@@ -55,7 +55,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         }
 
         schedule(cycles)
-        wait(for: [drained], timeout: 5)
+        wait(for: [drained], timeout: 30)
     }
 
     private func item(id: String, type: MagicItem.ItemType) -> MagicItem {

@@ -1,5 +1,4 @@
 import Foundation
-import SFSafeSymbols
 import Shared
 import StoreKit
 import SwiftUI
@@ -15,6 +14,7 @@ struct CarPlayConfigurationView: View {
     @State private var addItemDestination: CarPlayAddItemDestination?
     @State private var showAddFolderSheet = false
     @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
+    @State private var isEditingItems = false
 
     /// Whether the screen brings its own `NavigationStack`. It defaults to off because the screen is
     /// normally pushed (from Settings), and nesting a navigation container inside a pushed destination
@@ -141,7 +141,7 @@ struct CarPlayConfigurationView: View {
     }
 
     private var itemsSection: some View {
-        Section(L10n.CarPlay.Navigation.Tab.quickAccess) {
+        Section {
             Picker(L10n.Carplay.Tab.QuickAccess.layout, selection: Binding(
                 get: { viewModel.quickAccessLayout },
                 set: { newValue in
@@ -164,6 +164,11 @@ struct CarPlayConfigurationView: View {
                 viewModel.deleteItem(at: indexSet)
             }
             addItemButton
+        } header: {
+            ReorderableSectionHeader(
+                title: L10n.CarPlay.Navigation.Tab.quickAccess,
+                isEditing: $isEditingItems
+            )
         }
     }
 
@@ -217,18 +222,8 @@ struct CarPlayConfigurationView: View {
         )
     }
 
-    private func makeListItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-        return makeListItemRow(item: item, info: itemInfo)
-    }
-
     @ViewBuilder
-    private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
+    private func makeListItem(item: MagicItem) -> some View {
         if item.type == .folder {
             NavigationLink {
                 CarPlayFolderDetailView(
@@ -236,7 +231,7 @@ struct CarPlayConfigurationView: View {
                     viewModel: viewModel
                 )
             } label: {
-                itemRow(item: item, info: info)
+                itemRow(item: item)
             }
         } else if item.type == .assistPrompt {
             NavigationLink {
@@ -244,7 +239,7 @@ struct CarPlayConfigurationView: View {
                     viewModel.updateItem(updatedMagicItem)
                 }
             } label: {
-                itemRow(item: item, info: info)
+                itemRow(item: item)
             }
         } else {
             NavigationLink {
@@ -252,62 +247,17 @@ struct CarPlayConfigurationView: View {
                     viewModel.updateItem(updatedMagicItem)
                 }
             } label: {
-                itemRow(item: item, info: info)
+                itemRow(item: item)
             }
         }
     }
 
-    private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .accent))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title(for: item, info: info))
-                // Assist-prompt items show their prompt text; everything else shows the
-                // Server • Area • Device context line.
-                if let subtitle = subtitle(for: item) ?? info.contextSubtitle {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemSymbol: .line3Horizontal)
-                .foregroundStyle(.gray)
-        }
-    }
-
-    private func title(for item: MagicItem, info: MagicItem.Info) -> String {
-        if item.type == .assistPrompt,
-           let displayText = item.displayText?.trimmingCharacters(in: .whitespacesAndNewlines),
-           !displayText.isEmpty {
-            return displayText
-        }
-
-        return item.name(info: info)
-    }
-
-    private func subtitle(for item: MagicItem) -> String? {
-        guard item.type == .assistPrompt,
-              let assistPrompt = item.assistPrompt?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !assistPrompt.isEmpty else {
-            return nil
-        }
-
-        return assistPrompt
-    }
-
-    private func image(
-        for item: MagicItem,
-        itemInfo: MagicItem.Info,
-        watchPreview: Bool,
-        color: UIColor? = nil
-    ) -> UIImage {
-        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-
-        return icon.image(
-            ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
-            color: color ?? .init(hex: itemInfo.customization?.iconColor)
+    private func itemRow(item: MagicItem) -> some View {
+        MagicItemConfigurationRow(
+            item: item,
+            info: viewModel.magicItemInfo(for: item),
+            iconColor: .accent,
+            isReorderIndicatorVisible: isEditingItems
         )
     }
 

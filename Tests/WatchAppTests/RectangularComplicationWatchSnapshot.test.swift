@@ -23,9 +23,19 @@ struct RectangularComplicationWatchSnapshotTests {
             .environment(\.colorScheme, .dark)
     }
 
+    /// The icon slot carrying a configured color, which the face has to draw instead of tinting it away.
+    private static func customIconColor(
+        _ model: RectangularComplicationRenderModel
+    ) -> RectangularComplicationRenderModel {
+        var model = model
+        model.iconImage = customColoredComplicationIcon()
+        return model
+    }
+
     private static var variants: [(String, RectangularComplicationRenderModel)] {
         [
             ("icon-name-gauge", .sample()),
+            ("custom-icon-color", customIconColor(.sample(title: "Battery"))),
             ("all-slots", .sample(title: "Living Room", subtitle: "Temperature", bottomText: "Updated 2m ago")),
             ("all-slots-no-min-max", .sample(
                 title: "Living Room",

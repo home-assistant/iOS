@@ -97,8 +97,7 @@ final class HomeAssistantViewModel: ObservableObject {
             webViewController.webViewExternalMessageHandler.showAssist(
                 server: server,
                 pipeline: "",
-                autoStartRecording: false,
-                focusInputOnAppear: false
+                autoStartRecording: false
             )
         }
         sidebar.onShowNotifications = { [weak self] in

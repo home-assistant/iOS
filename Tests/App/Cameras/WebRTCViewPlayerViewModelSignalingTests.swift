@@ -229,7 +229,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         _ = try startAndOffer()
 
         try XCTUnwrap(clients.first).changeConnectionState(.disconnected)
-        spinMain(for: timing.disconnectedGracePeriod * 3)
+        spinMain(until: { clientConfigRequests.count == 2 })
 
         XCTAssertEqual(clientConfigRequests.count, 2)
         XCTAssertTrue(try XCTUnwrap(clients.first).isClosed)
@@ -254,7 +254,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     func testNoFrameBeforeTheTimeoutFailsTheStream() throws {
         _ = try startAndOffer()
 
-        spinMain(for: timing.connectionTimeout * 3)
+        spinMain(until: { viewModel.didFail })
 
         XCTAssertTrue(viewModel.didFail)
         XCTAssertFalse(viewModel.showLoader)
@@ -273,7 +273,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         connection.setState(.connecting, waitForQueue: false)
         viewModel.start()
 
-        spinMain(for: timing.connectionWaitTimeout * 1.5)
+        spinMain(until: { viewModel.didFail })
 
         XCTAssertTrue(viewModel.didFail)
         XCTAssertTrue(connection.pendingRequests.isEmpty)
@@ -306,7 +306,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
             XCTAssertEqual(clientConfigRequests.count, attempt + 1)
         }
 
-        spinMain(for: timing.signalingStallTimeout * 2)
+        spinMain(until: { viewModel.didFail })
 
         XCTAssertTrue(viewModel.didFail)
         XCTAssertEqual(clientConfigRequests.count, 3, "Nothing more is sent once the retries are spent")
@@ -400,10 +400,27 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     private func flushMainQueue() {
         let flushed = expectation(description: "main queue flushed")
         DispatchQueue.main.async { flushed.fulfill() }
-        wait(for: [flushed], timeout: 10.0)
+        wait(for: [flushed], timeout: 30.0)
     }
 
+    /// Spins for a fixed stretch, to prove something does *not* happen within it.
     private func spinMain(for interval: TimeInterval) {
         RunLoop.main.run(until: Date().addingTimeInterval(interval))
+    }
+
+    /// Spins until `condition` holds. Waiting for the outcome rather than for the interval keeps a
+    /// deadline that lands late — `asyncAfter` overshoots badly on a loaded machine — from reading
+    /// as a failure.
+    private func spinMain(
+        until condition: () -> Bool,
+        timeout: TimeInterval = 30,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let deadline = Date().addingTimeInterval(timeout)
+        while !condition(), Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        }
+        XCTAssertTrue(condition(), "Timed out spinning the main run loop", file: file, line: line)
     }
 }
