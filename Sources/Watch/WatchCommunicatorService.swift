@@ -842,7 +842,9 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func pushAction(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+    /// Not private so the reply contract it owes the watch can be unit tested directly; the only
+    /// caller is the message dispatch above.
+    func pushAction(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.pushActionResponse.rawValue
 
         // Every path answers, and answers with whether Home Assistant took the action: the watch

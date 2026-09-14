@@ -44,11 +44,7 @@ public extension UNNotificationContent {
     /// `UNNotificationAction` form of this; the watch needs the model itself so it can tell a
     /// text-input action apart and drive it on its own (see `DynamicNotificationHostingController`).
     var userInfoPayloadActions: [NotificationAction] {
-        Array(
-            userInfoActionConfigs
-                .map(NotificationAction.init(action:))
-                .prefix(Self.maxUserInfoActions)
-        )
+        Array(userInfoActionConfigs.map(NotificationAction.init(action:)).prefix(Self.maxUserInfoActions))
     }
 
     var userInfoActions: [UNNotificationAction] {
