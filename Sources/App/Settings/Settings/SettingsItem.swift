@@ -58,7 +58,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         }
     }
 
-    private static let iconSize: CGFloat = 24
+    static let iconSize: CGFloat = 24
 
     var materialIcon: MaterialDesignIcons {
         switch self {

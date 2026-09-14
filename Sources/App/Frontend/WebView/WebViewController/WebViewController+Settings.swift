@@ -19,7 +19,7 @@ extension WebViewController {
         webView?.backgroundColor = cachedColors[.primaryBackgroundColor]
         webView?.scrollView.backgroundColor = cachedColors[.primaryBackgroundColor]
 
-        // Catalyst keeps the native status-bar view (it holds the window buttons); colour it to match.
+        // The status-bar view sits behind the window buttons, Catalyst's and iPadOS's; colour it to match.
         if let statusBarView {
             statusBarView.backgroundColor = themedStatusBarColor()
             statusBarView.isOpaque = true

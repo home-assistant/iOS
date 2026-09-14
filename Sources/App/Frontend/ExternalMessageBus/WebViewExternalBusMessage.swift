@@ -36,7 +36,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
-            "hasSidebar": AppLabsFeature.macNativeSidebar.isEnabled,
+            "hasSidebar": AppLabsFeature.macNativeSidebar.isEnabled || AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
             "hasMatterStatusReport": Current.matter.isAvailable,

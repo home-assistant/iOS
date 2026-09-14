@@ -129,6 +129,16 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
+    @Test("VoiceToolsServerConfigurationTable conforms to DatabaseTableProtocol")
+    func voiceToolsServerConfigurationTableConformance() throws {
+        let table = VoiceToolsServerConfigurationTable()
+        #expect(table.tableName == GRDBDatabaseTable.voiceToolsServerConfiguration.rawValue)
+        #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
+
+        let expectedColumns = DatabaseTables.VoiceToolsServerConfiguration.allCases.map(\.rawValue)
+        #expect(Set(table.definedColumns) == Set(expectedColumns))
+    }
+
     @Test("ServerInfoMirrorTable conforms to DatabaseTableProtocol")
     func serverInfoMirrorTableConformance() throws {
         let table = ServerInfoMirrorTable()
@@ -159,10 +169,10 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 31 tables conform to DatabaseTableProtocol")
+    @Test("All 32 tables conform to DatabaseTableProtocol")
     func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 31, "Should have exactly 31 tables")
+        #expect(tables.count == 32, "Should have exactly 32 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName

@@ -146,8 +146,15 @@ struct LiveActivitySettingsView: View {
         }
     }
 
-    private var isLiveActivitySupportedOnDevice: Bool {
-        UIDevice.current.userInterfaceIdiom != .pad
+    var isLiveActivitySupportedOnDevice: Bool {
+        Self.isLiveActivitySupported(
+            idiom: UIDevice.current.userInterfaceIdiom,
+            majorSystemVersion: ProcessInfo.processInfo.operatingSystemVersion.majorVersion
+        )
+    }
+
+    static func isLiveActivitySupported(idiom: UIUserInterfaceIdiom, majorSystemVersion: Int) -> Bool {
+        idiom != .pad || majorSystemVersion >= 26
     }
 
     private var samplesSection: some View {

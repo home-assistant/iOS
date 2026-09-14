@@ -72,8 +72,6 @@
 		11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */; };
 		13E4D63B90C14B0DA25F2827 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C8FA7E5B23954D258050DD72 /* SFSafeSymbols */; };
 		17200629C6080FA329C8F802 /* Domain.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5459C05BEB77340680D8C6 /* Domain.test.swift */; };
-		42DA0000000000010000AF01 /* DomainStatesAfter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */; };
-		42DA0000000000030000AF03 /* AreaTarget.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000040000AF04 /* AreaTarget.test.swift */; };
 		17D9A7F5BB5024E854D46278 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DDD36A352E3698887FBF85D9 /* RealmSwift */; };
 		1A7E45C09B3D22E8F5A6B701 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4C014BAFE0BC019E4055ED11 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A7E45C09B3D22E8F5A6B702 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -189,6 +187,8 @@
 		42D14C91301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C90301BAF950058088E /* HAWatchComplications */; };
 		42D14CA1301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14CA0301BAF950058088E /* HAWatchComplications */; };
 		42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */; };
+		42DA0000000000010000AF01 /* DomainStatesAfter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */; };
+		42DA0000000000030000AF03 /* AreaTarget.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000040000AF04 /* AreaTarget.test.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
 		42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
@@ -654,6 +654,8 @@
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureMonitor.test.swift; sourceTree = "<group>"; };
+		42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStatesAfter.test.swift; sourceTree = "<group>"; };
+		42DA0000000000040000AF04 /* AreaTarget.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTarget.test.swift; sourceTree = "<group>"; };
 		42E2E0000000000000000002 /* OnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingE2ETests.swift; sourceTree = "<group>"; };
 		42E2E0000000000000000007 /* E2EDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = E2EDriver.swift; sourceTree = "<group>"; };
 		42E2E0000000000000000008 /* MigrationE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationE2ETests.swift; sourceTree = "<group>"; };
@@ -707,8 +709,6 @@
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DA5459C05BEB77340680D8C6 /* Domain.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.test.swift; sourceTree = "<group>"; };
-		42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStatesAfter.test.swift; sourceTree = "<group>"; };
-		42DA0000000000040000AF04 /* AreaTarget.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTarget.test.swift; sourceTree = "<group>"; };
 		FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -720,6 +720,13 @@
 				Info.plist,
 			);
 			target = 423FB76B2FFFDFDE000CB8FD /* Extensions-WatchWidgets */;
+		};
+		42FD0000001800510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				WatchAssistAppIntent.swift,
+			);
+			target = B6CC5D812159D10D00833E5D /* WatchApp */;
 		};
 		42479B7530013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -1462,7 +1469,9 @@
 				ClientEventsLogView/ClientEventsLogView.swift,
 				ClientEventsLogView/ClientEventsLogViewModel.swift,
 				Components/DatabaseResultsObserver.swift,
+				Components/MagicItemConfigurationRow.swift,
 				Components/NotificationIdentifierField.swift,
+				Components/ReorderableSectionHeader.swift,
 				Components/YamlPreviewSection.swift,
 				ConfigurationTransfer/AppConfigurationCategory.swift,
 				ConfigurationTransfer/AppConfigurationTransfer.swift,
@@ -1473,6 +1482,9 @@
 				Connection/ConnectionSettingsViewModel.swift,
 				Connection/ConnectionURLView.swift,
 				Connection/ConnectionURLViewModel.swift,
+				Connection/ConnectionURLsHowItWorksLink.swift,
+				Connection/ConnectionURLsHowItWorksView.swift,
+				Connection/ConnectionURLsHowItWorksViewModel.swift,
 				Connection/Webhook/WebhookDetailView.swift,
 				Connection/Webhook/WebhookDetailViewModel.swift,
 				Connection/Webhook/WebhookEndpoint.swift,
@@ -1501,11 +1513,13 @@
 				Gestures/GesturesSetupViewModel.swift,
 				Gestures/ListPicker.swift,
 				KeychainExplorer/KeychainExplorerView.swift,
+				Kiosk/ConditionalContainerView.swift,
 				Kiosk/KioskScreensaverSettingsView.swift,
 				Kiosk/KioskScreensaverView.swift,
 				Kiosk/KioskSensorsView.swift,
 				Kiosk/KioskSensorsViewModel.swift,
 				Kiosk/KioskSettingsEntryCustomizationView.swift,
+				Kiosk/KioskSettingsEntryIcon.swift,
 				Kiosk/KioskSettingsView.swift,
 				Kiosk/KioskSettingsViewModel.swift,
 				Kiosk/KioskView.swift,
@@ -1679,7 +1693,9 @@
 				ClientEventsLogView/ClientEventsLogView.swift,
 				ClientEventsLogView/ClientEventsLogViewModel.swift,
 				Components/DatabaseResultsObserver.swift,
+				Components/MagicItemConfigurationRow.swift,
 				Components/NotificationIdentifierField.swift,
+				Components/ReorderableSectionHeader.swift,
 				Components/YamlPreviewSection.swift,
 				ConfigurationTransfer/AppConfigurationCategory.swift,
 				ConfigurationTransfer/AppConfigurationTransfer.swift,
@@ -1690,6 +1706,9 @@
 				Connection/ConnectionSettingsViewModel.swift,
 				Connection/ConnectionURLView.swift,
 				Connection/ConnectionURLViewModel.swift,
+				Connection/ConnectionURLsHowItWorksLink.swift,
+				Connection/ConnectionURLsHowItWorksView.swift,
+				Connection/ConnectionURLsHowItWorksViewModel.swift,
 				Connection/Webhook/WebhookDetailView.swift,
 				Connection/Webhook/WebhookDetailViewModel.swift,
 				Connection/Webhook/WebhookEndpoint.swift,
@@ -1718,11 +1737,13 @@
 				Gestures/GesturesSetupViewModel.swift,
 				Gestures/ListPicker.swift,
 				KeychainExplorer/KeychainExplorerView.swift,
+				Kiosk/ConditionalContainerView.swift,
 				Kiosk/KioskScreensaverSettingsView.swift,
 				Kiosk/KioskScreensaverView.swift,
 				Kiosk/KioskSensorsView.swift,
 				Kiosk/KioskSensorsViewModel.swift,
 				Kiosk/KioskSettingsEntryCustomizationView.swift,
+				Kiosk/KioskSettingsEntryIcon.swift,
 				Kiosk/KioskSettingsView.swift,
 				Kiosk/KioskSettingsViewModel.swift,
 				Kiosk/KioskView.swift,
@@ -2448,6 +2469,7 @@
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-name-value-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.icon-only.png",
+				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.legacy-stack-text.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.name-only-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-name-gauge.png",
 				"__Snapshots__/CornerComplicationSnapshot.test/cornerComplicationVariants.value-name-no-gauge.png",
@@ -2462,9 +2484,11 @@
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.custom-text-color.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.full-fraction.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.icon-name-gauge.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.legacy-text-gauge.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.long-text.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.no-icon.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.no-name.png",
+				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.per-slot-colors.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.text-only.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.value-as-text.png",
 				"__Snapshots__/RectangularComplicationSnapshot.test/rectangularComplicationVariants.zero-fraction.png",
@@ -2482,7 +2506,7 @@
 		11F2F28D2587285300F61F7C /* NotificationAttachment */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationAttachment; sourceTree = "<group>"; };
 		420E64B72D676A4200A31E86 /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
 		42196AD92DA5AF7A00BD501E /* Onboarding */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Onboarding; sourceTree = "<group>"; };
-		423FB76F2FFFDFDE000CB8FD /* WatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (423FB77E2FFFDFDF000CB8FD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgets; sourceTree = "<group>"; };
+		423FB76F2FFFDFDE000CB8FD /* WatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (423FB77E2FFFDFDF000CB8FD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001800510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgets; sourceTree = "<group>"; };
 		42479B4630013FE300F7FCD3 /* WatchApp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42479B7530013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42479B7630013FE400F7FCD3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchApp; sourceTree = "<group>"; };
 		4283C0A63004CD31004D1061 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283C1A63004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42A11C0130010001000A0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A73004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A83004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1A93004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AA3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AB3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AC3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AD3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AE3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283C1AF3004CD32004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		4283E0D53004DCF4004D1061 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4283E1713004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1723004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1733004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1743004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1753004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 4283E1763004DCF5004D1061 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (gallery.ckcomplication, ); path = Resources; sourceTree = "<group>"; };
@@ -2492,6 +2516,7 @@
 		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
 		42CE0001300000000051FC9B /* Container */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Container; sourceTree = "<group>"; };
+		42CE0002300000000051FC9B /* Cameras */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Cameras; sourceTree = "<group>"; };
 		42D14C6E301BB6330058088E /* WatchAppTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WatchAppTests; sourceTree = "<group>"; };
 		42D3E49F2C5BCCF600444BE6 /* Watch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Watch; sourceTree = "<group>"; };
 		42DF4EE5302CACB600589E49 /* FlightGreetings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FlightGreetings; sourceTree = "<group>"; };
@@ -2577,6 +2602,8 @@
 		42EDE935300315A50051FC9B /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
 		42EDE93F300315A50051FC9B /* ZoneManager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZoneManager; sourceTree = "<group>"; };
 		42F467200000000000000001 /* NotificationSender */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NotificationSender; sourceTree = "<group>"; };
+		42FD0000009000510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
+		42FD0000009100510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
@@ -2935,6 +2962,7 @@
 				42EDE917300315A50051FC9B /* Settings */,
 				42EDE91C300315A50051FC9B /* TestFlightCommunication */,
 				42EDE930300315A50051FC9B /* Utilities */,
+				42FD0000009000510051FC9B /* VoiceToolsServer */,
 				42EDE935300315A50051FC9B /* WhatsNew */,
 				42EDE93F300315A50051FC9B /* ZoneManager */,
 				42EDE940300315A50051FC9B /* AppDelegate.swift */,
@@ -3014,6 +3042,7 @@
 				42EDBB6B3002FBBE0051FC9B /* Area */,
 				42EDBB9F3002FBBE0051FC9B /* Assist */,
 				42EDBB893002FBBE0051FC9B /* Auth */,
+				42CE0002300000000051FC9B /* Cameras */,
 				42EDBB7B3002FBBE0051FC9B /* CarPlay */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 				42CE0001300000000051FC9B /* Container */,
@@ -3025,6 +3054,7 @@
 				42EDBBF63002FBC90051FC9B /* Resources */,
 				42EDBBDB3002FBC90051FC9B /* Scenes */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
+				42FD0000009100510051FC9B /* VoiceToolsServer */,
 				42EDBBE23002FBC90051FC9B /* Thread */,
 				42EDBBBC3002FBC90051FC9B /* Utilities */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
@@ -3505,6 +3535,7 @@
 				42EDE930300315A50051FC9B /* Utilities */,
 				42EDE935300315A50051FC9B /* WhatsNew */,
 				42EDE93F300315A50051FC9B /* ZoneManager */,
+				42FD0000009000510051FC9B /* VoiceToolsServer */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -3544,6 +3575,7 @@
 				428626002DA5CC8400D58D13 /* DesignSystem */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
 				42CE0001300000000051FC9B /* Container */,
+				42CE0002300000000051FC9B /* Cameras */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
 				42DF4F00302CACC600589E49 /* Templating */,
 				42DF4F06302CACD400589E49 /* ServerSwitching */,
@@ -3568,6 +3600,7 @@
 				42EDBBEB3002FBC90051FC9B /* Webhook */,
 				42EDBBEF3002FBC90051FC9B /* Notifications */,
 				42EDBBF33002FBC90051FC9B /* WhatsNew */,
+				42FD0000009100510051FC9B /* VoiceToolsServer */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 			);
 			name = "Tests-App";
@@ -5087,11 +5120,12 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).watchkitapp.WatchWidgets";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BUNDLE_ID_PREFIX).HomeAssistant$(BUNDLE_ID_SUFFIX).watchkitapp.WatchWidgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG WIDGET_EXTENSION $(inherited)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -5167,10 +5201,12 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).watchkitapp.WatchWidgets";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BUNDLE_ID_PREFIX).HomeAssistant$(BUNDLE_ID_SUFFIX).watchkitapp.WatchWidgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "WIDGET_EXTENSION $(inherited)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -6198,7 +6234,7 @@
 			repositoryURL = "https://github.com/stasel/WebRTC.git";
 			requirement = {
 				kind = exactVersion;
-				version = 140.0.0;
+				version = 152.0.0;
 			};
 		};
 		42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {

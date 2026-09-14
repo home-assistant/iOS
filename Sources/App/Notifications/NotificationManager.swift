@@ -488,7 +488,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return
         }
 
-        if let options = kioskPushPresentationOptions(for: notification) {
+        if let options = kioskPushPresentationOptions(for: notification.request) {
             completionHandler(options)
             return
         }
@@ -512,16 +512,17 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         return completionHandler(methods)
     }
 
-    private func kioskPushPresentationOptions(
-        for notification: UNNotification
-    ) -> UNNotificationPresentationOptions? {
-        let content = notification.request.content
+    /// Takes the request rather than the `UNNotification` wrapping it: everything here needs only the
+    /// request, and unlike a notification a request can be built in tests.
+    func kioskPushPresentationOptions(for request: UNNotificationRequest) -> UNNotificationPresentationOptions? {
+        let content = request.content
         let message = content.body
         guard KioskPushCommand.isKioskCommand(message: message) else {
             return nil
         }
 
-        guard Current.kiosk.settings.acceptRemoteCommands else {
+        let kioskSettings = Current.kiosk.settings
+        guard kioskSettings.acceptRemoteCommands else {
             Current.Log.info("Ignoring kiosk remote command (disabled in settings): \(message)")
             return nil
         }
@@ -533,21 +534,12 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         performKioskCommand(command, userInfo: content.userInfo)
 
-        if #available(iOS 18, *) {
-            let identifier = notification.request.identifier
-            let symbol = command.symbol
-            let colors = (command.symbolForegroundStyle.primary, command.symbolForegroundStyle.secondary)
-            let title = command.localizedString
-            let subtitle = command.localizedSubtitle
+        // The command already ran above; the toast is only its visual confirmation, which the user can
+        // switch off for a kiosk that should react silently.
+        if #available(iOS 18, *),
+           let toast = command.confirmationToast(id: request.identifier, settings: kioskSettings) {
             Task { @MainActor in
-                ToastPresenter.shared.show(
-                    id: identifier,
-                    symbol: symbol,
-                    symbolForegroundStyle: colors,
-                    title: title,
-                    message: subtitle,
-                    duration: 4
-                )
+                ToastPresenter.shared.show(toast: toast, duration: 4)
             }
         }
 

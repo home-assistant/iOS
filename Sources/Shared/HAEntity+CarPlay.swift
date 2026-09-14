@@ -27,8 +27,8 @@ public extension HAEntity {
     /// state's `--state-…` palette, or a light's own color. Shared by CarPlay and the watch so both
     /// read the same as the widgets and the frontend itself.
     ///
-    /// - Parameter customColor: a color the user picked for this entity on the calling surface. As
-    ///   in the frontend's tile card, it only applies while the entity is active.
+    /// - Parameter customColor: a color the user picked for this entity on the calling surface,
+    ///   which wins over everything below it whatever the entity's state.
     func stateIconColor(customColor: UIColor? = nil) -> UIColor? {
         UIColor(
             EntityIconColorProvider.iconColor(

@@ -29,12 +29,20 @@ final class OnboardingStateObservable: ObservableObject {
         case migrationHandoff
     }
 
-    @Published private(set) var screen: Screen
+    @Published private(set) var screen: Screen {
+        didSet {
+            themeMode.observe(server: currentServer)
+        }
+    }
 
+    /// The theme mode belongs to the account, so the server on screen is what decides the appearance.
+    private let themeMode: FrontendThemeModeObserver
     private var cancellables = Set<AnyCancellable>()
 
-    init() {
+    init(themeMode: FrontendThemeModeObserver? = nil) {
+        self.themeMode = themeMode ?? FrontendThemeModeObserver()
         self.screen = Self.initialScreen()
+        self.themeMode.observe(server: currentServer)
         Current.onboardingObservation.register(observer: self)
         observeKioskTarget()
         NotificationCenter.default.publisher(for: AppMigrationCoordinator.handoffDidChange)

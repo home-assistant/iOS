@@ -186,6 +186,14 @@ final class MacSidebarViewModel: ObservableObject {
         save(effectiveUserData.reordered(to: mainItems.map(\.id)))
     }
 
+    func reorderItems(to order: [String]) {
+        let reordered = order.compactMap { id in mainItems.first(where: { $0.id == id }) }
+            + mainItems.filter { !order.contains($0.id) }
+        guard reordered != mainItems else { return }
+        mainItems = reordered
+        commitReorder()
+    }
+
     func hide(itemId: String) {
         guard let item = mainItems.first(where: { $0.id == itemId }), canHide(item) else { return }
         save(effectiveUserData.hiding(itemId, visibleOrder: mainItems.map(\.id)))

@@ -31,6 +31,9 @@ struct WatchWidgetComplicationSnapshot: Codable {
         /// Per-slot color override for the bottom text; nil falls back to `textColor`. Defaulted so
         /// payloads written before this field still decode and construct.
         var bottomTextColor: String? = nil
+        /// Per-slot color overrides for the title and value; nil falls back to `textColor`.
+        var titleColor: String? = nil
+        var valueColor: String? = nil
         /// Resolved slot texts (slot/formula model). All optional so payloads written before slots
         /// existed still decode — the accessors below then fall back to the top-level
         /// `title`/`subtitle`. Mutable so the widget's live self-fetch can update them in place.
@@ -42,9 +45,12 @@ struct WatchWidgetComplicationSnapshot: Codable {
         var showSubtitle: Bool?
         var showBottomText: Bool?
         /// Corner only: whether the corner's own text rides the outer curve (default true, the modern
-        /// layout) or sits flat in the corner tip, the way ClockKit drew a Graphic Corner's outer text.
+        /// layout) or sits flat in the corner tip, the way ClockKit drew a "Gauge Text" corner's outer text.
         /// Defaulted so payloads written before this field still decode and construct.
         var curvesText: Bool? = nil
+        /// Rectangular only: whether the value rides the gauge as its thumb (default true, the modern
+        /// layout) or sits as its own line above a plain bar, the way ClockKit's "Text Gauge" drew it.
+        var valueRidesGauge: Bool? = nil
     }
 
     let id: String?
@@ -63,6 +69,9 @@ struct WatchWidgetComplicationSnapshot: Codable {
     let menuName: String?
     /// Whether the complication is shown while the display is dimmed (default true).
     var showWhenInactive: Bool?
+    /// Whether `iconData`'s baked-in color is one the user picked. Optional and last, so older
+    /// payloads still decode.
+    var iconUsesCustomColor: Bool?
 
     static var placeholder: Self {
         .init(
@@ -123,13 +132,41 @@ struct WatchWidgetComplicationSnapshot: Codable {
 
     /// The value/text color for a given family, or nil to use the default.
     func textColor(for widgetFamily: WidgetFamily) -> Color? {
-        options(for: widgetFamily)?.textColor.flatMap { Color(hex: $0) }
+        guard let options = options(for: widgetFamily) else { return nil }
+        return predatesSlotColors(options, for: widgetFamily) ? nil : options.textColor.flatMap { Color(hex: $0) }
     }
 
     /// The bottom text's color override for a given family, or nil to fall back to `textColor`.
     func bottomTextColor(for widgetFamily: WidgetFamily) -> Color? {
         options(for: widgetFamily)?.bottomTextColor.flatMap { Color(hex: $0) }
     }
+
+    func titleColor(for widgetFamily: WidgetFamily) -> Color? {
+        options(for: widgetFamily)?.titleColor.flatMap { Color(hex: $0) }
+    }
+
+    func valueColor(for widgetFamily: WidgetFamily) -> Color? {
+        guard let options = options(for: widgetFamily) else { return nil }
+        let hex = options.valueColor ?? (predatesSlotColors(options, for: widgetFamily) ? options.textColor : nil)
+        return hex.flatMap { Color(hex: $0) }
+    }
+
+    /// Whether the rectangular value rides the gauge as its thumb (default true). Legacy complications
+    /// drew it as a text line above a plain bar and opt out.
+    func valueRidesGauge(for widgetFamily: WidgetFamily) -> Bool {
+        options(for: widgetFamily)?.valueRidesGauge ?? !isLegacy
+    }
+
+    /// A legacy rectangular payload written before per-slot colors existed carried the body's color as
+    /// the one shared text color, so it is read back as the value's color rather than everyone's.
+    private func predatesSlotColors(_ options: PerFamily, for widgetFamily: WidgetFamily) -> Bool {
+        isLegacy && widgetFamily == .accessoryRectangular && options.titleColor == nil
+            && options.valueColor == nil && options.textColor != nil
+    }
+
+    /// Legacy (ClockKit-era) complications carry their ClockKit family; modern configs and the
+    /// built-ins leave it empty.
+    private var isLegacy: Bool { !family.isEmpty }
 
     /// Whether to show the state value as text for a given family (default true).
     func showsValue(for widgetFamily: WidgetFamily) -> Bool {
@@ -267,7 +304,7 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// renders a complication as a monochrome template, whereas an SF Symbol renders as a crisp glyph.
     var iconImage: Image? {
         guard !isBuiltIn, let iconData, let image = UIImage(data: iconData) else { return nil }
-        return Image(uiImage: image).renderingMode(.template)
+        return ComplicationIconRendering.image(image, usesCustomColor: iconUsesCustomColor == true)
     }
 
     /// The corner family's WidgetKit archiver enforces the smallest image cap of the accessory
@@ -282,9 +319,10 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// stays sharp at the watch's 2x scale.
     var cornerIconImage: Image? {
         guard !isBuiltIn, let iconData, let image = UIImage(data: iconData) else { return nil }
+        let usesCustomColor = iconUsesCustomColor == true
         let maxSide = max(image.size.width, image.size.height)
         guard maxSide > Self.cornerIconMaxDimension, maxSide > 0 else {
-            return Image(uiImage: image).renderingMode(.template)
+            return ComplicationIconRendering.image(image, usesCustomColor: usesCustomColor)
         }
         let ratio = Self.cornerIconMaxDimension / maxSide
         let target = CGSize(width: image.size.width * ratio, height: image.size.height * ratio)
@@ -294,9 +332,9 @@ struct WatchWidgetComplicationSnapshot: Codable {
         defer { UIGraphicsEndImageContext() }
         image.draw(in: CGRect(origin: .zero, size: target))
         guard let resized = UIGraphicsGetImageFromCurrentImageContext() else {
-            return Image(uiImage: image).renderingMode(.template)
+            return ComplicationIconRendering.image(image, usesCustomColor: usesCustomColor)
         }
-        return Image(uiImage: resized).renderingMode(.template)
+        return ComplicationIconRendering.image(resized, usesCustomColor: usesCustomColor)
     }
 
     // Asset-catalog image used when there is no custom template icon: the Assist symbol for the Assist

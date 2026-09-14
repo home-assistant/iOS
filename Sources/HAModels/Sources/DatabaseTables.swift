@@ -21,6 +21,7 @@ public enum GRDBDatabaseTable: String {
     case appArea
     case homeViewConfiguration
     case assistConfiguration
+    case voiceToolsServerConfiguration
     case allowedTags
     case kioskSettings
     case appLabsFeatureState
@@ -209,6 +210,15 @@ public enum DatabaseTables {
         case startMode
     }
 
+    /// The voice tools server's own settings. Deliberately not part of `AssistConfiguration`:
+    /// what this device offers Home Assistant has nothing to do with how Assist behaves in the app,
+    /// and the two are configured independently.
+    public enum VoiceToolsServerConfiguration: String, CaseIterable {
+        case id
+        case isEnabled
+        case port
+    }
+
     public enum AllowedTag: String, CaseIterable {
         case tag
     }
@@ -273,6 +283,7 @@ public enum DatabaseTables {
         case enabled
         case requireAuthentication
         case acceptRemoteCommands
+        case showRemoteCommandConfirmations
         case serverId
         case dashboard
         case keepScreenOn
@@ -280,6 +291,7 @@ public enum DatabaseTables {
         case hideStatusBar
         case autoReload
         case settingsEntryPosition
+        case settingsEntryHidden
         case settingsEntryBackgroundColor
         case settingsEntryIconColor
         case screensaver

@@ -246,6 +246,27 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(controller.modalPresentationStyle, .fullScreen)
     }
 
+    @MainActor func testHandleExternalMessageShowAssistZoomsOutOfTheTappedSourceOnce() throws {
+        guard #available(iOS 18.0, *) else {
+            throw XCTSkip("Zoom transitions require iOS 18")
+        }
+        mockWebViewController.assistZoomAnchorView = nil
+        mockWebViewController.pendingAssistZoomSourceView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "assist/show",
+        ]
+
+        sut.handleExternalMessage(dictionary)
+
+        let controller = try XCTUnwrap(mockWebViewController.overlayedController)
+        XCTAssertNotNil(controller.preferredTransition)
+        XCTAssertNil(mockWebViewController.pendingAssistZoomSourceView)
+    }
+
     @MainActor func testHandleExternalMessageShowAssistCrossDissolvesWithoutAnchor() throws {
         mockWebViewController.assistZoomAnchorView = nil
 

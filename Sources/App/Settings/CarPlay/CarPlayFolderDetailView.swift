@@ -10,6 +10,7 @@ struct CarPlayFolderDetailView: View {
 
     @State private var showEditFolder = false
     @State private var addItemDestination: CarPlayAddItemDestination?
+    @State private var isEditingItems = false
 
     private var folder: MagicItem? {
         viewModel.config.folder(withId: folderId)
@@ -32,6 +33,8 @@ struct CarPlayFolderDetailView: View {
                     onSelectDestination: { addItemDestination = $0 },
                     onAddFolder: {}
                 )
+            } header: {
+                ReorderableSectionHeader(isEditing: $isEditingItems)
             }
         }
         .navigationTitle(folder?.displayText ?? L10n.Watch.Configuration.Folder.defaultName)
@@ -87,20 +90,13 @@ struct CarPlayFolderDetailView: View {
 
     @ViewBuilder
     private func row(for item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-
         if item.type == .assistPrompt {
             NavigationLink {
                 AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
                     viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
                 }
             } label: {
-                rowLabel(for: item, info: itemInfo)
+                rowLabel(for: item)
             }
         } else {
             NavigationLink {
@@ -108,30 +104,18 @@ struct CarPlayFolderDetailView: View {
                     viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
                 }
             } label: {
-                rowLabel(for: item, info: itemInfo)
+                rowLabel(for: item)
             }
         }
     }
 
-    private func rowLabel(for item: MagicItem, info: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: item.icon(info: info).image(
-                ofSize: .init(width: 18, height: 18),
-                color: .accent
-            ))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name(info: info))
-                if let contextSubtitle = info.contextSubtitle {
-                    Text(contextSubtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemSymbol: .line3Horizontal)
-                .foregroundStyle(.gray)
-        }
+    private func rowLabel(for item: MagicItem) -> some View {
+        MagicItemConfigurationRow(
+            item: item,
+            info: viewModel.magicItemInfo(for: item),
+            iconColor: .accent,
+            isReorderIndicatorVisible: isEditingItems
+        )
     }
 }
 

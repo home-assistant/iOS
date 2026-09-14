@@ -21,6 +21,10 @@ final class WebFrontendOverlayState: ObservableObject {
     /// Path of the frontend page currently displayed, without query or fragment.
     @Published var currentPath: String?
 
+    /// Fires when something other than the user's own taps in the frontend navigates it (deep links,
+    /// notifications, App Intents), so a host that has the frontend off screen can bring it back.
+    let externalNavigationRequests = PassthroughSubject<Void, Never>()
+
     /// Theme color for the top status-bar inset, drawn by `HomeAssistantView` over the (always edge-to-edge)
     /// web view. Nil when there should be no themed bar — i.e. edge-to-edge / full-screen is enabled, or on
     /// Catalyst (where the native status-bar view handles it).

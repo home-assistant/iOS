@@ -17,7 +17,7 @@ protocol WebViewExternalMessageHandlerProtocol {
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
     func stopImprovScanIfNeeded()
-    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool, focusInputOnAppear: Bool)
+    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool)
 }
 
 final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
@@ -151,9 +151,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 showAssist(
                     server: webViewController.server,
                     pipeline: pipelineId ?? "",
-                    autoStartRecording: startMode.resolveAutoStartRecording(frontendRequested: startListening ?? false),
-                    // Asking for text explicitly means the user wants to type, so save them a tap.
-                    focusInputOnAppear: startMode == .text
+                    autoStartRecording: startMode.resolveAutoStartRecording(frontendRequested: startListening ?? false)
                 )
             case .assistSettings:
                 showAssistSettingsViewController()
@@ -206,6 +204,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 reloadAndClearFrontendCache()
             case .sidebarShow:
                 MacNativeSidebarState.shared.show()
+                NativeTabBarState.shared.requestMore()
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -501,15 +500,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     func showAssist(
         server: Server,
         pipeline: String = "",
-        autoStartRecording: Bool = false,
-        focusInputOnAppear: Bool = false
+        autoStartRecording: Bool = false
     ) {
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
                 pipelineId: pipeline,
-                autoStartRecording: autoStartRecording,
-                focusInputOnAppear: focusInputOnAppear
+                autoStartRecording: autoStartRecording
             ))
             return
         }
@@ -520,8 +517,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             AssistWindowModel.shared.configure(
                 server: server,
                 preferredPipelineId: pipeline,
-                autoStartRecording: autoStartRecording,
-                focusInputOnAppear: focusInputOnAppear
+                autoStartRecording: autoStartRecording
             )
             Current.sceneManager.activateAnyScene(for: .assist)
         } else {
@@ -529,16 +525,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             let assistView = UIHostingController(rootView: AssistView.build(
                 server: server,
                 preferredPipelineId: pipeline,
-                autoStartRecording: autoStartRecording,
-                focusInputOnAppear: focusInputOnAppear
+                autoStartRecording: autoStartRecording
             ))
             assistView.modalPresentationStyle = .fullScreen
-            if #available(iOS 18.0, *), webViewController?.assistZoomAnchorView != nil {
-                // The request comes over the external bus, so there is no touched view to zoom out of: the
-                // anchor standing in for the frontend's Assist button plays that part. Resolved on every call
-                // because the transition asks again while presenting, dismissing and interactively dragging.
+            let tappedSource = webViewController?.pendingAssistZoomSourceView
+            webViewController?.pendingAssistZoomSourceView = nil
+            if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+                // Zoom out of the tapped tab bar spot when there is one, else the frontend's Assist anchor.
                 assistView.preferredTransition = .zoom { [weak self] _ in
-                    self?.webViewController?.assistZoomAnchorView
+                    tappedSource ?? self?.webViewController?.assistZoomAnchorView
                 }
             } else {
                 assistView.modalTransitionStyle = .crossDissolve

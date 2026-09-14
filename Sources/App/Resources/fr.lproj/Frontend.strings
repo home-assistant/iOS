@@ -6,7 +6,7 @@
 "panel::developer_tools" = "Outils de développement";
 "panel::energy" = "Énergie";
 "panel::history" = "Historique";
-"panel::home" = "Aperçu";
+"panel::home" = "Vue d’ensemble";
 "panel::light" = "Lumières";
 "panel::logbook" = "Activité";
 "panel::mailbox" = "Messagerie vocale";
@@ -17,7 +17,7 @@
 "panel::profile" = "Profil";
 "panel::security" = "Sécurité";
 "panel::shopping_list" = "Liste de courses";
-"panel::states" = "Vue d'ensemble";
+"panel::states" = "Vue d’ensemble";
 "panel::todo" = "Listes de tâches";
 "state::default::unavailable" = "Indisponible";
 "state::default::unknown" = "Inconnu";

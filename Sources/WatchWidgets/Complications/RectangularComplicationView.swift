@@ -46,7 +46,10 @@ struct RectangularComplicationView: View {
             showsBottomText: complication.showsBottomText(for: family),
             tint: complication.tintColor(for: family),
             textColor: complication.textColor(for: family),
-            bottomTextColor: complication.bottomTextColor(for: family)
+            bottomTextColor: complication.bottomTextColor(for: family),
+            titleColor: complication.titleColor(for: family),
+            valueColor: complication.valueColor(for: family),
+            valueRidesGauge: complication.valueRidesGauge(for: family)
         )
     }
 

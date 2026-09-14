@@ -74,6 +74,7 @@ public extension DatabaseQueue {
             AppAreaTable(),
             HomeViewConfigurationTable(),
             AssistConfigurationTable(),
+            VoiceToolsServerConfigurationTable(),
             AllowedTagTable(),
             KioskSettingsTable(),
             AppLabsFeatureStateTable(),
