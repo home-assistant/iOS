@@ -4,23 +4,20 @@ import XCTest
 
 @MainActor
 final class AppSettingsPresenterTests: XCTestCase {
+    /// One presenter per scene, so every test starts from a fresh one.
+    private var presenter: AppSettingsPresenter!
+
     override func setUp() {
         super.setUp()
-        AppSettingsPresenter.shared.pushPath = NavigationPath()
+        presenter = AppSettingsPresenter()
     }
 
     override func tearDown() {
-        AppSettingsPresenter.shared.pushPath = NavigationPath()
+        presenter = nil
         super.tearDown()
     }
 
     func testZoomSourceLastsUntilTheSheetIsDismissed() {
-        let presenter = AppSettingsPresenter.shared
-        defer {
-            presenter.isSheetPresented = false
-            presenter.sheetDismissed()
-        }
-
         presenter.presentSettings(zoomingFrom: "gear")
         XCTAssertEqual(presenter.zoomSourceID, "gear")
 
@@ -37,40 +34,40 @@ final class AppSettingsPresenterTests: XCTestCase {
     }
 
     func testPushingSettingsPutsItAtTheRootOfThePushPath() {
-        AppSettingsPresenter.shared.isPushPresented = true
+        presenter.isPushPresented = true
 
-        XCTAssertEqual(AppSettingsPresenter.shared.pushPath.count, 1)
-        XCTAssertTrue(AppSettingsPresenter.shared.isPushPresented)
+        XCTAssertEqual(presenter.pushPath.count, 1)
+        XCTAssertTrue(presenter.isPushPresented)
     }
 
     func testPushingSettingsAgainWhileItIsOpenDoesNotStackAnotherCopy() {
-        AppSettingsPresenter.shared.isPushPresented = true
-        AppSettingsPresenter.shared.pushPath.append(SettingsItem.liveActivities)
+        presenter.isPushPresented = true
+        presenter.pushPath.append(SettingsItem.liveActivities)
 
-        AppSettingsPresenter.shared.isPushPresented = true
+        presenter.isPushPresented = true
 
         // The screen Settings pushed stays put: re-asking for Settings can't push a second one over it.
-        XCTAssertEqual(AppSettingsPresenter.shared.pushPath.count, 2)
+        XCTAssertEqual(presenter.pushPath.count, 2)
     }
 
     func testClosingSettingsAlsoPopsTheScreensItPushed() {
-        AppSettingsPresenter.shared.isPushPresented = true
-        AppSettingsPresenter.shared.pushPath.append(SettingsItem.liveActivities)
+        presenter.isPushPresented = true
+        presenter.pushPath.append(SettingsItem.liveActivities)
 
-        AppSettingsPresenter.shared.isPushPresented = false
+        presenter.isPushPresented = false
 
-        XCTAssertTrue(AppSettingsPresenter.shared.pushPath.isEmpty)
-        XCTAssertFalse(AppSettingsPresenter.shared.isPushPresented)
+        XCTAssertTrue(presenter.pushPath.isEmpty)
+        XCTAssertFalse(presenter.isPushPresented)
     }
 
     func testPushPresentedFollowsThePathWhenTheUserNavigatesBack() {
-        AppSettingsPresenter.shared.isPushPresented = true
-        AppSettingsPresenter.shared.pushPath.append(SettingsItem.liveActivities)
+        presenter.isPushPresented = true
+        presenter.pushPath.append(SettingsItem.liveActivities)
 
         // Two pops, as the navigation stack would report them for two taps on Back.
-        AppSettingsPresenter.shared.pushPath.removeLast()
-        XCTAssertTrue(AppSettingsPresenter.shared.isPushPresented)
-        AppSettingsPresenter.shared.pushPath.removeLast()
-        XCTAssertFalse(AppSettingsPresenter.shared.isPushPresented)
+        presenter.pushPath.removeLast()
+        XCTAssertTrue(presenter.isPushPresented)
+        presenter.pushPath.removeLast()
+        XCTAssertFalse(presenter.isPushPresented)
     }
 }

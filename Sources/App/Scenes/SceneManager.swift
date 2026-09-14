@@ -177,16 +177,37 @@ final class SceneManager {
     private var appCoordinatorPromise: Guarantee<AppCoordinator>
     private var appCoordinatorSeal: (AppCoordinator) -> Void
 
-    /// The primary web-view coordinator (`HomeAssistantView`), replacing `webViewWindowControllerPromise`.
+    /// Every coordinator currently registered, weakly held. Multi-window (iPad, Catalyst) runs one per
+    /// scene, so this is how a request that started in a particular window finds that window's coordinator
+    /// instead of whichever one happened to register last.
+    private let registeredAppCoordinators = NSHashTable<AnyObject>.weakObjects()
+
+    /// The app-wide coordinator, for requests that arrive without a window behind them (deep links,
+    /// notifications, App Intents). Anything triggered from a window should go through
+    /// `appCoordinator(for:)` so it stays in that window.
     var appCoordinator: Guarantee<AppCoordinator> { appCoordinatorPromise }
 
     /// Called by `HomeAssistantView` once its coordinator exists.
     func registerAppCoordinator(_ coordinator: AppCoordinator) {
+        registeredAppCoordinators.add(coordinator)
+
         if appCoordinatorPromise.isFulfilled {
             appCoordinatorPromise = .value(coordinator)
         } else {
             appCoordinatorSeal(coordinator)
         }
+    }
+
+    /// The coordinator showing `scene`, for requests that started in one window and belong there —
+    /// a tap in that web view, a gesture on it. Falls back to the app-wide coordinator when the scene has
+    /// none of its own (kiosk mode, a window still coming up). Call on the main thread.
+    func appCoordinator(for scene: UIWindowScene?) -> Guarantee<AppCoordinator> {
+        guard let scene else { return appCoordinatorPromise }
+        let coordinators = registeredAppCoordinators.allObjects.compactMap { $0 as? AppCoordinator }
+        guard let coordinator = coordinators.first(where: { $0.window?.windowScene === scene }) else {
+            return appCoordinatorPromise
+        }
+        return .value(coordinator)
     }
 
     init() {

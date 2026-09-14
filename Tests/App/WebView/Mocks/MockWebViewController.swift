@@ -49,11 +49,13 @@ final class MockWebViewController: WebViewControllerProtocol {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
     }
 
+    var presentationWindow: UIWindow?
+
     func load(request: URLRequest) {
         // Simulate loading a request
     }
 
-    func showSettingsViewController() {
+    func showSettingsViewController(pushOntoNavigationStack: Bool) {
         // Simulate showing settings
     }
 
