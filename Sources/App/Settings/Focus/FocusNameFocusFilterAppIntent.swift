@@ -39,8 +39,15 @@ struct FocusNameFocusFilterAppIntent: SetFocusFilterIntent {
     }
 
     func perform() async throws -> some IntentResult {
+        // Logged before anything acts on it, and with the entity's id: this line is the only
+        // record that iOS ran the filter at all, and a run carrying no name is indistinguishable
+        // from a Focus ending — so a log written only after the happy path leaves "iOS never ran
+        // it" and "iOS ran it with nothing" looking exactly alike in an exported log.
+        Current.Log.info(
+            "focus filter running with name(\(focusName?.name ?? "<none>")) " +
+                "id(\(focusName?.id ?? "<none>"))"
+        )
         Current.focusFilter.setActiveFocusName(focusName?.name)
-        Current.Log.info("focus filter set focus name to \(focusName?.name ?? "<none>")")
 
         // `Current.apis` picks each server's URL from the cached network information, which a
         // process iOS has just launched to run this doesn't have yet — leaving a server that is
