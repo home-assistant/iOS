@@ -588,30 +588,7 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
             return
         }
 
-        firstly { () -> Promise<Void> in
-            let (promise, seal) = Promise<Void>.pending()
-
-            if Communicator.shared.currentReachability == .immediatelyReachable {
-                Current.Log.info("sending via phone")
-                Communicator.shared.send(.init(
-                    identifier: InteractiveImmediateMessages.pushAction.rawValue,
-                    content: ["PushActionInfo": info.toJSON(), "Server": server.identifier.rawValue],
-                    reply: { message in
-                        Current.Log.verbose("Received reply dictionary \(message)")
-                        seal.fulfill(())
-                    }
-                ), errorHandler: { error in
-                    Current.Log.error("Received error when sending immediate message \(error)")
-                    seal.reject(error)
-                })
-            } else {
-                Current.Log.info("sending via local")
-                Current.api(for: server)?.handlePushAction(for: info)
-                    .pipe(to: seal.resolve)
-            }
-
-            return promise
-        }.ensure {
+        WatchPushActionSender.send(info, server: server).ensure {
             completionHandler()
         }.cauterize()
     }
