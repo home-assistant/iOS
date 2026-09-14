@@ -6,7 +6,7 @@
 "panel::developer_tools" = "Geliştirici araçları";
 "panel::energy" = "Enerji";
 "panel::history" = "Geçmiş";
-"panel::home" = "Genel Bakış";
+"panel::home" = "Durumlar";
 "panel::light" = "Işıklar";
 "panel::logbook" = "Etkinlik";
 "panel::mailbox" = "Posta kutusu";
@@ -17,7 +17,7 @@
 "panel::profile" = "Profil";
 "panel::security" = "Güvenlik";
 "panel::shopping_list" = "Alışveriş listesi";
-"panel::states" = "Genel Bakış";
+"panel::states" = "Durumlar";
 "panel::todo" = "Yapılacaklar listeleri";
 "state::default::unavailable" = "Kullanım dışı";
 "state::default::unknown" = "Bilinmeyen";
