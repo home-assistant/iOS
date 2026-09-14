@@ -6,19 +6,21 @@ import Foundation
 /// hierarchy's contents are. The two things the web view does tell us — the URL it is on and the
 /// title the document set — are enough to name the page, which is what this carries.
 struct OnscreenPage: Equatable {
-    /// The frontend panel, which is the first component of the URL's path.
+    /// The frontend panel, named the way `PageAppEntity` names it.
     let panelPath: String
     let serverId: String
     /// The page's human-readable name, for anything that shows the activity rather than resolving it.
     let title: String
 
-    /// Fails when the URL names no panel we could resolve.
+    /// Fails when the URL's path holds none of the server's panels.
     ///
-    /// Panels are the first path component — `/lovelace/0` is the second view of the `lovelace`
-    /// panel — and `/` is whichever panel the server made default, which the URL alone does not say.
-    /// Rather than guess at that, a URL with no path yields no page.
-    init?(url: URL, title: String, serverId: String) {
-        guard let panelPath = url.pathComponents.first(where: { $0 != "/" && !$0.isEmpty }) else {
+    /// The panel is matched against the panels this server actually has, rather than assumed to be
+    /// the first path component: a server reached under a path prefix puts the prefix there instead
+    /// (`https://host/homeassistant/lovelace/0`), and `/` is whichever panel the server made default,
+    /// which the URL does not say. Matching also keeps us from naming something that is not a panel,
+    /// which the widgets' `PageAppEntity` query could not resolve either.
+    init?(url: URL, title: String, serverId: String, knownPanelPaths: Set<String>) {
+        guard let panelPath = url.pathComponents.first(where: { knownPanelPaths.contains($0) }) else {
             return nil
         }
         self.panelPath = panelPath

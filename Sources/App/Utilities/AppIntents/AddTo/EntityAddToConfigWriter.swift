@@ -64,38 +64,57 @@ enum EntityAddToConfigWriter {
 
     private static func addToMacToolbar(entityId: String, serverId: String) throws -> Outcome {
         var config = try MacToolbarConfig.config() ?? MacToolbarConfig()
-        guard !config.items.contains(entityId: entityId, serverId: serverId) else { return .alreadyPresent }
 
-        let appEntity = HAAppEntity.entity(id: entityId, serverId: serverId)
-        let iconName = appEntity?.icon
-            ?? Domain(rawValue: appEntity?.domain ?? "")?.icon(deviceClass: appEntity?.rawDeviceClass).name
-            ?? MaterialDesignIcons.dotsGridIcon.name
-        let item = MagicItem(
-            id: entityId,
-            serverId: serverId,
-            type: .entity,
-            customization: .init(icon: iconName),
-            action: .moreInfoDialog,
-            displayText: appEntity?.name
-        )
-        config.items.append(item)
-        try Current.database().write { db in
-            try config.insert(db, onConflict: .replace)
+        let item: MagicItem
+        let outcome: Outcome
+        if let existing = config.items.first(where: { $0.id == entityId && $0.serverId == serverId }) {
+            item = existing
+            outcome = .alreadyPresent
+        } else {
+            let appEntity = HAAppEntity.entity(id: entityId, serverId: serverId)
+            let iconName = appEntity?.icon
+                ?? Domain(rawValue: appEntity?.domain ?? "")?.icon(deviceClass: appEntity?.rawDeviceClass).name
+                ?? MaterialDesignIcons.dotsGridIcon.name
+            item = MagicItem(
+                id: entityId,
+                serverId: serverId,
+                type: .entity,
+                customization: .init(icon: iconName),
+                action: .moreInfoDialog,
+                displayText: appEntity?.name
+            )
+            config.items.append(item)
+            try Current.database().write { db in
+                try config.insert(db, onConflict: .replace)
+            }
+            outcome = .added
         }
-        // A visible toolbar inserts the item on this, rather than waiting for the next launch.
+
+        // Posted even for an entity already in the config, matching `EntityAddToHandler`: the config
+        // keeps entities the user removed from the toolbar's own customization, and this notification
+        // is what puts a retained one back on a visible toolbar.
         NotificationCenter.default.post(
             name: .macToolbarConfigDidChange,
             object: nil,
             userInfo: [MacToolbarConfigChange.userInfoKey: MacToolbarConfigChange.added(item)]
         )
-        return .added
+        return outcome
     }
 }
 
 private extension [MagicItem] {
-    /// An entity counts as already added when the same entity on the same server is in the list —
-    /// two servers may well have a `light.kitchen` each, and both belong in a destination.
+    /// An entity counts as already added when the same entity on the same server is anywhere in the
+    /// list, folders included: the watch and CarPlay both let a folder hold entities, and a second
+    /// copy at the root would still be a duplicate.
+    ///
+    /// The server is part of the match because two servers may well have a `light.kitchen` each, and
+    /// both belong in a destination.
     func contains(entityId: String, serverId: String) -> Bool {
-        contains { $0.id == entityId && $0.serverId == serverId }
+        contains { item in
+            if item.id == entityId, item.serverId == serverId {
+                return true
+            }
+            return item.items?.contains(entityId: entityId, serverId: serverId) ?? false
+        }
     }
 }

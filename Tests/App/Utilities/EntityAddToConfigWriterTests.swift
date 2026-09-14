@@ -92,6 +92,54 @@ struct EntityAddToConfigWriterTests {
         }
     }
 
+    /// The watch lets a folder hold entities, so an entity already inside one is already there — a
+    /// second copy at the root would be a duplicate the user then has to remove twice.
+    @Test("An entity already inside a folder is not added again at the root")
+    func doesNotAddAnEntityAlreadyInAFolder() throws {
+        try withConfigDatabase {
+            var config = WatchConfig(id: WatchConfig.watchConfigId)
+            config.items = [MagicItem(
+                id: "folder-1",
+                serverId: "",
+                type: .folder,
+                items: [MagicItem(id: "light.kitchen", serverId: "1", type: .entity)]
+            )]
+            try Current.database().write { db in
+                try config.insert(db, onConflict: .replace)
+            }
+
+            let outcome = try EntityAddToConfigWriter.add(
+                entityId: "light.kitchen",
+                serverId: "1",
+                to: .appleWatch
+            )
+
+            #expect(outcome == .alreadyPresent)
+            let items = try #require(WatchConfig.config()?.items)
+            #expect(items.count == 1)
+        }
+    }
+
+    /// Re-adding reports the entity rather than writing a second row, and still runs the announcement
+    /// that puts an entity back on a visible toolbar after the user removed it from the toolbar's own
+    /// customization — the config keeps such entities, so re-adding is how they come back.
+    @Test("Re-adding a Mac toolbar entity reports it without writing again")
+    func reAddingAMacToolbarEntityReportsIt() throws {
+        try withConfigDatabase {
+            _ = try EntityAddToConfigWriter.add(entityId: "light.kitchen", serverId: "1", to: .macToolbar)
+
+            let outcome = try EntityAddToConfigWriter.add(
+                entityId: "light.kitchen",
+                serverId: "1",
+                to: .macToolbar
+            )
+
+            #expect(outcome == .alreadyPresent)
+            let items = try #require(MacToolbarConfig.config()?.items)
+            #expect(items.map(\.id) == ["light.kitchen"])
+        }
+    }
+
     /// Two servers may each have a `light.kitchen`, and both belong at the destination.
     @Test("The same entity id on another server is a separate item")
     func addsSameEntityIdFromAnotherServer() throws {

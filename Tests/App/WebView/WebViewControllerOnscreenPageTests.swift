@@ -19,7 +19,8 @@ struct WebViewControllerOnscreenPageTests {
                 url: URL(string: "https://example.com/lovelace/0"),
                 pageTitle: "Overview – Home Assistant",
                 serverName: "Kitchen",
-                serverId: "1"
+                serverId: "1",
+                knownPanelPaths: ["lovelace", "history"]
             )
 
             #expect(activity.title == "Overview")
@@ -41,7 +42,8 @@ struct WebViewControllerOnscreenPageTests {
                 url: URL(string: "https://example.com/history"),
                 pageTitle: nil,
                 serverName: "Kitchen",
-                serverId: "1"
+                serverId: "1",
+                knownPanelPaths: ["lovelace", "history"]
             )
 
             #expect(activity.title == "Kitchen")
@@ -60,7 +62,8 @@ struct WebViewControllerOnscreenPageTests {
                 url: URL(string: "https://example.com/"),
                 pageTitle: "Home Assistant",
                 serverName: "Kitchen",
-                serverId: "1"
+                serverId: "1",
+                knownPanelPaths: ["lovelace", "history"]
             )
 
             #expect(activity.title == nil)
@@ -80,7 +83,8 @@ struct WebViewControllerOnscreenPageTests {
                 url: nil,
                 pageTitle: nil,
                 serverName: "Kitchen",
-                serverId: "1"
+                serverId: "1",
+                knownPanelPaths: ["lovelace", "history"]
             )
 
             #expect(activity.title == nil)
@@ -98,7 +102,8 @@ struct WebViewControllerOnscreenPageTests {
                 url: URL(string: "https://example.com/lovelace/0"),
                 pageTitle: "Overview – Home Assistant",
                 serverName: "Kitchen",
-                serverId: "1"
+                serverId: "1",
+                knownPanelPaths: ["lovelace", "history"]
             )
 
             #expect(activity.title == "Overview")
@@ -123,11 +128,32 @@ struct WebViewControllerOnscreenPageTests {
         }
     }
 
+    @Test("The panels a page can be on are the ones this server has")
+    func knownPanelPathsComeFromTheServersPanels() throws {
+        try withExposureDatabase {
+            try Current.database().write { db in
+                try AppPanel(
+                    id: "1-lovelace",
+                    serverId: "1",
+                    icon: nil,
+                    title: "Overview",
+                    path: "lovelace",
+                    component: "lovelace",
+                    showInSidebar: true
+                ).insert(db, onConflict: .replace)
+            }
+
+            #expect(WebViewController.knownPanelPaths(serverId: "1") == ["lovelace"])
+            #expect(WebViewController.knownPanelPaths(serverId: "2").isEmpty)
+        }
+    }
+
     private func withExposureDatabase(perform work: () throws -> Void) throws {
         let previousDatabase = Current.database
         let database = try DatabaseQueue(path: ":memory:")
 
         try SiriServerExposureTable().createIfNeeded(database: database)
+        try AppPanelTable().createIfNeeded(database: database)
         Current.database = { database }
 
         defer { Current.database = previousDatabase }

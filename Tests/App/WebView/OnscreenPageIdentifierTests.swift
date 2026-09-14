@@ -1,3 +1,4 @@
+import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
@@ -31,7 +32,9 @@ struct OnscreenPageIdentifierTests {
     /// Built through the initializer so the test resolves the panel the way the app does.
     private static func page() throws -> OnscreenPage {
         let url = try #require(URL(string: "https://example.com/lovelace/0"))
-        return try #require(OnscreenPage(url: url, title: "Overview", serverId: "1"))
+        return try #require(
+            OnscreenPage(url: url, title: "Overview", serverId: "1", knownPanelPaths: ["lovelace"])
+        )
     }
 
     private func withExposureDatabase(perform work: () throws -> Void) throws {
