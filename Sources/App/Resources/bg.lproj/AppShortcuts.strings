@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Включен ли е ${entity} в ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Отвори ${entity} в ${applicationName}";
 "Open ${target} details in ${applicationName}" = "Отвори подробностите за ${target} в ${applicationName}";
+"Open ${target} in ${applicationName}" = "Отвори ${target} в ${applicationName}";
 "Open something in ${applicationName}" = "Отвори нещо в ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Задай температурата на ${entity} в ${applicationName}";
 "Set a brightness in ${applicationName}" = "Задай яркост в ${applicationName}";

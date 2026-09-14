@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Onko ${entity} päällä sovelluksessa ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Avaa ${entity} sovelluksessa ${applicationName}";
 "Open ${target} details in ${applicationName}" = "Avaa kohteen ${target} tiedot sovelluksessa ${applicationName}";
+"Open ${target} in ${applicationName}" = "Avaa ${target} sovelluksessa ${applicationName}";
 "Open something in ${applicationName}" = "Avaa jokin sovelluksessa ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Aseta kohteen ${entity} lämpötila sovelluksessa ${applicationName}";
 "Set a brightness in ${applicationName}" = "Aseta kirkkaus sovelluksessa ${applicationName}";

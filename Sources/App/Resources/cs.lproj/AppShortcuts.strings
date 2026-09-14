@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Je ${entity} zapnuto v ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Otevři ${entity} v ${applicationName}";
 "Open ${target} details in ${applicationName}" = "Otevři podrobnosti ${target} v ${applicationName}";
+"Open ${target} in ${applicationName}" = "Otevři ${target} v ${applicationName}";
 "Open something in ${applicationName}" = "Otevři něco v ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Nastav teplotu ${entity} v ${applicationName}";
 "Set a brightness in ${applicationName}" = "Nastav jas v ${applicationName}";

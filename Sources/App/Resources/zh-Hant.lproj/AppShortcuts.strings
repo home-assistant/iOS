@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "在${applicationName}中${entity}開著嗎";
 "Open ${entity} in ${applicationName}" = "在${applicationName}中打開${entity}";
 "Open ${target} details in ${applicationName}" = "在${applicationName}中打開${target}的詳細資訊";
+"Open ${target} in ${applicationName}" = "在${applicationName}中打開${target}";
 "Open something in ${applicationName}" = "在${applicationName}中打開某個裝置";
 "Set ${entity} temperature in ${applicationName}" = "在${applicationName}中設定${entity}的溫度";
 "Set a brightness in ${applicationName}" = "在${applicationName}中設定亮度";

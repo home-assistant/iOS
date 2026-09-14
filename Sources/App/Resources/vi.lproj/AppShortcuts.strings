@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "${entity} có đang bật trong ${applicationName} không";
 "Open ${entity} in ${applicationName}" = "Mở ${entity} trong ${applicationName}";
 "Open ${target} details in ${applicationName}" = "Mở chi tiết của ${target} trong ${applicationName}";
+"Open ${target} in ${applicationName}" = "Mở ${target} trong ${applicationName}";
 "Open something in ${applicationName}" = "Mở thứ gì đó trong ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Đặt nhiệt độ của ${entity} trong ${applicationName}";
 "Set a brightness in ${applicationName}" = "Đặt độ sáng trong ${applicationName}";

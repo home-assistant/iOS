@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Kas ${entity} on sees rakenduses ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Ava ${entity} rakenduses ${applicationName}";
 "Open ${target} details in ${applicationName}" = "Ava ${target} üksikasjad rakenduses ${applicationName}";
+"Open ${target} in ${applicationName}" = "Ava ${target} rakenduses ${applicationName}";
 "Open something in ${applicationName}" = "Ava midagi rakenduses ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Määra ${entity} temperatuur rakenduses ${applicationName}";
 "Set a brightness in ${applicationName}" = "Määra heledus rakenduses ${applicationName}";

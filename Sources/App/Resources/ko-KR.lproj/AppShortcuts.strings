@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "${applicationName}에서 ${entity} 켜져 있나요";
 "Open ${entity} in ${applicationName}" = "${applicationName}에서 ${entity} 열기";
 "Open ${target} details in ${applicationName}" = "${applicationName}에서 ${target} 세부 정보 열기";
+"Open ${target} in ${applicationName}" = "${applicationName}에서 ${target} 열기";
 "Open something in ${applicationName}" = "${applicationName}에서 무언가 열기";
 "Set ${entity} temperature in ${applicationName}" = "${applicationName}에서 ${entity} 온도 설정하기";
 "Set a brightness in ${applicationName}" = "${applicationName}에서 밝기 설정하기";

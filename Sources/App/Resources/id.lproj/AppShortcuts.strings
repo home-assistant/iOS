@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Apakah ${entity} menyala di ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Buka ${entity} di ${applicationName}";
 "Open ${target} details in ${applicationName}" = "Buka detail ${target} di ${applicationName}";
+"Open ${target} in ${applicationName}" = "Buka ${target} di ${applicationName}";
 "Open something in ${applicationName}" = "Buka sesuatu di ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Atur suhu ${entity} di ${applicationName}";
 "Set a brightness in ${applicationName}" = "Atur kecerahan di ${applicationName}";

@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Ali je ${entity} vklopljen v ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Odpri ${entity} v ${applicationName}";
 "Open ${target} details in ${applicationName}" = "Odpri podrobnosti ${target} v ${applicationName}";
+"Open ${target} in ${applicationName}" = "Odpri ${target} v ${applicationName}";
 "Open something in ${applicationName}" = "Odpri nekaj v ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Nastavi temperaturo ${entity} v ${applicationName}";
 "Set a brightness in ${applicationName}" = "Nastavi svetlost v ${applicationName}";

@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Be van kapcsolva ${entity} a ${applicationName} alkalmazásban";
 "Open ${entity} in ${applicationName}" = "Nyisd ki ${entity} a ${applicationName} alkalmazásban";
 "Open ${target} details in ${applicationName}" = "Nyisd meg ${target} részleteit a ${applicationName} alkalmazásban";
+"Open ${target} in ${applicationName}" = "Nyisd ki ${target} a ${applicationName} alkalmazásban";
 "Open something in ${applicationName}" = "Nyiss ki valamit a ${applicationName} alkalmazásban";
 "Set ${entity} temperature in ${applicationName}" = "Állítsd be ${entity} hőmérsékletét a ${applicationName} alkalmazásban";
 "Set a brightness in ${applicationName}" = "Állíts be fényerőt a ${applicationName} alkalmazásban";

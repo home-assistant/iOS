@@ -41,13 +41,14 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             systemImageName: "info.circle"
         )
         // The same thing tapping a Spotlight result does: open the entity's more-info dialog. "Open"
-        // alone belongs to the cover shortcut below, so the phrases lead with "show" and spell out
-        // "details" where they use the verb, rather than leaving Siri two readings of "open the blind".
+        // is listed with and without "details" so the word is optional; on a cover that bare wording
+        // also matches the open shortcut below, and Siri picks between the two.
         AppShortcut(
             intent: ShowEntityDetailsAppIntent(),
             phrases: [
                 "\(.applicationName) show \(\.$target)",
                 "Show \(\.$target) in \(.applicationName)",
+                "Open \(\.$target) in \(.applicationName)",
                 "Open \(\.$target) details in \(.applicationName)",
                 "Show something in \(.applicationName)",
             ],

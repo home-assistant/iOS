@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "האם ${entity} דלוק ב-${applicationName}";
 "Open ${entity} in ${applicationName}" = "פתח את ${entity} ב-${applicationName}";
 "Open ${target} details in ${applicationName}" = "פתח את הפרטים של ${target} ב-${applicationName}";
+"Open ${target} in ${applicationName}" = "פתח את ${target} ב-${applicationName}";
 "Open something in ${applicationName}" = "פתח משהו ב-${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "הגדר את הטמפרטורה של ${entity} ב-${applicationName}";
 "Set a brightness in ${applicationName}" = "הגדר בהירות ב-${applicationName}";

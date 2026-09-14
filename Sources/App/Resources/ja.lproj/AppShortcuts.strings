@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "${applicationName}で${entity}はオンですか";
 "Open ${entity} in ${applicationName}" = "${applicationName}で${entity}を開ける";
 "Open ${target} details in ${applicationName}" = "${applicationName}で${target}の詳細を開く";
+"Open ${target} in ${applicationName}" = "${applicationName}で${target}を開ける";
 "Open something in ${applicationName}" = "${applicationName}で何かを開ける";
 "Set ${entity} temperature in ${applicationName}" = "${applicationName}で${entity}の温度を設定する";
 "Set a brightness in ${applicationName}" = "${applicationName}で明るさを設定する";

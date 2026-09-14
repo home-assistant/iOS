@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Ist ${entity} in ${applicationName} an";
 "Open ${entity} in ${applicationName}" = "${entity} in ${applicationName} öffnen";
 "Open ${target} details in ${applicationName}" = "Details von ${target} in ${applicationName} öffnen";
+"Open ${target} in ${applicationName}" = "${target} in ${applicationName} öffnen";
 "Open something in ${applicationName}" = "Etwas in ${applicationName} öffnen";
 "Set ${entity} temperature in ${applicationName}" = "Temperatur von ${entity} in ${applicationName} einstellen";
 "Set a brightness in ${applicationName}" = "Helligkeit in ${applicationName} einstellen";

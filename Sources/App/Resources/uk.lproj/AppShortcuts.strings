@@ -14,6 +14,7 @@
 "Is ${entity} on in ${applicationName}" = "Чи увімкнено ${entity} у ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Відкрий ${entity} у ${applicationName}";
 "Open ${target} details in ${applicationName}" = "Відкрий подробиці ${target} у ${applicationName}";
+"Open ${target} in ${applicationName}" = "Відкрий ${target} у ${applicationName}";
 "Open something in ${applicationName}" = "Відкрий щось у ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Встанови температуру ${entity} у ${applicationName}";
 "Set a brightness in ${applicationName}" = "Встанови яскравість у ${applicationName}";
