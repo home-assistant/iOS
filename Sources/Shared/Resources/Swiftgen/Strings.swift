@@ -1178,10 +1178,6 @@ public enum L10n {
       /// Get Entity State
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.get_entity_state.title") }
     }
-    public enum Lock {
-      /// Lock
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.lock.title") }
-    }
     public enum Open {
       /// Open
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.open.title") }
@@ -1197,6 +1193,10 @@ public enum L10n {
     public enum SetTemperature {
       /// Set Temperature
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.set_temperature.title") }
+    }
+    public enum ShowEntity {
+      /// Show Entity
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.show_entity.title") }
     }
     public enum TurnOff {
       /// Turn Off

@@ -1,9 +1,9 @@
 "${applicationName} close ${entity}" = "${applicationName}에서 ${entity} 닫아줘";
 "${applicationName} dim ${light}" = "${applicationName}에서 ${light} 어둡게 해줘";
 "${applicationName} is ${entity} on" = "${applicationName}에서 ${entity} 켜져 있어";
-"${applicationName} lock ${entity}" = "${applicationName}에서 ${entity} 잠가줘";
 "${applicationName} open ${entity}" = "${applicationName}에서 ${entity} 열어줘";
 "${applicationName} set a temperature" = "${applicationName}에서 온도 설정해줘";
+"${applicationName} show ${target}" = "${applicationName}에서 ${target} 보여줘";
 "${applicationName} turn off ${entity}" = "${applicationName}에서 ${entity} 꺼줘";
 "${applicationName} turn on ${entity}" = "${applicationName}에서 ${entity} 켜줘";
 "Check an entity in ${applicationName}" = "${applicationName}에서 엔티티 확인하기";
@@ -12,13 +12,14 @@
 "Dim ${light} in ${applicationName}" = "${applicationName}에서 ${light} 어둡게 하기";
 "Get an entity state from ${applicationName}" = "${applicationName}에서 엔티티 상태 가져오기";
 "Is ${entity} on in ${applicationName}" = "${applicationName}에서 ${entity} 켜져 있나요";
-"Lock ${entity} in ${applicationName}" = "${applicationName}에서 ${entity} 잠그기";
-"Lock something in ${applicationName}" = "${applicationName}에서 무언가 잠그기";
 "Open ${entity} in ${applicationName}" = "${applicationName}에서 ${entity} 열기";
+"Open ${target} details in ${applicationName}" = "${applicationName}에서 ${target} 세부 정보 열기";
 "Open something in ${applicationName}" = "${applicationName}에서 무언가 열기";
 "Set ${entity} temperature in ${applicationName}" = "${applicationName}에서 ${entity} 온도 설정하기";
 "Set a brightness in ${applicationName}" = "${applicationName}에서 밝기 설정하기";
 "Set a temperature in ${applicationName}" = "${applicationName}에서 온도 설정하기";
+"Show ${target} in ${applicationName}" = "${applicationName}에서 ${target} 표시하기";
+"Show something in ${applicationName}" = "${applicationName}에서 무언가 표시하기";
 "Turn off ${entity} in ${applicationName}" = "${applicationName}에서 ${entity} 끄기";
 "Turn on ${entity} in ${applicationName}" = "${applicationName}에서 ${entity} 켜기";
 "Turn something off in ${applicationName}" = "${applicationName}에서 무언가 끄기";
