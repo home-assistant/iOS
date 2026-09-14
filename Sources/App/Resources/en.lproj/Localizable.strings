@@ -346,7 +346,6 @@
 "assist.settings.on_device_tts.title" = "On-device TTS";
 "assist.settings.on_device_tts.voice" = "Voice";
 "assist.settings.section.experimental.title" = "Experimental";
-"assist.settings.section.labs.title" = "More";
 "assist.settings.start_mode.auto" = "Auto";
 "assist.settings.start_mode.footer" = "Controls how Assist starts when you trigger it from a Home Assistant dashboard. \"Auto\" follows what the dashboard asks for, while \"Voice\" and \"Text\" always override it. This does not apply to widgets, shortcuts or other app features.";
 "assist.settings.start_mode.text" = "Text";

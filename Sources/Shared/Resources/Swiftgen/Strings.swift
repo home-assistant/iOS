@@ -1347,10 +1347,6 @@ public enum L10n {
           /// Experimental
           public static var title: String { return L10n.tr("Localizable", "assist.settings.section.experimental.title") }
         }
-        public enum Labs {
-          /// More
-          public static var title: String { return L10n.tr("Localizable", "assist.settings.section.labs.title") }
-        }
       }
       public enum StartMode {
         /// Auto

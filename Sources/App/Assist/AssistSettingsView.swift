@@ -112,11 +112,6 @@ struct AssistSettingsView: View {
                         }
                     }
                 }
-            } header: {
-                HStack {
-                    Text(L10n.Assist.Settings.Section.Labs.title)
-                    LabsLabel()
-                }
             } footer: {
                 if viewModel.configuration.enableOnDeviceTTS {
                     Text(L10n.Assist.Settings.OnDeviceTts.footer)
