@@ -26,12 +26,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         mockWebViewController = nil
     }
 
+    /// Settings goes through the web view the message came from, so it opens in that window alone.
     @MainActor func testHandleExternalMessageConfigScreenShowShowSettings() {
-        let coordinator = MockAppCoordinator()
-        let settingsShown = expectation(description: "showSettings called")
-        coordinator.onShowSettings = { settingsShown.fulfill() }
-        Current.sceneManager.registerAppCoordinator(coordinator)
-
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -40,9 +36,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ]
         sut.handleExternalMessage(dictionary)
 
-        wait(for: [settingsShown], timeout: 1)
-        XCTAssertTrue(coordinator.showSettingsCalled)
-        XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
+        XCTAssertTrue(mockWebViewController.showSettingsCalled)
+        XCTAssertTrue(mockWebViewController.showSettingsPushedOntoNavigationStack)
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {

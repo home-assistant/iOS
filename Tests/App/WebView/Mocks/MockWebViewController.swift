@@ -50,13 +50,16 @@ final class MockWebViewController: WebViewControllerProtocol {
     }
 
     var presentationWindow: UIWindow?
+    private(set) var showSettingsCalled = false
+    private(set) var showSettingsPushedOntoNavigationStack = false
 
     func load(request: URLRequest) {
         // Simulate loading a request
     }
 
     func showSettingsViewController(pushOntoNavigationStack: Bool) {
-        // Simulate showing settings
+        showSettingsCalled = true
+        showSettingsPushedOntoNavigationStack = pushOntoNavigationStack
     }
 
     func openDebug() {
