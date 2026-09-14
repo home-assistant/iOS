@@ -414,13 +414,9 @@ struct NativeTabBarViewModelTests {
     @Test("App Settings opens the settings sheet zooming out of the More tab's gear")
     func showAppSettings() {
         let sut = makeFixture("appSettings").sut
-        let presenter = AppSettingsPresenter.shared
-        defer {
-            presenter.isSheetPresented = false
-            presenter.sheetDismissed()
-        }
+        let presenter = AppSettingsPresenter()
 
-        sut.showAppSettings()
+        sut.showAppSettings(using: presenter)
         #expect(presenter.isSheetPresented)
         #expect(presenter.mode == .full)
         #expect(presenter.zoomSourceID == NativeTabBarViewModel.appSettingsTransitionID)
