@@ -588,9 +588,14 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
             return
         }
 
-        WatchPushActionSender.send(info, server: server).ensure {
+        Task {
+            do {
+                try await WatchPushActionSender.send(info, server: server)
+            } catch {
+                Current.Log.error("failed to send notification action: \(error)")
+            }
             completionHandler()
-        }.cauterize()
+        }
     }
 }
 

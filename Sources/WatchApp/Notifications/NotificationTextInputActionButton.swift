@@ -15,26 +15,22 @@ struct NotificationTextInputActionButton: View {
             HStack(spacing: DesignSystem.Spaces.half) {
                 Text(action.title)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                indicator
+
+                switch state {
+                case .sending:
+                    ProgressView()
+                case .sent:
+                    Image(systemSymbol: .checkmark)
+                        .foregroundStyle(.green)
+                case .failed:
+                    Image(systemSymbol: .exclamationmarkTriangle)
+                        .foregroundStyle(.red)
+                case nil:
+                    Image(systemSymbol: .textBubble)
+                }
             }
         }
         .disabled(state == .sending || state == .sent)
-    }
-
-    @ViewBuilder
-    private var indicator: some View {
-        switch state {
-        case .sending:
-            ProgressView()
-        case .sent:
-            Image(systemSymbol: .checkmark)
-                .foregroundStyle(.green)
-        case .failed:
-            Image(systemSymbol: .exclamationmarkTriangle)
-                .foregroundStyle(.red)
-        case nil:
-            Image(systemSymbol: .textBubble)
-        }
     }
 }
 

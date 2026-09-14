@@ -125,7 +125,10 @@ final class DynamicNotificationViewModel: ObservableObject {
 
         presentTextInput { [weak self] text in
             Task { @MainActor in
-                guard let self, let text, !text.isEmpty else { return }
+                // Only `nil` means the user backed out. An empty reply is a reply, and the system
+                // response path forwards it too (`UNTextInputNotificationResponse.userText` is
+                // non-optional), so dropping it here would silently swallow the event.
+                guard let self, let text else { return }
                 send(textInputAction: action, text: text, content: notificationContent, server: server)
             }
         }
@@ -145,8 +148,9 @@ final class DynamicNotificationViewModel: ObservableObject {
             textInput: text
         )
 
-        WatchPushActionSender.send(info, server: server).done { [weak self] in
-            Task { @MainActor in
+        Task { [weak self] in
+            do {
+                try await WatchPushActionSender.send(info, server: server)
                 guard let self else { return }
                 textInputActionStates[action.id] = .sent
                 // Matches what the system does after an action is chosen, so the notification does
@@ -155,10 +159,8 @@ final class DynamicNotificationViewModel: ObservableObject {
                     UNUserNotificationCenter.current()
                         .removeDeliveredNotifications(withIdentifiers: [notificationIdentifier])
                 }
-            }
-        }.catch { [weak self] error in
-            Current.Log.error("failed to send notification text input action: \(error)")
-            Task { @MainActor in
+            } catch {
+                Current.Log.error("failed to send notification text input action: \(error)")
                 self?.textInputActionStates[action.id] = .failed
             }
         }

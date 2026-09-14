@@ -22,18 +22,15 @@ final class DynamicNotificationHostingController: WKUserNotificationHostingContr
 
     override func didReceive(_ notification: UNNotification) {
         let payloadActions = notification.request.content.userInfoPayloadActions
+        let split = NotificationActionSplit(payloadActions: payloadActions)
 
-        // watchOS never hands a `UNTextInputNotificationResponse` back to the app for a forwarded
-        // notification, so a text-input action put in `notificationActions` shows the reply screen
-        // and then silently drops whatever the user wrote — no event ever reaches Home Assistant.
-        // Those actions are therefore kept out of the system's list and rendered by the long look
-        // itself, which collects the reply and fires the event directly. Every other action still
-        // goes through the system, including the snooze presets `userInfoActions` falls back to
-        // when the payload carries no actions of its own.
+        // The actions `split` hands back to the app are the ones watchOS would drop the reply for;
+        // everything else stays with the system, including the snooze presets `userInfoActions`
+        // falls back to when the payload carries no actions of its own.
         if payloadActions.isEmpty {
             notificationActions = notification.request.content.userInfoActions
         } else {
-            notificationActions = payloadActions.filter { !$0.textInput }.map(\.action)
+            notificationActions = split.systemHandled.map(\.action)
         }
 
         viewModel.presentTextInput = { [weak self] completion in
@@ -47,7 +44,7 @@ final class DynamicNotificationHostingController: WKUserNotificationHostingContr
             }
         }
 
-        viewModel.didReceive(notification, textInputActions: payloadActions.filter(\.textInput))
+        viewModel.didReceive(notification, textInputActions: split.appHandled)
     }
 
     override func suggestionsForResponseToAction(
