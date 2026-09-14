@@ -5020,6 +5020,8 @@ public enum L10n {
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Drag to reorder your servers. The one at the top is used as the default server.
       public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
+      /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.
+      public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
       public enum AlwaysFallbackInternal {
         /// Enabling this with an unsecure URL (http) may compromise your security on public networks.
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.footer") }
