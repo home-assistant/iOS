@@ -313,6 +313,40 @@ public enum L10n {
         public static var switches: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.switches") }
       }
     }
+    public enum AddTo {
+      /// Adds a Home Assistant entity to the Apple Watch, CarPlay quick access or the Mac toolbar
+      public static var description: String { return L10n.tr("Localizable", "app_intents.add_to.description") }
+      /// Add entity to
+      public static var title: String { return L10n.tr("Localizable", "app_intents.add_to.title") }
+      public enum Destination {
+        /// Destination
+        public static var name: String { return L10n.tr("Localizable", "app_intents.add_to.destination.name") }
+      }
+      public enum Dialog {
+        /// Added %1$@ to %2$@
+        public static func added(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.add_to.dialog.added", String(describing: p1), String(describing: p2))
+        }
+        /// %1$@ is already in %2$@
+        public static func alreadyAdded(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.add_to.dialog.already_added", String(describing: p1), String(describing: p2))
+        }
+      }
+      public enum Entity {
+        /// Entity
+        public static var name: String { return L10n.tr("Localizable", "app_intents.add_to.entity.name") }
+      }
+      public enum Error {
+        /// %@ isn't available on this device
+        public static func unavailable(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.add_to.error.unavailable", String(describing: p1))
+        }
+        /// %1$@ can't be added to %2$@
+        public static func unsupported(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.add_to.error.unsupported", String(describing: p1), String(describing: p2))
+        }
+      }
+    }
     public enum AreaTarget {
       /// %@ areas
       public static func areasSection(_ p1: Any) -> String {
