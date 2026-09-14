@@ -10,6 +10,8 @@ final class AppContainerCoordinatorTests: XCTestCase {
     private var frontend: MockWebFrontend!
     private var coordinator: AppContainerCoordinator!
     private var themeModeApplier: FrontendThemeModeApplier!
+    /// The presenter of the coordinator's own scene, as `ContainerView` hands it over.
+    private var presenter: AppSettingsPresenter!
 
     override func setUp() {
         super.setUp()
@@ -18,24 +20,24 @@ final class AppContainerCoordinatorTests: XCTestCase {
         window.rootViewController = UIViewController()
         frontend = MockWebFrontend(server: server, presentationWindow: window)
         themeModeApplier = FrontendThemeModeApplier(windowScenes: { [] })
+        presenter = AppSettingsPresenter()
         coordinator = AppContainerCoordinator(themeModeApplier: themeModeApplier)
+        coordinator.settingsPresenter = presenter
         coordinator.setFrontend(frontend)
     }
 
     override func tearDown() {
-        AppSettingsPresenter.shared.isSheetPresented = false
-        AppSettingsPresenter.shared.isPushPresented = false
-        AppSettingsPresenter.shared.sheetDismissed()
+        presenter = nil
         super.tearDown()
     }
 
     func testDismissPresentedContentClearsSwiftUIPresentationStateAndCallsCompletion() {
-        AppSettingsPresenter.shared.isSheetPresented = true
+        presenter.isSheetPresented = true
         var completed = false
 
         coordinator.dismissPresentedContent { completed = true }
 
-        XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
+        XCTAssertFalse(presenter.isSheetPresented)
         XCTAssertTrue(completed)
     }
 
@@ -46,7 +48,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
     }
 
     func testDeepLinkNavigatesTheFrontendWhileASheetIsPresented() {
-        AppSettingsPresenter.shared.isSheetPresented = true
+        presenter.isSheetPresented = true
         let navigated = expectation(description: "frontend navigated")
         frontend.onOpen = { _ in navigated.fulfill() }
 
@@ -61,11 +63,11 @@ final class AppContainerCoordinatorTests: XCTestCase {
         wait(for: [navigated], timeout: 30)
         XCTAssertEqual(frontend.openedInlineURLs.last?.path, "/lovelace/dashboard")
         XCTAssertTrue(frontend.openedPanelURLs.isEmpty)
-        XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
+        XCTAssertFalse(presenter.isSheetPresented)
     }
 
     func testAppIntentOpensThePanelWhileASheetIsPresented() {
-        AppSettingsPresenter.shared.isSheetPresented = true
+        presenter.isSheetPresented = true
         let navigated = expectation(description: "frontend navigated")
         frontend.onOpen = { _ in navigated.fulfill() }
 
@@ -80,7 +82,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
         wait(for: [navigated], timeout: 30)
         XCTAssertEqual(frontend.openedPanelURLs.last?.path, "/lovelace/dashboard")
         XCTAssertTrue(frontend.openedInlineURLs.isEmpty)
-        XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
+        XCTAssertFalse(presenter.isSheetPresented)
     }
 
     func testActivatingTheActiveServerSendsTheFrontendBackToTheRoot() {
@@ -105,17 +107,31 @@ final class AppContainerCoordinatorTests: XCTestCase {
     }
 
     func testSelectingAServerClearsWhatIsAlreadyPresentedFirst() {
-        AppSettingsPresenter.shared.isSheetPresented = true
+        presenter.isSheetPresented = true
 
         coordinator.selectServer(prompt: nil) { _ in }
 
         // The picker is the settings sheet itself, so what is on screen goes away synchronously and the
         // picker takes its place a runloop later.
-        XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
+        XCTAssertFalse(presenter.isSheetPresented)
 
-        waitUntil { AppSettingsPresenter.shared.isSheetPresented }
+        waitUntil { presenter.isSheetPresented }
 
-        XCTAssertTrue(AppSettingsPresenter.shared.isSheetPresented)
+        XCTAssertTrue(presenter.isSheetPresented)
+    }
+
+    func testSelectingAServerOnlyOpensThePickerInTheSceneThatAskedForIt() {
+        // A second window, with the presenter and frontend its own container owns.
+        let otherScenePresenter = AppSettingsPresenter()
+        let otherFrontend = MockWebFrontend(server: server)
+        let otherCoordinator = AppContainerCoordinator(themeModeApplier: themeModeApplier)
+        otherCoordinator.settingsPresenter = otherScenePresenter
+        otherCoordinator.setFrontend(otherFrontend)
+
+        coordinator.selectServer(prompt: nil) { _ in }
+        waitUntil { presenter.isSheetPresented }
+
+        XCTAssertFalse(otherScenePresenter.isSheetPresented)
     }
 
     /// Spins the main run loop until `condition` holds. `selectServer` clears the screen and only then

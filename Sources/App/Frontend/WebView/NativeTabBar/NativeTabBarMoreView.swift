@@ -14,6 +14,7 @@ struct NativeTabBarMoreView: View {
     @ObservedObject var viewModel: NativeTabBarViewModel
     @State private var rowFrames: [String: CGRect] = [:]
     @Environment(\.serverSelectionNamespace) private var transitionNamespace
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
     var body: some View {
         List {
@@ -154,7 +155,9 @@ struct NativeTabBarMoreView: View {
                         }
                     }
                     Button {
-                        viewModel.showAppSettings()
+                        if let appSettingsPresenter {
+                            viewModel.showAppSettings(using: appSettingsPresenter)
+                        }
                     } label: {
                         Label(L10n.TabBar.More.appSettings, systemSymbol: .iphone)
                     }

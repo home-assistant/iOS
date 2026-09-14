@@ -5,10 +5,12 @@ import UIKit
 struct KioskView: View {
     @StateObject private var screensaver = KioskScreensaverController()
     @StateObject private var kiosk = Current.kiosk
+    /// This scene's Settings presenter, passed through to the container it wraps.
+    let appSettings: AppSettingsPresenter
     @Binding var showSettings: Bool
 
     var body: some View {
-        ContainerView()
+        ContainerView(appSettings: appSettings)
             .background(KioskActivityDetector { screensaver.recordActivity() })
             .overlay(alignment: .bottomLeading) {
                 if Current.isDebug {

@@ -73,7 +73,7 @@ final class WebViewGestureHandler {
     }
 
     private func showServersList() {
-        Current.sceneManager.appCoordinator.done { coordinator in
+        Current.sceneManager.appCoordinator(for: sceneOfGesture).done { coordinator in
             coordinator.selectServer(prompt: nil) { server in
                 coordinator.activate(server: server)
             }
@@ -157,8 +157,14 @@ final class WebViewGestureHandler {
 
         // Not `activate(server:)`: cycling servers with a gesture bypasses the server picker, so it
         // switches in place without sending the user back to the Home Assistant root.
-        Current.sceneManager.appCoordinator.done { coordinator in
+        Current.sceneManager.appCoordinator(for: sceneOfGesture).done { coordinator in
             coordinator.open(server: nextServer)
         }
+    }
+
+    /// The scene the gesture was made in, so what it asks for happens in that window rather than in
+    /// whichever one the app last registered.
+    private var sceneOfGesture: UIWindowScene? {
+        webView?.presentationWindow?.windowScene
     }
 }
