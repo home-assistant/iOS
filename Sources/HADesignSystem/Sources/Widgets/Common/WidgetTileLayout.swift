@@ -59,9 +59,11 @@ public enum WidgetTileLayout {
         }
     }
 
+    /// How many open items the to-do widget lists. The small family keeps to two so its rows can be
+    /// drawn at the same size as the medium family's, rather than shrunk below a comfortable tap.
     public static func todoListSize(for family: WidgetFamily) -> Int {
         switch family {
-        case .systemSmall: return 3
+        case .systemSmall: return 2
         case .systemMedium: return 3
         case .systemLarge: return 6
         case .systemExtraLarge, .systemExtraLargePortrait: return 12
