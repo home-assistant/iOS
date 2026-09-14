@@ -3138,6 +3138,8 @@ Right-click your desktop, choose Edit Widgets, search for Home Assistant, and ch
 "widgets.entities.description" = "Show and control the entities you choose.";
 "widgets.entities.not_configured" = "Edit the widget to choose entities.";
 "widgets.entities.param.entities.title" = "Entities";
+"widgets.entities.suggestions.all" = "All entities";
+"widgets.entities.suggestions.most_used" = "Most used";
 "widgets.entities.title" = "Entities";
 "widgets.entity_state.placeholder" = "Entity state";
 "widgets.gauge.description" = "Display numeric states from Home Assistant in a gauge";

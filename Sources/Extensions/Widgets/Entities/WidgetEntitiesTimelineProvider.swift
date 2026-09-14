@@ -83,12 +83,26 @@ struct WidgetEntitiesTimelineProvider: WidgetSingleEntryTimelineProvider {
     /// Only entities of the configured server are kept: the picker scopes its suggestions to that
     /// server, but a pick made before the server was changed would otherwise linger as a tile of a
     /// server the widget no longer says it shows.
+    ///
+    /// With nothing left to show — a widget just dropped on the home screen, or one whose picks all
+    /// belonged to another server — the entities this user controls most stand in, so the widget is
+    /// useful before it is configured. The empty state is still there for when even those are
+    /// unknown.
     static func items(for configuration: WidgetEntitiesAppIntent, family: WidgetFamily) -> [MagicItem] {
         let serverId = configuration.server.id
-        let items = (configuration.entities ?? [])
+        let picked = (configuration.entities ?? [])
             .filter { $0.serverId == serverId }
             .map(\.magicItem)
+        let items = picked.isEmpty ? mostUsedItems(serverId: serverId, family: family) : picked
         return Array(items.prefix(WidgetFamilySizes.size(for: family)))
+    }
+
+    /// The cache the app keeps of the backend's per-user usage ranking. Read-only here: refreshing
+    /// it is the app's job and the Common Controls widget's, both of which ask the server for it.
+    private static func mostUsedItems(serverId: String, family: WidgetFamily) -> [MagicItem] {
+        Current.entityUsage()
+            .mostUsedEntityIds(serverId: serverId, limit: WidgetFamilySizes.size(for: family))
+            .map { MagicItem(id: $0, serverId: serverId, type: .entity) }
     }
 
     private func entitiesState(

@@ -45,6 +45,8 @@ public enum GRDBDatabaseTable: String {
     case HACalendar = "hACalendar"
     // Events cached from the calendars above, so a fetch failure can fall back to them
     case HACalendarEvent = "hACalendarEvent"
+    // The signed-in user's most-controlled entities, from `usage_prediction/common_control`
+    case entityUsageRecord
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -431,5 +433,16 @@ public enum DatabaseTables {
         case backgroundColor
         case supportedFeatures
         case sortOrder
+    }
+
+    // The signed-in user's most-controlled entities, a time-of-day bucket at a time. Column names
+    // must match `EntityUsageRecord`'s stored properties.
+    public enum EntityUsageRecord: String, CaseIterable {
+        case id
+        case serverId
+        case entityId
+        case timeCategory
+        case rank
+        case updatedAt
     }
 }

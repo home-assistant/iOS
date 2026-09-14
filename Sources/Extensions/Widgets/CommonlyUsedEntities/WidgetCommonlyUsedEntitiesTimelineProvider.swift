@@ -80,22 +80,9 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             return []
         }
 
-        guard let api = Current.api(for: server) else {
-            Current.Log.error("Failed to fetch usage prediction: no API available for server")
-            return []
-        }
-
-        let entities: [String] = await withCheckedContinuation { (continuation: CheckedContinuation<[String], Never>) in
-            api.connection.send(.usagePredictionCommonControl()) { result in
-                switch result {
-                case let .success(response):
-                    continuation.resume(returning: response.entities)
-                case let .failure(error):
-                    Current.Log.error("Failed to fetch usage prediction: \(error)")
-                    continuation.resume(returning: [])
-                }
-            }
-        }
+        // Caches what it fetches, and answers from that cache when the server can't be reached —
+        // an offline server is no reason to replace the tiles with the empty state.
+        let entities = await Current.entityUsage().refresh(for: server)
 
         // Filtering happens before the family's tile limit is applied, so an excluded domain frees
         // its slot for the next predicted entity instead of leaving a gap.

@@ -24,26 +24,80 @@ struct WidgetEntitiesAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<WidgetEntitiesAppEntity> {
-        collection(for: entitiesPerServer(matching: string))
+        // A search is already ranked by what the user typed; putting a "most used" section above
+        // those results would bury the entity they asked for.
+        collection(for: entitiesPerServer(matching: string), highlightingMostUsed: false)
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<WidgetEntitiesAppEntity> {
-        collection(for: entitiesPerServer())
+        collection(for: entitiesPerServer(), highlightingMostUsed: true)
     }
 
     /// Scoped to the configured server as a flat list. Without one — the picker opened before the
     /// server parameter resolved — every server's entities are offered, grouped under its name.
     private func collection(
-        for entitiesPerServer: [(Server, [WidgetEntitiesAppEntity])]
+        for entitiesPerServer: [(Server, [WidgetEntitiesAppEntity])],
+        highlightingMostUsed: Bool
     ) -> IntentItemCollection<WidgetEntitiesAppEntity> {
         if let server = config?.server {
             let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
-            return .init(items: items)
+            guard highlightingMostUsed else { return .init(items: items) }
+            return mostUsedFirst(items: items, serverId: server.id)
         }
         return .init(sections: entitiesPerServer.map { server, items in
             .init(.init(stringLiteral: server.info.name), items: items)
         })
     }
+
+    /// The entities this user controls most, in a section of their own above the full list, so the
+    /// picker opens on the handful a widget is most likely to be built from.
+    ///
+    /// The ranking comes from the cache the app keeps of the backend's per-user usage prediction.
+    /// Until there is one — a fresh install, or a server too old to answer for it — the picker is
+    /// the plain alphabetical list it has always been.
+    private func mostUsedFirst(
+        items: [WidgetEntitiesAppEntity],
+        serverId: String
+    ) -> IntentItemCollection<WidgetEntitiesAppEntity> {
+        let split = Self.partitionedByMostUsed(
+            items: items,
+            mostUsedIds: Current.entityUsage().mostUsedEntityIds(
+                serverId: serverId,
+                limit: Self.mostUsedSuggestionLimit
+            )
+        )
+        guard !split.mostUsed.isEmpty else { return .init(items: items) }
+
+        return .init(sections: [
+            .init(
+                .init("widgets.entities.suggestions.most_used", defaultValue: "Most used"),
+                items: split.mostUsed
+            ),
+            .init(
+                .init("widgets.entities.suggestions.all", defaultValue: "All entities"),
+                items: split.rest
+            ),
+        ])
+    }
+
+    /// Splits the picker's rows into the entities the ranking names, in the ranking's order, and
+    /// everything else in the order it was already in.
+    ///
+    /// An id the ranking names but the picker has no row for — an entity removed since the user
+    /// last reached for it — is dropped rather than shown as a row that resolves to nothing.
+    static func partitionedByMostUsed(
+        items: [WidgetEntitiesAppEntity],
+        mostUsedIds: [String]
+    ) -> (mostUsed: [WidgetEntitiesAppEntity], rest: [WidgetEntitiesAppEntity]) {
+        let byEntityId = Dictionary(items.map { ($0.entityId, $0) }, uniquingKeysWith: { first, _ in first })
+        let mostUsed = mostUsedIds.compactMap { byEntityId[$0] }
+        let mostUsedIdSet = Set(mostUsed.map(\.entityId))
+        return (mostUsed, items.filter { !mostUsedIdSet.contains($0.entityId) })
+    }
+
+    /// Long enough to cover a household's routine without turning the first section into a second
+    /// full list to scroll past.
+    private static let mostUsedSuggestionLimit = 20
 
     /// Every server's entities as the picker offers them: sorted by name, or ranked by relevance
     /// when there is a search string. Either way the entities with nothing to say about where they

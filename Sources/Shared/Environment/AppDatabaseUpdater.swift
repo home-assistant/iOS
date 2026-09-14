@@ -468,6 +468,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             timer.end()
         }
 
+        // Step 7: The entities this user controls most, for the current time of day. Last because
+        // nothing else depends on it and it is the one step whose result is only a ranking: a
+        // failure leaves the previous ranking in place rather than costing the update anything.
+        // No progress phase — it is a single cached-server-side request, not a visible wait.
+        do {
+            let timer = ProfilingTimer("Step 7 (Entity usage)")
+            await Current.entityUsage().refresh(for: server)
+            timer.end()
+        }
+
         totalTimer.end()
         Current.Log.info("✅ [Profiling] Full update for server \(server.info.name) completed")
         await presentFinishedToast(server: server, showProgress: showProgress)

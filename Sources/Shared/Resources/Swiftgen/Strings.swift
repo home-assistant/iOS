@@ -10083,6 +10083,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "widgets.entities.param.entities.title") }
         }
       }
+      public enum Suggestions {
+        /// All entities
+        public static var all: String { return L10n.tr("Localizable", "widgets.entities.suggestions.all") }
+        /// Most used
+        public static var mostUsed: String { return L10n.tr("Localizable", "widgets.entities.suggestions.most_used") }
+      }
     }
     public enum EntityState {
       /// Entity state

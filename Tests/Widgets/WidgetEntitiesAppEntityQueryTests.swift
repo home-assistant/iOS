@@ -66,6 +66,37 @@ struct WidgetEntitiesAppEntityQueryTests {
         }
     }
 
+    /// The suggestions open on what this user controls most, in the ranking's order, with the rest
+    /// of the list following in the order it was already in.
+    @available(iOS 17, *)
+    @Test func mostUsedEntitiesLeadTheSuggestions() {
+        let items = ["light.kitchen", "sensor.temperature", "switch.porch"].map { Self.pick($0) }
+
+        let split = WidgetEntitiesAppEntityQuery.partitionedByMostUsed(
+            items: items,
+            mostUsedIds: ["switch.porch", "light.kitchen"]
+        )
+
+        #expect(split.mostUsed.map(\.entityId) == ["switch.porch", "light.kitchen"])
+        #expect(split.rest.map(\.entityId) == ["sensor.temperature"])
+    }
+
+    /// An entity the ranking still names but the picker has no row for — removed from Home
+    /// Assistant since the user last reached for it — is dropped, not shown as a row that resolves
+    /// to nothing.
+    @available(iOS 17, *)
+    @Test func rankedEntitiesThePickerHasNoRowForAreDropped() {
+        let items = [Self.pick("light.kitchen")]
+
+        let split = WidgetEntitiesAppEntityQuery.partitionedByMostUsed(
+            items: items,
+            mostUsedIds: ["light.gone", "light.kitchen"]
+        )
+
+        #expect(split.mostUsed.map(\.entityId) == ["light.kitchen"])
+        #expect(split.rest.isEmpty)
+    }
+
     /// A pick maps onto the item the widget renders and acts on. With no area or device to show,
     /// its context line falls back to the entity id, and its row carries no image: rendering one
     /// per row is more than the widget extension's memory allows.
@@ -136,6 +167,11 @@ struct WidgetEntitiesAppEntityQueryTests {
         }
 
         try await body()
+    }
+
+    @available(iOS 17, *)
+    private static func pick(_ entityId: String) -> WidgetEntitiesAppEntity {
+        .init(id: "A-\(entityId)", entityId: entityId, serverId: "A", displayString: entityId)
     }
 
     private static func entity(_ serverId: String, _ entityId: String, name: String) -> HAAppEntity {

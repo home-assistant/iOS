@@ -43,8 +43,9 @@ struct WidgetEntitiesTimelineProviderTests {
         }
     }
 
-    /// With nothing picked there is nothing to fetch, so the timeline entry comes back at once with
-    /// no states and the footer settings the configuration asked for.
+    /// With nothing picked and nothing known about what this user uses, there is nothing to fetch,
+    /// so the timeline entry comes back at once with no states and the footer settings the
+    /// configuration asked for.
     @available(iOS 17, *)
     @Test func timelineEntryWithNothingPickedFetchesNothing() async {
         await withFakes { server in
@@ -60,20 +61,66 @@ struct WidgetEntitiesTimelineProviderTests {
         }
     }
 
-    /// Runs `body` with one fake server registered and the preview item info provider standing in
-    /// for the database-backed one, restoring both afterwards.
-    private func withFakes(_ body: (Server) async -> Void) async {
+    /// A widget dropped on the home screen and not configured yet stands its tiles up from the
+    /// cached ranking of what this user controls most, so it is useful before it is set up. The
+    /// ranking is asked for by the configured server, not whichever one happens to be first.
+    @available(iOS 17, *)
+    @Test func nothingPickedFallsBackToTheMostUsedEntities() async {
+        let usage = FakeEntityUsageProvider(mostUsed: ["light.kitchen", "switch.porch"])
+        await withFakes(usage: usage) { server in
+            let configuration = Self.configuration(serverId: server.identifier.rawValue, entityIds: [])
+
+            let entry = await WidgetEntitiesTimelineProvider().snapshotEntry(for: configuration, family: .systemLarge)
+
+            #expect(entry.items.map(\.id) == ["light.kitchen", "switch.porch"])
+            #expect(usage.askedForServerIds == [server.identifier.rawValue])
+
+            // A widget that has never been opened for configuration carries no list at all, rather
+            // than an empty one, and stands its tiles up the same way.
+            configuration.entities = nil
+            let items = WidgetEntitiesTimelineProvider.items(for: configuration, family: .systemLarge)
+            #expect(items.map(\.id) == ["light.kitchen", "switch.porch"])
+        }
+    }
+
+    /// Picks win over the ranking: a configured widget shows what the user chose, and never asks.
+    @available(iOS 17, *)
+    @Test func picksWinOverTheMostUsedEntities() async {
+        let usage = FakeEntityUsageProvider(mostUsed: ["light.kitchen"])
+        await withFakes(usage: usage) { server in
+            let configuration = Self.configuration(
+                serverId: server.identifier.rawValue,
+                entityIds: ["sensor.temperature"]
+            )
+
+            let entry = await WidgetEntitiesTimelineProvider().snapshotEntry(for: configuration, family: .systemLarge)
+
+            #expect(entry.items.map(\.id) == ["sensor.temperature"])
+            #expect(usage.askedForServerIds.isEmpty)
+        }
+    }
+
+    /// Runs `body` with one fake server registered, the preview item info provider standing in for
+    /// the database-backed one and a usage ranking that knows nothing unless the caller says
+    /// otherwise, restoring all three afterwards.
+    private func withFakes(
+        usage: FakeEntityUsageProvider = FakeEntityUsageProvider(mostUsed: []),
+        _ body: (Server) async -> Void
+    ) async {
         let previousServers = Current.servers
         let previousProvider = Current.magicItemProvider
+        let previousUsage = Current.entityUsage
         defer {
             Current.servers = previousServers
             Current.magicItemProvider = previousProvider
+            Current.entityUsage = previousUsage
         }
 
         let servers = FakeServerManager()
         let server = servers.addFake()
         Current.servers = servers
         Current.magicItemProvider = { WidgetPreviewMagicItemProvider() }
+        Current.entityUsage = { usage }
 
         await body(server)
     }

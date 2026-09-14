@@ -41,15 +41,6 @@ struct WidgetEntitiesTests {
         }
     }
 
-    @available(iOS 17, *)
-    @Test func nothingPickedIsEmpty() {
-        let configuration = WidgetEntitiesAppIntent()
-        configuration.server = .init(identifier: .init(rawValue: "1"))
-        configuration.entities = nil
-
-        #expect(WidgetEntitiesTimelineProvider.items(for: configuration, family: .systemLarge).isEmpty)
-    }
-
     /// The last update time is on unless the user switches it off; there is no switch for states.
     @available(iOS 17, *)
     @Test func lastUpdateTimeIsShownByDefault() {
