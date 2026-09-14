@@ -10,6 +10,9 @@ extension WebViewController {
     func setupWindowTitleObserver() {
         windowTitleObserver = webView.observe(\.title) { [weak self] _, _ in
             self?.updateWindowSceneTitle()
+            // The same title names the page on the user activity, and a frontend route change sets it
+            // a beat after the URL it belongs to.
+            self?.updateOnscreenPage()
         }
     }
 
