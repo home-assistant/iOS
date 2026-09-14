@@ -17,6 +17,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var urlObserver: NSKeyValueObservation?
     var windowTitleObserver: NSKeyValueObservation?
+    var emptyStateTitleObserver: AnyCancellable?
     var tokens = [HACancellable]()
 
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
@@ -65,7 +66,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Set by `FrontendView`; lets connection/URL state drive SwiftUI overlays in `HomeAssistantView`
     /// instead of UIKit modals presented from here.
-    var overlayState: WebFrontendOverlayState?
+    var overlayState: WebFrontendOverlayState? {
+        didSet {
+            observeEmptyStateForWindowTitle()
+        }
+    }
 
     /// Set by `FrontendView` so retry can rebuild the SwiftUI-hosted web view when WebKit is stuck.
     var resetFrontendAction: (() -> Void)?
@@ -358,6 +363,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
+        updateWindowSceneTitle()
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
         updateWindowSceneTitle()
     }
 

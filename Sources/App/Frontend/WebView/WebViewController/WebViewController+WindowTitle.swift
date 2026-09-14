@@ -1,3 +1,4 @@
+import Combine
 import Shared
 import UIKit
 
@@ -12,9 +13,19 @@ extension WebViewController {
         }
     }
 
+    func observeEmptyStateForWindowTitle() {
+        emptyStateTitleObserver = overlayState?.$emptyState.sink { [weak self] emptyState in
+            self?.updateWindowSceneTitle(isCoveredByEmptyState: emptyState != nil)
+        }
+    }
+
     func updateWindowSceneTitle() {
+        updateWindowSceneTitle(isCoveredByEmptyState: overlayState?.emptyState != nil)
+    }
+
+    func updateWindowSceneTitle(isCoveredByEmptyState: Bool) {
         view.window?.windowScene?.title = Self.windowTitle(
-            pageTitle: webView?.title,
+            pageTitle: isCoveredByEmptyState ? nil : webView?.title,
             serverName: server.info.name
         )
     }

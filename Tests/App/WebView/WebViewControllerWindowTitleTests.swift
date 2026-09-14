@@ -45,18 +45,49 @@ struct WebViewControllerWindowTitleTests {
 
     @Test func thePageTitleTheFrontendSetsBecomesTheWindowsTitle() async throws {
         try await withHostScene { scene in
-            let sut = WebViewController(server: kitchenServer())
-            let window = UIWindow(windowScene: scene)
-            // Not made visible: an appearing web view loads the server's URL, which would replace this page.
-            window.rootViewController = sut
-            sut.loadViewIfNeeded()
+            let sut = webViewControllerParkedOnTheTestPage()
+            let window = showInWindow(sut, on: scene)
+            defer { window.isHidden = true }
 
-            sut.webView.loadHTMLString(
-                "<html><head><title>Overview – Home Assistant</title></head><body></body></html>",
-                baseURL: nil
-            )
+            sut.webView.loadHTMLString(Self.overviewPage, baseURL: nil)
 
             await waitUntil { scene.title == "Overview" }
+        }
+    }
+
+    @Test func aWindowCoveredByTheEmptyStateGoesBackToItsServersName() async throws {
+        try await withHostScene { scene in
+            let sut = webViewControllerParkedOnTheTestPage()
+            sut.overlayState = WebFrontendOverlayState()
+            let window = showInWindow(sut, on: scene)
+            defer { window.isHidden = true }
+
+            sut.webView.loadHTMLString(Self.overviewPage, baseURL: nil)
+            await waitUntil { scene.title == "Overview" }
+
+            sut.showEmptyState()
+            await waitUntil { scene.title == "Kitchen" }
+
+            sut.hideEmptyState()
+            await waitUntil { scene.title == "Overview" }
+        }
+    }
+
+    @Test func aWebViewHandedToAVisibleParentNamesTheScene() async throws {
+        try await withHostScene { scene in
+            scene.title = "Stale"
+            let parent = UIViewController()
+            let window = UIWindow(windowScene: scene)
+            window.rootViewController = parent
+            window.makeKeyAndVisible()
+            defer { window.isHidden = true }
+
+            let sut = WebViewController(server: kitchenServer())
+            parent.addChild(sut)
+            parent.view.addSubview(sut.view)
+            sut.didMove(toParent: parent)
+
+            await waitUntil { scene.title == "Kitchen" }
         }
     }
 
@@ -71,6 +102,28 @@ struct WebViewControllerWindowTitleTests {
             #expect(scene.title == "Untouched")
         }
     }
+
+    /// `didLogOut` is what keeps the controller from navigating to its server the moment the server object
+    /// updates, which would take the test page (and its title) away mid-test.
+    private func webViewControllerParkedOnTheTestPage() -> WebViewController {
+        let controller = WebViewController(server: kitchenServer())
+        controller.didLogOut = true
+        return controller
+    }
+
+    /// Hosted as a plain subview of a visible window: an appearing web view controller loads its server's
+    /// URL, which would navigate away from the page under test.
+    private func showInWindow(_ sut: WebViewController, on scene: UIWindowScene) -> UIWindow {
+        let host = UIViewController()
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = host
+        window.makeKeyAndVisible()
+        host.view.addSubview(sut.view)
+        return window
+    }
+
+    private static let overviewPage =
+        "<html><head><title>Overview – Home Assistant</title></head><body></body></html>"
 
     private func kitchenServer() -> Server {
         .fake(update: { $0.remoteName = "Kitchen" })
