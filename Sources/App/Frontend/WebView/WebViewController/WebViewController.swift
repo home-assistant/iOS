@@ -16,6 +16,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let server: Server
 
     var urlObserver: NSKeyValueObservation?
+    var windowTitleObserver: NSKeyValueObservation?
     var tokens = [HACancellable]()
 
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
@@ -229,6 +230,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     deinit {
         tabBarAssistZoomAnchor?.removeFromSuperview()
         self.urlObserver = nil
+        self.windowTitleObserver = nil
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
         loadActiveURLTask?.cancel()
@@ -299,6 +301,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupGestures(numberOfTouchesRequired: 3)
         setupEdgeGestures()
         setupURLObserver()
+        setupWindowTitleObserver()
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -355,6 +358,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
+        updateWindowSceneTitle()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
