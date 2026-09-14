@@ -98,4 +98,22 @@ struct KioskFrontendElementsTests {
 
         #expect(settings.frontendElementsToHide(nativeTabBar: false).isEmpty)
     }
+
+    @Test func hidingAnElementAddsItOnce() {
+        var hidden: Set<KioskFrontendElement> = [.sidebar]
+
+        hidden.setHidden(true, for: .dashboardTabs)
+        hidden.setHidden(true, for: .dashboardTabs)
+
+        #expect(hidden == [.sidebar, .dashboardTabs])
+    }
+
+    @Test func showingAnElementRemovesOnlyThatElement() {
+        var hidden: Set<KioskFrontendElement> = [.sidebar, .dashboardTabs]
+
+        hidden.setHidden(false, for: .dashboardTabs)
+        hidden.setHidden(false, for: .appPanelHeader)
+
+        #expect(hidden == [.sidebar])
+    }
 }

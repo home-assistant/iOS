@@ -25,16 +25,10 @@ struct KioskFrontendElementsView: View {
         }
     }
 
-    private func binding(for element: KioskFrontendElement) -> Binding<Bool> {
+    func binding(for element: KioskFrontendElement) -> Binding<Bool> {
         Binding(
             get: { hiddenElements.contains(element) },
-            set: { isHidden in
-                if isHidden {
-                    hiddenElements.insert(element)
-                } else {
-                    hiddenElements.remove(element)
-                }
-            }
+            set: { hiddenElements.setHidden($0, for: element) }
         )
     }
 }

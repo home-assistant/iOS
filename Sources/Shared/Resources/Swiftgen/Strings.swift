@@ -3219,7 +3219,7 @@ public enum L10n {
     public enum HiddenElements {
       /// Choose which parts of the Home Assistant interface this device hides.
       public static var body: String { return L10n.tr("Localizable", "kiosk.hidden_elements.body") }
-      /// Home Assistant versions that cannot yet be told which elements to hide keep hiding the sidebar and top bar controls, as before.
+      /// Home Assistant versions without this option hide the sidebar and top bar controls instead, as long as at least one element is selected.
       public static var footer: String { return L10n.tr("Localizable", "kiosk.hidden_elements.footer") }
       /// %li of %li hidden
       public static func summary(_ p1: Int, _ p2: Int) -> String {

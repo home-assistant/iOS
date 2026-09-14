@@ -4,7 +4,6 @@ import GRDB
 import SharedTesting
 import SwiftUI
 import Testing
-import UIKit
 
 struct KioskSettingsViewTests {
     @MainActor
@@ -52,7 +51,12 @@ struct KioskSettingsViewTests {
     @MainActor
     @Test func kioskSettingsScreenShowsTheHiddenElementsRowWhileTheSwitchIsOn() throws {
         try withKiosk(settings: KioskSettings(enabled: true, removeHeaderAndSidebar: true)) {
-            render(NavigationView { KioskSettingsView() })
+            // Taller than a phone: the row sits in the Display section, below the first screenful.
+            assertLightDarkSnapshots(
+                of: NavigationView { KioskSettingsView() },
+                drawHierarchyInKeyWindow: true,
+                layout: .fixed(width: 390, height: 2200)
+            )
         }
     }
 
@@ -71,23 +75,6 @@ struct KioskSettingsViewTests {
             let titles = KioskSettingsView.settingsSearchEntries.map(\.title)
             #expect(!titles.contains(L10n.Kiosk.HiddenElements.title))
         }
-    }
-
-    /// Lays the view out in a window, which is what makes SwiftUI evaluate the body.
-    ///
-    /// Deliberately never becomes the key window: the snapshot helpers above draw into whatever
-    /// window is key, so stealing it here would reach into them.
-    @MainActor
-    private func render(_ view: some View) {
-        let controller = UIHostingController(rootView: view)
-        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
-        window.rootViewController = controller
-        window.isHidden = false
-        controller.view.setNeedsLayout()
-        controller.view.layoutIfNeeded()
-
-        window.isHidden = true
-        window.rootViewController = nil
     }
 
     /// Points `Current` at a fresh in-memory database holding `settings`, so the screen's view model

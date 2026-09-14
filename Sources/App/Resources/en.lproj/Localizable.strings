@@ -912,7 +912,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "kiosk.frontend_element.sidebar" = "Sidebar";
 "kiosk.frontend_element.sidebar_button" = "Sidebar button";
 "kiosk.hidden_elements.body" = "Choose which parts of the Home Assistant interface this device hides.";
-"kiosk.hidden_elements.footer" = "Home Assistant versions that cannot yet be told which elements to hide keep hiding the sidebar and top bar controls, as before.";
+"kiosk.hidden_elements.footer" = "Home Assistant versions without this option hide the sidebar and top bar controls instead, as long as at least one element is selected.";
 "kiosk.hidden_elements.summary" = "%li of %li hidden";
 "kiosk.hidden_elements.title" = "Hidden elements";
 "kiosk.hide_settings_entry.alert.confirm" = "Hide button";
