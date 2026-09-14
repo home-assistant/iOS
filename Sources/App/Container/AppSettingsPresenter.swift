@@ -63,6 +63,10 @@ final class AppSettingsPresenter: ObservableObject {
     /// The `matchedTransitionSource` the sheet zooms out of, when the entry point has one.
     @Published private(set) var zoomSourceID: String?
 
+    /// The coordinator of the scene this presenter belongs to, set by `ContainerView`. The picker activates
+    /// the server the user chose through it, so picking in one window can't act on another.
+    weak var appCoordinator: AppCoordinator?
+
     private var dismissAllCancellable: AnyCancellable?
 
     init() {
@@ -134,6 +138,8 @@ final class AppSettingsPresenter: ObservableObject {
 
         if let request {
             request.onSelect(server)
+        } else if let appCoordinator {
+            appCoordinator.activate(server: server)
         } else {
             Current.sceneManager.appCoordinator.done { coordinator in
                 coordinator.activate(server: server)

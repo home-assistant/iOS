@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+@testable import Shared
 import SwiftUI
 import XCTest
 
@@ -31,6 +32,19 @@ final class AppSettingsPresenterTests: XCTestCase {
         presenter.presentSettings(zoomingFrom: "gear")
         presenter.presentServerSelection(.init(prompt: nil, zoomsFromStandBy: false, onSelect: { _ in }))
         XCTAssertNil(presenter.zoomSourceID)
+    }
+
+    /// Dragging Settings down to the picker and choosing a server has no pending request behind it, so it
+    /// activates through the scene's own coordinator rather than the app-wide one.
+    func testPickingAServerWithoutARequestActivatesItOnThisScenesCoordinator() {
+        let coordinator = MockAppCoordinator()
+        presenter.appCoordinator = coordinator
+        let server = Server.fake()
+
+        presenter.completeServerSelection(server)
+
+        XCTAssertEqual(coordinator.activatedServers.map(\.identifier), [server.identifier])
+        XCTAssertFalse(presenter.isSheetPresented)
     }
 
     func testPushingSettingsPutsItAtTheRootOfThePushPath() {

@@ -30,6 +30,7 @@ struct ContainerView: View {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
             coordinator.settingsPresenter = appSettings
+            appSettings.appCoordinator = coordinator
             coordinator.onShowSettings = { [weak coordinator] pushOntoNavigationStack in
                 // Push only in compact width, read from the window at presentation time.
                 let sizeClass = coordinator?.window?.traitCollection.horizontalSizeClass

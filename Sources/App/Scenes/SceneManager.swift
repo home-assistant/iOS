@@ -177,10 +177,14 @@ final class SceneManager {
     private var appCoordinatorPromise: Guarantee<AppCoordinator>
     private var appCoordinatorSeal: (AppCoordinator) -> Void
 
-    /// Every coordinator currently registered, weakly held. Multi-window (iPad, Catalyst) runs one per
-    /// scene, so this is how a request that started in a particular window finds that window's coordinator
-    /// instead of whichever one happened to register last.
-    private let registeredAppCoordinators = NSHashTable<AnyObject>.weakObjects()
+    private struct WeakAppCoordinator {
+        weak var value: AppCoordinator?
+    }
+
+    /// Every coordinator currently registered, weakly held in registration order. Multi-window (iPad,
+    /// Catalyst) runs one per scene, so this is how a request that started in a particular window finds
+    /// that window's coordinator instead of whichever one happened to register last.
+    private var registeredAppCoordinators: [WeakAppCoordinator] = []
 
     /// The app-wide coordinator, for requests that arrive without a window behind them (deep links,
     /// notifications, App Intents). Anything triggered from a window should go through
@@ -189,7 +193,8 @@ final class SceneManager {
 
     /// Called by `HomeAssistantView` once its coordinator exists.
     func registerAppCoordinator(_ coordinator: AppCoordinator) {
-        registeredAppCoordinators.add(coordinator)
+        registeredAppCoordinators.removeAll { $0.value == nil || $0.value === coordinator }
+        registeredAppCoordinators.append(WeakAppCoordinator(value: coordinator))
 
         if appCoordinatorPromise.isFulfilled {
             appCoordinatorPromise = .value(coordinator)
@@ -203,7 +208,9 @@ final class SceneManager {
     /// none of its own (kiosk mode, a window still coming up). Call on the main thread.
     func appCoordinator(for scene: UIWindowScene?) -> Guarantee<AppCoordinator> {
         guard let scene else { return appCoordinatorPromise }
-        let coordinators = registeredAppCoordinators.allObjects.compactMap { $0 as? AppCoordinator }
+        // Newest registration first, so a scene that came back gets its current coordinator rather than one
+        // left over from the container it replaced.
+        let coordinators = registeredAppCoordinators.reversed().compactMap(\.value)
         guard let coordinator = coordinators.first(where: { $0.window?.windowScene === scene }) else {
             return appCoordinatorPromise
         }

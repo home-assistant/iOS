@@ -952,6 +952,45 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.currentPageURL?.absoluteString, "https://home.local/lovelace/0")
     }
 
+    /// Multi-window: Settings has to reach the coordinator of the window this web view is in, not the one
+    /// that registered last (which is what the app-wide coordinator resolves to).
+    func testShowSettingsGoesToTheCoordinatorOfTheWebViewsOwnScene() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        let sut = makeSUT()
+        window.addSubview(sut.view)
+
+        let sceneCoordinator = MockAppCoordinator()
+        sceneCoordinator.window = window
+        let otherWindowCoordinator = MockAppCoordinator()
+        otherWindowCoordinator.window = UIWindow()
+        Current.sceneManager.registerAppCoordinator(sceneCoordinator)
+        // Registered last, so this is the app-wide coordinator every request used to land on.
+        Current.sceneManager.registerAppCoordinator(otherWindowCoordinator)
+        let settingsShown = expectation(description: "showSettings called")
+        sceneCoordinator.onShowSettings = { settingsShown.fulfill() }
+
+        sut.showSettingsViewController()
+
+        wait(for: [settingsShown], timeout: 1)
+        XCTAssertFalse(sceneCoordinator.showSettingsPushedOntoNavigationStack)
+        XCTAssertFalse(otherWindowCoordinator.showSettingsCalled)
+    }
+
+    /// Without a window to resolve a scene from, the app-wide coordinator is still the right answer.
+    func testShowSettingsFallsBackToTheAppWideCoordinatorWithoutAWindow() {
+        let sut = makeSUT()
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        let settingsShown = expectation(description: "showSettings called")
+        coordinator.onShowSettings = { settingsShown.fulfill() }
+
+        sut.showSettingsViewController(pushOntoNavigationStack: true)
+
+        wait(for: [settingsShown], timeout: 1)
+        XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
+    }
+
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
