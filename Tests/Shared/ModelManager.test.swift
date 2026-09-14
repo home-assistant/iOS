@@ -404,6 +404,51 @@ class ModelManagerTests: XCTestCase {
         verify(apis: [api2, newApi])
     }
 
+    /// A reconnect updates the server's version, which reports a server change; the subscription
+    /// must survive that instead of being torn down and rebuilt against the same servers.
+    func testServerChangeWithoutMembershipChangeKeepsSubscriptions() {
+        let handlers: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        var handlersIterator = handlers.makeIterator()
+        var subscribeCount = 0
+
+        let definitions: [LegacyModelManager.SubscribeDefinition] = [
+            .init(subscribe: { _, _, _, _ -> [HACancellable] in
+                subscribeCount += 1
+                return [handlersIterator.next()!]
+            }),
+        ]
+
+        manager.subscribe(definitions: definitions, isAppInForeground: { true })
+        XCTAssertEqual(subscribeCount, 2)
+
+        servers.notify()
+
+        XCTAssertEqual(subscribeCount, 2)
+        XCTAssertTrue(handlers.allSatisfy { !$0.wasCancelled })
+    }
+
+    func testUnsubscribeCancelsAndForgetsTheSubscribedServers() {
+        let handlers: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        var handlersIterator = handlers.makeIterator()
+        var subscribeCount = 0
+
+        let definitions: [LegacyModelManager.SubscribeDefinition] = [
+            .init(subscribe: { _, _, _, _ -> [HACancellable] in
+                subscribeCount += 1
+                return [handlersIterator.next()!]
+            }),
+        ]
+
+        manager.subscribe(definitions: definitions, isAppInForeground: { true })
+        manager.unsubscribe()
+
+        XCTAssertTrue(handlers.allSatisfy(\.wasCancelled))
+
+        servers.notify()
+
+        XCTAssertEqual(subscribeCount, 2, "Forgotten definitions must not be resubscribed by a server change")
+    }
+
     func testStoreWithoutModels() throws {
         try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: []))
         XCTAssertEqual(try database.read { try TestStoreModel1.fetchCount($0) }, 0)

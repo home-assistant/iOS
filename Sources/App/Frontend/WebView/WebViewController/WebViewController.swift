@@ -24,7 +24,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var statusBarView: UIView?
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
+    var pendingAssistZoomSourceView: UIView?
+    /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
+    weak var detachedOverlayController: UIViewController?
+    var tabBarAssistZoomAnchor: AssistZoomAnchorView?
     var webViewTopConstraint: NSLayoutConstraint?
+    /// Pins the bottom of `statusBarView`; on iOS it follows the web view's top edge.
+    var statusBarBottomConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
     var latestLoadError: Error?
 
@@ -78,6 +84,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+
+    /// How far down a view must start to clear the window controls; replaceable in tests, which have none.
+    var cornerAdaptedSafeAreaTop: @MainActor (UIView) -> CGFloat = { view in
+        guard #available(iOS 26, *) else { return view.safeAreaInsets.top }
+        return view.directionalEdgeInsets(for: .safeArea(cornerAdaptation: .vertical)).top
+    }
 
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
@@ -215,6 +227,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     deinit {
+        tabBarAssistZoomAnchor?.removeFromSuperview()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
@@ -293,8 +306,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupWebViewConstraints(statusBarView: statusBarView)
 
         // Above the web view so it lands where the frontend draws its Assist button; it takes no touches,
-        // so the button underneath keeps working.
-        assistZoomAnchorView = AssistZoomAnchorView.install(in: view)
+        // so the button underneath keeps working. Aligned to the web view so it follows the frontend's offset.
+        assistZoomAnchorView = AssistZoomAnchorView.install(in: view, alignedTo: webView)
 
         NotificationCenter.default.addObserver(
             self,
@@ -313,6 +326,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         checkForLocalSecurityLevelDecisionNeeded()
         onWebViewLoaded?(self)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateWindowControlsInset()
+    }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updateWindowControlsInset()
     }
 
     /// Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -431,8 +454,11 @@ extension WebViewController {
         }
     }
 
+    /// Kiosk mode is also what hides the frontend's hamburger for the App Labs native tab bar: the tabs
+    /// and the More tab already expose every sidebar page, so the button would only open More.
     func updateFrontendKioskMode() {
-        let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
+        let enable = (Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar)
+            || AppLabsFeature.iosNativeTabBar.isEnabled
         webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": enable]

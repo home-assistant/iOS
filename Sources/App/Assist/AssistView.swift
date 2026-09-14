@@ -94,9 +94,7 @@ struct AssistView: View {
                 viewModel.subscribeForConfigChanges()
             }
             .onChange(of: viewModel.focusOnInput) { newValue in
-                if newValue {
-                    isFirstResponder = true
-                }
+                isFirstResponder = newValue
             }
             .onDisappear {
                 assistSession.inProgress = false
@@ -506,6 +504,7 @@ struct AssistView: View {
                 .font(.system(size: Constants.keyboardIconFontSize, weight: .medium))
                 .foregroundStyle(.primary)
                 .frame(width: Constants.keyboardButtonSize, height: Constants.keyboardButtonSize)
+                .contentShape(Circle())
         }
         .buttonStyle(.plain)
         .modify { view in

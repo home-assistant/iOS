@@ -31,6 +31,8 @@ public struct RectangularComplicationContentView: View {
 
     public var body: some View {
         let textColor = model.textColor ?? .primary
+        let titleColor = model.titleColor ?? textColor
+        let valueColor = model.valueColor ?? textColor
         HStack(spacing: Layout.spacing) {
             if model.showsIcon, let iconImage = model.iconImage {
                 iconImage
@@ -44,7 +46,7 @@ public struct RectangularComplicationContentView: View {
                     Text(model.title)
                         .font(.caption2.weight(.semibold))
                         .lineLimit(Layout.titleLineLimit)
-                        .foregroundStyle(textColor)
+                        .foregroundStyle(titleColor)
                         .minimumScaleFactor(Layout.minimumScaleFactor)
                 }
                 if model.showsSubtitle, !model.subtitle.isEmpty {
@@ -54,7 +56,7 @@ public struct RectangularComplicationContentView: View {
                         .foregroundStyle(textColor.opacity(Layout.secondaryTextOpacity))
                         .minimumScaleFactor(Layout.minimumScaleFactor)
                 }
-                if let fraction = model.fraction {
+                if let fraction = model.fraction, model.valueRidesGauge {
                     RectangularProgressView(
                         fraction: fraction,
                         minLabel: model.minLabel,
@@ -64,13 +66,24 @@ public struct RectangularComplicationContentView: View {
                         // The value moves into the bar's thumb here, so it has to carry the text color
                         // with it — otherwise the one slot the user picks a color *for* is the only
                         // one that ignores it.
-                        valueColor: model.textColor
+                        valueColor: model.valueColor ?? model.textColor
                     )
-                } else if model.showsValue, !model.valueText.isEmpty {
-                    Text(model.valueText)
-                        .font(.caption2)
-                        .lineLimit(Layout.valueLineLimit)
-                        .foregroundStyle(textColor)
+                } else {
+                    if model.showsValue, !model.valueText.isEmpty {
+                        Text(model.valueText)
+                            .font(.caption2)
+                            .lineLimit(Layout.valueLineLimit)
+                            .foregroundStyle(valueColor)
+                    }
+                    if let fraction = model.fraction {
+                        RectangularProgressView(
+                            fraction: fraction,
+                            minLabel: model.minLabel,
+                            maxLabel: model.maxLabel,
+                            valueLabel: nil,
+                            tint: model.tint
+                        )
+                    }
                 }
                 if model.showsBottomText, !model.bottomText.isEmpty {
                     Text(model.bottomText)
@@ -100,7 +113,10 @@ public extension RectangularComplicationRenderModel {
         showMinMax: Bool = true,
         bottomText: String? = nil,
         tint: Color = .green,
-        textColor: Color? = nil
+        textColor: Color? = nil,
+        titleColor: Color? = nil,
+        valueColor: Color? = nil,
+        valueRidesGauge: Bool = true
     ) -> RectangularComplicationRenderModel {
         RectangularComplicationRenderModel(
             iconImage: icon ? sampleBoltIcon() : nil,
@@ -117,7 +133,10 @@ public extension RectangularComplicationRenderModel {
             bottomText: bottomText ?? "",
             showsBottomText: bottomText != nil,
             tint: tint,
-            textColor: textColor
+            textColor: textColor,
+            titleColor: titleColor,
+            valueColor: valueColor,
+            valueRidesGauge: valueRidesGauge
         )
     }
 }
@@ -163,6 +182,32 @@ private func face(_ model: RectangularComplicationRenderModel) -> some View {
 @available(iOS 16.0, watchOS 10.0, *)
 #Preview("Value as text") {
     face(.sample(title: "Front Door", subtitle: "Lock", fraction: nil, value: "Locked")).padding()
+}
+
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("Per-slot colors") {
+    face(.sample(
+        icon: false,
+        title: "Rain",
+        fraction: nil,
+        value: "▁▂▃▄▅▆▇█",
+        bottomText: "in 45m",
+        titleColor: .white,
+        valueColor: .green
+    )).padding()
+}
+
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("Legacy text gauge") {
+    face(.sample(
+        icon: false,
+        title: "2.9 kWh / 1.4 kW",
+        fraction: 0.9,
+        value: "S 8.4 °C / D 6.9 °C",
+        showMinMax: false,
+        valueColor: .orange,
+        valueRidesGauge: false
+    )).padding()
 }
 
 @available(iOS 16.0, watchOS 10.0, *)

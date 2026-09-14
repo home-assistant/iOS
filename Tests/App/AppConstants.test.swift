@@ -76,6 +76,17 @@ struct AppConstantsTests {
         )
     }
 
+    @Test func testOpenEntityDestinationURLOpensMoreInfoDialogForEveryDomain() async throws {
+        let serverId = "server123"
+        for entityId in ["camera.porch", "light.living_room", "sensor.temperature"] {
+            let result = AppConstants.openEntityDestinationURL(entityId: entityId, serverId: serverId)
+            #expect(result != nil, "\(entityId) should have a destination")
+            #expect(result == AppConstants.openEntityDeeplinkURL(entityId: entityId, serverId: serverId))
+            #expect(result?.host == "navigate")
+            #expect(result?.absoluteString.contains("more-info-entity-id=\(entityId)") == true)
+        }
+    }
+
     @Test func testOpenEntityMoreInfoDeeplinkURL() async throws {
         let entityId = "light.living_room"
         let result = AppConstants.openEntityMoreInfoDeeplinkURL(entityId: entityId)?.absoluteString

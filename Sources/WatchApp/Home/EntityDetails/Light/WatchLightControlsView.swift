@@ -44,6 +44,7 @@ struct WatchLightControlsView: View {
             }
         }
         .navigationTitle(Text(verbatim: viewModel.name))
+        .watchNativeNavigationBar()
         .onAppear {
             viewModel.startStateUpdates()
         }

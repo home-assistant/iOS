@@ -323,6 +323,8 @@ struct ConnectionSettingsView: View {
                 .buttonStyle(.plain)
             }
 
+            ConnectionURLsHowItWorksLink(server: viewModel.server)
+
             if viewModel.shouldShowSecurityLevelPicker {
                 Button {
                     showSecurityLevelPicker = true
@@ -551,6 +553,7 @@ extension ConnectionSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.General.DeviceName.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.InternalBaseUrl.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ExternalBaseUrl.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.UrlsHowItWorks.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.refreshServer),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ClientCertificate.header),

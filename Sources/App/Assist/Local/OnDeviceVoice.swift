@@ -21,4 +21,11 @@ struct OnDeviceVoice: Identifiable, Hashable, Sendable {
         self.language = voice.language
         self.quality = voice.quality
     }
+
+    init(identifier: String, name: String, language: String, quality: AVSpeechSynthesisVoiceQuality) {
+        self.identifier = identifier
+        self.name = name
+        self.language = language
+        self.quality = quality
+    }
 }

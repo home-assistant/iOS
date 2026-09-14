@@ -187,22 +187,29 @@ public enum AppConstants {
         pageDeeplinkURL(path: path)?.appending(queryItems: [URLQueryItem(name: "server", value: serverName)])
     }
 
-    /// Where tapping an entity lands: the native camera player for cameras, the frontend's more-info
-    /// dialog for everything else.
-    public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {
-        if Domain(entityId: entityId) == .camera {
-            return openCameraDeeplinkURL(entityId: entityId, serverId: serverId)
+    /// Everything that survives unescaped in the `url` value of an NFC tag link: the unreserved set
+    /// from RFC 3986, so the deep link's own separators cannot be mistaken for the outer URL's.
+    private static let nfcTagURLAllowed = CharacterSet(
+        charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+    )
+
+    /// The URL an NFC tag carries so that scanning it opens `deeplink` in the app.
+    ///
+    /// iPhone background tag reading only routes the `https` universal links the app has claimed, so a
+    /// bare `homeassistant://` URL written to a tag is ignored on a scan. A deep link travels on a tag
+    /// wrapped in the app's documented NFC universal link instead, which `TagManager.handle(userActivity:)`
+    /// unwraps back into the deep link when the scan reaches the app.
+    public static func nfcTagURL(deeplink: URL) -> URL? {
+        guard let encoded = deeplink.absoluteString
+            .addingPercentEncoding(withAllowedCharacters: nfcTagURLAllowed) else {
+            return nil
         }
-        return openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
+        return URL(string: "https://www.home-assistant.io/ios/nfc/?url=\(encoded)")
     }
 
-    /// The deep link host that opens the native camera player.
-    public static let cameraDeeplinkHost = "camera"
-
-    public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
-        URL(
-            string: "\(AppConstants.deeplinkURL.absoluteString)\(cameraDeeplinkHost)/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
-        )
+    /// Where tapping an entity lands: the frontend's more-info dialog, cameras included.
+    public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {
+        openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
     }
 
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {

@@ -14,6 +14,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var connectionState: FrontEndConnectionState = .connected
     var overlayedController: UIViewController?
     var assistZoomAnchorView: UIView?
+    var pendingAssistZoomSourceView: UIView?
 
     var presentOverlayControllerCalled = false
     var presentControllerCalled = false

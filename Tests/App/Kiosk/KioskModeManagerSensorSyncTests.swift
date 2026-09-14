@@ -11,6 +11,7 @@ import XCTest
 final class KioskModeManagerSensorSyncTests: XCTestCase {
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
+    private var previousSensors: SensorContainer!
 
     private let kioskSensorIds = [WebhookSensorId.kioskBrightness, .kioskVolume, .kioskScreensaver]
 
@@ -22,11 +23,14 @@ final class KioskModeManagerSensorSyncTests: XCTestCase {
         self.database = database
         previousDatabase = Current.database
         Current.database = { database }
+        previousSensors = Current.sensors
+        Current.sensors = SensorContainer()
 
         SensorEnablementStore.resetForTesting()
     }
 
     override func tearDown() {
+        Current.sensors = previousSensors
         Current.database = previousDatabase
         SensorEnablementStore.resetForTesting()
         super.tearDown()

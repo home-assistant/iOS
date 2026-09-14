@@ -57,12 +57,15 @@ final class AppSettingsPresenter: ObservableObject {
     @Published private(set) var isFullSettingsMounted = true
     @Published var detent: PresentationDetent = .large
     private(set) var selectionRequest: ServerSelectionRequest?
+    /// The `matchedTransitionSource` the sheet zooms out of, when the entry point has one.
+    @Published private(set) var zoomSourceID: String?
 
     private init() {}
 
     /// Opens the sheet on Settings itself.
-    func presentSettings() {
+    func presentSettings(zoomingFrom sourceID: String? = nil) {
         selectionRequest = nil
+        zoomSourceID = sourceID
         mode = .full
         isFullSettingsMounted = true
         detent = .large
@@ -73,6 +76,7 @@ final class AppSettingsPresenter: ObservableObject {
     /// request is the caller's only way of hearing back, so it is never dropped on their behalf.
     func presentServerSelection(_ request: ServerSelectionRequest) {
         selectionRequest = request
+        zoomSourceID = nil
         mode = .serverSelection
         isFullSettingsMounted = false
         detent = .medium
@@ -126,6 +130,7 @@ final class AppSettingsPresenter: ObservableObject {
         // set up in the meantime is left alone.
         guard !isSheetPresented else { return }
         selectionRequest = nil
+        zoomSourceID = nil
         mode = .full
         isFullSettingsMounted = true
         detent = .large

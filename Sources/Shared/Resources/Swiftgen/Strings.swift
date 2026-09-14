@@ -26,6 +26,8 @@ public enum L10n {
   public static var delete: String { return L10n.tr("Localizable", "delete") }
   /// Done
   public static var doneLabel: String { return L10n.tr("Localizable", "done_label") }
+  /// Edit
+  public static var editLabel: String { return L10n.tr("Localizable", "edit_label") }
   /// Error
   public static var errorLabel: String { return L10n.tr("Localizable", "error_label") }
   /// Help
@@ -1097,6 +1099,24 @@ public enum L10n {
         public static var name: String { return L10n.tr("Localizable", "app_intents.thermostat.entity.name") }
       }
     }
+    public enum Toggle {
+      /// Flips an entity to its opposite state
+      public static var description: String { return L10n.tr("Localizable", "app_intents.toggle.description") }
+      /// Toggle
+      public static var title: String { return L10n.tr("Localizable", "app_intents.toggle.title") }
+    }
+    public enum TurnOff {
+      /// Turns off a light, switch or fan, or closes a cover
+      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_off.description") }
+      /// Turn off
+      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_off.title") }
+    }
+    public enum TurnOn {
+      /// Turns on a light, switch or fan, or opens a cover
+      public static var description: String { return L10n.tr("Localizable", "app_intents.turn_on.description") }
+      /// Turn on
+      public static var title: String { return L10n.tr("Localizable", "app_intents.turn_on.title") }
+    }
     public enum TurnOnOff {
       /// Turns a light, switch or fan on or off, or opens and closes a cover
       public static var description: String { return L10n.tr("Localizable", "app_intents.turn_on_off.description") }
@@ -1132,6 +1152,12 @@ public enum L10n {
       public static var success: String { return L10n.tr("Localizable", "app_intents.update_sensors.success") }
       /// Update sensors
       public static var title: String { return L10n.tr("Localizable", "app_intents.update_sensors.title") }
+    }
+    public enum WatchAssist {
+      /// Opens Assist using the pipeline configured for the watch
+      public static var description: String { return L10n.tr("Localizable", "app_intents.watch_assist.description") }
+      /// Assist
+      public static var title: String { return L10n.tr("Localizable", "app_intents.watch_assist.title") }
     }
   }
 
@@ -3385,6 +3411,12 @@ public enum L10n {
         public static var large: String { return L10n.tr("Localizable", "kiosk.clock.style.large") }
       }
     }
+    public enum CommandConfirmation {
+      /// When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.command_confirmation.footer") }
+      /// Show command confirmation
+      public static var title: String { return L10n.tr("Localizable", "kiosk.command_confirmation.title") }
+    }
     public enum Corner {
       /// Bottom leading
       public static var bottomLeading: String { return L10n.tr("Localizable", "kiosk.corner.bottom_leading") }
@@ -3438,6 +3470,20 @@ public enum L10n {
     public enum Footer {
       /// When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.
       public static var description: String { return L10n.tr("Localizable", "kiosk.footer.description") }
+    }
+    public enum HideSettingsEntry {
+      /// Hiding the entry makes it invisible, not gone: the corner you picked still opens these settings when tapped.
+      public static var footer: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.footer") }
+      /// Hide entry button
+      public static var title: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.title") }
+      public enum Alert {
+        /// Hide button
+        public static var confirm: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.confirm") }
+        /// The button will no longer be drawn on screen. It stays tappable in the corner you picked, so make sure you remember which one: it is the only way back into these settings.
+        public static var message: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.message") }
+        /// Hide the settings entry?
+        public static var title: String { return L10n.tr("Localizable", "kiosk.hide_settings_entry.alert.title") }
+      }
     }
     public enum PushCommand {
       /// Returning to dashboard
@@ -4325,6 +4371,12 @@ public enum L10n {
       }
       /// Tag Written!
       public static var successMessage: String { return L10n.tr("Localizable", "nfc.write.success_message") }
+      public enum Deeplink {
+        /// Bring an NFC tag near your %@ to create a deeplink to this entity
+        public static func startMessage(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "nfc.write.deeplink.start_message", String(describing: p1))
+        }
+      }
       public enum Error {
         /// NFC tag has insufficient capacity: needs %ld but only has %ld
         public static func capacity(_ p1: Int, _ p2: Int) -> String {
@@ -4332,6 +4384,8 @@ public enum L10n {
         }
         /// NFC tag is not NDEF format
         public static var invalidFormat: String { return L10n.tr("Localizable", "nfc.write.error.invalid_format") }
+        /// This link cannot be written to an NFC tag
+        public static var invalidUrl: String { return L10n.tr("Localizable", "nfc.write.error.invalid_url") }
         /// NFC tag is read-only
         public static var notWritable: String { return L10n.tr("Localizable", "nfc.write.error.not_writable") }
       }
@@ -5195,6 +5249,14 @@ public enum L10n {
         /// App Labs are experimental features that can change or be removed at any time. Use them at your own risk.
         public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.header.subtitle") }
       }
+      public enum IosNativeTabBar {
+        /// Replaces the Home Assistant sidebar with a native tab bar. Choose up to three tabs from the More tab. The page reloads when you change this setting.
+        public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.footer") }
+        /// Replaces the Home Assistant sidebar with a native tab bar. The first four entries of the More tab's list are the tabs; reorder or hide them from the More tab. The page reloads when you change this setting.
+        public static var summary: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.summary") }
+        /// Native tab bar
+        public static var title: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.title") }
+      }
       public enum MacNativeSidebar {
         /// Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.
         public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.footer") }
@@ -5417,6 +5479,10 @@ public enum L10n {
           public static var zoneOnly: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.zone_only") }
         }
       }
+      public enum NetworkDetectionPermission {
+        /// Detecting your home network means reading its Wi-Fi name, which iOS only shares with apps that have location access. The Precise Location switch is what makes the name readable at all, including while you are using the app. The Always option is needed on top of it to keep reading the name while the app is in the background, for sensors and notifications. Tap here to change your settings.
+        public static var message: String { return L10n.tr("Localizable", "settings.connection_section.network_detection_permission.message") }
+      }
       public enum NoBaseUrl {
         /// No URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
@@ -5447,6 +5513,68 @@ public enum L10n {
           public static var devices: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.devices") }
           /// Updating entities
           public static var entities: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.entities") }
+        }
+      }
+      public enum UrlsHowItWorks {
+        /// Your Home Assistant can be reached in two ways: directly on your home network, or over the internet. The app picks one for every request, and the choice can change as you move.
+        public static var intro: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.intro") }
+        /// Understand Internal vs External URLs
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.title") }
+        public enum Active {
+          /// In use right now
+          public static var header: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.active.header") }
+          /// No URL can be used with the current settings
+          public static var `none`: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.active.none") }
+        }
+        public enum Away {
+          /// When no listed network matches, the Home Assistant Cloud URL is used if cloud is turned on, and the external URL otherwise.
+          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body") }
+          /// Anywhere else
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.title") }
+        }
+        public enum Background {
+          /// Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so without it your home network goes unrecognised and these connect the same way they do when you are away.
+          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.background.body") }
+          /// While the app is in the background
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.background.title") }
+        }
+        public enum Criteria {
+          /// Location access is set to Always
+          public static var alwaysLocation: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.always_location") }
+          /// The Precise Location switch is needed whenever the Wi-Fi name is read. The Always option only adds the background, so without it the internal URL is still used while the app is open. When your network cannot be matched, the app falls back as described above.
+          public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.footer") }
+          /// At least one hardware address listed
+          public static var hardwareAddresses: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.hardware_addresses") }
+          /// On this device
+          public static var header: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.header") }
+          /// Internal URL is set
+          public static var internalUrl: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.internal_url") }
+          /// Connected to a listed network
+          public static var listedNetwork: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.listed_network") }
+          /// Met
+          public static var met: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.met") }
+          /// Not met
+          public static var notMet: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.not_met") }
+          /// Precise Location switch is on
+          public static var preciseLocation: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.precise_location") }
+          /// At least one Wi-Fi network listed
+          public static var ssids: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.ssids") }
+        }
+        public enum Foreground {
+          /// You get home and open the app. The Wi-Fi name is read right then, it matches a listed network, and the dashboard loads over the internal URL. This already needs the Precise Location switch turned on: with it off iOS hands out an approximate position and never the network name, so the app stays on the external URL even at home.
+          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.foreground.body") }
+          /// While you are using the app
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.foreground.title") }
+        }
+        public enum Home {
+          /// When this device is connected to one of the Wi-Fi networks you listed for this Home Assistant, the internal URL is used. On Mac, a listed hardware address does the same.
+          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.home.body") }
+          /// On your home network
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.home.title") }
+        }
+        public enum SecurityLevel {
+          /// This only decides what happens when the internal URL is the only URL this Home Assistant has and it is not HTTPS. Most secure leaves it unused away from your listed networks, so the app does not connect at all from elsewhere. Less secure lets it be used anywhere. Not configured behaves like Less secure until you choose, and an HTTPS internal URL is used either way.
+          public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.security_level.footer") }
         }
       }
       public enum ValidateError {
@@ -6494,6 +6622,8 @@ public enum L10n {
       public static var servers: String { return L10n.tr("Localizable", "settings.search_keywords.servers") }
       /// siri, shortcuts, spotlight, voice, assistant
       public static var siri: String { return L10n.tr("Localizable", "settings.search_keywords.siri") }
+      /// wyoming, speech, voice, assist, speech to text, text to speech, stt, tts, microphone, dictation
+      public static var voiceToolsServer: String { return L10n.tr("Localizable", "settings.search_keywords.voice_tools_server") }
       /// apple watch, watchos, configuration
       public static var watch: String { return L10n.tr("Localizable", "settings.search_keywords.watch") }
       /// home screen, lock screen, custom widgets
@@ -6622,6 +6752,58 @@ public enum L10n {
     public enum TransferToNewApp {
       /// Transfer to the new app
       public static var title: String { return L10n.tr("Localizable", "settings.transfer_to_new_app.title") }
+    }
+    public enum VoiceToolsServer {
+      /// Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.
+      public static var body: String { return L10n.tr("Localizable", "settings.voice_tools_server.body") }
+      /// In Home Assistant, add the Wyoming integration and point it at this device, or accept it when it is discovered on your network.
+      /// 
+      /// The server only answers while the app is open, and stops when you leave it.
+      public static var enabledFooter: String { return L10n.tr("Localizable", "settings.voice_tools_server.enabled_footer") }
+      /// Speech is recognized and spoken on this device. Only the text and the finished audio travel over your local network.
+      public static var footer: String { return L10n.tr("Localizable", "settings.voice_tools_server.footer") }
+      /// Port
+      public static var port: String { return L10n.tr("Localizable", "settings.voice_tools_server.port") }
+      /// Speech recognition permission has not been granted, so this device can only answer text-to-speech requests. Allow it in the Settings app to use speech-to-text too.
+      public static var speechPermission: String { return L10n.tr("Localizable", "settings.voice_tools_server.speech_permission") }
+      /// Status
+      public static var statusTitle: String { return L10n.tr("Localizable", "settings.voice_tools_server.status_title") }
+      /// Voice tools server
+      public static var title: String { return L10n.tr("Localizable", "settings.voice_tools_server.title") }
+      /// Enable voice tools server
+      public static var toggle: String { return L10n.tr("Localizable", "settings.voice_tools_server.toggle") }
+      public enum Languages {
+        /// This device has no languages available for on-device speech recognition.
+        public static var empty: String { return L10n.tr("Localizable", "settings.voice_tools_server.languages.empty") }
+        /// Speech in these languages is recognized entirely on this device. A dictation language added in the Settings app appears here once it supports on-device recognition.
+        public static var footer: String { return L10n.tr("Localizable", "settings.voice_tools_server.languages.footer") }
+        /// Speech-to-text languages
+        public static var title: String { return L10n.tr("Localizable", "settings.voice_tools_server.languages.title") }
+      }
+      public enum OnDevice {
+        /// Home Assistant can pick any of these for a voice pipeline that uses this device.
+        public static var footer: String { return L10n.tr("Localizable", "settings.voice_tools_server.on_device.footer") }
+        /// Available on this device
+        public static var header: String { return L10n.tr("Localizable", "settings.voice_tools_server.on_device.header") }
+      }
+      public enum Status {
+        /// Listening on port %@
+        public static func running(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.voice_tools_server.status.running", String(describing: p1))
+        }
+        /// Starting...
+        public static var starting: String { return L10n.tr("Localizable", "settings.voice_tools_server.status.starting") }
+        /// Stopped
+        public static var stopped: String { return L10n.tr("Localizable", "settings.voice_tools_server.status.stopped") }
+      }
+      public enum Voices {
+        /// This device has no text-to-speech voices installed.
+        public static var empty: String { return L10n.tr("Localizable", "settings.voice_tools_server.voices.empty") }
+        /// Speech is spoken with these voices, all installed on this device. Voices downloaded in the Settings app, under Accessibility, appear here too.
+        public static var footer: String { return L10n.tr("Localizable", "settings.voice_tools_server.voices.footer") }
+        /// Text-to-speech voices
+        public static var title: String { return L10n.tr("Localizable", "settings.voice_tools_server.voices.title") }
+      }
     }
     public enum WhatsNew {
       /// What's new?
@@ -7656,6 +7838,67 @@ public enum L10n {
     public enum OpenSettings {
       /// Open Settings
       public static var title: String { return L10n.tr("Localizable", "shortcut_item.open_settings.title") }
+    }
+  }
+
+  public enum TabBar {
+    public enum Customize {
+      /// Add
+      public static var add: String { return L10n.tr("Localizable", "tab_bar.customize.add") }
+      /// Hide
+      public static var hide: String { return L10n.tr("Localizable", "tab_bar.customize.hide") }
+      /// Remove
+      public static var remove: String { return L10n.tr("Localizable", "tab_bar.customize.remove") }
+      /// Show
+      public static var show: String { return L10n.tr("Localizable", "tab_bar.customize.show") }
+      /// Tab %li
+      public static func tabNumberD(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "tab_bar.customize.tab_number_%d", p1)
+      }
+      /// Customize Tabs
+      public static var title: String { return L10n.tr("Localizable", "tab_bar.customize.title") }
+      public enum AvailableSection {
+        /// Remove a tab to add another one.
+        public static var footerFull: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.footer_full") }
+        /// Available
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.header") }
+      }
+      public enum DashboardsSection {
+        /// The first four entries are the tabs, the rest are listed in More. Drag to reorder.
+        public static var footerFourTabs: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.footer_four_tabs") }
+        /// Dashboards
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.dashboards_section.header") }
+      }
+      public enum HiddenSection {
+        /// Hidden dashboards do not appear in the tab bar or in More.
+        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.footer") }
+        /// Hidden
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.hidden_section.header") }
+      }
+      public enum TabsSection {
+        /// No tabs. Add pages from the list below.
+        public static var empty: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.empty") }
+        /// Up to three pages show as tabs. Drag to reorder.
+        public static var footer: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.footer") }
+        /// Tabs
+        public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.tabs_section.header") }
+      }
+    }
+    public enum Item {
+      /// Assist
+      public static var assist: String { return L10n.tr("Localizable", "tab_bar.item.assist") }
+      /// Search
+      public static var search: String { return L10n.tr("Localizable", "tab_bar.item.search") }
+    }
+    public enum More {
+      /// App Settings
+      public static var appSettings: String { return L10n.tr("Localizable", "tab_bar.more.app_settings") }
+      /// Customize
+      public static var customize: String { return L10n.tr("Localizable", "tab_bar.more.customize") }
+      /// Home Assistant Settings
+      public static var homeAssistantSettings: String { return L10n.tr("Localizable", "tab_bar.more.home_assistant_settings") }
+      /// More
+      public static var title: String { return L10n.tr("Localizable", "tab_bar.more.title") }
     }
   }
 
@@ -9462,6 +9705,10 @@ public enum L10n {
         public enum MacToolbar {
           /// Mac Toolbar
           public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.MacToolbar.title") }
+        }
+        public enum NfcTag {
+          /// NFC Tag
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.NfcTag.title") }
         }
         public enum Widget {
           /// Widget

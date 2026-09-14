@@ -10,6 +10,13 @@ import UIKit
 final class AppContainerCoordinator: AppCoordinator {
     weak var frontend: (any WebFrontend)?
 
+    /// One coordinator per frontend scene, so this is where a scene learns which server it is showing.
+    private let themeModeApplier: FrontendThemeModeApplier
+
+    init(themeModeApplier: FrontendThemeModeApplier = .shared) {
+        self.themeModeApplier = themeModeApplier
+    }
+
     /// Set by `ContainerView` to drive `OnboardingStateObservable` (the screen/server source of truth).
     var onOpenServer: ((Server) -> Void)?
     var onSetup: (() -> Void)?
@@ -31,6 +38,12 @@ final class AppContainerCoordinator: AppCoordinator {
     /// Resolves every pending `open(server:)` for the server whose frontend just appeared.
     func setFrontend(_ frontend: any WebFrontend) {
         self.frontend = frontend
+        // The coordinator is not isolated, but every presentation duty it has already runs on the main queue.
+        MainActor.assumeIsolated {
+            themeModeApplier.frontend(for: frontend.server.identifier, showingIn: { [weak self] in
+                self?.window?.windowScene
+            })
+        }
         let seals = pendingOpens.removeValue(forKey: frontend.server.identifier) ?? []
         seals.forEach { $0(frontend) }
     }
