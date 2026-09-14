@@ -120,13 +120,26 @@ final class SpotlightEntityIndexer: ServerObserver {
     /// may be stale rather than waiting for the next database change.
     @available(iOS 27.0, *)
     func reindex(entityIds: [String]) async throws {
-        let wanted = Set(entityIds)
         guard let snapshot = await Task.detached(priority: .utility) { Self.makeSnapshot() }.value else {
             return
         }
-        let entities = snapshot.entities.filter { wanted.contains($0.id) }
+        let entities = Self.entitiesToReindex(from: snapshot.entities, matching: entityIds)
         guard !entities.isEmpty else { return }
         try await index.indexAppEntities(entities)
+    }
+
+    /// The entities the system named, picked out of the current snapshot.
+    ///
+    /// Split out so the selection can be tested without driving the indexer, which only runs from
+    /// the system's requests, the same reason `indexableServers` below is its own function. The
+    /// system may name identifiers the snapshot no longer holds, so anything unknown is dropped
+    /// rather than reported.
+    nonisolated static func entitiesToReindex(
+        from entities: [HAAppEntityAppIntentEntity],
+        matching identifiers: [String]
+    ) -> [HAAppEntityAppIntentEntity] {
+        let wanted = Set(identifiers)
+        return entities.filter { wanted.contains($0.id) }
     }
 
     /// Rebuilds the whole index on request from the system.
