@@ -91,6 +91,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
+    /// Where the window's title lands; replaceable in tests, which all share the host process's one scene.
+    var applyWindowSceneTitle: @MainActor (UIWindowScene, String) -> Void = { windowScene, title in
+        windowScene.title = title
+    }
+
     /// How far down a view must start to clear the window controls; replaceable in tests, which have none.
     var cornerAdaptedSafeAreaTop: @MainActor (UIView) -> CGFloat = { view in
         guard #available(iOS 26, *) else { return view.safeAreaInsets.top }

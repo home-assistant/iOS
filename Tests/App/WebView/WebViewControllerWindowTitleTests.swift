@@ -31,76 +31,116 @@ struct WebViewControllerWindowTitleTests {
         #expect(WebViewController.windowTitle(pageTitle: "  \n ", serverName: "Kitchen") == "Kitchen")
     }
 
-    @Test func showingAWebViewNamesTheSceneItIsShownIn() async throws {
-        try await withHostScene { scene in
-            let sut = WebViewController(server: kitchenServer())
-            let window = UIWindow(windowScene: scene)
-            window.rootViewController = sut
-            window.makeKeyAndVisible()
-            defer { window.isHidden = true }
+    @Test func handingOverTheOverlayStateDoesNotForceTheWebViewToLoad() {
+        let sut = WebViewController(server: kitchenServer())
 
-            await waitUntil { scene.title == "Kitchen" }
-        }
+        sut.overlayState = WebFrontendOverlayState()
+
+        #expect(sut.viewIfLoaded == nil)
+    }
+
+    @Test func theTitleLandsOnTheSceneOfTheWindowTheWebViewIsIn() throws {
+        let scene = try hostScene()
+        let previousTitle = scene.title
+        defer { scene.title = previousTitle }
+        let sut = webViewControllerParkedOnTheTestPage()
+        let window = showInWindow(sut, on: scene)
+        defer { window.isHidden = true }
+
+        sut.updateWindowSceneTitle()
+
+        #expect(scene.title == "Kitchen")
+    }
+
+    @Test func showingAWebViewNamesTheWindowItAppearsIn() async throws {
+        let scene = try hostScene()
+        let sut = webViewControllerParkedOnTheTestPage()
+        let titles = TitleRecorder(watching: sut)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        await waitUntil { titles.last == "Kitchen" }
+    }
+
+    @Test func aWebViewHandedToAVisibleParentNamesTheWindow() throws {
+        let scene = try hostScene()
+        let host = UIViewController()
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = host
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+        let sut = webViewControllerParkedOnTheTestPage()
+        let titles = TitleRecorder(watching: sut)
+
+        host.addChild(sut)
+        host.view.addSubview(sut.view)
+        sut.didMove(toParent: host)
+
+        #expect(titles.last == "Kitchen")
     }
 
     @Test func thePageTitleTheFrontendSetsBecomesTheWindowsTitle() async throws {
-        try await withHostScene { scene in
-            let sut = webViewControllerParkedOnTheTestPage()
-            let window = showInWindow(sut, on: scene)
-            defer { window.isHidden = true }
+        let scene = try hostScene()
+        let sut = webViewControllerParkedOnTheTestPage()
+        let titles = TitleRecorder(watching: sut)
+        let window = showInWindow(sut, on: scene)
+        defer { window.isHidden = true }
 
-            sut.webView.loadHTMLString(Self.overviewPage, baseURL: nil)
+        sut.webView.loadHTMLString(Self.overviewPage, baseURL: nil)
 
-            await waitUntil { scene.title == "Overview" }
-        }
+        await waitUntil { titles.last == "Overview" }
     }
 
     @Test func aWindowCoveredByTheEmptyStateGoesBackToItsServersName() async throws {
-        try await withHostScene { scene in
-            let sut = webViewControllerParkedOnTheTestPage()
-            sut.overlayState = WebFrontendOverlayState()
-            let window = showInWindow(sut, on: scene)
-            defer { window.isHidden = true }
+        let scene = try hostScene()
+        let sut = webViewControllerParkedOnTheTestPage()
+        sut.overlayState = WebFrontendOverlayState()
+        let titles = TitleRecorder(watching: sut)
+        let window = showInWindow(sut, on: scene)
+        defer { window.isHidden = true }
 
-            sut.webView.loadHTMLString(Self.overviewPage, baseURL: nil)
-            await waitUntil { scene.title == "Overview" }
+        sut.webView.loadHTMLString(Self.overviewPage, baseURL: nil)
+        await waitUntil { titles.last == "Overview" }
 
-            sut.showEmptyState()
-            await waitUntil { scene.title == "Kitchen" }
+        sut.showEmptyState()
+        await waitUntil { titles.last == "Kitchen" }
 
-            sut.hideEmptyState()
-            await waitUntil { scene.title == "Overview" }
+        sut.hideEmptyState()
+        await waitUntil { titles.last == "Overview" }
+    }
+
+    @Test func aWebViewOutsideAWindowRenamesNothing() {
+        let sut = webViewControllerParkedOnTheTestPage()
+        let titles = TitleRecorder(watching: sut)
+        sut.loadViewIfNeeded()
+
+        sut.updateWindowSceneTitle()
+
+        #expect(titles.last == nil)
+    }
+
+    /// Collects what the controller would name its window, so that a test never has to read the title back
+    /// off the single scene the whole test host shares.
+    @MainActor
+    private final class TitleRecorder {
+        private(set) var titles: [String] = []
+
+        var last: String? {
+            titles.last
+        }
+
+        init(watching controller: WebViewController) {
+            controller.applyWindowSceneTitle = { [weak self] _, title in
+                self?.titles.append(title)
+            }
         }
     }
 
-    @Test func aWebViewHandedToAVisibleParentNamesTheScene() async throws {
-        try await withHostScene { scene in
-            scene.title = "Stale"
-            let parent = UIViewController()
-            let window = UIWindow(windowScene: scene)
-            window.rootViewController = parent
-            window.makeKeyAndVisible()
-            defer { window.isHidden = true }
-
-            let sut = WebViewController(server: kitchenServer())
-            parent.addChild(sut)
-            parent.view.addSubview(sut.view)
-            sut.didMove(toParent: parent)
-
-            await waitUntil { scene.title == "Kitchen" }
-        }
-    }
-
-    @Test func aWebViewOutsideAWindowRenamesNothing() async throws {
-        try await withHostScene { scene in
-            scene.title = "Untouched"
-            let sut = WebViewController(server: kitchenServer())
-            sut.loadViewIfNeeded()
-
-            sut.updateWindowSceneTitle()
-
-            #expect(scene.title == "Untouched")
-        }
+    /// The real scene the test host runs in, since a `UIWindowScene` cannot be built by hand.
+    private func hostScene() throws -> UIWindowScene {
+        try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
     }
 
     /// `didLogOut` is what keeps the controller from navigating to its server the moment the server object
@@ -127,13 +167,6 @@ struct WebViewControllerWindowTitleTests {
 
     private func kitchenServer() -> Server {
         .fake(update: { $0.remoteName = "Kitchen" })
-    }
-
-    private func withHostScene(_ body: (UIWindowScene) async throws -> Void) async throws {
-        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
-        let previousTitle = scene.title
-        defer { scene.title = previousTitle }
-        try await body(scene)
     }
 
     private func waitUntil(

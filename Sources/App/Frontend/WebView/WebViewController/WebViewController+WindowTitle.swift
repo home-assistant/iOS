@@ -23,11 +23,15 @@ extension WebViewController {
         updateWindowSceneTitle(isCoveredByEmptyState: overlayState?.emptyState != nil)
     }
 
+    /// `viewIfLoaded` so that naming the window never forces the web view to load: the empty-state
+    /// subscription is handed over before `FrontendView` has finished wiring the controller up.
     func updateWindowSceneTitle(isCoveredByEmptyState: Bool) {
-        view.window?.windowScene?.title = Self.windowTitle(
+        guard let windowScene = viewIfLoaded?.window?.windowScene else { return }
+
+        applyWindowSceneTitle(windowScene, Self.windowTitle(
             pageTitle: isCoveredByEmptyState ? nil : webView?.title,
             serverName: server.info.name
-        )
+        ))
     }
 
     static func windowTitle(pageTitle: String?, serverName: String) -> String {
