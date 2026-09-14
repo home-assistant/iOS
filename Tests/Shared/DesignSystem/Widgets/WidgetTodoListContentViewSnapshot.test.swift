@@ -16,6 +16,8 @@ struct WidgetTodoListContentViewSnapshotTests {
         allDone: "All done!"
     )
 
+    private static let listURL = URL(string: "https://example.com/todo")!
+
     private static let items: [WidgetTodoItemModel] = [
         .init(id: "todo-0", summary: "Coffee beans"),
         .init(id: "todo-1", summary: "Book a table", dueText: "Tomorrow"),
@@ -70,25 +72,53 @@ struct WidgetTodoListContentViewSnapshotTests {
         assertTodoListSnapshot(family: .systemMedium, items: Self.items)
     }
 
+    /// The controls wrapped the way the widget wraps them — a button completes an item, a link opens
+    /// the list — which must not move the checkbox off the summary's first line.
+    @available(iOS 17, *)
+    @MainActor @Test func systemMediumWithControlsSnapshot() {
+        assertTodoListSnapshot(family: .systemMedium, items: Self.items, wrapsControls: true)
+    }
+
+    @available(iOS 17, *)
+    @MainActor @Test func systemLargeSnapshot() {
+        assertTodoListSnapshot(family: .systemLarge, items: Self.items)
+    }
+
+    /// The shortest large widget, 321pt on a 4.7" phone, has no room for a sixth whole row, so the list
+    /// leaves it off rather than cutting it in half.
+    @available(iOS 17, *)
+    @MainActor @Test func systemLargeShortSnapshot() {
+        assertTodoListSnapshot(family: .systemLarge, items: Self.items, size: CGSize(width: 321, height: 321))
+    }
+
     @available(iOS 17, *)
     @MainActor private func assertTodoListSnapshot(
         family: WidgetFamily,
         items: [WidgetTodoItemModel],
         isConfigured: Bool = true,
+        // Overrides the family's usual size, for the cases that only go wrong on a smaller phone.
+        size: CGSize? = nil,
+        wrapsControls: Bool = false,
         fileID: StaticString = #fileID,
         filePath: StaticString = #filePath,
         testName: String = #function,
         line: UInt = #line,
         column: UInt = #column
     ) {
-        let size = Self.size(for: family)
+        let size = size ?? Self.size(for: family)
         assertLightDarkSnapshots(
             of: WidgetTodoListContentView(
                 title: "Groceries",
                 items: items,
                 isConfigured: isConfigured,
                 family: family,
-                strings: Self.strings
+                strings: Self.strings,
+                completeControl: { _, control in
+                    wrapsControls ? AnyView(Button {} label: { control }.buttonStyle(.plain)) : control
+                },
+                itemContent: { _, content in
+                    wrapsControls ? AnyView(Link(destination: Self.listURL) { content }) : content
+                }
             )
             .padding(DesignSystem.Spaces.two)
             .background(Color(uiColor: .systemBackground)),
@@ -107,8 +137,10 @@ struct WidgetTodoListContentViewSnapshotTests {
         switch family {
         case .systemSmall:
             CGSize(width: 170, height: 170)
-        default:
+        case .systemMedium:
             CGSize(width: 364, height: 170)
+        default:
+            CGSize(width: 364, height: 382)
         }
     }
 }
