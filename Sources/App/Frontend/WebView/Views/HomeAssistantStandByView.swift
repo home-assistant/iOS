@@ -540,7 +540,7 @@ struct HomeAssistantStandByView: View {
     }
 
     private func openSettings() {
-        appSettingsPresenter?.presentSettings()
+        appSettingsPresenter?.showSettings()
     }
 
     private func canShowErrorDetailsButton(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> Bool {

@@ -75,6 +75,28 @@ final class WebViewGestureHandlerTests: XCTestCase {
         XCTAssertEqual(otherWindowCoordinator.selectServerCallCount, 0)
     }
 
+    /// Cycling servers with a gesture switches the window the gesture happened in.
+    func testNextServerActionOpensTheNextServerInTheWebViewsOwnScene() throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 2)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let webView = MockWebViewController()
+        // The server the gesture cycles away from has to be one of the registered ones.
+        webView.server = try XCTUnwrap(Current.servers.all.first)
+        webView.presentationWindow = UIWindow(windowScene: scene)
+        let sceneCoordinator = MockAppCoordinator()
+        sceneCoordinator.window = webView.presentationWindow
+        Current.sceneManager.registerAppCoordinator(sceneCoordinator)
+        let serverOpened = expectation(description: "next server opened")
+        sceneCoordinator.onOpenServer = { serverOpened.fulfill() }
+
+        makeSUT(webView: webView).handleGestureAction(.nextServer)
+
+        wait(for: [serverOpened], timeout: 1)
+        XCTAssertEqual(sceneCoordinator.openedServers.count, 1)
+    }
+
     private func makeSUT(webView: MockWebViewController) -> WebViewGestureHandler {
         let sut = WebViewGestureHandler()
         sut.webView = webView

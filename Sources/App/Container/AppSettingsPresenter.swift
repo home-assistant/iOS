@@ -79,9 +79,24 @@ final class AppSettingsPresenter: ObservableObject {
             }
     }
 
+    /// Opens Settings wherever this scene puts it: its own window on Catalyst, a sheet or a push over the
+    /// frontend otherwise. Everything on screen asks for Settings through here.
+    func showSettings() {
+        if let appCoordinator {
+            appCoordinator.showSettings()
+        } else {
+            presentSettings()
+        }
+    }
+
+    /// Closes Settings, taking the screens it pushed with it.
+    func dismissSettings() {
+        isSheetPresented = false
+        isPushPresented = false
+    }
+
     /// Opens the sheet on Settings itself.
     func presentSettings(zoomingFrom sourceID: String? = nil) {
-        guard !openSettingsSceneIfCatalyst() else { return }
         selectionRequest = nil
         zoomSourceID = sourceID
         mode = .full
@@ -106,19 +121,14 @@ final class AppSettingsPresenter: ObservableObject {
     /// on Catalyst, where the sheet has no detents to drag and Settings is its own scene: closing the sheet
     /// there drops the request like any other dismissal.
     func showFullSettings() {
-        guard !openSettingsSceneIfCatalyst() else { return }
+        if Current.isCatalyst, Current.sceneManager.supportsMultipleScenes {
+            isSheetPresented = false
+            Current.sceneManager.activateAnyScene(for: .settings)
+            return
+        }
         mode = .full
         isFullSettingsMounted = true
         detent = .large
-    }
-
-    /// On Catalyst with multiple scenes Settings is a window of its own, so it is activated instead of being
-    /// presented here. Reports whether it took over the request.
-    private func openSettingsSceneIfCatalyst() -> Bool {
-        guard Current.isCatalyst, Current.sceneManager.supportsMultipleScenes else { return false }
-        isSheetPresented = false
-        Current.sceneManager.activateAnyScene(for: .settings)
-        return true
     }
 
     /// Covers Settings with the picker again, following the sheet back down to the medium detent.

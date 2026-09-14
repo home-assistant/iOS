@@ -500,8 +500,7 @@ struct ConnectionSettingsView: View {
     }
 
     private func dismissAppSettings() {
-        appSettingsPresenter?.isSheetPresented = false
-        appSettingsPresenter?.isPushPresented = false
+        appSettingsPresenter?.dismissSettings()
     }
 
     // MARK: - Delete Section

@@ -17,7 +17,7 @@ struct RecoveredServerReauthView: View {
             style: .recoveredServerNeedingReauthentication,
             server: server,
             availableReauthURLTypes: state.availableReauthURLTypes(for: server),
-            settingsAction: { appSettingsPresenter?.presentSettings() },
+            settingsAction: { appSettingsPresenter?.showSettings() },
             recoveredServerReauthAction: { urlType, completion in
                 state.performRecoveredServerReauthentication(
                     for: server,

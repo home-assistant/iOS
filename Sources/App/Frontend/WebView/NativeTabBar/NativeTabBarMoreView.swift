@@ -155,9 +155,7 @@ struct NativeTabBarMoreView: View {
                         }
                     }
                     Button {
-                        if let appSettingsPresenter {
-                            viewModel.showAppSettings(using: appSettingsPresenter)
-                        }
+                        viewModel.showAppSettings(using: appSettingsPresenter)
                     } label: {
                         Label(L10n.TabBar.More.appSettings, systemSymbol: .iphone)
                     }

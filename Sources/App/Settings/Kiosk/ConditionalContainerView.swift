@@ -59,7 +59,6 @@ struct ConditionalContainerView: View {
             }
         }
         .injectingViewControllerProvider()
-        // A sheet's content is hosted outside this view, so it is handed the presenter of its own accord.
         .environment(\.appSettingsPresenter, appSettings)
         #if !targetEnvironment(macCatalyst)
             .presentationDetents(sheetDetents, selection: $appSettings.detent)

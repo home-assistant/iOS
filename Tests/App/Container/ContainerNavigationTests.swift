@@ -1,3 +1,4 @@
+import GRDB
 @testable import HomeAssistant
 @testable import Shared
 import SwiftUI
@@ -71,9 +72,57 @@ final class ContainerNavigationTests: XCTestCase {
         XCTAssertTrue(presenter.pushPath.isEmpty)
     }
 
+    /// Settings asked for through this scene's coordinator lands on this scene's presenter: pushed over the
+    /// frontend in compact width, presented as a sheet otherwise.
+    func testTheContainersCoordinatorDrivesItsOwnSettingsPresenter() throws {
+        Current.servers = FakeServerManager(initial: 1)
+
+        let window = hostContainer()
+        let coordinator = try XCTUnwrap(Current.sceneManager.appCoordinator.value)
+
+        coordinator.showSettings(pushOntoNavigationStack: true)
+        settle(window)
+        XCTAssertTrue(presenter.isPushPresented)
+
+        presenter.isPushPresented = false
+        settle(window)
+        coordinator.showSettings()
+
+        XCTAssertTrue(presenter.isSheetPresented)
+        presenter.isSheetPresented = false
+    }
+
+    /// Kiosk mode wraps the same container, so what it shows is still this scene's Settings.
+    func testKioskModeHostsTheContainerWithTheScenesOwnPresenter() throws {
+        let previousDatabase = Current.database
+        let previousKiosk = Current.kiosk
+        defer {
+            Current.database = previousDatabase
+            Current.kiosk = previousKiosk
+        }
+        Current.servers = FakeServerManager(initial: 1)
+        let database = try DatabaseQueue()
+        for table in DatabaseQueue.tables() {
+            try table.createIfNeeded(database: database)
+        }
+        Current.database = { database }
+        var settings = KioskSettings(enabled: true)
+        settings.serverId = Current.servers.all.first?.identifier.rawValue
+        try database.write { db in
+            try settings.insert(db, onConflict: .replace)
+        }
+        Current.kiosk = KioskModeManager()
+
+        hostContainer()
+        let coordinator = try XCTUnwrap(Current.sceneManager.appCoordinator.value as? AppContainerCoordinator)
+
+        XCTAssertIdentical(coordinator.settingsPresenter, presenter)
+    }
+
     // MARK: - Helpers
 
     /// Puts the real app root on screen, so the screens below it lay out exactly as they do at launch.
+    @discardableResult
     private func hostContainer() -> UIWindow {
         let controller = UIHostingController(rootView: ConditionalContainerView(appSettings: presenter))
         // On the host app's scene, so the window is a real one that reports appearance; a window

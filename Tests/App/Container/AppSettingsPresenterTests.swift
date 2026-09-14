@@ -34,6 +34,37 @@ final class AppSettingsPresenterTests: XCTestCase {
         XCTAssertNil(presenter.zoomSourceID)
     }
 
+    /// Where Settings goes is the scene coordinator's call (its own window on Catalyst, a sheet here), so
+    /// the presenter asks it rather than presenting on its own.
+    func testShowingSettingsGoesThroughTheScenesCoordinator() {
+        let coordinator = MockAppCoordinator()
+        presenter.appCoordinator = coordinator
+
+        presenter.showSettings()
+
+        XCTAssertTrue(coordinator.showSettingsCalled)
+        XCTAssertFalse(presenter.isSheetPresented)
+    }
+
+    /// Before a container has claimed the presenter there is no coordinator to ask, and the sheet is still
+    /// the right answer.
+    func testShowingSettingsWithoutACoordinatorPresentsTheSheet() {
+        presenter.showSettings()
+
+        XCTAssertTrue(presenter.isSheetPresented)
+        XCTAssertEqual(presenter.mode, .full)
+    }
+
+    func testDismissingSettingsAlsoClearsWhatItPushed() {
+        presenter.isSheetPresented = true
+        presenter.isPushPresented = true
+
+        presenter.dismissSettings()
+
+        XCTAssertFalse(presenter.isSheetPresented)
+        XCTAssertFalse(presenter.isPushPresented)
+    }
+
     func testTheEnvironmentCarriesTheScenesPresenter() {
         var values = EnvironmentValues()
         XCTAssertNil(values.appSettingsPresenter)

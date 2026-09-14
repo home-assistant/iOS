@@ -149,9 +149,7 @@ struct ConnectionSecurityLevelBlockView: View {
     }
 
     private func openSettings() {
-        // This scene's presenter, so Settings opens in this window alone; it handles Catalyst (where
-        // Settings is a separate window) vs. the in-app sheet.
-        appSettingsPresenter?.presentSettings()
+        appSettingsPresenter?.showSettings()
     }
 
     private func requirementItem(systemSymbol: SFSymbol, title: String) -> some View {
