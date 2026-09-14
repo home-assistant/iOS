@@ -33,8 +33,9 @@ final class DynamicNotificationViewModel: ObservableObject {
     @Published private(set) var textInputActionStates: [String: TextInputActionState] = [:]
 
     /// Supplied by the hosting controller: presents watchOS's own text entry (dictation, scribble,
-    /// keyboard) and calls back with what the user wrote, or `nil` if they backed out.
-    var presentTextInput: ((@escaping (String?) -> Void) -> Void)?
+    /// keyboard) and calls back with what the user wrote, or `nil` if they backed out. Main-actor
+    /// bound because presenting it is a `WKInterfaceController` call.
+    var presentTextInput: (@MainActor (@escaping (String?) -> Void) -> Void)?
 
     private var api: HomeAssistantAPI?
     private var server: Server?
