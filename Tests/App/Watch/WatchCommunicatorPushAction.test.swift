@@ -43,42 +43,62 @@ final class WatchCommunicatorPushActionTests: XCTestCase {
         return .init(content: content, actionIdentifier: "REPLY", textInput: textInput)
     }
 
-    /// Runs the handler and returns the reply it produced. `settle` resolves the API promise for the
-    /// cases that get that far.
-    private func reply(to content: [String: Any], settle: (() -> Void)? = nil) -> [String: Any] {
+    private func message(
+        _ content: [String: Any],
+        reply: @escaping (HAWatchConnectivity.ImmediateMessage) -> Void
+    ) -> HAWatchConnectivity.InteractiveImmediateMessage {
+        .init(
+            identifier: InteractiveImmediateMessages.pushAction.rawValue,
+            content: content,
+            reply: reply
+        )
+    }
+
+    /// The handler rejects an unusable message before it reaches the API, so its reply lands while
+    /// `pushAction` is still on the stack — no waiting involved.
+    private func rejectedReply(to content: [String: Any]) -> [String: Any] {
+        var received: [String: Any]?
+        service.pushAction(message: message(content, reply: { received = $0.content }))
+
+        XCTAssertNotNil(received, "the handler has to answer every message")
+        XCTAssertNil(api.receivedInfo)
+        return received ?? [:]
+    }
+
+    /// Runs a message the handler does forward, and waits for the answer the API's result produces.
+    private func forwardedReply(to content: [String: Any]) -> [String: Any] {
         let replied = expectation(description: "replied")
         var received: [String: Any] = [:]
 
-        service.pushAction(message: .init(
-            identifier: InteractiveImmediateMessages.pushAction.rawValue,
-            content: content,
-            reply: { message in
-                received = message.content
-                replied.fulfill()
-            }
-        ))
+        let outgoing = message(content, reply: { answer in
+            received = answer.content
+            replied.fulfill()
+        })
+        service.pushAction(message: outgoing)
 
-        settle?()
         wait(for: [replied], timeout: 5)
         return received
     }
 
+    private func forwardableContent(textInput: String) -> [String: Any] {
+        [
+            "PushActionInfo": info(textInput: textInput).toJSON(),
+            "Server": server.identifier.rawValue,
+        ]
+    }
+
     func testRepliesFailureWhenThePayloadIsMissing() {
-        let received = reply(to: [:])
+        let received = rejectedReply(to: [:])
 
         XCTAssertEqual(received["fired"] as? Bool, false)
         XCTAssertNotNil(received["error"] as? String)
-        XCTAssertNil(api.receivedInfo)
     }
 
     func testRepliesFailureWhenThePayloadCannotBeMapped() {
-        let content: [String: Any] = ["PushActionInfo": ["nothing": "useful"]]
-
-        let received = reply(to: content)
+        let received = rejectedReply(to: ["PushActionInfo": ["nothing": "useful"]])
 
         XCTAssertEqual(received["fired"] as? Bool, false)
         XCTAssertNotNil(received["error"] as? String)
-        XCTAssertNil(api.receivedInfo)
     }
 
     func testRepliesFailureWhenTheServerIsUnknown() {
@@ -87,32 +107,21 @@ final class WatchCommunicatorPushActionTests: XCTestCase {
             "Server": "not-a-configured-server",
         ]
 
-        let received = reply(to: content)
+        let received = rejectedReply(to: content)
 
         XCTAssertEqual(received["fired"] as? Bool, false)
         XCTAssertNotNil(received["error"] as? String)
-        XCTAssertNil(api.receivedInfo)
     }
 
     func testRepliesFailureWhenTheServerIsMissingEntirely() {
-        let content: [String: Any] = ["PushActionInfo": info().toJSON()]
-
-        let received = reply(to: content)
+        let received = rejectedReply(to: ["PushActionInfo": info().toJSON()])
 
         XCTAssertEqual(received["fired"] as? Bool, false)
         XCTAssertNotNil(received["error"] as? String)
-        XCTAssertNil(api.receivedInfo)
     }
 
     func testForwardsTheReplyAndAnswersSuccess() {
-        let content: [String: Any] = [
-            "PushActionInfo": info(textInput: "on my way").toJSON(),
-            "Server": server.identifier.rawValue,
-        ]
-
-        let received = reply(to: content) { [weak self] in
-            self?.api.resolver?.fulfill(())
-        }
+        let received = forwardedReply(to: forwardableContent(textInput: "on my way"))
 
         XCTAssertEqual(received["fired"] as? Bool, true)
         XCTAssertNil(received["error"])
@@ -124,14 +133,9 @@ final class WatchCommunicatorPushActionTests: XCTestCase {
     /// The watch used to read a reply as delivered whatever happened on the phone, because the old
     /// handler answered from `ensure`.
     func testAnswersFailureWhenHomeAssistantRejects() {
-        let content: [String: Any] = [
-            "PushActionInfo": info(textInput: "on my way").toJSON(),
-            "Server": server.identifier.rawValue,
-        ]
+        api.failure = FakePushActionAPI.TestError.any
 
-        let received = reply(to: content) { [weak self] in
-            self?.api.resolver?.reject(FakePushActionAPI.TestError.any)
-        }
+        let received = forwardedReply(to: forwardableContent(textInput: "on my way"))
 
         XCTAssertEqual(received["fired"] as? Bool, false)
         XCTAssertNotNil(received["error"] as? String)
@@ -144,13 +148,16 @@ private final class FakePushActionAPI: HomeAssistantAPI {
         case any
     }
 
+    /// Set before the call to make Home Assistant reject the action.
+    var failure: Error?
     private(set) var receivedInfo: PushActionInfo?
-    private(set) var resolver: Resolver<Void>?
 
     override func handlePushAction(for info: PushActionInfo) -> Promise<Void> {
         receivedInfo = info
-        let (promise, resolver) = Promise<Void>.pending()
-        self.resolver = resolver
-        return promise
+
+        if let failure {
+            return Promise(error: failure)
+        }
+        return .value(())
     }
 }
