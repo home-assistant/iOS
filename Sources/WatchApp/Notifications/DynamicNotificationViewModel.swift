@@ -128,8 +128,8 @@ final class DynamicNotificationViewModel: ObservableObject {
                 // Only `nil` means the user backed out. An empty reply is a reply, and the system
                 // response path forwards it too (`UNTextInputNotificationResponse.userText` is
                 // non-optional), so dropping it here would silently swallow the event.
-                guard let self, let text else { return }
-                send(textInputAction: action, text: text, content: notificationContent, server: server)
+                guard let text else { return }
+                self?.send(textInputAction: action, text: text, content: notificationContent, server: server)
             }
         }
     }
@@ -151,19 +151,22 @@ final class DynamicNotificationViewModel: ObservableObject {
         Task { [weak self] in
             do {
                 try await WatchPushActionSender.send(info, server: server)
-                guard let self else { return }
-                textInputActionStates[action.id] = .sent
-                // Matches what the system does after an action is chosen, so the notification does
-                // not sit in Notification Center already answered.
-                if let notificationIdentifier {
-                    UNUserNotificationCenter.current()
-                        .removeDeliveredNotifications(withIdentifiers: [notificationIdentifier])
-                }
+                self?.didSend(textInputAction: action)
             } catch {
                 Current.Log.error("failed to send notification text input action: \(error)")
                 self?.textInputActionStates[action.id] = .failed
             }
         }
+    }
+
+    /// Marks the reply delivered and clears the notification, matching what the system does once an
+    /// action is chosen so it does not sit in Notification Center already answered.
+    private func didSend(textInputAction action: NotificationAction) {
+        textInputActionStates[action.id] = .sent
+
+        guard let notificationIdentifier else { return }
+        UNUserNotificationCenter.current()
+            .removeDeliveredNotifications(withIdentifiers: [notificationIdentifier])
     }
 
     private func reset() {
