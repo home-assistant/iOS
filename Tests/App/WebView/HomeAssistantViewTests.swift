@@ -19,6 +19,21 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertNil(controller.initialURL)
     }
 
+    /// The stand-by server pill belongs to one window's frontend; without a window to resolve a scene from,
+    /// the app-wide coordinator is still what presents the picker.
+    func testPresentingServerSelectionFromTheStandByPillZoomsOutOfIt() {
+        let sut = HomeAssistantViewModel(server: Server.fake())
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        let pickerShown = expectation(description: "server picker shown")
+        coordinator.onSelectServer = { pickerShown.fulfill() }
+
+        sut.presentServerSelection()
+
+        wait(for: [pickerShown], timeout: 1)
+        XCTAssertTrue(coordinator.selectServerZoomedFromStandBy)
+    }
+
     func testEachFrontendViewWiresItsControllerToItsOwnOverlayState() {
         let overlayStateA = WebFrontendOverlayState()
         let overlayStateB = WebFrontendOverlayState()

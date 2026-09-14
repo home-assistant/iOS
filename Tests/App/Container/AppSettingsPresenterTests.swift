@@ -34,6 +34,15 @@ final class AppSettingsPresenterTests: XCTestCase {
         XCTAssertNil(presenter.zoomSourceID)
     }
 
+    func testTheEnvironmentCarriesTheScenesPresenter() {
+        var values = EnvironmentValues()
+        XCTAssertNil(values.appSettingsPresenter)
+
+        values.appSettingsPresenter = presenter
+
+        XCTAssertIdentical(values.appSettingsPresenter, presenter)
+    }
+
     /// Dragging Settings down to the picker and choosing a server has no pending request behind it, so it
     /// activates through the scene's own coordinator rather than the app-wide one.
     func testPickingAServerWithoutARequestActivatesItOnThisScenesCoordinator() {
