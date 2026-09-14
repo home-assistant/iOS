@@ -6,7 +6,8 @@ import UIKit
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
-    @ObservedObject private var appSettings = AppSettingsPresenter.shared
+    /// This scene's Settings presenter, owned by `ConditionalContainerView`.
+    @ObservedObject var appSettings: AppSettingsPresenter
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
     @State private var coordinator = AppContainerCoordinator()
 
@@ -28,13 +29,15 @@ struct ContainerView: View {
         .onAppear {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
+            coordinator.settingsPresenter = appSettings
+            appSettings.appCoordinator = coordinator
             coordinator.onShowSettings = { [weak coordinator] pushOntoNavigationStack in
                 // Push only in compact width, read from the window at presentation time.
                 let sizeClass = coordinator?.window?.traitCollection.horizontalSizeClass
                 if pushOntoNavigationStack, sizeClass == .compact, !NativeTabBarState.shared.isEnabled {
-                    AppSettingsPresenter.shared.isPushPresented = true
+                    appSettings.isPushPresented = true
                 } else {
-                    AppSettingsPresenter.shared.presentSettings()
+                    appSettings.presentSettings()
                 }
             }
             coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }

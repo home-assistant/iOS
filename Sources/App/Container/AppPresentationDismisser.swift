@@ -16,7 +16,8 @@ final class AppPresentationDismisser {
 
     /// Fires when the screen has to be cleared for an incoming navigation. Views observing it drop their
     /// own presentation state; they are only subscribed while they are in the hierarchy, so nothing that
-    /// isn't on screen is touched. Read-only — clearing the screen goes through `dismissAll()`.
+    /// isn't on screen is touched. Each scene's `AppSettingsPresenter` listens too, Settings being the one
+    /// presentation that doesn't live in a view's own state. Read-only — clearing goes through `dismissAll()`.
     var dismissAllPublisher: AnyPublisher<Void, Never> { dismissAllSubject.eraseToAnyPublisher() }
 
     private let dismissAllSubject = PassthroughSubject<Void, Never>()
@@ -25,10 +26,6 @@ final class AppPresentationDismisser {
 
     /// Asks every presentation currently on screen to go away. Call on the main thread.
     func dismissAll() {
-        // Settings lives above the kiosk/container swap in a shared presenter rather than in a view's own
-        // state, so it is cleared directly instead of through the publisher.
-        AppSettingsPresenter.shared.isSheetPresented = false
-        AppSettingsPresenter.shared.isPushPresented = false
         dismissAllSubject.send(())
     }
 }

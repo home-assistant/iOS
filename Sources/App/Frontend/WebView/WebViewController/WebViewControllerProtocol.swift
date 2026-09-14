@@ -17,6 +17,8 @@ protocol WebViewControllerProtocol: AnyObject {
     /// frontend running inside our webview.
     var currentPageURL: URL? { get }
     var traitCollection: UITraitCollection { get }
+    /// The window the controller is on, for routing a request back to the scene it came from.
+    var presentationWindow: UIWindow? { get }
 
     func presentOverlayController(controller: UIViewController, animated: Bool)
     func presentAlertController(controller: UIViewController, animated: Bool)
@@ -33,7 +35,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func refresh()
     func refreshIfDisconnected()
     func load(request: URLRequest)
-    func showSettingsViewController()
+    func showSettingsViewController(pushOntoNavigationStack: Bool)
     func openDebug()
     func goBack()
     func goForward()
@@ -45,5 +47,9 @@ protocol WebViewControllerProtocol: AnyObject {
 extension WebViewControllerProtocol {
     func styleUI(publishesThemedStatusBar: Bool) {
         styleUI()
+    }
+
+    func showSettingsViewController() {
+        showSettingsViewController(pushOntoNavigationStack: false)
     }
 }

@@ -218,7 +218,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     // swiftlint:enable cyclomatic_complexity
 
     func showSettingsViewController() {
-        Current.sceneManager.appCoordinator.done { $0.showSettings(pushOntoNavigationStack: true) }
+        // Through the web view the message came from, so Settings opens in that window and no other.
+        webViewController?.showSettingsViewController(pushOntoNavigationStack: true)
     }
 
     @MainActor
