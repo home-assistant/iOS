@@ -15,15 +15,15 @@ struct WidgetExtraLargePortraitTests {
         #expect(WidgetFamily.extraLarges == [.systemExtraLarge, .systemExtraLargePortrait])
     }
 
-    /// Every widget the home screen offers goes up to both extra-large families: one of them
-    /// missing the size is the size missing from the gallery on iPad.
+    /// Every home screen widget goes up to both extra-large families: one of them missing the size
+    /// is the size missing from the gallery on iPad.
+    ///
+    /// The open page, scripts and sensors widgets are left out because their files belong to the
+    /// widget extension alone, so this target does not build them.
     @available(iOS 27, *)
     @Test func everyHomeScreenWidgetOffersTheExtraLargeFamilies() {
         let widgets: [(String, [WidgetFamily])] = [
             ("entities", WidgetEntitiesSupportedFamilies.families),
-            ("open page", WidgetOpenPageSupportedFamilies.families),
-            ("scripts", WidgetScriptsSupportedFamilies.families),
-            ("sensors", WidgetDetailsTableSupportedFamilies.families),
             ("custom", WidgetCustomSupportedFamilies.families),
             ("commonly used entities", WidgetCommonlyUsedEntitiesSupportedFamilies.families),
             ("to-do list", WidgetTodoList().supportedFamilies),
