@@ -101,6 +101,10 @@ extension WebViewController {
         }
     }
 
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        handleContentProcessTermination()
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         overlayState?.isLoading = false
         latestLoadError = nil
