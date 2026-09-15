@@ -20,6 +20,9 @@ private final class FakeLocationManager: LocationManagerProtocol {
     var accuracyAuthorization: CLAccuracyAuthorization { accuracy }
     var isLocationServicesEnabled: Bool { true }
     func requestLocationPermission() {}
+    func requestTemporaryFullAccuracyAuthorization(purposeKey: String, completion: @escaping (Error?) -> Void) {
+        completion(nil)
+    }
 }
 
 /// Lets a test move the device between networks: the connectivity closures read through it, so
