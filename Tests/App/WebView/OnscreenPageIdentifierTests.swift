@@ -4,11 +4,13 @@ import GRDB
 @testable import Shared
 import Testing
 
-@available(iOS 18.2, *)
+/// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
+/// to a type marked `@available`.
 @Suite(.serialized)
 struct OnscreenPageIdentifierTests {
     @Test("A page resolves to an identifier keyed the way the widgets' page entity is")
     func pageResolvesToAnIdentifier() throws {
+        guard #available(iOS 18.2, *) else { return }
         try withExposureDatabase {
             let page = try Self.page()
 
@@ -21,6 +23,7 @@ struct OnscreenPageIdentifierTests {
     /// could open, so hiding a server from Siri has to hide its screens too.
     @Test("A server hidden from Siri publishes no page")
     func hiddenServerPublishesNothing() throws {
+        guard #available(iOS 18.2, *) else { return }
         try withExposureDatabase {
             let page = try Self.page()
             SiriServerExposure.setExposed(false, serverId: "1")
