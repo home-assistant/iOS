@@ -7,7 +7,10 @@ import Testing
 
 /// Exercises the entity list behind "get entity state": it offers what a person would ask about,
 /// and leaves out what they would not.
-struct ReadableEntityAppEntityQueryTests {
+///
+/// Offering and resolving are two different objects now that the entity is shared: this narrows what
+/// is put in front of someone, and `HAAppEntityAppIntentEntityQuery` reads any id back.
+struct ReadableEntityOptionsProviderTests {
     private static func makeEntity(
         serverId: String,
         entityId: String,
@@ -84,7 +87,7 @@ struct ReadableEntityAppEntityQueryTests {
                 name: "Kitchen",
                 entities: ["sensor.temperature", "sensor.uptime", "switch.led", "light.hidden"]
             )
-            let collection = try await ReadableEntityAppEntityQuery().suggestedEntities()
+            let collection = try await ReadableEntityOptionsProvider().results()
             let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
             #expect(ids.contains("sensor.temperature"))
@@ -102,7 +105,7 @@ struct ReadableEntityAppEntityQueryTests {
                 Self.makeEntity(serverId: serverId, entityId: "light.orphan", name: "Orphan"),
             ])
             try await seedArea(serverId: serverId, name: "Kitchen", entities: ["light.kitchen"])
-            let collection = try await ReadableEntityAppEntityQuery().suggestedEntities()
+            let collection = try await ReadableEntityOptionsProvider().results()
             let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
             #expect(ids.contains("light.kitchen"))
@@ -116,11 +119,11 @@ struct ReadableEntityAppEntityQueryTests {
             try await seed(serverId: serverId, entities: [entity])
             try await seedArea(serverId: serverId, name: "Bathroom", entities: ["sensor.humidity"])
 
-            let resolved = try await ReadableEntityAppEntityQuery().entities(for: [entity.id])
+            let resolved = try await HAAppEntityAppIntentEntityQuery().entities(for: [entity.id])
             #expect(resolved.first?.entityId == "sensor.humidity")
             #expect(resolved.first?.displayString == "Humidity")
 
-            let matched = try await ReadableEntityAppEntityQuery().entities(matching: "humid")
+            let matched = try await HAAppEntityAppIntentEntityQuery().entities(matching: "humid")
             #expect(matched.sections.flatMap(\.items).map(\.value.entityId).contains("sensor.humidity"))
         }
     }
@@ -128,7 +131,7 @@ struct ReadableEntityAppEntityQueryTests {
 
 /// The question itself: the entity it names, and what it reads back.
 struct GetEntityStateAppIntentTests {
-    private static func entity(serverId: String) -> ReadableEntityAppEntity {
+    private static func entity(serverId: String) -> HAAppEntityAppIntentEntity {
         .init(
             id: "\(serverId)-sensor.humidity",
             entityId: "sensor.humidity",

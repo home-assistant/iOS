@@ -7,11 +7,15 @@ import Testing
 ///
 /// CarPlay's availability turns on the device idiom, which the test host decides, so only the
 /// destinations whose availability this can pin down are exercised here.
+///
+/// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
+/// to a type marked `@available`, and the intent is iOS 17 for its destination list.
 @MainActor
 @Suite(.serialized)
 struct AddEntityToAppIntentTests {
     @Test("Adding to the watch stores the entity")
     func addsToWatch() async throws {
+        guard #available(iOS 17.0, *) else { return }
         try await withConfigDatabase(isCatalyst: false) {
             let intent = AddEntityToAppIntent()
             intent.entity = Self.entity()
@@ -27,6 +31,7 @@ struct AddEntityToAppIntentTests {
 
     @Test("Adding to the Mac toolbar stores the entity on a Mac")
     func addsToMacToolbarOnCatalyst() async throws {
+        guard #available(iOS 17.0, *) else { return }
         try await withConfigDatabase(isCatalyst: true) {
             let intent = AddEntityToAppIntent()
             intent.entity = Self.entity()
@@ -44,6 +49,7 @@ struct AddEntityToAppIntentTests {
     /// adding a duplicate row.
     @Test("Adding an entity that is already there reports it instead of adding it twice")
     func reportsAnEntityThatIsAlreadyThere() async throws {
+        guard #available(iOS 17.0, *) else { return }
         try await withConfigDatabase(isCatalyst: false) {
             let intent = AddEntityToAppIntent()
             intent.entity = Self.entity()
@@ -62,6 +68,7 @@ struct AddEntityToAppIntentTests {
     /// write an item the watch would then skip.
     @Test("A domain the destination cannot show is refused, and nothing is written")
     func refusesUnsupportedDomain() async throws {
+        guard #available(iOS 17.0, *) else { return }
         try await withConfigDatabase(isCatalyst: false) {
             let intent = AddEntityToAppIntent()
             intent.entity = Self.entity(entityId: "camera.porch", displayString: "Porch")
@@ -77,6 +84,7 @@ struct AddEntityToAppIntentTests {
 
     @Test("A destination this device does not have is refused, and nothing is written")
     func refusesUnavailableDestination() async throws {
+        guard #available(iOS 17.0, *) else { return }
         try await withConfigDatabase(isCatalyst: false) {
             let intent = AddEntityToAppIntent()
             intent.entity = Self.entity()
@@ -96,6 +104,7 @@ struct AddEntityToAppIntentTests {
     /// from drawing it.
     @Test("The intent describes itself for the Shortcuts editor")
     func theIntentDescribesItself() {
+        guard #available(iOS 17.0, *) else { return }
         #expect(!String(describing: AddEntityToAppIntent.parameterSummary).isEmpty)
         #expect(!String(describing: AddEntityToAppIntent.title).isEmpty)
         #expect(!String(describing: AddEntityToAppIntent.description).isEmpty)

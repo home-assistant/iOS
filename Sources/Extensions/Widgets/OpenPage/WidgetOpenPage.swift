@@ -62,6 +62,6 @@ struct WidgetOpenPage: Widget {
 
 enum WidgetOpenPageSupportedFamilies {
     static var families: [WidgetFamily] {
-        [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .accessoryCircular]
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges + [.accessoryCircular]
     }
 }

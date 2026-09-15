@@ -5,7 +5,10 @@ import Testing
 
 /// Exercises the entity list behind the spoken on/off commands: it offers the domains a command can
 /// switch, and nothing else.
-struct ControllableEntityAppEntityQueryTests {
+///
+/// Offering and resolving are two different objects now that the entity is shared: this narrows what
+/// is put in front of someone, and `HAAppEntityAppIntentEntityQuery` reads any id back.
+struct ControllableEntityOptionsProviderTests {
     private static func makeEntity(
         serverId: String,
         entityId: String,
@@ -86,7 +89,7 @@ struct ControllableEntityAppEntityQueryTests {
                 entities: ["light.kitchen", "cover.garage", "sensor.humidity", "scene.movie"]
             )
 
-            let collection = try await ControllableEntityAppEntityQuery().suggestedEntities()
+            let collection = try await ControllableEntityOptionsProvider().results()
             let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
             #expect(ids.contains("light.kitchen"))
@@ -107,7 +110,7 @@ struct ControllableEntityAppEntityQueryTests {
 
             try await seedArea(serverId: serverId, name: "Study", entities: ["switch.desk"])
 
-            let resolved = try await ControllableEntityAppEntityQuery().entities(for: [entity.id])
+            let resolved = try await HAAppEntityAppIntentEntityQuery().entities(for: [entity.id])
 
             #expect(resolved.count == 1)
             #expect(resolved.first?.entityId == "switch.desk")
@@ -116,14 +119,14 @@ struct ControllableEntityAppEntityQueryTests {
         }
     }
 
-    /// Covers are not offered any more, but resolution stays wider than the suggestions: an id that
-    /// reaches this query still has to resolve, wherever it came from.
-    @Test func resolvesACoverEvenThoughItIsNoLongerOffered() async throws {
+    /// Covers are not offered here, but the shared query resolves every id whatever offered it, which
+    /// is what keeps a saved shortcut working wherever it came from.
+    @Test func resolvesACoverEvenThoughItIsNotOffered() async throws {
         try await withFakeServer { serverId in
             let entity = Self.makeEntity(serverId: serverId, entityId: "cover.garage", name: "Garage")
             try await seed(serverId: serverId, entities: [entity])
             try await seedArea(serverId: serverId, name: "Garage", entities: ["cover.garage"])
-            let resolved = try await ControllableEntityAppEntityQuery().entities(for: [entity.id])
+            let resolved = try await HAAppEntityAppIntentEntityQuery().entities(for: [entity.id])
             #expect(resolved.first?.entityId == "cover.garage")
         }
     }
@@ -139,7 +142,7 @@ struct ControllableEntityAppEntityQueryTests {
             // pull in the porch light too.
             try await seedArea(serverId: serverId, name: "Ground floor", entities: ["light.kitchen", "light.porch"])
 
-            let collection = try await ControllableEntityAppEntityQuery().entities(matching: "kitchen")
+            let collection = try await HAAppEntityAppIntentEntityQuery().entities(matching: "kitchen")
             let names = collection.sections.flatMap(\.items).map(\.value.displayString)
 
             #expect(names.contains("Kitchen ceiling"))
@@ -147,25 +150,112 @@ struct ControllableEntityAppEntityQueryTests {
         }
     }
 
-    @Test func subtitleNamesTheServerOnlyWhenThereIsMoreThanOne() async throws {
-        let entity = ControllableEntityAppEntity(
+    /// A row stands alone in Siri's disambiguation, where two homes can share a name, so the server
+    /// leads the context line once there is more than one — which the provider decides and bakes in.
+    @Test func subtitleNamesTheServerOnlyWhenThereIsMoreThanOne() {
+        func entity(namesTheServer: Bool) -> HAAppEntityAppIntentEntity {
+            HAAppEntityAppIntentEntity(
+                id: "s1-light.kitchen",
+                entityId: "light.kitchen",
+                serverId: "s1",
+                serverName: "Cabin",
+                areaName: "Kitchen",
+                displayString: "Ceiling",
+                iconName: "mdi:ceiling-light",
+                includesServerContext: namesTheServer
+            )
+        }
+
+        #expect(entity(namesTheServer: false).subtitle == "Kitchen")
+        #expect(entity(namesTheServer: true).subtitle == "Cabin • Kitchen")
+    }
+
+    /// An area id resolves through the shared query, which is what keeps a shortcut saved against a
+    /// room working now that offering and resolving are two different objects.
+    @Test func theSharedQueryResolvesAnAreaId() async throws {
+        try await withFakeServer { serverId in
+            try await seed(serverId: serverId, entities: [
+                Self.makeEntity(serverId: serverId, entityId: "light.kitchen", name: "Ceiling"),
+            ])
+            try await seedArea(serverId: serverId, name: "Kitchen", entities: ["light.kitchen"])
+
+            let offered = try await ControllableEntityOptionsProvider().results()
+                .sections.flatMap(\.items).map(\.value)
+            let area = try #require(offered.first { $0.areaTarget != nil })
+
+            let resolved = try await HAAppEntityAppIntentEntityQuery().entities(for: [area.id])
+
+            #expect(resolved.count == 1)
+            #expect(resolved.first?.id == area.id)
+            #expect(resolved.first?.areaTarget?.areaId == "area")
+        }
+    }
+
+    /// An area is addressed by room and an entity by id, which is the whole difference between the two
+    /// on the wire.
+    @Test func anAreaTargetsItsRoomAndAnEntityTargetsItself() {
+        let area = HAAppEntityAppIntentEntity(
+            areaTarget: .init(areaId: "kitchen", areaName: "Kitchen", domain: .light),
+            serverId: "s1",
+            serverName: "Cabin"
+        )
+        #expect(area.serviceTarget["area_id"] as? String == "kitchen")
+        #expect(area.serviceTarget["entity_id"] == nil)
+        #expect(area.domain == .light)
+
+        let entity = HAAppEntityAppIntentEntity(
             id: "s1-light.kitchen",
             entityId: "light.kitchen",
             serverId: "s1",
             serverName: "Cabin",
-            areaName: "Kitchen",
             displayString: "Ceiling",
             iconName: "mdi:ceiling-light"
+        )
+        #expect(entity.serviceTarget["entity_id"] as? String == "light.kitchen")
+        #expect(entity.serviceTarget["area_id"] == nil)
+        #expect(entity.domain == .light)
+    }
+
+    /// An area row names its room in the title, so it takes the server as its second line and nothing
+    /// at all when there is only one.
+    @Test func anAreaRowSubtitleIsTheServerOrNothing() {
+        let entity = HAAppEntityAppIntentEntity(
+            areaTarget: .init(areaId: "area", areaName: "Kitchen", domain: .light),
+            serverId: "s1",
+            serverName: "Cabin"
         )
 
         let previous = Current.servers
         defer { Current.servers = previous }
 
         Current.servers = FakeServerManager(initial: 1)
-        #expect(entity.subtitle == "Kitchen")
+        #expect(entity.subtitle == nil)
 
         Current.servers = FakeServerManager(initial: 2)
-        #expect(entity.subtitle == "Cabin • Kitchen")
+        #expect(entity.subtitle == "Cabin")
+    }
+
+    /// The provider is what decides the row carries its server, so the list it produces has to show it.
+    @Test func theOfferedRowsNameTheServerWhenThereIsMoreThanOne() async throws {
+        try await withFakeServer { serverId in
+            try await seed(serverId: serverId, entities: [
+                Self.makeEntity(serverId: serverId, entityId: "light.kitchen", name: "Ceiling"),
+            ])
+            try await seedArea(serverId: serverId, name: "Kitchen", entities: ["light.kitchen"])
+
+            let single = try await ControllableEntityOptionsProvider().results()
+                .sections.flatMap(\.items).map(\.value)
+            #expect(single.first(where: { $0.entityId == "light.kitchen" })?.subtitle == "Kitchen")
+
+            // A second server, whose own entities are none of this one's business; what changes is
+            // only that a row can no longer be read without saying which home it is in.
+            _ = (Current.servers as? FakeServerManager)?.addFake()
+            let many = try await ControllableEntityOptionsProvider().results()
+                .sections.flatMap(\.items).map(\.value)
+            let subtitle = many.first(where: { $0.entityId == "light.kitchen" })?.subtitle
+            #expect(subtitle?.hasSuffix("Kitchen") == true)
+            #expect(subtitle != "Kitchen")
+        }
     }
 
     @Test func skipsConfigurationDiagnosticHiddenAndRoomlessEntities() async throws {
@@ -183,7 +273,7 @@ struct ControllableEntityAppEntityQueryTests {
                 entities: ["light.kitchen", "switch.restart", "switch.secret"]
             )
 
-            let collection = try await ControllableEntityAppEntityQuery().suggestedEntities()
+            let collection = try await ControllableEntityOptionsProvider().results()
             let items = collection.sections.flatMap(\.items).map(\.value)
 
             #expect(items.filter { $0.areaTarget == nil }.map(\.entityId) == ["light.kitchen"])
@@ -203,7 +293,7 @@ struct ControllableEntityAppEntityQueryTests {
             ])
             try await seedArea(serverId: serverId, name: "Hall", entities: [])
 
-            let collection = try await ControllableEntityAppEntityQuery().suggestedEntities()
+            let collection = try await ControllableEntityOptionsProvider().results()
             let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
             #expect(ids.contains("scene.movie_time"))

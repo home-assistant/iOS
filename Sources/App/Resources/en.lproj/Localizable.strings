@@ -143,7 +143,6 @@
 "app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.control.error.only_turns_on" = "%@ can only be turned on";
 "app_intents.control.error.unsupported" = "%@ can't be turned on or off";
-"app_intents.controllable_entity.entity.name" = "Controllable Entity";
 "app_intents.controllable_entity.parameter.entity" = "Entity";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
@@ -244,7 +243,6 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.perform_action.title" = "Perform action";
-"app_intents.readable_entity.entity.name" = "Entity";
 "app_intents.render_template.description" = "Render a Home Assistant template. Only users with the admin role can perform this action.";
 "app_intents.render_template.template.title" = "Template";
 "app_intents.render_template.title" = "Render template";

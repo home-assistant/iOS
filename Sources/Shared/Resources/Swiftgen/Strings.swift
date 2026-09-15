@@ -612,10 +612,6 @@ public enum L10n {
       }
     }
     public enum ControllableEntity {
-      public enum Entity {
-        /// Controllable Entity
-        public static var name: String { return L10n.tr("Localizable", "app_intents.controllable_entity.entity.name") }
-      }
       public enum Parameter {
         /// Entity
         public static var entity: String { return L10n.tr("Localizable", "app_intents.controllable_entity.parameter.entity") }
@@ -981,12 +977,6 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.description") }
         /// Action data
         public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.title") }
-      }
-    }
-    public enum ReadableEntity {
-      public enum Entity {
-        /// Entity
-        public static var name: String { return L10n.tr("Localizable", "app_intents.readable_entity.entity.name") }
       }
     }
     public enum RenderTemplate {

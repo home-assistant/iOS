@@ -47,11 +47,7 @@ struct WidgetScripts: Widget {
 }
 
 enum WidgetScriptsSupportedFamilies {
-    static let families: [WidgetFamily] = [
-        .systemSmall,
-        .systemMedium,
-        .systemLarge,
-        .systemExtraLarge,
-        .accessoryCircular,
-    ]
+    static var families: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges + [.accessoryCircular]
+    }
 }

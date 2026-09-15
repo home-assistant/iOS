@@ -748,8 +748,7 @@
 				AppIntents/AssistPromptAppIntent.swift,
 				AppIntents/Control/ControlEntityIntentRunner.swift,
 				"AppIntents/Control/ControlEntityIntentRunner+Snippet.swift",
-				AppIntents/Control/ControllableEntityAppEntity.swift,
-				AppIntents/Control/ControllableEntityAppEntityQuery.swift,
+				AppIntents/Control/ControllableEntityOptionsProvider.swift,
 				AppIntents/Control/ControlResultSnippet.swift,
 				AppIntents/Control/ControlResultSnippetView.swift,
 				AppIntents/Control/DimmableLightAppEntity.swift,
@@ -770,8 +769,7 @@
 				AppIntents/EntityState/EntityStateSnippetView.swift,
 				AppIntents/EntityState/GetEntityStateAppIntent.swift,
 				AppIntents/EntityState/HAEntityStateAppEntity.swift,
-				AppIntents/EntityState/ReadableEntityAppEntity.swift,
-				AppIntents/EntityState/ReadableEntityAppEntityQuery.swift,
+				AppIntents/EntityState/ReadableEntityOptionsProvider.swift,
 				AppIntents/FireEventAppIntent.swift,
 				AppIntents/GetCameraSnapshotAppIntent.swift,
 				AppIntents/IntentActionEntity.swift,
@@ -1086,8 +1084,7 @@
 				AppIntents/Assist/AssistPipelineEntityQuery.swift,
 				AppIntents/AssistPromptAppIntent.swift,
 				AppIntents/Control/ControlEntityIntentRunner.swift,
-				AppIntents/Control/ControllableEntityAppEntity.swift,
-				AppIntents/Control/ControllableEntityAppEntityQuery.swift,
+				AppIntents/Control/ControllableEntityOptionsProvider.swift,
 				AppIntents/Control/DimmableLightAppEntity.swift,
 				AppIntents/Control/DimmableLightAppEntityQuery.swift,
 				AppIntents/Control/LockAppEntity.swift,
@@ -1122,6 +1119,7 @@
 				AppIntents/Widget/ReloadWidgetsAppIntent.swift,
 				Widgets/Assist/AssistAppIntent.swift,
 				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
+				Widgets/HAAppEntityAppIntentEntity.swift,
 			);
 			target = B6CC5D812159D10D00833E5D /* WatchApp */;
 		};
