@@ -103,6 +103,7 @@
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */; };
 		426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */; };
+		426A2EFB30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */; };
 		426BD76E2FFE54B0001378A4 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD76D2FFE54B0001378A4 /* OHHTTPStubs */; };
 		426BD7702FFE54B0001378A4 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD76F2FFE54B0001378A4 /* OHHTTPStubsSwift */; };
 		426BD7722FFE54E8001378A4 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD7712FFE54E8001378A4 /* OHHTTPStubs */; };
@@ -632,6 +633,7 @@
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspension.test.swift; sourceTree = "<group>"; };
+		426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspensionProtectedWork.test.swift; sourceTree = "<group>"; };
 		426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlEntityProvider.swift; sourceTree = "<group>"; };
 		4278CB822D01F09400CFAAC9 /* AppGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGesture.swift; sourceTree = "<group>"; };
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
@@ -3190,6 +3192,7 @@
 				42164BB8301320720077A903 /* ComplicationFormula.test.swift */,
 				424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */,
 				426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */,
+				426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4659,6 +4662,7 @@
 				42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */,
 				42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */,
 				424169A3303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift in Sources */,
+				426A2EFB30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift in Sources */,
 				42F1C0133140B00011AABB13 /* TokenManagerAccessTokenRejection.test.swift in Sources */,
 				42F1C0153140B00011AABB15 /* TokenManagerRevocation.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
