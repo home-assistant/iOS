@@ -153,6 +153,28 @@ public enum AppConstants {
             .withWidgetAuthenticity()
     }
 
+    /// Where tapping an area lands: the area's own view on the dashboard that has one, which is
+    /// what the frontend opens when an area is tapped.
+    ///
+    /// `dashboardPath` is the dashboard that owns those views — see
+    /// `AppPanel.areasDashboardPath(serverId:)`; the view under it is `areas-<area_id>`, the path
+    /// `computeAreaPath` builds in home-assistant/frontend. A server that has no such dashboard
+    /// passes `nil`, and the area opens on its Settings page instead of nowhere.
+    public static func openAreaDeeplinkURL(areaId: String, serverId: String, dashboardPath: String?) -> URL? {
+        guard !areaId.isEmpty else { return nil }
+        let path: String = {
+            guard let dashboardPath, !dashboardPath.isEmpty else {
+                return "config/areas/area/\(areaId)"
+            }
+            return "\(dashboardPath)/areas-\(areaId)"
+        }()
+        return AppConstants.navigateDeeplinkURL(
+            path: path,
+            serverId: serverId,
+            avoidUnnecessaryReload: true
+        )?.withWidgetAuthenticity()
+    }
+
     public static func openEntityDeeplinkURL(entityId: String, serverId: String) -> URL? {
         AppConstants.navigateDeeplinkURL(
             path: "",

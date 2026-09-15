@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import HAKit
 import PromiseKit
 import UIKit
 
@@ -42,6 +43,7 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
 
             request?.promise.done({ [weak self] panels in
                 self?.saveInDatabase(panels, server: server)
+                self?.updateAreasDashboard(panels, server: server)
             }).cauterize()
         }
     }
@@ -49,6 +51,20 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
     @objc private func enterBackground() {
         tokens.forEach({ $0?.cancel() })
         tokens = []
+    }
+
+    /// Keeps the dashboard an area's view lives on for this server in the app group, so a widget
+    /// can deep link into it without a connection of its own. See
+    /// `AppPanel.updateAreasDashboard(panels:serverId:on:)`.
+    private func updateAreasDashboard(_ panels: HAPanels, server: Server) {
+        guard let connection = Current.api(for: server)?.connection else { return }
+        Task {
+            await AppPanel.updateAreasDashboard(
+                panels: panels,
+                serverId: server.identifier.rawValue,
+                on: connection
+            )
+        }
     }
 
     private func saveInDatabase(_ panels: HAPanels, server: Server) {

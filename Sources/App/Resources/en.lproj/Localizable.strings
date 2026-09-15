@@ -2998,6 +2998,13 @@ Right-click your desktop, choose Edit Widgets, search for Home Assistant, and ch
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.parameters.action" = "Action";
 "widgets.actions.title" = "Actions";
+"widgets.areas.description" = "Show the areas of your home, floor by floor.";
+"widgets.areas.empty.description" = "No areas found on this server.";
+"widgets.areas.next_page" = "More areas";
+"widgets.areas.other_areas" = "Other areas";
+"widgets.areas.page.title" = "Show other areas";
+"widgets.areas.previous_page" = "Previous areas";
+"widgets.areas.title" = "Areas";
 "widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.not_configured" = "No Pipelines Configured";

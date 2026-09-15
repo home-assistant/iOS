@@ -26,6 +26,7 @@ struct WidgetsBundle17: WidgetBundle {
         }
         #endif
         WidgetEntities()
+        WidgetAreas()
         WidgetEnergy()
         WidgetCommonlyUsedEntities()
         WidgetCalendar()
@@ -66,6 +67,7 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenCamera()
         // Widgets
         WidgetEntities()
+        WidgetAreas()
         WidgetEnergy()
         WidgetCommonlyUsedEntities()
         WidgetCalendar()

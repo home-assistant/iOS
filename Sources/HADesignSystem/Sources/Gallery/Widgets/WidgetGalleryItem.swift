@@ -10,6 +10,7 @@ import WidgetKit
 /// and the subtitle says which widgets share it.
 public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
     case actions
+    case areas
     case sensors
     case assist
     case calendar
@@ -23,6 +24,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
     public var title: String {
         switch self {
         case .actions: "Actions"
+        case .areas: "Areas"
         case .sensors: "Sensors"
         case .assist: "Assist"
         case .calendar: "Calendar"
@@ -37,6 +39,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
     public var subtitle: String {
         switch self {
         case .actions: "Custom, Scripts, Open page, Commonly used, Entities"
+        case .areas: "Areas — paged, one floor at a time"
         case .sensors: "Sensors"
         case .assist: "Assist"
         case .calendar: "Calendar"
@@ -50,6 +53,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
     public var families: [WidgetFamily] {
         switch self {
         case .actions: [.systemSmall, .systemMedium, .systemLarge, .accessoryCircular, .accessoryInline]
+        case .areas: [.systemSmall, .systemMedium, .systemLarge]
         case .sensors: [.systemSmall, .systemMedium, .systemLarge]
         case .assist: [.systemSmall, .systemMedium, .accessoryCircular]
         case .calendar: [.systemSmall, .systemMedium, .systemLarge]
@@ -64,6 +68,8 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
         switch self {
         case .actions:
             tileGrid(models: WidgetTileSampleData.actions(fitting: family), family: family, kind: .button)
+        case .areas:
+            areas(family: family)
         case .sensors:
             tileGrid(models: WidgetTileSampleData.sensors(fitting: family), family: family, kind: .sensor)
         case .assist:
@@ -85,6 +91,18 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
             )
             .padding(DesignSystem.Spaces.one)
         }
+    }
+
+    /// The first page of a home with more areas than any family holds, so the gallery shows the
+    /// paging arrows in the state they spend most of their life in.
+    private func areas(family: WidgetFamily) -> some View {
+        WidgetAreasContentView(
+            page: WidgetAreasSampleData.page(family: family),
+            pageCount: WidgetAreasSampleData.pageCount(family: family),
+            family: family,
+            serverName: "Home",
+            strings: .preview
+        )
     }
 
     private func tileGrid(

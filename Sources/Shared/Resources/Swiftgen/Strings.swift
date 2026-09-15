@@ -9659,6 +9659,26 @@ public enum L10n {
         public static var action: String { return L10n.tr("Localizable", "widgets.actions.parameters.action") }
       }
     }
+    public enum Areas {
+      /// Show the areas of your home, floor by floor.
+      public static var description: String { return L10n.tr("Localizable", "widgets.areas.description") }
+      /// More areas
+      public static var nextPage: String { return L10n.tr("Localizable", "widgets.areas.next_page") }
+      /// Other areas
+      public static var otherAreas: String { return L10n.tr("Localizable", "widgets.areas.other_areas") }
+      /// Previous areas
+      public static var previousPage: String { return L10n.tr("Localizable", "widgets.areas.previous_page") }
+      /// Areas
+      public static var title: String { return L10n.tr("Localizable", "widgets.areas.title") }
+      public enum Empty {
+        /// No areas found on this server.
+        public static var description: String { return L10n.tr("Localizable", "widgets.areas.empty.description") }
+      }
+      public enum Page {
+        /// Show other areas
+        public static var title: String { return L10n.tr("Localizable", "widgets.areas.page.title") }
+      }
+    }
     public enum Assist {
       /// Ask Assist
       public static var actionTitle: String { return L10n.tr("Localizable", "widgets.assist.action_title") }
