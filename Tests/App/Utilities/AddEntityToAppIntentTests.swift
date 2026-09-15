@@ -19,7 +19,8 @@ struct AddEntityToAppIntentTests {
 
             _ = try await intent.perform()
 
-            let items = try #require(WatchConfig.config()?.items)
+            let stored = try WatchConfig.config()
+            let items = try #require(stored?.items)
             #expect(items.map(\.id) == ["light.kitchen"])
         }
     }
@@ -33,7 +34,8 @@ struct AddEntityToAppIntentTests {
 
             _ = try await intent.perform()
 
-            let items = try #require(MacToolbarConfig.config()?.items)
+            let stored = try MacToolbarConfig.config()
+            let items = try #require(stored?.items)
             #expect(items.map(\.id) == ["light.kitchen"])
         }
     }
@@ -50,7 +52,8 @@ struct AddEntityToAppIntentTests {
             _ = try await intent.perform()
             _ = try await intent.perform()
 
-            let items = try #require(WatchConfig.config()?.items)
+            let stored = try WatchConfig.config()
+            let items = try #require(stored?.items)
             #expect(items.count == 1)
         }
     }
@@ -67,7 +70,8 @@ struct AddEntityToAppIntentTests {
             await #expect(throws: ShortcutAppIntentError.self) {
                 _ = try await intent.perform()
             }
-            try #expect(WatchConfig.config() == nil)
+            let stored = try WatchConfig.config()
+            #expect(stored == nil)
         }
     }
 
@@ -81,7 +85,8 @@ struct AddEntityToAppIntentTests {
             await #expect(throws: ShortcutAppIntentError.self) {
                 _ = try await intent.perform()
             }
-            try #expect(MacToolbarConfig.config() == nil)
+            let stored = try MacToolbarConfig.config()
+            #expect(stored == nil)
         }
     }
 

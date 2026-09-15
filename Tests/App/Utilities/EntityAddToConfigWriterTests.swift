@@ -15,7 +15,8 @@ struct EntityAddToConfigWriterTests {
             )
 
             #expect(outcome == .added)
-            let config = try #require(WatchConfig.config())
+            let stored = try WatchConfig.config()
+            let config = try #require(stored)
             #expect(config.items.map(\.id) == ["light.kitchen"])
             #expect(config.items.first?.type == .entity)
             #expect(config.lastModified != nil)
@@ -52,7 +53,8 @@ struct EntityAddToConfigWriterTests {
             )
 
             #expect(outcome == .added)
-            let quickAccess = try #require(CarPlayConfig.config()?.quickAccessItems)
+            let stored = try CarPlayConfig.config()
+            let quickAccess = try #require(stored?.quickAccessItems)
             #expect(quickAccess.map(\.id) == ["light.kitchen"])
         }
     }
@@ -69,7 +71,8 @@ struct EntityAddToConfigWriterTests {
             )
 
             #expect(outcome == .added)
-            let item = try #require(MacToolbarConfig.config()?.items.first)
+            let stored = try MacToolbarConfig.config()
+            let item = try #require(stored?.items.first)
             #expect(item.id == "light.kitchen")
             #expect(item.action == .moreInfoDialog)
             #expect(item.customization?.icon != nil)
@@ -87,7 +90,8 @@ struct EntityAddToConfigWriterTests {
             )
 
             #expect(outcome == .alreadyPresent)
-            let items = try #require(WatchConfig.config()?.items)
+            let storedWatch = try WatchConfig.config()
+            let items = try #require(storedWatch?.items)
             #expect(items.count == 1)
         }
     }
@@ -115,7 +119,8 @@ struct EntityAddToConfigWriterTests {
             )
 
             #expect(outcome == .alreadyPresent)
-            let items = try #require(WatchConfig.config()?.items)
+            let storedWatch = try WatchConfig.config()
+            let items = try #require(storedWatch?.items)
             #expect(items.count == 1)
         }
     }
@@ -135,7 +140,8 @@ struct EntityAddToConfigWriterTests {
             )
 
             #expect(outcome == .alreadyPresent)
-            let items = try #require(MacToolbarConfig.config()?.items)
+            let storedToolbar = try MacToolbarConfig.config()
+            let items = try #require(storedToolbar?.items)
             #expect(items.map(\.id) == ["light.kitchen"])
         }
     }
@@ -152,7 +158,8 @@ struct EntityAddToConfigWriterTests {
             )
 
             #expect(outcome == .added)
-            let items = try #require(WatchConfig.config()?.items)
+            let storedWatch = try WatchConfig.config()
+            let items = try #require(storedWatch?.items)
             #expect(items.map(\.serverId) == ["1", "2"])
         }
     }
