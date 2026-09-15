@@ -14,6 +14,7 @@ extension WebViewController {
         didHandleServerErrorResponse = false
         didReceiveClientCertificateChallenge = false
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
+        forgetOnscreenEntity()
     }
 
     func webView(

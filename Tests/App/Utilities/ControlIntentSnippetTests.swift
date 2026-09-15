@@ -11,7 +11,7 @@ struct ControlIntentSnippetTests {
     private static func controllable(
         serverId: String,
         entityId: String = "light.kitchen"
-    ) -> ControllableEntityAppEntity {
+    ) -> HAAppEntityAppIntentEntity {
         .init(
             id: "\(serverId)-\(entityId)",
             entityId: entityId,

@@ -32,6 +32,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case cameraPlayerShow = "camera/show"
     case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
     case sidebarShow = "sidebar/show"
+    case moreInfoOpened = "more_info/opened"
+    case moreInfoClosed = "more_info/closed"
 
     @MainActor static var configResult: [String: Any] {
         [

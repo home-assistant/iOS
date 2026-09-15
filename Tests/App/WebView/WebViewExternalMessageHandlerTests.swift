@@ -436,4 +436,44 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         wait(for: [noFurtherSend], timeout: 0.5)
         XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
     }
+
+    /// What the more-info dialog is showing is what a spoken "this" has to mean, so the handler hands
+    /// it straight to the web view that will publish it.
+    @MainActor func testHandleExternalMessageMoreInfoOpenedRecordsTheEntity() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/opened",
+            "payload": ["entity_id": "light.kitchen"],
+        ])
+
+        XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
+    }
+
+    @MainActor func testHandleExternalMessageMoreInfoClosedForgetsTheEntity() {
+        mockWebViewController.setOnscreenEntity(entityId: "light.kitchen")
+
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/closed",
+            "payload": ["entity_id": "light.kitchen"],
+        ])
+
+        XCTAssertNil(mockWebViewController.onscreenEntityId)
+    }
+
+    @MainActor func testHandleExternalMessageMoreInfoOpenedWithoutAnEntityIsIgnored() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/opened",
+            "payload": [:],
+        ])
+
+        XCTAssertNil(mockWebViewController.onscreenEntityId)
+    }
 }
