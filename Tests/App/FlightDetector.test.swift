@@ -86,9 +86,34 @@ struct FlightDetectorTests {
             }
 
             #expect(FlightDetector.cabinPressureIndicatesFlight)
-            // The announcement is what makes the greeting appear without the app being reopened.
             #expect(changes.count == 1)
             #expect(changes.first?.indicatesFlight == true)
+        }
+    }
+
+    @Test func cabinPressureShowsTheGreetingWhileTheAppIsOpen() async {
+        guard #available(iOS 18, *) else { return }
+        await withSimulatedFlight(networkType: .noConnection, baselineKpa: 101.3) { flight in
+            FlightGreetingManager.shared.startPressureMonitoringIfNeeded()
+            flight.read(kpa: 78)
+
+            // The manager hands the monitor's verdict to the main actor before greeting.
+            for _ in 0 ..< 100 where ToastPresenter.shared.toast == nil {
+                try? await Task.sleep(for: .milliseconds(10))
+            }
+            #expect(ToastPresenter.shared.toast?.title == L10n.FlightGreetings.greeting)
+        }
+    }
+
+    @Test func cabinPressureDoesNotGreetWhenGreetingsAreOff() async {
+        guard #available(iOS 18, *) else { return }
+        await withSimulatedFlight(networkType: .noConnection, baselineKpa: 101.3, greetingsEnabled: false) { flight in
+            FlightGreetingManager.shared.startPressureMonitoringIfNeeded()
+            flight.read(kpa: 78)
+            try? await Task.sleep(for: .milliseconds(100))
+
+            #expect(!CabinPressureMonitor.shared.isObserving)
+            #expect(ToastPresenter.shared.toast == nil)
         }
     }
 
@@ -160,8 +185,10 @@ struct FlightDetectorTests {
         }
     }
 
-    /// Runs `body` with the network, barometer, clock, pressure baseline and greeting state under test
-    /// control, restoring all of them afterwards. Barometer readings are delivered synchronously.
+    /// Runs `body` with `Current` scoped to an environment whose network, clock and barometer (including its
+    /// observer) are under test control, so nothing outside the scenario sees them. The pressure baseline,
+    /// greeting cooldown and setting live in user defaults, which no environment isolates, so those are saved
+    /// and restored around it. Barometer readings are delivered synchronously.
     private func withSimulatedFlight(
         ssid: String? = nil,
         networkType: NetworkType,
@@ -170,11 +197,21 @@ struct FlightDetectorTests {
         _ body: (SimulatedFlight) async -> Void
     ) async {
         let flight = SimulatedFlight()
-        let previousNetworkState = Current.connectivity.currentNetworkState
-        let previousNetworkType = Current.connectivity.simpleNetworkType
-        let previousBarometer = Current.barometer
-        let previousDate = Current.date
-        let previousGreetingsEnabled = Current.settingsStore.flightGreetingsEnabled
+        let environment = AppEnvironment()
+        environment.connectivity.currentNetworkState = { NetworkState(ssid: ssid) }
+        environment.connectivity.simpleNetworkType = { networkType }
+        environment.date = { flight.now }
+        environment.barometer.isAvailable = { true }
+        environment.barometer.isAuthorized = { true }
+        environment.barometer.startUpdatesOnQueueHandler = { _, handler in
+            flight.barometerHandler = handler
+        }
+        environment.barometer.stopUpdates = {
+            flight.barometerHandler = nil
+        }
+        environment.barometerObserver = BarometerObserver()
+
+        let previousGreetingsEnabled = environment.settingsStore.flightGreetingsEnabled
         let storedKeys = [
             CabinPressureMonitor.baselinePressureKey,
             CabinPressureMonitor.baselineDateKey,
@@ -182,32 +219,13 @@ struct FlightDetectorTests {
         ]
         let previousStoredValues = storedKeys.map { prefs.object(forKey: $0) }
         defer {
-            CabinPressureMonitor.shared.stop()
-            if #available(iOS 18, *) {
-                ToastPresenter.shared.hideCurrent()
-            }
-            Current.connectivity.currentNetworkState = previousNetworkState
-            Current.connectivity.simpleNetworkType = previousNetworkType
-            Current.barometer = previousBarometer
-            Current.date = previousDate
-            Current.settingsStore.flightGreetingsEnabled = previousGreetingsEnabled
+            environment.settingsStore.flightGreetingsEnabled = previousGreetingsEnabled
             for (key, value) in zip(storedKeys, previousStoredValues) {
                 prefs.set(value, forKey: key)
             }
         }
 
-        Current.connectivity.currentNetworkState = { NetworkState(ssid: ssid) }
-        Current.connectivity.simpleNetworkType = { networkType }
-        Current.date = { flight.now }
-        Current.barometer.isAvailable = { true }
-        Current.barometer.isAuthorized = { true }
-        Current.barometer.startUpdatesOnQueueHandler = { _, handler in
-            flight.barometerHandler = handler
-        }
-        Current.barometer.stopUpdates = {
-            flight.barometerHandler = nil
-        }
-        Current.settingsStore.flightGreetingsEnabled = greetingsEnabled
+        environment.settingsStore.flightGreetingsEnabled = greetingsEnabled
         for key in storedKeys {
             prefs.removeObject(forKey: key)
         }
@@ -215,10 +233,17 @@ struct FlightDetectorTests {
             prefs.set(baselineKpa, forKey: CabinPressureMonitor.baselinePressureKey)
             prefs.set(flight.now.addingTimeInterval(-60 * 60), forKey: CabinPressureMonitor.baselineDateKey)
         }
-        if #available(iOS 18, *) {
-            ToastPresenter.shared.hideCurrent()
-        }
 
-        await body(flight)
+        await withCurrent(environment) {
+            if #available(iOS 18, *) {
+                ToastPresenter.shared.hideCurrent()
+            }
+            await body(flight)
+            // Stopped inside the scope, so it releases this scenario's barometer rather than the global one.
+            CabinPressureMonitor.shared.stop()
+            if #available(iOS 18, *) {
+                ToastPresenter.shared.hideCurrent()
+            }
+        }
     }
 }

@@ -96,7 +96,7 @@ final class FlightGreetingManager {
     /// possible, so a flight can announce itself instead of only being noticed when something happens
     /// to ask. Detection used to be purely on demand, which meant a single failed check at the moment
     /// the app opened was the end of it.
-    private func startPressureMonitoringIfNeeded() {
+    func startPressureMonitoringIfNeeded() {
         // The toast itself needs iOS 18, so below that there is nothing detection could lead to.
         guard #available(iOS 18, *), Current.settingsStore.flightGreetingsEnabled, canGreet else {
             CabinPressureMonitor.shared.stop()
