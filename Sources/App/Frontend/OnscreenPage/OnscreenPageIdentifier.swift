@@ -4,7 +4,10 @@ import Shared
 
 /// Turns the page on screen into the `EntityIdentifier` the system attaches to it, which is what lets
 /// Siri resolve a reference to "this page" into the same `PageAppEntity` the widgets already use.
-@available(iOS 18.0, *)
+///
+/// iOS 18.2 is where `NSUserActivity.appEntityIdentifier`, the only thing that carries this to the
+/// system, arrived — earlier releases have nowhere to put it.
+@available(iOS 18.2, *)
 enum OnscreenPageIdentifier {
     static func make(for page: OnscreenPage) -> EntityIdentifier? {
         // Hiding a server from Siri hides its screens too. Saying which page someone is looking at is

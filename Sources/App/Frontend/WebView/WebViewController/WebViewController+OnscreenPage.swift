@@ -61,7 +61,7 @@ extension WebViewController {
         }
 
         userActivity.title = page?.title
-        if #available(iOS 18.0, *) {
+        if #available(iOS 18.2, *) {
             userActivity.appEntityIdentifier = page.flatMap { OnscreenPageIdentifier.make(for: $0) }
         }
         userActivity.becomeCurrent()

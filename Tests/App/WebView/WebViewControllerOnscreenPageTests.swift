@@ -24,7 +24,7 @@ struct WebViewControllerOnscreenPageTests {
             )
 
             #expect(activity.title == "Overview")
-            if #available(iOS 18.0, *) {
+            if #available(iOS 18.2, *) {
                 #expect(activity.appEntityIdentifier != nil)
             }
         }
@@ -67,7 +67,7 @@ struct WebViewControllerOnscreenPageTests {
             )
 
             #expect(activity.title == nil)
-            if #available(iOS 18.0, *) {
+            if #available(iOS 18.2, *) {
                 #expect(activity.appEntityIdentifier == nil)
             }
         }
@@ -107,7 +107,7 @@ struct WebViewControllerOnscreenPageTests {
             )
 
             #expect(activity.title == "Overview")
-            if #available(iOS 18.0, *) {
+            if #available(iOS 18.2, *) {
                 #expect(activity.appEntityIdentifier == nil)
             }
         }

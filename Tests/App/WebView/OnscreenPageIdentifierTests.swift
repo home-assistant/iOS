@@ -4,7 +4,7 @@ import GRDB
 @testable import Shared
 import Testing
 
-@available(iOS 18.0, *)
+@available(iOS 18.2, *)
 @Suite(.serialized)
 struct OnscreenPageIdentifierTests {
     @Test("A page resolves to an identifier keyed the way the widgets' page entity is")
