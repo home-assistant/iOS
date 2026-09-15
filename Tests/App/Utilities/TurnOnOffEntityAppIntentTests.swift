@@ -6,7 +6,7 @@ import Testing
 
 /// One intent now switches both ways, so each direction is checked for the service it sends.
 struct TurnOnOffEntityAppIntentTests {
-    private static func entity(serverId: String, entityId: String = "light.kitchen") -> HAAppEntityAppIntentEntity {
+    private static func entity(serverId: String, entityId: String = "light.kitchen") -> ControllableEntityAppEntity {
         .init(
             id: "\(serverId)-\(entityId)",
             entityId: entityId,
