@@ -13,7 +13,7 @@ final class DeleteRemindersSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testTheItemIsRemovedFromItsOwnList() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.shopping"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.shopping"))
         let sut = DeleteRemindersSchemaIntent()
         sut.entities = [item(uid: "uid-1", list: list)]
 
@@ -31,8 +31,8 @@ final class DeleteRemindersSchemaIntentTests: AppIntentSchemaTestCase {
     /// Items can come from different lists, and each list lives on its own server, so each one is
     /// removed through its own list rather than all through the first.
     func testEachItemIsRemovedThroughItsOwnList() async throws {
-        let shopping = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.shopping"))
-        let work = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.work", name: "Work"))
+        let shopping = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.shopping"))
+        let work = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.work", name: "Work"))
         let sut = DeleteRemindersSchemaIntent()
         sut.entities = [item(uid: "uid-1", list: shopping), item(uid: "uid-2", list: work)]
 
@@ -59,7 +59,7 @@ final class DeleteRemindersSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testAnItemOnAServerThatIsGoneIsRefused() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(onServer: "missing-server"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(onServer: "missing-server"))
         let sut = DeleteRemindersSchemaIntent()
         sut.entities = [item(uid: "uid-1", list: list)]
 

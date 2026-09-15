@@ -6,7 +6,7 @@ import XCTest
 @available(iOS 27.0, *)
 final class UpdateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     private func existingItem(note: String? = "Two pints") throws -> ReminderSchemaEntity {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.shopping"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.shopping"))
         return ReminderSchemaEntity(
             item: TodoListItem(
                 summary: "Milk",
@@ -25,7 +25,7 @@ final class UpdateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testTheItemIsAddressedByItsUidOnItsOwnList() async throws {
-        let sut = intent(for: try existingItem())
+        let sut = try intent(for: existingItem())
         sut.title = "Oat milk"
 
         let task = Task { try await sut.perform() }
@@ -43,7 +43,7 @@ final class UpdateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     /// `todo.update_item` replaces the fields it is given, so anything the caller left out has to
     /// be sent back as it stands.
     func testFieldsTheCallerLeftOutAreRefilledFromTheItem() async throws {
-        let sut = intent(for: try existingItem())
+        let sut = try intent(for: existingItem())
 
         let task = Task { try await sut.perform() }
         let pending = try await request()
@@ -57,7 +57,7 @@ final class UpdateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testCompletingAnItemSendsTheCompletedStatus() async throws {
-        let sut = intent(for: try existingItem())
+        let sut = try intent(for: existingItem())
         sut.isCompleted = true
 
         let task = Task { try await sut.perform() }
@@ -70,7 +70,7 @@ final class UpdateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testANewNoteReplacesTheStoredOne() async throws {
-        let sut = intent(for: try existingItem())
+        let sut = try intent(for: existingItem())
         sut.note = AttributedString("Oat, not soya")
 
         let task = Task { try await sut.perform() }
@@ -83,7 +83,7 @@ final class UpdateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testANewDueDateIsSentInTheShapeItCarries() async throws {
-        let sut = intent(for: try existingItem())
+        let sut = try intent(for: existingItem())
         sut.dueDate = DateComponents(year: 2023, month: 11, day: 14)
 
         let task = Task { try await sut.perform() }
@@ -98,8 +98,8 @@ final class UpdateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     /// Moving an item between lists has no equivalent in the `todo` domain, so a named list is
     /// ignored rather than half-applied.
     func testANamedListDoesNotMoveTheItem() async throws {
-        let sut = intent(for: try existingItem())
-        sut.list = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.work", name: "Work"))
+        let sut = try intent(for: existingItem())
+        sut.list = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.work", name: "Work"))
 
         let task = Task { try await sut.perform() }
         let pending = try await request()
@@ -111,7 +111,7 @@ final class UpdateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testAnItemOnAServerThatIsGoneIsRefused() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(onServer: "missing-server"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(onServer: "missing-server"))
         let sut = intent(for: ReminderSchemaEntity(
             item: TodoListItem(summary: "Milk", uid: "uid-1", status: "needs_action", description: nil),
             list: list

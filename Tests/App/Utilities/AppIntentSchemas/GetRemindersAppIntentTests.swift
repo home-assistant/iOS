@@ -17,7 +17,7 @@ final class GetRemindersAppIntentTests: AppIntentSchemaTestCase {
     }
 
     func testTheNamedListIsRead() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.shopping"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.shopping"))
         let sut = intent(list: list)
 
         let task = Task { try await sut.perform() }
@@ -34,7 +34,7 @@ final class GetRemindersAppIntentTests: AppIntentSchemaTestCase {
     }
 
     func testTheAnswerIsReadWhetherOrNotCompletedItemsAreWanted() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.shopping"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.shopping"))
         let sut = intent(list: list, includeCompleted: true)
 
         let task = Task { try await sut.perform() }
@@ -48,7 +48,7 @@ final class GetRemindersAppIntentTests: AppIntentSchemaTestCase {
 
     /// A list whose entity id the server does not report back has no items, rather than failing.
     func testAListTheServerDoesNotAnswerForComesBackEmpty() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.shopping"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.shopping"))
         let sut = intent(list: list)
 
         let task = Task { try await sut.perform() }
@@ -59,7 +59,7 @@ final class GetRemindersAppIntentTests: AppIntentSchemaTestCase {
     }
 
     func testAListOnAServerThatIsGoneIsRefused() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(onServer: "missing-server"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(onServer: "missing-server"))
         let sut = intent(list: list)
 
         do {

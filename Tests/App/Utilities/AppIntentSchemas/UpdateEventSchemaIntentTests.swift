@@ -35,7 +35,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
 
     func testTheEventIsAddressedByItsUidOnItsOwnCalendar() async throws {
         let calendar = try seedCalendar(entityId: "calendar.home", supportedFeatures: 4)
-        let sut = intent(for: try existingEvent(calendar: calendar))
+        let sut = try intent(for: existingEvent(calendar: calendar))
         sut.title = "Dentist (moved)"
 
         let task = Task { try await sut.perform() }
@@ -54,7 +54,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
     /// back as it stands rather than cleared.
     func testFieldsTheCallerLeftOutAreRefilledFromTheEvent() async throws {
         let calendar = try seedCalendar(supportedFeatures: 4)
-        let sut = intent(for: try existingEvent(calendar: calendar))
+        let sut = try intent(for: existingEvent(calendar: calendar))
 
         let task = Task { try await sut.perform() }
         let pending = try await request()
@@ -73,7 +73,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
 
     func testANewLocationAndNoteReplaceTheStoredOnes() async throws {
         let calendar = try seedCalendar(supportedFeatures: 4)
-        let sut = intent(for: try existingEvent(calendar: calendar))
+        let sut = try intent(for: existingEvent(calendar: calendar))
         sut.location = .text("Low Street")
         sut.note = "Bring nothing"
 
@@ -91,7 +91,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
     /// One occurrence carries no range; this one and everything after it carries `THISANDFUTURE`.
     func testTheSpanBecomesTheRecurrenceRange() async throws {
         let calendar = try seedCalendar(supportedFeatures: 4)
-        let sut = intent(for: try existingEvent(calendar: calendar, recurrenceId: "rec-1"))
+        let sut = try intent(for: existingEvent(calendar: calendar, recurrenceId: "rec-1"))
         sut.span = .future
 
         let task = Task { try await sut.perform() }
@@ -106,7 +106,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
 
     func testASingleOccurrenceSendsNoRange() async throws {
         let calendar = try seedCalendar(supportedFeatures: 4)
-        let sut = intent(for: try existingEvent(calendar: calendar, recurrenceId: "rec-1"))
+        let sut = try intent(for: existingEvent(calendar: calendar, recurrenceId: "rec-1"))
         sut.span = .this
 
         let task = Task { try await sut.perform() }
@@ -122,7 +122,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
     /// end would be a day short.
     func testSwitchingToAllDaySendsDays() async throws {
         let calendar = try seedCalendar(supportedFeatures: 4)
-        let sut = intent(for: try existingEvent(calendar: calendar))
+        let sut = try intent(for: existingEvent(calendar: calendar))
         sut.isAllDay = true
 
         let task = Task { try await sut.perform() }
@@ -140,7 +140,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
     func testANamedCalendarDoesNotMoveTheEvent() async throws {
         let home = try seedCalendar(entityId: "calendar.home", supportedFeatures: 4, sortOrder: 0)
         let work = try seedCalendar(entityId: "calendar.work", supportedFeatures: 4, sortOrder: 1)
-        let sut = intent(for: try existingEvent(calendar: home))
+        let sut = try intent(for: existingEvent(calendar: home))
         sut.calendar = CalendarSchemaEntity(calendar: work)
 
         let task = Task { try await sut.perform() }
@@ -154,7 +154,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
 
     func testAnEventWithoutAUidCannotBeEdited() async throws {
         let calendar = try seedCalendar(supportedFeatures: 4)
-        let sut = intent(for: try existingEvent(calendar: calendar, uid: nil))
+        let sut = try intent(for: existingEvent(calendar: calendar, uid: nil))
 
         do {
             _ = try await sut.perform()
@@ -170,7 +170,7 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
 
     func testACalendarThatCannotEditEventsIsRefused() async throws {
         let calendar = try seedCalendar(name: "Holidays", supportedFeatures: 1)
-        let sut = intent(for: try existingEvent(calendar: calendar))
+        let sut = try intent(for: existingEvent(calendar: calendar))
 
         do {
             _ = try await sut.perform()

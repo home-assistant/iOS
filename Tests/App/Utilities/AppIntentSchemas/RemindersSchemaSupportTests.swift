@@ -8,13 +8,13 @@ final class RemindersSchemaSupportTests: AppIntentSchemaTestCase {
     // MARK: - API resolution
 
     func testApiResolvesTheListsOwnServer() throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList())
+        let list = try ReminderListSchemaEntity(entity: seedTodoList())
 
         XCTAssertNoThrow(try RemindersSchemaSupport.api(for: list))
     }
 
     func testApiRefusesAListWhoseServerIsGone() throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(onServer: "missing-server"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(onServer: "missing-server"))
 
         XCTAssertThrowsError(try RemindersSchemaSupport.api(for: list)) { error in
             XCTAssertEqual(

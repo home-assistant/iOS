@@ -39,7 +39,7 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
 
     /// The end the caller left out becomes an hour, matching how the frontend opens a new event.
     func testAMissingEndBecomesAnHour() async throws {
-        let sut = intent(calendar: try seedCalendar(supportedFeatures: 1))
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
 
         let task = Task { try await sut.perform() }
         let pending = try await request()
@@ -59,7 +59,7 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
     /// Home Assistant stores an exclusive end, so an all-day event the user picked for one day is
     /// sent through to the day after.
     func testAnAllDayEventIsSentAsDaysWithAnExclusiveEnd() async throws {
-        let sut = intent(calendar: try seedCalendar(supportedFeatures: 1))
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
         sut.isAllDay = true
 
         let task = Task { try await sut.perform() }
@@ -80,7 +80,7 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testTheOptionalFieldsAreOnlySentWhenThereIsSomethingToSend() async throws {
-        let sut = intent(calendar: try seedCalendar(supportedFeatures: 1))
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
         sut.note = AttributedString("Table for two")
         sut.location = .text("The Canteen")
         sut.recurrence = Calendar.RecurrenceRule(calendar: .current, frequency: .weekly)
@@ -98,7 +98,7 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testFieldsTheCallerLeftOutAreNotSentAtAll() async throws {
-        let sut = intent(calendar: try seedCalendar(supportedFeatures: 1))
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
 
         let task = Task { try await sut.perform() }
         let pending = try await request()
@@ -114,7 +114,7 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
 
     /// A calendar that cannot take new events rejects the write server-side, so nothing is sent.
     func testACalendarThatCannotAddEventsIsRefusedBeforeAnythingIsSent() async throws {
-        let sut = intent(calendar: try seedCalendar(name: "Holidays", supportedFeatures: 2))
+        let sut = try intent(calendar: seedCalendar(name: "Holidays", supportedFeatures: 2))
 
         do {
             _ = try await sut.perform()
@@ -129,7 +129,7 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testAnEventThatEndsBeforeItStartsIsRefused() async throws {
-        let sut = intent(calendar: try seedCalendar(supportedFeatures: 1))
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
         sut.endDate = start.addingTimeInterval(-60)
 
         do {

@@ -16,7 +16,7 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testTheItemIsAddedToTheNamedList() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList(entityId: "todo.shopping"))
+        let list = try ReminderListSchemaEntity(entity: seedTodoList(entityId: "todo.shopping"))
         let sut = intent(list: list)
 
         let task = Task { try await sut.perform() }
@@ -46,7 +46,7 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testTheNoteIsSentAsTheDescription() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList())
+        let list = try ReminderListSchemaEntity(entity: seedTodoList())
         let sut = intent(list: list)
         sut.note = AttributedString("Two pints")
 
@@ -61,7 +61,7 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
 
     /// `todo.add_item` takes a bare day or a datetime, never both.
     func testADueDayWithNoTimeIsSentAsADay() async throws {
-        let sut = intent(list: ReminderListSchemaEntity(entity: try seedTodoList()))
+        let sut = try intent(list: ReminderListSchemaEntity(entity: seedTodoList()))
         sut.dueDate = DateComponents(year: 2023, month: 11, day: 14)
 
         let task = Task { try await sut.perform() }
@@ -75,7 +75,7 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     func testADueDayWithATimeIsSentAsADateTime() async throws {
-        let sut = intent(list: ReminderListSchemaEntity(entity: try seedTodoList()))
+        let sut = try intent(list: ReminderListSchemaEntity(entity: seedTodoList()))
         sut.dueDate = DateComponents(year: 2023, month: 11, day: 14, hour: 9, minute: 30)
 
         let task = Task { try await sut.perform() }
@@ -91,7 +91,7 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
     /// The `todo` domain has nowhere to put these, and folding them into the note would put text on
     /// the list the user never dictated.
     func testTheFieldsHomeAssistantCannotStoreAreNotSent() async throws {
-        let list = ReminderListSchemaEntity(entity: try seedTodoList())
+        let list = try ReminderListSchemaEntity(entity: seedTodoList())
         let sut = intent(list: list)
         sut.isFlagged = true
         sut.tags = ["urgent"]

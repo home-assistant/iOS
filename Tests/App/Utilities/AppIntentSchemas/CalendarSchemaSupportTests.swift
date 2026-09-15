@@ -45,7 +45,7 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
     // MARK: - Capability checks
 
     func testCalendarForEntityRequiresTheStoredCalendarToExist() throws {
-        let entity = CalendarSchemaEntity(calendar: try seedCalendar())
+        let entity = try CalendarSchemaEntity(calendar: seedCalendar())
         try database.write { db in
             _ = try HACalendar.deleteAll(db)
         }
@@ -75,7 +75,7 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
     }
 
     func testCalendarForEntityNamesTheCalendarForEveryUnsupportedFeature() throws {
-        let entity = CalendarSchemaEntity(calendar: try seedCalendar(name: "Holidays", supportedFeatures: 0))
+        let entity = try CalendarSchemaEntity(calendar: seedCalendar(name: "Holidays", supportedFeatures: 0))
         let expected: [HACalendar.Feature: String] = [
             .createEvent: L10n.AppIntents.Calendar.Error.createUnsupported("Holidays"),
             .updateEvent: L10n.AppIntents.Calendar.Error.updateUnsupported("Holidays"),
@@ -94,7 +94,7 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
     /// Integrations that supply no uid produce events that can be listed but not changed, so the
     /// refusal has to say which of the two the caller was trying to do.
     func testUidRefusesAnEventWithoutOne() throws {
-        let calendar = CalendarSchemaEntity(calendar: try seedCalendar())
+        let calendar = try CalendarSchemaEntity(calendar: seedCalendar())
         let record = try seedEvent(uid: nil, summary: "Bin day")
         let event = CalendarEventSchemaEntity(record: record, calendar: calendar)
 
@@ -114,15 +114,15 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
 
     /// An empty string is the same as no uid at all: it addresses nothing.
     func testUidTreatsAnEmptyIdentifierAsMissing() throws {
-        let calendar = CalendarSchemaEntity(calendar: try seedCalendar())
-        let event = CalendarEventSchemaEntity(record: try seedEvent(uid: ""), calendar: calendar)
+        let calendar = try CalendarSchemaEntity(calendar: seedCalendar())
+        let event = try CalendarEventSchemaEntity(record: seedEvent(uid: ""), calendar: calendar)
 
         XCTAssertThrowsError(try CalendarSchemaSupport.uid(of: event, editing: true))
     }
 
     func testUidReturnsTheStoredIdentifier() throws {
-        let calendar = CalendarSchemaEntity(calendar: try seedCalendar())
-        let event = CalendarEventSchemaEntity(record: try seedEvent(uid: "uid-42"), calendar: calendar)
+        let calendar = try CalendarSchemaEntity(calendar: seedCalendar())
+        let event = try CalendarEventSchemaEntity(record: seedEvent(uid: "uid-42"), calendar: calendar)
 
         XCTAssertEqual(try CalendarSchemaSupport.uid(of: event, editing: true), "uid-42")
     }
