@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "Diese %1$@ sind eingeschaltet: %2$@";
 "app_intents.active_entities.dialog.some_open" = "Diese %1$@ sind geöffnet: %2$@";
 "app_intents.active_entities.filter.all" = "Entitäten";
-"app_intents.active_entities.filter.climates" = "Thermostate";
 "app_intents.active_entities.filter.covers" = "Abdeckungen";
 "app_intents.active_entities.filter.fans" = "Ventilatoren";
 "app_intents.active_entities.filter.lights" = "Leuchten";
-"app_intents.active_entities.filter.locks" = "Schlösser";
 "app_intents.active_entities.filter.media_players" = "Mediaplayer";
 "app_intents.active_entities.filter.name" = "Art";
 "app_intents.active_entities.filter.switches" = "Schalter";
@@ -1560,7 +1558,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.servers" = "Server";
 "settings.connection_section.servers_header" = "Server";
 "settings.connection_section.servers_reorder_footer" = "Reihenfolge der Server per Ziehen ändern. Der oberste wird als Standardserver verwendet.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "Für den Zugriff auf SSIDs im Hintergrund sind die Standortberechtigung „Immer“ und die Standortgenauigkeit „Vollständig“ erforderlich. Tippe hier, um deine Einstellungen zu ändern.";
 "settings.connection_section.update_database.finished" = "Serverinformationen aktualisiert";
 "settings.connection_section.update_database.progress.areas" = "Bereiche werden aktualisiert";
 "settings.connection_section.update_database.progress.calendars" = "Kalender werden aktualisiert";
@@ -2315,7 +2312,6 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "share_extension.error.title" = "Konnte nicht gesendet werden";
 "shortcut_item.open_settings.title" = "Einstellungen öffnen";
 "tab_bar.customize.add" = "Hinzufügen";
-"tab_bar.customize.available_section.footer_full" = "Entferne einen Tab, um einen weiteren hinzuzufügen.";
 "tab_bar.customize.available_section.header" = "Verfügbar";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "Die ersten vier Einträge sind die Tabs, der Rest wird unter „Weitere“ aufgelistet. Zum Ändern der Reihenfolge ziehen.";
 "tab_bar.customize.dashboards_section.header" = "Dashboards";

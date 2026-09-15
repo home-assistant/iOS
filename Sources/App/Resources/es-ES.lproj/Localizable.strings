@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "Estas %1$@ están encendidas: %2$@";
 "app_intents.active_entities.dialog.some_open" = "Estos %1$@ están abiertos: %2$@";
 "app_intents.active_entities.filter.all" = "entidades";
-"app_intents.active_entities.filter.climates" = "termostatos";
 "app_intents.active_entities.filter.covers" = "persianas";
 "app_intents.active_entities.filter.fans" = "ventiladores";
 "app_intents.active_entities.filter.lights" = "luces";
-"app_intents.active_entities.filter.locks" = "cerraduras";
 "app_intents.active_entities.filter.media_players" = "reproductores multimedia";
 "app_intents.active_entities.filter.name" = "Tipo";
 "app_intents.active_entities.filter.switches" = "interruptores";
@@ -1560,7 +1558,6 @@ Home Assistant es un software de código abierto, defiende la privacidad y se ej
 "settings.connection_section.servers" = "Servidores";
 "settings.connection_section.servers_header" = "Servidores";
 "settings.connection_section.servers_reorder_footer" = "Arrastra para reordenar tus servidores. El que está arriba se usa como servidor predeterminado.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "El acceso a los SSID en segundo plano requiere permiso de ubicación \"Siempre\" y precisión de ubicación \"Completa\". Toca aquí para cambiar tu configuración.";
 "settings.connection_section.update_database.finished" = "Se ha actualizado la información del servidor";
 "settings.connection_section.update_database.progress.areas" = "Actualizando áreas";
 "settings.connection_section.update_database.progress.calendars" = "Actualización de calendarios";
@@ -2315,7 +2312,6 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "share_extension.error.title" = "No se pudo enviar";
 "shortcut_item.open_settings.title" = "Abrir configuración";
 "tab_bar.customize.add" = "Añadir";
-"tab_bar.customize.available_section.footer_full" = "Elimina una pestaña para añadir otra.";
 "tab_bar.customize.available_section.header" = "Disponibles";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "Las cuatro primeras entradas son las pestañas; el resto aparece en Más. Arrastra para cambiar el orden.";
 "tab_bar.customize.dashboards_section.header" = "Paneles de control";

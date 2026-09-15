@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "Tyto %1$@ jsou zapnuty: %2$@";
 "app_intents.active_entities.dialog.some_open" = "Tyto %1$@ jsou otevřeny: %2$@";
 "app_intents.active_entities.filter.all" = "entit";
-"app_intents.active_entities.filter.climates" = "termostatů";
 "app_intents.active_entities.filter.covers" = "krytů";
 "app_intents.active_entities.filter.fans" = "ventilátorů";
 "app_intents.active_entities.filter.lights" = "světel";
-"app_intents.active_entities.filter.locks" = "zámků";
 "app_intents.active_entities.filter.media_players" = "přehrávačů médií";
 "app_intents.active_entities.filter.name" = "Druh";
 "app_intents.active_entities.filter.switches" = "spínačů";
@@ -1560,7 +1558,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.servers" = "Servery";
 "settings.connection_section.servers_header" = "Servery";
 "settings.connection_section.servers_reorder_footer" = "Přetažením změníte pořadí serverů. Server nahoře se používá jako výchozí.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "Přístup k SSID na pozadí vyžaduje oprávnění k poloze \"Vždy\" a \"Plnou\" přesnost polohy. Klepnutím sem změníte nastavení.";
 "settings.connection_section.update_database.finished" = "Informace o serveru byly aktualizovány";
 "settings.connection_section.update_database.progress.areas" = "Aktualizování oblastí";
 "settings.connection_section.update_database.progress.calendars" = "Aktualizace kalendářů";
@@ -2315,7 +2312,6 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "share_extension.error.title" = "Nelze odeslat";
 "shortcut_item.open_settings.title" = "Otevřít Nastavení";
 "tab_bar.customize.add" = "Přidat";
-"tab_bar.customize.available_section.footer_full" = "Odeberte záložku, abyste mohli přidat další.";
 "tab_bar.customize.available_section.header" = "Dostupné";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "První čtyři položky jsou karty, zbytek je uveden v sekci Více. Přetažením změníte pořadí.";
 "tab_bar.customize.dashboards_section.header" = "Ovládací panely";

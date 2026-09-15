@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "Disse %1$@ er tændt: %2$@";
 "app_intents.active_entities.dialog.some_open" = "Disse %1$@ er åbne: %2$@";
 "app_intents.active_entities.filter.all" = "entiteter";
-"app_intents.active_entities.filter.climates" = "termostater";
 "app_intents.active_entities.filter.covers" = "gardiner/porte";
 "app_intents.active_entities.filter.fans" = "blæsere";
 "app_intents.active_entities.filter.lights" = "lys";
-"app_intents.active_entities.filter.locks" = "låse";
 "app_intents.active_entities.filter.media_players" = "medieafspillere";
 "app_intents.active_entities.filter.name" = "Slags";
 "app_intents.active_entities.filter.switches" = "kontakter";
@@ -1560,7 +1558,6 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "settings.connection_section.servers" = "Servere";
 "settings.connection_section.servers_header" = "Servere";
 "settings.connection_section.servers_reorder_footer" = "Træk for at ændre rækkefølgen på dine servere. Den øverste server bruges som standardserver.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "Adgang til at tilgå SSID'er i baggrunden kræver, at lokalitetstilladelse er sat til 'Altid'  og at 'Præcis lokalitet' er slået til. Tryk her for at ændre dine indstillinger.";
 "settings.connection_section.update_database.finished" = "Serveroplysninger opdateret";
 "settings.connection_section.update_database.progress.areas" = "Opdaterer områder";
 "settings.connection_section.update_database.progress.calendars" = "Opdaterer kalendere";
@@ -2315,7 +2312,6 @@ Serveren svarer kun, mens appen er åben, og stopper, når du lukker den.";
 "share_extension.error.title" = "Kunne ikke sende";
 "shortcut_item.open_settings.title" = "Åbn indstillinger";
 "tab_bar.customize.add" = "Tilføj";
-"tab_bar.customize.available_section.footer_full" = "Fjern en fane for at tilføje en ny.";
 "tab_bar.customize.available_section.header" = "Tilgængelige";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "De første fire punkter er fanerne. Resten findes i Mere. Træk for at ændre rækkefølgen.";
 "tab_bar.customize.dashboards_section.header" = "Betjeningspaneler";
