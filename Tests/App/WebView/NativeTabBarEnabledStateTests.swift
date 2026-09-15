@@ -7,6 +7,7 @@ import Testing
 
 /// Flips the App Labs tab bar flag in the store the way the App Labs screen does and checks what follows it.
 @MainActor
+@Suite(.serialized)
 struct NativeTabBarEnabledStateTests {
     private func setTabBar(enabled: Bool) async throws {
         Current.appLabs.setEnabled(enabled, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
@@ -25,9 +26,10 @@ struct NativeTabBarEnabledStateTests {
     @Test("The shared state and the frontend sidebar config follow the App Labs flag")
     func stateFollowsTheFlag() async throws {
         let previousIsTestFlight = Current.isTestFlight
+        let previousTabBar = Current.appLabs.isEnabled(featureId: AppLabsFeature.iosNativeTabBar.rawValue)
         Current.isTestFlight = true
         defer {
-            Current.appLabs.setEnabled(false, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
+            Current.appLabs.setEnabled(previousTabBar, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
             Current.isTestFlight = previousIsTestFlight
         }
         try await setTabBar(enabled: false)
@@ -58,10 +60,11 @@ struct NativeTabBarEnabledStateTests {
         let previousDatabase = Current.database
         let previousKiosk = Current.kiosk
         let previousSensors = Current.sensors
+        let previousTabBar = Current.appLabs.isEnabled(featureId: AppLabsFeature.iosNativeTabBar.rawValue)
         Current.isTestFlight = true
         Current.sensors = SensorContainer()
         defer {
-            Current.appLabs.setEnabled(false, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
+            Current.appLabs.setEnabled(previousTabBar, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
             Current.isTestFlight = previousIsTestFlight
             Current.database = previousDatabase
             Current.kiosk = previousKiosk
@@ -105,9 +108,10 @@ struct NativeTabBarEnabledStateTests {
     @Test("The sidebar gesture still reaches the frontend while the tab bar is on")
     func sidebarGestureStillReachesTheFrontend() async throws {
         let previousIsTestFlight = Current.isTestFlight
+        let previousTabBar = Current.appLabs.isEnabled(featureId: AppLabsFeature.iosNativeTabBar.rawValue)
         Current.isTestFlight = true
         defer {
-            Current.appLabs.setEnabled(false, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
+            Current.appLabs.setEnabled(previousTabBar, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
             Current.isTestFlight = previousIsTestFlight
         }
         try await setTabBar(enabled: true)
