@@ -1,4 +1,5 @@
 import AppIntents
+import CoreLocation
 import Foundation
 import GeoToolbox
 
@@ -15,9 +16,10 @@ struct LocationTriggerSchemaEntity: TransientAppEntity {
     }
 
     init() {
-        // A `PlaceDescriptor` must carry at least one representation and traps without one. There
-        // is no place to describe, so this is an empty address rather than somewhere on the map.
-        self.place = PlaceDescriptor(representations: [.address("")], commonName: nil)
+        // A `PlaceDescriptor` must carry a representation that describes something and traps
+        // otherwise -- an empty address counts as nothing. There is no place to name, so this is
+        // the null coordinate rather than an invented address a person could end up reading.
+        self.place = PlaceDescriptor(representations: [.coordinate(CLLocationCoordinate2D())], commonName: nil)
         self.event = .arrive
     }
 }
