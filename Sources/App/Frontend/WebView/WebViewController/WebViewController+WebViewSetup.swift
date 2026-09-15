@@ -73,7 +73,7 @@ extension WebViewController {
             userActivity?.becomeCurrent()
 
             // The page moved, so what the system reads off this activity has to follow it.
-            updateOnscreenPage()
+            updateOnscreenContent()
 
             // Persist the server and a host-agnostic path so cold launch reopens here; the base URL is
             // re-resolved from current connectivity at load time (see `resolvedLoadURL`).

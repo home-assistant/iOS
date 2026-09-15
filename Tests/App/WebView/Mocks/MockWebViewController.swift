@@ -37,6 +37,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var presentAlertControllerCalled = false
     var shownBannerRequests = [BannerRequest]()
     var hiddenBannerIDs = [String]()
+    var onscreenEntityId: String?
     var handleExternalAuthFailureCalled = false
     var lastExternalAuthFailure: Error?
     var handleExternalAuthFailureExpectation: XCTestExpectation?
@@ -153,5 +154,14 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func presentAlertController(controller: UIViewController, animated: Bool) {
         presentAlertControllerCalled = true
+    }
+
+    func setOnscreenEntity(entityId: String) {
+        onscreenEntityId = entityId
+    }
+
+    func clearOnscreenEntity(entityId: String) {
+        guard onscreenEntityId == entityId else { return }
+        onscreenEntityId = nil
     }
 }
