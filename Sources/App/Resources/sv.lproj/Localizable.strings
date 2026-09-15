@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "These %1$@ are on: %2$@";
 "app_intents.active_entities.dialog.some_open" = "These %1$@ are open: %2$@";
 "app_intents.active_entities.filter.all" = "entities";
-"app_intents.active_entities.filter.climates" = "thermostats";
 "app_intents.active_entities.filter.covers" = "covers";
 "app_intents.active_entities.filter.fans" = "fans";
 "app_intents.active_entities.filter.lights" = "lights";
-"app_intents.active_entities.filter.locks" = "locks";
 "app_intents.active_entities.filter.media_players" = "media players";
 "app_intents.active_entities.filter.name" = "Kind";
 "app_intents.active_entities.filter.switches" = "switches";
@@ -1555,7 +1553,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.servers" = "Servrar";
 "settings.connection_section.servers_header" = "Servrar";
 "settings.connection_section.servers_reorder_footer" = "Dra för att ändra ordningen på dina servrar. Den som ligger överst används som standardserver.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "Åtkomst till SSID:er i bakgrunden kräver 'Alltid'-tillåtelse och 'Maximal' platsnoggrannhet.";
 "settings.connection_section.update_database.finished" = "Serverinformation uppdaterad";
 "settings.connection_section.update_database.progress.areas" = "Uppdaterar områden";
 "settings.connection_section.update_database.progress.calendars" = "Uppdaterar kalendrar";
@@ -2310,7 +2307,6 @@ The server only answers while the app is open, and stops when you leave it.";
 "share_extension.error.title" = "Kunde inte skicka";
 "shortcut_item.open_settings.title" = "Öppna inställningar";
 "tab_bar.customize.add" = "Add";
-"tab_bar.customize.available_section.footer_full" = "Remove a tab to add another one.";
 "tab_bar.customize.available_section.header" = "Available";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "The first four entries are the tabs, the rest are listed in More. Drag to reorder.";
 "tab_bar.customize.dashboards_section.header" = "Dashboards";

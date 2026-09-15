@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "켜져 있는 %1$@: %2$@";
 "app_intents.active_entities.dialog.some_open" = "열려 있는 %1$@: %2$@";
 "app_intents.active_entities.filter.all" = "엔티티";
-"app_intents.active_entities.filter.climates" = "온도 조절기";
 "app_intents.active_entities.filter.covers" = "커버";
 "app_intents.active_entities.filter.fans" = "팬";
 "app_intents.active_entities.filter.lights" = "조명";
-"app_intents.active_entities.filter.locks" = "잠금장치";
 "app_intents.active_entities.filter.media_players" = "미디어 플레이어";
 "app_intents.active_entities.filter.name" = "종류";
 "app_intents.active_entities.filter.switches" = "스위치";
@@ -1560,7 +1558,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.connection_section.servers" = "서버";
 "settings.connection_section.servers_header" = "서버";
 "settings.connection_section.servers_reorder_footer" = "서버를 재정렬하려면 드래그하세요. 맨 위에 있는 서버가 기본 서버로 사용됩니다.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "백그라운드에서 SSID에 액세스하려면 '항상' 위치 권한과 '전체' 위치 정확도가 필요합니다. 설정을 변경하려면 여기를 탭하세요.";
 "settings.connection_section.update_database.finished" = "서버 정보 업데이트됨";
 "settings.connection_section.update_database.progress.areas" = "영역 업데이트 중";
 "settings.connection_section.update_database.progress.calendars" = "캘린더 업데이트 중";
@@ -2315,7 +2312,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "share_extension.error.title" = "보낼 수 없음";
 "shortcut_item.open_settings.title" = "설정 열기";
 "tab_bar.customize.add" = "추가";
-"tab_bar.customize.available_section.footer_full" = "다른 탭을 추가하려면 기존 탭을 제거하세요.";
 "tab_bar.customize.available_section.header" = "추가 가능";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "처음 4개 항목은 탭으로 표시되고 나머지는 더 보기에 나열됩니다. 드래그하여 순서를 변경하세요.";
 "tab_bar.customize.dashboards_section.header" = "대시보드";
