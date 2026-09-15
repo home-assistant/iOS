@@ -295,16 +295,12 @@ public enum L10n {
       public enum Filter {
         /// entities
         public static var all: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.all") }
-        /// thermostats
-        public static var climates: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.climates") }
         /// covers
         public static var covers: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.covers") }
         /// fans
         public static var fans: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.fans") }
         /// lights
         public static var lights: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.lights") }
-        /// locks
-        public static var locks: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.locks") }
         /// media players
         public static var mediaPlayers: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.media_players") }
         /// Kind
@@ -2707,6 +2703,13 @@ public enum L10n {
     }
   }
 
+  public enum ForceCloseWarning {
+    /// The app was closed. Keeping it open gives accurate presence detection, faster sensor updates and instant notifications.
+    public static var body: String { return L10n.tr("Localizable", "force_close_warning.body") }
+    /// Keep Home Assistant running?
+    public static var title: String { return L10n.tr("Localizable", "force_close_warning.title") }
+  }
+
   public enum Gestures {
     public enum _1Finger {
       /// Using one finger
@@ -5044,8 +5047,6 @@ public enum L10n {
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Drag to reorder your servers. The one at the top is used as the default server.
       public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
-      /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.
-      public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
       public enum AlwaysFallbackInternal {
         /// Enabling this with an unsecure URL (http) may compromise your security on public networks.
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.footer") }
@@ -7076,6 +7077,12 @@ public enum L10n {
         /// Synced Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.header") }
       }
+      public enum ForceCloseWarning {
+        /// Shows a notification when the app is closed, since closing stops location and sensor updates until you reopen it. Requires notifications permission and Always location access.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.force_close_warning.footer") }
+        /// Force close warning
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.force_close_warning.title") }
+      }
       public enum History {
         /// Clear
         public static var clear: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear") }
@@ -7603,8 +7610,6 @@ public enum L10n {
       /// Customize Tabs
       public static var title: String { return L10n.tr("Localizable", "tab_bar.customize.title") }
       public enum AvailableSection {
-        /// Remove a tab to add another one.
-        public static var footerFull: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.footer_full") }
         /// Available
         public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.header") }
       }

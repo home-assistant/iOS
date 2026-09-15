@@ -153,12 +153,26 @@ struct AppConfigurationTransferTests {
         #expect(decoded == snapshot)
     }
 
+    @Test func appSettingsSnapshotTransfersForceCloseWarningToggle() {
+        let previous = Current.settingsStore.forceCloseWarningEnabled
+        defer { Current.settingsStore.forceCloseWarningEnabled = previous }
+
+        Current.settingsStore.forceCloseWarningEnabled = true
+        let snapshot = AppSettingsSnapshot.capture()
+        #expect(snapshot.forceCloseWarningEnabled == true)
+
+        Current.settingsStore.forceCloseWarningEnabled = false
+        snapshot.apply()
+        #expect(Current.settingsStore.forceCloseWarningEnabled == true)
+    }
+
     @Test func appSettingsSnapshotDecodesAFileMissingEveryField() throws {
         let data = try #require("{}".data(using: .utf8))
 
         let decoded = try JSONDecoder().decode(AppSettingsSnapshot.self, from: data)
 
         #expect(decoded.pageZoom == nil)
+        #expect(decoded.forceCloseWarningEnabled == nil)
         #expect(decoded.privacy == nil)
         #expect(decoded.locationSources == nil)
         #expect(decoded.gestures == nil)

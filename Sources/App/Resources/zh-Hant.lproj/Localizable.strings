@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "這些 %1$@ 已開啟：%2$@";
 "app_intents.active_entities.dialog.some_open" = "這些 %1$@ 是開啟的：%2$@";
 "app_intents.active_entities.filter.all" = "實體";
-"app_intents.active_entities.filter.climates" = "溫控器";
 "app_intents.active_entities.filter.covers" = "門簾";
 "app_intents.active_entities.filter.fans" = "風扇";
 "app_intents.active_entities.filter.lights" = "燈光";
-"app_intents.active_entities.filter.locks" = "門鎖";
 "app_intents.active_entities.filter.media_players" = "媒體播放器";
 "app_intents.active_entities.filter.name" = "種類";
 "app_intents.active_entities.filter.switches" = "開關";
@@ -1560,7 +1558,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.servers" = "伺服器";
 "settings.connection_section.servers_header" = "伺服器";
 "settings.connection_section.servers_reorder_footer" = "拖曳以重新排列伺服器順序。位於頂端的伺服器將作為預設伺服器。";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "於背景存取 SSID 無線網路需要於定位服務權限中開啟 '永遠' 與 '精確位置'。點選此處以變更設定。";
 "settings.connection_section.update_database.finished" = "伺服器資訊已更新";
 "settings.connection_section.update_database.progress.areas" = "更新區域";
 "settings.connection_section.update_database.progress.calendars" = "正在更新行事曆";
@@ -2315,7 +2312,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "share_extension.error.title" = "無法傳送";
 "shortcut_item.open_settings.title" = "開啟設定";
 "tab_bar.customize.add" = "新增";
-"tab_bar.customize.available_section.footer_full" = "移除一個分頁以新增另一個。";
 "tab_bar.customize.available_section.header" = "可用";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "前四個項目為分頁標籤，其餘列於更多中。拖曳以重新排序。";
 "tab_bar.customize.dashboards_section.header" = "儀表板";

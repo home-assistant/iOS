@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "Bunlar %1$@ Şunlar açık: %2$@";
 "app_intents.active_entities.dialog.some_open" = "Bunlar %1$@ Açıktır: %2$@";
 "app_intents.active_entities.filter.all" = "varlıklar";
-"app_intents.active_entities.filter.climates" = "termostatlar";
 "app_intents.active_entities.filter.covers" = "kapaklar";
 "app_intents.active_entities.filter.fans" = "fanlar";
 "app_intents.active_entities.filter.lights" = "ışıklar";
-"app_intents.active_entities.filter.locks" = "kilitler";
 "app_intents.active_entities.filter.media_players" = "medya oynatıcıları";
 "app_intents.active_entities.filter.name" = "Tür";
 "app_intents.active_entities.filter.switches" = "anahtarlar";
@@ -1560,7 +1558,6 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.servers" = "Sunucular";
 "settings.connection_section.servers_header" = "Sunucular";
 "settings.connection_section.servers_reorder_footer" = "Sunucularınızın sırasını değiştirmek için sürükleyin. En üstteki sunucu varsayılan sunucu olarak kullanılır.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "SSID'lere arka planda erişmek için 'Her Zaman' konum izni ve 'Tam' konum doğruluğu gerekir. Ayarlarınızı değiştirmek için buraya dokunun.";
 "settings.connection_section.update_database.finished" = "Sunucu bilgileri güncellendi";
 "settings.connection_section.update_database.progress.areas" = "Güncellenen alanlar";
 "settings.connection_section.update_database.progress.calendars" = "Takvimleri güncelle";
@@ -2315,7 +2312,6 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "share_extension.error.title" = "Gönderilemedi";
 "shortcut_item.open_settings.title" = "Ayarları Aç";
 "tab_bar.customize.add" = "Ekle";
-"tab_bar.customize.available_section.footer_full" = "Bir sekmeyi kaldırarak başka bir sekme ekleyin.";
 "tab_bar.customize.available_section.header" = "Mevcut";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "İlk dört giriş sekmelerdir, geri kalanlar ise “Daha Fazla” bölümünde listelenmiştir. Sırayı değiştirmek için sürükleyin.";
 "tab_bar.customize.dashboards_section.header" = "Gösterge Panelleri";
