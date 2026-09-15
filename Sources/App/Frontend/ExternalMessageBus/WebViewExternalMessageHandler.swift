@@ -23,6 +23,7 @@ protocol WebViewExternalMessageHandlerProtocol {
 final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
+    private let entityControlDonation: EntityControlDonation
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
@@ -31,9 +32,11 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private var pendingCommands: [Int: PendingExternalBusCommand] = [:]
 
     init(
-        improvManager: any ImprovManagerProtocol
+        improvManager: any ImprovManagerProtocol,
+        entityControlDonation: EntityControlDonation = .init()
     ) {
         self.improvManager = improvManager
+        self.entityControlDonation = entityControlDonation
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -217,6 +220,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.clearOnscreenEntity(entityId: entityId)
+            case .entityControlled:
+                guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")
+                    return
+                }
+                let serverId = webViewController.server.identifier.rawValue
+                Task { [entityControlDonation] in
+                    await entityControlDonation.donate(control, serverId: serverId)
+                }
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
