@@ -17,6 +17,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var urlObserver: NSKeyValueObservation?
     var windowTitleObserver: NSKeyValueObservation?
+    /// Watches `.siriEntityExposureDidChange` so the page published on `userActivity` follows the
+    /// user's Siri exposure setting; see `WebViewController+OnscreenPage`.
+    var siriExposureObserver: NSObjectProtocol?
     var emptyStateTitleObserver: AnyCancellable?
     var tokens = [HACancellable]()
 
@@ -241,6 +244,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         tabBarAssistZoomAnchor?.removeFromSuperview()
         self.urlObserver = nil
         self.windowTitleObserver = nil
+        if let siriExposureObserver {
+            NotificationCenter.default.removeObserver(siriExposureObserver)
+        }
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
         loadActiveURLTask?.cancel()
@@ -264,6 +270,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         observeConnectionNotifications()
         setupKioskModeObservation()
+        observeSiriExposureForOnscreenPage()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
 

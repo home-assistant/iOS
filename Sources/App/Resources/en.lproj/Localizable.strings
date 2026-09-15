@@ -69,6 +69,14 @@
 "app_intents.active_entities.filter.switches" = "switches";
 "app_intents.active_entities.name_with_server" = "%1$@ on %2$@";
 "app_intents.active_entities.title" = "Get what is on";
+"app_intents.add_to.description" = "Adds a Home Assistant entity to the Apple Watch, CarPlay quick access or the Mac toolbar";
+"app_intents.add_to.destination.name" = "Destination";
+"app_intents.add_to.dialog.added" = "Added %1$@ to %2$@";
+"app_intents.add_to.dialog.already_added" = "%1$@ is already in %2$@";
+"app_intents.add_to.entity.name" = "Entity";
+"app_intents.add_to.error.unavailable" = "%@ isn't available on this device";
+"app_intents.add_to.error.unsupported" = "%1$@ can't be added to %2$@";
+"app_intents.add_to.title" = "Add entity to";
 "app_intents.area_target.areas_section" = "%@ areas";
 "app_intents.area_target.blinds" = "%@ blinds";
 "app_intents.area_target.covers" = "%@ covers";
