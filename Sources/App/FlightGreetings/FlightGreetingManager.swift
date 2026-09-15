@@ -14,7 +14,7 @@ final class FlightGreetingManager {
     private static let toastDuration: TimeInterval = 5
     /// One greeting per flight: suppress repeats until well after even a long-haul leg.
     private static let greetingCooldown: TimeInterval = 6 * 60 * 60
-    private static let lastGreetingDateKey = "flightGreetingLastShownDate"
+    static let lastGreetingDateKey = "flightGreetingLastShownDate"
     /// How long a detection result stays valid before a caller triggers a fresh check. A positive
     /// stays valid for a while (the flight isn't ending soon); a negative retries sooner, but not so
     /// soon that back-to-back checks keep the GPS running continuously.
@@ -96,7 +96,7 @@ final class FlightGreetingManager {
     /// possible, so a flight can announce itself instead of only being noticed when something happens
     /// to ask. Detection used to be purely on demand, which meant a single failed check at the moment
     /// the app opened was the end of it.
-    private func startPressureMonitoringIfNeeded() {
+    func startPressureMonitoringIfNeeded() {
         // The toast itself needs iOS 18, so below that there is nothing detection could lead to.
         guard #available(iOS 18, *), Current.settingsStore.flightGreetingsEnabled, canGreet else {
             CabinPressureMonitor.shared.stop()

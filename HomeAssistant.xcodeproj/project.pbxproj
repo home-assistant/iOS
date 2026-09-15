@@ -192,6 +192,7 @@
 		42D14C91301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14C90301BAF950058088E /* HAWatchComplications */; };
 		42D14CA1301BAF950058088E /* HAWatchComplications in Frameworks */ = {isa = PBXBuildFile; productRef = 42D14CA0301BAF950058088E /* HAWatchComplications */; };
 		42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */; };
+		42F1C0DE302E000000A1B2C2 /* FlightDetector.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0DE302E000000A1B2C1 /* FlightDetector.test.swift */; };
 		42DA0000000000010000AF01 /* DomainStatesAfter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */; };
 		42DA0000000000030000AF03 /* AreaTarget.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA0000000000040000AF04 /* AreaTarget.test.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
@@ -663,6 +664,7 @@
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42D14C6D301BB6330058088E /* HomeAssistant-WatchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-WatchAppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinPressureMonitor.test.swift; sourceTree = "<group>"; };
+		42F1C0DE302E000000A1B2C1 /* FlightDetector.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightDetector.test.swift; sourceTree = "<group>"; };
 		42DA0000000000020000AF02 /* DomainStatesAfter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStatesAfter.test.swift; sourceTree = "<group>"; };
 		42DA0000000000040000AF04 /* AreaTarget.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTarget.test.swift; sourceTree = "<group>"; };
 		42E2E0000000000000000002 /* OnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingE2ETests.swift; sourceTree = "<group>"; };
@@ -3032,6 +3034,7 @@
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
 				74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */,
 				42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */,
+				42F1C0DE302E000000A1B2C1 /* FlightDetector.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
 				42EDBB963002FBBE0051FC9B /* Additions */,
 				42EDBB6B3002FBBE0051FC9B /* Area */,
@@ -4540,6 +4543,7 @@
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
 				FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */,
 				42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */,
+				42F1C0DE302E000000A1B2C2 /* FlightDetector.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
