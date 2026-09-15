@@ -7,16 +7,20 @@ import Shared
 /// CarPlay" against whatever the user is looking at rather than asking them to name it again.
 ///
 /// A command binds to the identifier whose type its own parameter takes, and an activity carries one
-/// identifier, so the fewer types an entity is modelled by the better this works. There are two:
-/// `HAAppEntityAppIntentEntity` for everything, and `OpenableEntityAppEntity` for covers, which stay
-/// separate because a phrase's candidate list comes from its parameter type's own query and "open"
-/// should offer covers alone.
+/// identifier, so the fewer types an entity is modelled by the better this works. There is
+/// `HAAppEntityAppIntentEntity` for everything, and a type of its own wherever a command's candidate
+/// list has to come from a narrower query than the shared one: `OpenableEntityAppEntity` for covers,
+/// `DimmableLightAppEntity` for lights, `ThermostatAppEntity` for thermostats and `LockAppEntity` for
+/// locks, so that "open", "dim", "set" and "lock" each offer their own kind alone.
 @available(iOS 18.2, *)
 enum OnscreenEntityIdentifier {
-    /// Every identifier the entity answers to, most specific command first.
+    /// Every identifier the entity answers to, the one an activity should carry first.
     ///
     /// A cover leads with the type that opens and closes it, since the one identifier an activity can
-    /// carry is the first, and "open this" is how a cover is asked for.
+    /// carry is the first, and "open this" is how a cover is asked for. Everything else leads with the
+    /// shared type, which the on/off command, the question and the add-to commands all take, so that
+    /// none of them is lost where the activity is all the system reads (iOS 18.2 and 18.3). The type a
+    /// light's, thermostat's or lock's own command takes follows, for the releases that read them all.
     static func makeAll(entityId: String, serverId: String) async -> [EntityIdentifier] {
         // Hiding a server from Siri hides what it is showing too, for the same reason the page does.
         guard SiriServerExposure.isExposed(serverId: serverId), let domain = Domain(entityId: entityId) else {
@@ -29,6 +33,16 @@ enum OnscreenEntityIdentifier {
             await identifiers.appendIfResolved(by: OpenableEntityAppEntityQuery(), id: id)
         }
         await identifiers.appendIfResolved(by: HAAppEntityAppIntentEntityQuery(), id: id)
+        switch domain {
+        case .light:
+            await identifiers.appendIfResolved(by: DimmableLightAppEntityQuery(), id: id)
+        case .climate:
+            await identifiers.appendIfResolved(by: ThermostatAppEntityQuery(), id: id)
+        case .lock:
+            await identifiers.appendIfResolved(by: LockAppEntityQuery(), id: id)
+        default:
+            break
+        }
 
         return identifiers
     }

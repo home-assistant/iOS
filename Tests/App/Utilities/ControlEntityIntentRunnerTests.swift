@@ -25,26 +25,25 @@ struct VoiceControllableDomainsTests {
         #expect(domains.contains(.switch))
         #expect(domains.contains(.fan))
         #expect(domains.contains(.cover))
-        #expect(domains.contains(.climate))
-        #expect(domains.contains(.mediaPlayer))
         // Helpers behave exactly like a switch, and people toggle them constantly.
         #expect(domains.contains(.inputBoolean))
-        // Named by whoever made them, so worth offering even with no room.
-        #expect(domains.contains(.scene))
         #expect(domains.contains(.group))
         #expect(domains.contains(.humidifier))
     }
 
-    @Test func questionsReachMoreDomainsThanCommands() {
-        // Safe to report, not to change by voice.
-        #expect(Domain.voiceReadable.contains(.lock))
-        #expect(!Domain.voiceControllable.contains(.lock))
-        #expect(Domain.voiceReadable.contains(.vacuum))
-        #expect(Domain.voiceReadable.contains(.alarmControlPanel))
-        // A scene has no on/off state to report.
+    @Test func questionsReachTheSensorsAsWellAsTheCommands() {
+        // What people most often ask about, and nothing a command could switch.
+        #expect(Domain.voiceReadable.contains(.sensor))
+        #expect(Domain.voiceReadable.contains(.binarySensor))
+        #expect(!Domain.voiceControllable.contains(.sensor))
+        #expect(Domain.voiceReadable.contains(.waterHeater))
+        // Kept off both lists to keep them short.
+        #expect(!Domain.voiceReadable.contains(.lock))
+        #expect(!Domain.voiceReadable.contains(.mediaPlayer))
+        #expect(!Domain.voiceReadable.contains(.climate))
         #expect(!Domain.voiceReadable.contains(.scene))
         // Everything commandable is also readable.
-        for domain in Domain.voiceControllable where domain != .scene {
+        for domain in Domain.voiceControllable {
             #expect(Domain.voiceReadable.contains(domain), "\(domain.rawValue) is not readable")
         }
     }
@@ -59,13 +58,6 @@ struct VoiceControllableDomainsTests {
         #expect(!Domain.lock.isVoiceSwitchable)
     }
 
-    @Test func onlyDevicesAreExpectedToSitInARoom() {
-        #expect(Domain.light.expectsAnArea)
-        #expect(Domain.mediaPlayer.expectsAnArea)
-        #expect(!Domain.scene.expectsAnArea)
-        #expect(!Domain.group.expectsAnArea)
-    }
-
     @Test func riskyReadOnlyAndRarelySpokenDomainsAreNot() {
         let domains = Domain.voiceControllable
         #expect(!domains.contains(.button))
@@ -77,6 +69,10 @@ struct VoiceControllableDomainsTests {
         // Their own actions read better than "turn off".
         #expect(!domains.contains(.script))
         #expect(!domains.contains(.automation))
+        // Set by voice through their own commands, or only ever activated.
+        #expect(!domains.contains(.climate))
+        #expect(!domains.contains(.scene))
+        #expect(!domains.contains(.mediaPlayer))
     }
 
     @Test func everySwitchableDomainIsTwoWay() {

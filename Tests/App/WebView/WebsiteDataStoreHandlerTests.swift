@@ -30,9 +30,15 @@ final class WebsiteDataStoreHandlerTests: XCTestCase {
         super.tearDown()
     }
 
+    /// The store answers at once, so the tests exercise the handler's own bookkeeping rather than how
+    /// long WebKit takes to clear a data store on the machine running them.
+    private func makeSUT() -> WebsiteDataStoreHandler {
+        WebsiteDataStoreHandler(removeData: { _, completion in completion() })
+    }
+
     func testCleaningTheFrontendAssetCacheRecordsTheVersionThatCleanedIt() async {
         Current.clientVersion = { Version(major: 2026, minor: 9, patch: 3) }
-        let sut = WebsiteDataStoreHandler()
+        let sut = makeSUT()
         let cleaned = expectation(description: "frontend asset cache cleaned")
 
         sut.cleanFrontendAssetCacheIfNeeded { didClean in
@@ -46,7 +52,7 @@ final class WebsiteDataStoreHandlerTests: XCTestCase {
 
     func testTheFrontendAssetCacheIsCleanedAgainAfterAnAppUpdate() async {
         Current.clientVersion = { Version(major: 2026, minor: 9, patch: 3) }
-        let sut = WebsiteDataStoreHandler()
+        let sut = makeSUT()
         let cleaned = expectation(description: "frontend asset cache cleaned")
         sut.cleanFrontendAssetCacheIfNeeded { _ in cleaned.fulfill() }
         await fulfillment(of: [cleaned], timeout: 10)

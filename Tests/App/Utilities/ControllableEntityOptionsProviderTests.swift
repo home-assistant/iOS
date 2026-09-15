@@ -8,6 +8,7 @@ import Testing
 ///
 /// Offering and resolving are two different objects now that the entity is shared: this narrows what
 /// is put in front of someone, and `HAAppEntityAppIntentEntityQuery` reads any id back.
+@Suite(.serialized)
 struct ControllableEntityOptionsProviderTests {
     private static func makeEntity(
         serverId: String,
@@ -96,8 +97,8 @@ struct ControllableEntityOptionsProviderTests {
             // A cover is offered by the open and close command instead, where the wording matches
             // the service it calls.
             #expect(!ids.contains("cover.garage"))
-            // A scene is offered, though only "turn on" reaches it.
-            #expect(ids.contains("scene.movie"))
+            // A scene only ever activates, so it is nothing to turn off.
+            #expect(!ids.contains("scene.movie"))
             // Nothing to switch on a sensor.
             #expect(!ids.contains("sensor.humidity"))
         }
@@ -188,6 +189,25 @@ struct ControllableEntityOptionsProviderTests {
             #expect(resolved.count == 1)
             #expect(resolved.first?.id == area.id)
             #expect(resolved.first?.areaTarget?.areaId == "area")
+        }
+    }
+
+    /// An area id names its domain, and an id that was valid once must keep resolving: a shortcut saved
+    /// against a room's thermostats still works after thermostats stop being offered by voice.
+    @Test func theSharedQueryResolvesAnAreaIdOfADomainNoLongerOffered() async throws {
+        try await withFakeServer { serverId in
+            try await seed(serverId: serverId, entities: [
+                Self.makeEntity(serverId: serverId, entityId: "climate.hall", name: "Hall"),
+            ])
+            try await seedArea(serverId: serverId, name: "Hall", entities: ["climate.hall"])
+            let saved = AreaTarget(areaId: "area", areaName: "Hall", domain: .climate).id(serverId: serverId)
+
+            let offered = try await ControllableEntityOptionsProvider().results()
+                .sections.flatMap(\.items).map(\.value.id)
+            let resolved = try await HAAppEntityAppIntentEntityQuery().entities(for: [saved])
+
+            #expect(!offered.contains(saved))
+            #expect(resolved.first?.areaTarget?.domain == .climate)
         }
     }
 
@@ -283,22 +303,22 @@ struct ControllableEntityOptionsProviderTests {
         }
     }
 
-    /// A scene is named by whoever made it, so it belongs in the list with no room at all.
-    @Test func keepsScenesAndGroupsThatHaveNoArea() async throws {
+    /// A room is what makes an entity worth naming out loud, whatever its domain: a group that was
+    /// never put in one stays out just like a light.
+    @Test func leavesOutGroupsAndLightsThatHaveNoArea() async throws {
         try await withFakeServer { serverId in
             try await seed(serverId: serverId, entities: [
-                Self.makeEntity(serverId: serverId, entityId: "scene.movie_time", name: "Movie time"),
+                Self.makeEntity(serverId: serverId, entityId: "group.hall", name: "Hall"),
                 Self.makeEntity(serverId: serverId, entityId: "group.downstairs", name: "Downstairs"),
                 Self.makeEntity(serverId: serverId, entityId: "light.nowhere", name: "Nowhere"),
             ])
-            try await seedArea(serverId: serverId, name: "Hall", entities: [])
+            try await seedArea(serverId: serverId, name: "Hall", entities: ["group.hall"])
 
             let collection = try await ControllableEntityOptionsProvider().results()
             let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
-            #expect(ids.contains("scene.movie_time"))
-            #expect(ids.contains("group.downstairs"))
-            // A light with no room stays out.
+            #expect(ids.contains("group.hall"))
+            #expect(!ids.contains("group.downstairs"))
             #expect(!ids.contains("light.nowhere"))
         }
     }
