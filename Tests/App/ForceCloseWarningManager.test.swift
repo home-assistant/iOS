@@ -86,27 +86,28 @@ struct ForceCloseWarningManagerTests {
         }
     }
 
-    /// Saves every shared value these tests touch and restores it after, so they never
-    /// leak state into each other or into unrelated suites sharing the process.
-    private func withForceCloseWorld(
-        isCatalyst: Bool = false,
-        toggle: Bool = false,
-        permission: CLAuthorizationStatus = .notDetermined,
-        _ body: () throws -> Void
-    ) rethrows {
-        let previousToggle = Current.settingsStore.forceCloseWarningEnabled
-        let previousCatalyst = Current.isCatalyst
-        let previousPermission = Current.location.permissionStatus
-        defer {
-            Current.settingsStore.forceCloseWarningEnabled = previousToggle
-            Current.isCatalyst = previousCatalyst
-            Current.location.permissionStatus = previousPermission
-        }
-        Current.isCatalyst = isCatalyst
-        Current.settingsStore.forceCloseWarningEnabled = toggle
-        Current.location.permissionStatus = { permission }
-        try body()
+}
+
+/// Saves every shared value these tests touch and restores it after, so they never
+/// leak state into each other or into unrelated suites sharing the process.
+private func withForceCloseWorld(
+    isCatalyst: Bool = false,
+    toggle: Bool = false,
+    permission: CLAuthorizationStatus = .notDetermined,
+    _ body: () throws -> Void
+) rethrows {
+    let previousToggle = Current.settingsStore.forceCloseWarningEnabled
+    let previousCatalyst = Current.isCatalyst
+    let previousPermission = Current.location.permissionStatus
+    defer {
+        Current.settingsStore.forceCloseWarningEnabled = previousToggle
+        Current.isCatalyst = previousCatalyst
+        Current.location.permissionStatus = previousPermission
     }
+    Current.isCatalyst = isCatalyst
+    Current.settingsStore.forceCloseWarningEnabled = toggle
+    Current.location.permissionStatus = { permission }
+    try body()
 }
 
 // `AppDelegate.applicationWillTerminate` is the only caller of `ForceCloseWarningManager.postImmediateWarning`,
@@ -115,14 +116,16 @@ struct ForceCloseWarningManagerTests {
 @Suite(.serialized)
 struct AppDelegateForceCloseTerminationTests {
     @Test func applicationWillTerminateHandsOffToTheWarningManager() {
-        let previousManager = Current.forceCloseWarningManager
-        var posted: [UNNotificationRequest] = []
-        Current.forceCloseWarningManager = ForceCloseWarningManager(addRequest: { posted.append($0) })
-        defer { Current.forceCloseWarningManager = previousManager }
+        withForceCloseWorld(toggle: true, permission: .authorizedAlways) {
+            let previousManager = Current.forceCloseWarningManager
+            var posted: [UNNotificationRequest] = []
+            Current.forceCloseWarningManager = ForceCloseWarningManager(addRequest: { posted.append($0) })
+            defer { Current.forceCloseWarningManager = previousManager }
 
-        AppDelegate().applicationWillTerminate(UIApplication.shared)
+            AppDelegate().applicationWillTerminate(UIApplication.shared)
 
-        #expect(posted.count == 1)
-        #expect(posted.first?.identifier == ForceCloseWarningManager.notificationIdentifier)
+            #expect(posted.count == 1)
+            #expect(posted.first?.identifier == ForceCloseWarningManager.notificationIdentifier)
+        }
     }
 }
