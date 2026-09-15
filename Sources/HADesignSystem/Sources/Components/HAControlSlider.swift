@@ -24,6 +24,7 @@ public struct HAControlSlider: View {
     private let isDisabled: Bool
     private let label: String?
     private let trackGradient: Gradient?
+    private let fillColor: Color
     @Binding private var value: Double
 
     /// - Parameters:
@@ -32,6 +33,8 @@ public struct HAControlSlider: View {
     ///   - trackGradient: Paints the track with a gradient instead of the flat recess, and drops the
     ///     fill. This is what the light colour-temperature feature is: the track itself is the
     ///     scale, from warm to cool, and a cursor marks where on it you are.
+    ///   - fillColor: What the filled part is painted with. Defaults to the brand colour; a light's
+    ///     brightness slider passes the light's own colour, the way the frontend tints it.
     public init(
         value: Binding<Double>,
         scale: HASliderScale = HASliderScale(),
@@ -40,7 +43,8 @@ public struct HAControlSlider: View {
         showsHandle: Bool = false,
         isDisabled: Bool = false,
         label: String? = nil,
-        trackGradient: Gradient? = nil
+        trackGradient: Gradient? = nil,
+        fillColor: Color = .haPrimary
     ) {
         _value = value
         self.scale = scale
@@ -50,6 +54,7 @@ public struct HAControlSlider: View {
         self.isDisabled = isDisabled
         self.label = label
         self.trackGradient = trackGradient
+        self.fillColor = fillColor
     }
 
     private static let thickness: CGFloat = 40
@@ -116,7 +121,7 @@ public struct HAControlSlider: View {
         switch mode {
         case .start, .end:
             RoundedRectangle(cornerRadius: Self.cornerRadius)
-                .fill(Color.haPrimary)
+                .fill(fillColor)
                 // The grip belongs to the bar, so it is overlaid before the alignment frame below —
                 // on that frame it would land at the end of the whole track instead.
                 .overlay(alignment: handleAlignment) {

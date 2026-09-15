@@ -24,6 +24,10 @@ public struct HomeDashboardCardView: View {
             HomePictureEntityCardView(config: picture)
         case let .emptyState(empty):
             HomeEmptyStateCardView(config: empty)
+        case let .mediaControl(media):
+            HomeMediaControlCardView(config: media)
+        case let .entities(entities):
+            HomeEntitiesCardView(config: entities)
         }
     }
 }

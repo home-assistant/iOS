@@ -44,6 +44,8 @@ public enum HomeDashboardStrategy {
         let areaViews = registry.areas.compactMap { area in
             HomeAreaStrategy.generate(areaId: area.id, config: config, registry: registry, strings: strings)
         }
-        return HomeDashboardConfig(views: [overview] + areaViews)
+        let mediaPlayers = HomeMediaPlayersStrategy.generate(registry: registry, strings: strings)
+        let otherDevices = HomeOtherDevicesStrategy.generate(config: config, registry: registry, strings: strings)
+        return HomeDashboardConfig(views: [overview] + areaViews + [mediaPlayers, otherDevices])
     }
 }

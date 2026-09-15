@@ -18,24 +18,23 @@ public struct HomeSummaryCardView: View {
             color: HomeDashboardNamedColor.color(config.summary.colorName) ?? .haPrimary,
             primary: config.title,
             secondary: subtitle,
-            isActive: activeCount > 0,
+            isActive: isActive,
             onTap: config.tapAction.map { action in { context.perform(action) } }
         )
     }
 
-    /// How many of the summary's entities are doing something, which is the line the frontend puts
-    /// under the title — "3 on", "2 unlocked".
-    private var activeCount: Int {
-        config.entityIds.count { context.presentation(of: $0)?.isActive == true }
+    /// Whether the summary's colour comes through: something it counts is doing something.
+    private var isActive: Bool {
+        config.entityIds.contains { context.presentation(of: $0)?.isActive == true }
     }
 
     private var subtitle: String? {
-        guard !config.entityIds.isEmpty else {
-            return nil
-        }
-        return activeCount > 0
-            ? context.strings.summaryActiveCount(activeCount)
-            : context.strings.summaryNoneActive
+        HomeSummarySubtitle.subtitle(
+            for: config.summary,
+            entityIds: config.entityIds,
+            registry: context.registry,
+            strings: context.strings
+        )
     }
 }
 

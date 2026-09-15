@@ -38,7 +38,8 @@ public struct HomeBrightnessFeatureView: View {
                 }
             ),
             scale: Self.scale,
-            label: context.strings.brightness
+            label: context.strings.brightness,
+            fillColor: context.presentation(of: entityId)?.color ?? .haPrimary
         )
         .frame(height: 40)
         .onChange(of: serverBrightness) { _ in

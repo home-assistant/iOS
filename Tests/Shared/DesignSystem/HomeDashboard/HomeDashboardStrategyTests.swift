@@ -21,6 +21,8 @@ struct HomeDashboardStrategyTests {
             "areas-bedroom",
             "areas-bathroom",
             "areas-garage",
+            "media-players",
+            "other-devices",
         ])
         // Counted rather than `allSatisfy`, which SwiftFormat rewrites to a key path that `#expect`
         // then refuses to expand.
@@ -301,6 +303,42 @@ struct HomeDashboardStrategyTests {
         }
         #expect(card.title == "This is a blank canvas")
         #expect(card.icon == "mdi:home-roof")
+    }
+
+    // MARK: - The extra views
+
+    @Test func groupsEveryMediaPlayerByTheRoomItIsIn() {
+        let view = dashboard().view(path: "media-players")
+        #expect(view?.title == "Media players")
+        let ground = view?.content.sections.first { $0.id == "floor:ground_floor" }
+        #expect(headings(of: ground) == ["Ground floor", "Living room"])
+        #expect(entityIds(of: ground) == ["media_player.living_room"])
+    }
+
+    @Test func listsTheDevicesThatBelongToNoRoom() {
+        let view = dashboard().view(path: "other-devices")
+        let printer = view?.content.sections.first { $0.id == "device:printer" }
+        #expect(headings(of: printer) == ["Printer"])
+        guard case let .entities(list)? = printer?.cards.last else {
+            Issue.record("A device's leftovers should be one list")
+            return
+        }
+        #expect(list.entityIds == ["sensor.printer_ink"])
+    }
+
+    @Test func saysSoWhenEveryDeviceHasARoom() {
+        let tidy = HomeRegistry(
+            areas: [HomeArea(id: "kitchen", name: "Kitchen")],
+            devices: [HomeDevice(id: "lamp", name: "Lamp", areaId: "kitchen")],
+            entities: [HomeEntityRegistration(id: "light.kitchen", deviceId: "lamp")],
+            states: [HomeEntityState(id: "light.kitchen", state: "on")]
+        )
+        let view = HomeDashboardStrategy.generate(registry: tidy).view(path: "other-devices")
+        guard case let .panel(cards) = view?.content, case let .emptyState(card) = cards[0] else {
+            Issue.record("A tidy home should show the empty state")
+            return
+        }
+        #expect(card.title == "All devices are organized")
     }
 
     // MARK: - Helpers

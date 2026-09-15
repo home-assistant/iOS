@@ -9,6 +9,8 @@ public enum HomeDashboardCardConfig: Identifiable, Equatable, Sendable {
     case summary(HomeSummaryCardConfig)
     /// A camera, which the strategy shows as its picture rather than as a tile.
     case pictureEntity(HomePictureEntityCardConfig)
+    case mediaControl(HomeMediaControlCardConfig)
+    case entities(HomeEntitiesCardConfig)
     case emptyState(HomeEmptyStateCardConfig)
 
     public var id: String {
@@ -18,6 +20,8 @@ public enum HomeDashboardCardConfig: Identifiable, Equatable, Sendable {
         case let .tile(config): "tile:\(config.entityId)"
         case let .summary(config): "summary:\(config.summary.rawValue)"
         case let .pictureEntity(config): "picture:\(config.entityId)"
+        case let .mediaControl(config): "media:\(config.entityId)"
+        case let .entities(config): "entities:\(config.id)"
         case let .emptyState(config): "empty:\(config.title)"
         }
     }
@@ -26,11 +30,13 @@ public enum HomeDashboardCardConfig: Identifiable, Equatable, Sendable {
     /// whole row; an area card takes a third, which is what puts three rooms side by side.
     public var columns: Int {
         switch self {
-        case .heading, .emptyState: 12
+        case .heading, .emptyState, .entities: 12
         case .area: 4
         case let .tile(config): config.columns
         case let .summary(config): config.columns
         case .pictureEntity: 6
+        // A now-playing card is as wide as the section: it carries artwork and a row of controls.
+        case .mediaControl: 12
         }
     }
 
@@ -40,7 +46,8 @@ public enum HomeDashboardCardConfig: Identifiable, Equatable, Sendable {
         switch self {
         case let .tile(config): config.entityId
         case let .pictureEntity(config): config.entityId
-        case .heading, .area, .summary, .emptyState: nil
+        case let .mediaControl(config): config.entityId
+        case .heading, .area, .summary, .emptyState, .entities: nil
         }
     }
 }

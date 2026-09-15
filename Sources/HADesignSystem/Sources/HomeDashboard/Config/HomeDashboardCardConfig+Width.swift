@@ -25,7 +25,7 @@ public extension HomeDashboardCardConfig {
                 tapAction: config.tapAction,
                 columns: 12
             ))
-        case .heading, .area, .pictureEntity, .emptyState:
+        case .heading, .area, .pictureEntity, .emptyState, .mediaControl, .entities:
             self
         }
     }
