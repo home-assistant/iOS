@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import PromiseKit
 
 public extension DatabaseQueue {
     // Following GRDB cocnurrency rules, we have just one database instance
@@ -207,6 +208,52 @@ public final class AppDatabaseSuspension {
     public static func suspendIfIdle() {
         shared.suspendIfIdle()
     }
+
+    public static func performProtectedWork(
+        named name: BackgroundTask,
+        _ work: @escaping @Sendable () -> Void
+    ) {
+        shared.performProtectedWork(named: name, work)
+    }
+
+    /// Runs synchronous database `work` off the main thread while holding a background task, then
+    /// hands the database back to whatever state the lifecycle wants.
+    ///
+    /// Work that can straddle the foreground→background transition is what the app's two biggest
+    /// 0xdead10cc terminations were: with no background task held, the process gets frozen while a
+    /// statement is mid-flight and still holding the app-group SQLite file lock. Holding one keeps
+    /// the process alive until the statement finishes; if the system expires it first, GRDB is
+    /// suspended instead, which aborts the statement and releases the lock before the freeze.
+    func performProtectedWork(named name: BackgroundTask, _ work: @escaping @Sendable () -> Void) {
+        let (untilWorkEnds, workEndSeal) = Promise<Void>.pending()
+        Current.backgroundTask(withName: name.rawValue) { _ in untilWorkEnds }
+            .catch { [self] _ in
+                // Out of background time: abort whatever is in flight so the file lock is released
+                // before the process freezes. The caller picks the work up on its next update.
+                suspend()
+            }
+        beginProtectedAccess()
+        Self.workQueue.async { [self] in
+            work()
+            // `suspend()` sets `wantsSuspension` again, so a still-set flag is how we learn the app
+            // backgrounded while the work ran and the database has to go back to suspended.
+            endProtectedAccess(suspend: lifecycleWantsSuspension)
+            workEndSeal.fulfill(())
+        }
+    }
+
+    private var lifecycleWantsSuspension: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return wantsSuspension
+    }
+
+    /// Serializes protected work: two long statements in flight at once would each extend the
+    /// window in which the other can be caught by suspension.
+    private static let workQueue = DispatchQueue(
+        label: "io.robbie.HomeAssistant.database-protected-work",
+        qos: .utility
+    )
 
     /// Resume the database for one background access and register it as in flight. Every call must be
     /// balanced with `endProtectedAccess(suspend:)`, which re-suspends only once the last access ends.

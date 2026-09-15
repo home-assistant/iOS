@@ -121,7 +121,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Skip on background location launches: the stand-by view is not shown then, and
         // spinning up WebKit off-screen risks the app being terminated for doing too much work.
         if !launchingForLocation {
-            AnimatedSVGWebViewCache.shared.preload(HomeAssistantStandByView.loadingLogoResourceName)
+            setupStandByLogoPreload()
         }
 
         let event = ClientEvent(
@@ -501,6 +501,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupUIApplicationShortcutItems() {
         AppIconShortcutItemsUpdater.update()
+    }
+
+    private var standByLogoPreloadObserver: Any?
+
+    /// Warms the stand-by logo's web view on the first activation instead of during
+    /// `didFinishLaunching`. Building the `WKWebView` inline spins up a whole WebKit content
+    /// process, which measured as half of the app's launch time — and the stand-by view is never on
+    /// screen during launch, so nothing needs it that early.
+    private func setupStandByLogoPreload() {
+        standByLogoPreloadObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            // `queue: .main` is what makes this delivery main-thread, which the compiler can't see.
+            MainActor.assumeIsolated {
+                AnimatedSVGWebViewCache.shared.preload(HomeAssistantStandByView.loadingLogoResourceName)
+                guard let observer = self?.standByLogoPreloadObserver else { return }
+                NotificationCenter.default.removeObserver(observer)
+                self?.standByLogoPreloadObserver = nil
+            }
+        }
     }
 
     private func migrateIfNeeded() {

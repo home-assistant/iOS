@@ -79,16 +79,22 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
             )
         }
 
-        do {
-            try Current.database().write { db in
-                try AppPanel.filter(Column(DatabaseTables.AppPanel.serverId.rawValue) == server.identifier.rawValue)
-                    .deleteAll(db)
-                for panel in appPanels {
-                    try panel.save(db)
+        // The write used to run wherever the `.panels()` promise resolved — the main thread — with no
+        // background task held, so backgrounding mid-commit froze the process while it still held the
+        // app-group SQLite file lock (0xdead10cc, the app's second-largest crash).
+        let serverId = server.identifier.rawValue
+        AppDatabaseSuspension.performProtectedWork(named: .panelsSave) {
+            do {
+                try Current.database().write { db in
+                    try AppPanel.filter(Column(DatabaseTables.AppPanel.serverId.rawValue) == serverId)
+                        .deleteAll(db)
+                    for panel in appPanels {
+                        try panel.save(db)
+                    }
                 }
+            } catch {
+                Current.Log.error("Error saving panels in database: \(error)")
             }
-        } catch {
-            Current.Log.error("Error saving panels in database: \(error)")
         }
     }
 }
