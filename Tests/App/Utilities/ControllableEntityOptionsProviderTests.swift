@@ -191,6 +191,25 @@ struct ControllableEntityOptionsProviderTests {
         }
     }
 
+    /// An area id names its domain, and an id that was valid once must keep resolving: a shortcut saved
+    /// against a room's thermostats still works after thermostats stop being offered by voice.
+    @Test func theSharedQueryResolvesAnAreaIdOfADomainNoLongerOffered() async throws {
+        try await withFakeServer { serverId in
+            try await seed(serverId: serverId, entities: [
+                Self.makeEntity(serverId: serverId, entityId: "climate.hall", name: "Hall"),
+            ])
+            try await seedArea(serverId: serverId, name: "Hall", entities: ["climate.hall"])
+            let saved = AreaTarget(areaId: "area", areaName: "Hall", domain: .climate).id(serverId: serverId)
+
+            let offered = try await ControllableEntityOptionsProvider().results()
+                .sections.flatMap(\.items).map(\.value.id)
+            let resolved = try await HAAppEntityAppIntentEntityQuery().entities(for: [saved])
+
+            #expect(!offered.contains(saved))
+            #expect(resolved.first?.areaTarget?.domain == .climate)
+        }
+    }
+
     /// An area is addressed by room and an entity by id, which is the whole difference between the two
     /// on the wire.
     @Test func anAreaTargetsItsRoomAndAnEntityTargetsItself() {

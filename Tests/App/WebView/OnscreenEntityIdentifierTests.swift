@@ -76,10 +76,10 @@ struct OnscreenEntityIdentifierTests {
         }
     }
 
-    /// A lock is out of reach of the spoken on/off command, so the type its own command takes leads,
-    /// and the shared one follows for "what is this" and the add-to command.
-    @Test("A lock leads with the type the lock command takes")
-    func aLockLeadsWithItsOwnType() async throws {
+    /// The shared type leads so that "what is this" and the add-to command keep working where the
+    /// activity is all the system reads; the lock command's own type follows for "lock this".
+    @Test("A lock leads with the shared entity and also answers to the lock type")
+    func aLockIsNamedTwiceSharedFirst() async throws {
         guard #available(iOS 18.2, *) else { return }
         try await withDatabase { serverId in
             try seed(entityId: "lock.front_door", serverId: serverId)
@@ -89,15 +89,14 @@ struct OnscreenEntityIdentifierTests {
                 .map(\.entityType)
 
             #expect(types.count == 2)
-            #expect(types.first == LockAppEntity.self)
-            #expect(types.contains { $0 == HAAppEntityAppIntentEntity.self })
+            #expect(types.first == HAAppEntityAppIntentEntity.self)
+            #expect(types.contains { $0 == LockAppEntity.self })
         }
     }
 
-    /// "Set this to 21" is how a thermostat is asked for, so the type the temperature command takes
-    /// leads.
-    @Test("A thermostat leads with the type the set-temperature command takes")
-    func aThermostatLeadsWithItsOwnType() async throws {
+    /// Same shape for a thermostat: shared first, then the type "set this to 21" takes.
+    @Test("A thermostat leads with the shared entity and also answers to the thermostat type")
+    func aThermostatIsNamedTwiceSharedFirst() async throws {
         guard #available(iOS 18.2, *) else { return }
         try await withDatabase { serverId in
             try seed(entityId: "climate.hall", serverId: serverId)
@@ -107,8 +106,8 @@ struct OnscreenEntityIdentifierTests {
                 .map(\.entityType)
 
             #expect(types.count == 2)
-            #expect(types.first == ThermostatAppEntity.self)
-            #expect(types.contains { $0 == HAAppEntityAppIntentEntity.self })
+            #expect(types.first == HAAppEntityAppIntentEntity.self)
+            #expect(types.contains { $0 == ThermostatAppEntity.self })
         }
     }
 

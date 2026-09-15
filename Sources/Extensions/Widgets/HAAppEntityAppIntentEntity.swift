@@ -118,12 +118,13 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     /// Every area this server offers as a target, built the one way so the list that offers them and
     /// the query that reads them back can never disagree on an id.
     ///
-    /// Resolution passes every domain an area can be targeted for; an option list passes the narrower
-    /// set it means to offer, and gets a subset of the same ids.
+    /// Resolution passes every domain an area can be targeted for, so an id saved while a domain was
+    /// still offered keeps resolving after it is not; an option list passes the narrower set it means
+    /// to offer, and gets a subset of the same ids.
     static func areaTargets(
         for server: Server,
         matching string: String?,
-        domains: [Domain] = Domain.voiceControllable
+        domains: [Domain] = AreaTarget.bulkDomains
     ) -> [HAAppEntityAppIntentEntity] {
         AreaTargetProvider.targets(for: server, domains: domains, matching: string)
             .map {
