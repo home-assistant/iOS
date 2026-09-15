@@ -157,7 +157,7 @@ struct ReadableEntityOptionsProviderTests {
 
 /// The question itself: the entity it names, and what it reads back.
 struct GetEntityStateAppIntentTests {
-    private static func entity(serverId: String) -> HAAppEntityAppIntentEntity {
+    private static func entity(serverId: String) -> ReadableEntityAppEntity {
         .init(
             id: "\(serverId)-sensor.humidity",
             entityId: "sensor.humidity",
