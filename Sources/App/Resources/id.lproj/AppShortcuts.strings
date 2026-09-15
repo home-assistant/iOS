@@ -1,9 +1,9 @@
 "${applicationName} close ${entity}" = "${applicationName} tutup ${entity}";
 "${applicationName} dim ${light}" = "${applicationName} redupkan ${light}";
 "${applicationName} is ${entity} on" = "${applicationName} apakah ${entity} menyala";
-"${applicationName} lock ${entity}" = "${applicationName} kunci ${entity}";
 "${applicationName} open ${entity}" = "${applicationName} buka ${entity}";
 "${applicationName} set a temperature" = "${applicationName} atur suhu";
+"${applicationName} show ${target}" = "${applicationName} tampilkan ${target}";
 "${applicationName} turn off ${entity}" = "${applicationName} matikan ${entity}";
 "${applicationName} turn on ${entity}" = "${applicationName} nyalakan ${entity}";
 "Check an entity in ${applicationName}" = "Periksa entitas di ${applicationName}";
@@ -12,13 +12,14 @@
 "Dim ${light} in ${applicationName}" = "Redupkan ${light} di ${applicationName}";
 "Get an entity state from ${applicationName}" = "Dapatkan status entitas dari ${applicationName}";
 "Is ${entity} on in ${applicationName}" = "Apakah ${entity} menyala di ${applicationName}";
-"Lock ${entity} in ${applicationName}" = "Kunci ${entity} di ${applicationName}";
-"Lock something in ${applicationName}" = "Kunci sesuatu di ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Buka ${entity} di ${applicationName}";
+"Open ${target} details in ${applicationName}" = "Buka detail ${target} di ${applicationName}";
 "Open something in ${applicationName}" = "Buka sesuatu di ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Atur suhu ${entity} di ${applicationName}";
 "Set a brightness in ${applicationName}" = "Atur kecerahan di ${applicationName}";
 "Set a temperature in ${applicationName}" = "Atur suhu di ${applicationName}";
+"Show ${target} in ${applicationName}" = "Tampilkan ${target} di ${applicationName}";
+"Show something in ${applicationName}" = "Tampilkan sesuatu di ${applicationName}";
 "Turn off ${entity} in ${applicationName}" = "Matikan ${entity} di ${applicationName}";
 "Turn on ${entity} in ${applicationName}" = "Nyalakan ${entity} di ${applicationName}";
 "Turn something off in ${applicationName}" = "Matikan sesuatu di ${applicationName}";

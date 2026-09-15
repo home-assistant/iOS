@@ -16,6 +16,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let server: Server
 
     var urlObserver: NSKeyValueObservation?
+    var windowTitleObserver: NSKeyValueObservation?
+    /// Watches `.siriEntityExposureDidChange` so the page published on `userActivity` follows the
+    /// user's Siri exposure setting; see `WebViewController+OnscreenPage`.
+    var siriExposureObserver: NSObjectProtocol?
+    var emptyStateTitleObserver: AnyCancellable?
     var tokens = [HACancellable]()
 
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
@@ -64,7 +69,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Set by `FrontendView`; lets connection/URL state drive SwiftUI overlays in `HomeAssistantView`
     /// instead of UIKit modals presented from here.
-    var overlayState: WebFrontendOverlayState?
+    var overlayState: WebFrontendOverlayState? {
+        didSet {
+            observeEmptyStateForWindowTitle()
+        }
+    }
 
     /// Set by `FrontendView` so retry can rebuild the SwiftUI-hosted web view when WebKit is stuck.
     var resetFrontendAction: (() -> Void)?
@@ -84,6 +93,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+
+    /// Where the window's title lands; replaceable in tests, which all share the host process's one scene.
+    var applyWindowSceneTitle: @MainActor (UIWindowScene, String) -> Void = { windowScene, title in
+        windowScene.title = title
+    }
 
     /// How far down a view must start to clear the window controls; replaceable in tests, which have none.
     var cornerAdaptedSafeAreaTop: @MainActor (UIView) -> CGFloat = { view in
@@ -229,6 +243,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     deinit {
         tabBarAssistZoomAnchor?.removeFromSuperview()
         self.urlObserver = nil
+        self.windowTitleObserver = nil
+        if let siriExposureObserver {
+            NotificationCenter.default.removeObserver(siriExposureObserver)
+        }
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
         loadActiveURLTask?.cancel()
@@ -252,6 +270,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         observeConnectionNotifications()
         setupKioskModeObservation()
+        observeSiriExposureForOnscreenPage()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
 
@@ -299,6 +318,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupGestures(numberOfTouchesRequired: 3)
         setupEdgeGestures()
         setupURLObserver()
+        setupWindowTitleObserver()
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -355,6 +375,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
+        updateWindowSceneTitle()
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        updateWindowSceneTitle()
     }
 
     override func viewWillDisappear(_ animated: Bool) {

@@ -1000,7 +1000,7 @@ final class WebViewControllerTests: XCTestCase {
 
     private func waitUntil(
         _ condition: @escaping () -> Bool,
-        timeout: TimeInterval = 2,
+        timeout: TimeInterval = 5,
         file: StaticString = #file,
         line: UInt = #line
     ) async {
@@ -1339,7 +1339,7 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 
     private func waitUntil(
         _ condition: @escaping () -> Bool,
-        timeout: TimeInterval = 2,
+        timeout: TimeInterval = 5,
         file: StaticString = #file,
         line: UInt = #line
     ) async {

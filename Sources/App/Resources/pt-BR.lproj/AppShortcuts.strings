@@ -1,9 +1,9 @@
 "${applicationName} close ${entity}" = "${applicationName} fechar ${entity}";
 "${applicationName} dim ${light}" = "${applicationName} diminuir ${light}";
 "${applicationName} is ${entity} on" = "${applicationName} ${entity} está ligado";
-"${applicationName} lock ${entity}" = "${applicationName} trancar ${entity}";
 "${applicationName} open ${entity}" = "${applicationName} abrir ${entity}";
 "${applicationName} set a temperature" = "${applicationName} ajustar uma temperatura";
+"${applicationName} show ${target}" = "${applicationName} mostrar ${target}";
 "${applicationName} turn off ${entity}" = "${applicationName} desligar ${entity}";
 "${applicationName} turn on ${entity}" = "${applicationName} ligar ${entity}";
 "Check an entity in ${applicationName}" = "Verificar uma entidade no ${applicationName}";
@@ -12,13 +12,14 @@
 "Dim ${light} in ${applicationName}" = "Diminuir ${light} no ${applicationName}";
 "Get an entity state from ${applicationName}" = "Obter o estado de uma entidade do ${applicationName}";
 "Is ${entity} on in ${applicationName}" = "${entity} está ligado no ${applicationName}";
-"Lock ${entity} in ${applicationName}" = "Trancar ${entity} no ${applicationName}";
-"Lock something in ${applicationName}" = "Trancar algo no ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Abrir ${entity} no ${applicationName}";
+"Open ${target} details in ${applicationName}" = "Abrir os detalhes de ${target} no ${applicationName}";
 "Open something in ${applicationName}" = "Abrir algo no ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Ajustar a temperatura de ${entity} no ${applicationName}";
 "Set a brightness in ${applicationName}" = "Ajustar o brilho no ${applicationName}";
 "Set a temperature in ${applicationName}" = "Ajustar uma temperatura no ${applicationName}";
+"Show ${target} in ${applicationName}" = "Mostrar ${target} no ${applicationName}";
+"Show something in ${applicationName}" = "Mostrar algo no ${applicationName}";
 "Turn off ${entity} in ${applicationName}" = "Desligar ${entity} no ${applicationName}";
 "Turn on ${entity} in ${applicationName}" = "Ligar ${entity} no ${applicationName}";
 "Turn something off in ${applicationName}" = "Desligar algo no ${applicationName}";
