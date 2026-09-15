@@ -145,16 +145,90 @@ public extension HomeAssistantAPI {
         return HACalendarEvent.dayFormatter.string(from: day)
     }
 
+    /// How long a calendar command waits for an answer before it gives up.
+    ///
+    /// HAKit queues a WebSocket command until the connection is ready and never times it out, so a
+    /// process woken in the background to run an App Intent against a server it cannot reach waits
+    /// forever: Siri eventually fails on its own, telling the user nothing and leaving no trace.
+    internal static var commandTimeout: TimeInterval = 15
+
     private func send<T: HADataDecodable>(_ request: HATypedRequest<T>) async throws -> T {
-        try await withCheckedThrowingContinuation { continuation in
-            connection.send(request) { result in
-                switch result {
-                case let .success(value):
-                    continuation.resume(returning: value)
-                case let .failure(error):
-                    continuation.resume(throwing: error)
+        let connection = connection
+        return try await PendingCommand<T>().run(timeout: Self.commandTimeout) { completion in
+            connection.send(request, completion: completion)
+        } onTimeout: {
+            Current.Log.error(
+                """
+                Calendar command \(request.request.type.command) timed out after \(Self.commandTimeout)s, \
+                connection is \(connection.state)
+                """
+            )
+        }
+    }
+
+    /// One WebSocket command that finishes exactly once: on the server's answer, or on the timeout.
+    private final class PendingCommand<T>: @unchecked Sendable {
+        private let lock = NSLock()
+        private var continuation: CheckedContinuation<T, any Error>?
+        private var token: HACancellable?
+        private var timeoutWork: DispatchWorkItem?
+
+        func run(
+            timeout seconds: TimeInterval,
+            send: (@escaping (Result<T, HAError>) -> Void) -> HACancellable,
+            onTimeout: @escaping () -> Void
+        ) async throws -> T {
+            try await withCheckedThrowingContinuation { continuation in
+                lock.lock()
+                self.continuation = continuation
+                lock.unlock()
+
+                let work = DispatchWorkItem { [weak self] in
+                    onTimeout()
+                    self?.finish(.failure(ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.timeout)))
                 }
+                lock.lock()
+                timeoutWork = work
+                lock.unlock()
+                DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + seconds, execute: work)
+
+                // Stored after the send so a completion that fires inline still wins the race.
+                store(token: send { [weak self] result in
+                    self?.finish(result.mapError { $0 as any Error })
+                })
             }
+        }
+
+        private func store(token: HACancellable) {
+            lock.lock()
+            let isFinished = continuation == nil
+            if !isFinished {
+                self.token = token
+            }
+            lock.unlock()
+            if isFinished {
+                token.cancel()
+            }
+        }
+
+        private func finish(_ result: Result<T, any Error>) {
+            lock.lock()
+            guard let continuation else {
+                lock.unlock()
+                return
+            }
+            self.continuation = nil
+            let token = token
+            self.token = nil
+            let work = timeoutWork
+            timeoutWork = nil
+            lock.unlock()
+
+            work?.cancel()
+            if case .failure = result {
+                token?.cancel()
+            }
+            continuation.resume(with: result)
         }
     }
 

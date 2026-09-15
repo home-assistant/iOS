@@ -583,6 +583,8 @@ public enum L10n {
         }
         /// The end must not be before the start
         public static var invalidDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.invalid_duration") }
+        /// Home Assistant did not answer in time, check your connection and try again
+        public static var timeout: String { return L10n.tr("Localizable", "app_intents.calendar.error.timeout") }
         /// That calendar is no longer available
         public static var unknownCalendar: String { return L10n.tr("Localizable", "app_intents.calendar.error.unknown_calendar") }
         /// %@ does not allow editing events

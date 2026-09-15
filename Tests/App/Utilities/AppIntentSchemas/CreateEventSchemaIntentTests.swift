@@ -1,3 +1,5 @@
+import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
 import XCTest
@@ -128,6 +130,58 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
 
+    /// HAKit queues a WebSocket command until the connection is ready and never times it out, so
+    /// the command has to give up on its own instead of leaving Siri waiting on a hang.
+    func testACommandTheServerNeverAnswersTimesOut() async throws {
+        let previousTimeout = HomeAssistantAPI.commandTimeout
+        HomeAssistantAPI.commandTimeout = 0.05
+        defer { HomeAssistantAPI.commandTimeout = previousTimeout }
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
+
+        do {
+            _ = try await sut.perform()
+            XCTFail("expected an unanswered command to time out")
+        } catch {
+            XCTAssertEqual(
+                (error as? ShortcutAppIntentError)?.errorDescription,
+                L10n.AppIntents.Calendar.Error.timeout
+            )
+        }
+        XCTAssertEqual(connection.cancelledRequests.count, 1)
+
+        // An answer that arrives after the command gave up must not resume it a second time.
+        try await request().completion(.success(.dictionary([:])))
+    }
+
+    /// A connection that is already ready answers while the command is still being sent, which is
+    /// the one moment the command has nothing to cancel yet.
+    func testACommandAnsweredAsItIsSentSucceeds() async throws {
+        let api = try XCTUnwrap(Current.api(for: server))
+        let immediate = ImmediateHAConnection()
+        api.connection = immediate
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
+
+        _ = try await sut.perform()
+
+        XCTAssertEqual(immediate.sentCommands, ["calendar/event/create"])
+        XCTAssertEqual(immediate.cancellables.first?.wasCancelled, true)
+    }
+
+    /// Siri reads `localizedStringResource`, so an error without one is reported as a bare failure.
+    func testTheRefusalReachesSiriAsItsOwnMessage() async throws {
+        let sut = try intent(calendar: seedCalendar(name: "Holidays", supportedFeatures: 2))
+
+        do {
+            _ = try await sut.perform()
+            XCTFail("expected a calendar without createEvent to be refused")
+        } catch let error as ShortcutAppIntentError {
+            XCTAssertEqual(
+                String(localized: error.localizedStringResource),
+                L10n.AppIntents.Calendar.Error.createUnsupported("Holidays")
+            )
+        }
+    }
+
     func testAnEventThatEndsBeforeItStartsIsRefused() async throws {
         let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
         sut.endDate = start.addingTimeInterval(-60)
@@ -139,5 +193,85 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
             XCTAssertTrue(error is ShortcutAppIntentError)
         }
         XCTAssertTrue(connection.pendingRequests.isEmpty)
+    }
+
+    /// Answers every command as it is sent, the way a connection that is already ready does.
+    ///
+    /// `HAMockConnection` only queues, and it is not open, so the inline answer needs its own
+    /// connection rather than a subclass.
+    private final class ImmediateHAConnection: HAConnection {
+        weak var delegate: HAConnectionDelegate?
+        var configuration = HAConnectionConfiguration(
+            connectionInfo: { nil },
+            fetchAuthToken: { completion in completion(.success("token")) }
+        )
+        var state: HAConnectionState = .ready(version: "1.0-fake")
+        lazy var caches: HACachesContainer = .init(connection: self)
+        var callbackQueue: DispatchQueue = .main
+
+        private(set) var sentCommands: [String] = []
+        private(set) var cancellables: [HAMockCancellable] = []
+
+        func connect() {}
+
+        func disconnect() {}
+
+        @discardableResult
+        func send(_ request: HARequest, completion: @escaping RequestCompletion) -> HACancellable {
+            sentCommands.append(request.type.command)
+            completion(.success(.dictionary([:])))
+            return record()
+        }
+
+        @discardableResult
+        func send<T>(
+            _ request: HATypedRequest<T>,
+            completion: @escaping (Swift.Result<T, HAError>) -> Void
+        ) -> HACancellable where T: HADataDecodable {
+            sentCommands.append(request.request.type.command)
+            do {
+                try completion(.success(T(data: .dictionary([:]))))
+            } catch {
+                completion(.failure(.underlying(error as NSError)))
+            }
+            return record()
+        }
+
+        @discardableResult
+        func subscribe(to request: HARequest, handler: @escaping SubscriptionHandler) -> HACancellable {
+            record()
+        }
+
+        @discardableResult
+        func subscribe(
+            to request: HARequest,
+            initiated: @escaping SubscriptionInitiatedHandler,
+            handler: @escaping SubscriptionHandler
+        ) -> HACancellable {
+            record()
+        }
+
+        @discardableResult
+        func subscribe<T>(
+            to request: HATypedSubscription<T>,
+            handler: @escaping (HACancellable, T) -> Void
+        ) -> HACancellable {
+            record()
+        }
+
+        @discardableResult
+        func subscribe<T>(
+            to request: HATypedSubscription<T>,
+            initiated: @escaping SubscriptionInitiatedHandler,
+            handler: @escaping (HACancellable, T) -> Void
+        ) -> HACancellable {
+            record()
+        }
+
+        private func record() -> HAMockCancellable {
+            let cancellable = HAMockCancellable {}
+            cancellables.append(cancellable)
+            return cancellable
+        }
     }
 }
