@@ -1,7 +1,8 @@
 import Combine
 import Foundation
+import GRDB
 @testable import HomeAssistant
-import Shared
+@testable import Shared
 import Testing
 
 /// Flips the App Labs tab bar flag in the store the way the App Labs screen does and checks what follows it.
@@ -47,6 +48,56 @@ struct NativeTabBarEnabledStateTests {
         state.requestMore()
         #expect(moreRequests == 1)
         cancellable.cancel()
+    }
+
+    /// Kiosk mode belongs to the kiosk settings alone. The tab bar gets the layout it needs from
+    /// `hasSidebar`, and kiosk mode would also take the dashboard's Add, Search and Edit buttons with it.
+    @Test("The tab bar leaves the frontend's kiosk mode to the kiosk settings")
+    func tabBarDoesNotEnableKioskMode() async throws {
+        let previousIsTestFlight = Current.isTestFlight
+        let previousDatabase = Current.database
+        let previousKiosk = Current.kiosk
+        let previousSensors = Current.sensors
+        Current.isTestFlight = true
+        Current.sensors = SensorContainer()
+        defer {
+            Current.appLabs.setEnabled(false, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
+            Current.isTestFlight = previousIsTestFlight
+            Current.database = previousDatabase
+            Current.kiosk = previousKiosk
+            Current.sensors = previousSensors
+        }
+
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+        Current.database = { database }
+
+        func setKiosk(removingHeaderAndSidebar: Bool) throws {
+            try database.write { db in
+                try KioskSettings(
+                    enabled: removingHeaderAndSidebar,
+                    removeHeaderAndSidebar: removingHeaderAndSidebar
+                ).insert(db, onConflict: .replace)
+            }
+            Current.kiosk = KioskModeManager()
+        }
+
+        try await setTabBar(enabled: true)
+        try setKiosk(removingHeaderAndSidebar: false)
+
+        let controller = WebViewController(server: .fake())
+        let handler = MockWebViewExternalMessageHandler()
+        controller.webViewExternalMessageHandler = handler
+
+        controller.updateFrontendKioskMode()
+        #expect(handler.sendExternalBusCommandWithRetryCommand == .kioskModeSet)
+        let withTabBarOnly = handler.sendExternalBusCommandWithRetryPayload?["enable"] as? Bool
+        #expect(withTabBarOnly == false)
+
+        try setKiosk(removingHeaderAndSidebar: true)
+        controller.updateFrontendKioskMode()
+        let withKioskSettings = handler.sendExternalBusCommandWithRetryPayload?["enable"] as? Bool
+        #expect(withKioskSettings == true)
     }
 
     /// The tab bar keeps the sidebar gesture working: it travels to the frontend, which bounces it back
