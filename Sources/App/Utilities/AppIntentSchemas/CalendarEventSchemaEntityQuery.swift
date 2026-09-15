@@ -22,7 +22,7 @@ struct CalendarEventSchemaEntityQuery: EntityQuery, EntityStringQuery {
 
     /// Every cached event, paired with the calendar it belongs to.
     private func events() async -> [CalendarEventSchemaEntity] {
-        let calendars = HACalendar.all()
+        let calendars = CalendarSchemaSupport.exposedCalendars()
         let calendarsById = Dictionary(
             calendars.map { ("\($0.serverId)-\($0.entityId)", $0) },
             uniquingKeysWith: { first, _ in first }

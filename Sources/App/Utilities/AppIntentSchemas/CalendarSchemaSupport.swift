@@ -5,6 +5,27 @@ import Shared
 /// Lookups and validation shared by the calendar schema intents.
 @available(iOS 27.0, *)
 enum CalendarSchemaSupport {
+    /// The calendars Siri may offer, honouring the per-server opt-out.
+    ///
+    /// The schema queries and the event Spotlight index read through this, the same way
+    /// `ControlEntityProvider.getEntitiesExposedToSiri()` covers entities. The rest of the app keeps
+    /// seeing every calendar: the setting is about what is offered to Siri, not about hiding a
+    /// server from the app.
+    static func exposedCalendars() -> [HACalendar] {
+        let hidden = SiriServerExposure.hiddenServerIds()
+        guard !hidden.isEmpty else {
+            return HACalendar.all()
+        }
+        return HACalendar.all().filter { !hidden.contains($0.serverId) }
+    }
+
+    /// One calendar by id, or nil when its server is opted out, so an identifier saved before the
+    /// opt-out stops resolving rather than quietly still working.
+    static func exposedCalendar(id: String) -> HACalendar? {
+        guard let calendar = HACalendar.get(id: id) else { return nil }
+        return SiriServerExposure.hiddenServerIds().contains(calendar.serverId) ? nil : calendar
+    }
+
     /// The stored calendar behind a schema entity, checked for the capability the caller needs.
     ///
     /// Home Assistant advertises `supported_features` per calendar, and a calendar that cannot do

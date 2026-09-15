@@ -18,7 +18,7 @@ struct ReminderListSchemaEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     private func lists() -> [ReminderListSchemaEntity] {
-        ControlEntityProvider(domains: [.todo]).getEntities()
+        ControlEntityProvider(domains: [.todo]).getEntitiesExposedToSiri()
             .flatMap(\.1)
             .map(ReminderListSchemaEntity.init(entity:))
     }
