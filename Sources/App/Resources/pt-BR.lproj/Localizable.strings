@@ -294,7 +294,7 @@
 "app_intents.update_sensors.description" = "Envie uma atualização do sensor para o Home Assistant";
 "app_intents.update_sensors.success" = "Sensores atualizados em todos os servidores";
 "app_intents.update_sensors.title" = "Atualizar sensores";
-"app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
+"app_intents.watch_assist.description" = "Abre o Assist usando o pipeline configurado para o relógio";
 "app_intents.watch_assist.title" = "Assist";
 "app_shortcuts.activate_scene.title" = "Ativar cena";
 "app_shortcuts.ask_assist.title" = "Perguntar ao Assist";
@@ -670,7 +670,7 @@
 "download_manager.downloading.title" = "Baixando";
 "download_manager.failed.title" = "Falha ao baixar o arquivo, erro: %@";
 "download_manager.finished.title" = "Download concluído";
-"edit_label" = "Edit";
+"edit_label" = "Editar";
 "entity_picker.add_selected" = "Adicionar %lld";
 "entity_picker.filter.area.all.title" = "Todas as áreas";
 "entity_picker.filter.area.title" = "Área";
@@ -881,8 +881,8 @@ Este servidor requer um certificado de cliente (mTLS), mas a operação foi canc
 "kiosk.clock.style" = "Estilo do relógio";
 "kiosk.clock.style.digital" = "Digital";
 "kiosk.clock.style.large" = "Grande";
-"kiosk.command_confirmation.footer" = "When enabled, a brief confirmation appears on screen each time a kiosk command runs. Turn it off to run commands without any visual feedback.";
-"kiosk.command_confirmation.title" = "Show command confirmation";
+"kiosk.command_confirmation.footer" = "Quando habilitado, uma breve confirmação aparece na tela sempre que um comando do kiosk é executado. Desligue para executar comandos sem nenhum feedback visual.";
+"kiosk.command_confirmation.title" = "Mostrar confirmação de comando";
 "kiosk.corner.bottom_leading" = "Inferior à esquerda";
 "kiosk.corner.bottom_left" = "Inferior esquerdo";
 "kiosk.corner.bottom_right" = "Inferior direito";
@@ -1196,10 +1196,10 @@ As tags funcionarão em qualquer dispositivo com o Home Assistant instalado que 
 "nfc.tag_approval.tag_id.title" = "Identificador de tag";
 "nfc.tag_approval.title" = "Permitir tag?";
 "nfc.tag_read" = "Leitura de tags NFC";
-"nfc.write.deeplink.start_message" = "Bring an NFC tag near your %@ to create a deeplink to this entity";
+"nfc.write.deeplink.start_message" = "Aproxime uma tag NFC do seu %@ para criar um deeplink para esta entidade";
 "nfc.write.error.capacity" = "A tag NFC tem capacidade insuficiente: precisa de %ld mas só tem %ld";
 "nfc.write.error.invalid_format" = "A tag NFC não é o formato NDEF";
-"nfc.write.error.invalid_url" = "This link cannot be written to an NFC tag";
+"nfc.write.error.invalid_url" = "Este link não pode ser gravado em uma tag NFC";
 "nfc.write.error.not_writable" = "A tag NFC é somente leitura";
 "nfc.write.identifier_choice.manual" = "Manual";
 "nfc.write.identifier_choice.message" = "O identificador ajuda a diferenciar várias tags.";
@@ -2916,7 +2916,7 @@ Como nenhuma URL é considerada segura, os dados deste servidor não serão sinc
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Barra de ferramentas do Mac";
-"web_view.add_to.option.NfcTag.title" = "NFC Tag";
+"web_view.add_to.option.NfcTag.title" = "Tag NFC";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Verifique sua conexão ou tente novamente mais tarde. Se o Home Assistant estiver reiniciando, ele se reconectará após ficar online novamente.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Limpar cache e recarregar";
