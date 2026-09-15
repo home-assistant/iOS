@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 struct ConnectionSettingsView: View {
     @StateObject private var viewModel: ConnectionSettingsViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
     @State private var showShareSheet = false
     @State private var showSecurityLevelPicker = false
     @State private var activityViewController: UIActivityViewController?
@@ -323,6 +324,8 @@ struct ConnectionSettingsView: View {
                 .buttonStyle(.plain)
             }
 
+            ConnectionURLsHowItWorksLink(server: viewModel.server)
+
             if viewModel.shouldShowSecurityLevelPicker {
                 Button {
                     showSecurityLevelPicker = true
@@ -497,8 +500,8 @@ struct ConnectionSettingsView: View {
     }
 
     private func dismissAppSettings() {
-        AppSettingsPresenter.shared.isSheetPresented = false
-        AppSettingsPresenter.shared.isPushPresented = false
+        appSettingsPresenter?.isSheetPresented = false
+        appSettingsPresenter?.isPushPresented = false
     }
 
     // MARK: - Delete Section
@@ -551,6 +554,7 @@ extension ConnectionSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.General.DeviceName.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.InternalBaseUrl.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ExternalBaseUrl.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.UrlsHowItWorks.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.refreshServer),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ClientCertificate.header),

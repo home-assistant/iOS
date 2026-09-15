@@ -26,6 +26,8 @@ public enum L10n {
   public static var delete: String { return L10n.tr("Localizable", "delete") }
   /// Done
   public static var doneLabel: String { return L10n.tr("Localizable", "done_label") }
+  /// Edit
+  public static var editLabel: String { return L10n.tr("Localizable", "edit_label") }
   /// Error
   public static var errorLabel: String { return L10n.tr("Localizable", "error_label") }
   /// Help
@@ -309,6 +311,40 @@ public enum L10n {
         public static var name: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.name") }
         /// switches
         public static var switches: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.switches") }
+      }
+    }
+    public enum AddTo {
+      /// Adds a Home Assistant entity to the Apple Watch, CarPlay quick access or the Mac toolbar
+      public static var description: String { return L10n.tr("Localizable", "app_intents.add_to.description") }
+      /// Add entity to
+      public static var title: String { return L10n.tr("Localizable", "app_intents.add_to.title") }
+      public enum Destination {
+        /// Destination
+        public static var name: String { return L10n.tr("Localizable", "app_intents.add_to.destination.name") }
+      }
+      public enum Dialog {
+        /// Added %1$@ to %2$@
+        public static func added(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.add_to.dialog.added", String(describing: p1), String(describing: p2))
+        }
+        /// %1$@ is already in %2$@
+        public static func alreadyAdded(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.add_to.dialog.already_added", String(describing: p1), String(describing: p2))
+        }
+      }
+      public enum Entity {
+        /// Entity
+        public static var name: String { return L10n.tr("Localizable", "app_intents.add_to.entity.name") }
+      }
+      public enum Error {
+        /// %@ isn't available on this device
+        public static func unavailable(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.add_to.error.unavailable", String(describing: p1))
+        }
+        /// %1$@ can't be added to %2$@
+        public static func unsupported(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.add_to.error.unsupported", String(describing: p1), String(describing: p2))
+        }
       }
     }
     public enum AreaTarget {
@@ -1151,6 +1187,12 @@ public enum L10n {
       /// Update sensors
       public static var title: String { return L10n.tr("Localizable", "app_intents.update_sensors.title") }
     }
+    public enum WatchAssist {
+      /// Opens Assist using the pipeline configured for the watch
+      public static var description: String { return L10n.tr("Localizable", "app_intents.watch_assist.description") }
+      /// Assist
+      public static var title: String { return L10n.tr("Localizable", "app_intents.watch_assist.title") }
+    }
   }
 
   public enum AppShortcuts {
@@ -1170,10 +1212,6 @@ public enum L10n {
       /// Get Entity State
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.get_entity_state.title") }
     }
-    public enum Lock {
-      /// Lock
-      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.lock.title") }
-    }
     public enum Open {
       /// Open
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.open.title") }
@@ -1189,6 +1227,10 @@ public enum L10n {
     public enum SetTemperature {
       /// Set Temperature
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.set_temperature.title") }
+    }
+    public enum ShowEntity {
+      /// Show Entity
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.show_entity.title") }
     }
     public enum TurnOff {
       /// Turn Off
@@ -4090,6 +4132,12 @@ public enum L10n {
       }
       /// Tag Written!
       public static var successMessage: String { return L10n.tr("Localizable", "nfc.write.success_message") }
+      public enum Deeplink {
+        /// Bring an NFC tag near your %@ to create a deeplink to this entity
+        public static func startMessage(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "nfc.write.deeplink.start_message", String(describing: p1))
+        }
+      }
       public enum Error {
         /// NFC tag has insufficient capacity: needs %ld but only has %ld
         public static func capacity(_ p1: Int, _ p2: Int) -> String {
@@ -4097,6 +4145,8 @@ public enum L10n {
         }
         /// NFC tag is not NDEF format
         public static var invalidFormat: String { return L10n.tr("Localizable", "nfc.write.error.invalid_format") }
+        /// This link cannot be written to an NFC tag
+        public static var invalidUrl: String { return L10n.tr("Localizable", "nfc.write.error.invalid_url") }
         /// NFC tag is read-only
         public static var notWritable: String { return L10n.tr("Localizable", "nfc.write.error.not_writable") }
       }
@@ -5188,6 +5238,10 @@ public enum L10n {
           public static var zoneOnly: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.zone_only") }
         }
       }
+      public enum NetworkDetectionPermission {
+        /// Detecting your home network means reading its Wi-Fi name, which iOS only shares with apps that have location access. The Precise Location switch is what makes the name readable at all, including while you are using the app. The Always option is needed on top of it to keep reading the name while the app is in the background, for sensors and notifications. Tap here to change your settings.
+        public static var message: String { return L10n.tr("Localizable", "settings.connection_section.network_detection_permission.message") }
+      }
       public enum NoBaseUrl {
         /// No URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
@@ -5218,6 +5272,68 @@ public enum L10n {
           public static var devices: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.devices") }
           /// Updating entities
           public static var entities: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.entities") }
+        }
+      }
+      public enum UrlsHowItWorks {
+        /// Your Home Assistant can be reached in two ways: directly on your home network, or over the internet. The app picks one for every request, and the choice can change as you move.
+        public static var intro: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.intro") }
+        /// Understand Internal vs External URLs
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.title") }
+        public enum Active {
+          /// In use right now
+          public static var header: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.active.header") }
+          /// No URL can be used with the current settings
+          public static var `none`: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.active.none") }
+        }
+        public enum Away {
+          /// When no listed network matches, the Home Assistant Cloud URL is used if cloud is turned on, and the external URL otherwise.
+          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body") }
+          /// Anywhere else
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.title") }
+        }
+        public enum Background {
+          /// Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so without it your home network goes unrecognised and these connect the same way they do when you are away.
+          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.background.body") }
+          /// While the app is in the background
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.background.title") }
+        }
+        public enum Criteria {
+          /// Location access is set to Always
+          public static var alwaysLocation: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.always_location") }
+          /// The Precise Location switch is needed whenever the Wi-Fi name is read. The Always option only adds the background, so without it the internal URL is still used while the app is open. When your network cannot be matched, the app falls back as described above.
+          public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.footer") }
+          /// At least one hardware address listed
+          public static var hardwareAddresses: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.hardware_addresses") }
+          /// On this device
+          public static var header: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.header") }
+          /// Internal URL is set
+          public static var internalUrl: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.internal_url") }
+          /// Connected to a listed network
+          public static var listedNetwork: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.listed_network") }
+          /// Met
+          public static var met: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.met") }
+          /// Not met
+          public static var notMet: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.not_met") }
+          /// Precise Location switch is on
+          public static var preciseLocation: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.precise_location") }
+          /// At least one Wi-Fi network listed
+          public static var ssids: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.criteria.ssids") }
+        }
+        public enum Foreground {
+          /// You get home and open the app. The Wi-Fi name is read right then, it matches a listed network, and the dashboard loads over the internal URL. This already needs the Precise Location switch turned on: with it off iOS hands out an approximate position and never the network name, so the app stays on the external URL even at home.
+          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.foreground.body") }
+          /// While you are using the app
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.foreground.title") }
+        }
+        public enum Home {
+          /// When this device is connected to one of the Wi-Fi networks you listed for this Home Assistant, the internal URL is used. On Mac, a listed hardware address does the same.
+          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.home.body") }
+          /// On your home network
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.home.title") }
+        }
+        public enum SecurityLevel {
+          /// This only decides what happens when the internal URL is the only URL this Home Assistant has and it is not HTTPS. Most secure leaves it unused away from your listed networks, so the app does not connect at all from elsewhere. Less secure lets it be used anywhere. Not configured behaves like Less secure until you choose, and an HTTPS internal URL is used either way.
+          public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.security_level.footer") }
         }
       }
       public enum ValidateError {
@@ -9344,6 +9460,10 @@ public enum L10n {
         public enum MacToolbar {
           /// Mac Toolbar
           public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.MacToolbar.title") }
+        }
+        public enum NfcTag {
+          /// NFC Tag
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.NfcTag.title") }
         }
         public enum Widget {
           /// Widget

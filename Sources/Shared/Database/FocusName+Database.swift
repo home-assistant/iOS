@@ -5,27 +5,35 @@ import GRDB
 // queries.
 public extension FocusName {
     /// Every Focus name the user created, sorted the way the settings screen lists them.
-    static func all() -> [FocusName] {
-        do {
-            return try Current.database().read { db in
-                try FocusName
-                    .order(Column(DatabaseTables.FocusName.name.rawValue))
-                    .fetchAll(db)
-            }
-        } catch {
-            Current.Log.error("Failed to fetch focus names, error: \(error.localizedDescription)")
-            return []
+    ///
+    /// Throws rather than reporting an empty list, which a caller answering iOS about a name it
+    /// already holds must not confuse with the user having deleted it — see the throwing
+    /// `FocusNameAppEntityQuery`.
+    static func fetchAll() throws -> [FocusName] {
+        try Current.database().read { db in
+            try FocusName
+                .order(Column(DatabaseTables.FocusName.name.rawValue))
+                .fetchAll(db)
         }
     }
 
-    static func get(id: String) -> FocusName? {
+    /// Throws when the database can't be read, so "this name is gone" stays distinguishable from
+    /// "I couldn't look". The Focus Filter turns the first into a deactivation, which wipes the
+    /// name the sensors report, so the two must never collapse into each other.
+    static func fetch(id: String) throws -> FocusName? {
+        try Current.database().read { db in
+            try FocusName.fetchOne(db, key: id)
+        }
+    }
+
+    /// The forgiving read, for the settings screen where an empty list is a display problem rather
+    /// than an answer anything acts on.
+    static func all() -> [FocusName] {
         do {
-            return try Current.database().read { db in
-                try FocusName.fetchOne(db, key: id)
-            }
+            return try fetchAll()
         } catch {
-            Current.Log.error("Failed to fetch focus name \(id), error: \(error.localizedDescription)")
-            return nil
+            Current.Log.error("Failed to fetch focus names, error: \(error.localizedDescription)")
+            return []
         }
     }
 

@@ -7,6 +7,7 @@ import WidgetKit
 struct WidgetCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: WidgetCreationViewModel
+    @State private var isEditingItems = false
     private let dismissAction: () -> Void
 
     /// Whether the screen brings its own `NavigationStack`. Off by default because the screen is
@@ -133,31 +134,28 @@ struct WidgetCreationView: View {
                 Label(L10n.Settings.Widgets.Create.AddItem.title, systemSymbol: .plus)
             }
         } header: {
-            Text(verbatim: L10n.Watch.Configuration.Items.title)
+            ReorderableSectionHeader(
+                title: L10n.Watch.Configuration.Items.title,
+                isEditing: $isEditingItems
+            )
         } footer: {
             Text(verbatim: L10n.Settings.Widgets.Create.Footer.title)
         }
     }
 
     private func makeListItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-        return makeListItemRow(item: item, info: itemInfo)
-    }
-
-    @ViewBuilder
-    private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .widget, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
             } label: {
-                itemRow(item: item, info: info)
+                MagicItemConfigurationRow(
+                    item: item,
+                    info: viewModel.magicItemInfo(for: item),
+                    iconColor: .haPrimary,
+                    isReorderIndicatorVisible: isEditingItems
+                )
             }
             Spacer()
             #if targetEnvironment(macCatalyst)
@@ -170,37 +168,6 @@ struct WidgetCreationView: View {
             .buttonStyle(.borderless)
             #endif
         }
-    }
-
-    private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: image(for: item, itemInfo: info, color: .haPrimary))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name(info: info))
-                if let contextSubtitle = info.contextSubtitle {
-                    Text(contextSubtitle)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemSymbol: .line3Horizontal)
-                .foregroundStyle(.gray)
-        }
-    }
-
-    private func image(
-        for item: MagicItem,
-        itemInfo: MagicItem.Info,
-        color: UIColor? = nil
-    ) -> UIImage {
-        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-
-        return icon.image(
-            ofSize: .init(width: 18, height: 18),
-            color: color ?? .init(hex: itemInfo.customization?.iconColor)
-        )
     }
 
     private var widgetPreviewItems: some View {

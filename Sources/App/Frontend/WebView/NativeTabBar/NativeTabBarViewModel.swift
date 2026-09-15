@@ -199,8 +199,9 @@ final class NativeTabBarViewModel: ObservableObject {
         }
     }
 
-    func showAppSettings() {
-        AppSettingsPresenter.shared.presentSettings(zoomingFrom: Self.appSettingsTransitionID)
+    /// The presenter belongs to the scene the tab bar is showing in, so Settings opens in that window only.
+    func showAppSettings(using presenter: AppSettingsPresenter) {
+        presenter.presentSettings(zoomingFrom: Self.appSettingsTransitionID)
     }
 
     // MARK: - Servers

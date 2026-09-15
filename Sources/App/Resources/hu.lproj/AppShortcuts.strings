@@ -1,9 +1,9 @@
 "${applicationName} close ${entity}" = "${applicationName} csukd be ${entity}";
 "${applicationName} dim ${light}" = "${applicationName} tompítsd ${light}";
 "${applicationName} is ${entity} on" = "${applicationName} be van kapcsolva ${entity}";
-"${applicationName} lock ${entity}" = "${applicationName} zárd be ${entity}";
 "${applicationName} open ${entity}" = "${applicationName} nyisd ki ${entity}";
 "${applicationName} set a temperature" = "${applicationName} állíts be hőmérsékletet";
+"${applicationName} show ${target}" = "${applicationName} mutasd ${target}";
 "${applicationName} turn off ${entity}" = "${applicationName} kapcsold ki ${entity}";
 "${applicationName} turn on ${entity}" = "${applicationName} kapcsold be ${entity}";
 "Check an entity in ${applicationName}" = "Ellenőrizz egy entitást a ${applicationName} alkalmazásban";
@@ -12,13 +12,14 @@
 "Dim ${light} in ${applicationName}" = "Tompítsd ${light} a ${applicationName} alkalmazásban";
 "Get an entity state from ${applicationName}" = "Kérd le egy entitás állapotát a ${applicationName} alkalmazásból";
 "Is ${entity} on in ${applicationName}" = "Be van kapcsolva ${entity} a ${applicationName} alkalmazásban";
-"Lock ${entity} in ${applicationName}" = "Zárd be ${entity} a ${applicationName} alkalmazásban";
-"Lock something in ${applicationName}" = "Zárj be valamit a ${applicationName} alkalmazásban";
 "Open ${entity} in ${applicationName}" = "Nyisd ki ${entity} a ${applicationName} alkalmazásban";
+"Open ${target} details in ${applicationName}" = "Nyisd meg ${target} részleteit a ${applicationName} alkalmazásban";
 "Open something in ${applicationName}" = "Nyiss ki valamit a ${applicationName} alkalmazásban";
 "Set ${entity} temperature in ${applicationName}" = "Állítsd be ${entity} hőmérsékletét a ${applicationName} alkalmazásban";
 "Set a brightness in ${applicationName}" = "Állíts be fényerőt a ${applicationName} alkalmazásban";
 "Set a temperature in ${applicationName}" = "Állíts be hőmérsékletet a ${applicationName} alkalmazásban";
+"Show ${target} in ${applicationName}" = "Mutasd ${target} a ${applicationName} alkalmazásban";
+"Show something in ${applicationName}" = "Mutass valamit a ${applicationName} alkalmazásban";
 "Turn off ${entity} in ${applicationName}" = "Kapcsold ki ${entity} a ${applicationName} alkalmazásban";
 "Turn on ${entity} in ${applicationName}" = "Kapcsold be ${entity} a ${applicationName} alkalmazásban";
 "Turn something off in ${applicationName}" = "Kapcsolj ki valamit a ${applicationName} alkalmazásban";

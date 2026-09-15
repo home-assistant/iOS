@@ -94,9 +94,7 @@ struct AssistView: View {
                 viewModel.subscribeForConfigChanges()
             }
             .onChange(of: viewModel.focusOnInput) { newValue in
-                if newValue {
-                    isFirstResponder = true
-                }
+                isFirstResponder = newValue
             }
             .onDisappear {
                 assistSession.inProgress = false

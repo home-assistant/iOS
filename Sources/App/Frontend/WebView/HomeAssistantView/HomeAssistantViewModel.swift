@@ -97,8 +97,7 @@ final class HomeAssistantViewModel: ObservableObject {
             webViewController.webViewExternalMessageHandler.showAssist(
                 server: server,
                 pipeline: "",
-                autoStartRecording: false,
-                focusInputOnAppear: false
+                autoStartRecording: false
             )
         }
         sidebar.onShowNotifications = { [weak self] in
@@ -388,7 +387,9 @@ final class HomeAssistantViewModel: ObservableObject {
     /// Opens the Settings sheet on its compact server picker, activating whatever the user picks. Zooms out of
     /// the stand-by view's server pill, which is the only thing that triggers it.
     func presentServerSelection() {
-        Current.sceneManager.appCoordinator.done { coordinator in
+        // The pill belongs to one window's frontend, so the picker opens on that window's coordinator.
+        let scene = webViewController?.presentationWindow?.windowScene
+        Current.sceneManager.appCoordinator(for: scene).done { coordinator in
             coordinator.selectServer(prompt: nil, zoomsFromStandBy: true) { server in
                 coordinator.activate(server: server)
             }

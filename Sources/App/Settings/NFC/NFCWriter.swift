@@ -28,7 +28,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         }
     }
 
-    init(requiredPayload: [NFCNDEFPayload], optionalPayload: [NFCNDEFPayload]) {
+    init(requiredPayload: [NFCNDEFPayload], optionalPayload: [NFCNDEFPayload], alertMessage: String) {
         self.requiredMessage = NFCNDEFMessage(records: requiredPayload)
         self.optionalMessage = NFCNDEFMessage(records: requiredPayload + optionalPayload)
         (self.promise, self.seal) = Promise<NFCNDEFMessage>.pending()
@@ -39,7 +39,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
             queue: nil,
             invalidateAfterFirstRead: false
         )
-        readerSession.alertMessage = L10n.Nfc.Write.startMessage(Current.device.inspecificModel())
+        readerSession.alertMessage = alertMessage
         readerSession.begin()
     }
 

@@ -1,26 +1,37 @@
+import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import UIKit
 import XCTest
 
 @MainActor
 final class OnboardingStateObservableTests: XCTestCase {
     private var previousServers: ServerManager!
+    private var previousApis: [Identifier<Server>: HomeAssistantAPI]!
     private var firstServer: Server!
     private var secondServer: Server!
 
     override func setUp() {
         super.setUp()
         previousServers = Current.servers
+        previousApis = Current.cachedApis
         let servers = FakeServerManager(initial: 0)
         firstServer = servers.add(identifier: .init(rawValue: "server-1"), serverInfo: .fake())
         secondServer = servers.add(identifier: .init(rawValue: "server-2"), serverInfo: .fake())
         Current.servers = servers
+        // Mocked, so observing a server does not open a websocket to `ServerInfo.fake()`'s URL.
+        Current.cachedApis = [firstServer, secondServer].reduce(into: [:]) { apis, server in
+            let api = HomeAssistantAPI(server: server)
+            api.connection = HAMockConnection()
+            apis[server.identifier] = api
+        }
 
         resetPersistedState()
     }
 
     override func tearDown() {
         Current.servers = previousServers
+        Current.cachedApis = previousApis
         resetPersistedState()
         super.tearDown()
     }
@@ -73,5 +84,62 @@ final class OnboardingStateObservableTests: XCTestCase {
         Current.settingsStore.lastActiveURLPath = "/lovelace/kitchen"
 
         XCTAssertNil(OnboardingStateObservable.restoredInitialPath(for: firstServer))
+    }
+
+    // MARK: - Frontend theme mode
+
+    func testTheServerOnScreenIsWhatDecidesTheAppsAppearance() {
+        Current.settingsStore.lastActiveServerIdentifier = "server-1"
+        let themeMode = ThemeModeProbe()
+        themeMode.remember("dark", for: firstServer)
+        themeMode.remember("light", for: secondServer)
+
+        // Launching straight into a server reads that server's preference.
+        let state = OnboardingStateObservable(themeMode: themeMode.observer)
+        XCTAssertEqual(themeMode.mode(for: firstServer), .dark)
+
+        // Switching server reads the new one's.
+        state.showWebView(for: secondServer)
+        XCTAssertEqual(themeMode.mode(for: secondServer), .light)
+    }
+
+    func testLaunchingIntoOnboardingLeavesTheDeviceInCharge() {
+        Current.servers = FakeServerManager(initial: 0)
+        let themeMode = ThemeModeProbe()
+
+        _ = OnboardingStateObservable(themeMode: themeMode.observer)
+
+        // No server means nobody whose preference to follow, so nothing is overridden.
+        XCTAssertEqual(themeMode.mode(for: firstServer), .automatic)
+    }
+
+    /// A real observer on a scratch defaults suite, reporting to an applier that styles no windows.
+    @MainActor
+    private final class ThemeModeProbe {
+        let observer: FrontendThemeModeObserver
+
+        private let applier = FrontendThemeModeApplier(windowScenes: { [] })
+        private let defaults: UserDefaults
+        private let suiteName: String
+
+        init() {
+            let suiteName = "OnboardingStateObservableTests-\(UUID().uuidString)"
+            let defaults = UserDefaults(suiteName: suiteName)!
+            self.suiteName = suiteName
+            self.defaults = defaults
+            self.observer = FrontendThemeModeObserver(defaults: defaults, applier: applier)
+        }
+
+        deinit {
+            defaults.removePersistentDomain(forName: suiteName)
+        }
+
+        func mode(for server: Server) -> FrontendThemeMode {
+            applier.mode(for: server.identifier)
+        }
+
+        func remember(_ mode: String, for server: Server) {
+            defaults.set(mode, forKey: "frontendThemeMode-\(server.identifier.rawValue)")
+        }
     }
 }

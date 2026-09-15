@@ -16,6 +16,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let server: Server
 
     var urlObserver: NSKeyValueObservation?
+    var windowTitleObserver: NSKeyValueObservation?
+    /// Watches `.siriEntityExposureDidChange` so the page published on `userActivity` follows the
+    /// user's Siri exposure setting; see `WebViewController+OnscreenPage`.
+    var siriExposureObserver: NSObjectProtocol?
+    var emptyStateTitleObserver: AnyCancellable?
     var tokens = [HACancellable]()
 
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
@@ -29,6 +34,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     weak var detachedOverlayController: UIViewController?
     var tabBarAssistZoomAnchor: AssistZoomAnchorView?
     var webViewTopConstraint: NSLayoutConstraint?
+    /// Pins the bottom of `statusBarView`; on iOS it follows the web view's top edge.
+    var statusBarBottomConstraint: NSLayoutConstraint?
     var bannerPresenter: any BannerPresenter = DefaultBannerPresenter()
     var latestLoadError: Error?
 
@@ -62,7 +69,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Set by `FrontendView`; lets connection/URL state drive SwiftUI overlays in `HomeAssistantView`
     /// instead of UIKit modals presented from here.
-    var overlayState: WebFrontendOverlayState?
+    var overlayState: WebFrontendOverlayState? {
+        didSet {
+            observeEmptyStateForWindowTitle()
+        }
+    }
 
     /// Set by `FrontendView` so retry can rebuild the SwiftUI-hosted web view when WebKit is stuck.
     var resetFrontendAction: (() -> Void)?
@@ -82,6 +93,17 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+
+    /// Where the window's title lands; replaceable in tests, which all share the host process's one scene.
+    var applyWindowSceneTitle: @MainActor (UIWindowScene, String) -> Void = { windowScene, title in
+        windowScene.title = title
+    }
+
+    /// How far down a view must start to clear the window controls; replaceable in tests, which have none.
+    var cornerAdaptedSafeAreaTop: @MainActor (UIView) -> CGFloat = { view in
+        guard #available(iOS 26, *) else { return view.safeAreaInsets.top }
+        return view.directionalEdgeInsets(for: .safeArea(cornerAdaptation: .vertical)).top
+    }
 
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
@@ -221,6 +243,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     deinit {
         tabBarAssistZoomAnchor?.removeFromSuperview()
         self.urlObserver = nil
+        self.windowTitleObserver = nil
+        if let siriExposureObserver {
+            NotificationCenter.default.removeObserver(siriExposureObserver)
+        }
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
         loadActiveURLTask?.cancel()
@@ -244,6 +270,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         observeConnectionNotifications()
         setupKioskModeObservation()
+        observeSiriExposureForOnscreenPage()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
 
@@ -291,6 +318,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupGestures(numberOfTouchesRequired: 3)
         setupEdgeGestures()
         setupURLObserver()
+        setupWindowTitleObserver()
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -298,8 +326,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupWebViewConstraints(statusBarView: statusBarView)
 
         // Above the web view so it lands where the frontend draws its Assist button; it takes no touches,
-        // so the button underneath keeps working.
-        assistZoomAnchorView = AssistZoomAnchorView.install(in: view)
+        // so the button underneath keeps working. Aligned to the web view so it follows the frontend's offset.
+        assistZoomAnchorView = AssistZoomAnchorView.install(in: view, alignedTo: webView)
 
         NotificationCenter.default.addObserver(
             self,
@@ -320,6 +348,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         onWebViewLoaded?(self)
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateWindowControlsInset()
+    }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updateWindowControlsInset()
+    }
+
     /// Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -337,6 +375,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
+        updateWindowSceneTitle()
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        updateWindowSceneTitle()
     }
 
     override func viewWillDisappear(_ animated: Bool) {

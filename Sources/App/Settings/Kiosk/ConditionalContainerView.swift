@@ -4,10 +4,17 @@ import SwiftUI
 
 struct ConditionalContainerView: View {
     @StateObject private var kiosk = Current.kiosk
-    @ObservedObject private var appSettings = AppSettingsPresenter.shared
+    /// Settings is presented per scene: iPad multi-window keeps one container (and one presenter) per
+    /// window, so a request only opens Settings in the window it came from.
+    @StateObject private var appSettings: AppSettingsPresenter
     @Environment(\.scenePhase) private var scenePhase
     @State private var showKioskSettings = false
     @Namespace private var serverSelectionNamespace
+
+    /// The scene creates its own presenter; tests pass theirs so they can drive Settings from outside.
+    init(appSettings: AppSettingsPresenter? = nil) {
+        self._appSettings = StateObject(wrappedValue: appSettings ?? AppSettingsPresenter())
+    }
 
     // The navigation stack Settings is pushed onto lives in `ContainerView`, around the frontend alone:
     // it is the only screen anything is ever pushed over, and a stack here would also enclose
@@ -17,6 +24,7 @@ struct ConditionalContainerView: View {
             .sheet(isPresented: $appSettings.isSheetPresented, onDismiss: appSettings.sheetDismissed) {
                 settingsSheet
             }
+            .environment(\.appSettingsPresenter, appSettings)
     }
 
     /// One sheet, two sizes: the servers at the medium detent, Settings once it is expanded. Settings is
@@ -51,6 +59,8 @@ struct ConditionalContainerView: View {
             }
         }
         .injectingViewControllerProvider()
+        // A sheet's content is hosted outside this view, so it is handed the presenter of its own accord.
+        .environment(\.appSettingsPresenter, appSettings)
         #if !targetEnvironment(macCatalyst)
             .presentationDetents(sheetDetents, selection: $appSettings.detent)
             .presentationDragIndicator(offersCompactDetent ? .visible : .automatic)
@@ -92,9 +102,9 @@ struct ConditionalContainerView: View {
     private var content: some View {
         Group {
             if kiosk.settings.enabled {
-                KioskView(showSettings: $showKioskSettings)
+                KioskView(appSettings: appSettings, showSettings: $showKioskSettings)
             } else {
-                ContainerView()
+                ContainerView(appSettings: appSettings)
             }
         }
         // The zoom transition into the server picker starts from the frontend's stand-by view, which is
@@ -111,7 +121,7 @@ struct ConditionalContainerView: View {
         .onChange(of: appSettings.isPushPresented) { isPresented in
             refreshWebViewIfSettingsClosed(isPresented)
         }
-        // Settings itself is cleared by `AppPresentationDismisser` (it lives in a shared presenter); the
+        // Settings itself is cleared by the presenter's own `AppPresentationDismisser` subscription; the
         // kiosk settings sheet is view state, so it opts in here.
         .dismissesOnAppNavigation { showKioskSettings = false }
         .sheet(isPresented: $showKioskSettings) {

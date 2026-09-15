@@ -29,6 +29,8 @@ struct HomeAssistantStandByView: View {
     /// frame by frame, and a test window gets no frames.
     private let contentFadeAnimation: Animation?
 
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
+
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
@@ -538,9 +540,7 @@ struct HomeAssistantStandByView: View {
     }
 
     private func openSettings() {
-        Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.showSettings()
-        }
+        appSettingsPresenter?.presentSettings()
     }
 
     private func canShowErrorDetailsButton(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> Bool {

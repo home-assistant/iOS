@@ -10,6 +10,17 @@ import UIKit
 final class AppContainerCoordinator: AppCoordinator {
     weak var frontend: (any WebFrontend)?
 
+    /// One coordinator per frontend scene, so this is where a scene learns which server it is showing.
+    private let themeModeApplier: FrontendThemeModeApplier
+
+    init(themeModeApplier: FrontendThemeModeApplier = .shared) {
+        self.themeModeApplier = themeModeApplier
+    }
+
+    /// This scene's Settings presenter, set by `ContainerView`. Each window has its own, so a request
+    /// presented through here only reaches the window it came from.
+    weak var settingsPresenter: AppSettingsPresenter?
+
     /// Set by `ContainerView` to drive `OnboardingStateObservable` (the screen/server source of truth).
     var onOpenServer: ((Server) -> Void)?
     var onSetup: (() -> Void)?
@@ -31,6 +42,12 @@ final class AppContainerCoordinator: AppCoordinator {
     /// Resolves every pending `open(server:)` for the server whose frontend just appeared.
     func setFrontend(_ frontend: any WebFrontend) {
         self.frontend = frontend
+        // The coordinator is not isolated, but every presentation duty it has already runs on the main queue.
+        MainActor.assumeIsolated {
+            themeModeApplier.frontend(for: frontend.server.identifier, showingIn: { [weak self] in
+                self?.window?.windowScene
+            })
+        }
         let seals = pendingOpens.removeValue(forKey: frontend.server.identifier) ?? []
         seals.forEach { $0(frontend) }
     }
@@ -114,9 +131,9 @@ final class AppContainerCoordinator: AppCoordinator {
         // The picker is the Settings sheet at its medium detent, so anything already presented (Settings
         // itself, What's New, …) would swallow it — clear the screen first. Presenting is deferred by a
         // runloop hop so a sheet that was just torn down can't swallow the one replacing it.
-        dismissPresentedContent {
+        dismissPresentedContent { [weak self] in
             DispatchQueue.main.async {
-                AppSettingsPresenter.shared.presentServerSelection(
+                self?.settingsPresenter?.presentServerSelection(
                     .init(prompt: prompt, zoomsFromStandBy: zoomsFromStandBy, onSelect: completion)
                 )
             }

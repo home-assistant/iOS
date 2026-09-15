@@ -21,6 +21,13 @@ struct PageAppEntity: AppEntity {
         self.panel = panel
         self.serverId = serverId
     }
+
+    /// The entity id for a panel, which is how anything outside the query — the page the web view
+    /// publishes as being on screen, for one — names a page without holding an `AppPanel`. Widgets
+    /// created before this existed stored the same string, so the shape cannot change.
+    static func makeId(serverId: String, panelPath: String) -> String {
+        "\(serverId)-\(panelPath)"
+    }
 }
 
 @available(macOS 13.0, *)
@@ -66,7 +73,7 @@ struct PageAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func id(for panel: AppPanel, server: Server) -> String {
-        "\(server.identifier.rawValue)-\(panel.path)"
+        PageAppEntity.makeId(serverId: server.identifier.rawValue, panelPath: panel.path)
     }
 
     // Since AppPanels came afterwards we need to keep the same

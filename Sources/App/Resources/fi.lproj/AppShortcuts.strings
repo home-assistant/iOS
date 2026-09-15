@@ -1,9 +1,9 @@
 "${applicationName} close ${entity}" = "${applicationName} sulje ${entity}";
 "${applicationName} dim ${light}" = "${applicationName} himmennä ${light}";
 "${applicationName} is ${entity} on" = "${applicationName} onko ${entity} päällä";
-"${applicationName} lock ${entity}" = "${applicationName} lukitse ${entity}";
 "${applicationName} open ${entity}" = "${applicationName} avaa ${entity}";
 "${applicationName} set a temperature" = "${applicationName} aseta lämpötila";
+"${applicationName} show ${target}" = "${applicationName} näytä ${target}";
 "${applicationName} turn off ${entity}" = "${applicationName} kytke ${entity} pois";
 "${applicationName} turn on ${entity}" = "${applicationName} kytke ${entity} päälle";
 "Check an entity in ${applicationName}" = "Tarkista entiteetti sovelluksessa ${applicationName}";
@@ -12,13 +12,14 @@
 "Dim ${light} in ${applicationName}" = "Himmennä ${light} sovelluksessa ${applicationName}";
 "Get an entity state from ${applicationName}" = "Hae entiteetin tila sovelluksesta ${applicationName}";
 "Is ${entity} on in ${applicationName}" = "Onko ${entity} päällä sovelluksessa ${applicationName}";
-"Lock ${entity} in ${applicationName}" = "Lukitse ${entity} sovelluksessa ${applicationName}";
-"Lock something in ${applicationName}" = "Lukitse jokin sovelluksessa ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Avaa ${entity} sovelluksessa ${applicationName}";
+"Open ${target} details in ${applicationName}" = "Avaa kohteen ${target} tiedot sovelluksessa ${applicationName}";
 "Open something in ${applicationName}" = "Avaa jokin sovelluksessa ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Aseta kohteen ${entity} lämpötila sovelluksessa ${applicationName}";
 "Set a brightness in ${applicationName}" = "Aseta kirkkaus sovelluksessa ${applicationName}";
 "Set a temperature in ${applicationName}" = "Aseta lämpötila sovelluksessa ${applicationName}";
+"Show ${target} in ${applicationName}" = "Näytä ${target} sovelluksessa ${applicationName}";
+"Show something in ${applicationName}" = "Näytä jokin sovelluksessa ${applicationName}";
 "Turn off ${entity} in ${applicationName}" = "Kytke ${entity} pois sovelluksessa ${applicationName}";
 "Turn on ${entity} in ${applicationName}" = "Kytke ${entity} päälle sovelluksessa ${applicationName}";
 "Turn something off in ${applicationName}" = "Kytke jokin pois sovelluksessa ${applicationName}";

@@ -5,10 +5,15 @@ import SwiftUI
 
 struct AppIconShortcutsConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = AppIconShortcutsConfigurationViewModel()
+    @StateObject private var viewModel: AppIconShortcutsConfigurationViewModel
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
+    @State private var isEditingItems = false
+
+    init(viewModel: AppIconShortcutsConfigurationViewModel? = nil) {
+        self._viewModel = .init(wrappedValue: viewModel ?? AppIconShortcutsConfigurationViewModel())
+    }
 
     var body: some View {
         List {
@@ -65,56 +70,27 @@ struct AppIconShortcutsConfigurationView: View {
                 Label(L10n.Settings.AppIconShortcuts.AddItem.title, systemSymbol: .plus)
             }
         } header: {
-            Text(L10n.Settings.AppIconShortcuts.Items.title)
+            ReorderableSectionHeader(
+                title: L10n.Settings.AppIconShortcuts.Items.title,
+                isEditing: $isEditingItems
+            )
         } footer: {
             Text(L10n.Settings.AppIconShortcuts.Footer.title)
         }
     }
 
     private func makeListItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-        return makeListItemRow(item: item, info: itemInfo)
-    }
-
-    @ViewBuilder
-    private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         NavigationLink {
             MagicItemCustomizationView(mode: .edit, context: .appIconShortcut, item: item) { updatedMagicItem in
                 viewModel.updateItem(updatedMagicItem)
             }
         } label: {
-            itemRow(item: item, info: info)
+            MagicItemConfigurationRow(
+                item: item,
+                info: viewModel.magicItemInfo(for: item),
+                isReorderIndicatorVisible: isEditingItems
+            )
         }
-    }
-
-    private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: image(for: item, itemInfo: info))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name(info: info))
-                if let contextSubtitle = info.contextSubtitle {
-                    Text(contextSubtitle)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemSymbol: .line3Horizontal)
-                .foregroundStyle(.gray)
-        }
-    }
-
-    private func image(for item: MagicItem, itemInfo: MagicItem.Info) -> UIImage {
-        item.icon(info: itemInfo).image(
-            ofSize: .init(width: 18, height: 18),
-            color: .init(hex: itemInfo.customization?.iconColor)
-        )
     }
 
     private var resetView: some View {
