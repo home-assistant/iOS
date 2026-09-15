@@ -282,6 +282,33 @@ struct WebViewControllerOnscreenContentTests {
         }
     }
 
+    /// Hiding a server from Siri has to take what is on screen off the activity now, rather than at
+    /// the next navigation, which is what the observer is for.
+    @Test("Changing the Siri exposure setting republishes what is on screen")
+    func theSiriExposureSettingRepublishes() async throws {
+        try await withExposureDatabase { _ in
+            let sut = WebViewController(server: .fake())
+            sut.setValue(UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640)), forKey: "view")
+            sut.webView = WKWebView(frame: .zero)
+            sut.userActivity = NSUserActivity(activityType: "test")
+
+            sut.observeSiriExposureForOnscreenContent()
+            #expect(sut.siriExposureObserver != nil)
+
+            NotificationCenter.default.post(name: .siriEntityExposureDidChange, object: nil)
+
+            // The observer hands the work to a task of its own, so the publish it starts is what says
+            // it fired.
+            var waited = 0
+            while sut.onscreenContentTask == nil, waited < 200 {
+                try await Task.sleep(nanoseconds: 5_000_000)
+                waited += 1
+            }
+            #expect(sut.onscreenContentTask != nil)
+            await sut.onscreenContentTask?.value
+        }
+    }
+
     @Test("The panels a page can be on are the ones this server has")
     func knownPanelPathsComeFromTheServersPanels() async throws {
         try await withExposureDatabase { _ in

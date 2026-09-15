@@ -55,6 +55,20 @@ struct EntityAddToDestinationOptionsProviderTests {
         }
     }
 
+    /// Through the provider itself rather than the filter behind it: nothing has chosen an entity, so
+    /// this is the list Siri is offered when it asks for the destination first.
+    @Test("The provider offers the device's destinations")
+    func theProviderOffersTheDevicesDestinations() async throws {
+        guard #available(iOS 17.0, *) else { return }
+        let previous = Current.isCatalyst
+        defer { Current.isCatalyst = previous }
+        Current.isCatalyst = true
+
+        let destinations = try await EntityAddToDestinationOptionsProvider().results()
+
+        #expect(destinations == [.macToolbar])
+    }
+
     private func withCatalyst(_ isCatalyst: Bool, perform work: () -> Void) {
         let previous = Current.isCatalyst
         defer { Current.isCatalyst = previous }

@@ -73,6 +73,27 @@ struct TurnOnOffEntityAppIntentTests {
         return first?.data["service"] as? String
     }
 
+    /// The watch takes the spoken sentence alone, with no card to build, so the runner's own entry
+    /// point is exercised rather than only the one the app's card goes through.
+    @Test func performSpeaksWhatItDid() async throws {
+        try await withMockedServer { server, connection in
+            let entity = Self.entity(serverId: server.identifier.rawValue)
+            let task = Task { try await ControlEntityIntentRunner.perform(.turnOn, on: entity) }
+            var waited = 0
+            while connection.pendingRequests.isEmpty, waited < 400 {
+                try await Task.sleep(nanoseconds: 5_000_000)
+                waited += 1
+            }
+            for pending in connection.pendingRequests {
+                pending.completion(.success(Self.stateResponse(entityId: entity.entityId)))
+            }
+
+            let dialog = try await task.value
+
+            #expect(dialog.contains(entity.displayString))
+        }
+    }
+
     @Test func onSendsTurnOn() async throws {
         try await withMockedServer { server, connection in
             var intent = TurnOnOffEntityAppIntent(action: .on)

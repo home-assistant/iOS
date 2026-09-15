@@ -476,4 +476,20 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         XCTAssertNil(mockWebViewController.onscreenEntityId)
     }
+
+    /// A close that names nothing cannot say which entity it closed, so the one on screen stands
+    /// rather than being dropped on a guess.
+    @MainActor func testHandleExternalMessageMoreInfoClosedWithoutAnEntityIsIgnored() {
+        mockWebViewController.setOnscreenEntity(entityId: "light.kitchen")
+
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/closed",
+            "payload": [:],
+        ])
+
+        XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
+    }
 }
