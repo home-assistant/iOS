@@ -1152,6 +1152,17 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         XCTAssertNil(sut.loadActiveURLTaskStartDate)
     }
 
+    func testLoadActiveURLDoesNothingBeforeTheWebViewIsBuilt() {
+        let sut = makeSUT()
+        sut.webView = nil
+
+        sut.loadActiveURLIfNeeded()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 0)
+        XCTAssertNil(sut.loadActiveURLTask)
+        XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
     /// The cache-clean check is asynchronous, so a log out can land between the two halves of an
     /// attempt that already passed the guard on the way in.
     func testLoadActiveURLDoesNothingWhenLogOutLandsDuringCacheCleanCheck() {
