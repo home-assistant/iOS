@@ -5015,6 +5015,10 @@ public enum L10n {
         /// Native sidebar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.title") }
       }
+      public enum SettingsRow {
+        /// TestFlight-only experiments. They have no planned release and can be removed at any time.
+        public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.settings_row.subtitle") }
+      }
       public enum TestflightOnly {
         /// App Labs is only available on TestFlight builds.
         public static var body: String { return L10n.tr("Localizable", "settings.app_labs.testflight_only.body") }
