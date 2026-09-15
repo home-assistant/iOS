@@ -5,7 +5,7 @@ import HAKit
 ///
 /// Reading is REST: Home Assistant only exposes a *subscription* over the WebSocket
 /// (`calendar/event/subscribe`), so the one-shot read is the REST endpoint the frontend uses too.
-/// Writing is the opposite — `calendar/event/create` and `calendar/event/delete` exist only as
+/// Writing is the opposite — `calendar/event/create`, `/update` and `/delete` exist only as
 /// WebSocket commands, there is no REST equivalent.
 ///
 /// These must live in Shared, not in the app target: both the app binary and Shared.framework link
@@ -86,6 +86,46 @@ public extension HomeAssistantAPI {
 
         _ = try await send(HATypedRequest<HAResponseVoid>(request: .init(
             type: "calendar/event/delete",
+            data: data
+        )))
+    }
+
+    /// Updates an event on `entityId`, replacing the fields the editor offers.
+    ///
+    /// `recurrenceId` and `recurrenceRange` mirror `deleteCalendarEvent`: an empty range edits the
+    /// single occurrence, `THISANDFUTURE` edits it and everything after it.
+    func updateCalendarEvent(
+        entityId: String,
+        uid: String,
+        recurrenceId: String?,
+        recurrenceRange: String?,
+        summary: String,
+        description: String?,
+        location: String?,
+        rrule: String?,
+        start: Date,
+        end: Date,
+        isAllDay: Bool
+    ) async throws {
+        var event: [String: Any] = [
+            "summary": summary,
+            "dtstart": Self.boundary(start, isAllDay: isAllDay, isExclusiveEnd: false),
+            "dtend": Self.boundary(end, isAllDay: isAllDay, isExclusiveEnd: true),
+        ]
+        if let description, !description.isEmpty { event["description"] = description }
+        if let location, !location.isEmpty { event["location"] = location }
+        if let rrule, !rrule.isEmpty { event["rrule"] = rrule }
+
+        var data: [String: Any] = [
+            "entity_id": entityId,
+            "uid": uid,
+            "event": event,
+        ]
+        if let recurrenceId, !recurrenceId.isEmpty { data["recurrence_id"] = recurrenceId }
+        if let recurrenceRange, !recurrenceRange.isEmpty { data["recurrence_range"] = recurrenceRange }
+
+        _ = try await send(HATypedRequest<HAResponseVoid>(request: .init(
+            type: "calendar/event/update",
             data: data
         )))
     }
