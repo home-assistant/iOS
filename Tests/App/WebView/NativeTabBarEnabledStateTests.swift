@@ -64,12 +64,16 @@ struct NativeTabBarEnabledStateTests {
         Current.isTestFlight = true
         Current.sensors = SensorContainer()
         defer {
-            Current.appLabs.setEnabled(previousTabBar, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
-            Current.isTestFlight = previousIsTestFlight
+            // The App Labs store persists through `Current.database`, so it has to go back to the real
+            // database before the flag is restored.
             Current.database = previousDatabase
             Current.kiosk = previousKiosk
             Current.sensors = previousSensors
+            Current.appLabs.setEnabled(previousTabBar, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
+            Current.isTestFlight = previousIsTestFlight
         }
+
+        try await setTabBar(enabled: true)
 
         let database = try DatabaseQueue()
         try KioskSettingsTable().createIfNeeded(database: database)
@@ -85,7 +89,6 @@ struct NativeTabBarEnabledStateTests {
             Current.kiosk = KioskModeManager()
         }
 
-        try await setTabBar(enabled: true)
         try setKiosk(removingHeaderAndSidebar: false)
 
         let controller = WebViewController(server: .fake())
