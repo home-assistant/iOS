@@ -96,6 +96,23 @@ struct EntityAddToConfigWriterTests {
         }
     }
 
+    @Test("An entity already in CarPlay quick access is reported rather than added twice")
+    func doesNotAddToCarPlayTwice() throws {
+        try withConfigDatabase {
+            _ = try EntityAddToConfigWriter.add(entityId: "light.kitchen", serverId: "1", to: .carPlay)
+            let outcome = try EntityAddToConfigWriter.add(
+                entityId: "light.kitchen",
+                serverId: "1",
+                to: .carPlay
+            )
+
+            #expect(outcome == .alreadyPresent)
+            let stored = try CarPlayConfig.config()
+            let items = try #require(stored?.quickAccessItems)
+            #expect(items.count == 1)
+        }
+    }
+
     /// The watch lets a folder hold entities, so an entity already inside one is already there — a
     /// second copy at the root would be a duplicate the user then has to remove twice.
     @Test("An entity already inside a folder is not added again at the root")

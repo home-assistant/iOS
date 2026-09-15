@@ -32,6 +32,26 @@ struct OnscreenPageIdentifierTests {
         }
     }
 
+    /// The identifier the web view publishes has to be the one the widgets' own page query would
+    /// produce, or Siri resolves a page nothing can answer.
+    @Test("The widgets' page query names a panel the same way")
+    func pageQueryNamesAPanelTheSameWay() {
+        let server = Server.fake()
+        let panel = AppPanel(
+            id: "1-lovelace",
+            serverId: server.identifier.rawValue,
+            title: "Overview",
+            path: "lovelace",
+            component: "lovelace",
+            showInSidebar: true
+        )
+
+        #expect(
+            PageAppEntityQuery().id(for: panel, server: server) ==
+                PageAppEntity.makeId(serverId: server.identifier.rawValue, panelPath: "lovelace")
+        )
+    }
+
     /// Built through the initializer so the test resolves the panel the way the app does.
     private static func page() throws -> OnscreenPage {
         let url = try #require(URL(string: "https://example.com/lovelace/0"))

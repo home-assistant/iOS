@@ -90,6 +90,17 @@ struct AddEntityToAppIntentTests {
         }
     }
 
+    /// Reading the summary runs the builder that lays the command out in the Shortcuts editor, and
+    /// reading the title and description builds the strings it is listed under. Nothing else in these
+    /// tests reaches them, and a summary naming a parameter the intent no longer has stops the editor
+    /// from drawing it.
+    @Test("The intent describes itself for the Shortcuts editor")
+    func theIntentDescribesItself() {
+        #expect(!String(describing: AddEntityToAppIntent.parameterSummary).isEmpty)
+        #expect(!String(describing: AddEntityToAppIntent.title).isEmpty)
+        #expect(!String(describing: AddEntityToAppIntent.description).isEmpty)
+    }
+
     private static func entity(
         entityId: String = "light.kitchen",
         displayString: String = "Kitchen"
