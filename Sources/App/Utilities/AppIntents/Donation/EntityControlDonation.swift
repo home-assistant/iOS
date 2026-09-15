@@ -67,18 +67,20 @@ struct EntityControlDonation {
             return nil
         }
         if Domain.voiceOpenable.contains(entityDomain) {
-            switch service {
-            case services.on.rawValue: return .openClose(.open)
-            case services.off.rawValue: return .openClose(.close)
-            default: return nil
+            if service == services.on.rawValue {
+                return .openClose(.open)
             }
+            return service == services.off.rawValue ? .openClose(.close) : nil
         }
-        switch service {
-        case services.on.rawValue: return .turnOnOff(.on)
-        case services.off.rawValue: return entityDomain.isVoiceSwitchable ? .turnOnOff(.off) : nil
-        case Service.toggle.rawValue: return entityDomain.isVoiceSwitchable ? .turnOnOff(.toggle) : nil
-        default: return nil
+        // A scene's off service is its on service, so "on" is read first and wins for it.
+        if service == services.on.rawValue {
+            return .turnOnOff(.on)
         }
+        guard entityDomain.isVoiceSwitchable else { return nil }
+        if service == services.off.rawValue {
+            return .turnOnOff(.off)
+        }
+        return service == Service.toggle.rawValue ? .turnOnOff(.toggle) : nil
     }
 
     /// Builds the intents through the very query their entity parameter uses, so nothing is donated
