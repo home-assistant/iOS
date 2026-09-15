@@ -14,7 +14,7 @@ final class FlightGreetingManager {
     private static let toastDuration: TimeInterval = 5
     /// One greeting per flight: suppress repeats until well after even a long-haul leg.
     private static let greetingCooldown: TimeInterval = 6 * 60 * 60
-    private static let lastGreetingDateKey = "flightGreetingLastShownDate"
+    static let lastGreetingDateKey = "flightGreetingLastShownDate"
     /// How long a detection result stays valid before a caller triggers a fresh check. A positive
     /// stays valid for a while (the flight isn't ending soon); a negative retries sooner, but not so
     /// soon that back-to-back checks keep the GPS running continuously.
