@@ -157,13 +157,14 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
     /// the one moment the command has nothing to cancel yet.
     func testACommandAnsweredAsItIsSentSucceeds() async throws {
         let api = try XCTUnwrap(Current.api(for: server))
-        let immediate = ImmediateConnection()
+        let immediate = ImmediateHAConnection()
         api.connection = immediate
         let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
 
         _ = try await sut.perform()
 
-        XCTAssertEqual(immediate.pendingRequests.count, 1)
+        XCTAssertEqual(immediate.sentCommands, ["calendar/event/create"])
+        XCTAssertEqual(immediate.cancellables.first?.wasCancelled, true)
     }
 
     /// Siri reads `localizedStringResource`, so an error without one is reported as a bare failure.
@@ -195,13 +196,81 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
     }
 
     /// Answers every command as it is sent, the way a connection that is already ready does.
-    private final class ImmediateConnection: HAMockConnection {
-        override func send<T: HADataDecodable>(
+    ///
+    /// `HAMockConnection` only queues, and it is not open, so the inline answer needs its own
+    /// connection rather than a subclass.
+    private final class ImmediateHAConnection: HAConnection {
+        weak var delegate: HAConnectionDelegate?
+        var configuration = HAConnectionConfiguration(
+            connectionInfo: { nil },
+            fetchAuthToken: { completion in completion(.success("token")) }
+        )
+        var state: HAConnectionState = .ready(version: "1.0-fake")
+        lazy var caches: HACachesContainer = .init(connection: self)
+        var callbackQueue: DispatchQueue = .main
+
+        private(set) var sentCommands: [String] = []
+        private(set) var cancellables: [HAMockCancellable] = []
+
+        func connect() {}
+
+        func disconnect() {}
+
+        @discardableResult
+        func send(_ request: HARequest, completion: @escaping RequestCompletion) -> HACancellable {
+            sentCommands.append(request.type.command)
+            completion(.success(.dictionary([:])))
+            return record()
+        }
+
+        @discardableResult
+        func send<T>(
             _ request: HATypedRequest<T>,
-            completion: @escaping (Result<T, HAError>) -> Void
+            completion: @escaping (Swift.Result<T, HAError>) -> Void
+        ) -> HACancellable where T: HADataDecodable {
+            sentCommands.append(request.request.type.command)
+            do {
+                try completion(.success(T(data: .dictionary([:]))))
+            } catch {
+                completion(.failure(.underlying(error as NSError)))
+            }
+            return record()
+        }
+
+        @discardableResult
+        func subscribe(to request: HARequest, handler: @escaping SubscriptionHandler) -> HACancellable {
+            record()
+        }
+
+        @discardableResult
+        func subscribe(
+            to request: HARequest,
+            initiated: @escaping SubscriptionInitiatedHandler,
+            handler: @escaping SubscriptionHandler
         ) -> HACancellable {
-            let cancellable = super.send(request, completion: completion)
-            pendingRequests.last?.completion(.success(.dictionary([:])))
+            record()
+        }
+
+        @discardableResult
+        func subscribe<T>(
+            to request: HATypedSubscription<T>,
+            handler: @escaping (HACancellable, T) -> Void
+        ) -> HACancellable {
+            record()
+        }
+
+        @discardableResult
+        func subscribe<T>(
+            to request: HATypedSubscription<T>,
+            initiated: @escaping SubscriptionInitiatedHandler,
+            handler: @escaping (HACancellable, T) -> Void
+        ) -> HACancellable {
+            record()
+        }
+
+        private func record() -> HAMockCancellable {
+            let cancellable = HAMockCancellable {}
+            cancellables.append(cancellable)
             return cancellable
         }
     }
