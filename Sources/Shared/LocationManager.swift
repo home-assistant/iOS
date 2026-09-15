@@ -300,9 +300,8 @@ final class LocationManager: NSObject, LocationManagerProtocol {
         completion: @escaping (Error?) -> Void
     ) {
         DispatchQueue.main.async { [coreLocationManager] in
-            coreLocationManager.requestTemporaryFullAccuracyAuthorization(withPurposeKey: purposeKey) { error in
-                completion(error)
-            }
+            coreLocationManager
+                .requestTemporaryFullAccuracyAuthorization(withPurposeKey: purposeKey, completion: completion)
         }
     }
 }

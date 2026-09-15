@@ -106,6 +106,7 @@
 		426A2EFB30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */; };
 		426A2EFD30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */; };
 		426A2F013059752700006022 /* ManualUpdateFullAccuracy.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */; };
+		426A4FAE30598ADA00006022 /* LocationManagerTemporaryFullAccuracy.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A4FAD30598ADA00006022 /* LocationManagerTemporaryFullAccuracy.test.swift */; };
 		426BD76E2FFE54B0001378A4 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD76D2FFE54B0001378A4 /* OHHTTPStubs */; };
 		426BD7702FFE54B0001378A4 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD76F2FFE54B0001378A4 /* OHHTTPStubsSwift */; };
 		426BD7722FFE54E8001378A4 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD7712FFE54E8001378A4 /* OHHTTPStubs */; };
@@ -638,6 +639,7 @@
 		426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspensionProtectedWork.test.swift; sourceTree = "<group>"; };
 		426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelsUpdaterSaveInDatabase.test.swift; sourceTree = "<group>"; };
 		426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualUpdateFullAccuracy.test.swift; sourceTree = "<group>"; };
+		426A4FAD30598ADA00006022 /* LocationManagerTemporaryFullAccuracy.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerTemporaryFullAccuracy.test.swift; sourceTree = "<group>"; };
 		426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlEntityProvider.swift; sourceTree = "<group>"; };
 		4278CB822D01F09400CFAAC9 /* AppGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGesture.swift; sourceTree = "<group>"; };
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
@@ -3199,6 +3201,7 @@
 				426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */,
 				426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */,
 				426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */,
+				426A4FAD30598ADA00006022 /* LocationManagerTemporaryFullAccuracy.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4657,6 +4660,7 @@
 				42AA0008300100010001AAA1 /* EntityIconColorProvider.test.swift in Sources */,
 				42C11A0131AC500011AABB01 /* ClimateControlState.test.swift in Sources */,
 				42C11A0531AC500011AABB05 /* VacuumCapabilities.test.swift in Sources */,
+				426A4FAE30598ADA00006022 /* LocationManagerTemporaryFullAccuracy.test.swift in Sources */,
 				42C11A0731AC500011AABB07 /* VacuumAreaMapping.test.swift in Sources */,
 				42B7C1A32F78D10000E4F3AB /* MaterialDesignIconsSFSymbol.test.swift in Sources */,
 				42BC58202FAA501E0080EE09 /* CarPlayAssistDebugSettings.test.swift in Sources */,

@@ -117,10 +117,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let launchingForLocation = launchOptions?[.location] != nil
 
-        // Warm the stand-by loading logo's WKWebView so it renders without cold-start delay. Armed
-        // unconditionally, including on background location launches: it only builds WebKit once the
-        // app becomes active, so a process launched into the background does the work if and when it
-        // is brought to the foreground, and never while it is off-screen.
         AnimatedSVGWebViewCache.shared
             .preloadOnFirstActivation(HomeAssistantStandByView.loadingLogoResourceName)
 

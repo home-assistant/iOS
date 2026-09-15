@@ -286,6 +286,10 @@ public final class AppDatabaseSuspension {
     /// Suspend unless a protected access is still running. Used when an expiring activity is denied or
     /// expires without having claimed an access of its own, and on backgrounding.
     ///
+    /// This is what `LifecycleManager.didEnterBackground` calls rather than `suspend()`: work under
+    /// `performProtectedWork` holds a background task, so the process is not about to be frozen, and
+    /// suspending outright would abort the very write the transition used to kill the app for.
+    ///
     /// The intent is recorded either way, so deferring is not forgetting: whichever access finishes
     /// last reads it back through `endProtectedAccess(suspend:)` and suspends then. Dropping it
     /// would leave the database resumed across a backgrounding, which is what 0xdead10cc needs.

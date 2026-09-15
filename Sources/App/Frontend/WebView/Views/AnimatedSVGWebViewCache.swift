@@ -32,6 +32,10 @@ final class AnimatedSVGWebViewCache {
     /// Building the web view spins up a whole WebKit content process, which measured as half of the
     /// app's launch time when done inline in `didFinishLaunching`. Nothing shows an animated SVG
     /// during launch, so the warm-up waits until the app is interactive.
+    ///
+    /// Safe to arm on a background launch (a location event, say): the work happens only once the
+    /// app becomes active, so a process that is never brought to the foreground never does it, and
+    /// one that is gets a warm view without having paid for it at launch.
     func preloadOnFirstActivation(_ resourceName: String) {
         guard firstActivationObserver == nil else { return }
         firstActivationObserver = NotificationCenter.default.addObserver(

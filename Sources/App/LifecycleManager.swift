@@ -122,10 +122,6 @@ class LifecycleManager {
             WyomingServerController.shared.applicationDidEnterBackground()
         }
         needsAppOpenLocationUpdate = true
-        // `suspendIfIdle` rather than `suspend`: work running under
-        // `AppDatabaseSuspension.performProtectedWork` holds a background task, so the process is
-        // not about to be frozen and suspending here would abort the very write this transition was
-        // killing the app for. Whoever holds the access suspends once it finishes.
         AppDatabaseSuspension.suspendIfIdle()
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidEnterBackground.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in

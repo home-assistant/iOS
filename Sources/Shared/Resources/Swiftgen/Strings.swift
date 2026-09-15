@@ -2774,9 +2774,9 @@ public enum L10n {
   }
 
   public enum ForceCloseWarning {
-    /// The app was closed. Keeping it open gives accurate presence detection, faster sensor updates and instant notifications.
+    /// Force-closing the app stops location and sensor updates. Reopen Home Assistant to restore them.
     public static var body: String { return L10n.tr("Localizable", "force_close_warning.body") }
-    /// Keep Home Assistant running?
+    /// Home Assistant was closed
     public static var title: String { return L10n.tr("Localizable", "force_close_warning.title") }
   }
 
@@ -7152,7 +7152,7 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.header") }
       }
       public enum ForceCloseWarning {
-        /// Shows a notification when the app is closed, since closing stops location and sensor updates until you reopen it. Requires notifications permission and Always location access.
+        /// Shows a notification when the app is closed, since closing stops location and sensor updates until you reopen it. Requires notifications permission and location access set to 'Always'.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.force_close_warning.footer") }
         /// Force close warning
         public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.force_close_warning.title") }
