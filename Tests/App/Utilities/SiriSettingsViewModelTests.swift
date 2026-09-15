@@ -139,7 +139,7 @@ struct SiriExposureAcrossQueriesTests {
     @Test func theControlQueriesDropTheHiddenServerAndKeepTheOther() async throws {
         try await clear()
         try await withOneHiddenServer { hidden, visible in
-            let controllable = try await ControllableEntityOptionsProvider().results()
+            let controllable = try await ControllableEntityAppEntityQuery().suggestedEntities()
                 .sections.flatMap(\.items).map(\.value.serverId)
             let locks = try await LockAppEntityQuery().suggestedEntities()
                 .sections.flatMap(\.items).map(\.value.serverId)
