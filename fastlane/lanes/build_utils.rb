@@ -87,8 +87,11 @@ end
 
 def report_altool_failure(failure, type:, output:)
   store = altool_store(type)
+  # Not "notarized": the iOS lane never notarizes, and the mac lane notarizes the Developer ID app
+  # rather than the App Store package this uploads, so neither says anything about what Apple just
+  # refused.
   message = "#{store} upload failed: #{failure[:title]} (#{failure[:codes].join('/')}). " \
-            "The app built, signed and notarized fine. #{failure[:reason]} #{failure[:action]}"
+            "The app built and signed fine. #{failure[:reason]} #{failure[:action]}"
 
   UI.error(message)
   puts "::error title=#{store} upload failed: #{failure[:title]}::#{message}"
@@ -107,7 +110,7 @@ end
 
 def altool_failure_summary_bullets(failure, output)
   [
-    '- The app **built, signed and notarized successfully**, so this is not a build or code failure.',
+    '- The package **built and signed successfully**, so this is not a build or code failure.',
     "- #{failure[:reason]}",
     "- Uploaded from **#{altool_xcode(output)}** (`DEVELOPER_DIR` is " \
     "`#{ENV.fetch('DEVELOPER_DIR', 'unset')}`).",
