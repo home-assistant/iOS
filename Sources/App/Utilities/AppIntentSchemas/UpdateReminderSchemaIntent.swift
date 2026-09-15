@@ -25,7 +25,7 @@ struct UpdateReminderSchemaIntent {
     func perform() async throws -> some ReturnsValue<ReminderSchemaEntity> {
         let api = try RemindersSchemaSupport.api(for: target.list)
         let newTitle = title ?? target.title
-        let newNote = note.map(String.init) ?? target.note
+        let newNote = note?.plainText ?? target.note
         let newDue = dueDate ?? target.dueDate
         let completed = isCompleted ?? target.isCompleted
         let due = RemindersSchemaSupport.due(newDue)

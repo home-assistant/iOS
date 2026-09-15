@@ -15,7 +15,9 @@ struct LocationTriggerSchemaEntity: TransientAppEntity {
     }
 
     init() {
-        self.place = PlaceDescriptor(representations: [], commonName: nil)
+        // A `PlaceDescriptor` must carry at least one representation and traps without one. There
+        // is no place to describe, so this is an empty address rather than somewhere on the map.
+        self.place = PlaceDescriptor(representations: [.address("")], commonName: nil)
         self.event = .arrive
     }
 }

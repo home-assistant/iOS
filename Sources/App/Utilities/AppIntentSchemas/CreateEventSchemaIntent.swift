@@ -28,7 +28,7 @@ struct CreateEventSchemaIntent {
         try await api.createCalendarEvent(
             entityId: stored.entityId,
             summary: title,
-            description: note.map(String.init),
+            description: note?.plainText,
             location: location?.plainText,
             rrule: recurrence?.rrule,
             start: startDate,
@@ -46,7 +46,7 @@ struct CreateEventSchemaIntent {
             isAllDay: isAllDay,
             calendar: calendar,
             location: location,
-            note: note.map(String.init)
+            note: note?.plainText
         ))
     }
 }

@@ -30,7 +30,7 @@ struct CreateReminderSchemaIntent {
         try await api.addTodoItem(
             listId: target.entityId,
             summary: title,
-            description: note.map(String.init),
+            description: note?.plainText,
             dueDate: due.date,
             dueDateTime: due.dateTime
         )
@@ -41,7 +41,7 @@ struct CreateReminderSchemaIntent {
             title: title,
             list: target,
             dueDate: dueDate,
-            note: note.map(String.init)
+            note: note?.plainText
         ))
     }
 }

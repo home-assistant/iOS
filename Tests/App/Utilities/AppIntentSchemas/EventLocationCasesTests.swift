@@ -7,6 +7,12 @@ import XCTest
 /// flatten down to one.
 @available(iOS 27.0, *)
 final class EventLocationCasesTests: XCTestCase {
+    /// A `PlaceDescriptor` must carry at least one representation, so every place here has an
+    /// address whether or not the test is about the address.
+    private func place(named name: String?) -> PlaceDescriptor {
+        PlaceDescriptor(representations: [.address("1 High Street")], commonName: name)
+    }
+
     func testTextIsCarriedThrough() {
         XCTAssertEqual(EventLocationCases.text("Dentist's office").plainText, "Dentist's office")
     }
@@ -19,13 +25,11 @@ final class EventLocationCasesTests: XCTestCase {
     /// A structured place is flattened to its name rather than dropped, which is the most Home
     /// Assistant can store of it.
     func testAPlaceIsFlattenedToItsName() {
-        let place = PlaceDescriptor(representations: [], commonName: "Cafe")
-
-        XCTAssertEqual(EventLocationCases.place(place).plainText, "Cafe")
+        XCTAssertEqual(EventLocationCases.place(place(named: "Cafe")).plainText, "Cafe")
     }
 
     func testAPlaceWithoutANameIsNoLocation() {
-        XCTAssertNil(EventLocationCases.place(PlaceDescriptor(representations: [], commonName: nil)).plainText)
-        XCTAssertNil(EventLocationCases.place(PlaceDescriptor(representations: [], commonName: "")).plainText)
+        XCTAssertNil(EventLocationCases.place(place(named: nil)).plainText)
+        XCTAssertNil(EventLocationCases.place(place(named: "")).plainText)
     }
 }
