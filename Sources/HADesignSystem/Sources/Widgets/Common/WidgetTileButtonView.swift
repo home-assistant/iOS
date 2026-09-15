@@ -172,15 +172,15 @@ public struct WidgetTileButtonView: View {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
-                case .regular, .compact, .compressed:
-                    HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
+                case .regular, .compact, .dense, .compressed:
+                    HStack(alignment: .center, spacing: sizeStyle.horizontalPadding) {
                         iconView
                         content(hidden: contentHidden) {
                             textStack
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
-                    .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
+                    .padding([.leading, .trailing], sizeStyle.horizontalPadding)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
                         iconView

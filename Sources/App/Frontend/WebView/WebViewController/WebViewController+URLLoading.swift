@@ -67,6 +67,11 @@ extension WebViewController {
     static let loadActiveURLStaleInterval: TimeInterval = 10
 
     @objc func loadActiveURLIfNeeded() {
+        guard webView != nil else {
+            Current.Log.info("not loading, web view not built yet")
+            return
+        }
+
         // After a log out the web view deliberately sits on a blank page behind the logged-out empty
         // state, which every caller here would read as "wrong URL loaded" and correct by navigating
         // back into the server -- taking the empty state down and re-authenticating the frontend with

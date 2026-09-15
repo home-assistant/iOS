@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "These %1$@ are on: %2$@";
 "app_intents.active_entities.dialog.some_open" = "These %1$@ are open: %2$@";
 "app_intents.active_entities.filter.all" = "entities";
-"app_intents.active_entities.filter.climates" = "thermostats";
 "app_intents.active_entities.filter.covers" = "covers";
 "app_intents.active_entities.filter.fans" = "fans";
 "app_intents.active_entities.filter.lights" = "lights";
-"app_intents.active_entities.filter.locks" = "locks";
 "app_intents.active_entities.filter.media_players" = "media players";
 "app_intents.active_entities.filter.name" = "Kind";
 "app_intents.active_entities.filter.switches" = "switches";
@@ -1560,7 +1558,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.servers" = "Servers";
 "settings.connection_section.servers_header" = "Máy chủ";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.update_database.finished" = "Server information updated";
 "settings.connection_section.update_database.progress.areas" = "Updating areas";
 "settings.connection_section.update_database.progress.calendars" = "Updating calendars";
@@ -2315,7 +2312,6 @@ The server only answers while the app is open, and stops when you leave it.";
 "share_extension.error.title" = "Không thể Gửi";
 "shortcut_item.open_settings.title" = "Open Settings";
 "tab_bar.customize.add" = "Add";
-"tab_bar.customize.available_section.footer_full" = "Remove a tab to add another one.";
 "tab_bar.customize.available_section.header" = "Available";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "The first four entries are the tabs, the rest are listed in More. Drag to reorder.";
 "tab_bar.customize.dashboards_section.header" = "Dashboards";

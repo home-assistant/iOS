@@ -42,7 +42,7 @@ public struct WidgetTileConfirmationView: View {
         switch sizeStyle {
         case .compressed:
             compressedForm
-        case .compact:
+        case .compact, .dense:
             condensedForm
         case .single, .expanded, .regular:
             defaultForm

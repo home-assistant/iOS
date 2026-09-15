@@ -258,6 +258,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notificationManager.didReceiveRemoteNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
     }
 
+    func applicationWillTerminate(_ application: UIApplication) {
+        // Fires when the user swipes the app away while it is running in the background:
+        // deliver the force-close warning immediately (see ForceCloseWarningManager).
+        Current.forceCloseWarningManager.postImmediateWarning()
+    }
+
     func application(
         _ application: UIApplication,
         handleEventsForBackgroundURLSession identifier: String,

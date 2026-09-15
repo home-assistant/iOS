@@ -593,6 +593,17 @@ public class SettingsStore {
         }
     }
 
+    /// Warn via local notification when the app appears to have been force-closed,
+    /// since force closing stops location and sensor updates until reopened.
+    public var forceCloseWarningEnabled: Bool {
+        get {
+            prefs.bool(forKey: "forceCloseWarningEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "forceCloseWarningEnabled")
+        }
+    }
+
     public var widgetAuthenticityToken: String {
         let key = "widgetAuthenticityToken"
 

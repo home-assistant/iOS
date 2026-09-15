@@ -11,7 +11,10 @@ import Shared
 /// One intent with a destination parameter rather than one intent per destination, matching
 /// `TurnOnOffEntityAppIntent`: the goal is the same either way, and Shortcuts reads better as a
 /// single "Add … to …" row.
-@available(macOS 13.0, *)
+///
+/// iOS 17 is where `IntentParameterDependency` arrived, which is what lets the destination list see
+/// the entity that was chosen and drop the destinations that cannot show it.
+@available(iOS 17.0, macOS 14.0, *)
 struct AddEntityToAppIntent: AppIntent {
     static let title: LocalizedStringResource = .init(
         "app_intents.add_to.title",
@@ -30,7 +33,10 @@ struct AddEntityToAppIntent: AppIntent {
     @Parameter(title: .init("app_intents.add_to.entity.name", defaultValue: "Entity"))
     var entity: HAAppEntityAppIntentEntity
 
-    @Parameter(title: .init("app_intents.add_to.destination.name", defaultValue: "Destination"))
+    @Parameter(
+        title: .init("app_intents.add_to.destination.name", defaultValue: "Destination"),
+        optionsProvider: EntityAddToDestinationOptionsProvider()
+    )
     var destination: EntityAddToDestinationAppEnum
 
     init() {}

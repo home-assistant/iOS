@@ -295,16 +295,12 @@ public enum L10n {
       public enum Filter {
         /// entities
         public static var all: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.all") }
-        /// thermostats
-        public static var climates: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.climates") }
         /// covers
         public static var covers: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.covers") }
         /// fans
         public static var fans: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.fans") }
         /// lights
         public static var lights: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.lights") }
-        /// locks
-        public static var locks: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.locks") }
         /// media players
         public static var mediaPlayers: String { return L10n.tr("Localizable", "app_intents.active_entities.filter.media_players") }
         /// Kind
@@ -616,10 +612,6 @@ public enum L10n {
       }
     }
     public enum ControllableEntity {
-      public enum Entity {
-        /// Controllable Entity
-        public static var name: String { return L10n.tr("Localizable", "app_intents.controllable_entity.entity.name") }
-      }
       public enum Parameter {
         /// Entity
         public static var entity: String { return L10n.tr("Localizable", "app_intents.controllable_entity.parameter.entity") }
@@ -985,12 +977,6 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.description") }
         /// Action data
         public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.title") }
-      }
-    }
-    public enum ReadableEntity {
-      public enum Entity {
-        /// Entity
-        public static var name: String { return L10n.tr("Localizable", "app_intents.readable_entity.entity.name") }
       }
     }
     public enum RenderTemplate {
@@ -2715,6 +2701,13 @@ public enum L10n {
       /// Focus name sensor is off
       public static var title: String { return L10n.tr("Localizable", "focus.sensor_disabled.title") }
     }
+  }
+
+  public enum ForceCloseWarning {
+    /// The app was closed. Keeping it open gives accurate presence detection, faster sensor updates and instant notifications.
+    public static var body: String { return L10n.tr("Localizable", "force_close_warning.body") }
+    /// Keep Home Assistant running?
+    public static var title: String { return L10n.tr("Localizable", "force_close_warning.title") }
   }
 
   public enum Gestures {
@@ -5022,6 +5015,10 @@ public enum L10n {
         /// Native sidebar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.title") }
       }
+      public enum SettingsRow {
+        /// TestFlight-only experiments. They have no planned release and can be removed at any time.
+        public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.settings_row.subtitle") }
+      }
       public enum TestflightOnly {
         /// App Labs is only available on TestFlight builds.
         public static var body: String { return L10n.tr("Localizable", "settings.app_labs.testflight_only.body") }
@@ -5054,8 +5051,6 @@ public enum L10n {
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Drag to reorder your servers. The one at the top is used as the default server.
       public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
-      /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.
-      public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
       public enum AlwaysFallbackInternal {
         /// Enabling this with an unsecure URL (http) may compromise your security on public networks.
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.footer") }
@@ -7086,6 +7081,12 @@ public enum L10n {
         /// Synced Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.header") }
       }
+      public enum ForceCloseWarning {
+        /// Shows a notification when the app is closed, since closing stops location and sensor updates until you reopen it. Requires notifications permission and Always location access.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.force_close_warning.footer") }
+        /// Force close warning
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.force_close_warning.title") }
+      }
       public enum History {
         /// Clear
         public static var clear: String { return L10n.tr("Localizable", "settings_details.notifications.history.clear") }
@@ -7613,8 +7614,6 @@ public enum L10n {
       /// Customize Tabs
       public static var title: String { return L10n.tr("Localizable", "tab_bar.customize.title") }
       public enum AvailableSection {
-        /// Remove a tab to add another one.
-        public static var footerFull: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.footer_full") }
         /// Available
         public static var header: String { return L10n.tr("Localizable", "tab_bar.customize.available_section.header") }
       }
@@ -9658,6 +9657,26 @@ public enum L10n {
       public enum Parameters {
         /// Action
         public static var action: String { return L10n.tr("Localizable", "widgets.actions.parameters.action") }
+      }
+    }
+    public enum Areas {
+      /// Show the areas of your home, floor by floor.
+      public static var description: String { return L10n.tr("Localizable", "widgets.areas.description") }
+      /// More areas
+      public static var nextPage: String { return L10n.tr("Localizable", "widgets.areas.next_page") }
+      /// Other areas
+      public static var otherAreas: String { return L10n.tr("Localizable", "widgets.areas.other_areas") }
+      /// Previous areas
+      public static var previousPage: String { return L10n.tr("Localizable", "widgets.areas.previous_page") }
+      /// Areas
+      public static var title: String { return L10n.tr("Localizable", "widgets.areas.title") }
+      public enum Empty {
+        /// No areas found on this server.
+        public static var description: String { return L10n.tr("Localizable", "widgets.areas.empty.description") }
+      }
+      public enum Page {
+        /// Show other areas
+        public static var title: String { return L10n.tr("Localizable", "widgets.areas.page.title") }
       }
     }
     public enum Assist {

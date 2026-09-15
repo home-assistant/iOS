@@ -17,9 +17,15 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var urlObserver: NSKeyValueObservation?
     var windowTitleObserver: NSKeyValueObservation?
-    /// Watches `.siriEntityExposureDidChange` so the page published on `userActivity` follows the
-    /// user's Siri exposure setting; see `WebViewController+OnscreenPage`.
+    /// Watches `.siriEntityExposureDidChange` so what is published on `userActivity` follows the
+    /// user's Siri exposure setting; see `WebViewController+OnscreenContent`.
     var siriExposureObserver: NSObjectProtocol?
+    /// The entity the frontend's more-info dialog is showing, reported over the external bus.
+    var onscreenEntityId: String?
+    /// The path the dialog opened over, so a route change is recognised as having closed it.
+    var onscreenEntityPath: String?
+    /// The in-flight publish of what is on screen, cancelled when a newer one replaces it.
+    var onscreenContentTask: Task<Void, Never>?
     var emptyStateTitleObserver: AnyCancellable?
     var tokens = [HACancellable]()
 
@@ -247,6 +253,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if let siriExposureObserver {
             NotificationCenter.default.removeObserver(siriExposureObserver)
         }
+        onscreenContentTask?.cancel()
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
         loadActiveURLTask?.cancel()
@@ -270,7 +277,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         observeConnectionNotifications()
         setupKioskModeObservation()
-        observeSiriExposureForOnscreenPage()
+        observeSiriExposureForOnscreenContent()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
 
