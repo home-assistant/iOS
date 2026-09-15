@@ -122,7 +122,7 @@ class LifecycleManager {
             WyomingServerController.shared.applicationDidEnterBackground()
         }
         needsAppOpenLocationUpdate = true
-        AppDatabaseSuspension.suspend()
+        AppDatabaseSuspension.suspendIfIdle()
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidEnterBackground.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(

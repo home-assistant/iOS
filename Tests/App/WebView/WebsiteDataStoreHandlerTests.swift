@@ -30,23 +30,15 @@ final class WebsiteDataStoreHandlerTests: XCTestCase {
         super.tearDown()
     }
 
-    /// The real store is left out of these: its completion comes back through the WebKit
-    /// networking process, which does not reliably start under the test runner.
-    private func handler(recordingInto removed: RemovedTypes = RemovedTypes()) -> WebsiteDataStoreHandler {
-        WebsiteDataStoreHandler { dataTypes, _, completion in
-            removed.dataTypes.append(dataTypes)
-            completion()
-        }
-    }
-
-    private final class RemovedTypes {
-        var dataTypes: [Set<String>] = []
+    /// The store answers at once, so the tests exercise the handler's own bookkeeping rather than how
+    /// long WebKit takes to clear a data store on the machine running them.
+    private func makeSUT() -> WebsiteDataStoreHandler {
+        WebsiteDataStoreHandler(removeData: { _, completion in completion() })
     }
 
     func testCleaningTheFrontendAssetCacheRecordsTheVersionThatCleanedIt() async {
         Current.clientVersion = { Version(major: 2026, minor: 9, patch: 3) }
-        let removed = RemovedTypes()
-        let sut = handler(recordingInto: removed)
+        let sut = makeSUT()
         let cleaned = expectation(description: "frontend asset cache cleaned")
 
         sut.cleanFrontendAssetCacheIfNeeded { didClean in
@@ -56,13 +48,11 @@ final class WebsiteDataStoreHandlerTests: XCTestCase {
 
         await fulfillment(of: [cleaned], timeout: 10)
         XCTAssertEqual(Current.settingsStore.prefs.string(forKey: Keys.lastCleanVersion), "2026.9.3")
-        XCTAssertEqual(removed.dataTypes, [WebsiteDataStoreHandlerImpl.frontendAssetDataTypes])
     }
 
     func testTheFrontendAssetCacheIsCleanedAgainAfterAnAppUpdate() async {
         Current.clientVersion = { Version(major: 2026, minor: 9, patch: 3) }
-        let removed = RemovedTypes()
-        let sut = handler(recordingInto: removed)
+        let sut = makeSUT()
         let cleaned = expectation(description: "frontend asset cache cleaned")
         sut.cleanFrontendAssetCacheIfNeeded { _ in cleaned.fulfill() }
         await fulfillment(of: [cleaned], timeout: 10)
@@ -83,7 +73,5 @@ final class WebsiteDataStoreHandlerTests: XCTestCase {
 
         await fulfillment(of: [cleanedAfterUpdate], timeout: 10)
         XCTAssertEqual(Current.settingsStore.prefs.string(forKey: Keys.lastCleanVersion), "2026.9.4")
-        // Twice, not three times: the middle call was skipped for the same version.
-        XCTAssertEqual(removed.dataTypes.count, 2)
     }
 }

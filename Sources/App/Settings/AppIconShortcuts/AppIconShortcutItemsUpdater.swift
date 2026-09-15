@@ -22,7 +22,11 @@ enum AppIconShortcutItemsUpdater {
         // `loadInformation` fetches every entity, area, and device row for every server
         // synchronously on the calling thread, and `update()` runs at app launch — keep that work
         // off the main thread. The resulting items are published back on main.
-        DispatchQueue.global(qos: .utility).async {
+        //
+        // It runs as protected work because launch is exactly when the user is most likely to
+        // background the app again: on a plain queue those reads were the app's largest crash, the
+        // process frozen mid-statement while holding the app-group SQLite file lock (0xdead10cc).
+        AppDatabaseSuspension.performProtectedWork(named: .appIconShortcutItems) {
             let magicItemProvider = Current.magicItemProvider()
             magicItemProvider.loadInformation { _ in
                 let config = (try? AppIconShortcutConfig.config()) ?? AppIconShortcutConfig()
@@ -37,7 +41,9 @@ enum AppIconShortcutItemsUpdater {
                             icon: icon(for: item, provider: magicItemProvider)
                         )
                     }
-                let shortcutItems = forcedShortcutItems + configuredShortcutItems
+                // Rebuilt rather than captured: the items are `UIApplicationShortcutItem`s, which
+                // shouldn't be handed across threads, and the property is a cheap pure rebuild.
+                let shortcutItems = Self.forcedShortcutItems + configuredShortcutItems
                 publish(shortcutItems: shortcutItems)
             }
         }
