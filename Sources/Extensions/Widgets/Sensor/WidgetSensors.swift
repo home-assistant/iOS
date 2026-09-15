@@ -58,10 +58,7 @@ struct WidgetSensors: Widget {
 
 enum WidgetDetailsTableSupportedFamilies {
     @available(iOS 17.0, *)
-    static let families: [WidgetFamily] = [
-        .systemSmall,
-        .systemMedium,
-        .systemLarge,
-        .systemExtraLarge,
-    ]
+    static var families: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
+    }
 }

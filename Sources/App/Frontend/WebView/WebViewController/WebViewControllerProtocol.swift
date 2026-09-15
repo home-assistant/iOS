@@ -42,6 +42,10 @@ protocol WebViewControllerProtocol: AnyObject {
     func openInBrowser()
     func styleUI()
     func styleUI(publishesThemedStatusBar: Bool)
+    /// Records which entity the frontend's more-info dialog is showing, so Siri can resolve a command
+    /// that says "this" against it; see `WebViewController+OnscreenContent`.
+    func setOnscreenEntity(entityId: String)
+    func clearOnscreenEntity(entityId: String)
 }
 
 extension WebViewControllerProtocol {

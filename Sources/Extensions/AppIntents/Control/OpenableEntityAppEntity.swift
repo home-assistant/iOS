@@ -5,9 +5,10 @@ import Shared
 
 /// A cover a spoken command can open or close.
 ///
-/// Deliberately its own type rather than reusing `ControllableEntityAppEntity`: Siri and Spotlight
+/// The one entity type that stayed separate from `HAAppEntityAppIntentEntity`: Siri and Spotlight
 /// fill a phrase's entity list from the parameter type's own query, so "open" offers only covers by
-/// being a different type — wording the phrase differently would not narrow the list.
+/// being a different type — wording the phrase differently would not narrow the list. Every other
+/// command narrows with a `DynamicOptionsProvider` over the shared entity instead.
 @available(macOS 13.0, watchOS 9.4, *)
 struct OpenableEntityAppEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init(

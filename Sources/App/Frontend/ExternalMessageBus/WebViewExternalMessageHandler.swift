@@ -205,6 +205,18 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .sidebarShow:
                 MacNativeSidebarState.shared.show()
                 NativeTabBarState.shared.requestMore()
+            case .moreInfoOpened:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/opened but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.setOnscreenEntity(entityId: entityId)
+            case .moreInfoClosed:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/closed but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.clearOnscreenEntity(entityId: entityId)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
