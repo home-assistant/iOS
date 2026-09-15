@@ -10,6 +10,7 @@ import Testing
 ///
 /// Offering and resolving are two different objects now that the entity is shared: this narrows what
 /// is put in front of someone, and `HAAppEntityAppIntentEntityQuery` reads any id back.
+@Suite(.serialized)
 struct ReadableEntityOptionsProviderTests {
     private static func makeEntity(
         serverId: String,
