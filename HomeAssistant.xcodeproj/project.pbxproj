@@ -1855,6 +1855,7 @@
 				FocusFilterWrapper.swift,
 				FocusReport.swift,
 				FocusStatusWrapper.swift,
+				ForceCloseWarningManager.swift,
 				HomeViewConfigurationTable.swift,
 				ImpactFeedbackGeneratorProtocol.swift,
 				KioskModeManager.swift,
