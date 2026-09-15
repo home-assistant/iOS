@@ -67,6 +67,15 @@ extension WebViewController {
     static let loadActiveURLStaleInterval: TimeInterval = 10
 
     @objc func loadActiveURLIfNeeded() {
+        // Every path below navigates the hosted web view, and the asynchronous one dereferences it
+        // seconds later, once the network information it waits on comes back. A view handed to the
+        // controller from outside skips `viewDidLoad`, so `viewWillAppear` can call through here
+        // before there is anything to navigate; stop before any of that work is scheduled.
+        guard webView != nil else {
+            Current.Log.info("not loading, no web view yet")
+            return
+        }
+
         // After a log out the web view deliberately sits on a blank page behind the logged-out empty
         // state, which every caller here would read as "wrong URL loaded" and correct by navigating
         // back into the server -- taking the empty state down and re-authenticating the frontend with

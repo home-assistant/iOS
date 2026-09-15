@@ -1138,6 +1138,22 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         XCTAssertNil(sut.loadActiveURLTaskStartDate)
     }
 
+    /// A view can be handed to the controller from outside, which skips `viewDidLoad` and leaves it
+    /// without a web view, while `viewWillAppear` still calls through here. Starting the load anyway
+    /// would trap: its asynchronous body dereferences the implicitly unwrapped web view once the
+    /// network information comes back, seconds later and inside whatever is running by then.
+    func testLoadActiveURLDoesNothingBeforeTheWebViewExists() {
+        let sut = WebViewController(server: .fake())
+        sut.setValue(UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640)), forKey: "view")
+        sut.isAppInBackground = { false }
+
+        sut.loadActiveURLIfNeeded()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 0)
+        XCTAssertNil(sut.loadActiveURLTask)
+        XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
     /// The blank page behind the logged-out empty state reads as the wrong URL, so without this the
     /// next trigger — a settings sheet closing, the app coming back to the foreground, the token
     /// update the log out itself writes — would navigate back into the server the user just left.
