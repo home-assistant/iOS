@@ -194,6 +194,43 @@ struct ControllableEntityAppEntityQueryTests {
         #expect(entity.subtitle == "Cabin • Kitchen")
     }
 
+    /// The row a picker draws: the entity's name on top, its context underneath, and the domain's
+    /// symbol beside them.
+    @Test func theRowIsTitledByTheEntityName() {
+        let previous = Current.servers
+        defer { Current.servers = previous }
+        Current.servers = FakeServerManager(initial: 1)
+
+        let representation = ControllableEntityAppEntity(
+            id: "s1-light.kitchen",
+            entityId: "light.kitchen",
+            serverId: "s1",
+            serverName: "Cabin",
+            areaName: "Kitchen",
+            displayString: "Ceiling",
+            iconName: "mdi:ceiling-light"
+        ).displayRepresentation
+
+        #expect(String(localized: representation.title) == "Ceiling")
+        #expect(representation.subtitle.map { String(localized: $0) } == "Kitchen")
+        #expect(representation.image != nil)
+    }
+
+    /// A domain the app does not model still gets a row rather than none.
+    @Test func aDomainWithNoSymbolStillDrawsOne() {
+        let entity = ControllableEntityAppEntity(
+            id: "s1-madeup.thing",
+            entityId: "madeup.thing",
+            serverId: "s1",
+            serverName: "Cabin",
+            displayString: "Thing",
+            iconName: "mdi:help"
+        )
+
+        #expect(entity.domain == nil)
+        #expect(entity.displayRepresentation.image != nil)
+    }
+
     /// An area id resolves through the same query that offered it, which is what keeps a shortcut
     /// saved against a room working.
     @Test func anAreaIdResolves() async throws {

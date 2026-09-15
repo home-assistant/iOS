@@ -112,6 +112,28 @@ struct ReadableEntityAppEntityQueryTests {
         }
     }
 
+    /// The row a picker draws: the entity's name on top, its context underneath, and a symbol beside
+    /// them.
+    @Test func theRowIsTitledByTheEntityName() {
+        let previous = Current.servers
+        defer { Current.servers = previous }
+        Current.servers = FakeServerManager(initial: 1)
+
+        let representation = ReadableEntityAppEntity(
+            id: "s1-sensor.humidity",
+            entityId: "sensor.humidity",
+            serverId: "s1",
+            serverName: "Cabin",
+            areaName: "Bathroom",
+            displayString: "Humidity",
+            iconName: "mdi:water-percent"
+        ).displayRepresentation
+
+        #expect(String(localized: representation.title) == "Humidity")
+        #expect(representation.subtitle.map { String(localized: $0) } == "Bathroom")
+        #expect(representation.image != nil)
+    }
+
     /// A row stands alone in Siri's disambiguation, where two homes can share a name.
     @Test func theContextLineNamesTheServerOnlyWhenThereIsMoreThanOne() {
         let entity = ReadableEntityAppEntity(
