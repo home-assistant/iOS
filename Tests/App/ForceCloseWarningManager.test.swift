@@ -85,7 +85,6 @@ struct ForceCloseWarningManagerTests {
             #expect(posted.isEmpty)
         }
     }
-
 }
 
 /// Saves every shared value these tests touch and restores it after, so they never
