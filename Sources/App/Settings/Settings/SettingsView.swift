@@ -353,29 +353,35 @@ struct SettingsView: View {
 
     @ViewBuilder
     private func settingsSection(
-        header: String,
+        header: String?,
         @ViewBuilder content: () -> some View
     ) -> some View {
         if Current.isCatalyst {
             Section {
-                Text(header)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(.top, DesignSystem.Spaces.two)
-                    .padding(.bottom, DesignSystem.Spaces.half)
-                    .listRowInsets(EdgeInsets(
-                        top: 0,
-                        leading: DesignSystem.Spaces.two,
-                        bottom: 0,
-                        trailing: DesignSystem.Spaces.two
-                    ))
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                    .accessibilityAddTraits(.isHeader)
+                if let header {
+                    Text(header)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.top, DesignSystem.Spaces.two)
+                        .padding(.bottom, DesignSystem.Spaces.half)
+                        .listRowInsets(EdgeInsets(
+                            top: 0,
+                            leading: DesignSystem.Spaces.two,
+                            bottom: 0,
+                            trailing: DesignSystem.Spaces.two
+                        ))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .accessibilityAddTraits(.isHeader)
+                }
+                content()
+            }
+        } else if let header {
+            Section(header: Text(header)) {
                 content()
             }
         } else {
-            Section(header: Text(header)) {
+            Section {
                 content()
             }
         }
@@ -383,7 +389,7 @@ struct SettingsView: View {
 
     @ViewBuilder
     private func settingsItemRow(_ item: SettingsItem, searchQuery: String? = nil) -> some View {
-        let subtitle = searchQuery.flatMap { item.contentMatchesSubtitle(searchQuery: $0) }
+        let subtitle = searchQuery.flatMap { item.contentMatchesSubtitle(searchQuery: $0) } ?? item.subtitle
         if item == .help {
             Button {
                 if let url = URL(string: "https://companion.home-assistant.io") {
