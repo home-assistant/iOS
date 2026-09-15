@@ -1,9 +1,9 @@
 "${applicationName} close ${entity}" = "${applicationName} ${entity} schließen";
 "${applicationName} dim ${light}" = "${applicationName} ${light} dimmen";
 "${applicationName} is ${entity} on" = "${applicationName} ist ${entity} an";
-"${applicationName} lock ${entity}" = "${applicationName} ${entity} abschließen";
 "${applicationName} open ${entity}" = "${applicationName} ${entity} öffnen";
 "${applicationName} set a temperature" = "${applicationName} Temperatur einstellen";
+"${applicationName} show ${target}" = "${applicationName} ${target} anzeigen";
 "${applicationName} turn off ${entity}" = "${applicationName} ${entity} ausschalten";
 "${applicationName} turn on ${entity}" = "${applicationName} ${entity} einschalten";
 "Check an entity in ${applicationName}" = "Eine Entität in ${applicationName} prüfen";
@@ -12,13 +12,14 @@
 "Dim ${light} in ${applicationName}" = "${light} in ${applicationName} dimmen";
 "Get an entity state from ${applicationName}" = "Entitätsstatus von ${applicationName} abrufen";
 "Is ${entity} on in ${applicationName}" = "Ist ${entity} in ${applicationName} an";
-"Lock ${entity} in ${applicationName}" = "${entity} in ${applicationName} abschließen";
-"Lock something in ${applicationName}" = "Etwas in ${applicationName} abschließen";
 "Open ${entity} in ${applicationName}" = "${entity} in ${applicationName} öffnen";
+"Open ${target} details in ${applicationName}" = "Details von ${target} in ${applicationName} öffnen";
 "Open something in ${applicationName}" = "Etwas in ${applicationName} öffnen";
 "Set ${entity} temperature in ${applicationName}" = "Temperatur von ${entity} in ${applicationName} einstellen";
 "Set a brightness in ${applicationName}" = "Helligkeit in ${applicationName} einstellen";
 "Set a temperature in ${applicationName}" = "Temperatur in ${applicationName} einstellen";
+"Show ${target} in ${applicationName}" = "${target} in ${applicationName} anzeigen";
+"Show something in ${applicationName}" = "Etwas in ${applicationName} anzeigen";
 "Turn off ${entity} in ${applicationName}" = "${entity} in ${applicationName} ausschalten";
 "Turn on ${entity} in ${applicationName}" = "${entity} in ${applicationName} einschalten";
 "Turn something off in ${applicationName}" = "Etwas in ${applicationName} ausschalten";

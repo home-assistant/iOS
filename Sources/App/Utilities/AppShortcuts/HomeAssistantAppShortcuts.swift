@@ -40,15 +40,19 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
             shortTitle: .init("app_shortcuts.get_entity_state.title", defaultValue: "Get Entity State"),
             systemImageName: "info.circle"
         )
+        // The same thing tapping a Spotlight result does: open the entity's more-info dialog. "Open"
+        // alone belongs to the cover shortcut below, so the phrases lead with "show" and spell out
+        // "details" where they use the verb, rather than leaving Siri two readings of "open the blind".
         AppShortcut(
-            intent: LockEntityAppIntent(),
+            intent: ShowEntityDetailsAppIntent(),
             phrases: [
-                "\(.applicationName) lock \(\.$entity)",
-                "Lock \(\.$entity) in \(.applicationName)",
-                "Lock something in \(.applicationName)",
+                "\(.applicationName) show \(\.$target)",
+                "Show \(\.$target) in \(.applicationName)",
+                "Open \(\.$target) details in \(.applicationName)",
+                "Show something in \(.applicationName)",
             ],
-            shortTitle: .init("app_shortcuts.lock.title", defaultValue: "Lock"),
-            systemImageName: "lock"
+            shortTitle: .init("app_shortcuts.show_entity.title", defaultValue: "Show Entity"),
+            systemImageName: "arrow.up.forward.app"
         )
         AppShortcut(
             intent: SetTemperatureAppIntent(),

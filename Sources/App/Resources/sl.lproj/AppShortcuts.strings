@@ -1,9 +1,9 @@
 "${applicationName} close ${entity}" = "${applicationName} zapri ${entity}";
 "${applicationName} dim ${light}" = "${applicationName} zatemni ${light}";
 "${applicationName} is ${entity} on" = "${applicationName} ali je ${entity} vklopljen";
-"${applicationName} lock ${entity}" = "${applicationName} zakleni ${entity}";
 "${applicationName} open ${entity}" = "${applicationName} odpri ${entity}";
 "${applicationName} set a temperature" = "${applicationName} nastavi temperaturo";
+"${applicationName} show ${target}" = "${applicationName} pokaži ${target}";
 "${applicationName} turn off ${entity}" = "${applicationName} izklopi ${entity}";
 "${applicationName} turn on ${entity}" = "${applicationName} vklopi ${entity}";
 "Check an entity in ${applicationName}" = "Preveri entiteto v ${applicationName}";
@@ -12,13 +12,14 @@
 "Dim ${light} in ${applicationName}" = "Zatemni ${light} v ${applicationName}";
 "Get an entity state from ${applicationName}" = "Pridobi stanje entitete iz ${applicationName}";
 "Is ${entity} on in ${applicationName}" = "Ali je ${entity} vklopljen v ${applicationName}";
-"Lock ${entity} in ${applicationName}" = "Zakleni ${entity} v ${applicationName}";
-"Lock something in ${applicationName}" = "Zakleni nekaj v ${applicationName}";
 "Open ${entity} in ${applicationName}" = "Odpri ${entity} v ${applicationName}";
+"Open ${target} details in ${applicationName}" = "Odpri podrobnosti ${target} v ${applicationName}";
 "Open something in ${applicationName}" = "Odpri nekaj v ${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "Nastavi temperaturo ${entity} v ${applicationName}";
 "Set a brightness in ${applicationName}" = "Nastavi svetlost v ${applicationName}";
 "Set a temperature in ${applicationName}" = "Nastavi temperaturo v ${applicationName}";
+"Show ${target} in ${applicationName}" = "Pokaži ${target} v ${applicationName}";
+"Show something in ${applicationName}" = "Pokaži nekaj v ${applicationName}";
 "Turn off ${entity} in ${applicationName}" = "Izklopi ${entity} v ${applicationName}";
 "Turn on ${entity} in ${applicationName}" = "Vklopi ${entity} v ${applicationName}";
 "Turn something off in ${applicationName}" = "Izklopi nekaj v ${applicationName}";
