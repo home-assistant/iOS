@@ -16,13 +16,47 @@ final class AnimatedSVGWebViewCache {
     static let shared = AnimatedSVGWebViewCache()
 
     private var warmWebViews: [String: AnimatedSVGWebView] = [:]
+    private var firstActivationObserver: Any?
 
-    private init() {}
+    /// Not private so tests can exercise an instance without the shared one's accumulated state.
+    init() {}
 
     /// Eagerly builds and starts loading the warm web view for `resourceName` (e.g. at app launch) so
     /// it is ready before first use.
     func preload(_ resourceName: String) {
         _ = warmWebView(for: resourceName)
+    }
+
+    /// Preloads `resourceName` the next time the app becomes active, then stops listening.
+    ///
+    /// Building the web view spins up a whole WebKit content process, which measured as half of the
+    /// app's launch time when done inline in `didFinishLaunching`. Nothing shows an animated SVG
+    /// during launch, so the warm-up waits until the app is interactive.
+    func preloadOnFirstActivation(_ resourceName: String) {
+        guard firstActivationObserver == nil else { return }
+        firstActivationObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            // `queue: .main` is what makes this delivery main-thread, which the compiler can't see.
+            MainActor.assumeIsolated {
+                self?.preload(resourceName)
+                self?.stopObservingFirstActivation()
+            }
+        }
+    }
+
+    /// Whether `resourceName` has already been warmed. Exists so tests can tell "not preloaded yet"
+    /// from "preloaded", which `webView(for:)` can't answer without warming it as a side effect.
+    func hasWarmWebView(for resourceName: String) -> Bool {
+        warmWebViews[resourceName] != nil
+    }
+
+    private func stopObservingFirstActivation() {
+        guard let firstActivationObserver else { return }
+        NotificationCenter.default.removeObserver(firstActivationObserver)
+        self.firstActivationObserver = nil
     }
 
     /// Returns a loaded web view for `resourceName`. Reuses the warm instance when it is free,

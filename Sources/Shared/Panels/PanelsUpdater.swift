@@ -67,7 +67,8 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
         }
     }
 
-    private func saveInDatabase(_ panels: HAPanels, server: Server) {
+    /// Not private so tests can drive the write without standing up a websocket connection.
+    func saveInDatabase(_ panels: HAPanels, server: Server) {
         let appPanels = panels.allPanels.map { panel in
             AppPanel(
                 serverId: server.identifier.rawValue,

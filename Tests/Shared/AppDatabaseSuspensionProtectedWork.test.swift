@@ -156,14 +156,38 @@ struct AppDatabaseSuspensionProtectedWorkTests {
         #expect(recorder.posted == [Database.resumeNotification])
     }
 
-    @Test("Backgrounding while the work runs hands the database back suspended")
-    func backgroundingDuringWorkResuspends() {
+    /// The regression this guards: `didEnterBackground` used to `suspend()` unconditionally, which
+    /// aborted the very write the background task was holding the process alive for.
+    @Test("Backgrounding while the work runs lets it finish, then hands the database back suspended")
+    func backgroundingDuringWorkDefersSuspension() {
+        let (suspension, recorder) = makeSuspension()
+        let runner = FakeBackgroundTaskRunner()
+        let postedDuringWork = Box<[Notification.Name]>()
+
+        withBackgroundTaskRunner(runner) {
+            suspension.performProtectedWork(named: .panelsSave) {
+                // What `LifecycleManager.didEnterBackground` does mid-write.
+                suspension.suspendIfIdle()
+                postedDuringWork.value = recorder.posted
+            }
+
+            #expect(waitUntil { postedDuringWork.value != nil })
+            #expect(waitUntil { recorder.posted.last == Database.suspendNotification })
+        }
+
+        // Nothing suspended the database out from under the work...
+        #expect(postedDuringWork.value == [Database.resumeNotification])
+        // ...and the deferred intent was applied once the access ended.
+        #expect(recorder.posted == [Database.resumeNotification, Database.suspendNotification])
+    }
+
+    @Test("A suspend that lands mid-work still hands the database back suspended")
+    func hardSuspendDuringWorkResuspends() {
         let (suspension, recorder) = makeSuspension()
         let runner = FakeBackgroundTaskRunner()
 
         withBackgroundTaskRunner(runner) {
             suspension.performProtectedWork(named: .panelsSave) {
-                // What `LifecycleManager.didEnterBackground` does mid-write.
                 suspension.suspend()
             }
 

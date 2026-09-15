@@ -147,6 +147,17 @@ public protocol LocationManagerProtocol: AnyObject {
     /// This method requests permission to access location only when the app is active.
     /// If permission has already been granted or denied, this method has no effect.
     func requestLocationPermission()
+
+    /// Requests one-off full accuracy while the user has approximate location enabled
+    ///
+    /// - Parameters:
+    ///   - purposeKey: Key into the app's `NSLocationTemporaryUsageDescriptionDictionary`,
+    ///     naming the reason shown to the user.
+    ///   - completion: Called with Core Location's error, or `nil` on success. Always called.
+    func requestTemporaryFullAccuracyAuthorization(
+        purposeKey: String,
+        completion: @escaping (Error?) -> Void
+    )
 }
 
 // MARK: - Implementation
@@ -279,6 +290,19 @@ final class LocationManager: NSObject, LocationManagerProtocol {
             postPermissionChangeNotification()
         @unknown default:
             coreLocationManager.requestWhenInUseAuthorization()
+        }
+    }
+
+    /// Hops to the main queue because the request presents UI, and Core Location delivers the
+    /// completion on the thread its manager was created on — which is this instance's.
+    func requestTemporaryFullAccuracyAuthorization(
+        purposeKey: String,
+        completion: @escaping (Error?) -> Void
+    ) {
+        DispatchQueue.main.async { [coreLocationManager] in
+            coreLocationManager.requestTemporaryFullAccuracyAuthorization(withPurposeKey: purposeKey) { error in
+                completion(error)
+            }
         }
     }
 }

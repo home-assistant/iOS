@@ -104,6 +104,8 @@
 		42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */; };
 		426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */; };
 		426A2EFB30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */; };
+		426A2EFD30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */; };
+		426A2F013059752700006022 /* ManualUpdateFullAccuracy.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */; };
 		426BD76E2FFE54B0001378A4 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD76D2FFE54B0001378A4 /* OHHTTPStubs */; };
 		426BD7702FFE54B0001378A4 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD76F2FFE54B0001378A4 /* OHHTTPStubsSwift */; };
 		426BD7722FFE54E8001378A4 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 426BD7712FFE54E8001378A4 /* OHHTTPStubs */; };
@@ -204,7 +206,6 @@
 		42EDEB11300315A50051FC9B /* HAApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE941300315A50051FC9B /* HAApp.swift */; };
 		42EDEB12300315A50051FC9B /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */; };
 		42EDEB13300315A50051FC9B /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE943300315A50051FC9B /* LifecycleManager.swift */; };
-		FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */; };
 		42EDEB14300315A50051FC9B /* MainWindowGroupCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */; };
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
 		42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */; };
@@ -284,6 +285,7 @@
 		DE51600000000000000000F5 /* HANetworking in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000F4 /* HANetworking */; };
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
+		FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -634,6 +636,8 @@
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspension.test.swift; sourceTree = "<group>"; };
 		426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspensionProtectedWork.test.swift; sourceTree = "<group>"; };
+		426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelsUpdaterSaveInDatabase.test.swift; sourceTree = "<group>"; };
+		426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualUpdateFullAccuracy.test.swift; sourceTree = "<group>"; };
 		426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlEntityProvider.swift; sourceTree = "<group>"; };
 		4278CB822D01F09400CFAAC9 /* AppGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGesture.swift; sourceTree = "<group>"; };
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
@@ -664,7 +668,6 @@
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
 		42EDE942300315A50051FC9B /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		42EDE943300315A50051FC9B /* LifecycleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleManager.swift; sourceTree = "<group>"; };
-		74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceCloseWarningManager.test.swift; sourceTree = "<group>"; };
 		42EDE944300315A50051FC9B /* MainWindowGroupCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowGroupCommands.swift; sourceTree = "<group>"; };
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
 		42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIIdentity.test.swift; sourceTree = "<group>"; };
@@ -680,6 +683,7 @@
 		480E9A5D40714BBAA81B15F7 /* ClientCertificate.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCertificate.test.swift; sourceTree = "<group>"; };
 		5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Database/GRDB+Initialization.test.swift"; sourceTree = "<group>"; };
 		6F482639B10AA7F76717F84F /* WatchConnectivity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.test.swift; sourceTree = "<group>"; };
+		74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceCloseWarningManager.test.swift; sourceTree = "<group>"; };
 		892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/DatabaseMigration.test.swift; sourceTree = "<group>"; };
 		9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = HomeAssistant.debug.xcconfig; sourceTree = "<group>"; };
 		9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.release.xcconfig; sourceTree = "<group>"; };
@@ -807,6 +811,15 @@
 				AppIntents/Widget/Sensor/WidgetSensorsConfig.swift,
 				AppIntents/Widget/WidgetContentSourceAppEnum.swift,
 				AppIntents/Widget/WidgetEntityAttributes.swift,
+				Widgets/Areas/WidgetAreas.swift,
+				Widgets/Areas/WidgetAreasAppIntent.swift,
+				Widgets/Areas/WidgetAreaSections.swift,
+				Widgets/Areas/WidgetAreasEntry.swift,
+				Widgets/Areas/WidgetAreasPageAppIntent.swift,
+				Widgets/Areas/WidgetAreasPageStore.swift,
+				Widgets/Areas/WidgetAreasSupportedFamilies.swift,
+				Widgets/Areas/WidgetAreasTimelineProvider.swift,
+				Widgets/Areas/WidgetAreasView.swift,
 				Widgets/Assist/AssistAppIntent.swift,
 				Widgets/Assist/Control/ControlAssistValueProvider.swift,
 				Widgets/Calendar/WidgetCalendar.swift,
@@ -815,15 +828,6 @@
 				Widgets/Calendar/WidgetCalendarAppIntent.swift,
 				Widgets/Calendar/WidgetCalendarAppIntentTimelineProvider.swift,
 				Widgets/Calendar/WidgetCalendarEntry.swift,
-				Widgets/Areas/WidgetAreaSections.swift,
-				Widgets/Areas/WidgetAreas.swift,
-				Widgets/Areas/WidgetAreasAppIntent.swift,
-				Widgets/Areas/WidgetAreasEntry.swift,
-				Widgets/Areas/WidgetAreasPageAppIntent.swift,
-				Widgets/Areas/WidgetAreasPageStore.swift,
-				Widgets/Areas/WidgetAreasSupportedFamilies.swift,
-				Widgets/Areas/WidgetAreasTimelineProvider.swift,
-				Widgets/Areas/WidgetAreasView.swift,
 				Widgets/Calendar/WidgetCalendarEvent.swift,
 				Widgets/Calendar/WidgetCalendarFormatter.swift,
 				Widgets/Calendar/WidgetCalendarPreviewSample.swift,
@@ -2232,12 +2236,6 @@
 				__Snapshots__/WidgetAreasSnapshot.test/systemMediumWithoutFloorsSnapshot.light.png,
 				__Snapshots__/WidgetAreasSnapshot.test/systemSmallSnapshot.dark.png,
 				__Snapshots__/WidgetAreasSnapshot.test/systemSmallSnapshot.light.png,
-				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemLarge-dark.png",
-				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemLarge-light.png",
-				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemMedium-dark.png",
-				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemMedium-light.png",
-				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemSmall-dark.png",
-				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemSmall-light.png",
 				__Snapshots__/WidgetCalendarSnapshot.test/systemLargeSnapshot.dark.png,
 				__Snapshots__/WidgetCalendarSnapshot.test/systemLargeSnapshot.light.png,
 				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumNextDaySnapshot.dark.png,
@@ -2250,6 +2248,12 @@
 				__Snapshots__/WidgetCalendarSnapshot.test/systemMediumSnapshot.light.png,
 				__Snapshots__/WidgetCalendarSnapshot.test/systemSmallSnapshot.dark.png,
 				__Snapshots__/WidgetCalendarSnapshot.test/systemSmallSnapshot.light.png,
+				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemLarge-dark.png",
+				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemLarge-light.png",
+				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemMedium-dark.png",
+				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemMedium-light.png",
+				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemSmall-dark.png",
+				"__Snapshots__/WidgetGallerySnapshot.test/gallerySnapshot-item.areas-systemSmall-light.png",
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallCapacitySnapshot.dark.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallCapacitySnapshot.light.png,
 				__Snapshots__/WidgetsSnapshot.test/gaugeWidgetSystemSmallSingleLabelSnapshot.dark.png,
@@ -3193,6 +3197,8 @@
 				424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */,
 				426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */,
 				426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */,
+				426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */,
+				426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4623,10 +4629,12 @@
 				1C9E83AFBC3E48D5AD9C7741 /* ClientCertificate.test.swift in Sources */,
 				42C11A2031AC500011AABB20 /* MJPEGStreamerSessionDelegate.test.swift in Sources */,
 				6DC7361D22E7972F8C24B259 /* WatchConnectivity.test.swift in Sources */,
+				426A2F013059752700006022 /* ManualUpdateFullAccuracy.test.swift in Sources */,
 				42164BB9301320720077A903 /* ComplicationFormula.test.swift in Sources */,
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
+				426A2EFD30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */,
 				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
 				426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */,

@@ -1073,36 +1073,23 @@ public class HomeAssistantAPI {
         Current.backgroundTask(withName: BackgroundTask.manualLocationUpdate.rawValue) { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
-                    // Creating a `CLLocationManager` and reading `accuracyAuthorization` are
-                    // synchronous XPC round-trips to locationd, and on a cold launch the first of
-                    // them also waits for the daemon connection to come up. On the main thread —
-                    // where `manuallyUpdate` is called from — that was half of the app's reported
-                    // hangs, all of them inside this closure.
+                    // Reading `accuracyAuthorization` is a synchronous XPC round-trip to locationd,
+                    // and on a cold launch it also waits for the daemon connection to come up. On
+                    // the main thread — where `manuallyUpdate` is called from — that was half of
+                    // the app's reported hangs, all of them inside this closure.
                     DispatchQueue.global(qos: .userInitiated).async {
-                        guard CLLocationManager().accuracyAuthorization != .fullAccuracy else {
-                            // already have full accuracy, don't need to request
+                        guard Current.locationManager.accuracyAuthorization != .fullAccuracy,
+                              type.allowsTemporaryAccess else {
+                            // Already precise, or this trigger may not ask: nothing to request.
                             return seal(())
                         }
 
-                        guard type.allowsTemporaryAccess else {
-                            return seal(())
-                        }
-
-                        // The request presents UI, so it needs the main thread — and its manager
-                        // has to be created there too, so the completion handler is delivered on a
-                        // thread with a live run loop.
-                        DispatchQueue.main.async {
-                            let locationManager = CLLocationManager()
-                            Current.Log.info("requesting full accuracy for manual update")
-                            locationManager.requestTemporaryFullAccuracyAuthorization(
-                                withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
-                            ) { error in
-                                Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
-
-                                withExtendedLifetime(locationManager) {
-                                    seal(())
-                                }
-                            }
+                        Current.Log.info("requesting full accuracy for manual update")
+                        Current.locationManager.requestTemporaryFullAccuracyAuthorization(
+                            purposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                        ) { error in
+                            Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
+                            seal(())
                         }
                     }
                 }
