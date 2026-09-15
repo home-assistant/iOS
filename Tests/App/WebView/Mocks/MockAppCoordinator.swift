@@ -13,6 +13,9 @@ final class MockAppCoordinator: AppCoordinator {
     private(set) var openedServers: [Server] = []
     private(set) var openedDeeplinks: [(server: Server, urlString: String)] = []
     private(set) var openedDeeplinksSelectingServer: [String] = []
+    private(set) var selectServerCallCount = 0
+    private(set) var selectServerZoomedFromStandBy = false
+    var onSelectServer: (() -> Void)?
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
     var onOpenServer: (() -> Void)?
@@ -47,7 +50,12 @@ final class MockAppCoordinator: AppCoordinator {
         activatedServers.append(server)
     }
 
-    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {}
+    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {
+        selectServerCallCount += 1
+        selectServerZoomedFromStandBy = zoomsFromStandBy
+        onSelectServer?()
+    }
+
     func presentInvitation(url: URL?) {}
     func setup() {}
 

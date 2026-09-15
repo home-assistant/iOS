@@ -1,9 +1,9 @@
 "${applicationName} close ${entity}" = "${applicationName} סגור את ${entity}";
 "${applicationName} dim ${light}" = "${applicationName} עמעם את ${light}";
 "${applicationName} is ${entity} on" = "${applicationName} האם ${entity} דלוק";
-"${applicationName} lock ${entity}" = "${applicationName} נעל את ${entity}";
 "${applicationName} open ${entity}" = "${applicationName} פתח את ${entity}";
 "${applicationName} set a temperature" = "${applicationName} הגדר טמפרטורה";
+"${applicationName} show ${target}" = "${applicationName} הצג את ${target}";
 "${applicationName} turn off ${entity}" = "${applicationName} כבה את ${entity}";
 "${applicationName} turn on ${entity}" = "${applicationName} הדלק את ${entity}";
 "Check an entity in ${applicationName}" = "בדוק ישות ב-${applicationName}";
@@ -12,13 +12,14 @@
 "Dim ${light} in ${applicationName}" = "עמעם את ${light} ב-${applicationName}";
 "Get an entity state from ${applicationName}" = "קבל מצב של ישות מ-${applicationName}";
 "Is ${entity} on in ${applicationName}" = "האם ${entity} דלוק ב-${applicationName}";
-"Lock ${entity} in ${applicationName}" = "נעל את ${entity} ב-${applicationName}";
-"Lock something in ${applicationName}" = "נעל משהו ב-${applicationName}";
 "Open ${entity} in ${applicationName}" = "פתח את ${entity} ב-${applicationName}";
+"Open ${target} details in ${applicationName}" = "פתח את הפרטים של ${target} ב-${applicationName}";
 "Open something in ${applicationName}" = "פתח משהו ב-${applicationName}";
 "Set ${entity} temperature in ${applicationName}" = "הגדר את הטמפרטורה של ${entity} ב-${applicationName}";
 "Set a brightness in ${applicationName}" = "הגדר בהירות ב-${applicationName}";
 "Set a temperature in ${applicationName}" = "הגדר טמפרטורה ב-${applicationName}";
+"Show ${target} in ${applicationName}" = "הצג את ${target} ב-${applicationName}";
+"Show something in ${applicationName}" = "הצג משהו ב-${applicationName}";
 "Turn off ${entity} in ${applicationName}" = "כבה את ${entity} ב-${applicationName}";
 "Turn on ${entity} in ${applicationName}" = "הדלק את ${entity} ב-${applicationName}";
 "Turn something off in ${applicationName}" = "כבה משהו ב-${applicationName}";
