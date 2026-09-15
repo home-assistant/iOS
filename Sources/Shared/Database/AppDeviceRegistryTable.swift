@@ -51,6 +51,7 @@ final class AppDeviceRegistryTable: DatabaseTableProtocol {
                     // Relationships
                     t.column(DatabaseTables.DeviceRegistry.primaryConfigEntry.rawValue, .text)
                     t.column(DatabaseTables.DeviceRegistry.viaDeviceID.rawValue, .text)
+                    t.column(DatabaseTables.DeviceRegistry.parentDeviceId.rawValue, .text).indexed()
 
                     // ID
                     t.uniqueKey([
