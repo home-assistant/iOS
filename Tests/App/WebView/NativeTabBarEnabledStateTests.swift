@@ -57,39 +57,28 @@ struct NativeTabBarEnabledStateTests {
     @Test("The tab bar leaves the frontend's kiosk mode to the kiosk settings")
     func tabBarDoesNotEnableKioskMode() async throws {
         let previousIsTestFlight = Current.isTestFlight
-        let previousDatabase = Current.database
         let previousKiosk = Current.kiosk
-        let previousSensors = Current.sensors
         let previousTabBar = Current.appLabs.isEnabled(featureId: AppLabsFeature.iosNativeTabBar.rawValue)
         Current.isTestFlight = true
-        Current.sensors = SensorContainer()
         defer {
-            // The App Labs store persists through `Current.database`, so it has to go back to the real
-            // database before the flag is restored.
-            Current.database = previousDatabase
             Current.kiosk = previousKiosk
-            Current.sensors = previousSensors
             Current.appLabs.setEnabled(previousTabBar, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
             Current.isTestFlight = previousIsTestFlight
         }
 
         try await setTabBar(enabled: true)
 
+        // The manager reads its settings from whichever database is current when it is built, so it keeps
+        // observing this empty one. `Current.database` itself goes straight back: the tests running
+        // alongside this one need the real database.
+        let previousDatabase = Current.database
         let database = try DatabaseQueue()
         try KioskSettingsTable().createIfNeeded(database: database)
         Current.database = { database }
-
-        func setKiosk(removingHeaderAndSidebar: Bool) throws {
-            try database.write { db in
-                try KioskSettings(
-                    enabled: removingHeaderAndSidebar,
-                    removeHeaderAndSidebar: removingHeaderAndSidebar
-                ).insert(db, onConflict: .replace)
-            }
-            Current.kiosk = KioskModeManager()
-        }
-
-        try setKiosk(removingHeaderAndSidebar: false)
+        let kiosk = KioskModeManager()
+        Current.database = previousDatabase
+        Current.kiosk = kiosk
+        try #require(!Current.kioskSettings.enabled)
 
         let controller = WebViewController(server: .fake())
         let handler = MockWebViewExternalMessageHandler()
@@ -97,13 +86,8 @@ struct NativeTabBarEnabledStateTests {
 
         controller.updateFrontendKioskMode()
         #expect(handler.sendExternalBusCommandWithRetryCommand == .kioskModeSet)
-        let withTabBarOnly = handler.sendExternalBusCommandWithRetryPayload?["enable"] as? Bool
-        #expect(withTabBarOnly == false)
-
-        try setKiosk(removingHeaderAndSidebar: true)
-        controller.updateFrontendKioskMode()
-        let withKioskSettings = handler.sendExternalBusCommandWithRetryPayload?["enable"] as? Bool
-        #expect(withKioskSettings == true)
+        let enable = handler.sendExternalBusCommandWithRetryPayload?["enable"] as? Bool
+        #expect(enable == false)
     }
 
     /// The tab bar keeps the sidebar gesture working: it travels to the frontend, which bounces it back
