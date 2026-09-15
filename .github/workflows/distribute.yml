@@ -43,7 +43,8 @@ jobs:
           # spell them differently. Say so here rather than letting xcrun fail halfway through a
           # half-hour build with nothing but a path that no longer exists.
           if [ ! -d "$DEVELOPER_DIR" ]; then
-            echo "::error title=DEVELOPER_DIR does not exist::$DEVELOPER_DIR is gone, so the runner image no longer spells that alias the way this workflow expects. Repoint DEVELOPER_DIR at one of the Xcodes listed below."
+            reason="$DEVELOPER_DIR is gone: the image no longer spells that alias the way this expects."
+            echo "::error title=DEVELOPER_DIR does not exist::$reason Repoint it at an Xcode listed below."
             ls -d /Applications/Xcode*.app 2>/dev/null || echo "  no Xcode installed"
             exit 1
           fi
