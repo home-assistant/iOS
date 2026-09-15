@@ -89,6 +89,13 @@ struct WidgetEntitiesSnapshotTests {
         assertWidgetSnapshot(family: .systemExtraLarge)
     }
 
+    /// The portrait extra-large family iOS 27 added: the same tiles as the landscape one, in the two
+    /// columns a large widget uses rather than four.
+    @available(iOS 27, *)
+    @MainActor @Test func systemExtraLargePortraitSnapshot() {
+        assertWidgetSnapshot(family: .systemExtraLargePortrait)
+    }
+
     /// A single controllable tile fills a small widget, the one arrangement that draws the icon
     /// above the title rather than beside it.
     @available(iOS 18, *)
@@ -225,11 +232,13 @@ struct WidgetEntitiesSnapshotTests {
         )
     }
 
+    /// The extra-large families are two large widgets side by side, or stacked for the portrait one.
     private static func size(for family: WidgetFamily) -> CGSize {
         switch family {
         case .systemSmall: CGSize(width: 160, height: 160)
         case .systemMedium: CGSize(width: 350, height: 160)
         case .systemLarge: CGSize(width: 350, height: 310)
+        case .systemExtraLargePortrait: CGSize(width: 350, height: 660)
         default: CGSize(width: 720, height: 310)
         }
     }
