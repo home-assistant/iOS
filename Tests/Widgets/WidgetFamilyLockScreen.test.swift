@@ -17,6 +17,10 @@ struct WidgetFamilyLockScreenTests {
         #expect(!family.isLockScreenAccessory)
     }
 
-    // `.systemExtraLargePortrait` is not listed: the iOS SDK lets a `switch` match the case but
-    // not name it as a value, so it is covered by `isLockScreenAccessory` listing it explicitly.
+    /// Tested on its own rather than in the arguments above: naming the case as a value needs
+    /// iOS 27, and an argument list cannot carry the availability check that allows it.
+    @available(iOS 27, *)
+    @Test func extraLargePortraitIsNotAnAccessory() {
+        #expect(!WidgetFamily.systemExtraLargePortrait.isLockScreenAccessory)
+    }
 }
