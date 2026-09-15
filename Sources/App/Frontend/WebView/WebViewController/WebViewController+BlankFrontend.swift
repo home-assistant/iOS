@@ -21,14 +21,18 @@ extension WebViewController {
 
         return await withCheckedContinuation { continuation in
             webView.evaluateJavaScript(WebViewJavascriptCommands.frontendRenderedProbe) { result, error in
-                if let error {
-                    Current.Log.error("Frontend render probe failed: \(error)")
-                    continuation.resume(returning: false)
-                    return
-                }
-                continuation.resume(returning: result as? Bool ?? false)
+                continuation.resume(returning: Self.hasRenderedFrontend(probeResult: result, error: error))
             }
         }
+    }
+
+    /// Non-private for tests.
+    static func hasRenderedFrontend(probeResult: Any?, error: Error?) -> Bool {
+        if let error {
+            Current.Log.error("Frontend render probe failed: \(error)")
+            return false
+        }
+        return probeResult as? Bool ?? false
     }
 
     @discardableResult

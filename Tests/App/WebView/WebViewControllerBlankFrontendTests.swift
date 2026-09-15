@@ -73,12 +73,23 @@ final class WebViewControllerBlankFrontendTests: XCTestCase {
 
     func testRecoveringABlankFrontendCleansItsCacheBeforeReloading() {
         let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
 
         XCTAssertTrue(sut.recoverFromBlankFrontend())
 
         XCTAssertEqual(websiteDataStoreHandler.cleanCacheCallCount, 1)
         XCTAssertEqual(websiteDataStoreHandler.lastDataTypes, WebsiteDataStoreHandlerImpl.frontendAssetDataTypes)
         XCTAssertEqual(sut.blankFrontendRecoveryAttempts, 1)
+
+        websiteDataStoreHandler.invokePendingCompletion()
+
+        XCTAssertEqual(sut.connectionState, .disconnected)
+    }
+
+    func testRenderProbeReportsNothingRenderedWhenTheScriptCannotRun() {
+        XCTAssertFalse(WebViewController.hasRenderedFrontend(probeResult: nil, error: URLError(.unknown)))
+        XCTAssertFalse(WebViewController.hasRenderedFrontend(probeResult: nil, error: nil))
+        XCTAssertTrue(WebViewController.hasRenderedFrontend(probeResult: true, error: nil))
     }
 
     func testRecoveringABlankRestoredPathFallsBackToTheFrontendRoot() async throws {
