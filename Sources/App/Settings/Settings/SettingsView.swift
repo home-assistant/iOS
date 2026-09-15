@@ -78,7 +78,7 @@ struct SettingsView: View {
                 }
 
                 // Settings items grouped by user objective
-                settingsSections(matching: nil)
+                settingsSections(SettingsSection.allCases, matching: nil)
             }
             Color.clear
                 .frame(height: Constants.macSidebarBottomPadding)
@@ -147,7 +147,7 @@ struct SettingsView: View {
                 }
 
                 // Settings items grouped by user objective
-                settingsSections(matching: nil)
+                settingsSections(SettingsSection.groupsAboveTrailingRows, matching: nil)
 
                 if let latestRelease = WhatsNewEngine().latestRelease() {
                     // What's New
@@ -187,6 +187,9 @@ struct SettingsView: View {
                         }
                     }
                 }
+
+                // App Labs sits below every other row, experiments last.
+                settingsSections([.appLabs], matching: nil)
             }
         }
         .accessibilityIdentifier(AccessibilityIdentifier.settingsList.rawValue)
@@ -320,7 +323,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            settingsSections(matching: trimmedSearchQuery)
+            settingsSections(SettingsSection.allCases, matching: trimmedSearchQuery)
         } else {
             noSearchResultsSection
         }
@@ -338,8 +341,8 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
-    private func settingsSections(matching searchQuery: String?) -> some View {
-        ForEach(SettingsSection.allCases, id: \.self) { section in
+    private func settingsSections(_ sections: [SettingsSection], matching searchQuery: String?) -> some View {
+        ForEach(sections, id: \.self) { section in
             let items = searchQuery.map { section.items(matching: $0) } ?? section.items
             if !items.isEmpty {
                 settingsSection(header: section.header) {

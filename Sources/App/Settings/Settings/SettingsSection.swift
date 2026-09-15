@@ -40,6 +40,12 @@ enum SettingsSection: String, CaseIterable, Hashable {
         }
     }
 
+    /// Groups rendered above the settings list's trailing rows (What's New, Beta Tester Updates,
+    /// About), so `appLabs` can be rendered below them and land at the very bottom of the list.
+    static var groupsAboveTrailingRows: [SettingsSection] {
+        allCases.filter { $0 != .appLabs }
+    }
+
     /// Entries visible on the current platform and device.
     var items: [SettingsItem] {
         allItems.filter(\.isVisible)
