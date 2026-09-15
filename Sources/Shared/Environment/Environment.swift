@@ -439,6 +439,8 @@ public class AppEnvironment {
     /// Dispatchque local notifications (From the App to the App, not from Home Assistant)
     public var notificationDispatcher: LocalNotificationDispatcherProtocol = LocalNotificationDispatcher()
 
+    public var forceCloseWarningManager = ForceCloseWarningManager()
+
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
     #endif
