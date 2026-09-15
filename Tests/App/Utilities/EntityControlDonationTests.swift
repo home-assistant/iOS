@@ -103,7 +103,25 @@ struct EntityControlDonationTests {
             )
 
             let entityIds = recorder.intents.compactMap { ($0 as? TurnOnOffEntityAppIntent)?.entity.entityId }
-            #expect(entityIds == ["light.kitchen", "light.hall"])
+            #expect(Set(entityIds) == ["light.kitchen", "light.hall"])
+            #expect(entityIds.count == 2)
+        }
+    }
+
+    /// One call can reach entities that different intents run, each resolved through its own query.
+    @Test func entitiesOfDifferentCommandsAreEachDonated() async throws {
+        try await withDatabase { serverId, recorder in
+            try seed(entityId: "light.kitchen", serverId: serverId)
+            try seed(entityId: "cover.garage", serverId: serverId)
+
+            await donation(recorder).donate(
+                message(["light.kitchen", "cover.garage"], "homeassistant", "turn_on"),
+                serverId: serverId
+            )
+
+            #expect(recorder.intents.count == 2)
+            #expect(recorder.intents.contains { $0 is TurnOnOffEntityAppIntent })
+            #expect(recorder.intents.contains { ($0 as? OpenCloseEntityAppIntent)?.action == .open })
         }
     }
 

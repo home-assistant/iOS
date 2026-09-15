@@ -10,7 +10,7 @@ import Shared
 /// the intents have no command for would be suggested as something the user cannot then run.
 struct EntityControlDonation {
     /// The command an intent exists for, which decides the intent to donate.
-    enum Command: Equatable {
+    enum Command: Hashable {
         case turnOnOff(TurnOnOffActionAppEnum)
         case openClose(OpenCloseActionAppEnum)
         case lock
@@ -27,17 +27,25 @@ struct EntityControlDonation {
 
     /// Donates one intent per entity the call reached, skipping servers hidden from Siri and
     /// entities that resolve to no command or that Siri is not exposed to.
+    ///
+    /// Entities are resolved one query per command rather than one per entity: each query rebuilds
+    /// the whole Siri-visible list to answer, and a call on a group can name many entities.
     func donate(_ message: EntityControlMessage, serverId: String) async {
         guard SiriServerExposure.isExposed(serverId: serverId) else { return }
+        var entityIdsByCommand: [Command: [String]] = [:]
         for entityId in message.entityIds {
-            guard let command = Self.command(entityId: entityId, domain: message.domain, service: message.service),
-                  let intent = await intent(for: command, entityId: entityId, serverId: serverId) else {
+            guard let command = Self.command(entityId: entityId, domain: message.domain, service: message.service) else {
                 continue
             }
-            do {
-                try await donateIntent(intent)
-            } catch {
-                Current.Log.error("Failed to donate \(type(of: intent)): \(error.localizedDescription)")
+            entityIdsByCommand[command, default: []].append(entityId)
+        }
+        for (command, entityIds) in entityIdsByCommand {
+            for intent in await intents(for: command, entityIds: entityIds, serverId: serverId) {
+                do {
+                    try await donateIntent(intent)
+                } catch {
+                    Current.Log.error("Failed to donate \(type(of: intent)): \(error.localizedDescription)")
+                }
             }
         }
     }
@@ -73,26 +81,32 @@ struct EntityControlDonation {
         }
     }
 
-    /// Builds the intent through the very query its entity parameter uses, so nothing is donated that
-    /// the system could not resolve when it suggests it back.
-    private func intent(for command: Command, entityId: String, serverId: String) async -> (any AppIntent)? {
-        let id = ServerEntity.uniqueId(serverId: serverId, entityId: entityId)
+    /// Builds the intents through the very query their entity parameter uses, so nothing is donated
+    /// that the system could not resolve when it suggests it back.
+    private func intents(for command: Command, entityIds: [String], serverId: String) async -> [any AppIntent] {
+        let ids = entityIds.map { ServerEntity.uniqueId(serverId: serverId, entityId: $0) }
         switch command {
         case let .turnOnOff(action):
-            guard let entity = try? await HAAppEntityAppIntentEntityQuery().entities(for: [id]).first else { return nil }
-            var intent = TurnOnOffEntityAppIntent(action: action)
-            intent.entity = entity
-            return intent
+            let entities = await (try? HAAppEntityAppIntentEntityQuery().entities(for: ids)) ?? []
+            return entities.map { entity in
+                var intent = TurnOnOffEntityAppIntent(action: action)
+                intent.entity = entity
+                return intent
+            }
         case let .openClose(action):
-            guard let entity = try? await OpenableEntityAppEntityQuery().entities(for: [id]).first else { return nil }
-            var intent = OpenCloseEntityAppIntent(action: action)
-            intent.entity = entity
-            return intent
+            let entities = await (try? OpenableEntityAppEntityQuery().entities(for: ids)) ?? []
+            return entities.map { entity in
+                var intent = OpenCloseEntityAppIntent(action: action)
+                intent.entity = entity
+                return intent
+            }
         case .lock:
-            guard let entity = try? await LockAppEntityQuery().entities(for: [id]).first else { return nil }
-            var intent = LockEntityAppIntent()
-            intent.entity = entity
-            return intent
+            let entities = await (try? LockAppEntityQuery().entities(for: ids)) ?? []
+            return entities.map { entity in
+                var intent = LockEntityAppIntent()
+                intent.entity = entity
+                return intent
+            }
         }
     }
 }
