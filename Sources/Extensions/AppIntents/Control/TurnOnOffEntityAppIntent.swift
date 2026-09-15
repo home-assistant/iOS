@@ -25,8 +25,11 @@ struct TurnOnOffEntityAppIntent: AppIntent {
     @Parameter(title: .init("app_intents.turn_on_off.action.name", defaultValue: "Action"), default: .on)
     var action: TurnOnOffActionAppEnum
 
-    @Parameter(title: .init("app_intents.controllable_entity.parameter.entity", defaultValue: "Entity"))
-    var entity: ControllableEntityAppEntity
+    @Parameter(
+        title: .init("app_intents.controllable_entity.parameter.entity", defaultValue: "Entity"),
+        optionsProvider: ControllableEntityOptionsProvider()
+    )
+    var entity: HAAppEntityAppIntentEntity
 
     init() {}
 

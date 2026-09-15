@@ -85,8 +85,8 @@ public enum WidgetTileLayout {
         switch family {
         case .systemSmall: return 0
         case .systemMedium: return 2
-        case .systemLarge: return 4
-        case .systemExtraLarge, .systemExtraLargePortrait: return 3
+        case .systemLarge, .systemExtraLargePortrait: return 4
+        case .systemExtraLarge: return 3
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
@@ -114,14 +114,16 @@ public enum WidgetTileLayout {
             return 1
         case .systemSmall: return 1
         case .systemMedium: return 2
-        case .systemLarge:
+        // The portrait extra-large family is no wider than a large one, only taller, so it takes the
+        // same two columns rather than the landscape family's four.
+        case .systemLarge, .systemExtraLargePortrait:
             if modelCount <= 2 {
                 // 2 'landscape' actions looks better than 2 'portrait'
                 return 1
             } else {
                 return 2
             }
-        case .systemExtraLarge, .systemExtraLargePortrait:
+        case .systemExtraLarge:
             if modelCount <= 4 {
                 return 1
             } else if modelCount <= 15 {
