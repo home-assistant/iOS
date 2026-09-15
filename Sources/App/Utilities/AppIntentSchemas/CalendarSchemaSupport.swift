@@ -32,9 +32,11 @@ enum CalendarSchemaSupport {
     /// the thing rejects it server-side, so failing here gives the user something they can act on.
     static func calendar(for entity: CalendarSchemaEntity, requiring feature: HACalendar.Feature) throws -> HACalendar {
         guard let stored = HACalendar.get(id: entity.id) else {
+            Current.Log.error("Calendar \(entity.id) is not in the database")
             throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.unknownCalendar)
         }
         guard stored.supports(feature) else {
+            Current.Log.error("Calendar \(stored.entityId) does not support \(feature)")
             throw ShortcutAppIntentError(Self.unsupported(feature, calendar: stored.name))
         }
         return stored
@@ -52,6 +54,7 @@ enum CalendarSchemaSupport {
     /// produce events that can be listed but not changed, so this refuses rather than guessing.
     static func uid(of event: CalendarEventSchemaEntity, editing: Bool) throws -> String {
         guard let uid = event.uid?.nilIfEmpty else {
+            Current.Log.error("Event \(event.id) has no uid, so it cannot be edited or deleted")
             throw ShortcutAppIntentError(
                 editing
                     ? L10n.AppIntents.Calendar.Error.eventNotEditable(event.title)
@@ -64,6 +67,7 @@ enum CalendarSchemaSupport {
     static func api(for calendar: HACalendar) throws -> HomeAssistantAPI {
         guard let server = Current.servers.server(forServerIdentifier: calendar.serverId),
               let api = Current.api(for: server) else {
+            Current.Log.error("No API for server \(calendar.serverId), which owns \(calendar.entityId)")
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
         return api
@@ -82,10 +86,12 @@ enum CalendarSchemaSupport {
     static func validate(start: Date, end: Date, isAllDay: Bool) throws {
         if isAllDay {
             guard start <= end else {
+                Current.Log.error("All-day event ends (\(end)) before it starts (\(start))")
                 throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.invalidDuration)
             }
         } else {
             guard start < end else {
+                Current.Log.error("Event ends (\(end)) at or before it starts (\(start))")
                 throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.zeroDuration)
             }
         }

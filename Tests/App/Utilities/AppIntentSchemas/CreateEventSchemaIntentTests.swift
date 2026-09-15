@@ -128,6 +128,41 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
 
+    /// HAKit queues a WebSocket command until the connection is ready and never times it out, so
+    /// the command has to give up on its own instead of leaving Siri waiting on a hang.
+    func testACommandTheServerNeverAnswersTimesOut() async throws {
+        let previousTimeout = HomeAssistantAPI.commandTimeout
+        HomeAssistantAPI.commandTimeout = 0.05
+        defer { HomeAssistantAPI.commandTimeout = previousTimeout }
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
+
+        do {
+            _ = try await sut.perform()
+            XCTFail("expected an unanswered command to time out")
+        } catch {
+            XCTAssertEqual(
+                (error as? ShortcutAppIntentError)?.errorDescription,
+                L10n.AppIntents.Calendar.Error.timeout
+            )
+        }
+        XCTAssertEqual(connection.cancelledRequests.count, 1)
+    }
+
+    /// Siri reads `localizedStringResource`, so an error without one is reported as a bare failure.
+    func testTheRefusalReachesSiriAsItsOwnMessage() async throws {
+        let sut = try intent(calendar: seedCalendar(name: "Holidays", supportedFeatures: 2))
+
+        do {
+            _ = try await sut.perform()
+            XCTFail("expected a calendar without createEvent to be refused")
+        } catch let error as ShortcutAppIntentError {
+            XCTAssertEqual(
+                String(localized: error.localizedStringResource),
+                L10n.AppIntents.Calendar.Error.createUnsupported("Holidays")
+            )
+        }
+    }
+
     func testAnEventThatEndsBeforeItStartsIsRefused() async throws {
         let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
         sut.endDate = start.addingTimeInterval(-60)

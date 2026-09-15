@@ -10,6 +10,7 @@ struct DeleteEventSchemaIntent {
     var span: EventSpanSchemaEnum?
 
     func perform() async throws -> some IntentResult {
+        Current.Log.info("Calendar schema intent: deleting event \(entity.id)")
         let stored = try CalendarSchemaSupport.calendar(for: entity.calendar, requiring: .deleteEvent)
         let api = try CalendarSchemaSupport.api(for: stored)
 

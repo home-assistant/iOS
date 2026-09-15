@@ -22,6 +22,7 @@ struct UpdateEventSchemaIntent {
     var span: EventSpanSchemaEnum?
 
     func perform() async throws -> some ReturnsValue<CalendarEventSchemaEntity> {
+        Current.Log.info("Calendar schema intent: editing event \(event.id)")
         // Moving an event between calendars is a delete plus a create in Home Assistant, which is
         // not what an edit promises, so the event stays where it is.
         let stored = try CalendarSchemaSupport.calendar(for: event.calendar, requiring: .updateEvent)
