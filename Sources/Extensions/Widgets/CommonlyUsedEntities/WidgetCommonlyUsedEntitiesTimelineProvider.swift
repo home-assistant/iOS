@@ -26,6 +26,10 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
     /// that triggers multiple timeline refreshes
     private static let cacheValiditySeconds: TimeInterval = 1
 
+    /// How many entities a widget with a domain filter asks core for, so enough are left to fill its
+    /// tiles once the filter drops some.
+    static let filteredPredictionLimit = 100
+
     func makePreviewEntry(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         let items = WidgetPreviewSample.entities
             .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
@@ -122,9 +126,9 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         return Array(magicItems.prefix(WidgetFamilySizes.size(for: family, capacity: .tile)))
     }
 
-    /// Asks core for as many entities as the family shows, or for its maximum when a domain filter
-    /// will drop some of them after they arrive. Cores older than 2026.10 reject a `limit`, so they
-    /// keep the default request.
+    /// Asks core for as many entities as the family shows, or for more when a domain filter will drop
+    /// some of them after they arrive. Cores older than 2026.10 reject a `limit`, so they keep the
+    /// default request.
     static func usagePredictionRequest(
         server: Server,
         family: WidgetFamily,
@@ -135,7 +139,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         }
         let limit = domainFilter.isEmpty
             ? WidgetFamilySizes.size(for: family, capacity: .tile)
-            : HAUsagePredictionCommonControl.maximumLimit
+            : Self.filteredPredictionLimit
         return .usagePredictionCommonControl(limit: limit)
     }
 

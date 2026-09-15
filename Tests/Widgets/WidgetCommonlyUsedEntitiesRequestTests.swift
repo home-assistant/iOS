@@ -68,14 +68,17 @@ struct WidgetCommonlyUsedEntitiesRequestTests {
     /// The domain filter runs after the prediction arrives, so asking for only the family's size
     /// would leave tiles empty once it drops some.
     @Test(arguments: families)
-    func domainFilterAsksForTheMaximum(family: WidgetFamily) {
+    func domainFilterAsksForMore(family: WidgetFamily) {
         guard #available(iOS 17, *) else { return }
         let request = WidgetCommonlyUsedEntitiesTimelineProvider.usagePredictionRequest(
             server: .fake(update: { info in info.version = .usagePredictionCommonControlLimit }),
             family: family,
             domainFilter: WidgetDomainFilter(includedDomains: [Domain.light.rawValue])
         )
-        #expect(request.request.data["limit"] as? Int == HAUsagePredictionCommonControl.maximumLimit)
+        #expect(
+            request.request.data["limit"] as? Int == WidgetCommonlyUsedEntitiesTimelineProvider
+                .filteredPredictionLimit
+        )
     }
 
     /// The widget sends the family-sized request and draws what core predicts, up to the tiles it shows.
