@@ -116,9 +116,7 @@ struct WidgetCommonlyUsedEntities: Widget {
 }
 
 enum WidgetCommonlyUsedEntitiesSupportedFamilies {
-    static let families: [WidgetFamily] = [
-        .systemSmall,
-        .systemMedium,
-        .systemLarge,
-    ]
+    static var families: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
+    }
 }

@@ -24,7 +24,11 @@ struct WidgetCalendar: Widget {
         }
         .configurationDisplayName(L10n.Widgets.Calendar.title)
         .description(L10n.Widgets.Calendar.description)
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies(supportedFamilies)
+    }
+
+    var supportedFamilies: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
     }
 }
 
