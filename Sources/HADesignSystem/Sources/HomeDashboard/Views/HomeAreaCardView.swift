@@ -18,21 +18,23 @@ public struct HomeAreaCardView: View {
         HACard {
             VStack(spacing: DesignSystem.Spaces.one) {
                 HATileIcon(icon: HomeDashboardIconName.icon(config.icon, fallback: .sofaIcon), color: .haPrimary)
+                // The name sits in the middle of whatever room is left under the icon rather than
+                // hanging from it, so a room called "Hall" is as settled on its card as one called
+                // "Downstairs guest bathroom" is on the card beside it.
                 Text(config.name)
                     .font(DesignSystem.Font.footnote)
                     .foregroundStyle(Color(uiColor: .label))
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
+                    .frame(maxHeight: .infinity)
                 // The readings sit on the card's floor, as they do across the foot of the frontend's
-                // area card, rather than under the name — which keeps the icons and the names of two
-                // rooms on the same line whether or not either of them has a temperature to show.
-                Spacer(minLength: .zero)
-                if let sensors {
-                    Text(sensors)
-                        .font(DesignSystem.Font.caption2)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
+                // area card — and their line is kept even by a room with nothing to report, so the
+                // name of a room without a temperature centres at the same height as the name of the
+                // room beside it that has one.
+                Text(sensors ?? "")
+                    .font(DesignSystem.Font.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
             .padding(DesignSystem.Spaces.oneAndMicro)
             // Every room is the same card, wherever it is: the two rows the strategy asked for.

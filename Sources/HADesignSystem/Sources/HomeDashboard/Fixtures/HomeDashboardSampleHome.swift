@@ -50,7 +50,9 @@ public enum HomeDashboardSampleHome {
             floorId: "first_floor",
             temperatureEntityId: "sensor.bedroom_temperature"
         ),
-        HomeArea(id: "bathroom", name: "Bathroom", icon: "mdi:shower", floorId: "first_floor"),
+        // Deliberately long: a room whose name wraps to two lines is what the card's layout has
+        // to survive, and the sample home is where the snapshots get one.
+        HomeArea(id: "bathroom", name: "Downstairs bathroom", icon: "mdi:shower", floorId: "first_floor"),
         HomeArea(id: "garage", name: "Garage", icon: "mdi:garage"),
     ]
 

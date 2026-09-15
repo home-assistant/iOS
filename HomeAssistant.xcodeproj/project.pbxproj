@@ -2204,6 +2204,8 @@
 				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/overview.overview-dark.png,
 				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/overview.overview-light.png,
 				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/overviewOnAWideScreen.overview-ipad.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/roomsWithLongAndShortNames.long-room-names-dark.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/roomsWithLongAndShortNames.long-room-names-light.png,
 				Widgets/__Snapshots__/WidgetTodoListContentViewSnapshot.test/systemLargeShortSnapshot.dark.png,
 				Widgets/__Snapshots__/WidgetTodoListContentViewSnapshot.test/systemLargeShortSnapshot.light.png,
 				Widgets/__Snapshots__/WidgetTodoListContentViewSnapshot.test/systemLargeSnapshot.dark.png,

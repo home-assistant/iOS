@@ -83,6 +83,25 @@ struct HomeDashboardSnapshotTests {
         assertLightDarkSnapshots(of: page(view, registry: registry), named: "area-kitchen")
     }
 
+    /// A room whose name wraps beside one whose name does not: both cards are the same size, both
+    /// icons on one line, and each name centred in the space under its own icon.
+    @Test func roomsWithLongAndShortNames() async throws {
+        let registry = HomeRegistry(
+            areas: [
+                HomeArea(id: "hall", name: "Hall", icon: "mdi:coat-rack", floorId: "ground_floor"),
+                HomeArea(
+                    id: "guest_bathroom",
+                    name: "Downstairs guest bathroom",
+                    icon: "mdi:shower",
+                    floorId: "ground_floor"
+                ),
+            ],
+            floors: [HomeFloor(id: "ground_floor", name: "Ground floor", level: 0)]
+        )
+        let view = HomeDashboardStrategy.generate(registry: registry, strings: .app).overview
+        assertLightDarkSnapshots(of: page(view, registry: registry), named: "long-room-names")
+    }
+
     /// Every player in the house, grouped by the room it is in.
     @Test func mediaPlayers() async throws {
         let view = dashboard(registry: registry).view(path: "media-players")
