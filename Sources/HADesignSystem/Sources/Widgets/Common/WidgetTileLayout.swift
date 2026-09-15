@@ -51,7 +51,8 @@ public enum WidgetTileLayout {
         switch family {
         case .systemSmall: return 2
         case .systemMedium: return 3
-        case .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: return 6
+        case .systemLarge, .systemExtraLarge: return 6
+        case .systemExtraLargePortrait: return 12
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
         @unknown default:
