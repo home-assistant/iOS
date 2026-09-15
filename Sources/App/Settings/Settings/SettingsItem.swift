@@ -56,6 +56,15 @@ enum SettingsItem: String, Hashable, CaseIterable {
         }
     }
 
+    /// Explanatory text shown under the title in the settings list, for entries whose
+    /// title alone does not convey what they are.
+    var subtitle: String? {
+        switch self {
+        case .appLabs: return L10n.Settings.AppLabs.SettingsRow.subtitle
+        default: return nil
+        }
+    }
+
     static let iconSize: CGFloat = 24
 
     var materialIcon: MaterialDesignIcons {

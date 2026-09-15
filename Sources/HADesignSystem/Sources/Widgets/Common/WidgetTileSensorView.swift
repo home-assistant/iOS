@@ -80,8 +80,8 @@ public struct WidgetTileSensorView: View {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
-                case .regular, .compact, .compressed:
-                    HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
+                case .regular, .compact, .dense, .compressed:
+                    HStack(alignment: .center, spacing: sizeStyle.horizontalPadding) {
                         VStack(alignment: .leading, spacing: .zero) {
                             subtext
                             text
@@ -90,7 +90,7 @@ public struct WidgetTileSensorView: View {
                         icon
                             .offset(y: -10)
                     }
-                    .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
+                    .padding([.leading, .trailing], sizeStyle.horizontalPadding)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
                         icon

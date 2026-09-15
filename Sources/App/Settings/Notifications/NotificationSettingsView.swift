@@ -20,6 +20,9 @@ struct NotificationSettingsView: View {
             overviewSection
             historySnoozeSoundsSection
             badgeSection
+            if !Current.isCatalyst {
+                forceCloseWarningSection
+            }
         }
         .toolbar {
             // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
@@ -111,12 +114,23 @@ struct NotificationSettingsView: View {
                 }
             }
 
-            SwiftUI.Toggle(
+            Toggle(
                 L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title,
                 isOn: $viewModel.clearBadgeAutomatically
             )
         } footer: {
             Text(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.description)
+        }
+    }
+
+    private var forceCloseWarningSection: some View {
+        Section {
+            Toggle(
+                L10n.SettingsDetails.Notifications.ForceCloseWarning.title,
+                isOn: $viewModel.forceCloseWarningEnabled
+            )
+        } footer: {
+            Text(L10n.SettingsDetails.Notifications.ForceCloseWarning.footer)
         }
     }
 
@@ -145,6 +159,19 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var clearBadgeAutomatically: Bool = Current.settingsStore.clearBadgeAutomatically {
         didSet {
             Current.settingsStore.clearBadgeAutomatically = clearBadgeAutomatically
+        }
+    }
+
+    @Published var forceCloseWarningEnabled: Bool = Current.settingsStore.forceCloseWarningEnabled {
+        didSet {
+            Current.settingsStore.forceCloseWarningEnabled = forceCloseWarningEnabled
+            if forceCloseWarningEnabled {
+                PermissionType.notification.request { [weak self] _, _ in
+                    Task { @MainActor [weak self] in
+                        self?.refreshPermissionStatus()
+                    }
+                }
+            }
         }
     }
 
@@ -181,8 +208,9 @@ final class NotificationSettingsViewModel: ObservableObject {
 }
 
 extension NotificationSettingsView: SettingsScreenSearchable {
+    /// Only index rows the screen can actually present: the force-close toggle is absent on Catalyst.
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        [
+        var entries = [
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.Permission.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.History.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.SnoozeActions.header),
@@ -190,5 +218,9 @@ extension NotificationSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.Button.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title),
         ]
+        if !Current.isCatalyst {
+            entries.append(SettingsSearchEntry(L10n.SettingsDetails.Notifications.ForceCloseWarning.title))
+        }
+        return entries
     }
 }

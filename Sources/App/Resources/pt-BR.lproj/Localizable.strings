@@ -59,11 +59,9 @@
 "app_intents.active_entities.dialog.some_on" = "Estes %1$@ estão ligados: %2$@";
 "app_intents.active_entities.dialog.some_open" = "Estes %1$@ estão abertos: %2$@";
 "app_intents.active_entities.filter.all" = "entidades";
-"app_intents.active_entities.filter.climates" = "termostatos";
 "app_intents.active_entities.filter.covers" = "coberturas";
 "app_intents.active_entities.filter.fans" = "ventiladores";
 "app_intents.active_entities.filter.lights" = "luzes";
-"app_intents.active_entities.filter.locks" = "fechaduras";
 "app_intents.active_entities.filter.media_players" = "reprodutores de mídia";
 "app_intents.active_entities.filter.name" = "Tipo";
 "app_intents.active_entities.filter.switches" = "interruptores";
@@ -1560,7 +1558,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.servers" = "Servidores";
 "settings.connection_section.servers_header" = "Servidores";
 "settings.connection_section.servers_reorder_footer" = "Arraste para reordenar seus servidores. O que estiver no topo é usado como servidor padrão.";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "Acessar SSIDs em segundo plano requer permissão de localização 'Sempre' e precisão de localização 'Total'. Toque aqui para alterar suas configurações.";
 "settings.connection_section.update_database.finished" = "Informações do servidor atualizadas";
 "settings.connection_section.update_database.progress.areas" = "Atualizando áreas";
 "settings.connection_section.update_database.progress.calendars" = "Atualizando calendários";
@@ -2315,7 +2312,6 @@ O servidor só responde enquanto o aplicativo está aberto, e para quando você 
 "share_extension.error.title" = "Não foi possível enviar";
 "shortcut_item.open_settings.title" = "Abrir Configurações";
 "tab_bar.customize.add" = "Adicionar";
-"tab_bar.customize.available_section.footer_full" = "Remova uma aba para adicionar outra.";
 "tab_bar.customize.available_section.header" = "Disponível";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "As primeiras quatro entradas são as abas, as demais ficam listadas em Mais. Arraste para reordenar.";
 "tab_bar.customize.dashboards_section.header" = "Dashboards";
