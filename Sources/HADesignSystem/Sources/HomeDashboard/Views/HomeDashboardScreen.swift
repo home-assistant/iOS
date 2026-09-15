@@ -32,12 +32,13 @@ public struct HomeDashboardScreen: View {
     public var body: some View {
         NavigationStack(path: $path) {
             overview
+                .homeDashboardEnvironment(context: navigatingContext, reorder: reorder)
                 .navigationDestination(for: String.self) { path in
+                    // Injected again here on purpose: see `homeDashboardEnvironment`.
                     areaPage(path: path)
+                        .homeDashboardEnvironment(context: navigatingContext, reorder: reorder)
                 }
         }
-        .environment(\.homeDashboard, navigatingContext)
-        .environmentObject(reorder)
     }
 
     @ViewBuilder private var overview: some View {

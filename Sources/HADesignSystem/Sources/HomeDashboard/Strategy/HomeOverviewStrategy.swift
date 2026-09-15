@@ -204,7 +204,7 @@ public enum HomeOverviewStrategy {
         if HomeEntityID.domain(of: entityId) == "camera" {
             return .pictureEntity(HomePictureEntityCardConfig(entityId: entityId))
         }
-        return .tile(HomeTileCardConfig(entityId: entityId, showsAreaName: true))
+        return .tile(HomeTileCardConfig(entityId: entityId, stateContent: [.state, .areaName]))
     }
 
     // MARK: - Summaries
@@ -301,7 +301,8 @@ public enum HomeOverviewStrategy {
             // The weather summary is a plain tile over the first weather entity, sorted by id so the
             // same one is picked every time.
             guard let weatherEntity = entities.sorted().first else { return nil }
-            return .tile(HomeTileCardConfig(entityId: weatherEntity, name: title))
+            // The weather tile leads with the temperature, as `state_content` asks it to.
+            return .tile(HomeTileCardConfig(entityId: weatherEntity, name: title, stateContent: [.temperature, .state]))
         case .energy:
             guard registry.hasPanel("energy"), registry.hasEnergyData else { return nil }
             let path = config.isHomePanel ? "/energy?historyBack=1&backPath=/home" : "/energy?historyBack=1"

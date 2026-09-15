@@ -2987,6 +2987,161 @@ public enum L10n {
     }
   }
 
+  public enum HomeDashboard {
+    /// Unnamed device
+    public static var unnamedDevice: String { return L10n.tr("Localizable", "home_dashboard.unnamed_device") }
+    /// Welcome %@
+    public static func welcomeUser(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "home_dashboard.welcome_user", String(describing: p1))
+    }
+    public enum AllOrganized {
+      /// There are no unassigned devices left. All devices are organized into areas.
+      public static var body: String { return L10n.tr("Localizable", "home_dashboard.all_organized.body") }
+      /// All devices are organized
+      public static var title: String { return L10n.tr("Localizable", "home_dashboard.all_organized.title") }
+    }
+    public enum Control {
+      /// Brightness
+      public static var brightness: String { return L10n.tr("Localizable", "home_dashboard.control.brightness") }
+      /// Close
+      public static var close: String { return L10n.tr("Localizable", "home_dashboard.control.close") }
+      /// Lock
+      public static var lock: String { return L10n.tr("Localizable", "home_dashboard.control.lock") }
+      /// Open
+      public static var `open`: String { return L10n.tr("Localizable", "home_dashboard.control.open") }
+      /// Stop
+      public static var stop: String { return L10n.tr("Localizable", "home_dashboard.control.stop") }
+      /// Unlock
+      public static var unlock: String { return L10n.tr("Localizable", "home_dashboard.control.unlock") }
+    }
+    public enum EmptyArea {
+      /// Assign existing device
+      public static var assignDevice: String { return L10n.tr("Localizable", "home_dashboard.empty_area.assign_device") }
+      /// Add your smart lights, switches, or sensors to this area to get started.
+      public static var body: String { return L10n.tr("Localizable", "home_dashboard.empty_area.body") }
+      /// This is a blank canvas
+      public static var title: String { return L10n.tr("Localizable", "home_dashboard.empty_area.title") }
+    }
+    public enum EmptyHome {
+      /// Add new device
+      public static var addDevice: String { return L10n.tr("Localizable", "home_dashboard.empty_home.add_device") }
+      /// Add lights, switches, sensors, or other smart home devices to get started.
+      public static var body: String { return L10n.tr("Localizable", "home_dashboard.empty_home.body") }
+      /// Edit areas
+      public static var editAreas: String { return L10n.tr("Localizable", "home_dashboard.empty_home.edit_areas") }
+      /// No devices here yet
+      public static var title: String { return L10n.tr("Localizable", "home_dashboard.empty_home.title") }
+    }
+    public enum Lights {
+      /// Off
+      public static var off: String { return L10n.tr("Localizable", "home_dashboard.lights.off") }
+      /// On
+      public static var on: String { return L10n.tr("Localizable", "home_dashboard.lights.on") }
+    }
+    public enum RecoveryMode {
+      /// Home Assistant is running in recovery mode, so there is nothing to show here.
+      public static var body: String { return L10n.tr("Localizable", "home_dashboard.recovery_mode.body") }
+      /// Recovery mode
+      public static var title: String { return L10n.tr("Localizable", "home_dashboard.recovery_mode.title") }
+    }
+    public enum Section {
+      /// Areas
+      public static var areas: String { return L10n.tr("Localizable", "home_dashboard.section.areas") }
+      /// Automations
+      public static var automations: String { return L10n.tr("Localizable", "home_dashboard.section.automations") }
+      /// Devices
+      public static var devices: String { return L10n.tr("Localizable", "home_dashboard.section.devices") }
+      /// Favorites
+      public static var favorites: String { return L10n.tr("Localizable", "home_dashboard.section.favorites") }
+      /// Other areas
+      public static var otherAreas: String { return L10n.tr("Localizable", "home_dashboard.section.other_areas") }
+      /// Other media players
+      public static var otherMediaPlayers: String { return L10n.tr("Localizable", "home_dashboard.section.other_media_players") }
+      /// Others
+      public static var others: String { return L10n.tr("Localizable", "home_dashboard.section.others") }
+      /// Scenes
+      public static var scenes: String { return L10n.tr("Localizable", "home_dashboard.section.scenes") }
+      /// Summaries
+      public static var summaries: String { return L10n.tr("Localizable", "home_dashboard.section.summaries") }
+    }
+    public enum Starting {
+      /// Your home will appear here once it has finished starting up.
+      public static var body: String { return L10n.tr("Localizable", "home_dashboard.starting.body") }
+      /// Home Assistant is starting
+      public static var title: String { return L10n.tr("Localizable", "home_dashboard.starting.title") }
+    }
+    public enum Subtitle {
+      /// %@ disarmed
+      public static func alarmsDisarmed(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.alarms_disarmed", String(describing: p1))
+      }
+      /// All off
+      public static var allLightsOff: String { return L10n.tr("Localizable", "home_dashboard.subtitle.all_lights_off") }
+      /// All good
+      public static var allMaintenanceGood: String { return L10n.tr("Localizable", "home_dashboard.subtitle.all_maintenance_good") }
+      /// All secure
+      public static var allSecure: String { return L10n.tr("Localizable", "home_dashboard.subtitle.all_secure") }
+      /// %@ on
+      public static func lightsOn(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.lights_on", String(describing: p1))
+      }
+      /// %@ unlocked
+      public static func locksUnlocked(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.locks_unlocked", String(describing: p1))
+      }
+      /// %@ low batteries
+      public static func lowBatteries(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.low_batteries", String(describing: p1))
+      }
+      /// %@ low battery
+      public static func lowBattery(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.low_battery", String(describing: p1))
+      }
+      /// %@ playing
+      public static func mediaPlaying(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.media_playing", String(describing: p1))
+      }
+      /// No media playing
+      public static var noMediaPlaying: String { return L10n.tr("Localizable", "home_dashboard.subtitle.no_media_playing") }
+      /// No one home
+      public static var nobodyHome: String { return L10n.tr("Localizable", "home_dashboard.subtitle.nobody_home") }
+      /// %@ people home
+      public static func peopleHome(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.people_home", String(describing: p1))
+      }
+      /// %@ person home
+      public static func personHome(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.person_home", String(describing: p1))
+      }
+      /// %@ unavailable device
+      public static func unavailableDevice(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.unavailable_device", String(describing: p1))
+      }
+      /// %@ unavailable devices
+      public static func unavailableDevices(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "home_dashboard.subtitle.unavailable_devices", String(describing: p1))
+      }
+    }
+    public enum Summary {
+      /// Climate
+      public static var climate: String { return L10n.tr("Localizable", "home_dashboard.summary.climate") }
+      /// Today's energy
+      public static var energy: String { return L10n.tr("Localizable", "home_dashboard.summary.energy") }
+      /// Lights
+      public static var lights: String { return L10n.tr("Localizable", "home_dashboard.summary.lights") }
+      /// Maintenance
+      public static var maintenance: String { return L10n.tr("Localizable", "home_dashboard.summary.maintenance") }
+      /// Media players
+      public static var mediaPlayers: String { return L10n.tr("Localizable", "home_dashboard.summary.media_players") }
+      /// Presence
+      public static var presence: String { return L10n.tr("Localizable", "home_dashboard.summary.presence") }
+      /// Security
+      public static var security: String { return L10n.tr("Localizable", "home_dashboard.summary.security") }
+      /// Weather
+      public static var weather: String { return L10n.tr("Localizable", "home_dashboard.summary.weather") }
+    }
+  }
+
   public enum HomeSectionsReorderView {
     /// Done
     public static var done: String { return L10n.tr("Localizable", "home_sections_reorder_view.done") }
@@ -5084,6 +5239,12 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.footer") }
         /// Native sidebar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.title") }
+      }
+      public enum NativeHomeDashboard {
+        /// Draws the Overview dashboard with native controls instead of the web frontend, including drag and drop to reorder your areas.
+        public static var summary: String { return L10n.tr("Localizable", "settings.app_labs.native_home_dashboard.summary") }
+        /// Native home dashboard
+        public static var title: String { return L10n.tr("Localizable", "settings.app_labs.native_home_dashboard.title") }
       }
       public enum SettingsRow {
         /// TestFlight-only experiments. They have no planned release and can be removed at any time.

@@ -13,7 +13,7 @@ public extension HomeDashboardCardConfig {
                 feature: config.feature,
                 isVertical: config.isVertical,
                 hidesState: config.hidesState,
-                showsAreaName: config.showsAreaName,
+                stateContent: config.stateContent,
                 tapAction: config.tapAction,
                 columns: 12
             ))

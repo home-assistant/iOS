@@ -33,7 +33,10 @@ public struct HomeAreaCardView: View {
                 }
             }
             .padding(DesignSystem.Spaces.oneAndMicro)
-            .frame(maxWidth: .infinity)
+            // Fills the height the grid offered so two rooms side by side are the same card, and
+            // hangs its contents from the top: centred, a room with a temperature under its name
+            // pushes its icon lower than the room beside it and the row reads as a staircase.
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .contentShape(Rectangle())
             .onTapGesture { context.perform(config.tapAction) }
             .accessibilityElement(children: .combine)

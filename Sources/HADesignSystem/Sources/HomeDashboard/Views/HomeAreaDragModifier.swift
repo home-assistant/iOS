@@ -29,8 +29,15 @@ public struct HomeAreaDragModifier: ViewModifier {
                     reorder.begin(dragging: areaId, in: areaOrder)
                     return NSItemProvider(object: areaId as NSString)
                 }
-                .dropDestination(for: String.self) { _, _ in
-                    reorder.drop(original: areaOrder)
+                .dropDestination(for: String.self) { dropped, _ in
+                    // The dragged room comes out of the drop itself when it can, so a drag that
+                    // never hovered still lands where it was let go.
+                    guard let dragged = dropped.first ?? reorder.draggingAreaId else {
+                        return false
+                    }
+                    withAnimation(.snappy) {
+                        reorder.drop(dragged, onto: areaId, original: areaOrder)
+                    }
                     return true
                 } isTargeted: { isTargeted in
                     guard isTargeted else {

@@ -14,9 +14,8 @@ public struct HomeTileCardConfig: Equatable, Sendable {
     public let isVertical: Bool
     /// Drops the state line, leaving the name alone.
     public let hidesState: Bool
-    /// Adds the room the entity is in to the state line. Favourites come from all over the home, so
-    /// the web dashboard names their area; a room's own tiles do not need it.
-    public let showsAreaName: Bool
+    /// What goes on the second line, in order. Empty means the tile shows no state at all.
+    public let stateContent: [HomeTileStateContent]
     public let tapAction: HomeDashboardAction?
     /// How many of a section's twelve columns the tile takes. Half a row by default, which is what
     /// the web dashboard gives a tile in a sections view.
@@ -29,7 +28,7 @@ public struct HomeTileCardConfig: Equatable, Sendable {
         feature: HomeTileFeature? = nil,
         isVertical: Bool = false,
         hidesState: Bool = false,
-        showsAreaName: Bool = false,
+        stateContent: [HomeTileStateContent] = [.state],
         tapAction: HomeDashboardAction? = nil,
         columns: Int = 6
     ) {
@@ -39,7 +38,7 @@ public struct HomeTileCardConfig: Equatable, Sendable {
         self.feature = feature
         self.isVertical = isVertical
         self.hidesState = hidesState
-        self.showsAreaName = showsAreaName
+        self.stateContent = stateContent
         self.tapAction = tapAction
         self.columns = columns
     }
