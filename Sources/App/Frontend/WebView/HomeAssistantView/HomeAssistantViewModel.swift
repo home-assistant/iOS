@@ -26,7 +26,7 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     let server: Server
-    let initialPath: String?
+    private(set) var initialPath: String?
     let overlayState: WebFrontendOverlayState
     let chrome: WebViewChromeState
     let reconnectManager: WebViewReconnectManager
@@ -342,6 +342,7 @@ final class HomeAssistantViewModel: ObservableObject {
             try? await Task.sleep(for: Constants.loaderFadeOutDuration)
             guard loaderCycleID == finishingCycleID, !isFullScreenLoaderVisible else { return }
             isFullScreenLoaderMounted = false
+            ensureWebViewVisible()
         }
     }
 
@@ -359,9 +360,33 @@ final class HomeAssistantViewModel: ObservableObject {
         loaderWatchdogTask = Task { @MainActor in
             try? await Task.sleep(for: loaderWatchdogTimeout)
             guard !Task.isCancelled, loaderCycleID == cycleID, isFullScreenLoaderMounted,
-                  !overlayState.isLoading, overlayState.emptyState == nil else { return }
-            Current.Log.error("Standby loader stuck with no frontend report after loading, dismissing it")
+                  !overlayState.isLoading, overlayState.emptyState == nil,
+                  !overlayState.showsNoActiveURL else { return }
+            Current.Log.error("Standby loader stuck with no frontend report after loading, checking the page")
+            await uncoverFrontendOrRecover(cycleID: cycleID)
+        }
+    }
+
+    private func uncoverFrontendOrRecover(cycleID: UUID) async {
+        guard let webViewController else {
             dismissStandByView()
+            return
+        }
+
+        let hasRendered = await webViewController.hasRenderedFrontend()
+
+        guard loaderCycleID == cycleID, isFullScreenLoaderMounted, isFullScreenLoaderVisible,
+              overlayState.emptyState == nil, !overlayState.showsNoActiveURL else { return }
+        guard !hasRendered else {
+            webViewController.resetBlankFrontendRecovery()
+            dismissStandByView()
+            return
+        }
+
+        Current.Log.error("Frontend neither reported nor rendered anything, recovering it")
+        initialPath = nil
+        if !webViewController.recoverFromBlankFrontend() {
+            webViewController.showBlankFrontendEmptyState()
         }
     }
 
@@ -382,6 +407,12 @@ final class HomeAssistantViewModel: ObservableObject {
             isFullScreenLoaderVisible = false
         }
         isFullScreenLoaderMounted = false
+        ensureWebViewVisible()
+    }
+
+    private func ensureWebViewVisible() {
+        guard contentOpacity == 0 else { return }
+        fade(to: 1, reduceMotion: reduceMotion)
     }
 
     /// Opens the Settings sheet on its compact server picker, activating whatever the user picks. Zooms out of

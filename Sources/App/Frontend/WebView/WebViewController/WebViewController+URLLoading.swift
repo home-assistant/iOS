@@ -275,7 +275,12 @@ extension WebViewController {
     /// the server again recovers a web view stuck on a broken page.
     func navigateToRoot() {
         Task { @MainActor [weak self] in
-            guard let self, let webviewURL = await server.webviewURL() else { return }
+            guard let self else { return }
+            guard let webviewURL = await server.webviewURL() else {
+                Current.Log.error("Cannot navigate to root, \(server.identifier.rawValue) has no active URL")
+                showNoActiveURLError()
+                return
+            }
             let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
             Current.Log.info("navigating web view to root: \(target.path)")
             loadViewIfNeeded()
