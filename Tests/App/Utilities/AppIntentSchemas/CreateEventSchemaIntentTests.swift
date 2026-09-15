@@ -1,3 +1,5 @@
+import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
 import XCTest
@@ -146,6 +148,22 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
             )
         }
         XCTAssertEqual(connection.cancelledRequests.count, 1)
+
+        // An answer that arrives after the command gave up must not resume it a second time.
+        try await request().completion(.success(.dictionary([:])))
+    }
+
+    /// A connection that is already ready answers while the command is still being sent, which is
+    /// the one moment the command has nothing to cancel yet.
+    func testACommandAnsweredAsItIsSentSucceeds() async throws {
+        let api = try XCTUnwrap(Current.api(for: server))
+        let immediate = ImmediateConnection()
+        api.connection = immediate
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 1))
+
+        _ = try await sut.perform()
+
+        XCTAssertEqual(immediate.pendingRequests.count, 1)
     }
 
     /// Siri reads `localizedStringResource`, so an error without one is reported as a bare failure.
@@ -174,5 +192,17 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
             XCTAssertTrue(error is ShortcutAppIntentError)
         }
         XCTAssertTrue(connection.pendingRequests.isEmpty)
+    }
+
+    /// Answers every command as it is sent, the way a connection that is already ready does.
+    private final class ImmediateConnection: HAMockConnection {
+        override func send<T: HADataDecodable>(
+            _ request: HATypedRequest<T>,
+            completion: @escaping (Result<T, HAError>) -> Void
+        ) -> HACancellable {
+            let cancellable = super.send(request, completion: completion)
+            pendingRequests.last?.completion(.success(.dictionary([:])))
+            return cancellable
+        }
     }
 }
