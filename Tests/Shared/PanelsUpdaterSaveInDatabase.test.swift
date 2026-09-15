@@ -83,7 +83,8 @@ struct PanelsUpdaterSaveInDatabaseTests {
             try updater.saveInDatabase(panels(urlPaths: ["lovelace", "energy"]), server: server(id: "1"))
 
             #expect(waitUntil { (try? storedPaths(in: database, serverId: "1"))?.count == 2 })
-            #expecttry (storedPaths(in: database, serverId: "1") == ["energy", "lovelace"])
+            let paths = try storedPaths(in: database, serverId: "1")
+            #expect(paths == ["energy", "lovelace"])
         }
     }
 
@@ -98,7 +99,8 @@ struct PanelsUpdaterSaveInDatabaseTests {
             try updater.saveInDatabase(panels(urlPaths: ["map"]), server: server(id: "1"))
 
             #expect(waitUntil { (try? storedPaths(in: database, serverId: "1")) == ["map"] })
-            #expecttry (storedPaths(in: database, serverId: "1") == ["map"])
+            let paths = try storedPaths(in: database, serverId: "1")
+            #expect(paths == ["map"])
         }
     }
 
@@ -113,7 +115,8 @@ struct PanelsUpdaterSaveInDatabaseTests {
             try updater.saveInDatabase(panels(urlPaths: ["energy"]), server: server(id: "2"))
             #expect(waitUntil { (try? storedPaths(in: database, serverId: "2")) == ["energy"] })
 
-            #expecttry (storedPaths(in: database, serverId: "1") == ["lovelace"])
+            let paths = try storedPaths(in: database, serverId: "1")
+            #expect(paths == ["lovelace"])
         }
     }
 

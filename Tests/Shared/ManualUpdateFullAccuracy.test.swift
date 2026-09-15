@@ -56,7 +56,8 @@ struct ManualUpdateFullAccuracyTests {
         await withLocationManager(accuracy: .reducedAccuracy) { manager in
             HomeAssistantAPI.manuallyUpdate(applicationState: .active, type: .userRequested).cauterize()
 
-            #expectawait (waitUntil { manager.requestedTemporaryFullAccuracyPurposeKeys.isEmpty == false })
+            let asked = await waitUntil { manager.requestedTemporaryFullAccuracyPurposeKeys.isEmpty == false }
+            #expect(asked)
             #expect(
                 manager.requestedTemporaryFullAccuracyPurposeKeys == ["TemporaryFullAccuracyReasonManualUpdate"]
             )
@@ -69,7 +70,8 @@ struct ManualUpdateFullAccuracyTests {
         await withLocationManager(accuracy: .reducedAccuracy, error: refusal) { manager in
             HomeAssistantAPI.manuallyUpdate(applicationState: .active, type: .userRequested).cauterize()
 
-            #expectawait (waitUntil { manager.requestedTemporaryFullAccuracyPurposeKeys.isEmpty == false })
+            let asked = await waitUntil { manager.requestedTemporaryFullAccuracyPurposeKeys.isEmpty == false }
+            #expect(asked)
         }
     }
 
@@ -79,7 +81,8 @@ struct ManualUpdateFullAccuracyTests {
             HomeAssistantAPI.manuallyUpdate(applicationState: .active, type: .userRequested).cauterize()
 
             // Waits for the decision itself rather than for a timeout to lapse.
-            #expectawait (waitUntil { manager.accuracyAuthorizationReadCount > 0 })
+            let checkedAccuracy = await waitUntil { manager.accuracyAuthorizationReadCount > 0 }
+            #expect(checkedAccuracy)
             #expect(manager.requestedTemporaryFullAccuracyPurposeKeys.isEmpty)
         }
     }
@@ -89,7 +92,8 @@ struct ManualUpdateFullAccuracyTests {
         await withLocationManager(accuracy: .reducedAccuracy) { manager in
             HomeAssistantAPI.manuallyUpdate(applicationState: .active, type: .appOpened).cauterize()
 
-            #expectawait (waitUntil { manager.accuracyAuthorizationReadCount > 0 })
+            let checkedAccuracy = await waitUntil { manager.accuracyAuthorizationReadCount > 0 }
+            #expect(checkedAccuracy)
             #expect(manager.requestedTemporaryFullAccuracyPurposeKeys.isEmpty)
         }
     }

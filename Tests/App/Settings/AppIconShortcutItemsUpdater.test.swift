@@ -90,7 +90,8 @@ struct AppIconShortcutItemsUpdaterTests {
         try await withConfiguredItems([entityItem(id: "light.kitchen"), entityItem(id: "light.hall")]) {
             AppIconShortcutItemsUpdater.update()
 
-            #expectawait (waitUntil { UIApplication.shared.shortcutItems?.count == 2 })
+            let published = await waitUntil { UIApplication.shared.shortcutItems?.count == 2 }
+            #expect(published)
             let types = UIApplication.shared.shortcutItems?.map(\.type) ?? []
             #expect(types.contains("appIconShortcut.1|entity|light.kitchen"))
             #expect(types.contains("appIconShortcut.1|entity|light.hall"))
@@ -103,7 +104,8 @@ struct AppIconShortcutItemsUpdaterTests {
         try await withConfiguredItems([entityItem(id: "light.kitchen")]) {
             AppIconShortcutItemsUpdater.update()
 
-            #expectawait (waitUntil { UIApplication.shared.shortcutItems?.isEmpty == false })
+            let published = await waitUntil { UIApplication.shared.shortcutItems?.isEmpty == false }
+            #expect(published)
             let item = UIApplication.shared.shortcutItems?.first
             #expect(item?.localizedTitle == "Kitchen light")
             #expect(item?.localizedSubtitle == "Kitchen")
@@ -117,7 +119,8 @@ struct AppIconShortcutItemsUpdaterTests {
         try await withConfiguredItems(items) {
             AppIconShortcutItemsUpdater.update()
 
-            #expectawait (waitUntil { UIApplication.shared.shortcutItems?.count == 4 })
+            let published = await waitUntil { UIApplication.shared.shortcutItems?.count == 4 }
+            #expect(published)
         }
     }
 
@@ -127,7 +130,8 @@ struct AppIconShortcutItemsUpdaterTests {
         try await withConfiguredItems([]) {
             AppIconShortcutItemsUpdater.update()
 
-            #expectawait (waitUntil { UIApplication.shared.shortcutItems?.isEmpty == true })
+            let stayedEmpty = await waitUntil { UIApplication.shared.shortcutItems?.isEmpty == true }
+            #expect(stayedEmpty)
         }
     }
 
