@@ -85,7 +85,7 @@ struct HAEntityStateAppEntity: TransientAppEntity {
         self.attributes = "{}"
     }
 
-    init(entity: HAAppEntityAppIntentEntity, state liveState: HAEntity) {
+    init(entity: ReadableEntityAppEntity, state liveState: HAEntity) {
         self.init(
             context: entity,
             serverId: entity.serverId,
