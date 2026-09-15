@@ -6,21 +6,21 @@ import Testing
 import UIKit
 
 /// Lays the settings list out so SwiftUI evaluates its body, covering the section and row
-/// builders on both the iOS list and the Catalyst sidebar, including the header-less App Labs
-/// section and the static subtitle its row carries.
+/// builders including the header-less App Labs section and the static subtitle its row carries.
+///
+/// Stays on the iOS path, whose rows are value-based links: the Catalyst sidebar keeps eager
+/// `NavigationLink(destination:)` rows, so rendering it would construct every destination screen
+/// — and the view models some of them build in `init`, which reach for the real database.
 @MainActor
 @Suite(.serialized)
 struct SettingsViewRenderTests {
-    private func withEnvironment(isCatalyst: Bool, isTestFlight: Bool, _ work: () -> Void) {
-        let previousCatalyst = Current.isCatalyst
+    private func withEnvironment(isTestFlight: Bool, _ work: () -> Void) {
         let previousTestFlight = Current.isTestFlight
         let previousServers = Current.servers
         defer {
-            Current.isCatalyst = previousCatalyst
             Current.isTestFlight = previousTestFlight
             Current.servers = previousServers
         }
-        Current.isCatalyst = isCatalyst
         Current.isTestFlight = isTestFlight
         Current.servers = FakeServerManager(initial: 1)
         work()
@@ -40,8 +40,8 @@ struct SettingsViewRenderTests {
         window.rootViewController = nil
     }
 
-    @Test func rendersTheIOSListWithAppLabs() {
-        withEnvironment(isCatalyst: false, isTestFlight: true) {
+    @Test func rendersTheListWithAppLabs() {
+        withEnvironment(isTestFlight: true) {
             #expect(SettingsItem.appLabs.isVisible)
             render(SettingsView())
         }
@@ -49,15 +49,9 @@ struct SettingsViewRenderTests {
 
     /// Without TestFlight the App Labs section drops out entirely, so the list falls back to the
     /// headed sections alone.
-    @Test func rendersTheIOSListWithoutAppLabs() {
-        withEnvironment(isCatalyst: false, isTestFlight: false) {
+    @Test func rendersTheListWithoutAppLabs() {
+        withEnvironment(isTestFlight: false) {
             #expect(!SettingsItem.appLabs.isVisible)
-            render(SettingsView())
-        }
-    }
-
-    @Test func rendersTheCatalystSidebarWithAppLabs() {
-        withEnvironment(isCatalyst: true, isTestFlight: true) {
             render(SettingsView())
         }
     }

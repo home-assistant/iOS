@@ -354,37 +354,47 @@ struct SettingsView: View {
         }
     }
 
+    /// A group whose header is nil renders as a plain section: its single entry already names
+    /// itself, so a header would only repeat it.
     @ViewBuilder
     private func settingsSection(
         header: String?,
         @ViewBuilder content: () -> some View
     ) -> some View {
-        if Current.isCatalyst {
+        if let header {
+            headedSettingsSection(header: header, content: content)
+        } else {
             Section {
-                if let header {
-                    Text(header)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .padding(.top, DesignSystem.Spaces.two)
-                        .padding(.bottom, DesignSystem.Spaces.half)
-                        .listRowInsets(EdgeInsets(
-                            top: 0,
-                            leading: DesignSystem.Spaces.two,
-                            bottom: 0,
-                            trailing: DesignSystem.Spaces.two
-                        ))
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .accessibilityAddTraits(.isHeader)
-                }
                 content()
             }
-        } else if let header {
-            Section(header: Text(header)) {
+        }
+    }
+
+    @ViewBuilder
+    private func headedSettingsSection(
+        header: String,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        if Current.isCatalyst {
+            Section {
+                Text(header)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, DesignSystem.Spaces.two)
+                    .padding(.bottom, DesignSystem.Spaces.half)
+                    .listRowInsets(EdgeInsets(
+                        top: 0,
+                        leading: DesignSystem.Spaces.two,
+                        bottom: 0,
+                        trailing: DesignSystem.Spaces.two
+                    ))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .accessibilityAddTraits(.isHeader)
                 content()
             }
         } else {
-            Section {
+            Section(header: Text(header)) {
                 content()
             }
         }
