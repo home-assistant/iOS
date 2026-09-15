@@ -143,8 +143,9 @@ struct WebViewControllerOnscreenContentTests {
             #expect(identifier?.entityType == HAAppEntityAppIntentEntity.self)
             #expect(identifier?.identifier == ServerEntity.uniqueId(serverId: serverId, entityId: "light.kitchen"))
             // The same identifiers go to the web view's elements, which is where a command whose
-            // parameter takes another type — "open this", for a cover — finds the one it needs.
-            #expect(identifiers == [identifier])
+            // parameter takes another type — "dim this", for a light — finds the one it needs.
+            #expect(identifiers.first == identifier)
+            #expect(identifiers.map(\.entityType).contains { $0 == DimmableLightAppEntity.self })
         }
     }
 
