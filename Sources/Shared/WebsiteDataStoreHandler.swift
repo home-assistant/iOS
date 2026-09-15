@@ -13,6 +13,35 @@ public extension WebsiteDataStoreHandlerProtocol {
 }
 
 final class WebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
+    /// Removes website data, the way `WKWebsiteDataStore` does.
+    ///
+    /// Injected because a unit test cannot wait on the real store: its completion arrives through
+    /// the WebKit networking process, which does not reliably start under the test runner, and the
+    /// test then hangs on the wait instead of failing on what it set out to check.
+    typealias DataRemover = (
+        _ dataTypes: Set<String>,
+        _ modifiedSince: Date,
+        _ completion: @escaping () -> Void
+    ) -> Void
+
+    private let removeData: DataRemover
+
+    init(removeData: @escaping DataRemover = WebsiteDataStoreHandler.removeFromDefaultStore) {
+        self.removeData = removeData
+    }
+
+    private static func removeFromDefaultStore(
+        dataTypes: Set<String>,
+        modifiedSince: Date,
+        completion: @escaping () -> Void
+    ) {
+        WKWebsiteDataStore.default().removeData(
+            ofTypes: dataTypes,
+            modifiedSince: modifiedSince,
+            completionHandler: completion
+        )
+    }
+
     private enum Constants {
         static let lastFrontendAssetCacheCleanDateKey = "lastFrontendAssetCacheCleanDate"
         static let lastFrontendAssetCacheCleanVersionKey = "lastFrontendAssetCacheCleanVersion"
@@ -38,18 +67,14 @@ final class WebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol {
 
     func cleanCache(dataTypes: Set<String>, completion: (() -> Void)? = nil) {
         Self.onMainThread {
-            WKWebsiteDataStore.default().removeData(
-                ofTypes: dataTypes,
-                modifiedSince: Date(timeIntervalSince1970: 0),
-                completionHandler: {
-                    if dataTypes.isSuperset(of: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) {
-                        self.lastFrontendAssetCacheCleanDate = Current.date()
-                        self.lastFrontendAssetCacheCleanVersion = Current.clientVersion().description
-                    }
-                    Current.Log.verbose("Cleaned browser cache for data types: \(dataTypes)")
-                    Self.onMainThread(completion)
+            self.removeData(dataTypes, Date(timeIntervalSince1970: 0)) {
+                if dataTypes.isSuperset(of: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) {
+                    self.lastFrontendAssetCacheCleanDate = Current.date()
+                    self.lastFrontendAssetCacheCleanVersion = Current.clientVersion().description
                 }
-            )
+                Current.Log.verbose("Cleaned browser cache for data types: \(dataTypes)")
+                Self.onMainThread(completion)
+            }
         }
     }
 
