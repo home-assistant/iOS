@@ -21,7 +21,7 @@ struct NativeTabBarEnabledStateTests {
         #expect(AppLabsFeature.iosNativeTabBar.footer == L10n.Settings.AppLabs.IosNativeTabBar.summary)
     }
 
-    @Test("The shared state and the hamburger gesture follow the App Labs flag")
+    @Test("The shared state and the frontend sidebar config follow the App Labs flag")
     func stateFollowsTheFlag() async throws {
         let previousIsTestFlight = Current.isTestFlight
         Current.isTestFlight = true
@@ -33,47 +33,46 @@ struct NativeTabBarEnabledStateTests {
 
         let state = NativeTabBarState()
         #expect(!state.isEnabled)
-        #expect(HAGestureAction.showSidebar.isAvailable)
-        #expect(HAGestureAction.backPage.isAvailable)
-        #expect(
-            GesturesSetupView.gestureActionsPickerContent.sections
-                .flatMap(\.items).contains { $0.id == HAGestureAction.showSidebar.rawValue }
-        )
         #expect(WebViewExternalBusMessage.configResult["hasSidebar"] as? Bool == false)
-
-        let sidebarGesture = MockWebViewController()
-        let handler = WebViewGestureHandler()
-        handler.webView = sidebarGesture
-        handler.handleGestureAction(.showSidebar)
-        #expect(
-            (sidebarGesture.webViewExternalMessageHandler as? MockWebViewExternalMessageHandler)?
-                .sendExternalBusCalled == true
-        )
 
         try await setTabBar(enabled: true)
         for _ in 0 ..< 100 where !state.isEnabled {
             try await Task.sleep(for: .milliseconds(20))
         }
         #expect(state.isEnabled)
-        #expect(!HAGestureAction.showSidebar.isAvailable)
-        #expect(
-            !GesturesSetupView.gestureActionsPickerContent.sections
-                .flatMap(\.items).contains { $0.id == HAGestureAction.showSidebar.rawValue }
-        )
         #expect(WebViewExternalBusMessage.configResult["hasSidebar"] as? Bool == true)
-
-        let ignoredGesture = MockWebViewController()
-        handler.webView = ignoredGesture
-        handler.handleGestureAction(.showSidebar)
-        #expect(
-            (ignoredGesture.webViewExternalMessageHandler as? MockWebViewExternalMessageHandler)?
-                .sendExternalBusCalled == false
-        )
 
         var moreRequests = 0
         let cancellable = state.moreRequests.sink { moreRequests += 1 }
         state.requestMore()
         #expect(moreRequests == 1)
         cancellable.cancel()
+    }
+
+    /// The tab bar keeps the sidebar gesture working: it travels to the frontend, which bounces it back
+    /// as `sidebar/show` because the app answered `hasSidebar`, and that opens the More tab.
+    @Test("The sidebar gesture still reaches the frontend while the tab bar is on")
+    func sidebarGestureStillReachesTheFrontend() async throws {
+        let previousIsTestFlight = Current.isTestFlight
+        Current.isTestFlight = true
+        defer {
+            Current.appLabs.setEnabled(false, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
+            Current.isTestFlight = previousIsTestFlight
+        }
+        try await setTabBar(enabled: true)
+
+        #expect(
+            GesturesSetupView.gestureActionsPickerContent.sections
+                .flatMap(\.items).contains { $0.id == HAGestureAction.showSidebar.rawValue }
+        )
+
+        let webView = MockWebViewController()
+        let handler = WebViewGestureHandler()
+        handler.webView = webView
+        handler.handleGestureAction(.showSidebar)
+        #expect(
+            (webView.webViewExternalMessageHandler as? MockWebViewExternalMessageHandler)?
+                .sendExternalBusCalled == true
+        )
     }
 }
