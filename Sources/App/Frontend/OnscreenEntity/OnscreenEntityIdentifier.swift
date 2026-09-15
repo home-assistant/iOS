@@ -7,16 +7,19 @@ import Shared
 /// CarPlay" against whatever the user is looking at rather than asking them to name it again.
 ///
 /// A command binds to the identifier whose type its own parameter takes, and an activity carries one
-/// identifier, so the fewer types an entity is modelled by the better this works. There are two:
-/// `HAAppEntityAppIntentEntity` for everything, and `OpenableEntityAppEntity` for covers, which stay
-/// separate because a phrase's candidate list comes from its parameter type's own query and "open"
-/// should offer covers alone.
+/// identifier, so the fewer types an entity is modelled by the better this works. There is
+/// `HAAppEntityAppIntentEntity` for everything, and a type of its own wherever a command's candidate
+/// list has to come from a narrower query than the shared one: `OpenableEntityAppEntity` for covers,
+/// `DimmableLightAppEntity` for lights, `ThermostatAppEntity` for thermostats and `LockAppEntity` for
+/// locks, so that "open", "dim", "set" and "lock" each offer their own kind alone.
 @available(iOS 18.2, *)
 enum OnscreenEntityIdentifier {
     /// Every identifier the entity answers to, most specific command first.
     ///
-    /// A cover leads with the type that opens and closes it, since the one identifier an activity can
-    /// carry is the first, and "open this" is how a cover is asked for.
+    /// A cover, a thermostat and a lock lead with the type their own command takes, since the one
+    /// identifier an activity can carry is the first, and "open this", "set this to 21" and "lock
+    /// this" are how they are asked for. A light leads with the shared type instead: "turn this off"
+    /// is asked far more often than "dim this", which still binds through the type that follows.
     static func makeAll(entityId: String, serverId: String) async -> [EntityIdentifier] {
         // Hiding a server from Siri hides what it is showing too, for the same reason the page does.
         guard SiriServerExposure.isExposed(serverId: serverId), let domain = Domain(entityId: entityId) else {
@@ -25,10 +28,20 @@ enum OnscreenEntityIdentifier {
         let id = ServerEntity.uniqueId(serverId: serverId, entityId: entityId)
         var identifiers: [EntityIdentifier] = []
 
-        if Domain.voiceOpenable.contains(domain) {
+        switch domain {
+        case .climate:
+            await identifiers.appendIfResolved(by: ThermostatAppEntityQuery(), id: id)
+        case .lock:
+            await identifiers.appendIfResolved(by: LockAppEntityQuery(), id: id)
+        case _ where Domain.voiceOpenable.contains(domain):
             await identifiers.appendIfResolved(by: OpenableEntityAppEntityQuery(), id: id)
+        default:
+            break
         }
         await identifiers.appendIfResolved(by: HAAppEntityAppIntentEntityQuery(), id: id)
+        if domain == .light {
+            await identifiers.appendIfResolved(by: DimmableLightAppEntityQuery(), id: id)
+        }
 
         return identifiers
     }
