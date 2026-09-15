@@ -1985,24 +1985,6 @@
 		42FD0000001400510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Components/__Snapshots__/CollapsibleViewTests/testCollapsibleViewCollapsed.dark.png,
-				Components/__Snapshots__/CollapsibleViewTests/testCollapsibleViewCollapsed.light.png,
-				Components/__Snapshots__/CollapsibleViewTests/testCollapsibleViewOpen.dark.png,
-				Components/__Snapshots__/CollapsibleViewTests/testCollapsibleViewOpen.light.png,
-				Components/__Snapshots__/ExternalLinkButtonTests/testExternalLinkButton.dark.png,
-				Components/__Snapshots__/ExternalLinkButtonTests/testExternalLinkButton.light.png,
-				Components/__Snapshots__/HAButtonStyles.test/testAppButtonStyles.dark.png,
-				Components/__Snapshots__/HAButtonStyles.test/testAppButtonStyles.light.png,
-				Components/__Snapshots__/HATextField.test/testSnapshot.dark.png,
-				Components/__Snapshots__/HATextField.test/testSnapshot.light.png,
-				Components/__Snapshots__/ListPickerTests/testLitPickerContentNoResultsUI.dark.png,
-				Components/__Snapshots__/ListPickerTests/testLitPickerContentNoResultsUI.light.png,
-				Components/__Snapshots__/ListPickerTests/testLitPickerContentSearchingUI.dark.png,
-				Components/__Snapshots__/ListPickerTests/testLitPickerContentSearchingUI.light.png,
-				Components/__Snapshots__/ListPickerTests/testLitPickerContentUI.dark.png,
-				Components/__Snapshots__/ListPickerTests/testLitPickerContentUI.light.png,
-				Components/__Snapshots__/ListPickerTests/testLitPickerUI.dark.png,
-				Components/__Snapshots__/ListPickerTests/testLitPickerUI.light.png,
 				"Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.alarmPanelCard-dark.png",
 				"Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.alarmPanelCard-light.png",
 				"Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.alert-dark.png",
@@ -2187,6 +2169,37 @@
 				"Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.treeIndicator-light.png",
 				"Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.weatherForecastCard-dark.png",
 				"Gallery/__Snapshots__/ComponentsGallerySnapshot.test/componentVariants-component.weatherForecastCard-light.png",
+				Components/__Snapshots__/CollapsibleViewTests/testCollapsibleViewCollapsed.dark.png,
+				Components/__Snapshots__/CollapsibleViewTests/testCollapsibleViewCollapsed.light.png,
+				Components/__Snapshots__/CollapsibleViewTests/testCollapsibleViewOpen.dark.png,
+				Components/__Snapshots__/CollapsibleViewTests/testCollapsibleViewOpen.light.png,
+				Components/__Snapshots__/ExternalLinkButtonTests/testExternalLinkButton.dark.png,
+				Components/__Snapshots__/ExternalLinkButtonTests/testExternalLinkButton.light.png,
+				Components/__Snapshots__/HAButtonStyles.test/testAppButtonStyles.dark.png,
+				Components/__Snapshots__/HAButtonStyles.test/testAppButtonStyles.light.png,
+				Components/__Snapshots__/HATextField.test/testSnapshot.dark.png,
+				Components/__Snapshots__/HATextField.test/testSnapshot.light.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentNoResultsUI.dark.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentNoResultsUI.light.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentSearchingUI.dark.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentSearchingUI.light.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentUI.dark.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerContentUI.light.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerUI.dark.png,
+				Components/__Snapshots__/ListPickerTests/testLitPickerUI.light.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/areaWithEverythingInIt.area-living-room-dark.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/areaWithEverythingInIt.area-living-room-light.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/areaWithItsLightsOn.area-kitchen-dark.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/areaWithItsLightsOn.area-kitchen-light.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/areaWithNothingInIt.empty-area-dark.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/areaWithNothingInIt.empty-area-light.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/areaWithOneSection.area-garage-dark.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/areaWithOneSection.area-garage-light.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/homeWithNoAreas.empty-home-dark.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/homeWithNoAreas.empty-home-light.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/overview.overview-dark.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/overview.overview-light.png,
+				HomeDashboard/__Snapshots__/HomeDashboardSnapshotTests/overviewOnAWideScreen.overview-ipad.png,
 				Widgets/__Snapshots__/WidgetTodoListContentViewSnapshot.test/systemLargeShortSnapshot.dark.png,
 				Widgets/__Snapshots__/WidgetTodoListContentViewSnapshot.test/systemLargeShortSnapshot.light.png,
 				Widgets/__Snapshots__/WidgetTodoListContentViewSnapshot.test/systemLargeSnapshot.dark.png,
@@ -2509,6 +2522,7 @@
 		42A7474C2E832FB8005E0332 /* fastlane */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = fastlane; sourceTree = "<group>"; };
 		42B980DA2DC2567F00BC5C08 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001300510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000D00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DesignSystem; sourceTree = "<group>"; };
+		42CE0004300000000051FC9B /* HomeDashboard */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = HomeDashboard; sourceTree = "<group>"; };
 		42CE0001300000000051FC9B /* Container */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Container; sourceTree = "<group>"; };
 		42CE0002300000000051FC9B /* Cameras */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Cameras; sourceTree = "<group>"; };
 		42D14C6E301BB6330058088E /* WatchAppTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WatchAppTests; sourceTree = "<group>"; };
@@ -2968,6 +2982,7 @@
 				42DF4EF6302CACC200589E49 /* Templating */,
 				42DF4EE5302CACB600589E49 /* FlightGreetings */,
 				42DF4F03302CACD000589E49 /* ServerSwitching */,
+				42CE0004300000000051FC9B /* HomeDashboard */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -3507,6 +3522,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				4283E0D53004DCF4004D1061 /* Resources */,
+				42CE0004300000000051FC9B /* HomeDashboard */,
 				42DF4EE5302CACB600589E49 /* FlightGreetings */,
 				42DF4EF6302CACC200589E49 /* Templating */,
 				42DF4F03302CACD000589E49 /* ServerSwitching */,

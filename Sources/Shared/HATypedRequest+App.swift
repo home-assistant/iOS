@@ -221,6 +221,15 @@ public extension HATypedRequest {
         ))
     }
 
+    /// Puts the areas in a new order, server-side. The same call the web frontend's area settings
+    /// make, so an order dragged into place on the phone is the order the browser shows too.
+    static func reorderAreaRegistry(areaIds: [String]) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(request: .init(
+            type: .webSocket("config/area_registry/reorder"),
+            data: ["area_ids": areaIds]
+        ))
+    }
+
     static func usagePredictionCommonControl() -> HATypedRequest<HAUsagePredictionCommonControl> {
         HATypedRequest<HAUsagePredictionCommonControl>(request: .init(
             type: .webSocket("usage_prediction/common_control")

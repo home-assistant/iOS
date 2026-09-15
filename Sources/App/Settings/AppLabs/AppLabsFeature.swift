@@ -4,6 +4,7 @@ import Shared
 enum AppLabsFeature: String, CaseIterable, Identifiable {
     case macNativeSidebar
     case iosNativeTabBar
+    case nativeHomeDashboard
 
     var id: String { rawValue }
 
@@ -16,6 +17,7 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
         switch self {
         case .macNativeSidebar: return L10n.Settings.AppLabs.MacNativeSidebar.title
         case .iosNativeTabBar: return L10n.Settings.AppLabs.IosNativeTabBar.title
+        case .nativeHomeDashboard: return L10n.Settings.AppLabs.NativeHomeDashboard.title
         }
     }
 
@@ -23,6 +25,7 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
         switch self {
         case .macNativeSidebar: return L10n.Settings.AppLabs.MacNativeSidebar.footer
         case .iosNativeTabBar: return L10n.Settings.AppLabs.IosNativeTabBar.summary
+        case .nativeHomeDashboard: return L10n.Settings.AppLabs.NativeHomeDashboard.summary
         }
     }
 
@@ -32,6 +35,13 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
         case .iosNativeTabBar:
             if #available(iOS 26, *) {
                 return !Current.isCatalyst
+            }
+            return false
+        case .nativeHomeDashboard:
+            // The dashboard's zoom transition wants iOS 18; below it the screen still works, but the
+            // point of the feature is how it moves, so it is not offered there.
+            if #available(iOS 18, *) {
+                return true
             }
             return false
         }

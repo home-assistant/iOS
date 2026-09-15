@@ -82,6 +82,9 @@ struct HomeAssistantView: View, WebFrontendView {
         .onChange(of: nativeTabBar.isEnabled) { _ in
             viewModel.resetWebFrontend()
         }
+        // Over everything, including the standby overlay and whichever App Labs layout is on: while
+        // the frontend is on the built-in Overview, that screen is drawn natively instead.
+        .nativeHomeOverlay(server: viewModel.server, currentPath: viewModel.overlayState.currentPath)
     }
 
     /// With the tab bar on, the web view is hosted by the selected tab instead of `frontendContent`.
