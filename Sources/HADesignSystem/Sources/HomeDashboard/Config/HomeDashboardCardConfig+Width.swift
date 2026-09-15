@@ -15,7 +15,8 @@ public extension HomeDashboardCardConfig {
                 hidesState: config.hidesState,
                 stateContent: config.stateContent,
                 tapAction: config.tapAction,
-                columns: 12
+                columns: 12,
+                rows: config.rows
             ))
         case let .summary(config):
             .summary(HomeSummaryCardConfig(

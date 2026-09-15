@@ -18,25 +18,33 @@ public struct HomeAreaCardView: View {
         HACard {
             VStack(spacing: DesignSystem.Spaces.one) {
                 HATileIcon(icon: HomeDashboardIconName.icon(config.icon, fallback: .sofaIcon), color: .haPrimary)
-                VStack(spacing: DesignSystem.Spaces.micro) {
-                    Text(config.name)
-                        .font(DesignSystem.Font.footnote)
-                        .foregroundStyle(Color(uiColor: .label))
-                        .lineLimit(2)
-                        .multilineTextAlignment(.center)
-                    if let sensors {
-                        Text(sensors)
-                            .font(DesignSystem.Font.caption2)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
+                Text(config.name)
+                    .font(DesignSystem.Font.footnote)
+                    .foregroundStyle(Color(uiColor: .label))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                // The readings sit on the card's floor, as they do across the foot of the frontend's
+                // area card, rather than under the name — which keeps the icons and the names of two
+                // rooms on the same line whether or not either of them has a temperature to show.
+                Spacer(minLength: .zero)
+                if let sensors {
+                    Text(sensors)
+                        .font(DesignSystem.Font.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
             }
             .padding(DesignSystem.Spaces.oneAndMicro)
-            // Fills the height the grid offered so two rooms side by side are the same card, and
-            // hangs its contents from the top: centred, a room with a temperature under its name
-            // pushes its icon lower than the room beside it and the row reads as a staircase.
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            // Every room is the same card, wherever it is: the two rows the strategy asked for.
+            // Sized to its contents instead, a room with a temperature under its name would be
+            // taller than the room beside it, and a floor of rooms with temperatures taller than a
+            // floor without.
+            .frame(
+                maxWidth: .infinity,
+                minHeight: HomeDashboardCardHeight.areaCard,
+                maxHeight: HomeDashboardCardHeight.areaCard,
+                alignment: .top
+            )
             .contentShape(Rectangle())
             .onTapGesture { context.perform(config.tapAction) }
             .accessibilityElement(children: .combine)

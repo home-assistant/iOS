@@ -111,7 +111,8 @@ public enum HomeOverviewStrategy {
                 isVertical: true,
                 hidesState: true,
                 tapAction: .navigate(HomeDashboardPath.otherDevices),
-                columns: 4
+                columns: 4,
+                rows: 2
             )))
         }
 

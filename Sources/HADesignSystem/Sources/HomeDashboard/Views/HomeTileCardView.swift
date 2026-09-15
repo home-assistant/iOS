@@ -21,6 +21,7 @@ public struct HomeTileCardView: View {
                 secondary: secondary(presentation),
                 vertical: config.isVertical,
                 isActive: presentation.isActive,
+                height: config.rows.map(HomeDashboardCardHeight.height(rows:)),
                 onTap: { context.perform(config.tapAction ?? .moreInfo(config.entityId)) },
                 features: { HomeTileFeatureView(feature: config.feature, entityId: config.entityId) }
             )

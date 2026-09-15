@@ -20,6 +20,9 @@ public struct HomeTileCardConfig: Equatable, Sendable {
     /// How many of a section's twelve columns the tile takes. Half a row by default, which is what
     /// the web dashboard gives a tile in a sections view.
     public let columns: Int
+    /// How many grid rows tall the tile is, when the strategy fixed it rather than letting the
+    /// contents decide — what makes the tile standing in for a room the same card as a room.
+    public let rows: Int?
 
     public init(
         entityId: String,
@@ -30,7 +33,8 @@ public struct HomeTileCardConfig: Equatable, Sendable {
         hidesState: Bool = false,
         stateContent: [HomeTileStateContent] = [.state],
         tapAction: HomeDashboardAction? = nil,
-        columns: Int = 6
+        columns: Int = 6,
+        rows: Int? = nil
     ) {
         self.entityId = entityId
         self.name = name
@@ -41,5 +45,6 @@ public struct HomeTileCardConfig: Equatable, Sendable {
         self.stateContent = stateContent
         self.tapAction = tapAction
         self.columns = columns
+        self.rows = rows
     }
 }

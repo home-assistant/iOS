@@ -17,6 +17,7 @@ public struct HATileCard<Features: View>: View {
     private let secondary: String?
     private let vertical: Bool
     private let isActive: Bool
+    private let height: CGFloat?
     private let onTap: (() -> Void)?
     private let features: Features
 
@@ -25,6 +26,8 @@ public struct HATileCard<Features: View>: View {
     ///     the disabled grey and `color` is ignored. The card itself is *not* tinted: checked
     ///     against the rendered `hui-tile-card`, whose `active` class only redirects `--tile-color`
     ///     at `ha-tile-icon`, leaving the card white.
+    ///   - height: A fixed height, for a tile the dashboard sized in grid rows rather than by its
+    ///     contents — the frontend's `grid_options.rows`. `nil` lets the contents decide.
     ///   - features: Controls drawn under the tile's row, e.g. a slider or a mode select.
     public init(
         icon: MaterialDesignIcons,
@@ -33,6 +36,7 @@ public struct HATileCard<Features: View>: View {
         secondary: String? = nil,
         vertical: Bool = false,
         isActive: Bool = false,
+        height: CGFloat? = nil,
         onTap: (() -> Void)? = nil,
         @ViewBuilder features: () -> Features
     ) {
@@ -42,6 +46,7 @@ public struct HATileCard<Features: View>: View {
         self.secondary = secondary
         self.vertical = vertical
         self.isActive = isActive
+        self.height = height
         self.onTap = onTap
         self.features = features()
     }
@@ -92,7 +97,10 @@ public struct HATileCard<Features: View>: View {
                     .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
                     .padding(.bottom, DesignSystem.Spaces.oneAndHalf)
             }
-            .frame(maxWidth: .infinity)
+            // A fixed height is applied inside the card, so it is the card's own surface that is
+            // that tall; applied outside, the card keeps its natural size and simply sits in a
+            // taller space.
+            .frame(maxWidth: .infinity, minHeight: height, maxHeight: height, alignment: .top)
         }
     }
 }
@@ -106,6 +114,7 @@ public extension HATileCard where Features == EmptyView {
         secondary: String? = nil,
         vertical: Bool = false,
         isActive: Bool = false,
+        height: CGFloat? = nil,
         onTap: (() -> Void)? = nil
     ) {
         self.init(
@@ -115,6 +124,7 @@ public extension HATileCard where Features == EmptyView {
             secondary: secondary,
             vertical: vertical,
             isActive: isActive,
+            height: height,
             onTap: onTap,
             features: { EmptyView() }
         )
