@@ -221,9 +221,14 @@ public extension HATypedRequest {
         ))
     }
 
-    static func usagePredictionCommonControl() -> HATypedRequest<HAUsagePredictionCommonControl> {
+    /// The entities the server predicts this user controls most at this time of day.
+    ///
+    /// - Parameter numResults: How many entities to return, at most. Servers that predate the
+    ///   parameter ignore it and return the number they always did.
+    static func usagePredictionCommonControl(numResults: Int) -> HATypedRequest<HAUsagePredictionCommonControl> {
         HATypedRequest<HAUsagePredictionCommonControl>(request: .init(
-            type: .webSocket("usage_prediction/common_control")
+            type: .webSocket("usage_prediction/common_control"),
+            data: ["num_results": numResults]
         ))
     }
 

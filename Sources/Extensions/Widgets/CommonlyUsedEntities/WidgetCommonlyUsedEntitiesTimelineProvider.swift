@@ -25,6 +25,12 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
     /// that triggers multiple timeline refreshes
     private static let cacheValiditySeconds: TimeInterval = 1
 
+    /// How many times its tile count a domain-filtered widget asks the prediction for. A filter is
+    /// applied to what the server sent, so without spare entities the filtered-out ones would leave
+    /// the widget half empty. An unfiltered widget displays everything it receives, so it asks for
+    /// exactly what fits.
+    private static let domainFilterHeadroom = 3
+
     func makePreviewEntry(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         let items = WidgetPreviewSample.entities
             .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
@@ -85,8 +91,11 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             return []
         }
 
+        let tileCount = WidgetFamilySizes.size(for: context.family, capacity: .tile)
+        let numResults = configuration.domainFilter.isEmpty ? tileCount : tileCount * Self.domainFilterHeadroom
+
         let entities: [String] = await withCheckedContinuation { (continuation: CheckedContinuation<[String], Never>) in
-            api.connection.send(.usagePredictionCommonControl()) { result in
+            api.connection.send(.usagePredictionCommonControl(numResults: numResults)) { result in
                 switch result {
                 case let .success(response):
                     continuation.resume(returning: response.entities)
@@ -113,7 +122,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             )
         }
 
-        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family, capacity: .tile)))
+        return Array(magicItems.prefix(tileCount))
     }
 
     private func entitiesState(
