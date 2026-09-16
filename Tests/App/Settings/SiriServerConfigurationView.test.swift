@@ -57,4 +57,35 @@ struct SiriServerConfigurationViewTests {
         let viewModel = SiriServerConfigurationViewModel(server: server, refresh: { _ in })
         assertLightDarkSnapshots(of: SiriServerConfigurationView(viewModel: viewModel), drawHierarchyInKeyWindow: true)
     }
+
+    @MainActor
+    @Test func siriServerConfigurationShowsProgressWhileReloading() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        let manager = FakeServerManager(initial: 0)
+        let server = manager.addFake()
+        Current.servers = manager
+        try await SiriTestSeeding.clear(serverIds: [server.identifier.rawValue])
+
+        let viewModel = SiriServerConfigurationViewModel(server: server, refresh: { _ in })
+        viewModel.reload()
+        let window = UIWindow(frame: .init(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = UIHostingController(
+            rootView: NavigationView { SiriServerConfigurationView(viewModel: viewModel) }
+        )
+        window.isHidden = false
+        window.layoutIfNeeded()
+        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+
+        #expect(viewModel.isReloading)
+        #expect(Self.containsView(ofType: UIActivityIndicatorView.self, in: window))
+        window.isHidden = true
+    }
+
+    private static func containsView(ofType type: UIView.Type, in view: UIView) -> Bool {
+        if view.isKind(of: type) {
+            return true
+        }
+        return view.subviews.contains { containsView(ofType: type, in: $0) }
+    }
 }

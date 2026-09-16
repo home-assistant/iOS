@@ -112,6 +112,41 @@ struct SiriEntityExposureTests {
         #expect(row.isDefault)
     }
 
+    @Test func theTableMigratesInPlaceWhenItAlreadyExists() throws {
+        let database = try DatabaseQueue(path: ":memory:")
+        let table = SiriEntityExposureTable()
+        try database.write { db in
+            try db.create(table: table.tableName) { t in
+                t.primaryKey(DatabaseTables.SiriEntityExposure.id.rawValue, .text).notNull()
+                t.column(DatabaseTables.SiriEntityExposure.serverId.rawValue, .text).notNull()
+                t.column(DatabaseTables.SiriEntityExposure.entityId.rawValue, .text).notNull()
+                t.column(DatabaseTables.SiriEntityExposure.domain.rawValue, .text).notNull()
+                t.column(DatabaseTables.SiriEntityExposure.isExposed.rawValue, .boolean).notNull()
+            }
+        }
+        try table.createIfNeeded(database: database)
+
+        let columns = try database.read { db in
+            try db.columns(in: table.tableName).map(\.name)
+        }
+        #expect(columns.sorted() == table.definedColumns.sorted())
+    }
+
+    @Test func writesFailQuietlyWhenTheDatabaseIsUnusable() throws {
+        let previous = Current.database
+        defer { Current.database = previous }
+        let empty = try DatabaseQueue(path: ":memory:")
+        Current.database = { empty }
+
+        SiriEntityExposure.setExposed(false, serverId: "s1", entityId: "todo.a", domain: todo)
+        SiriEntityExposure.setDefault(entityId: "todo.a", serverId: "s1", domain: todo)
+        SiriEntityExposure.delete(serverId: "s1")
+
+        #expect(SiriEntityExposure.hiddenEntityIds().isEmpty)
+        #expect(SiriEntityExposure.isExposed(serverId: "s1", entityId: "todo.a"))
+        #expect(SiriEntityExposure.defaultEntityId(serverId: "s1", domain: todo) == nil)
+    }
+
     @Test func theTableIsCreatedWithItsColumns() async throws {
         let columns = try await Current.database().read { db in
             try db.columns(in: GRDBDatabaseTable.siriEntityExposure.rawValue).map(\.name)
