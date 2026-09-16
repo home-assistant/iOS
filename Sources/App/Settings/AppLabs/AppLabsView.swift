@@ -25,6 +25,15 @@ struct AppLabsView: View {
             }
 
             let features = AppLabsFeature.availableFeatures
+            if features.isEmpty {
+                Section {
+                    Text(L10n.Settings.AppLabs.emptyState)
+                        .font(.callout)
+                        .foregroundColor(.secondary)
+                } header: {
+                    Text(L10n.Settings.AppLabs.FeaturesSection.header)
+                }
+            }
             ForEach(features) { feature in
                 Section {
                     Toggle(isOn: .init(get: {
@@ -42,27 +51,6 @@ struct AppLabsView: View {
                     Text(feature.footer)
                 }
             }
-
-            Section {
-                NavigationLink {
-                    VoiceToolsServerSettingsView()
-                } label: {
-                    Label {
-                        VStack(alignment: .leading) {
-                            Text(L10n.Settings.VoiceToolsServer.title)
-                            Text(L10n.Settings.VoiceToolsServer.body)
-                                .font(.footnote)
-                                .foregroundColor(.secondary)
-                        }
-                    } icon: {
-                        MaterialDesignIconsImage(icon: .accountVoiceIcon, size: SettingsItem.iconSize)
-                    }
-                }
-            } header: {
-                if features.isEmpty {
-                    Text(L10n.Settings.AppLabs.FeaturesSection.header)
-                }
-            }
         }
         .listTopContentMargin()
     }
@@ -70,13 +58,7 @@ struct AppLabsView: View {
 
 extension AppLabsView: SettingsScreenSearchable {
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        let voiceToolsServerKeywords = L10n.Settings.SearchKeywords.voiceToolsServer
-            .components(separatedBy: ",")
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
-        return AppLabsFeature.allCases.map { SettingsSearchEntry($0.title) }
-            + [SettingsSearchEntry(L10n.Settings.VoiceToolsServer.title, keywords: voiceToolsServerKeywords)]
-            + VoiceToolsServerSettingsView.settingsSearchEntries
+        AppLabsFeature.allCases.map { SettingsSearchEntry($0.title) }
     }
 }
 

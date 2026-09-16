@@ -9,6 +9,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case kiosk
     case location
     case remindersSync
+    case voiceToolsServer
     case notifications
     case liveActivities
     case sensors
@@ -37,6 +38,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
         case .remindersSync: return L10n.Settings.RemindersSync.title
+        case .voiceToolsServer: return L10n.Settings.VoiceToolsServer.title
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
@@ -77,6 +79,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .kiosk: return .tabletDashboardIcon
         case .location: return .crosshairsGpsIcon
         case .remindersSync: return .formatListChecksIcon
+        case .voiceToolsServer: return .accountVoiceIcon
         case .notifications: return .bellOutlineIcon
         case .liveActivities: return .playBoxOutlineIcon
         case .sensors: return .formatListBulletedIcon
@@ -132,6 +135,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             LocationSettingsView()
         case .remindersSync:
             RemindersSyncSettingsView()
+        case .voiceToolsServer:
+            VoiceToolsServerSettingsView()
         case .notifications:
             SettingsNotificationsView()
         case .liveActivities:
@@ -235,6 +240,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .kiosk: return L10n.Settings.SearchKeywords.kiosk
         case .location: return L10n.Settings.SearchKeywords.location
         case .remindersSync: return L10n.Settings.SearchKeywords.remindersSync
+        case .voiceToolsServer: return L10n.Settings.SearchKeywords.voiceToolsServer
         case .notifications: return L10n.Settings.SearchKeywords.notifications
         case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
         case .sensors: return L10n.Settings.SearchKeywords.sensors
@@ -266,6 +272,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .kiosk: return KioskSettingsView.settingsSearchEntries
         case .location: return LocationSettingsView.settingsSearchEntries
         case .remindersSync: return RemindersSyncSettingsView.settingsSearchEntries
+        case .voiceToolsServer: return VoiceToolsServerSettingsView.settingsSearchEntries
         case .notifications: return NotificationSettingsView.settingsSearchEntries
         case .liveActivities:
             #if os(iOS) && !targetEnvironment(macCatalyst)
