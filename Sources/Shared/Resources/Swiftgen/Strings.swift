@@ -6556,7 +6556,33 @@ public enum L10n {
       public static var subtitle: String { return L10n.tr("Localizable", "settings.siri.subtitle") }
       /// Siri
       public static var title: String { return L10n.tr("Localizable", "settings.siri.title") }
+      public enum Configure {
+        /// None
+        public static var defaultNone: String { return L10n.tr("Localizable", "settings.siri.configure.default_none") }
+        /// Default
+        public static var defaultTitle: String { return L10n.tr("Localizable", "settings.siri.configure.default_title") }
+        /// Reload from Home Assistant
+        public static var reload: String { return L10n.tr("Localizable", "settings.siri.configure.reload") }
+        public enum Calendars {
+          /// No calendars stored
+          public static var empty: String { return L10n.tr("Localizable", "settings.siri.configure.calendars.empty") }
+          /// Siri only offers the calendars switched on. The default calendar is used when you don't name one.
+          public static var footer: String { return L10n.tr("Localizable", "settings.siri.configure.calendars.footer") }
+          /// Calendars
+          public static var header: String { return L10n.tr("Localizable", "settings.siri.configure.calendars.header") }
+        }
+        public enum Lists {
+          /// No to-do lists stored
+          public static var empty: String { return L10n.tr("Localizable", "settings.siri.configure.lists.empty") }
+          /// Siri only offers the to-do lists switched on. Reminders go to the default list when you don't name one.
+          public static var footer: String { return L10n.tr("Localizable", "settings.siri.configure.lists.footer") }
+          /// To-do lists
+          public static var header: String { return L10n.tr("Localizable", "settings.siri.configure.lists.header") }
+        }
+      }
       public enum Servers {
+        /// Configure
+        public static var configure: String { return L10n.tr("Localizable", "settings.siri.servers.configure") }
         /// No servers yet
         public static var empty: String { return L10n.tr("Localizable", "settings.siri.servers.empty") }
         /// Turning a server off removes its entities from Siri, from Spotlight search, and from the Shortcuts app. Shortcuts you already built with those entities will stop finding them. Widgets and controls are not affected.

@@ -1981,6 +1981,16 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.server_switching.how_it_works.wifi.title" = "Home network first";
 "settings.server_switching.switched_toast" = "Switched to %@";
 "settings.server_switching.title" = "Server Switching";
+"settings.siri.configure.calendars.empty" = "No calendars stored";
+"settings.siri.configure.calendars.footer" = "Siri only offers the calendars switched on. The default calendar is used when you don't name one.";
+"settings.siri.configure.calendars.header" = "Calendars";
+"settings.siri.configure.default_none" = "None";
+"settings.siri.configure.default_title" = "Default";
+"settings.siri.configure.lists.empty" = "No to-do lists stored";
+"settings.siri.configure.lists.footer" = "Siri only offers the to-do lists switched on. Reminders go to the default list when you don't name one.";
+"settings.siri.configure.lists.header" = "To-do lists";
+"settings.siri.configure.reload" = "Reload from Home Assistant";
+"settings.siri.servers.configure" = "Configure";
 "settings.siri.servers.empty" = "No servers yet";
 "settings.siri.servers.footer" = "Turning a server off removes its entities from Siri, from Spotlight search, and from the Shortcuts app. Shortcuts you already built with those entities will stop finding them. Widgets and controls are not affected.";
 "settings.siri.servers.header" = "Servers";

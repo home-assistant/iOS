@@ -22,4 +22,8 @@ struct CalendarSchemaEntityQuery: EntityQuery, EntityStringQuery {
     func suggestedEntities() async throws -> [CalendarSchemaEntity] {
         CalendarSchemaSupport.exposedCalendars().map(CalendarSchemaEntity.init(calendar:))
     }
+
+    func defaultResult() async -> CalendarSchemaEntity? {
+        CalendarSchemaSupport.defaultCalendar().map(CalendarSchemaEntity.init(calendar:))
+    }
 }
