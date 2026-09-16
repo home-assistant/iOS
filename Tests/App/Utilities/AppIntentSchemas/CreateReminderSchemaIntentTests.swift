@@ -65,6 +65,32 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
         _ = try await task.value
     }
 
+    func testTheRealChooserCannotAskWithoutASiriSession() async throws {
+        try seedTodoList(entityId: "todo.shopping", name: "Shopping")
+        try seedTodoList(entityId: "todo.work", name: "Work")
+        let sut = intent(list: nil)
+        let lists = ReminderListSchemaEntityQuery().lists()
+
+        let attempt = Task { try await RemindersSchemaSupport.disambiguateList(sut.$list, lists) }
+        let outcome: Bool? = await withCheckedContinuation { continuation in
+            let resumed = ResumeOnce()
+            Task {
+                let result = await attempt.result
+                if resumed.claim() {
+                    continuation.resume(returning: (try? result.get()) == nil)
+                }
+            }
+            Task {
+                try? await Task.sleep(for: .seconds(5))
+                if resumed.claim() {
+                    continuation.resume(returning: nil)
+                }
+            }
+        }
+
+        XCTAssertEqual(outcome, true, "expected the chooser to fail fast outside a Siri session")
+    }
+
     func testTheNoteIsSentAsTheDescription() async throws {
         let list = try ReminderListSchemaEntity(entity: seedTodoList())
         let sut = intent(list: list)
@@ -143,5 +169,18 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
             )
         }
         XCTAssertTrue(connection.pendingRequests.isEmpty)
+    }
+
+    private final class ResumeOnce: @unchecked Sendable {
+        private let lock = NSLock()
+        private var claimed = false
+
+        func claim() -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            guard !claimed else { return false }
+            claimed = true
+            return true
+        }
     }
 }
