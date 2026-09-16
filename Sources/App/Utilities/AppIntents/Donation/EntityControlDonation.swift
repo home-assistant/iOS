@@ -72,7 +72,6 @@ struct EntityControlDonation {
             }
             return service == services.off.rawValue ? .openClose(.close) : nil
         }
-        // A scene's off service is its on service, so "on" is read first and wins for it.
         if service == services.on.rawValue {
             return .turnOnOff(.on)
         }
@@ -89,7 +88,7 @@ struct EntityControlDonation {
         let ids = entityIds.map { ServerEntity.uniqueId(serverId: serverId, entityId: $0) }
         switch command {
         case let .turnOnOff(action):
-            let entities = await (try? HAAppEntityAppIntentEntityQuery().entities(for: ids)) ?? []
+            let entities = await (try? ControllableEntityAppEntityQuery().entities(for: ids)) ?? []
             return entities.map { entity in
                 var intent = TurnOnOffEntityAppIntent(action: action)
                 intent.entity = entity

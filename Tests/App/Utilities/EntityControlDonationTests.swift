@@ -39,12 +39,9 @@ struct EntityControlDonationTests {
         #expect(command("lock.front_door", "lock", "unlock") == nil)
     }
 
-    @Test func scenesOnlyTurnOn() {
-        #expect(command("scene.movie", "scene", "turn_on") == .turnOnOff(.on))
-        #expect(command("scene.movie", "scene", "toggle") == nil)
-    }
-
     @Test func domainsWithoutAVoiceCommandAreSkipped() {
+        #expect(command("scene.movie", "scene", "turn_on") == nil)
+        #expect(command("climate.living_room", "climate", "turn_off") == nil)
         #expect(command("script.morning", "script", "turn_on") == nil)
         #expect(command("siren.alarm", "siren", "turn_on") == nil)
         #expect(command("sensor.temperature", "homeassistant", "update_entity") == nil)
