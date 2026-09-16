@@ -24,6 +24,30 @@ final class RemindersSchemaSupportTests: AppIntentSchemaTestCase {
         }
     }
 
+    func testApiRefusesAListSwitchedOffForSiri() throws {
+        let list = try ReminderListSchemaEntity(entity: seedTodoList())
+        try hideEntityFromSiri(list.entityId, domain: Domain.todo.rawValue)
+
+        XCTAssertThrowsError(try RemindersSchemaSupport.api(for: list)) { error in
+            XCTAssertEqual(
+                (error as? ShortcutAppIntentError)?.errorDescription,
+                L10n.AppIntents.Reminders.Error.listHidden
+            )
+        }
+    }
+
+    func testApiRefusesAListOnAnOptedOutServer() throws {
+        let list = try ReminderListSchemaEntity(entity: seedTodoList())
+        try hideFromSiri(serverId)
+
+        XCTAssertThrowsError(try RemindersSchemaSupport.api(for: list)) { error in
+            XCTAssertEqual(
+                (error as? ShortcutAppIntentError)?.errorDescription,
+                L10n.AppIntents.Reminders.Error.listHidden
+            )
+        }
+    }
+
     // MARK: - Default list
 
     func testTheDefaultListIsTheFirstOneOffered() throws {
