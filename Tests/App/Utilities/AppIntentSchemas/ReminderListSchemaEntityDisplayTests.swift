@@ -20,8 +20,10 @@ final class ReminderListSchemaEntityDisplayTests: AppIntentSchemaTestCase {
             entity: seedTodoList(name: "Shopping", onServer: other.identifier.rawValue)
         )
 
-        XCTAssertEqual(String(localized: XCTUnwrap(home.displayRepresentation.subtitle)), "Home")
-        XCTAssertEqual(String(localized: XCTUnwrap(cabin.displayRepresentation.subtitle)), "Cabin")
+        let homeSubtitle = try XCTUnwrap(home.displayRepresentation.subtitle)
+        let cabinSubtitle = try XCTUnwrap(cabin.displayRepresentation.subtitle)
+        XCTAssertEqual(String(localized: homeSubtitle), "Home")
+        XCTAssertEqual(String(localized: cabinSubtitle), "Cabin")
     }
 
     func testAListWhoseServerIsGoneHasNoSubtitle() throws {
