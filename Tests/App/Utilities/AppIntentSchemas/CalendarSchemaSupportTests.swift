@@ -203,7 +203,6 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
         XCTAssertNoThrow(try CalendarSchemaSupport.validate(start: start, end: end, isAllDay: true))
     }
 
-
     // MARK: - Cache
 
     func testRefreshCachedEventsReadsEveryCalendarAMonthEitherSideOfNow() async throws {
@@ -246,8 +245,9 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
     func testCachedEventFindsTheStoredEventByTitleAndStart() async throws {
         let calendar = try seedCalendar()
         let start = Date(timeIntervalSince1970: 1_700_000_000)
-        try seedEvent(id: "other", uid: "uid-other", summary: "Optician", start: start, end: start.addingTimeInterval(3600))
-        try seedEvent(id: "wanted", uid: "uid-wanted", summary: "Dentist", start: start, end: start.addingTimeInterval(3600))
+        let end = start.addingTimeInterval(3600)
+        try seedEvent(id: "other", uid: "uid-other", summary: "Optician", start: start, end: end)
+        try seedEvent(id: "wanted", uid: "uid-wanted", summary: "Dentist", start: start, end: end)
 
         let record = await CalendarSchemaSupport.cachedEvent(
             on: calendar,
@@ -263,7 +263,8 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
     func testCachedEventInsistsOnTheUidWhenGiven() async throws {
         let calendar = try seedCalendar()
         let start = Date(timeIntervalSince1970: 1_700_000_000)
-        try seedEvent(id: "wanted", uid: "uid-wanted", summary: "Dentist", start: start, end: start.addingTimeInterval(3600))
+        let end = start.addingTimeInterval(3600)
+        try seedEvent(id: "wanted", uid: "uid-wanted", summary: "Dentist", start: start, end: end)
 
         let matching = await CalendarSchemaSupport.cachedEvent(
             on: calendar,
@@ -296,7 +297,7 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
             id: "all-day",
             summary: "Holiday",
             start: dayStart,
-            end: Calendar.current.date(byAdding: .day, value: 1, to: dayStart)!,
+            end: XCTUnwrap(Calendar.current.date(byAdding: .day, value: 1, to: dayStart)),
             isAllDay: true
         )
 

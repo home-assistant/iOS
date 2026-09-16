@@ -34,7 +34,9 @@ final class FakeCalendarsModel: HACalendarsModelProtocol {
 
     func updateModel(_ entities: [HAEntity], server: Server) async {}
 
-    func refresh(server: Server) async -> Bool { true }
+    func refresh(server: Server) async -> Bool {
+        true
+    }
 
     func events(for calendar: HACalendar, start: Date, end: Date) async -> [HACalendarEvent] {
         let records = lock.withLock {

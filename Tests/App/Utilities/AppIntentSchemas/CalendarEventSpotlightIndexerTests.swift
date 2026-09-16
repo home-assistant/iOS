@@ -74,7 +74,6 @@ final class CalendarEventSpotlightIndexerTests: AppIntentSchemaTestCase {
         await CalendarEventSpotlightIndexer.reindex(index: index, defaults: nil)
     }
 
-
     /// The pass mirrors the cache and runs on every foreground, so it must not read a calendar from
     /// the server the way a Siri query does.
     func testAPassReadsTheCacheWithoutGoingToTheServer() async throws {

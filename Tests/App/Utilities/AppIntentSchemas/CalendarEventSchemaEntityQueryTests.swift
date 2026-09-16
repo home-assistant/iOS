@@ -87,7 +87,6 @@ final class CalendarEventSchemaEntityQueryTests: AppIntentSchemaTestCase {
         XCTAssertTrue(entities.isEmpty)
     }
 
-
     // MARK: - Re-reading the server
 
     /// An event Siri itself just added is not in the cache until the calendar is read again, so the
