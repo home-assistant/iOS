@@ -37,17 +37,23 @@ public extension UNNotificationContent {
         }
     }
 
-    var userInfoActions: [UNNotificationAction] {
-        let maxActions = 10
+    /// The most actions a notification can offer; anything beyond this is dropped by the system.
+    static let maxUserInfoActions = 10
 
-        let payloadActions = userInfoActionConfigs
-            .map(NotificationAction.init(action:))
-            .map(\.action)
+    /// The payload's actions as our own model, deduplicated and capped. `userInfoActions` is the
+    /// `UNNotificationAction` form of this; the watch needs the model itself so it can tell a
+    /// text-input action apart and drive it on its own (see `DynamicNotificationHostingController`).
+    var userInfoPayloadActions: [NotificationAction] {
+        Array(userInfoActionConfigs.map(NotificationAction.init(action:)).prefix(Self.maxUserInfoActions))
+    }
+
+    var userInfoActions: [UNNotificationAction] {
+        let payloadActions = userInfoPayloadActions.map(\.action)
 
         guard payloadActions.isEmpty else {
-            return Array(payloadActions.prefix(maxActions))
+            return payloadActions
         }
 
-        return Array(NotificationSnoozeAction.enabledActions().prefix(maxActions))
+        return Array(NotificationSnoozeAction.enabledActions().prefix(Self.maxUserInfoActions))
     }
 }

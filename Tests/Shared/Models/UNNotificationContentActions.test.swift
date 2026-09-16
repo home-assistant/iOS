@@ -72,4 +72,28 @@ final class UNNotificationContentActionsTests: XCTestCase {
 
         XCTAssertEqual(actions.count, 10)
     }
+
+    func testPayloadActionsExposeTextInputFlag() {
+        let actions = content(actions: [
+            ["identifier": "CANCEL", "title": "Cancel"],
+            ["identifier": "REPLY", "title": "Reply", "behavior": "textInput"],
+        ]).userInfoPayloadActions
+
+        XCTAssertEqual(actions.map(\.identifier), ["CANCEL", "REPLY"])
+        XCTAssertEqual(actions.map(\.textInput), [false, true])
+    }
+
+    func testPayloadActionsAreEmptyWithoutPayloadActions() {
+        // The snooze fallback belongs to `userInfoActions` only — the watch keys its own text-input
+        // handling off this, and a snooze preset is never a text-input action.
+        XCTAssertTrue(content(actions: nil).userInfoPayloadActions.isEmpty)
+    }
+
+    func testPayloadActionsCapAtMaximum() {
+        let payloadActions = (0 ..< 15).map { index in
+            ["identifier": "ACTION_\(index)", "title": "Action \(index)"]
+        }
+
+        XCTAssertEqual(content(actions: payloadActions).userInfoPayloadActions.count, 10)
+    }
 }

@@ -842,22 +842,43 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func pushAction(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+    /// Not private so the reply contract it owes the watch can be unit tested directly; the only
+    /// caller is the message dispatch above.
+    func pushAction(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.pushActionResponse.rawValue
 
-        if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
-           let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
-           let serverIdentifier = message.content["Server"] as? String,
-           let server = Current.servers.server(forServerIdentifier: serverIdentifier),
-           let api = Current.api(for: server) {
-            Current.backgroundTask(withName: BackgroundTask.watchPushAction.rawValue) { _ in
-                firstly {
-                    api.handlePushAction(for: info)
-                }.ensure {
-                    message.reply(.init(identifier: responseIdentifier))
-                }
-            }.catch { error in
-                Current.Log.error("error handling push action: \(error)")
+        // Every path answers, and answers with whether Home Assistant took the action: the watch
+        // shows the user that their reply went through, and a silent non-reply used to leave it
+        // waiting for the connectivity timeout instead.
+        func fail(_ reason: String) {
+            Current.Log.error("error handling push action: \(reason)")
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "fired": false,
+                "error": reason,
+            ]))
+        }
+
+        guard let infoJSON = message.content["PushActionInfo"] as? [String: Any],
+              let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON) else {
+            fail("iPhone could not read the notification action")
+            return
+        }
+
+        guard let serverIdentifier = message.content["Server"] as? String,
+              let server = Current.servers.server(forServerIdentifier: serverIdentifier),
+              let api = Current.api(for: server) else {
+            fail("iPhone has no usable connection for this server")
+            return
+        }
+
+        Current.backgroundTask(withName: BackgroundTask.watchPushAction.rawValue) { _ in
+            api.handlePushAction(for: info)
+        }.pipe { result in
+            switch result {
+            case .fulfilled:
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
+            case let .rejected(error):
+                fail(error.localizedDescription)
             }
         }
     }
