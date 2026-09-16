@@ -33,8 +33,8 @@ struct SettingsSearchIndexTests {
         #expect(!SettingsItem.location.matches(searchQuery: "watch face"))
     }
 
-    /// Searching for the protocol Home Assistant calls the voice tools server by has to surface
-    /// its row, and so do the screens nested inside it.
+    /// The name of the protocol Home Assistant speaks to the voice tools server must surface its
+    /// row, and so must the screens nested inside it.
     @Test("The voice tools server is found by its protocol and its nested screens")
     func voiceToolsServerIsFoundByItsProtocolAndScreens() {
         #expect(SettingsItem.voiceToolsServer.matches(searchQuery: "wyoming"))

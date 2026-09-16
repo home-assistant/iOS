@@ -4,6 +4,13 @@ import SwiftUI
 
 struct AppLabsView: View {
     @ObservedObject private var appLabs = Current.appLabs
+    private let features: [AppLabsFeature]
+
+    /// Injectable so previews and tests can render the list for a device with no experimental
+    /// features on offer, or with all of them, regardless of the device running them.
+    init(features: [AppLabsFeature] = AppLabsFeature.availableFeatures) {
+        self.features = features
+    }
 
     var body: some View {
         List {
@@ -24,7 +31,6 @@ struct AppLabsView: View {
                 }
             }
 
-            let features = AppLabsFeature.availableFeatures
             if features.isEmpty {
                 Section {
                     Text(L10n.Settings.AppLabs.emptyState)
@@ -62,8 +68,14 @@ extension AppLabsView: SettingsScreenSearchable {
     }
 }
 
-#Preview {
+#Preview("Features") {
     NavigationView {
-        AppLabsView()
+        AppLabsView(features: AppLabsFeature.allCases)
+    }
+}
+
+#Preview("Empty") {
+    NavigationView {
+        AppLabsView(features: [])
     }
 }
