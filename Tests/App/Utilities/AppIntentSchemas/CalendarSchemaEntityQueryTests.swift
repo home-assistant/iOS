@@ -57,4 +57,36 @@ final class CalendarSchemaEntityQueryTests: AppIntentSchemaTestCase {
 
         XCTAssertTrue(entities.isEmpty)
     }
+
+    func testACalendarSwitchedOffInSettingsIsNotOffered() async throws {
+        try seedCalendar(entityId: "calendar.home", name: "Home", sortOrder: 0)
+        let work = try seedCalendar(entityId: "calendar.work", name: "Work", sortOrder: 1)
+        try hideEntityFromSiri("calendar.work", domain: Domain.calendar.rawValue)
+
+        let suggested = try await sut.suggestedEntities()
+        let byId = try await sut.entities(for: [work.id])
+        let matching = try await sut.entities(matching: "work")
+
+        XCTAssertEqual(suggested.map(\.title), ["Home"])
+        XCTAssertTrue(byId.isEmpty)
+        XCTAssertTrue(matching.isEmpty)
+    }
+
+    func testTheDefaultResultIsTheDefaultCalendar() async throws {
+        try seedCalendar(entityId: "calendar.home", name: "Home", sortOrder: 0)
+        try seedCalendar(entityId: "calendar.work", name: "Work", sortOrder: 1)
+        try makeSiriDefault("calendar.work", domain: Domain.calendar.rawValue)
+
+        let entity = await sut.defaultResult()
+
+        XCTAssertEqual(entity?.title, "Work")
+    }
+
+    func testThereIsNoDefaultResultWithoutADefault() async throws {
+        try seedCalendar(name: "Home")
+
+        let entity = await sut.defaultResult()
+
+        XCTAssertNil(entity)
+    }
 }

@@ -9,6 +9,8 @@ struct SiriSettingsView: View {
     static var settingsSearchEntries: [SettingsSearchEntry] {
         [
             SettingsSearchEntry(L10n.Settings.Siri.Servers.header),
+            SettingsSearchEntry(L10n.Settings.Siri.Configure.Calendars.header),
+            SettingsSearchEntry(L10n.Settings.Siri.Configure.Lists.header),
         ]
     }
 
@@ -33,6 +35,12 @@ struct SiriSettingsView: View {
                         set: { viewModel.setExposed($0, serverId: row.id) }
                     )) {
                         Text(row.name)
+                    }
+                    if #available(iOS 27.0, *), row.isExposed,
+                       let server = Current.servers.server(for: .init(rawValue: row.id)) {
+                        NavigationLink(L10n.Settings.Siri.Servers.configure) {
+                            SiriServerConfigurationView(server: server)
+                        }
                     }
                 }
             }

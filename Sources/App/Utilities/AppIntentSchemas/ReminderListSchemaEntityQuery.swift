@@ -17,9 +17,21 @@ struct ReminderListSchemaEntityQuery: EntityQuery, EntityStringQuery {
         lists()
     }
 
+    func defaultResult() async -> ReminderListSchemaEntity? {
+        defaultList()
+    }
+
     func lists() -> [ReminderListSchemaEntity] {
-        ControlEntityProvider(domains: [.todo]).getEntitiesExposedToSiri()
+        let hidden = SiriEntityExposure.hiddenEntityIds(domain: Domain.todo.rawValue)
+        return ControlEntityProvider(domains: [.todo]).getEntitiesExposedToSiri()
             .flatMap(\.1)
+            .filter { !hidden.contains($0.id) }
             .map(ReminderListSchemaEntity.init(entity:))
+    }
+
+    func defaultList() -> ReminderListSchemaEntity? {
+        let defaults = SiriEntityExposure.defaultEntityIds(domain: Domain.todo.rawValue)
+        guard !defaults.isEmpty else { return nil }
+        return lists().first { defaults.contains($0.id) }
     }
 }

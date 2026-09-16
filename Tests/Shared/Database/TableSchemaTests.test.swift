@@ -328,13 +328,13 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 32 tables create successfully together")
+    @Test("All 33 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 32 tables
-        #expect(tables.count == 32, "Should have exactly 32 tables, but found \(tables.count)")
+        // Verify we have exactly 33 tables
+        #expect(tables.count == 33, "Should have exactly 33 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

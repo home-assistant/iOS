@@ -58,6 +58,19 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
         }
     }
 
+    func testCalendarForEntityRefusesACalendarSwitchedOffForSiri() throws {
+        let calendar = try seedCalendar()
+        let entity = CalendarSchemaEntity(calendar: calendar)
+        try hideEntityFromSiri(calendar.entityId, domain: Domain.calendar.rawValue)
+
+        XCTAssertThrowsError(try CalendarSchemaSupport.calendar(for: entity, requiring: .createEvent)) { error in
+            XCTAssertEqual(
+                (error as? ShortcutAppIntentError)?.errorDescription,
+                L10n.AppIntents.Calendar.Error.unknownCalendar
+            )
+        }
+    }
+
     /// Home Assistant rejects an unsupported write server-side, so failing here gives the user a
     /// message naming the calendar instead of a bare service error.
     func testCalendarForEntityRefusesACalendarThatCannotDoTheThing() throws {

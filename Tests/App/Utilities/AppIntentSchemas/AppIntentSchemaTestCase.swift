@@ -39,6 +39,7 @@ class AppIntentSchemaTestCase: XCTestCase {
 
         let database = try DatabaseQueue(path: ":memory:")
         try SiriServerExposureTable().createIfNeeded(database: database)
+        try SiriEntityExposureTable().createIfNeeded(database: database)
         try HACalendarTable().createIfNeeded(database: database)
         try HACalendarEventTable().createIfNeeded(database: database)
         try HAppEntityTable().createIfNeeded(database: database)
@@ -79,6 +80,30 @@ class AppIntentSchemaTestCase: XCTestCase {
     func hideFromSiri(_ serverId: String) throws {
         try database.write { db in
             try SiriServerExposure(serverId: serverId, isExposed: false).insert(db)
+        }
+    }
+
+    func hideEntityFromSiri(_ entityId: String, domain: String, onServer serverId: String? = nil) throws {
+        try database.write { db in
+            try SiriEntityExposure(
+                serverId: serverId ?? self.serverId,
+                entityId: entityId,
+                domain: domain,
+                isExposed: false,
+                isDefault: false
+            ).insert(db)
+        }
+    }
+
+    func makeSiriDefault(_ entityId: String, domain: String, onServer serverId: String? = nil) throws {
+        try database.write { db in
+            try SiriEntityExposure(
+                serverId: serverId ?? self.serverId,
+                entityId: entityId,
+                domain: domain,
+                isExposed: true,
+                isDefault: true
+            ).insert(db)
         }
     }
 

@@ -24,7 +24,42 @@ final class RemindersSchemaSupportTests: AppIntentSchemaTestCase {
         }
     }
 
+    func testApiRefusesAListSwitchedOffForSiri() throws {
+        let list = try ReminderListSchemaEntity(entity: seedTodoList())
+        try hideEntityFromSiri(list.entityId, domain: Domain.todo.rawValue)
+
+        XCTAssertThrowsError(try RemindersSchemaSupport.api(for: list)) { error in
+            XCTAssertEqual(
+                (error as? ShortcutAppIntentError)?.errorDescription,
+                L10n.AppIntents.Reminders.Error.listHidden
+            )
+        }
+    }
+
+    func testApiRefusesAListOnAnOptedOutServer() throws {
+        let list = try ReminderListSchemaEntity(entity: seedTodoList())
+        try hideFromSiri(serverId)
+
+        XCTAssertThrowsError(try RemindersSchemaSupport.api(for: list)) { error in
+            XCTAssertEqual(
+                (error as? ShortcutAppIntentError)?.errorDescription,
+                L10n.AppIntents.Reminders.Error.listHidden
+            )
+        }
+    }
+
     // MARK: - List resolution
+
+    func testAConfiguredDefaultIsUsedWithoutAsking() throws {
+        try seedTodoList(entityId: "todo.shopping", name: "Shopping")
+        try seedTodoList(entityId: "todo.work", name: "Work")
+        try makeSiriDefault("todo.work", domain: Domain.todo.rawValue)
+
+        guard case let .only(list) = RemindersSchemaSupport.listResolution() else {
+            return XCTFail("expected the default list to be picked without a choice")
+        }
+        XCTAssertEqual(list.entityId, "todo.work")
+    }
 
     func testMoreThanOneListIsAChoiceInTheOrderOffered() throws {
         try seedTodoList(entityId: "todo.shopping", name: "Shopping")

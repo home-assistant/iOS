@@ -12,18 +12,27 @@ enum CalendarSchemaSupport {
     /// seeing every calendar: the setting is about what is offered to Siri, not about hiding a
     /// server from the app.
     static func exposedCalendars() -> [HACalendar] {
-        let hidden = SiriServerExposure.hiddenServerIds()
-        guard !hidden.isEmpty else {
+        let hiddenServers = SiriServerExposure.hiddenServerIds()
+        let hiddenCalendars = SiriEntityExposure.hiddenEntityIds(domain: Domain.calendar.rawValue)
+        guard !hiddenServers.isEmpty || !hiddenCalendars.isEmpty else {
             return HACalendar.all()
         }
-        return HACalendar.all().filter { !hidden.contains($0.serverId) }
+        return HACalendar.all().filter { !hiddenServers.contains($0.serverId) && !hiddenCalendars.contains($0.id) }
+    }
+
+    static func defaultCalendar() -> HACalendar? {
+        let defaults = SiriEntityExposure.defaultEntityIds(domain: Domain.calendar.rawValue)
+        guard !defaults.isEmpty else { return nil }
+        return exposedCalendars().first { defaults.contains($0.id) }
     }
 
     /// One calendar by id, or nil when its server is opted out, so an identifier saved before the
     /// opt-out stops resolving rather than quietly still working.
     static func exposedCalendar(id: String) -> HACalendar? {
         guard let calendar = HACalendar.get(id: id) else { return nil }
-        return SiriServerExposure.hiddenServerIds().contains(calendar.serverId) ? nil : calendar
+        if SiriServerExposure.hiddenServerIds().contains(calendar.serverId) { return nil }
+        if SiriEntityExposure.hiddenEntityIds(domain: Domain.calendar.rawValue).contains(calendar.id) { return nil }
+        return calendar
     }
 
     /// The stored calendar behind a schema entity, checked for the capability the caller needs.
@@ -31,8 +40,8 @@ enum CalendarSchemaSupport {
     /// Home Assistant advertises `supported_features` per calendar, and a calendar that cannot do
     /// the thing rejects it server-side, so failing here gives the user something they can act on.
     static func calendar(for entity: CalendarSchemaEntity, requiring feature: HACalendar.Feature) throws -> HACalendar {
-        guard let stored = HACalendar.get(id: entity.id) else {
-            Current.Log.error("Calendar \(entity.id) is not in the database")
+        guard let stored = exposedCalendar(id: entity.id) else {
+            Current.Log.error("Calendar \(entity.id) is not in the database or is not exposed to Siri")
             throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.unknownCalendar)
         }
         guard stored.supports(feature) else {
