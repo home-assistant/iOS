@@ -78,6 +78,9 @@ extension MacWebViewTitleBar {
 
         private weak var webViewController: WebViewController?
         private weak var titlebar: UITitlebar?
+        /// The scene this toolbar is attached to, so what its items ask for happens in that window rather
+        /// than in whichever one the app last registered a coordinator for.
+        private weak var windowScene: UIWindowScene?
         private weak var serverPickerItem: NSMenuToolbarItem?
         private var toolbar: NSToolbar?
         private var server: Server?
@@ -104,6 +107,7 @@ extension MacWebViewTitleBar {
         func attach(to windowScene: UIWindowScene?) {
             guard let titlebar = windowScene?.titlebar else { return }
             self.titlebar = titlebar
+            self.windowScene = windowScene
 
             if toolbar == nil || titlebar.toolbar !== toolbar {
                 let toolbar = NSToolbar(identifier: Constants.toolbarIdentifier)
@@ -415,10 +419,10 @@ extension MacWebViewTitleBar {
                 UIAction(
                     title: server.info.name,
                     state: server.identifier == selectedIdentifier ? .on : .off
-                ) { _ in
+                ) { [weak self] _ in
                     // Not `activate(server:)`: like the server-cycling gestures, the toolbar menu
                     // switches in place without sending the user back to the Home Assistant root.
-                    Current.sceneManager.appCoordinator.done { coordinator in
+                    Current.sceneManager.appCoordinator(for: self?.windowScene).done { coordinator in
                         coordinator.open(server: server)
                     }
                 }
@@ -583,7 +587,7 @@ extension MacWebViewTitleBar {
                       entityId: magicItem.id,
                       serverId: magicItem.serverId
                   ) else { return }
-            Current.sceneManager.appCoordinator.done { coordinator in
+            Current.sceneManager.appCoordinator(for: windowScene).done { coordinator in
                 IncomingURLHandler(coordinator: coordinator).handle(url: url)
             }
         }
