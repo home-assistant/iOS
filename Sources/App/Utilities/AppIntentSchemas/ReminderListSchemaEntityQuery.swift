@@ -21,7 +21,7 @@ struct ReminderListSchemaEntityQuery: EntityQuery, EntityStringQuery {
         defaultList()
     }
 
-    private func lists() -> [ReminderListSchemaEntity] {
+    func lists() -> [ReminderListSchemaEntity] {
         let hidden = SiriEntityExposure.hiddenEntityIds(domain: Domain.todo.rawValue)
         return ControlEntityProvider(domains: [.todo]).getEntitiesExposedToSiri()
             .flatMap(\.1)
@@ -29,13 +29,7 @@ struct ReminderListSchemaEntityQuery: EntityQuery, EntityStringQuery {
             .map(ReminderListSchemaEntity.init(entity:))
     }
 
-    /// The list a new reminder lands on when none was named: the default picked in Settings, else
-    /// the first the provider reports, which follows the app's own server and entity ordering.
-    func firstList() -> ReminderListSchemaEntity? {
-        defaultList() ?? lists().first
-    }
-
-    private func defaultList() -> ReminderListSchemaEntity? {
+    func defaultList() -> ReminderListSchemaEntity? {
         let defaults = SiriEntityExposure.defaultEntityIds(domain: Domain.todo.rawValue)
         guard !defaults.isEmpty else { return nil }
         return lists().first { defaults.contains($0.id) }

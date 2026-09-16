@@ -55,15 +55,15 @@ final class ReminderListSchemaEntityQueryTests: AppIntentSchemaTestCase {
         XCTAssertTrue(unmatched.isEmpty)
     }
 
-    func testTheFirstListIsTheOneTheProviderReportsFirst() throws {
+    func testTheListsFollowTheProvidersOrder() throws {
         try seedTodoList(entityId: "todo.shopping", name: "Shopping")
         try seedTodoList(entityId: "todo.work", name: "Work")
 
-        XCTAssertEqual(sut.firstList()?.entityId, "todo.shopping")
+        XCTAssertEqual(sut.lists().map(\.entityId), ["todo.shopping", "todo.work"])
     }
 
-    func testThereIsNoFirstListWithoutAnyLists() {
-        XCTAssertNil(sut.firstList())
+    func testThereAreNoListsWithoutAnyLists() {
+        XCTAssertTrue(sut.lists().isEmpty)
     }
 
     func testAListSwitchedOffInSettingsIsNotOffered() async throws {
@@ -81,7 +81,7 @@ final class ReminderListSchemaEntityQueryTests: AppIntentSchemaTestCase {
         try seedTodoList(entityId: "todo.work", name: "Work")
         try makeSiriDefault("todo.work", domain: Domain.todo.rawValue)
 
-        XCTAssertEqual(sut.firstList()?.entityId, "todo.work")
+        XCTAssertEqual(sut.defaultList()?.entityId, "todo.work")
     }
 
     func testTheDefaultResultIsTheDefaultList() async throws {

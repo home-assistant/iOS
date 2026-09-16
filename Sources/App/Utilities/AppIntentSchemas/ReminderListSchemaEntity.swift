@@ -18,7 +18,15 @@ struct ReminderListSchemaEntity: IndexedEntity {
     var serverId: String
 
     var displayRepresentation: DisplayRepresentation {
-        .init(title: "\(name)", image: .init(systemName: "checklist"))
+        .init(title: "\(name)", subtitle: serverSubtitle, image: .init(systemName: "checklist"))
+    }
+
+    private var serverSubtitle: LocalizedStringResource? {
+        guard Current.servers.all.count > 1,
+              let server = Current.servers.server(for: .init(rawValue: serverId)) else {
+            return nil
+        }
+        return "\(server.info.name)"
     }
 
     init(entity: HAAppEntity) {

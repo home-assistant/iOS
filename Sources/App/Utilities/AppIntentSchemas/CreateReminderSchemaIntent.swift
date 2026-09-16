@@ -23,7 +23,7 @@ struct CreateReminderSchemaIntent {
     var section: ReminderSectionSchemaEntity?
 
     func perform() async throws -> some ReturnsValue<ReminderSchemaEntity> {
-        let target = try list ?? RemindersSchemaSupport.defaultList()
+        let target = try await resolveList()
         let api = try RemindersSchemaSupport.api(for: target)
         let due = RemindersSchemaSupport.due(dueDate)
 
@@ -43,5 +43,19 @@ struct CreateReminderSchemaIntent {
             dueDate: dueDate,
             note: note?.plainText
         ))
+    }
+
+    private func resolveList() async throws -> ReminderListSchemaEntity {
+        if let list {
+            return list
+        }
+        switch RemindersSchemaSupport.listResolution() {
+        case .noLists:
+            throw ShortcutAppIntentError(L10n.AppIntents.Reminders.Error.noList)
+        case let .only(list):
+            return list
+        case let .choice(lists):
+            return try await RemindersSchemaSupport.disambiguateList($list, lists)
+        }
     }
 }
