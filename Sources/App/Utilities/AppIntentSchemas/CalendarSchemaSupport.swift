@@ -40,8 +40,8 @@ enum CalendarSchemaSupport {
     /// Home Assistant advertises `supported_features` per calendar, and a calendar that cannot do
     /// the thing rejects it server-side, so failing here gives the user something they can act on.
     static func calendar(for entity: CalendarSchemaEntity, requiring feature: HACalendar.Feature) throws -> HACalendar {
-        guard let stored = HACalendar.get(id: entity.id) else {
-            Current.Log.error("Calendar \(entity.id) is not in the database")
+        guard let stored = exposedCalendar(id: entity.id) else {
+            Current.Log.error("Calendar \(entity.id) is not in the database or is not exposed to Siri")
             throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.unknownCalendar)
         }
         guard stored.supports(feature) else {

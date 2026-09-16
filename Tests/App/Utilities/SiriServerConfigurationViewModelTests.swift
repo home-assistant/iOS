@@ -4,6 +4,7 @@ import GRDB
 import Testing
 
 @MainActor
+@Suite(.serialized)
 struct SiriServerConfigurationViewModelTests {
     private func withSeededServer(_ body: (Server) async throws -> Void) async throws {
         let previous = Current.servers
@@ -33,8 +34,13 @@ struct SiriServerConfigurationViewModelTests {
             entityId: "todo.other",
             name: "Other"
         )
-        defer { Task { try? await SiriTestSeeding.clear(serverIds: [serverId, other.identifier.rawValue]) } }
-        try await body(server)
+        do {
+            try await body(server)
+        } catch {
+            try await SiriTestSeeding.clear(serverIds: [serverId, other.identifier.rawValue])
+            throw error
+        }
+        try await SiriTestSeeding.clear(serverIds: [serverId, other.identifier.rawValue])
     }
 
     @Test func loadsOnlyTheServersOwnCalendarsAndLists() async throws {

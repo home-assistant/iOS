@@ -259,6 +259,7 @@
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.perform_action.title" = "Perform action";
 "app_intents.readable_entity.entity.name" = "Entity";
+"app_intents.reminders.error.list_hidden" = "That to-do list is no longer available to Siri";
 "app_intents.reminders.error.no_list" = "There are no to-do lists to add this to";
 "app_intents.reminders.get_items.description" = "Get the items on a Home Assistant to-do list";
 "app_intents.reminders.get_items.include_completed.title" = "Include completed";

@@ -10,6 +10,11 @@ enum RemindersSchemaSupport {
               let api = Current.api(for: server) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
+        guard SiriServerExposure.isExposed(serverId: list.serverId),
+              SiriEntityExposure.isExposed(serverId: list.serverId, entityId: list.entityId) else {
+            Current.Log.error("List \(list.id) is not exposed to Siri")
+            throw ShortcutAppIntentError(L10n.AppIntents.Reminders.Error.listHidden)
+        }
         return api
     }
 

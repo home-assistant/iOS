@@ -3,6 +3,7 @@
 import SwiftUI
 import Testing
 
+@Suite(.serialized)
 struct SiriSettingsViewSnapshotTests {
     @MainActor
     @Test func siriSettingsWithAConfigureLinkUnderExposedServers() async throws {
@@ -17,8 +18,9 @@ struct SiriSettingsViewSnapshotTests {
         let serverIds = [home.identifier.rawValue, cabin.identifier.rawValue]
         try await SiriTestSeeding.clear(serverIds: serverIds)
         SiriServerExposure.setExposed(false, serverId: cabin.identifier.rawValue)
-        defer { Task { try? await SiriTestSeeding.clear(serverIds: serverIds) } }
 
         assertLightDarkSnapshots(of: SiriSettingsView(), drawHierarchyInKeyWindow: true)
+
+        try await SiriTestSeeding.clear(serverIds: serverIds)
     }
 }

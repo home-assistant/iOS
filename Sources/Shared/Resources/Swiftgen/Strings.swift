@@ -1031,6 +1031,8 @@ public enum L10n {
     }
     public enum Reminders {
       public enum Error {
+        /// That to-do list is no longer available to Siri
+        public static var listHidden: String { return L10n.tr("Localizable", "app_intents.reminders.error.list_hidden") }
         /// There are no to-do lists to add this to
         public static var noList: String { return L10n.tr("Localizable", "app_intents.reminders.error.no_list") }
       }

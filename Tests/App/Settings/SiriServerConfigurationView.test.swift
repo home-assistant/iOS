@@ -3,6 +3,7 @@
 import SwiftUI
 import Testing
 
+@Suite(.serialized)
 struct SiriServerConfigurationViewTests {
     @MainActor
     @Test func siriServerConfigurationWithCalendarsAndLists() async throws {
@@ -37,10 +38,11 @@ struct SiriServerConfigurationViewTests {
             entityId: "todo.projects",
             domain: Domain.todo.rawValue
         )
-        defer { Task { try? await SiriTestSeeding.clear(serverIds: [serverId]) } }
 
         let viewModel = SiriServerConfigurationViewModel(server: server, refresh: { _ in })
         assertLightDarkSnapshots(of: SiriServerConfigurationView(viewModel: viewModel), drawHierarchyInKeyWindow: true)
+
+        try await SiriTestSeeding.clear(serverIds: [serverId])
     }
 
     @MainActor
