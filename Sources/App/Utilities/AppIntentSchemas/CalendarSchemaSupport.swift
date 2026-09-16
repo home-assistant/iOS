@@ -64,6 +64,81 @@ enum CalendarSchemaSupport {
         return uid
     }
 
+    static let refreshWindow: TimeInterval = 30 * 24 * 60 * 60
+
+    static func refreshCachedEvents(for calendars: [HACalendar], touching dates: [Date] = []) async {
+        guard !calendars.isEmpty else { return }
+        let now = Current.date()
+        let day: TimeInterval = 24 * 60 * 60
+        let start = min(now.addingTimeInterval(-refreshWindow), (dates.min() ?? now).addingTimeInterval(-day))
+        let end = max(now.addingTimeInterval(refreshWindow), (dates.max() ?? now).addingTimeInterval(day))
+
+        await withTaskGroup(of: Void.self) { group in
+            for calendar in calendars {
+                group.addTask {
+                    _ = await Current.calendarsModel().events(for: calendar, start: start, end: end)
+                }
+            }
+        }
+    }
+
+    static func cachedEvent(
+        on calendar: HACalendar,
+        titled summary: String,
+        start: Date,
+        end: Date,
+        isAllDay: Bool,
+        uid: String? = nil,
+        excluding knownIds: Set<String> = []
+    ) async -> HACalendarEventRecord? {
+        let matches = await cachedEvents(
+            on: calendar,
+            titled: summary,
+            start: start,
+            end: end,
+            isAllDay: isAllDay,
+            uid: uid
+        )
+        let unseen = matches.filter { !knownIds.contains($0.id) }
+        if unseen.count == 1 {
+            return unseen[0]
+        }
+        return matches.count == 1 ? matches[0] : nil
+    }
+
+    static func cachedEvents(
+        on calendar: HACalendar,
+        titled summary: String,
+        start: Date,
+        end: Date,
+        isAllDay: Bool,
+        uid: String? = nil
+    ) async -> [HACalendarEventRecord] {
+        var windowStart = start
+        var windowEnd = end
+        if isAllDay {
+            let days = Calendar.current
+            windowStart = days.startOfDay(for: start)
+            windowEnd = days.date(byAdding: .day, value: 1, to: days.startOfDay(for: end)) ?? end
+        }
+        let records = await HACalendarEventRecord.events(
+            serverId: calendar.serverId,
+            calendarEntityId: calendar.entityId,
+            start: windowStart,
+            end: windowEnd
+        )
+        return records.filter { record in
+            if let uid, record.uid != uid {
+                return false
+            }
+            guard record.summary == summary, record.isAllDay == isAllDay else { return false }
+            if isAllDay {
+                return Calendar.current.isDate(record.start, inSameDayAs: start)
+            }
+            return abs(record.start.timeIntervalSince(start)) < 1
+        }
+    }
+
     static func api(for calendar: HACalendar) throws -> HomeAssistantAPI {
         guard let server = Current.servers.server(forServerIdentifier: calendar.serverId),
               let api = Current.api(for: server) else {
@@ -76,7 +151,9 @@ enum CalendarSchemaSupport {
     /// The end Home Assistant should store when the caller left it out: an hour later for a timed
     /// event, the same day for an all-day one, matching how the frontend opens a new event.
     static func resolvedEnd(_ end: Date?, start: Date, isAllDay: Bool) -> Date {
-        if let end { return end }
+        if let end {
+            return end
+        }
         return isAllDay ? start : start.addingTimeInterval(60 * 60)
     }
 

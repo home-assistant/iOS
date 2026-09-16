@@ -183,4 +183,62 @@ final class UpdateEventSchemaIntentTests: AppIntentSchemaTestCase {
         }
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
+
+    /// A moved event has to leave the cache where it was as well as appear where it now is, so the
+    /// read-back takes in both dates.
+    func testTheCalendarIsReadBackAroundBothTheOldAndTheNewDates() async throws {
+        let calendar = try seedCalendar(supportedFeatures: 4)
+        let sut = try intent(for: existingEvent(calendar: calendar))
+        let movedTo = start.addingTimeInterval(45 * 86400)
+        sut.startDate = movedTo
+        sut.endDate = movedTo.addingTimeInterval(3600)
+
+        let task = Task { try await sut.perform() }
+        let pending = try await request()
+        XCTAssertTrue(calendarsModel.eventsRequests.isEmpty)
+
+        pending.completion(.success(.dictionary([:])))
+        _ = try await task.value
+
+        let readBack = try XCTUnwrap(calendarsModel.eventsRequests.first)
+        XCTAssertEqual(calendarsModel.refreshedCalendars.map(\.id), [calendar.id])
+        XCTAssertTrue(readBack.covers(start))
+        XCTAssertTrue(readBack.covers(movedTo))
+    }
+
+    func testTheStoredEventIsHandedBackWhenTheReadBackFindsIt() async throws {
+        let calendar = try seedCalendar(supportedFeatures: 4)
+        let sut = try intent(for: existingEvent(calendar: calendar))
+        sut.title = "Dentist (moved)"
+        calendarsModel.serverReturns([
+            HACalendarEventRecord(
+                id: "stored",
+                serverId: serverId,
+                calendarEntityId: calendar.entityId,
+                uid: "uid-1",
+                recurrenceId: nil,
+                summary: "Dentist (moved)",
+                start: start,
+                end: start.addingTimeInterval(3600),
+                isAllDay: false,
+                eventDescription: "Bring the form",
+                location: "High Street",
+                rrule: nil
+            ),
+        ], for: calendar)
+
+        let task = Task { try await sut.perform() }
+        try await acknowledge()
+        _ = try await task.value
+
+        let stored = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Dentist (moved)",
+            start: start,
+            end: start.addingTimeInterval(3600),
+            isAllDay: false,
+            uid: "uid-1"
+        )
+        XCTAssertEqual(stored?.id, "stored")
+    }
 }
