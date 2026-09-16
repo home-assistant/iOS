@@ -43,6 +43,28 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
         _ = try await task.value
     }
 
+    func testWithSeveralListsTheUserIsAskedAndTheChoiceIsUsed() async throws {
+        try seedTodoList(entityId: "todo.shopping", name: "Shopping")
+        try seedTodoList(entityId: "todo.work", name: "Work")
+        let previous = RemindersSchemaSupport.disambiguateList
+        defer { RemindersSchemaSupport.disambiguateList = previous }
+        var offered: [String] = []
+        RemindersSchemaSupport.disambiguateList = { _, lists in
+            offered = lists.map(\.entityId)
+            return lists[1]
+        }
+        let sut = intent(list: nil)
+
+        let task = Task { try await sut.perform() }
+        let pending = try await request()
+
+        XCTAssertEqual(offered, ["todo.shopping", "todo.work"])
+        XCTAssertEqual(pending.request.data["entity_id"] as? String, "todo.work")
+
+        pending.completion(.success(.dictionary([:])))
+        _ = try await task.value
+    }
+
     func testTheNoteIsSentAsTheDescription() async throws {
         let list = try ReminderListSchemaEntity(entity: seedTodoList())
         let sut = intent(list: list)

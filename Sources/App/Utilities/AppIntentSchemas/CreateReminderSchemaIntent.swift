@@ -55,13 +55,7 @@ struct CreateReminderSchemaIntent {
         case let .only(list):
             return list
         case let .choice(lists):
-            return try await $list.requestDisambiguation(
-                among: lists,
-                dialog: IntentDialog(.init(
-                    "app_intents.reminders.create.which_list",
-                    defaultValue: "Which list?"
-                ))
-            )
+            return try await RemindersSchemaSupport.disambiguateList($list, lists)
         }
     }
 }

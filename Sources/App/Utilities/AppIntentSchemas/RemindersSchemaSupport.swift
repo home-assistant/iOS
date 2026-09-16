@@ -17,6 +17,19 @@ enum RemindersSchemaSupport {
         ReminderListResolution(lists: ReminderListSchemaEntityQuery().lists())
     }
 
+    static var disambiguateList: (
+        IntentParameter<ReminderListSchemaEntity?>,
+        [ReminderListSchemaEntity]
+    ) async throws -> ReminderListSchemaEntity = { parameter, lists in
+        try await parameter.requestDisambiguation(
+            among: lists,
+            dialog: IntentDialog(.init(
+                "app_intents.reminders.create.which_list",
+                defaultValue: "Which list?"
+            ))
+        )
+    }
+
     /// `todo.add_item` and `todo.update_item` take either a bare day or a datetime, never both, so
     /// a due date with no time component is sent as a day.
     static func due(_ components: DateComponents?) -> (date: String?, dateTime: String?) {
