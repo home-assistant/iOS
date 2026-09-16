@@ -26,6 +26,14 @@ struct CreateEventSchemaIntent {
         let end = CalendarSchemaSupport.resolvedEnd(endDate, start: startDate, isAllDay: isAllDay)
         try CalendarSchemaSupport.validate(start: startDate, end: end, isAllDay: isAllDay)
 
+        let knownIds = await Set(CalendarSchemaSupport.cachedEvents(
+            on: stored,
+            titled: title,
+            start: startDate,
+            end: end,
+            isAllDay: isAllDay
+        ).map(\.id))
+
         try await api.createCalendarEvent(
             entityId: stored.entityId,
             summary: title,
@@ -43,7 +51,8 @@ struct CreateEventSchemaIntent {
             titled: title,
             start: startDate,
             end: end,
-            isAllDay: isAllDay
+            isAllDay: isAllDay,
+            excluding: knownIds
         ) {
             return .result(value: CalendarEventSchemaEntity(record: record, calendar: calendar))
         }

@@ -1,10 +1,10 @@
 import Foundation
-import GRDB
 import HAKit
 @testable import Shared
 
-/// Stands in for the server-backed calendars model: records every read and, like the real one,
-/// leaves what the server returned in the cache. Nothing is pruned, so seeded events stay put.
+/// Stands in for the server-backed calendars model: records every read, and answers the way the
+/// real one does. A calendar given a server answer replaces its cached window with it; a calendar
+/// without one is unreachable and falls back to what the cache holds.
 final class FakeCalendarsModel: HACalendarsModelProtocol {
     struct EventsRequest: Equatable {
         let calendar: HACalendar
@@ -41,15 +41,23 @@ final class FakeCalendarsModel: HACalendarsModelProtocol {
     func events(for calendar: HACalendar, start: Date, end: Date) async -> [HACalendarEvent] {
         let records = lock.withLock {
             recordedRequests.append(EventsRequest(calendar: calendar, start: start, end: end))
-            return stubbedRecords[calendar.id] ?? []
+            return stubbedRecords[calendar.id]
         }
-        if !records.isEmpty {
-            try? await Current.database().write { db in
-                for record in records {
-                    try record.insert(db, onConflict: .replace)
-                }
-            }
+        guard let records else {
+            return await HACalendarEventRecord.events(
+                serverId: calendar.serverId,
+                calendarEntityId: calendar.entityId,
+                start: start,
+                end: end
+            ).map(\.event)
         }
+        await HACalendarEventRecord.replace(
+            records,
+            serverId: calendar.serverId,
+            calendarEntityId: calendar.entityId,
+            start: start,
+            end: end
+        )
         return records.map(\.event)
     }
 }

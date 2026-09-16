@@ -88,16 +88,49 @@ enum CalendarSchemaSupport {
         start: Date,
         end: Date,
         isAllDay: Bool,
-        uid: String? = nil
+        uid: String? = nil,
+        excluding knownIds: Set<String> = []
     ) async -> HACalendarEventRecord? {
+        let matches = await cachedEvents(
+            on: calendar,
+            titled: summary,
+            start: start,
+            end: end,
+            isAllDay: isAllDay,
+            uid: uid
+        )
+        let unseen = matches.filter { !knownIds.contains($0.id) }
+        if unseen.count == 1 {
+            return unseen[0]
+        }
+        return matches.count == 1 ? matches[0] : nil
+    }
+
+    static func cachedEvents(
+        on calendar: HACalendar,
+        titled summary: String,
+        start: Date,
+        end: Date,
+        isAllDay: Bool,
+        uid: String? = nil
+    ) async -> [HACalendarEventRecord] {
+        var windowStart = start
+        var windowEnd = end
+        if isAllDay {
+            let days = Calendar.current
+            windowStart = days.startOfDay(for: start)
+            windowEnd = days.date(byAdding: .day, value: 1, to: days.startOfDay(for: end)) ?? end
+        }
         let records = await HACalendarEventRecord.events(
             serverId: calendar.serverId,
             calendarEntityId: calendar.entityId,
-            start: start,
-            end: end
+            start: windowStart,
+            end: windowEnd
         )
-        return records.first { record in
-            if let uid, record.uid != uid { return false }
+        return records.filter { record in
+            if let uid, record.uid != uid {
+                return false
+            }
             guard record.summary == summary, record.isAllDay == isAllDay else { return false }
             if isAllDay {
                 return Calendar.current.isDate(record.start, inSameDayAs: start)
@@ -118,7 +151,9 @@ enum CalendarSchemaSupport {
     /// The end Home Assistant should store when the caller left it out: an hour later for a timed
     /// event, the same day for an all-day one, matching how the frontend opens a new event.
     static func resolvedEnd(_ end: Date?, start: Date, isAllDay: Bool) -> Date {
-        if let end { return end }
+        if let end {
+            return end
+        }
         return isAllDay ? start : start.addingTimeInterval(60 * 60)
     }
 

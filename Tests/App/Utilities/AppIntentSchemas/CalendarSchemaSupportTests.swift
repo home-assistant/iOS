@@ -326,4 +326,57 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
 
         XCTAssertNil(record)
     }
+
+    /// An all-day event created without an end is looked up with `end == start`, and at midnight
+    /// that is a zero-length window the stored row would fall outside of.
+    func testCachedEventFindsAnAllDayEventLookedUpAtItsMidnightWithNoLength() async throws {
+        let calendar = try seedCalendar()
+        let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
+        try seedEvent(
+            id: "all-day",
+            summary: "Holiday",
+            start: dayStart,
+            end: XCTUnwrap(Calendar.current.date(byAdding: .day, value: 1, to: dayStart)),
+            isAllDay: true
+        )
+
+        let record = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Holiday",
+            start: dayStart,
+            end: dayStart,
+            isAllDay: true
+        )
+
+        XCTAssertEqual(record?.id, "all-day")
+    }
+
+    /// Two events that look the same cannot be told apart by what was asked for, so the one that
+    /// was not there before the write is the one the write produced.
+    func testCachedEventPrefersTheRecordThatWasNotThereBefore() async throws {
+        let calendar = try seedCalendar()
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        let end = start.addingTimeInterval(3600)
+        try seedEvent(id: "old", uid: "uid-old", summary: "Dentist", start: start, end: end)
+        try seedEvent(id: "new", uid: "uid-new", summary: "Dentist", start: start, end: end)
+
+        let unseen = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Dentist",
+            start: start,
+            end: end,
+            isAllDay: false,
+            excluding: ["old"]
+        )
+        let ambiguous = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Dentist",
+            start: start,
+            end: end,
+            isAllDay: false
+        )
+
+        XCTAssertEqual(unseen?.id, "new")
+        XCTAssertNil(ambiguous)
+    }
 }

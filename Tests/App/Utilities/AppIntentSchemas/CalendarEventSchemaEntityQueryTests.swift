@@ -160,13 +160,25 @@ final class CalendarEventSchemaEntityQueryTests: AppIntentSchemaTestCase {
         XCTAssertTrue(calendarsModel.eventsRequests.isEmpty)
     }
 
-    /// A calendar the server has nothing new for keeps what the cache already held.
-    func testACalendarTheServerReturnsNothingForKeepsItsCachedEvents() async throws {
+    /// A calendar the server cannot be reached for keeps what the cache already held.
+    func testACalendarTheServerCannotBeReachedForKeepsItsCachedEvents() async throws {
         try seedCalendar()
         try seedEvent(id: "old", summary: "Old", start: start, end: start.addingTimeInterval(3600))
 
         let entities = try await sut.suggestedEntities()
 
         XCTAssertEqual(entities.map(\.title), ["Old"])
+    }
+
+    /// An event the server no longer returns has been deleted there, so the re-read drops it.
+    func testAnEventTheServerNoLongerReturnsLeavesTheCache() async throws {
+        let calendar = try seedCalendar()
+        let soon = Date().addingTimeInterval(3600)
+        try seedEvent(id: "gone", summary: "Gone", start: soon, end: soon.addingTimeInterval(3600))
+        calendarsModel.serverReturns([], for: calendar)
+
+        let entities = try await sut.suggestedEntities()
+
+        XCTAssertTrue(entities.isEmpty)
     }
 }
