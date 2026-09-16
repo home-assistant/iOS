@@ -139,6 +139,37 @@ struct SiriServerConfigurationViewModelTests {
         }
     }
 
+    @Test func listsAreEmptyWhenTheDatabaseIsUnusable() async throws {
+        try await withSeededServer { server in
+            let previous = Current.database
+            defer { Current.database = previous }
+            let empty = try DatabaseQueue(path: ":memory:")
+            Current.database = { empty }
+
+            let model = SiriServerConfigurationViewModel(server: server, refresh: { _ in })
+            model.load()
+
+            #expect(model.lists.isEmpty)
+            #expect(model.calendars.isEmpty)
+        }
+    }
+
+    @Test func theDefaultRefreshGoesThroughTheAppDatabaseUpdater() async throws {
+        try await withSeededServer { server in
+            let previous = Current.appDatabaseUpdater
+            defer { Current.appDatabaseUpdater = previous }
+            let updater = RecordingSiriAppDatabaseUpdater()
+            Current.appDatabaseUpdater = updater
+
+            let model = SiriServerConfigurationViewModel(server: server)
+            model.reload()
+
+            #expect(updater.updates.map(\.serverId) == [server.identifier.rawValue])
+            #expect(updater.updates.first?.forceUpdate == true)
+            #expect(updater.updates.first?.showProgress == false)
+        }
+    }
+
     @Test func anotherServersRoutineDoesNotFinishTheReload() async throws {
         try await withSeededServer { server in
             let model = SiriServerConfigurationViewModel(server: server, refresh: { _ in })
@@ -150,5 +181,25 @@ struct SiriServerConfigurationViewModelTests {
 
             #expect(model.isReloading)
         }
+    }
+}
+
+private final class RecordingSiriAppDatabaseUpdater: AppDatabaseUpdaterProtocol {
+    struct Update {
+        let serverId: String
+        let forceUpdate: Bool
+        let showProgress: Bool
+    }
+
+    private(set) var updates: [Update] = []
+
+    func stop() {}
+
+    func update(server: Server, forceUpdate: Bool, showProgress: Bool) {
+        updates.append(Update(
+            serverId: server.identifier.rawValue,
+            forceUpdate: forceUpdate,
+            showProgress: showProgress
+        ))
     }
 }

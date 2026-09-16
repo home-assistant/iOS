@@ -39,9 +39,7 @@ struct SiriServerConfigurationView: View {
                 if viewModel.isReloading {
                     ProgressView()
                 } else {
-                    Button {
-                        viewModel.reload()
-                    } label: {
+                    Button(action: viewModel.reload) {
                         Image(systemSymbol: .arrowClockwise)
                     }
                     .accessibilityLabel(L10n.Settings.Siri.Configure.reload)
