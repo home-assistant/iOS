@@ -10,13 +10,21 @@ final class MockLocationManager: LocationManagerProtocol {
     var mockAccuracyAuthorization: CLAccuracyAuthorization = .fullAccuracy
     var mockLocationServicesEnabled: Bool = true
     var requestLocationPermissionCalled = false
+    /// Error handed to the temporary-full-accuracy completion; `nil` means the request succeeded.
+    var mockTemporaryFullAccuracyError: Error?
+    var requestedTemporaryFullAccuracyPurposeKeys: [String] = []
 
     var currentPermissionState: LocationPermissionState {
         mockPermissionState
     }
 
+    /// Counts reads so a test can tell "the code has checked the accuracy and decided not to ask"
+    /// apart from "the code has not got there yet".
+    private(set) var accuracyAuthorizationReadCount = 0
+
     var accuracyAuthorization: CLAccuracyAuthorization {
-        mockAccuracyAuthorization
+        accuracyAuthorizationReadCount += 1
+        return mockAccuracyAuthorization
     }
 
     var isLocationServicesEnabled: Bool {
@@ -25,6 +33,14 @@ final class MockLocationManager: LocationManagerProtocol {
 
     func requestLocationPermission() {
         requestLocationPermissionCalled = true
+    }
+
+    func requestTemporaryFullAccuracyAuthorization(
+        purposeKey: String,
+        completion: @escaping (Error?) -> Void
+    ) {
+        requestedTemporaryFullAccuracyPurposeKeys.append(purposeKey)
+        completion(mockTemporaryFullAccuracyError)
     }
 
     // Helper method to simulate permission state changes

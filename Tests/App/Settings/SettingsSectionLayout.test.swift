@@ -26,6 +26,14 @@ struct SettingsSectionLayoutTests {
         }
     }
 
+    /// The device lends Home Assistant its speech recognition and synthesis, so the row sits with
+    /// the other things shared from this device rather than in App Labs.
+    @Test("The voice tools server is shared from this device")
+    func voiceToolsServerIsSharedFromThisDevice() {
+        #expect(SettingsSection.shareFromDevice.allItems.last == .voiceToolsServer)
+        #expect(!SettingsSection.appLabs.allItems.contains(.voiceToolsServer))
+    }
+
     @Test("App Labs is the only entry carrying a static subtitle")
     func appLabsIsTheOnlyEntryWithASubtitle() {
         #expect(SettingsItem.appLabs.subtitle?.isEmpty == false)

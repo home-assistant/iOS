@@ -18,9 +18,8 @@ struct WyomingServerControllerTests {
         try work()
     }
 
-    /// An App Labs feature: a setting a TestFlight build left on must not bind a port once the
-    /// same install updates to an App Store build.
-    @Test func staysStoppedOutsideTestFlight() throws {
+    /// Generally available: an App Store build binds the port just like a TestFlight one.
+    @Test func startsOutsideTestFlight() throws {
         let previousIsTestFlight = Current.isTestFlight
         defer { Current.isTestFlight = previousIsTestFlight }
         Current.isTestFlight = false
@@ -30,7 +29,8 @@ struct WyomingServerControllerTests {
 
             controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: true, port: 10806))
 
-            #expect(controller.state == .stopped)
+            #expect(controller.state != .stopped)
+            controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: false))
         }
     }
 

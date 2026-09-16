@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import Shared
 import Testing
 
 struct SettingsSearchIndexTests {
@@ -30,6 +31,15 @@ struct SettingsSearchIndexTests {
         #expect(SettingsItem.location.matches(searchQuery: "gps"))
         #expect(SettingsItem.notifications.matches(searchQuery: "push"))
         #expect(!SettingsItem.location.matches(searchQuery: "watch face"))
+    }
+
+    /// The name of the protocol Home Assistant speaks to the voice tools server must surface its
+    /// row, and so must the screens nested inside it.
+    @Test("The voice tools server is found by its protocol and its nested screens")
+    func voiceToolsServerIsFoundByItsProtocolAndScreens() {
+        #expect(SettingsItem.voiceToolsServer.matches(searchQuery: "wyoming"))
+        #expect(SettingsItem.voiceToolsServer.matches(searchQuery: L10n.Settings.VoiceToolsServer.Voices.title))
+        #expect(!SettingsItem.appLabs.matches(searchQuery: "wyoming"))
     }
 
     @Test("Matching is case insensitive")

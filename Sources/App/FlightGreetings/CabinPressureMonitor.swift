@@ -32,8 +32,8 @@ final class CabinPressureMonitor {
     /// Past this the device has likely moved to a different elevation, making the baseline unusable.
     static let baselineValidity: TimeInterval = 48 * 60 * 60
 
-    private static let baselinePressureKey = "cabinPressureGroundBaselineKpa"
-    private static let baselineDateKey = "cabinPressureGroundBaselineDate"
+    static let baselinePressureKey = "cabinPressureGroundBaselineKpa"
+    static let baselineDateKey = "cabinPressureGroundBaselineDate"
 
     private let lock = NSLock()
     private var samples: [CabinPressureSample] = []

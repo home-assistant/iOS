@@ -100,6 +100,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
+    var blankFrontendRecoveryAttempts = 0
+    var contentProcessTerminations = 0
+
+    /// Answers the blank-frontend probe instead of the live page; replaceable in tests.
+    var hasRenderedFrontendCheck: (@MainActor ((Bool) -> Void) -> Void)?
+
     /// Where the window's title lands; replaceable in tests, which all share the host process's one scene.
     var applyWindowSceneTitle: @MainActor (UIWindowScene, String) -> Void = { windowScene, title in
         windowScene.title = title
@@ -487,11 +493,8 @@ extension WebViewController {
         }
     }
 
-    /// Kiosk mode is also what hides the frontend's hamburger for the App Labs native tab bar: the tabs
-    /// and the More tab already expose every sidebar page, so the button would only open More.
     func updateFrontendKioskMode() {
-        let enable = (Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar)
-            || AppLabsFeature.iosNativeTabBar.isEnabled
+        let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
         webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": enable]

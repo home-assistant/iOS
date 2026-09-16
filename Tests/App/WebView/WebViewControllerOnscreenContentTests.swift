@@ -140,11 +140,13 @@ struct WebViewControllerOnscreenContentTests {
             // The page still names the activity: the dialog is drawn over it, not instead of it.
             #expect(activity.title == "Overview")
             let identifier = activity.appEntityIdentifier
-            #expect(identifier?.entityType == HAAppEntityAppIntentEntity.self)
+            // "Turn this off" is the common ask for a light, so that command's type leads.
+            #expect(identifier?.entityType == ControllableEntityAppEntity.self)
             #expect(identifier?.identifier == ServerEntity.uniqueId(serverId: serverId, entityId: "light.kitchen"))
             // The same identifiers go to the web view's elements, which is where a command whose
-            // parameter takes another type — "open this", for a cover — finds the one it needs.
-            #expect(identifiers == [identifier])
+            // parameter takes another type — "dim this", for a light — finds the one it needs.
+            #expect(identifiers.first == identifier)
+            #expect(identifiers.map(\.entityType).contains { $0 == DimmableLightAppEntity.self })
         }
     }
 

@@ -1,6 +1,8 @@
 @testable import HomeAssistant
 import Shared
+import SwiftUI
 import Testing
+import UIKit
 
 struct AppLabsViewTests {
     @Test func appLabsIsHiddenOutsideTestFlight() {
@@ -15,15 +17,28 @@ struct AppLabsViewTests {
         #expect(SettingsItem.appLabs.isVisible)
     }
 
-    /// The voice tools server lives inside App Labs rather than in the root settings list, so
-    /// searching for it — including the protocol Home Assistant calls it — has to surface App Labs.
-    @Test func appLabsIsFoundByTheVoiceToolsServer() {
-        let previousIsTestFlight = Current.isTestFlight
-        defer { Current.isTestFlight = previousIsTestFlight }
-        Current.isTestFlight = true
+    /// Lays the screen out so SwiftUI evaluates its body. Deliberately never becomes the key
+    /// window: the snapshot helpers draw into whatever window is key, so stealing it here would
+    /// reach into unrelated tests.
+    @MainActor
+    private func render(_ view: some View) {
+        let controller = UIHostingController(rootView: view)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 1400))
+        window.rootViewController = controller
+        window.isHidden = false
+        controller.view.setNeedsLayout()
+        controller.view.layoutIfNeeded()
 
-        #expect(SettingsItem.appLabs.matches(searchQuery: "wyoming"))
-        #expect(SettingsItem.appLabs.matches(searchQuery: L10n.Settings.VoiceToolsServer.title))
-        #expect(SettingsItem.appLabs.matches(searchQuery: L10n.Settings.VoiceToolsServer.Voices.title))
+        window.isHidden = true
+        window.rootViewController = nil
+    }
+
+    /// A device with nothing experimental on offer says so instead of showing an empty list.
+    @Test @MainActor func rendersTheEmptyStateWithoutFeatures() {
+        render(AppLabsView(features: []))
+    }
+
+    @Test @MainActor func rendersEveryFeature() {
+        render(AppLabsView(features: AppLabsFeature.allCases))
     }
 }

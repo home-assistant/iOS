@@ -152,11 +152,9 @@ struct WidgetCustom: Widget {
 }
 
 enum WidgetCustomSupportedFamilies {
-    static let families: [WidgetFamily] = [
-        .systemSmall,
-        .systemMedium,
-        .systemLarge,
-    ]
+    static var families: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
+    }
 }
 
 #if DEBUG

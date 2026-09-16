@@ -94,6 +94,7 @@ extension WebViewController: WebViewControllerProtocol {
         // Possible values: connected, loaded, disconnected, auth-invalid
         switch resolvedState {
         case .connected, .loaded:
+            resetBlankFrontendRecoveryIfRendered(for: resolvedState)
             hideEmptyState()
             updateFrontendKioskMode()
         case .authInvalid:

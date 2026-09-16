@@ -315,6 +315,152 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertTrue(sut.isFullScreenLoaderMounted)
     }
 
+    func testWatchdogUncoversTheFrontendWhenItsPageHasRenderedSomething() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+        let controller = webViewController(overlayState: overlayState, hasRenderedFrontend: true)
+        controller.blankFrontendRecoveryAttempts = WebViewController.maximumBlankFrontendRecoveryAttempts
+        sut.webViewController = controller
+
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+
+        await waitUntil { !sut.isFullScreenLoaderMounted }
+        XCTAssertFalse(sut.shouldShowStandByView)
+        XCTAssertEqual(controller.blankFrontendRecoveryAttempts, 0)
+    }
+
+    func testWatchdogLeavesTheNoActiveURLStateAlone() async {
+        let overlayState = WebFrontendOverlayState()
+        overlayState.showsNoActiveURL = true
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+        let controller = webViewController(overlayState: overlayState, hasRenderedFrontend: false)
+        sut.webViewController = controller
+
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+
+        try? await Task.sleep(for: .milliseconds(150))
+        XCTAssertEqual(controller.blankFrontendRecoveryAttempts, 0)
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+    }
+
+    func testWatchdogRecoversABlankPageInsteadOfUncoveringIt() async {
+        let previousHandler = Current.websiteDataStoreHandler
+        defer { Current.websiteDataStoreHandler = previousHandler }
+        Current.websiteDataStoreHandler = FakeWebsiteDataStoreHandler()
+
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            initialPath: "/lovelace/0",
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+        let controller = webViewController(overlayState: overlayState, hasRenderedFrontend: false)
+        sut.webViewController = controller
+
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+
+        await waitUntil { controller.blankFrontendRecoveryAttempts == 1 }
+        XCTAssertNil(sut.initialPath)
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+        XCTAssertTrue(sut.shouldShowStandByView)
+    }
+
+    func testWatchdogShowsTheEmptyStateWhenABlankPageIsBeyondRecovery() async {
+        let previousFlightGreetings = Current.settingsStore.flightGreetingsEnabled
+        defer { Current.settingsStore.flightGreetingsEnabled = previousFlightGreetings }
+        Current.settingsStore.flightGreetingsEnabled = false
+
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+        let controller = webViewController(overlayState: overlayState, hasRenderedFrontend: false)
+        controller.blankFrontendRecoveryAttempts = WebViewController.maximumBlankFrontendRecoveryAttempts
+        sut.webViewController = controller
+
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+
+        await waitUntil { overlayState.emptyState != nil }
+        XCTAssertEqual(overlayState.emptyState?.style, .disconnected)
+        XCTAssertTrue(sut.shouldShowStandByView)
+    }
+
+    func testTheFrontendIsVisibleOnceTheLoaderFinishesFadingOut() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderMinimumDurationElapsed = true
+
+        overlayState.connectionState = .loaded
+
+        await waitUntil { !sut.isFullScreenLoaderMounted }
+        XCTAssertEqual(sut.webViewContentOpacity, 1)
+    }
+
+    func testWatchdogLeavesABlankPageToAnEmptyStateThatArrivesWhileItProbes() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+        let content = emptyStateContent()
+        let probed = expectation(description: "page probed")
+        let controller = FrontendView(server: Server.fake(), overlayState: overlayState).makeWebViewController()
+        controller.hasRenderedFrontendCheck = { completion in
+            overlayState.emptyState = content
+            completion(false)
+            probed.fulfill()
+        }
+        sut.webViewController = controller
+
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+
+        await fulfillment(of: [probed], timeout: 5)
+        XCTAssertEqual(controller.blankFrontendRecoveryAttempts, 0)
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+    }
+
+    func testUncoveringTheFrontendMakesItVisibleWhenItsFadeNeverRan() {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        XCTAssertEqual(sut.webViewContentOpacity, 0)
+
+        sut.forceDismissStandByView()
+
+        XCTAssertEqual(sut.webViewContentOpacity, 1)
+    }
+
+    private func webViewController(
+        overlayState: WebFrontendOverlayState,
+        hasRenderedFrontend: Bool
+    ) -> WebViewController {
+        let controller = FrontendView(server: Server.fake(), overlayState: overlayState).makeWebViewController()
+        controller.hasRenderedFrontendCheck = { $0(hasRenderedFrontend) }
+        return controller
+    }
+
     private func server(version: Version) -> Server {
         Server.fake { info in
             info.version = version

@@ -949,6 +949,17 @@ public class HomeAssistantAPI {
             self.textInput = (response as? UNTextInputNotificationResponse)?.userText
         }
 
+        /// Builds the same info for an action the app ran itself, without a `UNNotificationResponse`.
+        /// The watch needs this: watchOS never hands a text-input response back to the app for a
+        /// forwarded notification, so the watch collects the reply and fires the event on its own
+        /// (see `DynamicNotificationViewModel.perform(textInputAction:)`).
+        public init(content: UNNotificationContent, actionIdentifier: String, textInput: String?) {
+            self.identifier = UNNotificationContent.uncombinedAction(from: actionIdentifier)
+            self.category = content.categoryIdentifier
+            self.actionData = content.userInfo["homeassistant"]
+            self.textInput = textInput
+        }
+
         public init(map: ObjectMapper.Map) throws {
             self.identifier = try map.value("identifier")
             self.category = try? map.value("category")
@@ -1103,24 +1114,22 @@ public class HomeAssistantAPI {
         Current.backgroundTask(withName: BackgroundTask.manualLocationUpdate.rawValue) { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
-                    let locationManager = CLLocationManager()
+                    // Reading `accuracyAuthorization` is a synchronous XPC round-trip to locationd,
+                    // and on a cold launch it also waits for the daemon connection to come up. On
+                    // the main thread — where `manuallyUpdate` is called from — that was half of
+                    // the app's reported hangs, all of them inside this closure.
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        guard Current.locationManager.accuracyAuthorization != .fullAccuracy,
+                              type.allowsTemporaryAccess else {
+                            // Already precise, or this trigger may not ask: nothing to request.
+                            return seal(())
+                        }
 
-                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
-                        // already have full accuracy, don't need to request
-                        return seal(())
-                    }
-
-                    guard type.allowsTemporaryAccess else {
-                        return seal(())
-                    }
-
-                    Current.Log.info("requesting full accuracy for manual update")
-                    locationManager.requestTemporaryFullAccuracyAuthorization(
-                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
-                    ) { error in
-                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
-
-                        withExtendedLifetime(locationManager) {
+                        Current.Log.info("requesting full accuracy for manual update")
+                        Current.locationManager.requestTemporaryFullAccuracyAuthorization(
+                            purposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                        ) { error in
+                            Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
                             seal(())
                         }
                     }

@@ -29,6 +29,30 @@ jobs:
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
 
+      # The image carries exactly one Xcode 27 and symlinks Xcode.app, Xcode_27.0.app and
+      # Xcode_27.0.0.app at it, so DEVELOPER_DIR above names a path, not a version: it read as a
+      # release for the whole week it pointed at Xcode 27 beta 6, including while App Store Connect
+      # was rejecting what that beta built. The build number is the only thing that tells a beta
+      # from the release apart (27A5252f against the 27A266a release candidate), so print it, along
+      # with the bundle the symlink actually resolves to, before anything is built with it.
+      - name: Report the selected Xcode
+        run: |
+          set -euo pipefail
+
+          # The aliases are the image's to name, and the update that replaces the beta is free to
+          # spell them differently. Say so here rather than letting xcrun fail halfway through a
+          # half-hour build with nothing but a path that no longer exists.
+          if [ ! -d "$DEVELOPER_DIR" ]; then
+            reason="$DEVELOPER_DIR is gone: the image no longer spells that alias the way this expects."
+            echo "::error title=DEVELOPER_DIR does not exist::$reason Repoint it at an Xcode listed below."
+            ls -d /Applications/Xcode*.app 2>/dev/null || echo "  no Xcode installed"
+            exit 1
+          fi
+
+          echo "DEVELOPER_DIR is $DEVELOPER_DIR"
+          echo "which resolves to $(cd "$DEVELOPER_DIR" && pwd -P)"
+          xcodebuild -version
+
       - name: Build ${{ matrix.kind }}
         run: |
           bundle exec fastlane ${{ matrix.kind }} build

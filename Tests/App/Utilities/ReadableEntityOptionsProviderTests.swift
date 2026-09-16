@@ -5,11 +5,12 @@ import HAKit_Mocks
 @testable import Shared
 import Testing
 
-/// Exercises the entity list behind "get entity state": it offers what a person would ask about,
-/// and leaves out what they would not.
+/// Exercises the entity list behind "get entity state" and "show": it offers what a person would
+/// ask about, and leaves out what they would not.
 ///
 /// Offering and resolving are two different objects now that the entity is shared: this narrows what
 /// is put in front of someone, and `HAAppEntityAppIntentEntityQuery` reads any id back.
+@Suite(.serialized)
 struct ReadableEntityOptionsProviderTests {
     private static func makeEntity(
         serverId: String,
@@ -97,6 +98,31 @@ struct ReadableEntityOptionsProviderTests {
         }
     }
 
+    /// The sensors are in, since they are what people ask about; a media player is not, however
+    /// nicely it sits in a room.
+    @Test func leavesOutDomainsNobodyAsksAbout() async throws {
+        try await withFakeServer { serverId in
+            try await seed(serverId: serverId, entities: [
+                Self.makeEntity(serverId: serverId, entityId: "sensor.temperature", name: "Temperature"),
+                Self.makeEntity(serverId: serverId, entityId: "binary_sensor.door", name: "Door"),
+                Self.makeEntity(serverId: serverId, entityId: "media_player.tv", name: "TV"),
+                Self.makeEntity(serverId: serverId, entityId: "lock.front", name: "Front"),
+            ])
+            try await seedArea(
+                serverId: serverId,
+                name: "Living room",
+                entities: ["sensor.temperature", "binary_sensor.door", "media_player.tv", "lock.front"]
+            )
+            let collection = try await ReadableEntityOptionsProvider().results()
+            let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
+
+            #expect(ids.contains("sensor.temperature"))
+            #expect(ids.contains("binary_sensor.door"))
+            #expect(!ids.contains("media_player.tv"))
+            #expect(!ids.contains("lock.front"))
+        }
+    }
+
     /// An entity in no room is one nobody names out loud.
     @Test func leavesOutEntitiesWithNoArea() async throws {
         try await withFakeServer { serverId in
@@ -131,7 +157,7 @@ struct ReadableEntityOptionsProviderTests {
 
 /// The question itself: the entity it names, and what it reads back.
 struct GetEntityStateAppIntentTests {
-    private static func entity(serverId: String) -> HAAppEntityAppIntentEntity {
+    private static func entity(serverId: String) -> ReadableEntityAppEntity {
         .init(
             id: "\(serverId)-sensor.humidity",
             entityId: "sensor.humidity",

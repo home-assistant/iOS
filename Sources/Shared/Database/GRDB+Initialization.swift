@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import PromiseKit
 
 public extension DatabaseQueue {
     // Following GRDB cocnurrency rules, we have just one database instance
@@ -208,6 +209,57 @@ public final class AppDatabaseSuspension {
         shared.suspendIfIdle()
     }
 
+    public static func performProtectedWork(
+        named name: BackgroundTask,
+        _ work: @escaping @Sendable () -> Void
+    ) {
+        shared.performProtectedWork(named: name, work)
+    }
+
+    /// Runs synchronous database `work` off the main thread while holding a background task, then
+    /// hands the database back to whatever state the lifecycle wants.
+    ///
+    /// Work that can straddle the foreground→background transition is what the app's two biggest
+    /// 0xdead10cc terminations were: with no background task held, the process gets frozen while a
+    /// statement is mid-flight and still holding the app-group SQLite file lock. Holding one keeps
+    /// the process alive until the statement finishes; if the system expires it first, GRDB is
+    /// suspended instead, which aborts the statement and releases the lock before the freeze.
+    func performProtectedWork(named name: BackgroundTask, _ work: @escaping @Sendable () -> Void) {
+        let (untilWorkEnds, workEndSeal) = Promise<Void>.pending()
+        beginProtectedAccess()
+        // Started before the background task is armed, so the task's window always covers work that
+        // is already under way rather than work still waiting for a thread.
+        Self.workQueue.async { [self] in
+            work()
+            // `suspend()` sets `wantsSuspension` again, so a still-set flag is how we learn the app
+            // backgrounded while the work ran and the database has to go back to suspended.
+            endProtectedAccess(suspend: lifecycleWantsSuspension)
+            workEndSeal.fulfill(())
+        }
+        Current.backgroundTask(withName: name.rawValue) { _ in untilWorkEnds }
+            .catch { [self] _ in
+                // Out of background time: the process is about to be frozen, so suspend even though
+                // this aborts whatever statement is in flight — releasing the app-group file lock is
+                // what avoids the 0xdead10cc kill. The caller retries on its next update.
+                suspend()
+            }
+    }
+
+    private var lifecycleWantsSuspension: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return wantsSuspension
+    }
+
+    /// Concurrent: GRDB's `DatabaseQueue` already serializes the statements themselves, so queueing
+    /// callers behind each other here would only make a caller's background task tick down while its
+    /// work waits — and let one caller's expiry abort another's in-flight transaction.
+    private static let workQueue = DispatchQueue(
+        label: "io.robbie.HomeAssistant.database-protected-work",
+        qos: .utility,
+        attributes: .concurrent
+    )
+
     /// Resume the database for one background access and register it as in flight. Every call must be
     /// balanced with `endProtectedAccess(suspend:)`, which re-suspends only once the last access ends.
     func beginProtectedAccess() {
@@ -232,13 +284,22 @@ public final class AppDatabaseSuspension {
     }
 
     /// Suspend unless a protected access is still running. Used when an expiring activity is denied or
-    /// expires without having claimed an access of its own.
+    /// expires without having claimed an access of its own, and on backgrounding.
+    ///
+    /// This is what `LifecycleManager.didEnterBackground` calls rather than `suspend()`: work under
+    /// `performProtectedWork` holds a background task, so the process is not about to be frozen, and
+    /// suspending outright would abort the very write the transition used to kill the app for.
+    ///
+    /// The intent is recorded either way, so deferring is not forgetting: whichever access finishes
+    /// last reads it back through `endProtectedAccess(suspend:)` and suspends then. Dropping it
+    /// would leave the database resumed across a backgrounding, which is what 0xdead10cc needs.
     func suspendIfIdle() {
         lock.lock()
+        wantsSuspension = true
         let isIdle = protectedAccessCount == 0
         lock.unlock()
         guard isIdle else { return }
-        suspend()
+        postNotification(Database.suspendNotification)
     }
 
     func suspend() {
