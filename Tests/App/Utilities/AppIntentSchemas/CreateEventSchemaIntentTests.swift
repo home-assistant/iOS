@@ -274,4 +274,31 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
             return cancellable
         }
     }
+
+
+    /// The command returns nothing, so the calendar is read back once the server has accepted the
+    /// event and not before: that is what puts the new event, uid included, where Siri reads from.
+    func testTheCalendarIsReadBackOnceTheEventIsCreated() async throws {
+        let calendar = try seedCalendar(supportedFeatures: 1)
+        let sut = intent(calendar: calendar)
+
+        let task = Task { try await sut.perform() }
+        let pending = try await request()
+        XCTAssertTrue(calendarsModel.eventsRequests.isEmpty)
+
+        pending.completion(.success(.dictionary([:])))
+        _ = try await task.value
+
+        let readBack = try XCTUnwrap(calendarsModel.eventsRequests.first)
+        XCTAssertEqual(calendarsModel.refreshedCalendars.map(\.id), [calendar.id])
+        XCTAssertTrue(readBack.covers(start))
+    }
+
+    func testARefusedEventLeavesTheCacheAlone() async throws {
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 2))
+
+        _ = try? await sut.perform()
+
+        XCTAssertTrue(calendarsModel.eventsRequests.isEmpty)
+    }
 }

@@ -17,11 +17,13 @@ class AppIntentSchemaTestCase: XCTestCase {
     private var previousDatabase: (() -> DatabaseQueue)!
     private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var previousRefreshNetworkInformation: (() async -> Void)!
+    private var previousCalendarsModel: (() -> HACalendarsModelProtocol)!
 
     var database: DatabaseQueue!
     var servers: FakeServerManager!
     var server: Server!
     var connection: HAMockConnection!
+    var calendarsModel: FakeCalendarsModel!
 
     var serverId: String { server.identifier.rawValue }
 
@@ -31,6 +33,7 @@ class AppIntentSchemaTestCase: XCTestCase {
         previousDatabase = Current.database
         previousCachedApis = Current.cachedApis
         previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        previousCalendarsModel = Current.calendarsModel
         // Nothing here talks to a network; the real one waits on the SSID lookup.
         Current.connectivity.refreshNetworkInformation = {}
 
@@ -50,13 +53,19 @@ class AppIntentSchemaTestCase: XCTestCase {
         connection = HAMockConnection()
         api.connection = connection
         Current.setCachedApi(api, for: server.identifier)
+
+        let calendarsModel = FakeCalendarsModel()
+        self.calendarsModel = calendarsModel
+        Current.calendarsModel = { calendarsModel }
     }
 
     override func tearDown() {
+        Current.calendarsModel = previousCalendarsModel
         Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
         Current.cachedApis = previousCachedApis
         Current.servers = previousServers
         Current.database = previousDatabase
+        calendarsModel = nil
         connection = nil
         server = nil
         servers = nil

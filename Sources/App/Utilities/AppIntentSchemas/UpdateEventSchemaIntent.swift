@@ -50,6 +50,21 @@ struct UpdateEventSchemaIntent {
             isAllDay: allDay
         )
 
+        await CalendarSchemaSupport.refreshCachedEvents(
+            for: [stored],
+            touching: [event.startDate, event.endDate, start, end]
+        )
+        if let record = await CalendarSchemaSupport.cachedEvent(
+            on: stored,
+            titled: title ?? event.title,
+            start: start,
+            end: end,
+            isAllDay: allDay,
+            uid: event.uid
+        ) {
+            return .result(value: CalendarEventSchemaEntity(record: record, calendar: event.calendar))
+        }
+
         return .result(value: CalendarEventSchemaEntity(
             id: event.id,
             title: title ?? event.title,

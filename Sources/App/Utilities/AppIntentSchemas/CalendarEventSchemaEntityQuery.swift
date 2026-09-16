@@ -3,8 +3,8 @@ import Foundation
 import GRDB
 import Shared
 
-/// Reads the cached calendar events, which is the only source available without a round trip:
-/// Home Assistant has no "fetch event by id" endpoint.
+/// Answers from the cached calendar events, re-read from the server first: Home Assistant has no
+/// "fetch event by id" endpoint, so the cache is what an identifier resolves against.
 @available(iOS 27.0, *)
 struct CalendarEventSchemaEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [CalendarEventSchemaEntity] {
@@ -20,9 +20,17 @@ struct CalendarEventSchemaEntityQuery: EntityQuery, EntityStringQuery {
         await events()
     }
 
-    /// Every cached event, paired with the calendar it belongs to.
     private func events() async -> [CalendarEventSchemaEntity] {
         let calendars = CalendarSchemaSupport.exposedCalendars()
+        await CalendarSchemaSupport.refreshCachedEvents(for: calendars)
+        return await cachedEntities(for: calendars)
+    }
+
+    func cachedEntities() async -> [CalendarEventSchemaEntity] {
+        await cachedEntities(for: CalendarSchemaSupport.exposedCalendars())
+    }
+
+    private func cachedEntities(for calendars: [HACalendar]) async -> [CalendarEventSchemaEntity] {
         let calendarsById = Dictionary(
             calendars.map { ("\($0.serverId)-\($0.entityId)", $0) },
             uniquingKeysWith: { first, _ in first }

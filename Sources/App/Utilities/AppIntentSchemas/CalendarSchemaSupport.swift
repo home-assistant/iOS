@@ -64,6 +64,48 @@ enum CalendarSchemaSupport {
         return uid
     }
 
+    static let refreshWindow: TimeInterval = 30 * 24 * 60 * 60
+
+    static func refreshCachedEvents(for calendars: [HACalendar], touching dates: [Date] = []) async {
+        guard !calendars.isEmpty else { return }
+        let now = Current.date()
+        let day: TimeInterval = 24 * 60 * 60
+        let start = min(now.addingTimeInterval(-refreshWindow), (dates.min() ?? now).addingTimeInterval(-day))
+        let end = max(now.addingTimeInterval(refreshWindow), (dates.max() ?? now).addingTimeInterval(day))
+
+        await withTaskGroup(of: Void.self) { group in
+            for calendar in calendars {
+                group.addTask {
+                    _ = await Current.calendarsModel().events(for: calendar, start: start, end: end)
+                }
+            }
+        }
+    }
+
+    static func cachedEvent(
+        on calendar: HACalendar,
+        titled summary: String,
+        start: Date,
+        end: Date,
+        isAllDay: Bool,
+        uid: String? = nil
+    ) async -> HACalendarEventRecord? {
+        let records = await HACalendarEventRecord.events(
+            serverId: calendar.serverId,
+            calendarEntityId: calendar.entityId,
+            start: start,
+            end: end
+        )
+        return records.first { record in
+            if let uid, record.uid != uid { return false }
+            guard record.summary == summary, record.isAllDay == isAllDay else { return false }
+            if isAllDay {
+                return Calendar.current.isDate(record.start, inSameDayAs: start)
+            }
+            return abs(record.start.timeIntervalSince(start)) < 1
+        }
+    }
+
     static func api(for calendar: HACalendar) throws -> HomeAssistantAPI {
         guard let server = Current.servers.server(forServerIdentifier: calendar.serverId),
               let api = Current.api(for: server) else {

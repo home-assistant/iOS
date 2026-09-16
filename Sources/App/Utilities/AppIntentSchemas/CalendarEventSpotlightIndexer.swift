@@ -21,7 +21,7 @@ enum CalendarEventSpotlightIndexer {
     /// The cache is a rolling window that drops events a month after they end, so entries that fell
     /// out of it are removed here rather than lingering in Spotlight forever.
     static func reindex(index: CSSearchableIndex, defaults: UserDefaults?) async {
-        let events = await (try? CalendarEventSchemaEntityQuery().suggestedEntities()) ?? []
+        let events = await CalendarEventSchemaEntityQuery().cachedEntities()
         let ids = events.map(\.id)
         let stale = Set(defaults?.stringArray(forKey: stateKey) ?? []).subtracting(ids)
 

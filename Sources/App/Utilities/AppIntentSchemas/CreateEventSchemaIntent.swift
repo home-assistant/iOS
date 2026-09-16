@@ -37,8 +37,17 @@ struct CreateEventSchemaIntent {
             isAllDay: isAllDay
         )
 
-        // `calendar/event/create` returns nothing, so the entity handed back describes what was
-        // asked for. The uid is unknown until the calendar is read again.
+        await CalendarSchemaSupport.refreshCachedEvents(for: [stored], touching: [startDate, end])
+        if let record = await CalendarSchemaSupport.cachedEvent(
+            on: stored,
+            titled: title,
+            start: startDate,
+            end: end,
+            isAllDay: isAllDay
+        ) {
+            return .result(value: CalendarEventSchemaEntity(record: record, calendar: calendar))
+        }
+
         return .result(value: CalendarEventSchemaEntity(
             id: "\(stored.serverId)-\(stored.entityId)-\(startDate.timeIntervalSince1970)",
             title: title,

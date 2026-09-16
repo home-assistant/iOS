@@ -202,4 +202,127 @@ final class CalendarSchemaSupportTests: AppIntentSchemaTestCase {
         XCTAssertNoThrow(try CalendarSchemaSupport.validate(start: start, end: end, isAllDay: false))
         XCTAssertNoThrow(try CalendarSchemaSupport.validate(start: start, end: end, isAllDay: true))
     }
+
+
+    // MARK: - Cache
+
+    func testRefreshCachedEventsReadsEveryCalendarAMonthEitherSideOfNow() async throws {
+        let home = try seedCalendar(entityId: "calendar.home", sortOrder: 0)
+        let work = try seedCalendar(entityId: "calendar.work", sortOrder: 1)
+
+        await CalendarSchemaSupport.refreshCachedEvents(for: [home, work])
+
+        let requests = calendarsModel.eventsRequests
+        XCTAssertEqual(Set(requests.map(\.calendar.id)), [home.id, work.id])
+        let now = Date()
+        for request in requests {
+            XCTAssertTrue(request.covers(now.addingTimeInterval(-29 * 86400)))
+            XCTAssertTrue(request.covers(now.addingTimeInterval(29 * 86400)))
+            XCTAssertFalse(request.covers(now.addingTimeInterval(-32 * 86400)))
+            XCTAssertFalse(request.covers(now.addingTimeInterval(32 * 86400)))
+        }
+    }
+
+    /// A write that touched something outside the month has to be read back too, or the cache keeps
+    /// the event as it was.
+    func testRefreshCachedEventsWidensTheWindowToTakeInTheDatesItWasGiven() async throws {
+        let calendar = try seedCalendar()
+        let farAhead = Date().addingTimeInterval(90 * 86400)
+        let farBehind = Date().addingTimeInterval(-90 * 86400)
+
+        await CalendarSchemaSupport.refreshCachedEvents(for: [calendar], touching: [farAhead, farBehind])
+
+        let request = try XCTUnwrap(calendarsModel.eventsRequests.first)
+        XCTAssertTrue(request.covers(farAhead))
+        XCTAssertTrue(request.covers(farBehind))
+    }
+
+    func testRefreshCachedEventsDoesNothingWithoutCalendars() async {
+        await CalendarSchemaSupport.refreshCachedEvents(for: [])
+
+        XCTAssertTrue(calendarsModel.eventsRequests.isEmpty)
+    }
+
+    func testCachedEventFindsTheStoredEventByTitleAndStart() async throws {
+        let calendar = try seedCalendar()
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        try seedEvent(id: "other", uid: "uid-other", summary: "Optician", start: start, end: start.addingTimeInterval(3600))
+        try seedEvent(id: "wanted", uid: "uid-wanted", summary: "Dentist", start: start, end: start.addingTimeInterval(3600))
+
+        let record = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Dentist",
+            start: start,
+            end: start.addingTimeInterval(3600),
+            isAllDay: false
+        )
+
+        XCTAssertEqual(record?.uid, "uid-wanted")
+    }
+
+    func testCachedEventInsistsOnTheUidWhenGiven() async throws {
+        let calendar = try seedCalendar()
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        try seedEvent(id: "wanted", uid: "uid-wanted", summary: "Dentist", start: start, end: start.addingTimeInterval(3600))
+
+        let matching = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Dentist",
+            start: start,
+            end: start.addingTimeInterval(3600),
+            isAllDay: false,
+            uid: "uid-wanted"
+        )
+        let other = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Dentist",
+            start: start,
+            end: start.addingTimeInterval(3600),
+            isAllDay: false,
+            uid: "uid-other"
+        )
+
+        XCTAssertEqual(matching?.id, "wanted")
+        XCTAssertNil(other)
+    }
+
+    /// Home Assistant stores an all-day event as a date, so the time Siri picked within that day
+    /// cannot be expected to line up with the stored start.
+    func testCachedEventMatchesAnAllDayEventAnywhereInItsDay() async throws {
+        let calendar = try seedCalendar()
+        let midday = Date(timeIntervalSince1970: 1_700_000_000)
+        let dayStart = Calendar.current.startOfDay(for: midday)
+        try seedEvent(
+            id: "all-day",
+            summary: "Holiday",
+            start: dayStart,
+            end: Calendar.current.date(byAdding: .day, value: 1, to: dayStart)!,
+            isAllDay: true
+        )
+
+        let record = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Holiday",
+            start: midday,
+            end: midday,
+            isAllDay: true
+        )
+
+        XCTAssertEqual(record?.id, "all-day")
+    }
+
+    func testCachedEventIsNilWhenTheCacheDoesNotHoldIt() async throws {
+        let calendar = try seedCalendar()
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+
+        let record = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Dentist",
+            start: start,
+            end: start.addingTimeInterval(3600),
+            isAllDay: false
+        )
+
+        XCTAssertNil(record)
+    }
 }
