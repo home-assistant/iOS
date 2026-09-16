@@ -13,7 +13,7 @@ extension ControlEntityIntentRunner {
     /// already happened, so the sentence stands on its own and no card is shown.
     static func performShowingResult(
         _ action: Action,
-        on entity: HAAppEntityAppIntentEntity
+        on entity: ControllableEntityAppEntity
     ) async throws -> (dialog: String, state: HAEntityStateAppEntity?) {
         let service = try await callService(action, on: entity)
         // A whole area has no one state to report, so it gets the spoken sentence and no card.

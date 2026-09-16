@@ -583,6 +583,8 @@ public enum L10n {
         }
         /// The end must not be before the start
         public static var invalidDuration: String { return L10n.tr("Localizable", "app_intents.calendar.error.invalid_duration") }
+        /// Home Assistant did not answer in time, check your connection and try again
+        public static var timeout: String { return L10n.tr("Localizable", "app_intents.calendar.error.timeout") }
         /// That calendar is no longer available
         public static var unknownCalendar: String { return L10n.tr("Localizable", "app_intents.calendar.error.unknown_calendar") }
         /// %@ does not allow editing events
@@ -650,6 +652,10 @@ public enum L10n {
       }
     }
     public enum ControllableEntity {
+      public enum Entity {
+        /// Controllable Entity
+        public static var name: String { return L10n.tr("Localizable", "app_intents.controllable_entity.entity.name") }
+      }
       public enum Parameter {
         /// Entity
         public static var entity: String { return L10n.tr("Localizable", "app_intents.controllable_entity.parameter.entity") }
@@ -1017,6 +1023,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.perform_action.payload.title") }
       }
     }
+    public enum ReadableEntity {
+      public enum Entity {
+        /// Entity
+        public static var name: String { return L10n.tr("Localizable", "app_intents.readable_entity.entity.name") }
+      }
+    }
     public enum Reminders {
       public enum Error {
         /// There are no to-do lists to add this to
@@ -1267,6 +1279,10 @@ public enum L10n {
     public enum GetEntityState {
       /// Get Entity State
       public static var title: String { return L10n.tr("Localizable", "app_shortcuts.get_entity_state.title") }
+    }
+    public enum Lock {
+      /// Lock
+      public static var title: String { return L10n.tr("Localizable", "app_shortcuts.lock.title") }
     }
     public enum Open {
       /// Open

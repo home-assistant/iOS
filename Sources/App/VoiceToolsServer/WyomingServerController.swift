@@ -49,9 +49,7 @@ final class WyomingServerController: ObservableObject {
 
     private func reconcile() {
         let configuration = configuration ?? VoiceToolsServerConfiguration.config
-        // The server is an App Labs feature, so a setting left on by a TestFlight build stays
-        // inert once the same install updates to an App Store build.
-        guard AppLabsFeature.isLabsAvailable, configuration.isEnabled, isForeground else {
+        guard configuration.isEnabled, isForeground else {
             stop()
             return
         }

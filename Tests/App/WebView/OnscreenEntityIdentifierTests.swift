@@ -24,10 +24,45 @@ struct OnscreenEntityIdentifierTests {
         }
     }
 
-    /// Everything that is not a cover is the one shared entity, which is what "turn this off", "what
-    /// is this" and "add this to CarPlay" all take.
-    @Test("Anything but a cover is named by the shared entity alone")
-    func aLightIsTheSharedEntity() async throws {
+    /// "Turn this off" is what someone says to a switch, so the type that command takes leads; the
+    /// shared type follows for "add this to CarPlay", and the question's type after it.
+    @Test("A switch leads with the type the on and off command takes")
+    func aSwitchLeadsWithControllable() async throws {
+        guard #available(iOS 18.2, *) else { return }
+        try await withDatabase { serverId in
+            try seed(entityId: "switch.desk", serverId: serverId)
+
+            let types = await OnscreenEntityIdentifier
+                .makeAll(entityId: "switch.desk", serverId: serverId)
+                .map(\.entityType)
+
+            #expect(types.first == ControllableEntityAppEntity.self)
+            #expect(types.contains { $0 == HAAppEntityAppIntentEntity.self })
+            #expect(types.contains { $0 == ReadableEntityAppEntity.self })
+        }
+    }
+
+    /// Nothing switches a sensor, so the question is the only thing to say to one and its type leads.
+    @Test("A sensor leads with the type the question takes")
+    func aSensorLeadsWithReadable() async throws {
+        guard #available(iOS 18.2, *) else { return }
+        try await withDatabase { serverId in
+            try seed(entityId: "sensor.humidity", serverId: serverId)
+
+            let types = await OnscreenEntityIdentifier
+                .makeAll(entityId: "sensor.humidity", serverId: serverId)
+                .map(\.entityType)
+
+            #expect(types.first == ReadableEntityAppEntity.self)
+            #expect(types.contains { $0 == HAAppEntityAppIntentEntity.self })
+            #expect(!types.contains { $0 == ControllableEntityAppEntity.self })
+        }
+    }
+
+    /// "Turn this off" is the common ask for a light, so that command's type leads; "dim this" takes
+    /// the dimming type, which follows so that it binds too.
+    @Test("A light leads with the on and off type and also answers to the dimming type")
+    func aLightLeadsWithControllable() async throws {
         guard #available(iOS 18.2, *) else { return }
         try await withDatabase { serverId in
             try seed(entityId: "light.kitchen", serverId: serverId)
@@ -36,22 +71,62 @@ struct OnscreenEntityIdentifierTests {
                 .makeAll(entityId: "light.kitchen", serverId: serverId)
                 .map(\.entityType)
 
-            #expect(types.count == 1)
-            #expect(types.first == HAAppEntityAppIntentEntity.self)
+            #expect(types.first == ControllableEntityAppEntity.self)
+            #expect(types.contains { $0 == HAAppEntityAppIntentEntity.self })
+            #expect(types.contains { $0 == DimmableLightAppEntity.self })
         }
     }
 
-    /// A lock is deliberately out of reach of a spoken on/off command, but the shared entity is what
-    /// the question and the add-to command take, so it is still named.
-    @Test("An entity no command can switch is still named")
-    func anUnswitchableEntityIsStillNamed() async throws {
+    /// The dimming type's query leaves out a light in no room, but the on/off and shared types resolve
+    /// every id, so the light on screen can still be turned off or added somewhere.
+    @Test("A light in no room keeps the on and off type and loses the dimming type")
+    func aLightInNoRoomKeepsTheCommandType() async throws {
+        guard #available(iOS 18.2, *) else { return }
+        try await withDatabase { serverId in
+            try seed(entityId: "light.kitchen", serverId: serverId, inAnArea: false)
+
+            let types = await OnscreenEntityIdentifier
+                .makeAll(entityId: "light.kitchen", serverId: serverId)
+                .map(\.entityType)
+
+            #expect(types.first == ControllableEntityAppEntity.self)
+            #expect(types.contains { $0 == HAAppEntityAppIntentEntity.self })
+            #expect(!types.contains { $0 == DimmableLightAppEntity.self })
+        }
+    }
+
+    /// The shared type leads so that "what is this" and the add-to command keep working where the
+    /// activity is all the system reads; the lock command's own type follows for "lock this".
+    @Test("A lock leads with the shared entity and also answers to the lock type")
+    func aLockIsNamedTwiceSharedFirst() async throws {
         guard #available(iOS 18.2, *) else { return }
         try await withDatabase { serverId in
             try seed(entityId: "lock.front_door", serverId: serverId)
 
-            let identifier = await OnscreenEntityIdentifier.make(entityId: "lock.front_door", serverId: serverId)
+            let types = await OnscreenEntityIdentifier
+                .makeAll(entityId: "lock.front_door", serverId: serverId)
+                .map(\.entityType)
 
-            #expect(identifier?.entityType == HAAppEntityAppIntentEntity.self)
+            #expect(types.count == 2)
+            #expect(types.first == HAAppEntityAppIntentEntity.self)
+            #expect(types.contains { $0 == LockAppEntity.self })
+        }
+    }
+
+    /// Same shape for a thermostat: shared first, then the type "set this to 21" takes.
+    @Test("A thermostat leads with the shared entity and also answers to the thermostat type")
+    func aThermostatIsNamedTwiceSharedFirst() async throws {
+        guard #available(iOS 18.2, *) else { return }
+        try await withDatabase { serverId in
+            try seed(entityId: "climate.hall", serverId: serverId)
+
+            let types = await OnscreenEntityIdentifier
+                .makeAll(entityId: "climate.hall", serverId: serverId)
+                .map(\.entityType)
+
+            #expect(types.count == 2)
+            #expect(types.first == HAAppEntityAppIntentEntity.self)
+            #expect(types.contains { $0 == ThermostatAppEntity.self })
         }
     }
 
@@ -67,9 +142,10 @@ struct OnscreenEntityIdentifierTests {
                 .makeAll(entityId: "cover.garage", serverId: serverId)
                 .map(\.entityType)
 
-            #expect(types.count == 2)
             #expect(types.first == OpenableEntityAppEntity.self)
             #expect(types.contains { $0 == HAAppEntityAppIntentEntity.self })
+            // Nothing "turns off" a blind, so the on/off type is not among them.
+            #expect(!types.contains { $0 == ControllableEntityAppEntity.self })
         }
     }
 
@@ -85,8 +161,8 @@ struct OnscreenEntityIdentifierTests {
                 .makeAll(entityId: "cover.garage", serverId: serverId)
                 .map(\.entityType)
 
-            #expect(types.count == 1)
             #expect(types.first == HAAppEntityAppIntentEntity.self)
+            #expect(!types.contains { $0 == OpenableEntityAppEntity.self })
         }
     }
 

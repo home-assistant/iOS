@@ -20,6 +20,7 @@ struct CreateEventSchemaIntent {
     var note: AttributedString?
 
     func perform() async throws -> some ReturnsValue<CalendarEventSchemaEntity> {
+        Current.Log.info("Calendar schema intent: adding an event to \(calendar.id)")
         let stored = try CalendarSchemaSupport.calendar(for: calendar, requiring: .createEvent)
         let api = try CalendarSchemaSupport.api(for: stored)
         let end = CalendarSchemaSupport.resolvedEnd(endDate, start: startDate, isAllDay: isAllDay)
