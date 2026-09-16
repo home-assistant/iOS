@@ -30,10 +30,8 @@ final class CreateReminderSchemaIntentTests: AppIntentSchemaTestCase {
         _ = try await task.value
     }
 
-    /// With no list named the item lands on the first one offered, rather than nowhere.
-    func testWithoutAListTheFirstOneIsUsed() async throws {
+    func testWithoutAListTheOnlyOneIsUsedWithoutAsking() async throws {
         try seedTodoList(entityId: "todo.shopping", name: "Shopping")
-        try seedTodoList(entityId: "todo.work", name: "Work")
         let sut = intent(list: nil)
 
         let task = Task { try await sut.perform() }

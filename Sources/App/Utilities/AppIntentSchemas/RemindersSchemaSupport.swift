@@ -13,12 +13,8 @@ enum RemindersSchemaSupport {
         return api
     }
 
-    /// The list a new reminder belongs on when the caller did not name one.
-    static func defaultList() throws -> ReminderListSchemaEntity {
-        guard let list = ReminderListSchemaEntityQuery().firstList() else {
-            throw ShortcutAppIntentError(L10n.AppIntents.Reminders.Error.noList)
-        }
-        return list
+    static func listResolution() -> ReminderListResolution {
+        ReminderListResolution(lists: ReminderListSchemaEntityQuery().lists())
     }
 
     /// `todo.add_item` and `todo.update_item` take either a bare day or a datetime, never both, so

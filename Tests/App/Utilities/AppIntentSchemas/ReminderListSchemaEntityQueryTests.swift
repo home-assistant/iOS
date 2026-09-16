@@ -55,14 +55,14 @@ final class ReminderListSchemaEntityQueryTests: AppIntentSchemaTestCase {
         XCTAssertTrue(unmatched.isEmpty)
     }
 
-    func testTheFirstListIsTheOneTheProviderReportsFirst() throws {
+    func testTheListsFollowTheProvidersOrder() throws {
         try seedTodoList(entityId: "todo.shopping", name: "Shopping")
         try seedTodoList(entityId: "todo.work", name: "Work")
 
-        XCTAssertEqual(sut.firstList()?.entityId, "todo.shopping")
+        XCTAssertEqual(sut.lists().map(\.entityId), ["todo.shopping", "todo.work"])
     }
 
-    func testThereIsNoFirstListWithoutAnyLists() {
-        XCTAssertNil(sut.firstList())
+    func testThereAreNoListsWithoutAnyLists() {
+        XCTAssertTrue(sut.lists().isEmpty)
     }
 }

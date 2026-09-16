@@ -1030,6 +1030,10 @@ public enum L10n {
       }
     }
     public enum Reminders {
+      public enum Create {
+        /// Which list?
+        public static var whichList: String { return L10n.tr("Localizable", "app_intents.reminders.create.which_list") }
+      }
       public enum Error {
         /// There are no to-do lists to add this to
         public static var noList: String { return L10n.tr("Localizable", "app_intents.reminders.error.no_list") }
