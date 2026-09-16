@@ -1,4 +1,5 @@
 import AppIntents
+import HAKit
 import Shared
 import WidgetKit
 
@@ -25,6 +26,10 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
     /// that triggers multiple timeline refreshes
     private static let cacheValiditySeconds: TimeInterval = 1
 
+    /// How many entities a widget with a domain filter asks core for, so enough are left to fill its
+    /// tiles once the filter drops some.
+    static let filteredPredictionLimit = 100
+
     func makePreviewEntry(in context: Context) -> WidgetCommonlyUsedEntitiesEntry {
         let items = WidgetPreviewSample.entities
             .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
@@ -44,7 +49,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         for configuration: WidgetCommonlyUsedEntitiesAppIntent,
         in context: Context
     ) async -> WidgetCommonlyUsedEntitiesEntry {
-        let items = await fetchItems(context: context, configuration: configuration)
+        let items = await fetchItems(family: context.family, configuration: configuration)
         return await .init(
             date: .now,
             items: items,
@@ -60,7 +65,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         for configuration: WidgetCommonlyUsedEntitiesAppIntent,
         in context: Context
     ) async -> WidgetCommonlyUsedEntitiesEntry {
-        let items = await fetchItems(context: context, configuration: configuration)
+        let items = await fetchItems(family: context.family, configuration: configuration)
         let entitiesState = await entitiesState(configuration: configuration, items: items)
 
         return await .init(
@@ -74,7 +79,7 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
         )
     }
 
-    private func fetchItems(context: Context, configuration: WidgetCommonlyUsedEntitiesAppIntent) async -> [MagicItem] {
+    func fetchItems(family: WidgetFamily, configuration: WidgetCommonlyUsedEntitiesAppIntent) async -> [MagicItem] {
         guard let server = configuration.server.getServer() ?? Current.servers.all.first else {
             Current.Log.info("No server found for commonly used entities widget, returning empty items")
             return []
@@ -85,8 +90,13 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             return []
         }
 
+        let request = Self.usagePredictionRequest(
+            server: server,
+            family: family,
+            domainFilter: configuration.domainFilter
+        )
         let entities: [String] = await withCheckedContinuation { (continuation: CheckedContinuation<[String], Never>) in
-            api.connection.send(.usagePredictionCommonControl()) { result in
+            api.connection.send(request) { result in
                 switch result {
                 case let .success(response):
                     continuation.resume(returning: response.entities)
@@ -113,7 +123,24 @@ struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProv
             )
         }
 
-        return Array(magicItems.prefix(WidgetFamilySizes.size(for: context.family, capacity: .tile)))
+        return Array(magicItems.prefix(WidgetFamilySizes.size(for: family, capacity: .tile)))
+    }
+
+    /// Asks core for as many entities as the family shows, or for more when a domain filter will drop
+    /// some of them after they arrive. Cores older than 2026.10 reject a `limit`, so they keep the
+    /// default request.
+    static func usagePredictionRequest(
+        server: Server,
+        family: WidgetFamily,
+        domainFilter: WidgetDomainFilter
+    ) -> HATypedRequest<HAUsagePredictionCommonControl> {
+        guard server.info.version >= .usagePredictionCommonControlLimit else {
+            return .usagePredictionCommonControl()
+        }
+        let limit = domainFilter.isEmpty
+            ? WidgetFamilySizes.size(for: family, capacity: .tile)
+            : Self.filteredPredictionLimit
+        return .usagePredictionCommonControl(limit: limit)
     }
 
     private func entitiesState(
