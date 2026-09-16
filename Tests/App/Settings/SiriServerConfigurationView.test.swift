@@ -73,11 +73,19 @@ struct SiriServerConfigurationViewTests {
         window.rootViewController = UIHostingController(
             rootView: NavigationView { SiriServerConfigurationView(viewModel: viewModel) }
         )
-        window.makeKeyAndVisible()
+        window.isHidden = false
         window.layoutIfNeeded()
         RunLoop.main.run(until: Date().addingTimeInterval(0.2))
 
         #expect(viewModel.isReloading)
+        #expect(Self.containsView(ofType: UIActivityIndicatorView.self, in: window))
         window.isHidden = true
+    }
+
+    private static func containsView(ofType type: UIView.Type, in view: UIView) -> Bool {
+        if view.isKind(of: type) {
+            return true
+        }
+        return view.subviews.contains { containsView(ofType: type, in: $0) }
     }
 }

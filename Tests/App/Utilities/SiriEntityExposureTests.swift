@@ -115,7 +115,15 @@ struct SiriEntityExposureTests {
     @Test func theTableMigratesInPlaceWhenItAlreadyExists() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let table = SiriEntityExposureTable()
-        try table.createIfNeeded(database: database)
+        try database.write { db in
+            try db.create(table: table.tableName) { t in
+                t.primaryKey(DatabaseTables.SiriEntityExposure.id.rawValue, .text).notNull()
+                t.column(DatabaseTables.SiriEntityExposure.serverId.rawValue, .text).notNull()
+                t.column(DatabaseTables.SiriEntityExposure.entityId.rawValue, .text).notNull()
+                t.column(DatabaseTables.SiriEntityExposure.domain.rawValue, .text).notNull()
+                t.column(DatabaseTables.SiriEntityExposure.isExposed.rawValue, .boolean).notNull()
+            }
+        }
         try table.createIfNeeded(database: database)
 
         let columns = try database.read { db in

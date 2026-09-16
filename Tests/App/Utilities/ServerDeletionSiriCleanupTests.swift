@@ -1,3 +1,4 @@
+import GRDB
 @testable import HomeAssistant
 @testable import Shared
 import Testing
@@ -19,8 +20,16 @@ struct ServerDeletionSiriCleanupTests {
 
         await server.deleteFromApp()
 
+        let (serverRows, entityRows) = try await Current.database().read { db in
+            try (
+                SiriServerExposure.filter(key: serverId).fetchCount(db),
+                SiriEntityExposure
+                    .filter(Column(DatabaseTables.SiriEntityExposure.serverId.rawValue) == serverId)
+                    .fetchCount(db)
+            )
+        }
         #expect(manager.all.isEmpty)
-        #expect(SiriServerExposure.isExposed(serverId: serverId))
-        #expect(SiriEntityExposure.isExposed(serverId: serverId, entityId: "todo.a"))
+        #expect(serverRows == 0)
+        #expect(entityRows == 0)
     }
 }

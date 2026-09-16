@@ -182,24 +182,24 @@ struct SiriServerConfigurationViewModelTests {
             #expect(model.isReloading)
         }
     }
-}
 
-private final class RecordingSiriAppDatabaseUpdater: AppDatabaseUpdaterProtocol {
-    struct Update {
-        let serverId: String
-        let forceUpdate: Bool
-        let showProgress: Bool
-    }
+    private final class RecordingSiriAppDatabaseUpdater: AppDatabaseUpdaterProtocol {
+        struct Update {
+            let serverId: String
+            let forceUpdate: Bool
+            let showProgress: Bool
+        }
 
-    private(set) var updates: [Update] = []
+        private(set) var updates: [Update] = []
 
-    func stop() {}
+        func stop() {}
 
-    func update(server: Server, forceUpdate: Bool, showProgress: Bool) {
-        updates.append(Update(
-            serverId: server.identifier.rawValue,
-            forceUpdate: forceUpdate,
-            showProgress: showProgress
-        ))
+        func update(server: Server, forceUpdate: Bool, showProgress: Bool) {
+            updates.append(Update(
+                serverId: server.identifier.rawValue,
+                forceUpdate: forceUpdate,
+                showProgress: showProgress
+            ))
+        }
     }
 }
