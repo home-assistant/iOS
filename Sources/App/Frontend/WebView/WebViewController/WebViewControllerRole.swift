@@ -6,10 +6,11 @@ import Shared
 /// The main frontend is the app: it remembers where it is for the next launch, publishes its page
 /// for Handoff and Siri, and offers the sidebar gestures. A standalone more-info screen shows one
 /// entity's details in a sheet over it, at the frontend's frameless `/more-info` route, and does
-/// none of that: the page underneath stays what the app is showing.
+/// none of that: the page underneath stays what the app is showing. A sheet booted ahead of time
+/// has no entity yet; it is told which one over the bus.
 enum WebViewControllerRole: Equatable {
     case mainFrontend
-    case standaloneMoreInfo(entityId: String)
+    case standaloneMoreInfo(entityId: String?)
 
     var isMainFrontend: Bool {
         self == .mainFrontend
@@ -28,12 +29,14 @@ enum WebViewControllerRole: Equatable {
 
     /// The frontend's frameless more-info page. It reads the entity from the same query item as the
     /// more-info deep link on any other route, and shows the info view by default.
-    static func standaloneMoreInfoPath(entityId: String) -> String {
+    static func standaloneMoreInfoPath(entityId: String?) -> String {
         var components = URLComponents()
         components.path = "/more-info"
-        components.queryItems = [
-            URLQueryItem(name: AppConstants.QueryItems.openMoreInfoDialog.rawValue, value: entityId),
-        ]
+        if let entityId {
+            components.queryItems = [
+                URLQueryItem(name: AppConstants.QueryItems.openMoreInfoDialog.rawValue, value: entityId),
+            ]
+        }
         return components.string ?? "/more-info"
     }
 }

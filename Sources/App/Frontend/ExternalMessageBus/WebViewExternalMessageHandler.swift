@@ -88,6 +88,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 webViewController.updateFrontendConnectionState(state: connEvt)
             case .frontendLoaded:
                 webViewController.updateFrontendConnectionState(state: FrontEndConnectionState.loaded.rawValue)
+                // The main frontend is up, so a sheet booted now is ready by the time an entity is tapped.
+                if webViewController.role.isMainFrontend, AppLabsFeature.nativeMoreInfo.isEnabled {
+                    standaloneMoreInfoPresenter.prewarm(from: webViewController)
+                }
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])

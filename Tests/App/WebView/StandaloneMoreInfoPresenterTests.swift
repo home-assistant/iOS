@@ -5,17 +5,30 @@ import XCTest
 final class StandaloneMoreInfoPresenterTests: XCTestCase {
     private var host: MockWebViewController!
     private var sut: StandaloneMoreInfoPresenter!
+    private var madeControllers: [WebViewController] = []
 
-    override func setUp() {
+    @MainActor override func setUp() {
         super.setUp()
         host = MockWebViewController()
-        sut = StandaloneMoreInfoPresenter()
+        madeControllers = []
+        sut = StandaloneMoreInfoPresenter(makeController: { [weak self] server, role in
+            let controller = WebViewController(server: server, role: role)
+            // A mock handler so a page change is observable and no JavaScript is ever run.
+            controller.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
+            self?.madeControllers.append(controller)
+            return controller
+        })
     }
 
     override func tearDown() {
         sut = nil
         host = nil
+        madeControllers = []
         super.tearDown()
+    }
+
+    private func sheetHandler(_ sheet: WebViewController) throws -> MockWebViewExternalMessageHandler {
+        try XCTUnwrap(sheet.webViewExternalMessageHandler as? MockWebViewExternalMessageHandler)
     }
 
     @MainActor func testPresentShowsTheFrontendPageForTheEntityAsASheet() throws {
@@ -28,6 +41,56 @@ final class StandaloneMoreInfoPresenterTests: XCTestCase {
         // The frontend underneath keeps publishing for Handoff; the sheet must not compete with it.
         XCTAssertNil(sheet.userActivity)
         XCTAssertEqual(host.onscreenEntityId, "light.kitchen")
+    }
+
+    /// The booted sheet is kept: the next entity is a page change over the bus, not a new web view.
+    @MainActor func testPresentingAgainReusesTheSheetAndChangesItsPage() throws {
+        sut.present(entityId: "light.kitchen", from: host)
+        let sheet = try XCTUnwrap(host.overlayedController as? WebViewController)
+        sheet.connectionState = .loaded
+
+        sut.present(entityId: "light.bedroom", from: host)
+
+        XCTAssertEqual(madeControllers.count, 1)
+        XCTAssertTrue(host.overlayedController === sheet)
+        let handler = try sheetHandler(sheet)
+        XCTAssertEqual(handler.sendExternalBusCommandWithRetryCommand, .navigate)
+        XCTAssertEqual(
+            handler.sendExternalBusCommandWithRetryPayload?["path"] as? String,
+            "/more-info?more-info-entity-id=light.bedroom"
+        )
+        XCTAssertEqual(host.onscreenEntityId, "light.bedroom")
+    }
+
+    /// A sheet still booting cannot change page yet; it shows the loader and is told once loaded.
+    @MainActor func testPresentingWhileTheSheetBootsWaitsForItsFrontend() throws {
+        sut.prewarm(from: host)
+        let sheet = try XCTUnwrap(sut.sheet)
+        XCTAssertEqual(sheet.role, .standaloneMoreInfo(entityId: nil))
+        XCTAssertFalse(host.presentOverlayControllerCalled)
+
+        sut.present(entityId: "light.kitchen", from: host)
+
+        let handler = try sheetHandler(sheet)
+        XCTAssertFalse(handler.sendExternalBusCommandWithRetryCalled)
+        XCTAssertEqual(sut.pendingEntityId, "light.kitchen")
+        XCTAssertNotNil(sheet.standaloneLoadingController)
+
+        sheet.onStandaloneFrontendLoaded?()
+
+        XCTAssertNil(sut.pendingEntityId)
+        XCTAssertEqual(handler.sendExternalBusCommandWithRetryCommand, .navigate)
+        XCTAssertEqual(
+            handler.sendExternalBusCommandWithRetryPayload?["path"] as? String,
+            "/more-info?more-info-entity-id=light.kitchen"
+        )
+    }
+
+    @MainActor func testPrewarmBootsOnlyOneSheet() {
+        sut.prewarm(from: host)
+        sut.prewarm(from: host)
+
+        XCTAssertEqual(madeControllers.count, 1)
     }
 
     /// Siri resolves "this" against the frontend underneath, which carries the entity only while the
@@ -47,11 +110,24 @@ final class StandaloneMoreInfoPresenterTests: XCTestCase {
         sut.present(entityId: "light.kitchen", from: host)
         let sheet = try XCTUnwrap(host.overlayedController as? WebViewController)
         let firstDismiss = sheet.onDismiss
+        sheet.connectionState = .loaded
         sut.present(entityId: "light.bedroom", from: host)
 
         firstDismiss?()
 
         XCTAssertEqual(host.onscreenEntityId, "light.bedroom")
+    }
+
+    /// A kept sheet is a whole second frontend, the first thing to give up when memory is short.
+    @MainActor func testMemoryPressureDropsAHiddenSheet() throws {
+        sut.present(entityId: "light.kitchen", from: host)
+        XCTAssertNotNil(sut.sheet)
+
+        sut.discardSheetIfHidden()
+
+        XCTAssertNil(sut.sheet)
+        sut.present(entityId: "light.kitchen", from: host)
+        XCTAssertEqual(madeControllers.count, 2)
     }
 
     /// A link out of the sheet goes to the frontend underneath, through the same `navigate` command

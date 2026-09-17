@@ -100,6 +100,7 @@ extension WebViewController: WebViewControllerProtocol {
             if resolvedState == .loaded {
                 // The page has rendered, so the loader covering it can go.
                 hideStandaloneLoadingIndicator()
+                onStandaloneFrontendLoaded?()
             }
         case .authInvalid:
             showEmptyState()
