@@ -29,6 +29,7 @@ struct WidgetExtraLargePortraitTests {
             ("to-do list", WidgetTodoList().supportedFamilies),
             ("calendar", WidgetCalendar().supportedFamilies),
             ("energy", WidgetEnergySupportedFamilies.families),
+            ("areas", WidgetAreasSupportedFamilies.families),
         ]
 
         for (name, families) in widgets {
