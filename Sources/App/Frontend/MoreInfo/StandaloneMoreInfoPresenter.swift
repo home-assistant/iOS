@@ -60,7 +60,7 @@ final class StandaloneMoreInfoPresenter {
             sheet = makeSheet(server: host.server, entityId: entityId)
             self.sheet = sheet
         }
-        Self.configurePresentation(of: sheet)
+        Self.configurePresentation(of: sheet, entityId: entityId)
 
         // Siri resolves "this" against the entity on screen. The sheet publishes no activity of its
         // own, so the frontend underneath carries the entity while the sheet is up and drops it after.
@@ -89,13 +89,24 @@ final class StandaloneMoreInfoPresenter {
         pendingEntityId = nil
     }
 
-    static func configurePresentation(of controller: UIViewController) {
+    /// A sensor's details fit half a screen; a light's controls need the whole of it. Set before each
+    /// presentation, since the same sheet serves every entity in turn. The grabber only appears when
+    /// there is a second detent to drag to.
+    static func configurePresentation(of controller: UIViewController, entityId: String) {
         if Current.isCatalyst {
             controller.modalPresentationStyle = .formSheet
         } else if let sheet = controller.sheetPresentationController {
-            // The page fills the sheet, and with nothing to drag to there is no grabber.
-            sheet.detents = [.large()]
+            let compact = prefersCompactSheet(entityId: entityId)
+            sheet.detents = compact ? [.medium(), .large()] : [.large()]
+            sheet.selectedDetentIdentifier = compact ? .medium : .large
+            sheet.prefersGrabberVisible = compact
         }
+    }
+
+    /// Unknown domains are custom integrations whose details could be anything, so they get the room.
+    nonisolated static func prefersCompactSheet(entityId: String) -> Bool {
+        guard let domain = Domain(entityId: entityId) else { return false }
+        return domain.prefersCompactMoreInfoSheet
     }
 
     private func makeSheet(server: Server, entityId: String?) -> WebViewController {

@@ -130,6 +130,47 @@ final class StandaloneMoreInfoPresenterTests: XCTestCase {
         XCTAssertEqual(madeControllers.count, 2)
     }
 
+    /// A sensor's details fit half a screen to begin with; a drag reveals the rest.
+    @MainActor func testReadOnlyDomainsStartAtAMediumDetent() throws {
+        sut.present(entityId: "sensor.temperature", from: host)
+
+        let sheet = try XCTUnwrap(host.overlayedController as? WebViewController)
+        let presentation = try XCTUnwrap(sheet.sheetPresentationController)
+        XCTAssertEqual(presentation.detents.map(\.identifier), [.medium, .large])
+        XCTAssertEqual(presentation.selectedDetentIdentifier, .medium)
+        XCTAssertTrue(presentation.prefersGrabberVisible)
+    }
+
+    /// A light's controls need the whole screen, so the sheet opens large and stays so.
+    @MainActor func testControlDomainsOpenLarge() throws {
+        sut.present(entityId: "light.kitchen", from: host)
+
+        let presentation = try XCTUnwrap(host.overlayedController?.sheetPresentationController)
+        XCTAssertEqual(presentation.detents.map(\.identifier), [.large])
+        XCTAssertEqual(presentation.selectedDetentIdentifier, .large)
+        // Nothing to drag to, so no grabber.
+        XCTAssertFalse(presentation.prefersGrabberVisible)
+    }
+
+    /// The same sheet serves every entity, so its size follows the entity it is about to show.
+    @MainActor func testTheReusedSheetIsResizedForTheNextEntity() throws {
+        sut.present(entityId: "light.kitchen", from: host)
+        let sheet = try XCTUnwrap(host.overlayedController as? WebViewController)
+        sheet.connectionState = .loaded
+
+        sut.present(entityId: "sensor.temperature", from: host)
+
+        XCTAssertEqual(sheet.sheetPresentationController?.selectedDetentIdentifier, .medium)
+    }
+
+    /// Custom domains could show anything, so they get the room.
+    func testUnknownDomainsGetTheLargeSheet() {
+        XCTAssertTrue(StandaloneMoreInfoPresenter.prefersCompactSheet(entityId: "binary_sensor.front_door"))
+        XCTAssertFalse(StandaloneMoreInfoPresenter.prefersCompactSheet(entityId: "climate.bedroom"))
+        XCTAssertFalse(StandaloneMoreInfoPresenter.prefersCompactSheet(entityId: "custom_thing.device"))
+        XCTAssertFalse(StandaloneMoreInfoPresenter.prefersCompactSheet(entityId: "not-an-entity-id"))
+    }
+
     /// A link out of the sheet goes to the frontend underneath, through the same `navigate` command
     /// the app uses for its own navigation.
     @MainActor func testNavigationOutOfTheSheetIsSentToTheFrontendUnderneath() throws {
