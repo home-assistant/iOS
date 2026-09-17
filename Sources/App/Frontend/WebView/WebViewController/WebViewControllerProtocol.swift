@@ -3,6 +3,7 @@ import Shared
 
 protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
+    var role: WebViewControllerRole { get }
     var connectionState: FrontEndConnectionState { get }
     var overlayedController: UIViewController? { get }
     /// Source view the zoom transition into Assist grows from; see `AssistZoomAnchorView`. Nil when the

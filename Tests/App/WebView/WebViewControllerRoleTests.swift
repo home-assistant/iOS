@@ -24,6 +24,11 @@ final class WebViewControllerRoleTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://home.example:8123/more-info?more-info-entity-id=climate.bedroom")
     }
 
+    /// A sheet booted ahead of time has no entity yet; the page waits to be told one.
+    func testStandaloneMoreInfoWithoutAnEntityPinsTheBarePage() {
+        XCTAssertEqual(WebViewControllerRole.standaloneMoreInfo(entityId: nil).pinnedPath, "/more-info")
+    }
+
     func testStandaloneMoreInfoPathEscapesTheEntityId() throws {
         let path = WebViewControllerRole.standaloneMoreInfoPath(entityId: "sensor.a&b c")
 

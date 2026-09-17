@@ -11,6 +11,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var currentPageURL: URL?
     var traitCollection: UITraitCollection = .init()
     var server: Server = ServerFixture.standard
+    var role: WebViewControllerRole = .mainFrontend
     var connectionState: FrontEndConnectionState = .connected
     var overlayedController: UIViewController?
     var assistZoomAnchorView: UIView?
