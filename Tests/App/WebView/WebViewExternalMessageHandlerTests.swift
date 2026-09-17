@@ -540,6 +540,31 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertTrue(mockWebViewController.closeStandaloneMoreInfoCalled)
     }
 
+    /// A link out of the standalone page arrives on the sheet's web view, which hands the path on.
+    @MainActor func testHandleExternalMessageMoreInfoNavigateRelaysThePath() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/navigate",
+            "payload": ["path": "/config/devices/device/abc"],
+        ])
+
+        XCTAssertEqual(mockWebViewController.relayedStandaloneNavigationPath, "/config/devices/device/abc")
+    }
+
+    @MainActor func testHandleExternalMessageMoreInfoNavigateWithoutAPathIsIgnored() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/navigate",
+            "payload": [:],
+        ])
+
+        XCTAssertNil(mockWebViewController.relayedStandaloneNavigationPath)
+    }
+
     /// A control the frontend reports is donated as the intent that would repeat it, against the
     /// server of the web view it came from.
     @MainActor func testHandleExternalMessageEntityControlledDonatesTheMatchingIntent() async throws {

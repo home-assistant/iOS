@@ -46,6 +46,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var showLoggedOutStateExpectation: XCTestExpectation?
     var openInBrowserCalled = false
     var closeStandaloneMoreInfoCalled = false
+    var relayedStandaloneNavigationPath: String?
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -168,5 +169,9 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func closeStandaloneMoreInfo() {
         closeStandaloneMoreInfoCalled = true
+    }
+
+    func relayStandaloneNavigation(path: String) {
+        relayedStandaloneNavigationPath = path
     }
 }

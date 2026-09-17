@@ -54,6 +54,29 @@ final class StandaloneMoreInfoPresenterTests: XCTestCase {
         XCTAssertEqual(host.onscreenEntityId, "light.bedroom")
     }
 
+    /// A link out of the sheet goes to the frontend underneath, through the same `navigate` command
+    /// the app uses for its own navigation.
+    @MainActor func testNavigationOutOfTheSheetIsSentToTheFrontendUnderneath() throws {
+        sut.present(entityId: "light.kitchen", from: host)
+        let sheet = try XCTUnwrap(host.overlayedController as? WebViewController)
+        let handler = try XCTUnwrap(host.webViewExternalMessageHandler as? MockWebViewExternalMessageHandler)
+
+        sheet.relayStandaloneNavigation(path: "/config/devices/device/abc")
+
+        XCTAssertEqual(handler.sendExternalBusCommandWithRetryCommand, .navigate)
+        XCTAssertEqual(handler.sendExternalBusCommandWithRetryPayload?["path"] as? String, "/config/devices/device/abc")
+    }
+
+    /// `more_info/navigate` only ever means the sheet; the app's frontend navigates itself.
+    @MainActor func testNavigationRelayOnTheMainFrontendDoesNothing() throws {
+        let main = WebViewController(server: ServerFixture.standard)
+        let handler = try XCTUnwrap(host.webViewExternalMessageHandler as? MockWebViewExternalMessageHandler)
+
+        main.relayStandaloneNavigation(path: "/config")
+
+        XCTAssertFalse(handler.sendExternalBusCommandWithRetryCalled)
+    }
+
     /// `more_info/close` only ever means the sheet; the app's frontend has nothing to dismiss.
     @MainActor func testCloseOnTheMainFrontendDoesNothing() {
         let main = WebViewController(server: ServerFixture.standard)

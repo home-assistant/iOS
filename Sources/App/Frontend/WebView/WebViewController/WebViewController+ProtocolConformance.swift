@@ -193,4 +193,14 @@ extension WebViewController: WebViewControllerProtocol {
         Current.Log.info("Dismissing standalone more-info on the frontend's request")
         dismiss(animated: true)
     }
+
+    func relayStandaloneNavigation(path: String) {
+        guard case .standaloneMoreInfo = role else {
+            Current.Log.warning("more_info/navigate reached the main frontend, which navigates itself")
+            return
+        }
+        Current.Log.info("Standalone more-info hands navigation to \(path) to the frontend underneath")
+        onStandaloneNavigation?(path)
+        dismiss(animated: true)
+    }
 }
