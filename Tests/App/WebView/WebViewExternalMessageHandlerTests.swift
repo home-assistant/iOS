@@ -504,13 +504,11 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "message": "",
             "command": "",
             "type": "more_info/open",
-            "payload": ["entity_id": "light.kitchen"],
+            "payload": ["entity_id": "light.kitchen", "title": "Kitchen ceiling", "subtitle": "Kitchen"],
         ])
 
         XCTAssertTrue(mockWebViewController.presentOverlayControllerCalled)
-        let sheet = mockWebViewController.overlayedController as? WebViewController
-        XCTAssertEqual(sheet?.role, .standaloneMoreInfo(entityId: "light.kitchen"))
-        XCTAssertEqual(sheet?.server.identifier.rawValue, mockWebViewController.server.identifier.rawValue)
+        XCTAssertTrue(mockWebViewController.overlayedController is StandaloneMoreInfoPresenter.Container)
         XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
     }
 
@@ -551,6 +549,40 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ])
 
         XCTAssertEqual(mockWebViewController.relayedStandaloneNavigationPath, "/config/devices/device/abc")
+    }
+
+    /// The header arrives on the sheet's web view, whose controller passes it to the sheet's bar.
+    @MainActor func testHandleExternalMessageMoreInfoHeaderUpdatesTheSheetsBar() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/header",
+            "payload": [
+                "entity_id": "light.kitchen",
+                "title": "Kitchen ceiling",
+                "navigation": "back",
+                "actions": [["id": "history", "label": "History", "icon": "mdi:chart-box-outline"]],
+                "menu": [],
+            ],
+        ])
+
+        let header = mockWebViewController.updatedStandaloneMoreInfoHeader
+        XCTAssertEqual(header?.title, "Kitchen ceiling")
+        XCTAssertEqual(header?.navigation, .back)
+        XCTAssertEqual(header?.actions.map(\.id), ["history"])
+    }
+
+    @MainActor func testHandleExternalMessageMoreInfoHeaderWithoutATitleIsIgnored() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/header",
+            "payload": ["entity_id": "light.kitchen"],
+        ])
+
+        XCTAssertNil(mockWebViewController.updatedStandaloneMoreInfoHeader)
     }
 
     @MainActor func testHandleExternalMessageMoreInfoNavigateWithoutAPathIsIgnored() {

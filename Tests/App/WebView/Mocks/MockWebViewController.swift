@@ -48,6 +48,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var openInBrowserCalled = false
     var closeStandaloneMoreInfoCalled = false
     var relayedStandaloneNavigationPath: String?
+    var updatedStandaloneMoreInfoHeader: StandaloneMoreInfoHeader?
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -174,5 +175,9 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func relayStandaloneNavigation(path: String) {
         relayedStandaloneNavigationPath = path
+    }
+
+    func updateStandaloneMoreInfoHeader(_ header: StandaloneMoreInfoHeader) {
+        updatedStandaloneMoreInfoHeader = header
     }
 }

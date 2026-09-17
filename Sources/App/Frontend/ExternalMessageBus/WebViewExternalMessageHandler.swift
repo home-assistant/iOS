@@ -230,7 +230,12 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     Current.Log.error("Received more_info/open but entity_id was not string! \(incomingMessage)")
                     return
                 }
-                standaloneMoreInfoPresenter.present(entityId: entityId, from: webViewController)
+                standaloneMoreInfoPresenter.present(
+                    entityId: entityId,
+                    title: incomingMessage.Payload?["title"] as? String,
+                    subtitle: incomingMessage.Payload?["subtitle"] as? String,
+                    from: webViewController
+                )
             case .moreInfoClose:
                 // Arrives on the sheet's own web view, so that controller is the one to go.
                 webViewController.closeStandaloneMoreInfo()
@@ -240,6 +245,12 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.relayStandaloneNavigation(path: path)
+            case .moreInfoHeader:
+                guard let header = StandaloneMoreInfoHeader(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received more_info/header with an invalid payload! \(incomingMessage)")
+                    return
+                }
+                webViewController.updateStandaloneMoreInfoHeader(header)
             case .entityControlled:
                 guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
                     Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")

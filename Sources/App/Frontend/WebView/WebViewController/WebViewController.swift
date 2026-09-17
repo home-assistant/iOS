@@ -16,14 +16,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let server: Server
     /// Whether this is the app's frontend or a standalone more-info sheet over it; see `WebViewControllerRole`.
     let role: WebViewControllerRole
-    /// Called after a standalone sheet has left the screen, however it was dismissed.
-    var onDismiss: (() -> Void)?
     /// Called with the frontend path a standalone sheet was asked to leave for, before it dismisses.
     var onStandaloneNavigation: ((String) -> Void)?
     /// Called each time a standalone sheet's frontend reports it has loaded.
     var onStandaloneFrontendLoaded: (() -> Void)?
-    /// Covers the standalone sheet until its frontend reports it has loaded.
-    var standaloneLoadingController: UIViewController?
+    /// Called with each header a standalone sheet's frontend describes for the sheet's bar.
+    var onStandaloneHeaderChange: ((StandaloneMoreInfoHeader) -> Void)?
 
     var urlObserver: NSKeyValueObservation?
     var windowTitleObserver: NSKeyValueObservation?
@@ -355,8 +353,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             setupEdgeGestures()
             setupURLObserver()
             setupWindowTitleObserver()
-        } else {
-            showStandaloneLoadingIndicator()
         }
 
         webView.navigationDelegate = self
@@ -424,14 +420,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     override func viewWillDisappear(_ animated: Bool) {
         userActivity?.resignCurrent()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        // Only a standalone sheet is ever dismissed; the main frontend disappears behind tabs and
-        // presentations and comes back.
-        guard !role.isMainFrontend, isBeingDismissed || presentingViewController == nil else { return }
-        onDismiss?()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
