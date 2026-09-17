@@ -113,7 +113,7 @@ struct MagicItemWidgetInteractionTests {
         #expect(!item.controlsEntityFromWidget)
         #expect(ItemAction.allCases.last == .nothing)
         #expect(ItemAction.offered(for: item, selected: .default).last == .nothing)
-        #expect(ItemAction.nothing.name == "Nothing")
+        #expect(ItemAction.nothing.name == L10n.Widgets.Action.Name.nothing)
 
         // Either half alone leaves the other on its default.
         var iconOnly = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
