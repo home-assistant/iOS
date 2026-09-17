@@ -5132,6 +5132,12 @@ public enum L10n {
         /// Native sidebar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.title") }
       }
+      public enum NativeMoreInfo {
+        /// Opens entity details in a sheet of their own instead of the Home Assistant dialog. Needs a Home Assistant version that supports it; older versions keep the dialog. The page reloads when you change this setting.
+        public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.native_more_info.footer") }
+        /// Native entity details
+        public static var title: String { return L10n.tr("Localizable", "settings.app_labs.native_more_info.title") }
+      }
       public enum SettingsRow {
         /// TestFlight-only experiments. They have no planned release and can be removed at any time.
         public static var subtitle: String { return L10n.tr("Localizable", "settings.app_labs.settings_row.subtitle") }

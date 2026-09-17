@@ -495,6 +495,51 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
     }
 
+    /// With the app showing more-info natively, the frontend hands over the entity instead of opening
+    /// its dialog: a sheet with the frontend's standalone page comes up over the web view that asked,
+    /// which keeps carrying the entity for Siri while the sheet is up.
+    @MainActor func testHandleExternalMessageMoreInfoOpenPresentsTheStandaloneSheet() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/open",
+            "payload": ["entity_id": "light.kitchen"],
+        ])
+
+        XCTAssertTrue(mockWebViewController.presentOverlayControllerCalled)
+        let sheet = mockWebViewController.overlayedController as? WebViewController
+        XCTAssertEqual(sheet?.role, .standaloneMoreInfo(entityId: "light.kitchen"))
+        XCTAssertEqual(sheet?.server.identifier.rawValue, mockWebViewController.server.identifier.rawValue)
+        XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
+    }
+
+    @MainActor func testHandleExternalMessageMoreInfoOpenWithoutAnEntityIsIgnored() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/open",
+            "payload": [:],
+        ])
+
+        XCTAssertFalse(mockWebViewController.presentOverlayControllerCalled)
+        XCTAssertNil(mockWebViewController.onscreenEntityId)
+    }
+
+    /// The close arrives on the sheet's own web view, so that controller is the one asked to go.
+    @MainActor func testHandleExternalMessageMoreInfoCloseDismissesTheStandaloneSheet() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/close",
+            "payload": ["entity_id": "light.kitchen"],
+        ])
+
+        XCTAssertTrue(mockWebViewController.closeStandaloneMoreInfoCalled)
+    }
+
     /// A control the frontend reports is donated as the intent that would repeat it, against the
     /// server of the web view it came from.
     @MainActor func testHandleExternalMessageEntityControlledDonatesTheMatchingIntent() async throws {
