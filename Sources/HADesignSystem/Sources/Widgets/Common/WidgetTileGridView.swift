@@ -53,18 +53,38 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     }
 
     public var body: some View {
-        let spacing = sizeStyle == .compressed ? .zero : DesignSystem.Spaces.one
-        VStack(alignment: .leading, spacing: spacing) {
+        GeometryReader { proxy in
+            grid(sizeStyle: resolvedSizeStyle(inGridOfHeight: proxy.size.height))
+        }
+    }
+
+    /// The size the tiles are really drawn at.
+    ///
+    /// The tile count picks the size the caller asked for; how tall the grid turns out to be is what
+    /// says whether a compact tile still has room for its icon, since the same rows are comfortable
+    /// on a tall widget and cramped on a short one with a footer under them. Which is why the height
+    /// is read here rather than counted off the tiles — see
+    /// ``WidgetTileLayout/sizeStyle(_:inGridOfHeight:rows:)``.
+    private func resolvedSizeStyle(inGridOfHeight height: CGFloat) -> WidgetTileSizeStyle {
+        WidgetTileLayout.sizeStyle(sizeStyle, inGridOfHeight: height, rows: rows.count)
+    }
+
+    private func grid(sizeStyle style: WidgetTileSizeStyle) -> some View {
+        let spacing = style == .compressed ? .zero : DesignSystem.Spaces.one
+        return VStack(alignment: .leading, spacing: spacing) {
             ForEach(Array(rows.enumerated()), id: \.element) { rowIndex, column in
                 HStack(spacing: spacing) {
                     ForEach(Array(column.enumerated()), id: \.element.id) { itemIndex, item in
-                        tileContent(item, sizeStyle, AnyView(tile(for: item)))
-                            .environment(\.widgetTileCorners, corners(row: rowIndex, item: itemIndex, in: column))
-                            .frame(maxHeight: maxTileHeight)
+                        tileContent(item, style, AnyView(tile(for: item, sizeStyle: style)))
+                            .environment(
+                                \.widgetTileCorners,
+                                corners(row: rowIndex, item: itemIndex, in: column, sizeStyle: style)
+                            )
+                            .frame(maxHeight: maxTileHeight(for: style))
                             .frame(maxWidth: .infinity)
                     }
                     // Constraint item to single column
-                    if hasTrailingSpacer(column) {
+                    if hasTrailingSpacer(column, sizeStyle: style) {
                         Spacer()
                             .frame(maxWidth: .infinity)
                     }
@@ -72,11 +92,14 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .padding([.single, .compressed].contains(sizeStyle) ? .zero : DesignSystem.Spaces.one)
+        .padding([.single, .compressed].contains(style) ? .zero : DesignSystem.Spaces.one)
     }
 
-    private var maxTileHeight: CGFloat? {
-        (sizeStyle == .compact && family != .systemSmall) ? Self.maxTileHeightWhenCompact : nil
+    /// The cap a tile drawn beside its text is held to. A dense tile is one the grid had no room to
+    /// draw compact, so it is already shorter than this — the cap follows it so nothing jumps as a
+    /// grid gives way.
+    private func maxTileHeight(for sizeStyle: WidgetTileSizeStyle) -> CGFloat? {
+        ([.compact, .dense].contains(sizeStyle) && family != .systemSmall) ? Self.maxTileHeightWhenCompact : nil
     }
 
     /// Which of the widget's corners this tile is the one sitting in, if any: the ends of the first
@@ -85,11 +108,16 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     ///
     /// None of them when the grid is compressed: with no padding to hold a tile off the edge, the
     /// widget's own clip already rounds the corners it reaches, so there is nothing left to widen.
-    private func corners(row: Int, item: Int, in tiles: [Item]) -> WidgetTileCorners {
+    private func corners(
+        row: Int,
+        item: Int,
+        in tiles: [Item],
+        sizeStyle: WidgetTileSizeStyle
+    ) -> WidgetTileCorners {
         guard sizeStyle != .compressed else { return [] }
         // A row padded out with a spacer stops short of the widget's trailing edge.
         let isLeading = item == .zero
-        let isTrailing = item == tiles.count - 1 && !hasTrailingSpacer(tiles)
+        let isTrailing = item == tiles.count - 1 && !hasTrailingSpacer(tiles, sizeStyle: sizeStyle)
         var corners: WidgetTileCorners = []
         if row == .zero {
             if isLeading { corners.insert(.topLeading) }
@@ -102,11 +130,11 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         return corners
     }
 
-    private func hasTrailingSpacer(_ tiles: [Item]) -> Bool {
-        tiles.count == 1 && family != .systemSmall && sizeStyle == .compact
+    private func hasTrailingSpacer(_ tiles: [Item], sizeStyle: WidgetTileSizeStyle) -> Bool {
+        tiles.count == 1 && family != .systemSmall && [.compact, .dense].contains(sizeStyle)
     }
 
-    private func tile(for item: Item) -> some View {
+    private func tile(for item: Item, sizeStyle: WidgetTileSizeStyle) -> some View {
         WidgetTileView(
             model: item.tileModel,
             sizeStyle: sizeStyle,

@@ -137,6 +137,42 @@ public enum WidgetTileLayout {
         }
     }
 
+    /// The height a tile stops being worth drawing at compact size, and draws dense instead.
+    ///
+    /// A compact tile is a 38pt icon circle inset by 12pt: below this there is no longer room for
+    /// both, and the glyph fills a row the name is squeezed into. The areas widget pages by the same
+    /// number — see `WidgetAreasLayout.tileStyle(for:family:)`.
+    public static let denseTileHeight: CGFloat = 52
+
+    /// The height one row of a grid this tall gets, once the grid's padding and the gaps between its
+    /// rows have taken theirs.
+    public static func tileHeight(inGridOfHeight height: CGFloat, rows: Int) -> CGFloat {
+        guard rows > 0 else { return .zero }
+        let padding = DesignSystem.Spaces.one * 2
+        let gaps = CGFloat(rows - 1) * DesignSystem.Spaces.one
+        return max(.zero, height - padding - gaps) / CGFloat(rows)
+    }
+
+    /// The size a grid this tall actually draws its tiles at: the one the tile count asked for,
+    /// dropped to `.dense` once the rows leave each tile shorter than a compact one is drawn for.
+    ///
+    /// Measured rather than counted, because the same rows are comfortable on a large phone and
+    /// cramped on a short one with a footer under them. Only a compact grid is dropped: the sizes
+    /// above it are drawn where there is room to spare, and a compressed one has already given up
+    /// its padding and its border to fit.
+    ///
+    /// A height of zero is a grid that has not been measured yet, which is no reason to shrink it.
+    public static func sizeStyle(
+        _ sizeStyle: WidgetTileSizeStyle,
+        inGridOfHeight height: CGFloat,
+        rows: Int
+    ) -> WidgetTileSizeStyle {
+        guard sizeStyle == .compact, rows > 0, height > .zero else { return sizeStyle }
+        return tileHeight(inGridOfHeight: height, rows: rows) < denseTileHeight ? .dense : sizeStyle
+    }
+
+    /// The size the tile count alone asks for. How tall the grid turns out to be can still drop a
+    /// compact grid to `.dense` — see ``sizeStyle(_:inGridOfHeight:rows:)``.
     public static func sizeStyle(family: WidgetFamily, modelsCount: Int, rowsCount: Int) -> WidgetTileSizeStyle {
         if modelsCount == 1 {
             return .single

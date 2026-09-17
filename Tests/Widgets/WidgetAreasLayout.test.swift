@@ -107,7 +107,7 @@ struct WidgetAreasLayoutTests {
     @Test func aPageWithAHeadingDrawsItsTilesDense() throws {
         let pages = WidgetAreasLayout.pages(sections: [Self.floor("ground", areas: 4)], family: .systemMedium)
         let page = try #require(pages.first)
-        #expect(WidgetAreasLayout.tileHeight(for: page, family: .systemMedium) < 52)
+        #expect(WidgetAreasLayout.tileHeight(for: page, family: .systemMedium) < WidgetTileLayout.denseTileHeight)
         #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemMedium) == .dense)
     }
 

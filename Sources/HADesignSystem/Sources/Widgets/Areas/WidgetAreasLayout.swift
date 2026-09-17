@@ -125,8 +125,6 @@ public enum WidgetAreasLayout {
 
     /// How tall a tile is drawn when the page has room to spare.
     public static let maxTileHeight: CGFloat = 56
-    /// The height a tile stops being worth drawing at compact size, and draws dense instead.
-    private static let denseTileHeight: CGFloat = 52
     /// A floor heading and the gap under it.
     private static let headingHeight: CGFloat = 22
     private static let rowSpacing: CGFloat = 8
@@ -161,8 +159,12 @@ public enum WidgetAreasLayout {
 
     /// How a tile is drawn on this page: dense once the headings have taken enough of the height
     /// that a compact tile would be all icon.
+    ///
+    /// The height it turns on is the design system's, so an area tile squeezed by a heading and an
+    /// entity tile squeezed by its own rows give way at the same point — see
+    /// ``WidgetTileLayout/denseTileHeight``.
     public static func tileStyle(for page: WidgetAreasPage, family: WidgetFamily) -> WidgetTileSizeStyle {
-        tileHeight(for: page, family: family) < denseTileHeight ? .dense : .compact
+        tileHeight(for: page, family: family) < WidgetTileLayout.denseTileHeight ? .dense : .compact
     }
 
     /// The tiles of one section, arranged into the rows they are drawn in.
