@@ -17,7 +17,11 @@ struct SiriSettingsView: View {
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
-                image: .microphoneMessageIcon,
+                image: nil,
+                headerImageAlternativeView: AnyView(
+                    SettingsItem.siri.icon(size: 80)
+                        .foregroundStyle(Color.haPrimary)
+                ),
                 title: L10n.Settings.Siri.title,
                 subtitle: L10n.Settings.Siri.subtitle
             )
