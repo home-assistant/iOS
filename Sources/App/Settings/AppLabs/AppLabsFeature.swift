@@ -38,7 +38,11 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
             }
             return false
         case .nativeMoreInfo:
-            return !Current.isCatalyst
+            // The sheet's chrome is built on iOS 26's navigation subtitle and close button role.
+            if #available(iOS 26, *) {
+                return !Current.isCatalyst
+            }
+            return false
         }
     }
 

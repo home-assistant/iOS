@@ -98,8 +98,7 @@ extension WebViewController: WebViewControllerProtocol {
             hideEmptyState()
             updateFrontendKioskMode()
             if resolvedState == .loaded {
-                // The page has rendered, so the loader covering it can go.
-                hideStandaloneLoadingIndicator()
+                // The page has rendered, so the sheet's loader can go.
                 onStandaloneFrontendLoaded?()
             }
         case .authInvalid:
@@ -203,5 +202,13 @@ extension WebViewController: WebViewControllerProtocol {
         Current.Log.info("Standalone more-info hands navigation to \(path) to the frontend underneath")
         onStandaloneNavigation?(path)
         dismiss(animated: true)
+    }
+
+    func updateStandaloneMoreInfoHeader(_ header: StandaloneMoreInfoHeader) {
+        guard case .standaloneMoreInfo = role else {
+            Current.Log.warning("more_info/header reached the main frontend, which draws its own header")
+            return
+        }
+        onStandaloneHeaderChange?(header)
     }
 }
