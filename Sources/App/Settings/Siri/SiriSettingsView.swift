@@ -17,7 +17,11 @@ struct SiriSettingsView: View {
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
-                image: .microphoneMessageIcon,
+                image: nil,
+                headerImageAlternativeView: AnyView(
+                    SettingsItem.siri.icon(size: 80)
+                        .foregroundStyle(Color.haPrimary)
+                ),
                 title: L10n.Settings.Siri.title,
                 subtitle: L10n.Settings.Siri.subtitle
             )
@@ -38,8 +42,11 @@ struct SiriSettingsView: View {
                     }
                     if #available(iOS 27.0, *), row.isExposed,
                        let server = Current.servers.server(for: .init(rawValue: row.id)) {
-                        NavigationLink(L10n.Settings.Siri.Servers.configure) {
+                        NavigationLink {
                             SiriServerConfigurationView(server: server)
+                        } label: {
+                            Text(L10n.Settings.Siri.Servers.configure)
+                                .foregroundStyle(Color.haPrimary)
                         }
                     }
                 }
