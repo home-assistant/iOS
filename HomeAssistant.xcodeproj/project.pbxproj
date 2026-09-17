@@ -2228,6 +2228,8 @@
 		42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				__Snapshots__/WidgetAreasSnapshot.test/systemExtraLargePortraitSnapshot.dark.png,
+				__Snapshots__/WidgetAreasSnapshot.test/systemExtraLargePortraitSnapshot.light.png,
 				__Snapshots__/WidgetAreasSnapshot.test/systemExtraLargeSnapshot.dark.png,
 				__Snapshots__/WidgetAreasSnapshot.test/systemExtraLargeSnapshot.light.png,
 				__Snapshots__/WidgetAreasSnapshot.test/systemLargeLastPageSnapshot.dark.png,
