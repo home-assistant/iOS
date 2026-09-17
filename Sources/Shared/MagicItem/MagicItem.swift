@@ -376,13 +376,16 @@ public struct MagicItem: Codable, Equatable, Hashable {
     /// The interaction an explicitly chosen action performs. `nil` for `.default`, for a
     /// `.toggle` or an on/off behavior the item's domain can't perform, and for a more-info dialog
     /// an item without an entity can't open — all of which leave the choice to whatever the caller
-    /// falls back on. The retired `.nothing` opens the more-info dialog: an icon that was told to
-    /// do nothing must not start controlling the entity after an update.
+    /// falls back on. `.nothing` reloads the widget and nothing more: the tap never controls the
+    /// entity or leaves the widget, so tapping a tile that does nothing is how its state is
+    /// refreshed on demand.
     private func interactionType(for action: ItemAction) -> WidgetInteractionType? {
         switch action {
         case .default:
             return nil
-        case .moreInfoDialog, .nothing:
+        case .nothing:
+            return .appIntent(.refresh)
+        case .moreInfoDialog:
             return hasMoreInfoDialog ? openEntityIntent() : nil
         case .toggle:
             return toggleIntent()
@@ -511,8 +514,7 @@ public enum MagicItemError: Error {
 public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     /// Listed in the frontend's own order, with the app's own additions next to the action they
     /// resemble most: the domain's main action and on/off behaviors after "toggle", `runScript`
-    /// after "perform action". The frontend's "no action" is left out: an item with nothing else
-    /// to do opens its more-info dialog, so `.nothing` is storage only.
+    /// after "perform action", and the frontend's "no action" last.
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,
@@ -525,6 +527,7 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
         .performAction("", "", ""),
         .runScript("", ""),
         .assist("", "", false),
+        .nothing,
     ]
 
     case `default`
@@ -554,10 +557,9 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     case performAction(_ serverId: String, _ actionId: String, _ payload: String)
     case runScript(_ serverId: String, _ scriptId: String)
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
-    /// Retired: the picker no longer offers it, and an item stored with it opens the more-info
-    /// dialog — the one behavior that, like doing nothing, never controls the entity. The case
-    /// stays only so configurations saved while it was offered still decode — dropping it would
-    /// fail every item in such a configuration, not just this one's choice.
+    /// The frontend's "no action": the tap neither controls the entity nor leaves the widget. On a
+    /// widget it reloads the tile instead, so a tile that does nothing is the one whose state can be
+    /// refreshed by hand — which is what the behavior has been used for since it was first offered.
     case nothing
 
     /// The behaviors a picker offers one item: every case, minus the ones the item's domain can't
@@ -565,8 +567,7 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     /// with a single service — the way the frontend's action editor filters "toggle" out of its
     /// own list. `supportedFeatures`, when known, narrows "toggle" the way the frontend's
     /// `canToggleState` does. A stored choice stays listed even then, so it never vanishes from
-    /// under the user; it falls back at tap time the way it always has. The retired `.nothing` is
-    /// the exception: it reads as "more info", so it is never listed.
+    /// under the user; it falls back at tap time the way it always has.
     public static func offered(
         for item: MagicItem,
         supportedFeatures: Int? = nil,
@@ -587,12 +588,6 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
                 return true
             }
         }
-    }
-
-    /// Whether this is a stored choice the picker should show as "more info": the retired
-    /// `.nothing`, which now behaves that way.
-    public var isRetired: Bool {
-        self == .nothing
     }
 
     public var id: String {
