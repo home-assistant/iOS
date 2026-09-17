@@ -46,9 +46,10 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoOpen.rawValue, "more_info/open")
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoClose.rawValue, "more_info/close")
+        XCTAssertEqual(WebViewExternalBusMessage.moreInfoNavigate.rawValue, "more_info/navigate")
         XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 31)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 32)
     }
 
     func testExternalBusOutgoingMessageKeys() {

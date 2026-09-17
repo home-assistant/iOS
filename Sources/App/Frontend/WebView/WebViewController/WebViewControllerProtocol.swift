@@ -49,6 +49,9 @@ protocol WebViewControllerProtocol: AnyObject {
     /// The frontend's `more_info/close`: dismisses the sheet this controller is shown in as a standalone
     /// more-info screen; see `StandaloneMoreInfoPresenter`.
     func closeStandaloneMoreInfo()
+    /// The frontend's `more_info/navigate`: a link out of the standalone more-info screen, for the
+    /// frontend underneath to show; the sheet is dismissed.
+    func relayStandaloneNavigation(path: String)
 }
 
 extension WebViewControllerProtocol {

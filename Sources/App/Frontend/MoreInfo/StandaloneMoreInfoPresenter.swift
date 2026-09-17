@@ -7,7 +7,9 @@ import UIKit
 /// The frontend sends `more_info/open` instead of opening its dialog once the app reports
 /// `hasNativeMoreInfo`. The sheet hosts a second web view on the frontend's frameless `/more-info`
 /// route; its close button sends `more_info/close`, which the sheet's own controller answers by
-/// dismissing itself (see `WebViewController.closeStandaloneMoreInfo()`).
+/// dismissing itself (see `WebViewController.closeStandaloneMoreInfo()`). A link out of the page
+/// (device page, entity editor, related items) arrives as `more_info/navigate`: the sheet is
+/// dismissed and the frontend underneath is sent to the destination over the bus.
 @MainActor
 final class StandaloneMoreInfoPresenter {
     nonisolated init() {}
@@ -25,6 +27,12 @@ final class StandaloneMoreInfoPresenter {
         host.setOnscreenEntity(entityId: entityId)
         sheet.onDismiss = { [weak host] in
             host?.clearOnscreenEntity(entityId: entityId)
+        }
+        sheet.onStandaloneNavigation = { [weak host] path in
+            host?.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+                command: .navigate,
+                payload: ["path": path]
+            )
         }
 
         host.presentOverlayController(controller: sheet, animated: true)

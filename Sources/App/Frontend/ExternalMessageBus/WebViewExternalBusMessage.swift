@@ -38,6 +38,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case moreInfoOpen = "more_info/open"
     /// Sent by the standalone more-info page when its close button is tapped.
     case moreInfoClose = "more_info/close"
+    /// Sent by the standalone more-info page instead of navigating to another page itself.
+    case moreInfoNavigate = "more_info/navigate"
     case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {

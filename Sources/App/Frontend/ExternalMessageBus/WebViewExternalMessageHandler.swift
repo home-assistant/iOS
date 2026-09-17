@@ -230,6 +230,12 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .moreInfoClose:
                 // Arrives on the sheet's own web view, so that controller is the one to go.
                 webViewController.closeStandaloneMoreInfo()
+            case .moreInfoNavigate:
+                guard let path = incomingMessage.Payload?["path"] as? String else {
+                    Current.Log.error("Received more_info/navigate but path was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.relayStandaloneNavigation(path: path)
             case .entityControlled:
                 guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
                     Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")

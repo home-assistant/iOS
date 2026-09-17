@@ -18,6 +18,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let role: WebViewControllerRole
     /// Called after a standalone sheet has left the screen, however it was dismissed.
     var onDismiss: (() -> Void)?
+    /// Called with the frontend path a standalone sheet was asked to leave for, before it dismisses.
+    var onStandaloneNavigation: ((String) -> Void)?
     /// Covers the standalone sheet until its frontend reports it has loaded.
     var standaloneLoadingController: UIViewController?
 
