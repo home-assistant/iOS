@@ -34,6 +34,10 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case sidebarShow = "sidebar/show"
     case moreInfoOpened = "more_info/opened"
     case moreInfoClosed = "more_info/closed"
+    /// Sent instead of opening the more-info dialog while the app reports `hasNativeMoreInfo`.
+    case moreInfoOpen = "more_info/open"
+    /// Sent by the standalone more-info page when its close button is tapped.
+    case moreInfoClose = "more_info/close"
     case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
@@ -53,6 +57,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
+            "hasNativeMoreInfo": AppLabsFeature.nativeMoreInfo.isEnabled,
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
             "toastComponentVersion": { // Frontend can use this to know if the version has what it needs

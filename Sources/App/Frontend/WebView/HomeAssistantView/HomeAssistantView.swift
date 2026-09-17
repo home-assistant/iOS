@@ -14,6 +14,7 @@ struct HomeAssistantView: View, WebFrontendView {
     @StateObject private var launchMessages = LaunchMessagesState()
     @ObservedObject private var nativeSidebar = MacNativeSidebarState.shared
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
+    @ObservedObject private var appLabs = Current.appLabs
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Owned by `ConditionalContainerView`, which presents the picker the stand-by view zooms into.
@@ -80,6 +81,10 @@ struct HomeAssistantView: View, WebFrontendView {
             viewModel.resetWebFrontend()
         }
         .onChange(of: nativeTabBar.isEnabled) { _ in
+            viewModel.resetWebFrontend()
+        }
+        .onChange(of: AppLabsFeature.nativeMoreInfo.isEnabled(in: appLabs.enabledFeatureIds)) { _ in
+            // `hasNativeMoreInfo` is read from the external config once per page load as well.
             viewModel.resetWebFrontend()
         }
     }

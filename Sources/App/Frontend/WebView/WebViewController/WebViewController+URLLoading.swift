@@ -192,6 +192,12 @@ extension WebViewController {
     /// Determines which URL to load for the active server: the kiosk dashboard (when applicable), the
     /// restored last URL, the preserved current path on a base-URL change, or the server default.
     private func resolvedLoadURL(for webviewURL: URL) async -> URL {
+        if webView.url == nil, let pinnedPath = role.pinnedPath,
+           let pinned = Self.restoredURL(base: webviewURL, relativePath: pinnedPath) {
+            // The role decides the first page; a base URL change later keeps whatever the page is on.
+            Current.Log.info("loading pinned path: \(pinned.path)")
+            return pinned
+        }
         if let kioskURL = await kioskDashboardURL(for: webviewURL) {
             // In kiosk mode the configured dashboard takes precedence over restore/last-path behavior.
             Current.Log.info("loading kiosk dashboard path: \(kioskURL.path)")

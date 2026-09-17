@@ -45,6 +45,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var showLoggedOutStateCalled = false
     var showLoggedOutStateExpectation: XCTestExpectation?
     var openInBrowserCalled = false
+    var closeStandaloneMoreInfoCalled = false
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -163,5 +164,9 @@ final class MockWebViewController: WebViewControllerProtocol {
     func clearOnscreenEntity(entityId: String) {
         guard onscreenEntityId == entityId else { return }
         onscreenEntityId = nil
+    }
+
+    func closeStandaloneMoreInfo() {
+        closeStandaloneMoreInfoCalled = true
     }
 }

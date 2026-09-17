@@ -46,6 +46,9 @@ protocol WebViewControllerProtocol: AnyObject {
     /// that says "this" against it; see `WebViewController+OnscreenContent`.
     func setOnscreenEntity(entityId: String)
     func clearOnscreenEntity(entityId: String)
+    /// The frontend's `more_info/close`: dismisses the sheet this controller is shown in as a standalone
+    /// more-info screen; see `StandaloneMoreInfoPresenter`.
+    func closeStandaloneMoreInfo()
 }
 
 extension WebViewControllerProtocol {

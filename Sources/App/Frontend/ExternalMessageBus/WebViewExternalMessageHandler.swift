@@ -25,6 +25,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private let improvManager: any ImprovManagerProtocol
     private let entityControlDonation: EntityControlDonation
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
+    private lazy var standaloneMoreInfoPresenter = StandaloneMoreInfoPresenter()
 
     private var improvController: UIViewController?
 
@@ -220,6 +221,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.clearOnscreenEntity(entityId: entityId)
+            case .moreInfoOpen:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/open but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                standaloneMoreInfoPresenter.present(entityId: entityId, from: webViewController)
+            case .moreInfoClose:
+                // Arrives on the sheet's own web view, so that controller is the one to go.
+                webViewController.closeStandaloneMoreInfo()
             case .entityControlled:
                 guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
                     Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")
