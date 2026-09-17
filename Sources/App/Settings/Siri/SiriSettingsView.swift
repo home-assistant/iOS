@@ -38,8 +38,11 @@ struct SiriSettingsView: View {
                     }
                     if #available(iOS 27.0, *), row.isExposed,
                        let server = Current.servers.server(for: .init(rawValue: row.id)) {
-                        NavigationLink(L10n.Settings.Siri.Servers.configure) {
+                        NavigationLink {
                             SiriServerConfigurationView(server: server)
+                        } label: {
+                            Text(L10n.Settings.Siri.Servers.configure)
+                                .foregroundStyle(Color.haPrimary)
                         }
                     }
                 }
