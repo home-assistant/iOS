@@ -127,7 +127,8 @@ public enum WidgetAreasLayout {
     public static let maxTileHeight: CGFloat = 56
     /// A floor heading and the gap under it.
     private static let headingHeight: CGFloat = 22
-    private static let rowSpacing: CGFloat = 8
+    /// The gap between two rows of tiles, which is the one the view stacks them with.
+    private static var rowSpacing: CGFloat { DesignSystem.Spaces.one }
 
     /// The height each tile on a page gets: what is left of the page once the headings and the gaps
     /// between the rows have taken theirs, and never more than a tile is drawn at.
