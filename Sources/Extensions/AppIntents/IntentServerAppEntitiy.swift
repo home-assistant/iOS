@@ -8,7 +8,11 @@ struct IntentServerAppEntity: AppEntity, Sendable {
 
     struct IntentServerAppEntityQuery: EntityQuery, EntityStringQuery {
         func entities(for identifiers: [IntentServerAppEntity.ID]) async throws -> [IntentServerAppEntity] {
-            getServerEntities().filter { identifiers.contains($0.id) }
+            // Keep the persisted identifier rather than the local server's one, so a shortcut synced
+            // between devices keeps working on both instead of being fixed on one and broken on the other.
+            identifiers
+                .map { IntentServerAppEntity(identifier: .init(rawValue: $0)) }
+                .filter { $0.getServer() != nil }
         }
 
         func entities(matching string: String) async throws -> [IntentServerAppEntity] {
@@ -51,10 +55,22 @@ struct IntentServerAppEntity: AppEntity, Sendable {
     }
 
     func getServer() -> Server? {
-        Current.servers.server(for: .init(rawValue: id))
+        Self.server(for: id)
     }
 
     func getInfo() -> ServerInfo? {
         getServer()?.info
+    }
+
+    /// Server identifiers are generated per installation, so a shortcut synced from another device
+    /// through iCloud carries an identifier this device has never seen. When a single server is set
+    /// up there is only one server that shortcut can mean, so resolve to it instead of failing.
+    static func server(for rawIdentifier: String) -> Server? {
+        if let server = Current.servers.server(for: .init(rawValue: rawIdentifier)) {
+            return server
+        }
+
+        let allServers = Current.servers.all
+        return allServers.count == 1 ? allServers.first : nil
     }
 }
