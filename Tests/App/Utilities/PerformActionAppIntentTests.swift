@@ -1,3 +1,4 @@
+import Foundation
 import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
@@ -44,25 +45,37 @@ struct PerformActionAppIntentTests {
     /// Runs `perform()` against a mocked connection, answering the one request it sends.
     ///
     /// The intent is async while the connection records requests synchronously, so the call is
-    /// started first and the request answered once it lands.
+    /// started first and the request answered once it lands. A request that never arrives fails the
+    /// test rather than leaving it awaiting an intent that is itself blocked on the connection.
     @available(iOS 17.0, *)
     private func performAndCaptureRequest(
         _ intent: PerformActionAppIntent,
         connection: HAMockConnection
-    ) async throws -> HARequest? {
+    ) async throws -> HARequest {
         let task = Task { try await intent.perform() }
-        var waited = 0
-        while connection.pendingRequests.isEmpty, waited < 200 {
-            try await Task.sleep(nanoseconds: 5_000_000)
-            waited += 1
-        }
-        let request = connection.pendingRequests.first?.request
-        for pending in connection.pendingRequests {
+        do {
+            let pending = try await firstRequest(on: connection)
             pending.completion(.success(.empty))
+            _ = try await task.value
+            return pending.request
+        } catch {
+            task.cancel()
+            throw error
         }
-        _ = try await task.value
-        return request
     }
+
+    /// The first request sent on `connection`, once it has been sent.
+    private func firstRequest(on connection: HAMockConnection) async throws -> HAMockConnection.PendingRequest {
+        for _ in 0 ..< 300 {
+            if let pending = connection.pendingRequests.first {
+                return pending
+            }
+            try await Task.sleep(nanoseconds: 10 * NSEC_PER_MSEC)
+        }
+        throw RequestNeverSent()
+    }
+
+    private struct RequestNeverSent: Error {}
 
     /// A shortcut synced from another device names a server this installation never issued. With a
     /// single server set up there is only one server it can mean, so the action runs.
@@ -75,9 +88,9 @@ struct PerformActionAppIntentTests {
             intent.payload = #"{"entity_id": "fan.probreeze"}"#
 
             let request = try await performAndCaptureRequest(intent, connection: connections[0])
-            #expect(request?.data["domain"] as? String == "fan")
-            #expect(request?.data["service"] as? String == "turn_on")
-            #expect((request?.data["service_data"] as? [String: Any])?["entity_id"] as? String == "fan.probreeze")
+            #expect(request.data["domain"] as? String == "fan")
+            #expect(request.data["service"] as? String == "turn_on")
+            #expect((request.data["service_data"] as? [String: Any])?["entity_id"] as? String == "fan.probreeze")
         }
     }
 
