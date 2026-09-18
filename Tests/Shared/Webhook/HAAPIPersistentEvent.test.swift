@@ -3,16 +3,64 @@ import Foundation
 import XCTest
 
 final class HAAPIPersistentEventTests: XCTestCase {
+    private typealias StartRecord = (
+        server: Server,
+        request: WebhookRequest,
+        identifier: String?,
+        timeout: TimeInterval?
+    )
+
+    private final class LockedValue<Value>: @unchecked Sendable {
+        private let lock = NSLock()
+        private var stored: Value
+
+        init(_ value: Value) {
+            self.stored = value
+        }
+
+        var value: Value {
+            get {
+                lock.lock()
+                defer { lock.unlock() }
+                return stored
+            }
+            set {
+                lock.lock()
+                stored = newValue
+                lock.unlock()
+            }
+        }
+
+        func withValue<T>(_ operation: (inout Value) -> T) -> T {
+            lock.lock()
+            defer { lock.unlock() }
+            return operation(&stored)
+        }
+    }
+
     private final class RecordingWebhookManager: FakeWebhookManager {
-        var startResult: Result<Task<Void, Error>, Error> = .failure(WebhookError.requiresMainThread)
-        var reconciliationResult: PersistedBackgroundRequestState = .absent
-        private(set) var starts = [(
-            server: Server,
-            request: WebhookRequest,
-            identifier: String?,
-            timeout: TimeInterval?
-        )]()
-        private(set) var reconciliations = [String]()
+        private let startResultBox = LockedValue<Result<Task<Void, Error>, Error>>(.failure(WebhookError.requiresMainThread))
+        private let reconciliationResultBox = LockedValue<PersistedBackgroundRequestState>(.absent)
+        private let startsBox = LockedValue<[StartRecord]>([])
+        private let reconciliationsBox = LockedValue<[String]>([])
+
+        var startResult: Result<Task<Void, Error>, Error> {
+            get { startResultBox.value }
+            set { startResultBox.value = newValue }
+        }
+
+        var reconciliationResult: PersistedBackgroundRequestState {
+            get { reconciliationResultBox.value }
+            set { reconciliationResultBox.value = newValue }
+        }
+
+        var starts: [StartRecord] {
+            startsBox.value
+        }
+
+        var reconciliations: [String] {
+            reconciliationsBox.value
+        }
 
         override func startPersistedBackground(
             identifier: WebhookResponseIdentifier = .unhandled,
@@ -21,12 +69,16 @@ final class HAAPIPersistentEventTests: XCTestCase {
             requestIdentifier: String? = nil,
             requestTimeout: TimeInterval? = nil
         ) -> Result<Task<Void, Error>, Error> {
-            starts.append((server, request, requestIdentifier, requestTimeout))
+            startsBox.withValue { starts in
+                starts.append((server, request, requestIdentifier, requestTimeout))
+            }
             return startResult
         }
 
         override func reconcilePersistedBackground(requestIdentifier: String) async -> PersistedBackgroundRequestState {
-            reconciliations.append(requestIdentifier)
+            reconciliationsBox.withValue { reconciliations in
+                reconciliations.append(requestIdentifier)
+            }
             return reconciliationResult
         }
     }

@@ -79,6 +79,12 @@ public class WebhookManager: NSObject {
         }
     }
 
+    private var temporaryUploadFileForTask: [TaskKey: URL] = [:] {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+    }
+
     private var serverForEphemeralTask: [TaskKey: Server] = [:] {
         willSet {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
@@ -490,14 +496,12 @@ public class WebhookManager: NSObject {
             serverCache[server.identifier] = server
             evaluateCancellable(by: task, type: handlerType, persisted: persisted, with: promise)
             resolverForTask[taskKey] = seal
+            temporaryUploadFileForTask[taskKey] = temporaryFile
             if let requestIdentifier {
                 registerActivePersistedRequest(promise, requestIdentifier: requestIdentifier)
             }
 
             task.resume()
-            // URLSession owns the upload file after `resume()`. Cleanup failure must not turn a
-            // successfully started task into a reported start failure.
-            try? FileManager.default.removeItem(at: temporaryFile)
 
             Current.Log.info("started immediate persisted request: \(taskKey)")
             return promise
@@ -934,6 +938,12 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         let sessionInfo = sessionInfo(for: session)
         let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
         let statusCode = (task.response as? HTTPURLResponse)?.statusCode
+        let temporaryUploadFile = temporaryUploadFileForTask.removeValue(forKey: taskKey)
+        defer {
+            if let temporaryUploadFile {
+                try? FileManager.default.removeItem(at: temporaryUploadFile)
+            }
+        }
 
         if let error, error.isCancelled {
             Current.Log.info("ignoring cancelled task \(taskKey)")
