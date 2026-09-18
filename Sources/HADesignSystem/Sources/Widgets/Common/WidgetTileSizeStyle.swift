@@ -104,5 +104,33 @@ public enum WidgetTileSizeStyle: CaseIterable, Sendable {
             return .init(width: 30, height: 30)
         }
     }
+
+    /// The icon slot in a row this tall: the row, less the inset it keeps above and below the icon —
+    /// the same one it keeps at the leading edge, so the glyph is not pressed against the card's top
+    /// and bottom while the text starts further in than the icon does.
+    ///
+    /// Never larger than the size the style is drawn at: a row with height to spare keeps the icon
+    /// the design system sized it for rather than growing one to fill it. A row of no height is one
+    /// nobody has measured, which is no reason to shrink anything.
+    public func iconCircleSize(inRowOfHeight rowHeight: CGFloat?) -> CGSize {
+        guard let rowHeight, rowHeight > .zero else { return iconCircleSize }
+        let side = min(iconCircleSize.height, max(.zero, rowHeight - horizontalPadding * 2))
+        return .init(width: side, height: side)
+    }
+
+    /// The size a glyph is drawn at in a row this tall: brought down in step with the slot it sits
+    /// in, so a glyph fills the same share of its circle at every height.
+    public func iconSize(withBackground: Bool, inRowOfHeight rowHeight: CGFloat?) -> CGFloat {
+        let full = iconSize(withBackground: withBackground)
+        guard iconCircleSize.height > .zero else { return full }
+        return full * (iconCircleSize(inRowOfHeight: rowHeight).height / iconCircleSize.height)
+    }
+
+    public func iconFont(withBackground: Bool, inRowOfHeight rowHeight: CGFloat?) -> Font {
+        .custom(
+            MaterialDesignIcons.familyName,
+            size: iconSize(withBackground: withBackground, inRowOfHeight: rowHeight)
+        )
+    }
 }
 #endif

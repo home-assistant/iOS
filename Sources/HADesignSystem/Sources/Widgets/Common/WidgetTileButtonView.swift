@@ -17,19 +17,24 @@ public struct WidgetTileButtonView: View {
     /// Splits the tile into an icon control and a body control. `nil` leaves it whole, for the tiles
     /// whose icon and body would run the same thing anyway.
     public let regions: WidgetTileRegions?
+    /// How tall the row this tile is drawn in turns out to be, which is what its icon is sized from.
+    /// `nil` when the caller has not measured one, and the icon keeps the size its style draws at.
+    public let rowHeight: CGFloat?
 
     public init(
         model: WidgetTileModel,
         sizeStyle: WidgetTileSizeStyle,
         family: WidgetFamily,
         tinted: Bool,
-        regions: WidgetTileRegions? = nil
+        regions: WidgetTileRegions? = nil,
+        rowHeight: CGFloat? = nil
     ) {
         self.model = model
         self.sizeStyle = sizeStyle
         self.family = family
         self.tinted = tinted
         self.regions = regions
+        self.rowHeight = rowHeight
     }
 
     /// The inline family draws its icon at the size the system leaves for one, next to the title.
@@ -111,7 +116,7 @@ public struct WidgetTileButtonView: View {
     private var icon: some View {
         VStack {
             Text(verbatim: model.icon.unicode)
-                .font(sizeStyle.iconFont(withBackground: model.showIconBackground))
+                .font(sizeStyle.iconFont(withBackground: model.showIconBackground, inRowOfHeight: iconRowHeight))
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
                 // The glyph is a private-use character in the icon font, so VoiceOver has nothing
@@ -121,7 +126,10 @@ public struct WidgetTileButtonView: View {
         // The slot stays the same size either way, so tiles line up whether or not their icon has
         // a background. Only the circle behind a background icon needs clipping — a bare glyph is
         // drawn larger and would be cut off by it.
-        .frame(width: sizeStyle.iconCircleSize.width, height: sizeStyle.iconCircleSize.height)
+        .frame(
+            width: sizeStyle.iconCircleSize(inRowOfHeight: iconRowHeight).width,
+            height: sizeStyle.iconCircleSize(inRowOfHeight: iconRowHeight).height
+        )
         .modify { view in
             if model.showIconBackground {
                 view
@@ -130,6 +138,15 @@ public struct WidgetTileButtonView: View {
             } else {
                 view
             }
+        }
+    }
+
+    /// The height the icon is sized from: the row's, but only where the icon sits beside the text.
+    /// The sizes that stack it above the text have the whole tile to fill and are drawn as they are.
+    private var iconRowHeight: CGFloat? {
+        switch sizeStyle {
+        case .regular, .compact, .dense, .compressed: rowHeight
+        case .single, .expanded: nil
         }
     }
 
