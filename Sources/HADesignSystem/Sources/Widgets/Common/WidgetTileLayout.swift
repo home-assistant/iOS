@@ -141,7 +141,7 @@ public enum WidgetTileLayout {
     ///
     /// A compact tile is a 38pt icon circle inset by 12pt: below this there is no longer room for
     /// both, and the glyph fills a row the name is squeezed into. The areas widget pages by the same
-    /// number — see `WidgetAreasLayout.tileStyle(for:family:)`.
+    /// number — see `WidgetAreasLayout.tileStyle(for:family:inContentOfHeight:)`.
     public static let denseTileHeight: CGFloat = 52
 
     /// The gap a grid leaves between its rows, and the padding it keeps around them.
