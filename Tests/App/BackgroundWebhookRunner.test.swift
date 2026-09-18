@@ -39,7 +39,7 @@ final class BackgroundWebhookRunnerTests: XCTestCase {
             }
         )
         Current.isBackgroundRequestsImmediate = { true }
-        let api = FakeHassAPI(server: .fake())
+        let api = HomeAssistantAPI(server: .fake())
         Current.cachedApis = [api.server.identifier: api]
         let manager = WebhookManager()
         let url = api.server.info.connection.evaluateWebhookURL()

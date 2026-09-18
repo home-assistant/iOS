@@ -39,7 +39,9 @@ final class HAAPIPersistentEventTests: XCTestCase {
     }
 
     private final class RecordingWebhookManager: FakeWebhookManager {
-        private let startResultBox = LockedValue<Result<Task<Void, Error>, Error>>(.failure(WebhookError.requiresMainThread))
+        private let startResultBox = LockedValue<Result<Task<Void, Error>, Error>>(
+            .failure(WebhookError.requiresMainThread)
+        )
         private let reconciliationResultBox = LockedValue<PersistedBackgroundRequestState>(.absent)
         private let startsBox = LockedValue<[StartRecord]>([])
         private let reconciliationsBox = LockedValue<[String]>([])
