@@ -76,11 +76,8 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
             ForEach(Array(rows.enumerated()), id: \.element) { rowIndex, column in
                 HStack(spacing: spacing) {
                     ForEach(Array(column.enumerated()), id: \.element.id) { itemIndex, item in
-                        tileContent(
-                            item,
-                            style,
-                            AnyView(tile(for: item, sizeStyle: style, rowHeight: measuredRowHeight))
-                        )
+                        let rendered = AnyView(tile(for: item, sizeStyle: style, rowHeight: measuredRowHeight))
+                        tileContent(item, style, rendered)
                             .environment(
                                 \.widgetTileCorners,
                                 corners(row: rowIndex, item: itemIndex, in: column, sizeStyle: style)

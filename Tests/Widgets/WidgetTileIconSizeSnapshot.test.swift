@@ -25,8 +25,8 @@ struct WidgetTileIconSizeSnapshotTests {
 
     /// A row with height to spare keeps the circle the compact size is drawn at.
     @MainActor @Test func iconKeepsItsSizeInARoomyRow() {
-        assertTile(rowHeight: WidgetTileSizeStyle.compact.iconCircleSize.height
-            + WidgetTileSizeStyle.compact.horizontalPadding * 2)
+        let compact = WidgetTileSizeStyle.compact
+        assertTile(rowHeight: compact.iconCircleSize.height + compact.horizontalPadding * 2)
     }
 
     /// A shorter row gets a smaller circle instead of one pressed against the card's top and bottom:
