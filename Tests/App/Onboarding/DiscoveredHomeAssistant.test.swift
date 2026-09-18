@@ -217,6 +217,24 @@ struct DiscoveredHomeAssistantTests {
         #expect(discovered.adoptingInstanceID(from: [discovered]).uuid == "")
     }
 
+    @Test("A URL without a usable host and port never matches")
+    func adoptionIgnoresURLsWithoutHostAndPort() async throws {
+        let discovered = try DiscoveredHomeAssistant(
+            JSON: [
+                "uuid": "instance-id-from-mdns",
+                "internal_url": "http://192.168.1.100:8123",
+                "location_name": "Home",
+            ],
+            context: nil
+        )
+        let manual = DiscoveredHomeAssistant(manualURL: URL(string: "file:///config")!)
+
+        let adopted = manual.adoptingInstanceID(from: [discovered])
+
+        #expect(adopted.uuid == manual.uuid)
+        #expect(adopted.hasHomeAssistantInstanceID == false)
+    }
+
     @Test("mDNS payload allows missing version")
     func mdnsPayloadAllowsMissingVersion() async throws {
         let discovered = try DiscoveredHomeAssistant(
