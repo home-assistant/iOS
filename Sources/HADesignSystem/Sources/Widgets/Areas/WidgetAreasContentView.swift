@@ -161,9 +161,9 @@ public struct WidgetAreasContentView: View {
             ),
             sizeStyle: tileSizeStyle,
             family: family,
-            kind: .button,
-            rowHeight: tileHeight
+            kind: .button
         )
+        .environment(\.widgetTileRowHeight, tileHeight)
     }
 
     @ViewBuilder

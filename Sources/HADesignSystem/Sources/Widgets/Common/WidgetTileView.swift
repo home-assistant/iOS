@@ -25,10 +25,6 @@ public struct WidgetTileView: View {
     /// Splits an action tile into an icon control and a body control. Only ``WidgetTileKind/button``
     /// tiles can be split — a reading has nothing to control.
     public let regions: WidgetTileRegions?
-    /// How tall the row this tile is drawn in turns out to be. The tile sizes its icon from it, so
-    /// a row too short for the icon the style draws gets a smaller one rather than one pressed
-    /// against the card's edges. `nil` where the caller has not measured a row.
-    public let rowHeight: CGFloat?
 
     public init(
         model: WidgetTileModel,
@@ -36,8 +32,7 @@ public struct WidgetTileView: View {
         family: WidgetFamily,
         kind: WidgetTileKind,
         tinted: Bool? = nil,
-        regions: WidgetTileRegions? = nil,
-        rowHeight: CGFloat? = nil
+        regions: WidgetTileRegions? = nil
     ) {
         self.model = model
         self.sizeStyle = sizeStyle
@@ -45,7 +40,6 @@ public struct WidgetTileView: View {
         self.kind = kind
         self.tinted = tinted
         self.regions = regions
-        self.rowHeight = rowHeight
     }
 
     public var body: some View {
@@ -58,16 +52,14 @@ public struct WidgetTileView: View {
                     sizeStyle: sizeStyle,
                     family: family,
                     tinted: isTinted,
-                    regions: regions,
-                    rowHeight: rowHeight
+                    regions: regions
                 )
             case .sensor:
                 WidgetTileSensorView(
                     model: model,
                     sizeStyle: sizeStyle,
                     family: family,
-                    tinted: isTinted,
-                    rowHeight: rowHeight
+                    tinted: isTinted
                 )
             }
         }

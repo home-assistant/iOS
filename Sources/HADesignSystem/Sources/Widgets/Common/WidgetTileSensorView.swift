@@ -12,21 +12,18 @@ public struct WidgetTileSensorView: View {
     public let family: WidgetFamily
     public let tinted: Bool
     /// How tall the row this tile is drawn in turns out to be, which is what its icon is sized from.
-    /// `nil` when the caller has not measured one, and the icon keeps the size its style draws at.
-    public let rowHeight: CGFloat?
+    @Environment(\.widgetTileRowHeight) private var rowHeight
 
     public init(
         model: WidgetTileModel,
         sizeStyle: WidgetTileSizeStyle,
         family: WidgetFamily,
-        tinted: Bool,
-        rowHeight: CGFloat? = nil
+        tinted: Bool
     ) {
         self.model = model
         self.sizeStyle = sizeStyle
         self.family = family
         self.tinted = tinted
-        self.rowHeight = rowHeight
     }
 
     /// The inline family draws its icon at the size the system leaves for one, next to the reading.

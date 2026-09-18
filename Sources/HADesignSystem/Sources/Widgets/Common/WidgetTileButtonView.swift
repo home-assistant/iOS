@@ -18,23 +18,20 @@ public struct WidgetTileButtonView: View {
     /// whose icon and body would run the same thing anyway.
     public let regions: WidgetTileRegions?
     /// How tall the row this tile is drawn in turns out to be, which is what its icon is sized from.
-    /// `nil` when the caller has not measured one, and the icon keeps the size its style draws at.
-    public let rowHeight: CGFloat?
+    @Environment(\.widgetTileRowHeight) private var rowHeight
 
     public init(
         model: WidgetTileModel,
         sizeStyle: WidgetTileSizeStyle,
         family: WidgetFamily,
         tinted: Bool,
-        regions: WidgetTileRegions? = nil,
-        rowHeight: CGFloat? = nil
+        regions: WidgetTileRegions? = nil
     ) {
         self.model = model
         self.sizeStyle = sizeStyle
         self.family = family
         self.tinted = tinted
         self.regions = regions
-        self.rowHeight = rowHeight
     }
 
     /// The inline family draws its icon at the size the system leaves for one, next to the title.

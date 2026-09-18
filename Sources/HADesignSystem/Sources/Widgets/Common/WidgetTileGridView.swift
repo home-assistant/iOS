@@ -76,12 +76,12 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
             ForEach(Array(rows.enumerated()), id: \.element) { rowIndex, column in
                 HStack(spacing: spacing) {
                     ForEach(Array(column.enumerated()), id: \.element.id) { itemIndex, item in
-                        let rendered = AnyView(tile(for: item, sizeStyle: style, rowHeight: measuredRowHeight))
-                        tileContent(item, style, rendered)
+                        tileContent(item, style, AnyView(tile(for: item, sizeStyle: style)))
                             .environment(
                                 \.widgetTileCorners,
                                 corners(row: rowIndex, item: itemIndex, in: column, sizeStyle: style)
                             )
+                            .environment(\.widgetTileRowHeight, measuredRowHeight)
                             .frame(maxHeight: maxTileHeight(for: style))
                             .frame(maxWidth: .infinity)
                     }
@@ -150,14 +150,13 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         tiles.count == 1 && family != .systemSmall && [.compact, .dense].contains(sizeStyle)
     }
 
-    private func tile(for item: Item, sizeStyle: WidgetTileSizeStyle, rowHeight: CGFloat?) -> some View {
+    private func tile(for item: Item, sizeStyle: WidgetTileSizeStyle) -> some View {
         WidgetTileView(
             model: item.tileModel,
             sizeStyle: sizeStyle,
             family: family,
             kind: kind,
-            regions: tileRegions(item),
-            rowHeight: rowHeight
+            regions: tileRegions(item)
         )
     }
 }

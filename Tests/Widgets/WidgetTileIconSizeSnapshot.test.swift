@@ -53,9 +53,9 @@ struct WidgetTileIconSizeSnapshotTests {
                 model: WidgetTileSampleData.actions[1],
                 sizeStyle: .compact,
                 family: .systemMedium,
-                kind: .button,
-                rowHeight: rowHeight
+                kind: .button
             )
+            .environment(\.widgetTileRowHeight, rowHeight)
             .frame(width: width, height: rowHeight)
             .background(Color.widgetPrimaryBackground),
             layout: .fixed(width: width, height: rowHeight),
