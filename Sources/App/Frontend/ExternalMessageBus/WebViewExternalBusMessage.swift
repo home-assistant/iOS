@@ -34,6 +34,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case sidebarShow = "sidebar/show"
     case moreInfoOpened = "more_info/opened"
     case moreInfoClosed = "more_info/closed"
+    case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
         [

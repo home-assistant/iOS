@@ -1,3 +1,5 @@
+import AppIntents
+import GRDB
 @testable import HomeAssistant
 import Improv_iOS
 import PromiseKit
@@ -491,5 +493,95 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ])
 
         XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
+    }
+
+    /// A control the frontend reports is donated as the intent that would repeat it, against the
+    /// server of the web view it came from.
+    @MainActor func testHandleExternalMessageEntityControlledDonatesTheMatchingIntent() async throws {
+        try await withSeededDatabase(entityId: "light.kitchen") { server in
+            let donated = expectation(description: "donated")
+            var intents: [any AppIntent] = []
+            sut = WebViewExternalMessageHandler(
+                improvManager: ImprovManager.shared,
+                entityControlDonation: .init { intent in
+                    intents.append(intent)
+                    donated.fulfill()
+                }
+            )
+            mockWebViewController.server = server
+            sut.webViewController = mockWebViewController
+
+            sut.handleExternalMessage([
+                "id": 1,
+                "message": "",
+                "command": "",
+                "type": "entity/controlled",
+                "payload": [
+                    "entity_ids": ["light.kitchen"],
+                    "domain": "light",
+                    "service": "turn_on",
+                ],
+            ])
+
+            await fulfillment(of: [donated], timeout: 5)
+            let intent = try XCTUnwrap(intents.first as? TurnOnOffEntityAppIntent)
+            XCTAssertEqual(intent.action, .on)
+            XCTAssertEqual(intent.entity.entityId, "light.kitchen")
+            XCTAssertEqual(intent.entity.serverId, server.identifier.rawValue)
+        }
+    }
+
+    @MainActor func testHandleExternalMessageEntityControlledWithoutAServiceDonatesNothing() async throws {
+        let donated = expectation(description: "donated")
+        donated.isInverted = true
+        sut = WebViewExternalMessageHandler(
+            improvManager: ImprovManager.shared,
+            entityControlDonation: .init { _ in donated.fulfill() }
+        )
+        sut.webViewController = mockWebViewController
+
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "entity/controlled",
+            "payload": ["entity_ids": ["light.kitchen"], "domain": "light"],
+        ])
+
+        await fulfillment(of: [donated], timeout: 0.5)
+    }
+
+    /// Points `Current` at an in-memory database holding one entity of a fake server, and restores it.
+    private func withSeededDatabase(
+        entityId: String,
+        perform work: @MainActor (Server) async throws -> Void
+    ) async throws {
+        let previousDatabase = Current.database
+        let previousServers = Current.servers
+        let database = try DatabaseQueue(path: ":memory:")
+        try SiriServerExposureTable().createIfNeeded(database: database)
+        try HAppEntityTable().createIfNeeded(database: database)
+        try AppAreaTable().createIfNeeded(database: database)
+        Current.database = { database }
+        let manager = FakeServerManager(initial: 0)
+        let server = manager.addFake()
+        Current.servers = manager
+        defer {
+            Current.database = previousDatabase
+            Current.servers = previousServers
+        }
+
+        try await database.write { db in
+            try HAAppEntity(
+                id: ServerEntity.uniqueId(serverId: server.identifier.rawValue, entityId: entityId),
+                entityId: entityId,
+                serverId: server.identifier.rawValue,
+                domain: entityId.components(separatedBy: ".").first ?? "",
+                name: "Something",
+                icon: nil,
+                rawDeviceClass: nil
+            ).insert(db)
+        }
+        try await work(server)
     }
 }

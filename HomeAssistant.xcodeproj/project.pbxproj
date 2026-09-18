@@ -1597,6 +1597,8 @@
 				Settings/SettingsSection.swift,
 				Settings/SettingsServersView.swift,
 				Settings/SettingsView.swift,
+				Siri/SiriServerConfigurationView.swift,
+				Siri/SiriServerConfigurationViewModel.swift,
 				Siri/SiriSettingsView.swift,
 				Siri/SiriSettingsViewModel.swift,
 				Widgets/Builder/CustomWidgetsListView.swift,
@@ -1821,6 +1823,8 @@
 				Settings/SettingsSection.swift,
 				Settings/SettingsServersView.swift,
 				Settings/SettingsView.swift,
+				Siri/SiriServerConfigurationView.swift,
+				Siri/SiriServerConfigurationViewModel.swift,
 				Siri/SiriSettingsView.swift,
 				Siri/SiriSettingsViewModel.swift,
 				Widgets/Builder/CustomWidgetsListView.swift,
@@ -2226,6 +2230,8 @@
 		42FD0000001600510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				__Snapshots__/WidgetAreasSnapshot.test/systemExtraLargePortraitSnapshot.dark.png,
+				__Snapshots__/WidgetAreasSnapshot.test/systemExtraLargePortraitSnapshot.light.png,
 				__Snapshots__/WidgetAreasSnapshot.test/systemExtraLargeSnapshot.dark.png,
 				__Snapshots__/WidgetAreasSnapshot.test/systemExtraLargeSnapshot.light.png,
 				__Snapshots__/WidgetAreasSnapshot.test/systemLargeLastPageSnapshot.dark.png,

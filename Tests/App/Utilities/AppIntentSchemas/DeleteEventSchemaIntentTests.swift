@@ -81,4 +81,20 @@ final class DeleteEventSchemaIntentTests: AppIntentSchemaTestCase {
         }
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
+
+    func testTheCalendarIsReadBackOnceTheEventIsDeleted() async throws {
+        let calendar = try seedCalendar(supportedFeatures: 2)
+        let sut = try intent(calendar: calendar)
+
+        let task = Task { try await sut.perform() }
+        let pending = try await request()
+        XCTAssertTrue(calendarsModel.eventsRequests.isEmpty)
+
+        pending.completion(.success(.dictionary([:])))
+        _ = try await task.value
+
+        let readBack = try XCTUnwrap(calendarsModel.eventsRequests.first)
+        XCTAssertEqual(calendarsModel.refreshedCalendars.map(\.id), [calendar.id])
+        XCTAssertTrue(readBack.covers(Date(timeIntervalSince1970: 1_700_000_000)))
+    }
 }

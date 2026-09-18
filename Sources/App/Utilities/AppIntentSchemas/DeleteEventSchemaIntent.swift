@@ -20,6 +20,7 @@ struct DeleteEventSchemaIntent {
             recurrenceId: entity.recurrenceId,
             recurrenceRange: span?.recurrenceRange
         )
+        await CalendarSchemaSupport.refreshCachedEvents(for: [stored], touching: [entity.startDate, entity.endDate])
         return .result()
     }
 }

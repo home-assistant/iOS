@@ -55,14 +55,60 @@ final class ReminderListSchemaEntityQueryTests: AppIntentSchemaTestCase {
         XCTAssertTrue(unmatched.isEmpty)
     }
 
-    func testTheFirstListIsTheOneTheProviderReportsFirst() throws {
+    func testTheListsFollowTheProvidersOrder() throws {
         try seedTodoList(entityId: "todo.shopping", name: "Shopping")
         try seedTodoList(entityId: "todo.work", name: "Work")
 
-        XCTAssertEqual(sut.firstList()?.entityId, "todo.shopping")
+        XCTAssertEqual(sut.lists().map(\.entityId), ["todo.shopping", "todo.work"])
     }
 
-    func testThereIsNoFirstListWithoutAnyLists() {
-        XCTAssertNil(sut.firstList())
+    func testThereAreNoListsWithoutAnyLists() {
+        XCTAssertTrue(sut.lists().isEmpty)
+    }
+
+    func testAListSwitchedOffInSettingsIsNotOffered() async throws {
+        try seedTodoList(entityId: "todo.shopping", name: "Shopping")
+        try seedTodoList(entityId: "todo.work", name: "Work")
+        try hideEntityFromSiri("todo.work", domain: Domain.todo.rawValue)
+
+        let entities = try await sut.suggestedEntities()
+
+        XCTAssertEqual(entities.map(\.entityId), ["todo.shopping"])
+    }
+
+    func testTheDefaultListWinsOverTheFirstOne() throws {
+        try seedTodoList(entityId: "todo.shopping", name: "Shopping")
+        try seedTodoList(entityId: "todo.work", name: "Work")
+        try makeSiriDefault("todo.work", domain: Domain.todo.rawValue)
+
+        XCTAssertEqual(sut.defaultList()?.entityId, "todo.work")
+    }
+
+    func testTheDefaultResultIsTheDefaultList() async throws {
+        try seedTodoList(entityId: "todo.shopping", name: "Shopping")
+        try seedTodoList(entityId: "todo.work", name: "Work")
+        try makeSiriDefault("todo.work", domain: Domain.todo.rawValue)
+
+        let entity = await sut.defaultResult()
+
+        XCTAssertEqual(entity?.entityId, "todo.work")
+    }
+
+    func testThereIsNoDefaultResultWithoutADefault() async throws {
+        try seedTodoList(entityId: "todo.shopping", name: "Shopping")
+
+        let entity = await sut.defaultResult()
+
+        XCTAssertNil(entity)
+    }
+
+    func testADefaultOnAnOptedOutServerDoesNotCount() async throws {
+        try seedTodoList(entityId: "todo.shopping", name: "Shopping")
+        try makeSiriDefault("todo.shopping", domain: Domain.todo.rawValue)
+        try hideFromSiri(serverId)
+
+        let entity = await sut.defaultResult()
+
+        XCTAssertNil(entity)
     }
 }

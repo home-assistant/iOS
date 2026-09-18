@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -103,8 +104,16 @@ enum SettingsItem: String, Hashable, CaseIterable {
         icon(size: Self.iconSize)
     }
 
+    @ViewBuilder
     func icon(size: CGFloat) -> some View {
-        MaterialDesignIconsImage(icon: materialIcon, size: size)
+        if self == .siri, #available(iOS 26.0, *) {
+            Image(systemSymbol: SFSymbol(rawValue: "siri"))
+                .resizable()
+                .scaledToFit()
+                .frame(width: size, height: size)
+        } else {
+            MaterialDesignIconsImage(icon: materialIcon, size: size)
+        }
     }
 
     var accessoryIcon: some View {

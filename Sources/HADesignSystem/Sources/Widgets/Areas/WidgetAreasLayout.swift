@@ -20,8 +20,10 @@ public enum WidgetAreasLayout {
     public static func columns(for family: WidgetFamily) -> Int {
         switch family {
         case .systemSmall: 1
-        case .systemMedium, .systemLarge: 2
-        case .systemExtraLarge, .systemExtraLargePortrait: 4
+        // The portrait extra-large family is no wider than a large one, only taller, so it takes the
+        // same two columns rather than the landscape family's four.
+        case .systemMedium, .systemLarge, .systemExtraLargePortrait: 2
+        case .systemExtraLarge: 4
         default: 1
         }
     }
@@ -29,12 +31,14 @@ public enum WidgetAreasLayout {
     /// The room a page has, in the half-rows described by ``rowCost``.
     ///
     /// Budgeted so a family that shows one floor comes out at a whole number of tile rows: a medium
-    /// widget holds a heading and two rows, a large one a heading and five.
+    /// widget holds a heading and two rows, a large one a heading and five, and the portrait
+    /// extra-large family — two large widgets stacked — a heading and twelve.
     static func budget(for family: WidgetFamily) -> Int {
         switch family {
         case .systemSmall: 4
         case .systemMedium: 5
-        case .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: 11
+        case .systemLarge, .systemExtraLarge: 11
+        case .systemExtraLargePortrait: 25
         default: 2
         }
     }
@@ -121,8 +125,6 @@ public enum WidgetAreasLayout {
 
     /// How tall a tile is drawn when the page has room to spare.
     public static let maxTileHeight: CGFloat = 56
-    /// The height a tile stops being worth drawing at compact size, and draws dense instead.
-    private static let denseTileHeight: CGFloat = 52
     /// A floor heading and the gap under it.
     private static let headingHeight: CGFloat = 22
     private static let rowSpacing: CGFloat = 8
@@ -134,7 +136,9 @@ public enum WidgetAreasLayout {
     static func contentHeight(for family: WidgetFamily) -> CGFloat {
         switch family {
         case .systemSmall, .systemMedium: 128
-        case .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: 336
+        case .systemLarge, .systemExtraLarge: 336
+        // Two large widgets stacked, with the gap the home screen leaves between them.
+        case .systemExtraLargePortrait: 760
         default: 128
         }
     }
@@ -155,8 +159,12 @@ public enum WidgetAreasLayout {
 
     /// How a tile is drawn on this page: dense once the headings have taken enough of the height
     /// that a compact tile would be all icon.
+    ///
+    /// The height it turns on is the design system's, so an area tile squeezed by a heading and an
+    /// entity tile squeezed by its own rows give way at the same point — see
+    /// ``WidgetTileLayout/denseTileHeight``.
     public static func tileStyle(for page: WidgetAreasPage, family: WidgetFamily) -> WidgetTileSizeStyle {
-        tileHeight(for: page, family: family) < denseTileHeight ? .dense : .compact
+        tileHeight(for: page, family: family) < WidgetTileLayout.denseTileHeight ? .dense : .compact
     }
 
     /// The tiles of one section, arranged into the rows they are drawn in.

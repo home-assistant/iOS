@@ -85,12 +85,29 @@ struct WidgetAreasLayoutTests {
         #expect(WidgetAreasLayout.areasPerPage(for: family, headings: false) == areasPerPage)
     }
 
+    /// The portrait extra-large family iOS 27 added is a large widget's width and two of them tall,
+    /// so it keeps the large family's two columns and spends the extra height on rows.
+    @available(iOS 27, *)
+    @Test func thePortraitExtraLargeFamilyIsATallLargeWidget() throws {
+        #expect(WidgetAreasLayout.columns(for: .systemExtraLargePortrait) == 2)
+        #expect(WidgetAreasLayout.areasPerPage(for: .systemExtraLargePortrait, headings: false) == 24)
+
+        let pages = WidgetAreasLayout.pages(
+            sections: [Self.floor("ground", areas: 30)],
+            family: .systemExtraLargePortrait
+        )
+        #expect(pages.map { $0.sections.flatMap(\.areas).count } == [24, 6])
+        // A dozen rows under a heading still leave every tile tall enough to be drawn compact.
+        let page = try #require(pages.first)
+        #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemExtraLargePortrait) == .compact)
+    }
+
     /// A page that spends part of its height on a floor heading has less left for its rows, and the
     /// tiles are drawn dense so the icon doesn't fill what is left of them.
     @Test func aPageWithAHeadingDrawsItsTilesDense() throws {
         let pages = WidgetAreasLayout.pages(sections: [Self.floor("ground", areas: 4)], family: .systemMedium)
         let page = try #require(pages.first)
-        #expect(WidgetAreasLayout.tileHeight(for: page, family: .systemMedium) < 52)
+        #expect(WidgetAreasLayout.tileHeight(for: page, family: .systemMedium) < WidgetTileLayout.denseTileHeight)
         #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemMedium) == .dense)
     }
 

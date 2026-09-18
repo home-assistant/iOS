@@ -73,7 +73,11 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
         XCTAssertEqual(dtstart, HACalendarEvent.dayFormatter.string(from: start))
         XCTAssertEqual(
             dtend,
-            HACalendarEvent.dayFormatter.string(from: Calendar.current.date(byAdding: .day, value: 1, to: start)!)
+            try HACalendarEvent.dayFormatter.string(from: XCTUnwrap(Calendar.current.date(
+                byAdding: .day,
+                value: 1,
+                to: start
+            )))
         )
         XCTAssertNotEqual(dtstart, dtend)
 
@@ -224,10 +228,10 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
         }
 
         @discardableResult
-        func send<T>(
+        func send<T: HADataDecodable>(
             _ request: HATypedRequest<T>,
             completion: @escaping (Swift.Result<T, HAError>) -> Void
-        ) -> HACancellable where T: HADataDecodable {
+        ) -> HACancellable {
             sentCommands.append(request.request.type.command)
             do {
                 try completion(.success(T(data: .dictionary([:]))))
@@ -273,5 +277,67 @@ final class CreateEventSchemaIntentTests: AppIntentSchemaTestCase {
             cancellables.append(cancellable)
             return cancellable
         }
+    }
+
+    /// The command returns nothing, so the calendar is read back once the server has accepted the
+    /// event and not before: that is what puts the new event, uid included, where Siri reads from.
+    func testTheCalendarIsReadBackOnceTheEventIsCreated() async throws {
+        let calendar = try seedCalendar(supportedFeatures: 1)
+        let sut = intent(calendar: calendar)
+
+        let task = Task { try await sut.perform() }
+        let pending = try await request()
+        XCTAssertTrue(calendarsModel.eventsRequests.isEmpty)
+
+        pending.completion(.success(.dictionary([:])))
+        _ = try await task.value
+
+        let readBack = try XCTUnwrap(calendarsModel.eventsRequests.first)
+        XCTAssertEqual(calendarsModel.refreshedCalendars.map(\.id), [calendar.id])
+        XCTAssertTrue(readBack.covers(start))
+    }
+
+    func testARefusedEventLeavesTheCacheAlone() async throws {
+        let sut = try intent(calendar: seedCalendar(supportedFeatures: 2))
+
+        _ = try? await sut.perform()
+
+        XCTAssertTrue(calendarsModel.eventsRequests.isEmpty)
+    }
+
+    /// Once the read-back finds the event the server stored, that is what Siri is handed back, uid
+    /// included, rather than a description of what was asked for.
+    func testTheStoredEventIsHandedBackWhenTheReadBackFindsIt() async throws {
+        let calendar = try seedCalendar(supportedFeatures: 1)
+        calendarsModel.serverReturns([
+            HACalendarEventRecord(
+                id: "stored",
+                serverId: serverId,
+                calendarEntityId: calendar.entityId,
+                uid: "uid-stored",
+                recurrenceId: nil,
+                summary: "Lunch",
+                start: start,
+                end: start.addingTimeInterval(3600),
+                isAllDay: false,
+                eventDescription: nil,
+                location: nil,
+                rrule: nil
+            ),
+        ], for: calendar)
+        let sut = intent(calendar: calendar)
+
+        let task = Task { try await sut.perform() }
+        try await acknowledge()
+        _ = try await task.value
+
+        let stored = await CalendarSchemaSupport.cachedEvent(
+            on: calendar,
+            titled: "Lunch",
+            start: start,
+            end: start.addingTimeInterval(3600),
+            isAllDay: false
+        )
+        XCTAssertEqual(stored?.uid, "uid-stored")
     }
 }

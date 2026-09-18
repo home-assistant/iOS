@@ -10,15 +10,33 @@ enum RemindersSchemaSupport {
               let api = Current.api(for: server) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
+        guard SiriServerExposure.isExposed(serverId: list.serverId),
+              SiriEntityExposure.isExposed(serverId: list.serverId, entityId: list.entityId) else {
+            Current.Log.error("List \(list.id) is not exposed to Siri")
+            throw ShortcutAppIntentError(L10n.AppIntents.Reminders.Error.listHidden)
+        }
         return api
     }
 
-    /// The list a new reminder belongs on when the caller did not name one.
-    static func defaultList() throws -> ReminderListSchemaEntity {
-        guard let list = ReminderListSchemaEntityQuery().firstList() else {
-            throw ShortcutAppIntentError(L10n.AppIntents.Reminders.Error.noList)
+    static func listResolution() -> ReminderListResolution {
+        let query = ReminderListSchemaEntityQuery()
+        if let list = query.defaultList() {
+            return .only(list)
         }
-        return list
+        return ReminderListResolution(lists: query.lists())
+    }
+
+    static var disambiguateList: (
+        IntentParameter<ReminderListSchemaEntity?>,
+        [ReminderListSchemaEntity]
+    ) async throws -> ReminderListSchemaEntity = { parameter, lists in
+        try await parameter.requestDisambiguation(
+            among: lists,
+            dialog: IntentDialog(.init(
+                "app_intents.reminders.create.which_list",
+                defaultValue: "Which list?"
+            ))
+        )
     }
 
     /// `todo.add_item` and `todo.update_item` take either a bare day or a datetime, never both, so

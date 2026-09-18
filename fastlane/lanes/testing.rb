@@ -72,9 +72,12 @@ lane :test do
   # The complication snapshot tests render the shared views on watchOS, so they run under the WatchApp
   # scheme on a watch simulator — the iOS run above can't reach them. A plain name,OS destination is
   # ambiguous here: CI pairs a watch to a phone, and a paired watch matches twice ("multiple devices
-  # matched"). Which model gets paired varies per runner, so resolve the 46mm's UDID (the model the
-  # reference images were recorded on) and target it by id, which is unambiguous even when paired.
-  watch_model = 'Apple Watch Series 11 (46mm)'
+  # matched"). Which model gets paired varies per runner, so resolve the 46mm's UDID and target it by
+  # id, which is unambiguous even when paired. The references are rendered from the view rather than
+  # from the screen, so the model only has to be one the runner image ships — bump it when that image
+  # drops the one named here, or the destination resolves to nothing and the run fails before it
+  # builds.
+  watch_model = 'Apple Watch Series 12 (46mm)'
   newest_watch = available_simulators('watchOS')
                  .select { |_, device| device['name'] == watch_model }
                  .max_by { |runtime, _| runtime.scan(/\d+/).map(&:to_i) }
