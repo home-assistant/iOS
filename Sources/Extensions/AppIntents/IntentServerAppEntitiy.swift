@@ -12,7 +12,7 @@ struct IntentServerAppEntity: AppEntity, Sendable {
             // between devices keeps working on both instead of being fixed on one and broken on the other.
             identifiers
                 .map { IntentServerAppEntity(identifier: .init(rawValue: $0)) }
-                .filter { $0.getServer() != nil }
+                .filter { $0.shortcutServer() != nil }
         }
 
         func entities(matching string: String) async throws -> [IntentServerAppEntity] {
@@ -55,17 +55,27 @@ struct IntentServerAppEntity: AppEntity, Sendable {
     }
 
     func getServer() -> Server? {
-        Self.server(for: id)
+        Current.servers.server(for: .init(rawValue: id))
     }
 
     func getInfo() -> ServerInfo? {
-        getServer()?.info
+        shortcutServer()?.info
     }
 
-    /// Server identifiers are generated per installation, so a shortcut synced from another device
-    /// through iCloud carries an identifier this device has never seen. When a single server is set
-    /// up there is only one server that shortcut can mean, so resolve to it instead of failing.
-    static func server(for rawIdentifier: String) -> Server? {
+    /// The server a shortcut means, resolving an identifier this installation never issued to the
+    /// only server set up.
+    ///
+    /// Shortcuts sync between devices through iCloud while server identifiers are generated per
+    /// installation, so the synced copy names a server the other device has never seen. With a
+    /// single server there is only one server it can mean.
+    ///
+    /// Widgets stay on the strict `getServer()`: one configured for a server that is gone shows
+    /// nothing, rather than quietly switching to another server's data.
+    func shortcutServer() -> Server? {
+        Self.shortcutServer(for: id)
+    }
+
+    static func shortcutServer(for rawIdentifier: String) -> Server? {
         if let server = Current.servers.server(for: .init(rawValue: rawIdentifier)) {
             return server
         }

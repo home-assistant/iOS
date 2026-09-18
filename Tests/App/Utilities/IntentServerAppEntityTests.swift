@@ -4,7 +4,8 @@ import Testing
 
 /// Server identifiers are generated per installation, so a shortcut synced between devices through
 /// iCloud carries an identifier the second device never issued. These cover how far that identifier
-/// is trusted: a single server is unambiguous, several servers are not.
+/// is trusted: a single server is unambiguous, several servers are not, and widgets don't guess at
+/// all.
 @Suite(.serialized)
 struct IntentServerAppEntityTests {
     private static let foreignIdentifier = "identifier-from-another-device"
@@ -21,21 +22,31 @@ struct IntentServerAppEntityTests {
     @Test func resolvesAnUnknownIdentifierToTheOnlyServer() async throws {
         try await withServers(count: 1) { servers in
             let entity = IntentServerAppEntity(identifier: .init(rawValue: Self.foreignIdentifier))
-            #expect(entity.getServer()?.identifier == servers[0].identifier)
+            #expect(entity.shortcutServer()?.identifier == servers[0].identifier)
         }
     }
 
     @Test func doesNotGuessBetweenSeveralServers() async throws {
         try await withServers(count: 2) { _ in
             let entity = IntentServerAppEntity(identifier: .init(rawValue: Self.foreignIdentifier))
-            #expect(entity.getServer() == nil)
+            #expect(entity.shortcutServer() == nil)
         }
     }
 
     @Test func resolvesAKnownIdentifierWhenSeveralServersExist() async throws {
         try await withServers(count: 2) { servers in
             let entity = IntentServerAppEntity(from: servers[1])
+            #expect(entity.shortcutServer()?.identifier == servers[1].identifier)
             #expect(entity.getServer()?.identifier == servers[1].identifier)
+        }
+    }
+
+    /// Widgets resolve strictly: one configured for a server that is gone shows nothing, rather
+    /// than quietly switching to whichever server is left.
+    @Test func strictResolutionNeverFallsBack() async throws {
+        try await withServers(count: 1) { _ in
+            let entity = IntentServerAppEntity(identifier: .init(rawValue: Self.foreignIdentifier))
+            #expect(entity.getServer() == nil)
         }
     }
 
@@ -46,7 +57,7 @@ struct IntentServerAppEntityTests {
         try await withServers(count: 1) { servers in
             let entities = try await IntentServerAppEntity.defaultQuery.entities(for: [Self.foreignIdentifier])
             #expect(entities.map(\.id) == [Self.foreignIdentifier])
-            #expect(entities.first?.getServer()?.identifier == servers[0].identifier)
+            #expect(entities.first?.shortcutServer()?.identifier == servers[0].identifier)
         }
     }
 
