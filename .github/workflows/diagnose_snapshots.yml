@@ -45,23 +45,24 @@ jobs:
           -project HomeAssistant.xcodeproj
           -scheme Tests-Unit
 
-      - name: Run the small snapshot suite unformatted
+      - name: Run the snapshot suite unformatted
         continue-on-error: true
         run: >-
           xcodebuild test
           -project HomeAssistant.xcodeproj
           -scheme Tests-Unit
           -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest'
-          -only-testing:Tests-App/WidgetsSnapshotTests/systemSmallSnapshots
+          -only-testing:Tests-App/WidgetsSnapshotTests
           COMPILER_INDEX_STORE_ENABLE=NO
           > /tmp/raw.log 2>&1
 
       - name: Show what actually failed
         if: ${{ always() }}
         run: |
-          echo "=== lines mentioning a snapshot failure ==="
-          grep -nE "Couldn't snapshot|Exceeded timeout|does not match|No reference|recorded an issue|Issue recorded" \
-            /tmp/raw.log | head -40 || true
-          echo "=== surrounding context for the first one ==="
-          grep -nE -A12 -B4 "Couldn't snapshot|does not match|No reference|Issue recorded" \
-            /tmp/raw.log | head -80 || true
+          echo "=== anything that reads as a failure ==="
+          grep -inE "fail|issue|couldn't|exceeded|does not match|no reference" /tmp/raw.log \
+            | grep -viE "failureCount|0 failures" | head -60 || true
+          echo "=== tail of the run ==="
+          tail -60 /tmp/raw.log || true
+          echo "=== snapshot files touched during the run ==="
+          git status --porcelain -- Tests | head -40 || true
