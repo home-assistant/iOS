@@ -107,6 +107,66 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertTrue(Current.servers.all.isEmpty)
     }
 
+    func testServerIdentifierUsesReportedInstanceID() {
+        let info = with(ServerInfo.fake()) { $0.instanceID = "instance-1" }
+
+        let identifier = OnboardingAuth.serverIdentifier(
+            for: info,
+            fallback: "fallback-identifier",
+            existingServers: []
+        )
+
+        XCTAssertEqual(identifier, "instance-1")
+    }
+
+    func testServerIdentifierFallsBackWhenNoInstanceIDIsReported() {
+        let unreported = ServerInfo.fake()
+        let empty = with(ServerInfo.fake()) { $0.instanceID = "" }
+
+        XCTAssertEqual(
+            OnboardingAuth.serverIdentifier(for: unreported, fallback: "fallback-identifier", existingServers: []),
+            "fallback-identifier"
+        )
+        XCTAssertEqual(
+            OnboardingAuth.serverIdentifier(for: empty, fallback: "fallback-identifier", existingServers: []),
+            "fallback-identifier"
+        )
+    }
+
+    /// Re-onboarding a server the app already has must not rename it: widgets, shortcuts and Siri
+    /// configurations hold the existing identifier in stores this app cannot rewrite.
+    func testServerIdentifierKeepsTheIdentifierOfAServerWithTheSameInstanceID() {
+        let existing = Server.fake(identifier: "server-from-an-older-install") {
+            $0.instanceID = "instance-1"
+        }
+        let info = with(ServerInfo.fake()) { $0.instanceID = "instance-1" }
+
+        let identifier = OnboardingAuth.serverIdentifier(
+            for: info,
+            fallback: "fallback-identifier",
+            existingServers: [existing]
+        )
+
+        XCTAssertEqual(identifier, "server-from-an-older-install")
+    }
+
+    func testFailureAfterOverwritingAnExistingServerRestoresIt() throws {
+        let identifier = Identifier<Server>(rawValue: try XCTUnwrap(instance.uuid))
+        let existingInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Server from before onboarding"
+            $0.instanceID = "instance-1"
+        }
+        Current.servers.add(identifier: identifier, serverInfo: existingInfo)
+
+        let result = auth(postComplete: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result)) { error in
+            XCTAssertEqual(error as? TestError, .specific)
+        }
+
+        XCTAssertEqual(Current.servers.all.count, 1)
+        XCTAssertEqual(Current.servers.server(for: identifier)?.info, existingInfo)
+    }
+
     func testCancelledLogin() throws {
         let result = auth(
             includeExternal: false, // cancelled should not attempt external

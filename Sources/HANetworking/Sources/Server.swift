@@ -59,6 +59,10 @@ public struct ServerInfo: Codable, Equatable {
 
     public var remoteName: String
     public var hassDeviceId: String?
+    /// Home Assistant's own instance ID, as `get_config` reports it. Identifies the server itself
+    /// rather than this app's registration with it, so the same instance is recognisable across
+    /// onboarding routes. `nil` for a server whose Home Assistant is too old to report it.
+    public var instanceID: String?
     public var sortOrder: Int
     public var version: Version
     public var connection: ConnectionInfo
@@ -78,6 +82,7 @@ public struct ServerInfo: Codable, Equatable {
         case tokenInfo
         case settings
         case hassDeviceId
+        case instanceID
     }
 
     public init(from decoder: Decoder) throws {
@@ -85,6 +90,7 @@ public struct ServerInfo: Codable, Equatable {
 
         self.remoteName = try container.decode(String.self, forKey: .name)
         self.hassDeviceId = try container.decodeIfPresent(String.self, forKey: .hassDeviceId)
+        self.instanceID = try container.decodeIfPresent(String.self, forKey: .instanceID)
         self.sortOrder = try container.decode(Int.self, forKey: .sortOrder)
         self.connection = try container.decode(ConnectionInfo.self, forKey: .connectionInfo)
         self.token = try container.decode(TokenInfo.self, forKey: .tokenInfo)
@@ -101,6 +107,7 @@ public struct ServerInfo: Codable, Equatable {
         try container.encode(token, forKey: .tokenInfo)
         try container.encode(settings, forKey: .settings)
         try container.encode(hassDeviceId, forKey: .hassDeviceId)
+        try container.encode(instanceID, forKey: .instanceID)
     }
 
     public init(
@@ -207,6 +214,7 @@ public struct ServerInfo: Codable, Equatable {
             && lhs.connection == rhs.connection
             && lhs.token == rhs.token
             && lhs.hassDeviceId == rhs.hassDeviceId
+            && lhs.instanceID == rhs.instanceID
             && lhs.version == rhs.version
             && lhs.sortOrder == rhs.sortOrder
             && areEqualSettings(lhs.settings, rhs.settings)
