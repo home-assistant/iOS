@@ -41,6 +41,15 @@ struct IntentServerAppEntityTests {
         }
     }
 
+    /// The Shortcuts editor reads its label from the resolved server, so a synced shortcut names the
+    /// server it will actually run against instead of showing "Unknown".
+    @Test func describesTheResolvedServer() async throws {
+        try await withServers(count: 1) { servers in
+            let entity = IntentServerAppEntity(identifier: .init(rawValue: Self.foreignIdentifier))
+            #expect(entity.getInfo()?.name == servers[0].info.name)
+        }
+    }
+
     /// Widgets resolve strictly: one configured for a server that is gone shows nothing, rather
     /// than quietly switching to whichever server is left.
     @Test func strictResolutionNeverFallsBack() async throws {
