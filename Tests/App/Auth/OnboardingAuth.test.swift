@@ -151,7 +151,8 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testFailureAfterOverwritingAnExistingServerRestoresIt() throws {
-        let identifier = Identifier<Server>(rawValue: try XCTUnwrap(instance.uuid))
+        let uuid = try XCTUnwrap(instance.uuid)
+        let identifier = Identifier<Server>(rawValue: uuid)
         let existingInfo = with(ServerInfo.fake()) {
             $0.remoteName = "Server from before onboarding"
             $0.instanceID = "instance-1"
