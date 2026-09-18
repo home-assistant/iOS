@@ -42,6 +42,10 @@ final class OnboardingServersListViewModel: ObservableObject {
         Current.onboardingObservation.register(observer: self)
     }
 
+    /// Started as soon as the servers list appears, an invitation on screen or not: mDNS is the only
+    /// place Home Assistant publishes its instance ID, and onboarding through an invitation link
+    /// needs it to land on the identifier the discovery flow would have produced. The invitation
+    /// keeps the screen to itself either way — nothing the list renders is shown while it is up.
     func startDiscovery() {
         discoveredInstances = []
         discovery.start()
