@@ -1,0 +1,67 @@
+# Temporary: runs one snapshot suite without the log formatter, so the failure
+# message xcbeautify swallows is visible. Delete once the failure is understood.
+name: Diagnose Snapshots
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - widget-tile-icon-scaling
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+  BUNDLE_PATH: vendor/bundle
+
+concurrency:
+  group: diagnose-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  diagnose:
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+
+      - name: Run the small snapshot suite unformatted
+        continue-on-error: true
+        run: >-
+          xcodebuild test
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+          -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest'
+          -only-testing:Tests-App/WidgetsSnapshotTests/systemSmallSnapshots
+          COMPILER_INDEX_STORE_ENABLE=NO
+          > /tmp/raw.log 2>&1
+
+      - name: Show what actually failed
+        if: ${{ always() }}
+        run: |
+          echo "=== lines mentioning a snapshot failure ==="
+          grep -nE "Couldn't snapshot|Exceeded timeout|does not match|No reference|recorded an issue|Issue recorded" \
+            /tmp/raw.log | head -40 || true
+          echo "=== surrounding context for the first one ==="
+          grep -nE -A12 -B4 "Couldn't snapshot|does not match|No reference|Issue recorded" \
+            /tmp/raw.log | head -80 || true
