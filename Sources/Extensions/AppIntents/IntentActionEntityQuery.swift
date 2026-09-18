@@ -7,7 +7,19 @@ struct IntentActionEntityQuery: EntityQuery, EntityStringQuery {
     var intent
 
     func entities(for identifiers: [String]) async throws -> [IntentActionEntity] {
-        let actions = try await actionEntities().flatMap(\.1)
+        try await entities(for: identifiers, selectedServer: intent?.server)
+    }
+
+    /// Hydrates saved action identifiers against `selectedServer`.
+    ///
+    /// The App Intents `entities(for:)` entry point passes the parent intent's server, which is how
+    /// Shortcuts scopes this query. Callers that already have that server share this path so lookup,
+    /// metadata, and persisted ids agree.
+    func entities(
+        for identifiers: [String],
+        selectedServer: IntentServerAppEntity?
+    ) async throws -> [IntentActionEntity] {
+        let actions = try await actionEntities(selectedServer: selectedServer).flatMap(\.1)
         let matchedActions = actions.filter { identifiers.contains($0.id) }
         let matchedIdentifiers = Set(matchedActions.map(\.id))
         let fallbackActions = identifiers
@@ -46,15 +58,22 @@ struct IntentActionEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     private func actionEntities() async throws -> [(Server, [IntentActionEntity])] {
-        guard let server = intent?.server.getServer() else {
+        try await actionEntities(selectedServer: intent?.server)
+    }
+
+    /// Fetches definitions from the locally resolved server but stamps each action with the
+    /// selected intent server's id, so a synced alias still matches `action.serverId == server.id`.
+    private func actionEntities(selectedServer: IntentServerAppEntity?) async throws
+        -> [(Server, [IntentActionEntity])] {
+        guard let selectedServer, let resolvedServer = selectedServer.getServer() else {
             return []
         }
 
-        let definitions = try await AppIntentServerAPI.actionDefinitions(server: server)
+        let definitions = try await AppIntentServerAPI.actionDefinitions(server: resolvedServer)
         return [(
-            server,
+            resolvedServer,
             definitions.map { definition in
-                IntentActionEntity(serverId: server.identifier.rawValue, definition: definition)
+                IntentActionEntity(serverId: selectedServer.id, definition: definition)
             }
         )]
     }
