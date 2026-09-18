@@ -86,6 +86,12 @@ final class OnboardingServersListViewModel: ObservableObject {
     }
 
     func selectInstance(_ instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
+        // A URL the user typed, or one opened from an invitation link, carries no Home Assistant
+        // instance ID — only mDNS publishes that. Adopt the one discovery already found for the same
+        // address so both onboarding paths mint the same server identifier, instead of the typed one
+        // creating a second entry for a server the app may already know.
+        let instance = instance.adoptingInstanceID(from: discoveredInstances)
+
         Current.Log.verbose("Selected instance \(instance)")
 
         currentlyInstanceLoading = instance

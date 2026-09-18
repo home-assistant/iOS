@@ -31,6 +31,19 @@ public extension URL {
         }
     }
 
+    /// The lowercased `host:port` pair this URL addresses, with the scheme's default port filled in.
+    /// `nil` when the URL has no host, or has neither a port nor a scheme to derive one from.
+    ///
+    /// Two URLs that share it reach the same server socket whatever path or scheme each one carries,
+    /// which is what makes it usable to tell whether two descriptions of a server are the same one.
+    var hostAndPortIdentity: String? {
+        guard let host = host?.lowercased(), !host.isEmpty, let port = portForComparison else {
+            return nil
+        }
+
+        return "\(host):\(port)"
+    }
+
     func sanitized() -> URL {
         guard path.hasSuffix("/"),
               var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
