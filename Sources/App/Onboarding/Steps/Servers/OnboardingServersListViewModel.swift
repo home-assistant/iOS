@@ -25,6 +25,11 @@ final class OnboardingServersListViewModel: ObservableObject {
 
     var pendingManualURL: URL?
 
+    /// How long onboarding waits for mDNS to answer for a typed URL or an invitation link before
+    /// settling for the locally generated identifier. Overridable so tests don't wait it out.
+    var discoveryAdoptionTimeout: TimeInterval = 2
+    private static let discoveryPollInterval = NSEC_PER_SEC / 10
+
     private var discovery = Current.bonjour()
     private var cancellables = Set<AnyCancellable>()
     private let shouldDismissOnSuccess: Bool
@@ -86,16 +91,50 @@ final class OnboardingServersListViewModel: ObservableObject {
     }
 
     func selectInstance(_ instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
-        // A URL the user typed, or one opened from an invitation link, carries no Home Assistant
-        // instance ID — only mDNS publishes that. Adopt the one discovery already found for the same
-        // address so both onboarding paths mint the same server identifier, instead of the typed one
-        // creating a second entry for a server the app may already know.
-        let instance = instance.adoptingInstanceID(from: discoveredInstances)
-
-        Current.Log.verbose("Selected instance \(instance)")
-
         currentlyInstanceLoading = instance
         authPresenter = presenter
+
+        // An instance found over mDNS already carries Home Assistant's instance ID; a URL the user
+        // typed or an invitation link does not, so let discovery answer for that address first and
+        // onboard under the identifier the discovery flow would have produced.
+        guard !instance.hasHomeAssistantInstanceID else {
+            authenticate(to: instance, presenter: presenter)
+            return
+        }
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let adopted = await instanceAdoptingDiscoveredInstanceID(instance)
+            currentlyInstanceLoading = adopted
+            authenticate(to: adopted, presenter: presenter)
+        }
+    }
+
+    /// Discovery can still be resolving when a URL is submitted or an invitation is accepted — the
+    /// invitation screen only starts it moments earlier — so give mDNS a window to answer for the
+    /// address being onboarded. Returns as soon as it does, and never holds onboarding longer than
+    /// `discoveryAdoptionTimeout`.
+    @MainActor
+    private func instanceAdoptingDiscoveredInstanceID(
+        _ instance: DiscoveredHomeAssistant
+    ) async -> DiscoveredHomeAssistant {
+        let deadline = Current.date().addingTimeInterval(discoveryAdoptionTimeout)
+
+        while Current.date() < deadline {
+            let adopted = instance.adoptingInstanceID(from: discoveredInstances)
+
+            if adopted.hasHomeAssistantInstanceID {
+                return adopted
+            }
+
+            try? await Task.sleep(nanoseconds: Self.discoveryPollInterval)
+        }
+
+        return instance
+    }
+
+    private func authenticate(to instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
+        Current.Log.verbose("Selected instance \(instance)")
 
         let authentication = OnboardingAuth()
 

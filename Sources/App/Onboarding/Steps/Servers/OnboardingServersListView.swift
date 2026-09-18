@@ -288,7 +288,11 @@ struct OnboardingServersListView: View {
     private func onAppear() {
         if !screenLoaded {
             screenLoaded = true
-            startDiscoveryIfNeeded()
+            // Discovery runs even with an invitation on screen: mDNS is the only place Home
+            // Assistant publishes its instance ID, and accepting the invitation needs it to land on
+            // the same server identifier the discovery flow would have produced. The invitation
+            // keeps the screen to itself — nothing below renders while it is up.
+            viewModel.startDiscovery()
         } else if !shouldShowInvitation {
             // Reappearing after an auth flow page above was popped — being covered stopped
             // discovery, so resume it without clearing what was already found.
@@ -308,11 +312,6 @@ struct OnboardingServersListView: View {
             .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
             .animation(.easeInOut, value: viewModel.showCenterLoader)
             .animation(.easeInOut, value: autoConnectInstance)
-    }
-
-    private func startDiscoveryIfNeeded() {
-        guard !shouldShowInvitation else { return }
-        viewModel.startDiscovery()
     }
 
     private func acceptInvitation(url: URL) {
