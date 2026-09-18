@@ -6,6 +6,9 @@ import Testing
 
 /// Covers which server an action runs against, in particular for a shortcut synced from another
 /// device, which names a server identifier this installation never issued.
+///
+/// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
+/// to a type marked `@available`, and the intent is iOS 17.
 @Suite(.serialized)
 struct PerformActionAppIntentTests {
     private static let foreignIdentifier = "identifier-from-another-device"
@@ -42,6 +45,7 @@ struct PerformActionAppIntentTests {
     ///
     /// The intent is async while the connection records requests synchronously, so the call is
     /// started first and the request answered once it lands.
+    @available(iOS 17.0, *)
     private func performAndCaptureRequest(
         _ intent: PerformActionAppIntent,
         connection: HAMockConnection
@@ -63,6 +67,7 @@ struct PerformActionAppIntentTests {
     /// A shortcut synced from another device names a server this installation never issued. With a
     /// single server set up there is only one server it can mean, so the action runs.
     @Test func runsAnActionFromAShortcutSyncedFromAnotherDevice() async throws {
+        guard #available(iOS 17.0, *) else { return }
         try await withServers(count: 1) { _, connections in
             let intent = PerformActionAppIntent()
             intent.server = IntentServerAppEntity(identifier: .init(rawValue: Self.foreignIdentifier))
@@ -79,6 +84,7 @@ struct PerformActionAppIntentTests {
     /// With several servers set up there is nothing to fall back on, so an action belonging to a
     /// different server than the one picked is still refused.
     @Test func refusesAnActionBelongingToAnotherServer() async throws {
+        guard #available(iOS 17.0, *) else { return }
         try await withServers(count: 2) { servers, _ in
             let intent = PerformActionAppIntent()
             intent.server = IntentServerAppEntity(from: servers[0])
@@ -95,6 +101,7 @@ struct PerformActionAppIntentTests {
 
     /// Nothing resolves when no server is set up, whatever the shortcut names.
     @Test func refusesWhenNoServerIsSetUp() async throws {
+        guard #available(iOS 17.0, *) else { return }
         try await withServers(count: 0) { _, _ in
             let intent = PerformActionAppIntent()
             intent.server = IntentServerAppEntity(identifier: .init(rawValue: Self.foreignIdentifier))

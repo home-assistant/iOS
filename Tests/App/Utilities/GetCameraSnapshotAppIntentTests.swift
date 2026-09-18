@@ -5,12 +5,16 @@ import HAKit_Mocks
 import Testing
 
 /// Covers which server a camera snapshot is taken from.
+///
+/// The availability guard sits inside the test rather than on the suite: `@Suite` cannot be applied
+/// to a type marked `@available`, and the intent is iOS 17.
 @Suite(.serialized)
 struct GetCameraSnapshotAppIntentTests {
     /// With several servers set up an unknown identifier resolves to nothing, so a camera belonging
     /// to a different server than the one picked is refused rather than snapshotted from the wrong
     /// place.
     @Test func refusesACameraBelongingToAnotherServer() async throws {
+        guard #available(iOS 17.0, *) else { return }
         let previousServers = Current.servers
         let previousApis = Current.cachedApis
         defer {
