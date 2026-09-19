@@ -1,17 +1,26 @@
+import HADesignSystem
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 struct EntityRowView: View {
-    // This avoids lag while loading a screen with several rows
+    /// Where the row's content comes from. A long list resolves it for every row up front, so that
+    /// scrolling neither reads the database nor writes view state: each state write schedules a
+    /// SwiftUI update, and every update makes `List` re-solve the layout of all of its sections.
+    private enum Content {
+        case resolved(subtitle: String?, icon: MaterialDesignIcons?)
+        case resolvedByRow
+    }
+
+    // Only the rows that resolve their own content need state, and only they pay for it.
     @State private var showIcon = false
-    @State private var subtitle = ""
-    @State private var title = ""
-    @State private var icon: UIImage?
+    @State private var rowSubtitle = ""
+    @State private var rowIcon: MaterialDesignIcons?
     private let entity: HAAppEntity?
     private let optionalTitle: String?
     private let accessoryImageSystemSymbol: SFSymbol?
     private let isSelected: Bool
+    private let content: Content
 
     private let iconSize: CGSize = .init(width: 24, height: 24)
 
@@ -25,13 +34,49 @@ struct EntityRowView: View {
         self.optionalTitle = optionalTitle
         self.accessoryImageSystemSymbol = accessoryImageSystemSymbol
         self.isSelected = isSelected
+        self.content = .resolvedByRow
+    }
+
+    init(
+        entity: HAAppEntity?,
+        subtitle: String?,
+        icon: MaterialDesignIcons?,
+        accessoryImageSystemSymbol: SFSymbol? = nil,
+        isSelected: Bool = false
+    ) {
+        self.entity = entity
+        self.optionalTitle = nil
+        self.accessoryImageSystemSymbol = accessoryImageSystemSymbol
+        self.isSelected = isSelected
+        self.content = .resolved(subtitle: subtitle, icon: icon)
+    }
+
+    private var title: String {
+        optionalTitle ?? entity?.name ?? ""
+    }
+
+    private var subtitle: String {
+        switch content {
+        case let .resolved(subtitle, _): subtitle.orEmpty
+        case .resolvedByRow: rowSubtitle
+        }
+    }
+
+    private var icon: MaterialDesignIcons? {
+        switch content {
+        case let .resolved(_, icon): icon
+        case .resolvedByRow: showIcon ? rowIcon : nil
+        }
     }
 
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
             HStack {
-                if showIcon, let icon {
-                    Image(uiImage: icon)
+                if let icon {
+                    // The design system's cached glyph, rather than rendering one per row: the row
+                    // re-appears constantly while a long list scrolls.
+                    MaterialDesignIconsImage(icon: icon, size: iconSize.width)
+                        .foregroundStyle(Color.gray)
                 }
             }
             .frame(width: iconSize.width, height: iconSize.height)
@@ -54,27 +99,21 @@ struct EntityRowView: View {
                     .font(.title3)
             }
         }
-        .animation(.easeInOut, value: showIcon)
-        .onAppear {
-            title = optionalTitle ?? entity?.name ?? ""
-            subtitle = (entity?.contextualSubtitle).orEmpty
-            let fallbackIcon = Domain(entityId: (entity?.entityId).orEmpty)?.icon(deviceClass: entity?.rawDeviceClass)
-            if let entity {
-                // Prefer the entity's own icon override, then the frontend-matching default resolved
-                // from the backend `entity_component` map at sync time, then the domain fallback.
-                let iconName = entity.icon?.isEmpty == false ? entity.icon : entity.resolvedIcon
-                icon = MaterialDesignIcons(
-                    serversideValueNamed: iconName.orEmpty,
-                    fallback: fallbackIcon ?? .dotsGridIcon
-                ).image(
-                    ofSize: .init(width: iconSize.width, height: iconSize.height),
-                    color: UIColor(Color.gray)
-                )
+        .modify { view in
+            if case .resolvedByRow = content {
+                view
+                    .animation(.easeInOut, value: showIcon)
+                    .onAppear {
+                        rowSubtitle = (entity?.contextualSubtitle).orEmpty
+                        rowIcon = entity?.materialDesignIcon
+                        showIcon = true
+                    }
+                    .onDisappear {
+                        showIcon = false
+                    }
+            } else {
+                view
             }
-            showIcon = true
-        }
-        .onDisappear {
-            showIcon = false
         }
     }
 }
