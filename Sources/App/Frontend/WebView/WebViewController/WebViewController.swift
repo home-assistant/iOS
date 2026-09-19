@@ -117,6 +117,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         return view.directionalEdgeInsets(for: .safeArea(cornerAdaptation: .vertical)).top
     }
 
+    /// Which idiom the frontend is being shown in; only iPad windows get controls drawn over them.
+    var userInterfaceIdiom: @MainActor (UIView) -> UIUserInterfaceIdiom = { view in
+        view.traitCollection.userInterfaceIdiom
+    }
+
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
         improvManager: ImprovManager.shared
