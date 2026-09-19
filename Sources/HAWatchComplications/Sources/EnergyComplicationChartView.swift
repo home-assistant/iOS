@@ -67,6 +67,26 @@ public struct EnergyComplicationChartView: View {
         static let cornerRadius: CGFloat = 1
         static let baselineWidth: CGFloat = 0.5
         static let baselineOpacity: CGFloat = 0.35
+        static let day: TimeInterval = 24 * 3600
+    }
+
+    /// The whole day the buckets belong to, rather than just the stretch of it that has reported.
+    ///
+    /// Without this the chart divides its width by however many buckets it was given, so a morning
+    /// three hours into the day draws three blocks the size of postage stamps instead of the start
+    /// of a day — and the complication's own window is "today", which means most of the day it is on
+    /// the face is spent part-reported. The widget anchors its axis for the same reason.
+    ///
+    /// Derived from the buckets rather than carried alongside them because the window is always a
+    /// single day: whichever day the first bucket falls in is the one to draw.
+    private var xDomain: ClosedRange<Date> {
+        let calendar = Calendar.current
+        // Any domain will do when there is nothing to plot; a fixed one keeps the render
+        // reproducible, where "today" would make every snapshot differ by the day it ran.
+        let anchor = bars.first?.date ?? Date(timeIntervalSince1970: 0)
+        let start = calendar.startOfDay(for: anchor)
+        let end = calendar.startOfDay(for: bars.last?.date ?? anchor).addingTimeInterval(Layout.day)
+        return start ... max(end, start.addingTimeInterval(Layout.day))
     }
 
     public var body: some View {
@@ -101,6 +121,7 @@ public struct EnergyComplicationChartView: View {
             }
         }
         .chartLegend(.hidden)
+        .chartXScale(domain: xDomain)
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartPlotStyle { plot in

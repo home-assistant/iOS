@@ -151,9 +151,12 @@ jobs:
       - name: Render the references
         continue-on-error: true
         run: |
-          # Only exported when asked for: the helper only checks whether the variable is set, so an
-          # empty value would put every run into record mode.
-          if [ "${{ inputs.record }}" = "true" ]; then
+          # A push re-records unconditionally, because that is what this workflow is for: once a
+          # reference exists, a plain run would compare against it and the design could never be
+          # iterated on. The references are asserted against by the repository's own CI instead.
+          # Only exported when wanted: the helper checks whether the variable is set at all, so an
+          # empty value would put every run into record mode by accident.
+          if [ "${{ inputs.record }}" = "true" ] || [ "${{ github.event_name }}" = "push" ]; then
             export TEST_RUNNER_RECORD_SNAPSHOTS=1
           fi
           xcodebuild test \
