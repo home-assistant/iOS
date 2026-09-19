@@ -56,10 +56,11 @@ public enum EnergyComplicationSampleData {
     /// home with all of them.
     public static var allSourceStats: [EnergyComplicationStat] {
         let batteryNet = batteryBars.reduce(0) { $0 + $1.batteryUsed - $1.batteryCharged }
-        return stats + [
+        let extras: [EnergyComplicationStat] = [
             .energy(.batteryOut, kWh: batteryNet),
-            .init(series: .gas, value: EnergyComplicationStat.quantity(4.8), unit: "m³"),
+            EnergyComplicationStat(series: .gas, value: EnergyComplicationStat.quantity(4.8), unit: "m³"),
         ]
+        return stats + extras
     }
 
     /// One hour of the sample day: household demand peaks in the morning and again in the evening,

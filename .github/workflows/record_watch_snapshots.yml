@@ -38,6 +38,50 @@ env:
   SNAPSHOTS_DIR: Tests/WatchAppTests/__Snapshots__/EnergyComplicationWatchSnapshot.test
 
 jobs:
+  # The iOS half of the change — the shared statistics aggregation, the widget provider that now
+  # delegates to it — is not built by the watch scheme, and `ci.yml` only runs on pull requests. So
+  # it is built and tested here too, for as long as this workflow exists.
+  ios:
+    runs-on: xcode-27
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+
+      # The whole scheme rather than the energy suites alone: the point is compiling the app and its
+      # extensions against the moved aggregation, which no narrower selection would do.
+      - name: Run the unit tests
+        run: >-
+          xcodebuild test
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+          -destination "platform=iOS Simulator,name=iPhone 17,OS=latest"
+          COMPILER_INDEX_STORE_ENABLE=NO
+
   record:
     runs-on: xcode-27
     timeout-minutes: 90

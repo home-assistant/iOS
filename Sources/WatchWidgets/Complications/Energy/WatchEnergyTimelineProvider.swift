@@ -70,8 +70,10 @@ struct WatchEnergyTimelineProvider: AppIntentTimelineProvider {
                 model: EnergyComplicationRenderModel(message: WatchWidgetStrings.energyNoData)
             )
         }
+        // Stamped now rather than with the payload's own date: an entry dated in the past is a
+        // timeline WidgetKit has already run past, and the payload's age is not what it renders.
         return WatchEnergyEntry(
-            date: snapshot.date,
+            date: Date(),
             model: EnergyComplicationRenderModel(
                 snapshot: snapshot,
                 showsServerName: WatchEnergyComplicationStore.showsServerName()
