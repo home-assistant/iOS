@@ -26,7 +26,7 @@ struct RenderTemplateAppIntent: AppIntent, CustomIntentMigratedAppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.refreshNetworkInformation()
-        guard let server = server.getServer() else {
+        guard let server = server.shortcutServer() else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
 
