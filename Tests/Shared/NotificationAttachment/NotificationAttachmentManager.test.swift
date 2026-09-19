@@ -242,6 +242,22 @@ class NotificationAttachmentManagerTests: XCTestCase {
         XCTAssertEqual(try deliveredCategory(for: content), "DYNAMIC")
     }
 
+    func testAudioAttachmentKeepsDynamicCategory() throws {
+        parser1.result = image1.successParserResult(needsAuth: false, typeHint: kUTTypeWaveformAudio)
+
+        let content = try deliveredContent(for: makeContent(categoryIdentifier: "DYNAMIC"))
+        XCTAssertEqual(content.attachments.first?.type, kUTTypeWaveformAudio as String)
+        XCTAssertEqual(content.categoryIdentifier, "DYNAMIC")
+    }
+
+    func testVideoAttachmentKeepsDynamicCategory() throws {
+        parser1.result = image1.successParserResult(needsAuth: false, typeHint: kUTTypeMPEG4)
+
+        let content = try deliveredContent(for: makeContent(categoryIdentifier: "DYNAMIC"))
+        XCTAssertEqual(content.attachments.first?.type, kUTTypeMPEG4 as String)
+        XCTAssertEqual(content.categoryIdentifier, "DYNAMIC")
+    }
+
     func testNoAttachmentKeepsDynamicCategory() throws {
         parser1.result = .missing
         parser2.result = .missing
@@ -260,8 +276,12 @@ class NotificationAttachmentManagerTests: XCTestCase {
         return content
     }
 
+    private func deliveredContent(for content: UNNotificationContent) throws -> UNNotificationContent {
+        try hang(Promise(manager.content(from: content, api: api)))
+    }
+
     private func deliveredCategory(for content: UNNotificationContent) throws -> String {
-        try hang(Promise(manager.content(from: content, api: api))).categoryIdentifier
+        try deliveredContent(for: content).categoryIdentifier
     }
 }
 

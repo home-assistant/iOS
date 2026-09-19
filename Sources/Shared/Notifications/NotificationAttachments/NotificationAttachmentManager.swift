@@ -111,9 +111,15 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
     ///
     /// Give those back to the system: the category is kept whenever the payload actually needs the
     /// extension, meaning it brings its own actions or an entity to render live (a camera stream, a
-    /// map), and dropped when the attachment is all there is to show.
+    /// map), and dropped when the image is all there is to show.
     static func removeContentExtensionCategoryIfUnneeded(from content: UNMutableNotificationContent) {
         guard content.categoryIdentifier == "DYNAMIC", !content.attachments.isEmpty else {
+            return
+        }
+
+        // Audio and video keep the extension for `PlayerAttachmentViewController`, whose transport
+        // controls the system doesn't draw for an attachment of its own.
+        guard content.attachments.allSatisfy({ UTType($0.type)?.conforms(to: .image) == true }) else {
             return
         }
 
