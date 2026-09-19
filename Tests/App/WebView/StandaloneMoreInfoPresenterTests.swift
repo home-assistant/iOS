@@ -124,6 +124,53 @@ final class StandaloneMoreInfoPresenterTests: XCTestCase {
         XCTAssertNil(host.onscreenEntityId)
     }
 
+    /// The sheet is laid out with the frontend's page inside it.
+    @MainActor func testTheSheetLaysOutTheFrontendsPage() throws {
+        sut.present(entityId: "light.kitchen", title: "Kitchen ceiling", from: host)
+        let container = try XCTUnwrap(host.overlayedController as? StandaloneMoreInfoPresenter.Container)
+
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = container
+        window.isHidden = false
+        container.view.setNeedsLayout()
+        container.view.layoutIfNeeded()
+        window.isHidden = true
+        window.rootViewController = nil
+
+        XCTAssertEqual(sut.model.title, "Kitchen ceiling")
+    }
+
+    /// A Mac has no detents to drag, so the sheet is a form sheet there.
+    @MainActor func testCatalystShowsAFormSheet() {
+        let previousIsCatalyst = Current.isCatalyst
+        defer { Current.isCatalyst = previousIsCatalyst }
+        Current.isCatalyst = true
+        let controller = UIViewController()
+
+        StandaloneMoreInfoPresenter.configurePresentation(of: controller, entityId: "sensor.outside")
+
+        XCTAssertEqual(controller.modalPresentationStyle, .formSheet)
+    }
+
+    /// The memory warning itself drops the hidden sheet, not just a direct call.
+    @MainActor func testAMemoryWarningDropsAHiddenSheet() throws {
+        sut.present(entityId: "light.kitchen", from: host)
+        host.overlayedController = nil
+        XCTAssertNotNil(sut.sheet)
+
+        NotificationCenter.default.post(
+            name: UIApplication.didReceiveMemoryWarningNotification,
+            object: nil
+        )
+
+        let dropped = expectation(description: "sheet dropped")
+        Task { @MainActor in
+            dropped.fulfill()
+        }
+        wait(for: [dropped], timeout: 2)
+        XCTAssertNil(sut.sheet)
+    }
+
     /// A kept sheet is a whole second frontend, the first thing to give up when memory is short.
     @MainActor func testMemoryPressureDropsAHiddenSheet() throws {
         sut.present(entityId: "light.kitchen", from: host)
