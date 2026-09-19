@@ -193,6 +193,14 @@ extension WebViewController: WebViewControllerProtocol {
         dismiss(animated: true)
     }
 
+    func resizeNativeModal(to size: NativeModalSize) {
+        guard case .nativeModal = role else {
+            Current.Log.warning("modal/size reached the main frontend, which is not in a modal")
+            return
+        }
+        onNativeModalSizeChange?(size)
+    }
+
     func relayNativeModalNavigation(path: String) {
         guard case .nativeModal = role else {
             Current.Log.warning("modal/navigate reached the main frontend, which navigates itself")

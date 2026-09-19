@@ -36,6 +36,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case moreInfoClosed = "more_info/closed"
     /// Asks for a frontend route in a modal of the app's own, while it reports `hasNativeModal`.
     case modalOpen = "modal/open"
+    /// Asks for more or less room after the modal is already up; a dialog inside it needs the screen.
+    case modalSize = "modal/size"
     /// Sent from inside a native modal when its close button is tapped.
     case modalClose = "modal/close"
     /// Sent from inside a native modal instead of navigating to another page itself.

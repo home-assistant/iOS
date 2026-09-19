@@ -49,6 +49,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var closeNativeModalCalled = false
     var relayedNativeModalNavigationPath: String?
     var nativeModalZoomSourceRect: CGRect?
+    var resizedNativeModalSize: NativeModalSize?
     var nativeModalZoomSourceView: UIView? = UIView()
     var updatedNativeModalHeader: NativeModalHeader?
 
@@ -174,6 +175,10 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func closeNativeModal() {
         closeNativeModalCalled = true
+    }
+
+    func resizeNativeModal(to size: NativeModalSize) {
+        resizedNativeModalSize = size
     }
 
     func relayNativeModalNavigation(path: String) {

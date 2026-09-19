@@ -52,6 +52,8 @@ protocol WebViewControllerProtocol: AnyObject {
     func closeNativeModal()
     /// The frontend's `modal/navigate`: a link out of the modal, for the
     /// frontend underneath to show; the sheet is dismissed.
+    /// The frontend's `modal/size`: how much room the page inside needs now.
+    func resizeNativeModal(to size: NativeModalSize)
     func relayNativeModalNavigation(path: String)
     /// A view parked at `rect` in the page's own coordinates, for a zoom transition to grow out of.
     func nativeModalZoomSource(at rect: CGRect) -> UIView?

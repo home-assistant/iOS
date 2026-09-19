@@ -179,6 +179,19 @@ final class NativeModalPresenterTests: XCTestCase {
         XCTAssertEqual(presentation.selectedDetentIdentifier, .medium)
     }
 
+    /// A dialog opened inside the page needs the whole screen, so the modal grows under it.
+    @MainActor func testThePageCanAskForMoreRoomAfterTheModalIsUp() throws {
+        sut.present(path: "/more-info?more-info-entity-id=sensor.outside", size: .compact, from: host)
+        let sheet = try presentedSheet()
+        let presentation = try XCTUnwrap(host.overlayedController?.sheetPresentationController)
+        XCTAssertEqual(presentation.selectedDetentIdentifier, .medium)
+
+        sheet.resizeNativeModal(to: .full)
+
+        XCTAssertEqual(presentation.selectedDetentIdentifier, .large)
+        XCTAssertFalse(presentation.prefersGrabberVisible)
+    }
+
     /// A rectangle with no area is nothing to grow out of.
     func testAnOriginNeedsAnArea() {
         XCTAssertNil(NativeModalOrigin(payload: ["x": 0.0, "y": 0.0, "width": 0.0, "height": 40.0]))

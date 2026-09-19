@@ -140,12 +140,23 @@ final class NativeModalPresenter {
 
     /// How much room the frontend asked for. Set before each presentation, since the same modal
     /// serves every route in turn. The grabber only appears when there is a second detent to drag to.
-    static func configurePresentation(of controller: UIViewController, size: NativeModalSize) {
+    static func configurePresentation(
+        of controller: UIViewController,
+        size: NativeModalSize,
+        animated: Bool = false
+    ) {
         guard let sheet = controller.sheetPresentationController else { return }
-        let compact = size == .compact
-        sheet.detents = compact ? [.medium(), .large()] : [.large()]
-        sheet.selectedDetentIdentifier = compact ? .medium : .large
-        sheet.prefersGrabberVisible = compact
+        let apply = {
+            let compact = size == .compact
+            sheet.detents = compact ? [.medium(), .large()] : [.large()]
+            sheet.selectedDetentIdentifier = compact ? .medium : .large
+            sheet.prefersGrabberVisible = compact
+        }
+        if animated {
+            sheet.animateChanges(apply)
+        } else {
+            apply()
+        }
     }
 
     /// Grows the modal out of whatever the user touched, when the frontend said where that was and
@@ -178,6 +189,11 @@ final class NativeModalPresenter {
         }
         sheet.onNativeModalHeaderChange = { [weak self] header in
             self?.model.apply(header)
+        }
+        // A dialog opened inside the page needs the whole screen, so the modal grows under it.
+        sheet.onNativeModalSizeChange = { [weak self] size in
+            guard let container = self?.container else { return }
+            Self.configurePresentation(of: container, size: size, animated: true)
         }
         // Siri resolves "this" against the entity on screen. The modal publishes no activity of its
         // own, so the frontend underneath carries whatever the page inside reports, and drops it

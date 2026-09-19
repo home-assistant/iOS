@@ -238,6 +238,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     origin: NativeModalOrigin(payload: incomingMessage.Payload?["origin"]),
                     from: webViewController
                 )
+            case .modalSize:
+                webViewController.resizeNativeModal(
+                    to: NativeModalSize(payload: incomingMessage.Payload?["size"])
+                )
             case .modalClose:
                 // Arrives on the modal's own web view, so that controller is the one to go.
                 webViewController.closeNativeModal()
