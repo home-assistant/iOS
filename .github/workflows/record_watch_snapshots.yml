@@ -13,6 +13,11 @@ name: Record Watch Snapshots
 # new ones.
 
 on:
+  # Push rather than `workflow_dispatch`: a manually dispatched workflow has to exist on the default
+  # branch, and this one is meant to be deleted before it ever gets there.
+  push:
+    branches:
+      - "claude/apple-watch-energy-complications-**"
   workflow_dispatch:
     inputs:
       record:
