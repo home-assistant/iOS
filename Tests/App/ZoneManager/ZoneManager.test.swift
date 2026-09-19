@@ -591,19 +591,54 @@ private extension Array where Element: CLRegion {
 }
 
 private class FakeCollector: NSObject, ZoneManagerCollector {
-    var delegate: ZoneManagerCollectorDelegate?
+    weak var delegate: ZoneManagerCollectorDelegate?
 
     var ignoringNextStates = Set<CLRegion>()
     var ignoreNextStateCallsWereOnMainThread = [Bool]()
+    var foregroundScanCallsWereOnMainThread = [Bool]()
+    var backgroundScanCallsWereOnMainThread = [Bool]()
+    var scannedRegions = Set<CLRegion>()
+    weak var scanManager: CLLocationManager?
+    var stopScanningCount = 0
+    var opportunisticallyScannedRegions = Set<CLRegion>()
+    var backgroundMonitoredRegions = Set<CLRegion>()
+    var stopBackgroundMonitoringCount = 0
 
     func ignoreNextState(for region: CLRegion) {
         ignoreNextStateCallsWereOnMainThread.append(Thread.isMainThread)
         ignoringNextStates.insert(region)
     }
+
+    func startForegroundBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        foregroundScanCallsWereOnMainThread.append(Thread.isMainThread)
+        scannedRegions = regions
+        scanManager = manager
+    }
+
+    func stopForegroundBeaconScanning(manager: CLLocationManager) {
+        stopScanningCount += 1
+        scanManager = manager
+    }
+
+    func startBackgroundBeaconMonitoring(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        backgroundScanCallsWereOnMainThread.append(Thread.isMainThread)
+        backgroundMonitoredRegions = regions
+        scanManager = manager
+    }
+
+    func stopBackgroundBeaconMonitoring(manager: CLLocationManager) {
+        stopBackgroundMonitoringCount += 1
+        scanManager = manager
+    }
+
+    func startOpportunisticBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        opportunisticallyScannedRegions = regions
+        scanManager = manager
+    }
 }
 
 private class FakeProcessor: ZoneManagerProcessor {
-    var delegate: ZoneManagerProcessorDelegate?
+    weak var delegate: ZoneManagerProcessorDelegate?
 
     var promiseToReturn: Promise<Void>?
     var performEvent: ZoneManagerEvent?
