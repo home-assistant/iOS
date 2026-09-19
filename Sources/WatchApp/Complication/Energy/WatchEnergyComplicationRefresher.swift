@@ -52,6 +52,12 @@ enum WatchEnergyComplicationRefresher {
         previous: [EnergyComplicationSnapshot],
         defaults: UserDefaults?
     ) {
+        // Without the app group there is nowhere to leave the payload, and a reload would only send
+        // the extension back to read what it already has.
+        guard let defaults else {
+            Current.Log.error("Missing app group defaults for watch energy complication snapshots")
+            return
+        }
         guard snapshots != previous else { return }
         EnergyComplicationSnapshot.write(snapshots, to: defaults)
         // Every kind rather than this one: the widget registers its kind from the extension's own
@@ -62,9 +68,9 @@ enum WatchEnergyComplicationRefresher {
         // The picker's list only changes when a server is added or removed, so re-querying it on
         // every value change would just double the extension launches.
         let identity = snapshots.map(\.serverId).sorted().joined(separator: "|")
-        if defaults?.string(forKey: serversIdentityKey) != identity {
+        if defaults.string(forKey: serversIdentityKey) != identity {
             WidgetCenter.shared.invalidateConfigurationRecommendations()
-            defaults?.set(identity, forKey: serversIdentityKey)
+            defaults.set(identity, forKey: serversIdentityKey)
         }
     }
 
