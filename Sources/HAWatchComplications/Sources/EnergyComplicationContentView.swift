@@ -55,6 +55,9 @@ public struct EnergyComplicationContentView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(Layout.minimumScaleFactor)
             }
+            // Nothing to plot means no chart rather than a bare axis. A dashboard with gas and
+            // nothing else has no series on this chart at all — gas is a figure, never a bar — so
+            // the axis would sit there empty for good, saying nothing the figure above it doesn't.
             if let message = model.message, !message.isEmpty {
                 // No figures and no chart: the whole complication is the reason there aren't any.
                 Text(message)
@@ -65,8 +68,10 @@ public struct EnergyComplicationContentView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             } else {
                 statsRow
-                EnergyComplicationChartView(bars: model.bars)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                if !model.bars.isEmpty {
+                    EnergyComplicationChartView(bars: model.bars)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
