@@ -25,7 +25,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private let improvManager: any ImprovManagerProtocol
     private let entityControlDonation: EntityControlDonation
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
-    private lazy var standaloneMoreInfoPresenter = StandaloneMoreInfoPresenter()
+    private lazy var nativeModalPresenter = NativeModalPresenter()
 
     private var improvController: UIViewController?
 
@@ -90,7 +90,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 webViewController.updateFrontendConnectionState(state: FrontEndConnectionState.loaded.rawValue)
                 // The main frontend is up, so a sheet booted now is ready by the time an entity is tapped.
                 if webViewController.role.isMainFrontend, AppLabsFeature.nativeMoreInfo.isEnabled {
-                    standaloneMoreInfoPresenter.prewarm(from: webViewController)
+                    nativeModalPresenter.prewarm(from: webViewController)
                 }
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
@@ -215,7 +215,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 NativeTabBarState.shared.requestMore()
             case .moreInfoOpened:
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
-                    Current.Log.error("Received more_info/opened but entity_id was not string! \(incomingMessage)")
+                    Current.Log.error("Received modal/opened but entity_id was not string! \(incomingMessage)")
                     return
                 }
                 webViewController.setOnscreenEntity(entityId: entityId)
@@ -225,32 +225,34 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.clearOnscreenEntity(entityId: entityId)
-            case .moreInfoOpen:
-                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
-                    Current.Log.error("Received more_info/open but entity_id was not string! \(incomingMessage)")
+            case .modalOpen:
+                guard let path = incomingMessage.Payload?["path"] as? String else {
+                    Current.Log.error("Received modal/open but path was not string! \(incomingMessage)")
                     return
                 }
-                standaloneMoreInfoPresenter.present(
-                    entityId: entityId,
+                nativeModalPresenter.present(
+                    path: path,
                     title: incomingMessage.Payload?["title"] as? String,
                     subtitle: incomingMessage.Payload?["subtitle"] as? String,
+                    size: NativeModalSize(payload: incomingMessage.Payload?["size"]),
+                    origin: NativeModalOrigin(payload: incomingMessage.Payload?["origin"]),
                     from: webViewController
                 )
-            case .moreInfoClose:
-                // Arrives on the sheet's own web view, so that controller is the one to go.
-                webViewController.closeStandaloneMoreInfo()
-            case .moreInfoNavigate:
+            case .modalClose:
+                // Arrives on the modal's own web view, so that controller is the one to go.
+                webViewController.closeNativeModal()
+            case .modalNavigate:
                 guard let path = incomingMessage.Payload?["path"] as? String else {
-                    Current.Log.error("Received more_info/navigate but path was not string! \(incomingMessage)")
+                    Current.Log.error("Received modal/navigate but path was not string! \(incomingMessage)")
                     return
                 }
-                webViewController.relayStandaloneNavigation(path: path)
-            case .moreInfoHeader:
-                guard let header = StandaloneMoreInfoHeader(payload: incomingMessage.Payload) else {
-                    Current.Log.error("Received more_info/header with an invalid payload! \(incomingMessage)")
+                webViewController.relayNativeModalNavigation(path: path)
+            case .modalHeader:
+                guard let header = NativeModalHeader(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received modal/header with an invalid payload! \(incomingMessage)")
                     return
                 }
-                webViewController.updateStandaloneMoreInfoHeader(header)
+                webViewController.updateNativeModalHeader(header)
             case .entityControlled:
                 guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
                     Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")
@@ -345,7 +347,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     }
 
     @discardableResult
-    public func sendExternalBus(message: WebSocketMessage) -> Promise<Void> {
+    func sendExternalBus(message: WebSocketMessage) -> Promise<Void> {
         Promise<Void> { seal in
             DispatchQueue.main.async { [self] in
                 do {

@@ -1,11 +1,10 @@
 @testable import HomeAssistant
 import XCTest
 
-final class StandaloneMoreInfoHeaderTests: XCTestCase {
+final class NativeModalHeaderTests: XCTestCase {
     /// The bar shows exactly what the frontend described, in the frontend's order.
     func testParsesTheFrontendsHeader() throws {
-        let header = try XCTUnwrap(StandaloneMoreInfoHeader(payload: [
-            "entity_id": "light.kitchen",
+        let header = try XCTUnwrap(NativeModalHeader(payload: [
             "title": "Kitchen ceiling",
             "subtitle": "Kitchen ▸ Hue bridge",
             "navigation": "close",
@@ -22,7 +21,6 @@ final class StandaloneMoreInfoHeaderTests: XCTestCase {
             ],
         ]))
 
-        XCTAssertEqual(header.entityId, "light.kitchen")
         XCTAssertEqual(header.title, "Kitchen ceiling")
         XCTAssertEqual(header.subtitle, "Kitchen ▸ Hue bridge")
         XCTAssertEqual(header.navigation, .close)
@@ -40,8 +38,7 @@ final class StandaloneMoreInfoHeaderTests: XCTestCase {
 
     /// A secondary view has a back button and nothing else; missing lists mean empty ones.
     func testABackHeaderWithoutItems() throws {
-        let header = try XCTUnwrap(StandaloneMoreInfoHeader(payload: [
-            "entity_id": "light.kitchen",
+        let header = try XCTUnwrap(NativeModalHeader(payload: [
             "title": "History",
             "navigation": "back",
             "navigation_label": "Back to info",
@@ -55,8 +52,7 @@ final class StandaloneMoreInfoHeaderTests: XCTestCase {
 
     /// An item the app cannot draw (no id, label or icon) is left out rather than failing the header.
     func testSkipsMalformedItemsAndUnknownNavigation() throws {
-        let header = try XCTUnwrap(StandaloneMoreInfoHeader(payload: [
-            "entity_id": "light.kitchen",
+        let header = try XCTUnwrap(NativeModalHeader(payload: [
             "title": "Kitchen ceiling",
             "navigation": "sideways",
             "actions": [
@@ -70,8 +66,8 @@ final class StandaloneMoreInfoHeaderTests: XCTestCase {
     }
 
     func testAHeaderNeedsAnEntityAndATitle() {
-        XCTAssertNil(StandaloneMoreInfoHeader(payload: nil))
-        XCTAssertNil(StandaloneMoreInfoHeader(payload: ["entity_id": "light.kitchen"]))
-        XCTAssertNil(StandaloneMoreInfoHeader(payload: ["title": "Kitchen ceiling"]))
+        XCTAssertNil(NativeModalHeader(payload: nil))
+        XCTAssertNil(NativeModalHeader(payload: ["subtitle": "Kitchen"]))
+        XCTAssertNil(NativeModalHeader(payload: ["title": "Kitchen ceiling"]))
     }
 }

@@ -1,32 +1,32 @@
 import Combine
 import Foundation
 
-/// What the standalone more-info sheet's chrome shows: the frontend header's title, breadcrumb,
+/// What a native modal's chrome shows: the frontend header's title, breadcrumb,
 /// buttons and menu, and whether the page is still booting behind the native loader.
 ///
-/// The title and subtitle first come with `more_info/open`, so the bar is right from the first
-/// frame; everything else, and every later change, comes with `more_info/header` from the sheet's
-/// own frontend (see `StandaloneMoreInfoHeader`).
+/// The title and subtitle first come with `modal/open`, so the bar is right from the first
+/// frame; everything else, and every later change, comes with `modal/header` from the modal's
+/// own frontend (see `NativeModalHeader`).
 @MainActor
-final class StandaloneMoreInfoSheetModel: ObservableObject {
+final class NativeModalModel: ObservableObject {
     @Published var title: String
     @Published var subtitle: String?
     @Published var isLoading: Bool
-    @Published var navigation: StandaloneMoreInfoHeader.Navigation
+    @Published var navigation: NativeModalHeader.Navigation
     @Published var navigationLabel: String
     @Published var menuLabel: String
-    @Published var actions: [StandaloneMoreInfoHeader.Action]
-    @Published var menu: [StandaloneMoreInfoHeader.MenuItem]
+    @Published var actions: [NativeModalHeader.Action]
+    @Published var menu: [NativeModalHeader.MenuItem]
 
     init(
         title: String = "",
         subtitle: String? = nil,
         isLoading: Bool = true,
-        navigation: StandaloneMoreInfoHeader.Navigation = .close,
+        navigation: NativeModalHeader.Navigation = .close,
         navigationLabel: String = "",
         menuLabel: String = "",
-        actions: [StandaloneMoreInfoHeader.Action] = [],
-        menu: [StandaloneMoreInfoHeader.MenuItem] = []
+        actions: [NativeModalHeader.Action] = [],
+        menu: [NativeModalHeader.MenuItem] = []
     ) {
         self.title = title
         self.subtitle = subtitle
@@ -39,7 +39,7 @@ final class StandaloneMoreInfoSheetModel: ObservableObject {
     }
 
     /// Takes over the header the frontend described.
-    func apply(_ header: StandaloneMoreInfoHeader) {
+    func apply(_ header: NativeModalHeader) {
         title = header.title
         subtitle = header.subtitle
         navigation = header.navigation

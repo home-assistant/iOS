@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 import XCTest
 
-final class StandaloneMoreInfoSheetViewTests: XCTestCase {
+final class NativeModalViewTests: XCTestCase {
     /// Lays the view out so SwiftUI evaluates its body. Deliberately never becomes the key window:
     /// the snapshot helpers draw into whatever window is key, so stealing it here would reach into
     /// unrelated tests.
@@ -22,10 +22,10 @@ final class StandaloneMoreInfoSheetViewTests: XCTestCase {
 
     @MainActor
     private func sheet(
-        model: StandaloneMoreInfoSheetModel,
+        model: NativeModalModel,
         onAction: @escaping (String) -> Void = { _ in }
     ) -> some View {
-        StandaloneMoreInfoSheetView(
+        NativeModalView(
             model: model,
             onClose: {},
             onAction: onAction,
@@ -37,7 +37,7 @@ final class StandaloneMoreInfoSheetViewTests: XCTestCase {
 
     /// A sheet that is still booting shows the native loader over the page.
     @MainActor func testShowsTheLoaderWhileTheFrontendBoots() {
-        let model = StandaloneMoreInfoSheetModel(title: "light.kitchen", isLoading: true)
+        let model = NativeModalModel(title: "light.kitchen", isLoading: true)
 
         render(sheet(model: model))
 
@@ -47,7 +47,7 @@ final class StandaloneMoreInfoSheetViewTests: XCTestCase {
     /// The bar draws what the frontend described: the entity's name over its breadcrumb, the icon
     /// buttons, and the overflow menu.
     @MainActor func testDrawsTheHeaderTheFrontendDescribed() {
-        let model = StandaloneMoreInfoSheetModel(
+        let model = NativeModalModel(
             title: "Kitchen ceiling",
             subtitle: "Kitchen ▸ Hue bridge",
             isLoading: false,
@@ -82,7 +82,7 @@ final class StandaloneMoreInfoSheetViewTests: XCTestCase {
 
     /// A secondary view replaces the close button with a back button and drops the subtitle.
     @MainActor func testDrawsTheBackButtonOnASecondaryView() {
-        let model = StandaloneMoreInfoSheetModel(
+        let model = NativeModalModel(
             title: "History",
             isLoading: false,
             navigation: .back,
@@ -98,23 +98,23 @@ final class StandaloneMoreInfoSheetViewTests: XCTestCase {
     @MainActor func testHostsTheFrontendsWebView() {
         let controller = WebViewController(
             server: ServerFixture.standard,
-            role: .standaloneMoreInfo(entityId: "light.kitchen")
+            role: .nativeModal(path: "/more-info?more-info-entity-id=light.kitchen")
         )
         controller.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
-        let model = StandaloneMoreInfoSheetModel(title: "Kitchen ceiling", isLoading: false)
+        let model = NativeModalModel(title: "Kitchen ceiling", isLoading: false)
 
         render(
-            StandaloneMoreInfoSheetView(
+            NativeModalView(
                 model: model,
                 onClose: {},
                 onAction: { _ in },
                 onDisappear: {}
             ) {
-                StandaloneMoreInfoWebView(controller: controller)
+                NativeModalWebView(controller: controller)
             }
         )
 
-        XCTAssertEqual(controller.role, .standaloneMoreInfo(entityId: "light.kitchen"))
+        XCTAssertEqual(controller.role, .nativeModal(path: "/more-info?more-info-entity-id=light.kitchen"))
     }
 
     /// An icon the frontend names by its MDI name is drawn; an unknown one falls back rather than
@@ -122,8 +122,8 @@ final class StandaloneMoreInfoSheetViewTests: XCTestCase {
     @MainActor func testDrawsTheIconsTheFrontendNames() {
         render(
             VStack {
-                StandaloneMoreInfoHeaderIcon(name: "mdi:chart-box-outline")
-                StandaloneMoreInfoHeaderIcon(name: "not-an-icon")
+                NativeModalHeaderIcon(name: "mdi:chart-box-outline")
+                NativeModalHeaderIcon(name: "not-an-icon")
             }
         )
     }

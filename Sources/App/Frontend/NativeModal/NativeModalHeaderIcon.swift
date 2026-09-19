@@ -2,7 +2,7 @@ import Shared
 import SwiftUI
 
 /// An MDI icon named by the frontend (`mdi:chart-box-outline`), drawn as a template so the bar tints it.
-struct StandaloneMoreInfoHeaderIcon: View {
+struct NativeModalHeaderIcon: View {
     let name: String
 
     var body: some View {

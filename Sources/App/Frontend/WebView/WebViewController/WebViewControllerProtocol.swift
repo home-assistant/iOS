@@ -47,14 +47,16 @@ protocol WebViewControllerProtocol: AnyObject {
     /// that says "this" against it; see `WebViewController+OnscreenContent`.
     func setOnscreenEntity(entityId: String)
     func clearOnscreenEntity(entityId: String)
-    /// The frontend's `more_info/close`: dismisses the sheet this controller is shown in as a standalone
-    /// more-info screen; see `StandaloneMoreInfoPresenter`.
-    func closeStandaloneMoreInfo()
-    /// The frontend's `more_info/navigate`: a link out of the standalone more-info screen, for the
+    /// The frontend's `modal/close`: dismisses the modal this controller is shown in;
+    /// see `NativeModalPresenter`.
+    func closeNativeModal()
+    /// The frontend's `modal/navigate`: a link out of the modal, for the
     /// frontend underneath to show; the sheet is dismissed.
-    func relayStandaloneNavigation(path: String)
-    /// The frontend's `more_info/header`: what the standalone more-info sheet's bar should show now.
-    func updateStandaloneMoreInfoHeader(_ header: StandaloneMoreInfoHeader)
+    func relayNativeModalNavigation(path: String)
+    /// A view parked at `rect` in the page's own coordinates, for a zoom transition to grow out of.
+    func nativeModalZoomSource(at rect: CGRect) -> UIView?
+    /// The frontend's `modal/header`: what the modal's bar should show now.
+    func updateNativeModalHeader(_ header: NativeModalHeader)
 }
 
 extension WebViewControllerProtocol {

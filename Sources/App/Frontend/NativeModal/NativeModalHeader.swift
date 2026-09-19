@@ -1,11 +1,11 @@
 import Foundation
 
-/// The header of the standalone more-info sheet as the frontend describes it in `more_info/header`.
+/// The header of a native modal as the frontend describes it in `modal/header`.
 ///
 /// The frontend decides what the header offers (history, settings, the overflow menu) from the
 /// entity's domain, the user's rights and the open view; the sheet draws exactly this and reports a
-/// tap with `more_info/action` and the item's `id`. Nothing here is known to the app ahead of time.
-struct StandaloneMoreInfoHeader: Equatable {
+/// tap with `modal/action` and the item's `id`. Nothing here is known to the app ahead of time.
+struct NativeModalHeader: Equatable {
     /// What the leading button does.
     enum Navigation: String {
         /// Dismiss the sheet.
@@ -65,7 +65,6 @@ struct StandaloneMoreInfoHeader: Equatable {
         }
     }
 
-    let entityId: String
     let title: String
     let subtitle: String?
     let navigation: Navigation
@@ -78,9 +77,7 @@ struct StandaloneMoreInfoHeader: Equatable {
 
     init?(payload: [String: Any]?) {
         guard let payload,
-              let entityId = payload["entity_id"] as? String,
               let title = payload["title"] as? String else { return nil }
-        self.entityId = entityId
         self.title = title
         self.subtitle = payload["subtitle"] as? String
         self.navigation = (payload["navigation"] as? String).flatMap(Navigation.init(rawValue:)) ?? .close
@@ -91,7 +88,6 @@ struct StandaloneMoreInfoHeader: Equatable {
     }
 
     init(
-        entityId: String,
         title: String,
         subtitle: String? = nil,
         navigation: Navigation = .close,
@@ -100,7 +96,6 @@ struct StandaloneMoreInfoHeader: Equatable {
         actions: [Action] = [],
         menu: [MenuItem] = []
     ) {
-        self.entityId = entityId
         self.title = title
         self.subtitle = subtitle
         self.navigation = navigation

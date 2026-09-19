@@ -4,13 +4,13 @@ import Shared
 /// What a `WebViewController` is on screen as.
 ///
 /// The main frontend is the app: it remembers where it is for the next launch, publishes its page
-/// for Handoff and Siri, and offers the sidebar gestures. A standalone more-info screen shows one
-/// entity's details in a sheet over it, at the frontend's frameless `/more-info` route, and does
-/// none of that: the page underneath stays what the app is showing. A sheet booted ahead of time
-/// has no entity yet; it is told which one over the bus.
+/// for Handoff and Siri, and offers the sidebar gestures. A native modal shows one frontend route
+/// in a presentation of its own over it, and does none of that: the page underneath stays what the
+/// app is showing. The frontend names the route; a modal booted ahead of time has none yet and is
+/// told over the bus.
 enum WebViewControllerRole: Equatable {
     case mainFrontend
-    case standaloneMoreInfo(entityId: String?)
+    case nativeModal(path: String?)
 
     var isMainFrontend: Bool {
         self == .mainFrontend
@@ -22,21 +22,8 @@ enum WebViewControllerRole: Equatable {
         switch self {
         case .mainFrontend:
             return nil
-        case let .standaloneMoreInfo(entityId):
-            return Self.standaloneMoreInfoPath(entityId: entityId)
+        case let .nativeModal(path):
+            return path
         }
-    }
-
-    /// The frontend's frameless more-info page. It reads the entity from the same query item as the
-    /// more-info deep link on any other route, and shows the info view by default.
-    static func standaloneMoreInfoPath(entityId: String?) -> String {
-        var components = URLComponents()
-        components.path = "/more-info"
-        if let entityId {
-            components.queryItems = [
-                URLQueryItem(name: AppConstants.QueryItems.openMoreInfoDialog.rawValue, value: entityId),
-            ]
-        }
-        return components.string ?? "/more-info"
     }
 }

@@ -82,7 +82,7 @@ struct HomeAssistantView: View, WebFrontendView {
             viewModel.resetWebFrontend()
         }
         .onChange(of: AppLabsFeature.nativeMoreInfo.isEnabled(in: appLabs.enabledFeatureIds)) { _ in
-            // `hasNativeMoreInfo` is read from the external config once per page load as well.
+            // `hasNativeModal` is read from the external config once per page load as well.
             viewModel.resetWebFrontend()
         }
     }

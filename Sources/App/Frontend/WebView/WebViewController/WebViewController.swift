@@ -14,14 +14,19 @@ import UIKit
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var webView: WKWebView!
     let server: Server
-    /// Whether this is the app's frontend or a standalone more-info sheet over it; see `WebViewControllerRole`.
+    /// Whether this is the app's frontend or a native modal over it; see `WebViewControllerRole`.
     let role: WebViewControllerRole
-    /// Called with the frontend path a standalone sheet was asked to leave for, before it dismisses.
-    var onStandaloneNavigation: ((String) -> Void)?
-    /// Called each time a standalone sheet's frontend reports it has loaded.
-    var onStandaloneFrontendLoaded: (() -> Void)?
-    /// Called with each header a standalone sheet's frontend describes for the sheet's bar.
-    var onStandaloneHeaderChange: ((StandaloneMoreInfoHeader) -> Void)?
+    /// Called with the frontend path a modal was asked to leave for, before it dismisses.
+    var onNativeModalNavigation: ((String) -> Void)?
+    /// Called each time a modal's frontend becomes ready to show, on its first load and on every
+    /// reconnection after it drops. `frontend/loaded` arrives once per page load, so a modal that
+    /// loses its connection while it waits would never hear about the recovery otherwise.
+    var onNativeModalReady: (() -> Void)?
+    /// Called with each header a modal's frontend describes for the modal's bar.
+    var onNativeModalHeaderChange: ((NativeModalHeader) -> Void)?
+    /// Called with the entity a modal's page is showing, or nil when it stops showing one. A modal
+    /// publishes no activity of its own, so its host carries this for Siri.
+    var onNativeModalOnscreenEntity: ((String?) -> Void)?
 
     var urlObserver: NSKeyValueObservation?
     var windowTitleObserver: NSKeyValueObservation?
@@ -43,6 +48,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var statusBarView: UIView?
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
+    /// Parked where the frontend said a modal was asked from; see `nativeModalZoomSource(at:)`.
+    var nativeModalZoomAnchorView: NativeModalZoomAnchorView?
     var pendingAssistZoomSourceView: UIView?
     /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
     weak var detachedOverlayController: UIViewController?

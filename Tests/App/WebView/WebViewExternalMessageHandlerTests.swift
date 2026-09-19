@@ -497,69 +497,71 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
     /// With the app showing more-info natively, the frontend hands over the entity instead of opening
     /// its dialog: a sheet with the frontend's standalone page comes up over the web view that asked,
-    /// which keeps carrying the entity for Siri while the sheet is up.
-    @MainActor func testHandleExternalMessageMoreInfoOpenPresentsTheStandaloneSheet() {
+    /// which loads exactly the route the frontend named.
+    @MainActor func testHandleExternalMessageModalOpenPresentsTheRouteTheFrontendNamed() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "more_info/open",
-            "payload": ["entity_id": "light.kitchen", "title": "Kitchen ceiling", "subtitle": "Kitchen"],
+            "type": "modal/open",
+            "payload": [
+                "path": "/more-info?more-info-entity-id=light.kitchen",
+                "title": "Kitchen ceiling",
+                "subtitle": "Kitchen",
+                "size": "full",
+            ],
         ])
 
         XCTAssertTrue(mockWebViewController.presentOverlayControllerCalled)
-        XCTAssertTrue(mockWebViewController.overlayedController is StandaloneMoreInfoPresenter.Container)
-        XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
+        XCTAssertTrue(mockWebViewController.overlayedController is NativeModalPresenter.Container)
     }
 
-    @MainActor func testHandleExternalMessageMoreInfoOpenWithoutAnEntityIsIgnored() {
+    @MainActor func testHandleExternalMessageModalOpenWithoutAPathIsIgnored() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "more_info/open",
+            "type": "modal/open",
             "payload": [:],
         ])
 
         XCTAssertFalse(mockWebViewController.presentOverlayControllerCalled)
-        XCTAssertNil(mockWebViewController.onscreenEntityId)
     }
 
-    /// The close arrives on the sheet's own web view, so that controller is the one asked to go.
-    @MainActor func testHandleExternalMessageMoreInfoCloseDismissesTheStandaloneSheet() {
+    /// The close arrives on the modal's own web view, so that controller is the one asked to go.
+    @MainActor func testHandleExternalMessageModalCloseDismissesTheModal() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "more_info/close",
-            "payload": ["entity_id": "light.kitchen"],
+            "type": "modal/close",
+            "payload": [:],
         ])
 
-        XCTAssertTrue(mockWebViewController.closeStandaloneMoreInfoCalled)
+        XCTAssertTrue(mockWebViewController.closeNativeModalCalled)
     }
 
-    /// A link out of the standalone page arrives on the sheet's web view, which hands the path on.
-    @MainActor func testHandleExternalMessageMoreInfoNavigateRelaysThePath() {
+    /// A link out of the page arrives on the modal's web view, which hands the path on.
+    @MainActor func testHandleExternalMessageModalNavigateRelaysThePath() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "more_info/navigate",
+            "type": "modal/navigate",
             "payload": ["path": "/config/devices/device/abc"],
         ])
 
-        XCTAssertEqual(mockWebViewController.relayedStandaloneNavigationPath, "/config/devices/device/abc")
+        XCTAssertEqual(mockWebViewController.relayedNativeModalNavigationPath, "/config/devices/device/abc")
     }
 
-    /// The header arrives on the sheet's web view, whose controller passes it to the sheet's bar.
-    @MainActor func testHandleExternalMessageMoreInfoHeaderUpdatesTheSheetsBar() {
+    /// The header arrives on the modal's web view, whose controller passes it to the modal's bar.
+    @MainActor func testHandleExternalMessageModalHeaderUpdatesTheModalsBar() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "more_info/header",
+            "type": "modal/header",
             "payload": [
-                "entity_id": "light.kitchen",
                 "title": "Kitchen ceiling",
                 "navigation": "back",
                 "actions": [["id": "history", "label": "History", "icon": "mdi:chart-box-outline"]],
@@ -567,34 +569,34 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             ],
         ])
 
-        let header = mockWebViewController.updatedStandaloneMoreInfoHeader
+        let header = mockWebViewController.updatedNativeModalHeader
         XCTAssertEqual(header?.title, "Kitchen ceiling")
         XCTAssertEqual(header?.navigation, .back)
         XCTAssertEqual(header?.actions.map(\.id), ["history"])
     }
 
-    @MainActor func testHandleExternalMessageMoreInfoHeaderWithoutATitleIsIgnored() {
+    @MainActor func testHandleExternalMessageModalHeaderWithoutATitleIsIgnored() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "more_info/header",
-            "payload": ["entity_id": "light.kitchen"],
+            "type": "modal/header",
+            "payload": ["subtitle": "Kitchen"],
         ])
 
-        XCTAssertNil(mockWebViewController.updatedStandaloneMoreInfoHeader)
+        XCTAssertNil(mockWebViewController.updatedNativeModalHeader)
     }
 
-    @MainActor func testHandleExternalMessageMoreInfoNavigateWithoutAPathIsIgnored() {
+    @MainActor func testHandleExternalMessageModalNavigateWithoutAPathIsIgnored() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "more_info/navigate",
+            "type": "modal/navigate",
             "payload": [:],
         ])
 
-        XCTAssertNil(mockWebViewController.relayedStandaloneNavigationPath)
+        XCTAssertNil(mockWebViewController.relayedNativeModalNavigationPath)
     }
 
     /// A control the frontend reports is donated as the intent that would repeat it, against the
@@ -633,7 +635,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         }
     }
 
-    @MainActor func testHandleExternalMessageEntityControlledWithoutAServiceDonatesNothing() async throws {
+    @MainActor func testHandleExternalMessageEntityControlledWithoutAServiceDonatesNothing() async {
         let donated = expectation(description: "donated")
         donated.isInverted = true
         sut = WebViewExternalMessageHandler(

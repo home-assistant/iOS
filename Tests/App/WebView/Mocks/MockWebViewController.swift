@@ -46,11 +46,14 @@ final class MockWebViewController: WebViewControllerProtocol {
     var showLoggedOutStateCalled = false
     var showLoggedOutStateExpectation: XCTestExpectation?
     var openInBrowserCalled = false
-    var closeStandaloneMoreInfoCalled = false
-    var relayedStandaloneNavigationPath: String?
-    var updatedStandaloneMoreInfoHeader: StandaloneMoreInfoHeader?
+    var closeNativeModalCalled = false
+    var relayedNativeModalNavigationPath: String?
+    var nativeModalZoomSourceRect: CGRect?
+    var nativeModalZoomSourceView: UIView? = UIView()
+    var updatedNativeModalHeader: NativeModalHeader?
 
-    init() {
+    init(role: WebViewControllerRole = .mainFrontend) {
+        self.role = role
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
     }
 
@@ -169,15 +172,20 @@ final class MockWebViewController: WebViewControllerProtocol {
         onscreenEntityId = nil
     }
 
-    func closeStandaloneMoreInfo() {
-        closeStandaloneMoreInfoCalled = true
+    func closeNativeModal() {
+        closeNativeModalCalled = true
     }
 
-    func relayStandaloneNavigation(path: String) {
-        relayedStandaloneNavigationPath = path
+    func relayNativeModalNavigation(path: String) {
+        relayedNativeModalNavigationPath = path
     }
 
-    func updateStandaloneMoreInfoHeader(_ header: StandaloneMoreInfoHeader) {
-        updatedStandaloneMoreInfoHeader = header
+    func nativeModalZoomSource(at rect: CGRect) -> UIView? {
+        nativeModalZoomSourceRect = rect
+        return nativeModalZoomSourceView
+    }
+
+    func updateNativeModalHeader(_ header: NativeModalHeader) {
+        updatedNativeModalHeader = header
     }
 }

@@ -34,14 +34,14 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case sidebarShow = "sidebar/show"
     case moreInfoOpened = "more_info/opened"
     case moreInfoClosed = "more_info/closed"
-    /// Sent instead of opening the more-info dialog while the app reports `hasNativeMoreInfo`.
-    case moreInfoOpen = "more_info/open"
-    /// Sent by the standalone more-info page when its close button is tapped.
-    case moreInfoClose = "more_info/close"
-    /// Sent by the standalone more-info page instead of navigating to another page itself.
-    case moreInfoNavigate = "more_info/navigate"
-    /// Sent by the standalone page whenever the header the sheet draws for it should change.
-    case moreInfoHeader = "more_info/header"
+    /// Asks for a frontend route in a modal of the app's own, while it reports `hasNativeModal`.
+    case modalOpen = "modal/open"
+    /// Sent from inside a native modal when its close button is tapped.
+    case modalClose = "modal/close"
+    /// Sent from inside a native modal instead of navigating to another page itself.
+    case modalNavigate = "modal/navigate"
+    /// Sent from inside a native modal whenever the header the app draws for it should change.
+    case modalHeader = "modal/header"
     case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
@@ -61,8 +61,12 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
-            "hasNativeMoreInfo": AppLabsFeature.nativeMoreInfo.isEnabled,
-            "hasNativeMoreInfoHeader": true, // The native more-info sheet draws the header from more_info/header
+            // Native modals are iOS 26 and later, and never Catalyst: the bar is built on that
+            // release's navigation subtitle and close button role, and a Mac window has no sheet to
+            // present in. `isEnabled` carries both, so the page inside only drops its own header
+            // where there is a native bar to replace it.
+            "hasNativeModal": AppLabsFeature.nativeMoreInfo.isEnabled,
+            "hasNativeModalHeader": AppLabsFeature.nativeMoreInfo.isEnabled,
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
             "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
@@ -87,6 +91,6 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
     case showNotifications = "notifications/show"
-    /// A tap on the native more-info header; the payload's `id` is from `more_info/header`.
-    case moreInfoAction = "more_info/action"
+    /// A tap on a native modal's header; the payload's `id` is from `modal/header`.
+    case modalAction = "modal/action"
 }

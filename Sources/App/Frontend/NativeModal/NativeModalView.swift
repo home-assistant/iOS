@@ -2,13 +2,13 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The standalone more-info sheet: the frontend's page under a standard navigation bar showing what
-/// the frontend's own header would (see `StandaloneMoreInfoHeader`): the entity's name over its area
+/// A native modal: the frontend's page under a standard navigation bar showing what
+/// the frontend's own header would (see `NativeModalHeader`): the entity's name over its area
 /// and device breadcrumb, a close or back button, the header's icon buttons and its overflow menu.
 /// The native loader covers the page until its frontend reports loaded, so the frontend's own launch
 /// screen is never seen.
-struct StandaloneMoreInfoSheetView<Content: View>: View {
-    @ObservedObject var model: StandaloneMoreInfoSheetModel
+struct NativeModalView<Content: View>: View {
+    @ObservedObject var model: NativeModalModel
     let onClose: () -> Void
     /// A header item was tapped; the id is the frontend's.
     let onAction: (String) -> Void
@@ -21,11 +21,11 @@ struct StandaloneMoreInfoSheetView<Content: View>: View {
                 .ignoresSafeArea()
                 .overlay {
                     if model.isLoading {
-                        StandaloneMoreInfoLoadingView()
+                        NativeModalLoadingView()
                     }
                 }
                 .navigationTitle(model.title)
-                .modifier(StandaloneMoreInfoSubtitleModifier(subtitle: model.subtitle))
+                .modifier(NativeModalSubtitleModifier(subtitle: model.subtitle))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -36,7 +36,7 @@ struct StandaloneMoreInfoSheetView<Content: View>: View {
                             Button {
                                 onAction(action.id)
                             } label: {
-                                StandaloneMoreInfoHeaderIcon(name: action.icon)
+                                NativeModalHeaderIcon(name: action.icon)
                             }
                             .accessibilityLabel(action.label)
                         }
@@ -74,7 +74,7 @@ struct StandaloneMoreInfoSheetView<Content: View>: View {
                     Label {
                         Text(item.label)
                     } icon: {
-                        StandaloneMoreInfoHeaderIcon(name: item.icon)
+                        NativeModalHeaderIcon(name: item.icon)
                     }
                 }
                 .disabled(item.isDisabled)
@@ -90,8 +90,8 @@ struct StandaloneMoreInfoSheetView<Content: View>: View {
 }
 
 #Preview {
-    StandaloneMoreInfoSheetView(
-        model: StandaloneMoreInfoSheetModel(
+    NativeModalView(
+        model: NativeModalModel(
             title: "Kitchen ceiling",
             subtitle: "Kitchen ▸ Hue bridge",
             isLoading: false,

@@ -44,10 +44,10 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.sidebarShow.rawValue, "sidebar/show")
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoOpened.rawValue, "more_info/opened")
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
-        XCTAssertEqual(WebViewExternalBusMessage.moreInfoOpen.rawValue, "more_info/open")
-        XCTAssertEqual(WebViewExternalBusMessage.moreInfoClose.rawValue, "more_info/close")
-        XCTAssertEqual(WebViewExternalBusMessage.moreInfoNavigate.rawValue, "more_info/navigate")
-        XCTAssertEqual(WebViewExternalBusMessage.moreInfoHeader.rawValue, "more_info/header")
+        XCTAssertEqual(WebViewExternalBusMessage.modalOpen.rawValue, "modal/open")
+        XCTAssertEqual(WebViewExternalBusMessage.modalClose.rawValue, "modal/close")
+        XCTAssertEqual(WebViewExternalBusMessage.modalNavigate.rawValue, "modal/navigate")
+        XCTAssertEqual(WebViewExternalBusMessage.modalHeader.rawValue, "modal/header")
         XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
 
         XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 33)
@@ -77,7 +77,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.moreInfoAction.rawValue, "more_info/action")
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.modalAction.rawValue, "modal/action")
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 11)
     }
@@ -86,7 +86,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         let result = WebViewExternalBusMessage.configResult
 
         // Expected keys currently defined in WebViewExternalBusMessage.configResult
-        let expectedKeys: Set<String> = [
+        let expectedKeys: Set = [
             "hasSettingsScreen",
             "hasSidebar",
             "canWriteTag",
