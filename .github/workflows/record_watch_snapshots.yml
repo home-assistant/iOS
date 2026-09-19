@@ -74,13 +74,33 @@ jobs:
 
       # The whole scheme rather than the energy suites alone: the point is compiling the app and its
       # extensions against the moved aggregation, which no narrower selection would do.
+      #
+      # `continue-on-error` because the iOS references are recorded here too, the same way the watch
+      # ones are: swift-snapshot-testing writes any reference it doesn't find and then fails, so the
+      # first run after a new snapshot test is expected to be red.
       - name: Run the unit tests
+        continue-on-error: true
         run: >-
           xcodebuild test
           -project HomeAssistant.xcodeproj
           -scheme Tests-Unit
           -destination "platform=iOS Simulator,name=iPhone 17,OS=latest"
           COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Commit the references
+        if: always()
+        run: |
+          find Tests/WatchComplications/__Snapshots__ -name '*.failure.png' -delete 2>/dev/null || true
+          git add -A Tests/WatchComplications/__Snapshots__
+          if git diff --cached --quiet; then
+            echo "No snapshot changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Record energy complication snapshots"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
   record:
     runs-on: xcode-27
@@ -190,4 +210,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Record watch energy complication snapshots"
+          # The iOS job records its own references onto the same branch, so whichever lands second
+          # has to take the other's commit rather than reject it.
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

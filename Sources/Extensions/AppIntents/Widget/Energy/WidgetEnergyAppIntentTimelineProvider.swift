@@ -326,7 +326,9 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         EnergyStatisticsSummary.netCost(cost: cost, compensation: compensation, in: stats)
     }
 
-    private static func sumTotals(ids: [String], in stats: EnergyStatistics) -> Double? {
+    /// Internal, like the two above it, so the mapping onto the shared aggregation can be exercised
+    /// without a live connection behind it.
+    static func sumTotals(ids: [String], in stats: EnergyStatistics) -> Double? {
         EnergyStatisticsSummary.total(of: ids, in: stats)
     }
 
