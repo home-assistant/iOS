@@ -259,6 +259,8 @@
 "app_intents.perform_action.response_success" = "Bitti";
 "app_intents.perform_action.title" = "Eylemi gerçekleştir";
 "app_intents.readable_entity.entity.name" = "Varlık";
+"app_intents.reminders.create.which_list" = "Which list?";
+"app_intents.reminders.error.list_hidden" = "That to-do list is no longer available to Siri";
 "app_intents.reminders.error.no_list" = "There are no to-do lists to add this to";
 "app_intents.reminders.get_items.description" = "Get the items on a Home Assistant to-do list";
 "app_intents.reminders.get_items.include_completed.title" = "Include completed";
@@ -1981,6 +1983,16 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.server_switching.how_it_works.wifi.title" = "Önce ev ağı";
 "settings.server_switching.switched_toast" = "Şuna geçti: %@";
 "settings.server_switching.title" = "Sunucu Değiştir";
+"settings.siri.configure.calendars.empty" = "No calendars stored";
+"settings.siri.configure.calendars.footer" = "Siri only offers the calendars switched on. The default calendar is used when you don't name one.";
+"settings.siri.configure.calendars.header" = "Calendars";
+"settings.siri.configure.default_none" = "None";
+"settings.siri.configure.default_title" = "Default";
+"settings.siri.configure.lists.empty" = "No to-do lists stored";
+"settings.siri.configure.lists.footer" = "Siri only offers the to-do lists switched on. Reminders go to the default list when you don't name one.";
+"settings.siri.configure.lists.header" = "To-do lists";
+"settings.siri.configure.reload" = "Reload from Home Assistant";
+"settings.siri.servers.configure" = "Configure";
 "settings.siri.servers.empty" = "Henüz sunucu yok";
 "settings.siri.servers.footer" = "Bir sunucuyu kapatmak, o sunucudaki öğeleri Siri’den, Spotlight aramasından ve Kısayollar uygulamasından kaldırır. Bu öğelerle daha önce oluşturduğunuz kısayollar artık bu öğeleri bulamaz. Widget’lar ve denetimler bundan etkilenmez.";
 "settings.siri.servers.header" = "Sunucular";
