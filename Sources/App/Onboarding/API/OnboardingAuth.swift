@@ -39,11 +39,23 @@ class OnboardingAuth {
                 return promise
             }
 
+            // Set once the server is persisted, so a later failure undoes exactly what was written.
+            var persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+
             return firstly {
                 steps(.beforeRegister, .register, .afterRegister)
-            }.map {
+            }.map { () -> Server in
+                // `get_config` ran in `.afterRegister`, so by now the server reports its own
+                // instance ID and the identifier can be the one every onboarding route agrees on.
+                let identifier = Self.serverIdentifier(
+                    for: api.server.info,
+                    fallback: api.server.identifier,
+                    existingServers: Current.servers.all
+                )
+                persisted = (identifier, Current.servers.server(for: identifier)?.info)
+
                 // actually persists to outside-onboarding
-                Current.servers.add(identifier: api.server.identifier, serverInfo: api.server.info)
+                return Current.servers.add(identifier: identifier, serverInfo: api.server.info)
             }.get { server in
                 // Nothing was persisted yet when `configuredAPI` ran, so the API it returned is built
                 // around a detached, in-memory `Server` — and everything that API created at init
@@ -60,7 +72,8 @@ class OnboardingAuth {
             }.then { server in
                 steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
-                when(resolved: undoConfigure(api: api)).then { _ in Promise<Server>(error: error) }
+                when(resolved: undoConfigure(api: api, persisted: persisted))
+                    .then { _ in Promise<Server>(error: error) }
             }
         }
     }
@@ -234,14 +247,47 @@ class OnboardingAuth {
         }
     }
 
-    private func undoConfigure(api: HomeAssistantAPI) -> Promise<Void> {
+    /// The identifier an onboarded server is stored under: the identifier of a server already
+    /// reporting this instance ID, else the instance ID itself, else the fallback onboarding
+    /// started with. Keeping an existing server's identifier matters because widgets, shortcuts
+    /// and Siri configurations hold that string in stores this app cannot rewrite, so re-onboarding
+    /// a server the app already has updates it in place rather than renaming it.
+    static func serverIdentifier(
+        for serverInfo: ServerInfo,
+        fallback: Identifier<Server>,
+        existingServers: [Server]
+    ) -> Identifier<Server> {
+        guard let instanceID = serverInfo.instanceID, !instanceID.isEmpty else {
+            return fallback
+        }
+
+        if let existing = existingServers.first(where: { $0.info.instanceID == instanceID }) {
+            return existing.identifier
+        }
+
+        return Identifier<Server>(rawValue: instanceID)
+    }
+
+    private func undoConfigure(
+        api: HomeAssistantAPI,
+        persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+    ) -> Promise<Void> {
         Current.Log.info()
+        let identifier = persisted?.identifier ?? api.server.identifier
         return firstly {
             when(resolved: api.tokenManager.revokeToken()).asVoid()
         }.done {
             api.connection.disconnect()
-            Current.servers.remove(identifier: api.server.identifier)
-            Current.resetAPICache(for: [api.server.identifier])
+
+            if let previousInfo = persisted?.previousInfo {
+                // This onboarding overwrote a server the user already had, so put it back instead
+                // of deleting it along with everything keyed to its identifier.
+                Current.servers.add(identifier: identifier, serverInfo: previousInfo)
+            } else {
+                Current.servers.remove(identifier: identifier)
+            }
+
+            Current.resetAPICache(for: [identifier])
         }
     }
 }
