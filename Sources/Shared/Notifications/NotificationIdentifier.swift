@@ -11,6 +11,16 @@ public enum NotificationIdentifier: String {
     case serverUnreachable
     case liveActivityTokenUnreachable
 
+    // Beacon diagnostics
+    case beaconDetectedLocally
+    case beaconExitedLocally
+    case beaconEventPreflightFailed
+    case beaconEventPersisted
+    case beaconEventUploadStarted
+    case beaconEventUploadStalled
+    case beaconEventDelivered
+    case beaconEventQueued
+
     // Debug
     case debug
 }
