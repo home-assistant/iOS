@@ -29,9 +29,11 @@ struct ThermostatAppEntity: AppEntity, EntityContextRepresentable {
     @Property(title: .init("app_intents.entity.property.server", defaultValue: "Server"))
     var serverName: String
 
+    /// Titled by the command, because Spotlight draws its rows from this. See
+    /// `ControllableEntityAppEntity`.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: "\(displayString)",
+            title: .init(stringLiteral: L10n.AppIntents.SetTemperature.rowTitle(displayString)),
             subtitle: contextSubtitle(serverName: serverName).map { LocalizedStringResource(stringLiteral: $0) }
         )
     }

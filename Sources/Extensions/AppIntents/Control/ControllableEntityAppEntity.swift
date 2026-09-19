@@ -48,9 +48,15 @@ struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
     /// The icon is the domain's SF Symbol, not the entity's own Material Design glyph: drawing the
     /// glyph per row made the Shortcuts app stutter as the list scrolled, and a symbol name costs
     /// nothing to pass.
+    ///
+    /// The title names the command, because this representation is what Spotlight draws its rows from:
+    /// the system builds one row per shortcut per entity and titles each with nothing but this, so five
+    /// shortcuts over one light read as five rows all saying "Chamber light". Turning on and turning off
+    /// still share this type — a phrase may name only one parameter, so the direction is fixed by the
+    /// shortcut rather than carried here — and so still share a row title.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: "\(displayString)",
+            title: .init(stringLiteral: L10n.AppIntents.ControllableEntity.rowTitle(displayString)),
             subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
             image: .init(systemName: domain?.sfSymbolName ?? Self.fallbackSymbolName)
         )

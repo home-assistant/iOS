@@ -42,9 +42,11 @@ struct OpenableEntityAppEntity: AppEntity, EntityContextRepresentable {
         areaTarget?.domain ?? Domain(entityId: entityId)
     }
 
+    /// Titled by the command, because Spotlight draws its rows from this. Opening and closing share
+    /// this type, so they still share a title; see `ControllableEntityAppEntity` for why.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: "\(displayString)",
+            title: .init(stringLiteral: L10n.AppIntents.OpenClose.rowTitle(displayString)),
             subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
     }

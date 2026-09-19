@@ -194,9 +194,11 @@ struct ControllableEntityAppEntityQueryTests {
         #expect(entity.subtitle == "Cabin • Kitchen")
     }
 
-    /// The row a picker draws: the entity's name on top, its context underneath, and the domain's
-    /// symbol beside them.
-    @Test func theRowIsTitledByTheEntityName() {
+    /// The row a picker draws: what the command does to the entity on top, its context underneath, and
+    /// the domain's symbol beside them. The command is in the title because Spotlight builds one row
+    /// per shortcut per entity and titles each with nothing but this representation, so a name alone
+    /// left a light reading as several identical rows.
+    @Test func theRowIsTitledByTheCommandAndTheEntityName() {
         let previous = Current.servers
         defer { Current.servers = previous }
         Current.servers = FakeServerManager(initial: 1)
@@ -211,7 +213,7 @@ struct ControllableEntityAppEntityQueryTests {
             iconName: "mdi:ceiling-light"
         ).displayRepresentation
 
-        #expect(String(localized: representation.title) == "Ceiling")
+        #expect(String(localized: representation.title) == "Turn Ceiling on or off")
         #expect(representation.subtitle.map { String(localized: $0) } == "Kitchen")
         #expect(representation.image != nil)
     }

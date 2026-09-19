@@ -112,9 +112,10 @@ struct ReadableEntityAppEntityQueryTests {
         }
     }
 
-    /// The row a picker draws: the entity's name on top, its context underneath, and a symbol beside
-    /// them.
-    @Test func theRowIsTitledByTheEntityName() {
+    /// The row a picker draws: the question this command answers about the entity on top, its context
+    /// underneath, and a symbol beside them. The command is in the title because Spotlight titles each
+    /// of the rows it builds with nothing but this representation.
+    @Test func theRowIsTitledByTheCommandAndTheEntityName() {
         let previous = Current.servers
         defer { Current.servers = previous }
         Current.servers = FakeServerManager(initial: 1)
@@ -129,7 +130,7 @@ struct ReadableEntityAppEntityQueryTests {
             iconName: "mdi:water-percent"
         ).displayRepresentation
 
-        #expect(String(localized: representation.title) == "Humidity")
+        #expect(String(localized: representation.title) == "Is Humidity on")
         #expect(representation.subtitle.map { String(localized: $0) } == "Bathroom")
         #expect(representation.image != nil)
     }

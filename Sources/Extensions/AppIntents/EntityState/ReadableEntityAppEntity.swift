@@ -39,10 +39,11 @@ struct ReadableEntityAppEntity: AppEntity, EntityContextRepresentable {
     }
 
     /// The icon is the domain's SF Symbol rather than the entity's own glyph, which would mean
-    /// rendering an image per row as the list scrolls.
+    /// rendering an image per row as the list scrolls. The title names the question, because Spotlight
+    /// draws its rows from this. See `ControllableEntityAppEntity`.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: "\(displayString)",
+            title: .init(stringLiteral: L10n.AppIntents.ReadableEntity.rowTitle(displayString)),
             subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
             image: .init(systemName: domain?.sfSymbolName ?? SFSymbol.powerCircle.rawValue)
         )

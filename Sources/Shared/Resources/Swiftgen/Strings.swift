@@ -652,6 +652,10 @@ public enum L10n {
       }
     }
     public enum ControllableEntity {
+      /// Turn %@ on or off
+      public static func rowTitle(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.controllable_entity.row_title", String(describing: p1))
+      }
       public enum Entity {
         /// Controllable Entity
         public static var name: String { return L10n.tr("Localizable", "app_intents.controllable_entity.entity.name") }
@@ -714,6 +718,10 @@ public enum L10n {
       }
     }
     public enum DimmableLight {
+      /// Dim %@
+      public static func rowTitle(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.dimmable_light.row_title", String(describing: p1))
+      }
       public enum Entity {
         /// Light
         public static var name: String { return L10n.tr("Localizable", "app_intents.dimmable_light.entity.name") }
@@ -950,6 +958,10 @@ public enum L10n {
     public enum OpenClose {
       /// Opens or closes a Home Assistant cover
       public static var description: String { return L10n.tr("Localizable", "app_intents.open_close.description") }
+      /// Open or close %@
+      public static func rowTitle(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.open_close.row_title", String(describing: p1))
+      }
       /// Open or close
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_close.title") }
       public enum Action {
@@ -1024,6 +1036,10 @@ public enum L10n {
       }
     }
     public enum ReadableEntity {
+      /// Is %@ on
+      public static func rowTitle(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.readable_entity.row_title", String(describing: p1))
+      }
       public enum Entity {
         /// Entity
         public static var name: String { return L10n.tr("Localizable", "app_intents.readable_entity.entity.name") }
@@ -1168,6 +1184,10 @@ public enum L10n {
     public enum SetTemperature {
       /// Sets a thermostat's target temperature, in the unit your server uses
       public static var description: String { return L10n.tr("Localizable", "app_intents.set_temperature.description") }
+      /// Set %@ temperature
+      public static func rowTitle(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.set_temperature.row_title", String(describing: p1))
+      }
       /// Set temperature
       public static var title: String { return L10n.tr("Localizable", "app_intents.set_temperature.title") }
       public enum Parameter {
