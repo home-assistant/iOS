@@ -31,7 +31,8 @@ struct EnergyComplicationSnapshotTests {
             Self.snapshot(serverId: "server-2", serverName: "Cabin", message: "No energy data"),
         ]
         let data = try JSONEncoder().encode(original)
-        #expect(try JSONDecoder().decode([EnergyComplicationSnapshot].self, from: data) == original)
+        let decoded = try JSONDecoder().decode([EnergyComplicationSnapshot].self, from: data)
+        #expect(decoded == original)
     }
 
     @Test func writesAndReadsBackFromDefaults() throws {

@@ -34,7 +34,8 @@ enum WatchEnergyComplicationRefresher {
         let previous = EnergyComplicationSnapshot.read(from: defaults)
         var snapshots: [EnergyComplicationSnapshot] = []
         for server in Current.servers.all {
-            snapshots.append(await snapshot(for: server))
+            let built = await snapshot(for: server)
+            snapshots.append(built)
         }
         // A pass that was cancelled partway would otherwise drop the servers it never reached from
         // the picker; leave the store as it was and let the next refresh rebuild it.
