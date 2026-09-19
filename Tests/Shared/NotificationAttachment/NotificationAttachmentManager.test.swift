@@ -206,6 +206,63 @@ class NotificationAttachmentManagerTests: XCTestCase {
         XCTAssertEqual(try hang(Promise(promise)), expected)
         XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
+
+    func testAttachmentRemovesDefaultedCategory() throws {
+        parser1.result = image1.successParserResult(needsAuth: false)
+
+        XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "")), "")
+    }
+
+    func testAttachmentRemovesDynamicCategory() throws {
+        parser1.result = image1.successParserResult(needsAuth: false)
+
+        XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "DYNAMIC")), "")
+    }
+
+    func testAttachmentKeepsOtherCategory() throws {
+        parser1.result = image1.successParserResult(needsAuth: false)
+
+        XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "MAP")), "MAP")
+    }
+
+    func testAttachmentKeepsDynamicCategoryWithPayloadActions() throws {
+        parser1.result = image1.successParserResult(needsAuth: false)
+
+        let content = makeContent(
+            categoryIdentifier: "DYNAMIC",
+            userInfo: ["actions": [["action": "CONFIRM", "title": "Confirm"]]]
+        )
+        XCTAssertEqual(try deliveredCategory(for: content), "DYNAMIC")
+    }
+
+    func testAttachmentKeepsDynamicCategoryWithEntityId() throws {
+        parser1.result = image1.successParserResult(needsAuth: false)
+
+        let content = makeContent(categoryIdentifier: "DYNAMIC", userInfo: ["entity_id": "camera.front_door"])
+        XCTAssertEqual(try deliveredCategory(for: content), "DYNAMIC")
+    }
+
+    func testNoAttachmentKeepsDynamicCategory() throws {
+        parser1.result = .missing
+        parser2.result = .missing
+        parser3.result = .missing
+
+        XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "DYNAMIC")), "DYNAMIC")
+    }
+
+    private func makeContent(
+        categoryIdentifier: String,
+        userInfo: [AnyHashable: Any] = [:]
+    ) -> UNNotificationContent {
+        let content = UNMutableNotificationContent()
+        content.categoryIdentifier = categoryIdentifier
+        content.userInfo = userInfo
+        return content
+    }
+
+    private func deliveredCategory(for content: UNNotificationContent) throws -> String {
+        try hang(Promise(manager.content(from: content, api: api))).categoryIdentifier
+    }
 }
 
 private class Image {
