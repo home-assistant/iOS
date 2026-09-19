@@ -20,8 +20,10 @@ public enum WidgetAreasLayout {
     public static func columns(for family: WidgetFamily) -> Int {
         switch family {
         case .systemSmall: 1
-        case .systemMedium, .systemLarge: 2
-        case .systemExtraLarge, .systemExtraLargePortrait: 4
+        // The portrait extra-large family is no wider than a large one, only taller, so it takes the
+        // same two columns rather than the landscape family's four.
+        case .systemMedium, .systemLarge, .systemExtraLargePortrait: 2
+        case .systemExtraLarge: 4
         default: 1
         }
     }
@@ -29,12 +31,14 @@ public enum WidgetAreasLayout {
     /// The room a page has, in the half-rows described by ``rowCost``.
     ///
     /// Budgeted so a family that shows one floor comes out at a whole number of tile rows: a medium
-    /// widget holds a heading and two rows, a large one a heading and five.
+    /// widget holds a heading and two rows, a large one a heading and five, and the portrait
+    /// extra-large family — two large widgets stacked — a heading and twelve.
     static func budget(for family: WidgetFamily) -> Int {
         switch family {
         case .systemSmall: 4
         case .systemMedium: 5
-        case .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: 11
+        case .systemLarge, .systemExtraLarge: 11
+        case .systemExtraLargePortrait: 25
         default: 2
         }
     }
@@ -121,33 +125,33 @@ public enum WidgetAreasLayout {
 
     /// How tall a tile is drawn when the page has room to spare.
     public static let maxTileHeight: CGFloat = 56
-    /// The height a tile stops being worth drawing at compact size, and draws dense instead.
-    private static let denseTileHeight: CGFloat = 52
     /// A floor heading and the gap under it.
     private static let headingHeight: CGFloat = 22
-    private static let rowSpacing: CGFloat = 8
+    /// The gap between two rows of tiles, which is the one the view stacks them with.
+    private static var rowSpacing: CGFloat { DesignSystem.Spaces.one }
 
-    /// What a family leaves the tiles once its padding and the footer have taken theirs.
+    /// The height each tile on a page gets: what is left of the page once the headings and the gaps
+    /// between the rows have taken theirs, and never more than a tile is drawn at.
     ///
-    /// Measured from the widget sizes a current iPhone draws — the same ones the snapshots use — so
-    /// the arithmetic here matches what the page actually gets.
-    static func contentHeight(for family: WidgetFamily) -> CGFloat {
-        switch family {
-        case .systemSmall, .systemMedium: 128
-        case .systemLarge, .systemExtraLarge, .systemExtraLargePortrait: 336
-        default: 128
-        }
-    }
-
-    /// The height each tile on a page gets: what is left once the headings and the gaps between the
-    /// rows have taken theirs, and never more than a tile is drawn at.
-    public static func tileHeight(for page: WidgetAreasPage, family: WidgetFamily) -> CGFloat {
+    /// `contentHeight` is what the page is actually given, measured by the view. It used to be read
+    /// off a table of family sizes, which is a guess at what the family, the device and the footer
+    /// leave — and a guess that was wrong by a third on the tallest family, so its tiles were sized
+    /// for rows half a dozen points taller than the ones they landed in. Every other tile widget
+    /// measures; this one does now too.
+    ///
+    /// A height of zero is a page nobody has measured yet, which is no reason to shrink anything:
+    /// it draws at the full tile height until the measurement arrives.
+    public static func tileHeight(
+        for page: WidgetAreasPage,
+        family: WidgetFamily,
+        inContentOfHeight contentHeight: CGFloat
+    ) -> CGFloat {
         let columns = columns(for: family)
         let rows = page.sections.reduce(0) { $0 + rowsNeeded(for: $1.areas.count, columns: columns) }
-        guard rows > 0 else { return maxTileHeight }
+        guard rows > 0, contentHeight > .zero else { return maxTileHeight }
         let headings = page.sections.filter { $0.title != nil }.count
         let gaps = max(0, rows + headings - 1)
-        let available = contentHeight(for: family)
+        let available = contentHeight
             - CGFloat(headings) * headingHeight
             - CGFloat(gaps) * rowSpacing
         return min(maxTileHeight, max(.zero, available) / CGFloat(rows))
@@ -155,8 +159,17 @@ public enum WidgetAreasLayout {
 
     /// How a tile is drawn on this page: dense once the headings have taken enough of the height
     /// that a compact tile would be all icon.
-    public static func tileStyle(for page: WidgetAreasPage, family: WidgetFamily) -> WidgetTileSizeStyle {
-        tileHeight(for: page, family: family) < denseTileHeight ? .dense : .compact
+    ///
+    /// The height it turns on is the design system's, so an area tile squeezed by a heading and an
+    /// entity tile squeezed by its own rows give way at the same point — see
+    /// ``WidgetTileLayout/denseTileHeight``.
+    public static func tileStyle(
+        for page: WidgetAreasPage,
+        family: WidgetFamily,
+        inContentOfHeight contentHeight: CGFloat
+    ) -> WidgetTileSizeStyle {
+        tileHeight(for: page, family: family, inContentOfHeight: contentHeight) < WidgetTileLayout.denseTileHeight
+            ? .dense : .compact
     }
 
     /// The tiles of one section, arranged into the rows they are drawn in.

@@ -102,14 +102,14 @@ struct WidgetAreasTimelineProviderTests {
         #expect(WidgetAreasEntry.preview(family: .systemLarge, page: 9).page.sections.isEmpty)
     }
 
+    /// Every system family, the portrait extra-large one included, so the widget is in the gallery
+    /// at every size the home screen offers it.
     @available(iOS 17, *)
-    @Test func theWidgetIsConfiguredWithAServerAndSupportsFourSizes() async throws {
-        #expect(WidgetAreasSupportedFamilies.families == [
-            .systemSmall,
-            .systemMedium,
-            .systemLarge,
-            .systemExtraLarge,
-        ])
+    @Test func theWidgetIsConfiguredWithAServerAndSupportsEverySystemSize() async throws {
+        #expect(
+            WidgetAreasSupportedFamilies.families ==
+                [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
+        )
         _ = WidgetAreas().body
         _ = WidgetAreasAppIntent.parameterSummary
         _ = try await WidgetAreasAppIntent().perform()

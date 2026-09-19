@@ -49,6 +49,13 @@ struct WidgetAreasSnapshotTests {
         assertAreasSnapshot(family: .systemExtraLarge, entry: Self.entry(family: .systemExtraLarge))
     }
 
+    /// The portrait extra-large family iOS 27 added: a large widget's two columns, and the height of
+    /// two of them stacked, so the whole home fits on one page and the arrows stay away.
+    @available(iOS 27, *)
+    @MainActor @Test func systemExtraLargePortraitSnapshot() {
+        assertAreasSnapshot(family: .systemExtraLargePortrait, entry: Self.entry(family: .systemExtraLargePortrait))
+    }
+
     /// A page in the middle of the home: both arrows live, and the floor that ran over carries its
     /// heading with it.
     @available(iOS 18, *)
@@ -123,8 +130,9 @@ struct WidgetAreasSnapshotTests {
         )
     }
 
-    /// The home screen widget sizes on a current iPhone, and the iPad for the extra large family, so
-    /// a layout that only just fits here only just fits on device too.
+    /// The home screen widget sizes on a current iPhone, and the iPad for the extra large families,
+    /// so a layout that only just fits here only just fits on device too. The portrait one is two
+    /// large widgets stacked, with the gap the home screen leaves between them.
     private func snapshotSize(for family: WidgetFamily) -> CGSize {
         switch family {
         case .systemSmall:
@@ -133,6 +141,11 @@ struct WidgetAreasSnapshotTests {
             CGSize(width: 364, height: 170)
         case .systemExtraLarge:
             CGSize(width: 715, height: 382)
+        case .systemExtraLargePortrait:
+            // Measured off the family as an iPhone actually draws it. It was guessed at 364x806,
+            // half a large widget taller than the real thing, which is what let the tiles be sized
+            // for rows they never got.
+            CGSize(width: 350, height: 564)
         default:
             CGSize(width: 364, height: 382)
         }

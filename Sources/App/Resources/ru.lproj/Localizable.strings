@@ -259,6 +259,8 @@
 "app_intents.perform_action.response_success" = "Готово";
 "app_intents.perform_action.title" = "Выполнить действие";
 "app_intents.readable_entity.entity.name" = "Объект";
+"app_intents.reminders.create.which_list" = "Which list?";
+"app_intents.reminders.error.list_hidden" = "That to-do list is no longer available to Siri";
 "app_intents.reminders.error.no_list" = "There are no to-do lists to add this to";
 "app_intents.reminders.get_items.description" = "Get the items on a Home Assistant to-do list";
 "app_intents.reminders.get_items.include_completed.title" = "Include completed";
@@ -1981,6 +1983,16 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.server_switching.how_it_works.wifi.title" = "Сначала домашняя сеть";
 "settings.server_switching.switched_toast" = "Переключено на %@";
 "settings.server_switching.title" = "Переключение сервера";
+"settings.siri.configure.calendars.empty" = "No calendars stored";
+"settings.siri.configure.calendars.footer" = "Siri only offers the calendars switched on. The default calendar is used when you don't name one.";
+"settings.siri.configure.calendars.header" = "Calendars";
+"settings.siri.configure.default_none" = "None";
+"settings.siri.configure.default_title" = "Default";
+"settings.siri.configure.lists.empty" = "No to-do lists stored";
+"settings.siri.configure.lists.footer" = "Siri only offers the to-do lists switched on. Reminders go to the default list when you don't name one.";
+"settings.siri.configure.lists.header" = "To-do lists";
+"settings.siri.configure.reload" = "Reload from Home Assistant";
+"settings.siri.servers.configure" = "Configure";
 "settings.siri.servers.empty" = "Серверов пока нет";
 "settings.siri.servers.footer" = "При выключении сервера его объекты удаляются из Siri, поиска Spotlight и приложения Команды. Команды, которые вы уже создали с использованием этих объектов, перестанут их находить. Виджеты и элементы управления не затрагиваются.";
 "settings.siri.servers.header" = "Серверы";
