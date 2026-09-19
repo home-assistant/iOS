@@ -11,6 +11,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var currentPageURL: URL?
     var traitCollection: UITraitCollection = .init()
     var server: Server = ServerFixture.standard
+    var role: WebViewControllerRole = .mainFrontend
     var connectionState: FrontEndConnectionState = .connected
     var overlayedController: UIViewController?
     var assistZoomAnchorView: UIView?
@@ -45,6 +46,9 @@ final class MockWebViewController: WebViewControllerProtocol {
     var showLoggedOutStateCalled = false
     var showLoggedOutStateExpectation: XCTestExpectation?
     var openInBrowserCalled = false
+    var closeStandaloneMoreInfoCalled = false
+    var relayedStandaloneNavigationPath: String?
+    var updatedStandaloneMoreInfoHeader: StandaloneMoreInfoHeader?
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -163,5 +167,17 @@ final class MockWebViewController: WebViewControllerProtocol {
     func clearOnscreenEntity(entityId: String) {
         guard onscreenEntityId == entityId else { return }
         onscreenEntityId = nil
+    }
+
+    func closeStandaloneMoreInfo() {
+        closeStandaloneMoreInfoCalled = true
+    }
+
+    func relayStandaloneNavigation(path: String) {
+        relayedStandaloneNavigationPath = path
+    }
+
+    func updateStandaloneMoreInfoHeader(_ header: StandaloneMoreInfoHeader) {
+        updatedStandaloneMoreInfoHeader = header
     }
 }

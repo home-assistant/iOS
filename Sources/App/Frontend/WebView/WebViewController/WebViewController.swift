@@ -14,6 +14,14 @@ import UIKit
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var webView: WKWebView!
     let server: Server
+    /// Whether this is the app's frontend or a standalone more-info sheet over it; see `WebViewControllerRole`.
+    let role: WebViewControllerRole
+    /// Called with the frontend path a standalone sheet was asked to leave for, before it dismisses.
+    var onStandaloneNavigation: ((String) -> Void)?
+    /// Called each time a standalone sheet's frontend reports it has loaded.
+    var onStandaloneFrontendLoaded: (() -> Void)?
+    /// Called with each header a standalone sheet's frontend describes for the sheet's bar.
+    var onStandaloneHeaderChange: ((StandaloneMoreInfoHeader) -> Void)?
 
     var urlObserver: NSKeyValueObservation?
     var windowTitleObserver: NSKeyValueObservation?
@@ -209,8 +217,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     // MARK: - Initialization
 
-    init(server: Server, shouldLoadImmediately: Bool = false) {
+    init(server: Server, role: WebViewControllerRole = .mainFrontend, shouldLoadImmediately: Bool = false) {
         self.server = server
+        self.role = role
         self.leftEdgePanGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .left
         }
@@ -220,8 +229,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         super.init(nibName: nil, bundle: nil)
 
-        userActivity = with(NSUserActivity(activityType: "\(AppConstants.BundleID).frontend")) {
-            $0.isEligibleForHandoff = true
+        // A standalone sheet publishes nothing of its own: the frontend underneath keeps carrying
+        // the page for Handoff, and the entity the sheet shows for Siri.
+        if role.isMainFrontend {
+            userActivity = with(NSUserActivity(activityType: "\(AppConstants.BundleID).frontend")) {
+                $0.isEligibleForHandoff = true
+            }
         }
 
         leftEdgePanGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
@@ -329,9 +342,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         setupGestures(numberOfTouchesRequired: 2)
         setupGestures(numberOfTouchesRequired: 3)
-        setupEdgeGestures()
-        setupURLObserver()
-        setupWindowTitleObserver()
+        if role.isMainFrontend {
+            // The edge gestures toggle the sidebar the standalone page does not have, and would fight
+            // the sheet's own swipe; where the frontend is, and what it is titled, is the app's page.
+            setupEdgeGestures()
+            setupURLObserver()
+            setupWindowTitleObserver()
+        }
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -494,6 +511,8 @@ extension WebViewController {
     }
 
     func updateFrontendKioskMode() {
+        // The standalone page has no header or sidebar to remove.
+        guard role.isMainFrontend else { return }
         let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
         webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,

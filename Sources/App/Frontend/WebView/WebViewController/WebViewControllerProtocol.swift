@@ -3,6 +3,7 @@ import Shared
 
 protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
+    var role: WebViewControllerRole { get }
     var connectionState: FrontEndConnectionState { get }
     var overlayedController: UIViewController? { get }
     /// Source view the zoom transition into Assist grows from; see `AssistZoomAnchorView`. Nil when the
@@ -46,6 +47,14 @@ protocol WebViewControllerProtocol: AnyObject {
     /// that says "this" against it; see `WebViewController+OnscreenContent`.
     func setOnscreenEntity(entityId: String)
     func clearOnscreenEntity(entityId: String)
+    /// The frontend's `more_info/close`: dismisses the sheet this controller is shown in as a standalone
+    /// more-info screen; see `StandaloneMoreInfoPresenter`.
+    func closeStandaloneMoreInfo()
+    /// The frontend's `more_info/navigate`: a link out of the standalone more-info screen, for the
+    /// frontend underneath to show; the sheet is dismissed.
+    func relayStandaloneNavigation(path: String)
+    /// The frontend's `more_info/header`: what the standalone more-info sheet's bar should show now.
+    func updateStandaloneMoreInfoHeader(_ header: StandaloneMoreInfoHeader)
 }
 
 extension WebViewControllerProtocol {

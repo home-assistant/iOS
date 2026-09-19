@@ -25,6 +25,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private let improvManager: any ImprovManagerProtocol
     private let entityControlDonation: EntityControlDonation
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
+    private lazy var standaloneMoreInfoPresenter = StandaloneMoreInfoPresenter()
 
     private var improvController: UIViewController?
 
@@ -87,6 +88,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 webViewController.updateFrontendConnectionState(state: connEvt)
             case .frontendLoaded:
                 webViewController.updateFrontendConnectionState(state: FrontEndConnectionState.loaded.rawValue)
+                // The main frontend is up, so a sheet booted now is ready by the time an entity is tapped.
+                if webViewController.role.isMainFrontend, AppLabsFeature.nativeMoreInfo.isEnabled {
+                    standaloneMoreInfoPresenter.prewarm(from: webViewController)
+                }
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
@@ -220,6 +225,32 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.clearOnscreenEntity(entityId: entityId)
+            case .moreInfoOpen:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/open but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                standaloneMoreInfoPresenter.present(
+                    entityId: entityId,
+                    title: incomingMessage.Payload?["title"] as? String,
+                    subtitle: incomingMessage.Payload?["subtitle"] as? String,
+                    from: webViewController
+                )
+            case .moreInfoClose:
+                // Arrives on the sheet's own web view, so that controller is the one to go.
+                webViewController.closeStandaloneMoreInfo()
+            case .moreInfoNavigate:
+                guard let path = incomingMessage.Payload?["path"] as? String else {
+                    Current.Log.error("Received more_info/navigate but path was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.relayStandaloneNavigation(path: path)
+            case .moreInfoHeader:
+                guard let header = StandaloneMoreInfoHeader(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received more_info/header with an invalid payload! \(incomingMessage)")
+                    return
+                }
+                webViewController.updateStandaloneMoreInfoHeader(header)
             case .entityControlled:
                 guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
                     Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")

@@ -34,6 +34,14 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case sidebarShow = "sidebar/show"
     case moreInfoOpened = "more_info/opened"
     case moreInfoClosed = "more_info/closed"
+    /// Sent instead of opening the more-info dialog while the app reports `hasNativeMoreInfo`.
+    case moreInfoOpen = "more_info/open"
+    /// Sent by the standalone more-info page when its close button is tapped.
+    case moreInfoClose = "more_info/close"
+    /// Sent by the standalone more-info page instead of navigating to another page itself.
+    case moreInfoNavigate = "more_info/navigate"
+    /// Sent by the standalone page whenever the header the sheet draws for it should change.
+    case moreInfoHeader = "more_info/header"
     case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
@@ -53,6 +61,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
+            "hasNativeMoreInfo": AppLabsFeature.nativeMoreInfo.isEnabled,
+            "hasNativeMoreInfoHeader": true, // The native more-info sheet draws the header from more_info/header
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
             "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
@@ -77,4 +87,6 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
     case showNotifications = "notifications/show"
+    /// A tap on the native more-info header; the payload's `id` is from `more_info/header`.
+    case moreInfoAction = "more_info/action"
 }

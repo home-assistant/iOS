@@ -97,6 +97,10 @@ extension WebViewController: WebViewControllerProtocol {
             resetBlankFrontendRecoveryIfRendered(for: resolvedState)
             hideEmptyState()
             updateFrontendKioskMode()
+            if resolvedState == .loaded {
+                // The page has rendered, so the sheet's loader can go.
+                onStandaloneFrontendLoaded?()
+            }
         case .authInvalid:
             showEmptyState()
         case .disconnected, .unknown:
@@ -179,5 +183,32 @@ extension WebViewController: WebViewControllerProtocol {
     @objc func refreshIfDisconnected() {
         guard !connectionState.isReadyForDisplay else { return }
         refresh()
+    }
+
+    func closeStandaloneMoreInfo() {
+        guard case .standaloneMoreInfo = role else {
+            Current.Log.warning("more_info/close reached the main frontend, which has no sheet to dismiss")
+            return
+        }
+        Current.Log.info("Dismissing standalone more-info on the frontend's request")
+        dismiss(animated: true)
+    }
+
+    func relayStandaloneNavigation(path: String) {
+        guard case .standaloneMoreInfo = role else {
+            Current.Log.warning("more_info/navigate reached the main frontend, which navigates itself")
+            return
+        }
+        Current.Log.info("Standalone more-info hands navigation to \(path) to the frontend underneath")
+        onStandaloneNavigation?(path)
+        dismiss(animated: true)
+    }
+
+    func updateStandaloneMoreInfoHeader(_ header: StandaloneMoreInfoHeader) {
+        guard case .standaloneMoreInfo = role else {
+            Current.Log.warning("more_info/header reached the main frontend, which draws its own header")
+            return
+        }
+        onStandaloneHeaderChange?(header)
     }
 }

@@ -4,6 +4,7 @@ import Shared
 enum AppLabsFeature: String, CaseIterable, Identifiable {
     case macNativeSidebar
     case iosNativeTabBar
+    case nativeMoreInfo
 
     var id: String { rawValue }
 
@@ -16,6 +17,7 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
         switch self {
         case .macNativeSidebar: return L10n.Settings.AppLabs.MacNativeSidebar.title
         case .iosNativeTabBar: return L10n.Settings.AppLabs.IosNativeTabBar.title
+        case .nativeMoreInfo: return L10n.Settings.AppLabs.NativeMoreInfo.title
         }
     }
 
@@ -23,6 +25,7 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
         switch self {
         case .macNativeSidebar: return L10n.Settings.AppLabs.MacNativeSidebar.footer
         case .iosNativeTabBar: return L10n.Settings.AppLabs.IosNativeTabBar.summary
+        case .nativeMoreInfo: return L10n.Settings.AppLabs.NativeMoreInfo.footer
         }
     }
 
@@ -30,6 +33,12 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
         switch self {
         case .macNativeSidebar: return Current.isCatalyst
         case .iosNativeTabBar:
+            if #available(iOS 26, *) {
+                return !Current.isCatalyst
+            }
+            return false
+        case .nativeMoreInfo:
+            // The sheet's chrome is built on iOS 26's navigation subtitle and close button role.
             if #available(iOS 26, *) {
                 return !Current.isCatalyst
             }
