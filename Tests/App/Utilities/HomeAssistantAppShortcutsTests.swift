@@ -8,13 +8,13 @@ struct HomeAssistantAppShortcutsTests {
     /// Every `systemImageName` the provider hands out, in the order the shortcuts are offered.
     /// Kept in step with `HomeAssistantAppShortcuts.appShortcuts` by hand, as the phrases below are.
     private static let shortcutSymbols = [
-        "power",
-        "power.dotted",
+        "lightswitch.on.fill",
+        "lightswitch.off.fill",
         "info.circle",
         "arrow.up.forward.app",
         "thermometer",
         "sun.max",
-        "curtains",
+        "curtains.open",
         "curtains.closed",
     ]
 
@@ -26,11 +26,11 @@ struct HomeAssistantAppShortcutsTests {
     }
 
     /// A symbol name that names nothing draws a blank rather than failing to build, which is the kind
-    /// of thing that ships. Each one is resolved here instead.
+    /// of thing that ships: "curtains" did, for the open command, until this test went looking. Each
+    /// one is resolved here instead, and every bad name is named at once so a run says which.
     @Test func everyShortcutSymbolIsARealSFSymbol() {
-        for name in Self.shortcutSymbols {
-            #expect(UIImage(systemName: name) != nil, "\(name) is not an SF Symbol")
-        }
+        let missing = Self.shortcutSymbols.filter { UIImage(systemName: $0) == nil }
+        #expect(missing.isEmpty, "not SF Symbols: \(missing.joined(separator: ", "))")
     }
 
     /// One symbol per shortcut, so a shortcut added without one is caught here.
