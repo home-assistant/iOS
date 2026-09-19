@@ -29,11 +29,9 @@ struct DimmableLightAppEntity: AppEntity, EntityContextRepresentable {
     @Property(title: .init("app_intents.entity.property.server", defaultValue: "Server"))
     var serverName: String
 
-    /// Titled by the command, because Spotlight draws its rows from this and would otherwise give a
-    /// light one row per shortcut, each saying only the light's name. See `ControllableEntityAppEntity`.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: .init(stringLiteral: L10n.AppIntents.DimmableLight.rowTitle(displayString)),
+            title: "\(displayString)",
             subtitle: contextSubtitle(serverName: serverName).map { LocalizedStringResource(stringLiteral: $0) }
         )
     }

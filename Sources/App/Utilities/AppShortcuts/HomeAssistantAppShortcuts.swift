@@ -4,15 +4,18 @@ import Foundation
 /// Shortcuts offered to Siri and Spotlight on install; phrases are localized in `AppShortcuts.strings`.
 /// Gated at iOS 17 because `PerformActionAppIntent` and `GetCameraSnapshotAppIntent` are.
 ///
-/// Every shortcut that names an entity carries a `parameterPresentation`, and that is not optional
-/// dressing: the system builds one row per shortcut per entity, and with no presentation to label it
-/// each of those rows is titled with nothing but the entity's own name. Searching for a light turned
-/// up half a dozen rows all reading "Chamber light", one of which dimmed it, one turned it off and one
-/// opened the app. The summary is what writes the verb into the row, so "Turn off Chamber light" and
-/// "Dim Chamber light" are told apart before they are tapped rather than after.
+/// Every shortcut that names an entity carries a `parameterPresentation`, which labels it in the
+/// Shortcuts app and in Siri.
 ///
-/// The summaries are phrased the way that language's spoken phrases already are — they share the
-/// `AppShortcuts.strings` table with them — so a row reads like the sentence that runs it.
+/// **`systemImageName` is what tells the Spotlight rows apart, so no two may repeat.** The system
+/// builds one row per shortcut per entity and titles every one of them with the entity's own name —
+/// searching for a light returns a column all reading "Chamber light" — and the title cannot be
+/// changed without the verb following the entity into Siri's disambiguation and the Shortcuts picker,
+/// which reads as noise. The glyph has no such cost: the system draws the entity's own image where
+/// its display representation sets one and falls back to the symbol here where it does not, so the
+/// command entity types deliberately set none and these symbols reach the row instead. The cover pair
+/// shows the shape of it — an open curtain against a closed one — and `HomeAssistantAppShortcutsTests`
+/// pins every symbol as real and distinct.
 @available(iOS 17.0, *)
 struct HomeAssistantAppShortcuts: AppShortcutsProvider {
     static let shortcutTileColor: ShortcutTileColor = .lightBlue
@@ -47,7 +50,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
                 "Turn something off in \(.applicationName)",
             ],
             shortTitle: .init("app_shortcuts.turn_off.title", defaultValue: "Turn Off"),
-            systemImageName: "power",
+            systemImageName: "power.dotted",
             parameterPresentation: ParameterPresentation(
                 for: \.$entity,
                 summary: Summary("Turn off \(\.$entity)"),
@@ -55,7 +58,7 @@ struct HomeAssistantAppShortcuts: AppShortcutsProvider {
                     OptionsCollection(
                         ControllableEntityAppEntityQuery(),
                         title: .init("app_intents.controllable_entity.parameter.entity", defaultValue: "Entity"),
-                        systemImageName: "power"
+                        systemImageName: "power.dotted"
                     )
                 }
             )

@@ -112,10 +112,9 @@ struct ReadableEntityAppEntityQueryTests {
         }
     }
 
-    /// The row a picker draws: the question this command answers about the entity on top, its context
-    /// underneath, and a symbol beside them. The command is in the title because Spotlight titles each
-    /// of the rows it builds with nothing but this representation.
-    @Test func theRowIsTitledByTheCommandAndTheEntityName() {
+    /// The row a picker draws: the entity's name on top and its context underneath, with no image of
+    /// its own — the glyph is the App Shortcut's, so a question's row is not mistaken for a command's.
+    @Test func theRowIsTitledByTheEntityNameAndCarriesNoImage() {
         let previous = Current.servers
         defer { Current.servers = previous }
         Current.servers = FakeServerManager(initial: 1)
@@ -130,9 +129,9 @@ struct ReadableEntityAppEntityQueryTests {
             iconName: "mdi:water-percent"
         ).displayRepresentation
 
-        #expect(String(localized: representation.title) == "Is Humidity on")
+        #expect(String(localized: representation.title) == "Humidity")
         #expect(representation.subtitle.map { String(localized: $0) } == "Bathroom")
-        #expect(representation.image != nil)
+        #expect(representation.image == nil)
     }
 
     /// A row stands alone in Siri's disambiguation, where two homes can share a name.

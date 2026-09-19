@@ -1,6 +1,5 @@
 import AppIntents
 import Foundation
-import SFSafeSymbols
 import Shared
 
 /// An entity a spoken question can ask about.
@@ -38,14 +37,13 @@ struct ReadableEntityAppEntity: AppEntity, EntityContextRepresentable {
         Domain(entityId: entityId)
     }
 
-    /// The icon is the domain's SF Symbol rather than the entity's own glyph, which would mean
-    /// rendering an image per row as the list scrolls. The title names the question, because Spotlight
-    /// draws its rows from this. See `ControllableEntityAppEntity`.
+    /// Deliberately carries no image, so the question's own glyph reaches the Spotlight row rather
+    /// than the domain's. See `ControllableEntityAppEntity` for why the glyph is the only part of
+    /// that row a command can vary.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: .init(stringLiteral: L10n.AppIntents.ReadableEntity.rowTitle(displayString)),
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
-            image: .init(systemName: domain?.sfSymbolName ?? SFSymbol.powerCircle.rawValue)
+            title: "\(displayString)",
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
     }
 

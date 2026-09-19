@@ -194,11 +194,10 @@ struct ControllableEntityAppEntityQueryTests {
         #expect(entity.subtitle == "Cabin • Kitchen")
     }
 
-    /// The row a picker draws: what the command does to the entity on top, its context underneath, and
-    /// the domain's symbol beside them. The command is in the title because Spotlight builds one row
-    /// per shortcut per entity and titles each with nothing but this representation, so a name alone
-    /// left a light reading as several identical rows.
-    @Test func theRowIsTitledByTheCommandAndTheEntityName() {
+    /// The row a picker draws: the entity's name on top and its context underneath, with no image of
+    /// its own. The glyph is left to the App Shortcut, which is the only thing that can say whether
+    /// tapping the row switches the entity, dims it or asks about it.
+    @Test func theRowIsTitledByTheEntityNameAndCarriesNoImage() {
         let previous = Current.servers
         defer { Current.servers = previous }
         Current.servers = FakeServerManager(initial: 1)
@@ -213,13 +212,13 @@ struct ControllableEntityAppEntityQueryTests {
             iconName: "mdi:ceiling-light"
         ).displayRepresentation
 
-        #expect(String(localized: representation.title) == "Turn Ceiling on or off")
+        #expect(String(localized: representation.title) == "Ceiling")
         #expect(representation.subtitle.map { String(localized: $0) } == "Kitchen")
-        #expect(representation.image != nil)
+        #expect(representation.image == nil)
     }
 
     /// A domain the app does not model still gets a row rather than none.
-    @Test func aDomainWithNoSymbolStillDrawsOne() {
+    @Test func aDomainWithNoSymbolStillDrawsARow() {
         let entity = ControllableEntityAppEntity(
             id: "s1-madeup.thing",
             entityId: "madeup.thing",
@@ -230,7 +229,7 @@ struct ControllableEntityAppEntityQueryTests {
         )
 
         #expect(entity.domain == nil)
-        #expect(entity.displayRepresentation.image != nil)
+        #expect(String(localized: entity.displayRepresentation.title) == "Thing")
     }
 
     /// An area id resolves through the same query that offered it, which is what keeps a shortcut

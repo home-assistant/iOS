@@ -2,8 +2,43 @@ import AppIntents
 import Foundation
 @testable import HomeAssistant
 import Testing
+import UIKit
 
 struct HomeAssistantAppShortcutsTests {
+    /// Every `systemImageName` the provider hands out, in the order the shortcuts are offered.
+    /// Kept in step with `HomeAssistantAppShortcuts.appShortcuts` by hand, as the phrases below are.
+    private static let shortcutSymbols = [
+        "power",
+        "power.dotted",
+        "info.circle",
+        "arrow.up.forward.app",
+        "thermometer",
+        "sun.max",
+        "curtains",
+        "curtains.closed",
+    ]
+
+    /// The glyph is the only part of a Spotlight row a shortcut controls — the title is always the
+    /// entity's name — so two shortcuts sharing a symbol are two rows nobody can tell apart. Turning
+    /// on and turning off drew the same `power` for exactly that reason.
+    @Test func noTwoShortcutsDrawTheSameSymbol() {
+        #expect(Set(Self.shortcutSymbols).count == Self.shortcutSymbols.count)
+    }
+
+    /// A symbol name that names nothing draws a blank rather than failing to build, which is the kind
+    /// of thing that ships. Each one is resolved here instead.
+    @Test func everyShortcutSymbolIsARealSFSymbol() {
+        for name in Self.shortcutSymbols {
+            #expect(UIImage(systemName: name) != nil, "\(name) is not an SF Symbol")
+        }
+    }
+
+    /// One symbol per shortcut, so a shortcut added without one is caught here.
+    @Test func everyShortcutHasASymbol() {
+        guard #available(iOS 17.0, *) else { return }
+        #expect(Self.shortcutSymbols.count == HomeAssistantAppShortcuts.appShortcuts.count)
+    }
+
     /// Apple caps an app at ten, and `appintentsmetadataprocessor` fails the build on the eleventh.
     @Test func staysWithinTheShortcutLimit() {
         guard #available(iOS 17.0, *) else { return }
