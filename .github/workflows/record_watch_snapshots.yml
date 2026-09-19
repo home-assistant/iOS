@@ -1,0 +1,141 @@
+name: Record Watch Snapshots
+
+# TEMPORARY — delete this workflow once the energy complication's snapshot references are in.
+#
+# The watchOS complication references are rendered by `assertWatchSnapshot`, which writes a PNG for
+# any reference it doesn't find on disk and then fails, so a run can't pass on nothing. Recording
+# them is therefore a matter of running the tests once on a machine with Xcode and committing
+# whatever they wrote — which is what this does, because a Linux development container has neither
+# Xcode nor a watch simulator to render them with.
+#
+# Scoped to the energy tests on purpose: a run with `record` on rewrites every reference it touches,
+# and the complication references that already exist must not be quietly re-recorded alongside the
+# new ones.
+
+on:
+  workflow_dispatch:
+    inputs:
+      record:
+        description: "Overwrite references that already exist, not just the missing ones"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: record-watch-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+  SNAPSHOTS_DIR: Tests/WatchAppTests/__Snapshots__/EnergyComplicationWatchSnapshot.test
+
+jobs:
+  record:
+    runs-on: xcode-27
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      # Warmed on `main` by the CI workflow; restoring it here is the difference between a few
+      # minutes and a cold build of every pinned dependency.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      # A fallback restore carries precompiled Clang modules built from other headers; drop them so
+      # they are rebuilt against the ones actually checked out. Same reasoning as the CI workflow.
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme WatchApp
+
+      # A plain `name,OS=latest` destination is ambiguous once CI has paired the watch to a phone,
+      # so resolve a UDID and target it by id — the same reasoning as the `test` lane. Unlike that
+      # lane this falls back to any available watch: the references are rendered from the view
+      # rather than from the screen, so the model only has to exist.
+      - name: Resolve watch simulator
+        id: simulator
+        run: |
+          cat > "${RUNNER_TEMP}/watch_udid.py" <<'PY'
+          import json, re, subprocess, sys
+
+          listing = subprocess.run(
+              ["xcrun", "simctl", "list", "devices", "available", "--json"],
+              capture_output=True, text=True, check=True,
+          ).stdout
+          watches = [
+              (runtime, device)
+              for runtime, devices in json.loads(listing)["devices"].items()
+              if "watchOS" in runtime
+              for device in devices
+          ]
+          preferred = [w for w in watches if w[1]["name"] == "Apple Watch Series 12 (46mm)"] or watches
+          if not preferred:
+              sys.exit("No watchOS simulator available on this runner")
+          print(max(preferred, key=lambda w: [int(n) for n in re.findall(r"\d+", w[0])])[1]["udid"])
+          PY
+          UDID=$(python3 "${RUNNER_TEMP}/watch_udid.py")
+          echo "Using watch simulator ${UDID}"
+          echo "udid=${UDID}" >> "$GITHUB_OUTPUT"
+
+      # Expected to fail: a reference that was only just written has nothing to assert against yet,
+      # and the helper reports that as an issue on purpose. The commit below is the real result.
+      - name: Render the references
+        continue-on-error: true
+        run: |
+          # Only exported when asked for: the helper only checks whether the variable is set, so an
+          # empty value would put every run into record mode.
+          if [ "${{ inputs.record }}" = "true" ]; then
+            export TEST_RUNNER_RECORD_SNAPSHOTS=1
+          fi
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme WatchApp \
+            -destination "platform=watchOS Simulator,id=${{ steps.simulator.outputs.udid }}" \
+            -only-testing:HomeAssistant-WatchAppTests/EnergyComplicationWatchSnapshotTests \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      # Uploaded as well as committed, so a reference that came out wrong can be looked at without
+      # pulling the branch.
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload rendered snapshots"
+        if: always()
+        with:
+          name: watch-energy-snapshots
+          path: ${{ env.SNAPSHOTS_DIR }}
+          if-no-files-found: warn
+
+      - name: Commit the references
+        if: always()
+        run: |
+          # `.failure.png` is what a mismatch writes next to a reference: a diff aid, never
+          # something to commit.
+          find Tests/WatchAppTests/__Snapshots__ -name '*.failure.png' -delete
+          git add -A Tests/WatchAppTests/__Snapshots__
+          if git diff --cached --quiet; then
+            echo "No snapshot changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Record watch energy complication snapshots"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

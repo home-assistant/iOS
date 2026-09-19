@@ -323,16 +323,11 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     /// shrinking it. Nil when the dashboard tracks no money at all; a home that earns more than it
     /// spends legitimately comes back negative.
     static func netCost(cost: [String], compensation: [String], in stats: EnergyStatistics) -> Double? {
-        let spent = sumTotals(ids: cost, in: stats)
-        let earned = sumTotals(ids: compensation, in: stats)
-        guard spent != nil || earned != nil else { return nil }
-        return (spent ?? 0) - (earned ?? 0)
+        EnergyStatisticsSummary.netCost(cost: cost, compensation: compensation, in: stats)
     }
 
     private static func sumTotals(ids: [String], in stats: EnergyStatistics) -> Double? {
-        let present = ids.filter { stats.byStatId[$0] != nil }
-        guard !present.isEmpty else { return nil }
-        return present.reduce(0) { $0 + (stats.totalChange(for: $1) ?? 0) }
+        EnergyStatisticsSummary.total(of: ids, in: stats)
     }
 
     /// Builds the chart series per statistics bucket: grid consumption, solar generation, the
@@ -342,6 +337,9 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     ///
     /// Static and internal so the aggregation can be exercised directly: it is the step that decides
     /// what the graph plots, and it has no seam through the live provider.
+    ///
+    /// The aggregation itself lives in `EnergyStatisticsSummary`, shared with the watch's energy
+    /// complication so the two summaries of the same dashboard can't drift apart.
     static func chartPoints(
         importIds: [String],
         exportIds: [String],
@@ -350,39 +348,25 @@ struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
         batteryDischargeIds: [String] = [],
         in stats: EnergyStatistics
     ) -> [WidgetEnergyEntry.ChartPoint] {
-        let gridByStart = bucketTotals(ids: importIds, in: stats)
-        let returnedByStart = bucketTotals(ids: exportIds, in: stats)
-        let solarByStart = bucketTotals(ids: solarIds, in: stats)
-        let chargedByStart = bucketTotals(ids: batteryChargeIds, in: stats)
-        let dischargedByStart = bucketTotals(ids: batteryDischargeIds, in: stats)
-        let dates = Set(gridByStart.keys)
-            .union(solarByStart.keys)
-            .union(returnedByStart.keys)
-            .union(chargedByStart.keys)
-            .union(dischargedByStart.keys)
-            .sorted()
-        return dates.map { date in
+        EnergyStatisticsSummary.chartPoints(
+            for: .init(
+                gridImport: importIds,
+                gridExport: exportIds,
+                solar: solarIds,
+                batteryDischarge: batteryDischargeIds,
+                batteryCharge: batteryChargeIds
+            ),
+            in: stats
+        ).map { point in
             WidgetEnergyEntry.ChartPoint(
-                date: date,
-                grid: max(gridByStart[date] ?? 0, 0),
-                solar: max(solarByStart[date] ?? 0, 0),
-                gridReturned: max(returnedByStart[date] ?? 0, 0),
-                batteryCharged: max(chargedByStart[date] ?? 0, 0),
-                batteryDischarged: max(dischargedByStart[date] ?? 0, 0)
+                date: point.date,
+                grid: point.grid,
+                solar: point.solar,
+                gridReturned: point.gridReturned,
+                batteryCharged: point.batteryCharged,
+                batteryDischarged: point.batteryDischarged
             )
         }
-    }
-
-    /// Sums the given statistics' change per bucket start, merging the ids that feed one series —
-    /// a home can have several grid meters, and the graph plots their combined flow.
-    private static func bucketTotals(ids: [String], in stats: EnergyStatistics) -> [Date: Double] {
-        var totals: [Date: Double] = [:]
-        for id in ids {
-            for bucket in stats.byStatId[id] ?? [] {
-                totals[bucket.start, default: 0] += (bucket.change ?? 0)
-            }
-        }
-        return totals
     }
 
     // MARK: - Live power
