@@ -78,7 +78,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
             mockAssistService.assistSource,
             .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
         )
-        XCTAssertTrue(mockTonePlayer.playedTones.contains(.startRecording))
+        XCTAssertTrue(mockTonePlayer.playedTones.contains(.listening))
     }
 
     func testDidStartRecordingSkipsServerTTSWhenOnDeviceTTSEnabled() {
@@ -245,9 +245,9 @@ final class CarPlayAssistSessionTests: XCTestCase {
             speechTranscriber: transcriber
         )
         sut.start()
-        // The listening-active flag is set right before the recording indicator tone.
+        // The listening-active flag is set right before the listening tone.
         await waitUntil { [mockTonePlayer] in
-            mockTonePlayer?.playedTones.contains(.startRecording) == true
+            mockTonePlayer?.playedTones.contains(.listening) == true
         }
 
         transcriber.simulateListeningStateChange(false)
@@ -326,6 +326,19 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertTrue(mockAssistService.resetShouldStartListeningAgainAfterPlaybackEndCalled)
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
         XCTAssertEqual(sut.currentState, .recording)
+    }
+
+    func testTTSMediaUrlStopsTheProcessingCueBeforePlayback() throws {
+        let sut = makeSut()
+        sut.start()
+        sut.didReceiveEvent(.sttEnd)
+        XCTAssertTrue(mockTonePlayer.playedTones.contains(.processing))
+        XCTAssertFalse(mockTonePlayer.stopCalled)
+
+        let mediaUrl = try XCTUnwrap(URL(string: "https://example.invalid/tts.mp3"))
+        sut.didReceiveTtsMediaUrl(mediaUrl)
+
+        XCTAssertTrue(mockTonePlayer.stopCalled)
     }
 
     // MARK: - Muted TTS (does not apply to CarPlay)
