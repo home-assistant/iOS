@@ -311,7 +311,6 @@ struct OnboardingServersListView: View {
     }
 
     private func startDiscoveryIfNeeded() {
-        guard !shouldShowInvitation else { return }
         viewModel.startDiscovery()
     }
 
