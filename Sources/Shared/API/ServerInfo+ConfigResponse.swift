@@ -1,6 +1,6 @@
 import Foundation
 
-public extension ServerInfo {
+extension ServerInfo {
     /// Applies what the server reports about itself in `get_config`.
     ///
     /// Values the response leaves out keep what is already stored: a Home Assistant too old to

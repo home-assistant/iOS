@@ -24,8 +24,12 @@ class FakeWebhookManager: WebhookManager {
         request: WebhookRequest,
         overrideURL: URL? = nil
     ) -> Promise<ResponseType> {
-        guard let response = sendEphemeralHandler?(server, request) as? ResponseType else {
-            return .init(error: FakeWebhookManagerError.noEphemeralResponse)
+        guard let sendEphemeralHandler else {
+            return .init(error: FakeWebhookManagerError.noEphemeralHandler)
+        }
+
+        guard let response = sendEphemeralHandler(server, request) as? ResponseType else {
+            return .init(error: FakeWebhookManagerError.ephemeralResponseTypeMismatch)
         }
 
         return .value(response)
@@ -33,5 +37,8 @@ class FakeWebhookManager: WebhookManager {
 }
 
 enum FakeWebhookManagerError: Error {
-    case noEphemeralResponse
+    /// No handler was set, so the test did not expect an ephemeral request at all.
+    case noEphemeralHandler
+    /// A handler answered, but with something other than the type the caller asked to decode.
+    case ephemeralResponseTypeMismatch
 }

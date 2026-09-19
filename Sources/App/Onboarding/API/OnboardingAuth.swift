@@ -247,11 +247,11 @@ class OnboardingAuth {
         }
     }
 
-    /// The identifier an onboarded server is stored under: Home Assistant's own instance ID when it
-    /// reports one, so the same instance keeps one entry however it was reached. A server already
-    /// stored under that instance ID keeps its existing identifier — widgets, shortcuts and Siri
-    /// configurations hold that string in stores this app cannot rewrite, so re-onboarding updates
-    /// the server in place rather than renaming it.
+    /// The identifier an onboarded server is stored under: the identifier of a server already
+    /// reporting this instance ID, else the instance ID itself, else the fallback onboarding
+    /// started with. Keeping an existing server's identifier matters because widgets, shortcuts
+    /// and Siri configurations hold that string in stores this app cannot rewrite, so re-onboarding
+    /// a server the app already has updates it in place rather than renaming it.
     static func serverIdentifier(
         for serverInfo: ServerInfo,
         fallback: Identifier<Server>,
