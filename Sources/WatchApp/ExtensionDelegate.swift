@@ -693,9 +693,18 @@ enum WatchWidgetComplicationSnapshotStore {
     /// completing (otherwise the app may be suspended before the REST fetch returns).
     ///
     /// Coalesced: concurrent callers join the run already in flight (see `RefreshCoordinator`).
+    ///
+    /// The energy complications refresh alongside this rather than inside it: they are generated per
+    /// server rather than configured, keep their own payload in the app group, and talk websocket
+    /// where the entity complications talk REST — so neither has anything to wait for in the other.
     @discardableResult
     static func refresh() async -> [ComplicationRefreshOutcome] {
-        await RefreshCoordinator.shared.run { await performRefresh() }
+        await RefreshCoordinator.shared.run {
+            async let energy: Void = WatchEnergyComplicationRefresher.refresh()
+            let outcomes = await performRefresh()
+            await energy
+            return outcomes
+        }
     }
 
     private static func performRefresh() async -> [ComplicationRefreshOutcome] {

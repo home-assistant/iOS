@@ -123,4 +123,17 @@ struct WidgetEnergyChartPointsTests {
         )
         #expect(points.map(\.grid) == [0, 0.2])
     }
+
+    /// The period totals beside the chart come from the same response. Nil rather than zero for a
+    /// series the response never carried, which is what keeps a home without panels from being
+    /// shown a solar figure of nothing.
+    @available(iOS 17, *)
+    @Test func sumsThePeriodTotalOfASeries() {
+        let response = stats([
+            "grid_a": [(Self.hourOne, 1), (Self.hourTwo, 0.5)],
+            "grid_b": [(Self.hourOne, 2)],
+        ])
+        #expect(WidgetEnergyAppIntentTimelineProvider.sumTotals(ids: ["grid_a", "grid_b"], in: response) == 3.5)
+        #expect(WidgetEnergyAppIntentTimelineProvider.sumTotals(ids: ["solar"], in: response) == nil)
+    }
 }
