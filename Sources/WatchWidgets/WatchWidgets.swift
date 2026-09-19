@@ -6,6 +6,7 @@ struct WatchWidgetsBundle: WidgetBundle {
     var body: some Widget {
         if #available(watchOS 10.0, *) {
             WatchWidgets()
+            WatchEnergyWidget()
         }
         if #available(watchOS 26.0, *) {
             WatchControlAssist()
