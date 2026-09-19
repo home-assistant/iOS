@@ -30,6 +30,25 @@ struct HomeAssistantAppShortcutsTests {
         ]))
     }
 
+    /// Every shortcut that names an entity is labelled by its parameter presentation's summary. Without
+    /// one, the system titles each of the rows it builds — one per shortcut per entity — with nothing
+    /// but the entity's own name, so searching for a light returned half a dozen rows all reading
+    /// "Chamber light", one of which dimmed it and one of which turned it off. These summaries are what
+    /// write the verb into the row, and they are keyed off the same table the phrases are.
+    @Test func everyEntityShortcutOffersASummary() throws {
+        let strings = try Self.phrases(forLanguage: "en")
+        #expect(strings.isSuperset(of: [
+            "Turn on ${entity}",
+            "Turn off ${entity}",
+            "Is ${entity} on",
+            "Open ${target} details",
+            "Set ${entity} temperature",
+            "Dim ${light}",
+            "Open ${entity}",
+            "Close ${entity}",
+        ]))
+    }
+
     /// Lock gave its slot to the shortcut above. A phrase left behind would still be handed to Siri,
     /// pointing at a shortcut that no longer exists.
     @Test func noLockPhrasesAreLeftBehind() throws {
@@ -38,7 +57,7 @@ struct HomeAssistantAppShortcutsTests {
     }
 
     /// These translations are written by hand rather than exported from Lokalise, so a language can
-    /// end up a phrase short without anything else noticing.
+    /// end up a phrase or a summary short without anything else noticing.
     @Test func everyLanguageCarriesTheSamePhrases() throws {
         let english = try Self.phrases(forLanguage: "en")
         for language in Self.bundle.localizations where language != "Base" {
