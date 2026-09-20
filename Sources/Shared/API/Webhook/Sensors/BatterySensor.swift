@@ -15,6 +15,13 @@ final class BatterySensorUpdateSignaler: SensorProviderUpdateSignaler, DeviceWra
 }
 
 public class BatterySensor: SensorProvider {
+    /// Appended to a battery's own identifier to make its level sensor's unique ID. Named because
+    /// `SensorEntityCategory` has only the ID to recognise a battery sensor by: every battery a Mac
+    /// reports gets one of its own, so the IDs are not knowable ahead of time.
+    public static let levelIDSuffix = "_level"
+    /// Appended to a battery's own identifier to make its state sensor's unique ID.
+    public static let stateIDSuffix = "_state"
+
     public let request: SensorProviderRequest
     public required init(request: SensorProviderRequest) {
         self.request = request
@@ -40,7 +47,7 @@ public class BatterySensor: SensorProvider {
 
         let levelSensor = with(WebhookSensor(
             name: "\(sensorNamePrefix) Level",
-            uniqueID: "\(sensorIDPrefix)_level",
+            uniqueID: "\(sensorIDPrefix)\(Self.levelIDSuffix)",
             icon: icon,
             deviceClass: .battery,
             state: battery.level
@@ -51,7 +58,7 @@ public class BatterySensor: SensorProvider {
 
         let stateSensor = with(WebhookSensor(
             name: "\(sensorNamePrefix) State",
-            uniqueID: "\(sensorIDPrefix)_state",
+            uniqueID: "\(sensorIDPrefix)\(Self.stateIDSuffix)",
             icon: icon,
             state: battery.state.description
         )) {

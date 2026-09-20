@@ -82,6 +82,11 @@ public class ConnectivitySensor: SensorProvider {
         case noCarriers
     }
 
+    /// Prefixes the unique ID of the sensor describing one SIM. Named because `SensorEntityCategory`
+    /// has only the ID to recognise it by: the device decides how many SIMs there are, so the IDs
+    /// are not knowable ahead of time.
+    public static let simIDPrefix = "connectivity_sim_"
+
     public let request: SensorProviderRequest
     public required init(request: SensorProviderRequest) {
         self.request = request
@@ -208,7 +213,7 @@ public class ConnectivitySensor: SensorProvider {
         let id = key.last ?? "?"
         sensor = WebhookSensor(
             name: "SIM \(id)",
-            uniqueID: "connectivity_sim_\(id)",
+            uniqueID: "\(Self.simIDPrefix)\(id)",
             icon: "mdi:sim",
             state: "Unknown"
         )

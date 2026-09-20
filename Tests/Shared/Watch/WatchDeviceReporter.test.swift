@@ -59,7 +59,8 @@ struct WatchDeviceReporterTests {
             webhookSecret: nil,
             cloudhookURL: nil,
             registeredAt: now,
-            deviceName: identity.deviceName
+            deviceName: identity.deviceName,
+            registeredAppVersion: AppConstants.version
         )
     }
 
@@ -162,6 +163,36 @@ struct WatchDeviceReporterTests {
         #expect(registered["unique_id"] as? String == "battery_state")
         #expect(registered["disabled"] as? Bool == false)
         #expect(store.registration(for: server.identifier)?.registeredSensorEnablement["battery_state"] == true)
+    }
+
+    @Test func registersEverySensorAgainAfterAnAppUpdate() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.enabledSensorIDs = ["battery_level", "battery_state"]
+        let reporter = reporter(responses: [["success": true], ["success": true], Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 2))
+        // Nothing switched over, but the update can have changed what the sensors are, and only
+        // `register_sensor` carries that.
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor", "update_sensor_states"])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func doesNotRegisterAgainOnceTheVersionHasBeenRecorded() async throws {
+        var known = registration
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.enabledSensorIDs = ["battery_level", "battery_state"]
+        let reporter = reporter(responses: [Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 2))
+        #expect(log.sends.map(\.type) == ["update_sensor_states"])
     }
 
     @Test func registersAgainOnceWhenTheServerForgotTheDevice() async throws {
