@@ -199,7 +199,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         if !isUpdate {
             DeviceClass <- map["device_class"]
             Disabled <- map["disabled"]
-            entityCategory >>> map["entity_category"]
+            entityCategory?.rawValue >>> map["entity_category"]
             Name <- map["name"]
             StateClass <- map["state_class"]
             UnitOfMeasurement <- map["unit_of_measurement"]
