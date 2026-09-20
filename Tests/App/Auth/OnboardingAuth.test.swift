@@ -8,17 +8,26 @@ import XCTest
 class OnboardingAuthTests: XCTestCase {
     private var auth: OnboardingAuth!
     private var instance: DiscoveredHomeAssistant!
+    private var previousCurrentNetworkState: (() async -> NetworkState)!
 
     override func setUp() {
         super.setUp()
 
         auth = OnboardingAuth()
+        previousCurrentNetworkState = Current.connectivity.currentNetworkState
 
         Current.servers = FakeServerManager()
 
         var instance = DiscoveredHomeAssistant(manualURL: URL(string: "https://external.homeassistant:8123")!)
         instance.internalURL = URL(string: "https://internal.homeassistant:8123")!
         self.instance = instance
+    }
+
+    override func tearDown() {
+        // Several tests stub the current network state; don't leak it into whatever runs next.
+        Current.connectivity.currentNetworkState = previousCurrentNetworkState
+
+        super.tearDown()
     }
 
     func testPlainSetup() {
@@ -270,6 +279,36 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertTrue(connectionInfo.useCloud)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
+    }
+
+    func testSuccessfulWithOnlyExternalDoesNotRecordCurrentSSID() throws {
+        // The user typed an external URL, so the Wi-Fi the device happens to be on says nothing about
+        // the server's home network and must not be recorded — the user is never shown it either, since
+        // the home network onboarding step is skipped for a server reachable over HTTPS.
+        instance.internalURL = nil
+        Current.connectivity.currentNetworkState = {
+            NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
+        }
+
+        let server = try hang(auth())
+
+        let connectionInfo = server.info.connection
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
+    }
+
+    func testSuccessfulWithInternalAndExternalAndInternalFailsDoesNotRecordCurrentSSID() throws {
+        // Falling back to the external URL means the internal URL never answered from this network.
+        Current.connectivity.currentNetworkState = {
+            NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
+        }
+
+        let server = try hang(auth(internalLoginResult: .init(error: TestError.specific)))
+
+        let connectionInfo = server.info.connection
+        XCTAssertNil(connectionInfo.address(for: .internal))
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
     }
 
     func testInternalPortRedirectIsAdopted() throws {

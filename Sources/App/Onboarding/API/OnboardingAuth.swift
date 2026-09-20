@@ -294,6 +294,15 @@ class OnboardingAuth {
 
 private extension ConnectionInfo {
     init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails, currentSSID: String?) {
+        // Recording the network the device happens to be on as one of the server's home networks is only
+        // justified when the internal URL is what just answered: `connect(to:)` clears `internalURL` on the
+        // external-URL attempt, so a non-nil one here means auth went through the server's local address
+        // over this very network. Onboarding through the external URL observes nothing of the sort, and
+        // the home network step — the only place the user confirms a network — is skipped whenever a
+        // configured URL is HTTPS (see `OnboardingPermissionsNavigationViewModel`), so an SSID recorded
+        // there is one the user is never shown and never agreed to.
+        let authenticatedOverInternalURL = discovered.internalURL != nil
+
         self.init(
             externalURL: discovered.externalURL,
             internalURL: discovered.internalURL,
@@ -301,7 +310,7 @@ private extension ConnectionInfo {
             remoteUIURL: nil,
             webhookID: "",
             webhookSecret: nil,
-            internalSSIDs: currentSSID.map { [$0] },
+            internalSSIDs: authenticatedOverInternalURL ? currentSSID.map { [$0] } : nil,
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
