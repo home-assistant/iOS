@@ -32,4 +32,6 @@ public enum WebhookSensorId: String, CaseIterable {
     case kioskScreensaver
     case cameraMotion
     case cameraStream
+    case hingeAngle = "hinge_angle"
+    case hingeStatus = "hinge_status"
 }
