@@ -168,6 +168,31 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(Current.servers.server(for: identifier)?.info, existingInfo)
     }
 
+    /// A server added next to an existing one is asked what it should receive at the end of
+    /// onboarding, so it must not be handed the sensors the user switched on for another one on its
+    /// way through registration.
+    func testAdditionalServerIsOnboardedWithSensorsHeldBack() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        Current.servers.add(
+            identifier: "a-server-from-before",
+            serverInfo: with(ServerInfo.fake()) { $0.instanceID = "another-instance" }
+        )
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.info.setting(for: .sensorPrivacy), ServerSensorPrivacy.none)
+    }
+
+    /// The app's first server answers the same question through the location permission screen and
+    /// starts with nothing switched on, so it keeps the default.
+    func testFirstServerIsOnboardedWithTheDefaultSensorPrivacy() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.info.setting(for: .sensorPrivacy), ServerSensorPrivacy.all)
+    }
+
     func testCancelledLogin() throws {
         let result = auth(
             includeExternal: false, // cancelled should not attempt external

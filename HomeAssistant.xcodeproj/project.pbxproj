@@ -1359,6 +1359,8 @@
 				Steps/Permissions/Steps/LocalAccessAndNetworkInput/NetworkInput/HomeNetworkInputViewModel.swift,
 				Steps/Permissions/Steps/LocalAccessOnlyDisclaimer/LocalAccessOnlyDisclaimerView.swift,
 				Steps/Permissions/Steps/Location/LocationPermissionView.swift,
+				Steps/Permissions/Steps/Privacy/OnboardingPrivacyView.swift,
+				Steps/Permissions/Steps/Privacy/OnboardingPrivacyViewModel.swift,
 				Steps/Servers/ManualURLEntry/ManualURLEntryView.swift,
 				Steps/Servers/OnboardingScanningInstanceRow.swift,
 				Steps/Servers/OnboardingServersListView.swift,

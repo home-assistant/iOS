@@ -39,6 +39,14 @@ class OnboardingAuth {
                 return promise
             }
 
+            // A server added next to an existing one is asked what it should receive at the end of
+            // onboarding (`OnboardingPrivacyView`), so it starts out sending no sensor data: the
+            // registration step below would otherwise hand a system nobody has been asked about
+            // every sensor the user switched on for another one.
+            if !Current.servers.all.isEmpty {
+                api.server.info.setSetting(value: ServerSensorPrivacy.none, for: .sensorPrivacy)
+            }
+
             // Set once the server is persisted, so a later failure undoes exactly what was written.
             var persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
 

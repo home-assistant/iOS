@@ -4717,6 +4717,26 @@ public enum L10n {
         }
       }
     }
+    public enum Privacy {
+      /// Every server has its own choices, and this one is new. Pick what this device sends to it, you can change this later in the server settings.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.privacy.description") }
+      /// Choose what to share with this server
+      public static var title: String { return L10n.tr("Localizable", "onboarding.privacy.title") }
+      public enum Location {
+        /// Send this device's precise location.
+        public static var exactDescription: String { return L10n.tr("Localizable", "onboarding.privacy.location.exact_description") }
+        /// Never send this device's location.
+        public static var neverDescription: String { return L10n.tr("Localizable", "onboarding.privacy.location.never_description") }
+        /// Only send which of your zones this device is in.
+        public static var zoneOnlyDescription: String { return L10n.tr("Localizable", "onboarding.privacy.location.zone_only_description") }
+      }
+      public enum Sensors {
+        /// Send the sensors you switch on for this device.
+        public static var allDescription: String { return L10n.tr("Localizable", "onboarding.privacy.sensors.all_description") }
+        /// Do not send any sensor data.
+        public static var noneDescription: String { return L10n.tr("Localizable", "onboarding.privacy.sensors.none_description") }
+      }
+    }
     public enum Scanning {
       /// Discovered: %@
       public static func discoveredAnnouncement(_ p1: Any) -> String {
