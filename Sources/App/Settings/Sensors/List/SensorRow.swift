@@ -21,14 +21,22 @@ struct SensorRow: View {
                         LabsLabel()
                     }
                 }
-                if isEnabled {
-                    Text(sensor.StateDescription ?? L10n.unknownLabel)
-                        .foregroundColor(.secondary)
-                        .font(.subheadline)
-                } else {
-                    Text(L10n.SettingsSensors.disabledStateReplacement)
-                        .foregroundColor(.secondary)
-                        .font(.subheadline)
+                // The badge sits on the state line rather than beside the name: the state it
+                // qualifies is right there, and a long sensor name keeps the full width to wrap
+                // into instead of being squeezed word by word.
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Text(
+                        isEnabled
+                            ? sensor.StateDescription ?? L10n.unknownLabel
+                            : L10n.SettingsSensors.disabledStateReplacement
+                    )
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+                    // Some sensors cannot be kept current once the app leaves the screen, so the
+                    // row says so rather than letting a frozen state look like a failure.
+                    if SensorForegroundAvailability.isForegroundOnly(sensorUniqueID: sensor.UniqueID) {
+                        SensorForegroundOnlyBadge()
+                    }
                 }
             }
         }
