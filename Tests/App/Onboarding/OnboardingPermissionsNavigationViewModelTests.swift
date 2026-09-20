@@ -78,9 +78,6 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Initialization clears internal URL override when local network configuration is skipped")
     func initializationClearsInternalURLOverrideWhenLocalNetworkConfigurationIsSkipped() async throws {
-        // Discovery pins the internal URL when internal+external URLs exist but the SSID
-        // is unknown; skipping the home network step means internalSSIDs will never be set
-        // to clear that override, so the view model has to clear it
         let server = Self.makeServer(
             identifier: "override-cleared",
             externalURL: URL(string: "https://external.example.com")!,
@@ -322,8 +319,6 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Set less secure local connection clears the internal URL override")
     func setLessSecureLocalConnectionClearsInternalURLOverride() async throws {
-        // Onboarding pins the internal URL when it authenticated through it, and this choice jumps
-        // past the home network step, so nothing else would unpin it.
         let server = Self.makeServer(
             identifier: "less-secure-clears-override",
             externalURL: URL(string: "http://external.example.com")!,

@@ -299,9 +299,6 @@ private extension ConnectionInfo {
             remoteUIURL: nil,
             webhookID: "",
             webhookSecret: nil,
-            // The Wi-Fi network the device happens to be on is never adopted as a home network here.
-            // `HomeNetworkInputView` is where the user is shown the network and confirms it, and the
-            // home network step is the only thing that may write `internalSSIDs`.
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
@@ -313,11 +310,6 @@ private extension ConnectionInfo {
         // default cloud to on
         useCloud = true
 
-        // Authentication went through the internal URL — `connect(to:)` clears `internalURL` on the
-        // external-URL attempt — so keep using it for the rest of onboarding, since no home network is
-        // configured yet to tell the two apart. Every route out of the permissions flow clears this
-        // again: the home network step through `internalSSIDs`' `didSet`, and the routes that skip that
-        // step explicitly (see `OnboardingPermissionsNavigationViewModel`).
         if discovered.internalURL != nil, discovered.externalURL != nil {
             overrideActiveURLType = .internal
         }

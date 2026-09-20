@@ -24,7 +24,6 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     override func tearDown() {
-        // Several tests stub the current network state; don't leak it into whatever runs next.
         Current.connectivity.currentNetworkState = previousCurrentNetworkState
 
         super.tearDown()
@@ -218,10 +217,7 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
 
-    func testSuccessfulWithInternalAndExternalAndInternalSucceedsWithSSID() throws {
-        // Being on a named Wi-Fi network while authenticating is not consent to treat it as a home
-        // network: only the home network step, where the user is shown it, may write `internalSSIDs`.
-        // Until then the internal URL stays pinned, since nothing can tell the two networks apart.
+    func testSuccessfulWithInternalAndExternalAndInternalSucceedsDoesNotRecordCurrentSSID() throws {
         Current.connectivity.currentNetworkState = {
             NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
         }
@@ -286,8 +282,6 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testSuccessfulWithOnlyExternalDoesNotRecordCurrentSSID() throws {
-        // Onboarding through an external URL never even reaches a local address, so there is nothing
-        // to pin either.
         instance.internalURL = nil
         Current.connectivity.currentNetworkState = {
             NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
@@ -302,7 +296,6 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testSuccessfulWithInternalAndExternalAndInternalFailsDoesNotRecordCurrentSSID() throws {
-        // Falling back to the external URL means the internal URL never answered from this network.
         Current.connectivity.currentNetworkState = {
             NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
         }
