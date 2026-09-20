@@ -78,9 +78,7 @@ struct OnboardingPermissionsNavigationView: View {
     }
 
     private var privacy: some View {
-        OnboardingPrivacyView { locationPrivacy, sensorPrivacy in
-            viewModel.savePrivacyChoices(locationPrivacy: locationPrivacy, sensorPrivacy: sensorPrivacy)
-        }
+        OnboardingPrivacyView(action: viewModel.savePrivacyChoices)
     }
 
     private var localAccess: some View {

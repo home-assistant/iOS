@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 @testable import HomeAssistant
+import PromiseKit
 import Shared
 import Testing
 
@@ -602,6 +603,51 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
         #expect(viewModel.locationPermissionContext == .notRequested)
     }
 
+    @Test("Choosing to send the sensors registers them with the new server")
+    func savingPrivacyChoicesRegistersTheSensors() async throws {
+        ServerFixture.reset()
+        let server = ServerFixture.withRemoteConnection
+        let api = FakeSensorRegisteringAPI(server: server)
+        Current.setCachedApi(api, for: server.identifier)
+        defer { Current.resetAPICache(for: [server.identifier]) }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: [.privacy, .completion]
+        )
+
+        viewModel.savePrivacyChoices(locationPrivacy: .never, sensorPrivacy: .all)
+
+        // Registration is handed to a task, so give it a moment to reach the API.
+        for _ in 0 ..< 50 where !api.didRegisterSensors {
+            try await Task.sleep(nanoseconds: 10 * NSEC_PER_MSEC)
+        }
+
+        #expect(api.didRegisterSensors)
+        #expect(server.info.setting(for: .sensorPrivacy) == .all)
+        #expect(viewModel.currentStep == .completion)
+    }
+
+    @Test("Choosing to send no sensors does not register them")
+    func savingPrivacyChoicesWithoutSensorsSkipsRegistration() async throws {
+        ServerFixture.reset()
+        let server = ServerFixture.withRemoteConnection
+        let api = FakeSensorRegisteringAPI(server: server)
+        Current.setCachedApi(api, for: server.identifier)
+        defer { Current.resetAPICache(for: [server.identifier]) }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: [.privacy, .completion]
+        )
+
+        viewModel.savePrivacyChoices(locationPrivacy: .never, sensorPrivacy: .none)
+        try await Task.sleep(nanoseconds: 50 * NSEC_PER_MSEC)
+
+        #expect(api.didRegisterSensors == false)
+        #expect(server.info.setting(for: .sensorPrivacy) == ServerSensorPrivacy.none)
+    }
+
     @Test("Denying the location permission on the privacy step stores never and moves on")
     func denyingTheLocationPermissionOnThePrivacyStepAdvances() async throws {
         let server = ServerFixture.standard
@@ -640,6 +686,16 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
 }
 
 // MARK: - Mock Classes
+
+/// Records the sensor registration the privacy step asks for, without reaching a server.
+final class FakeSensorRegisteringAPI: HomeAssistantAPI {
+    private(set) var didRegisterSensors = false
+
+    override func registerSensors(limitedToUniqueIDs uniqueIDs: Set<String>?) -> Promise<Void> {
+        didRegisterSensors = true
+        return .value(())
+    }
+}
 
 /// Mock CLLocationManager for testing
 class MockCLLocationManager: CLLocationManager {

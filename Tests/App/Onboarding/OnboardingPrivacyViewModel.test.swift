@@ -53,6 +53,17 @@ struct OnboardingPrivacyViewModelTests {
         #expect(viewModel.sensorPrivacy == ServerSensorPrivacy.none)
     }
 
+    @MainActor @Test("Submitting without anyone listening is harmless")
+    func submittingWithoutAnAction() async throws {
+        let viewModel = OnboardingPrivacyViewModel()
+
+        viewModel.locationSelection.wrappedValue = ServerLocationPrivacy.never.rawValue
+        viewModel.sensorSelection.wrappedValue = ServerSensorPrivacy.none.rawValue
+        viewModel.submit()
+
+        #expect(viewModel.canSubmit)
+    }
+
     @MainActor @Test("Both questions have to be answered before the step can be left")
     func bothQuestionsHaveToBeAnswered() async throws {
         var submitted: (location: ServerLocationPrivacy, sensors: ServerSensorPrivacy)?

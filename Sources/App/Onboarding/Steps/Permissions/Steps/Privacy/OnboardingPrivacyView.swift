@@ -73,9 +73,7 @@ struct OnboardingPrivacyView: View {
                 }
             },
             primaryActionTitle: L10n.continueLabel,
-            primaryAction: {
-                viewModel.submit()
-            },
+            primaryAction: viewModel.submit,
             primaryActionIdentifier: AccessibilityIdentifier.onboardingPrivacyNext.rawValue
         )
         .disableOnboardingPrimaryAction(!viewModel.canSubmit)
