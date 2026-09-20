@@ -74,6 +74,28 @@ struct SensorRowTests {
         assertLightDarkSnapshots(of: view)
     }
 
+    /// The hinge sensors carry the same badge: nothing reports a hinge to an app that is not the
+    /// one on screen.
+    @MainActor
+    @Test func testHingeForegroundOnlyRowViews() async throws {
+        let view = List {
+            SensorRow(sensor: WebhookSensor(
+                name: "Hinge Angle",
+                uniqueID: WebhookSensorId.hingeAngle.rawValue,
+                icon: "mdi:angle-acute",
+                state: 118.5,
+                unit: "°"
+            ), isEnabled: true)
+            SensorRow(sensor: WebhookSensor(
+                name: "Hinge Status",
+                uniqueID: WebhookSensorId.hingeStatus.rawValue,
+                icon: "mdi:book-open-outline",
+                state: HingeStatus.partiallyOpen.rawValue
+            ), isEnabled: true)
+        }
+        assertLightDarkSnapshots(of: view)
+    }
+
     private static func kioskSensor(
         name: String,
         id: WebhookSensorId,

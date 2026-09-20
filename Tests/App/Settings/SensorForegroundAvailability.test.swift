@@ -28,6 +28,14 @@ struct SensorForegroundAvailabilityTests {
         ) == false)
     }
 
+    /// The hinge is only delivered to a view in the hierarchy, so it stops arriving when the app
+    /// leaves the screen.
+    @Test func testHingeSensorsAreForegroundOnly() {
+        for sensorID in [WebhookSensorId.hingeAngle, .hingeStatus] {
+            #expect(SensorForegroundAvailability.isForegroundOnly(sensorUniqueID: sensorID.rawValue))
+        }
+    }
+
     @Test func testSensorsThatReportInTheBackgroundAreNotMarked() {
         for sensorID in [
             WebhookSensorId.activity,
