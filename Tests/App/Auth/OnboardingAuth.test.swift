@@ -8,17 +8,25 @@ import XCTest
 class OnboardingAuthTests: XCTestCase {
     private var auth: OnboardingAuth!
     private var instance: DiscoveredHomeAssistant!
+    private var previousCurrentNetworkState: (() async -> NetworkState)!
 
     override func setUp() {
         super.setUp()
 
         auth = OnboardingAuth()
+        previousCurrentNetworkState = Current.connectivity.currentNetworkState
 
         Current.servers = FakeServerManager()
 
         var instance = DiscoveredHomeAssistant(manualURL: URL(string: "https://external.homeassistant:8123")!)
         instance.internalURL = URL(string: "https://internal.homeassistant:8123")!
         self.instance = instance
+    }
+
+    override func tearDown() {
+        Current.connectivity.currentNetworkState = previousCurrentNetworkState
+
+        super.tearDown()
     }
 
     func testPlainSetup() {
@@ -209,7 +217,7 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
 
-    func testSuccessfulWithInternalAndExternalAndInternalSucceedsWithSSID() throws {
+    func testSuccessfulWithInternalAndExternalAndInternalSucceedsDoesNotRecordCurrentSSID() throws {
         Current.connectivity.currentNetworkState = {
             NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
         }
@@ -226,8 +234,9 @@ class OnboardingAuthTests: XCTestCase {
         let connectionInfo = server.info.connection
         XCTAssertEqual(connectionInfo.address(for: .internal), instance.internalURL)
         XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
-        XCTAssertEqual(connectionInfo.internalSSIDs, ["unit_test"])
-        XCTAssertEqual(connectionInfo.internalHardwareAddresses, nil)
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertEqual(connectionInfo.overrideActiveURLType, .internal)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
@@ -270,6 +279,34 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertTrue(connectionInfo.useCloud)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
+    }
+
+    func testSuccessfulWithOnlyExternalDoesNotRecordCurrentSSID() throws {
+        instance.internalURL = nil
+        Current.connectivity.currentNetworkState = {
+            NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
+        }
+
+        let server = try hang(auth())
+
+        let connectionInfo = server.info.connection
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertNil(connectionInfo.overrideActiveURLType)
+    }
+
+    func testSuccessfulWithInternalAndExternalAndInternalFailsDoesNotRecordCurrentSSID() throws {
+        Current.connectivity.currentNetworkState = {
+            NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
+        }
+
+        let server = try hang(auth(internalLoginResult: .init(error: TestError.specific)))
+
+        let connectionInfo = server.info.connection
+        XCTAssertNil(connectionInfo.address(for: .internal))
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertNil(connectionInfo.overrideActiveURLType)
     }
 
     func testInternalPortRedirectIsAdopted() throws {

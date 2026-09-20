@@ -211,11 +211,9 @@ class OnboardingAuth {
         return Promise { seal in
             Task { [self] in
                 do {
-                    let currentSSID = await Current.connectivity.currentWiFiSSID()
                     var connectionInfo = ConnectionInfo(
                         discovered: instance,
-                        authDetails: authDetails,
-                        currentSSID: currentSSID
+                        authDetails: authDetails
                     )
 
                     let tokenInfo = try await tokenExchange.tokenInfo(
@@ -293,7 +291,7 @@ class OnboardingAuth {
 }
 
 private extension ConnectionInfo {
-    init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails, currentSSID: String?) {
+    init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails) {
         self.init(
             externalURL: discovered.externalURL,
             internalURL: discovered.internalURL,
@@ -301,7 +299,7 @@ private extension ConnectionInfo {
             remoteUIURL: nil,
             webhookID: "",
             webhookSecret: nil,
-            internalSSIDs: currentSSID.map { [$0] },
+            internalSSIDs: nil,
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
@@ -312,10 +310,7 @@ private extension ConnectionInfo {
         // default cloud to on
         useCloud = true
 
-        // if we have internal+external, we're on the internal network doing discovery
-        // but we don't yet have location permission to know we're on an internal ssid
-        if internalSSIDs == [] || internalSSIDs == nil,
-           discovered.internalURL != nil, discovered.externalURL != nil {
+        if discovered.internalURL != nil, discovered.externalURL != nil {
             overrideActiveURLType = .internal
         }
     }
