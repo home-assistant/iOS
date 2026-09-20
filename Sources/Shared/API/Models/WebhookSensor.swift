@@ -79,7 +79,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     public var `Type`: String = "sensor"
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
-    public var entityCategory: String?
+    public private(set) var entityCategory: SensorEntityCategory?
 
     /// Whether Home Assistant should disable the matching entity. Only `register_sensor` acts on
     /// this, so it's left out of state updates.
@@ -99,6 +99,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.init()
         self.Name = sensor.Name
         self.UniqueID = sensor.UniqueID
+        self.entityCategory = sensor.entityCategory
         self.State = "unavailable"
         self.Icon = "mdi:dots-square"
         self.Type = sensor.Type
@@ -108,6 +109,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.init()
         self.Name = name
         self.UniqueID = uniqueID
+        self.entityCategory = SensorEntityCategory.category(forSensorUniqueID: uniqueID)
     }
 
     /// A sensor the app knows but cannot read, because the user has not granted the permission it
@@ -117,9 +119,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     /// permission, so a sensor that disappeared until the permission was granted would have no row
     /// left to switch on. Explicitly unavailable rather than a value it hasn't read.
     convenience init(awaitingPermissionNamed name: String, uniqueID: String, type: String? = nil) {
-        self.init()
-        self.Name = name
-        self.UniqueID = uniqueID
+        self.init(name: name, uniqueID: uniqueID)
         self.State = "unavailable"
         self.Icon = "mdi:dots-square"
         if let type {
@@ -132,13 +132,11 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         uniqueID: String,
         state: Any,
         unit: String? = nil,
-        entityCategory: String? = nil,
         stateClass: SensorStateClass? = nil
     ) {
         self.init(name: name, uniqueID: uniqueID)
         self.State = state
         self.UnitOfMeasurement = unit
-        self.entityCategory = entityCategory
         self.StateClass = stateClass
     }
 
@@ -148,7 +146,6 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         icon: String?,
         state: Any,
         unit: String? = nil,
-        entityCategory: String? = nil,
         stateClass: SensorStateClass? = nil
     ) {
         self.init(
@@ -156,7 +153,6 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
             uniqueID: uniqueID,
             state: state,
             unit: unit,
-            entityCategory: entityCategory,
             stateClass: stateClass
         )
         self.Icon = icon
@@ -167,16 +163,14 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         uniqueID: String,
         icon: MaterialDesignIcons,
         state: Any,
-        unit: String? = nil,
-        entityCategory: String? = nil
+        unit: String? = nil
     ) {
         self.init(
             name: name,
             uniqueID: uniqueID,
             icon: "mdi:\(icon.name)",
             state: state,
-            unit: unit,
-            entityCategory: entityCategory
+            unit: unit
         )
     }
 
@@ -186,10 +180,9 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         icon: String,
         deviceClass: DeviceClass,
         state: Any,
-        unit: String? = nil,
-        entityCategory: String? = nil
+        unit: String? = nil
     ) {
-        self.init(name: name, uniqueID: uniqueID, icon: icon, state: state, unit: unit, entityCategory: entityCategory)
+        self.init(name: name, uniqueID: uniqueID, icon: icon, state: state, unit: unit)
         self.DeviceClass = deviceClass
     }
 
@@ -206,7 +199,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         if !isUpdate {
             DeviceClass <- map["device_class"]
             Disabled <- map["disabled"]
-            entityCategory <- map["entity_category"]
+            entityCategory?.rawValue >>> map["entity_category"]
             Name <- map["name"]
             StateClass <- map["state_class"]
             UnitOfMeasurement <- map["unit_of_measurement"]

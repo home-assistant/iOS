@@ -234,8 +234,11 @@ public actor WatchDeviceReporter {
         let sensors = dependencies.currentSensors()
         let enabledIDs = dependencies.settings.enabledSensorIDs
 
+        let describesAnotherVersion = registration.registeredAppVersion != AppConstants.version
+
         let outdated = sensors.filter { sensor in
             guard let uniqueID = sensor.UniqueID else { return false }
+            guard !describesAnotherVersion else { return true }
             return registration.registeredSensorEnablement[uniqueID] != enabledIDs.contains(uniqueID)
         }
         try await register(
@@ -245,6 +248,12 @@ public actor WatchDeviceReporter {
             registration: registration,
             timeout: timeout
         )
+
+        if describesAnotherVersion {
+            var updated = dependencies.registrations.registration(for: server.identifier) ?? registration
+            updated.registeredAppVersion = AppConstants.version
+            try dependencies.registrations.set(updated, for: server.identifier)
+        }
 
         guard sensors.contains(where: { sensor in sensor.UniqueID.map { enabledIDs.contains($0) } ?? false }) else {
             return .nothingEnabled

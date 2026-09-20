@@ -361,6 +361,7 @@ public class HomeAssistantAPI {
                 promises.append(getConfig())
                 promises.append(Current.modelManager.fetch(apis: [self]))
                 promises.append(updateComplications(passively: false).asVoid())
+                promises.append(registerSensorsIfAppVersionChanged())
             }
 
             promises.append(UpdateSensors(trigger: reason.updateSensorTrigger).asVoid())
@@ -1005,7 +1006,23 @@ public class HomeAssistantAPI {
             Current.webhooks.send(server: server, request: .init(type: "register_sensor", data: sensor.toJSON()))
         }.tap { result in
             Current.Log.info("finished registering sensors: \(result)")
-        }.asVoid()
+        }.asVoid().get { [server] _ in
+            guard uniqueIDs == nil else { return }
+            SensorRegistrationVersionStore.recordRegistration(for: server.identifier)
+        }
+    }
+
+    func registerSensorsIfAppVersionChanged() -> Promise<Void> {
+        guard SensorRegistrationVersionStore.needsRegistration(for: server.identifier) else {
+            return .value(())
+        }
+
+        Current.Log.info("registering all sensors with \(server.identifier) for this version of the app")
+
+        return registerSensors().recover { error -> Promise<Void> in
+            Current.Log.error("failed to register sensors for this version of the app: \(error)")
+            return .value(())
+        }
     }
 
     public func UpdateSensors(
