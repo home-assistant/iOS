@@ -116,10 +116,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                         info.connection.connectionAccessSecurityLevel = .mostSecure
                     }
 
-                    // Discovery may have pinned the internal URL while the SSID was still unknown
-                    // (see `OnboardingAuth`); since the home network step is skipped, nothing will
-                    // set `internalSSIDs` to clear that override, so clear it here to avoid staying
-                    // pinned to the internal URL when off the home network
                     if info.connection.overrideActiveURLType == .internal {
                         info.connection.overrideActiveURLType = nil
                     }
@@ -209,6 +205,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     func setLessSecureLocalConnection() {
         onboardingServer.update { info in
             info.connection.connectionAccessSecurityLevel = .lessSecure
+            info.connection.overrideActiveURLType = nil
         }
     }
 
