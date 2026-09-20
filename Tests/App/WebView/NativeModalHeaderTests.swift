@@ -65,9 +65,10 @@ final class NativeModalHeaderTests: XCTestCase {
         XCTAssertEqual(header.actions.map(\.id), ["settings"])
     }
 
-    func testAHeaderNeedsAnEntityAndATitle() {
+    /// A bar with no title has nothing to draw; everything else the frontend may leave out.
+    func testAHeaderNeedsATitle() {
         XCTAssertNil(NativeModalHeader(payload: nil))
         XCTAssertNil(NativeModalHeader(payload: ["subtitle": "Kitchen"]))
-        XCTAssertNil(NativeModalHeader(payload: ["title": "Kitchen ceiling"]))
+        XCTAssertEqual(NativeModalHeader(payload: ["title": "Kitchen ceiling"])?.title, "Kitchen ceiling")
     }
 }
