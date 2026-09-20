@@ -7690,6 +7690,12 @@ public enum L10n {
       public static var noResults: String { return L10n.tr("Localizable", "settings_sensors.sensors.no_results") }
       /// Search sensors
       public static var searchPrompt: String { return L10n.tr("Localizable", "settings_sensors.sensors.search_prompt") }
+      public enum ForegroundOnly {
+        /// Only updates while the app is open
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.accessibility_label") }
+        /// When app is open
+        public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
+      }
     }
     public enum Settings {
       /// Changes will be applied on the next update.
