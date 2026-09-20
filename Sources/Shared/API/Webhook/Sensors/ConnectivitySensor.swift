@@ -82,6 +82,8 @@ public class ConnectivitySensor: SensorProvider {
         case noCarriers
     }
 
+    public static let simIDPrefix = "connectivity_sim_"
+
     public let request: SensorProviderRequest
     public required init(request: SensorProviderRequest) {
         self.request = request
@@ -208,7 +210,7 @@ public class ConnectivitySensor: SensorProvider {
         let id = key.last ?? "?"
         sensor = WebhookSensor(
             name: "SIM \(id)",
-            uniqueID: "connectivity_sim_\(id)",
+            uniqueID: "\(Self.simIDPrefix)\(id)",
             icon: "mdi:sim",
             state: "Unknown"
         )

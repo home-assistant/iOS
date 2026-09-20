@@ -59,7 +59,8 @@ struct WatchDeviceReporterTests {
             webhookSecret: nil,
             cloudhookURL: nil,
             registeredAt: now,
-            deviceName: identity.deviceName
+            deviceName: identity.deviceName,
+            registeredAppVersion: AppConstants.version
         )
     }
 
@@ -101,6 +102,7 @@ struct WatchDeviceReporterTests {
                 defer { lock.unlock() }
                 let response = remaining.first ?? ()
                 if remaining.count > 1 { remaining.removeFirst() }
+                if let error = response as? Error { throw error }
                 return response
             },
             now: { now }
@@ -162,6 +164,105 @@ struct WatchDeviceReporterTests {
         #expect(registered["unique_id"] as? String == "battery_state")
         #expect(registered["disabled"] as? Bool == false)
         #expect(store.registration(for: server.identifier)?.registeredSensorEnablement["battery_state"] == true)
+    }
+
+    @Test func registersEverySensorAgainAfterAnAppUpdate() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.enabledSensorIDs = ["battery_level", "battery_state"]
+        let reporter = reporter(responses: [["success": true], ["success": true], Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 2))
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor", "update_sensor_states"])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func registersEverySensorAgainForARegistrationMadeBeforeTheVersionWasTracked() async throws {
+        var known = registration
+        known.registeredAppVersion = nil
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.enabledSensorIDs = ["battery_level", "battery_state"]
+        let reporter = reporter(responses: [["success": true], ["success": true], Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 2))
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor", "update_sensor_states"])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func registersEverySensorAgainEvenWhenTheyAreAllSwitchedOff() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": false, "battery_state": false]
+        try store.set(known, for: server.identifier)
+        let reporter = reporter(responses: [["success": true], ["success": true]])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .nothingEnabled)
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor"])
+        let payloads = log.sends.compactMap { $0.data as? [String: Any] }
+        #expect(payloads.allSatisfy { $0["disabled"] as? Bool == true })
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func keepsTheOldVersionWhenARegistrationFailsPartWayThrough() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.enabledSensorIDs = ["battery_level", "battery_state"]
+        let reporter = reporter(responses: [["success": true], ReporterTestError.any])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        guard case .failed = reports.first?.outcome else {
+            Issue.record("expected a failure, got \(String(describing: reports.first?.outcome))")
+            return
+        }
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor"])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == "2020.1")
+    }
+
+    @Test func registersEverythingAgainOnTheRunAfterAFailedOne() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.enabledSensorIDs = ["battery_level", "battery_state"]
+
+        _ = await reporter(responses: [["success": true], ReporterTestError.any])
+            .report(trigger: .settingsChange)
+        let afterFailure = log.sends.count
+
+        _ = await reporter(responses: [["success": true], ["success": true], Self.accepted])
+            .report(trigger: .settingsChange)
+
+        #expect(log.sends.dropFirst(afterFailure).map(\.type) == [
+            "register_sensor",
+            "register_sensor",
+            "update_sensor_states",
+        ])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func doesNotRegisterAgainOnceTheVersionHasBeenRecorded() async throws {
+        var known = registration
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.enabledSensorIDs = ["battery_level", "battery_state"]
+        let reporter = reporter(responses: [Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 2))
+        #expect(log.sends.map(\.type) == ["update_sensor_states"])
     }
 
     @Test func registersAgainOnceWhenTheServerForgotTheDevice() async throws {
@@ -399,4 +500,8 @@ struct WatchDeviceReporterTests {
 
         #expect(error.errorDescription == "Home Assistant rejected battery_level: Bad value")
     }
+}
+
+private enum ReporterTestError: Error {
+    case any
 }
