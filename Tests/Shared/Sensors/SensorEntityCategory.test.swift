@@ -6,16 +6,12 @@ import Testing
 @Suite("Sensor entity categories")
 struct SensorEntityCategoryTests {
     private static let diagnosticSensorIDs: Set<WebhookSensorId> = [
-        .active,
         .appVersion,
         .connectivityBSID,
         .connectivitySSID,
         .connectivityConnectionType,
-        .displaysCount,
         .lastUpdateTrigger,
         .locationPermission,
-        .primaryDisplayId,
-        .primaryDisplayName,
         .storage,
         .watchBattery,
         .watchBatteryState,
@@ -44,10 +40,6 @@ struct SensorEntityCategoryTests {
         #expect(SensorEntityCategory.category(forSensorUniqueID: "app-version") == .diagnostic)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "last_update_trigger") == .diagnostic)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "location-permission") == .diagnostic)
-        #expect(SensorEntityCategory.category(forSensorUniqueID: "active") == .diagnostic)
-        #expect(SensorEntityCategory.category(forSensorUniqueID: "displays_count") == .diagnostic)
-        #expect(SensorEntityCategory.category(forSensorUniqueID: "primary_display_name") == .diagnostic)
-        #expect(SensorEntityCategory.category(forSensorUniqueID: "primary_display_id") == .diagnostic)
     }
 
     @Test("What the device measures around it stays a plain sensor")
@@ -56,9 +48,22 @@ struct SensorEntityCategoryTests {
         #expect(SensorEntityCategory.category(forSensorUniqueID: "geocoded_location") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "pressure") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "cameraMotion") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "cameraStream") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "iphone-audio-output") == nil)
+    }
+
+    @Test("Nothing a Mac alone reports is a diagnostic")
+    func macOnlySensorsAreNotDiagnostic() {
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "active") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "displays_count") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "primary_display_name") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "primary_display_id") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "frontmost_app") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "camera_in_use") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "active_camera") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "microphone_in_use") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "active_microphone") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "audio_output_in_use") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "active_audio_output") == nil)
     }
 

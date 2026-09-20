@@ -16,11 +16,7 @@ public extension SensorEntityCategory {
              .storage,
              .lastUpdateTrigger,
              .appVersion,
-             .active,
              .locationPermission,
-             .displaysCount,
-             .primaryDisplayName,
-             .primaryDisplayId,
              .watchBattery,
              .watchBatteryState:
             return .diagnostic
@@ -29,6 +25,10 @@ public extension SensorEntityCategory {
              .pressure,
              .focus,
              .focusName,
+             .active,
+             .displaysCount,
+             .primaryDisplayName,
+             .primaryDisplayId,
              .frontmostApp,
              .iPhoneAudioOutput,
              .camera,
