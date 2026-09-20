@@ -14,6 +14,9 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: TRUE
   BUNDLE_PATH: vendor/bundle
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: xcode-27
