@@ -101,6 +101,7 @@ public extension WatchConnectivityManager {
             finish()
             let response = HAWatchConnectivity.ImmediateMessage(content: responseEnvelope)
                 ?? HAWatchConnectivity.ImmediateMessage(identifier: message.identifier, content: responseEnvelope)
+            self.recordCounterpartProtocolVersion(response.senderVersion)
             message.reply(response)
         }, errorHandler: { error in
             timeoutWork.cancel()

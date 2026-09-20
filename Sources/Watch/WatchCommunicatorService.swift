@@ -180,6 +180,8 @@ final class WatchCommunicatorService {
                     handleClientCertImportRequest(message: message)
                 case .vacuumCleanableAreas:
                     handleVacuumCleanableAreas(message: message)
+                case .httpRequest:
+                    handleHTTPRequest(message: message)
                 }
             }
     }
@@ -188,8 +190,10 @@ final class WatchCommunicatorService {
     /// watch, surface a brief toast so the user can see the two devices talking. Silently skipped when
     /// the app isn't active (a toast wouldn't be visible) or on OS versions without the toast overlay.
     private func presentWatchInteractionToast(for messageId: InteractiveImmediateMessages) {
-        // Skip keepalives and per-chunk pulls (the sync start already toasts) to avoid spamming.
-        guard messageId != .ping, messageId != .watchDatabaseMirrorChunk else { return }
+        // Skip keepalives, per-chunk pulls (the sync start already toasts) and relayed requests —
+        // those arrive one per watch interaction and often several per screen, so toasting them
+        // would bury the ones that mean something.
+        guard messageId != .ping, messageId != .watchDatabaseMirrorChunk, messageId != .httpRequest else { return }
         guard #available(iOS 18, *) else { return }
 
         let message: String
@@ -267,6 +271,116 @@ final class WatchCommunicatorService {
                 Current.Log.error("Failed to fetch vacuum area mapping for the watch: \(error)")
                 reply([])
             }
+    }
+
+    // MARK: - Relayed HTTP requests (watch → phone → Home Assistant)
+
+    /// Perform one HTTP request the watch handed over, and reply with whatever the server said.
+    ///
+    /// The watch resolves its own URL, but it does so blind: routing through the phone hides the
+    /// network from it, so it can never satisfy the internal-URL check and falls back to a remote
+    /// URL that, from inside the LAN, may not resolve at all. Re-basing onto the phone's current
+    /// active URL is the point of the exercise — everything else is carried across untouched, down
+    /// to the watch's own bearer token, so this stays a transport and not a second implementation
+    /// of what the watch was asking for.
+    private func handleHTTPRequest(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let reply: (WatchHTTPResponsePayload) -> Void = { payload in
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.httpRequestResponse.rawValue,
+                content: payload.content
+            ))
+        }
+
+        // The beta gate for the whole relay, and the only one: the watch deliberately doesn't check
+        // `Current.isTestFlight` itself, because that reads the app-store receipt and the watch
+        // bundle doesn't reliably carry one. Answering `notEnabled` latches the relay off on the
+        // watch, so a production pairing pays this round trip once rather than once per request.
+        // Ungating this feature is deleting this guard.
+        guard Current.isTestFlight else {
+            reply(.failure(.notEnabled, reason: "This iPhone build doesn't relay watch requests"))
+            return
+        }
+
+        guard let payload = WatchHTTPRequestPayload(content: message.content) else {
+            Current.Log.error("Watch relayed an HTTP request that could not be decoded")
+            reply(.failure(.malformedRequest, reason: "The iPhone could not decode the request"))
+            return
+        }
+
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == payload.serverId }) else {
+            Current.Log.error("Watch relayed an HTTP request for unknown server \(payload.serverId)")
+            reply(.failure(.unknownServer, reason: "The iPhone has no server \(payload.serverId)"))
+            return
+        }
+
+        Task {
+            let url = await Self.resolvedURL(for: payload, server: server)
+
+            var request = URLRequest(url: url)
+            request.httpMethod = payload.method
+            request.timeoutInterval = payload.timeout
+            request.httpBody = payload.body
+            for (field, value) in payload.headers {
+                request.setValue(value, forHTTPHeaderField: field)
+            }
+
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.timeoutIntervalForRequest = payload.timeout
+            configuration.timeoutIntervalForResource = payload.timeout
+            configuration.waitsForConnectivity = false
+
+            do {
+                let (data, response) = try await ServerRequestPerformer.perform(
+                    request,
+                    server: server,
+                    configuration: configuration
+                )
+                Current.Log.info(
+                    "Relayed \(payload.method) \(url.absoluteString) for the watch: \(response.statusCode)"
+                )
+                let headers = response.allHeaderFields.reduce(into: [String: String]()) { result, entry in
+                    if let field = entry.key as? String, let value = entry.value as? String {
+                        result[field] = value
+                    }
+                }
+                let envelope = WatchHTTPResponsePayload.response(
+                    statusCode: response.statusCode,
+                    headers: headers,
+                    body: data
+                )
+                // A response the watch link can't carry is not a failed request — the watch repeats
+                // it over its own networking, where nothing bounds the size.
+                let ceiling = WatchMessageSizeLimits.interactiveMessage - WatchMessageSizeLimits.envelopeOverhead
+                guard let size = WatchConnectivityManager.estimatePayloadSize(of: envelope.content),
+                      size <= ceiling else {
+                    Current.Log.info("Relayed response for the watch is too large to send back; it will retry itself")
+                    reply(.failure(.tooLarge, reason: "Response exceeds the message size limit"))
+                    return
+                }
+                reply(envelope)
+            } catch {
+                Current.Log.error("Relayed \(payload.method) \(url.absoluteString) for the watch failed: \(error)")
+                reply(.failure(.transport, reason: error.localizedDescription))
+            }
+        }
+    }
+
+    /// The URL to actually dial: the phone's current active URL for this server when the watch's
+    /// URL was built on one of its configured bases, otherwise the watch's URL untouched (a
+    /// cloudhook, say, which works from any network and has no base to transplant).
+    private static func resolvedURL(for payload: WatchHTTPRequestPayload, server: Server) async -> URL {
+        guard let activeURL = await server.activeURL(),
+              let rebased = WatchRelayURLRebase.rebased(
+                  payload.url,
+                  connection: server.info.connection,
+                  activeURL: activeURL
+              ) else {
+            return payload.url
+        }
+        Current.Log.info(
+            "Re-based the watch's \(payload.url.absoluteString) onto the iPhone's active URL"
+        )
+        return rebased
     }
 
     // MARK: - mTLS client certificate transfer (phone → watch)

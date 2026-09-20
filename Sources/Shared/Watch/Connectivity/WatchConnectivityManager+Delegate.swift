@@ -6,6 +6,7 @@ extension WatchConnectivityManager {
 
     func receiveMessage(_ content: [String: Any]) {
         guard let immediate = HAWatchConnectivity.ImmediateMessage(content: content) else { return }
+        recordCounterpartProtocolVersion(immediate.senderVersion)
         immediateMessage.notify(immediate)
     }
 
@@ -18,6 +19,7 @@ extension WatchConnectivityManager {
             replyHandler([:])
             return
         }
+        recordCounterpartProtocolVersion(interactive.senderVersion)
         interactiveImmediateMessage.notify(interactive)
     }
 
@@ -25,6 +27,7 @@ extension WatchConnectivityManager {
         if let complication = HAWatchConnectivity.ComplicationInfo(jsonDictionary: userInfo) {
             complicationInfo.notify(complication)
         } else if let guaranteed = HAWatchConnectivity.GuaranteedMessage(content: userInfo) {
+            recordCounterpartProtocolVersion(guaranteed.senderVersion)
             guaranteedMessage.notify(guaranteed)
         }
     }
