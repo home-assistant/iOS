@@ -13,10 +13,6 @@ public struct WatchDeviceRegistration: Codable, Equatable {
     public var registeredSensorEnablement: [String: Bool]
     /// The `device_name` last sent; `nil` for a registration made before it was tracked.
     public var deviceName: String?
-    /// The app version whose sensor descriptions were last registered. Only `register_sensor`
-    /// carries what a sensor is — name, icon, device class, unit, entity category — so an update
-    /// that changes any of it has to register everything again; `nil` for a registration made
-    /// before this was tracked, which is what makes that happen once after upgrading.
     public var registeredAppVersion: String?
 
     public init(

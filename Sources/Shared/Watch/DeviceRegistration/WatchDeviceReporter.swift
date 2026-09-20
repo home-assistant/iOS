@@ -234,8 +234,6 @@ public actor WatchDeviceReporter {
         let sensors = dependencies.currentSensors()
         let enabledIDs = dependencies.settings.enabledSensorIDs
 
-        // An app update can change what a sensor is — its name, icon, device class, unit or entity
-        // category — and only `register_sensor` carries that, so everything goes again once.
         let describesAnotherVersion = registration.registeredAppVersion != AppConstants.version
 
         let outdated = sensors.filter { sensor in
@@ -252,8 +250,6 @@ public actor WatchDeviceReporter {
         )
 
         if describesAnotherVersion {
-            // Written only once every sensor above got through, so a run that failed part-way
-            // starts over rather than leaving some entities describing the previous version.
             var updated = dependencies.registrations.registration(for: server.identifier) ?? registration
             updated.registeredAppVersion = AppConstants.version
             try dependencies.registrations.set(updated, for: server.identifier)

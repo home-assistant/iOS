@@ -79,13 +79,6 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     public var `Type`: String = "sensor"
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
-    /// Where Home Assistant files the sensor's entity, decided from the unique ID by
-    /// `SensorEntityCategory.category(forSensorUniqueID:)` — never set per sensor, so every way a
-    /// provider can build the same sensor describes it the same way.
-    ///
-    /// Left out of the payload entirely when there is none, which is how Home Assistant is told
-    /// nothing rather than told to clear one: moving a sensor that has already registered *out* of
-    /// a category would need the key sent explicitly as null.
     public private(set) var entityCategory: SensorEntityCategory?
 
     /// Whether Home Assistant should disable the matching entity. Only `register_sensor` acts on

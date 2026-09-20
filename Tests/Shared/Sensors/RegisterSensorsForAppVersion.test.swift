@@ -3,8 +3,6 @@ import PromiseKit
 @testable import Shared
 import XCTest
 
-/// `register_sensor` is the only call that describes a sensor, so an app update has to send it
-/// again for the entities Home Assistant already has.
 class RegisterSensorsForAppVersionTests: XCTestCase {
     private var api: HomeAssistantAPI!
     private var webhookManager: FakeWebhookManager!
@@ -26,7 +24,7 @@ class RegisterSensorsForAppVersionTests: XCTestCase {
         SensorRegistrationVersionStore.forgetRegistration(for: api.server.identifier)
     }
 
-    /// Answers every registration, counting them.
+    @discardableResult
     private func acceptRegistrations() -> () -> [WebhookRequest] {
         var requests = [WebhookRequest]()
         webhookManager.sendRequestHandler = { _, _, request, seal in
@@ -34,6 +32,16 @@ class RegisterSensorsForAppVersionTests: XCTestCase {
             seal.fulfill(())
         }
         return { requests }
+    }
+
+    private func rejectRegistrations() {
+        webhookManager.sendRequestHandler = { _, _, _, seal in
+            seal.reject(TestError.any)
+        }
+    }
+
+    private func payloads(in requests: [WebhookRequest]) -> [[String: Any]] {
+        requests.compactMap { $0.data as? [String: Any] }
     }
 
     func testAFullPassRecordsTheVersion() throws {
@@ -47,11 +55,53 @@ class RegisterSensorsForAppVersionTests: XCTestCase {
     }
 
     func testRegisteringOneSensorLeavesTheVersionAlone() throws {
-        _ = acceptRegistrations()
+        acceptRegistrations()
 
         try hang(api.registerSensors(limitedToUniqueIDs: [WebhookSensorId.appVersion.rawValue]))
 
         XCTAssertTrue(SensorRegistrationVersionStore.needsRegistration(for: api.server.identifier))
+    }
+
+    func testAFailedPassLeavesTheVersionAlone() throws {
+        rejectRegistrations()
+
+        XCTAssertThrowsError(try hang(api.registerSensors()))
+
+        XCTAssertTrue(SensorRegistrationVersionStore.needsRegistration(for: api.server.identifier))
+    }
+
+    func testRegistrationCarriesTheEntityCategory() throws {
+        let requests = acceptRegistrations()
+
+        try hang(api.registerSensors())
+
+        let sent = payloads(in: requests())
+        let appVersionID = WebhookSensorId.appVersion.rawValue
+        let appVersion = try XCTUnwrap(sent.first { $0["unique_id"] as? String == appVersionID })
+        XCTAssertEqual(appVersion["entity_category"] as? String, "diagnostic")
+
+        for payload in sent {
+            let uniqueID = try XCTUnwrap(payload["unique_id"] as? String)
+            XCTAssertEqual(
+                payload["entity_category"] as? String,
+                SensorEntityCategory.category(forSensorUniqueID: uniqueID)?.rawValue,
+                uniqueID
+            )
+        }
+    }
+
+    func testAStateUpdateCarriesNoEntityCategory() throws {
+        var sent = [WebhookRequest]()
+        webhookManager.sendRequestHandler = { _, _, request, seal in
+            sent.append(request)
+            seal.fulfill(())
+        }
+
+        try hang(api.UpdateSensors(trigger: .Manual))
+
+        let payloads = sent.flatMap { $0.data as? [[String: Any]] ?? [] }
+        XCTAssertFalse(payloads.isEmpty)
+        XCTAssertTrue(payloads.allSatisfy { $0["entity_category"] == nil })
     }
 
     func testAnUpgradedInstallRegistersEverythingOnce() throws {
@@ -61,20 +111,31 @@ class RegisterSensorsForAppVersionTests: XCTestCase {
         let afterFirstRun = requests().count
         XCTAssertGreaterThan(afterFirstRun, 0)
 
-        // Nothing left to say until the app updates again.
         try hang(api.registerSensorsIfAppVersionChanged())
+
         XCTAssertEqual(requests().count, afterFirstRun)
     }
 
-    func testAFailedPassIsLeftForTheNextConnection() throws {
-        webhookManager.sendRequestHandler = { _, _, _, seal in
-            seal.reject(TestError.any)
-        }
+    func testAnInstallThatNeverUpgradedRegistersNothing() throws {
+        let requests = acceptRegistrations()
+        SensorRegistrationVersionStore.recordRegistration(for: api.server.identifier)
 
-        // Recovered, so a failure here can't fail the connection it runs as part of.
         try hang(api.registerSensorsIfAppVersionChanged())
 
+        XCTAssertTrue(requests().isEmpty)
+    }
+
+    func testAFailedPassIsRecoveredAndRetriedByTheNextConnection() throws {
+        rejectRegistrations()
+
+        XCTAssertNoThrow(try hang(api.registerSensorsIfAppVersionChanged()))
         XCTAssertTrue(SensorRegistrationVersionStore.needsRegistration(for: api.server.identifier))
+
+        let requests = acceptRegistrations()
+        try hang(api.registerSensorsIfAppVersionChanged())
+
+        XCTAssertFalse(requests().isEmpty)
+        XCTAssertFalse(SensorRegistrationVersionStore.needsRegistration(for: api.server.identifier))
     }
 
     private enum TestError: Error {

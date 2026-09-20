@@ -82,9 +82,6 @@ public class ConnectivitySensor: SensorProvider {
         case noCarriers
     }
 
-    /// Prefixes the unique ID of the sensor describing one SIM. Named because `SensorEntityCategory`
-    /// has only the ID to recognise it by: the device decides how many SIMs there are, so the IDs
-    /// are not knowable ahead of time.
     public static let simIDPrefix = "connectivity_sim_"
 
     public let request: SensorProviderRequest

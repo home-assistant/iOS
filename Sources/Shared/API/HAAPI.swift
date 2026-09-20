@@ -1007,18 +1007,11 @@ public class HomeAssistantAPI {
         }.tap { result in
             Current.Log.info("finished registering sensors: \(result)")
         }.asVoid().get { [server] _ in
-            // Only a complete pass describes every sensor; registering the few whose switch just
-            // changed says nothing about the rest.
             guard uniqueIDs == nil else { return }
             SensorRegistrationVersionStore.recordRegistration(for: server.identifier)
         }
     }
 
-    /// Registers every sensor again after the app updated, because `register_sensor` is the only
-    /// call that carries what a sensor is — its name, icon, device class, unit and entity category
-    /// — and Home Assistant applies that to an existing entity only when it is sent again.
-    ///
-    /// Mirrors the Android companion app, which re-registers on noticing its own version changed.
     func registerSensorsIfAppVersionChanged() -> Promise<Void> {
         guard SensorRegistrationVersionStore.needsRegistration(for: server.identifier) else {
             return .value(())
@@ -1026,8 +1019,6 @@ public class HomeAssistantAPI {
 
         Current.Log.info("registering all sensors with \(server.identifier) for this version of the app")
 
-        // Nothing else waits on it, and the stored version only moves on success, so a failure is
-        // retried by the next connection instead of failing this one.
         return registerSensors().recover { error -> Promise<Void> in
             Current.Log.error("failed to register sensors for this version of the app: \(error)")
             return .value(())

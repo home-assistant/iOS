@@ -8,6 +8,14 @@ struct SensorRegistrationVersionStoreTests {
         .init(rawValue: "sensor-registration-version-test-\(UUID().uuidString)")
     }
 
+    private func recordedVersion(for server: Identifier<Server>) -> String? {
+        Current.settingsStore.prefs.string(forKey: SensorRegistrationVersionStore.key(for: server))
+    }
+
+    private func record(version: String, for server: Identifier<Server>) {
+        Current.settingsStore.prefs.set(version, forKey: SensorRegistrationVersionStore.key(for: server))
+    }
+
     @Test("A server that has never been told needs telling")
     func aNewServerNeedsRegistration() {
         let server = identifier()
@@ -16,16 +24,45 @@ struct SensorRegistrationVersionStoreTests {
         #expect(SensorRegistrationVersionStore.needsRegistration(for: server))
     }
 
-    @Test("Recording a pass settles it until the app version moves")
+    @Test("Recording a pass stores this version and settles the server")
     func recordingSettlesTheServer() {
         let server = identifier()
         defer { SensorRegistrationVersionStore.forgetRegistration(for: server) }
 
         SensorRegistrationVersionStore.recordRegistration(for: server)
-        #expect(!SensorRegistrationVersionStore.needsRegistration(for: server))
 
-        // What an app update looks like from here: the recorded version is no longer this one.
-        Current.settingsStore.prefs.set("2020.1", forKey: "sensorRegistrationAppVersion_\(server.rawValue)")
+        #expect(recordedVersion(for: server) == AppConstants.version)
+        #expect(!SensorRegistrationVersionStore.needsRegistration(for: server))
+    }
+
+    @Test("Recording again is harmless")
+    func recordingTwiceLeavesItSettled() {
+        let server = identifier()
+        defer { SensorRegistrationVersionStore.forgetRegistration(for: server) }
+
+        SensorRegistrationVersionStore.recordRegistration(for: server)
+        SensorRegistrationVersionStore.recordRegistration(for: server)
+
+        #expect(!SensorRegistrationVersionStore.needsRegistration(for: server))
+    }
+
+    @Test("An install that upgraded needs telling again")
+    func anUpgradedInstallNeedsRegistration() {
+        let server = identifier()
+        defer { SensorRegistrationVersionStore.forgetRegistration(for: server) }
+
+        record(version: "2020.1", for: server)
+
+        #expect(SensorRegistrationVersionStore.needsRegistration(for: server))
+    }
+
+    @Test("An install that downgraded needs telling again")
+    func aDowngradedInstallNeedsRegistration() {
+        let server = identifier()
+        defer { SensorRegistrationVersionStore.forgetRegistration(for: server) }
+
+        record(version: "9999.1", for: server)
+
         #expect(SensorRegistrationVersionStore.needsRegistration(for: server))
     }
 
@@ -37,6 +74,7 @@ struct SensorRegistrationVersionStoreTests {
         SensorRegistrationVersionStore.recordRegistration(for: server)
         SensorRegistrationVersionStore.forgetRegistration(for: server)
 
+        #expect(recordedVersion(for: server) == nil)
         #expect(SensorRegistrationVersionStore.needsRegistration(for: server))
     }
 
@@ -53,5 +91,9 @@ struct SensorRegistrationVersionStoreTests {
 
         #expect(!SensorRegistrationVersionStore.needsRegistration(for: first))
         #expect(SensorRegistrationVersionStore.needsRegistration(for: second))
+
+        SensorRegistrationVersionStore.forgetRegistration(for: first)
+
+        #expect(recordedVersion(for: second) == nil)
     }
 }
