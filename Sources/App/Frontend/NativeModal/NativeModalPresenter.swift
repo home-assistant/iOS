@@ -15,7 +15,7 @@ import UIKit
 /// page's own header would. The title and breadcrumb come with `modal/open`; the buttons and menu,
 /// and every later change, with `modal/header` from the modal's own frontend, which answers a tap
 /// sent back as `modal/action` (see `NativeModalHeader`). The page leaves its own header out (the
-/// app reports `hasNativeModalHeader`). UIKit is kept to the web view.
+/// app reports `hasNativeModal`). UIKit is kept to the web view.
 ///
 /// A page inside a modal can ask for one of its own: each web view has its own presenter, so modals
 /// stack, and a link out of any of them dismisses the stack and lands on the main frontend.

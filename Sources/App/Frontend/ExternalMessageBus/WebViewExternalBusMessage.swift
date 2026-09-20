@@ -63,10 +63,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasEntityAddTo": true,
             // Native modals are iOS 26 and later, and never Catalyst: the bar is built on that
             // release's navigation subtitle and close button role, and a Mac window has no sheet to
-            // present in. `isEnabled` carries both, so the page inside only drops its own header
-            // where there is a native bar to replace it.
+            // present in.
             "hasNativeModal": AppLabsFeature.nativeMoreInfo.isEnabled,
-            "hasNativeModalHeader": AppLabsFeature.nativeMoreInfo.isEnabled,
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
             "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
