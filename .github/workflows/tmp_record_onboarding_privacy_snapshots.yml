@@ -1,0 +1,133 @@
+---
+# TEMPORARY WORKFLOW — delete before merging.
+#
+# The onboarding privacy step's snapshot references can only be rendered on macOS, so this
+# workflow records the missing ones on a CI runner and commits them back to the branch. It
+# then re-runs the same tests with recording switched off, so the run is green only when the
+# committed references actually match.
+name: TEMPORARY Record onboarding privacy snapshots
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/server-onboarding-privacy-hc3atv
+
+permissions:
+  contents: write
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+  BUNDLE_PATH: vendor/bundle
+  DESTINATION: platform=iOS Simulator,name=iPhone 17,OS=latest
+  SNAPSHOTS_PATH: Tests/App/Onboarding/__Snapshots__
+
+concurrency:
+  group: record-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  record:
+    runs-on: xcode-27
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+        with:
+          ruby-version: .ruby-version
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Cache: Gems"
+        id: cache_gems
+        with:
+          path: vendor/bundle
+          key: >-
+            ${{ format('{0}-gems-{1}-{2}-{3}',
+            runner.os,
+            env.ImageVersion,
+            env.DEVELOPER_DIR,
+            hashFiles('.ruby-version', '**/Gemfile.lock')) }}
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: >-
+          rm -rf
+          ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+      - name: Install Gems
+        if: steps.cache_gems.outputs.cache-hit != 'true'
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+
+      # Recording a reference counts as a test failure, so this step is expected to fail on the
+      # first run of a new snapshot test; the commit and the verification below are the signal.
+      - name: Record missing snapshots
+        continue-on-error: true
+        run: >-
+          xcodebuild test
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+          -destination "$DESTINATION"
+          -only-testing:Tests-App
+          -disableAutomaticPackageResolution
+          COMPILER_INDEX_STORE_ENABLE=NO
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD=missing
+
+      - name: Commit recorded snapshots
+        id: commit
+        run: |
+          git add --all "$SNAPSHOTS_PATH"
+          if git diff --cached --quiet; then
+            echo "Nothing was recorded, the references are already in the branch"
+            echo "recorded=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Record onboarding privacy step snapshots"
+          git push origin "HEAD:${{ github.ref_name }}"
+          echo "recorded=true" >> "$GITHUB_OUTPUT"
+
+      # With every reference in place the same tests have to pass without recording anything,
+      # which is what says the committed images are the ones the views actually render.
+      - name: Verify against the recorded snapshots
+        run: >-
+          xcodebuild test
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+          -destination "$DESTINATION"
+          -only-testing:Tests-App
+          -disableAutomaticPackageResolution
+          COMPILER_INDEX_STORE_ENABLE=NO
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD=never
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload recorded snapshots"
+        if: ${{ always() }}
+        with:
+          name: recorded-snapshots
+          path: ${{ env.SNAPSHOTS_PATH }}
+          if-no-files-found: ignore
