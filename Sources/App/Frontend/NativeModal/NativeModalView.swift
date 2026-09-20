@@ -2,11 +2,10 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// A native modal: the frontend's page under a standard navigation bar showing what
-/// the frontend's own header would (see `NativeModalHeader`): the entity's name over its area
-/// and device breadcrumb, a close or back button, the header's icon buttons and its overflow menu.
-/// The native loader covers the page until its frontend reports loaded, so the frontend's own launch
-/// screen is never seen.
+/// A native modal: the frontend's page under a standard navigation bar showing what the page's own
+/// header would (see `NativeModalHeader`): a title over a breadcrumb, a close or back button, icon
+/// buttons and an overflow menu. The native loader covers the page until its frontend reports
+/// loaded, so the frontend's own launch screen is never seen.
 struct NativeModalView<Content: View>: View {
     @ObservedObject var model: NativeModalModel
     let onClose: () -> Void

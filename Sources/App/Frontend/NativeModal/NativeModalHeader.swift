@@ -2,15 +2,14 @@ import Foundation
 
 /// The header of a native modal as the frontend describes it in `modal/header`.
 ///
-/// The frontend decides what the header offers (history, settings, the overflow menu) from the
-/// entity's domain, the user's rights and the open view; the sheet draws exactly this and reports a
-/// tap with `modal/action` and the item's `id`. Nothing here is known to the app ahead of time.
+/// The frontend decides what the header offers; the bar draws exactly this and reports a tap with
+/// `modal/action` and the item's `id`. Nothing here is known to the app ahead of time.
 struct NativeModalHeader: Equatable {
     /// What the leading button does.
     enum Navigation: String {
         /// Dismiss the sheet.
         case close
-        /// Return to the entity's own view, or to the entity this one was reached from.
+        /// Return to whatever the page was showing before.
         case back
     }
 
