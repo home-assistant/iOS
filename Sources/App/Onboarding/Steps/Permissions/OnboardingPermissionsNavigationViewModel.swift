@@ -1,6 +1,5 @@
 import CoreLocation
 import Foundation
-import PromiseKit
 import Shared
 import UIKit
 
@@ -212,11 +211,13 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         onboardingServer.info.setSetting(value: sensorPrivacy, for: .sensorPrivacy)
         onboardingServer.info.setSetting(value: locationPrivacy, for: .locationPrivacy)
 
-        if sensorPrivacy == .all {
+        if sensorPrivacy == .all, let api = Current.api(for: onboardingServer) {
             // Onboarding held the sensors back until this choice (see `OnboardingAuth`), so this is
             // what registers them, the same way changing the setting later in the server's settings
             // does.
-            Current.api(for: onboardingServer)?.registerSensors().cauterize()
+            Task {
+                try? await api.registerSensors().asyncValue()
+            }
         }
 
         guard locationPrivacy != .never else {
@@ -356,6 +357,11 @@ extension OnboardingPermissionsNavigationViewModel: CLLocationManagerDelegate {
             disableLocationSensor()
             if locationPermissionContext == .lessSecureLocalConnection {
                 applyLocationPermissionNeeds()
+            } else if currentStep == .privacy {
+                // Unlike the location step, the privacy step has no skip action to fall back on.
+                // The refusal answers its location question as `never` (just stored above), so the
+                // flow moves on instead of leaving the user on a screen that looks unanswered.
+                nextStep()
             }
         case .authorizedAlways:
             // Full location access granted - no additional action needed

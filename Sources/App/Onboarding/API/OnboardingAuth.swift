@@ -40,11 +40,13 @@ class OnboardingAuth {
             }
 
             // A server added next to an existing one is asked what it should receive at the end of
-            // onboarding (`OnboardingPrivacyView`), so it starts out sending no sensor data: the
-            // registration step below would otherwise hand a system nobody has been asked about
-            // every sensor the user switched on for another one.
+            // onboarding (`OnboardingPrivacyView`), so it starts out sending nothing: the steps
+            // below would otherwise hand a system nobody has been asked about this device's exact
+            // location and every sensor the user switched on for another one. Abandoning the flow
+            // before the question is answered leaves it on these values rather than the defaults.
             if !Current.servers.all.isEmpty {
                 api.server.info.setSetting(value: ServerSensorPrivacy.none, for: .sensorPrivacy)
+                api.server.info.setSetting(value: ServerLocationPrivacy.never, for: .locationPrivacy)
             }
 
             // Set once the server is persisted, so a later failure undoes exactly what was written.
@@ -60,10 +62,20 @@ class OnboardingAuth {
                     fallback: api.server.identifier,
                     existingServers: Current.servers.all
                 )
-                persisted = (identifier, Current.servers.server(for: identifier)?.info)
+                let existingInfo = Current.servers.server(for: identifier)?.info
+                persisted = (identifier, existingInfo)
+
+                // Re-authenticating a server the app already has is not a new server, and the
+                // privacy step is not shown for it, so it keeps the choices it already carries
+                // instead of the holdback above (or a default) overwriting them.
+                var serverInfo = api.server.info
+                if let existingInfo {
+                    serverInfo.setSetting(value: existingInfo.setting(for: .sensorPrivacy), for: .sensorPrivacy)
+                    serverInfo.setSetting(value: existingInfo.setting(for: .locationPrivacy), for: .locationPrivacy)
+                }
 
                 // actually persists to outside-onboarding
-                return Current.servers.add(identifier: identifier, serverInfo: api.server.info)
+                return Current.servers.add(identifier: identifier, serverInfo: serverInfo)
             }.get { server in
                 // Nothing was persisted yet when `configuredAPI` ran, so the API it returned is built
                 // around a detached, in-memory `Server` — and everything that API created at init

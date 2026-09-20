@@ -602,6 +602,29 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
         #expect(viewModel.locationPermissionContext == .notRequested)
     }
 
+    @Test("Denying the location permission on the privacy step stores never and moves on")
+    func denyingTheLocationPermissionOnThePrivacyStepAdvances() async throws {
+        let server = ServerFixture.standard
+        let previousStatus = Current.location.permissionStatus
+        defer { Current.location.permissionStatus = previousStatus }
+        Current.location.permissionStatus = { .notDetermined }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: [.privacy, .completion]
+        )
+
+        viewModel.savePrivacyChoices(locationPrivacy: .exact, sensorPrivacy: .all)
+        #expect(viewModel.currentStep == .privacy)
+
+        let locationManager = MockCLLocationManager()
+        locationManager.authorizationStatus = .denied
+        viewModel.locationManagerDidChangeAuthorization(locationManager)
+
+        #expect(server.info.setting(for: .locationPrivacy) == .never)
+        #expect(viewModel.currentStep == .completion)
+    }
+
     /// A registry holding the server being onboarded, plus `alongsideOtherServers` already onboarded ones.
     private static func serverManager(
         containing server: Server,
