@@ -7691,7 +7691,7 @@ public enum L10n {
       /// Search sensors
       public static var searchPrompt: String { return L10n.tr("Localizable", "settings_sensors.sensors.search_prompt") }
       public enum ForegroundOnly {
-        /// Only reports while the app is open
+        /// Only updates while the app is open
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.accessibility_label") }
         /// When app is open
         public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
