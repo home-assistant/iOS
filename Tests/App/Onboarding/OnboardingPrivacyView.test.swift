@@ -5,12 +5,12 @@ import SwiftUI
 import Testing
 
 struct OnboardingPrivacyViewTests {
-    @MainActor @Test func defaultChoicesSnapshot() async throws {
+    @MainActor @Test func nothingSelectedSnapshot() async throws {
         guard #available(iOS 18.0, *) else { return }
 
         let view = OnboardingPrivacyView { _, _ in }
 
-        assertLightDarkSnapshots(of: AnyView(view), named: "default-choices")
+        assertLightDarkSnapshots(of: AnyView(view), named: "nothing-selected")
     }
 
     @MainActor @Test func nothingSharedSnapshot() async throws {

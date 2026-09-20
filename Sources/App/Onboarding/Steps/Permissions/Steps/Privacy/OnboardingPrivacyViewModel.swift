@@ -5,18 +5,18 @@ import SwiftUI
 /// Holds the privacy choices `OnboardingPrivacyView` offers for a server being added to an app that
 /// already has one onboarded.
 ///
-/// The choices start on the same values a server falls back to when nobody picks any, so the screen
-/// shows what would otherwise be applied silently rather than proposing something different.
+/// Nothing is selected to begin with: the step exists because these choices were being applied
+/// without anybody making them, so the flow waits for both of them rather than proposing any.
 @MainActor
 final class OnboardingPrivacyViewModel: ObservableObject {
-    @Published var locationPrivacy: ServerLocationPrivacy
-    @Published var sensorPrivacy: ServerSensorPrivacy
+    @Published var locationPrivacy: ServerLocationPrivacy?
+    @Published var sensorPrivacy: ServerSensorPrivacy?
 
     private let action: (ServerLocationPrivacy, ServerSensorPrivacy) -> Void
 
     init(
-        locationPrivacy: ServerLocationPrivacy = .defaultSettingValue,
-        sensorPrivacy: ServerSensorPrivacy = .defaultSettingValue,
+        locationPrivacy: ServerLocationPrivacy? = nil,
+        sensorPrivacy: ServerSensorPrivacy? = nil,
         action: @escaping (ServerLocationPrivacy, ServerSensorPrivacy) -> Void = { _, _ in }
     ) {
         self.locationPrivacy = locationPrivacy
@@ -24,8 +24,14 @@ final class OnboardingPrivacyViewModel: ObservableObject {
         self.action = action
     }
 
+    /// Whether both questions have been answered; until they are, the step cannot be left.
+    var canSubmit: Bool {
+        locationPrivacy != nil && sensorPrivacy != nil
+    }
+
     /// Hands the choices to whoever is running the onboarding flow.
     func submit() {
+        guard let locationPrivacy, let sensorPrivacy else { return }
         action(locationPrivacy, sensorPrivacy)
     }
 
@@ -73,7 +79,7 @@ final class OnboardingPrivacyViewModel: ObservableObject {
     /// a selection can never be lost.
     var locationSelection: Binding<String?> {
         Binding(get: {
-            self.locationPrivacy.rawValue
+            self.locationPrivacy?.rawValue
         }, set: { newValue in
             guard let newValue, let privacy = ServerLocationPrivacy(rawValue: newValue) else { return }
             self.locationPrivacy = privacy
@@ -82,7 +88,7 @@ final class OnboardingPrivacyViewModel: ObservableObject {
 
     var sensorSelection: Binding<String?> {
         Binding(get: {
-            self.sensorPrivacy.rawValue
+            self.sensorPrivacy?.rawValue
         }, set: { newValue in
             guard let newValue, let privacy = ServerSensorPrivacy(rawValue: newValue) else { return }
             self.sensorPrivacy = privacy

@@ -4,14 +4,15 @@ import Testing
 
 @Suite("OnboardingPrivacyViewModel Tests")
 struct OnboardingPrivacyViewModelTests {
-    @MainActor @Test("Starts on the values a server falls back to when nobody picks any")
-    func startsOnTheSettingDefaults() async throws {
+    @MainActor @Test("Starts with nothing selected and cannot be submitted")
+    func startsWithNothingSelected() async throws {
         let viewModel = OnboardingPrivacyViewModel()
 
-        #expect(viewModel.locationPrivacy == ServerLocationPrivacy.defaultSettingValue)
-        #expect(viewModel.sensorPrivacy == ServerSensorPrivacy.defaultSettingValue)
-        #expect(viewModel.locationSelection.wrappedValue == ServerLocationPrivacy.defaultSettingValue.rawValue)
-        #expect(viewModel.sensorSelection.wrappedValue == ServerSensorPrivacy.defaultSettingValue.rawValue)
+        #expect(viewModel.locationPrivacy == nil)
+        #expect(viewModel.sensorPrivacy == nil)
+        #expect(viewModel.locationSelection.wrappedValue == nil)
+        #expect(viewModel.sensorSelection.wrappedValue == nil)
+        #expect(viewModel.canSubmit == false)
     }
 
     @MainActor @Test("Offers every location and sensor privacy level")
@@ -35,6 +36,8 @@ struct OnboardingPrivacyViewModelTests {
 
         #expect(viewModel.locationPrivacy == .zoneOnly)
         #expect(viewModel.sensorPrivacy == ServerSensorPrivacy.none)
+        #expect(viewModel.locationSelection.wrappedValue == ServerLocationPrivacy.zoneOnly.rawValue)
+        #expect(viewModel.sensorSelection.wrappedValue == ServerSensorPrivacy.none.rawValue)
     }
 
     @MainActor @Test("A value that is not an option leaves the choice alone")
@@ -50,17 +53,23 @@ struct OnboardingPrivacyViewModelTests {
         #expect(viewModel.sensorPrivacy == ServerSensorPrivacy.none)
     }
 
-    @MainActor @Test("Submitting hands over the choices that are selected")
-    func submittingHandsOverTheSelectedChoices() async throws {
+    @MainActor @Test("Both questions have to be answered before the step can be left")
+    func bothQuestionsHaveToBeAnswered() async throws {
         var submitted: (location: ServerLocationPrivacy, sensors: ServerSensorPrivacy)?
         let viewModel = OnboardingPrivacyViewModel { location, sensors in
             submitted = (location, sensors)
         }
 
         viewModel.locationSelection.wrappedValue = ServerLocationPrivacy.zoneOnly.rawValue
+        #expect(viewModel.canSubmit == false)
+        viewModel.submit()
+        #expect(submitted == nil)
+
+        viewModel.sensorSelection.wrappedValue = ServerSensorPrivacy.all.rawValue
+        #expect(viewModel.canSubmit)
         viewModel.submit()
 
         #expect(submitted?.location == .zoneOnly)
-        #expect(submitted?.sensors == ServerSensorPrivacy.defaultSettingValue)
+        #expect(submitted?.sensors == .all)
     }
 }

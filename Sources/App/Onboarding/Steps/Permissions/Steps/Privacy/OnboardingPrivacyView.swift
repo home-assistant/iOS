@@ -5,13 +5,14 @@ import SwiftUI
 ///
 /// Only shown while onboarding a server into an app that already has another one: the first server
 /// settles these choices through the location permission screen, but every server after it would
-/// otherwise start on the defaults without anyone being asked.
+/// otherwise start on the defaults without anyone being asked. Nothing is selected to begin with
+/// and the flow cannot be continued until both questions are answered.
 struct OnboardingPrivacyView: View {
     @StateObject private var viewModel: OnboardingPrivacyViewModel
 
     init(
-        locationPrivacy: ServerLocationPrivacy = .defaultSettingValue,
-        sensorPrivacy: ServerSensorPrivacy = .defaultSettingValue,
+        locationPrivacy: ServerLocationPrivacy? = nil,
+        sensorPrivacy: ServerSensorPrivacy? = nil,
         action: @escaping (ServerLocationPrivacy, ServerSensorPrivacy) -> Void
     ) {
         self._viewModel = StateObject(wrappedValue: OnboardingPrivacyViewModel(
@@ -77,6 +78,7 @@ struct OnboardingPrivacyView: View {
             },
             primaryActionIdentifier: AccessibilityIdentifier.onboardingPrivacyNext.rawValue
         )
+        .disableOnboardingPrimaryAction(!viewModel.canSubmit)
     }
 }
 
