@@ -88,6 +88,6 @@ struct OnboardingPrivacyView: View {
 }
 
 #Preview("Nothing shared") {
-    OnboardingPrivacyView(locationPrivacy: .never, sensorPrivacy: .none) { _, _ in
+    OnboardingPrivacyView(locationPrivacy: .never, sensorPrivacy: ServerSensorPrivacy.none) { _, _ in
     }
 }

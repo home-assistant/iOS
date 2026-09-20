@@ -42,7 +42,7 @@ struct OnboardingPrivacyViewModelTests {
 
     @MainActor @Test("A value that is not an option leaves the choice alone")
     func unknownValueKeepsTheCurrentChoice() async throws {
-        let viewModel = OnboardingPrivacyViewModel(locationPrivacy: .never, sensorPrivacy: .none)
+        let viewModel = OnboardingPrivacyViewModel(locationPrivacy: .never, sensorPrivacy: ServerSensorPrivacy.none)
 
         viewModel.locationSelection.wrappedValue = "not-a-privacy-level"
         viewModel.locationSelection.wrappedValue = nil

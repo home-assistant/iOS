@@ -16,7 +16,9 @@ struct OnboardingPrivacyViewTests {
     @MainActor @Test func nothingSharedSnapshot() async throws {
         guard #available(iOS 18.0, *) else { return }
 
-        let view = OnboardingPrivacyView(locationPrivacy: .never, sensorPrivacy: .none) { _, _ in }
+        // `ServerSensorPrivacy.none` spelled out: against the optional parameter a bare `.none`
+        // would be `Optional.none`, leaving the question unanswered.
+        let view = OnboardingPrivacyView(locationPrivacy: .never, sensorPrivacy: ServerSensorPrivacy.none) { _, _ in }
 
         assertLightDarkSnapshots(of: AnyView(view), named: "nothing-shared")
     }
