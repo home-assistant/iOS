@@ -14,20 +14,6 @@ enum WatchWidgetStrings {
         )
     }
 
-    static var energyTitle: String {
-        localized("widgets.energy.title", defaultValue: "Energy")
-    }
-
-    static var energyDescription: String {
-        localized("widgets.energy.description", defaultValue: "Show your energy dashboard at a glance.")
-    }
-
-    /// Shown when the app group holds no energy payload at all — the watch app has never had the
-    /// chance to read one, rather than having read one and found nothing in it.
-    static var energyNoData: String {
-        localized("widgets.energy.no_data", defaultValue: "No energy data")
-    }
-
     private static let containingAppBundle: Bundle = {
         let appURL = Bundle.main.bundleURL.deletingLastPathComponent().deletingLastPathComponent()
         return Bundle(url: appURL) ?? .main

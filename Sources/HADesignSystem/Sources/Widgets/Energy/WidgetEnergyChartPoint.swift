@@ -1,11 +1,8 @@
+#if !os(watchOS)
 import Foundation
 
 /// One bucket of the energy chart, in the terms the chart paints: what came in, what was generated,
 /// what the battery gave back or took, and what went back out.
-///
-/// Unlike the drawing code around it this compiles on watchOS too: it is plain arithmetic, and the
-/// watch complication's chart is fed from the very same split so the two platforms can't disagree
-/// about what a bucket means.
 public struct WidgetEnergyChartPoint: Identifiable, Equatable {
     public var id: Date { date }
     public let date: Date
@@ -130,3 +127,4 @@ public struct WidgetEnergyChartPoint: Identifiable, Equatable {
     /// The share of this bucket's discharge the home used itself, rather than sending to the grid.
     public var batteryUsed: Double { split.usedBattery }
 }
+#endif
