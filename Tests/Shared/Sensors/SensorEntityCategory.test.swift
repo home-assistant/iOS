@@ -70,7 +70,7 @@ struct SensorEntityCategoryTests {
     @Test("Apple Health and the pedometer are readings about a person, not about a device")
     func personalReadingsAreNotDiagnostic() {
         for uniqueID in PedometerSensor.allSensorIDs {
-            #expect(SensorEntityCategory.category(forSensorUniqueID: uniqueID) == nil, uniqueID)
+            #expect(SensorEntityCategory.category(forSensorUniqueID: uniqueID) == nil, "\(uniqueID)")
         }
         #expect(SensorEntityCategory.category(forSensorUniqueID: "health_steps") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "health_heart_rate") == nil)
