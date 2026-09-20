@@ -8,6 +8,7 @@ enum NativeModalSize: String {
     /// The whole screen.
     case full
 
+    /// Anything the frontend did not name takes the whole screen.
     init(payload: Any?) {
         self = (payload as? String).flatMap(NativeModalSize.init(rawValue:)) ?? .full
     }

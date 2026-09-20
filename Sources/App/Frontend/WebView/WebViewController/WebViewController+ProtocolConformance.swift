@@ -193,12 +193,12 @@ extension WebViewController: WebViewControllerProtocol {
         dismiss(animated: true)
     }
 
-    func resizeNativeModal(to size: NativeModalSize) {
+    func updateNativeModal(_ update: NativeModalUpdate) {
         guard case .nativeModal = role else {
-            Current.Log.warning("modal/size reached the main frontend, which is not in a modal")
+            Current.Log.warning("modal/update reached the main frontend, which is not in a modal")
             return
         }
-        onNativeModalSizeChange?(size)
+        onNativeModalUpdate?(update)
     }
 
     func relayNativeModalNavigation(path: String) {
@@ -222,13 +222,5 @@ extension WebViewController: WebViewControllerProtocol {
         webView.addSubview(anchor)
         anchor.frame = rect
         return anchor
-    }
-
-    func updateNativeModalHeader(_ header: NativeModalHeader) {
-        guard case .nativeModal = role else {
-            Current.Log.warning("modal/header reached the main frontend, which draws its own header")
-            return
-        }
-        onNativeModalHeaderChange?(header)
     }
 }

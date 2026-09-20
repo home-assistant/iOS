@@ -187,13 +187,16 @@ final class NativeModalPresenter {
             self.pendingPath = nil
             navigate(to: pendingPath, in: sheet)
         }
-        sheet.onNativeModalHeaderChange = { [weak self] header in
-            self?.model.apply(header)
-        }
-        // A dialog opened inside the page needs the whole screen, so the modal grows under it.
-        sheet.onNativeModalSizeChange = { [weak self] size in
-            guard let container = self?.container else { return }
-            Self.configurePresentation(of: container, size: size, animated: true)
+        // The bar follows the page's own header; a dialog opened inside it needs the whole screen,
+        // so the modal grows under it.
+        sheet.onNativeModalUpdate = { [weak self] update in
+            guard let self else { return }
+            if let header = update.header {
+                model.apply(header)
+            }
+            if let size = update.size, let container {
+                Self.configurePresentation(of: container, size: size, animated: true)
+            }
         }
         // Siri resolves "this" against the entity on screen. The modal publishes no activity of its
         // own, so the frontend underneath carries whatever the page inside reports, and drops it

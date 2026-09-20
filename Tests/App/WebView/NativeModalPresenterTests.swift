@@ -186,7 +186,7 @@ final class NativeModalPresenterTests: XCTestCase {
         let presentation = try XCTUnwrap(host.overlayedController?.sheetPresentationController)
         XCTAssertEqual(presentation.selectedDetentIdentifier, .medium)
 
-        sheet.resizeNativeModal(to: .full)
+        sheet.updateNativeModal(NativeModalUpdate(size: .full))
 
         XCTAssertEqual(presentation.selectedDetentIdentifier, .large)
         XCTAssertFalse(presentation.prefersGrabberVisible)
@@ -340,13 +340,13 @@ final class NativeModalPresenterTests: XCTestCase {
         sut.present(path: "/more-info?more-info-entity-id=light.kitchen", title: "Kitchen ceiling", from: host)
         let sheet = try presentedSheet()
 
-        sheet.updateNativeModalHeader(NativeModalHeader(
+        sheet.updateNativeModal(NativeModalUpdate(header: NativeModalHeader(
             title: "History",
             navigation: .back,
             navigationLabel: "Back to info",
             actions: [.init(id: "history", label: "History", icon: "mdi:chart-box-outline")],
             menu: [.init(id: "details", label: "Details", icon: "mdi:information-outline")]
-        ))
+        )))
 
         XCTAssertEqual(sut.model.title, "History")
         XCTAssertNil(sut.model.subtitle)
@@ -372,10 +372,10 @@ final class NativeModalPresenterTests: XCTestCase {
     /// A header reaching the main frontend's controller is not for any sheet.
     @MainActor func testAHeaderOnTheMainFrontendDoesNothing() {
         let main = WebViewController(server: host.server, role: .mainFrontend)
-        var received: NativeModalHeader?
-        main.onNativeModalHeaderChange = { received = $0 }
+        var received: NativeModalUpdate?
+        main.onNativeModalUpdate = { received = $0 }
 
-        main.updateNativeModalHeader(NativeModalHeader(title: "Kitchen"))
+        main.updateNativeModal(NativeModalUpdate(header: NativeModalHeader(title: "Kitchen")))
 
         XCTAssertNil(received)
     }

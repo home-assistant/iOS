@@ -238,10 +238,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     origin: NativeModalOrigin(payload: incomingMessage.Payload?["origin"]),
                     from: webViewController
                 )
-            case .modalSize:
-                webViewController.resizeNativeModal(
-                    to: NativeModalSize(payload: incomingMessage.Payload?["size"])
-                )
             case .modalClose:
                 // Arrives on the modal's own web view, so that controller is the one to go.
                 webViewController.closeNativeModal()
@@ -251,12 +247,12 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.relayNativeModalNavigation(path: path)
-            case .modalHeader:
-                guard let header = NativeModalHeader(payload: incomingMessage.Payload) else {
-                    Current.Log.error("Received modal/header with an invalid payload! \(incomingMessage)")
+            case .modalUpdate:
+                guard let update = NativeModalUpdate(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received modal/update with nothing in it! \(incomingMessage)")
                     return
                 }
-                webViewController.updateNativeModalHeader(header)
+                webViewController.updateNativeModal(update)
             case .entityControlled:
                 guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
                     Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")

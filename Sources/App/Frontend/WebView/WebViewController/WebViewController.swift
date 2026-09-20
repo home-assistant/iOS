@@ -22,10 +22,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// reconnection after it drops. `frontend/loaded` arrives once per page load, so a modal that
     /// loses its connection while it waits would never hear about the recovery otherwise.
     var onNativeModalReady: (() -> Void)?
-    /// Called with each header a modal's frontend describes for the modal's bar.
-    var onNativeModalHeaderChange: ((NativeModalHeader) -> Void)?
-    /// Called with how much room the page inside a modal needs now.
-    var onNativeModalSizeChange: ((NativeModalSize) -> Void)?
+    /// Called with everything a modal's frontend changes about it after it is up.
+    var onNativeModalUpdate: ((NativeModalUpdate) -> Void)?
     /// Called with the entity a modal's page is showing, or nil when it stops showing one. A modal
     /// publishes no activity of its own, so its host carries this for Siri.
     var onNativeModalOnscreenEntity: ((String?) -> Void)?

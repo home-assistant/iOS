@@ -555,36 +555,36 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
     }
 
     /// The header arrives on the modal's web view, whose controller passes it to the modal's bar.
-    @MainActor func testHandleExternalMessageModalHeaderUpdatesTheModalsBar() {
+    @MainActor func testHandleExternalMessageModalUpdateDrawsTheBar() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "modal/header",
-            "payload": [
+            "type": "modal/update",
+            "payload": ["header": [
                 "title": "Kitchen ceiling",
                 "navigation": "back",
                 "actions": [["id": "history", "label": "History", "icon": "mdi:chart-box-outline"]],
                 "menu": [],
-            ],
+            ]],
         ])
 
-        let header = mockWebViewController.updatedNativeModalHeader
+        let header = mockWebViewController.nativeModalUpdate?.header
         XCTAssertEqual(header?.title, "Kitchen ceiling")
         XCTAssertEqual(header?.navigation, .back)
         XCTAssertEqual(header?.actions.map(\.id), ["history"])
     }
 
-    @MainActor func testHandleExternalMessageModalHeaderWithoutATitleIsIgnored() {
+    @MainActor func testHandleExternalMessageModalUpdateWithNothingUsableIsIgnored() {
         sut.handleExternalMessage([
             "id": 1,
             "message": "",
             "command": "",
-            "type": "modal/header",
-            "payload": ["subtitle": "Kitchen"],
+            "type": "modal/update",
+            "payload": ["header": ["subtitle": "Kitchen"]],
         ])
 
-        XCTAssertNil(mockWebViewController.updatedNativeModalHeader)
+        XCTAssertNil(mockWebViewController.nativeModalUpdate)
     }
 
     @MainActor func testHandleExternalMessageModalNavigateWithoutAPathIsIgnored() {
