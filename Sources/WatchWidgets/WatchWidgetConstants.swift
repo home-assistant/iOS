@@ -75,13 +75,6 @@ enum WatchWidgetConstants {
         widgetBundleID + ".control.assist"
     }
 
-    /// Kind of the energy complication. Its own kind rather than another family of the complication
-    /// widget above: that one renders whatever complication the user configured in the app, while
-    /// this one is generated from the servers the app already has and is configured by nothing.
-    static var energyKind: String {
-        widgetBundleID + ".energy"
-    }
-
     static let supportedFamilies: [WidgetFamily] = [
         .accessoryCircular,
         .accessoryRectangular,
