@@ -32,8 +32,10 @@ struct WebhookSensorIdTests {
         assert(WebhookSensorId.kioskScreensaver.rawValue == "kioskScreensaver")
         assert(WebhookSensorId.cameraMotion.rawValue == "cameraMotion")
         assert(WebhookSensorId.cameraStream.rawValue == "cameraStream")
+        assert(WebhookSensorId.hingeAngle.rawValue == "hinge_angle")
+        assert(WebhookSensorId.hingeStatus.rawValue == "hinge_status")
         assert(
-            WebhookSensorId.allCases.count == 29,
+            WebhookSensorId.allCases.count == 31,
             "WebhookSensorId has different number of cases than defined in test, \(WebhookSensorId.allCases.count)"
         )
     }

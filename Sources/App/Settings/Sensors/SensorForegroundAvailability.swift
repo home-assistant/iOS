@@ -28,5 +28,9 @@ enum SensorForegroundAvailability {
         WebhookSensorId.kioskVolume.rawValue,
         // The screensaver only exists while the app is the one drawing the screen.
         WebhookSensorId.kioskScreensaver.rawValue,
+        // The hinge is only reported to a view in the hierarchy, so the angle and status
+        // stop arriving the moment the app is no longer the one on screen.
+        WebhookSensorId.hingeAngle.rawValue,
+        WebhookSensorId.hingeStatus.rawValue,
     ]
 }
