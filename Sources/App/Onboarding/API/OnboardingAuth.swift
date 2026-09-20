@@ -211,11 +211,9 @@ class OnboardingAuth {
         return Promise { seal in
             Task { [self] in
                 do {
-                    let currentSSID = await Current.connectivity.currentWiFiSSID()
                     var connectionInfo = ConnectionInfo(
                         discovered: instance,
-                        authDetails: authDetails,
-                        currentSSID: currentSSID
+                        authDetails: authDetails
                     )
 
                     let tokenInfo = try await tokenExchange.tokenInfo(
@@ -293,16 +291,7 @@ class OnboardingAuth {
 }
 
 private extension ConnectionInfo {
-    init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails, currentSSID: String?) {
-        // Recording the network the device happens to be on as one of the server's home networks is only
-        // justified when the internal URL is what just answered: `connect(to:)` clears `internalURL` on the
-        // external-URL attempt, so a non-nil one here means auth went through the server's local address
-        // over this very network. Onboarding through the external URL observes nothing of the sort, and
-        // the home network step — the only place the user confirms a network — is skipped whenever a
-        // configured URL is HTTPS (see `OnboardingPermissionsNavigationViewModel`), so an SSID recorded
-        // there is one the user is never shown and never agreed to.
-        let authenticatedOverInternalURL = discovered.internalURL != nil
-
+    init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails) {
         self.init(
             externalURL: discovered.externalURL,
             internalURL: discovered.internalURL,
@@ -310,7 +299,10 @@ private extension ConnectionInfo {
             remoteUIURL: nil,
             webhookID: "",
             webhookSecret: nil,
-            internalSSIDs: authenticatedOverInternalURL ? currentSSID.map { [$0] } : nil,
+            // The Wi-Fi network the device happens to be on is never adopted as a home network here.
+            // `HomeNetworkInputView` is where the user is shown the network and confirms it, and the
+            // home network step is the only thing that may write `internalSSIDs`.
+            internalSSIDs: nil,
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
@@ -321,10 +313,12 @@ private extension ConnectionInfo {
         // default cloud to on
         useCloud = true
 
-        // if we have internal+external, we're on the internal network doing discovery
-        // but we don't yet have location permission to know we're on an internal ssid
-        if internalSSIDs == [] || internalSSIDs == nil,
-           discovered.internalURL != nil, discovered.externalURL != nil {
+        // Authentication went through the internal URL — `connect(to:)` clears `internalURL` on the
+        // external-URL attempt — so keep using it for the rest of onboarding, since no home network is
+        // configured yet to tell the two apart. Every route out of the permissions flow clears this
+        // again: the home network step through `internalSSIDs`' `didSet`, and the routes that skip that
+        // step explicitly (see `OnboardingPermissionsNavigationViewModel`).
+        if discovered.internalURL != nil, discovered.externalURL != nil {
             overrideActiveURLType = .internal
         }
     }

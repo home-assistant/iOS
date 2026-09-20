@@ -320,6 +320,28 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
     }
 
+    @Test("Set less secure local connection clears the internal URL override")
+    func setLessSecureLocalConnectionClearsInternalURLOverride() async throws {
+        // Onboarding pins the internal URL when it authenticated through it, and this choice jumps
+        // past the home network step, so nothing else would unpin it.
+        let server = Self.makeServer(
+            identifier: "less-secure-clears-override",
+            externalURL: URL(string: "http://external.example.com")!,
+            internalURL: URL(string: "http://internal.example.com")!
+        )
+        server.update { info in
+            info.connection.overrideActiveURLType = .internal
+        }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+        #expect(viewModel.steps.contains(.homeNetwork))
+
+        viewModel.setLessSecureLocalConnection()
+
+        #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
+        #expect(server.info.connection.overrideActiveURLType == nil)
+    }
+
     @Test("Request location permission for less secure local connection")
     func requestLocationPermissionForLessSecureLocalConnection() async throws {
         let server = ServerFixture.standard

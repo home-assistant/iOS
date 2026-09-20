@@ -219,6 +219,9 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testSuccessfulWithInternalAndExternalAndInternalSucceedsWithSSID() throws {
+        // Being on a named Wi-Fi network while authenticating is not consent to treat it as a home
+        // network: only the home network step, where the user is shown it, may write `internalSSIDs`.
+        // Until then the internal URL stays pinned, since nothing can tell the two networks apart.
         Current.connectivity.currentNetworkState = {
             NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
         }
@@ -235,8 +238,9 @@ class OnboardingAuthTests: XCTestCase {
         let connectionInfo = server.info.connection
         XCTAssertEqual(connectionInfo.address(for: .internal), instance.internalURL)
         XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
-        XCTAssertEqual(connectionInfo.internalSSIDs, ["unit_test"])
-        XCTAssertEqual(connectionInfo.internalHardwareAddresses, nil)
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertEqual(connectionInfo.overrideActiveURLType, .internal)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
@@ -282,9 +286,8 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testSuccessfulWithOnlyExternalDoesNotRecordCurrentSSID() throws {
-        // The user typed an external URL, so the Wi-Fi the device happens to be on says nothing about
-        // the server's home network and must not be recorded — the user is never shown it either, since
-        // the home network onboarding step is skipped for a server reachable over HTTPS.
+        // Onboarding through an external URL never even reaches a local address, so there is nothing
+        // to pin either.
         instance.internalURL = nil
         Current.connectivity.currentNetworkState = {
             NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
@@ -295,6 +298,7 @@ class OnboardingAuthTests: XCTestCase {
         let connectionInfo = server.info.connection
         XCTAssertNil(connectionInfo.internalSSIDs)
         XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertNil(connectionInfo.overrideActiveURLType)
     }
 
     func testSuccessfulWithInternalAndExternalAndInternalFailsDoesNotRecordCurrentSSID() throws {
@@ -309,6 +313,7 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertNil(connectionInfo.address(for: .internal))
         XCTAssertNil(connectionInfo.internalSSIDs)
         XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertNil(connectionInfo.overrideActiveURLType)
     }
 
     func testInternalPortRedirectIsAdopted() throws {
