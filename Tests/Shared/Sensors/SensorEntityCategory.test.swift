@@ -12,9 +12,6 @@ struct SensorEntityCategoryTests {
         .connectivitySSID,
         .connectivityConnectionType,
         .displaysCount,
-        .focus,
-        .focusName,
-        .kioskMode,
         .lastUpdateTrigger,
         .locationPermission,
         .primaryDisplayId,
@@ -48,7 +45,9 @@ struct SensorEntityCategoryTests {
         #expect(SensorEntityCategory.category(forSensorUniqueID: "last_update_trigger") == .diagnostic)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "location-permission") == .diagnostic)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "active") == .diagnostic)
-        #expect(SensorEntityCategory.category(forSensorUniqueID: "focus") == .diagnostic)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "displays_count") == .diagnostic)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "primary_display_name") == .diagnostic)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "primary_display_id") == .diagnostic)
     }
 
     @Test("What the device measures around it stays a plain sensor")
@@ -73,12 +72,18 @@ struct SensorEntityCategoryTests {
         #expect(SensorEntityCategory.category(forSensorUniqueID: "health_sleep_duration") == nil)
     }
 
-    @Test("The kiosk's live state is what a wall tablet's dashboard shows")
-    func onlyKioskModeIsDiagnostic() {
-        #expect(SensorEntityCategory.category(forSensorUniqueID: "kioskMode") == .diagnostic)
+    @Test("The kiosk is what a wall tablet's dashboard shows, all of it")
+    func kioskSensorsAreNotDiagnostic() {
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "kioskMode") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "kioskBrightness") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "kioskVolume") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "kioskScreensaver") == nil)
+    }
+
+    @Test("Focus is something automations act on, not a diagnostic")
+    func focusSensorsAreNotDiagnostic() {
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "focus") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "focus_name") == nil)
     }
 
     @Test("A battery is a diagnostic whatever the hardware calls it")
