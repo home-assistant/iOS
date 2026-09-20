@@ -13,8 +13,7 @@ struct SensorRowTests {
                     uniqueID: "1",
                     icon: .abTestingIcon,
                     state: false,
-                    unit: nil,
-                    entityCategory: nil
+                    unit: nil
                 ),
                 isEnabled: true
             )
