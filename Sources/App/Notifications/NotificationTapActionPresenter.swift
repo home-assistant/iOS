@@ -10,6 +10,9 @@ import UserNotifications
 /// are there, they were just never seen. When a plain tap has nothing else to do, the same actions are
 /// offered in an alert, and picking one runs it exactly as the system would have.
 ///
+/// Off until the user turns it on in Settings › Notifications (`SettingsStore.notificationTapActionsEnabled`),
+/// since it changes what tapping a notification does.
+///
 /// Whatever the payload already asks a tap to do wins. A `url` to open and an `entity_id` to show are
 /// routed by `NotificationManager` before a tap reaches this; a shortcut to run and a command to send are
 /// checked for here — see `tapRunsSomethingElse(for:)`.
@@ -54,10 +57,14 @@ final class NotificationTapActionPresenter {
         return false
     }
 
-    /// Offers `content`'s actions, unless the tap is already spoken for or the notification has none.
-    /// Returns whether there was anything to offer, which is what tells those two cases apart.
+    /// Offers `content`'s actions, unless the user has not asked for this, the tap is already spoken
+    /// for, or the notification has no actions. Returns whether anything was offered.
     @discardableResult
     func present(for content: UNNotificationContent, server: Server) -> Bool {
+        guard Current.settingsStore.notificationTapActionsEnabled else {
+            return false
+        }
+
         guard !Self.tapRunsSomethingElse(for: content) else {
             return false
         }

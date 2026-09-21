@@ -6,8 +6,9 @@ import UIKit
 import UserNotifications
 import XCTest
 
-/// A notification the user taps instead of pressing and holding: the actions iOS kept hidden are
-/// offered in an alert, unless the payload already asked that tap to do something else.
+/// A notification the user taps instead of pressing and holding: once the setting is on, the actions
+/// iOS kept hidden are offered in an alert, unless the payload already asked that tap to do something
+/// else.
 final class NotificationTapActionPresenterTests: XCTestCase {
     private var sut: NotificationTapActionPresenter!
     private var server: Server!
@@ -17,6 +18,7 @@ final class NotificationTapActionPresenterTests: XCTestCase {
     private var previousDatabase: (() -> DatabaseQueue)!
     private var previousServers: ServerManager!
     private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
+    private var previousTapActionsEnabled: Bool!
 
     @MainActor
     override func setUp() async throws {
@@ -39,6 +41,9 @@ final class NotificationTapActionPresenterTests: XCTestCase {
         coordinator = MockAppCoordinator()
         Current.sceneManager.registerAppCoordinator(coordinator)
 
+        previousTapActionsEnabled = Current.settingsStore.notificationTapActionsEnabled
+        Current.settingsStore.notificationTapActionsEnabled = true
+
         sut = NotificationTapActionPresenter()
     }
 
@@ -46,8 +51,23 @@ final class NotificationTapActionPresenterTests: XCTestCase {
         Current.database = previousDatabase
         Current.servers = previousServers
         Current.cachedApis = previousCachedApis
+        Current.settingsStore.notificationTapActionsEnabled = previousTapActionsEnabled
 
         super.tearDown()
+    }
+
+    // MARK: - The setting that turns this on
+
+    /// The whole feature is opt-in: until the switch in Settings › Notifications is on, a tap keeps
+    /// doing exactly what it used to.
+    @MainActor
+    func testOffersNothingUntilTheSettingIsTurnedOn() {
+        Current.settingsStore.notificationTapActionsEnabled = false
+
+        let content = content(userInfo: ["actions": [["identifier": "OPEN", "title": "Open the gate"]]])
+
+        XCTAssertFalse(sut.present(for: content, server: server))
+        XCTAssertTrue(coordinator.presentedViewControllers.isEmpty)
     }
 
     // MARK: - Which actions a tap offers
