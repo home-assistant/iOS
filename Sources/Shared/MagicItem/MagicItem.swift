@@ -1091,7 +1091,8 @@ public extension MagicItem {
         let requestTask = Task {
             let result: Result<(Data, HTTPURLResponse), Error>
             do {
-                result = .success(try await ServerRequestPerformer.perform(request, server: server, onStep: onStep))
+                let response = try await ServerRequestPerformer.perform(request, server: server, onStep: onStep)
+                result = .success(response)
             } catch {
                 result = .failure(error)
             }
