@@ -148,9 +148,12 @@ enum WatchRequestRelay {
     /// the continuation; cancellation settles the wait immediately rather than letting it run out
     /// the budget, and any reply that lands afterwards is dropped — the phone may well have
     /// performed the request, but the caller has already gone.
+    /// - Parameter communicator: the link to the counterpart; the shared one unless a test
+    ///   substitutes a session it can answer from.
     static func deliver(
         _ payload: WatchHTTPRequestPayload,
-        budget: TimeInterval
+        budget: TimeInterval,
+        over communicator: Communicator = WatchConnectivityManager.shared
     ) async -> WatchHTTPResponsePayload? {
         let gate = WatchRelayReplyGate()
         return await withTaskCancellationHandler {
@@ -159,7 +162,7 @@ enum WatchRequestRelay {
                 // message on the link would only invite the phone to do work nobody will read.
                 guard gate.adopt(continuation) else { return }
 
-                Communicator.shared.send(
+                communicator.send(
                     .init(
                         identifier: InteractiveImmediateMessages.httpRequest.rawValue,
                         content: payload.content,

@@ -131,7 +131,10 @@ public enum ServerRequestPerformer {
 
     /// Holds the in-flight data task so cancellation can reach it, without caring whether the
     /// cancellation or the task itself arrives first.
-    private final class CancellableTaskBox: @unchecked Sendable {
+    /// Internal rather than private so the cancel-before-`adopt` race — the one that leaves a
+    /// caller suspended forever if `adopt` gets it wrong — can be provoked directly in a test
+    /// instead of hoped for by timing a cancellation.
+    final class CancellableTaskBox: @unchecked Sendable {
         private let lock = NSLock()
         private var task: URLSessionDataTask?
         private var isCancelled = false

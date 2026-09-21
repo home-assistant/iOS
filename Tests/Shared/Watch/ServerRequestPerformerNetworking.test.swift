@@ -88,6 +88,40 @@ struct ServerRequestPerformerNetworkingTests {
         }
     }
 
+    /// A response that isn't HTTP at all carries no status for the caller to act on, so it is an
+    /// error rather than a success with no status.
+    @Test func throwsWhenTheResponseIsNotHTTP() async {
+        StubbedRequestProtocol.respondWithoutHTTP()
+        defer { StubbedRequestProtocol.reset() }
+
+        await #expect(throws: HomeAssistantRESTError.invalidResponse) {
+            try await ServerRequestPerformer.perform(
+                request(),
+                server: ServerFixture.standard,
+                configuration: stubbedConfiguration()
+            )
+        }
+    }
+
+    /// The cancel-before-`adopt` race, provoked directly rather than hoped for by timing: a data
+    /// task that was never resumed is not guaranteed to deliver a completion callback when
+    /// cancelled, and that callback is the only thing that resumes the continuation and lets the
+    /// session be invalidated.
+    @Test func adoptingAfterCancellationStartsTheTaskBeforeCancellingIt() {
+        StubbedRequestProtocol.hang()
+        defer { StubbedRequestProtocol.reset() }
+
+        let session = URLSession(configuration: stubbedConfiguration())
+        defer { session.finishTasksAndInvalidate() }
+        let task = session.dataTask(with: request())
+        let box = ServerRequestPerformer.CancellableTaskBox()
+
+        box.cancel()
+        box.adopt(task)
+
+        #expect(task.state != .suspended, "a task left suspended never reports completion")
+    }
+
     /// The same race the other way round: the caller gives up before the data task has even been
     /// handed over. A task that is never resumed is not guaranteed to deliver a completion, so this
     /// would hang forever if `adopt` did not resume it first.
@@ -118,6 +152,8 @@ final class StubbedRequestProtocol: URLProtocol {
         case fail(any Error)
         /// Never answers, so the test can cancel a request that is genuinely in flight.
         case hang
+        /// Answers with a plain `URLResponse`, which carries no status code.
+        case nonHTTP
     }
 
     private static let lock = NSLock()
@@ -139,6 +175,12 @@ final class StubbedRequestProtocol: URLProtocol {
         lock.lock()
         defer { lock.unlock() }
         behavior = .hang
+    }
+
+    static func respondWithoutHTTP() {
+        lock.lock()
+        defer { lock.unlock() }
+        behavior = .nonHTTP
     }
 
     static func reset() {
@@ -177,6 +219,19 @@ final class StubbedRequestProtocol: URLProtocol {
             client.urlProtocolDidFinishLoading(self)
         case let .fail(error):
             client.urlProtocol(self, didFailWithError: error)
+        case .nonHTTP:
+            guard let url = request.url else {
+                client.urlProtocol(self, didFailWithError: URLError(.badURL))
+                return
+            }
+            let response = URLResponse(
+                url: url,
+                mimeType: "text/plain",
+                expectedContentLength: 0,
+                textEncodingName: nil
+            )
+            client.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client.urlProtocolDidFinishLoading(self)
         case .hang:
             break
         }
