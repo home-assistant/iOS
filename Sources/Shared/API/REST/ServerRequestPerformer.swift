@@ -25,18 +25,58 @@ public enum ServerRequestPerformer {
     ) async throws -> (Data, HTTPURLResponse) {
         // Inert anywhere but the watch, and on the watch whenever the iPhone can't answer — see
         // `WatchRequestRelay.isAvailable`.
-        if let relayed = try await WatchRequestRelay.perform(
-            request,
-            server: server,
-            budget: budget(for: request, configuration: configuration),
-            onStep: onStep
-        ) {
-            return relayed
+        do {
+            if let relayed = try await WatchRequestRelay.perform(
+                request,
+                server: server,
+                budget: budget(for: request, configuration: configuration),
+                onStep: onStep
+            ) {
+                log(request, route: .iPhone, outcome: "HTTP \(relayed.1.statusCode)")
+                return relayed
+            }
+        } catch {
+            log(request, route: .iPhone, outcome: "failed: \(error.localizedDescription)")
+            throw error
         }
         // A relay that came back empty because the caller gave up must not turn into a second
         // request: the phone may already have performed the first one.
         try Task.checkCancellation()
-        return try await direct(request, server: server, configuration: configuration, onStep: onStep)
+
+        do {
+            let performed = try await direct(request, server: server, configuration: configuration, onStep: onStep)
+            log(request, route: .watch, outcome: "HTTP \(performed.1.statusCode)")
+            return performed
+        } catch {
+            log(request, route: .watch, outcome: "failed: \(error.localizedDescription)")
+            throw error
+        }
+    }
+
+    /// Which device actually put the request on the network.
+    private enum Route: String {
+        case iPhone = "relayed via iPhone"
+        case watch = "sent from the watch"
+    }
+
+    /// Records the route every watch request took, so an exported log answers "which device sent
+    /// this?" without inference.
+    ///
+    /// That question is the first one worth asking when someone reports the watch can't reach their
+    /// server, and until now the log couldn't answer it: a relayed request logged only that a relay
+    /// was *attempted*, and a direct one logged nothing about its route at all. Note the URL here is
+    /// the one the watch resolved — on the relayed route the iPhone may re-base it before dialling,
+    /// and logs that on its own side.
+    ///
+    /// Only on the watch: the iPhone never relays, so its route is never in question and a line per
+    /// request would be noise.
+    private static func log(_ request: URLRequest, route: Route, outcome: String) {
+        #if os(watchOS)
+        Current.Log.info(
+            "[Request] \(request.httpMethod ?? "GET") \(request.url?.absoluteString ?? "?") " +
+                "— \(route.rawValue) → \(outcome)"
+        )
+        #endif
     }
 
     /// How long the caller is prepared to wait, taken as the tighter of the two bounds it can set —
@@ -53,6 +93,9 @@ public enum ServerRequestPerformer {
         configuration: URLSessionConfiguration,
         onStep: ((String) -> Void)?
     ) async throws -> (Data, HTTPURLResponse) {
+        // Announced here rather than at the call site so it covers both ways of arriving: a relay
+        // that declined, and a watch that never had one to try.
+        onStep?("Sending from the watch…")
         let session = HomeAssistantAPI.makeCertificateAwareURLSession(
             server: server,
             configuration: configuration,

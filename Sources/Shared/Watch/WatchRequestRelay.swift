@@ -75,7 +75,7 @@ enum WatchRequestRelay {
         Current.Log.info("Relaying \(payload.method) \(url.absoluteString) through the iPhone")
 
         guard let response = await send(payload, budget: budget) else {
-            onStep?("iPhone didn't answer; sending from the watch")
+            onStep?("iPhone didn't answer")
             return nil
         }
 
@@ -109,7 +109,7 @@ enum WatchRequestRelay {
                 onStep?("iPhone already sent this request and it didn't come back: \(reason)")
                 throw WatchRelayError(reason: reason)
             }
-            onStep?("iPhone couldn't relay (\(failure.rawValue)); sending from the watch")
+            onStep?("iPhone couldn't relay: \(failure.rawValue)")
             return nil
         }
     }
