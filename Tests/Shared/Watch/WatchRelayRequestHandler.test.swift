@@ -55,7 +55,7 @@ struct WatchRelayRequestHandlerTests {
             to: ["nonsense": true],
             servers: [server()],
             resolveActiveURL: { _ in nil },
-            perform: { _, _, _ in (Data(), self.http(200)) }
+            perform: { _, _, _ in (Data(), http(200)) }
         )
 
         guard case let .failure(failure, _) = response else {
@@ -70,7 +70,7 @@ struct WatchRelayRequestHandlerTests {
             to: payload(serverId: "not-a-server").content,
             servers: [server()],
             resolveActiveURL: { _ in nil },
-            perform: { _, _, _ in (Data(), self.http(200)) }
+            perform: { _, _, _ in (Data(), http(200)) }
         )
 
         guard case let .failure(failure, _) = response else {
@@ -90,7 +90,7 @@ struct WatchRelayRequestHandlerTests {
             resolveActiveURL: { _ in nil },
             perform: { request, _, _ in
                 dialed.value = request
-                return (Data(), self.http(200))
+                return (Data(), http(200))
             }
         )
 
@@ -110,10 +110,10 @@ struct WatchRelayRequestHandlerTests {
         let response = await WatchRelayRequestHandler.response(
             to: payload().content,
             servers: [server()],
-            resolveActiveURL: { _ in self.url("http://homeassistant.local:8123") },
+            resolveActiveURL: { _ in url("http://homeassistant.local:8123") },
             perform: { request, _, _ in
                 dialed.value = request.url
-                return (Data("ok".utf8), self.http(200))
+                return (Data("ok".utf8), http(200))
             }
         )
 
@@ -135,7 +135,7 @@ struct WatchRelayRequestHandlerTests {
             resolveActiveURL: { _ in nil },
             perform: { request, _, _ in
                 dialed.value = request
-                return (Data(), self.http(200))
+                return (Data(), http(200))
             }
         )
 
@@ -150,7 +150,7 @@ struct WatchRelayRequestHandlerTests {
             to: payload().content,
             servers: [server()],
             resolveActiveURL: { _ in nil },
-            perform: { _, _, _ in (Data(), self.http(401)) }
+            perform: { _, _, _ in (Data(), http(401)) }
         )
 
         guard case let .response(statusCode, _, _) = response else {
@@ -183,7 +183,7 @@ struct WatchRelayRequestHandlerTests {
             to: payload().content,
             servers: [server()],
             resolveActiveURL: { _ in nil },
-            perform: { _, _, _ in (oversized, self.http(200)) }
+            perform: { _, _, _ in (oversized, http(200)) }
         )
 
         guard case let .failure(failure, _) = response else {
