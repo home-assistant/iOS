@@ -457,6 +457,34 @@ struct WatchConnectivityReceive_test {
         #expect(box.value == .immediatelyReachable)
         #expect(manager.currentReachability == .immediatelyReachable)
     }
+
+    /// Senders gate capability-dependent messages on this, and an unrecognised identifier is never
+    /// replied to — so a version that hasn't arrived yet has to read as "too old", not as absent.
+    @Test func counterpartProtocolVersionIsUnknownUntilSomethingArrives() {
+        let manager = WatchConnectivityManager(session: FakeWCSession())
+
+        #expect(manager.counterpartProtocolVersion == nil)
+    }
+
+    @Test func counterpartProtocolVersionIsLearnedFromAnyInboundMessage() {
+        let manager = WatchConnectivityManager(session: FakeWCSession())
+
+        manager.receiveMessage(["identifier": "ping", "content": [:], "version": 2])
+
+        #expect(manager.counterpartProtocolVersion == 2)
+    }
+
+    /// A message from a build that predates versioning can arrive after a versioned one — a queued
+    /// `transferUserInfo`, say — and must not walk the learned capability back.
+    @Test func counterpartProtocolVersionNeverDecreases() {
+        let manager = WatchConnectivityManager(session: FakeWCSession())
+
+        manager.receiveMessage(["identifier": "ping", "content": [:], "version": 2])
+        manager.receiveMessage(["identifier": "ping", "content": [:]])
+        manager.receiveMessage(["identifier": "ping", "content": [:], "version": 1])
+
+        #expect(manager.counterpartProtocolVersion == 2)
+    }
 }
 
 #if os(iOS)
