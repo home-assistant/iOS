@@ -11,19 +11,22 @@ struct ClosestServerSourceBadge: View {
     let source: ServerProximitySource
 
     var body: some View {
-        Label {
-            Text(title)
-        } icon: {
+        // A plain HStack, not a `Label`: inside a `List` the label style lays the icon and the
+        // title out in separate columns sized for a full-width row, which leaves the capsule
+        // holding the icon alone.
+        HStack(spacing: DesignSystem.Spaces.half) {
             Image(systemSymbol: symbol)
+            Text(title)
         }
         .font(.caption2)
         .foregroundStyle(.secondary)
         .padding(.horizontal, DesignSystem.Spaces.one)
         .padding(.vertical, DesignSystem.Spaces.micro)
         .background(Color(uiColor: .tertiarySystemFill), in: Capsule())
-        // Horizontal only: the capsule must never be squeezed narrower than its label, but
-        // fixing the height too would let a compressed label wrap into a tall capsule instead.
-        .fixedSize(horizontal: true, vertical: false)
+        // Keeps its shape wherever it is placed, rather than being squeezed by a neighbour
+        // that wants the width.
+        .fixedSize()
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityLabel)
     }
 

@@ -84,12 +84,13 @@ jobs:
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             -only-testing:Tests-App/ServerSwitchingSettingsViewTests \
+            -only-testing:Tests-App/ClosestServerSourceBadgeTests \
             -only-testing:Tests-App/LocationBasedServerSwitcherTests \
             -disableAutomaticPackageResolution \
             COMPILER_INDEX_STORE_ENABLE=NO
 
       - name: "Show what was recorded"
-        run: git status --short && ls -la "Tests/App/Settings/__Snapshots__/ServerSwitchingSettingsView.test/"
+        run: git status --short && ls -lR "Tests/App/Settings/__Snapshots__/"
 
       # Second pass: the references now exist, so this is an ordinary comparison. It has to
       # pass, otherwise what got recorded is not reproducible and must not be committed.
@@ -100,6 +101,7 @@ jobs:
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             -only-testing:Tests-App/ServerSwitchingSettingsViewTests \
+            -only-testing:Tests-App/ClosestServerSourceBadgeTests \
             -only-testing:Tests-App/LocationBasedServerSwitcherTests \
             -disableAutomaticPackageResolution \
             COMPILER_INDEX_STORE_ENABLE=NO
@@ -109,7 +111,9 @@ jobs:
         if: ${{ always() }}
         with:
           name: recorded-snapshots
-          path: Tests/App/Settings/__Snapshots__/ServerSwitchingSettingsView.test/
+          path: |
+            Tests/App/Settings/__Snapshots__/ServerSwitchingSettingsView.test/
+            Tests/App/Settings/__Snapshots__/ClosestServerSourceBadge.test/
           if-no-files-found: warn
 
       # The artifact lives on blob storage the authoring environment cannot reach, so also
@@ -166,18 +170,24 @@ jobs:
           guard CGImageDestinationFinalize(destination) else { exit(1) }
           SWIFT
 
-          cd "Tests/App/Settings/__Snapshots__/ServerSwitchingSettingsView.test"
+          snapshots="Tests/App/Settings/__Snapshots__"
+          screen="$snapshots/ServerSwitchingSettingsView.test"
+          badge="$snapshots/ClosestServerSourceBadge.test"
           # Dark first, light last: only the tail of the log is retrievable, so the variants
-          # that matter most have to be the ones printed last.
-          for name in \
-            serverSwitchingScreenWithClosestServer.dark \
-            serverSwitchingScreenWithClosestServerOnHomeNetwork.dark \
-            serverSwitchingScreenWithClosestServer.light \
-            serverSwitchingScreenWithClosestServerOnHomeNetwork.light; do
-            [ -f "$name.png" ] || { echo "MISSING $name.png"; continue; }
-            swift "$RUNNER_TEMP/shrink.swift" "$name.png" "$RUNNER_TEMP/$name.jpg" 1150 0.5 0.55
-            echo "PREVIEW-BYTES $name $(wc -c < "$RUNNER_TEMP/$name.jpg")"
-            echo "===BEGIN $name==="
-            base64 < "$RUNNER_TEMP/$name.jpg"
-            echo "===END $name==="
+          # that matter most have to be the ones printed last. The badge's own references are
+          # already small, so they are printed whole rather than cropped.
+          print_preview() { # <file> <label> <cropHeight> <scale>
+            [ -f "$1" ] || { echo "MISSING $1"; return; }
+            swift "$RUNNER_TEMP/shrink.swift" "$1" "$RUNNER_TEMP/$2.jpg" "$3" "$4" 0.55
+            echo "PREVIEW-BYTES $2 $(wc -c < "$RUNNER_TEMP/$2.jpg")"
+            echo "===BEGIN $2==="
+            base64 < "$RUNNER_TEMP/$2.jpg"
+            echo "===END $2==="
+          }
+          for variant in dark light; do
+            print_preview "$screen/serverSwitchingScreenWithClosestServer.$variant.png" \
+              "screen-location-$variant" 1150 0.5
+            print_preview "$screen/serverSwitchingScreenWithClosestServerOnHomeNetwork.$variant.png" \
+              "screen-network-$variant" 1150 0.5
+            print_preview "$badge/badgeSources.$variant.png" "badge-$variant" 100000 1.0
           done
