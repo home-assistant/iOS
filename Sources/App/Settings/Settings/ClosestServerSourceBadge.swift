@@ -21,8 +21,9 @@ struct ClosestServerSourceBadge: View {
         .padding(.horizontal, DesignSystem.Spaces.one)
         .padding(.vertical, DesignSystem.Spaces.micro)
         .background(Color(uiColor: .tertiarySystemFill), in: Capsule())
-        // Keeps its shape next to a server name and distance that want the width.
-        .fixedSize()
+        // Horizontal only: the capsule must never be squeezed narrower than its label, but
+        // fixing the height too would let a compressed label wrap into a tall capsule instead.
+        .fixedSize(horizontal: true, vertical: false)
         .accessibilityLabel(accessibilityLabel)
     }
 
@@ -56,23 +57,23 @@ struct ClosestServerSourceBadge: View {
 
 #Preview {
     List {
-        HStack {
-            Text("Closest Server")
-            Spacer()
-            VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
+        VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
+            HStack {
+                Text("Closest Server")
+                Spacer()
                 Text("Casa")
                     .foregroundStyle(.secondary)
-                ClosestServerSourceBadge(source: .homeNetwork)
             }
+            ClosestServerSourceBadge(source: .homeNetwork)
         }
-        HStack {
-            Text("Closest Server")
-            Spacer()
-            VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
+        VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
+            HStack {
+                Text("Closest Server")
+                Spacer()
                 Text("Casa · 1.2 km")
                     .foregroundStyle(.secondary)
-                ClosestServerSourceBadge(source: .location(distance: 1200))
             }
+            ClosestServerSourceBadge(source: .location(distance: 1200))
         }
     }
 }
