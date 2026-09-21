@@ -33,6 +33,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     var commandManager = NotificationCommandManager()
 
+    /// Offers a notification's own actions when a plain tap on it has nothing else to do.
+    let tapActionPresenter = NotificationTapActionPresenter()
+
     /// Hidden, off-screen volume view; `MPVolumeView` only drives the hardware volume while in a window.
     private lazy var volumeControlView = MPVolumeView(frame: CGRect(x: -2000, y: -2000, width: 1, height: 1))
 
@@ -321,35 +324,6 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
-    private func urlString(from response: UNNotificationResponse) -> String? {
-        let content = response.notification.request.content
-        let urlValue = ["url", "uri", "clickAction"].compactMap { content.userInfo[$0] }.first
-
-        if let action = content.userInfoActionConfigs.first(
-            where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
-        ), let url = action.url {
-            // we only allow the action-specific one to override global if it's set
-            return url
-        } else if let openURLRaw = urlValue as? String {
-            // global url [string], always do it if we aren't picking a specific action
-            return openURLRaw
-        } else if let openURLDictionary = urlValue as? [String: String] {
-            // old-style, per-action url -- for before we could define actions in the notification dynamically
-            return openURLDictionary.compactMap { key, value -> String? in
-                if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                   key.lowercased() == NotificationCategory.FallbackActionIdentifier {
-                    return value
-                } else if key.lowercased() == response.actionIdentifier.lowercased() {
-                    return value
-                } else {
-                    return nil
-                }
-            }.first
-        } else {
-            return nil
-        }
-    }
-
     public func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -415,7 +389,9 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             handleShortcutNotification(shortcutName, shortcutDict)
         }
 
-        if let url = urlString(from: response) {
+        let content = response.notification.request.content
+
+        if let url = content.urlString(forActionIdentifier: response.actionIdentifier) {
             Current.Log.info("launching URL \(url)")
             Current.sceneManager.appCoordinator.done {
                 $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
@@ -432,6 +408,10 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             Current.sceneManager.appCoordinator.done { _ in
                 URLOpener.shared.open(entityURL, options: [:], completionHandler: nil)
             }
+        } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+            // Nothing was asked of this tap, and iOS keeps the notification's actions hidden until it
+            // is pressed and held — offer them here so a tap is not a dead end.
+            tapActionPresenter.present(for: content, server: server)
         }
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {

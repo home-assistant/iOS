@@ -4271,6 +4271,11 @@ public enum L10n {
     }
   }
 
+  public enum NotificationTapActions {
+    /// Actions
+    public static var title: String { return L10n.tr("Localizable", "notification_tap_actions.title") }
+  }
+
   public enum NotificationsConfigurator {
     /// Identifier
     public static var identifier: String { return L10n.tr("Localizable", "notifications_configurator.identifier") }

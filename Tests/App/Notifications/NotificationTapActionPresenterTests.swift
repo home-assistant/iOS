@@ -1,0 +1,299 @@
+import GRDB
+@testable import HomeAssistant
+import PromiseKit
+@testable import Shared
+import UIKit
+import UserNotifications
+import XCTest
+
+/// A notification the user taps instead of pressing and holding: the actions iOS kept hidden are
+/// offered in an alert, unless the payload already asked that tap to do something else.
+final class NotificationTapActionPresenterTests: XCTestCase {
+    private var sut: NotificationTapActionPresenter!
+    private var server: Server!
+    private var api: FakeTapActionAPI!
+    private var coordinator: MockAppCoordinator!
+    private var database: DatabaseQueue!
+    private var previousDatabase: (() -> DatabaseQueue)!
+    private var previousServers: ServerManager!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
+
+    @MainActor
+    override func setUp() async throws {
+        database = try DatabaseQueue()
+        try NotificationCategoryTable().createIfNeeded(database: database)
+        try NotificationSnoozeActionTable().createIfNeeded(database: database)
+        previousDatabase = Current.database
+        Current.database = { self.database }
+
+        previousServers = Current.servers
+        previousCachedApis = Current.cachedApis
+
+        let servers = FakeServerManager()
+        Current.servers = servers
+        server = servers.addFake()
+
+        api = FakeTapActionAPI(server: server)
+        Current.setCachedApi(api, for: server.identifier)
+
+        coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+
+        sut = NotificationTapActionPresenter()
+    }
+
+    override func tearDown() {
+        Current.database = previousDatabase
+        Current.servers = previousServers
+        Current.cachedApis = previousCachedApis
+
+        super.tearDown()
+    }
+
+    // MARK: - Which actions a tap offers
+
+    @MainActor
+    func testOffersTheActionsThePayloadCarries() throws {
+        let alert = try presentedAlert(for: content(userInfo: [
+            "actions": [
+                ["identifier": "OPEN", "title": "Open the gate"],
+                ["identifier": "IGNORE", "title": "Ignore"],
+            ],
+        ]))
+
+        XCTAssertEqual(alert.actions.map(\.title), ["Open the gate", "Ignore", L10n.cancelLabel])
+        XCTAssertEqual(alert.actions.last?.style, .cancel)
+    }
+
+    @MainActor
+    func testOffersTheActionsTheNotificationsCategoryWasConfiguredWith() throws {
+        save(category: "ALARM", actions: [
+            NotificationAction(identifier: "DISARM", title: "Disarm"),
+        ])
+
+        // Payloads spell the category however they like; the app stores it uppercased.
+        let alert = try presentedAlert(for: content(category: "alarm"))
+
+        XCTAssertEqual(alert.actions.map(\.title), ["Disarm", L10n.cancelLabel])
+    }
+
+    @MainActor
+    func testPrefersThePayloadsActionsOverTheCategorys() {
+        save(category: "ALARM", actions: [NotificationAction(identifier: "DISARM", title: "Disarm")])
+
+        let actions = NotificationTapActionPresenter.actions(for: content(
+            category: "ALARM",
+            userInfo: ["actions": [["identifier": "OPEN", "title": "Open the gate"]]]
+        ))
+
+        XCTAssertEqual(actions.map(\.identifier), ["OPEN"])
+    }
+
+    @MainActor
+    func testOffersNothingWhenTheNotificationHasNoActions() {
+        XCTAssertFalse(sut.present(for: content(), server: server))
+        XCTAssertTrue(coordinator.presentedViewControllers.isEmpty)
+    }
+
+    /// Snooze presets are ours, added by the system whenever a notification brings no actions of its
+    /// own — a tap should not turn them into the notification's actions.
+    @MainActor
+    func testDoesNotOfferTheSnoozePresets() {
+        let content = content(category: "UNKNOWN")
+
+        XCTAssertFalse(content.userInfoActions.isEmpty, "the system does put snooze presets on this one")
+        XCTAssertTrue(NotificationTapActionPresenter.actions(for: content).isEmpty)
+    }
+
+    // MARK: - Taps that already do something
+
+    @MainActor
+    func testLeavesANotificationThatRunsAShortcutAlone() {
+        let content = content(userInfo: [
+            "shortcut": ["name": "Good Night"],
+            "actions": [["identifier": "OPEN", "title": "Open the gate"]],
+        ])
+
+        XCTAssertFalse(sut.present(for: content, server: server))
+        XCTAssertTrue(coordinator.presentedViewControllers.isEmpty)
+    }
+
+    @MainActor
+    func testLeavesANotificationThatSendsACommandAlone() {
+        let content = content(userInfo: [
+            "homeassistant": ["command": "update_complications"],
+            "actions": [["identifier": "OPEN", "title": "Open the gate"]],
+        ])
+
+        XCTAssertFalse(sut.present(for: content, server: server))
+    }
+
+    @MainActor
+    func testLeavesALiveActivityNotificationAlone() {
+        let content = content(userInfo: [
+            "homeassistant": ["live_update": true],
+            "actions": [["identifier": "OPEN", "title": "Open the gate"]],
+        ])
+
+        XCTAssertFalse(sut.present(for: content, server: server))
+    }
+
+    // MARK: - How the alert reads
+
+    @MainActor
+    func testHeadsTheAlertWithTheNotificationItself() {
+        let alert = sut.makeAlert(
+            for: [NotificationAction(identifier: "OPEN", title: "Open the gate")],
+            content: content(title: "Front gate", body: "Someone is at the gate"),
+            server: server
+        )
+
+        XCTAssertEqual(alert.title, "Front gate")
+        XCTAssertEqual(alert.message, "Someone is at the gate")
+    }
+
+    @MainActor
+    func testFallsBackToAGenericTitleForATitlelessNotification() {
+        let alert = sut.makeAlert(
+            for: [NotificationAction(identifier: "OPEN", title: "Open the gate")],
+            content: content(),
+            server: server
+        )
+
+        XCTAssertEqual(alert.title, L10n.NotificationTapActions.title)
+        XCTAssertNil(alert.message)
+    }
+
+    @MainActor
+    func testMarksDestructiveActionsAsDestructive() {
+        let alert = sut.makeAlert(
+            for: [
+                NotificationAction(identifier: "OPEN", title: "Open the gate"),
+                NotificationAction(identifier: "DELETE", title: "Delete", destructive: true),
+            ],
+            content: content(),
+            server: server
+        )
+
+        XCTAssertEqual(alert.actions.map(\.style), [.default, .destructive, .cancel])
+    }
+
+    // MARK: - Picking an action
+
+    @MainActor
+    func testPickingAnActionTellsHomeAssistantWhichOneFired() {
+        sut.select(
+            NotificationAction(identifier: "OPEN", title: "Open the gate"),
+            content: content(category: "GATE"),
+            server: server
+        )
+
+        XCTAssertEqual(api.receivedInfo?.identifier, "OPEN")
+        XCTAssertEqual(api.receivedInfo?.category, "GATE")
+        XCTAssertNil(api.receivedInfo?.textInput)
+    }
+
+    @MainActor
+    func testPickingAnActionOpensTheURLItCarries() {
+        let opened = expectation(description: "opened")
+        coordinator.onOpenDeeplink = { _ in opened.fulfill() }
+
+        sut.select(
+            NotificationAction(identifier: "OPEN", title: "Open the gate"),
+            content: content(userInfo: [
+                "actions": [["identifier": "OPEN", "title": "Open the gate", "url": "/lovelace/gate"]],
+            ]),
+            server: server
+        )
+
+        wait(for: [opened], timeout: 5)
+        XCTAssertEqual(coordinator.openedDeeplinks.map(\.urlString), ["/lovelace/gate"])
+        XCTAssertEqual(api.receivedInfo?.identifier, "OPEN")
+    }
+
+    @MainActor
+    func testPickingATextInputActionAsksWhatToSendFirst() throws {
+        let presented = expectation(description: "presented")
+        coordinator.onPresent = { _ in presented.fulfill() }
+
+        sut.select(
+            NotificationAction(
+                identifier: "REPLY",
+                title: "Reply",
+                textInput: true,
+                textInputButtonTitle: "Send",
+                textInputPlaceholder: "Your reply"
+            ),
+            content: content(),
+            server: server
+        )
+
+        wait(for: [presented], timeout: 5)
+        let alert = try XCTUnwrap(coordinator.presentedViewControllers.last as? UIAlertController)
+        XCTAssertEqual(alert.title, "Reply")
+        XCTAssertEqual(alert.textFields?.count, 1)
+        XCTAssertEqual(alert.textFields?.first?.placeholder, "Your reply")
+        XCTAssertEqual(alert.actions.map(\.title), [L10n.cancelLabel, "Send"])
+        XCTAssertNil(api.receivedInfo, "nothing is sent until there is something to send")
+    }
+
+    @MainActor
+    func testSendingAReplyForwardsWhatWasTyped() {
+        sut.perform(
+            NotificationAction(identifier: "REPLY", title: "Reply", textInput: true),
+            content: content(),
+            server: server,
+            textInput: "on my way"
+        )
+
+        XCTAssertEqual(api.receivedInfo?.identifier, "REPLY")
+        XCTAssertEqual(api.receivedInfo?.textInput, "on my way")
+    }
+
+    // MARK: - Helpers
+
+    private func content(
+        title: String = "",
+        body: String = "",
+        category: String = "",
+        userInfo: [String: Any] = [:]
+    ) -> UNNotificationContent {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.categoryIdentifier = category
+        content.userInfo = userInfo
+        return content
+    }
+
+    private func save(category identifier: String, actions: [NotificationAction]) {
+        NotificationCategory(
+            identifier: identifier,
+            serverIdentifier: server.identifier.rawValue,
+            name: identifier,
+            actions: actions
+        ).save()
+    }
+
+    /// Offers `content`'s actions and returns the alert that reached the screen. Presentation goes
+    /// through the scene manager's coordinator promise, so it lands a run loop later.
+    @MainActor
+    private func presentedAlert(for content: UNNotificationContent) throws -> UIAlertController {
+        let presented = expectation(description: "presented")
+        coordinator.onPresent = { _ in presented.fulfill() }
+
+        XCTAssertTrue(sut.present(for: content, server: server))
+
+        wait(for: [presented], timeout: 5)
+        return try XCTUnwrap(coordinator.presentedViewControllers.last as? UIAlertController)
+    }
+}
+
+private final class FakeTapActionAPI: HomeAssistantAPI {
+    private(set) var receivedInfo: PushActionInfo?
+
+    override func handlePushAction(for info: PushActionInfo) -> Promise<Void> {
+        receivedInfo = info
+        return .value(())
+    }
+}
