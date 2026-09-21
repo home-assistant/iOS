@@ -105,6 +105,13 @@ struct WatchRequestRelayTests {
         }
     }
 
+    /// The relay error carries the phone's own words: the run screen shows it, so a generic string
+    /// would lose the only explanation the user gets.
+    @Test func relayErrorDescribesItselfWithThePhonesReason() {
+        #expect(WatchRelayError(reason: "connection refused").errorDescription == "connection refused")
+        #expect(WatchRelayError(reason: "a").localizedDescription == "a")
+    }
+
     @Test func surfacesAFailureThePhoneGotFromTheNetwork() {
         #expect(throws: WatchRelayError(reason: "connection refused")) {
             try WatchRequestRelay.result(
