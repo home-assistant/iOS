@@ -316,6 +316,53 @@ final class NotificationTapActionPresenterTests: XCTestCase {
         XCTAssertNil(api.receivedInfo, "nothing is sent until there is something to send")
     }
 
+    /// The reply alert is where the text comes from, so sending reads it back out of that alert.
+    @MainActor
+    func testSendsWhatWasTypedIntoTheReplyAlert() {
+        let action = NotificationAction(identifier: "REPLY", title: "Reply", textInput: true)
+        let alert = sut.makeTextInputAlert(for: action, content: content(), server: server)
+        alert.textFields?.first?.text = "on my way"
+
+        sut.send(action, content: content(), server: server, from: alert)
+
+        XCTAssertEqual(api.receivedInfo?.identifier, "REPLY")
+        XCTAssertEqual(api.receivedInfo?.textInput, "on my way")
+    }
+
+    /// An empty reply is still a reply: the system's own response path forwards it, so dropping it
+    /// here would lose an event the user asked to send.
+    @MainActor
+    func testSendsAnEmptyReplyWhenNothingWasTyped() {
+        sut.send(
+            NotificationAction(identifier: "REPLY", title: "Reply", textInput: true),
+            content: content(),
+            server: server,
+            from: nil
+        )
+
+        XCTAssertEqual(api.receivedInfo?.textInput, "")
+    }
+
+    /// Home Assistant rejecting the action is handled rather than left as an unhandled rejection.
+    @MainActor
+    func testHandlesHomeAssistantRejectingTheAction() {
+        api.failure = FakeTapActionAPI.TestError.any
+
+        sut.perform(
+            NotificationAction(identifier: "OPEN", title: "Open the gate"),
+            content: content(),
+            server: server,
+            textInput: nil
+        )
+
+        // Nothing observable comes back from a rejected action, so this just lets the promise settle.
+        let settled = expectation(description: "settled")
+        settled.isInverted = true
+        wait(for: [settled], timeout: 0.5)
+
+        XCTAssertEqual(api.receivedInfo?.identifier, "OPEN")
+    }
+
     @MainActor
     func testSendingAReplyForwardsWhatWasTyped() {
         sut.perform(
@@ -383,10 +430,20 @@ final class NotificationTapActionPresenterTests: XCTestCase {
 }
 
 private final class FakeTapActionAPI: HomeAssistantAPI {
+    enum TestError: Error {
+        case any
+    }
+
+    /// Set before the call to make Home Assistant reject the action.
+    var failure: Error?
     private(set) var receivedInfo: PushActionInfo?
 
     override func handlePushAction(for info: PushActionInfo) -> Promise<Void> {
         receivedInfo = info
+
+        if let failure {
+            return Promise(error: failure)
+        }
         return .value(())
     }
 }

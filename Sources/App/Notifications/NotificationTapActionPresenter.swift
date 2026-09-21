@@ -151,19 +151,23 @@ final class NotificationTapActionPresenter {
             title: action.textInputButtonTitle,
             style: .default,
             handler: { [weak self, weak alert] _ in
-                // An empty reply is still a reply — the system's own response path forwards it
-                // (`UNTextInputNotificationResponse.userText` is non-optional), so swallowing it here
-                // would lose an event the user asked to send.
-                self?.perform(
-                    action,
-                    content: content,
-                    server: server,
-                    textInput: alert?.textFields?.first?.text ?? ""
-                )
+                self?.send(action, content: content, server: server, from: alert)
             }
         ))
 
         return alert
+    }
+
+    /// Runs `action` with whatever was typed into `alert`. An empty reply is still a reply — the
+    /// system's own response path forwards it (`UNTextInputNotificationResponse.userText` is
+    /// non-optional), so swallowing it here would lose an event the user asked to send.
+    func send(
+        _ action: NotificationAction,
+        content: UNNotificationContent,
+        server: Server,
+        from alert: UIAlertController?
+    ) {
+        perform(action, content: content, server: server, textInput: alert?.textFields?.first?.text ?? "")
     }
 
     /// Runs `action` as if the user had picked it from the notification itself: whatever URL it carries

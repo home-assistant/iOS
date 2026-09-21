@@ -426,11 +426,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             handleShortcutNotification(shortcutName, shortcutDict)
         }
 
-        handleOpenedNotification(
-            content: response.notification.request.content,
-            actionIdentifier: response.actionIdentifier,
-            server: server
-        )
+        let content = response.notification.request.content
+        handleOpenedNotification(content: content, actionIdentifier: response.actionIdentifier, server: server)
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {
             Current.backgroundTask(withName: BackgroundTask.handlePushAction.rawValue) { _ in
