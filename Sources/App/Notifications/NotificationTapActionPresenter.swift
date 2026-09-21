@@ -21,11 +21,11 @@ final class NotificationTapActionPresenter {
     /// names a category instead — the ones that category was configured with. Snooze presets are
     /// deliberately left out, because they are a convenience of ours that the system adds when a
     /// notification brings no actions of its own, not something the notification asked for.
-    static func actions(for content: UNNotificationContent) -> [NotificationAction] {
+    static func actions(for content: UNNotificationContent, server: Server) -> [NotificationAction] {
         let payloadActions = content.userInfoPayloadActions
 
         guard payloadActions.isEmpty else {
-            return payloadActions
+            return offerable(payloadActions)
         }
 
         let categoryIdentifier = content.categoryIdentifier.lowercased()
@@ -34,9 +34,23 @@ final class NotificationTapActionPresenter {
             return []
         }
 
-        return NotificationCategory.all()
-            .first { $0.identifier.lowercased() == categoryIdentifier }?
-            .actions ?? []
+        // A category is stored under its identifier alone, so the row on file can belong to another
+        // server, whose actions would then be fired against the server this notification came from.
+        // A category made on the device carries no server of its own and belongs to all of them.
+        let category = NotificationCategory.all().first {
+            $0.identifier.lowercased() == categoryIdentifier
+                && ($0.serverIdentifier.isEmpty || $0.serverIdentifier == server.identifier.rawValue)
+        }
+
+        return offerable(category?.actions ?? [])
+    }
+
+    /// The actions the app may run itself. One that requires authentication is left to the system,
+    /// which is the same call `NotificationActionSplit` makes for the watch: the app cannot reproduce
+    /// the unlock gate `UNNotificationAction` applies, and quietly dropping that requirement is worse
+    /// than the action only being reachable by pressing and holding the notification.
+    private static func offerable(_ actions: [NotificationAction]) -> [NotificationAction] {
+        actions.filter { !$0.authenticationRequired }
     }
 
     /// Whether the payload asks a tap to do something of its own, which the actions alert must not take
@@ -69,7 +83,7 @@ final class NotificationTapActionPresenter {
             return false
         }
 
-        let actions = Self.actions(for: content)
+        let actions = Self.actions(for: content, server: server)
 
         guard !actions.isEmpty else {
             return false

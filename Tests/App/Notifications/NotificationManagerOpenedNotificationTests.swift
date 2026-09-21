@@ -18,6 +18,7 @@ final class NotificationManagerOpenedNotificationTests: XCTestCase {
     private var previousServers: ServerManager!
     private var previousURLOpener: URLOpening!
     private var previousTapActionsEnabled: Bool!
+    private var previousCoordinator: AppCoordinator?
 
     @MainActor
     override func setUp() async throws {
@@ -31,6 +32,7 @@ final class NotificationManagerOpenedNotificationTests: XCTestCase {
         Current.servers = servers
         server = servers.addFake()
 
+        previousCoordinator = await Self.currentAppCoordinator()
         coordinator = MockAppCoordinator()
         Current.sceneManager.registerAppCoordinator(coordinator)
 
@@ -49,6 +51,10 @@ final class NotificationManagerOpenedNotificationTests: XCTestCase {
         Current.servers = previousServers
         Current.settingsStore.notificationTapActionsEnabled = previousTapActionsEnabled
         URLOpener.shared = previousURLOpener
+
+        if let previousCoordinator {
+            Current.sceneManager.registerAppCoordinator(previousCoordinator)
+        }
 
         super.tearDown()
     }
@@ -137,6 +143,16 @@ final class NotificationManagerOpenedNotificationTests: XCTestCase {
         XCTAssertTrue(coordinator.openedDeeplinks.isEmpty)
         XCTAssertTrue(urlOpener.openedURLs.isEmpty)
         XCTAssertTrue(coordinator.presentedViewControllers.isEmpty)
+    }
+
+    /// The scene manager is process-wide, so a mock registered here would outlive the test and answer
+    /// for every later one. Put back whatever was registered before, when there was one.
+    @MainActor
+    private static func currentAppCoordinator() async -> AppCoordinator? {
+        guard Current.sceneManager.appCoordinator.isFulfilled else { return nil }
+        return await withCheckedContinuation { continuation in
+            Current.sceneManager.appCoordinator.done { continuation.resume(returning: $0) }
+        }
     }
 
     private func content(userInfo: [String: Any]) -> UNNotificationContent {

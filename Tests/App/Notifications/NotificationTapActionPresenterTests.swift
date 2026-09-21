@@ -19,6 +19,7 @@ final class NotificationTapActionPresenterTests: XCTestCase {
     private var previousServers: ServerManager!
     private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var previousTapActionsEnabled: Bool!
+    private var previousCoordinator: AppCoordinator?
 
     @MainActor
     override func setUp() async throws {
@@ -38,6 +39,7 @@ final class NotificationTapActionPresenterTests: XCTestCase {
         api = FakeTapActionAPI(server: server)
         Current.setCachedApi(api, for: server.identifier)
 
+        previousCoordinator = await Self.currentAppCoordinator()
         coordinator = MockAppCoordinator()
         Current.sceneManager.registerAppCoordinator(coordinator)
 
@@ -52,6 +54,10 @@ final class NotificationTapActionPresenterTests: XCTestCase {
         Current.servers = previousServers
         Current.cachedApis = previousCachedApis
         Current.settingsStore.notificationTapActionsEnabled = previousTapActionsEnabled
+
+        if let previousCoordinator {
+            Current.sceneManager.registerAppCoordinator(previousCoordinator)
+        }
 
         super.tearDown()
     }
@@ -101,10 +107,13 @@ final class NotificationTapActionPresenterTests: XCTestCase {
     func testPrefersThePayloadsActionsOverTheCategorys() {
         save(category: "ALARM", actions: [NotificationAction(identifier: "DISARM", title: "Disarm")])
 
-        let actions = NotificationTapActionPresenter.actions(for: content(
-            category: "ALARM",
-            userInfo: ["actions": [["identifier": "OPEN", "title": "Open the gate"]]]
-        ))
+        let actions = NotificationTapActionPresenter.actions(
+            for: content(
+                category: "ALARM",
+                userInfo: ["actions": [["identifier": "OPEN", "title": "Open the gate"]]]
+            ),
+            server: server
+        )
 
         XCTAssertEqual(actions.map(\.identifier), ["OPEN"])
     }
@@ -122,7 +131,57 @@ final class NotificationTapActionPresenterTests: XCTestCase {
         let content = content(category: "UNKNOWN")
 
         XCTAssertFalse(content.userInfoActions.isEmpty, "the system does put snooze presets on this one")
-        XCTAssertTrue(NotificationTapActionPresenter.actions(for: content).isEmpty)
+        XCTAssertTrue(NotificationTapActionPresenter.actions(for: content, server: server).isEmpty)
+    }
+
+    /// A category is stored under its identifier alone, so the row on file may belong to a different
+    /// server — whose actions would be fired against this notification's server.
+    @MainActor
+    func testIgnoresACategoryThatBelongsToAnotherServer() {
+        save(category: "ALARM", serverIdentifier: "another-server", actions: [
+            NotificationAction(identifier: "DISARM", title: "Disarm"),
+        ])
+
+        let content = content(category: "ALARM")
+
+        XCTAssertTrue(NotificationTapActionPresenter.actions(for: content, server: server).isEmpty)
+        XCTAssertFalse(sut.present(for: content, server: server))
+    }
+
+    /// A category made on the device belongs to every server, so it still has actions to offer.
+    @MainActor
+    func testOffersACategoryThatBelongsToNoServer() {
+        save(category: "ALARM", serverIdentifier: "", actions: [
+            NotificationAction(identifier: "DISARM", title: "Disarm"),
+        ])
+
+        let actions = NotificationTapActionPresenter.actions(for: content(category: "ALARM"), server: server)
+
+        XCTAssertEqual(actions.map(\.identifier), ["DISARM"])
+    }
+
+    /// The app cannot reproduce the unlock gate the system puts on an action that requires
+    /// authentication, so such an action stays with the system — see `NotificationActionSplit`.
+    @MainActor
+    func testLeavesActionsThatRequireAuthenticationToTheSystem() throws {
+        let alert = try presentedAlert(for: content(userInfo: [
+            "actions": [
+                ["identifier": "OPEN", "title": "Open the gate"],
+                ["identifier": "UNLOCK", "title": "Unlock", "authenticationRequired": true],
+            ],
+        ]))
+
+        XCTAssertEqual(alert.actions.map(\.title), ["Open the gate", L10n.cancelLabel])
+    }
+
+    @MainActor
+    func testOffersNothingWhenEveryActionRequiresAuthentication() {
+        save(category: "ALARM", actions: [
+            NotificationAction(identifier: "DISARM", title: "Disarm", authenticationRequired: true),
+        ])
+
+        XCTAssertFalse(sut.present(for: content(category: "ALARM"), server: server))
+        XCTAssertTrue(coordinator.presentedViewControllers.isEmpty)
     }
 
     // MARK: - Taps that already do something
@@ -272,6 +331,16 @@ final class NotificationTapActionPresenterTests: XCTestCase {
 
     // MARK: - Helpers
 
+    /// The scene manager is process-wide, so a mock registered here would outlive the test and answer
+    /// for every later one. Put back whatever was registered before, when there was one.
+    @MainActor
+    private static func currentAppCoordinator() async -> AppCoordinator? {
+        guard Current.sceneManager.appCoordinator.isFulfilled else { return nil }
+        return await withCheckedContinuation { continuation in
+            Current.sceneManager.appCoordinator.done { continuation.resume(returning: $0) }
+        }
+    }
+
     private func content(
         title: String = "",
         body: String = "",
@@ -286,10 +355,14 @@ final class NotificationTapActionPresenterTests: XCTestCase {
         return content
     }
 
-    private func save(category identifier: String, actions: [NotificationAction]) {
+    private func save(
+        category identifier: String,
+        serverIdentifier: String? = nil,
+        actions: [NotificationAction]
+    ) {
         NotificationCategory(
             identifier: identifier,
-            serverIdentifier: server.identifier.rawValue,
+            serverIdentifier: serverIdentifier ?? server.identifier.rawValue,
             name: identifier,
             actions: actions
         ).save()
