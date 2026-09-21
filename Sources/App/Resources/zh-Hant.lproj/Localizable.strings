@@ -1385,6 +1385,13 @@
 "onboarding.permissions.notification.description" = "允許 Home Assistant 發出推送通知";
 "onboarding.permissions.notification.grant_description" = "允許通知權限以為裝置新增通知服務。";
 "onboarding.permissions.notification.title" = "通知";
+"onboarding.privacy.description" = "Every server has its own choices, and this one is new. Pick what this device sends to it, you can change this later in the server settings.";
+"onboarding.privacy.location.exact_description" = "Send this device's precise location.";
+"onboarding.privacy.location.never_description" = "Never send this device's location.";
+"onboarding.privacy.location.zone_only_description" = "Only send which of your zones this device is in.";
+"onboarding.privacy.sensors.all_description" = "Send the sensors you switch on for this device.";
+"onboarding.privacy.sensors.none_description" = "Do not send any sensor data.";
+"onboarding.privacy.title" = "Choose what to share with this server";
 "onboarding.scanning.discovered_announcement" = "已掃描：%@";
 "onboarding.scanning.manual" = "手動輸入位址";
 "onboarding.scanning.manual.button.divider.title" = "或";
@@ -2351,6 +2358,8 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_sensors.permissions.status.while_in_use" = "使用時";
 "settings_sensors.sensors.configure" = "設定";
 "settings_sensors.sensors.enable_all" = "啟用所有感測器";
+"settings_sensors.sensors.foreground_only.accessibility_label" = "Only updates while the app is open";
+"settings_sensors.sensors.foreground_only.badge" = "When app is open";
 "settings_sensors.sensors.header" = "感測器";
 "settings_sensors.sensors.no_results" = "未找到符合搜尋條件的感測器。";
 "settings_sensors.sensors.search_prompt" = "搜尋感測器";

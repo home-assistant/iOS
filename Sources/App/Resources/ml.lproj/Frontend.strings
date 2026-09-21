@@ -6,8 +6,8 @@
 "panel::developer_tools" = "വികസക സാമഗ്രികൾ";
 "panel::energy" = "ഊര്‍ജ്ജം";
 "panel::history" = "ചരിത്രം";
-"panel::home" = "Overview";
-"panel::light" = "Lights";
+"panel::home" = "മേൽക്കാഴ്ച്ച";
+"panel::light" = "ലൈറ്റുകൾ";
 "panel::logbook" = "നടപടികൾ";
 "panel::mailbox" = "മെയിൽബോക്സ്";
 "panel::maintenance" = "Maintenance";
@@ -16,7 +16,7 @@
 "panel::notfound" = "Page not found";
 "panel::profile" = "പ്രൊഫൈൽ";
 "panel::security" = "Security";
-"panel::shopping_list" = "വാങ്ങിക്കൽ പട്ടിക";
+"panel::shopping_list" = "വാങ്ങൽപ്പട്ടിക";
 "panel::states" = "മേൽക്കാഴ്ച്ച";
 "panel::todo" = "ചെയ്യേണ്ട പട്ടിക";
 "state::default::unavailable" = "ലഭ്യമല്ല";
