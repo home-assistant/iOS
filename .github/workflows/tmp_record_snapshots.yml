@@ -83,8 +83,8 @@ jobs:
             -project HomeAssistant.xcodeproj \
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
-            -only-testing:HomeAssistant-Tests-App/ServerSwitchingSettingsViewTests \
-            -only-testing:HomeAssistant-Tests-App/LocationBasedServerSwitcherTests \
+            -only-testing:Tests-App/ServerSwitchingSettingsViewTests \
+            -only-testing:Tests-App/LocationBasedServerSwitcherTests \
             -disableAutomaticPackageResolution \
             COMPILER_INDEX_STORE_ENABLE=NO
 
@@ -99,8 +99,8 @@ jobs:
             -project HomeAssistant.xcodeproj \
             -scheme Tests-Unit \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
-            -only-testing:HomeAssistant-Tests-App/ServerSwitchingSettingsViewTests \
-            -only-testing:HomeAssistant-Tests-App/LocationBasedServerSwitcherTests \
+            -only-testing:Tests-App/ServerSwitchingSettingsViewTests \
+            -only-testing:Tests-App/LocationBasedServerSwitcherTests \
             -disableAutomaticPackageResolution \
             COMPILER_INDEX_STORE_ENABLE=NO
 
