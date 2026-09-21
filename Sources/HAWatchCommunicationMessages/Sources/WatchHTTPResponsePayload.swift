@@ -25,18 +25,18 @@ public enum WatchHTTPResponsePayload {
         /// The phone put the request on the network and it failed there.
         case transport
 
-        /// Whether the watch should fall back to performing the request over its own networking.
+        /// Whether the phone had already put the request on the network when it failed this way.
         ///
-        /// `transport` doesn't: the phone did reach the network and the request failed on it, so a
-        /// retry from the watch — which, when the phone is this reachable, is almost certainly
-        /// routing through that same phone anyway — would just pay the timeout twice. Every other
-        /// case means the phone never got as far as the network, so the watch is no worse off
-        /// trying than it would have been without the relay at all.
-        public var allowsDirectRetry: Bool {
+        /// This is what decides whether the watch may repeat the request itself. After
+        /// `transport` and `tooLarge` the server has seen it — `tooLarge` in particular means it
+        /// *succeeded* and only the answer wouldn't fit back down the link — so repeating a
+        /// non-idempotent request would run the action a second time. The rest fail before
+        /// anything is sent, leaving the watch no worse off than without the relay at all.
+        public var didReachNetwork: Bool {
             switch self {
-            case .notEnabled, .malformedRequest, .unknownServer, .tooLarge:
+            case .transport, .tooLarge:
                 return true
-            case .transport:
+            case .notEnabled, .malformedRequest, .unknownServer:
                 return false
             }
         }

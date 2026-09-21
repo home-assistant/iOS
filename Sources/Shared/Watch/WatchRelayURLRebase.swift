@@ -26,6 +26,28 @@ public enum WatchRelayURLRebase {
             .sorted { $0.absoluteString.count > $1.absoluteString.count }
     }
 
+    /// Whether the phone may dial `url` on the watch's behalf at all.
+    ///
+    /// A relayed request is forwarded with the headers the watch set, which for most of them
+    /// includes its bearer token. So the phone must not send one just anywhere: a malformed or
+    /// tampered-with message naming a server the phone does know would otherwise turn it into an
+    /// authenticated request to a host of the sender's choosing. Only URLs built on one of the
+    /// server's own bases pass, plus the cloudhook host.
+    ///
+    /// The cloudhook is matched by host rather than exactly, because the URL the watch sends is
+    /// from *its* registration while the phone only holds its own — different paths on the same
+    /// Nabu Casa host. Those requests carry no bearer token (see `WatchWebhookClient`), so the
+    /// looser match costs nothing.
+    public static func isPermitted(_ url: URL, connection: ConnectionInfo) -> Bool {
+        if let cloudhookHost = connection.cloudhookURL?.host?.lowercased(),
+           url.host?.lowercased() == cloudhookHost {
+            return true
+        }
+        return configuredBases(of: connection).contains { base in
+            isBase(base.absoluteString, of: url.absoluteString)
+        }
+    }
+
     /// `url` with its base swapped for `activeURL`, or `nil` when `url` isn't built on one of
     /// `connection`'s bases (nothing to rebase) or is already on `activeURL` (nothing to change).
     public static func rebased(_ url: URL, connection: ConnectionInfo, activeURL: URL) -> URL? {

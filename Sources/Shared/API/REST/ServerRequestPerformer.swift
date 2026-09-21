@@ -33,6 +33,9 @@ public enum ServerRequestPerformer {
         ) {
             return relayed
         }
+        // A relay that came back empty because the caller gave up must not turn into a second
+        // request: the phone may already have performed the first one.
+        try Task.checkCancellation()
         return try await direct(request, server: server, configuration: configuration, onStep: onStep)
     }
 
@@ -90,21 +93,23 @@ public enum ServerRequestPerformer {
         private var task: URLSessionDataTask?
         private var isCancelled = false
 
-        /// Starts `task`, or drops it already-cancelled when the caller gave up in the meantime.
+        /// Starts `task`, cancelling it straight away when the caller gave up in the meantime.
         func adopt(_ task: URLSessionDataTask) {
             lock.lock()
             let wasCancelled = isCancelled
-            if !wasCancelled {
-                self.task = task
-            }
+            self.task = task
             lock.unlock()
 
-            // Resumed outside the lock: `cancel()` contends for the same lock, and the completion
-            // handler can run before `resume()` even returns.
+            // Always resumed, even when already cancelled, and always outside the lock: `cancel()`
+            // contends for the same lock, and the completion handler can run before `resume()`
+            // returns. Resuming first matters because a task that was never resumed is not
+            // guaranteed to deliver a completion callback when cancelled — and that callback is
+            // the only thing that resumes the continuation and lets the session be invalidated.
+            // The request may briefly leave the device before the cancel lands, which is a far
+            // better outcome than a caller suspended forever.
+            task.resume()
             if wasCancelled {
                 task.cancel()
-            } else {
-                task.resume()
             }
         }
 

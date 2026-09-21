@@ -136,6 +136,50 @@ struct WatchRelayURLRebaseTests {
         #expect(rebased?.absoluteString == "http://homeassistant.local:8123/api/states")
     }
 
+    // MARK: - What the phone is allowed to dial
+
+    /// The relayed request carries the watch's bearer token, so an arbitrary host must never be
+    /// dialed just because the message named a server the phone knows.
+    @Test func refusesHostsTheServerIsNotConfiguredFor() {
+        #expect(WatchRelayURLRebase.isPermitted(
+            url("https://attacker.example/steal"),
+            connection: connection()
+        ) == false)
+    }
+
+    @Test func refusesAHostThatMerelyStartsWithAConfiguredBase() {
+        #expect(WatchRelayURLRebase.isPermitted(
+            url("https://ha.example.com.evil.test/api/states"),
+            connection: connection()
+        ) == false)
+    }
+
+    @Test func permitsEachConfiguredBase() {
+        let connection = connection(remoteUIURL: "https://abc123.ui.nabu.casa")
+        #expect(WatchRelayURLRebase.isPermitted(
+            url("http://homeassistant.local:8123/api/states"),
+            connection: connection
+        ))
+        #expect(WatchRelayURLRebase.isPermitted(url("https://ha.example.com/api/states"), connection: connection))
+        #expect(WatchRelayURLRebase.isPermitted(url("https://abc123.ui.nabu.casa/api/states"), connection: connection))
+    }
+
+    /// The watch sends the cloudhook from its own registration, which the phone doesn't hold — a
+    /// different path on the same host. Those requests carry no bearer token, so matching the host
+    /// is enough.
+    @Test func permitsTheCloudhookHostWithADifferentPath() {
+        let connection = connection(cloudhookURL: "https://hooks.nabu.casa/PHONE_ID")
+        #expect(WatchRelayURLRebase.isPermitted(url("https://hooks.nabu.casa/WATCH_ID"), connection: connection))
+    }
+
+    @Test func refusesTheCloudhookPathOnAnotherHost() {
+        let connection = connection(cloudhookURL: "https://hooks.nabu.casa/PHONE_ID")
+        #expect(WatchRelayURLRebase.isPermitted(
+            url("https://hooks.nabu.casa.evil.test/WATCH_ID"),
+            connection: connection
+        ) == false)
+    }
+
     /// Remote UI is a configured base like the others, so a watch that fell back to it is rebased
     /// too.
     @Test func rebasesRemoteUIURLs() {

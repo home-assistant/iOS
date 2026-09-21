@@ -53,6 +53,13 @@ public struct WatchHTTPRequestPayload {
         self.timeout = timeout
     }
 
+    /// Whether repeating this request is harmless. Decides whether the watch may perform it itself
+    /// after a failure the phone hit *after* reaching the server: a second GET costs a round trip,
+    /// a second `POST /api/services/light/toggle` turns the light back off.
+    public var isIdempotent: Bool {
+        ["GET", "HEAD", "OPTIONS"].contains(method.uppercased())
+    }
+
     /// `URL` isn't property-list serializable, which is what WCSession encodes to, so it crosses as
     /// its string form.
     public var content: [String: Any] {

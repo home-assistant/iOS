@@ -142,8 +142,8 @@ enum WatchRequestRelay {
                 Current.Log.info("iPhone doesn't accept relayed requests; the watch will send its own from now on")
                 disable()
             }
-            guard failure.allowsDirectRetry else {
-                onStep?("iPhone reached the network and the request failed: \(reason)")
+            guard allowsDirectRetry(after: failure, payload: payload) else {
+                onStep?("iPhone already sent this request and it didn't come back: \(reason)")
                 throw WatchRelayError(reason: reason)
             }
             onStep?("iPhone couldn't relay (\(failure.rawValue)); sending from the watch")
@@ -151,38 +151,95 @@ enum WatchRequestRelay {
         }
     }
 
-    /// Bridges the callback-based send onto async. Resolves exactly once — the reply and the error
-    /// handler race, and `send` guarantees only that at most one error fires, not that a reply
-    /// can't have landed first.
+    /// Whether the watch may perform the request itself after the phone failed this way.
+    ///
+    /// Only the relay can decide this, because it takes both the failure and the request's method:
+    /// once the phone has reached the server, repeating a non-idempotent request runs the action
+    /// twice. `tooLarge` is the trap — it means the request *succeeded* and only the response
+    /// wouldn't fit back down the link, so a naive retry is the one case that reliably
+    /// double-fires a service call.
+    static func allowsDirectRetry(
+        after failure: WatchHTTPResponsePayload.Failure,
+        payload: WatchHTTPRequestPayload
+    ) -> Bool {
+        guard failure.didReachNetwork else { return true }
+        // `transport` means it failed on the network; the watch, routing through this same phone,
+        // would only pay the timeout again. `tooLarge` means it worked, so only a safe method may
+        // be repeated to fetch the answer another way.
+        return failure == .tooLarge && payload.isIdempotent
+    }
+
+    /// Bridges the callback-based send onto async. Resolves exactly once — the reply, the delivery
+    /// error, the timeout and cancellation all race, and `send` guarantees only that at most one
+    /// error fires, not that a reply can't have landed first.
+    ///
+    /// Cancellation settles the wait immediately rather than letting it run out the budget. Any
+    /// reply that lands afterwards is dropped: the phone may well have performed the request, and
+    /// the caller has already gone.
     private static func send(
         _ payload: WatchHTTPRequestPayload,
         budget: TimeInterval
     ) async -> WatchHTTPResponsePayload? {
-        await withCheckedContinuation { continuation in
-            let lock = NSLock()
-            var settled = false
-            func settleOnce(_ value: WatchHTTPResponsePayload?) {
-                lock.lock()
-                let shouldRun = !settled
-                settled = true
-                lock.unlock()
-                if shouldRun { continuation.resume(returning: value) }
-            }
+        let gate = ReplyGate()
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                // False when cancellation beat the send: the wait is already over, so putting a
+                // message on the link would only invite the phone to do work nobody will read.
+                guard gate.adopt(continuation) else { return }
 
-            Communicator.shared.send(
-                .init(
-                    identifier: InteractiveImmediateMessages.httpRequest.rawValue,
-                    content: payload.content,
-                    reply: { message in
-                        settleOnce(WatchHTTPResponsePayload(content: message.content))
+                Communicator.shared.send(
+                    .init(
+                        identifier: InteractiveImmediateMessages.httpRequest.rawValue,
+                        content: payload.content,
+                        reply: { message in
+                            gate.settle(WatchHTTPResponsePayload(content: message.content))
+                        }
+                    ),
+                    timeout: budget,
+                    errorHandler: { error in
+                        Current.Log.error("Relaying to the iPhone failed: \(error.localizedDescription)")
+                        gate.settle(nil)
                     }
-                ),
-                timeout: budget,
-                errorHandler: { error in
-                    Current.Log.error("Relaying to the iPhone failed: \(error.localizedDescription)")
-                    settleOnce(nil)
-                }
-            )
+                )
+            }
+        } onCancel: {
+            gate.settle(nil)
+        }
+    }
+
+    /// Settles the relay wait exactly once, and copes with cancellation arriving before the
+    /// continuation has even been handed over.
+    private final class ReplyGate: @unchecked Sendable {
+        private let lock = NSLock()
+        private var continuation: CheckedContinuation<WatchHTTPResponsePayload?, Never>?
+        private var isSettled = false
+
+        /// Takes ownership of the wait. Returns `false` when it was already settled — only
+        /// possible when the task was cancelled before the send went out — having resumed the
+        /// continuation itself.
+        func adopt(_ continuation: CheckedContinuation<WatchHTTPResponsePayload?, Never>) -> Bool {
+            lock.lock()
+            if isSettled {
+                lock.unlock()
+                continuation.resume(returning: nil)
+                return false
+            }
+            self.continuation = continuation
+            lock.unlock()
+            return true
+        }
+
+        func settle(_ value: WatchHTTPResponsePayload?) {
+            lock.lock()
+            guard !isSettled else {
+                lock.unlock()
+                return
+            }
+            isSettled = true
+            let waiting = continuation
+            continuation = nil
+            lock.unlock()
+            waiting?.resume(returning: value)
         }
     }
 }

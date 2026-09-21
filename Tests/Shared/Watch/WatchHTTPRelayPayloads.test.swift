@@ -9,12 +9,13 @@ struct WatchHTTPRelayPayloadsTests {
     }
 
     private func requestPayload(
-        body: Data? = Data(#"{"entity_id":"light.kitchen"}"#.utf8)
+        body: Data? = Data(#"{"entity_id":"light.kitchen"}"#.utf8),
+        method: String = "POST"
     ) -> WatchHTTPRequestPayload {
         WatchHTTPRequestPayload(
             serverId: "server-1",
             url: url("https://ha.example.com/api/services/light/toggle"),
-            method: "POST",
+            method: method,
             headers: ["Authorization": "Bearer token", "Content-Type": "application/json"],
             body: body,
             timeout: 28
@@ -77,15 +78,22 @@ struct WatchHTTPRelayPayloadsTests {
         #expect(reason == "too big")
     }
 
-    /// A failure the phone produced without reaching the network leaves the watch free to try; one
-    /// it produced by reaching it does not, or the watch pays the same timeout twice over what is
-    /// almost certainly the same route.
-    @Test func onlyPreNetworkFailuresAllowARetry() {
-        #expect(WatchHTTPResponsePayload.Failure.notEnabled.allowsDirectRetry)
-        #expect(WatchHTTPResponsePayload.Failure.malformedRequest.allowsDirectRetry)
-        #expect(WatchHTTPResponsePayload.Failure.unknownServer.allowsDirectRetry)
-        #expect(WatchHTTPResponsePayload.Failure.tooLarge.allowsDirectRetry)
-        #expect(WatchHTTPResponsePayload.Failure.transport.allowsDirectRetry == false)
+    /// Whether the server has already seen the request is what decides if the watch may repeat it.
+    /// `tooLarge` is the one that looks pre-network and isn't: the request succeeded and only the
+    /// answer wouldn't fit back down the link.
+    @Test func failuresKnowWhetherTheRequestReachedTheServer() {
+        #expect(WatchHTTPResponsePayload.Failure.notEnabled.didReachNetwork == false)
+        #expect(WatchHTTPResponsePayload.Failure.malformedRequest.didReachNetwork == false)
+        #expect(WatchHTTPResponsePayload.Failure.unknownServer.didReachNetwork == false)
+        #expect(WatchHTTPResponsePayload.Failure.tooLarge.didReachNetwork)
+        #expect(WatchHTTPResponsePayload.Failure.transport.didReachNetwork)
+    }
+
+    @Test func onlySafeMethodsCountAsIdempotent() {
+        #expect(requestPayload(method: "GET").isIdempotent)
+        #expect(requestPayload(method: "head").isIdempotent)
+        #expect(requestPayload(method: "POST").isIdempotent == false)
+        #expect(requestPayload(method: "DELETE").isIdempotent == false)
     }
 
     /// Only the phone declining outright says something that won't change; every other pre-network

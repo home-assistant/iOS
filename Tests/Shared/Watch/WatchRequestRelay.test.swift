@@ -10,11 +10,11 @@ struct WatchRequestRelayTests {
         URL(string: string)!
     }
 
-    private func payload() -> WatchHTTPRequestPayload {
+    private func payload(method: String = "GET") -> WatchHTTPRequestPayload {
         WatchHTTPRequestPayload(
             serverId: "server-1",
             url: url("https://ha.example.com/api/states"),
-            method: "GET",
+            method: method,
             headers: [:],
             body: nil,
             timeout: 10
@@ -66,16 +66,48 @@ struct WatchRequestRelayTests {
 
     @Test func fallsBackToTheWatchWhenThePhoneNeverReachedTheNetwork() throws {
         defer { WatchRequestRelay.resetDisabledStateForTesting() }
-        for failure in [WatchHTTPResponsePayload.Failure.malformedRequest, .unknownServer, .tooLarge] {
+        for failure in [WatchHTTPResponsePayload.Failure.malformedRequest, .unknownServer] {
             WatchRequestRelay.resetDisabledStateForTesting()
             let result = try WatchRequestRelay.result(
                 of: .failure(failure, reason: "nope"),
                 url: url("https://ha.example.com/api/states"),
-                payload: payload()
+                payload: payload(method: "POST")
             )
 
             #expect(result == nil)
             #expect(WatchRequestRelay.isDisabledForTesting == false)
+        }
+    }
+
+    /// `tooLarge` means the phone performed the request and only its answer wouldn't fit back. A
+    /// GET can safely be fetched again; repeating the POST would run the action a second time —
+    /// toggling a light back off, or firing a script twice.
+    @Test func doesNotRepeatANonIdempotentRequestThePhoneAlreadySent() {
+        #expect(WatchRequestRelay.allowsDirectRetry(after: .tooLarge, payload: payload(method: "GET")))
+        #expect(WatchRequestRelay.allowsDirectRetry(after: .tooLarge, payload: payload(method: "POST")) == false)
+    }
+
+    @Test func neverRepeatsAfterATransportFailureWhicheverTheMethod() {
+        #expect(WatchRequestRelay.allowsDirectRetry(after: .transport, payload: payload(method: "GET")) == false)
+        #expect(WatchRequestRelay.allowsDirectRetry(after: .transport, payload: payload(method: "POST")) == false)
+    }
+
+    /// Nothing was sent, so the method doesn't matter.
+    @Test func alwaysRepeatsAfterAPreNetworkFailure() {
+        for failure in [WatchHTTPResponsePayload.Failure.notEnabled, .malformedRequest, .unknownServer] {
+            #expect(WatchRequestRelay.allowsDirectRetry(after: failure, payload: payload(method: "POST")))
+        }
+    }
+
+    /// The whole point of the idempotency rule: a relayed service call whose response was too big
+    /// must surface as an error rather than quietly running twice.
+    @Test func surfacesATooLargeResponseToANonIdempotentRequest() {
+        #expect(throws: WatchRelayError(reason: "Response exceeds the message size limit")) {
+            try WatchRequestRelay.result(
+                of: .failure(.tooLarge, reason: "Response exceeds the message size limit"),
+                url: url("https://ha.example.com/api/services/light/toggle"),
+                payload: payload(method: "POST")
+            )
         }
     }
 

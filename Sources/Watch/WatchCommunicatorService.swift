@@ -313,6 +313,18 @@ final class WatchCommunicatorService {
             return
         }
 
+        // The request is forwarded with the watch's own headers, bearer token included, so the
+        // phone only dials hosts this server is actually configured for. A message naming a known
+        // server but carrying some other URL is refused rather than forwarded.
+        guard WatchRelayURLRebase.isPermitted(payload.url, connection: server.info.connection) else {
+            Current.Log.error(
+                "Watch relayed an HTTP request to \(payload.url.absoluteString), which is not a configured URL " +
+                    "for server \(payload.serverId)"
+            )
+            reply(.failure(.malformedRequest, reason: "The URL is not configured for this server"))
+            return
+        }
+
         Task {
             let url = await Self.resolvedURL(for: payload, server: server)
 
