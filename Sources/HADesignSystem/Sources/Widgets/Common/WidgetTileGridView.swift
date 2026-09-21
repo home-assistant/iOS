@@ -7,6 +7,10 @@ import WidgetKit
 /// The grid of tiles every tile-based widget is made of: rows of equal-width tiles, sized by
 /// ``WidgetTileSizeStyle`` and spaced — or not, once compressed — to fill the family.
 ///
+/// Fill its width, that is: a tile is never taller than the size it is drawn at was built for, so
+/// what a tall family leaves over the rows stays empty instead of stretching them — see
+/// ``WidgetTileSizeStyle/maxTileHeight``.
+///
 /// The grid draws the tiles; `tileContent` is where the widget wraps each one in whatever makes it
 /// do something, or swaps it for a ``WidgetTileConfirmationView``. Left alone, the tiles are inert,
 /// which is exactly what a gallery wants.
@@ -16,13 +20,6 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     /// Splits a tile into its own icon and body controls. Returning `nil` leaves the tile whole, to
     /// be wrapped by ``TileContent`` as usual.
     public typealias TileRegions = (Item) -> WidgetTileRegions?
-
-    /// Maximum tile height used for compact layouts in non-small widget families.
-    /// This value was measured to keep a single row tile (icon + title + subtitle)
-    /// visually balanced within the widget's vertical constraints, accounting for
-    /// default padding and text styles from the design system. If typography or
-    /// vertical paddings change in `DesignSystem`, this value should be revisited.
-    private static var maxTileHeightWhenCompact: CGFloat { 68 }
 
     private let rows: [[Item]]
     private let sizeStyle: WidgetTileSizeStyle
@@ -98,8 +95,8 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
     }
 
     /// How tall each row ends up: what the grid's own padding and the gaps between the rows leave,
-    /// shared between them, and never more than the cap a tile drawn beside its text is held to.
-    /// This is what the tiles size their icons from.
+    /// shared between them, and never more than the cap its tiles are held to. This is what the
+    /// tiles size their icons from.
     private func rowHeight(sizeStyle: WidgetTileSizeStyle, in availableHeight: CGFloat) -> CGFloat? {
         guard availableHeight > .zero, !rows.isEmpty else { return nil }
         let shared = WidgetTileLayout.tileHeight(
@@ -111,11 +108,16 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         return min(shared, cap)
     }
 
-    /// The cap a tile drawn beside its text is held to. A dense tile is one the grid had no room to
-    /// draw compact, so it is already shorter than this — the cap follows it so nothing jumps as a
-    /// grid gives way.
+    /// The cap a tile sharing its widget with other tiles is held to — the height the size style was
+    /// drawn for, rather than everything the family happens to leave. See
+    /// ``WidgetTileSizeStyle/maxTileHeight``.
+    ///
+    /// A tile drawn at the single size is left out: it is the widget's whole surface, so shrinking
+    /// its card would leave the widget half painted. It holds its own contents to the same height
+    /// instead — see ``WidgetTileButtonView``.
     private func maxTileHeight(for sizeStyle: WidgetTileSizeStyle) -> CGFloat? {
-        ([.compact, .dense].contains(sizeStyle) && family != .systemSmall) ? Self.maxTileHeightWhenCompact : nil
+        guard sizeStyle != .single else { return nil }
+        return sizeStyle.maxTileHeight(in: family)
     }
 
     /// Which of the widget's corners this tile is the one sitting in, if any: the ends of the first

@@ -87,6 +87,13 @@ public struct WidgetTileSensorView: View {
         }
     }
 
+    /// The height a reading that fills its widget holds its contents to, for the same reason an
+    /// action tile does — see ``WidgetTileButtonView``.
+    private var maxContentHeight: CGFloat? {
+        guard sizeStyle == .single else { return nil }
+        return sizeStyle.maxTileHeight(in: family)
+    }
+
     private var tileView: some View {
         VStack(alignment: .leading) {
             Group {
@@ -113,6 +120,7 @@ public struct WidgetTileSensorView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .padding(.vertical, sizeStyle == .regular ? 10 : /* use default */ nil)
+                    .frame(maxHeight: maxContentHeight)
                 }
             }
             .modify { view in

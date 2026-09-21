@@ -147,6 +147,19 @@ public struct WidgetTileButtonView: View {
         }
     }
 
+    /// The height a tile that fills its widget holds its contents to.
+    ///
+    /// A single tile has no card to cap — the card is the widget's own surface, and shrinking it
+    /// would leave the widget half painted — so its contents are what stop spreading: the icon and
+    /// the text are held to the height the size was drawn for and centred in the card, rather than
+    /// pinned to its top and bottom edges however tall the family is. Every other size is capped by
+    /// the grid, which is where a tile sharing its widget with others is sized — see
+    /// ``WidgetTileGridView``.
+    private var maxContentHeight: CGFloat? {
+        guard sizeStyle == .single else { return nil }
+        return sizeStyle.maxTileHeight(in: family)
+    }
+
     /// The icon as its own control. Splitting the tile makes the icon reachable on its own, so it
     /// has to carry the tile's name — the title it used to be announced with lives in the other
     /// half now.
@@ -206,6 +219,7 @@ public struct WidgetTileButtonView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .padding(.vertical, sizeStyle == .regular ? 10 : /* use default */ nil)
+                    .frame(maxHeight: maxContentHeight)
                 }
             }
             .modify { view in

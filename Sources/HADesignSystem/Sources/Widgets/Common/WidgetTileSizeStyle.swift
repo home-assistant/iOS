@@ -2,6 +2,7 @@
 import Foundation
 import HAIconic
 import SwiftUI
+import WidgetKit
 
 /// How much room a single tile has, which is what decides its typography and icon size.
 ///
@@ -47,6 +48,48 @@ public enum WidgetTileSizeStyle: CaseIterable, Sendable {
     /// text is the next thing to go, so the name and the state keep the room they have.
     public var showsAreaLine: Bool {
         self != .compressed
+    }
+
+    /// The tallest a tile drawn at this size is worth being, or `nil` where there is nothing to cap.
+    ///
+    /// A widget hands its grid the whole height its family has, and without a cap the tiles take all
+    /// of it: on a tall family that leaves a glyph at the top of a card, its name at the bottom, and
+    /// a band of nothing in between. Holding every tile to the height its own contents need is what
+    /// keeps a tile the same size whichever family it lands in — the room left over stays empty
+    /// rather than being poured into the cards.
+    ///
+    /// The numbers are measured from what each size draws: the icon circle, the three lines of text
+    /// under it and the padding around them, with a little room left for the icon and the name to
+    /// breathe. If the typography or the vertical paddings change in `DesignSystem`, they should be
+    /// revisited.
+    ///
+    /// A compressed tile is the one size with nothing to cap: it is what a grid packing more tiles
+    /// than its family holds comfortably gives way to, and has already dropped its padding and its
+    /// border to fit them.
+    public var maxTileHeight: CGFloat? {
+        switch self {
+        case .single:
+            return 148
+        case .expanded:
+            return 140
+        case .regular, .compact:
+            return 68
+        case .dense:
+            // A dense tile is a compact one the grid had no room to draw, so it is already shorter
+            // than this — the cap follows it so nothing jumps as a grid gives way.
+            return 68
+        case .compressed:
+            return nil
+        }
+    }
+
+    /// The cap a tile is held to in this family.
+    ///
+    /// None in the small family: it holds two tiles at most, so its tiles never outgrow what the
+    /// family leaves them, and the lone tile filling it is the size that style was drawn for rather
+    /// than a stretch.
+    public func maxTileHeight(in family: WidgetFamily) -> CGFloat? {
+        family == .systemSmall ? nil : maxTileHeight
     }
 
     /// How much larger a glyph is drawn when it has no background behind it: with no circle to sit
