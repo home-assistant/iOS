@@ -37,6 +37,27 @@ struct NotificationSettingsViewTests {
         }
     }
 
+    @Test func settingsSearchIndexesTapActionsRow() {
+        let titles = NotificationSettingsView.settingsSearchEntries.map(\.title)
+        #expect(titles.contains(L10n.SettingsDetails.Notifications.TapActions.title))
+    }
+
+    /// The row is the only way into the feature, so its switch has to reach the store the presenter
+    /// reads.
+    @MainActor
+    @Test func tapActionsToggleWritesThroughToSettings() {
+        let previous = Current.settingsStore.notificationTapActionsEnabled
+        defer { Current.settingsStore.notificationTapActionsEnabled = previous }
+
+        Current.settingsStore.notificationTapActionsEnabled = false
+        let viewModel = NotificationSettingsViewModel()
+        #expect(viewModel.tapActionsEnabled == false)
+
+        viewModel.tapActionsEnabled = true
+
+        #expect(Current.settingsStore.notificationTapActionsEnabled)
+    }
+
     private func withCatalyst(_ isCatalyst: Bool, _ body: () throws -> Void) rethrows {
         let previous = Current.isCatalyst
         Current.isCatalyst = isCatalyst

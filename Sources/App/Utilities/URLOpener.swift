@@ -33,8 +33,9 @@ protocol URLOpening {
 /// A singleton responsible for opening URLs in the application.
 /// This abstraction allows for easier testing and centralized URL opening logic.
 final class URLOpener: URLOpening {
-    /// The shared singleton instance.
-    static let shared: URLOpening = URLOpener()
+    /// The shared instance. Settable so tests can put `MockURLOpener` in its place; nothing but a
+    /// test should ever replace it.
+    static var shared: URLOpening = URLOpener()
 
     /// Private initializer to enforce singleton pattern.
     private init() {}
@@ -78,6 +79,8 @@ final class URLOpener: URLOpening {
 /// A mock URL opener for testing purposes.
 final class MockURLOpener: URLOpening {
     var openedURLs: [(url: URL, options: [UIApplication.OpenExternalURLOptionsKey: Any])] = []
+    /// Called after a URL is recorded, so a test can wait for an open that happens asynchronously.
+    var onOpen: ((URL) -> Void)?
     var canOpenURLResult: Bool = true
     var openCompletionResult: Bool = true
     var openSettingsDestination: OpenSettingsDestination?
@@ -89,6 +92,7 @@ final class MockURLOpener: URLOpening {
     ) {
         openedURLs.append((url, options))
         completion?(openCompletionResult)
+        onOpen?(url)
     }
 
     func canOpenURL(_ url: URL) -> Bool {

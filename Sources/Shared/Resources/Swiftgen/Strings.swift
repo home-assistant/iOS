@@ -4271,6 +4271,11 @@ public enum L10n {
     }
   }
 
+  public enum NotificationTapActions {
+    /// Actions
+    public static var title: String { return L10n.tr("Localizable", "notification_tap_actions.title") }
+  }
+
   public enum NotificationsConfigurator {
     /// Identifier
     public static var identifier: String { return L10n.tr("Localizable", "notifications_configurator.identifier") }
@@ -7438,6 +7443,12 @@ public enum L10n {
           /// Sounds Imported
           public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.imported_alert.title") }
         }
+      }
+      public enum TapActions {
+        /// Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.tap_actions.footer") }
+        /// Show actions when tapped
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.tap_actions.title") }
       }
     }
     public enum Privacy {

@@ -604,6 +604,18 @@ public class SettingsStore {
         }
     }
 
+    /// Whether tapping a notification offers the actions it carries, which iOS otherwise only reveals
+    /// once the notification is pressed and held. Opt-in: a tap normally just opens the app, and
+    /// turning a tap into a question is a change of habit the user asks for.
+    public var notificationTapActionsEnabled: Bool {
+        get {
+            prefs.bool(forKey: "notificationTapActionsEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "notificationTapActionsEnabled")
+        }
+    }
+
     public var widgetAuthenticityToken: String {
         let key = "widgetAuthenticityToken"
 

@@ -166,6 +166,19 @@ struct AppConfigurationTransferTests {
         #expect(Current.settingsStore.forceCloseWarningEnabled == true)
     }
 
+    @Test func appSettingsSnapshotTransfersTheNotificationTapActionsToggle() {
+        let previous = Current.settingsStore.notificationTapActionsEnabled
+        defer { Current.settingsStore.notificationTapActionsEnabled = previous }
+
+        Current.settingsStore.notificationTapActionsEnabled = true
+        let snapshot = AppSettingsSnapshot.capture()
+        #expect(snapshot.notificationTapActionsEnabled == true)
+
+        Current.settingsStore.notificationTapActionsEnabled = false
+        snapshot.apply()
+        #expect(Current.settingsStore.notificationTapActionsEnabled)
+    }
+
     @Test func appSettingsSnapshotDecodesAFileMissingEveryField() throws {
         let data = try #require("{}".data(using: .utf8))
 
