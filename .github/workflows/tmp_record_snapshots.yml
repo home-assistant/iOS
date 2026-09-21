@@ -116,78 +116,28 @@ jobs:
             Tests/App/Settings/__Snapshots__/ClosestServerSourceBadge.test/
           if-no-files-found: warn
 
-      # The artifact lives on blob storage the authoring environment cannot reach, so also
-      # print each reference as a cropped, downscaled JPEG in base64. The crop keeps the top
-      # of the screen — the nav bar, the toggle and the Closest Server row — which is all the
-      # badge change touches, and keeps the payload small enough to read out of the log.
-      - name: "Print previews of the recorded references"
+      # The artifact lives on blob storage the authoring environment cannot reach, so hand the
+      # references over through the log instead: base64, wrapped wide so the per-line timestamp
+      # the runner prepends stays a rounding error. Only the references this change records are
+      # dumped — the ones already in the repository are unchanged and would just be bulk.
+      - name: "Dump the recorded references"
         if: ${{ always() }}
         run: |
-          cat > "$RUNNER_TEMP/shrink.swift" <<'SWIFT'
-          import CoreGraphics
-          import Foundation
-          import ImageIO
-          import UniformTypeIdentifiers
-
-          // shrink <input> <output> <cropHeight> <scale> <jpegQuality>
-          let args = CommandLine.arguments
-          guard args.count == 6,
-                let source = CGImageSourceCreateWithURL(URL(fileURLWithPath: args[1]) as CFURL, nil),
-                let image = CGImageSourceCreateImageAtIndex(source, 0, nil),
-                let cropHeight = Int(args[3]),
-                let scale = Double(args[4]),
-                let quality = Double(args[5]) else {
-              FileHandle.standardError.write(Data("shrink: bad arguments or unreadable image\n".utf8))
-              exit(1)
-          }
-          let box = CGRect(x: 0, y: 0, width: image.width, height: min(cropHeight, image.height))
-          guard let cropped = image.cropping(to: box) else { exit(1) }
-          let width = Int(Double(cropped.width) * scale)
-          let height = Int(Double(cropped.height) * scale)
-          guard let context = CGContext(
-              data: nil,
-              width: width,
-              height: height,
-              bitsPerComponent: 8,
-              bytesPerRow: 0,
-              space: CGColorSpaceCreateDeviceRGB(),
-              bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
-          ) else { exit(1) }
-          context.interpolationQuality = .high
-          context.draw(cropped, in: CGRect(x: 0, y: 0, width: width, height: height))
-          guard let output = context.makeImage(),
-                let destination = CGImageDestinationCreateWithURL(
-                    URL(fileURLWithPath: args[2]) as CFURL,
-                    UTType.jpeg.identifier as CFString,
-                    1,
-                    nil
-                ) else { exit(1) }
-          CGImageDestinationAddImage(
-              destination,
-              output,
-              [kCGImageDestinationLossyCompressionQuality: quality] as CFDictionary
-          )
-          guard CGImageDestinationFinalize(destination) else { exit(1) }
-          SWIFT
-
           snapshots="Tests/App/Settings/__Snapshots__"
-          screen="$snapshots/ServerSwitchingSettingsView.test"
           badge="$snapshots/ClosestServerSourceBadge.test"
-          # Dark first, light last: only the tail of the log is retrievable, so the variants
-          # that matter most have to be the ones printed last. The badge's own references are
-          # already small, so they are printed whole rather than cropped.
-          print_preview() { # <file> <label> <cropHeight> <scale>
-            [ -f "$1" ] || { echo "MISSING $1"; return; }
-            swift "$RUNNER_TEMP/shrink.swift" "$1" "$RUNNER_TEMP/$2.jpg" "$3" "$4" 0.55
-            echo "PREVIEW-BYTES $2 $(wc -c < "$RUNNER_TEMP/$2.jpg")"
-            echo "===BEGIN $2==="
-            base64 < "$RUNNER_TEMP/$2.jpg"
-            echo "===END $2==="
-          }
-          for variant in dark light; do
-            print_preview "$screen/serverSwitchingScreenWithClosestServer.$variant.png" \
-              "screen-location-$variant" 1150 0.5
-            print_preview "$screen/serverSwitchingScreenWithClosestServerOnHomeNetwork.$variant.png" \
-              "screen-network-$variant" 1150 0.5
-            print_preview "$badge/badgeSources.$variant.png" "badge-$variant" 100000 1.0
+          screen="$snapshots/ServerSwitchingSettingsView.test"
+          closest="serverSwitchingScreenWithClosestServer"
+          for path in \
+            "$badge/badgeSources.light.png" \
+            "$badge/badgeSources.dark.png" \
+            "$screen/$closest.light.png" \
+            "$screen/$closest.dark.png" \
+            "$screen/${closest}OnHomeNetwork.light.png" \
+            "$screen/${closest}OnHomeNetwork.dark.png"; do
+            [ -f "$path" ] || { echo "MISSING $path"; continue; }
+            echo "DUMP-BYTES $path $(wc -c < "$path") $(shasum -a 256 < "$path" | cut -d" " -f1)"
+            echo "===BEGIN $path==="
+            base64 < "$path" | tr -d "\n" | fold -w 3000
+            echo ""
+            echo "===END $path==="
           done
