@@ -6545,6 +6545,20 @@ public enum L10n {
       public enum ClosestServer {
         /// Closest Server
         public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.title") }
+        public enum Source {
+          public enum Location {
+            /// Based on your current location
+            public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.source.location.accessibility_label") }
+            /// Location
+            public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.source.location.title") }
+          }
+          public enum Network {
+            /// Based on the Wi-Fi network you are connected to
+            public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.source.network.accessibility_label") }
+            /// Wi-Fi network
+            public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.source.network.title") }
+          }
+        }
       }
       public enum HowItWorks {
         /// With multiple homes, the app can figure out which server matters right now and switch to it for you. Walk into your second home and its dashboard is already there.

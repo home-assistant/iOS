@@ -32,8 +32,16 @@ struct ServerSwitchingSettingsView: View {
                         HStack {
                             Text(L10n.Settings.ServerSwitching.ClosestServer.title)
                             Spacer()
-                            Text(closestServer)
-                                .foregroundStyle(.secondary)
+                            // Stacked rather than inline: the badge would push the server name and
+                            // its distance off the row on narrower screens.
+                            VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
+                                Text(closestServer)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.trailing)
+                                if let closestServerSource = viewModel.closestServerSource {
+                                    ClosestServerSourceBadge(source: closestServerSource)
+                                }
+                            }
                         }
                     }
                 }

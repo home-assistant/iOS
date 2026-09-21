@@ -1977,6 +1977,10 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.server_select.title" = "Server";
 "settings.server_switching.by_location.footer" = "When you open the app, it checks whether you are at one of your homes, either connected to its Wi-Fi network or inside its Home zone. If that home belongs to another server, that server is opened automatically. Checks happen only on this device while the app is in use, and your location is never stored.";
 "settings.server_switching.by_location.title" = "Switch Server by Location";
+"settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
+"settings.server_switching.closest_server.source.location.title" = "Location";
+"settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
+"settings.server_switching.closest_server.source.network.title" = "Wi-Fi network";
 "settings.server_switching.closest_server.title" = "Closest Server";
 "settings.server_switching.how_it_works.intro" = "With multiple homes, the app can figure out which server matters right now and switch to it for you. Walk into your second home and its dashboard is already there.";
 "settings.server_switching.how_it_works.location.body" = "Otherwise, your location is compared with each server's Home zone, and the nearest one is considered closest.";
