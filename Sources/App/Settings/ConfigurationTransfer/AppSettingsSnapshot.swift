@@ -40,6 +40,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
     var locationBasedServerSwitching: Bool?
     var clearBadgeAutomatically: Bool?
     var forceCloseWarningEnabled: Bool?
+    var notificationTapActionsEnabled: Bool?
     var macNativeFeaturesOnly: Bool?
     var receiveDebugNotifications: Bool?
     /// Seconds between periodic sensor updates. A negative value means "disabled", matching how
@@ -82,6 +83,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
             locationBasedServerSwitching: store.locationBasedServerSwitching,
             clearBadgeAutomatically: store.clearBadgeAutomatically,
             forceCloseWarningEnabled: store.forceCloseWarningEnabled,
+            notificationTapActionsEnabled: store.notificationTapActionsEnabled,
             macNativeFeaturesOnly: store.macNativeFeaturesOnly,
             receiveDebugNotifications: store.receiveDebugNotifications,
             periodicUpdateIntervalSeconds: store.periodicUpdateInterval ?? -1,
@@ -149,6 +151,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
         if let locationBasedServerSwitching { store.locationBasedServerSwitching = locationBasedServerSwitching }
         if let clearBadgeAutomatically { store.clearBadgeAutomatically = clearBadgeAutomatically }
         if let forceCloseWarningEnabled { store.forceCloseWarningEnabled = forceCloseWarningEnabled }
+        if let notificationTapActionsEnabled { store.notificationTapActionsEnabled = notificationTapActionsEnabled }
         if let macNativeFeaturesOnly { store.macNativeFeaturesOnly = macNativeFeaturesOnly }
         if let receiveDebugNotifications { store.receiveDebugNotifications = receiveDebugNotifications }
         if let gestures { store.gestures = gestures }
