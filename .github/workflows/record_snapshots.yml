@@ -1,8 +1,7 @@
 name: Record Snapshots (temporary)
 
-# Temporary helper for the widget tile max height change: re-records the snapshot references the
-# change moves, on a macOS runner, and commits them back to the branch. Runs only on that branch,
-# and is deleted once the references are in.
+# Temporary helper for the widget tile max height change: the snapshot references were recorded
+# on this runner, and this run is what verifies the suite against them. Deleted once it is green.
 
 on:
   push:
@@ -11,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
@@ -25,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  record:
+  verify:
     runs-on: xcode-27
     timeout-minutes: 90
     steps:
@@ -65,28 +64,5 @@ jobs:
           -project HomeAssistant.xcodeproj
           -scheme Tests-Unit
 
-      # `failed` records only the references that no longer match, so snapshots the change does
-      # not touch keep the bytes they were recorded with. Recording is itself a test failure,
-      # which is what the verification run at the end is for.
-      - name: Record the snapshots the change moves
-        continue-on-error: true
-        env:
-          SNAPSHOT_TESTING_RECORD: failed
-          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: failed
-        run: bundle exec fastlane test
-
-      - name: Commit the re-recorded references
-        run: |
-          if [ -z "$(git status --porcelain -- Tests)" ]; then
-            echo "No reference changed."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- Tests
-          git commit -m "Re-record widget snapshots for the tile height cap"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
-
-      # The references are only worth committing if the suite passes against them.
-      - name: Verify the suite against the recorded references
+      - name: Run the suite against the recorded references
         run: bundle exec fastlane test
