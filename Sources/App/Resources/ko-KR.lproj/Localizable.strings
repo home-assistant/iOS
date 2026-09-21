@@ -1385,6 +1385,13 @@
 "onboarding.permissions.notification.description" = "Home Assistant에서 푸시 알림을 보내는것을 허용합니다";
 "onboarding.permissions.notification.grant_description" = "기기에 대한 알림 서비스를 생성하려면 알림 권한을 허용하세요.";
 "onboarding.permissions.notification.title" = "알림";
+"onboarding.privacy.description" = "Every server has its own choices, and this one is new. Pick what this device sends to it, you can change this later in the server settings.";
+"onboarding.privacy.location.exact_description" = "Send this device's precise location.";
+"onboarding.privacy.location.never_description" = "Never send this device's location.";
+"onboarding.privacy.location.zone_only_description" = "Only send which of your zones this device is in.";
+"onboarding.privacy.sensors.all_description" = "Send the sensors you switch on for this device.";
+"onboarding.privacy.sensors.none_description" = "Do not send any sensor data.";
+"onboarding.privacy.title" = "Choose what to share with this server";
 "onboarding.scanning.discovered_announcement" = "발견됨: %@";
 "onboarding.scanning.manual" = "주소 수동 입력";
 "onboarding.scanning.manual.button.divider.title" = "또는";
@@ -2351,6 +2358,8 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings_sensors.permissions.status.while_in_use" = "사용 중일 때";
 "settings_sensors.sensors.configure" = "설정";
 "settings_sensors.sensors.enable_all" = "모든 센서를 활성화하기";
+"settings_sensors.sensors.foreground_only.accessibility_label" = "Only updates while the app is open";
+"settings_sensors.sensors.foreground_only.badge" = "When app is open";
 "settings_sensors.sensors.header" = "센서";
 "settings_sensors.sensors.no_results" = "검색과 일치하는 센서가 없습니다";
 "settings_sensors.sensors.search_prompt" = "센서 검색";
