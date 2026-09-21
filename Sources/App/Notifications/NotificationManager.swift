@@ -324,6 +324,43 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
+    /// Where opening a notification takes the user: the URL it asks for, the entity it is about, or —
+    /// when the tap has nothing else to do — the actions it carries. Split out of the delegate
+    /// callback below, which only the system can call, so the routing can be exercised on its own.
+    func handleOpenedNotification(
+        content: UNNotificationContent,
+        actionIdentifier: String,
+        server: Server
+    ) {
+        if let url = content.urlString(forActionIdentifier: actionIdentifier) {
+            Current.Log.info("launching URL \(url)")
+            Current.sceneManager.appCoordinator.done {
+                $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
+            }
+            return
+        }
+
+        guard actionIdentifier == UNNotificationDefaultActionIdentifier else { return }
+
+        if let entityId = content.userInfo["entity_id"] as? String,
+           let entityURL = AppConstants.openEntityDeeplinkURL(
+               entityId: entityId,
+               serverId: server.identifier.rawValue
+           ) {
+            // No tap action was specified, so open the notification's entity on the server it
+            // came from.
+            Current.Log.info("opening entity \(entityId) from notification tap")
+            Current.sceneManager.appCoordinator.done { _ in
+                URLOpener.shared.open(entityURL, options: [:], completionHandler: nil)
+            }
+            return
+        }
+
+        // Nothing was asked of this tap, and iOS keeps a notification's actions hidden until it is
+        // pressed and held — offer them here so a tap is not a dead end.
+        tapActionPresenter.present(for: content, server: server)
+    }
+
     public func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -389,30 +426,11 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             handleShortcutNotification(shortcutName, shortcutDict)
         }
 
-        let content = response.notification.request.content
-
-        if let url = content.urlString(forActionIdentifier: response.actionIdentifier) {
-            Current.Log.info("launching URL \(url)")
-            Current.sceneManager.appCoordinator.done {
-                $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
-            }
-        } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  let entityId = userInfo["entity_id"] as? String,
-                  let entityURL = AppConstants.openEntityDeeplinkURL(
-                      entityId: entityId,
-                      serverId: server.identifier.rawValue
-                  ) {
-            // No tap action was specified, so open the notification's entity on the server it
-            // came from.
-            Current.Log.info("opening entity \(entityId) from notification tap")
-            Current.sceneManager.appCoordinator.done { _ in
-                URLOpener.shared.open(entityURL, options: [:], completionHandler: nil)
-            }
-        } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
-            // Nothing was asked of this tap, and iOS keeps the notification's actions hidden until it
-            // is pressed and held — offer them here so a tap is not a dead end.
-            tapActionPresenter.present(for: content, server: server)
-        }
+        handleOpenedNotification(
+            content: response.notification.request.content,
+            actionIdentifier: response.actionIdentifier,
+            server: server
+        )
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {
             Current.backgroundTask(withName: BackgroundTask.handlePushAction.rawValue) { _ in
