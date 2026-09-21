@@ -4,7 +4,6 @@ import Testing
 
 struct WatchHTTPRelayPayloadsTests {
     private func url(_ string: String) -> URL {
-        // swiftlint:disable:next force_unwrapping
         URL(string: string)!
     }
 

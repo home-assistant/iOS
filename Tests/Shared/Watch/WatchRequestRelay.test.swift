@@ -6,7 +6,6 @@ import Testing
 @Suite(.serialized)
 struct WatchRequestRelayTests {
     private func url(_ string: String) -> URL {
-        // swiftlint:disable:next force_unwrapping
         URL(string: string)!
     }
 

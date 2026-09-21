@@ -4,7 +4,6 @@ import Testing
 
 struct ServerRequestPerformerTests {
     private func request(timeout: TimeInterval) -> URLRequest {
-        // swiftlint:disable:next force_unwrapping
         var request = URLRequest(url: URL(string: "https://ha.example.com/api/states")!)
         request.timeoutInterval = timeout
         return request
