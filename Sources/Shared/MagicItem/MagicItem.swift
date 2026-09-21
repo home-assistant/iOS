@@ -1089,7 +1089,9 @@ public extension MagicItem {
         )
 
         let requestTask = Task {
-            let result: Result<(Data, HTTPURLResponse), Error>
+            // Qualified: PromiseKit's single-parameter `Result` shadows the standard library's
+            // in this file.
+            let result: Swift.Result<(Data, HTTPURLResponse), Error>
             do {
                 let response = try await ServerRequestPerformer.perform(request, server: server, onStep: onStep)
                 result = .success(response)
