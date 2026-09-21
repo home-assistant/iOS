@@ -25,6 +25,10 @@ enum WatchRequestRelay {
     /// attempt rather than one that is certain to expire.
     static let minimumRequestTimeout: TimeInterval = 2
 
+    /// How the payload reaches the phone and the answer comes back: the WatchConnectivity send,
+    /// unless a test substitutes a fake for it.
+    typealias Deliver = (WatchHTTPRequestPayload, TimeInterval) async -> WatchHTTPResponsePayload?
+
     /// Whether a request should go to the phone at all.
     ///
     /// `counterpartProtocolVersion` matters as much as reachability: a phone that predates the
@@ -54,11 +58,19 @@ enum WatchRequestRelay {
     /// Throws only when the phone reached the network and the request failed there. That is a real
     /// answer, so the caller gets it instead of paying a second timeout repeating it over a route
     /// that, with the phone this close, almost certainly runs through the phone anyway.
+    ///
+    /// - Parameters:
+    ///   - isAvailable: whether to relay at all; the live answer unless a test pins it.
+    ///   - deliver: the link to the phone, injected the same way `WatchRelayRequestHandler` injects
+    ///     the network on the far side, so everything but the WatchConnectivity call itself can be
+    ///     exercised off a watch.
     static func perform(
         _ request: URLRequest,
         server: Server,
         budget: TimeInterval,
-        onStep: ((String) -> Void)? = nil
+        onStep: ((String) -> Void)? = nil,
+        isAvailable: Bool = WatchRequestRelay.isAvailable,
+        deliver: Deliver = { await WatchRequestRelay.deliver($0, budget: $1) }
     ) async throws -> (Data, HTTPURLResponse)? {
         guard isAvailable, let url = request.url else { return nil }
 
@@ -74,7 +86,7 @@ enum WatchRequestRelay {
         onStep?("Relaying through iPhone…")
         Current.Log.info("Relaying \(payload.method) \(url.absoluteString) through the iPhone")
 
-        guard let response = await send(payload, budget: budget) else {
+        guard let response = await deliver(payload, budget) else {
             onStep?("iPhone didn't answer")
             return nil
         }
@@ -132,18 +144,15 @@ enum WatchRequestRelay {
         return failure == .tooLarge && payload.isIdempotent
     }
 
-    /// Bridges the callback-based send onto async. Resolves exactly once — the reply, the delivery
-    /// error, the timeout and cancellation all race, and `send` guarantees only that at most one
-    /// error fires, not that a reply can't have landed first.
-    ///
-    /// Cancellation settles the wait immediately rather than letting it run out the budget. Any
-    /// reply that lands afterwards is dropped: the phone may well have performed the request, and
-    /// the caller has already gone.
-    private static func send(
+    /// Bridges the callback-based send onto async. `WatchRelayReplyGate` arbitrates the race for
+    /// the continuation; cancellation settles the wait immediately rather than letting it run out
+    /// the budget, and any reply that lands afterwards is dropped — the phone may well have
+    /// performed the request, but the caller has already gone.
+    static func deliver(
         _ payload: WatchHTTPRequestPayload,
         budget: TimeInterval
     ) async -> WatchHTTPResponsePayload? {
-        let gate = ReplyGate()
+        let gate = WatchRelayReplyGate()
         return await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
                 // False when cancellation beat the send: the wait is already over, so putting a
@@ -167,42 +176,6 @@ enum WatchRequestRelay {
             }
         } onCancel: {
             gate.settle(nil)
-        }
-    }
-
-    /// Settles the relay wait exactly once, and copes with cancellation arriving before the
-    /// continuation has even been handed over.
-    private final class ReplyGate: @unchecked Sendable {
-        private let lock = NSLock()
-        private var continuation: CheckedContinuation<WatchHTTPResponsePayload?, Never>?
-        private var isSettled = false
-
-        /// Takes ownership of the wait. Returns `false` when it was already settled — only
-        /// possible when the task was cancelled before the send went out — having resumed the
-        /// continuation itself.
-        func adopt(_ continuation: CheckedContinuation<WatchHTTPResponsePayload?, Never>) -> Bool {
-            lock.lock()
-            if isSettled {
-                lock.unlock()
-                continuation.resume(returning: nil)
-                return false
-            }
-            self.continuation = continuation
-            lock.unlock()
-            return true
-        }
-
-        func settle(_ value: WatchHTTPResponsePayload?) {
-            lock.lock()
-            guard !isSettled else {
-                lock.unlock()
-                return
-            }
-            isSettled = true
-            let waiting = continuation
-            continuation = nil
-            lock.unlock()
-            waiting?.resume(returning: value)
         }
     }
 }

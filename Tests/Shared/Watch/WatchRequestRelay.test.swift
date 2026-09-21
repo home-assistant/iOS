@@ -18,6 +18,17 @@ struct WatchRequestRelayTests {
         )
     }
 
+    private func request(
+        _ urlString: String = "https://ha.example.com/api/services/light/toggle",
+        method: String = "POST"
+    ) -> URLRequest {
+        var request = URLRequest(url: url(urlString))
+        request.httpMethod = method
+        request.httpBody = Data("{}".utf8)
+        request.setValue("Bearer token", forHTTPHeaderField: "Authorization")
+        return request
+    }
+
     /// The phone's slice of the budget leaves room for the two WatchConnectivity hops, so its reply
     /// lands inside the caller's deadline rather than just after it.
     @Test func requestTimeoutLeavesRoomForTheRoundTrip() {
@@ -121,4 +132,121 @@ struct WatchRequestRelayTests {
             )
         }
     }
+
+    // MARK: - Relaying
+
+    @Test func doesNotTouchTheLinkWhenThePhoneCannotAnswer() async throws {
+        let relayed = RelayedBox()
+        let result = try await WatchRequestRelay.perform(
+            request(),
+            server: ServerFixture.standard,
+            budget: 30,
+            isAvailable: false,
+            deliver: { payload, budget in
+                relayed.payload = payload
+                relayed.budget = budget
+                return WatchHTTPResponsePayload.response(statusCode: 200, headers: [:], body: Data())
+            }
+        )
+
+        #expect(result == nil)
+        #expect(relayed.payload == nil, "an unavailable relay must not put anything on the link")
+    }
+
+    /// The phone is a transport: it gets the watch's request verbatim, down to the bearer token,
+    /// and a request timeout already shortened by the round trip it is about to make.
+    @Test func handsThePhoneTheWatchsRequestVerbatim() async throws {
+        let relayed = RelayedBox()
+        _ = try await WatchRequestRelay.perform(
+            request(),
+            server: ServerFixture.standard,
+            budget: 30,
+            isAvailable: true,
+            deliver: { payload, budget in
+                relayed.payload = payload
+                relayed.budget = budget
+                return WatchHTTPResponsePayload.response(statusCode: 200, headers: [:], body: Data())
+            }
+        )
+
+        #expect(relayed.payload?.serverId == ServerFixture.standard.identifier.rawValue)
+        #expect(relayed.payload?.url.absoluteString == "https://ha.example.com/api/services/light/toggle")
+        #expect(relayed.payload?.method == "POST")
+        #expect(relayed.payload?.body == Data("{}".utf8))
+        #expect(relayed.payload?.headers["Authorization"] == "Bearer token")
+        #expect(relayed.payload?.timeout == 28)
+        #expect(relayed.budget == 30, "the link itself still gets the caller's whole budget")
+    }
+
+    @Test func returnsThePhonesAnswerAndNarratesTheRoute() async throws {
+        let steps = StepsBox()
+        let result = try await WatchRequestRelay.perform(
+            request(),
+            server: ServerFixture.standard,
+            budget: 30,
+            onStep: { steps.value.append($0) },
+            isAvailable: true,
+            deliver: { _, _ in .response(statusCode: 200, headers: [:], body: Data("ok".utf8)) }
+        )
+
+        #expect(result?.0 == Data("ok".utf8))
+        #expect(result?.1.statusCode == 200)
+        #expect(steps.value.contains("Relaying through iPhone…"))
+        #expect(steps.value.contains("iPhone answered 200"))
+    }
+
+    /// Out of range, out of battery, or a phone that never got the message: the watch is on its own
+    /// and has to try for itself.
+    @Test func fallsBackToTheWatchWhenThePhoneNeverAnswers() async throws {
+        let steps = StepsBox()
+        let result = try await WatchRequestRelay.perform(
+            request(),
+            server: ServerFixture.standard,
+            budget: 30,
+            onStep: { steps.value.append($0) },
+            isAvailable: true,
+            deliver: { _, _ in nil }
+        )
+
+        #expect(result == nil)
+        #expect(steps.value.contains("iPhone didn't answer"))
+    }
+
+    /// A GET the phone couldn't decode never reached the network, so the watch may still try it.
+    @Test func fallsBackToTheWatchWhenThePhoneNeverReachedTheNetworkAtAll() async throws {
+        let result = try await WatchRequestRelay.perform(
+            request(),
+            server: ServerFixture.standard,
+            budget: 30,
+            isAvailable: true,
+            deliver: { _, _ in .failure(.unknownServer, reason: "no such server") }
+        )
+
+        #expect(result == nil)
+    }
+
+    /// The phone already paid for this one on the network; repeating it is the caller's problem to
+    /// hear about, not the relay's to hide.
+    @Test func surfacesAFailureThePhoneAlreadyPaidForOnTheNetwork() async {
+        await #expect(throws: WatchRelayError(reason: "connection refused")) {
+            try await WatchRequestRelay.perform(
+                request(),
+                server: ServerFixture.standard,
+                budget: 30,
+                isAvailable: true,
+                deliver: { _, _ in .failure(.transport, reason: "connection refused") }
+            )
+        }
+    }
+}
+
+/// What the fake link was handed. The closure is called from another context, so a reference box
+/// carries the values back out.
+private final class RelayedBox: @unchecked Sendable {
+    var payload: WatchHTTPRequestPayload?
+    var budget: TimeInterval?
+}
+
+private final class StepsBox: @unchecked Sendable {
+    var value: [String] = []
 }
