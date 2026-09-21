@@ -81,7 +81,6 @@ struct WatchHTTPRelayPayloadsTests {
     /// `tooLarge` is the one that looks pre-network and isn't: the request succeeded and only the
     /// answer wouldn't fit back down the link.
     @Test func failuresKnowWhetherTheRequestReachedTheServer() {
-        #expect(WatchHTTPResponsePayload.Failure.notEnabled.didReachNetwork == false)
         #expect(WatchHTTPResponsePayload.Failure.malformedRequest.didReachNetwork == false)
         #expect(WatchHTTPResponsePayload.Failure.unknownServer.didReachNetwork == false)
         #expect(WatchHTTPResponsePayload.Failure.tooLarge.didReachNetwork)
@@ -93,16 +92,6 @@ struct WatchHTTPRelayPayloadsTests {
         #expect(requestPayload(method: "head").isIdempotent)
         #expect(requestPayload(method: "POST").isIdempotent == false)
         #expect(requestPayload(method: "DELETE").isIdempotent == false)
-    }
-
-    /// Only the phone declining outright says something that won't change; every other pre-network
-    /// failure is about this one request, so the watch must keep offering the next.
-    @Test func onlyADeclinedRelayTurnsItOff() {
-        #expect(WatchHTTPResponsePayload.Failure.notEnabled.disablesRelay)
-        #expect(WatchHTTPResponsePayload.Failure.malformedRequest.disablesRelay == false)
-        #expect(WatchHTTPResponsePayload.Failure.unknownServer.disablesRelay == false)
-        #expect(WatchHTTPResponsePayload.Failure.tooLarge.disablesRelay == false)
-        #expect(WatchHTTPResponsePayload.Failure.transport.disablesRelay == false)
     }
 
     /// WCSession serializes payloads as a binary property list and rejects anything it can't

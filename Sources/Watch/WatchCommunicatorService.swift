@@ -291,16 +291,6 @@ final class WatchCommunicatorService {
             ))
         }
 
-        // The beta gate for the whole relay, and the only one: the watch deliberately doesn't check
-        // `Current.isTestFlight` itself, because that reads the app-store receipt and the watch
-        // bundle doesn't reliably carry one. Answering `notEnabled` latches the relay off on the
-        // watch, so a production pairing pays this round trip once rather than once per request.
-        // Ungating this feature is deleting this guard.
-        guard Current.isTestFlight else {
-            reply(.failure(.notEnabled, reason: "This iPhone build doesn't relay watch requests"))
-            return
-        }
-
         guard let payload = WatchHTTPRequestPayload(content: message.content) else {
             Current.Log.error("Watch relayed an HTTP request that could not be decoded")
             reply(.failure(.malformedRequest, reason: "The iPhone could not decode the request"))

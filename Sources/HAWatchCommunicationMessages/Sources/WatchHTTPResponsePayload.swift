@@ -11,10 +11,6 @@ public enum WatchHTTPResponsePayload {
     case failure(Failure, reason: String)
 
     public enum Failure: String {
-        /// This build of the iPhone app doesn't accept relayed requests. Distinct from the other
-        /// pre-network failures in that it will not change for the life of the session, so the
-        /// watch stops asking rather than paying a round trip per request.
-        case notEnabled
         /// The phone couldn't decode the request — the two builds disagree about the wire format.
         case malformedRequest
         /// No server on the phone matches the request's `serverId` — the watch is configured with a
@@ -36,15 +32,9 @@ public enum WatchHTTPResponsePayload {
             switch self {
             case .transport, .tooLarge:
                 return true
-            case .notEnabled, .malformedRequest, .unknownServer:
+            case .malformedRequest, .unknownServer:
                 return false
             }
-        }
-
-        /// Whether the watch should stop relaying altogether rather than just retry this one
-        /// request. Only `notEnabled` says something about the phone that won't change.
-        public var disablesRelay: Bool {
-            self == .notEnabled
         }
     }
 

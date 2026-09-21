@@ -2,8 +2,6 @@ import Foundation
 @testable import Shared
 import Testing
 
-/// Serialized because the relay's "the phone declined" latch is process-wide static state.
-@Suite(.serialized)
 struct WatchRequestRelayTests {
     private func url(_ string: String) -> URL {
         URL(string: string)!
@@ -64,9 +62,7 @@ struct WatchRequestRelayTests {
     }
 
     @Test func fallsBackToTheWatchWhenThePhoneNeverReachedTheNetwork() throws {
-        defer { WatchRequestRelay.resetDisabledStateForTesting() }
         for failure in [WatchHTTPResponsePayload.Failure.malformedRequest, .unknownServer] {
-            WatchRequestRelay.resetDisabledStateForTesting()
             let result = try WatchRequestRelay.result(
                 of: .failure(failure, reason: "nope"),
                 url: url("https://ha.example.com/api/states"),
@@ -74,7 +70,6 @@ struct WatchRequestRelayTests {
             )
 
             #expect(result == nil)
-            #expect(WatchRequestRelay.isDisabledForTesting == false)
         }
     }
 
@@ -93,7 +88,7 @@ struct WatchRequestRelayTests {
 
     /// Nothing was sent, so the method doesn't matter.
     @Test func alwaysRepeatsAfterAPreNetworkFailure() {
-        for failure in [WatchHTTPResponsePayload.Failure.notEnabled, .malformedRequest, .unknownServer] {
+        for failure in [WatchHTTPResponsePayload.Failure.malformedRequest, .unknownServer] {
             #expect(WatchRequestRelay.allowsDirectRetry(after: failure, payload: payload(method: "POST")))
         }
     }
@@ -108,22 +103,6 @@ struct WatchRequestRelayTests {
                 payload: payload(method: "POST")
             )
         }
-    }
-
-    /// A phone that declines the relay won't change its mind, so the watch stops asking rather than
-    /// spending a round trip per request to hear the same answer.
-    @Test func aDeclinedRelayStopsTheWatchAskingAgain() throws {
-        WatchRequestRelay.resetDisabledStateForTesting()
-        defer { WatchRequestRelay.resetDisabledStateForTesting() }
-
-        let result = try WatchRequestRelay.result(
-            of: .failure(.notEnabled, reason: "not a beta build"),
-            url: url("https://ha.example.com/api/states"),
-            payload: payload()
-        )
-
-        #expect(result == nil)
-        #expect(WatchRequestRelay.isDisabledForTesting)
     }
 
     @Test func surfacesAFailureThePhoneGotFromTheNetwork() {

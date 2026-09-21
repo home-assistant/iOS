@@ -25,54 +25,21 @@ enum WatchRequestRelay {
     /// attempt rather than one that is certain to expire.
     static let minimumRequestTimeout: TimeInterval = 2
 
-    /// Latched once the phone has said it doesn't accept relayed requests, so the watch stops
-    /// asking instead of paying a round trip per request to be told the same thing.
-    private static let disabledLock = NSLock()
-    private static var isDisabledByPhone = false
-
     /// Whether a request should go to the phone at all.
     ///
     /// `counterpartProtocolVersion` matters as much as reachability: a phone that predates the
     /// relay drops the unknown message without replying, so relaying to one would burn a full reply
     /// timeout on every request before falling back. Unknown counts as too old.
-    ///
-    /// Note there is deliberately no `Current.isTestFlight` check here: that reads the app-store
-    /// receipt, which the watch bundle does not reliably carry. The phone holds the gate and
-    /// answers `notEnabled`, which latches `isDisabledByPhone` below.
     static var isAvailable: Bool {
         #if os(watchOS)
         guard Communicator.shared.currentReachability == .immediatelyReachable else { return false }
         guard let version = Communicator.shared.counterpartProtocolVersion,
               version >= WatchProtocolVersion.httpRelay else { return false }
-        disabledLock.lock()
-        defer { disabledLock.unlock() }
-        return !isDisabledByPhone
+        return true
         #else
         // Only the watch relays. The phone is the far end — it performs.
         return false
         #endif
-    }
-
-    /// Stops relaying for the rest of this app session.
-    static func disable() {
-        disabledLock.lock()
-        defer { disabledLock.unlock() }
-        isDisabledByPhone = true
-    }
-
-    /// Test seam — `isAvailable` folds this into several other conditions (and is always false off
-    /// the watch), so the latch needs reading on its own.
-    static var isDisabledForTesting: Bool {
-        disabledLock.lock()
-        defer { disabledLock.unlock() }
-        return isDisabledByPhone
-    }
-
-    /// Test seam — nothing in the app re-enables the relay once the phone has turned it down.
-    static func resetDisabledStateForTesting() {
-        disabledLock.lock()
-        defer { disabledLock.unlock() }
-        isDisabledByPhone = false
     }
 
     /// What the phone gets for the request itself, out of the caller's total budget.
@@ -138,10 +105,6 @@ enum WatchRequestRelay {
             return (body, http)
         case let .failure(failure, reason):
             Current.Log.error("iPhone could not relay \(payload.method) \(url.absoluteString): \(reason)")
-            if failure.disablesRelay {
-                Current.Log.info("iPhone doesn't accept relayed requests; the watch will send its own from now on")
-                disable()
-            }
             guard allowsDirectRetry(after: failure, payload: payload) else {
                 onStep?("iPhone already sent this request and it didn't come back: \(reason)")
                 throw WatchRelayError(reason: reason)
