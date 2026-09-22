@@ -12,10 +12,12 @@ class CameraMotionSensorTests: XCTestCase {
     )
 
     private var motionDetection: FakeMotionDetectionManager!
+    private var previousServers: ServerManager!
 
     override func setUp() {
         super.setUp()
 
+        previousServers = Current.servers
         let servers = FakeServerManager()
         servers.addFake()
         Current.servers = servers
@@ -28,6 +30,7 @@ class CameraMotionSensorTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
+        Current.servers = previousServers
         Current.motionDetection = MotionDetectionManager()
         SensorEnablementStore.resetForTesting()
     }

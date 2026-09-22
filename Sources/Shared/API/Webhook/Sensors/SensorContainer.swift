@@ -153,7 +153,12 @@ public class SensorContainer {
     /// no longer has. Adding that server again registers it under a new identifier, so it starts
     /// opt-in like any other new server rather than picking the old choices back up.
     public func forgetSensorSelection(forServerWithIdentifier identifier: Identifier<Server>) {
-        enablement.forgetServers(withIdentifiers: [identifier])
+        let forgotten = enablement.forgetServers(withIdentifiers: [identifier])
+        guard !forgotten.isEmpty else { return }
+        // Device-level work asks whether any server still wants a sensor, and removing the last one
+        // that did changes that answer. Without telling the observers, a camera or Health signaler
+        // the gone server was the only reason for keeps running.
+        notifySignal(reason: .settingsChange(changedUniqueIDs: Array(forgotten), serverIDs: []))
     }
 
     /// Starts a first-time install with nothing enabled. Every sensor is opt-in, so an install that

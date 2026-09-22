@@ -12,11 +12,13 @@ class CameraStreamSensorTests: XCTestCase {
     )
 
     private var motionDetection: FakeMotionDetectionManager!
+    private var previousServers: ServerManager!
     private var server: FakeCameraStreamServer!
 
     override func setUp() {
         super.setUp()
 
+        previousServers = Current.servers
         let servers = FakeServerManager()
         servers.addFake()
         Current.servers = servers
@@ -31,6 +33,7 @@ class CameraStreamSensorTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
+        Current.servers = previousServers
         Current.motionDetection = MotionDetectionManager()
         Current.cameraStreamServer = CameraStreamServer()
         SensorEnablementStore.resetForTesting()

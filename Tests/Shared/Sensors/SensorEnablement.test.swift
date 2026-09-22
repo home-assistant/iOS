@@ -300,6 +300,33 @@ class SensorEnablementTests: XCTestCase {
         XCTAssertFalse(isEnabledEverywhere(dynamicSensorID), storedEnablementState)
     }
 
+    /// Switching a not-yet-produced sensor on for one server must not hand it to the others when
+    /// the dynamic pass runs: the user asked for it in one place.
+    func testTurningADynamicSensorOnForOneServerLeavesTheOthersAlone() throws {
+        SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [dynamicSensorID])
+
+        container.setEnabled(true, forUniqueID: dynamicSensorID, on: server)
+        try generateSensors(withUniqueIDs: [dynamicSensorID])
+
+        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID, for: server), storedEnablementState)
+        XCTAssertFalse(container.isEnabled(uniqueID: dynamicSensorID, for: secondServer), storedEnablementState)
+    }
+
+    /// Removing the only server that wanted a sensor changes what device-level work should be
+    /// doing, which it only finds out about by being told.
+    func testForgettingAServerSignalsTheSensorsItWasTheLastToWant() {
+        container.resetSensorsForFirstRun()
+        container.setEnabled(true, forUniqueID: WebhookSensorId.cameraMotion.rawValue, on: secondServer)
+
+        let observer = MockSensorObserver()
+        container.register(observer: observer)
+        servers.remove(identifier: secondServer.identifier)
+        container.forgetSensorSelection(forServerWithIdentifier: secondServer.identifier)
+
+        XCTAssertEqual(observer.signalledUniqueIDs, [WebhookSensorId.cameraMotion.rawValue])
+        XCTAssertFalse(container.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraMotion.rawValue))
+    }
+
     func testSensorsAppearingAfterTheMigrationStayOffUntilEnabled() throws {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
 
@@ -408,6 +435,23 @@ class SensorEnablementTests: XCTestCase {
             server: server
         )
         _ = try hang(Promise(response))
+    }
+
+    /// Records what the container told its observers, which is how "the signal went out" is
+    /// observed without an API to receive it.
+    private class MockSensorObserver: SensorObserver {
+        var signalledUniqueIDs: [String] = []
+
+        func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {}
+
+        func sensorContainer(
+            _ container: SensorContainer,
+            didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+            lastUpdate: SensorObserverUpdate?
+        ) {
+            guard case let .settingsChange(changedUniqueIDs, _) = reason else { return }
+            signalledUniqueIDs.append(contentsOf: changedUniqueIDs)
+        }
     }
 
     private class MockEnablementSensorProvider: SensorProvider {

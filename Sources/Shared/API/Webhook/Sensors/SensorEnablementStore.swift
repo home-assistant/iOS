@@ -111,18 +111,19 @@ public final class SensorEnablementStore {
     /// dynamic IDs, because that pass reads the denylist to decide them. Without this, turning a
     /// per-battery or per-SIM sensor off before the app has produced it once would be undone.
     ///
-    /// The denylist has no room for "off here, on there", so a choice made in this window applies
-    /// to every server. That only affects sensors the app has never produced, which are therefore
-    /// reporting to nobody yet, and it errs the way opt-in does: a sensor someone has just switched
-    /// off doesn't start up anywhere.
+    /// Only switching off is recorded. The denylist has no room for "off here, on there", and it is
+    /// read as "give this to nobody", so an off is safe to mirror — the sensor has never been
+    /// produced, and so is reporting to nobody yet — while an on is not: clearing the entry would
+    /// let the dynamic pass hand the sensor to every inheriting server, when the user asked for it
+    /// on one. Switching one on needs no mirror anyway, because that writes straight to the
+    /// server's own allowlist and the dynamic pass only ever adds.
     ///
     /// - Returns: whether the denylist changed.
     private func recordChoiceForPendingMigration(_ value: Bool, forUniqueID uniqueID: String) -> Bool {
-        guard migrationState != .complete else { return false }
+        guard migrationState != .complete, !value else { return false }
 
         var disabled = legacyDisabledSensorIDs
-        let didChange = value ? disabled.remove(uniqueID) != nil : disabled.insert(uniqueID).inserted
-        guard didChange else { return false }
+        guard disabled.insert(uniqueID).inserted else { return false }
 
         legacyDisabledSensorIDs = disabled
         return true
@@ -277,13 +278,20 @@ public final class SensorEnablementStore {
     /// Drops a removed server's allowlist, so the app stops carrying choices for a server the user
     /// no longer has. Re-adding that server registers it under a new identifier, which starts
     /// opt-in like any other new server.
-    func forgetServers(withIdentifiers serverIDs: [Identifier<Server>]) {
-        guard !serverIDs.isEmpty else { return }
+    /// - Returns: the sensors the removed servers were receiving, which are the ones whose
+    ///   device-level answer to `isEnabledForAnyServer(uniqueID:)` may just have changed.
+    @discardableResult
+    func forgetServers(withIdentifiers serverIDs: [Identifier<Server>]) -> Set<String> {
+        guard !serverIDs.isEmpty else { return [] }
         prepareIfNeeded()
 
         let rawIDs = Set(serverIDs.map(\.rawValue))
 
         var byServer = enabledSensorIDsByServer
+        var forgotten = Set<String>()
+        for rawID in rawIDs {
+            forgotten.formUnion(byServer[rawID] ?? [])
+        }
         if !byServer.keys.filter(rawIDs.contains).isEmpty {
             byServer = byServer.filter { !rawIDs.contains($0.key) }
             enabledSensorIDsByServer = byServer
@@ -295,6 +303,8 @@ public final class SensorEnablementStore {
         if remainingInheriting.count != inheritingServerIDs.count {
             inheritingServerIDs = remainingInheriting
         }
+
+        return forgotten
     }
 
     private func removeLegacyKeys() {
