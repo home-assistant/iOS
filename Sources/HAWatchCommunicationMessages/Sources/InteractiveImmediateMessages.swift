@@ -49,4 +49,16 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     /// `vacuumCleanableAreasResponse`. Only sent while the phone is immediately reachable; the
     /// watch hides the option otherwise.
     case vacuumCleanableAreas
+    /// Watch → phone: perform one HTTP request on the watch's behalf, `WatchHTTPRequestPayload`.
+    /// The phone re-bases the URL against its own active URL for that server and dials it with the
+    /// same certificate-aware session the watch would have used, replying with
+    /// `httpRequestResponse`.
+    ///
+    /// This carries transport only — the watch still builds the request, owns its credentials and
+    /// parses the answer. What it borrows is the phone's position on the network: when the watch
+    /// routes through the phone, Apple's proxying hides the Wi-Fi it is really on, so the watch
+    /// can't tell that the internal URL would work and falls back to a remote one that may not be
+    /// reachable from inside the LAN at all (a router without NAT loopback). Letting the phone
+    /// dial makes the URL choice and the network vantage point the same device.
+    case httpRequest
 }
