@@ -44,7 +44,7 @@ public struct ConnectionInfo: Codable, Equatable {
         externalURL != nil || remoteUIURL != nil
     }
 
-    private var configuredURLs: [URL] {
+    public var configuredURLs: [URL] {
         [externalURL, internalURL, remoteUIURL].compactMap(\.self)
     }
 
