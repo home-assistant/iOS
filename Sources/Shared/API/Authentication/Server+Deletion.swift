@@ -21,6 +21,8 @@ public extension Server {
         Current.servers.remove(identifier: identifier)
         SiriServerExposure.delete(serverId: identifier.rawValue)
         SiriEntityExposure.delete(serverId: identifier.rawValue)
+        FrontendThemeVariable.delete(serverId: identifier.rawValue)
+        Current.frontendTheme().reload()
         Current.resetAPICache(for: [identifier])
         Current.onboardingObservation.needed(.logout)
     }
