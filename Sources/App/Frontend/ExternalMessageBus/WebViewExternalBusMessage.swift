@@ -35,6 +35,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case moreInfoOpened = "more_info/opened"
     case moreInfoClosed = "more_info/closed"
     case entityControlled = "entity/controlled"
+    case backButtonShow = "back_button/show"
+    case backButtonHide = "back_button/hide"
 
     @MainActor static var configResult: [String: Any] {
         [
@@ -54,6 +56,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
             "hasSplashscreen": true,
+            "hasNativeBackButton": NativeBackButtonState.shared.reportSupport(),
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
             "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
                 if #available(iOS 18, *), !Current.isCatalyst {
@@ -77,4 +80,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
     case showNotifications = "notifications/show"
+    case backButtonPressed = "back_button/pressed"
 }

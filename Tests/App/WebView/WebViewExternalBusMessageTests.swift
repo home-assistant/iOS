@@ -45,8 +45,10 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoOpened.rawValue, "more_info/opened")
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
         XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
+        XCTAssertEqual(WebViewExternalBusMessage.backButtonShow.rawValue, "back_button/show")
+        XCTAssertEqual(WebViewExternalBusMessage.backButtonHide.rawValue, "back_button/hide")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 29)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 31)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -73,8 +75,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.backButtonPressed.rawValue, "back_button/pressed")
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 10)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 11)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {
@@ -99,6 +102,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasSplashscreen",
             "appVersion",
             "toastComponentVersion",
+            "hasNativeBackButton",
         ]
 
         let actualKeys = Set(result.keys)

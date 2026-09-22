@@ -14,6 +14,7 @@ struct HomeAssistantView: View, WebFrontendView {
     @StateObject private var launchMessages = LaunchMessagesState()
     @ObservedObject private var nativeSidebar = MacNativeSidebarState.shared
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
+    @ObservedObject private var nativeBackButton = NativeBackButtonState.shared
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Owned by `ConditionalContainerView`, which presents the picker the stand-by view zooms into.
@@ -79,6 +80,21 @@ struct HomeAssistantView: View, WebFrontendView {
         }
         .onChange(of: nativeTabBar.isEnabled) { _ in
             viewModel.resetWebFrontend()
+        }
+        // The hinge is what tells us whether we draw the frontend's back button, and it is
+        // reported once the view is on screen. That normally lands well before the frontend asks
+        // for its config, so only reload when it turns out to have asked first.
+        .modify { view in
+            if #available(iOS 27.1, *) {
+                view.onHingeChange { _, context in
+                    nativeBackButton.hingeAvailabilityChanged(to: context.hinge != nil)
+                    if nativeBackButton.isFrontendReportStale {
+                        viewModel.resetWebFrontend()
+                    }
+                }
+            } else {
+                view
+            }
         }
     }
 
