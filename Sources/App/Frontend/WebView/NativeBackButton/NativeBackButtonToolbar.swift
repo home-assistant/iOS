@@ -10,7 +10,7 @@ import SwiftUI
 /// the frontend exactly as it was.
 @available(iOS 26, *)
 struct NativeBackButtonToolbar: ViewModifier {
-    @ObservedObject private var state = NativeBackButtonState.shared
+    @ObservedObject var state: NativeBackButtonState = .shared
 
     let webViewController: WebViewController?
 

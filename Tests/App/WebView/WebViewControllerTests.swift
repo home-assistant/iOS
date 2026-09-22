@@ -704,6 +704,17 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertFalse(sut.didReceiveClientCertificateChallenge)
     }
 
+    /// Whatever back button the old page asked the app to draw belongs to that page alone.
+    func testStartingANavigationTakesTheNativeBackButtonAway() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        NativeBackButtonState.shared.show()
+
+        sut.webView(WKWebView(), didStartProvisionalNavigation: nil)
+
+        XCTAssertFalse(NativeBackButtonState.shared.isVisible)
+    }
+
     func testFailedNavigationOverClientCertificateShowsCertificateEmptyState() {
         let sut = makeSUT()
         let overlayState = WebFrontendOverlayState()

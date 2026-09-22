@@ -20,10 +20,18 @@ final class NativeBackButtonState: ObservableObject {
     /// The value `config/get` last handed the frontend, or nil before it ever asked.
     private var reportedSupport: Bool?
 
+    /// Whether the native tab bar layout is on. Injected so a test can render the toolbar without
+    /// driving the App Labs store, which other tests flip underneath it.
+    private let isTabBarEnabled: () -> Bool
+
+    init(isTabBarEnabled: @escaping () -> Bool = { AppLabsFeature.iosNativeTabBar.isEnabled }) {
+        self.isTabBarEnabled = isTabBarEnabled
+    }
+
     /// Only a hinged device takes the back button over, and only in the native tab bar layout,
     /// which is the one that gives us a toolbar to put it in.
     var isSupported: Bool {
-        hasHinge && AppLabsFeature.iosNativeTabBar.isEnabled
+        hasHinge && isTabBarEnabled()
     }
 
     /// Answers `hasNativeBackButton` and remembers the answer, so we can tell later whether the

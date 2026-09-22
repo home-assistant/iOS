@@ -2,13 +2,18 @@ import Foundation
 @testable import HomeAssistant
 import Improv_iOS
 @testable import Shared
+import SwiftUI
 import Testing
+import UIKit
 
-/// The frontend hides its own back arrow the moment `hasNativeBackButton` is on, so the flag and
-/// the show/hide messages that follow it have to agree about when we draw one.
+/// The frontend hides its own back arrow the moment `hasNativeBackButton` is on, so the flag, the
+/// show/hide messages that follow it, and the toolbar we draw all have to agree.
+///
+/// One serialized suite covers all three: they share `NativeBackButtonState.shared` and the App
+/// Labs flag, and separate suites would run against each other's setup.
 @MainActor
 @Suite(.serialized)
-struct NativeBackButtonStateTests {
+struct NativeBackButtonTests {
     private func withDevice(
         hasHinge: Bool,
         tabBarEnabled: Bool,
@@ -17,20 +22,59 @@ struct NativeBackButtonStateTests {
         let previousIsTestFlight = Current.isTestFlight
         let previousTabBar = Current.appLabs.isEnabled(featureId: AppLabsFeature.iosNativeTabBar.rawValue)
         defer {
+            NativeBackButtonState.shared.hide()
             NativeBackButtonState.shared.hingeAvailabilityChanged(to: false)
             Current.appLabs.setEnabled(previousTabBar, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
             Current.isTestFlight = previousIsTestFlight
         }
 
-        NativeBackButtonState.shared.hingeAvailabilityChanged(to: hasHinge)
         Current.isTestFlight = true
         Current.appLabs.setEnabled(tabBarEnabled, featureId: AppLabsFeature.iosNativeTabBar.rawValue)
         for _ in 0 ..< 100 where AppLabsFeature.iosNativeTabBar.isEnabled != tabBarEnabled {
             try await Task.sleep(for: .milliseconds(20))
         }
+        NativeBackButtonState.shared.hingeAvailabilityChanged(to: hasHinge)
 
         try await body()
     }
+
+    /// Renders the toolbar the way a tab does and counts the controls it put on screen.
+    ///
+    /// The content itself draws none, so any control on screen is the toolbar's. Both the label
+    /// and the bar are out of reach of a plain view walk: SwiftUI exposes a toolbar item's label
+    /// through an accessibility element rather than the `UIView` it draws, and the bar it builds
+    /// is not a `UINavigationBar`.
+    @available(iOS 26, *)
+    private func renderedControlCount(state: NativeBackButtonState) async throws -> Int {
+        let controller = UIHostingController(
+            rootView: Color.clear.modifier(
+                NativeBackButtonToolbar(state: state, webViewController: nil)
+            )
+        )
+        let scene = try #require(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        window.layoutIfNeeded()
+
+        // The bar is built a run loop turn after the navigation stack comes up.
+        try await Task.sleep(for: .milliseconds(300))
+        window.layoutIfNeeded()
+        defer { window.isHidden = true }
+
+        var controls = 0
+        var queue: [UIView] = [window]
+        while let view = queue.popLast() {
+            if view is UIControl, !view.isHidden {
+                controls += 1
+            }
+            queue.append(contentsOf: view.subviews)
+        }
+
+        return controls
+    }
+
+    // MARK: - Reporting the flag
 
     @Test("The frontend is only told to drop its back arrow on a hinged device with the tab bar on")
     func supportedOnlyOnAHingedDevice() async throws {
@@ -82,6 +126,8 @@ struct NativeBackButtonStateTests {
         }
     }
 
+    // MARK: - Talking to the frontend
+
     @Test("The bus messages of the frontend drive the button, and a page load clears it")
     func busMessagesDriveTheButton() {
         let handler = WebViewExternalMessageHandler(improvManager: ImprovManager.shared)
@@ -116,5 +162,42 @@ struct NativeBackButtonStateTests {
         let script = try #require(webViewController.lastEvaluatedJavaScriptScript)
         #expect(script.contains("\"command\":\"back_button\\/pressed\""))
         #expect(script.contains("\"type\":\"command\""))
+    }
+
+    // MARK: - Drawing the button
+
+    @available(iOS 26, *)
+    @Test("The button is there while the frontend reports a back action")
+    func showsTheButtonWhenTheFrontendAsksForIt() async throws {
+        let state = NativeBackButtonState(isTabBarEnabled: { true })
+        state.hingeAvailabilityChanged(to: true)
+        state.show()
+
+        let controls = try await renderedControlCount(state: state)
+
+        #expect(controls > 0)
+    }
+
+    @available(iOS 26, *)
+    @Test("A page with nowhere to go back to gets no button")
+    func hidesTheButtonWithoutABackAction() async throws {
+        let state = NativeBackButtonState(isTabBarEnabled: { true })
+        state.hingeAvailabilityChanged(to: true)
+        state.hide()
+
+        let controls = try await renderedControlCount(state: state)
+
+        #expect(controls == 0)
+    }
+
+    @available(iOS 26, *)
+    @Test("A device we never claimed the back button on keeps the frontend as it was")
+    func addsNoChromeWhenUnsupported() async throws {
+        let state = NativeBackButtonState(isTabBarEnabled: { true })
+        state.show()
+
+        let controls = try await renderedControlCount(state: state)
+
+        #expect(controls == 0)
     }
 }
