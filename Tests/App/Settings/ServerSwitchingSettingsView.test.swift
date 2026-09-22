@@ -24,7 +24,29 @@ struct ServerSwitchingSettingsViewTests {
         assertLightDarkSnapshots(
             of: NavigationView {
                 ServerSwitchingSettingsView(
-                    viewModel: ServerSwitchingSettingsViewModel(closestServerDescription: "Fake Server · 1.2 km")
+                    viewModel: ServerSwitchingSettingsViewModel(
+                        closestServerDescription: "Fake Server · 1.2 km",
+                        closestServerSource: .location(distance: 1200)
+                    )
+                )
+            },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @MainActor
+    @Test func serverSwitchingScreenWithClosestServerOnHomeNetwork() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 2)
+        // Matched by Wi-Fi: no distance in the value, and the badge says where it came from.
+        assertLightDarkSnapshots(
+            of: NavigationView {
+                ServerSwitchingSettingsView(
+                    viewModel: ServerSwitchingSettingsViewModel(
+                        closestServerDescription: "Fake Server",
+                        closestServerSource: .homeNetwork
+                    )
                 )
             },
             drawHierarchyInKeyWindow: true
