@@ -55,9 +55,7 @@ struct HomeAssistantView: View, WebFrontendView {
                     frontendOpacity: viewModel.webViewContentOpacity,
                     frontendIgnoredSafeAreaEdges: viewModel.webViewIgnoredSafeAreaEdges,
                     onNeedsWebViewController: viewModel.ensureWebViewController
-                ) {
-                    standByView
-                }
+                )
             }
             // The frontend chrome keeps one structural identity whichever App Labs layout is on, so its
             // appear/disappear fades never race each other when a layout is toggled.
@@ -110,9 +108,9 @@ struct HomeAssistantView: View, WebFrontendView {
                 value: viewModel.isWebViewCoveredByStandBy
             )
             noActiveURLState
-            if !isNativeTabBarActive {
-                standByView
-            }
+            // Layered above the native tab bar, not inside a tab: the bar belongs to the `TabView`, so
+            // covering it is what takes it off screen while stand-by is up.
+            standByView
         }
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.showsNoActiveURL)
@@ -207,7 +205,7 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @ViewBuilder
     private var standByView: some View {
-        if viewModel.shouldShowStandByView, !viewModel.overlayState.showsNoActiveURL {
+        if viewModel.isStandByViewVisible {
             HomeAssistantStandByView(
                 server: viewModel.server,
                 emptyState: viewModel.displayedEmptyState,
