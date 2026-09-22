@@ -37,35 +37,159 @@ struct SensorListView: View {
     }()
 
     var body: some View {
-        if viewModel.server == nil {
-            list
-        } else {
-            list.searchable(
-                text: $viewModel.searchTerm,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: Text(L10n.SettingsSensors.Sensors.searchPrompt)
-            )
-        }
-    }
-
-    private var list: some View {
         List {
             if !viewModel.isSearching {
-                header
+                if let server = viewModel.server, isServerScoped {
+                    AppleLikeListTopRowHeader(
+                        image: .motionSensorIcon,
+                        title: server.info.name,
+                        subtitle: L10n.SettingsSensors.Servers.serverBody
+                    )
+                } else {
+                    AppleLikeListTopRowHeader(
+                        image: .motionSensorIcon,
+                        title: L10n.SettingsSensors.title,
+                        subtitle: L10n.SettingsSensors.body
+                    )
+                }
+
                 if !isServerScoped {
-                    periodicUpdateSection
-                    permissionsSection
-                    serversSection
+                    Section(
+                        header: Text(L10n.SettingsSensors.PeriodicUpdate.foregroundHeader),
+                        footer: Text(periodicUpdateFooter)
+                    ) {
+                        Picker(
+                            selection: $viewModel.periodicUpdateInterval,
+                            label: Text(L10n.SettingsSensors.PeriodicUpdate.title)
+                        ) {
+                            ForEach(periodicOptions, id: \.self) { option in
+                                Text(periodicUpdateDisplayText(for: option)).tag(option)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .onChange(of: viewModel.periodicUpdateInterval) { newValue in
+                            viewModel.setPeriodicUpdateInterval(newValue)
+                        }
+                    }
+
+                    if !permissionsViewModel.availablePermissions.isEmpty {
+                        Section {
+                            NavigationLink {
+                                SensorPermissionsView()
+                            } label: {
+                                HStack {
+                                    Text(L10n.SettingsSensors.Permissions.header)
+                                    Spacer()
+                                    if permissionsViewModel.notDeterminedCount > 0 {
+                                        Text("\(permissionsViewModel.notDeterminedCount)")
+                                            .font(.footnote.weight(.semibold))
+                                            .foregroundStyle(.white)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 2)
+                                            .background(.orange, in: Capsule())
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            if viewModel.server != nil {
-                healthSensorsSection
-                if !viewModel.isSearching {
-                    enableAllSection
+
+            // Each server picks its own sensors, so with more than one there is nothing sensible to
+            // toggle on this screen — it lists the servers, and the toggles live one step in.
+            if !isServerScoped, !viewModel.selectableServers.isEmpty {
+                Section {
+                    ForEach(viewModel.filteredServers, id: \.identifier) { server in
+                        NavigationLink {
+                            SensorListView(server: server)
+                        } label: {
+                            HStack {
+                                Text(server.info.name)
+                                Spacer()
+                                // Inside the label rather than `.badge`, so the count sits between
+                                // the name and the disclosure chevron instead of after it.
+                                Text("\(viewModel.enabledCount(for: server))")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                } header: {
+                    Text(L10n.SettingsSensors.Servers.header)
+                } footer: {
+                    Text(L10n.SettingsSensors.Servers.footer)
                 }
-                sensorSections
+            }
+
+            if let server = viewModel.server {
+                #if os(iOS) && !targetEnvironment(macCatalyst)
+                // Apple Health has too many sensors to mix into the list below, so they get their
+                // own screen.
+                if viewModel.showHealthSection {
+                    Section(footer: Text(L10n.SettingsSensors.Health.footer)) {
+                        NavigationLink {
+                            HealthSensorListView(server: server)
+                        } label: {
+                            HStack {
+                                Text(L10n.SettingsSensors.Health.Sensors.title)
+                                LabsLabel()
+                                Spacer()
+                                Text("\(viewModel.enabledHealthSensorCount)")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+                #endif
+
+                if !viewModel.isSearching {
+                    Section {
+                        Toggle(isOn: .init(get: {
+                            viewModel.allSensorsEnabled
+                        }, set: { newValue in
+                            viewModel.updateAllSensors(isEnabled: newValue)
+                        })) {
+                            Text(L10n.SettingsSensors.Sensors.enableAll)
+                        }
+                    } header: {
+                        Text(L10n.SettingsSensors.Sensors.header)
+                    } footer: {
+                        if let lastUpdate = viewModel.lastUpdateDate {
+                            Text("\(L10n.SettingsSensors.LastUpdated.prefix) ") +
+                                Text(lastUpdate, style: .date) +
+                                Text(" ") +
+                                Text(lastUpdate, style: .time)
+                        }
+                    }
+                }
+
+                ForEach(viewModel.filteredSensors, id: \.UniqueID) { sensor in
+                    Section {
+                        Toggle(isOn: .init(get: {
+                            viewModel.isEnabled(sensor)
+                        }, set: { newValue in
+                            viewModel.setEnabled(newValue, for: sensor)
+                        })) {
+                            SensorRow(sensor: sensor, isEnabled: viewModel.isEnabled(sensor))
+                        }
+                        NavigationLink(destination: SensorDetailView(sensor: sensor, server: server)) {
+                            Text(L10n.SettingsSensors.Sensors.configure)
+                        }
+                    }
+                }
+
+                if viewModel.isSearching, viewModel.filteredSensors.isEmpty {
+                    Section {
+                        Text(L10n.SettingsSensors.Sensors.noResults)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
         }
+        .searchable(
+            text: $viewModel.searchTerm,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: Text(searchPrompt)
+        )
         .onAppear {
             permissionsViewModel.update()
             viewModel.refresh()
@@ -83,164 +207,12 @@ struct SensorListView: View {
         .listTopContentMargin()
     }
 
-    @ViewBuilder
-    private var header: some View {
-        if let server = viewModel.server, isServerScoped {
-            AppleLikeListTopRowHeader(
-                image: .motionSensorIcon,
-                title: server.info.name,
-                subtitle: L10n.SettingsSensors.Servers.serverBody
-            )
-        } else {
-            AppleLikeListTopRowHeader(
-                image: .motionSensorIcon,
-                title: L10n.SettingsSensors.title,
-                subtitle: L10n.SettingsSensors.body
-            )
-        }
-    }
-
-    private var periodicUpdateSection: some View {
-        Section(
-            header: Text(L10n.SettingsSensors.PeriodicUpdate.foregroundHeader),
-            footer: Text(periodicUpdateFooter)
-        ) {
-            Picker(
-                selection: $viewModel.periodicUpdateInterval,
-                label: Text(L10n.SettingsSensors.PeriodicUpdate.title)
-            ) {
-                ForEach(periodicOptions, id: \.self) { option in
-                    Text(periodicUpdateDisplayText(for: option)).tag(option)
-                }
-            }
-            .pickerStyle(.menu)
-            .onChange(of: viewModel.periodicUpdateInterval) { newValue in
-                viewModel.setPeriodicUpdateInterval(newValue)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var permissionsSection: some View {
-        if !permissionsViewModel.availablePermissions.isEmpty {
-            Section {
-                NavigationLink {
-                    SensorPermissionsView()
-                } label: {
-                    HStack {
-                        Text(L10n.SettingsSensors.Permissions.header)
-                        Spacer()
-                        if permissionsViewModel.notDeterminedCount > 0 {
-                            Text("\(permissionsViewModel.notDeterminedCount)")
-                                .font(.footnote.weight(.semibold))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(.orange, in: Capsule())
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /// Each server picks its own sensors, so with more than one there is nothing sensible to toggle
-    /// on this screen — it lists the servers, and the toggles live one step in.
-    @ViewBuilder
-    private var serversSection: some View {
-        if !viewModel.selectableServers.isEmpty {
-            Section {
-                ForEach(viewModel.selectableServers, id: \.identifier) { server in
-                    NavigationLink {
-                        SensorListView(server: server)
-                    } label: {
-                        HStack {
-                            Text(server.info.name)
-                            Spacer()
-                            // Inside the label rather than `.badge`, so the count sits between the
-                            // name and the disclosure chevron instead of after it.
-                            Text("\(viewModel.enabledCount(for: server))")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-            } header: {
-                Text(L10n.SettingsSensors.Servers.header)
-            } footer: {
-                Text(L10n.SettingsSensors.Servers.footer)
-            }
-        }
-    }
-
-    private var enableAllSection: some View {
-        Section {
-            Toggle(isOn: .init(get: {
-                viewModel.allSensorsEnabled
-            }, set: { newValue in
-                viewModel.updateAllSensors(isEnabled: newValue)
-            })) {
-                Text(L10n.SettingsSensors.Sensors.enableAll)
-            }
-        } header: {
-            Text(L10n.SettingsSensors.Sensors.header)
-        } footer: {
-            if let lastUpdate = viewModel.lastUpdateDate {
-                Text("\(L10n.SettingsSensors.LastUpdated.prefix) ") +
-                    Text(lastUpdate, style: .date) +
-                    Text(" ") +
-                    Text(lastUpdate, style: .time)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var sensorSections: some View {
-        ForEach(viewModel.filteredSensors, id: \.UniqueID) { sensor in
-            Section {
-                Toggle(isOn: .init(get: {
-                    viewModel.isEnabled(sensor)
-                }, set: { newValue in
-                    viewModel.setEnabled(newValue, for: sensor)
-                })) {
-                    SensorRow(sensor: sensor, isEnabled: viewModel.isEnabled(sensor))
-                }
-                if let server = viewModel.server {
-                    NavigationLink(destination: SensorDetailView(sensor: sensor, server: server)) {
-                        Text(L10n.SettingsSensors.Sensors.configure)
-                    }
-                }
-            }
-        }
-        if viewModel.isSearching, viewModel.filteredSensors.isEmpty {
-            Section {
-                Text(L10n.SettingsSensors.Sensors.noResults)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    /// Apple Health has too many sensors to mix into the list below, so they get their own screen.
-    @ViewBuilder
-    private var healthSensorsSection: some View {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        if let server = viewModel.server, viewModel.showHealthSection {
-            Section(footer: Text(L10n.SettingsSensors.Health.footer)) {
-                NavigationLink {
-                    HealthSensorListView(server: server)
-                } label: {
-                    HStack {
-                        Text(L10n.SettingsSensors.Health.Sensors.title)
-                        LabsLabel()
-                        Spacer()
-                        // Inside the label rather than `.badge`, so the count sits between the
-                        // title and the disclosure chevron instead of after it.
-                        Text("\(viewModel.enabledHealthSensorCount)")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-        }
-        #endif
+    /// The root screen of an install with several servers lists those rather than sensors, so that
+    /// is what its search field looks through.
+    private var searchPrompt: String {
+        viewModel.server == nil
+            ? L10n.SettingsSensors.Servers.searchPrompt
+            : L10n.SettingsSensors.Sensors.searchPrompt
     }
 
     /// On Mac the periodic update also runs while the app is in the background, everywhere else

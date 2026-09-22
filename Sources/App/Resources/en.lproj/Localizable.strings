@@ -2372,6 +2372,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_sensors.sensors.search_prompt" = "Search sensors";
 "settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
 "settings_sensors.servers.header" = "Servers";
+"settings_sensors.servers.search_prompt" = "Search servers";
 "settings_sensors.servers.server_body" = "Decide which of your device sensors you want to share with this server.";
 "settings_sensors.settings.footer" = "Changes will be applied on the next update.";
 "settings_sensors.settings.header" = "Settings";

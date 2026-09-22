@@ -5,6 +5,9 @@ import Testing
 
 /// Sensors are chosen per server, so the root screen shows either one server's sensors or the list
 /// of servers to pick one — which is the difference these cover.
+///
+/// Serialized because `withServers` swaps globals on `Current`.
+@Suite(.serialized)
 struct SensorListViewTests {
     @MainActor
     @Test func sensorListWithOneServerShowsItsSensors() throws {

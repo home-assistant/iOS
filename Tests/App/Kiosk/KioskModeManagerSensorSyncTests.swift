@@ -42,6 +42,29 @@ final class KioskModeManagerSensorSyncTests: XCTestCase {
         super.tearDown()
     }
 
+    /// "Any server has it" is already satisfied by a selection that differs between servers, so the
+    /// sync has to look at all of them or the ones that disagree never catch up.
+    func testTransitionReachesServersWhoseSelectionDiffers() throws {
+        let servers = try XCTUnwrap(Current.servers as? FakeServerManager)
+        let alreadyOn = try XCTUnwrap(servers.all.first)
+        let stillOff = servers.addFake()
+
+        for sensorId in kioskSensorIds {
+            Current.sensors.setEnabled(true, forUniqueID: sensorId.rawValue, on: alreadyOn)
+        }
+
+        let manager = KioskModeManager()
+        try persistKioskSettings(enabled: true)
+        waitFor(manager, kioskEnabled: true)
+
+        for sensorId in kioskSensorIds {
+            XCTAssertTrue(
+                Current.sensors.isEnabled(uniqueID: sensorId.rawValue, for: stillOff),
+                "\(sensorId.rawValue) never reached the server it was switched off for"
+            )
+        }
+    }
+
     func testObservationWithoutTransitionDoesNotDisableUserEnabledSensors() throws {
         // Kiosk mode is off (no persisted settings) and the user has the kiosk sensors enabled.
         for sensorId in kioskSensorIds {

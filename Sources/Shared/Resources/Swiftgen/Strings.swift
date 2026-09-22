@@ -7747,6 +7747,8 @@ public enum L10n {
       public static var footer: String { return L10n.tr("Localizable", "settings_sensors.servers.footer") }
       /// Servers
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.servers.header") }
+      /// Search servers
+      public static var searchPrompt: String { return L10n.tr("Localizable", "settings_sensors.servers.search_prompt") }
       /// Decide which of your device sensors you want to share with this server.
       public static var serverBody: String { return L10n.tr("Localizable", "settings_sensors.servers.server_body") }
     }

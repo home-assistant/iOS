@@ -1,3 +1,4 @@
+import Combine
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
@@ -5,6 +6,7 @@ import Testing
 
 /// The sensor list is scoped to one server, or to none on the root screen of an install with
 /// several. These cover what that scoping changes.
+@Suite(.serialized)
 @MainActor
 struct SensorListViewModelPerServerTests {
     @Test func aScopedModelReportsOnlyItsOwnServersSelection() async throws {
@@ -80,6 +82,39 @@ struct SensorListViewModelPerServerTests {
             // With one server its sensors are shown on the root screen itself, so there is nothing
             // to pick between.
             #expect(SensorListViewModel(server: nil).selectableServers.isEmpty)
+        }
+    }
+
+    /// An already-open screen has to follow servers coming and going, or it keeps offering one that
+    /// has been removed.
+    @Test func theServerListFollowsServersBeingAddedAndRemoved() async throws {
+        try await withServers { servers in
+            let viewModel = SensorListViewModelWithoutRefresh(server: nil)
+            #expect(viewModel.selectableServers.count == 2)
+
+            // The fake registry stores the change without announcing it, which the real one does.
+            let added = servers.addFake()
+            servers.notify()
+            await settle { viewModel.servers.count == 3 }
+            #expect(viewModel.selectableServers.count == 3)
+
+            servers.remove(identifier: added.identifier)
+            servers.notify()
+            await settle { viewModel.servers.count == 2 }
+            #expect(viewModel.selectableServers.count == 2)
+        }
+    }
+
+    /// The root screen lists servers rather than sensors, so that is what its search looks through.
+    @Test func searchingTheRootScreenFiltersTheServers() async throws {
+        try await withServers { servers in
+            let viewModel = SensorListViewModelWithoutRefresh(server: nil)
+            let wanted = try #require(servers.all.first)
+            wanted.info.remoteName = "Holiday house"
+
+            viewModel.searchTerm = "holiday"
+
+            #expect(viewModel.filteredServers.map(\.identifier) == [wanted.identifier])
         }
     }
 

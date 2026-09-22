@@ -11,6 +11,9 @@ class SensorListViewModel: ObservableObject {
     @Published var sensors: [WebhookSensor] = []
     /// Mirrored here so toggling a sensor re-renders the list; `SensorContainer` isn't observable.
     @Published private(set) var enabledUniqueIDs: Set<String> = []
+    /// Kept current from `serversDidChange`, so adding or removing one while this screen is open
+    /// doesn't leave it offering a server that is gone or hiding one that has just arrived.
+    @Published private(set) var servers: [Server] = []
     @Published var lastUpdateDate: Date?
     @Published var periodicUpdateInterval: TimeInterval? = Current.settingsStore.periodicUpdateInterval
     @Published var searchTerm: String = ""
@@ -64,8 +67,15 @@ class SensorListViewModel: ObservableObject {
     /// The servers the root screen lists, each leading to its own copy of this screen. Empty while
     /// there is only one, whose sensors are shown on the root screen itself.
     var selectableServers: [Server] {
-        let all = Current.servers.all.sorted()
-        return all.count > 1 ? all : []
+        servers.count > 1 ? servers.sorted() : []
+    }
+
+    /// The servers matching the current search term. Searching the root screen is searching the
+    /// list it actually shows, which is the servers rather than one of their sensors.
+    var filteredServers: [Server] {
+        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !term.isEmpty else { return selectableServers }
+        return selectableServers.filter { $0.info.name.localizedStandardContains(term) }
     }
 
     var allSensorsEnabled: Bool {
@@ -82,11 +92,14 @@ class SensorListViewModel: ObservableObject {
     init(server: Server?) {
         self.server = server
         self.enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
+        self.servers = Current.servers.all
         Current.sensors.register(observer: self)
+        Current.servers.add(observer: self)
     }
 
     deinit {
         Current.sensors.unregister(observer: self)
+        Current.servers.remove(observer: self)
     }
 
     func isEnabled(_ sensor: WebhookSensor) -> Bool {
@@ -163,6 +176,16 @@ class SensorListViewModel: ObservableObject {
                 return (lhs.UniqueID ?? "") < (rhs.UniqueID ?? "")
             }
             return comparison == .orderedAscending
+        }
+    }
+}
+
+// MARK: - ServerObserver
+
+extension SensorListViewModel: ServerObserver {
+    func serversDidChange(_ serverManager: ServerManager) {
+        DispatchQueue.main.async { [weak self] in
+            self?.servers = serverManager.all
         }
     }
 }
