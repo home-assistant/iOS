@@ -12,9 +12,15 @@ class CameraMotionSensorTests: XCTestCase {
     )
 
     private var motionDetection: FakeMotionDetectionManager!
+    private var previousServers: ServerManager!
 
     override func setUp() {
         super.setUp()
+
+        previousServers = Current.servers
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
 
         motionDetection = FakeMotionDetectionManager()
         Current.motionDetection = motionDetection
@@ -24,6 +30,7 @@ class CameraMotionSensorTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
+        Current.servers = previousServers
         Current.motionDetection = MotionDetectionManager()
         SensorEnablementStore.resetForTesting()
     }
@@ -69,11 +76,11 @@ class CameraMotionSensorTests: XCTestCase {
         motionDetection.overrideCanDetectMotion = true
 
         _ = try hang(CameraMotionSensor(request: request).sensors())
-        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: WebhookSensorId.cameraMotion.rawValue))
+        XCTAssertFalse(Current.sensors.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraMotion.rawValue))
 
-        Current.sensors.setEnabled(true, forUniqueID: WebhookSensorId.cameraMotion.rawValue)
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: WebhookSensorId.cameraMotion.rawValue)
         _ = try hang(CameraMotionSensor(request: request).sensors())
-        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: WebhookSensorId.cameraMotion.rawValue))
+        XCTAssertTrue(Current.sensors.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraMotion.rawValue))
     }
 
     func testSignalerCreated() throws {

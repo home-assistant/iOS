@@ -52,7 +52,7 @@ class BaseSensorUpdateSignaler: SensorObserver {
             })
 
             let activeSensors = activeRelatedSensors.filter({ sensor in
-                Current.sensors.isEnabled(sensor: sensor)
+                Current.sensors.isEnabledForAnyServer(sensor: sensor)
             })
 
             if activeSensors.isEmpty {

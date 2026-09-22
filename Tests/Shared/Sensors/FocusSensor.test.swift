@@ -13,8 +13,22 @@ class FocusSensorTests: XCTestCase {
 
     private let now = Date(timeIntervalSince1970: 1_700_000_000)
 
+    /// Enablement is per server, so the device-level observation these cover only starts while
+    /// there is a server to report to.
+    private var previousServers: ServerManager!
+
     override func setUp() {
         super.setUp()
+        previousServers = Current.servers
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
+        // Stated rather than inherited: the observation only runs while a server wants the sensor,
+        // and what an earlier test left in the shared selection is not this test's premise.
+        SensorEnablementStore.resetForTesting()
+        Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [
+            WebhookSensorId.focus.rawValue,
+        ])
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
         Current.focusFilter.state.value = nil
@@ -23,6 +37,8 @@ class FocusSensorTests: XCTestCase {
     }
 
     override func tearDown() {
+        SensorEnablementStore.resetForTesting()
+        Current.servers = previousServers
         Current.focusFilter.state.value = nil
         Current.focusStatus.receivedStatus.value = nil
         Current.focusFilter = FocusFilterWrapper()

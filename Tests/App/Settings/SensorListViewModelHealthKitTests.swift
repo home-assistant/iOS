@@ -8,6 +8,8 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
     private var originalHealthKitService: HealthKitService!
     private var originalSensors: SensorContainer!
+    private var originalServers: ServerManager!
+    private var server: Server!
     private var previousReported: Any?
 
     override func setUp() {
@@ -15,8 +17,12 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
         originalHealthKitService = Current.healthKitService
         originalSensors = Current.sensors
+        originalServers = Current.servers
         previousReported = Current.settingsStore.prefs.object(forKey: Self.reportedKey)
 
+        let servers = FakeServerManager()
+        server = servers.addFake()
+        Current.servers = servers
         Current.sensors = SensorContainer()
         SensorEnablementStore.resetForTesting()
         Current.settingsStore.prefs.removeObject(forKey: Self.reportedKey)
@@ -34,8 +40,11 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         }
         Current.healthKitService = originalHealthKitService
         Current.sensors = originalSensors
+        Current.servers = originalServers
+        server = nil
         originalHealthKitService = nil
         originalSensors = nil
+        originalServers = nil
         previousReported = nil
         super.tearDown()
     }
@@ -59,7 +68,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         Current.healthKitService.requestReadAuthorization = originalHealthKitService.requestReadAuthorization
         // Established explicitly rather than assumed: with a sensor enabled this reaches real
         // HealthKit, which never returns on a headless simulator and hangs the whole suite.
-        Current.sensors.setEnabled(false, forUniqueIDs: HealthKitMetric.all.map(\.uniqueID))
+        Current.sensors.setEnabledForAllServers(false, forUniqueIDs: HealthKitMetric.all.map(\.uniqueID))
         var thrown: Error?
 
         do {
@@ -96,15 +105,15 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
         viewModel.updateAllSensors(isEnabled: true)
 
-        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
-        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
+        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: server))
+        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID, for: server))
     }
 
     // MARK: - Apple Health sensor list
 
     @MainActor
     func testHealthSensorListStartsWithEverythingDisabled() {
-        let viewModel = HealthSensorListViewModel()
+        let viewModel = HealthSensorListViewModel(server: server)
 
         XCTAssertTrue(viewModel.enabledUniqueIDs.isEmpty)
         XCTAssertFalse(viewModel.areAllEnabled)
@@ -112,23 +121,39 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
     @MainActor
     func testHealthSensorListTogglesIndividualMetrics() throws {
-        let viewModel = HealthSensorListViewModel()
+        let viewModel = HealthSensorListViewModel(server: server)
         let metric = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_heart_rate"))
 
         viewModel.setEnabled(true, for: metric)
 
         XCTAssertTrue(viewModel.isEnabled(metric))
-        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: metric.uniqueID))
+        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: metric.uniqueID, for: server))
 
         viewModel.setEnabled(false, for: metric)
 
         XCTAssertFalse(viewModel.isEnabled(metric))
-        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: metric.uniqueID))
+        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: metric.uniqueID, for: server))
+    }
+
+    /// Each category has its own "Enable all", which only covers the metrics it lists.
+    @MainActor
+    func testHealthSensorListEnablesEverythingInOneCategory() {
+        let viewModel = HealthSensorListViewModel(server: server)
+        let category = HealthKitMetricCategory.heart
+        let inCategory = Set(HealthKitMetric.metrics(in: category).map(\.uniqueID))
+        XCTAssertFalse(inCategory.isEmpty)
+
+        viewModel.enableAll(in: category)
+
+        XCTAssertTrue(inCategory.isSubset(of: viewModel.enabledUniqueIDs))
+        // The other categories are left alone.
+        XCTAssertEqual(viewModel.enabledUniqueIDs, inCategory)
+        XCTAssertFalse(viewModel.areAllEnabled)
     }
 
     @MainActor
     func testHealthSensorListEnablesAndDisablesEverything() {
-        let viewModel = HealthSensorListViewModel()
+        let viewModel = HealthSensorListViewModel(server: server)
 
         viewModel.setAllEnabled(true)
         XCTAssertTrue(viewModel.areAllEnabled)
@@ -140,7 +165,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
     @MainActor
     func testHealthSensorListShowsReportedStates() async throws {
-        let viewModel = HealthSensorListViewModel()
+        let viewModel = HealthSensorListViewModel(server: server)
         let sensor = WebhookSensor(
             name: "Resting Heart Rate",
             uniqueID: HealthKitMetric.restingHeartRate.uniqueID,
@@ -161,7 +186,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         Current.healthKitService.requestReadAuthorization = {
             throw HealthKitService.HealthKitServiceError.noEnabledSensors
         }
-        let viewModel = HealthSensorListViewModel()
+        let viewModel = HealthSensorListViewModel(server: server)
         XCTAssertTrue(viewModel.isHealthKitAvailable)
 
         await viewModel.requestAuthorization()
@@ -172,7 +197,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
 
     @MainActor
     func testHealthSensorListSearchFiltersByName() {
-        let viewModel = HealthSensorListViewModel()
+        let viewModel = HealthSensorListViewModel(server: server)
 
         viewModel.searchTerm = "water"
 

@@ -6,6 +6,9 @@ import UIKit
 
 @MainActor
 class HealthSensorListViewModel: ObservableObject {
+    /// The server these metrics are being chosen for. Enablement is per server, so this screen
+    /// only speaks for this one.
+    let server: Server
     @Published var searchTerm = ""
     @Published var alertMessage: String?
     @Published var showAlert = false
@@ -16,9 +19,10 @@ class HealthSensorListViewModel: ObservableObject {
     /// this screen is where their values are visible.
     @Published private(set) var stateDescriptions: [String: String] = [:]
 
-    init() {
+    init(server: Server) {
+        self.server = server
         self.isHealthKitAvailable = Current.healthKitService.isAvailable()
-        self.enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
+        self.enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
         Current.sensors.register(observer: self)
     }
 
@@ -58,20 +62,20 @@ class HealthSensorListViewModel: ObservableObject {
     }
 
     func setEnabled(_ isEnabled: Bool, for metric: HealthKitMetric) {
-        Current.sensors.setEnabled(isEnabled, forUniqueID: metric.uniqueID)
-        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
+        Current.sensors.setEnabled(isEnabled, forUniqueID: metric.uniqueID, on: server)
+        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
         guard isEnabled else { return }
         Task { await requestAuthorization() }
     }
 
     func setAllEnabled(_ isEnabled: Bool) {
-        Current.sensors.setEnabled(isEnabled, forUniqueIDs: HealthKitMetric.all.map(\.uniqueID))
-        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
+        Current.sensors.setEnabled(isEnabled, forUniqueIDs: HealthKitMetric.all.map(\.uniqueID), on: server)
+        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
     }
 
     func enableAll(in category: HealthKitMetricCategory) {
-        Current.sensors.setEnabled(true, forUniqueIDs: metrics(in: category).map(\.uniqueID))
-        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs()
+        Current.sensors.setEnabled(true, forUniqueIDs: metrics(in: category).map(\.uniqueID), on: server)
+        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
         Task { await requestAuthorization() }
     }
 
@@ -102,8 +106,9 @@ class HealthSensorListViewModel: ObservableObject {
         }
     }
 
-    private static func currentlyEnabledUniqueIDs() -> Set<String> {
-        Set(HealthKitMetric.all.map(\.uniqueID).filter { Current.sensors.isEnabled(uniqueID: $0) })
+    private static func currentlyEnabledUniqueIDs(for server: Server) -> Set<String> {
+        Current.sensors.enabledUniqueIDs(for: server)
+            .intersection(HealthKitMetric.all.map(\.uniqueID))
     }
 
     private nonisolated static func healthStateDescriptions(from sensors: [WebhookSensor]) -> [String: String] {

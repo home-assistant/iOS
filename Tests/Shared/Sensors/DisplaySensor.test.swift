@@ -3,6 +3,33 @@ import PromiseKit
 import XCTest
 
 class DeviceSensorTests: XCTestCase {
+    /// Enablement is per server, so the device-level observation these cover only starts while
+    /// there is a server to report to.
+    private var previousServers: ServerManager!
+
+    override func setUp() {
+        super.setUp()
+
+        previousServers = Current.servers
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
+        // Stated rather than inherited: the observation only runs while a server wants the sensor,
+        // and what an earlier test left in the shared selection is not this test's premise.
+        SensorEnablementStore.resetForTesting()
+        Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [
+            WebhookSensorId.displaysCount.rawValue,
+            WebhookSensorId.primaryDisplayName.rawValue,
+            WebhookSensorId.primaryDisplayId.rawValue,
+        ])
+    }
+
+    override func tearDown() {
+        SensorEnablementStore.resetForTesting()
+        Current.servers = previousServers
+        super.tearDown()
+    }
+
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),

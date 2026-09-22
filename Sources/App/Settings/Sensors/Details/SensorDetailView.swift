@@ -5,8 +5,8 @@ import SwiftUI
 struct SensorDetailView: View {
     @StateObject var viewModel: SensorDetailViewModel
 
-    init(sensor: WebhookSensor) {
-        self._viewModel = .init(wrappedValue: SensorDetailViewModel(sensor: sensor))
+    init(sensor: WebhookSensor, server: Server) {
+        self._viewModel = .init(wrappedValue: SensorDetailViewModel(sensor: sensor, server: server))
     }
 
     var body: some View {

@@ -7748,6 +7748,16 @@ public enum L10n {
         public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
       }
     }
+    public enum Servers {
+      /// Each server receives the sensors you pick for it, so a sensor can report to one and not another.
+      public static var footer: String { return L10n.tr("Localizable", "settings_sensors.servers.footer") }
+      /// Servers
+      public static var header: String { return L10n.tr("Localizable", "settings_sensors.servers.header") }
+      /// Search servers
+      public static var searchPrompt: String { return L10n.tr("Localizable", "settings_sensors.servers.search_prompt") }
+      /// Decide which of your device sensors you want to share with this server.
+      public static var serverBody: String { return L10n.tr("Localizable", "settings_sensors.servers.server_body") }
+    }
     public enum Settings {
       /// Changes will be applied on the next update.
       public static var footer: String { return L10n.tr("Localizable", "settings_sensors.settings.footer") }
