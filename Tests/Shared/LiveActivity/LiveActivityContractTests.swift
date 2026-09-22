@@ -243,43 +243,81 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertNil(noProgress.progressBarFillFraction)
     }
 
-    /// A card (Lock Screen, StandBy, Smart Stack) already draws the progress bar, so its trailing
-    /// slot labels that bar with the percentage and `critical_text` only fills the slot when there
-    /// is no percentage to show. The Dynamic Island's trailing slot keeps the opposite precedence,
-    /// so a payload carrying both still shows `critical_text` there.
-    func testContentState_cardTrailingValue_prefersProgressOverCriticalText() {
+    /// `critical_text` is only ever sent deliberately, so on a card it holds the trailing slot and
+    /// the progress percentage it displaces moves beside the bar. Neither value is dropped.
+    func testContentState_cardTrailingValue_prefersCriticalTextAndKeepsPercent() {
         let both = HALiveActivityAttributes.ContentState(
             message: "All content state fields active",
             criticalText: "5 min",
             progress: 42,
             progressMax: 100
         )
-        XCTAssertEqual(both.cardTrailingValue, .progressPercent(0.42))
+        XCTAssertEqual(both.cardTrailingValue, .criticalText("5 min"))
+        XCTAssertEqual(both.displacedProgressPercent ?? -1, 0.42, accuracy: 0.0001)
+
+        // Nothing is displaced when the percentage already holds the slot.
+        var progressOnly = both
+        progressOnly.criticalText = nil
+        XCTAssertEqual(progressOnly.cardTrailingValue, .progressPercent(0.42))
+        XCTAssertNil(progressOnly.displacedProgressPercent)
 
         var criticalTextOnly = both
         criticalTextOnly.progress = nil
         criticalTextOnly.progressMax = nil
         XCTAssertEqual(criticalTextOnly.cardTrailingValue, .criticalText("5 min"))
+        XCTAssertNil(criticalTextOnly.displacedProgressPercent)
 
-        // No usable fraction (missing or zero denominator) falls back to critical_text.
+        // No usable fraction (missing or zero denominator) leaves nothing to displace.
         var missingMax = both
         missingMax.progressMax = nil
-        XCTAssertEqual(missingMax.cardTrailingValue, .criticalText("5 min"))
+        XCTAssertNil(missingMax.displacedProgressPercent)
 
         var zeroMax = both
         zeroMax.progressMax = 0
-        XCTAssertEqual(zeroMax.cardTrailingValue, .criticalText("5 min"))
+        XCTAssertNil(zeroMax.displacedProgressPercent)
 
-        // `decreasing` flips only the bar's fill, so the percentage stays the raw progress.
+        // `decreasing` flips only the bar's fill, so the displaced label stays the raw progress.
         var decreasing = both
         decreasing.progressBarDirection = "decreasing"
-        XCTAssertEqual(decreasing.cardTrailingValue, .progressPercent(0.42))
+        XCTAssertEqual(decreasing.displacedProgressPercent ?? -1, 0.42, accuracy: 0.0001)
 
         var neither = both
         neither.criticalText = nil
         neither.progress = nil
         neither.progressMax = nil
         XCTAssertNil(neither.cardTrailingValue)
+        XCTAssertNil(neither.displacedProgressPercent)
+    }
+
+    /// A running chronometer holds the expanded Dynamic Island's trailing slot, so the
+    /// `critical_text` it displaces is drawn beside the bar instead of being dropped. The condition
+    /// must match the trailing slot's own, or the text renders twice or not at all.
+    func testContentState_displacedCriticalText_followsTheChronometerSlot() {
+        let both = HALiveActivityAttributes.ContentState(
+            message: "Pasta",
+            criticalText: "5 min",
+            chronometer: true,
+            countdownEnd: Date(timeIntervalSince1970: 1_700_000_000)
+        )
+        XCTAssertEqual(both.displacedCriticalText, "5 min")
+
+        // No chronometer: `critical_text` is already in the trailing slot.
+        var noChronometer = both
+        noChronometer.chronometer = nil
+        XCTAssertNil(noChronometer.displacedCriticalText)
+
+        var chronometerOff = both
+        chronometerOff.chronometer = false
+        XCTAssertNil(chronometerOff.displacedCriticalText)
+
+        // `chronometer` without an end date does not render a timer, so nothing is displaced.
+        var noEnd = both
+        noEnd.countdownEnd = nil
+        XCTAssertNil(noEnd.displacedCriticalText)
+
+        var noCriticalText = both
+        noCriticalText.criticalText = nil
+        XCTAssertNil(noCriticalText.displacedCriticalText)
     }
 
     /// A content-state payload without progress keys still decodes, with nil progress.

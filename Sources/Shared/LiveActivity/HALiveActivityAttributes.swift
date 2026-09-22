@@ -56,8 +56,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Primary body text. Maps to `message` in the notification payload.
         public var message: String
 
-        /// Short chip text. Owns the Dynamic Island's trailing slot, and takes a card's trailing
-        /// slot only when there is no progress percentage to show there (see `cardTrailingValue`).
+        /// Short supplementary text. Sending it is always deliberate, so every presentation shows
+        /// it: it takes the trailing slot on a card and in the compact Dynamic Island pill, and
+        /// rides beside the bar in the expanded island, where the chronometer holds that slot.
         /// Maps to `critical_text` in the notification payload (≤ ~10 chars recommended).
         public var criticalText: String?
 
@@ -158,22 +159,36 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             return resolvedProgressBarDirection == .decreasing ? 1 - fraction : fraction
         }
 
-        /// Trailing value for the card presentations: the progress percentage when
-        /// `progress`/`progress_max` yield one, else `critical_text`.
-        ///
-        /// A card already draws the progress bar, so the percentage labels it and `critical_text`
-        /// would only duplicate what the bar and the message line already say. `critical_text` is
-        /// the short chip text — it owns the Dynamic Island's trailing slot (where the precedence
-        /// is chronometer, then `critical_text`, then the percentage), the same role it plays in
-        /// Android's status bar chip. On a card with no progress bar it takes the slot instead.
+        /// Trailing value for the card presentations: `critical_text` when set, else the progress
+        /// percentage. An automation that sends `critical_text` meant it to be read, so it holds
+        /// the slot; the percentage it displaces is not dropped, it moves to
+        /// `displacedProgressPercent` beside the bar.
         public var cardTrailingValue: CardTrailingValue? {
-            if let progressFraction {
-                return .progressPercent(progressFraction)
-            }
             if let criticalText {
                 return .criticalText(criticalText)
             }
+            if let progressFraction {
+                return .progressPercent(progressFraction)
+            }
             return nil
+        }
+
+        /// The progress percentage to draw beside a card's progress bar, because `critical_text`
+        /// holds the trailing slot it would otherwise occupy. Nil when the percentage is already in
+        /// that slot, or when there is none, so the bar is labelled only where the label would
+        /// otherwise be lost and never shows the same value twice.
+        public var displacedProgressPercent: Double? {
+            guard criticalText != nil else { return nil }
+            return progressFraction
+        }
+
+        /// `critical_text` to draw beside the expanded Dynamic Island's bar, because a running
+        /// chronometer holds that presentation's trailing slot. Nil when `critical_text` is already
+        /// in the slot, or unset. The condition mirrors the trailing slot's own chronometer test, so
+        /// the text is never drawn twice and never goes missing.
+        public var displacedCriticalText: String? {
+            guard chronometer == true, countdownEnd != nil else { return nil }
+            return criticalText
         }
 
         // MARK: - CodingKeys

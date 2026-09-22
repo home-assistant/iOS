@@ -48,21 +48,7 @@ struct HALockScreenView: View {
                 trailingValue
             }
 
-            if let fraction = state.progressBarFillFraction {
-                HAActivityProgressBar(
-                    fraction: fraction,
-                    fillColor: barColor,
-                    trackColor: trackColor,
-                    height: 10
-                )
-            } else if state.chronometer == true, let end = state.countdownEnd {
-                HAActivityTimerProgressBar(
-                    start: state.chronometerStart,
-                    end: end,
-                    tint: barColor,
-                    direction: state.resolvedProgressBarDirection
-                )
-            }
+            progressContent
         }
         .padding(.horizontal, DesignSystem.Spaces.two)
         .padding(.vertical, DesignSystem.Spaces.two)
@@ -106,20 +92,61 @@ struct HALockScreenView: View {
     private var trailingValue: some View {
         if let value = state.cardTrailingValue {
             switch value {
-            case let .progressPercent(fraction):
-                Text(HAActivityVisualStyle.percentString(for: fraction))
-                    .font(.headline.monospacedDigit())
-                    .foregroundStyle(primaryTextColor)
-                    .lineLimit(1)
-                    .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
             case let .criticalText(critical):
                 Text(critical)
                     .font(.headline)
                     .foregroundStyle(primaryTextColor)
                     .lineLimit(1)
                     .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
+            case let .progressPercent(fraction):
+                Text(HAActivityVisualStyle.percentString(for: fraction))
+                    .font(.headline.monospacedDigit())
+                    .foregroundStyle(primaryTextColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
             }
         }
+    }
+
+    /// The progress bar, carrying the percentage `critical_text` displaced from the trailing slot.
+    /// The bar keeps the whole row to itself when nothing was displaced, so the common
+    /// progress-only card is laid out exactly as before.
+    @ViewBuilder
+    private var progressContent: some View {
+        if let fraction = state.progressBarFillFraction {
+            if let percent = state.displacedProgressPercent {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    progressBar(fraction: fraction)
+                    Text(HAActivityVisualStyle.percentString(for: percent))
+                        .font(.subheadline.monospacedDigit())
+                        .foregroundStyle(secondaryTextColor)
+                        .lineLimit(1)
+                        // The bar already reports the same percentage as its accessibility value.
+                        .accessibilityHidden(true)
+                        // GeometryReader inside the bar takes every point it is offered, so the
+                        // label has to claim its width first.
+                        .layoutPriority(1)
+                }
+            } else {
+                progressBar(fraction: fraction)
+            }
+        } else if state.chronometer == true, let end = state.countdownEnd {
+            HAActivityTimerProgressBar(
+                start: state.chronometerStart,
+                end: end,
+                tint: barColor,
+                direction: state.resolvedProgressBarDirection
+            )
+        }
+    }
+
+    private func progressBar(fraction: Double) -> some View {
+        HAActivityProgressBar(
+            fraction: fraction,
+            fillColor: barColor,
+            trackColor: trackColor,
+            height: 10
+        )
     }
 
     // MARK: - Helpers
