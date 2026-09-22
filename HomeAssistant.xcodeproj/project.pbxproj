@@ -1891,6 +1891,8 @@
 				FocusReport.swift,
 				FocusStatusWrapper.swift,
 				ForceCloseWarningManager.swift,
+				FrontendThemeProvider.swift,
+				FrontendThemeProviderProtocol.swift,
 				HomeViewConfigurationTable.swift,
 				ImpactFeedbackGeneratorProtocol.swift,
 				KioskModeManager.swift,
