@@ -1248,6 +1248,7 @@
 "notification_service.parser.camera.invalid_entity" = "提供的实体标识符无效。";
 "notification_service.parser.url.invalid_url" = "给定的网址无效。";
 "notification_service.parser.url.no_url" = "未提供网址。";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "示例触发器";
 "notifications_configurator.action.rows.authentication_required.footer" = "当用户选择具有此选项的动作时，系统会提示用户解锁设备。解锁后，才会通知 Home Assistant 所选操作。";
 "notifications_configurator.action.rows.authentication_required.title" = "需要身份验证";
@@ -2266,6 +2267,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "铃声已导入";
 "settings_details.notifications.sounds.system" = "系统";
 "settings_details.notifications.sounds.title" = "通知铃声";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "通知设置";
 "settings_details.privacy.alerts.description" = "允许检查重要警报，如安全漏洞。";
 "settings_details.privacy.alerts.title" = "警报";

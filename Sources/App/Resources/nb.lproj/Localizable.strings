@@ -1248,6 +1248,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "notification_service.parser.camera.invalid_entity" = "enhets_id oppgitt var ugyldig.";
 "notification_service.parser.url.invalid_url" = "Den angitte URL-adressen var ugyldig.";
 "notification_service.parser.url.no_url" = "Ingen URL ble oppgitt.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Når brukeren velger en handling med dette alternativet, vil systemet be brukeren om å låse opp enheten. Etter opplåsing vil Home Assistant bli varslet om den valgte handlingen.";
 "notifications_configurator.action.rows.authentication_required.title" = "Godkjenning kreves";
@@ -2269,6 +2270,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Lyder importert";
 "settings_details.notifications.sounds.system" = "System";
 "settings_details.notifications.sounds.title" = "Lyder";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Varslingsinnstillinger";
 "settings_details.privacy.alerts.description" = "Tillater å se etter viktige varsler som sikkerhetsproblemer.";
 "settings_details.privacy.alerts.title" = "Varsler";

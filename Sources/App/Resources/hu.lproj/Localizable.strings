@@ -1248,6 +1248,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "notification_service.parser.camera.invalid_entity" = "A megadott entity_id érvénytelen.";
 "notification_service.parser.url.invalid_url" = "A megadott URL érvénytelen.";
 "notification_service.parser.url.no_url" = "Nincs megadva URL.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Példa eseményindító";
 "notifications_configurator.action.rows.authentication_required.footer" = "Ha a felhasználó ezzel a lehetőséggel választja ki a műveletet, a rendszer felszólítja a felhasználót a készülék feloldására. A feloldás után a Home Assistant értesítést kap a kiválasztott műveletről.";
 "notifications_configurator.action.rows.authentication_required.title" = "Hitelesítés szükséges";
@@ -2268,6 +2269,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Importált hangok";
 "settings_details.notifications.sounds.system" = "Rendszer";
 "settings_details.notifications.sounds.title" = "Hangok";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Értesítések";
 "settings_details.privacy.alerts.description" = "Lehetővé teszi a fontos figyelmeztetések ellenőrzését, például biztonsági rések kapcsán.";
 "settings_details.privacy.alerts.title" = "Riasztások";

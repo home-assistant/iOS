@@ -10,10 +10,10 @@
 "panel::light" = "ലൈറ്റുകൾ";
 "panel::logbook" = "നടപടികൾ";
 "panel::mailbox" = "മെയിൽബോക്സ്";
-"panel::maintenance" = "Maintenance";
+"panel::maintenance" = "പരിപാലനം";
 "panel::map" = "ഭൂപടം";
 "panel::media_browser" = "മാധ്യമങ്ങൾ";
-"panel::notfound" = "Page not found";
+"panel::notfound" = "താൾ കണ്ടെത്തിയില്ല";
 "panel::profile" = "പ്രൊഫൈൽ";
 "panel::security" = "Security";
 "panel::shopping_list" = "വാങ്ങൽപ്പട്ടിക";

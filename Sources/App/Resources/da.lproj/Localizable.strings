@@ -269,7 +269,7 @@
 "app_intents.reminders.list_type.standard" = "List";
 "app_intents.reminders.location_trigger.arrive" = "Arriving";
 "app_intents.reminders.location_trigger.depart" = "Leaving";
-"app_intents.reminders.location_trigger.name" = "Location";
+"app_intents.reminders.location_trigger.name" = "Lokalitet";
 "app_intents.render_template.description" = "Gengiv en Home Assistant-skabelon. Kun brugere med administratorrettigheder kan udføre denne handling.";
 "app_intents.render_template.template.title" = "Skabelon";
 "app_intents.render_template.title" = "Gengiv skabelon";
@@ -1248,6 +1248,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "notification_service.parser.camera.invalid_entity" = "Angivet entitets-Id er ugyldig.";
 "notification_service.parser.url.invalid_url" = "Den angivne webadresse var ugyldig.";
 "notification_service.parser.url.no_url" = "Ingen webadresse blev angivet.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Udløsereksempel";
 "notifications_configurator.action.rows.authentication_required.footer" = "Når brugeren vælger en handling med denne indstilling, beder systemet brugeren om at låse enheden op. Efter oplåsning vil Home Assistant blive underrettet om den valgte handling.";
 "notifications_configurator.action.rows.authentication_required.title" = "Godkendelse påkrævet";
@@ -2269,6 +2270,8 @@ Serveren svarer kun, mens appen er åben, og stopper, når du lukker den.";
 "settings_details.notifications.sounds.imported_alert.title" = "Importerede lyde";
 "settings_details.notifications.sounds.system" = "System";
 "settings_details.notifications.sounds.title" = "Lyde";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Notifikationer";
 "settings_details.privacy.alerts.description" = "Gør det muligt at kontrollere vigtige advarsler såsom sikkerhedssvagheder.";
 "settings_details.privacy.alerts.title" = "Advarsler";

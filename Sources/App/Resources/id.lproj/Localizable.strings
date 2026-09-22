@@ -1248,6 +1248,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "notification_service.parser.camera.invalid_entity" = "Nilai entity_id yang diberikan tidak valid.";
 "notification_service.parser.url.invalid_url" = "URL yang diberikan tidak valid.";
 "notification_service.parser.url.no_url" = "Tidak ada URL yang diberikan.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Ketika pengguna memilih tindakan dengan opsi ini, sistem meminta pengguna untuk membuka kunci perangkat. Setelah membuka kunci, Home Assistant akan diberi tahu tentang tindakan yang dipilih.";
 "notifications_configurator.action.rows.authentication_required.title" = "Diperlukan Autentikasi";
@@ -2268,6 +2269,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Suara Diimpor";
 "settings_details.notifications.sounds.system" = "Sistem";
 "settings_details.notifications.sounds.title" = "Suara";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Notifikasi";
 "settings_details.privacy.alerts.description" = "Izinkan memeriksa peringatan penting, misalnya kerentanan keamanan.";
 "settings_details.privacy.alerts.title" = "Peringatan";

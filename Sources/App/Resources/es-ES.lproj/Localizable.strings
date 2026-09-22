@@ -1248,6 +1248,7 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "notification_service.parser.camera.invalid_entity" = "El entity_id facilitado no es válido.";
 "notification_service.parser.url.invalid_url" = "La URL proporcionada no es válida.";
 "notification_service.parser.url.no_url" = "No se proporcionó ninguna URL.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Disparador de ejemplo";
 "notifications_configurator.action.rows.authentication_required.footer" = "Cuando el usuario selecciona una acción con esta opción, el sistema le pide que desbloquee el dispositivo. Una vez desbloqueado, se notificará a Home Assistant la acción seleccionada.";
 "notifications_configurator.action.rows.authentication_required.title" = "Se requiere autenticación";
@@ -2269,6 +2270,8 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "settings_details.notifications.sounds.imported_alert.title" = "Sonidos importados";
 "settings_details.notifications.sounds.system" = "Sistema";
 "settings_details.notifications.sounds.title" = "Sonidos";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Notificaciones";
 "settings_details.privacy.alerts.description" = "Permite la comprobación de alertas importantes tales como vulnerabilidades de seguridad.";
 "settings_details.privacy.alerts.title" = "Alertas";

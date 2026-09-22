@@ -1248,6 +1248,7 @@
 "notification_service.parser.camera.invalid_entity" = "指定されたentity_idは無効でした。";
 "notification_service.parser.url.invalid_url" = "指定されたURLが無効でした。";
 "notification_service.parser.url.no_url" = "URLが提供されていません。";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "トリガーの例";
 "notifications_configurator.action.rows.authentication_required.footer" = "ユーザーがこのオプションでアクションを選択すると、システムはユーザーにデバイスのロックを解除するように求めます。ロック解除後、選択したアクションが Home Assistant に通知されます。";
 "notifications_configurator.action.rows.authentication_required.title" = "認証が必要";
@@ -2268,6 +2269,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "インポートされたサウンド";
 "settings_details.notifications.sounds.system" = "システム";
 "settings_details.notifications.sounds.title" = "サウンド";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "通知";
 "settings_details.privacy.alerts.description" = "セキュリティの脆弱性などの重要な警告をチェックできます。";
 "settings_details.privacy.alerts.title" = "アラート";
