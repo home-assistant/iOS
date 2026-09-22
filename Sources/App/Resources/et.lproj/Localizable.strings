@@ -1248,6 +1248,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "notification_service.parser.camera.invalid_entity" = "Esitatud olemi_id oli kehtetu.";
 "notification_service.parser.url.invalid_url" = "Sisestatud URL oli kehtetu.";
 "notification_service.parser.url.no_url" = "URL-i ei esitatud.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Näidispäästik";
 "notifications_configurator.action.rows.authentication_required.footer" = "Kui kasutaja valib selle suvandiga toimingu, palub süsteem kasutajal seadme avada. Pärast avamist teavitatakse Home Assistantit valitud toimingust.";
 "notifications_configurator.action.rows.authentication_required.title" = "Nõutav on tuvastamine";
@@ -2269,6 +2270,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Imporditud helid";
 "settings_details.notifications.sounds.system" = "Süsteemsed";
 "settings_details.notifications.sounds.title" = "Helid";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Teavitused";
 "settings_details.privacy.alerts.description" = "Võimaldab kontrollida olulisi hoiatusi, näiteks turvaauke.";
 "settings_details.privacy.alerts.title" = "Hoiatused";

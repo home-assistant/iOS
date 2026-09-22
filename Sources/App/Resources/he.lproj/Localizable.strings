@@ -1248,6 +1248,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "notification_service.parser.camera.invalid_entity" = "entity_id שסופק היה לא חוקי.";
 "notification_service.parser.url.invalid_url" = "כתובת האתר הנתונה לא הייתה חוקית.";
 "notification_service.parser.url.no_url" = "לא סופקה כתובת אתר.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "When the user selects an action with this option, the system prompts the user to unlock the device. After unlocking, Home Assistant will be notified of the selected action.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authentication Required";
@@ -2269,6 +2270,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Sounds Imported";
 "settings_details.notifications.sounds.system" = "System";
 "settings_details.notifications.sounds.title" = "Sounds";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "התראות";
 "settings_details.privacy.alerts.description" = "מאפשר בדיקת התראות חשובות כמו פרצות אבטחה.";
 "settings_details.privacy.alerts.title" = "התראות";

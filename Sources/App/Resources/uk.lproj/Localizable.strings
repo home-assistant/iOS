@@ -1248,6 +1248,7 @@ Currently mTLS is only supported on iOS 17+, it may present issues related to di
 "notification_service.parser.camera.invalid_entity" = "Вказаний entity_id недійсний.";
 "notification_service.parser.url.invalid_url" = "Вказана URL-адреса недійсна.";
 "notification_service.parser.url.no_url" = "URL-адреса не вказана.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Коли користувач вибирає дію з цією опцією, система пропонує користувачеві розблокувати пристрій. Після розблокування Home Assistant буде повідомлений про вибрану дію.";
 "notifications_configurator.action.rows.authentication_required.title" = "Потрібна автентифікація";
@@ -2269,6 +2270,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Імпортовані звуки";
 "settings_details.notifications.sounds.system" = "Система";
 "settings_details.notifications.sounds.title" = "Звуки";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Сповіщення";
 "settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
 "settings_details.privacy.alerts.title" = "Alerts";

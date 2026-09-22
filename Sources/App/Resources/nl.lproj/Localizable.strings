@@ -1248,6 +1248,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "notification_service.parser.camera.invalid_entity" = "entity_id is ongeldig.";
 "notification_service.parser.url.invalid_url" = "De opgegeven URL was ongeldig.";
 "notification_service.parser.url.no_url" = "Er is geen URL opgegeven.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Voorbeeldtrigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Wanneer de gebruiker een actie met deze optie selecteert, vraagt het systeem de gebruiker om het apparaat te ontgrendelen. Na het ontgrendelen wordt de Home Assistant op de hoogte gebracht van de geselecteerde actie.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authenticatie vereist";
@@ -2269,6 +2270,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Geluiden geïmporteerd";
 "settings_details.notifications.sounds.system" = "Systeem";
 "settings_details.notifications.sounds.title" = "Geluiden";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Meldingen";
 "settings_details.privacy.alerts.description" = "Maakt het mogelijk om te controleren op belangrijke waarschuwingen, zoals beveiligingsproblemen.";
 "settings_details.privacy.alerts.title" = "Waarschuwingen";

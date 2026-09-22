@@ -1244,6 +1244,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "notification_service.parser.camera.invalid_entity" = "Angivet enhets_id var ogiltigt.";
 "notification_service.parser.url.invalid_url" = "Den angivna URL:en var ogiltig.";
 "notification_service.parser.url.no_url" = "Ingen URL angavs.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Exempelutlösare";
 "notifications_configurator.action.rows.authentication_required.footer" = "När användaren väljer en åtgärd med det här alternativet uppmanar systemet användaren att låsa upp enheten. Efter upplåsning kommer Home Assistant att meddelas om den valda åtgärden.";
 "notifications_configurator.action.rows.authentication_required.title" = "Autentisering krävs";
@@ -2264,6 +2265,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Ljud importerat";
 "settings_details.notifications.sounds.system" = "System";
 "settings_details.notifications.sounds.title" = "Ljud";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Notiser";
 "settings_details.privacy.alerts.description" = "Tillåter kontroll av viktiga varningar som säkerhetssårbarheter.";
 "settings_details.privacy.alerts.title" = "Varningar";
