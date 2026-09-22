@@ -235,7 +235,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     title: incomingMessage.Payload?["title"] as? String,
                     subtitle: incomingMessage.Payload?["subtitle"] as? String,
                     size: NativeModalSize(payload: incomingMessage.Payload?["size"]),
-                    origin: NativeModalOrigin(payload: incomingMessage.Payload?["origin"]),
                     from: webViewController
                 )
             case .modalClose:

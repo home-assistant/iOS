@@ -48,8 +48,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var statusBarView: UIView?
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
-    /// Parked where the frontend said a modal was asked from; see `nativeModalZoomSource(at:)`.
-    var nativeModalZoomAnchorView: NativeModalZoomAnchorView?
     var pendingAssistZoomSourceView: UIView?
     /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
     weak var detachedOverlayController: UIViewController?

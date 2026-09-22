@@ -136,49 +136,6 @@ final class NativeModalPresenterTests: XCTestCase {
         XCTAssertFalse(handler.sendExternalBusCommandWithRetryCalled)
     }
 
-    /// A modal asked for over the bus has no view the user touched, so the frontend sends the
-    /// rectangle it was asked from and the transition grows out of that.
-    @MainActor func testTheModalGrowsOutOfWhereTheFrontendWasTapped() {
-        sut.present(
-            path: "/more-info?more-info-entity-id=light.kitchen",
-            origin: NativeModalOrigin(rect: CGRect(x: 12, y: 340, width: 160, height: 80)),
-            from: host
-        )
-
-        XCTAssertEqual(host.nativeModalZoomSourceRect, CGRect(x: 12, y: 340, width: 160, height: 80))
-    }
-
-    /// The same modal serves every route, so one asked for without an origin has to go back to the
-    /// plain presentation rather than keep the last one's zoom.
-    @MainActor func testAModalWithoutAnOriginAsksForNoZoomSource() throws {
-        sut.present(
-            path: "/more-info?more-info-entity-id=light.kitchen",
-            origin: NativeModalOrigin(rect: CGRect(x: 12, y: 340, width: 160, height: 80)),
-            from: host
-        )
-        let sheet = try presentedSheet()
-        sheet.connectionState = .loaded
-        host.nativeModalZoomSourceRect = nil
-
-        sut.present(path: "/more-info?more-info-entity-id=sensor.outside", from: host)
-
-        XCTAssertNil(host.nativeModalZoomSourceRect)
-    }
-
-    /// A zoom presents the modal whole, so a compact one keeps its detents instead.
-    @MainActor func testACompactModalIsNotZoomed() throws {
-        sut.present(
-            path: "/more-info?more-info-entity-id=sensor.outside",
-            size: .compact,
-            origin: NativeModalOrigin(rect: CGRect(x: 12, y: 340, width: 160, height: 80)),
-            from: host
-        )
-
-        XCTAssertNil(host.nativeModalZoomSourceRect)
-        let presentation = try XCTUnwrap(host.overlayedController?.sheetPresentationController)
-        XCTAssertEqual(presentation.selectedDetentIdentifier, .medium)
-    }
-
     /// A dialog opened inside the page needs the whole screen, so the modal grows under it.
     @MainActor func testThePageCanAskForMoreRoomAfterTheModalIsUp() throws {
         sut.present(path: "/more-info?more-info-entity-id=sensor.outside", size: .compact, from: host)
@@ -190,17 +147,6 @@ final class NativeModalPresenterTests: XCTestCase {
 
         XCTAssertEqual(presentation.selectedDetentIdentifier, .large)
         XCTAssertFalse(presentation.prefersGrabberVisible)
-    }
-
-    /// A rectangle with no area is nothing to grow out of.
-    func testAnOriginNeedsAnArea() {
-        XCTAssertNil(NativeModalOrigin(payload: ["x": 0.0, "y": 0.0, "width": 0.0, "height": 40.0]))
-        XCTAssertNil(NativeModalOrigin(payload: ["x": 0.0, "y": 0.0]))
-        XCTAssertNil(NativeModalOrigin(payload: nil))
-        XCTAssertEqual(
-            NativeModalOrigin(payload: ["x": 1.0, "y": 2.0, "width": 3.0, "height": 4.0])?.rect,
-            CGRect(x: 1, y: 2, width: 3, height: 4)
-        )
     }
 
     @MainActor func testPrewarmBootsOnlyOneSheet() {

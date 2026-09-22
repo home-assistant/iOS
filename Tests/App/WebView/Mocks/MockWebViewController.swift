@@ -48,8 +48,6 @@ final class MockWebViewController: WebViewControllerProtocol {
     var openInBrowserCalled = false
     var closeNativeModalCalled = false
     var relayedNativeModalNavigationPath: String?
-    var nativeModalZoomSourceRect: CGRect?
-    var nativeModalZoomSourceView: UIView? = UIView()
     var nativeModalUpdate: NativeModalUpdate?
 
     init(role: WebViewControllerRole = .mainFrontend) {
@@ -178,11 +176,6 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func relayNativeModalNavigation(path: String) {
         relayedNativeModalNavigationPath = path
-    }
-
-    func nativeModalZoomSource(at rect: CGRect) -> UIView? {
-        nativeModalZoomSourceRect = rect
-        return nativeModalZoomSourceView
     }
 
     func updateNativeModal(_ update: NativeModalUpdate) {

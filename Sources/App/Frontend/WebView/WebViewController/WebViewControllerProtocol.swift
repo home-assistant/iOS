@@ -55,8 +55,6 @@ protocol WebViewControllerProtocol: AnyObject {
     /// The frontend's `modal/update`: what changed about the modal this controller is shown in.
     func updateNativeModal(_ update: NativeModalUpdate)
     func relayNativeModalNavigation(path: String)
-    /// A view parked at `rect` in the page's own coordinates, for a zoom transition to grow out of.
-    func nativeModalZoomSource(at rect: CGRect) -> UIView?
 }
 
 extension WebViewControllerProtocol {

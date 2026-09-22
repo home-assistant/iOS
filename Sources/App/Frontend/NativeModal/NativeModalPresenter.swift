@@ -75,7 +75,6 @@ final class NativeModalPresenter {
         title: String? = nil,
         subtitle: String? = nil,
         size: NativeModalSize = .full,
-        origin: NativeModalOrigin? = nil,
         from host: WebViewControllerProtocol
     ) {
         Current.Log.info("Presenting a native modal at \(path)")
@@ -92,10 +91,6 @@ final class NativeModalPresenter {
         model.title = title ?? path
         model.subtitle = subtitle
         Self.configurePresentation(of: container, size: size)
-        // A zoom presents the modal whole, whichever order the two are set in, so a compact one keeps
-        // its detents and the plain slide up: half a screen the user can drag is worth more there
-        // than the flourish.
-        configureZoom(of: container, origin: size == .compact ? nil : origin, from: host)
 
         dismissHandler = { [weak self, weak host] in
             guard let self, let onscreenEntityId else { return }
@@ -157,22 +152,6 @@ final class NativeModalPresenter {
         } else {
             apply()
         }
-    }
-
-    /// Grows the modal out of whatever the user touched, when the frontend said where that was and
-    /// the modal is taking the whole screen. The same modal serves every route, so a request with no
-    /// origin has to put the plain presentation back rather than keep the last one's zoom.
-    private func configureZoom(
-        of controller: UIViewController,
-        origin: NativeModalOrigin?,
-        from host: WebViewControllerProtocol
-    ) {
-        guard #available(iOS 18, *) else { return }
-        guard let origin, let source = host.nativeModalZoomSource(at: origin.rect) else {
-            controller.preferredTransition = nil
-            return
-        }
-        controller.preferredTransition = .zoom { [weak source] _ in source }
     }
 
     private func makeSheet(host: WebViewControllerProtocol, path: String?) -> WebViewController {

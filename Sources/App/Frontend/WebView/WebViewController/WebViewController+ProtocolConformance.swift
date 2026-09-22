@@ -210,17 +210,4 @@ extension WebViewController: WebViewControllerProtocol {
         onNativeModalNavigation?(path)
         dismiss(animated: true)
     }
-
-    func nativeModalZoomSource(at rect: CGRect) -> UIView? {
-        guard let webView else { return nil }
-        let anchor = nativeModalZoomAnchorView ?? {
-            let anchor = NativeModalZoomAnchorView(frame: rect)
-            nativeModalZoomAnchorView = anchor
-            return anchor
-        }()
-        // Last in the web view, so nothing the page draws can cover the frame the zoom reads.
-        webView.addSubview(anchor)
-        anchor.frame = rect
-        return anchor
-    }
 }
