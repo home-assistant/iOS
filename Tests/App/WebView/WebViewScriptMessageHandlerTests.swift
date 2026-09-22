@@ -107,7 +107,8 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
         Current.frontendTheme = { provider }
         mockWebViewController.server = ServerFixture.standard
         mockWebViewController.traitCollection = UITraitCollection(userInterfaceStyle: .light)
-        provider.storeExpectation = expectation(description: "theme stored")
+        let stored = expectation(description: "theme stored")
+        provider.storeExpectation = stored
         sut.isAppInBackground = { false }
 
         sut.handle(messageName: "updateThemeVariables", messageBody: [
@@ -115,7 +116,7 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
             "variables": [["name": "--primary-color", "value": "rgb(3, 169, 244)", "color": "rgb(3, 169, 244)"]],
         ])
 
-        wait(for: [provider.storeExpectation!], timeout: 10)
+        wait(for: [stored], timeout: 10)
         XCTAssertEqual(provider.storedServerId, ServerFixture.standard.identifier.rawValue)
         XCTAssertEqual(provider.storedAppearance, .dark)
         XCTAssertEqual(provider.storedVariables.map(\.name), ["--primary-color"])
@@ -127,6 +128,23 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
         let provider = SpyFrontendThemeProvider()
         Current.frontendTheme = { provider }
         sut.isAppInBackground = { true }
+
+        sut.handle(messageName: "updateThemeVariables", messageBody: [
+            "variables": [["name": "--primary-color", "value": "rgb(0, 0, 0)"]],
+        ])
+
+        XCTAssertFalse(provider.storeCalled)
+    }
+
+    /// Nothing to attribute the capture to: the web view went away between the message being posted
+    /// and it being handled.
+    @MainActor func testThemeVariablesWithoutAWebViewAreDropped() {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let provider = SpyFrontendThemeProvider()
+        Current.frontendTheme = { provider }
+        sut.webView = nil
+        sut.isAppInBackground = { false }
 
         sut.handle(messageName: "updateThemeVariables", messageBody: [
             "variables": [["name": "--primary-color", "value": "rgb(0, 0, 0)"]],

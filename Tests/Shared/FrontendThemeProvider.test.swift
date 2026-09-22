@@ -177,6 +177,35 @@ struct FrontendThemeProviderTests {
         #expect(FrontendThemeProvider().variables(appearance: .light).isEmpty)
     }
 
+    /// A database the theme cannot be written to or read from leaves the screens on their defaults
+    /// rather than taking the web view's message handling down with it.
+    @Test("A failing database leaves nothing cached")
+    func survivesDatabaseFailures() throws {
+        let previousDatabase = Current.database
+        let previousServers = Current.servers
+        defer {
+            Current.database = previousDatabase
+            Current.servers = previousServers
+        }
+        // No theme table, so every read and write against it throws.
+        let database = try DatabaseQueue(path: ":memory:")
+        Current.database = { database }
+        let servers = FakeServerManager(initial: 0)
+        let server = servers.addFake()
+        Current.servers = servers
+        let serverId = server.identifier.rawValue
+
+        let provider = FrontendThemeProvider()
+        provider.store(
+            [variable(serverId: serverId, appearance: .light, name: "--primary-color", color: "rgb(1, 2, 3)")],
+            for: serverId,
+            appearance: .light
+        )
+
+        #expect(provider.variables(for: serverId, appearance: .light).isEmpty)
+        #expect(provider.color(of: "--primary-color", for: serverId) == nil)
+    }
+
     private struct RGBA: Equatable {
         let red, green, blue, alpha: Int
     }

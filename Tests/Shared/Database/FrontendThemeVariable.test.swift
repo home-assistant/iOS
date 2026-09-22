@@ -137,6 +137,40 @@ struct FrontendThemeVariableTests {
         }
     }
 
+    /// Deleting is best-effort: a server going away must not take the sign-out flow down with it.
+    @Test("Deleting survives a database that has no theme table")
+    func deleteSwallowsDatabaseFailures() throws {
+        let previousDatabase = Current.database
+        defer { Current.database = previousDatabase }
+        // No theme table, so the delete statement throws and has to be swallowed.
+        let database = try DatabaseQueue(path: ":memory:")
+        Current.database = { database }
+
+        // Reaching the next line is the assertion: the failure is logged, not thrown or trapped.
+        FrontendThemeVariable.delete(serverId: "1")
+    }
+
+    /// An installed table is migrated rather than recreated, which is what preserves rows across
+    /// a release that adds a column.
+    @Test("Creating the table twice keeps the rows that are already there")
+    func createIfNeededIsIdempotent() throws {
+        let previousDatabase = Current.database
+        defer { Current.database = previousDatabase }
+        let database = try DatabaseQueue(path: ":memory:")
+        try FrontendThemeVariableTable().createIfNeeded(database: database)
+        Current.database = { database }
+
+        try FrontendThemeVariable.replaceAll(
+            [variable(serverId: "1", appearance: .light, name: "--primary-color", color: "rgb(1, 2, 3)")],
+            serverId: "1",
+            appearance: .light
+        )
+        try FrontendThemeVariableTable().createIfNeeded(database: database)
+
+        let stored = try FrontendThemeVariable.fetchVariables(serverId: "1", appearance: .light)
+        #expect(stored["--primary-color"]?.colorValue == "rgb(1, 2, 3)")
+    }
+
     private func variable(
         serverId: String,
         appearance: FrontendThemeAppearance,
