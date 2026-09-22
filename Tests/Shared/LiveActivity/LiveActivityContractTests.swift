@@ -243,6 +243,45 @@ final class LiveActivityContractTests: XCTestCase {
         XCTAssertNil(noProgress.progressBarFillFraction)
     }
 
+    /// A card (Lock Screen, StandBy, Smart Stack) already draws the progress bar, so its trailing
+    /// slot labels that bar with the percentage and `critical_text` only fills the slot when there
+    /// is no percentage to show. The Dynamic Island's trailing slot keeps the opposite precedence,
+    /// so a payload carrying both still shows `critical_text` there.
+    func testContentState_cardTrailingValue_prefersProgressOverCriticalText() {
+        let both = HALiveActivityAttributes.ContentState(
+            message: "All content state fields active",
+            criticalText: "5 min",
+            progress: 42,
+            progressMax: 100
+        )
+        XCTAssertEqual(both.cardTrailingValue, .progressPercent(0.42))
+
+        var criticalTextOnly = both
+        criticalTextOnly.progress = nil
+        criticalTextOnly.progressMax = nil
+        XCTAssertEqual(criticalTextOnly.cardTrailingValue, .criticalText("5 min"))
+
+        // No usable fraction (missing or zero denominator) falls back to critical_text.
+        var missingMax = both
+        missingMax.progressMax = nil
+        XCTAssertEqual(missingMax.cardTrailingValue, .criticalText("5 min"))
+
+        var zeroMax = both
+        zeroMax.progressMax = 0
+        XCTAssertEqual(zeroMax.cardTrailingValue, .criticalText("5 min"))
+
+        // `decreasing` flips only the bar's fill, so the percentage stays the raw progress.
+        var decreasing = both
+        decreasing.progressBarDirection = "decreasing"
+        XCTAssertEqual(decreasing.cardTrailingValue, .progressPercent(0.42))
+
+        var neither = both
+        neither.criticalText = nil
+        neither.progress = nil
+        neither.progressMax = nil
+        XCTAssertNil(neither.cardTrailingValue)
+    }
+
     /// A content-state payload without progress keys still decodes, with nil progress.
     func testContentState_missingProgress_decodesAsNil() throws {
         let decoded = try JSONDecoder().decode(

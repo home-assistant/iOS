@@ -56,7 +56,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Primary body text. Maps to `message` in the notification payload.
         public var message: String
 
-        /// Short text for Dynamic Island compact trailing view.
+        /// Short chip text. Owns the Dynamic Island's trailing slot, and takes a card's trailing
+        /// slot only when there is no progress percentage to show there (see `cardTrailingValue`).
         /// Maps to `critical_text` in the notification payload (≤ ~10 chars recommended).
         public var criticalText: String?
 
@@ -124,6 +125,15 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case decreasing
         }
 
+        /// What the card presentations (Lock Screen, StandBy, Smart Stack) put in their trailing
+        /// slot, so every card resolves it the same way.
+        public enum CardTrailingValue: Hashable {
+            /// The progress percentage, as a fraction in [0, 1].
+            case progressPercent(Double)
+            /// The `critical_text` string.
+            case criticalText(String)
+        }
+
         // MARK: - Computed helpers (not sent over wire)
 
         /// Progress as a fraction in [0, 1] for use in SwiftUI ProgressView.
@@ -146,6 +156,24 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         public var progressBarFillFraction: Double? {
             guard let fraction = progressFraction else { return nil }
             return resolvedProgressBarDirection == .decreasing ? 1 - fraction : fraction
+        }
+
+        /// Trailing value for the card presentations: the progress percentage when
+        /// `progress`/`progress_max` yield one, else `critical_text`.
+        ///
+        /// A card already draws the progress bar, so the percentage labels it and `critical_text`
+        /// would only duplicate what the bar and the message line already say. `critical_text` is
+        /// the short chip text — it owns the Dynamic Island's trailing slot (where the precedence
+        /// is chronometer, then `critical_text`, then the percentage), the same role it plays in
+        /// Android's status bar chip. On a card with no progress bar it takes the slot instead.
+        public var cardTrailingValue: CardTrailingValue? {
+            if let progressFraction {
+                return .progressPercent(progressFraction)
+            }
+            if let criticalText {
+                return .criticalText(criticalText)
+            }
+            return nil
         }
 
         // MARK: - CodingKeys

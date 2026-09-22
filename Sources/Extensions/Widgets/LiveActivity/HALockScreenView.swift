@@ -104,18 +104,21 @@ struct HALockScreenView: View {
 
     @ViewBuilder
     private var trailingValue: some View {
-        if let critical = state.criticalText {
-            Text(critical)
-                .font(.headline)
-                .foregroundStyle(primaryTextColor)
-                .lineLimit(1)
-                .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
-        } else if let fraction = state.progressFraction {
-            Text(HAActivityVisualStyle.percentString(for: fraction))
-                .font(.headline.monospacedDigit())
-                .foregroundStyle(primaryTextColor)
-                .lineLimit(1)
-                .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
+        if let value = state.cardTrailingValue {
+            switch value {
+            case let .progressPercent(fraction):
+                Text(HAActivityVisualStyle.percentString(for: fraction))
+                    .font(.headline.monospacedDigit())
+                    .foregroundStyle(primaryTextColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
+            case let .criticalText(critical):
+                Text(critical)
+                    .font(.headline)
+                    .foregroundStyle(primaryTextColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
+            }
         }
     }
 
