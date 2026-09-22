@@ -192,16 +192,9 @@ extension SensorListViewModel: SensorObserver {
         didSignalForUpdateBecause reason: SensorContainerUpdateReason,
         lastUpdate: SensorObserverUpdate?
     ) {
-        guard server != nil else {
-            // This screen is showing a count per server, which a change on any of them moves, and
-            // the counts are read straight from the store rather than published. Nothing here shows
-            // a sensor's value, so asking every server for a fresh reading would be work for a
-            // screen that would not display it — the screen that did the toggling asks for itself.
-            DispatchQueue.main.async { [weak self] in
-                self?.objectWillChange.send()
-            }
-            return
-        }
+        // The root screen of an install with several servers lists the servers themselves, so a
+        // change to what one of them receives has nothing to bring up to date here.
+        guard server != nil else { return }
         refresh()
     }
 

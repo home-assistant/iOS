@@ -54,6 +54,18 @@ struct SensorListViewModelPerServerTests {
         }
     }
 
+    @Test func theRootModelIgnoresAnEnablementSignal() async throws {
+        try await withServers { servers in
+            let first = try #require(servers.all.first)
+            let viewModel = SensorListViewModel(server: nil)
+
+            Current.sensors.setEnabled(true, forUniqueID: WebhookSensorId.activity.rawValue, on: first)
+
+            #expect(viewModel.sensors.isEmpty)
+            #expect(viewModel.alertMessage == nil)
+        }
+    }
+
     @Test func serversAreOfferedOnlyWhenThereIsMoreThanOne() async throws {
         try await withServers { servers in
             #expect(SensorListViewModel(server: nil).selectableServers.count == 2)
