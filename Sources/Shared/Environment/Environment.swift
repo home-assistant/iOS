@@ -265,6 +265,11 @@ public class AppEnvironment {
         EntityComponentIconsService.shared
     }
 
+    /// The frontend theme captured from the web view, for drawing native screens in the user's colors.
+    public var frontendTheme: () -> FrontendThemeProviderProtocol = {
+        FrontendThemeProvider.shared
+    }
+
     public var calendarsModel: () -> HACalendarsModelProtocol = {
         HACalendarsModel.shared
     }

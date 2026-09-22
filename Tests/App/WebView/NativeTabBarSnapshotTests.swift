@@ -57,8 +57,7 @@ struct NativeTabBarSnapshotTests {
                 webViewController: nil,
                 frontendOpacity: 1,
                 frontendIgnoredSafeAreaEdges: .all,
-                onNeedsWebViewController: {},
-                frontendOverlay: { Color.clear }
+                onNeedsWebViewController: {}
             ),
             drawHierarchyInKeyWindow: true
         )
@@ -74,8 +73,7 @@ struct NativeTabBarSnapshotTests {
                 webViewController: nil,
                 frontendOpacity: 1,
                 frontendIgnoredSafeAreaEdges: .all,
-                onNeedsWebViewController: {},
-                frontendOverlay: { EmptyView() }
+                onNeedsWebViewController: {}
             ),
             drawHierarchyInKeyWindow: true
         )
