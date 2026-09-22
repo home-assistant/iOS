@@ -1679,7 +1679,11 @@ extension HomeAssistantAPI: SensorObserver {
     ) {
         Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
             firstly { () -> Promise<Void> in
-                guard case let .settingsChange(changedUniqueIDs) = reason, !changedUniqueIDs.isEmpty else {
+                guard case let .settingsChange(changedUniqueIDs, serverIDs) = reason,
+                      !changedUniqueIDs.isEmpty,
+                      // An empty list is a change that isn't about one server, so every one of them
+                      // re-registers; otherwise only the servers whose selection actually moved do.
+                      serverIDs.isEmpty || serverIDs.contains(server.identifier) else {
                     return .value(())
                 }
                 // Carries the new enablement to Home Assistant, which only `register_sensor` can do.

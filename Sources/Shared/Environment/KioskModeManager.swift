@@ -117,8 +117,10 @@ public final class KioskModeManager: ObservableObject {
         lastSyncedKioskEnabled = settings.enabled
 
         for sensorId in [WebhookSensorId.kioskBrightness, .kioskVolume, .kioskScreensaver] {
-            guard Current.sensors.isEnabled(uniqueID: sensorId.rawValue) != settings.enabled else { continue }
-            Current.sensors.setEnabled(settings.enabled, forUniqueID: sensorId.rawValue)
+            guard Current.sensors.isEnabledForAnyServer(uniqueID: sensorId.rawValue) != settings.enabled else { continue }
+            // Kiosk mode is a property of the device rather than of one server, so its own sensors
+            // follow it everywhere the device reports.
+            Current.sensors.setEnabledForAllServers(settings.enabled, forUniqueID: sensorId.rawValue)
         }
     }
 }

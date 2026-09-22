@@ -96,7 +96,7 @@ class SensorContainerTests: XCTestCase {
                 WebhookSensor(name: "Bravo", uniqueID: "bravo"),
             ]),
         ]
-        container.setEnabled(true, forUniqueID: "charlie")
+        container.setEnabledForAllServers(true, forUniqueID: "charlie")
 
         _ = try hang(Promise(container.sensors(reason: .trigger("unit-test"), server: server1)))
 
@@ -342,8 +342,8 @@ class SensorContainerTests: XCTestCase {
             $0.State = "state"
             $0.Attributes = ["test": true]
         }
-        container.setEnabled(false, for: underlying)
-        XCTAssertFalse(container.isEnabled(sensor: underlying))
+        container.setEnabled(false, for: underlying, on: server1)
+        XCTAssertFalse(container.isEnabled(sensor: underlying, for: server1))
 
         let promises: [Promise<[WebhookSensor]>] = [.value([underlying])]
 
@@ -358,8 +358,8 @@ class SensorContainerTests: XCTestCase {
         XCTAssertEqual(result1sensor.Name, underlying.Name)
         XCTAssertEqual(result1sensor.Icon, "mdi:dots-square")
 
-        container.setEnabled(true, for: underlying)
-        XCTAssertTrue(container.isEnabled(sensor: underlying))
+        container.setEnabled(true, for: underlying, on: server1)
+        XCTAssertTrue(container.isEnabled(sensor: underlying, for: server1))
 
         MockSensorProvider.returnedPromises = promises
         let promise2 = container.sensors(reason: .trigger("unit-test"), server: server1)
@@ -404,7 +404,7 @@ class SensorContainerTests: XCTestCase {
         container.register(provider: MockSensorProvider.self)
 
         let underlying = WebhookSensor(name: "test1a", uniqueID: "testEnablement")
-        container.setEnabled(false, for: underlying)
+        container.setEnabled(false, for: underlying, on: server1)
 
         MockSensorProvider.returnedPromises = [.value([underlying])]
         let disabled = try hang(Promise(container.sensors(reason: .registration, server: server1)))
@@ -412,7 +412,7 @@ class SensorContainerTests: XCTestCase {
         XCTAssertEqual(disabledSensor.Disabled, true)
         XCTAssertEqual(disabledSensor.toJSON()["disabled"] as? Bool, true)
 
-        container.setEnabled(true, for: underlying)
+        container.setEnabled(true, for: underlying, on: server1)
 
         MockSensorProvider.returnedPromises = [.value([underlying])]
         let enabled = try hang(Promise(container.sensors(reason: .registration, server: server1)))
@@ -423,7 +423,7 @@ class SensorContainerTests: XCTestCase {
         container.register(provider: MockSensorProvider.self)
 
         let underlying = WebhookSensor(name: "test1a", uniqueID: "testEnablementOmitted")
-        container.setEnabled(false, for: underlying)
+        container.setEnabled(false, for: underlying, on: server1)
 
         MockSensorProvider.returnedPromises = [.value([underlying])]
         let result = try hang(Promise(container.sensors(reason: .trigger("unit-test"), server: server1)))
@@ -441,7 +441,7 @@ class SensorContainerTests: XCTestCase {
         container.register(provider: MockSensorProvider.self)
         container.register(provider: MockSensorProvider.self)
         // Opt-in like every sensor, and this test is about the value that reaches the server.
-        container.setEnabled(true, forUniqueID: "focus_name")
+        container.setEnabledForAllServers(true, forUniqueID: "focus_name")
 
         let (slowProvider, slowSeal) = Promise<[WebhookSensor]>.pending()
 
@@ -479,7 +479,7 @@ class SensorContainerTests: XCTestCase {
     func testValueSentToOneServerDoesntStopAnother() throws {
         container.register(provider: MockSensorProvider.self)
         container.register(provider: MockSensorProvider.self)
-        container.setEnabled(true, forUniqueID: "focus_name")
+        container.setEnabledForAllServers(true, forUniqueID: "focus_name")
 
         let (slowProvider, slowSeal) = Promise<[WebhookSensor]>.pending()
 
