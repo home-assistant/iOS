@@ -9,6 +9,9 @@ import Shared
 final class ServerSwitchingSettingsViewModel: NSObject, ObservableObject {
     /// E.g. "Casa · 1.2 km" (or just "Casa" when matched by Wi-Fi), `nil` while undetermined.
     @Published private(set) var closestServerDescription: String?
+    /// Which signal produced `closestServerDescription`, badged beside it so the row says where its
+    /// answer came from. Set and cleared together with the description.
+    @Published private(set) var closestServerSource: ServerProximitySource?
 
     private let locationManager = CLLocationManager()
     private let distanceFormatter = with(MKDistanceFormatter()) {
@@ -18,8 +21,9 @@ final class ServerSwitchingSettingsViewModel: NSObject, ObservableObject {
     private var currentSSID: String?
     private var currentLocation: CLLocation?
 
-    init(closestServerDescription: String? = nil) {
+    init(closestServerDescription: String? = nil, closestServerSource: ServerProximitySource? = nil) {
         self.closestServerDescription = closestServerDescription
+        self.closestServerSource = closestServerSource
         super.init()
         locationManager.delegate = self
     }
@@ -55,14 +59,17 @@ final class ServerSwitchingSettingsViewModel: NSObject, ObservableObject {
         ) else {
             // Clear rather than keep a stale value when the signals no longer resolve a server.
             closestServerDescription = nil
+            closestServerSource = nil
             return
         }
-        if let distance = closest.distance {
-            let formatted = distanceFormatter.string(fromDistance: distance)
-            closestServerDescription = "\(closest.server.info.name) · \(formatted)"
-        } else {
+        closestServerSource = closest.source
+        switch closest.source {
+        case .homeNetwork:
             // Matched by being on the server's home network; a distance would be meaningless.
             closestServerDescription = closest.server.info.name
+        case let .location(distance):
+            let formatted = distanceFormatter.string(fromDistance: distance)
+            closestServerDescription = "\(closest.server.info.name) · \(formatted)"
         }
     }
 }
