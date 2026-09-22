@@ -100,6 +100,72 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
         XCTAssertTrue(mockWebViewController.showLoggedOutStateCalled)
     }
 
+    @MainActor func testThemeVariablesAreStoredForTheServerAndAppearanceTheWebViewReports() {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let provider = SpyFrontendThemeProvider()
+        Current.frontendTheme = { provider }
+        mockWebViewController.server = ServerFixture.standard
+        mockWebViewController.traitCollection = UITraitCollection(userInterfaceStyle: .light)
+        let stored = expectation(description: "theme stored")
+        provider.storeExpectation = stored
+        sut.isAppInBackground = { false }
+
+        sut.handle(messageName: "updateThemeVariables", messageBody: [
+            "darkMode": true,
+            "variables": [["name": "--primary-color", "value": "rgb(3, 169, 244)", "color": "rgb(3, 169, 244)"]],
+        ])
+
+        wait(for: [stored], timeout: 10)
+        XCTAssertEqual(provider.storedServerId, ServerFixture.standard.identifier.rawValue)
+        XCTAssertEqual(provider.storedAppearance, .dark)
+        XCTAssertEqual(provider.storedVariables.map(\.name), ["--primary-color"])
+    }
+
+    @MainActor func testThemeVariablesInBackgroundAreIgnored() {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let provider = SpyFrontendThemeProvider()
+        Current.frontendTheme = { provider }
+        sut.isAppInBackground = { true }
+
+        sut.handle(messageName: "updateThemeVariables", messageBody: [
+            "variables": [["name": "--primary-color", "value": "rgb(0, 0, 0)"]],
+        ])
+
+        XCTAssertFalse(provider.storeCalled)
+    }
+
+    /// Nothing to attribute the capture to: the web view went away between the message being posted
+    /// and it being handled.
+    @MainActor func testThemeVariablesWithoutAWebViewAreDropped() {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let provider = SpyFrontendThemeProvider()
+        Current.frontendTheme = { provider }
+        sut.webView = nil
+        sut.isAppInBackground = { false }
+
+        sut.handle(messageName: "updateThemeVariables", messageBody: [
+            "variables": [["name": "--primary-color", "value": "rgb(0, 0, 0)"]],
+        ])
+
+        XCTAssertFalse(provider.storeCalled)
+    }
+
+    /// An unusable payload must not replace a good theme with an empty one.
+    @MainActor func testThemeVariablesWithNothingWorthStoringAreDropped() {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let provider = SpyFrontendThemeProvider()
+        Current.frontendTheme = { provider }
+        sut.isAppInBackground = { false }
+
+        sut.handle(messageName: "updateThemeVariables", messageBody: ["variables": []])
+
+        XCTAssertFalse(provider.storeCalled)
+    }
+
     /// Points the environment at a single server the mock web view is showing. Its only URL refuses
     /// connections immediately, so the revoke request fails fast instead of reaching the network.
     @MainActor private func givenLoggedInServer() -> Server {
