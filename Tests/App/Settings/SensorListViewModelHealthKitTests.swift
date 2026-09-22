@@ -135,6 +135,22 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         XCTAssertFalse(Current.sensors.isEnabled(uniqueID: metric.uniqueID, for: server))
     }
 
+    /// Each category has its own "Enable all", which only covers the metrics it lists.
+    @MainActor
+    func testHealthSensorListEnablesEverythingInOneCategory() {
+        let viewModel = HealthSensorListViewModel(server: server)
+        let category = HealthKitMetricCategory.heart
+        let inCategory = Set(HealthKitMetric.metrics(in: category).map(\.uniqueID))
+        XCTAssertFalse(inCategory.isEmpty)
+
+        viewModel.enableAll(in: category)
+
+        XCTAssertTrue(inCategory.isSubset(of: viewModel.enabledUniqueIDs))
+        // The other categories are left alone.
+        XCTAssertEqual(viewModel.enabledUniqueIDs, inCategory)
+        XCTAssertFalse(viewModel.areAllEnabled)
+    }
+
     @MainActor
     func testHealthSensorListEnablesAndDisablesEverything() {
         let viewModel = HealthSensorListViewModel(server: server)

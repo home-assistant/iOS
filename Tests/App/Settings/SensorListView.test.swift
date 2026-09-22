@@ -31,6 +31,36 @@ struct SensorListViewTests {
         }
     }
 
+    @MainActor
+    @Test func serverScopedSensorListShowsItsSensors() throws {
+        try withServers(count: 2) { servers in
+            let server = try #require(servers.all.first)
+            let viewModel = SensorListViewModel(server: server)
+            viewModel.sensors = [
+                WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue, state: "Walking"),
+                WebhookSensor(name: "Storage", uniqueID: WebhookSensorId.storage.rawValue, state: "12 GB"),
+            ]
+            assertLightDarkSnapshots(
+                of: NavigationView { SensorListView(server: server, viewModel: viewModel) },
+                drawHierarchyInKeyWindow: true
+            )
+        }
+    }
+
+    @MainActor
+    @Test func sensorListSaysWhenASearchMatchesNothing() throws {
+        try withServers(count: 2) { servers in
+            let server = try #require(servers.all.first)
+            let viewModel = SensorListViewModel(server: server)
+            viewModel.sensors = [WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue)]
+            viewModel.searchTerm = "nothing matches this"
+            assertLightDarkSnapshots(
+                of: NavigationView { SensorListView(server: server, viewModel: viewModel) },
+                drawHierarchyInKeyWindow: true
+            )
+        }
+    }
+
     /// The screen reads the servers and the selection straight out of `Current`, so both are put
     /// back afterwards rather than left for whatever test runs next.
     @MainActor

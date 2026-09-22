@@ -17,15 +17,15 @@ struct SensorListView: View {
     private let isServerScoped: Bool
 
     /// The root screen, which scopes itself to the only server when there is one.
-    init() {
+    init(viewModel: SensorListViewModel? = nil) {
         self.isServerScoped = false
-        self._viewModel = .init(wrappedValue: SensorListViewModel())
+        self._viewModel = .init(wrappedValue: viewModel ?? SensorListViewModel())
     }
 
     /// One server's sensors, pushed from the list of servers on the root screen.
-    init(server: Server) {
+    init(server: Server, viewModel: SensorListViewModel? = nil) {
         self.isServerScoped = true
-        self._viewModel = .init(wrappedValue: SensorListViewModel(server: server))
+        self._viewModel = .init(wrappedValue: viewModel ?? SensorListViewModel(server: server))
     }
 
     private let periodicOptions: [TimeInterval?] = {

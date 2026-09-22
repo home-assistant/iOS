@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import PromiseKit
 @testable import Shared
 import XCTest
 
@@ -24,6 +25,9 @@ class SensorPermissionOnEnableTests: XCTestCase {
         Current.servers = servers
         Current.sensors = SensorContainer()
         SensorEnablementStore.resetForTesting()
+        // Without this the store assumes an upgrade and switches the legacy-era sensors on, so a
+        // test about switching one on would start with it already enabled.
+        Current.sensors.resetSensorsForFirstRun()
         Current.requestSensorPermissions = { [weak self] uniqueIDs in
             self?.requestedUniqueIDs.append(uniqueIDs)
         }
@@ -115,6 +119,29 @@ class SensorPermissionOnEnableTests: XCTestCase {
         viewModel.setEnabled(true)
 
         XCTAssertEqual(requestedUniqueIDs, [[WebhookSensorId.focus.rawValue]])
+    }
+
+    /// The detail screen follows the sensor as later updates arrive, and each of them re-reads the
+    /// enablement for the server it is configuring rather than for whichever came first.
+    func testDetailScreenFollowsTheSensorForItsOwnServer() {
+        let sensor = WebhookSensor(name: "Storage", uniqueID: WebhookSensorId.storage.rawValue)
+        let viewModel = SensorDetailViewModel(sensor: sensor, server: server)
+        XCTAssertFalse(viewModel.isEnabled)
+
+        Current.sensors.setEnabled(true, forUniqueID: WebhookSensorId.storage.rawValue, on: server)
+        let updated = WebhookSensor(
+            name: "Storage",
+            uniqueID: WebhookSensorId.storage.rawValue,
+            state: "12 GB"
+        )
+        viewModel.sensorContainer(Current.sensors, didUpdate: .init(sensors: .value([updated])))
+
+        let populated = expectation(description: "the update reaches the screen")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { populated.fulfill() }
+        wait(for: [populated], timeout: 2)
+
+        XCTAssertTrue(viewModel.isEnabled)
+        XCTAssertEqual(viewModel.stateDescription, updated.StateDescription)
     }
 
     private final class SensorListViewModelWithoutRefresh: SensorListViewModel {
