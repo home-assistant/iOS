@@ -107,12 +107,6 @@ class SensorListViewModel: ObservableObject {
         return enabledUniqueIDs.contains(uniqueID)
     }
 
-    /// How many sensors are switched on for a server, shown next to it on the root screen so the
-    /// difference between servers is visible without opening each one.
-    func enabledCount(for server: Server) -> Int {
-        Current.sensors.enabledUniqueIDs(for: server).count
-    }
-
     func refresh() {
         firstly {
             HomeAssistantAPI.manuallyUpdate(

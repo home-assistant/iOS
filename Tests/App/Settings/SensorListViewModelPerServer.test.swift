@@ -54,25 +54,6 @@ struct SensorListViewModelPerServerTests {
         }
     }
 
-    /// The root screen shows a count next to each server, which is the only place the difference
-    /// between them is visible without opening each one.
-    @Test func theRootModelCountsEachServersSelection() async throws {
-        try await withServers { servers in
-            let first = try #require(servers.all.first)
-            let second = try #require(servers.all.last)
-            Current.sensors.setEnabled(
-                true,
-                forUniqueIDs: [WebhookSensorId.activity.rawValue, WebhookSensorId.storage.rawValue],
-                on: first
-            )
-
-            let viewModel = SensorListViewModel(server: nil)
-
-            #expect(viewModel.enabledCount(for: first) == 2)
-            #expect(viewModel.enabledCount(for: second) == 0)
-        }
-    }
-
     @Test func serversAreOfferedOnlyWhenThereIsMoreThanOne() async throws {
         try await withServers { servers in
             #expect(SensorListViewModel(server: nil).selectableServers.count == 2)
