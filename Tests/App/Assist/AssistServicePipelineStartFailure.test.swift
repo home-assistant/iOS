@@ -11,6 +11,7 @@ import XCTest
 /// the rejection is reported as an Assist error instead.
 final class AssistServicePipelineStartFailureTests: XCTestCase {
     private var previousServers: ServerManager!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var server: Server!
     private var connection: HAMockConnection!
     private var delegate: SpyAssistServiceDelegate!
@@ -19,6 +20,7 @@ final class AssistServicePipelineStartFailureTests: XCTestCase {
     override func setUp() {
         super.setUp()
         previousServers = Current.servers
+        previousCachedApis = Current.cachedApis
         let servers = FakeServerManager()
         Current.servers = servers
         server = servers.addFake()
@@ -34,7 +36,7 @@ final class AssistServicePipelineStartFailureTests: XCTestCase {
     }
 
     override func tearDown() {
-        Current.cachedApis = [:]
+        Current.cachedApis = previousCachedApis
         Current.servers = previousServers
         sut = nil
         delegate = nil
@@ -99,23 +101,69 @@ final class AssistServicePipelineStartFailureTests: XCTestCase {
         XCTAssertTrue(connection.cancelledSubscriptions.isEmpty)
     }
 
+    /// A run that does start keeps delivering pipeline events to the same subscription, so the
+    /// event handler still has to reach `handleAssistEvent` after the `initiated` handler was added
+    /// alongside it.
+    func testVoiceRunThatStartsDeliversEventsToTheHandler() throws {
+        sut.assist(source: .audio(pipelineId: nil, audioSampleRate: 16000, tts: true))
+
+        try initiateLastSubscription(with: .success(.dictionary([:])))
+        try deliverToLastSubscription(runStartEvent)
+
+        XCTAssertEqual(delegate.events, [.runStart])
+        XCTAssertTrue(delegate.receivedGreenLight, "run-start carries the id audio upload needs")
+    }
+
+    /// The prompt flow shares that handler, so it has to keep delivering events too.
+    func testTextRunThatStartsDeliversEventsToTheHandler() throws {
+        sut.assist(source: .text(input: "turn off the lights", pipelineId: nil, expectTTS: true))
+
+        try initiateLastSubscription(with: .success(.dictionary([:])))
+        try deliverToLastSubscription(runStartEvent)
+
+        XCTAssertEqual(delegate.events, [.runStart])
+    }
+
+    /// `run-start` is the first event of a healthy run and the one that hands over the binary
+    /// handler id, so it exercises the handler and the green-light path in one go.
+    private var runStartEvent: HAData {
+        .dictionary([
+            "type": "run-start",
+            "timestamp": "2026-09-22T16:59:52.000000+00:00",
+            "data": ["runner_data": ["stt_binary_handler_id": 1]],
+        ])
+    }
+
     private func initiateLastSubscription(with result: Result<HAData, HAError>) throws {
         let subscription = try XCTUnwrap(connection.pendingSubscriptions.last)
         subscription.initiated(result)
     }
-}
 
-private final class SpyAssistServiceDelegate: AssistServiceDelegate {
-    private(set) var errors: [(code: String, message: String)] = []
+    private func deliverToLastSubscription(_ data: HAData) throws {
+        let subscription = try XCTUnwrap(connection.pendingSubscriptions.last)
+        subscription.handler(subscription.cancellable, data)
+    }
 
-    func didReceiveEvent(_ event: AssistEvent) {}
-    func didReceiveSttContent(_ content: String) {}
-    func didReceiveIntentEndContent(_ content: String) {}
-    func didReceiveStreamResponseChunk(_ content: String) {}
-    func didReceiveGreenLightForAudioInput() {}
-    func didReceiveTtsMediaUrl(_ mediaUrl: URL) {}
+    private final class SpyAssistServiceDelegate: AssistServiceDelegate {
+        private(set) var errors: [(code: String, message: String)] = []
+        private(set) var events: [AssistEvent] = []
+        private(set) var receivedGreenLight = false
 
-    func didReceiveError(code: String, message: String) {
-        errors.append((code: code, message: message))
+        func didReceiveSttContent(_ content: String) {}
+        func didReceiveIntentEndContent(_ content: String) {}
+        func didReceiveStreamResponseChunk(_ content: String) {}
+        func didReceiveTtsMediaUrl(_ mediaUrl: URL) {}
+
+        func didReceiveEvent(_ event: AssistEvent) {
+            events.append(event)
+        }
+
+        func didReceiveGreenLightForAudioInput() {
+            receivedGreenLight = true
+        }
+
+        func didReceiveError(code: String, message: String) {
+            errors.append((code: code, message: message))
+        }
     }
 }

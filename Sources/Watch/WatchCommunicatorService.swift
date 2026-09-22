@@ -1084,9 +1084,6 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     }
 
     func didReceiveError(code: String, message: String) {
-        // The run is over, so the recording it was going to carry is dead weight. Dropping it keeps
-        // a failed attempt's audio from sitting in memory until the next one replaces it.
-        pendingAudioData = nil
         let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistError.rawValue,
             content: AssistErrorPayload(code: code, message: message).content
