@@ -68,11 +68,13 @@ public final class FrontendThemeProvider: FrontendThemeProviderProtocol {
             return
         }
         lock.lock()
+        // `hasLoaded` is deliberately left alone: this filled one server/appearance, and claiming the
+        // whole cache is loaded would hide every other server's persisted rows until the next reload.
+        // The merge in `loadIfNeeded` keeps what was just stored, so the load stays safe to run after.
         cache[Self.cacheKey(serverId: serverId, appearance: appearance)] = Dictionary(
             variables.map { ($0.name, $0) },
             uniquingKeysWith: { _, latest in latest }
         )
-        hasLoaded = true
         lock.unlock()
         NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
     }

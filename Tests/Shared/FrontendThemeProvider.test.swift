@@ -161,6 +161,37 @@ struct FrontendThemeProviderTests {
         }
     }
 
+    /// A capture for one server must not convince the cache it holds every server: the first theme
+    /// event of a launch fills one server and one appearance, and the rest are still only on disk.
+    @Test("A capture for one server does not hide another server's stored theme")
+    func storingOneServerStillLoadsTheOthers() throws {
+        try withThemeEnvironment { provider, serverId in
+            let otherServerId = "other-server"
+            try FrontendThemeVariable.replaceAll(
+                [variable(
+                    serverId: otherServerId,
+                    appearance: .light,
+                    name: "--primary-color",
+                    color: "rgb(9, 9, 9)"
+                )],
+                serverId: otherServerId,
+                appearance: .light
+            )
+
+            // The very first thing this provider does is store, before it has ever read the database.
+            provider.store(
+                [variable(serverId: serverId, appearance: .light, name: "--primary-color", color: "rgb(1, 2, 3)")],
+                for: serverId,
+                appearance: .light
+            )
+
+            #expect(provider.variables(for: otherServerId, appearance: .light).count == 1)
+            // ...and the freshly stored theme is not clobbered by that load.
+            let stored = provider.variables(for: serverId, appearance: .light)
+            #expect(stored["--primary-color"]?.colorValue == "rgb(1, 2, 3)")
+        }
+    }
+
     @Test("With no servers there is nothing to resolve against")
     func hasNoVariablesWithoutAServer() throws {
         let previousDatabase = Current.database

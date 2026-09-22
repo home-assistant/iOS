@@ -14,6 +14,8 @@ import GRDB
 /// `nil` for anything that is not a color — which is what makes it safe to hand straight to a
 /// color parser.
 public struct FrontendThemeVariable: Codable, FetchableRecord, PersistableRecord, Equatable, Sendable {
+    public static let databaseTableName = GRDBDatabaseTable.frontendThemeVariable.rawValue
+
     /// `serverId|appearance|name`, so re-capturing a theme overwrites in place instead of accumulating.
     public var id: String
     public var serverId: String

@@ -22,20 +22,24 @@ final class FrontendThemeVariableTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.FrontendThemeVariable.themeName.rawValue, .text)
                     t.column(DatabaseTables.FrontendThemeVariable.updatedAt.rawValue, .datetime).notNull()
                 }
-                // A theme is always read as a whole set — every property of one server in one appearance —
-                // and there are a few hundred rows per set, so the lookup gets an index of its own.
-                try db.create(
-                    index: "\(tableName)_serverId_appearance",
-                    on: tableName,
-                    columns: [
-                        DatabaseTables.FrontendThemeVariable.serverId.rawValue,
-                        DatabaseTables.FrontendThemeVariable.appearance.rawValue,
-                    ],
-                    ifNotExists: true
-                )
             }
         } else {
             try migrateColumns(database: database)
+        }
+
+        // A theme is always read as a whole set — every property of one server in one appearance —
+        // and there are a few hundred rows per set, so the pair the lookup filters on is indexed.
+        // GRDB has no index declaration inside `create(table:)`, and running this outside the
+        // creation branch with `ifNotExists` also covers databases created before the index existed.
+        try database.write { db in
+            try db.create(
+                indexOn: tableName,
+                columns: [
+                    DatabaseTables.FrontendThemeVariable.serverId.rawValue,
+                    DatabaseTables.FrontendThemeVariable.appearance.rawValue,
+                ],
+                options: [.ifNotExists]
+            )
         }
     }
 }
