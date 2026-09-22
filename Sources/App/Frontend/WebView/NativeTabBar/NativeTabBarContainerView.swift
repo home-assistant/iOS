@@ -4,7 +4,7 @@ import SwiftUI
 
 /// The App Labs native iOS tab bar.
 @available(iOS 26, *)
-struct NativeTabBarContainerView<FrontendOverlay: View>: View {
+struct NativeTabBarContainerView: View {
     private enum Constants {
         static var tabIconSize: CGFloat { 24 }
     }
@@ -15,7 +15,6 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
     let frontendOpacity: Double
     let frontendIgnoredSafeAreaEdges: Edge.Set
     let onNeedsWebViewController: () -> Void
-    @ViewBuilder let frontendOverlay: () -> FrontendOverlay
 
     var body: some View {
         TabView(selection: Binding(
@@ -25,16 +24,13 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
             ForEach(viewModel.regularTabItems) { item in
                 Tab(value: item.tab) {
                     if item.sidebarItem != nil {
-                        ZStack {
-                            NativeTabBarFrontendSlot(
-                                controller: webViewController,
-                                isActive: viewModel.selection == item.tab,
-                                onNeedsController: onNeedsWebViewController
-                            )
-                            .opacity(frontendOpacity)
-                            .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
-                            frontendOverlay()
-                        }
+                        NativeTabBarFrontendSlot(
+                            controller: webViewController,
+                            isActive: viewModel.selection == item.tab,
+                            onNeedsController: onNeedsWebViewController
+                        )
+                        .opacity(frontendOpacity)
+                        .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
                     } else {
                         Color.clear
                     }
@@ -56,16 +52,13 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
                         NativeTabBarMoreView(viewModel: viewModel)
                     }
                     if viewModel.moreShowsFrontend {
-                        ZStack {
-                            NativeTabBarFrontendSlot(
-                                controller: webViewController,
-                                isActive: viewModel.selection == .more,
-                                onNeedsController: onNeedsWebViewController
-                            )
-                            .opacity(frontendOpacity)
-                            .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
-                            frontendOverlay()
-                        }
+                        NativeTabBarFrontendSlot(
+                            controller: webViewController,
+                            isActive: viewModel.selection == .more,
+                            onNeedsController: onNeedsWebViewController
+                        )
+                        .opacity(frontendOpacity)
+                        .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
                         .transition(.move(edge: .trailing))
                     }
                 }
@@ -135,7 +128,5 @@ struct NativeTabBarContainerView<FrontendOverlay: View>: View {
         frontendOpacity: 1,
         frontendIgnoredSafeAreaEdges: .all,
         onNeedsWebViewController: {}
-    ) {
-        EmptyView()
-    }
+    )
 }

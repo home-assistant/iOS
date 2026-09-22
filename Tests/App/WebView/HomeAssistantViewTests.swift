@@ -96,6 +96,23 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertFalse(sut.loaderMinimumDurationElapsed)
     }
 
+    func testStandByViewIsVisibleWhileTheLoaderIsUp() {
+        let sut = HomeAssistantViewModel(server: Server.fake())
+
+        XCTAssertTrue(sut.isStandByViewVisible)
+    }
+
+    /// The no-active-URL block replaces the whole frontend, stand-by included, so nothing is layered over it.
+    func testStandByViewIsHiddenWhileTheNoActiveURLStateShows() {
+        let overlayState = WebFrontendOverlayState()
+        overlayState.showsNoActiveURL = true
+
+        let sut = HomeAssistantViewModel(server: Server.fake(), overlayState: overlayState)
+
+        XCTAssertTrue(sut.shouldShowStandByView)
+        XCTAssertFalse(sut.isStandByViewVisible)
+    }
+
     func testConnectedHidesStandbyLoaderBeforeFrontendLoadedEventSupport() {
         let overlayState = WebFrontendOverlayState()
         let sut = HomeAssistantViewModel(
