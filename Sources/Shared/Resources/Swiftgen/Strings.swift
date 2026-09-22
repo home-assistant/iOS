@@ -6918,6 +6918,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.enabled.title") }
         }
       }
+      public enum EnhancedWebSecurity {
+        /// iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.general.enhanced_web_security.footer") }
+        /// Apple Enhanced Web Security
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.enhanced_web_security.title") }
+      }
       public enum FullScreen {
         /// Full Screen
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.full_screen.title") }

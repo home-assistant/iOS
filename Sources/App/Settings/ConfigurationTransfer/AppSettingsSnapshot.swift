@@ -34,6 +34,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
     var fullScreen: Bool?
     var restoreLastURL: Bool?
     var refreshWebViewAfterInactive: Bool?
+    var enhancedWebSecurityEnabled: Bool?
     var webViewAlwaysBelowStatusBar: Bool?
     var webViewEmptyStateTimeout: Int?
     var flightGreetingsEnabled: Bool?
@@ -77,6 +78,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
             fullScreen: store.fullScreen,
             restoreLastURL: store.restoreLastURL,
             refreshWebViewAfterInactive: store.refreshWebViewAfterInactive,
+            enhancedWebSecurityEnabled: store.enhancedWebSecurityEnabled,
             webViewAlwaysBelowStatusBar: store.webViewAlwaysBelowStatusBar,
             webViewEmptyStateTimeout: store.webViewEmptyStateTimeout,
             flightGreetingsEnabled: store.flightGreetingsEnabled,
@@ -135,6 +137,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
         if let fullScreen { store.fullScreen = fullScreen }
         if let restoreLastURL { store.restoreLastURL = restoreLastURL }
         if let refreshWebViewAfterInactive { store.refreshWebViewAfterInactive = refreshWebViewAfterInactive }
+        if let enhancedWebSecurityEnabled { store.enhancedWebSecurityEnabled = enhancedWebSecurityEnabled }
         if let webViewAlwaysBelowStatusBar { store.webViewAlwaysBelowStatusBar = webViewAlwaysBelowStatusBar }
         if let webViewEmptyStateTimeout { store.webViewEmptyStateTimeout = webViewEmptyStateTimeout }
         if let mediaTypesRequiringUserActionForPlayback {

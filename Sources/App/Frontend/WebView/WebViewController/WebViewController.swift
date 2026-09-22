@@ -271,6 +271,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {
+        // WebKit reads this when the web view is built, so it has to be settled first.
+        WebKitEnhancedSecurity.prepareForConfiguredServers()
+
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         // Avoid interrupting background audio when the frontend loads media-capable elements.
