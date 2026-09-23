@@ -127,4 +127,49 @@ struct AppDelegateForceCloseTerminationTests {
             #expect(posted.first?.identifier == ForceCloseWarningManager.notificationIdentifier)
         }
     }
+
+    @Test func applicationWillTerminateForgetsTheLastPage() {
+        withForceCloseWorld(toggle: true, permission: .authorizedAlways) {
+            withLastPage(server: "server-1", path: "/config/integrations/integration/hue") {
+                AppDelegate().applicationWillTerminate(UIApplication.shared)
+
+                #expect(Current.settingsStore.lastActiveURLPath == nil)
+                #expect(Current.settingsStore.lastActiveServerIdentifier == "server-1")
+            }
+        }
+    }
+
+    @Test func applicationWillTerminateForgetsTheLastPageEvenWhenTheWarningIsDisabled() {
+        withForceCloseWorld(toggle: false, permission: .denied) {
+            withLastPage(server: "server-1", path: "/config/integrations/integration/hue") {
+                AppDelegate().applicationWillTerminate(UIApplication.shared)
+
+                #expect(Current.settingsStore.lastActiveURLPath == nil)
+                #expect(Current.settingsStore.lastActiveServerIdentifier == "server-1")
+            }
+        }
+    }
+
+    @Test func applicationWillTerminateKeepsTheLastPageOnCatalyst() {
+        withForceCloseWorld(isCatalyst: true) {
+            withLastPage(server: "server-1", path: "/config/integrations/integration/hue") {
+                AppDelegate().applicationWillTerminate(UIApplication.shared)
+
+                #expect(Current.settingsStore.lastActiveURLPath == "/config/integrations/integration/hue")
+                #expect(Current.settingsStore.lastActiveServerIdentifier == "server-1")
+            }
+        }
+    }
+}
+
+private func withLastPage(server: String, path: String, _ body: () throws -> Void) rethrows {
+    let previousServer = Current.settingsStore.lastActiveServerIdentifier
+    let previousPath = Current.settingsStore.lastActiveURLPath
+    defer {
+        Current.settingsStore.lastActiveServerIdentifier = previousServer
+        Current.settingsStore.lastActiveURLPath = previousPath
+    }
+    Current.settingsStore.lastActiveServerIdentifier = server
+    Current.settingsStore.lastActiveURLPath = path
+    try body()
 }
