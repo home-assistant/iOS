@@ -1248,7 +1248,7 @@
 "notification_service.parser.camera.invalid_entity" = "所提供的 entity_id 無效。";
 "notification_service.parser.url.invalid_url" = "所提供的 URL 無效。";
 "notification_service.parser.url.no_url" = "未提供 URL。";
-"notification_tap_actions.title" = "Actions";
+"notification_tap_actions.title" = "操作";
 "notifications_configurator.action.example_trigger.title" = "觸發範例";
 "notifications_configurator.action.rows.authentication_required.footer" = "當使用者選擇此選項操作，系統將會提示使用者解鎖裝置。解鎖後，Home Assistant 將會通知所選擇的操作。";
 "notifications_configurator.action.rows.authentication_required.title" = "需要驗證";
@@ -1978,6 +1978,10 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.server_select.title" = "伺服器";
 "settings.server_switching.by_location.footer" = "當您開啟應用程式時，它會檢查您是否位於您的某個住家，是否已連接到該住家的 Wi-Fi 網路或位於該住家的家庭區域內。如果該住所屬於其他伺服器，則會自動開啟該伺服器。此檢查僅在使用應用程式期間的裝置上進行，並且絕不儲存您的位置資訊。";
 "settings.server_switching.by_location.title" = "按位置切換伺服器";
+"settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
+"settings.server_switching.closest_server.source.location.title" = "Location";
+"settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
+"settings.server_switching.closest_server.source.network.title" = "Wi-Fi network";
 "settings.server_switching.closest_server.title" = "最近的伺服器";
 "settings.server_switching.how_it_works.intro" = "如果您擁有多處住家，該應用程式可以自動判斷目前哪個伺服器最重要，並自動切換到該伺服器。走進您的第二個住家，它的儀表板即已就緒。";
 "settings.server_switching.how_it_works.location.body" = "否則，系統會將您的位置與每個伺服器的家庭區域進行比較，並將最接近的一個視為最近的。";
@@ -2098,6 +2102,8 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_details.general.edge_to_edge.enabled.title" = "啟用";
 "settings_details.general.edge_to_edge.footer" = "在支援的裝置上將 Home Assistant 介面延伸至螢幕邊緣。這是一項實驗性功能，可能隨時移除，並可能導致版面配置問題。";
 "settings_details.general.edge_to_edge.title" = "無邊框顯示";
+"settings_details.general.enhanced_web_security.footer" = "iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.";
+"settings_details.general.enhanced_web_security.title" = "Apple Enhanced Web Security";
 "settings_details.general.full_screen.title" = "全螢幕";
 "settings_details.general.launch_on_login.title" = "登入時啟動 App";
 "settings_details.general.links.title" = "連結";
@@ -2270,8 +2276,8 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_details.notifications.sounds.imported_alert.title" = "音效已匯入";
 "settings_details.notifications.sounds.system" = "系統";
 "settings_details.notifications.sounds.title" = "音效";
-"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
-"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
+"settings_details.notifications.tap_actions.footer" = "點選通知時，系統會詢問要執行哪個操作，而不只是開啟應用程式。在 iOS 中，這些操作通常只有在長按通知時才會顯示。點選後本身已有特定操作的通知（例如開啟網址或實體）則不受影響。";
+"settings_details.notifications.tap_actions.title" = "點選時顯示操作";
 "settings_details.notifications.title" = "通知訊息設定";
 "settings_details.privacy.alerts.description" = "允許檢查重要警告，例如安全漏洞通報。";
 "settings_details.privacy.alerts.title" = "警告";
@@ -2366,6 +2372,10 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_sensors.sensors.header" = "感測器";
 "settings_sensors.sensors.no_results" = "未找到符合搜尋條件的感測器。";
 "settings_sensors.sensors.search_prompt" = "搜尋感測器";
+"settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
+"settings_sensors.servers.header" = "Servers";
+"settings_sensors.servers.search_prompt" = "Search servers";
+"settings_sensors.servers.server_body" = "Decide which of your device sensors you want to share with this server.";
 "settings_sensors.settings.footer" = "變更將於下次更新時生效。";
 "settings_sensors.settings.header" = "設定";
 "settings_sensors.title" = "感測器";

@@ -1978,6 +1978,10 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.server_select.title" = "서버";
 "settings.server_switching.by_location.footer" = "앱을 열면 현재 집 중 하나에 있는지 확인합니다. 해당 집의 Wi-Fi 네트워크에 연결되어 있거나 Home 구역 안에 있는지를 기준으로 합니다. 그 집이 다른 서버에 속해 있으면 해당 서버가 자동으로 열립니다. 확인은 앱을 사용하는 동안 이 기기에서만 수행되며, 위치는 저장되지 않습니다.";
 "settings.server_switching.by_location.title" = "위치로 서버 전환";
+"settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
+"settings.server_switching.closest_server.source.location.title" = "Location";
+"settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
+"settings.server_switching.closest_server.source.network.title" = "Wi-Fi network";
 "settings.server_switching.closest_server.title" = "가장 가까운 서버";
 "settings.server_switching.how_it_works.intro" = "집이 여러 개 있으면 앱이 지금 어떤 서버가 필요한지 파악해 자동으로 전환할 수 있습니다. 두 번째 집에 들어가면 해당 대시보드가 이미 열려 있습니다.";
 "settings.server_switching.how_it_works.location.body" = "그 외의 경우, 현재 위치를 각 서버의 Home 구역과 비교하여 가장 가까운 서버를 판단합니다.";
@@ -2098,6 +2102,8 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings_details.general.edge_to_edge.enabled.title" = "활성화";
 "settings_details.general.edge_to_edge.footer" = "지원하는 기기에서 Home Assistant UI를 화면 가장자리까지 표시합니다. 이 기능은 실험 기능이며 언제든지 제거될 수 있고 레이아웃 문제가 발생할 수도 있습니다.";
 "settings_details.general.edge_to_edge.title" = "가장자리에서 가장자리까지 표시";
+"settings_details.general.enhanced_web_security.footer" = "iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.";
+"settings_details.general.enhanced_web_security.title" = "Apple Enhanced Web Security";
 "settings_details.general.full_screen.title" = "전체 화면";
 "settings_details.general.launch_on_login.title" = "로그인 시 앱 실행";
 "settings_details.general.links.title" = "링크";
@@ -2366,6 +2372,10 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings_sensors.sensors.header" = "센서";
 "settings_sensors.sensors.no_results" = "검색과 일치하는 센서가 없습니다";
 "settings_sensors.sensors.search_prompt" = "센서 검색";
+"settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
+"settings_sensors.servers.header" = "Servers";
+"settings_sensors.servers.search_prompt" = "Search servers";
+"settings_sensors.servers.server_body" = "Decide which of your device sensors you want to share with this server.";
 "settings_sensors.settings.footer" = "변경 사항은 다음 업데이트에 적용됩니다.";
 "settings_sensors.settings.header" = "설정";
 "settings_sensors.title" = "센서";
