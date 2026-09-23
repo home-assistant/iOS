@@ -45,10 +45,17 @@ public extension WatchConnectivityManager {
         errorHandler: ((Error) -> Void)? = nil
     ) -> InteractiveSendTicket {
         let deadline = timeout > 0 ? DispatchTime.now() + timeout : nil
-        return enqueueInteractiveSend(priority: priority, coalescingKey: coalescingKey) { [weak self] in
+        let ticket = enqueueInteractiveSend(priority: priority, coalescingKey: coalescingKey) { [weak self] in
             guard let self else { return }
             performInteractiveSend(message, timeout: timeout, deadline: deadline, errorHandler: errorHandler)
         }
+        if let deadline, ticket.queuedSequence != nil {
+            DispatchQueue.main.asyncAfter(deadline: deadline) { [weak self] in
+                guard let self, cancelQueuedInteractiveSend(ticket) else { return }
+                errorHandler?(HAWatchConnectivity.ConnectivityError.notSentInTime)
+            }
+        }
+        return ticket
     }
 
     private func performInteractiveSend(

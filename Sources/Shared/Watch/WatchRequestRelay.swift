@@ -26,8 +26,7 @@ enum WatchRequestRelay {
     /// attempt rather than one that is certain to expire.
     static let minimumRequestTimeout: TimeInterval = 2
 
-    static let unansweredReason =
-        "The iPhone received the request but didn't report back in time. Check whether it ran before trying again."
+    static var unansweredReason: String { L10n.Watch.Relay.Unanswered.message }
 
     enum Delivery: Equatable {
         case answered(WatchHTTPResponsePayload)

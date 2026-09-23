@@ -9380,6 +9380,12 @@ public enum L10n {
         }
       }
     }
+    public enum Relay {
+      public enum Unanswered {
+        /// The iPhone received the request but didn't report back in time. Check whether it ran before trying again.
+        public static var message: String { return L10n.tr("Localizable", "watch.relay.unanswered.message") }
+      }
+    }
     public enum Settings {
       /// Auto
       public static var auto: String { return L10n.tr("Localizable", "watch.settings.auto") }

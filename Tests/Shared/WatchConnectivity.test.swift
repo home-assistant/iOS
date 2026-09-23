@@ -633,20 +633,48 @@ struct WatchConnectivityQueue_test {
         #expect(sentIdentifiers(fake) == ["one"])
     }
 
-    @Test func aSendQueuedPastItsTimeoutIsNeverSent() async throws {
+    @Test func aQueuedSendExpiresWhileWaitingForASlot() async throws {
         let fake = FakeWCSession()
         let manager = WatchConnectivityManager(session: fake)
 
         manager.send(interactive("one"))
         manager.send(interactive("two"))
         var error: Error?
-        manager.send(interactive("late"), timeout: 0.05, errorHandler: { error = $0 })
-        try await Task.sleep(nanoseconds: 150_000_000)
+        let queued = manager.send(interactive("expired"), timeout: 0.05, errorHandler: { error = $0 })
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        #expect(error as? HAWatchConnectivity.ConnectivityError == .notSentInTime)
+        #expect(manager.cancelQueuedInteractiveSend(queued) == false)
 
         let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
         fake.sentMessages[0].replyHandler?(reply)
         #expect(sentIdentifiers(fake) == ["one", "two"])
-        #expect(error as? HAWatchConnectivity.ConnectivityError == .notSentInTime)
+    }
+
+    @Test func aSendDequeuedPastItsTimeoutIsNeverSent() async throws {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        manager.send(interactive("one"))
+        manager.send(interactive("two"))
+        var errors: [Error] = []
+        manager.send(interactive("late"), timeout: 0.05, errorHandler: { errors.append($0) })
+
+        let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
+        let freeASlotAfterTheDeadline = {
+            Thread.sleep(forTimeInterval: 0.1)
+            fake.sentMessages[0].replyHandler?(reply)
+        }
+        if Thread.isMainThread {
+            freeASlotAfterTheDeadline()
+        } else {
+            DispatchQueue.main.sync(execute: freeASlotAfterTheDeadline)
+        }
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        #expect(sentIdentifiers(fake) == ["one", "two"])
+        #expect(errors.count == 1)
+        #expect(errors.first as? HAWatchConnectivity.ConnectivityError == .notSentInTime)
 
         manager.send(interactive("next"))
         #expect(sentIdentifiers(fake) == ["one", "two", "next"])
