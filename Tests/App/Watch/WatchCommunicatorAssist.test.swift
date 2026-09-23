@@ -12,6 +12,7 @@ final class WatchCommunicatorAssistTests: XCTestCase {
     private var recognizerLocale: Locale?
     private var recognizerFailure: Error?
     private var configuration = AssistConfiguration()
+    private var watchSpeaksOnDevice = true
     private var sentMessages: [HAWatchConnectivity.ImmediateMessage] = []
     private var service: WatchCommunicatorService!
 
@@ -27,6 +28,7 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         recognizerLocale = nil
         recognizerFailure = nil
         configuration = AssistConfiguration()
+        watchSpeaksOnDevice = true
         sentMessages = []
 
         service = WatchCommunicatorService()
@@ -40,6 +42,7 @@ final class WatchCommunicatorAssistTests: XCTestCase {
             return self?.recognizer ?? FakeSpeechRecognizer()
         }
         service.send = { [weak self] in self?.sentMessages.append($0) }
+        service.watchSpeaksOnDevice = { [weak self] in self?.watchSpeaksOnDevice ?? true }
     }
 
     override func tearDown() {
@@ -113,6 +116,18 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         XCTAssertEqual(
             assistService.assistSource,
             .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: false)
+        )
+    }
+
+    func testRecordingKeepsServerTTSWhenTheWatchCannotSpeakOnDevice() {
+        configuration = AssistConfiguration(enableOnDeviceTTS: true)
+        watchSpeaksOnDevice = false
+
+        sendRecording()
+
+        XCTAssertEqual(
+            assistService.assistSource,
+            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
         )
     }
 
@@ -233,15 +248,25 @@ final class WatchCommunicatorAssistTests: XCTestCase {
 
     // MARK: - Answers
 
-    func testAnswerIsSpokenOnTheWatchWhenTTSIsOnDevice() {
-        configuration = AssistConfiguration(enableOnDeviceTTS: true)
+    func testAnswerIsSpokenOnTheWatchWithTheSelectedVoiceWhenTTSIsOnDevice() {
+        configuration = AssistConfiguration(enableOnDeviceTTS: true, onDeviceTTSVoiceIdentifier: "voice")
 
         service.didReceiveIntentEndContent("The door is locked.")
 
         let answers = messages(.assistIntentEndResponse).compactMap { AssistTextResponsePayload(content: $0.content) }
         XCTAssertEqual(answers.map(\.text), ["The door is locked."])
         let spoken = messages(.assistOnDeviceTTS).compactMap { AssistOnDeviceTTSPayload(content: $0.content) }
-        XCTAssertEqual(spoken.map(\.text), ["The door is locked."])
+        XCTAssertEqual(spoken, [AssistOnDeviceTTSPayload(text: "The door is locked.", voiceIdentifier: "voice")])
+    }
+
+    func testAnswerIsNotSpokenOnTheWatchWhenTheWatchCannotSpeakOnDevice() {
+        configuration = AssistConfiguration(enableOnDeviceTTS: true)
+        watchSpeaksOnDevice = false
+
+        service.didReceiveIntentEndContent("The door is locked.")
+
+        XCTAssertEqual(messages(.assistIntentEndResponse).count, 1)
+        XCTAssertTrue(messages(.assistOnDeviceTTS).isEmpty)
     }
 
     func testAnswerIsNotSpokenOnTheWatchByDefault() {
@@ -261,9 +286,14 @@ final class WatchCommunicatorAssistTests: XCTestCase {
     }
 
     func testOnDeviceTTSPayloadRoundTripsAndRejectsMissingText() {
-        let payload = AssistOnDeviceTTSPayload(text: "Done")
+        let payload = AssistOnDeviceTTSPayload(text: "Done", voiceIdentifier: "voice")
         XCTAssertEqual(AssistOnDeviceTTSPayload(content: payload.content), payload)
-        XCTAssertNil(AssistOnDeviceTTSPayload(content: [:]))
+
+        let bare = AssistOnDeviceTTSPayload(text: "Done")
+        XCTAssertEqual(AssistOnDeviceTTSPayload(content: bare.content), bare)
+        XCTAssertNil(bare.content["voiceIdentifier"])
+
+        XCTAssertNil(AssistOnDeviceTTSPayload(content: ["voiceIdentifier": "voice"]))
     }
 }
 

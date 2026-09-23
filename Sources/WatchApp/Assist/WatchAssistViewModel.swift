@@ -275,8 +275,8 @@ extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
         audioPlayer.play(url: url, server: server)
     }
 
-    func didReceiveOnDeviceTTS(text: String) {
-        speechSynthesizer.speak(text)
+    func didReceiveOnDeviceTTS(_ payload: AssistOnDeviceTTSPayload) {
+        speechSynthesizer.speak(payload)
     }
 
     func didReceiveError(code: String, message: String) {

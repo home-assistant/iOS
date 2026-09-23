@@ -16,6 +16,10 @@ final class WatchCommunicatorService {
     var assistConfiguration: () -> AssistConfiguration = { AssistConfiguration.config }
     var makeAssistService: (Server) -> AssistServiceProtocol = { AssistService(server: $0) }
     var makeSpeechRecognizer: OnDeviceRecognizerFactory = systemSpeechRecognizerFactory
+    var watchSpeaksOnDevice: () -> Bool = {
+        (Communicator.shared.counterpartProtocolVersion ?? 0) >= WatchProtocolVersion.assistOnDeviceTTS
+    }
+
     var send: (HAWatchConnectivity.ImmediateMessage) -> Void = { Communicator.shared.send($0) }
 
     /// One in-progress chunked audio upload from the watch.
@@ -991,9 +995,17 @@ extension WatchCommunicatorService {
             initAssistServiceIfNeeded(server: server).assist(source: .audio(
                 pipelineId: payload.pipelineId,
                 audioSampleRate: payload.sampleRate,
-                tts: configuration.requestsServerTTS
+                tts: requestsServerTTS(configuration)
             ))
         }
+    }
+
+    private func speaksOnDevice(_ configuration: AssistConfiguration) -> Bool {
+        configuration.enableOnDeviceTTS && watchSpeaksOnDevice()
+    }
+
+    private func requestsServerTTS(_ configuration: AssistConfiguration) -> Bool {
+        !configuration.muteTTS && !speaksOnDevice(configuration)
     }
 
     private func transcribeOnDevice(
@@ -1023,7 +1035,7 @@ extension WatchCommunicatorService {
                 initAssistServiceIfNeeded(server: server).assist(source: .text(
                     input: input,
                     pipelineId: pipelineId,
-                    expectTTS: configuration.requestsServerTTS
+                    expectTTS: requestsServerTTS(configuration)
                 ))
             } catch {
                 Current.Log.error("On-device transcription of watch audio failed: \(error.localizedDescription)")
@@ -1065,7 +1077,7 @@ extension WatchCommunicatorService {
         initAssistServiceIfNeeded(server: server).assist(source: .text(
             input: payload.text,
             pipelineId: payload.pipelineId,
-            expectTTS: assistConfiguration().requestsServerTTS
+            expectTTS: requestsServerTTS(assistConfiguration())
         ))
         acknowledge()
     }
@@ -1122,10 +1134,13 @@ extension WatchCommunicatorService: AssistServiceDelegate {
         sendMessage(message: message)
 
         let configuration = assistConfiguration()
-        guard configuration.enableOnDeviceTTS, !configuration.muteTTS else { return }
+        guard speaksOnDevice(configuration), !configuration.muteTTS else { return }
         sendMessage(message: .init(
             identifier: InteractiveImmediateResponses.assistOnDeviceTTS.rawValue,
-            content: AssistOnDeviceTTSPayload(text: content).content
+            content: AssistOnDeviceTTSPayload(
+                text: content,
+                voiceIdentifier: configuration.onDeviceTTSVoiceIdentifier
+            ).content
         ))
     }
 

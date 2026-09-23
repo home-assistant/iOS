@@ -3,17 +3,19 @@ import Foundation
 import Shared
 
 protocol WatchSpeechSynthesizing: AnyObject {
-    func speak(_ text: String)
+    func speak(_ payload: AssistOnDeviceTTSPayload)
     func stop()
 }
 
 final class WatchSpeechSynthesizer: NSObject, WatchSpeechSynthesizing {
     private let synthesizer = AVSpeechSynthesizer()
 
-    func speak(_ text: String) {
+    func speak(_ payload: AssistOnDeviceTTSPayload) {
         synthesizer.stopSpeaking(at: .immediate)
+        let utterance = AVSpeechUtterance(string: payload.text)
+        utterance.voice = payload.voiceIdentifier.flatMap { AVSpeechSynthesisVoice(identifier: $0) }
         configureAudioSessionForPlayback()
-        synthesizer.speak(AVSpeechUtterance(string: text))
+        synthesizer.speak(utterance)
     }
 
     func stop() {
