@@ -9,6 +9,7 @@ public extension HAWatchConnectivity {
         case payloadTooLarge
         case payloadUnsupportedTypes
         case replyTimedOut
+        case notSentInTime
         case deliveryFailed(underlying: Error)
 
         public var errorDescription: String? {
@@ -25,6 +26,8 @@ public extension HAWatchConnectivity {
                 return "The message payload contains non-property-list values"
             case .replyTimedOut:
                 return "The counterpart did not reply in time"
+            case .notSentInTime:
+                return "The message waited for a free send slot past its timeout and was not sent"
             case let .deliveryFailed(underlying):
                 return underlying.localizedDescription
             }
@@ -64,7 +67,8 @@ extension HAWatchConnectivity.ConnectivityError: Equatable {
              (.notReachable, .notReachable),
              (.payloadTooLarge, .payloadTooLarge),
              (.payloadUnsupportedTypes, .payloadUnsupportedTypes),
-             (.replyTimedOut, .replyTimedOut):
+             (.replyTimedOut, .replyTimedOut),
+             (.notSentInTime, .notSentInTime):
             return true
         case let (.deliveryFailed(lhsError), .deliveryFailed(rhsError)):
             return (lhsError as NSError) == (rhsError as NSError)
@@ -86,6 +90,7 @@ extension HAWatchConnectivity.ConnectivityError: CustomNSError {
         case .payloadUnsupportedTypes: return 5
         case .replyTimedOut: return 6
         case .deliveryFailed: return 7
+        case .notSentInTime: return 8
         }
     }
 

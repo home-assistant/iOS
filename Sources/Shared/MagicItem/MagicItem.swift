@@ -1093,7 +1093,12 @@ public extension MagicItem {
             // in this file.
             let result: Swift.Result<(Data, HTTPURLResponse), Error>
             do {
-                let response = try await ServerRequestPerformer.perform(request, server: server, onStep: onStep)
+                let response = try await ServerRequestPerformer.perform(
+                    request,
+                    server: server,
+                    priority: .userAction,
+                    onStep: onStep
+                )
                 result = .success(response)
             } catch {
                 result = .failure(error)
