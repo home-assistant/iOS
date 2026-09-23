@@ -308,6 +308,17 @@ struct WatchRequestRelayTests {
             )
         }
     }
+
+    @Test func fallsBackWhenTheSharedLinkCannotCarryTheRequest() async throws {
+        let result = try await WatchRequestRelay.perform(
+            request(),
+            server: ServerFixture.standard,
+            budget: 5,
+            isAvailable: true
+        )
+
+        #expect(result == nil)
+    }
 }
 
 /// What the fake link was handed. The closure is called from another context, so a reference box
