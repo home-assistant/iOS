@@ -192,6 +192,62 @@ const setOverrideZoomEnabled = (shouldZoom) => {
     console.log(`adjusted viewport to ${element['content']}`);
 };
 
+const installFocusedInputCommitHandler = () => {
+    const editableTagNames = new Set(['INPUT', 'TEXTAREA', 'SELECT']);
+
+    const deepActiveElement = (root) => {
+        let el = root?.activeElement;
+        while (el) {
+            if (el.tagName === 'IFRAME' || el.tagName === 'FRAME') {
+                try {
+                    const doc = el.contentDocument || el.contentWindow?.document;
+                    const inner = doc?.activeElement;
+                    if (inner && inner !== doc.body) {
+                        root = doc;
+                        el = inner;
+                        continue;
+                    }
+                } catch (error) {}
+            } else if (el.shadowRoot?.activeElement) {
+                el = el.shadowRoot.activeElement;
+                continue;
+            }
+            break;
+        }
+        return el;
+    };
+
+    const eventPathContains = (event, element) => {
+        try {
+            if (event.composedPath().includes(element)) {
+                return true;
+            }
+        } catch (error) {}
+        return event.target === element || element.contains?.(event.target);
+    };
+
+    const commitFocusedInputBeforeExternalTap = (event) => {
+        const el = deepActiveElement(document);
+        if (!el || eventPathContains(event, el)) {
+            return;
+        }
+        if (!editableTagNames.has(el.tagName) && !el.isContentEditable) {
+            return;
+        }
+
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+
+    if (window.PointerEvent) {
+        document.addEventListener('pointerdown', commitFocusedInputBeforeExternalTap, true);
+    } else {
+        document.addEventListener('touchstart', commitFocusedInputBeforeExternalTap, true);
+    }
+};
+
+installFocusedInputCommitHandler();
+
 waitForHassConnection().then(({ conn }) => {
     conn.subscribeEvents(notifyThemeColors, 'themes_updated');
     conn.sendMessagePromise({type: 'frontend/get_themes'}).then(notifyThemeColors);
