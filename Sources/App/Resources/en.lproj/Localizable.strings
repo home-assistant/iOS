@@ -393,6 +393,7 @@
 "assist.watch.volume.title" = "Volume control";
 "assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Pick pipeline";
+"back_label" = "Back";
 "camera_list.edit.off.title" = "Edit";
 "camera_list.edit.on.title" = "Done";
 "camera_list.empty.message" = "No camera entities found in your Home Assistant setup";

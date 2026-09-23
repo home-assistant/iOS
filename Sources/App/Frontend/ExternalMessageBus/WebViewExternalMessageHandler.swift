@@ -13,6 +13,7 @@ protocol WebViewExternalMessageHandlerProtocol {
     func handleExternalMessage(_ dictionary: [String: Any])
     func sendExternalBus(message: WebSocketMessage) -> Promise<Void>
     func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?)
+    func sendBackButtonPressed()
 
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
@@ -229,6 +230,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 Task { [entityControlDonation] in
                     await entityControlDonation.donate(control, serverId: serverId)
                 }
+            case .backButtonShow:
+                NativeBackButtonState.shared.show()
+            case .backButtonHide:
+                NativeBackButtonState.shared.hide()
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -240,6 +245,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     }
 
     // swiftlint:enable cyclomatic_complexity
+
+    /// The user tapped our back button: the frontend owns the navigation, so hand it straight back.
+    /// Sent without the acknowledgement retry — the frontend answers a command only when it could
+    /// not handle it, and a back button the user can see means it is loaded and listening.
+    func sendBackButtonPressed() {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.backButtonPressed.rawValue
+        ))
+    }
 
     func showSettingsViewController() {
         // Through the web view the message came from, so Settings opens in that window and no other.

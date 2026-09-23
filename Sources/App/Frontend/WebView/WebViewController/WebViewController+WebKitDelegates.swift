@@ -15,6 +15,8 @@ extension WebViewController {
         didReceiveClientCertificateChallenge = false
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
         forgetOnscreenEntity()
+        // Whatever back button the old page asked for is gone with it.
+        NativeBackButtonState.shared.reset()
     }
 
     func webView(

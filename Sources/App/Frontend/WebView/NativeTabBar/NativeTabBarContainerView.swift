@@ -31,6 +31,7 @@ struct NativeTabBarContainerView: View {
                         )
                         .opacity(frontendOpacity)
                         .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
+                        .modifier(NativeBackButtonToolbar(webViewController: webViewController))
                     } else {
                         Color.clear
                     }
@@ -59,6 +60,7 @@ struct NativeTabBarContainerView: View {
                         )
                         .opacity(frontendOpacity)
                         .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
+                        .modifier(NativeBackButtonToolbar(webViewController: webViewController))
                         .transition(.move(edge: .trailing))
                     }
                 }
