@@ -59,12 +59,12 @@
 "app_intents.active_entities.dialog.some_on" = "These %1$@ are on: %2$@";
 "app_intents.active_entities.dialog.some_open" = "These %1$@ are open: %2$@";
 "app_intents.active_entities.filter.all" = "entities";
-"app_intents.active_entities.filter.covers" = "covers";
+"app_intents.active_entities.filter.covers" = "Volets";
 "app_intents.active_entities.filter.fans" = "fans";
-"app_intents.active_entities.filter.lights" = "lights";
+"app_intents.active_entities.filter.lights" = "lumières";
 "app_intents.active_entities.filter.media_players" = "media players";
 "app_intents.active_entities.filter.name" = "Kind";
-"app_intents.active_entities.filter.switches" = "switches";
+"app_intents.active_entities.filter.switches" = "interrupteurs";
 "app_intents.active_entities.name_with_server" = "%1$@ on %2$@";
 "app_intents.active_entities.title" = "Get what is on";
 "app_intents.add_to.description" = "Adds a Home Assistant entity to the Apple Watch, CarPlay quick access or the Mac toolbar";
@@ -77,17 +77,17 @@
 "app_intents.add_to.title" = "Add entity to";
 "app_intents.area_target.areas_section" = "%@ areas";
 "app_intents.area_target.blinds" = "%@ blinds";
-"app_intents.area_target.covers" = "%@ covers";
+"app_intents.area_target.covers" = "%@ volets";
 "app_intents.area_target.curtains" = "%@ curtains";
 "app_intents.area_target.doors" = "%@ doors";
 "app_intents.area_target.fans" = "%@ fans";
-"app_intents.area_target.garage_doors" = "%@ garage doors";
+"app_intents.area_target.garage_doors" = "%@ portes de garage";
 "app_intents.area_target.humidifiers" = "%@ humidifiers";
-"app_intents.area_target.lights" = "%@ lights";
+"app_intents.area_target.lights" = "%@ lumières";
 "app_intents.area_target.media_players" = "%@ media players";
 "app_intents.area_target.shades" = "%@ shades";
 "app_intents.area_target.shutters" = "%@ shutters";
-"app_intents.area_target.switches" = "%@ switches";
+"app_intents.area_target.switches" = "%@ interrupteurs";
 "app_intents.area_target.thermostats" = "%@ thermostats";
 "app_intents.area_target.toggles" = "%@ toggles";
 "app_intents.area_target.valves" = "%@ valves";
@@ -171,7 +171,7 @@
 "app_intents.dialog.toggled" = "Toggled %@";
 "app_intents.dialog.turned_off" = "Turned off %@";
 "app_intents.dialog.turned_on" = "Turned on %@";
-"app_intents.dimmable_light.entity.name" = "Light";
+"app_intents.dimmable_light.entity.name" = "Lumière";
 "app_intents.entity.property.area" = "Area";
 "app_intents.entity.property.device" = "Device";
 "app_intents.entity.property.entity_id" = "Entity ID";
@@ -238,10 +238,10 @@
 "app_intents.open_close.action.close" = "Close";
 "app_intents.open_close.action.name" = "Action";
 "app_intents.open_close.action.open" = "Open";
-"app_intents.open_close.description" = "Opens or closes a Home Assistant cover";
+"app_intents.open_close.description" = "Ouvre ou ferme un volet Home Assistant";
 "app_intents.open_close.dialog.closed" = "Closed %@";
 "app_intents.open_close.dialog.opened" = "Opened %@";
-"app_intents.open_close.entity.name" = "Cover";
+"app_intents.open_close.entity.name" = "Volet";
 "app_intents.open_close.title" = "Open or close";
 "app_intents.open_experimental_dashboard.description" = "Ouvre le tableau de bord expérimental";
 "app_intents.open_experimental_dashboard.title" = "Ouvrir le tableau de bord expérimental";
@@ -259,6 +259,8 @@
 "app_intents.perform_action.response_success" = "Terminé";
 "app_intents.perform_action.title" = "Effectuer l'action";
 "app_intents.readable_entity.entity.name" = "Entity";
+"app_intents.reminders.create.which_list" = "Which list?";
+"app_intents.reminders.error.list_hidden" = "That to-do list is no longer available to Siri";
 "app_intents.reminders.error.no_list" = "There are no to-do lists to add this to";
 "app_intents.reminders.get_items.description" = "Get the items on a Home Assistant to-do list";
 "app_intents.reminders.get_items.include_completed.title" = "Include completed";
@@ -289,7 +291,7 @@
 "app_intents.scripts.show_confirmation_dialog.title" = "Notification de confirmation";
 "app_intents.scripts.success_message.content" = "Script « %@ » exécuté.";
 "app_intents.server.title" = "Serveur";
-"app_intents.set_brightness.description" = "Sets a light's brightness as a percentage";
+"app_intents.set_brightness.description" = "Définit la luminosité d'une lumière en pourcentage";
 "app_intents.set_brightness.parameter.brightness" = "Brightness";
 "app_intents.set_brightness.title" = "Set brightness";
 "app_intents.set_temperature.description" = "Sets a thermostat's target temperature, in the unit your server uses";
@@ -306,15 +308,15 @@
 "app_intents.thermostat.entity.name" = "Thermostat";
 "app_intents.toggle.description" = "Flips an entity to its opposite state";
 "app_intents.toggle.title" = "Toggle";
-"app_intents.turn_off.description" = "Turns off a light, switch or fan, or closes a cover";
+"app_intents.turn_off.description" = "Éteint une lumière, un interrupteur ou un ventilateur, ou ferme un volet";
 "app_intents.turn_off.title" = "Turn off";
-"app_intents.turn_on.description" = "Turns on a light, switch or fan, or opens a cover";
+"app_intents.turn_on.description" = "Allume une lumière, un interrupteur ou un ventilateur, ou ouvre un volet";
 "app_intents.turn_on.title" = "Turn on";
 "app_intents.turn_on_off.action.name" = "Action";
 "app_intents.turn_on_off.action.off" = "Turn off";
 "app_intents.turn_on_off.action.on" = "Turn on";
 "app_intents.turn_on_off.action.toggle" = "Toggle";
-"app_intents.turn_on_off.description" = "Turns a light, switch or fan on or off, or opens and closes a cover";
+"app_intents.turn_on_off.description" = "Allume ou éteint une lumière, un interrupteur ou un ventilateur, ou ouvre et ferme un volet";
 "app_intents.turn_on_off.title" = "Turn on or off";
 "app_intents.update_location.description" = "Envoyer une mise à jour de position à Home Assistant";
 "app_intents.update_location.location.title" = "Localisation";
@@ -612,9 +614,9 @@
 "component.color_picker.more_saturation" = "Plus de saturation";
 "component.distribution.show_less" = "Voir moins";
 "component.distribution.show_more" = "Voir plus";
-"component.energy_period.compare" = "Compare with previous period";
-"component.energy_period.next" = "Next period";
-"component.energy_period.previous" = "Previous period";
+"component.energy_period.compare" = "Comparer avec la période précédente";
+"component.energy_period.next" = "Période suivante";
+"component.energy_period.previous" = "Période précédente";
 "component.media_control.next" = "Suivant";
 "component.media_control.pause" = "Pause";
 "component.media_control.play" = "Lecture";
@@ -1246,6 +1248,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "notification_service.parser.camera.invalid_entity" = "l'entity_id fourni n'était pas valide.";
 "notification_service.parser.url.invalid_url" = "L'URL indiquée n'était pas valide.";
 "notification_service.parser.url.no_url" = "Aucune URL n'a été fournie.";
+"notification_tap_actions.title" = "Actions";
 "notifications_configurator.action.example_trigger.title" = "Exemple de déclencheur";
 "notifications_configurator.action.rows.authentication_required.footer" = "Lorsque l'utilisateur sélectionne une action avec cette option, le système l'invite à déverrouiller l'appareil. Après le déverrouillage, Home Assistant sera informé de l'action sélectionnée.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authentification requise";
@@ -1383,6 +1386,13 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.permissions.notification.description" = "Autoriser l'envoi de notifications push depuis votre Home Assistant";
 "onboarding.permissions.notification.grant_description" = "Autorisez l'autorisation de notification pour créer un service de notification pour votre appareil.";
 "onboarding.permissions.notification.title" = "Notifications";
+"onboarding.privacy.description" = "Every server has its own choices, and this one is new. Pick what this device sends to it, you can change this later in the server settings.";
+"onboarding.privacy.location.exact_description" = "Send this device's precise location.";
+"onboarding.privacy.location.never_description" = "Never send this device's location.";
+"onboarding.privacy.location.zone_only_description" = "Envoyer uniquement la zone dans laquelle se trouve cet appareil.";
+"onboarding.privacy.sensors.all_description" = "Envoyer les capteurs que vous activez pour cet appareil.";
+"onboarding.privacy.sensors.none_description" = "Ne pas envoyer les données des capteurs.";
+"onboarding.privacy.title" = "Choisissez ce que vous souhaitez partager avec ce serveur";
 "onboarding.scanning.discovered_announcement" = "Découvert : %@";
 "onboarding.scanning.manual" = "Saisir l'adresse manuellement";
 "onboarding.scanning.manual.button.divider.title" = "ou";
@@ -1512,8 +1522,8 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings.app_labs.ios_native_tab_bar.title" = "Native tab bar";
 "settings.app_labs.mac_native_sidebar.footer" = "Remplace la barre latérale de Home Assistant par une barre latérale native de macOS. La page se recharge lorsque vous modifiez ce paramètre.";
 "settings.app_labs.mac_native_sidebar.title" = "Native sidebar";
-"settings.app_labs.settings_row.subtitle" = "TestFlight-only experiments. They have no planned release and can be removed at any time.";
-"settings.app_labs.testflight_only.body" = "App Labs is only available on TestFlight builds.";
+"settings.app_labs.settings_row.subtitle" = "Expérimentations réservées à TestFlight. Elles n'ont aucune date de sortie prévue et peuvent être supprimées à tout moment.";
+"settings.app_labs.testflight_only.body" = "App Labs est uniquement disponible sur les versions TestFlight.";
 "settings.app_labs.title" = "App Labs";
 "settings.connection_section.activate_server" = "Activer";
 "settings.connection_section.add_server" = "Ajouter un serveur";
@@ -1583,7 +1593,7 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings.connection_section.location_send_type.title" = "Emplacement envoyé";
 "settings.connection_section.logged_in_as" = "Connecté en tant que";
 "settings.connection_section.make_default" = "Définir par défaut";
-"settings.connection_section.network_detection_permission.message" = "Detecting your home network means reading its Wi-Fi name, which iOS only shares with apps that have location access. The Precise Location switch is what makes the name readable at all, including while you are using the app. The Always option is needed on top of it to keep reading the name while the app is in the background, for sensors and notifications. Tap here to change your settings.";
+"settings.connection_section.network_detection_permission.message" = "La détection de votre réseau domestique nécessite la lecture de son nom Wi-Fi, qu'iOS ne partage qu'avec les applications disposant d'un accès à la localisation. Le commutateur « Position exacte » est ce qui permet de rendre ce nom lisible, y compris lorsque vous utilisez l'application. L'option « Toujours » est nécessaire en plus pour continuer à lire le nom lorsque l'application est en arrière-plan, pour les capteurs et les notifications. Touchez ici pour modifier vos paramètres.";
 "settings.connection_section.no_base_url.title" = "Pas d'URL";
 "settings.connection_section.refresh_server" = "Mettre à jour les informations du serveur";
 "settings.connection_section.remote_ui_url.title" = "URL d'interface utilisateur distante";
@@ -1605,16 +1615,16 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings.connection_section.urls_how_it_works.background.body" = "Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so without it your home network goes unrecognised and these connect the same way they do when you are away.";
 "settings.connection_section.urls_how_it_works.background.title" = "While the app is in the background";
 "settings.connection_section.urls_how_it_works.criteria.always_location" = "Location access is set to Always";
-"settings.connection_section.urls_how_it_works.criteria.footer" = "The Precise Location switch is needed whenever the Wi-Fi name is read. The Always option only adds the background, so without it the internal URL is still used while the app is open. When your network cannot be matched, the app falls back as described above.";
+"settings.connection_section.urls_how_it_works.criteria.footer" = "Le commutateur « Position exacte » est nécessaire chaque fois que le nom du Wi-Fi est lu. L'option « Toujours » ajoute uniquement l'arrière-plan, de sorte que sans elle, l'URL interne reste utilisée lorsque l'application est ouverte. Si votre réseau ne peut pas être identifié, l'application bascule selon le fonctionnement décrit ci-dessus.";
 "settings.connection_section.urls_how_it_works.criteria.hardware_addresses" = "At least one hardware address listed";
 "settings.connection_section.urls_how_it_works.criteria.header" = "On this device";
 "settings.connection_section.urls_how_it_works.criteria.internal_url" = "Internal URL is set";
 "settings.connection_section.urls_how_it_works.criteria.listed_network" = "Connected to a listed network";
 "settings.connection_section.urls_how_it_works.criteria.met" = "Met";
 "settings.connection_section.urls_how_it_works.criteria.not_met" = "Not met";
-"settings.connection_section.urls_how_it_works.criteria.precise_location" = "Precise Location switch is on";
+"settings.connection_section.urls_how_it_works.criteria.precise_location" = "Le commutateur « Position exacte » est activé";
 "settings.connection_section.urls_how_it_works.criteria.ssids" = "At least one Wi-Fi network listed";
-"settings.connection_section.urls_how_it_works.foreground.body" = "You get home and open the app. The Wi-Fi name is read right then, it matches a listed network, and the dashboard loads over the internal URL. This already needs the Precise Location switch turned on: with it off iOS hands out an approximate position and never the network name, so the app stays on the external URL even at home.";
+"settings.connection_section.urls_how_it_works.foreground.body" = "Vous arrivez chez vous et ouvrez l'application. Le nom du Wi-Fi est lu à ce moment précis, correspond à un réseau répertorié, et le tableau de bord se charge via l'URL interne. Cela nécessite déjà que le commutateur « Position exacte » soit activé : lorsqu'il est désactivé, iOS ne fournit qu'une position approximative et jamais le nom du réseau, de sorte que l'application reste sur l'URL externe, même à la maison.";
 "settings.connection_section.urls_how_it_works.foreground.title" = "While you are using the app";
 "settings.connection_section.urls_how_it_works.home.body" = "When this device is connected to one of the Wi-Fi networks you listed for this Home Assistant, the internal URL is used. On Mac, a listed hardware address does the same.";
 "settings.connection_section.urls_how_it_works.home.title" = "On your home network";
@@ -1802,7 +1812,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.manage_storage.inside_app_database" = "Stored inside the app database";
 "settings.debugging.manage_storage.item.app_database.explanation" = "The servers you signed in to, plus the Apple Watch, CarPlay, widget and notification setups you built by hand.";
 "settings.debugging.manage_storage.item.app_database.title" = "App database";
-"settings.debugging.manage_storage.item.app_preferences.explanation" = "Every switch, picker and preference in this app.";
+"settings.debugging.manage_storage.item.app_preferences.explanation" = "Toutes les options, sélecteurs et préférences de cette application.";
 "settings.debugging.manage_storage.item.app_preferences.title" = "App settings";
 "settings.debugging.manage_storage.item.cached_calendar_events.explanation" = "Calendar events kept so widgets can still draw something when a fetch fails.";
 "settings.debugging.manage_storage.item.cached_calendar_events.title" = "Cached calendar events";
@@ -1934,7 +1944,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search.no_results.title" = "Aucun résultat pour « %@ »";
 "settings.search.prompt" = "Rechercher dans les réglages";
 "settings.search_keywords.app_icon_shortcuts" = "actions rapides, écran d'accueil, appui long, lanceur";
-"settings.search_keywords.app_labs" = "experimental, beta, labs, features, testflight, sidebar";
+"settings.search_keywords.app_labs" = "expérimental, bêta, labs, fonctionnalités, testflight, barre latérale";
 "settings.search_keywords.car_play" = "voiture, véhicule, conduite, tableau de bord";
 "settings.search_keywords.complications" = "cadran, apple watch, aperçu";
 "settings.search_keywords.debugging" = "journaux, diagnostics, exportation, base de données, dépannage, réinitialisation";
@@ -1954,20 +1964,24 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.search_keywords.reminders_sync" = "rappels, todo, to-do, tâches, listes, liste de courses, synchronisation";
 "settings.search_keywords.sensors" = "batterie, mouvement, podomètre, focus, données de l'appareil";
 "settings.search_keywords.servers" = "connexion, URL, compte, instance, ajouter un serveur";
-"settings.search_keywords.siri" = "siri, shortcuts, spotlight, voice, assistant";
+"settings.search_keywords.siri" = "siri, raccourcis, spotlight, voix, assistant";
 "settings.search_keywords.voice_tools_server" = "wyoming, speech, voice, assist, speech to text, text to speech, stt, tts, microphone, dictation";
 "settings.search_keywords.watch" = "apple watch, watchOS, configuration";
 "settings.search_keywords.widgets" = "écran d'accueil, écran verrouillé, widgets personnalisés";
 "settings.sections.customize_experience.header" = "Personnalisez votre expérience";
 "settings.sections.help_support.header" = "Aide et assistance";
 "settings.sections.other_devices.header" = "Apple Watch et CarPlay";
-"settings.sections.privacy_security.header" = "Privacy & security";
+"settings.sections.privacy_security.header" = "Confidentialité et sécurité";
 "settings.sections.quick_access.header" = "Accès rapide";
 "settings.sections.share_from_device.header" = "Partager depuis cet appareil";
 "settings.sections.stay_informed.header" = "Restez informé";
 "settings.server_select.title" = "Serveur";
 "settings.server_switching.by_location.footer" = "À l'ouverture de l'app, celle-ci vérifie si vous vous trouvez à l'un de vos domiciles, connecté à son réseau Wi-Fi ou dans sa zone Domicile. Si ce domicile appartient à un autre serveur, ce serveur est ouvert automatiquement. Les vérifications n'ont lieu que sur cet appareil pendant l'utilisation de l'app, et votre position n'est jamais conservée.";
 "settings.server_switching.by_location.title" = "Changer de serveur selon la position";
+"settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
+"settings.server_switching.closest_server.source.location.title" = "Location";
+"settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
+"settings.server_switching.closest_server.source.network.title" = "Wi-Fi network";
 "settings.server_switching.closest_server.title" = "Serveur le plus proche";
 "settings.server_switching.how_it_works.intro" = "Avec plusieurs domiciles, l'app peut déterminer quel serveur compte à l'instant présent et y basculer pour vous. Entrez dans votre résidence secondaire et son tableau de bord est déjà là.";
 "settings.server_switching.how_it_works.location.body" = "Sinon, votre position est comparée à la zone Domicile de chaque serveur, et le plus proche est retenu.";
@@ -1981,8 +1995,18 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.server_switching.how_it_works.wifi.title" = "Le réseau du domicile d'abord";
 "settings.server_switching.switched_toast" = "Basculé vers %@";
 "settings.server_switching.title" = "Changement de serveur";
+"settings.siri.configure.calendars.empty" = "No calendars stored";
+"settings.siri.configure.calendars.footer" = "Siri ne propose que les calendriers activés. Le calendrier par défaut est utilisé si vous n'en nommez pas un.";
+"settings.siri.configure.calendars.header" = "Calendars";
+"settings.siri.configure.default_none" = "None";
+"settings.siri.configure.default_title" = "Default";
+"settings.siri.configure.lists.empty" = "No to-do lists stored";
+"settings.siri.configure.lists.footer" = "Siri ne propose que les listes de tâches activées. Les rappels vont dans la liste par défaut si vous n'en nommez pas une.";
+"settings.siri.configure.lists.header" = "To-do lists";
+"settings.siri.configure.reload" = "Reload from Home Assistant";
+"settings.siri.servers.configure" = "Configure";
 "settings.siri.servers.empty" = "No servers yet";
-"settings.siri.servers.footer" = "Turning a server off removes its entities from Siri, from Spotlight search, and from the Shortcuts app. Shortcuts you already built with those entities will stop finding them. Widgets and controls are not affected.";
+"settings.siri.servers.footer" = "Désactiver un serveur supprime ses entités de Siri, de la recherche Spotlight et de l'application Raccourcis. Les raccourcis que vous avez déjà créés avec ces entités ne les trouveront plus. Les widgets et les commandes ne sont pas affectés.";
 "settings.siri.servers.header" = "Servers";
 "settings.siri.subtitle" = "Choose which servers Siri can use";
 "settings.siri.title" = "Siri";
@@ -1994,9 +2018,9 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.template_edit.title" = "Modifier le modèle";
 "settings.test_flight_communication.title" = "Mises à jour pour bêta-testeurs";
 "settings.voice_tools_server.body" = "Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.";
-"settings.voice_tools_server.enabled_footer" = "In Home Assistant, add the Wyoming integration and point it at this device, or accept it when it is discovered on your network.\
+"settings.voice_tools_server.enabled_footer" = "Dans Home Assistant, ajoutez l'intégration Wyoming et pointez-la vers cet appareil, ou acceptez-la lorsqu'elle est détectée sur votre réseau.\
 \
-The server only answers while the app is open, and stops when you leave it.";
+Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lorsque vous la quittez.";
 "settings.voice_tools_server.footer" = "Speech is recognized and spoken on this device. Only the text and the finished audio travel over your local network.";
 "settings.voice_tools_server.languages.empty" = "This device has no languages available for on-device speech recognition.";
 "settings.voice_tools_server.languages.footer" = "Speech in these languages is recognized entirely on this device. A dictation language added in the Settings app appears here once it supports on-device recognition.";
@@ -2073,11 +2097,13 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.general.app_icon.explanation.title" = "Chaque icône possède 3 variantes (iOS 18+) : par défaut, sombre et teintée, pour s'adapter au style d'écran d'accueil iOS sélectionné. Certaines icônes sont identiques en mode sombre ou gérées automatiquement par iOS.";
 "settings_details.general.app_icon.title" = "Icône de l'application";
 "settings_details.general.body" = "Configuration de base de l'app, icône de l'app et paramètres de la page web.";
-"settings_details.general.body_mac" = "Basic App configuration and web page settings.";
+"settings_details.general.body_mac" = "Configuration de base de l'application et paramètres de la page web.";
 "settings_details.general.device_name.title" = "Nom de l'appareil";
 "settings_details.general.edge_to_edge.enabled.title" = "Activer";
 "settings_details.general.edge_to_edge.footer" = "Afficher l'interface de Home Assistant bord à bord sur les appareils compatibles. Fonctionnalité expérimentale, qui peut être retirée à tout moment et peut aussi causer des problèmes de mise en page.";
 "settings_details.general.edge_to_edge.title" = "Affichage bord à bord";
+"settings_details.general.enhanced_web_security.footer" = "iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.";
+"settings_details.general.enhanced_web_security.title" = "Apple Enhanced Web Security";
 "settings_details.general.full_screen.title" = "Plein écran";
 "settings_details.general.launch_on_login.title" = "Lancer l'application lors de la connexion";
 "settings_details.general.links.title" = "Liens";
@@ -2250,6 +2276,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_details.notifications.sounds.imported_alert.title" = "Sons importés";
 "settings_details.notifications.sounds.system" = "Système";
 "settings_details.notifications.sounds.title" = "Sons";
+"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
+"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
 "settings_details.notifications.title" = "Notifications";
 "settings_details.privacy.alerts.description" = "Permet de vérifier les alertes importantes telles que les vulnérabilités de sécurité.";
 "settings_details.privacy.alerts.title" = "Alertes";
@@ -2295,7 +2323,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_sensors.health.sensors.enable_all.confirmation.confirm" = "Enable All";
 "settings_sensors.health.sensors.enable_all.confirmation.title" = "Enable all %li Apple Health sensors? They will all be read and sent to Home Assistant.";
 "settings_sensors.health.sensors.enable_all_section" = "Enable all";
-"settings_sensors.health.sensors.footer" = "Every Apple Health sensor starts switched off. Only the ones turned on here are read and sent to Home Assistant — request access again after turning more of them on, so Apple Health can grant permission for the new ones.";
+"settings_sensors.health.sensors.footer" = "Chaque capteur Apple Santé est initialement désactivé. Seuls ceux activés ici sont lus et envoyés à Home Assistant — demandez à nouveau l'accès après en avoir activé d'autres, afin qu'Apple Santé puisse accorder l'autorisation pour les nouveaux.";
 "settings_sensors.health.sensors.title" = "Apple Health Sensors";
 "settings_sensors.health.status" = "Health Data";
 "settings_sensors.health.status.available" = "Available";
@@ -2319,7 +2347,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_sensors.permissions.header" = "Autorisations";
 "settings_sensors.permissions.health.footer" = "Apple Health never tells apps whether reading health data was allowed, so this only shows whether access was already requested.";
 "settings_sensors.permissions.local_network.title" = "Local Network";
-"settings_sensors.permissions.local_network.usage" = "Discovers and connects to Home Assistant on your local network.";
+"settings_sensors.permissions.local_network.usage" = "Découvre et se connecte à Home Assistant sur votre réseau local.";
 "settings_sensors.permissions.location.title" = "Location";
 "settings_sensors.permissions.location.usage" = "Runs location-based automations and reports where your device is.";
 "settings_sensors.permissions.microphone.title" = "Microphone";
@@ -2331,17 +2359,23 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_sensors.permissions.speech.title" = "Speech Recognition";
 "settings_sensors.permissions.speech.usage" = "Transcribes your voice into Assist commands.";
 "settings_sensors.permissions.status.always" = "Always";
-"settings_sensors.permissions.status.denied" = "Denied";
-"settings_sensors.permissions.status.granted" = "Granted";
+"settings_sensors.permissions.status.denied" = "Refusé";
+"settings_sensors.permissions.status.granted" = "Accordé";
 "settings_sensors.permissions.status.not_requested" = "Not requested";
 "settings_sensors.permissions.status.requested" = "Requested";
 "settings_sensors.permissions.status.restricted" = "Restricted";
 "settings_sensors.permissions.status.while_in_use" = "While in use";
 "settings_sensors.sensors.configure" = "Configure";
 "settings_sensors.sensors.enable_all" = "Activer tous les capteurs";
+"settings_sensors.sensors.foreground_only.accessibility_label" = "S'actualise uniquement quand l'application est ouverte";
+"settings_sensors.sensors.foreground_only.badge" = "Lorsque l'application est ouverte";
 "settings_sensors.sensors.header" = "Capteurs";
 "settings_sensors.sensors.no_results" = "No sensors match your search";
 "settings_sensors.sensors.search_prompt" = "Search sensors";
+"settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
+"settings_sensors.servers.header" = "Servers";
+"settings_sensors.servers.search_prompt" = "Search servers";
+"settings_sensors.servers.server_body" = "Decide which of your device sensors you want to share with this server.";
 "settings_sensors.settings.footer" = "Les modifications seront appliquées lors de la prochaine mise à jour.";
 "settings_sensors.settings.header" = "Paramètres";
 "settings_sensors.title" = "Capteurs";
@@ -2640,10 +2674,10 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Icône";
 "watch.configurator.sections.ring.footer" = "L'anneau montrant les progrès entourant le texte.";
 "watch.configurator.sections.ring.header" = "Anneau";
-"watch.cover_controls.close" = "Close";
-"watch.cover_controls.open" = "Open";
+"watch.cover_controls.close" = "Fermer";
+"watch.cover_controls.open" = "Ouvrir";
 "watch.cover_controls.position" = "Position";
-"watch.cover_controls.stop" = "Stop";
+"watch.cover_controls.stop" = "Arrêter";
 "watch.debug.complication_refresh.finished.failed_line" = "%1$@ a échoué en %2$@ : %3$@";
 "watch.debug.complication_refresh.finished.kept_previous_line" = "%1$@ a échoué en %2$@ (%3$@) — affiche toujours %4$@";
 "watch.debug.complication_refresh.finished.summary" = "%1$li réussies, %2$li échouées en %3$@";
@@ -2850,10 +2884,10 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "watch.labels.no_config_add" = "Avec votre iPhone à proximité, vous pouvez ajouter des entités compatibles à votre Apple Watch à l'aide du bouton ci-dessous, ou depuis les réglages de l'app compagnon sur iPhone.";
 "watch.labels.no_config_add_plus" = "Avec votre iPhone à proximité, vous pouvez ajouter des entités compatibles à votre Apple Watch à l'aide du bouton « + », ou depuis les réglages de l'app compagnon sur iPhone.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
-"watch.light_controls.brightness" = "Brightness";
-"watch.light_controls.color" = "Color";
-"watch.light_controls.power" = "Power";
-"watch.light_controls.temperature" = "Temperature";
+"watch.light_controls.brightness" = "Luminosité";
+"watch.light_controls.color" = "Couleur";
+"watch.light_controls.power" = "Puissance";
+"watch.light_controls.temperature" = "Température";
 "watch.lock_controls.lock" = "Lock";
 "watch.lock_controls.open" = "Open";
 "watch.lock_controls.open_confirmation.title" = "Are you sure you want to open \"%@\"?";
@@ -2920,7 +2954,7 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "watch.settings.refresh" = "Actualiser";
 "watch.settings.restart_app.footer" = "Cela ferme l'app immédiatement. Vous devrez la rouvrir manuellement.";
 "watch.settings.restart_app.title" = "Redémarrer l'app";
-"watch.settings.sensors.footer" = "Your Apple Watch reports these to Home Assistant on its own, as a separate device from your iPhone. Nothing is sent until you switch a sensor on.";
+"watch.settings.sensors.footer" = "Votre Apple Watch les transmet seule à Home Assistant, en tant qu'appareil distinct de votre iPhone. Rien n'est envoyé tant que vous n'activez pas un capteur.";
 "watch.settings.sensors.last_error" = "Last error: %@";
 "watch.settings.sensors.last_sent" = "Last sent %@";
 "watch.settings.sensors.never_sent" = "Not sent yet";
@@ -2976,23 +3010,24 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "whats_new.app_support_update.item_body" = "Il s'agit de la dernière mise à jour pour iOS 15, watchOS 8 et macOS 11 et versions antérieures. Appuyez pour en savoir plus.";
 "whats_new.app_support_update.item_title" = "La prise en charge d'iOS 15, watchOS 8 et macOS 11 prendra fin";
 "whats_new.app_support_update.title" = "Mise à jour de la prise en charge de l'app";
-"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
+"whats_new.energy_widget.article_body" = "Le nouveau widget **Énergie** affiche votre tableau de bord d'énergie sur votre écran d'accueil et votre écran verrouillé.\
+​\
+**Ce qu'il affiche**\
+Le réseau, le solaire, la batterie et le gaz pour la période de votre choix : aujourd'hui, hier, cette semaine ou ce mois-ci. Choisissez la source affichée en premier ou laissez-le décider. Le petit format indique la puissance en temps réel si des capteurs de puissance sont configurés, tandis que les formats plus larges détaillent les totaux de la période pour chaque source.\
+​\
+**Comment l'ajouter**\
+Maintenez le doigt appuyé sur votre écran d'accueil, touchez le bouton d'ajout dans le coin supérieur, recherchez Home Assistant, puis sélectionnez Énergie. Pour l'écran verrouillé, maintenez le doigt appuyé dessus, touchez Personnaliser, puis ajoutez-y le widget. Un tableau de bord d'énergie doit préalablement être configuré dans Home Assistant.";
+"whats_new.energy_widget.item_body" = "Consultez en un coup d'œil l'énergie que votre maison consomme, produit et stocke sur votre écran d'accueil et votre écran verrouillé. Appuyez pour en savoir plus.";
+"whats_new.energy_widget.item_title" = "Widget Énergie";
+"whats_new.energy_widget.mac.article_body" = "Le nouveau widget **Énergie** affiche votre tableau de bord d'énergie directement sur votre bureau.\
 \
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
+**Ce qu'il affiche**\
+Le réseau, le solaire, la batterie et le gaz pour la période de votre choix : aujourd'hui, hier, cette semaine ou ce mois-ci. Choisissez la source affichée en premier ou laissez-le décider. Le petit format indique la puissance en temps réel si des capteurs de puissance sont configurés, tandis que les formats plus larges détaillent les totaux de la période pour chaque source.\
 \
-**How to add it**\
-Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
-"whats_new.energy_widget.item_title" = "Energy widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
+**Comment l'ajouter**\
+Faites un clic droit sur votre bureau, choisissez « Modifier les widgets », recherchez Home Assistant, puis sélectionnez Énergie. Un tableau de bord d'énergie doit préalablement être configuré dans Home Assistant.";
+"whats_new.energy_widget.mac.item_body" = "Consultez en un coup d'œil l'énergie que votre maison consomme, produit et stocke.\
+Appuyez pour en savoir plus.";
 "whats_new.item.opens_article_hint" = "Ouvre un article";
 "whats_new.item.opens_link_hint" = "Ouvre un lien";
 "whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
@@ -3154,27 +3189,27 @@ Right-click your desktop, choose Edit Widgets, search for Home Assistant, and ch
 "widgets.details.parameters.upper_template" = "Modèle de texte supérieur";
 "widgets.details.title" = "Détails";
 "widgets.energy.battery" = "Batterie";
-"widgets.energy.description" = "Show your energy dashboard at a glance.";
-"widgets.energy.electricity" = "Grid";
+"widgets.energy.description" = "Consultez votre tableau de bord d'énergie en un coup d'œil.";
+"widgets.energy.electricity" = "Réseau";
 "widgets.energy.gas" = "Gaz";
-"widgets.energy.grid" = "Grid";
-"widgets.energy.no_connection" = "No connection available, review your Home Assistant URL configuration";
-"widgets.energy.no_data" = "No energy data";
-"widgets.energy.not_configured" = "No energy dashboard configured";
-"widgets.energy.period.this_month" = "This month";
-"widgets.energy.period.this_week" = "This week";
-"widgets.energy.period.title" = "Period";
-"widgets.energy.period.today" = "Today";
-"widgets.energy.period.yesterday" = "Yesterday";
-"widgets.energy.refresh_title" = "Refresh Energy";
-"widgets.energy.solar" = "Solar";
-"widgets.energy.source.auto" = "Auto";
+"widgets.energy.grid" = "Réseau";
+"widgets.energy.no_connection" = "Aucune connexion disponible, vérifiez la configuration de l'URL Home Assistant";
+"widgets.energy.no_data" = "Aucune donnée d'énergie";
+"widgets.energy.not_configured" = "Aucun tableau de bord d'énergie configuré";
+"widgets.energy.period.this_month" = "Ce mois-ci";
+"widgets.energy.period.this_week" = "Cette semaine";
+"widgets.energy.period.title" = "Période";
+"widgets.energy.period.today" = "Aujourd'hui";
+"widgets.energy.period.yesterday" = "Hier";
+"widgets.energy.refresh_title" = "Actualiser les données d'énergie";
+"widgets.energy.solar" = "Solaire";
+"widgets.energy.source.auto" = "Automatique";
 "widgets.energy.source.battery" = "Batterie";
-"widgets.energy.source.consumption" = "Consumption";
+"widgets.energy.source.consumption" = "Consommation";
 "widgets.energy.source.gas" = "Gaz";
-"widgets.energy.source.solar" = "Solar";
+"widgets.energy.source.solar" = "Solaire";
 "widgets.energy.source.title" = "Source";
-"widgets.energy.title" = "Energy";
+"widgets.energy.title" = "Énergie";
 "widgets.entities.description" = "Show and control the entities you choose.";
 "widgets.entities.not_configured" = "Edit the widget to choose entities.";
 "widgets.entities.param.entities.title" = "Entities";

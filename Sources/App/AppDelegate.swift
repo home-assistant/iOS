@@ -255,9 +255,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        // Fires when the user swipes the app away while it is running in the background:
-        // deliver the force-close warning immediately (see ForceCloseWarningManager).
         Current.forceCloseWarningManager.postImmediateWarning()
+        // This prevents users from getting stuck on a page without a way to recover
+        if !Current.isCatalyst {
+            Current.settingsStore.lastActiveURLPath = nil
+        }
     }
 
     func application(

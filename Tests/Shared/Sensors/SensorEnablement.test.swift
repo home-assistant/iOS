@@ -5,7 +5,9 @@ import XCTest
 
 class SensorEnablementTests: XCTestCase {
     private var container: SensorContainer!
+    private var servers: FakeServerManager!
     private var server: Server!
+    private var secondServer: Server!
 
     /// A battery whose unique ID comes from the hardware, so it can't be known ahead of time.
     private let dynamicSensorID = "battery-serial-1234_level"
@@ -13,8 +15,9 @@ class SensorEnablementTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let servers = FakeServerManager()
+        servers = FakeServerManager()
         server = servers.addFake()
+        secondServer = servers.addFake()
         Current.servers = servers
 
         SensorEnablementStore.resetForTesting()
@@ -33,9 +36,9 @@ class SensorEnablementTests: XCTestCase {
     func testUpgradeKeepsSensorsTheUserHadNotDisabled() {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [WebhookSensorId.storage.rawValue])
 
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.appVersion.rawValue))
+        XCTAssertFalse(isEnabledEverywhere(WebhookSensorId.storage.rawValue))
+        XCTAssertTrue(isEnabledEverywhere(WebhookSensorId.activity.rawValue))
+        XCTAssertTrue(isEnabledEverywhere(WebhookSensorId.appVersion.rawValue))
     }
 
     func testUpgradeLeavesOptInSensorsOffWhenTheDeviceNeverProducedThem() {
@@ -43,8 +46,8 @@ class SensorEnablementTests: XCTestCase {
 
         // Absent from the denylist only because this device never ran them, not because the user
         // asked for them.
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.cameraMotion.rawValue))
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.cameraStream.rawValue))
+        XCTAssertFalse(isEnabledEverywhere(WebhookSensorId.cameraMotion.rawValue))
+        XCTAssertFalse(isEnabledEverywhere(WebhookSensorId.cameraStream.rawValue))
     }
 
     /// A sensor added after the allowlist shipped can't be in a legacy denylist, and reading that
@@ -52,7 +55,7 @@ class SensorEnablementTests: XCTestCase {
     func testUpgradeLeavesSensorsAddedAfterTheLegacyEraOff() {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
 
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.focusName.rawValue))
+        XCTAssertFalse(isEnabledEverywhere(WebhookSensorId.focusName.rawValue))
     }
 
     func testUpgradeKeepsOptInSensorsTheUserHadTurnedOn() {
@@ -61,8 +64,8 @@ class SensorEnablementTests: XCTestCase {
             seenOptInSensorIDs: [.cameraMotion, .cameraStream]
         )
 
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.cameraMotion.rawValue))
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.cameraStream.rawValue))
+        XCTAssertTrue(isEnabledEverywhere(WebhookSensorId.cameraMotion.rawValue))
+        XCTAssertTrue(isEnabledEverywhere(WebhookSensorId.cameraStream.rawValue))
     }
 
     func testUpgradeKeepsEveryStaticallyKnownSensorFamily() {
@@ -70,24 +73,24 @@ class SensorEnablementTests: XCTestCase {
 
         // Sensor IDs that don't come from WebhookSensorId, and so are the ones a registry built
         // only from that enum would silently switch off.
-        XCTAssertTrue(container.isEnabled(uniqueID: "pedometer_distance"))
-        XCTAssertTrue(container.isEnabled(uniqueID: "battery_level"))
-        XCTAssertTrue(container.isEnabled(uniqueID: "battery_state"))
-        XCTAssertTrue(container.isEnabled(uniqueID: "camera_in_use"))
-        XCTAssertTrue(container.isEnabled(uniqueID: "active_camera"))
+        XCTAssertTrue(isEnabledEverywhere("pedometer_distance"))
+        XCTAssertTrue(isEnabledEverywhere("battery_level"))
+        XCTAssertTrue(isEnabledEverywhere("battery_state"))
+        XCTAssertTrue(isEnabledEverywhere("camera_in_use"))
+        XCTAssertTrue(isEnabledEverywhere("active_camera"))
         // Apple Health is opt-in, so upgrading is not enough to start reading it.
-        XCTAssertFalse(container.isEnabled(uniqueID: HealthKitMetric.restingHeartRate.uniqueID))
+        XCTAssertFalse(isEnabledEverywhere(HealthKitMetric.restingHeartRate.uniqueID))
     }
 
     func testUpgradeRunsOnlyOnce() {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue, for: server))
 
-        container.setEnabled(false, forUniqueID: WebhookSensorId.storage.rawValue)
+        container.setEnabled(false, forUniqueID: WebhookSensorId.storage.rawValue, on: server)
 
         // A second store over the same defaults must not treat this as a fresh migration and undo
         // the choice above.
-        XCTAssertFalse(SensorContainer().isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
+        XCTAssertFalse(SensorContainer().isEnabled(uniqueID: WebhookSensorId.storage.rawValue, for: server))
     }
 
     func testUpgradeIsUnaffectedByDenylistEntriesForSensorsThatNoLongerExist() {
@@ -96,9 +99,9 @@ class SensorEnablementTests: XCTestCase {
             WebhookSensorId.storage.rawValue,
         ])
 
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
-        XCTAssertFalse(container.isEnabled(uniqueID: "a_sensor_that_was_removed"))
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
+        XCTAssertFalse(isEnabledEverywhere(WebhookSensorId.storage.rawValue))
+        XCTAssertFalse(isEnabledEverywhere("a_sensor_that_was_removed"))
+        XCTAssertTrue(isEnabledEverywhere(WebhookSensorId.activity.rawValue))
     }
 
     func testUpgradeDropsTheLegacyKeysOnceComplete() throws {
@@ -112,8 +115,148 @@ class SensorEnablementTests: XCTestCase {
         let prefs = Current.settingsStore.prefs
         XCTAssertNil(prefs.object(forKey: "disabledSensors"))
         XCTAssertNil(prefs.object(forKey: "sensor_initially_disabled_cameraMotion"))
+        // The device-wide allowlist only exists to be handed to the servers, and goes once it has.
+        XCTAssertNil(prefs.object(forKey: "enabledSensors"))
         // The user's choice survives the keys it used to be stored in.
-        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
+        XCTAssertFalse(isEnabledEverywhere(WebhookSensorId.storage.rawValue))
+    }
+
+    // MARK: - Migrating an install that predates per-server enablement
+
+    /// The selection every server used to share has to reach every server, or an entity someone
+    /// relies on stops reporting because they installed an update.
+    func testEveryExistingServerInheritsTheOneSelectionTheyShared() {
+        SensorEnablementStore.seedDeviceWideAllowlistForTesting(enabledSensorIDs: [
+            WebhookSensorId.activity.rawValue,
+            WebhookSensorId.appVersion.rawValue,
+        ])
+
+        for server in [server!, secondServer!] {
+            XCTAssertEqual(
+                container.enabledUniqueIDs(for: server),
+                Set([WebhookSensorId.activity.rawValue, WebhookSensorId.appVersion.rawValue]),
+                server.identifier.rawValue
+            )
+        }
+    }
+
+    func testSensorsTheUserHadSwitchedOffStayOffOnEveryServer() {
+        SensorEnablementStore.seedDeviceWideAllowlistForTesting(enabledSensorIDs: [
+            WebhookSensorId.activity.rawValue,
+        ])
+
+        XCTAssertFalse(isEnabledEverywhere(WebhookSensorId.storage.rawValue))
+    }
+
+    func testTheSplitRunsOnlyOnce() {
+        SensorEnablementStore.seedDeviceWideAllowlistForTesting(enabledSensorIDs: [
+            WebhookSensorId.activity.rawValue,
+        ])
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: server))
+
+        container.setEnabled(false, forUniqueID: WebhookSensorId.activity.rawValue, on: server)
+
+        // A second store over the same defaults must not hand the old selection out again.
+        let second = SensorContainer()
+        XCTAssertFalse(second.isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: server))
+        XCTAssertTrue(second.isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: secondServer))
+    }
+
+    /// The split has nobody to hand the selection to until a server exists, and finishing it there
+    /// would throw the selection away.
+    func testTheSplitWaitsUntilThereIsAServerToInheritIt() {
+        SensorEnablementStore.seedDeviceWideAllowlistForTesting(enabledSensorIDs: [
+            WebhookSensorId.activity.rawValue,
+        ])
+        let emptyServers = FakeServerManager()
+        Current.servers = emptyServers
+
+        XCTAssertFalse(SensorContainer().isEnabledForAnyServer(uniqueID: WebhookSensorId.activity.rawValue))
+
+        let restored = emptyServers.addFake()
+        XCTAssertTrue(SensorContainer().isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: restored))
+    }
+
+    // MARK: - Servers added afterwards
+
+    /// Every sensor is opt-in, and a server the user has just added never had any of them reporting
+    /// to it, so it starts with nothing rather than with what the other servers happen to receive.
+    func testAServerAddedAfterTheSplitStartsWithNothingEnabled() {
+        SensorEnablementStore.seedDeviceWideAllowlistForTesting(enabledSensorIDs: [
+            WebhookSensorId.activity.rawValue,
+        ])
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: server))
+
+        let addedLater = servers.addFake()
+
+        XCTAssertTrue(container.enabledUniqueIDs(for: addedLater).isEmpty)
+    }
+
+    func testADynamicSensorIsNotSeededOntoAServerAddedAfterTheSplit() throws {
+        SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
+        // Finishes the split, so the server below is one the user added afterwards.
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: server))
+        let addedLater = servers.addFake()
+
+        try generateSensors(withUniqueIDs: [dynamicSensorID])
+
+        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID, for: server))
+        XCTAssertFalse(container.isEnabled(uniqueID: dynamicSensorID, for: addedLater))
+    }
+
+    func testRemovingAServerForgetsItsSelection() {
+        SensorEnablementStore.seedDeviceWideAllowlistForTesting(enabledSensorIDs: [
+            WebhookSensorId.activity.rawValue,
+        ])
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: secondServer))
+
+        container.forgetSensorSelection(forServerWithIdentifier: secondServer.identifier)
+
+        XCTAssertTrue(container.enabledUniqueIDs(for: secondServer).isEmpty)
+        // The other server is untouched.
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue, for: server))
+    }
+
+    // MARK: - Choosing per server
+
+    func testSwitchingASensorOnForOneServerLeavesTheOtherAlone() {
+        container.resetSensorsForFirstRun()
+
+        container.setEnabled(true, forUniqueID: WebhookSensorId.storage.rawValue, on: server)
+
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue, for: server))
+        XCTAssertFalse(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue, for: secondServer))
+    }
+
+    /// Device-level work — observing the camera, reading Apple Health — happens once however many
+    /// servers the values reach, so one server wanting a sensor is enough to do it.
+    func testASensorCountsAsEnabledWhileAnyServerStillWantsIt() {
+        container.resetSensorsForFirstRun()
+        container.setEnabled(true, forUniqueID: WebhookSensorId.cameraMotion.rawValue, on: secondServer)
+
+        XCTAssertTrue(container.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraMotion.rawValue))
+
+        container.setEnabled(false, forUniqueID: WebhookSensorId.cameraMotion.rawValue, on: secondServer)
+
+        XCTAssertFalse(container.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraMotion.rawValue))
+    }
+
+    /// A removed server's leftover choices must not keep hardware awake for a server that is gone.
+    func testASensorOnlyARemovedServerWantedNoLongerCountsAsEnabled() {
+        container.resetSensorsForFirstRun()
+        container.setEnabled(true, forUniqueID: WebhookSensorId.cameraMotion.rawValue, on: secondServer)
+
+        servers.remove(identifier: secondServer.identifier)
+
+        XCTAssertFalse(container.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraMotion.rawValue))
+    }
+
+    func testEnablingForAllServersCoversEveryOneOfThem() {
+        container.resetSensorsForFirstRun()
+
+        container.setEnabledForAllServers(true, forUniqueID: WebhookSensorId.kioskBrightness.rawValue)
+
+        XCTAssertTrue(isEnabledEverywhere(WebhookSensorId.kioskBrightness.rawValue))
     }
 
     // MARK: - Sensors whose unique IDs only exist at runtime
@@ -123,7 +266,7 @@ class SensorEnablementTests: XCTestCase {
 
         try generateSensors(withUniqueIDs: [dynamicSensorID])
 
-        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID))
+        XCTAssertTrue(isEnabledEverywhere(dynamicSensorID))
     }
 
     func testDynamicSensorIDsTheUserHadDisabledStayOff() throws {
@@ -131,16 +274,57 @@ class SensorEnablementTests: XCTestCase {
 
         try generateSensors(withUniqueIDs: [dynamicSensorID])
 
-        XCTAssertFalse(container.isEnabled(uniqueID: dynamicSensorID))
+        XCTAssertFalse(isEnabledEverywhere(dynamicSensorID))
     }
 
     func testTurningADynamicSensorOffBeforeItIsEverProducedSticks() throws {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
 
-        container.setEnabled(false, forUniqueID: dynamicSensorID)
+        for each in [server!, secondServer!] {
+            container.setEnabled(false, forUniqueID: dynamicSensorID, on: each)
+        }
         try generateSensors(withUniqueIDs: [dynamicSensorID])
 
-        XCTAssertFalse(container.isEnabled(uniqueID: dynamicSensorID))
+        XCTAssertFalse(isEnabledEverywhere(dynamicSensorID))
+    }
+
+    /// A sensor the app has never produced is reporting to nobody, so switching it off before the
+    /// migration reaches it keeps it off everywhere rather than starting it up on the servers that
+    /// happened not to be the one the user was looking at.
+    func testTurningADynamicSensorOffBeforeItExistsKeepsItOffOnEveryServer() throws {
+        SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [])
+
+        container.setEnabled(false, forUniqueID: dynamicSensorID, on: server)
+        try generateSensors(withUniqueIDs: [dynamicSensorID])
+
+        XCTAssertFalse(isEnabledEverywhere(dynamicSensorID), storedEnablementState)
+    }
+
+    /// Switching a not-yet-produced sensor on for one server must not hand it to the others when
+    /// the dynamic pass runs: the user asked for it in one place.
+    func testTurningADynamicSensorOnForOneServerLeavesTheOthersAlone() throws {
+        SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [dynamicSensorID])
+
+        container.setEnabled(true, forUniqueID: dynamicSensorID, on: server)
+        try generateSensors(withUniqueIDs: [dynamicSensorID])
+
+        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID, for: server), storedEnablementState)
+        XCTAssertFalse(container.isEnabled(uniqueID: dynamicSensorID, for: secondServer), storedEnablementState)
+    }
+
+    /// Removing the only server that wanted a sensor changes what device-level work should be
+    /// doing, which it only finds out about by being told.
+    func testForgettingAServerSignalsTheSensorsItWasTheLastToWant() {
+        container.resetSensorsForFirstRun()
+        container.setEnabled(true, forUniqueID: WebhookSensorId.cameraMotion.rawValue, on: secondServer)
+
+        let observer = MockSensorObserver()
+        container.register(observer: observer)
+        servers.remove(identifier: secondServer.identifier)
+        container.forgetSensorSelection(forServerWithIdentifier: secondServer.identifier)
+
+        XCTAssertEqual(observer.signalledUniqueIDs, [WebhookSensorId.cameraMotion.rawValue])
+        XCTAssertFalse(container.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraMotion.rawValue))
     }
 
     func testSensorsAppearingAfterTheMigrationStayOffUntilEnabled() throws {
@@ -150,11 +334,11 @@ class SensorEnablementTests: XCTestCase {
         let laterSensorID = "connectivity_sim_2"
         try generateSensors(withUniqueIDs: [dynamicSensorID, laterSensorID])
 
-        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID), storedEnablementState)
-        XCTAssertFalse(container.isEnabled(uniqueID: laterSensorID), storedEnablementState)
+        XCTAssertTrue(container.isEnabled(uniqueID: dynamicSensorID, for: server), storedEnablementState)
+        XCTAssertFalse(container.isEnabled(uniqueID: laterSensorID, for: server), storedEnablementState)
 
-        container.setEnabled(true, forUniqueID: laterSensorID)
-        XCTAssertTrue(container.isEnabled(uniqueID: laterSensorID))
+        container.setEnabled(true, forUniqueID: laterSensorID, on: server)
+        XCTAssertTrue(container.isEnabled(uniqueID: laterSensorID, for: server))
     }
 
     func testALimitedGenerationDoesNotFinishTheMigration() throws {
@@ -167,17 +351,21 @@ class SensorEnablementTests: XCTestCase {
         // Carrying dynamic IDs over on the next full run is covered by the first-generation test,
         // which doesn't need a second `hang()` to get there — every one of those spins the run
         // loop, letting another suite's in-flight generation finish this migration first.
-        XCTAssertFalse(container.isEnabled(uniqueID: "some_other_sensor"), storedEnablementState)
+        XCTAssertFalse(container.isEnabled(uniqueID: "some_other_sensor", for: server), storedEnablementState)
     }
 
     /// The persisted enablement state, for failure messages: the migration is driven entirely by
-    /// these three keys, so they say which step went wrong.
+    /// these keys, so they say which step went wrong.
     private var storedEnablementState: String {
         let prefs = Current.settingsStore.prefs
         let enabled = prefs.object(forKey: "enabledSensors") as? [String] ?? []
+        let byServer = prefs.object(forKey: "enabledSensorsByServer") as? [String: [String]] ?? [:]
         let disabled = prefs.object(forKey: "disabledSensors") as? [String] ?? []
         let state = prefs.string(forKey: "sensorEnablementMigrationState") ?? "nil"
-        return "migration=\(state) disabled=\(disabled) enabled(\(enabled.count))=\(enabled.suffix(6))"
+        let inheriting = prefs.object(forKey: "sensorEnablementInheritingServers") as? [String]
+        let perServer = byServer.map { "\($0.key)(\($0.value.count))=\($0.value.suffix(6))" }.sorted()
+        return "migration=\(state) inheriting=\(inheriting?.count.description ?? "nil") " +
+            "disabled=\(disabled) enabled(\(enabled.count))=\(enabled.suffix(6)) byServer=\(perServer)"
     }
 
     // MARK: - First-time installs
@@ -195,7 +383,7 @@ class SensorEnablementTests: XCTestCase {
             WebhookSensorId.cameraMotion.rawValue,
             HealthKitMetric.restingHeartRate.uniqueID,
         ] {
-            XCTAssertFalse(container.isEnabled(uniqueID: uniqueID), uniqueID)
+            XCTAssertFalse(isEnabledEverywhere(uniqueID), uniqueID)
         }
     }
 
@@ -204,29 +392,37 @@ class SensorEnablementTests: XCTestCase {
 
         try generateSensors(withUniqueIDs: [dynamicSensorID, "connectivity_sim_1"])
 
-        XCTAssertFalse(container.isEnabled(uniqueID: dynamicSensorID))
-        XCTAssertFalse(container.isEnabled(uniqueID: "connectivity_sim_1"))
+        XCTAssertFalse(isEnabledEverywhere(dynamicSensorID))
+        XCTAssertFalse(isEnabledEverywhere("connectivity_sim_1"))
     }
 
     func testFirstRunLeavesAnUpgradedInstallAlone() {
         SensorEnablementStore.seedLegacyStateForTesting(disabledSensorIDs: [WebhookSensorId.storage.rawValue])
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
+        XCTAssertTrue(isEnabledEverywhere(WebhookSensorId.activity.rawValue))
 
         container.resetSensorsForFirstRun()
 
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.activity.rawValue))
+        XCTAssertTrue(isEnabledEverywhere(WebhookSensorId.activity.rawValue))
     }
 
     func testFirstRunDoesNotComeBackWhenAServerIsSetUpAgain() {
         container.resetSensorsForFirstRun()
-        container.setEnabled(true, forUniqueID: WebhookSensorId.storage.rawValue)
+        container.setEnabled(true, forUniqueID: WebhookSensorId.storage.rawValue, on: server)
 
         container.resetSensorsForFirstRun()
 
-        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue))
+        XCTAssertTrue(container.isEnabled(uniqueID: WebhookSensorId.storage.rawValue, for: server))
     }
 
     // MARK: - Helpers
+
+    /// Asserting per server would say the same thing twice in every migration test, where what is
+    /// being checked is that both of them ended up with the selection.
+    private func isEnabledEverywhere(_ uniqueID: String) -> Bool {
+        let enabled = [server!, secondServer!].map { container.isEnabled(uniqueID: uniqueID, for: $0) }
+        XCTAssertEqual(enabled.first, enabled.last, "\(uniqueID) differs between servers")
+        return enabled.allSatisfy { $0 }
+    }
 
     private func generateSensors(withUniqueIDs uniqueIDs: [String], limitedToProvider: Bool = false) throws {
         MockEnablementSensorProvider.returnedSensors = uniqueIDs.map {
@@ -239,6 +435,23 @@ class SensorEnablementTests: XCTestCase {
             server: server
         )
         _ = try hang(Promise(response))
+    }
+
+    /// Records what the container told its observers, which is how "the signal went out" is
+    /// observed without an API to receive it.
+    private class MockSensorObserver: SensorObserver {
+        var signalledUniqueIDs: [String] = []
+
+        func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {}
+
+        func sensorContainer(
+            _ container: SensorContainer,
+            didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+            lastUpdate: SensorObserverUpdate?
+        ) {
+            guard case let .settingsChange(changedUniqueIDs, _) = reason else { return }
+            signalledUniqueIDs.append(contentsOf: changedUniqueIDs)
+        }
     }
 
     private class MockEnablementSensorProvider: SensorProvider {

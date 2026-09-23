@@ -50,44 +50,28 @@ public struct WidgetAreasContentView: View {
     /// rather than disappearing, so the two other things in the footer don't shift as you page.
     private static let unavailableArrowOpacity: CGFloat = 0.25
     private static let arrowSize: CGFloat = 26
-    /// How tall an area tile is drawn on this page, and how it draws itself at that height.
+    /// How tall an area tile is drawn on a page this tall, and how it draws itself at that height.
     ///
     /// Shorter than the cap ``WidgetTileGridView`` puts on an entity tile, because an area tile is
     /// one line of text beside its icon rather than three: given the whole page it would stretch
     /// into a mostly empty card, and the last page of a home would draw nothing like a full one.
-    private var tileHeight: CGFloat {
-        WidgetAreasLayout.tileHeight(for: page, family: family)
+    private func tileHeight(inContentOfHeight height: CGFloat) -> CGFloat {
+        WidgetAreasLayout.tileHeight(for: page, family: family, inContentOfHeight: height)
     }
 
-    private var tileSizeStyle: WidgetTileSizeStyle {
-        WidgetAreasLayout.tileStyle(for: page, family: family)
+    private func tileSizeStyle(inContentOfHeight height: CGFloat) -> WidgetTileSizeStyle {
+        WidgetAreasLayout.tileStyle(for: page, family: family, inContentOfHeight: height)
     }
 
     public var body: some View {
         VStack(spacing: DesignSystem.Spaces.half) {
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-                ForEach(page.sections) { section in
-                    if let title = section.title {
-                        heading(title: title, icon: section.icon)
-                    }
-                    ForEach(
-                        Array(WidgetAreasLayout.rows(of: section.areas, family: family).enumerated()),
-                        id: \.offset
-                    ) { _, row in
-                        HStack(spacing: DesignSystem.Spaces.one) {
-                            ForEach(row) { area in
-                                areaContent(area, AnyView(tile(for: area)))
-                                    .frame(maxWidth: .infinity, maxHeight: tileHeight)
-                            }
-                            // A short last row keeps its tiles the width of the ones above them.
-                            ForEach(0 ..< missingColumns(in: row), id: \.self) { _ in
-                                Spacer().frame(maxWidth: .infinity)
-                            }
-                        }
-                    }
-                }
+            // The page is measured rather than assumed: what the family, the device and the footer
+            // below actually leave is what the tiles are sized from, the same way every other tile
+            // widget sizes its rows — see ``WidgetTileGridView``.
+            GeometryReader { proxy in
+                tiles(inContentOfHeight: proxy.size.height)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
             // Server, page and arrows: the same footer the other tile widgets carry, with the two
             // corners given over to paging.
@@ -131,6 +115,36 @@ public struct WidgetAreasContentView: View {
             .joined(separator: " · ")
     }
 
+    /// The floors and their areas, drawn for a page of this height.
+    @ViewBuilder
+    private func tiles(inContentOfHeight height: CGFloat) -> some View {
+        let rowHeight = tileHeight(inContentOfHeight: height)
+        let style = tileSizeStyle(inContentOfHeight: height)
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+            ForEach(page.sections) { section in
+                if let title = section.title {
+                    heading(title: title, icon: section.icon)
+                }
+                ForEach(
+                    Array(WidgetAreasLayout.rows(of: section.areas, family: family).enumerated()),
+                    id: \.offset
+                ) { _, row in
+                    HStack(spacing: DesignSystem.Spaces.one) {
+                        ForEach(row) { area in
+                            areaContent(area, AnyView(tile(for: area, sizeStyle: style)))
+                                .environment(\.widgetTileRowHeight, rowHeight)
+                                .frame(maxWidth: .infinity, maxHeight: rowHeight)
+                        }
+                        // A short last row keeps its tiles the width of the ones above them.
+                        ForEach(0 ..< missingColumns(in: row), id: \.self) { _ in
+                            Spacer().frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private func heading(title: String, icon: MaterialDesignIcons?) -> some View {
         HStack(spacing: DesignSystem.Spaces.half) {
             if let icon {
@@ -148,7 +162,7 @@ public struct WidgetAreasContentView: View {
         .accessibilityAddTraits(.isHeader)
     }
 
-    private func tile(for area: WidgetAreaModel) -> some View {
+    private func tile(for area: WidgetAreaModel, sizeStyle: WidgetTileSizeStyle) -> some View {
         WidgetTileView(
             model: WidgetTileModel(
                 id: area.id,
@@ -159,7 +173,7 @@ public struct WidgetAreasContentView: View {
                 icon: area.icon,
                 showIconBackground: true
             ),
-            sizeStyle: tileSizeStyle,
+            sizeStyle: sizeStyle,
             family: family,
             kind: .button
         )

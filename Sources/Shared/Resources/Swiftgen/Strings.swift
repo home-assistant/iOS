@@ -4271,6 +4271,11 @@ public enum L10n {
     }
   }
 
+  public enum NotificationTapActions {
+    /// Actions
+    public static var title: String { return L10n.tr("Localizable", "notification_tap_actions.title") }
+  }
+
   public enum NotificationsConfigurator {
     /// Identifier
     public static var identifier: String { return L10n.tr("Localizable", "notifications_configurator.identifier") }
@@ -4715,6 +4720,26 @@ public enum L10n {
           /// Send commands to your device
           public static var commands: String { return L10n.tr("Localizable", "onboarding.permissions.notification.bullet.commands") }
         }
+      }
+    }
+    public enum Privacy {
+      /// Every server has its own choices, and this one is new. Pick what this device sends to it, you can change this later in the server settings.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.privacy.description") }
+      /// Choose what to share with this server
+      public static var title: String { return L10n.tr("Localizable", "onboarding.privacy.title") }
+      public enum Location {
+        /// Send this device's precise location.
+        public static var exactDescription: String { return L10n.tr("Localizable", "onboarding.privacy.location.exact_description") }
+        /// Never send this device's location.
+        public static var neverDescription: String { return L10n.tr("Localizable", "onboarding.privacy.location.never_description") }
+        /// Only send which of your zones this device is in.
+        public static var zoneOnlyDescription: String { return L10n.tr("Localizable", "onboarding.privacy.location.zone_only_description") }
+      }
+      public enum Sensors {
+        /// Send the sensors you switch on for this device.
+        public static var allDescription: String { return L10n.tr("Localizable", "onboarding.privacy.sensors.all_description") }
+        /// Do not send any sensor data.
+        public static var noneDescription: String { return L10n.tr("Localizable", "onboarding.privacy.sensors.none_description") }
       }
     }
     public enum Scanning {
@@ -6525,6 +6550,20 @@ public enum L10n {
       public enum ClosestServer {
         /// Closest Server
         public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.title") }
+        public enum Source {
+          public enum Location {
+            /// Based on your current location
+            public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.source.location.accessibility_label") }
+            /// Location
+            public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.source.location.title") }
+          }
+          public enum Network {
+            /// Based on the Wi-Fi network you are connected to
+            public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.source.network.accessibility_label") }
+            /// Wi-Fi network
+            public static var title: String { return L10n.tr("Localizable", "settings.server_switching.closest_server.source.network.title") }
+          }
+        }
       }
       public enum HowItWorks {
         /// With multiple homes, the app can figure out which server matters right now and switch to it for you. Walk into your second home and its dashboard is already there.
@@ -6878,6 +6917,12 @@ public enum L10n {
           /// Enable
           public static var title: String { return L10n.tr("Localizable", "settings_details.general.edge_to_edge.enabled.title") }
         }
+      }
+      public enum EnhancedWebSecurity {
+        /// iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.general.enhanced_web_security.footer") }
+        /// Apple Enhanced Web Security
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.enhanced_web_security.title") }
       }
       public enum FullScreen {
         /// Full Screen
@@ -7419,6 +7464,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.imported_alert.title") }
         }
       }
+      public enum TapActions {
+        /// Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.tap_actions.footer") }
+        /// Show actions when tapped
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.tap_actions.title") }
+      }
     }
     public enum Privacy {
       /// You are in control of your data.
@@ -7690,6 +7741,22 @@ public enum L10n {
       public static var noResults: String { return L10n.tr("Localizable", "settings_sensors.sensors.no_results") }
       /// Search sensors
       public static var searchPrompt: String { return L10n.tr("Localizable", "settings_sensors.sensors.search_prompt") }
+      public enum ForegroundOnly {
+        /// Only updates while the app is open
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.accessibility_label") }
+        /// When app is open
+        public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
+      }
+    }
+    public enum Servers {
+      /// Each server receives the sensors you pick for it, so a sensor can report to one and not another.
+      public static var footer: String { return L10n.tr("Localizable", "settings_sensors.servers.footer") }
+      /// Servers
+      public static var header: String { return L10n.tr("Localizable", "settings_sensors.servers.header") }
+      /// Search servers
+      public static var searchPrompt: String { return L10n.tr("Localizable", "settings_sensors.servers.search_prompt") }
+      /// Decide which of your device sensors you want to share with this server.
+      public static var serverBody: String { return L10n.tr("Localizable", "settings_sensors.servers.server_body") }
     }
     public enum Settings {
       /// Changes will be applied on the next update.
@@ -9311,6 +9378,12 @@ public enum L10n {
         public static func title(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.lock_controls.open_confirmation.title", String(describing: p1))
         }
+      }
+    }
+    public enum Relay {
+      public enum Unanswered {
+        /// The iPhone received the request but didn't report back in time. Check whether it ran before trying again.
+        public static var message: String { return L10n.tr("Localizable", "watch.relay.unanswered.message") }
       }
     }
     public enum Settings {

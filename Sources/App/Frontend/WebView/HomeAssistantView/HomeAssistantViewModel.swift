@@ -134,6 +134,12 @@ final class HomeAssistantViewModel: ObservableObject {
         isFullScreenLoaderMounted || overlayState.emptyState != nil
     }
 
+    /// Whether the stand-by overlay is actually on screen: the no-active-URL block takes over the whole
+    /// frontend and replaces it.
+    var isStandByViewVisible: Bool {
+        shouldShowStandByView && !overlayState.showsNoActiveURL
+    }
+
     var webViewContentOpacity: Double {
         if overlayState.emptyState != nil || isWebViewCoveredByStandBy || isPullToRefreshActive {
             return 0

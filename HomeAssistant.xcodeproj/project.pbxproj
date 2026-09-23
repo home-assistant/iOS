@@ -86,6 +86,8 @@
 		420E64BF2D676B2400A31E86 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 420E64BE2D676B2400A31E86 /* SnapshotTesting */; };
 		420E64C12D676B2400A31E86 /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 420E64C02D676B2400A31E86 /* SnapshotTestingCustomDump */; };
 		421125C72F51DE9200971BAD /* StatePrecision.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421125C62F51DE9200971BAD /* StatePrecision.test.swift */; };
+		42A1B2C12F60000000000002 /* HomeAssistantAPIGetConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1B2C02F60000000000002 /* HomeAssistantAPIGetConfig.test.swift */; };
+		42A1B2C12F60000000000001 /* ServerInfo+ConfigResponse.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1B2C02F60000000000001 /* ServerInfo+ConfigResponse.test.swift */; };
 		42145A622DAFD49A00891E04 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */; };
 		42145A662F7F4CC000891E04 /* EntityColorAttributesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */; };
@@ -165,6 +167,7 @@
 		42A1F0B62E000000000000B6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A62E000000000000A6 /* Alamofire */; };
 		42A1F0B72E000000000000B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A72E000000000000A7 /* Alamofire */; };
 		42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */; };
+		42A7F1012FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift */; };
 		42AA0002300100010001AAA1 /* EntityStateActive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0001300100010001AAA1 /* EntityStateActive.swift */; };
 		42AA0003300100010001AAA1 /* EntityStateActive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0001300100010001AAA1 /* EntityStateActive.swift */; };
 		42AA0005300100010001AAA1 /* EntityStateColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0004300100010001AAA1 /* EntityStateColor.swift */; };
@@ -243,6 +246,8 @@
 		A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */; };
 		A307E253426FAE95903A3493 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; };
 		B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000030 /* Color+Hex.test.swift */; };
+		B0B0B0B00000000000000035 /* FrontendThemeProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000034 /* FrontendThemeProvider.test.swift */; };
+		B0B0B0B00000000000000033 /* UIColor+CSSColor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000032 /* UIColor+CSSColor.test.swift */; };
 		B3FD7A16B24D03BE49029BB0 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 638EC9AD85B8C58C9C77DCC7 /* GRDB */; };
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
@@ -627,6 +632,8 @@
 		11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.test.swift; sourceTree = "<group>"; };
 		4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataStoreHandler.swift; sourceTree = "<group>"; };
 		421125C62F51DE9200971BAD /* StatePrecision.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.test.swift; sourceTree = "<group>"; };
+		42A1B2C02F60000000000002 /* HomeAssistantAPIGetConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIGetConfig.test.swift; sourceTree = "<group>"; };
+		42A1B2C02F60000000000001 /* ServerInfo+ConfigResponse.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServerInfo+ConfigResponse.test.swift"; sourceTree = "<group>"; };
 		42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityColorAttributesParser.swift; sourceTree = "<group>"; };
 		42164BB8301320720077A903 /* ComplicationFormula.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFormula.test.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
@@ -651,6 +658,7 @@
 		4298587D2EB1025E00E33710 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWidgetsUpdater.swift; sourceTree = "<group>"; };
 		42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/AllowedTag.test.swift; sourceTree = "<group>"; };
+		42A7F1002FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/FrontendThemeVariable.test.swift; sourceTree = "<group>"; };
 		42AA0001300100010001AAA1 /* EntityStateActive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityStateActive.swift; sourceTree = "<group>"; };
 		42AA0004300100010001AAA1 /* EntityStateColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityStateColor.swift; sourceTree = "<group>"; };
 		42AA0007300100010001AAA1 /* EntityIconColorProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.test.swift; sourceTree = "<group>"; };
@@ -696,6 +704,8 @@
 		9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.xcconfig; sourceTree = "<group>"; };
 		9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/TableSchemaTests.test.swift; sourceTree = "<group>"; };
 		B0B0B0B00000000000000030 /* Color+Hex.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.test.swift"; sourceTree = "<group>"; };
+		B0B0B0B00000000000000034 /* FrontendThemeProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendThemeProvider.test.swift; sourceTree = "<group>"; };
+		B0B0B0B00000000000000032 /* UIColor+CSSColor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSColor.test.swift"; sourceTree = "<group>"; };
 		B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-NotificationContent.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B627CB081D83C87B0057173E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -1357,6 +1367,8 @@
 				Steps/Permissions/Steps/LocalAccessAndNetworkInput/NetworkInput/HomeNetworkInputViewModel.swift,
 				Steps/Permissions/Steps/LocalAccessOnlyDisclaimer/LocalAccessOnlyDisclaimerView.swift,
 				Steps/Permissions/Steps/Location/LocationPermissionView.swift,
+				Steps/Permissions/Steps/Privacy/OnboardingPrivacyView.swift,
+				Steps/Permissions/Steps/Privacy/OnboardingPrivacyViewModel.swift,
 				Steps/Servers/ManualURLEntry/ManualURLEntryView.swift,
 				Steps/Servers/OnboardingScanningInstanceRow.swift,
 				Steps/Servers/OnboardingServersListView.swift,
@@ -1484,6 +1496,8 @@
 				Focus/FocusNameFocusFilterAppIntent.swift,
 				Focus/FocusSettingsView.swift,
 				Focus/FocusSettingsViewModel.swift,
+				General/EnhancedWebSecuritySettingsRow.swift,
+				General/EnhancedWebSecuritySettingsViewModel.swift,
 				General/GeneralSettingsTemplateEditor.swift,
 				General/GeneralSettingsView.swift,
 				Gestures/AppleLikeListTopRowHeader.swift,
@@ -1572,6 +1586,7 @@
 				Sensors/Health/HealthSensorListView.swift,
 				Sensors/Health/HealthSensorListViewModel.swift,
 				Sensors/Health/HealthSensorRow.swift,
+				Sensors/List/SensorForegroundOnlyBadge.swift,
 				Sensors/List/SensorListView.swift,
 				Sensors/List/SensorListViewModel.swift,
 				Sensors/List/SensorRow.swift,
@@ -1581,6 +1596,8 @@
 				Sensors/Permissions/SensorPermissionStatus.swift,
 				Sensors/Permissions/SensorPermissionsView.swift,
 				Sensors/Permissions/SensorPermissionsViewModel.swift,
+				Sensors/SensorForegroundAvailability.swift,
+				Settings/ClosestServerSourceBadge.swift,
 				Settings/HomeAssistantAccountRowView.swift,
 				Settings/MacSettingsSidebarLabelStyle.swift,
 				Settings/MacSettingsSidebarRowStyle.swift,
@@ -1710,6 +1727,8 @@
 				Focus/FocusNameFocusFilterAppIntent.swift,
 				Focus/FocusSettingsView.swift,
 				Focus/FocusSettingsViewModel.swift,
+				General/EnhancedWebSecuritySettingsRow.swift,
+				General/EnhancedWebSecuritySettingsViewModel.swift,
 				General/GeneralSettingsTemplateEditor.swift,
 				General/GeneralSettingsView.swift,
 				Gestures/AppleLikeListTopRowHeader.swift,
@@ -1798,6 +1817,7 @@
 				Sensors/Health/HealthSensorListView.swift,
 				Sensors/Health/HealthSensorListViewModel.swift,
 				Sensors/Health/HealthSensorRow.swift,
+				Sensors/List/SensorForegroundOnlyBadge.swift,
 				Sensors/List/SensorListView.swift,
 				Sensors/List/SensorListViewModel.swift,
 				Sensors/List/SensorRow.swift,
@@ -1807,6 +1827,8 @@
 				Sensors/Permissions/SensorPermissionStatus.swift,
 				Sensors/Permissions/SensorPermissionsView.swift,
 				Sensors/Permissions/SensorPermissionsViewModel.swift,
+				Sensors/SensorForegroundAvailability.swift,
+				Settings/ClosestServerSourceBadge.swift,
 				Settings/HomeAssistantAccountRowView.swift,
 				Settings/MacSettingsSidebarLabelStyle.swift,
 				Settings/MacSettingsSidebarRowStyle.swift,
@@ -1871,6 +1893,8 @@
 				FocusReport.swift,
 				FocusStatusWrapper.swift,
 				ForceCloseWarningManager.swift,
+				FrontendThemeProvider.swift,
+				FrontendThemeProviderProtocol.swift,
 				HomeViewConfigurationTable.swift,
 				ImpactFeedbackGeneratorProtocol.swift,
 				KioskModeManager.swift,
@@ -1981,6 +2005,10 @@
 			membershipExceptions = (
 				__Snapshots__/AboutView.test/testUI.dark.png,
 				__Snapshots__/AboutView.test/testUI.light.png,
+				__Snapshots__/EnhancedWebSecuritySettingsRow.test/rendersNothingWhenNotRelevant.not-relevant-dark.png,
+				__Snapshots__/EnhancedWebSecuritySettingsRow.test/rendersNothingWhenNotRelevant.not-relevant-light.png,
+				__Snapshots__/EnhancedWebSecuritySettingsRow.test/testUI.dark.png,
+				__Snapshots__/EnhancedWebSecuritySettingsRow.test/testUI.light.png,
 				__Snapshots__/GesturesSetupView.test/testActionsPickerSearchingUI.dark.png,
 				__Snapshots__/GesturesSetupView.test/testActionsPickerSearchingUI.light.png,
 				__Snapshots__/GesturesSetupView.test/testActionsPickerUI.dark.png,
@@ -3152,6 +3180,8 @@
 			children = (
 				42F467200000000000000001 /* NotificationSender */,
 				421125C62F51DE9200971BAD /* StatePrecision.test.swift */,
+				42A1B2C02F60000000000002 /* HomeAssistantAPIGetConfig.test.swift */,
+				42A1B2C02F60000000000001 /* ServerInfo+ConfigResponse.test.swift */,
 				42EDBC163002FBD10051FC9B /* Models */,
 				42EDBC0C3002FBD10051FC9B /* Extensions */,
 				428626002DA5CC8400D58D13 /* DesignSystem */,
@@ -3167,6 +3197,7 @@
 				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
 				11883CC624C131EE0036A6C6 /* AppZone.test.swift */,
 				42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */,
+				42A7F1002FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift */,
 				892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */,
 				BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */,
 				5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */,
@@ -3179,6 +3210,8 @@
 				11267D0825BBA9FE00F28E5C /* Updater.test.swift */,
 				1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */,
 				B0B0B0B00000000000000030 /* Color+Hex.test.swift */,
+				B0B0B0B00000000000000034 /* FrontendThemeProvider.test.swift */,
+				B0B0B0B00000000000000032 /* UIColor+CSSColor.test.swift */,
 				11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */,
 				11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */,
 				11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */,
@@ -4660,6 +4693,7 @@
 				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
 				426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */,
 				42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */,
+				42A7F1012FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,
 				692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */,
 				BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */,
@@ -4699,8 +4733,12 @@
 				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
 				1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */,
 				B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */,
+				B0B0B0B00000000000000035 /* FrontendThemeProvider.test.swift in Sources */,
+				B0B0B0B00000000000000033 /* UIColor+CSSColor.test.swift in Sources */,
 				11764A6C26817FC3007D47F3 /* UserDefaultsValueSync.test.swift in Sources */,
 				421125C72F51DE9200971BAD /* StatePrecision.test.swift in Sources */,
+				42A1B2C12F60000000000002 /* HomeAssistantAPIGetConfig.test.swift in Sources */,
+				42A1B2C12F60000000000001 /* ServerInfo+ConfigResponse.test.swift in Sources */,
 				114CBAED283AB92D00A9BAFF /* SecTrust+TestAdditions.swift in Sources */,
 				94802EABC64FDEEC9F875310 /* CallServiceResponse.test.swift in Sources */,
 			);

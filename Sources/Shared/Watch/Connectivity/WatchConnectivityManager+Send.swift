@@ -36,22 +36,32 @@ public extension WatchConnectivityManager {
     /// Sends flow through the outbound queue (`WatchConnectivityManager+SendQueue`): while the
     /// in-flight cap is reached, `priority` orders the backlog and a queued send sharing
     /// `coalescingKey` is replaced by this one.
+    @discardableResult
     func send(
         _ message: HAWatchConnectivity.InteractiveImmediateMessage,
         timeout: TimeInterval = WatchConnectivityManager.interactiveReplyTimeout,
         priority: HAWatchConnectivity.SendPriority = .normal,
         coalescingKey: String? = nil,
         errorHandler: ((Error) -> Void)? = nil
-    ) {
-        enqueueInteractiveSend(priority: priority, coalescingKey: coalescingKey) { [weak self] in
+    ) -> InteractiveSendTicket {
+        let deadline = timeout > 0 ? DispatchTime.now() + timeout : nil
+        let ticket = enqueueInteractiveSend(priority: priority, coalescingKey: coalescingKey) { [weak self] in
             guard let self else { return }
-            performInteractiveSend(message, timeout: timeout, errorHandler: errorHandler)
+            performInteractiveSend(message, timeout: timeout, deadline: deadline, errorHandler: errorHandler)
         }
+        if let deadline, ticket.queuedSequence != nil {
+            DispatchQueue.main.asyncAfter(deadline: deadline) { [weak self] in
+                guard let self, cancelQueuedInteractiveSend(ticket) else { return }
+                errorHandler?(HAWatchConnectivity.ConnectivityError.notSentInTime)
+            }
+        }
+        return ticket
     }
 
     private func performInteractiveSend(
         _ message: HAWatchConnectivity.InteractiveImmediateMessage,
         timeout: TimeInterval,
+        deadline: DispatchTime?,
         errorHandler: ((Error) -> Void)?
     ) {
         // Every terminal path must release the queue slot exactly once — including the early
@@ -80,13 +90,20 @@ public extension WatchConnectivityManager {
             return
         }
 
+        let remaining = deadline.map(Self.seconds(until:))
+        if let remaining, remaining <= 0 {
+            errorHandler?(HAWatchConnectivity.ConnectivityError.notSentInTime)
+            finish()
+            return
+        }
+
         Self.warnIfExceedsMessageLimit(message.jsonRepresentation(), identifier: message.identifier)
 
         // At most one of {delivery error, timeout} may call errorHandler; a reply or delivery error
         // cancels the pending timeout so it doesn't linger (retaining the handlers) for the full
         // window after the send already resolved - chunked flows create one of these per chunk.
         let errorGate = WatchConnectivityOnceFlag()
-        let effectiveTimeout = timeout > 0 ? timeout : Self.interactiveReplyTimeout
+        let effectiveTimeout = remaining ?? Self.interactiveReplyTimeout
         let timeoutWork = DispatchWorkItem {
             if timeout > 0, errorGate.trySet() {
                 errorHandler?(HAWatchConnectivity.ConnectivityError.replyTimedOut)
@@ -101,6 +118,7 @@ public extension WatchConnectivityManager {
             finish()
             let response = HAWatchConnectivity.ImmediateMessage(content: responseEnvelope)
                 ?? HAWatchConnectivity.ImmediateMessage(identifier: message.identifier, content: responseEnvelope)
+            self.recordCounterpartProtocolVersion(response.senderVersion)
             message.reply(response)
         }, errorHandler: { error in
             timeoutWork.cancel()
@@ -109,6 +127,13 @@ public extension WatchConnectivityManager {
             }
             finish()
         })
+    }
+
+    static func seconds(until deadline: DispatchTime) -> TimeInterval {
+        let now = DispatchTime.now().uptimeNanoseconds
+        let target = deadline.uptimeNanoseconds
+        guard target > now else { return 0 }
+        return TimeInterval(target - now) / 1_000_000_000
     }
 
     /// One-way message. Requires the counterpart immediately reachable.

@@ -180,6 +180,8 @@ final class WatchCommunicatorService {
                     handleClientCertImportRequest(message: message)
                 case .vacuumCleanableAreas:
                     handleVacuumCleanableAreas(message: message)
+                case .httpRequest:
+                    handleHTTPRequest(message: message)
                 }
             }
     }
@@ -188,8 +190,10 @@ final class WatchCommunicatorService {
     /// watch, surface a brief toast so the user can see the two devices talking. Silently skipped when
     /// the app isn't active (a toast wouldn't be visible) or on OS versions without the toast overlay.
     private func presentWatchInteractionToast(for messageId: InteractiveImmediateMessages) {
-        // Skip keepalives and per-chunk pulls (the sync start already toasts) to avoid spamming.
-        guard messageId != .ping, messageId != .watchDatabaseMirrorChunk else { return }
+        // Skip keepalives, per-chunk pulls (the sync start already toasts) and relayed requests —
+        // those arrive one per watch interaction and often several per screen, so toasting them
+        // would bury the ones that mean something.
+        guard messageId != .ping, messageId != .watchDatabaseMirrorChunk, messageId != .httpRequest else { return }
         guard #available(iOS 18, *) else { return }
 
         let message: String
@@ -267,6 +271,23 @@ final class WatchCommunicatorService {
                 Current.Log.error("Failed to fetch vacuum area mapping for the watch: \(error)")
                 reply([])
             }
+    }
+
+    // MARK: - Relayed HTTP requests (watch → phone → Home Assistant)
+
+    /// Perform one HTTP request the watch handed over, and reply with whatever the server said.
+    /// `WatchRelayRequestHandler` makes every decision; this is the message plumbing around it.
+    private func handleHTTPRequest(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        Task {
+            let payload = await WatchRelayRequestHandler.response(
+                to: message.content,
+                servers: Current.servers.all
+            )
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.httpRequestResponse.rawValue,
+                content: payload.content
+            ))
+        }
     }
 
     // MARK: - mTLS client certificate transfer (phone → watch)

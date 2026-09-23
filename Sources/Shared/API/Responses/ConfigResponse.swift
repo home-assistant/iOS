@@ -5,6 +5,7 @@ public class ConfigResponse: Mappable {
     public var Components: [String] = []
     public var Version: String = ""
     public var hassDeviceId: String?
+    public var instanceID: String?
 
     public var TemperatureUnit: String?
     public var LengthUnit: String?
@@ -29,6 +30,7 @@ public class ConfigResponse: Mappable {
         Components <- map["components"]
         Version <- map["version"]
         hassDeviceId <- map["hass_device_id"]
+        instanceID <- map["instance_id"]
 
         TemperatureUnit <- map["unit_system.temperature"]
         LengthUnit <- map["unit_system.length"]

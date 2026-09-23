@@ -225,6 +225,16 @@ struct WatchWebhookClientTests {
             try WatchWebhookClient.responseObject(from: response, secret: nil)
         }
     }
+
+    @Test func performReachesTheNetworkThroughTheSharedTransport() async {
+        var request = URLRequest(url: URL(string: "https://127.0.0.1:1/api/webhook/watch-hook")!)
+        request.httpMethod = "POST"
+        request.timeoutInterval = 5
+
+        await #expect(throws: (any Error).self) {
+            try await WatchWebhookClient.perform(request, server: ServerFixture.standard)
+        }
+    }
 }
 
 /// Holds the request a fake `perform` saw, across the actor hop the client makes.

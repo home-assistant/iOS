@@ -134,6 +134,18 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertTrue(mockTonePlayer.playedTones.contains(.error))
     }
 
+    /// A run the server refuses fails before speech-to-text ever ends, so the error state is the
+    /// only thing left to release the microphone the session opened when it started.
+    func testErrorWhileRecordingStopsRecorder() {
+        let sut = makeSut()
+        sut.start()
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+
+        sut.didReceiveError(code: "stt-provider-missing", message: "No speech-to-text provider")
+
+        XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
+    }
+
     func testEventsAreIgnoredAfterStop() {
         let sut = makeSut()
         sut.start()

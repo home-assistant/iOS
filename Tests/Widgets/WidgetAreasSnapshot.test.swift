@@ -142,7 +142,10 @@ struct WidgetAreasSnapshotTests {
         case .systemExtraLarge:
             CGSize(width: 715, height: 382)
         case .systemExtraLargePortrait:
-            CGSize(width: 364, height: 806)
+            // Measured off the family as an iPhone actually draws it. It was guessed at 364x806,
+            // half a large widget taller than the real thing, which is what let the tiles be sized
+            // for rows they never got.
+            CGSize(width: 350, height: 564)
         default:
             CGSize(width: 364, height: 382)
         }

@@ -6,6 +6,13 @@ import Testing
 
 /// One intent now switches both ways, so each direction is checked for the service it sends.
 struct TurnOnOffEntityAppIntentTests {
+    /// Toggling is the only direction that is right whatever state the entity is already in, so it is
+    /// what an action dropped into a shortcut without the direction set does. The App Shortcuts still
+    /// pass a direction of their own, since "turn off" has to mean off.
+    @Test func theActionDefaultsToToggle() {
+        #expect(TurnOnOffEntityAppIntent().action == .toggle)
+    }
+
     private static func entity(serverId: String, entityId: String = "light.kitchen") -> ControllableEntityAppEntity {
         .init(
             id: "\(serverId)-\(entityId)",

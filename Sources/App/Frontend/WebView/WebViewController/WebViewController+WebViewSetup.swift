@@ -12,6 +12,7 @@ extension WebViewController {
         userContentController.add(safeScriptMessageHandler, name: "revokeExternalAuth")
         userContentController.add(safeScriptMessageHandler, name: "externalBus")
         userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
+        userContentController.add(safeScriptMessageHandler, name: "updateThemeVariables")
         userContentController.add(safeScriptMessageHandler, name: "logError")
         userContentController.add(safeScriptMessageHandler, name: "frontendRestored")
 

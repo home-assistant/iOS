@@ -47,6 +47,8 @@ struct GeneralSettingsView: View {
                 fullScreen
                 refreshAfterInactive
             }
+
+            EnhancedWebSecuritySettingsRow(viewModel: .init())
         }
         .id(redrawHelper)
         .listTopContentMargin()

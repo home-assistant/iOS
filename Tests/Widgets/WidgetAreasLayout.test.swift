@@ -97,9 +97,55 @@ struct WidgetAreasLayoutTests {
             family: .systemExtraLargePortrait
         )
         #expect(pages.map { $0.sections.flatMap(\.areas).count } == [24, 6])
-        // A dozen rows under a heading still leave every tile tall enough to be drawn compact.
+    }
+
+    /// The height a page is given is measured, not assumed.
+    ///
+    /// It used to be read off a table that put the portrait extra-large family's page at 760pt when
+    /// an iPhone leaves it nearer 595 — so its tiles were sized for rows a good six points taller
+    /// than the ones they landed in, and kept a compact tile's 12pt leading inset against barely
+    /// 7pt above and below the icon, where every other tile widget at that height draws a dense one
+    /// inset evenly on all four sides.
+    @available(iOS 27, *)
+    @Test func aPortraitExtraLargePageIsSizedFromTheHeightItIsGiven() throws {
+        let pages = WidgetAreasLayout.pages(
+            sections: [Self.floor("ground", areas: 10), Self.floor("first", areas: 9)],
+            family: .systemExtraLargePortrait
+        )
         let page = try #require(pages.first)
-        #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemExtraLargePortrait) == .compact)
+        // What the family actually leaves the tiles, measured off the rendered widget.
+        let measured: CGFloat = 595
+        let height = WidgetAreasLayout.tileHeight(
+            for: page,
+            family: .systemExtraLargePortrait,
+            inContentOfHeight: measured
+        )
+        let dense: CGFloat = WidgetTileLayout.denseTileHeight
+        #expect(height < dense)
+        #expect(WidgetAreasLayout.tileStyle(
+            for: page,
+            family: .systemExtraLargePortrait,
+            inContentOfHeight: measured
+        ) == .dense)
+
+        // The icon then keeps as much room above and below it as it does at the leading edge.
+        let style = WidgetTileSizeStyle.dense
+        let circle: CGFloat = style.iconCircleSize(inRowOfHeight: height).height
+        let verticalInset: CGFloat = (height - circle) / 2
+        let leadingInset: CGFloat = style.horizontalPadding
+        #expect(verticalInset >= leadingInset)
+    }
+
+    /// A page nobody has measured yet draws at the full tile height rather than guessing one.
+    @Test func anUnmeasuredPageDrawsAtTheFullTileHeight() throws {
+        let pages = WidgetAreasLayout.pages(sections: [Self.floor("ground", areas: 4)], family: .systemMedium)
+        let page = try #require(pages.first)
+        let unmeasured: CGFloat = .zero
+        #expect(WidgetAreasLayout.tileHeight(
+            for: page,
+            family: .systemMedium,
+            inContentOfHeight: unmeasured
+        ) == WidgetAreasLayout.maxTileHeight)
     }
 
     /// A page that spends part of its height on a floor heading has less left for its rows, and the
@@ -107,8 +153,11 @@ struct WidgetAreasLayoutTests {
     @Test func aPageWithAHeadingDrawsItsTilesDense() throws {
         let pages = WidgetAreasLayout.pages(sections: [Self.floor("ground", areas: 4)], family: .systemMedium)
         let page = try #require(pages.first)
-        #expect(WidgetAreasLayout.tileHeight(for: page, family: .systemMedium) < WidgetTileLayout.denseTileHeight)
-        #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemMedium) == .dense)
+        #expect(
+            WidgetAreasLayout.tileHeight(for: page, family: .systemMedium, inContentOfHeight: 128)
+                < WidgetTileLayout.denseTileHeight
+        )
+        #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemMedium, inContentOfHeight: 128) == .dense)
     }
 
     /// Without headings the same family draws the same four tiles at full height.
@@ -118,8 +167,11 @@ struct WidgetAreasLayoutTests {
             family: .systemMedium
         )
         let page = try #require(pages.first)
-        #expect(WidgetAreasLayout.tileHeight(for: page, family: .systemMedium) == WidgetAreasLayout.maxTileHeight)
-        #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemMedium) == .compact)
+        #expect(
+            WidgetAreasLayout.tileHeight(for: page, family: .systemMedium, inContentOfHeight: 128)
+                == WidgetAreasLayout.maxTileHeight
+        )
+        #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemMedium, inContentOfHeight: 128) == .compact)
     }
 
     /// A large page has height to spare even with two headings on it.
@@ -129,14 +181,20 @@ struct WidgetAreasLayoutTests {
             family: .systemLarge
         )
         let page = try #require(pages.first)
-        #expect(WidgetAreasLayout.tileHeight(for: page, family: .systemLarge) == WidgetAreasLayout.maxTileHeight)
-        #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemLarge) == .compact)
+        #expect(
+            WidgetAreasLayout.tileHeight(for: page, family: .systemLarge, inContentOfHeight: 336)
+                == WidgetAreasLayout.maxTileHeight
+        )
+        #expect(WidgetAreasLayout.tileStyle(for: page, family: .systemLarge, inContentOfHeight: 336) == .compact)
     }
 
     /// An empty page has nothing to size, and says so rather than dividing by no rows.
     @Test func anEmptyPageFallsBackToTheFullTileHeight() {
         let empty = WidgetAreasPage(id: 0, sections: [])
-        #expect(WidgetAreasLayout.tileHeight(for: empty, family: .systemMedium) == WidgetAreasLayout.maxTileHeight)
+        #expect(
+            WidgetAreasLayout.tileHeight(for: empty, family: .systemMedium, inContentOfHeight: 128)
+                == WidgetAreasLayout.maxTileHeight
+        )
     }
 
     /// The rows a section is drawn in never run wider than the family's columns.

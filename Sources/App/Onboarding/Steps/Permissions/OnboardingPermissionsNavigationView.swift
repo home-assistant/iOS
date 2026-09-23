@@ -49,6 +49,8 @@ struct OnboardingPermissionsNavigationView: View {
             disclaimer
         case .location:
             location
+        case .privacy:
+            privacy
         case .localAccess:
             localAccess
         case .homeNetwork:
@@ -72,6 +74,12 @@ struct OnboardingPermissionsNavigationView: View {
         } secondaryAction: {
             viewModel.disableLocationSensor()
             viewModel.nextStep()
+        }
+    }
+
+    private var privacy: some View {
+        OnboardingPrivacyView { locationPrivacy, sensorPrivacy in
+            viewModel.savePrivacyChoices(locationPrivacy: locationPrivacy, sensorPrivacy: sensorPrivacy)
         }
     }
 

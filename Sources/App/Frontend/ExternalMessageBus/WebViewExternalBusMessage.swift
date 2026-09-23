@@ -55,13 +55,6 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasEntityAddTo": true,
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
-            "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
-                if #available(iOS 18, *), !Current.isCatalyst {
-                    return ToastPresenter.toastComponentVersion
-                } else {
-                    return -1
-                }
-            }(),
         ]
     }
 }

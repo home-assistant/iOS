@@ -12,10 +12,16 @@ class CameraStreamSensorTests: XCTestCase {
     )
 
     private var motionDetection: FakeMotionDetectionManager!
+    private var previousServers: ServerManager!
     private var server: FakeCameraStreamServer!
 
     override func setUp() {
         super.setUp()
+
+        previousServers = Current.servers
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
 
         motionDetection = FakeMotionDetectionManager()
         Current.motionDetection = motionDetection
@@ -27,6 +33,7 @@ class CameraStreamSensorTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
+        Current.servers = previousServers
         Current.motionDetection = MotionDetectionManager()
         Current.cameraStreamServer = CameraStreamServer()
         SensorEnablementStore.resetForTesting()
@@ -77,11 +84,11 @@ class CameraStreamSensorTests: XCTestCase {
         motionDetection.overrideCanDetectMotion = true
 
         _ = try hang(CameraStreamSensor(request: request).sensors())
-        XCTAssertFalse(Current.sensors.isEnabled(uniqueID: WebhookSensorId.cameraStream.rawValue))
+        XCTAssertFalse(Current.sensors.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraStream.rawValue))
 
-        Current.sensors.setEnabled(true, forUniqueID: WebhookSensorId.cameraStream.rawValue)
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: WebhookSensorId.cameraStream.rawValue)
         _ = try hang(CameraStreamSensor(request: request).sensors())
-        XCTAssertTrue(Current.sensors.isEnabled(uniqueID: WebhookSensorId.cameraStream.rawValue))
+        XCTAssertTrue(Current.sensors.isEnabledForAnyServer(uniqueID: WebhookSensorId.cameraStream.rawValue))
     }
 
     func testSignalerCreated() throws {

@@ -94,6 +94,7 @@ public extension DatabaseQueue {
             SiriEntityExposureTable(),
             HACalendarTable(),
             HACalendarEventTable(),
+            FrontendThemeVariableTable(),
         ]
     }
 

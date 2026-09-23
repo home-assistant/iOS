@@ -56,7 +56,7 @@ final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
             })
 
             let activeSensors = activeRelatedSensors.filter({ sensor in
-                Current.sensors.isEnabled(sensor: sensor)
+                Current.sensors.isEnabledForAnyServer(sensor: sensor)
             })
 
             if activeSensors.isEmpty {
@@ -81,6 +81,8 @@ public class ConnectivitySensor: SensorProvider {
         case unsupportedPlatform
         case noCarriers
     }
+
+    public static let simIDPrefix = "connectivity_sim_"
 
     public let request: SensorProviderRequest
     public required init(request: SensorProviderRequest) {
@@ -208,7 +210,7 @@ public class ConnectivitySensor: SensorProvider {
         let id = key.last ?? "?"
         sensor = WebhookSensor(
             name: "SIM \(id)",
-            uniqueID: "connectivity_sim_\(id)",
+            uniqueID: "\(Self.simIDPrefix)\(id)",
             icon: "mdi:sim",
             state: "Unknown"
         )

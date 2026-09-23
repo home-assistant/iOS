@@ -362,6 +362,7 @@ public class HomeAssistantAPI {
                 promises.append(getConfig())
                 promises.append(Current.modelManager.fetch(apis: [self]))
                 promises.append(updateComplications(passively: false).asVoid())
+                promises.append(registerSensorsIfAppVersionChanged())
             }
 
             promises.append(UpdateSensors(trigger: reason.updateSensorTrigger).asVoid())
@@ -489,20 +490,14 @@ public class HomeAssistantAPI {
 
         return promise.done { [self] config in
             let previousVersion = server.info.version
-            let fetchedVersion = try? Version(hassVersion: config.Version)
 
             server.update { serverInfo in
-                serverInfo.connection.cloudhookURL = config.CloudhookURL
-                serverInfo.connection.set(address: config.RemoteUIURL, for: .remoteUI)
-                serverInfo.remoteName = config.LocationName ?? ServerInfo.defaultName
-                serverInfo.hassDeviceId = config.hassDeviceId
-
-                if let fetchedVersion {
-                    serverInfo.version = fetchedVersion
-                }
+                serverInfo.apply(config)
             }
 
-            if let fetchedVersion, fetchedVersion != previousVersion {
+            let fetchedVersion = server.info.version
+
+            if fetchedVersion != previousVersion {
                 Current.Log
                     .info("Server \(server.identifier) version changed from \(previousVersion) to \(fetchedVersion)")
                 let changedServer = server
@@ -1041,7 +1036,23 @@ public class HomeAssistantAPI {
             Current.webhooks.send(server: server, request: .init(type: "register_sensor", data: sensor.toJSON()))
         }.tap { result in
             Current.Log.info("finished registering sensors: \(result)")
-        }.asVoid()
+        }.asVoid().get { [server] _ in
+            guard uniqueIDs == nil else { return }
+            SensorRegistrationVersionStore.recordRegistration(for: server.identifier)
+        }
+    }
+
+    func registerSensorsIfAppVersionChanged() -> Promise<Void> {
+        guard SensorRegistrationVersionStore.needsRegistration(for: server.identifier) else {
+            return .value(())
+        }
+
+        Current.Log.info("registering all sensors with \(server.identifier) for this version of the app")
+
+        return registerSensors().recover { error -> Promise<Void> in
+            Current.Log.error("failed to register sensors for this version of the app: \(error)")
+            return .value(())
+        }
     }
 
     public func UpdateSensors(
@@ -1698,7 +1709,11 @@ extension HomeAssistantAPI: SensorObserver {
     ) {
         Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
             firstly { () -> Promise<Void> in
-                guard case let .settingsChange(changedUniqueIDs) = reason, !changedUniqueIDs.isEmpty else {
+                guard case let .settingsChange(changedUniqueIDs, serverIDs) = reason,
+                      !changedUniqueIDs.isEmpty,
+                      // An empty list is a change that isn't about one server, so every one of them
+                      // re-registers; otherwise only the servers whose selection actually moved do.
+                      serverIDs.isEmpty || serverIDs.contains(server.identifier) else {
                     return .value(())
                 }
                 // Carries the new enablement to Home Assistant, which only `register_sensor` can do.

@@ -11,6 +11,7 @@ class HealthKitSensorTests: XCTestCase {
     private var originalCalendar: (() -> Calendar)!
     private var originalHealthKitService: HealthKitService!
     private var originalSensors: SensorContainer!
+    private var originalServers: ServerManager!
     private var previousReported: Any?
 
     private let lock = NSLock()
@@ -36,6 +37,7 @@ class HealthKitSensorTests: XCTestCase {
         originalCalendar = Current.calendar
         originalHealthKitService = Current.healthKitService
         originalSensors = Current.sensors
+        originalServers = Current.servers
         previousReported = Current.settingsStore.prefs.object(forKey: Self.reportedKey)
 
         request = .init(
@@ -47,12 +49,15 @@ class HealthKitSensorTests: XCTestCase {
 
         Current.date = { Date(timeIntervalSince1970: 1_000_000) }
         Current.calendar = { Calendar(identifier: .gregorian) }
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
         Current.sensors = SensorContainer()
         SensorEnablementStore.resetForTesting()
         Current.settingsStore.prefs.removeObject(forKey: Self.reportedKey)
 
         // Enablement is an allowlist, so switch on the two metrics these tests report.
-        Current.sensors.setEnabled(true, forUniqueIDs: [activeEnergy.uniqueID, restingHeartRate.uniqueID])
+        Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [activeEnergy.uniqueID, restingHeartRate.uniqueID])
 
         originalDebounceInterval = HealthKitSensorUpdateSignaler.signalDebounceInterval
         originalMinimumSignalInterval = HealthKitSensorUpdateSignaler.minimumSignalInterval
@@ -87,6 +92,8 @@ class HealthKitSensorTests: XCTestCase {
         Current.calendar = originalCalendar
         Current.healthKitService = originalHealthKitService
         Current.sensors = originalSensors
+        Current.servers = originalServers
+        originalServers = nil
         originalDate = nil
         originalCalendar = nil
         originalHealthKitService = nil
@@ -178,7 +185,7 @@ class HealthKitSensorTests: XCTestCase {
         SensorEnablementStore.resetForTesting()
         Current.settingsStore.prefs.removeObject(forKey: Self.reportedKey)
 
-        let enabled = HealthKitMetric.all.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) }
+        let enabled = HealthKitMetric.all.filter { Current.sensors.isEnabledForAnyServer(uniqueID: $0.uniqueID) }
         XCTAssertTrue(enabled.isEmpty)
         XCTAssertTrue(try generateSensors().isEmpty)
         XCTAssertEqual(queryCount(activeEnergy.uniqueID), 0)
@@ -248,7 +255,7 @@ class HealthKitSensorTests: XCTestCase {
         wait(for: [observed], timeout: 5)
 
         observed = expectation(description: "observed metrics narrowed")
-        Current.sensors.setEnabled(false, forUniqueID: restingHeartRate.uniqueID)
+        Current.sensors.setEnabledForAllServers(false, forUniqueID: restingHeartRate.uniqueID)
 
         _ = try generateSensors()
 
@@ -353,7 +360,7 @@ class HealthKitSensorTests: XCTestCase {
     func testDisabledIndividualSensorDoesNotQueryThatMetric() throws {
         _ = try generateSensors()
         resetQueryCounts()
-        Current.sensors.setEnabled(false, forUniqueID: restingHeartRate.uniqueID)
+        Current.sensors.setEnabledForAllServers(false, forUniqueID: restingHeartRate.uniqueID)
 
         let sensors = try generateSensors()
 
@@ -364,12 +371,12 @@ class HealthKitSensorTests: XCTestCase {
     }
 
     func testReEnabledIndividualSensorQueriesThatMetric() throws {
-        Current.sensors.setEnabled(false, forUniqueID: restingHeartRate.uniqueID)
+        Current.sensors.setEnabledForAllServers(false, forUniqueID: restingHeartRate.uniqueID)
         _ = try generateSensors()
         resetQueryCounts()
         request.reason = .trigger(LocationUpdateTrigger.Periodic.rawValue)
         Current.date = { Date(timeIntervalSince1970: 1_000_000 + 60) }
-        Current.sensors.setEnabled(true, forUniqueID: restingHeartRate.uniqueID)
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: restingHeartRate.uniqueID)
 
         _ = try generateSensors()
 
@@ -393,7 +400,7 @@ class HealthKitSensorTests: XCTestCase {
         let heartRate = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_heart_rate"))
         _ = try generateSensors()
         stubbedValues[heartRate.uniqueID] = 71.6
-        Current.sensors.setEnabled(true, forUniqueID: heartRate.uniqueID)
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: heartRate.uniqueID)
 
         let sensors = try generateSensors()
 
@@ -403,7 +410,7 @@ class HealthKitSensorTests: XCTestCase {
 
     func testMetricsUseTheirOwnQueryWindow() throws {
         let bodyMass = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_body_mass"))
-        Current.sensors.setEnabled(true, forUniqueID: bodyMass.uniqueID)
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: bodyMass.uniqueID)
         Current.healthKitService.queryValue = { [weak self] metric, start, end in
             self?.recordWindow(start: start, end: end, for: metric.uniqueID)
             return nil
@@ -423,7 +430,7 @@ class HealthKitSensorTests: XCTestCase {
 
     func testSleepMetricsQueryWholeSleepDays() throws {
         let sleepDuration = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_duration"))
-        Current.sensors.setEnabled(true, forUniqueID: sleepDuration.uniqueID)
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: sleepDuration.uniqueID)
         Current.healthKitService.queryValue = { [weak self] metric, start, end in
             self?.recordWindow(start: start, end: end, for: metric.uniqueID)
             return nil
@@ -444,7 +451,7 @@ class HealthKitSensorTests: XCTestCase {
 
     func testSleepMinutesAreReportedAsWholeMinutes() throws {
         let deepSleep = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_deep"))
-        Current.sensors.setEnabled(true, forUniqueID: deepSleep.uniqueID)
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: deepSleep.uniqueID)
         stubbedValues[deepSleep.uniqueID] = 61.4
 
         let sensors = try generateSensors()

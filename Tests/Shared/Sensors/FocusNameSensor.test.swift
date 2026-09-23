@@ -247,6 +247,26 @@ class FocusNameSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, false)
     }
 
+    /// A reset run only ends the Focus that carried the name, and iOS still answering "focused"
+    /// means another one is on — a Focus with no filter paired to it, or the same one reactivated
+    /// without a re-run. Neither is "no Focus is running", and the last name stays the best answer
+    /// to which one it is; a days-old pushed status is not an answer at all.
+    func testKeepsTheNameWhenTheLiveStatusOutlivesAStalePushedStatus() throws {
+        FocusName(name: "Personal").save()
+        setUpDependencies(
+            activeFocusName: nil,
+            receivedStatus: received(isFocused: false, at: -48 * 60 * 60),
+            liveIsFocused: true
+        )
+        Current.focusFilter.activeFocusState = { [now] in
+            FocusFilterState(name: nil, date: now, lastKnownName: "Personal")
+        }
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Personal")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
+    }
+
     /// iOS skips re-running the filter when the same Focus quickly reactivates — the pushed status
     /// is the only signal — so the name it wiped on deactivation has to come back on its own.
     func testRestoresTheNameWhenFocusReactivatesWithoutAFilterRun() throws {

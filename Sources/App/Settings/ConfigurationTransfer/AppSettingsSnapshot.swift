@@ -34,12 +34,14 @@ struct AppSettingsSnapshot: Codable, Equatable {
     var fullScreen: Bool?
     var restoreLastURL: Bool?
     var refreshWebViewAfterInactive: Bool?
+    var enhancedWebSecurityEnabled: Bool?
     var webViewAlwaysBelowStatusBar: Bool?
     var webViewEmptyStateTimeout: Int?
     var flightGreetingsEnabled: Bool?
     var locationBasedServerSwitching: Bool?
     var clearBadgeAutomatically: Bool?
     var forceCloseWarningEnabled: Bool?
+    var notificationTapActionsEnabled: Bool?
     var macNativeFeaturesOnly: Bool?
     var receiveDebugNotifications: Bool?
     /// Seconds between periodic sensor updates. A negative value means "disabled", matching how
@@ -76,12 +78,14 @@ struct AppSettingsSnapshot: Codable, Equatable {
             fullScreen: store.fullScreen,
             restoreLastURL: store.restoreLastURL,
             refreshWebViewAfterInactive: store.refreshWebViewAfterInactive,
+            enhancedWebSecurityEnabled: store.enhancedWebSecurityEnabled,
             webViewAlwaysBelowStatusBar: store.webViewAlwaysBelowStatusBar,
             webViewEmptyStateTimeout: store.webViewEmptyStateTimeout,
             flightGreetingsEnabled: store.flightGreetingsEnabled,
             locationBasedServerSwitching: store.locationBasedServerSwitching,
             clearBadgeAutomatically: store.clearBadgeAutomatically,
             forceCloseWarningEnabled: store.forceCloseWarningEnabled,
+            notificationTapActionsEnabled: store.notificationTapActionsEnabled,
             macNativeFeaturesOnly: store.macNativeFeaturesOnly,
             receiveDebugNotifications: store.receiveDebugNotifications,
             periodicUpdateIntervalSeconds: store.periodicUpdateInterval ?? -1,
@@ -133,6 +137,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
         if let fullScreen { store.fullScreen = fullScreen }
         if let restoreLastURL { store.restoreLastURL = restoreLastURL }
         if let refreshWebViewAfterInactive { store.refreshWebViewAfterInactive = refreshWebViewAfterInactive }
+        if let enhancedWebSecurityEnabled { store.enhancedWebSecurityEnabled = enhancedWebSecurityEnabled }
         if let webViewAlwaysBelowStatusBar { store.webViewAlwaysBelowStatusBar = webViewAlwaysBelowStatusBar }
         if let webViewEmptyStateTimeout { store.webViewEmptyStateTimeout = webViewEmptyStateTimeout }
         if let mediaTypesRequiringUserActionForPlayback {
@@ -149,6 +154,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
         if let locationBasedServerSwitching { store.locationBasedServerSwitching = locationBasedServerSwitching }
         if let clearBadgeAutomatically { store.clearBadgeAutomatically = clearBadgeAutomatically }
         if let forceCloseWarningEnabled { store.forceCloseWarningEnabled = forceCloseWarningEnabled }
+        if let notificationTapActionsEnabled { store.notificationTapActionsEnabled = notificationTapActionsEnabled }
         if let macNativeFeaturesOnly { store.macNativeFeaturesOnly = macNativeFeaturesOnly }
         if let receiveDebugNotifications { store.receiveDebugNotifications = receiveDebugNotifications }
         if let gestures { store.gestures = gestures }

@@ -8,7 +8,8 @@ import Foundation
 /// pushes whether any Focus is running, which is what tells us one ended — but it says `false`
 /// for a Focus whose status the user doesn't share, whether pushed to us or asked for, during a
 /// switch it still describes the Focus that just ended, and iOS doesn't reliably push it at all
-/// when every Focus ends, so a Focus the app can ask iOS about is also ended by asking.
+/// when every Focus ends, so for a Focus the app can ask iOS about, asking is what settles it in
+/// either direction.
 ///
 /// The name is deliberately sticky: iOS wipes the filter's name on deactivation and skips
 /// re-running the filter for quick reactivations, so the last reported name is the best answer to
@@ -57,6 +58,16 @@ public struct FocusReport: Equatable {
             // source of truth, so a live "not focused" ends a pushed "running" once that push has
             // had the switch window to settle.
             isFocused = false
+        } else if let receivedStatus, receivedStatus.isFocused == false, liveStatus == true,
+                  Current.date().timeIntervalSince(receivedStatus.date) > switchGracePeriod {
+            // The same rule the other way round, and the reason a Focus could read as off while
+            // iOS said one was running. A pushed "nothing is running" is the weakest thing we
+            // hold: it is also what iOS says about a Focus the user doesn't share, iOS only
+            // pushes it when it feels like it, and nothing ages it out — one arriving days ago
+            // otherwise outranked every later answer. Asking iOS is not ambiguous in this
+            // direction, because it never answers "focused" while no Focus is on, so once that
+            // push has had the switch window to settle the live answer replaces it.
+            isFocused = true
         } else {
             isFocused = receivedStatus?.isFocused ?? liveStatus
         }
@@ -103,8 +114,9 @@ public struct FocusReport: Equatable {
     }
 
     /// Asking iOS directly, which only the app can do, and which only answers for Focuses whose
-    /// status the user shares. The fallback for when no status was ever pushed to us, and what
-    /// ends a pushed "running" whose "ended" push never came.
+    /// status the user shares. The fallback for when no status was ever pushed to us, what ends a
+    /// pushed "running" whose "ended" push never came, and what starts a Focus the last push —
+    /// which can be days old — still calls not running.
     private static func liveIsFocused() -> Bool? {
         guard Current.focusStatus.isAvailable(),
               Current.focusStatus.authorizationStatus() == .authorized else {

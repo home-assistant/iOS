@@ -328,13 +328,24 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 33 tables create successfully together")
+    @Test("FrontendThemeVariableTable schema validation")
+    func frontendThemeVariableTableSchema() throws {
+        let table = FrontendThemeVariableTable()
+        let expectedColumns = DatabaseTables.FrontendThemeVariable.allCases.map(\.rawValue)
+        try verifyTableSchema(
+            table: table,
+            expectedTableName: GRDBDatabaseTable.frontendThemeVariable.rawValue,
+            expectedColumns: expectedColumns
+        )
+    }
+
+    @Test("All 34 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 33 tables
-        #expect(tables.count == 33, "Should have exactly 33 tables, but found \(tables.count)")
+        // Verify we have exactly 34 tables
+        #expect(tables.count == 34, "Should have exactly 34 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

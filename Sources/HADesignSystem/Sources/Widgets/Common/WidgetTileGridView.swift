@@ -54,7 +54,7 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
 
     public var body: some View {
         GeometryReader { proxy in
-            grid(sizeStyle: resolvedSizeStyle(inGridOfHeight: proxy.size.height))
+            grid(sizeStyle: resolvedSizeStyle(inGridOfHeight: proxy.size.height), in: proxy.size.height)
         }
     }
 
@@ -69,8 +69,9 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
         WidgetTileLayout.sizeStyle(sizeStyle, inGridOfHeight: height, rows: rows.count)
     }
 
-    private func grid(sizeStyle style: WidgetTileSizeStyle) -> some View {
-        let spacing = style == .compressed ? .zero : DesignSystem.Spaces.one
+    private func grid(sizeStyle style: WidgetTileSizeStyle, in availableHeight: CGFloat) -> some View {
+        let spacing = WidgetTileLayout.gridSpacing(for: style)
+        let measuredRowHeight = rowHeight(sizeStyle: style, in: availableHeight)
         return VStack(alignment: .leading, spacing: spacing) {
             ForEach(Array(rows.enumerated()), id: \.element) { rowIndex, column in
                 HStack(spacing: spacing) {
@@ -80,6 +81,7 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
                                 \.widgetTileCorners,
                                 corners(row: rowIndex, item: itemIndex, in: column, sizeStyle: style)
                             )
+                            .environment(\.widgetTileRowHeight, measuredRowHeight)
                             .frame(maxHeight: maxTileHeight(for: style))
                             .frame(maxWidth: .infinity)
                     }
@@ -92,7 +94,21 @@ public struct WidgetTileGridView<Item: WidgetTileRepresentable>: View {
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .padding([.single, .compressed].contains(style) ? .zero : DesignSystem.Spaces.one)
+        .padding(WidgetTileLayout.gridPadding(for: style))
+    }
+
+    /// How tall each row ends up: what the grid's own padding and the gaps between the rows leave,
+    /// shared between them, and never more than the cap a tile drawn beside its text is held to.
+    /// This is what the tiles size their icons from.
+    private func rowHeight(sizeStyle: WidgetTileSizeStyle, in availableHeight: CGFloat) -> CGFloat? {
+        guard availableHeight > .zero, !rows.isEmpty else { return nil }
+        let shared = WidgetTileLayout.tileHeight(
+            inGridOfHeight: availableHeight,
+            rows: rows.count,
+            sizeStyle: sizeStyle
+        )
+        guard let cap = maxTileHeight(for: sizeStyle) else { return shared }
+        return min(shared, cap)
     }
 
     /// The cap a tile drawn beside its text is held to. A dense tile is one the grid had no room to

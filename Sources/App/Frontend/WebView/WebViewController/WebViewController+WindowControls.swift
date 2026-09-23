@@ -9,13 +9,24 @@ extension WebViewController {
 
         return Self.webViewTopInset(
             cornerAdaptedSafeAreaTop: cornerAdaptedSafeAreaTop(view),
-            safeAreaTop: view.safeAreaInsets.top
+            safeAreaTop: view.safeAreaInsets.top,
+            idiom: userInterfaceIdiom(view)
         )
     }
 
     /// The whole inset, not only the part beyond the safe area, which the frontend no longer insets itself by.
-    static func webViewTopInset(cornerAdaptedSafeAreaTop: CGFloat, safeAreaTop: CGFloat) -> CGFloat {
-        cornerAdaptedSafeAreaTop > safeAreaTop ? cornerAdaptedSafeAreaTop : 0
+    ///
+    /// Only iPadOS windows get controls drawn over them. On iPhone the corner-adapted safe area is bigger than
+    /// the plain one on rounded displays alone, and reserving that room leaves a strip of app-drawn colour the
+    /// web content cannot reach: a dialog scrim, for one, stops short of the top of the screen.
+    static func webViewTopInset(
+        cornerAdaptedSafeAreaTop: CGFloat,
+        safeAreaTop: CGFloat,
+        idiom: UIUserInterfaceIdiom
+    ) -> CGFloat {
+        guard idiom == .pad else { return 0 }
+
+        return cornerAdaptedSafeAreaTop > safeAreaTop ? cornerAdaptedSafeAreaTop : 0
     }
 
     /// Offsets the web view and lets the themed status bar view fill the space it leaves behind the controls.

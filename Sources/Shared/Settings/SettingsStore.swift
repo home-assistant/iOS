@@ -315,6 +315,20 @@ public class SettingsStore {
         }
     }
 
+    /// Whether to leave WebKit's Enhanced Security heuristic alone on plain-HTTP connections.
+    ///
+    /// Off by default: on iOS 27 that heuristic renders `http://` pages in a hardened, much slower
+    /// process, which is what makes local dashboards lag. Users who would rather keep Apple's
+    /// hardening than the frame rate can switch it back on.
+    public var enhancedWebSecurityEnabled: Bool {
+        get {
+            prefs.bool(forKey: "enhancedWebSecurityEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "enhancedWebSecurityEnabled")
+        }
+    }
+
     public var refreshWebViewAfterInactive: Bool {
         get {
             if let value = prefs.object(forKey: "refreshWebViewAfterInactive") as? NSNumber {
@@ -601,6 +615,18 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "forceCloseWarningEnabled")
+        }
+    }
+
+    /// Whether tapping a notification offers the actions it carries, which iOS otherwise only reveals
+    /// once the notification is pressed and held. Opt-in: a tap normally just opens the app, and
+    /// turning a tap into a question is a change of habit the user asks for.
+    public var notificationTapActionsEnabled: Bool {
+        get {
+            prefs.bool(forKey: "notificationTapActionsEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "notificationTapActionsEnabled")
         }
     }
 

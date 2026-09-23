@@ -19,6 +19,7 @@ struct NotificationSettingsView: View {
             )
             overviewSection
             historySnoozeSoundsSection
+            tapActionsSection
             badgeSection
             if !Current.isCatalyst {
                 forceCloseWarningSection
@@ -99,6 +100,17 @@ struct NotificationSettingsView: View {
         }
     }
 
+    private var tapActionsSection: some View {
+        Section {
+            Toggle(
+                L10n.SettingsDetails.Notifications.TapActions.title,
+                isOn: $viewModel.tapActionsEnabled
+            )
+        } footer: {
+            Text(L10n.SettingsDetails.Notifications.TapActions.footer)
+        }
+    }
+
     private var badgeSection: some View {
         Section {
             Button {
@@ -162,6 +174,12 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
     }
 
+    @Published var tapActionsEnabled: Bool = Current.settingsStore.notificationTapActionsEnabled {
+        didSet {
+            Current.settingsStore.notificationTapActionsEnabled = tapActionsEnabled
+        }
+    }
+
     @Published var forceCloseWarningEnabled: Bool = Current.settingsStore.forceCloseWarningEnabled {
         didSet {
             Current.settingsStore.forceCloseWarningEnabled = forceCloseWarningEnabled
@@ -215,6 +233,7 @@ extension NotificationSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.History.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.SnoozeActions.header),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.Sounds.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.TapActions.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.Button.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title),
         ]

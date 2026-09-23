@@ -67,11 +67,14 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
             content.mutableCopy() as! UNMutableNotificationContent
         }.get { content in
             Self.applyDefaultCategoryIfNeeded(to: content)
-        }.then { content in
+        }.then { content -> Guarantee<UNNotificationContent> in
             when(resolved: attachmentPromise.get { attachment in
                 Current.Log.info("adding attachment \(attachment)")
                 content.attachments.append(attachment)
-            }).map { _ in content }
+            }).map { _ -> UNNotificationContent in
+                Self.removeContentExtensionCategoryIfUnneeded(from: content)
+                return content
+            }
         }.get { content in
             Current.Log.info("delivering content \(content)")
 
@@ -97,6 +100,34 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
         }
 
         content.categoryIdentifier = "DYNAMIC"
+    }
+
+    /// iOS only draws an attachment's thumbnail on the collapsed banner when it presents the
+    /// notification itself. The "DYNAMIC" category is claimed by the notification content extension
+    /// (see its `UNNotificationExtensionCategory`), which hands presentation over to our own view
+    /// controller — and that one is only built once the notification is expanded. Home Assistant tags
+    /// every notification carrying an attachment as "DYNAMIC", so a plain image push loses its
+    /// thumbnail in exchange for a custom interface that only draws the very same image.
+    ///
+    /// Give those back to the system: the category is kept whenever the payload actually needs the
+    /// extension, meaning it brings its own actions or an entity to render live (a camera stream, a
+    /// map), and dropped when the image is all there is to show.
+    static func removeContentExtensionCategoryIfUnneeded(from content: UNMutableNotificationContent) {
+        guard content.categoryIdentifier == "DYNAMIC", !content.attachments.isEmpty else {
+            return
+        }
+
+        // Audio and video keep the extension for `PlayerAttachmentViewController`, whose transport
+        // controls the system doesn't draw for an attachment of its own.
+        guard content.attachments.allSatisfy({ UTType($0.type)?.conforms(to: .image) == true }) else {
+            return
+        }
+
+        guard content.userInfoPayloadActions.isEmpty, content.userInfo["entity_id"] == nil else {
+            return
+        }
+
+        content.categoryIdentifier = ""
     }
 
     public func downloadAttachment(

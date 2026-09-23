@@ -46,6 +46,8 @@ public enum GRDBDatabaseTable: String {
     case HACalendar = "hACalendar"
     // Events cached from the calendars above, so a fetch failure can fall back to them
     case HACalendarEvent = "hACalendarEvent"
+    // Every CSS custom property the frontend theme resolves to, per server and per light/dark mode
+    case frontendThemeVariable
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -442,5 +444,18 @@ public enum DatabaseTables {
         case backgroundColor
         case supportedFeatures
         case sortOrder
+    }
+
+    // One row per CSS custom property the frontend resolves. Column names must match
+    // `FrontendThemeVariable`'s stored properties.
+    public enum FrontendThemeVariable: String, CaseIterable {
+        case id
+        case serverId
+        case appearance
+        case name
+        case value
+        case colorValue
+        case themeName
+        case updatedAt
     }
 }

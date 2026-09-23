@@ -67,6 +67,21 @@ class PedometerSensorTests: XCTestCase {
         }
     }
 
+    func testRegistrationListsEverySensorEvenWithoutAValue() throws {
+        request.reason = .registration
+        Current.pedometer.isAuthorized = { true }
+        Current.pedometer.isStepCountingAvailable = { true }
+        Current.pedometer.queryStartEndHandler = { _, _, hand in hand(FakePedometerData(), nil) }
+
+        let sensors = try hang(PedometerSensor(request: request).sensors())
+
+        XCTAssertEqual(Set(sensors.compactMap(\.UniqueID)), Set(PedometerSensor.allSensorIDs))
+        let pace = sensors.first(where: { $0.UniqueID == "pedometer_avg_active_pace" })
+        XCTAssertEqual(pace?.State as? String, "unavailable")
+        XCTAssertEqual(pace?.UnitOfMeasurement, "m/s")
+        XCTAssertEqual(sensors.first(where: { $0.UniqueID == "pedometer_steps" })?.State as? Int, 0)
+    }
+
     func testWithOnlyRequiredSteps() throws {
         Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }

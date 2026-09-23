@@ -141,15 +141,35 @@ public enum WidgetTileLayout {
     ///
     /// A compact tile is a 38pt icon circle inset by 12pt: below this there is no longer room for
     /// both, and the glyph fills a row the name is squeezed into. The areas widget pages by the same
-    /// number — see `WidgetAreasLayout.tileStyle(for:family:)`.
+    /// number — see `WidgetAreasLayout.tileStyle(for:family:inContentOfHeight:)`.
     public static let denseTileHeight: CGFloat = 52
+
+    /// The gap a grid leaves between its rows, and the padding it keeps around them.
+    ///
+    /// A compressed grid has given up both — that is what compressing is — and a single tile fills
+    /// its widget edge to edge.
+    public static func gridSpacing(for sizeStyle: WidgetTileSizeStyle) -> CGFloat {
+        sizeStyle == .compressed ? .zero : DesignSystem.Spaces.one
+    }
+
+    public static func gridPadding(for sizeStyle: WidgetTileSizeStyle) -> CGFloat {
+        [.single, .compressed].contains(sizeStyle) ? .zero : DesignSystem.Spaces.one
+    }
 
     /// The height one row of a grid this tall gets, once the grid's padding and the gaps between its
     /// rows have taken theirs.
-    public static func tileHeight(inGridOfHeight height: CGFloat, rows: Int) -> CGFloat {
+    ///
+    /// The size style decides what those are worth. It defaults to the compact one because the
+    /// question this answers for ``sizeStyle(_:inGridOfHeight:rows:)`` is only ever asked of a
+    /// compact grid; the tiles themselves ask it for the style they are actually drawn at.
+    public static func tileHeight(
+        inGridOfHeight height: CGFloat,
+        rows: Int,
+        sizeStyle: WidgetTileSizeStyle = .compact
+    ) -> CGFloat {
         guard rows > 0 else { return .zero }
-        let padding = DesignSystem.Spaces.one * 2
-        let gaps = CGFloat(rows - 1) * DesignSystem.Spaces.one
+        let padding = gridPadding(for: sizeStyle) * 2
+        let gaps = CGFloat(rows - 1) * gridSpacing(for: sizeStyle)
         return max(.zero, height - padding - gaps) / CGFloat(rows)
     }
 

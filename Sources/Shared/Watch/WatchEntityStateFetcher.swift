@@ -39,24 +39,23 @@ public enum WatchEntityStateFetcher {
             request.timeoutInterval = 4
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
-            let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
-            let task = session.dataTask(with: request) { [session] data, response, _ in
-                // The session strongly retains its delegate until invalidated; do it once the task ends.
-                defer { session.finishTasksAndInvalidate() }
-                guard let data,
-                      let http = response as? HTTPURLResponse,
-                      (200 ..< 300).contains(http.statusCode) else {
-                    // The server rejected a token the client still considered valid; stop polling
-                    // with it, or every cycle logs invalid auth server-side until an IP ban.
-                    if (response as? HTTPURLResponse)?.statusCode == 401 {
-                        tokenManager.handleAccessTokenRejected(token)
+            Task {
+                do {
+                    let (data, http) = try await ServerRequestPerformer.perform(request, server: server)
+                    guard (200 ..< 300).contains(http.statusCode) else {
+                        // The server rejected a token the client still considered valid; stop polling
+                        // with it, or every cycle logs invalid auth server-side until an IP ban.
+                        if http.statusCode == 401 {
+                            tokenManager.handleAccessTokenRejected(token)
+                        }
+                        finish(nil)
+                        return
                     }
+                    finish(try? Self.entity(from: data))
+                } catch {
                     finish(nil)
-                    return
                 }
-                finish(try? Self.entity(from: data))
             }
-            task.resume()
         }.catch { _ in
             finish(nil)
         }

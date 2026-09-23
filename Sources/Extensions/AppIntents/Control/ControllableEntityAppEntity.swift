@@ -1,6 +1,5 @@
 import AppIntents
 import Foundation
-import SFSafeSymbols
 import Shared
 
 /// An entity a spoken command can switch on or off, or a whole room's worth of them.
@@ -45,20 +44,20 @@ struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
         areaTarget?.domain ?? Domain(entityId: entityId)
     }
 
-    /// The icon is the domain's SF Symbol, not the entity's own Material Design glyph: drawing the
-    /// glyph per row made the Shortcuts app stutter as the list scrolled, and a symbol name costs
-    /// nothing to pass.
+    /// Deliberately carries no image, which is what lets the command's own glyph reach the row.
+    ///
+    /// Spotlight builds one row per shortcut per entity and titles every one of them with the entity's
+    /// name, so a light turns up as a column of rows reading the same thing. The glyph is the only part
+    /// of that row a command can vary — the system draws this image where there is one and falls back
+    /// to the App Shortcut's `systemImageName` where there is not — so leaving it out is what makes
+    /// switching, dimming and asking distinguishable at a glance. `HomeAssistantAppShortcuts` holds
+    /// the symbols and the test that keeps them distinct.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
-            image: .init(systemName: domain?.sfSymbolName ?? Self.fallbackSymbolName)
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
     }
-
-    /// A domain the app does not model still gets a row, and an on/off glyph is the least wrong
-    /// thing to show for one.
-    static let fallbackSymbolName = SFSymbol.powerCircle.rawValue
 
     /// An area row already names its area in the title, so it takes the server as its second line
     /// (and nothing at all when there is only one) rather than repeating itself.

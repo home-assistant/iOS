@@ -563,4 +563,41 @@ final class AssistViewModelTests: XCTestCase {
 
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
     }
+
+    /// Recording starts before the pipeline is subscribed, so a run the server refuses arrives with
+    /// the microphone still live. The error has to take the view out of its listening state too,
+    /// otherwise it keeps recording into a pipeline that will never accept the audio.
+    @MainActor
+    func testErrorWhileRecordingStopsRecording() async {
+        sut.isRecording = true
+
+        sut.didReceiveError(code: "stt-provider-missing", message: "No speech-to-text provider")
+        await waitUntilNotRecording()
+
+        XCTAssertFalse(sut.isRecording)
+        XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// An error outside a recording — a failed prompt, say — has no microphone to release, so it
+    /// must not reach for the recorder.
+    @MainActor
+    func testErrorWhileNotRecordingLeavesRecorderAlone() async {
+        sut.isRecording = false
+
+        sut.didReceiveError(code: "pipeline_run_failed", message: "socket died")
+        await Task.yield()
+
+        XCTAssertFalse(mockAudioRecorder.stopRecordingCalled)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// The stop is scheduled onto the main actor, so it lands a turn after the error arrives.
+    @MainActor
+    private func waitUntilNotRecording(timeout: TimeInterval = 2) async {
+        let deadline = Date().addingTimeInterval(timeout)
+        while sut.isRecording, Date() < deadline {
+            await Task.yield()
+        }
+    }
 }

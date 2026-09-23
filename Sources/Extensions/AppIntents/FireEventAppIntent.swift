@@ -58,7 +58,7 @@ struct FireEventAppIntent: AppIntent, CustomIntentMigratedAppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.refreshNetworkInformation()
-        guard let server = server.getServer(),
+        guard let server = server.shortcutServer(),
               let api = Current.api(for: server) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }
