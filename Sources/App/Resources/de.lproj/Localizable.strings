@@ -67,7 +67,7 @@
 "app_intents.active_entities.filter.switches" = "Schalter";
 "app_intents.active_entities.name_with_server" = "%1$@ auf %2$@";
 "app_intents.active_entities.title" = "Abrufen, was eingeschaltet ist";
-"app_intents.add_to.description" = "Fügt eine Home Assistant-Entität zur Apple Watch, zum CarPlay-Schnellzugriff oder zur Mac-Symbolleiste hinzu.";
+"app_intents.add_to.description" = "Fügt eine Home-Assistant-Entität zur Apple Watch, zum CarPlay-Schnellzugriff oder zur Mac-Symbolleiste hinzu.";
 "app_intents.add_to.destination.name" = "Ziel";
 "app_intents.add_to.dialog.added" = "%1$@ zu %2$@ hinzugefügt";
 "app_intents.add_to.dialog.already_added" = "%1$@ bereits in %2$@";
@@ -260,9 +260,9 @@
 "app_intents.perform_action.title" = "Aktion ausführen";
 "app_intents.readable_entity.entity.name" = "Entität";
 "app_intents.reminders.create.which_list" = "Welche Liste?";
-"app_intents.reminders.error.list_hidden" = "Diese To-Do-Liste steht Siri nicht mehr zur Verfügung";
-"app_intents.reminders.error.no_list" = "Es gibt keine To-Do-Listen, zu denen man dies hinzufügen könnte";
-"app_intents.reminders.get_items.description" = "Ruft die Einträge aus einer Home Assistant-To-Do-Liste ab";
+"app_intents.reminders.error.list_hidden" = "Diese To-do-Liste steht Siri nicht mehr zur Verfügung";
+"app_intents.reminders.error.no_list" = "Es gibt keine To-do-Listen, zu denen man dies hinzufügen könnte";
+"app_intents.reminders.get_items.description" = "Ruft die Einträge einer To-do-Liste von Home Assistant ab";
 "app_intents.reminders.get_items.include_completed.title" = "Auch erledigte";
 "app_intents.reminders.get_items.title" = "To-do-Einträge abrufen";
 "app_intents.reminders.list.name" = "Liste";
@@ -1248,7 +1248,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "notification_service.parser.camera.invalid_entity" = "Gegebene entity_id ist ungültig.";
 "notification_service.parser.url.invalid_url" = "Die angegebene URL ist ungültig.";
 "notification_service.parser.url.no_url" = "Es wurde keine URL angegeben.";
-"notification_tap_actions.title" = "Actions";
+"notification_tap_actions.title" = "Aktionen";
 "notifications_configurator.action.example_trigger.title" = "Beispiel-Auslöser";
 "notifications_configurator.action.rows.authentication_required.footer" = "Bei aktivierter Option wird der Benutzer nach Auswahl einer Benachrichtigungs-Aktion vom System aufgefordert das Gerät zu entsperren. Die Aktionswahl wird erst nach erfolgreicher Authentifizierung an Home Assistant weitergegeben.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authentifizierung erforderlich";
@@ -1978,6 +1978,10 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings.server_select.title" = "Server";
 "settings.server_switching.by_location.footer" = "Beim Öffnen der App wird geprüft, ob du dich bei einem deiner Zuhause befindest – entweder verbunden mit dessen WLAN-Netzwerk oder innerhalb dessen „Zuhause“-Zone. Gehört dieses Zuhause zu einem anderen Server, wird dieser Server automatisch geöffnet. Die Überprüfung erfolgt ausschließlich auf diesem Gerät, solange die App genutzt wird, und dein Standort wird niemals gespeichert.";
 "settings.server_switching.by_location.title" = "Server nach Standort wechseln";
+"settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
+"settings.server_switching.closest_server.source.location.title" = "Location";
+"settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
+"settings.server_switching.closest_server.source.network.title" = "Wi-Fi network";
 "settings.server_switching.closest_server.title" = "Nächstgelegener Server";
 "settings.server_switching.how_it_works.intro" = "Mit mehr als einem Zuhause kann die App den aktuell relevanten Server ermitteln und automatisch darauf umschalten. Sobald du dein zweites Zuhause betrittst, ist dessen Dashboard bereits verfügbar.";
 "settings.server_switching.how_it_works.location.body" = "Andernfalls wird dein Standort mit der „Zuhause“-Zone jedes Servers verglichen, und der nächstgelegene wird als näher betrachtet.";
@@ -2098,6 +2102,8 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "settings_details.general.edge_to_edge.enabled.title" = "Aktivieren";
 "settings_details.general.edge_to_edge.footer" = "Die Benutzeroberfläche von Home Assistant auf unterstützten Geräten randlos anzeigen. Dies ist eine experimentelle Funktion, die jederzeit entfernt werden kann und unter Umständen Layoutprobleme verursacht.";
 "settings_details.general.edge_to_edge.title" = "Randlose Anzeige";
+"settings_details.general.enhanced_web_security.footer" = "iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.";
+"settings_details.general.enhanced_web_security.title" = "Apple Enhanced Web Security";
 "settings_details.general.full_screen.title" = "Vollbild";
 "settings_details.general.launch_on_login.title" = "App bei Anmeldung starten";
 "settings_details.general.links.title" = "Links";
@@ -2270,8 +2276,8 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "settings_details.notifications.sounds.imported_alert.title" = "Töne importiert";
 "settings_details.notifications.sounds.system" = "System";
 "settings_details.notifications.sounds.title" = "Töne";
-"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
-"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
+"settings_details.notifications.tap_actions.footer" = "Wenn man auf eine Benachrichtigung tippt, wird gefragt, welche der verfügbaren Aktionen ausgeführt werden soll, anstatt die App einfach nur zu öffnen. Ansonsten zeigt iOS diese Aktionen erst an, wenn man die Benachrichtigung gedrückt hält. Benachrichtigungen, die bereits beim Antippen eine Aktion ausführen, wie z. B. das Öffnen einer URL oder Entität, bleiben unverändert.";
+"settings_details.notifications.tap_actions.title" = "Aktionen beim Antippen anzeigen";
 "settings_details.notifications.title" = "Benachrichtigungen";
 "settings_details.privacy.alerts.description" = "Erlaubt das Überprüfen auf wichtige Warnungen wie zum Beispiel Sicherheitslücken.";
 "settings_details.privacy.alerts.title" = "Warnungen";
@@ -2366,6 +2372,10 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.sensors.no_results" = "Keine Sensoren passen zu deiner Suche";
 "settings_sensors.sensors.search_prompt" = "Sensoren durchsuchen";
+"settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
+"settings_sensors.servers.header" = "Servers";
+"settings_sensors.servers.search_prompt" = "Search servers";
+"settings_sensors.servers.server_body" = "Decide which of your device sensors you want to share with this server.";
 "settings_sensors.settings.footer" = "Änderungen werden bei der nächsten Aktualisierung übernommen.";
 "settings_sensors.settings.header" = "Einstellungen";
 "settings_sensors.title" = "Sensoren";
@@ -3035,11 +3045,11 @@ Klicke mit der rechten Maustaste auf deinen Schreibtisch, wähle „Widgets bear
 "widgets.action.name.navigate" = "Navigieren";
 "widgets.action.name.nothing" = "Keine";
 "widgets.action.name.open" = "Öffnen";
-"widgets.action.name.perform_action" = "Perform action";
+"widgets.action.name.perform_action" = "Aktion ausführen";
 "widgets.action.name.press" = "Drücken";
 "widgets.action.name.run" = "Ausführen";
 "widgets.action.name.run_script" = "Skript ausführen";
-"widgets.action.name.toggle" = "Toggle";
+"widgets.action.name.toggle" = "Umschalten";
 "widgets.action.name.trigger" = "Auslösen";
 "widgets.action.name.turn_off" = "Ausschalten";
 "widgets.action.name.turn_on" = "Einschalten";
@@ -3049,7 +3059,7 @@ Klicke mit der rechten Maustaste auf deinen Schreibtisch, wähle „Widgets bear
 "widgets.actions.not_configured" = "Keine Aktionen eingerichtet";
 "widgets.actions.parameters.action" = "Aktion";
 "widgets.actions.title" = "Aktionen";
-"widgets.areas.description" = "Zeigt die einzelnen Bereiche deies Zuhauses, Etage für Etage.";
+"widgets.areas.description" = "Zeigt die einzelnen Bereiche deines Zuhauses, Etage für Etage.";
 "widgets.areas.empty.description" = "Auf diesem Server wurden keine Bereiche gefunden.";
 "widgets.areas.next_page" = "Weitere Bereiche";
 "widgets.areas.other_areas" = "Andere Bereiche";
@@ -3152,8 +3162,8 @@ Klicke mit der rechten Maustaste auf deinen Schreibtisch, wähle „Widgets bear
 "widgets.controls.switch.title" = "Schalter";
 "widgets.custom.intent_activate_failed.body" = "Bitte erneut versuchen";
 "widgets.custom.intent_activate_failed.title" = "Entität konnte nicht „aktiviert“ werden";
-"widgets.custom.intent_perform_action_failed.body" = "Please try again";
-"widgets.custom.intent_perform_action_failed.title" = "Failed to perform action";
+"widgets.custom.intent_perform_action_failed.body" = "Bitte erneut versuchen";
+"widgets.custom.intent_perform_action_failed.title" = "Fehler beim Ausführen der Aktion";
 "widgets.custom.intent_press_failed.body" = "Bitte erneut versuchen";
 "widgets.custom.intent_press_failed.title" = "Entität konnte nicht „gedrückt“ werden";
 "widgets.custom.intent_toggle_failed.body" = "Bitte erneut versuchen";

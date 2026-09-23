@@ -1248,7 +1248,7 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "notification_service.parser.camera.invalid_entity" = "Poskytnuté entiy_id bylo neplatné.";
 "notification_service.parser.url.invalid_url" = "Zadaná URL byla neplatná.";
 "notification_service.parser.url.no_url" = "Nebyla zadána žádná URL.";
-"notification_tap_actions.title" = "Actions";
+"notification_tap_actions.title" = "Akce";
 "notifications_configurator.action.example_trigger.title" = "Příklad spouštěče";
 "notifications_configurator.action.rows.authentication_required.footer" = "Když uživatel vybere akci s touto volbou, systém jej vyzve k odemknutí zařízení. Po odemknutí bude Home Assistantovi předána vybraná akce.";
 "notifications_configurator.action.rows.authentication_required.title" = "Vyžadováno ověření";
@@ -1978,6 +1978,10 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "settings.server_select.title" = "Server";
 "settings.server_switching.by_location.footer" = "Když aplikaci otevřete, zkontroluje, zda se nacházíte v jednom ze svých domovů, zda jste připojeni k jeho Wi-Fi síti nebo v jeho domovské zóně. Pokud daný domov patří k jinému serveru, tento server se automaticky otevře. Kontroly probíhají jen na tomto zařízení, když je aplikace používána, a vaše poloha se nikdy neukládá.";
 "settings.server_switching.by_location.title" = "Přepnout server podle umístění";
+"settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
+"settings.server_switching.closest_server.source.location.title" = "Location";
+"settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
+"settings.server_switching.closest_server.source.network.title" = "Wi-Fi network";
 "settings.server_switching.closest_server.title" = "Nejbližší server";
 "settings.server_switching.how_it_works.intro" = "S více domovy aplikace dokáže zjistit, který server je právě teď důležitý, a přepnout na něj za vás. Vejděte do svého druhého domova, kde na vás bude čekat jeho ovládací panel.";
 "settings.server_switching.how_it_works.location.body" = "V opačném případě se vaše poloha porovná s domovskou zónou každého serveru a nejbližší z nich se považuje za nejblíže k vám.";
@@ -2098,6 +2102,8 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "settings_details.general.edge_to_edge.enabled.title" = "Povolit";
 "settings_details.general.edge_to_edge.footer" = "Na zařízeních, která to podporují, se uživatelské rozhraní Home Assistanta zobrazí přes celou šířku displeje. Jedná se o experimentální funkci, která může být kdykoli odebrána a může také způsobit problémy s rozložením.";
 "settings_details.general.edge_to_edge.title" = "Displej od okraje k okraji";
+"settings_details.general.enhanced_web_security.footer" = "iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.";
+"settings_details.general.enhanced_web_security.title" = "Apple Enhanced Web Security";
 "settings_details.general.full_screen.title" = "Na celou obrazovku";
 "settings_details.general.launch_on_login.title" = "Spustit aplikaci při přihlášení";
 "settings_details.general.links.title" = "Odkazy";
@@ -2270,8 +2276,8 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "settings_details.notifications.sounds.imported_alert.title" = "Importované zvuky";
 "settings_details.notifications.sounds.system" = "Systém";
 "settings_details.notifications.sounds.title" = "Zvuky";
-"settings_details.notifications.tap_actions.footer" = "Tapping a notification asks which of its actions to run, instead of only opening the app. iOS otherwise shows those actions only when you press and hold the notification. Notifications that already do something when tapped, such as opening a URL or an entity, are unchanged.";
-"settings_details.notifications.tap_actions.title" = "Show actions when tapped";
+"settings_details.notifications.tap_actions.footer" = "Klepnutím na oznámení se zobrazí dotaz, které akce se mají spustit, místo aby se jen otevřela aplikace. iOS jinak zobrazuje tyto akce jen tehdy, když oznámení stisknete a podržíte. Oznámení, která již po klepnutí něco dělají, například otevírají URL adresu nebo entitu, zůstávají nezměněna.";
+"settings_details.notifications.tap_actions.title" = "Zobrazit akce po klepnutí";
 "settings_details.notifications.title" = "Oznámení";
 "settings_details.privacy.alerts.description" = "Umožňuje kontrolu důležitých upozornění, jako jsou chyby zabezpečení.";
 "settings_details.privacy.alerts.title" = "Výstrahy";
@@ -2366,6 +2372,10 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "settings_sensors.sensors.header" = "Senzory";
 "settings_sensors.sensors.no_results" = "Vašemu hledání neodpovídají žádné senzory";
 "settings_sensors.sensors.search_prompt" = "Vyhledání senzorů";
+"settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
+"settings_sensors.servers.header" = "Servers";
+"settings_sensors.servers.search_prompt" = "Search servers";
+"settings_sensors.servers.server_body" = "Decide which of your device sensors you want to share with this server.";
 "settings_sensors.settings.footer" = "Změny budou použity při příští aktualizaci.";
 "settings_sensors.settings.header" = "Nastavení";
 "settings_sensors.title" = "Senzory";
