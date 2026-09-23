@@ -101,6 +101,6 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         ]
 
         let actualKeys = Set(result.keys)
-        XCTAssertTrue(expectedKeys.isSubset(of: actualKeys), "Missing keys: \(expectedKeys.subtracting(actualKeys))")
+        XCTAssertEqual(actualKeys, expectedKeys)
     }
 }
