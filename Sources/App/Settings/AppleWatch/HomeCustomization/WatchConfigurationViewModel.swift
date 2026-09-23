@@ -64,7 +64,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     func updateItem(_ item: MagicItem) {
         // Try root level first
         if let indexToUpdate = watchConfig.items
-            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+            .firstIndex(where: { $0.isSameStoredItem(as: item) }) {
             watchConfig.items.remove(at: indexToUpdate)
             watchConfig.items.insert(item, at: indexToUpdate)
             return
@@ -72,7 +72,7 @@ final class WatchConfigurationViewModel: ObservableObject {
         // Try inside folders
         for (folderIndex, folder) in watchConfig.items.enumerated() where folder.type == .folder {
             if let items = folder.items,
-               let index = items.firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+               let index = items.firstIndex(where: { $0.isSameStoredItem(as: item) }) {
                 var updatedFolder = folder
                 var updatedItems = items
                 updatedItems.remove(at: index)
@@ -100,7 +100,7 @@ final class WatchConfigurationViewModel: ObservableObject {
         var folder = watchConfig.items[folderIndex]
         var folderItems = folder.items ?? []
         if let itemIndex = folderItems
-            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+            .firstIndex(where: { $0.isSameStoredItem(as: item) }) {
             folderItems[itemIndex] = item
             folder.items = folderItems
             watchConfig.items[folderIndex] = folder

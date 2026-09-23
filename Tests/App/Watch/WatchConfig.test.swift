@@ -59,6 +59,83 @@ struct WatchConfigurationViewModel_test {
         #expect(folder.items?.isEmpty == true)
     }
 
+    @Test func updateItemReplacesAssistPromptMovedToAnotherServer() {
+        let viewModel = WatchConfigurationViewModel()
+        let prompt = MagicItem(
+            id: "prompt-id",
+            serverId: "server1",
+            type: .assistPrompt,
+            displayText: "Lights",
+            assistPrompt: "Turn on the lights",
+            assistPipelineId: ""
+        )
+        viewModel.addItem(prompt)
+
+        var moved = prompt
+        moved.serverId = "server2"
+        viewModel.updateItem(moved)
+
+        #expect(viewModel.watchConfig.items.count == 1)
+        #expect(viewModel.watchConfig.items[0].serverId == "server2")
+    }
+
+    @Test func updateItemInFolderReplacesAssistPromptMovedToAnotherServer() {
+        let viewModel = WatchConfigurationViewModel()
+        viewModel.addFolder(named: "My Folder")
+        let folderId = viewModel.watchConfig.items[0].id
+        let prompt = MagicItem(
+            id: "prompt-id",
+            serverId: "server1",
+            type: .assistPrompt,
+            displayText: "Lights",
+            assistPrompt: "Turn on the lights",
+            assistPipelineId: ""
+        )
+        viewModel.addItemToFolder(folderId: folderId, item: prompt)
+
+        var moved = prompt
+        moved.serverId = "server2"
+        viewModel.updateItemInFolder(folderId: folderId, item: moved)
+
+        #expect(viewModel.watchConfig.items[0].items?.count == 1)
+        #expect(viewModel.watchConfig.items[0].items?.first?.serverId == "server2")
+    }
+
+    @Test func updateItemFindsAssistPromptInsideFolderMovedToAnotherServer() {
+        let viewModel = WatchConfigurationViewModel()
+        viewModel.addFolder(named: "My Folder")
+        let folderId = viewModel.watchConfig.items[0].id
+        let prompt = MagicItem(
+            id: "prompt-id",
+            serverId: "server1",
+            type: .assistPrompt,
+            displayText: "Lights",
+            assistPrompt: "Turn on the lights",
+            assistPipelineId: ""
+        )
+        viewModel.addItemToFolder(folderId: folderId, item: prompt)
+
+        var moved = prompt
+        moved.serverId = "server2"
+        viewModel.updateItem(moved)
+
+        #expect(viewModel.watchConfig.items.count == 1)
+        #expect(viewModel.watchConfig.items[0].items?.first?.serverId == "server2")
+    }
+
+    @Test func updateItemKeepsScriptsApartByServer() {
+        let viewModel = WatchConfigurationViewModel()
+        viewModel.addItem(MagicItem(id: "script.test", serverId: "server1", type: .script))
+        viewModel.addItem(MagicItem(id: "script.test", serverId: "server2", type: .script))
+
+        var edited = MagicItem(id: "script.test", serverId: "server2", type: .script)
+        edited.displayText = "Edited"
+        viewModel.updateItem(edited)
+
+        #expect(viewModel.watchConfig.items[0].displayText == nil)
+        #expect(viewModel.watchConfig.items[1].displayText == "Edited")
+    }
+
     @Test func addItemToFolderAddsItemInsideFolder() async throws {
         let viewModel = WatchConfigurationViewModel()
 
