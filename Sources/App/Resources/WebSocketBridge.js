@@ -235,8 +235,8 @@ const installFocusedInputCommitHandler = () => {
             return;
         }
 
-        focusedElement.dispatchEvent(new Event('input', { bubbles: true }));
-        focusedElement.dispatchEvent(new Event('change', { bubbles: true }));
+        focusedElement.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+        focusedElement.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
     };
 
     if (window.PointerEvent) {
