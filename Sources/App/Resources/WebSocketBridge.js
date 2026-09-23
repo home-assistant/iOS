@@ -196,25 +196,25 @@ const installFocusedInputCommitHandler = () => {
     const editableTagNames = new Set(['INPUT', 'TEXTAREA', 'SELECT']);
 
     const deepActiveElement = (root) => {
-        let el = root?.activeElement;
-        while (el) {
-            if (el.tagName === 'IFRAME' || el.tagName === 'FRAME') {
+        let activeElement = root?.activeElement;
+        while (activeElement) {
+            if (activeElement.tagName === 'IFRAME' || activeElement.tagName === 'FRAME') {
                 try {
-                    const doc = el.contentDocument || el.contentWindow?.document;
-                    const inner = doc?.activeElement;
-                    if (inner && inner !== doc.body) {
-                        root = doc;
-                        el = inner;
+                    const frameDocument = activeElement.contentDocument || activeElement.contentWindow?.document;
+                    const frameActiveElement = frameDocument?.activeElement;
+                    if (frameActiveElement && frameActiveElement !== frameDocument.body) {
+                        root = frameDocument;
+                        activeElement = frameActiveElement;
                         continue;
                     }
                 } catch (error) {}
-            } else if (el.shadowRoot?.activeElement) {
-                el = el.shadowRoot.activeElement;
+            } else if (activeElement.shadowRoot?.activeElement) {
+                activeElement = activeElement.shadowRoot.activeElement;
                 continue;
             }
             break;
         }
-        return el;
+        return activeElement;
     };
 
     const eventPathContains = (event, element) => {
@@ -227,16 +227,16 @@ const installFocusedInputCommitHandler = () => {
     };
 
     const commitFocusedInputBeforeExternalTap = (event) => {
-        const el = deepActiveElement(document);
-        if (!el || eventPathContains(event, el)) {
+        const focusedElement = deepActiveElement(document);
+        if (!focusedElement || eventPathContains(event, focusedElement)) {
             return;
         }
-        if (!editableTagNames.has(el.tagName) && !el.isContentEditable) {
+        if (!editableTagNames.has(focusedElement.tagName) && !focusedElement.isContentEditable) {
             return;
         }
 
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
+        focusedElement.dispatchEvent(new Event('input', { bubbles: true }));
+        focusedElement.dispatchEvent(new Event('change', { bubbles: true }));
     };
 
     if (window.PointerEvent) {
