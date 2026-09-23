@@ -22,9 +22,6 @@ import SwiftUI
 public final class ToastPresenter: ObservableObject {
     public static let shared = ToastPresenter()
 
-    /// Frontend can use this to know whether the app's toast component has what it needs.
-    public static var toastComponentVersion = 1
-
     @Published public private(set) var toast: Toast?
 
     private var autoDismissTask: Task<Void, Never>?

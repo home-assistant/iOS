@@ -98,7 +98,6 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasEntityAddTo",
             "hasSplashscreen",
             "appVersion",
-            "toastComponentVersion",
         ]
 
         let actualKeys = Set(result.keys)
