@@ -123,7 +123,7 @@ struct WatchConfigurationViewModel_test {
         #expect(viewModel.watchConfig.items[0].items?.first?.serverId == "server2")
     }
 
-    @Test func updateItemKeepsEntitiesApartByServer() {
+    @Test func updateItemKeepsScriptsApartByServer() {
         let viewModel = WatchConfigurationViewModel()
         viewModel.addItem(MagicItem(id: "script.test", serverId: "server1", type: .script))
         viewModel.addItem(MagicItem(id: "script.test", serverId: "server2", type: .script))
