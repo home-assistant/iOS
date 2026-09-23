@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Shared
+import SwiftUI
 
 /// Lays the list's first entries out as tabs, then More, and tracks in which tab the single web frontend shows.
 @MainActor
@@ -19,6 +20,7 @@ final class NativeTabBarViewModel: ObservableObject {
     @Published private(set) var moreShowsFrontend = false
     @Published var showsCustomize = false
     private(set) var customizeZoomsFromButton = true
+    @Published private(set) var accentColor: Color = .haPrimary
 
     let sidebar: MacSidebarViewModel
     /// Opens the frontend's own quick search; the Search tab is an action, never a selected tab.
@@ -55,6 +57,7 @@ final class NativeTabBarViewModel: ObservableObject {
         self.mainItems = sidebar.mainItems
         self.fixedItems = sidebar.fixedItems
         self.hiddenSidebarItems = sidebar.hiddenItems
+        self.accentColor = sidebar.accentColor
         rebuild()
         self.selection = tabItems.first?.sidebarItem.map { .panel(id: $0.id) } ?? .more
         self.lastFrontendTab = selection
@@ -67,6 +70,13 @@ final class NativeTabBarViewModel: ObservableObject {
                 self?.fixedItems = fixedItems
                 self?.hiddenSidebarItems = hiddenItems
                 self?.rebuild()
+            }
+            .store(in: &cancellables)
+
+        sidebar.$accentColor
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] accentColor in
+                self?.accentColor = accentColor
             }
             .store(in: &cancellables)
 

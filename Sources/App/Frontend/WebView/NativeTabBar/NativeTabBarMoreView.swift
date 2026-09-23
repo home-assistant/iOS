@@ -27,7 +27,8 @@ struct NativeTabBarMoreView: View {
                             NativeTabBarItemLabel(
                                 item: item,
                                 server: viewModel.sidebar.server,
-                                user: viewModel.sidebar.user
+                                user: viewModel.sidebar.user,
+                                accentColor: viewModel.accentColor
                             )
                         }
                         .onGeometryChange(for: CGRect.self) { proxy in
@@ -81,7 +82,8 @@ struct NativeTabBarMoreView: View {
                             server: viewModel.sidebar.server,
                             title: profile.title,
                             user: viewModel.sidebar.user,
-                            size: Constants.avatarSize
+                            size: Constants.avatarSize,
+                            accentColor: viewModel.accentColor
                         )
                         Text(viewModel.sidebar.server.info.name)
                             .font(.subheadline.weight(.medium))

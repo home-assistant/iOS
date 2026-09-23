@@ -11,6 +11,7 @@ struct NativeTabBarItemLabel: View {
     let item: NativeTabBarItem
     let server: Server
     let user: HAResponseCurrentUser?
+    var accentColor: Color = .haPrimary
 
     var body: some View {
         Label {
@@ -18,14 +19,20 @@ struct NativeTabBarItemLabel: View {
                 .foregroundStyle(Color.primary)
         } icon: {
             if item.sidebarItem?.kind == .profile {
-                MacSidebarAvatarView(server: server, title: item.title, user: user, size: Constants.iconSize)
+                MacSidebarAvatarView(
+                    server: server,
+                    title: item.title,
+                    user: user,
+                    size: Constants.iconSize,
+                    accentColor: accentColor
+                )
             } else {
                 Image(uiImage: item.icon.image(
                     ofSize: .init(width: Constants.iconSize, height: Constants.iconSize),
                     color: .label
                 ))
                 .renderingMode(.template)
-                .foregroundStyle(Color.haPrimary)
+                .foregroundStyle(accentColor)
             }
         }
     }

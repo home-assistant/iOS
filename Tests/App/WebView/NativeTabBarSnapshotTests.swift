@@ -78,4 +78,41 @@ struct NativeTabBarSnapshotTests {
             drawHierarchyInKeyWindow: true
         )
     }
+
+    @available(iOS 26, *)
+    @Test func tabBarTintedWithTheServersCapturedPrimaryColor() {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let stub = StubFrontendThemeProvider()
+        stub.set(.purple, for: .primaryColor)
+        Current.frontendTheme = { stub }
+
+        let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.tabBarTinted")
+        viewModel.didSelect(.more)
+        assertLightDarkSnapshots(
+            of: NativeTabBarContainerView(
+                viewModel: viewModel,
+                webViewController: nil,
+                frontendOpacity: 1,
+                frontendIgnoredSafeAreaEdges: .all,
+                onNeedsWebViewController: {}
+            ),
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @available(iOS 26, *)
+    @Test func moreViewTintedWithTheServersCapturedPrimaryColor() {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let stub = StubFrontendThemeProvider()
+        stub.set(.purple, for: .primaryColor)
+        Current.frontendTheme = { stub }
+
+        let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.moreTinted")
+        assertLightDarkSnapshots(
+            of: NavigationStack { NativeTabBarMoreView(viewModel: viewModel) },
+            drawHierarchyInKeyWindow: true
+        )
+    }
 }
