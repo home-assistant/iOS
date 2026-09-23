@@ -202,6 +202,42 @@ final class LegacyWatchSensorsTests: XCTestCase {
         XCTAssertTrue(LegacyWatchSensors.hasRetired(for: other.identifier))
     }
 
+    func testOverlappingRunsForOneServerSendEachRequestOnce() async throws {
+        let config = try config(entities: [
+            levelID: entity(disabled: false),
+            stateID: entity(disabled: false),
+        ])
+        let pending = PendingRequests()
+        webhookManager.sendRequestHandler = { _, _, request, seal in
+            pending.add(request, seal)
+        }
+
+        let first = Task { await LegacyWatchSensors.retire(reportedBy: config, on: server) }
+        await pending.waitForCount(1)
+
+        XCTAssertFalse(LegacyWatchSensors.needsRetiring(reportedBy: config, on: server))
+        let second = Task { await LegacyWatchSensors.retire(reportedBy: config, on: server) }
+        await second.value
+        XCTAssertEqual(pending.count, 1)
+
+        pending.fulfillAll()
+        await pending.waitForCount(2)
+        pending.fulfillAll()
+        await first.value
+
+        XCTAssertEqual(pending.count, 2)
+        XCTAssertTrue(LegacyWatchSensors.hasRetired(for: server.identifier))
+    }
+
+    func testAFailedRunReleasesTheServerForTheNextOne() async throws {
+        rejectRegistrations()
+        let config = try config(entities: [levelID: entity(disabled: false)])
+
+        await LegacyWatchSensors.retire(reportedBy: config, on: server)
+
+        XCTAssertTrue(LegacyWatchSensors.needsRetiring(reportedBy: config, on: server))
+    }
+
     func testFetchingTheConfigDisablesThem() throws {
         let api = HomeAssistantAPI(server: server)
         let registered = expectation(description: "both legacy sensors disabled")
@@ -235,5 +271,38 @@ final class LegacyWatchSensorsTests: XCTestCase {
 
     private enum TestError: Error {
         case any
+    }
+
+    private final class PendingRequests {
+        private let lock = NSLock()
+        private var requests = [WebhookRequest]()
+        private var seals = [Resolver<Void>]()
+
+        var count: Int {
+            lock.lock()
+            defer { lock.unlock() }
+            return requests.count
+        }
+
+        func add(_ request: WebhookRequest, _ seal: Resolver<Void>) {
+            lock.lock()
+            defer { lock.unlock() }
+            requests.append(request)
+            seals.append(seal)
+        }
+
+        func fulfillAll() {
+            lock.lock()
+            let pending = seals
+            seals.removeAll()
+            lock.unlock()
+            pending.forEach { $0.fulfill(()) }
+        }
+
+        func waitForCount(_ expected: Int) async {
+            while count < expected {
+                try? await Task.sleep(nanoseconds: 10_000_000)
+            }
+        }
     }
 }

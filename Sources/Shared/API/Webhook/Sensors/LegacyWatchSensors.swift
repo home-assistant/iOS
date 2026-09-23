@@ -1,12 +1,16 @@
 import Foundation
 
 public enum LegacyWatchSensors {
+    private static let inFlightLock = NSLock()
+    private static var inFlight = Set<String>()
+
     public static func needsRetiring(reportedBy config: ConfigResponse, on server: Server) -> Bool {
-        !hasRetired(for: server.identifier) && config.entities != nil
+        config.entities != nil && !hasRetired(for: server.identifier) && !isInFlight(server.identifier)
     }
 
     public static func retire(reportedBy config: ConfigResponse, on server: Server) async {
-        guard needsRetiring(reportedBy: config, on: server), let entities = config.entities else { return }
+        guard let entities = config.entities, claim(server.identifier) else { return }
+        defer { release(server.identifier) }
 
         let sensors = sensorsToDisable(among: entities)
         guard !sensors.isEmpty else {
@@ -58,6 +62,26 @@ public enum LegacyWatchSensors {
         }
 
         return [level, state]
+    }
+
+    private static func claim(_ serverIdentifier: Identifier<Server>) -> Bool {
+        inFlightLock.lock()
+        defer { inFlightLock.unlock() }
+        guard !hasRetired(for: serverIdentifier), !inFlight.contains(serverIdentifier.rawValue) else { return false }
+        inFlight.insert(serverIdentifier.rawValue)
+        return true
+    }
+
+    private static func release(_ serverIdentifier: Identifier<Server>) {
+        inFlightLock.lock()
+        defer { inFlightLock.unlock() }
+        inFlight.remove(serverIdentifier.rawValue)
+    }
+
+    private static func isInFlight(_ serverIdentifier: Identifier<Server>) -> Bool {
+        inFlightLock.lock()
+        defer { inFlightLock.unlock() }
+        return inFlight.contains(serverIdentifier.rawValue)
     }
 
     static func hasRetired(for serverIdentifier: Identifier<Server>) -> Bool {
