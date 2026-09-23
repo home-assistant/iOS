@@ -149,6 +149,17 @@ struct AppDelegateForceCloseTerminationTests {
             }
         }
     }
+
+    @Test func applicationWillTerminateKeepsTheLastPageOnCatalyst() {
+        withForceCloseWorld(isCatalyst: true) {
+            withLastPage(server: "server-1", path: "/config/integrations/integration/hue") {
+                AppDelegate().applicationWillTerminate(UIApplication.shared)
+
+                #expect(Current.settingsStore.lastActiveURLPath == "/config/integrations/integration/hue")
+                #expect(Current.settingsStore.lastActiveServerIdentifier == "server-1")
+            }
+        }
+    }
 }
 
 private func withLastPage(server: String, path: String, _ body: () throws -> Void) rethrows {

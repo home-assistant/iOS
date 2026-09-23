@@ -256,8 +256,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         Current.forceCloseWarningManager.postImmediateWarning()
-        // This prevents user to get stuck on a page without a way to recover
-        Current.settingsStore.lastActiveURLPath = nil
+        // This prevents users from getting stuck on a page without a way to recover
+        if !Current.isCatalyst {
+            Current.settingsStore.lastActiveURLPath = nil
+        }
     }
 
     func application(
