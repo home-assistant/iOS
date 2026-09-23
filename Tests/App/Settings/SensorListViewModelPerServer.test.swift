@@ -54,25 +54,6 @@ struct SensorListViewModelPerServerTests {
         }
     }
 
-    /// The root screen shows a count next to each server, which is the only place the difference
-    /// between them is visible without opening each one.
-    @Test func theRootModelCountsEachServersSelection() async throws {
-        try await withServers { servers in
-            let first = try #require(servers.all.first)
-            let second = try #require(servers.all.last)
-            Current.sensors.setEnabled(
-                true,
-                forUniqueIDs: [WebhookSensorId.activity.rawValue, WebhookSensorId.storage.rawValue],
-                on: first
-            )
-
-            let viewModel = SensorListViewModel(server: nil)
-
-            #expect(viewModel.enabledCount(for: first) == 2)
-            #expect(viewModel.enabledCount(for: second) == 0)
-        }
-    }
-
     @Test func serversAreOfferedOnlyWhenThereIsMoreThanOne() async throws {
         try await withServers { servers in
             #expect(SensorListViewModel(server: nil).selectableServers.count == 2)
@@ -118,9 +99,9 @@ struct SensorListViewModelPerServerTests {
         }
     }
 
-    /// The root screen's counts are read straight from the store rather than published, so a
-    /// change made on one server's screen has to nudge it by hand.
-    @Test func theRootModelRepublishesWhenASelectionChanges() async throws {
+    /// The root screen lists the servers rather than anything a selection changes, so a change on
+    /// one of them leaves it alone instead of asking every server for a fresh reading.
+    @Test func theRootModelIgnoresASelectionChange() async throws {
         try await withServers { _ in
             let viewModel = SensorListViewModelWithoutRefresh(server: nil)
             var republished = 0
@@ -133,7 +114,8 @@ struct SensorListViewModelPerServerTests {
             )
             await settle { republished > 0 }
 
-            #expect(republished > 0)
+            #expect(republished == 0)
+            #expect(viewModel.refreshCount == 0)
             token.cancel()
         }
     }
@@ -163,7 +145,11 @@ struct SensorListViewModelPerServerTests {
     /// `refresh()` asks the real `HomeAssistantAPI` for an update, which a unit test has no server
     /// to answer with.
     private final class SensorListViewModelWithoutRefresh: SensorListViewModel {
-        override func refresh() {}
+        private(set) var refreshCount = 0
+
+        override func refresh() {
+            refreshCount += 1
+        }
     }
 
     /// The model hands its published changes to the main queue, so a test reading them straight

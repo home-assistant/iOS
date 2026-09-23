@@ -103,14 +103,7 @@ struct SensorListView: View {
                         NavigationLink {
                             SensorListView(server: server)
                         } label: {
-                            HStack {
-                                Text(server.info.name)
-                                Spacer()
-                                // Inside the label rather than `.badge`, so the count sits between
-                                // the name and the disclosure chevron instead of after it.
-                                Text("\(viewModel.enabledCount(for: server))")
-                                    .foregroundStyle(.secondary)
-                            }
+                            Text(server.info.name)
                         }
                     }
                 } header: {
