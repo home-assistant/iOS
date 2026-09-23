@@ -1,10 +1,13 @@
 import Foundation
+import ObjectMapper
 import PromiseKit
 @testable import Shared
 import XCTest
 
 final class LegacyWatchSensorsTests: XCTestCase {
     private var server: Server!
+    private var servers: FakeServerManager!
+    private var previousServers: ServerManager!
     private var webhookManager: FakeWebhookManager!
     private var previousWebhookManager: WebhookManager!
 
@@ -13,7 +16,10 @@ final class LegacyWatchSensorsTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        server = .fake()
+        servers = FakeServerManager()
+        server = servers.addFake()
+        previousServers = Current.servers
+        Current.servers = servers
         webhookManager = FakeWebhookManager()
         previousWebhookManager = Current.webhooks
         Current.webhooks = webhookManager
@@ -21,6 +27,7 @@ final class LegacyWatchSensorsTests: XCTestCase {
 
     override func tearDown() {
         Current.webhooks = previousWebhookManager
+        Current.servers = previousServers
         LegacyWatchSensors.forgetRetired(for: server.identifier)
         super.tearDown()
     }
@@ -184,8 +191,22 @@ final class LegacyWatchSensorsTests: XCTestCase {
         XCTAssertTrue(LegacyWatchSensors.hasRetired(for: server.identifier))
     }
 
+    func testAServerStillBeingOnboardedIsLeftAlone() async throws {
+        let detached = Server.fake()
+        defer { LegacyWatchSensors.forgetRetired(for: detached.identifier) }
+        let requests = acceptRegistrations()
+        let config = try config(entities: [levelID: entity(disabled: false)])
+
+        XCTAssertFalse(LegacyWatchSensors.needsRetiring(reportedBy: config, on: detached))
+
+        await LegacyWatchSensors.retire(reportedBy: config, on: detached)
+
+        XCTAssertTrue(requests().isEmpty)
+        XCTAssertFalse(LegacyWatchSensors.hasRetired(for: detached.identifier))
+    }
+
     func testServersAreTrackedApart() async throws {
-        let other = Server.fake()
+        let other = servers.addFake()
         defer { LegacyWatchSensors.forgetRetired(for: other.identifier) }
         let requests = acceptRegistrations()
         let config = try config(entities: [

@@ -5,11 +5,14 @@ public enum LegacyWatchSensors {
     private static var inFlight = Set<String>()
 
     public static func needsRetiring(reportedBy config: ConfigResponse, on server: Server) -> Bool {
-        config.entities != nil && !hasRetired(for: server.identifier) && !isInFlight(server.identifier)
+        config.entities != nil
+            && isPersisted(server)
+            && !hasRetired(for: server.identifier)
+            && !isInFlight(server.identifier)
     }
 
     public static func retire(reportedBy config: ConfigResponse, on server: Server) async {
-        guard let entities = config.entities, claim(server.identifier) else { return }
+        guard let entities = config.entities, isPersisted(server), claim(server.identifier) else { return }
         defer { release(server.identifier) }
 
         let sensors = sensorsToDisable(among: entities)
@@ -62,6 +65,10 @@ public enum LegacyWatchSensors {
         }
 
         return [level, state]
+    }
+
+    private static func isPersisted(_ server: Server) -> Bool {
+        Current.servers.server(for: server.identifier) != nil
     }
 
     private static func claim(_ serverIdentifier: Identifier<Server>) -> Bool {
