@@ -175,7 +175,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     func updateItem(_ item: MagicItem) {
         if let indexToUpdate = config.quickAccessItems
-            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+            .firstIndex(where: { $0.isSameStoredItem(as: item) }) {
             config.quickAccessItems.remove(at: indexToUpdate)
             config.quickAccessItems.insert(item, at: indexToUpdate)
         }
@@ -251,7 +251,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
         mutateFolder(withId: folderId) { folder in
             var folderItems = folder.items ?? []
             if let itemIndex = folderItems
-                .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+                .firstIndex(where: { $0.isSameStoredItem(as: item) }) {
                 folderItems[itemIndex] = item
                 folder.items = folderItems
             }

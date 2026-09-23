@@ -87,6 +87,10 @@ public struct MagicItem: Codable, Equatable, Hashable {
         type == .assistPipeline || type == .assistPrompt
     }
 
+    public func isSameStoredItem(as other: MagicItem) -> Bool {
+        id == other.id && (serverId == other.serverId || (type == .assistPrompt && other.type == .assistPrompt))
+    }
+
     /// Domain retrieved from id when item is entity else nil
     public var domain: Domain? {
         if let domainString = id.split(separator: ".").first, let domain = Domain(rawValue: String(domainString)) {
