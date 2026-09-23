@@ -4,6 +4,7 @@ import SharedTesting
 import SwiftUI
 import Testing
 
+@Suite(.serialized)
 @MainActor
 struct MacSidebarSnapshotTests {
     private enum Constants {
