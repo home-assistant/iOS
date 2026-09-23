@@ -24,7 +24,7 @@ actor WyomingServer {
     /// local-network permission prompt on the machine running them.
     private let advertisesOverBonjour: Bool
     private let fallbackLocale: Locale
-    private let makeRecognizer: WyomingRecognizerFactory
+    private let makeRecognizer: OnDeviceRecognizerFactory
     private let onStateChange: @Sendable (WyomingServerState) -> Void
     private let queue = DispatchQueue(label: "io.home-assistant.wyoming-server", qos: .userInitiated)
 
@@ -36,7 +36,7 @@ actor WyomingServer {
         serviceName: String,
         fallbackLocale: Locale,
         advertisesOverBonjour: Bool = true,
-        makeRecognizer: @escaping WyomingRecognizerFactory = wyomingSystemRecognizerFactory,
+        makeRecognizer: @escaping OnDeviceRecognizerFactory = systemSpeechRecognizerFactory,
         onStateChange: @escaping @Sendable (WyomingServerState) -> Void
     ) {
         self.requestedPort = port

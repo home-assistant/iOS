@@ -14,7 +14,7 @@ struct SystemSpeechRecognizerTests {
 
     @Test func theProductionPathBuildsOrRefusesCleanly() {
         do {
-            let session = try WyomingSpeechRecognitionSession(locale: Locale(identifier: "en-US"), format: format)
+            let session = try OnDeviceSpeechRecognitionSession(locale: Locale(identifier: "en-US"), format: format)
             session.cancel()
         } catch let error as WyomingProtocolError {
             #expect(error.errorDescription?.isEmpty == false)
@@ -27,7 +27,7 @@ struct SystemSpeechRecognizerTests {
     /// asked for rather than that something unspecified went wrong.
     @Test func anUnknownLocaleIsRefusedByName() {
         do {
-            let session = try WyomingSpeechRecognitionSession(locale: Locale(identifier: "zz-ZZ"), format: format)
+            let session = try OnDeviceSpeechRecognitionSession(locale: Locale(identifier: "zz-ZZ"), format: format)
             session.cancel()
         } catch let WyomingProtocolError.speechRecognitionUnavailable(language) {
             #expect(language == "zz-ZZ")
@@ -43,7 +43,7 @@ struct SystemSpeechRecognizerTests {
     /// audio even on a machine that would refuse the recogniser anyway.
     @Test func theFormatIsRefusedBeforeTheRecognizer() {
         #expect(throws: WyomingProtocolError.unsupportedAudioFormat(.init(rate: 16000, width: 4, channels: 1))) {
-            _ = try WyomingSpeechRecognitionSession(
+            _ = try OnDeviceSpeechRecognitionSession(
                 locale: Locale(identifier: "en-US"),
                 format: .init(rate: 16000, width: 4, channels: 1)
             )

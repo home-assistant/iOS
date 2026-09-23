@@ -22,6 +22,10 @@ extension AssistConfiguration {
         }
     }
 
+    var requestsServerTTS: Bool {
+        !muteTTS && !enableOnDeviceTTS
+    }
+
     func save() {
         do {
             try Current.database().write { db in

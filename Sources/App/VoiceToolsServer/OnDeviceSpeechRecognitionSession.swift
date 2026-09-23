@@ -2,16 +2,16 @@ import AVFoundation
 import Foundation
 import Shared
 
-/// Transcribes one Wyoming audio stream: PCM arrives in `append`, and `finish` reports what the
-/// recogniser made of it once the client's `audio-stop` closes the stream.
+/// Transcribes one audio stream with the on-device recogniser: PCM arrives in `append`, and
+/// `finish` reports what the recogniser made of it once the stream is closed.
 @MainActor
-final class WyomingSpeechRecognitionSession {
+final class OnDeviceSpeechRecognitionSession {
     /// How long to wait for a final result after the audio ends before answering with the best
     /// transcript so far. The recogniser can cancel after `endAudio()` without ever delivering a
     /// final result, which would otherwise hang the client until it times out.
     static let defaultGracePeriod: TimeInterval = 2
 
-    private let recognizer: any WyomingSpeechRecognizing
+    private let recognizer: any OnDeviceSpeechRecognizing
     private let gracePeriod: TimeInterval
     private var converter: WyomingPCMConverter
 
@@ -26,8 +26,8 @@ final class WyomingSpeechRecognitionSession {
     /// about first.
     init(
         format: WyomingAudioFormat,
-        gracePeriod: TimeInterval = WyomingSpeechRecognitionSession.defaultGracePeriod,
-        makeRecognizer: () throws -> any WyomingSpeechRecognizing
+        gracePeriod: TimeInterval = OnDeviceSpeechRecognitionSession.defaultGracePeriod,
+        makeRecognizer: () throws -> any OnDeviceSpeechRecognizing
     ) throws {
         self.converter = try WyomingPCMConverter(format: format)
         self.recognizer = try makeRecognizer()

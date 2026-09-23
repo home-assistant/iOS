@@ -1,14 +1,14 @@
 import AVFoundation
 import Foundation
 
-/// The recogniser a `WyomingSpeechRecognitionSession` drives, reduced to what the session needs.
+/// The recogniser an `OnDeviceSpeechRecognitionSession` drives, reduced to what the session needs.
 ///
 /// A protocol rather than `SFSpeechRecognizer` directly because the session's own behaviour — which
 /// transcript wins, what a failure after the audio ended means, answering the client exactly once —
 /// is worth testing, and a real recogniser cannot be created without speech authorisation, which no
 /// test runner has.
 @MainActor
-protocol WyomingSpeechRecognizing: AnyObject {
+protocol OnDeviceSpeechRecognizing: AnyObject {
     /// Begins recognising, reporting each transcript as it improves and `isFinal` on the last one.
     /// A recogniser reports at most one failure, and nothing after it.
     func start(
@@ -25,7 +25,7 @@ protocol WyomingSpeechRecognizing: AnyObject {
 ///
 /// Threaded from the listener down rather than constructed where it is used, so a test can drive a
 /// whole `audio-start`/`audio-chunk`/`audio-stop` exchange without speech authorisation.
-typealias WyomingRecognizerFactory = @Sendable @MainActor (Locale) throws -> any WyomingSpeechRecognizing
+typealias OnDeviceRecognizerFactory = @Sendable @MainActor (Locale) throws -> any OnDeviceSpeechRecognizing
 
 /// The on-device recogniser, which is what the app itself always uses.
-let wyomingSystemRecognizerFactory: WyomingRecognizerFactory = { try SystemSpeechRecognizer(locale: $0) }
+let systemSpeechRecognizerFactory: OnDeviceRecognizerFactory = { try SystemSpeechRecognizer(locale: $0) }

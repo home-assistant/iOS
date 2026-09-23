@@ -18,6 +18,7 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case assistSTTResponse
     case assistIntentEndResponse
     case assistTTSResponse
+    case assistOnDeviceTTS
     case assistError
     case watchConfigResponse
     case emptyWatchConfigResponse
