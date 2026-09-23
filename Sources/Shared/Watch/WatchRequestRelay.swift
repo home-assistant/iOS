@@ -1,4 +1,5 @@
 import Foundation
+import WatchConnectivity
 
 /// Performs a watch HTTP request on the paired iPhone instead of on the watch, when the iPhone is
 /// close enough to answer immediately.
@@ -25,9 +26,17 @@ enum WatchRequestRelay {
     /// attempt rather than one that is certain to expire.
     static let minimumRequestTimeout: TimeInterval = 2
 
+    static var unansweredReason: String { L10n.Watch.Relay.Unanswered.message }
+
+    enum Delivery: Equatable {
+        case answered(WatchHTTPResponsePayload)
+        case notSent
+        case unanswered
+    }
+
     /// How the payload reaches the phone and the answer comes back: the WatchConnectivity send,
     /// unless a test substitutes a fake for it.
-    typealias Deliver = (WatchHTTPRequestPayload, TimeInterval) async -> WatchHTTPResponsePayload?
+    typealias Deliver = (WatchHTTPRequestPayload, TimeInterval, HAWatchConnectivity.SendPriority) async -> Delivery
 
     /// Whether a request should go to the phone at all.
     ///
@@ -53,13 +62,14 @@ enum WatchRequestRelay {
 
     /// Relays `request` and returns the server's answer, or `nil` when the request should be
     /// performed locally instead — the phone is out of reach, is too old to understand the message,
-    /// doesn't know the server, or couldn't carry the response back.
+    /// doesn't know the server, or the request never left the watch.
     ///
-    /// Throws only when the phone reached the network and the request failed there. That is a real
-    /// answer, so the caller gets it instead of paying a second timeout repeating it over a route
-    /// that, with the phone this close, almost certainly runs through the phone anyway.
+    /// Throws when the phone reached the network and the request failed there, and when the phone
+    /// received a non-idempotent request and never reported back: either way the request may have
+    /// run, so the caller gets an error instead of a second copy of the action.
     ///
     /// - Parameters:
+    ///   - priority: where the send queues behind the watch's other traffic to the phone.
     ///   - isAvailable: whether to relay at all; the live answer unless a test pins it.
     ///   - deliver: the link to the phone, injected the same way `WatchRelayRequestHandler` injects
     ///     the network on the far side, so everything but the WatchConnectivity call itself can be
@@ -68,9 +78,10 @@ enum WatchRequestRelay {
         _ request: URLRequest,
         server: Server,
         budget: TimeInterval,
+        priority: HAWatchConnectivity.SendPriority = .normal,
         onStep: ((String) -> Void)? = nil,
         isAvailable: Bool = WatchRequestRelay.isAvailable,
-        deliver: Deliver = { await WatchRequestRelay.deliver($0, budget: $1) }
+        deliver: Deliver = { await WatchRequestRelay.deliver($0, budget: $1, priority: $2) }
     ) async throws -> (Data, HTTPURLResponse)? {
         guard isAvailable, let url = request.url else { return nil }
 
@@ -86,12 +97,15 @@ enum WatchRequestRelay {
         onStep?("Relaying through iPhone…")
         Current.Log.info("Relaying \(payload.method) \(url.absoluteString) through the iPhone")
 
-        guard let response = await deliver(payload, budget) else {
-            onStep?("iPhone didn't answer")
+        switch await deliver(payload, budget, priority) {
+        case let .answered(response):
+            return try result(of: response, url: url, payload: payload, onStep: onStep)
+        case .notSent:
+            onStep?("iPhone never received the request")
             return nil
+        case .unanswered:
+            return try unansweredResult(url: url, payload: payload, onStep: onStep)
         }
-
-        return try result(of: response, url: url, payload: payload, onStep: onStep)
     }
 
     /// Turns the phone's answer into the caller's, or into `nil` to retry locally. Split out from
@@ -126,6 +140,22 @@ enum WatchRequestRelay {
         }
     }
 
+    static func unansweredResult(
+        url: URL,
+        payload: WatchHTTPRequestPayload,
+        onStep: ((String) -> Void)? = nil
+    ) throws -> (Data, HTTPURLResponse)? {
+        guard payload.isIdempotent else {
+            Current.Log.error(
+                "iPhone received \(payload.method) \(url.absoluteString) but never reported back; not repeating it"
+            )
+            onStep?("iPhone received the request but didn't report back; not repeating it")
+            throw WatchRelayError(reason: unansweredReason)
+        }
+        onStep?("iPhone didn't answer")
+        return nil
+    }
+
     /// Whether the watch may perform the request itself after the phone failed this way.
     ///
     /// Only the relay can decide this, because it takes both the failure and the request's method:
@@ -144,17 +174,35 @@ enum WatchRequestRelay {
         return failure == .tooLarge && payload.isIdempotent
     }
 
+    static func wasDelivered(despite error: Error) -> Bool {
+        if let connectivityError = error as? HAWatchConnectivity.ConnectivityError {
+            switch connectivityError {
+            case .replyTimedOut:
+                return true
+            case let .deliveryFailed(underlying):
+                return wasDelivered(despite: underlying)
+            default:
+                return false
+            }
+        }
+        let nsError = error as NSError
+        guard nsError.domain == WCErrorDomain else { return false }
+        return nsError.code == WCError.Code.messageReplyTimedOut.rawValue
+            || nsError.code == WCError.Code.messageReplyFailed.rawValue
+    }
+
     /// Bridges the callback-based send onto async. `WatchRelayReplyGate` arbitrates the race for
     /// the continuation; cancellation settles the wait immediately rather than letting it run out
-    /// the budget, and any reply that lands afterwards is dropped — the phone may well have
-    /// performed the request, but the caller has already gone.
+    /// the budget, withdraws the send if it is still queued, and any reply that lands afterwards is
+    /// dropped — the phone may well have performed the request, but the caller has already gone.
     /// - Parameter communicator: the link to the counterpart; the shared one unless a test
     ///   substitutes a session it can answer from.
     static func deliver(
         _ payload: WatchHTTPRequestPayload,
         budget: TimeInterval,
-        over communicator: Communicator = WatchConnectivityManager.shared
-    ) async -> WatchHTTPResponsePayload? {
+        priority: HAWatchConnectivity.SendPriority = .normal,
+        over communicator: WatchConnectivityManager = WatchConnectivityManager.shared
+    ) async -> Delivery {
         let gate = WatchRelayReplyGate()
         return await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
@@ -162,23 +210,35 @@ enum WatchRequestRelay {
                 // message on the link would only invite the phone to do work nobody will read.
                 guard gate.adopt(continuation) else { return }
 
-                communicator.send(
+                let ticket = communicator.send(
                     .init(
                         identifier: InteractiveImmediateMessages.httpRequest.rawValue,
                         content: payload.content,
                         reply: { message in
-                            gate.settle(WatchHTTPResponsePayload(content: message.content))
+                            if let response = WatchHTTPResponsePayload(content: message.content) {
+                                gate.settle(.answered(response))
+                            } else {
+                                Current.Log.error("The iPhone's relay reply could not be decoded")
+                                gate.settle(.unanswered)
+                            }
                         }
                     ),
                     timeout: budget,
+                    priority: priority,
                     errorHandler: { error in
                         Current.Log.error("Relaying to the iPhone failed: \(error.localizedDescription)")
-                        gate.settle(nil)
+                        gate.settle(wasDelivered(despite: error) ? .unanswered : .notSent)
                     }
                 )
+                if !gate.hold(ticket) {
+                    _ = communicator.cancelQueuedInteractiveSend(ticket)
+                }
             }
         } onCancel: {
-            gate.settle(nil)
+            gate.settle(.notSent)
+            if let ticket = gate.takeTicket() {
+                _ = communicator.cancelQueuedInteractiveSend(ticket)
+            }
         }
     }
 }

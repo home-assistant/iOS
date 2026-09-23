@@ -2,26 +2,23 @@ import Foundation
 @testable import Shared
 import Testing
 
-private typealias RelayContinuation = CheckedContinuation<WatchHTTPResponsePayload?, Never>
+private typealias RelayContinuation = CheckedContinuation<WatchRequestRelay.Delivery, Never>
 
 /// The gate exists for races that are hard to provoke on a real link — a reply and an error both
 /// firing, cancellation landing before the send — so they are provoked directly here. Resuming a
 /// checked continuation twice traps, which makes every one of these a crash if the gate is wrong.
 struct WatchRelayReplyGateTests {
+    private let ok = WatchHTTPResponsePayload.response(statusCode: 200, headers: [:], body: Data("ok".utf8))
+
     @Test func handsThePhonesAnswerToTheWaiter() async {
         let gate = WatchRelayReplyGate()
 
         let value = await withCheckedContinuation { (continuation: RelayContinuation) in
             #expect(gate.adopt(continuation))
-            gate.settle(.response(statusCode: 200, headers: [:], body: Data("ok".utf8)))
+            gate.settle(.answered(ok))
         }
 
-        guard case let .response(statusCode, _, body) = value else {
-            Issue.record("expected the phone's response")
-            return
-        }
-        #expect(statusCode == 200)
-        #expect(body == Data("ok".utf8))
+        #expect(value == .answered(ok))
     }
 
     /// Cancellation can settle the wait before the send goes out. `adopt` has to resume that
@@ -29,7 +26,7 @@ struct WatchRelayReplyGateTests {
     /// so the caller doesn't put a message on the link nobody will read.
     @Test func resumesImmediatelyWhenTheWaitWasAlreadySettled() async {
         let gate = WatchRelayReplyGate()
-        gate.settle(nil)
+        gate.settle(.notSent)
         let adopted = AdoptedBox()
 
         let value = await withCheckedContinuation { (continuation: RelayContinuation) in
@@ -37,7 +34,7 @@ struct WatchRelayReplyGateTests {
         }
 
         #expect(adopted.value == false)
-        #expect(value == nil)
+        #expect(value == .notSent)
     }
 
     /// `Communicator.send` promises at most one error, not that a reply can't have landed first.
@@ -46,28 +43,40 @@ struct WatchRelayReplyGateTests {
 
         let value = await withCheckedContinuation { (continuation: RelayContinuation) in
             _ = gate.adopt(continuation)
-            gate.settle(.response(statusCode: 204, headers: [:], body: Data()))
-            gate.settle(nil)
+            gate.settle(.answered(ok))
+            gate.settle(.unanswered)
         }
 
-        guard case let .response(statusCode, _, _) = value else {
-            Issue.record("expected the first answer to win")
-            return
-        }
-        #expect(statusCode == 204)
+        #expect(value == .answered(ok))
     }
 
     /// A reply arriving after the caller gave up: the wait is closed, and nothing must be resumed.
     @Test func ignoresAnAnswerThatArrivesAfterTheWaitIsOver() async {
         let gate = WatchRelayReplyGate()
-        gate.settle(nil)
+        gate.settle(.notSent)
 
         let value = await withCheckedContinuation { (continuation: RelayContinuation) in
             _ = gate.adopt(continuation)
         }
-        gate.settle(.response(statusCode: 200, headers: [:], body: Data()))
+        gate.settle(.answered(ok))
 
-        #expect(value == nil)
+        #expect(value == .notSent)
+    }
+
+    @Test func holdsTheQueuedSendUntilItIsTakenOnce() {
+        let gate = WatchRelayReplyGate()
+
+        #expect(gate.hold(WatchConnectivityManager.InteractiveSendTicket(queuedSequence: 7)))
+        #expect(gate.takeTicket()?.queuedSequence == 7)
+        #expect(gate.takeTicket() == nil)
+    }
+
+    @Test func refusesToHoldASendOnceTheWaitIsSettled() {
+        let gate = WatchRelayReplyGate()
+        gate.settle(.notSent)
+
+        #expect(gate.hold(WatchConnectivityManager.InteractiveSendTicket(queuedSequence: 7)) == false)
+        #expect(gate.takeTicket() == nil)
     }
 }
 

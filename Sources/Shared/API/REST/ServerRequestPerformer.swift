@@ -21,6 +21,7 @@ public enum ServerRequestPerformer {
         _ request: URLRequest,
         server: Server,
         configuration: URLSessionConfiguration = .ephemeral,
+        priority: HAWatchConnectivity.SendPriority = .normal,
         onStep: ((String) -> Void)? = nil
     ) async throws -> (Data, HTTPURLResponse) {
         // Inert anywhere but the watch, and on the watch whenever the iPhone can't answer — see
@@ -30,6 +31,7 @@ public enum ServerRequestPerformer {
                 request,
                 server: server,
                 budget: budget(for: request, configuration: configuration),
+                priority: priority,
                 onStep: onStep
             ) {
                 log(request, route: .iPhone, outcome: "HTTP \(relayed.1.statusCode)")
