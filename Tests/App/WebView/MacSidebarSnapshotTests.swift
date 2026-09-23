@@ -31,13 +31,18 @@ struct MacSidebarSnapshotTests {
         ]
     }
 
-    private func makeViewModel(suiteName: String) -> MacSidebarViewModel {
+    private func makeViewModel(suiteName: String, hiddenPanelPaths: [String] = []) -> MacSidebarViewModel {
         let userDefaults = UserDefaults(suiteName: suiteName) ?? .standard
         userDefaults.removePersistentDomain(forName: suiteName)
         let server = ServerFixture.standard
         let store = MacSidebarSnapshotStore(userDefaults: userDefaults)
         store.store(
-            MacSidebarSnapshot(panels: previewPanels, isAdmin: true, userName: "Bruno"),
+            MacSidebarSnapshot(
+                panels: previewPanels,
+                hiddenPanels: hiddenPanelPaths.isEmpty ? nil : hiddenPanelPaths,
+                isAdmin: true,
+                userName: "Bruno"
+            ),
             for: server.identifier.rawValue
         )
         return MacSidebarViewModel(server: server, overlayState: WebFrontendOverlayState(), snapshotStore: store)
@@ -67,5 +72,36 @@ struct MacSidebarSnapshotTests {
             of: MacSidebarView(viewModel: viewModel).frame(width: Constants.width, height: Constants.height),
             layout: .fixed(width: Constants.width, height: Constants.height)
         )
+    }
+
+    @Test func rendersHiddenItemsInTheServersCapturedPrimaryColorWhileEditing() {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let stub = StubFrontendThemeProvider()
+        stub.set(.purple, for: .primaryColor)
+        Current.frontendTheme = { stub }
+
+        let viewModel = makeViewModel(suiteName: "MacSidebarSnapshotTests.hidden", hiddenPanelPaths: ["energy"])
+        viewModel.isEditing = true
+        assertLightDarkSnapshots(
+            of: MacSidebarView(viewModel: viewModel).frame(width: Constants.width, height: Constants.height),
+            layout: .fixed(width: Constants.width, height: Constants.height)
+        )
+    }
+
+    @Test func accentColorUpdatesWhenTheCapturedThemeChanges() async {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let stub = StubFrontendThemeProvider()
+        Current.frontendTheme = { stub }
+
+        let viewModel = makeViewModel(suiteName: "MacSidebarSnapshotTests.notification")
+        #expect(viewModel.accentColor == .haPrimary)
+
+        stub.set(.purple, for: .primaryColor)
+        NotificationCenter.default.post(name: FrontendThemeProvider.didChangeNotification, object: nil)
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        #expect(viewModel.accentColor == .purple)
     }
 }
