@@ -465,6 +465,10 @@ public class HomeAssistantAPI {
                 serverInfo.apply(config)
             }
 
+            if LegacyWatchSensors.needsRetiring(reportedBy: config, on: server) {
+                Task { [server] in await LegacyWatchSensors.retire(reportedBy: config, on: server) }
+            }
+
             let fetchedVersion = server.info.version
 
             if fetchedVersion != previousVersion {
