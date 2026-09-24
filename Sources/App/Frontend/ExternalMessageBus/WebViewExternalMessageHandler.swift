@@ -25,6 +25,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private let improvManager: any ImprovManagerProtocol
     private let entityControlDonation: EntityControlDonation
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
+    private lazy var nativeModalPresenter = NativeModalPresenter()
 
     private var improvController: UIViewController?
 
@@ -87,6 +88,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 webViewController.updateFrontendConnectionState(state: connEvt)
             case .frontendLoaded:
                 webViewController.updateFrontendConnectionState(state: FrontEndConnectionState.loaded.rawValue)
+                // The main frontend is up, so a sheet booted now is ready by the time an entity is tapped.
+                if webViewController.role.isMainFrontend, AppLabsFeature.nativeMoreInfo.isEnabled {
+                    nativeModalPresenter.prewarm(from: webViewController)
+                }
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
@@ -210,7 +215,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 NativeTabBarState.shared.requestMore()
             case .moreInfoOpened:
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
-                    Current.Log.error("Received more_info/opened but entity_id was not string! \(incomingMessage)")
+                    Current.Log.error("Received modal/opened but entity_id was not string! \(incomingMessage)")
                     return
                 }
                 webViewController.setOnscreenEntity(entityId: entityId)
@@ -220,6 +225,33 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.clearOnscreenEntity(entityId: entityId)
+            case .modalOpen:
+                guard let path = incomingMessage.Payload?["path"] as? String else {
+                    Current.Log.error("Received modal/open but path was not string! \(incomingMessage)")
+                    return
+                }
+                nativeModalPresenter.present(
+                    path: path,
+                    title: incomingMessage.Payload?["title"] as? String,
+                    subtitle: incomingMessage.Payload?["subtitle"] as? String,
+                    size: NativeModalSize(payload: incomingMessage.Payload?["size"]),
+                    from: webViewController
+                )
+            case .modalClose:
+                // Arrives on the modal's own web view, so that controller is the one to go.
+                webViewController.closeNativeModal()
+            case .modalNavigate:
+                guard let path = incomingMessage.Payload?["path"] as? String else {
+                    Current.Log.error("Received modal/navigate but path was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.relayNativeModalNavigation(path: path)
+            case .modalUpdate:
+                guard let update = NativeModalUpdate(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received modal/update with nothing in it! \(incomingMessage)")
+                    return
+                }
+                webViewController.updateNativeModal(update)
             case .entityControlled:
                 guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
                     Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")
@@ -314,7 +346,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     }
 
     @discardableResult
-    public func sendExternalBus(message: WebSocketMessage) -> Promise<Void> {
+    func sendExternalBus(message: WebSocketMessage) -> Promise<Void> {
         Promise<Void> { seal in
             DispatchQueue.main.async { [self] in
                 do {

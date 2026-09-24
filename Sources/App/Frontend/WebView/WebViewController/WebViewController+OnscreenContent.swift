@@ -77,6 +77,11 @@ extension WebViewController {
     /// the frontend moves on without saying so. The dialog is drawn over a route rather than being one
     /// — a deep link into it only adds a query item — so the path is what changes when it closes.
     func setOnscreenEntity(entityId: String) {
+        // A modal publishes no activity of its own; its host carries what the page inside shows.
+        if case .nativeModal = role {
+            onNativeModalOnscreenEntity?(entityId)
+            return
+        }
         guard onscreenEntityId != entityId else { return }
         onscreenEntityId = entityId
         onscreenEntityPath = currentPageURL?.path
@@ -89,6 +94,10 @@ extension WebViewController {
     /// another is an open followed by nothing, and a close arriving late for the entity before it
     /// must not take the new one down with it.
     func clearOnscreenEntity(entityId: String) {
+        if case .nativeModal = role {
+            onNativeModalOnscreenEntity?(nil)
+            return
+        }
         guard onscreenEntityId == entityId else { return }
         onscreenEntityId = nil
         updateOnscreenContent()

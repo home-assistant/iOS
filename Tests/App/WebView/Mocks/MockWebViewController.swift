@@ -11,6 +11,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var currentPageURL: URL?
     var traitCollection: UITraitCollection = .init()
     var server: Server = ServerFixture.standard
+    var role: WebViewControllerRole = .mainFrontend
     var connectionState: FrontEndConnectionState = .connected
     var overlayedController: UIViewController?
     var assistZoomAnchorView: UIView?
@@ -45,8 +46,12 @@ final class MockWebViewController: WebViewControllerProtocol {
     var showLoggedOutStateCalled = false
     var showLoggedOutStateExpectation: XCTestExpectation?
     var openInBrowserCalled = false
+    var closeNativeModalCalled = false
+    var relayedNativeModalNavigationPath: String?
+    var nativeModalUpdate: NativeModalUpdate?
 
-    init() {
+    init(role: WebViewControllerRole = .mainFrontend) {
+        self.role = role
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
     }
 
@@ -163,5 +168,17 @@ final class MockWebViewController: WebViewControllerProtocol {
     func clearOnscreenEntity(entityId: String) {
         guard onscreenEntityId == entityId else { return }
         onscreenEntityId = nil
+    }
+
+    func closeNativeModal() {
+        closeNativeModalCalled = true
+    }
+
+    func relayNativeModalNavigation(path: String) {
+        relayedNativeModalNavigationPath = path
+    }
+
+    func updateNativeModal(_ update: NativeModalUpdate) {
+        nativeModalUpdate = update
     }
 }

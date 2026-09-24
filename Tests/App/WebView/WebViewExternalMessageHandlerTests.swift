@@ -495,6 +495,110 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
     }
 
+    /// With the app showing more-info natively, the frontend hands over the entity instead of opening
+    /// its dialog: a sheet with the frontend's standalone page comes up over the web view that asked,
+    /// which loads exactly the route the frontend named.
+    @MainActor func testHandleExternalMessageModalOpenPresentsTheRouteTheFrontendNamed() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "modal/open",
+            "payload": [
+                "path": "/more-info?more-info-entity-id=light.kitchen",
+                "title": "Kitchen ceiling",
+                "subtitle": "Kitchen",
+                "size": "full",
+            ],
+        ])
+
+        XCTAssertTrue(mockWebViewController.presentOverlayControllerCalled)
+        XCTAssertTrue(mockWebViewController.overlayedController is NativeModalPresenter.Container)
+    }
+
+    @MainActor func testHandleExternalMessageModalOpenWithoutAPathIsIgnored() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "modal/open",
+            "payload": [:],
+        ])
+
+        XCTAssertFalse(mockWebViewController.presentOverlayControllerCalled)
+    }
+
+    /// The close arrives on the modal's own web view, so that controller is the one asked to go.
+    @MainActor func testHandleExternalMessageModalCloseDismissesTheModal() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "modal/close",
+            "payload": [:],
+        ])
+
+        XCTAssertTrue(mockWebViewController.closeNativeModalCalled)
+    }
+
+    /// A link out of the page arrives on the modal's web view, which hands the path on.
+    @MainActor func testHandleExternalMessageModalNavigateRelaysThePath() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "modal/navigate",
+            "payload": ["path": "/config/devices/device/abc"],
+        ])
+
+        XCTAssertEqual(mockWebViewController.relayedNativeModalNavigationPath, "/config/devices/device/abc")
+    }
+
+    /// The header arrives on the modal's web view, whose controller passes it to the modal's bar.
+    @MainActor func testHandleExternalMessageModalUpdateDrawsTheBar() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "modal/update",
+            "payload": ["header": [
+                "title": "Kitchen ceiling",
+                "navigation": "back",
+                "actions": [["id": "history", "label": "History", "icon": "mdi:chart-box-outline"]],
+                "menu": [],
+            ]],
+        ])
+
+        let header = mockWebViewController.nativeModalUpdate?.header
+        XCTAssertEqual(header?.title, "Kitchen ceiling")
+        XCTAssertEqual(header?.navigation, .back)
+        XCTAssertEqual(header?.actions.map(\.id), ["history"])
+    }
+
+    @MainActor func testHandleExternalMessageModalUpdateWithNothingUsableIsIgnored() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "modal/update",
+            "payload": ["header": ["subtitle": "Kitchen"]],
+        ])
+
+        XCTAssertNil(mockWebViewController.nativeModalUpdate)
+    }
+
+    @MainActor func testHandleExternalMessageModalNavigateWithoutAPathIsIgnored() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "modal/navigate",
+            "payload": [:],
+        ])
+
+        XCTAssertNil(mockWebViewController.relayedNativeModalNavigationPath)
+    }
+
     /// A control the frontend reports is donated as the intent that would repeat it, against the
     /// server of the web view it came from.
     @MainActor func testHandleExternalMessageEntityControlledDonatesTheMatchingIntent() async throws {
@@ -531,7 +635,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         }
     }
 
-    @MainActor func testHandleExternalMessageEntityControlledWithoutAServiceDonatesNothing() async throws {
+    @MainActor func testHandleExternalMessageEntityControlledWithoutAServiceDonatesNothing() async {
         let donated = expectation(description: "donated")
         donated.isInverted = true
         sut = WebViewExternalMessageHandler(

@@ -34,6 +34,14 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case sidebarShow = "sidebar/show"
     case moreInfoOpened = "more_info/opened"
     case moreInfoClosed = "more_info/closed"
+    /// Asks for a frontend route in a modal of the app's own, while it reports `hasNativeModal`.
+    case modalOpen = "modal/open"
+    /// Sent from inside a native modal when its close button is tapped.
+    case modalClose = "modal/close"
+    /// Sent from inside a native modal instead of navigating to another page itself.
+    case modalNavigate = "modal/navigate"
+    /// What changed about a modal already up: the header to draw, the room the page needs.
+    case modalUpdate = "modal/update"
     case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
@@ -53,6 +61,10 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
+            // Native modals are iOS 26 and later, and never Catalyst: the bar is built on that
+            // release's navigation subtitle and close button role, and a Mac window has no sheet to
+            // present in.
+            "hasNativeModal": AppLabsFeature.nativeMoreInfo.isEnabled,
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
         ]
@@ -70,4 +82,6 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
     case showNotifications = "notifications/show"
+    /// A tap on a native modal's header; the payload's `id` is from `modal/update`.
+    case modalAction = "modal/action"
 }

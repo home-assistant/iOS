@@ -97,6 +97,9 @@ extension WebViewController: WebViewControllerProtocol {
             resetBlankFrontendRecoveryIfRendered(for: resolvedState)
             hideEmptyState()
             updateFrontendKioskMode()
+            // The page can be shown, so a modal's loader can go and a route it was waiting to show
+            // can be asked for. Both states count: a reconnection never repeats `frontend/loaded`.
+            onNativeModalReady?()
         case .authInvalid:
             showEmptyState()
         case .disconnected, .unknown:
@@ -179,5 +182,32 @@ extension WebViewController: WebViewControllerProtocol {
     @objc func refreshIfDisconnected() {
         guard !connectionState.isReadyForDisplay else { return }
         refresh()
+    }
+
+    func closeNativeModal() {
+        guard case .nativeModal = role else {
+            Current.Log.warning("modal/close reached the main frontend, which has no modal to dismiss")
+            return
+        }
+        Current.Log.info("Dismissing the native modal on the frontend's request")
+        dismiss(animated: true)
+    }
+
+    func updateNativeModal(_ update: NativeModalUpdate) {
+        guard case .nativeModal = role else {
+            Current.Log.warning("modal/update reached the main frontend, which is not in a modal")
+            return
+        }
+        onNativeModalUpdate?(update)
+    }
+
+    func relayNativeModalNavigation(path: String) {
+        guard case .nativeModal = role else {
+            Current.Log.warning("modal/navigate reached the main frontend, which navigates itself")
+            return
+        }
+        Current.Log.info("The native modal hands navigation to \(path) to the frontend underneath")
+        onNativeModalNavigation?(path)
+        dismiss(animated: true)
     }
 }

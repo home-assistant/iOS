@@ -14,6 +14,19 @@ import UIKit
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var webView: WKWebView!
     let server: Server
+    /// Whether this is the app's frontend or a native modal over it; see `WebViewControllerRole`.
+    let role: WebViewControllerRole
+    /// Called with the frontend path a modal was asked to leave for, before it dismisses.
+    var onNativeModalNavigation: ((String) -> Void)?
+    /// Called each time a modal's frontend becomes ready to show, on its first load and on every
+    /// reconnection after it drops. `frontend/loaded` arrives once per page load, so a modal that
+    /// loses its connection while it waits would never hear about the recovery otherwise.
+    var onNativeModalReady: (() -> Void)?
+    /// Called with everything a modal's frontend changes about it after it is up.
+    var onNativeModalUpdate: ((NativeModalUpdate) -> Void)?
+    /// Called with the entity a modal's page is showing, or nil when it stops showing one. A modal
+    /// publishes no activity of its own, so its host carries this for Siri.
+    var onNativeModalOnscreenEntity: ((String?) -> Void)?
 
     var urlObserver: NSKeyValueObservation?
     var windowTitleObserver: NSKeyValueObservation?
@@ -214,8 +227,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     // MARK: - Initialization
 
-    init(server: Server, shouldLoadImmediately: Bool = false) {
+    init(server: Server, role: WebViewControllerRole = .mainFrontend, shouldLoadImmediately: Bool = false) {
         self.server = server
+        self.role = role
         self.leftEdgePanGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .left
         }
@@ -225,8 +239,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         super.init(nibName: nil, bundle: nil)
 
-        userActivity = with(NSUserActivity(activityType: "\(AppConstants.BundleID).frontend")) {
-            $0.isEligibleForHandoff = true
+        // A standalone sheet publishes nothing of its own: the frontend underneath keeps carrying
+        // the page for Handoff, and the entity the sheet shows for Siri.
+        if role.isMainFrontend {
+            userActivity = with(NSUserActivity(activityType: "\(AppConstants.BundleID).frontend")) {
+                $0.isEligibleForHandoff = true
+            }
         }
 
         leftEdgePanGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
@@ -337,9 +355,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         setupGestures(numberOfTouchesRequired: 2)
         setupGestures(numberOfTouchesRequired: 3)
-        setupEdgeGestures()
-        setupURLObserver()
-        setupWindowTitleObserver()
+        if role.isMainFrontend {
+            // The edge gestures toggle the sidebar the standalone page does not have, and would fight
+            // the sheet's own swipe; where the frontend is, and what it is titled, is the app's page.
+            setupEdgeGestures()
+            setupURLObserver()
+            setupWindowTitleObserver()
+        }
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -502,6 +524,8 @@ extension WebViewController {
     }
 
     func updateFrontendKioskMode() {
+        // The standalone page has no header or sidebar to remove.
+        guard role.isMainFrontend else { return }
         let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
         webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,

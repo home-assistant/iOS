@@ -3,6 +3,7 @@ import Shared
 
 protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
+    var role: WebViewControllerRole { get }
     var connectionState: FrontEndConnectionState { get }
     var overlayedController: UIViewController? { get }
     /// Source view the zoom transition into Assist grows from; see `AssistZoomAnchorView`. Nil when the
@@ -46,6 +47,14 @@ protocol WebViewControllerProtocol: AnyObject {
     /// that says "this" against it; see `WebViewController+OnscreenContent`.
     func setOnscreenEntity(entityId: String)
     func clearOnscreenEntity(entityId: String)
+    /// The frontend's `modal/close`: dismisses the modal this controller is shown in;
+    /// see `NativeModalPresenter`.
+    func closeNativeModal()
+    /// The frontend's `modal/navigate`: a link out of the modal, for the
+    /// frontend underneath to show; the sheet is dismissed.
+    /// The frontend's `modal/update`: what changed about the modal this controller is shown in.
+    func updateNativeModal(_ update: NativeModalUpdate)
+    func relayNativeModalNavigation(path: String)
 }
 
 extension WebViewControllerProtocol {
