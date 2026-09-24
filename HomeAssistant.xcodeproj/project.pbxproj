@@ -1064,6 +1064,7 @@
 				/Localized/Core.strings,
 				/Localized/Frontend.strings,
 				Info.plist,
+				Sounds/Assist/LICENSE.md,
 			);
 			target = B657A8E51CA646EB00121384 /* App */;
 		};
