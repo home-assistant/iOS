@@ -33,6 +33,7 @@ final class WatchAssistViewModel: ObservableObject {
 
     private let audioRecorder: any WatchAudioRecorderProtocol
     private let audioPlayer: any AudioPlayerProtocol
+    private let speechSynthesizer: any WatchSpeechSynthesizing
     private let immediateCommunicatorService: ImmediateCommunicatorService
     private let runtimeSessions: WatchExtendedRuntimeSessionHolding
     private var isHoldingRuntimeSession = false
@@ -46,6 +47,7 @@ final class WatchAssistViewModel: ObservableObject {
         assistService: WatchAssistService,
         audioRecorder: any WatchAudioRecorderProtocol,
         audioPlayer: any AudioPlayerProtocol,
+        speechSynthesizer: any WatchSpeechSynthesizing = WatchSpeechSynthesizer(),
         immediateCommunicatorService: ImmediateCommunicatorService,
         runtimeSessions: WatchExtendedRuntimeSessionHolding = WatchExtendedRuntimeSessionManager.shared,
         prompt: String? = nil
@@ -55,6 +57,7 @@ final class WatchAssistViewModel: ObservableObject {
         self.runtimeSessions = runtimeSessions
         self.assistService = assistService
         self.audioPlayer = audioPlayer
+        self.speechSynthesizer = speechSynthesizer
         self.prompt = prompt
         audioRecorder.delegate = self
         immediateCommunicatorService.addObserver(.init(delegate: self))
@@ -108,6 +111,7 @@ final class WatchAssistViewModel: ObservableObject {
 
     func endRoutine() {
         stopRecording()
+        speechSynthesizer.stop()
         assistService.endRoutine()
         timer?.invalidate()
         immediateCommunicatorService.removeObserver(self)
@@ -269,6 +273,10 @@ extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
             Current.Log.error("Watch Assist could not resolve the session's server, TTS playback will stream")
         }
         audioPlayer.play(url: url, server: server)
+    }
+
+    func didReceiveOnDeviceTTS(_ payload: AssistOnDeviceTTSPayload) {
+        speechSynthesizer.speak(payload)
     }
 
     func didReceiveError(code: String, message: String) {

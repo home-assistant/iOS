@@ -13,6 +13,14 @@ final class WatchCommunicatorService {
     // Assist
     private var assistService: AssistServiceProtocol?
     private var pendingAudioData: Data?
+    var assistConfiguration: () -> AssistConfiguration = { AssistConfiguration.config }
+    var makeAssistService: (Server) -> AssistServiceProtocol = { AssistService(server: $0) }
+    var makeSpeechRecognizer: OnDeviceRecognizerFactory = systemSpeechRecognizerFactory
+    var watchSpeaksOnDevice: () -> Bool = {
+        (Communicator.shared.counterpartProtocolVersion ?? 0) >= WatchProtocolVersion.assistOnDeviceTTS
+    }
+
+    var send: (HAWatchConnectivity.ImmediateMessage) -> Void = { Communicator.shared.send($0) }
 
     /// One in-progress chunked audio upload from the watch.
     private struct AudioChunkSession {
@@ -381,7 +389,7 @@ final class WatchCommunicatorService {
         return top
     }
 
-    private func handleAssistAudioChunkedMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+    func handleAssistAudioChunkedMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
         guard let payload = AssistAudioChunkPayload(content: message.content) else {
             Current.Log.error("Invalid chunked message data")
             return
@@ -905,7 +913,7 @@ final class WatchCommunicatorService {
     }
 
     private func sendMessage(message: HAWatchConnectivity.ImmediateMessage) {
-        Communicator.shared.send(message)
+        send(message)
     }
 }
 
@@ -973,18 +981,73 @@ extension WatchCommunicatorService {
             return
         }
 
-        pendingAudioData = data
-        initAssistServiceIfNeeded(server: server).assist(source: .audio(
-            pipelineId: payload.pipelineId,
-            audioSampleRate: payload.sampleRate,
-            tts: true
-        ))
+        let configuration = assistConfiguration()
+        if configuration.enableOnDeviceSTT {
+            transcribeOnDevice(
+                data,
+                sampleRate: payload.sampleRate,
+                pipelineId: payload.pipelineId,
+                server: server,
+                configuration: configuration
+            )
+        } else {
+            pendingAudioData = data
+            initAssistServiceIfNeeded(server: server).assist(source: .audio(
+                pipelineId: payload.pipelineId,
+                audioSampleRate: payload.sampleRate,
+                tts: requestsServerTTS(configuration)
+            ))
+        }
+    }
+
+    private func speaksOnDevice(_ configuration: AssistConfiguration) -> Bool {
+        configuration.enableOnDeviceTTS && watchSpeaksOnDevice()
+    }
+
+    private func requestsServerTTS(_ configuration: AssistConfiguration) -> Bool {
+        !configuration.muteTTS && !speaksOnDevice(configuration)
+    }
+
+    private func transcribeOnDevice(
+        _ data: Data,
+        sampleRate: Double,
+        pipelineId: String,
+        server: Server,
+        configuration: AssistConfiguration
+    ) {
+        let locale = configuration.onDeviceSTTLocaleIdentifier.map { Locale(identifier: $0) } ?? Locale.current
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let session = try OnDeviceSpeechRecognitionSession(
+                    format: .init(rate: Int(sampleRate), width: 2, channels: 1)
+                ) { try makeSpeechRecognizer(locale) }
+                session.append(WAVDataChunk.pcm(in: data))
+                let input = try await session.finish().trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !input.isEmpty else {
+                    didReceiveError(
+                        code: "no_speech_recognized",
+                        message: L10n.Assist.Watch.OnDeviceStt.noSpeechRecognized
+                    )
+                    return
+                }
+                didReceiveSttContent(input)
+                initAssistServiceIfNeeded(server: server).assist(source: .text(
+                    input: input,
+                    pipelineId: pipelineId,
+                    expectTTS: requestsServerTTS(configuration)
+                ))
+            } catch {
+                Current.Log.error("On-device transcription of watch audio failed: \(error.localizedDescription)")
+                didReceiveError(code: "on_device_stt_failed", message: error.localizedDescription)
+            }
+        }
     }
 
     /// Run an Assist pipeline with the prompt written on the watch. There is no audio to upload, so
     /// unlike the recording flow this starts the pipeline as soon as the message arrives; the
     /// response travels back through the same delegate messages.
-    private func handleAssistTextInputMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+    func handleAssistTextInputMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
         // Every path acknowledges: the watch treats a missing reply as a delivery failure and would
         // report that on top of the failure reported here.
         let acknowledge: () -> Void = {
@@ -1014,7 +1077,7 @@ extension WatchCommunicatorService {
         initAssistServiceIfNeeded(server: server).assist(source: .text(
             input: payload.text,
             pipelineId: payload.pipelineId,
-            expectTTS: true
+            expectTTS: requestsServerTTS(assistConfiguration())
         ))
         acknowledge()
     }
@@ -1023,7 +1086,7 @@ extension WatchCommunicatorService {
         if let assistService {
             assistService.replaceServer(server: server)
         } else {
-            assistService = AssistService(server: server)
+            assistService = makeAssistService(server)
         }
 
         assistService?.delegate = self
@@ -1069,6 +1132,16 @@ extension WatchCommunicatorService: AssistServiceDelegate {
             content: AssistTextResponsePayload(text: content).content
         )
         sendMessage(message: message)
+
+        let configuration = assistConfiguration()
+        guard speaksOnDevice(configuration), !configuration.muteTTS else { return }
+        sendMessage(message: .init(
+            identifier: InteractiveImmediateResponses.assistOnDeviceTTS.rawValue,
+            content: AssistOnDeviceTTSPayload(
+                text: content,
+                voiceIdentifier: configuration.onDeviceTTSVoiceIdentifier
+            ).content
+        ))
     }
 
     func didReceiveGreenLightForAudioInput() {
