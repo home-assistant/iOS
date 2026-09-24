@@ -28,13 +28,14 @@ struct NativeTabBarCustomizeView: View {
                         NativeTabBarItemLabel(
                             item: item,
                             server: viewModel.sidebar.server,
-                            user: viewModel.sidebar.user
+                            user: viewModel.sidebar.user,
+                            accentColor: viewModel.accentColor
                         )
                         if let index = viewModel.tabItems.firstIndex(where: { $0.id == item.id }) {
                             Spacer(minLength: 0)
                             Text(L10n.TabBar.Customize.tabNumberD(index + 1))
                                 .font(.caption.weight(.semibold))
-                                .foregroundStyle(Color.haPrimary)
+                                .foregroundStyle(viewModel.accentColor)
                                 .padding(.horizontal, DesignSystem.Spaces.one)
                                 .padding(.vertical, DesignSystem.Spaces.micro)
                                 .background(Capsule().fill(Color.haPrimaryLightFill))
@@ -66,7 +67,8 @@ struct NativeTabBarCustomizeView: View {
                             NativeTabBarItemLabel(
                                 item: item,
                                 server: viewModel.sidebar.server,
-                                user: viewModel.sidebar.user
+                                user: viewModel.sidebar.user,
+                                accentColor: viewModel.accentColor
                             )
                             .opacity(Constants.hiddenRowOpacity)
                         }

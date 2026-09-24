@@ -7,6 +7,7 @@ struct MacSidebarAvatarView: View {
     let title: String
     let user: HAResponseCurrentUser?
     let size: CGFloat
+    var accentColor: Color = .haPrimary
 
     @State private var profilePicture: UIImage?
 
@@ -18,7 +19,7 @@ struct MacSidebarAvatarView: View {
                     .scaledToFill()
             } else {
                 Circle()
-                    .fill(Color.haPrimary)
+                    .fill(accentColor)
                     .overlay(
                         Text(title.prefix(1).uppercased())
                             .font(.caption2.bold())
