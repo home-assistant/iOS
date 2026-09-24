@@ -2893,6 +2893,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.lock_controls.open_confirmation.title" = "Are you sure you want to open \"%@\"?";
 "watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Σύμβολο κράτησης θέσης";
+"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
 "watch.settings.auto" = "Αυτόματο";
 "watch.settings.client_certificate.available_on_watch" = "Διαθέσιμο σε αυτό το ρολόι";
 "watch.settings.client_certificate.import_instructions" = "Ανοίξτε την εφαρμογή Home Assistant στο iPhone σας για να εισάγετε το πιστοποιητικό και στη συνέχεια, ανανεώστε τη σελίδα.";

@@ -2893,6 +2893,7 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "watch.lock_controls.open_confirmation.title" = "Are you sure you want to open \"%@\"?";
 "watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Kohatäide";
+"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
 "watch.settings.auto" = "Automaatne";
 "watch.settings.client_certificate.available_on_watch" = "Saadaval sellel kellal";
 "watch.settings.client_certificate.import_instructions" = "Sertifikaadi importimiseks ava oma iPhone'is Home Assistant ja seejärel värskenda siin.";

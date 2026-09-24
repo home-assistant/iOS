@@ -2893,6 +2893,7 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "watch.lock_controls.open_confirmation.title" = "\"%@\"  açmak istediğinizden emin misiniz?";
 "watch.lock_controls.unlock" = "Kilidi aç";
 "watch.placeholder_complication_name" = "Yer tutucu";
+"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
 "watch.settings.auto" = "Otomatik";
 "watch.settings.client_certificate.available_on_watch" = "Bu saatte mevcut";
 "watch.settings.client_certificate.import_instructions" = "Sertifikayı içe aktarmak için iPhone'unuzda Home Assistant'ı açın, ardından burayı yenileyin.";

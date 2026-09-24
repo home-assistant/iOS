@@ -2891,6 +2891,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.lock_controls.open_confirmation.title" = "\"%@\"을(를) 여시겠습니까?";
 "watch.lock_controls.unlock" = "잠금 해제";
 "watch.placeholder_complication_name" = "자리 표시자";
+"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
 "watch.settings.auto" = "자동";
 "watch.settings.client_certificate.available_on_watch" = "이 Watch에서 사용 가능";
 "watch.settings.client_certificate.import_instructions" = "인증서를 가져오려면 iPhone에서 Home Assistant를 연 다음 여기에서 새로 고침하세요.";
