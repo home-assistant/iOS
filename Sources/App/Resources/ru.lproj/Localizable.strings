@@ -2100,7 +2100,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.edge_to_edge.enabled.title" = "Включение";
 "settings_details.general.edge_to_edge.footer" = "Отображение пользовательского интерфейса Home Assistant от края до края на устройствах, которые его поддерживают. Это экспериментальная функция, которая может быть удалена в любое время, а также может вызвать проблемы с версткой.";
 "settings_details.general.edge_to_edge.title" = "Отображение от края до края";
-"settings_details.general.enhanced_web_security.footer" = "iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.";
+"settings_details.general.enhanced_web_security.footer" = "В iOS 27 страницы, загружаемые по обычному протоколу HTTP, отображаются в усиленном, гораздо более медленном режиме, из-за чего при локальном подключении панели управления работают с задержкой. Home Assistant отключает этот режим, чтобы панели работали быстро. Включите этот режим, чтобы воспользоваться защитой Apple, но пожертвовать производительностью. Если обслуживать Home Assistant по протоколу HTTPS, этого компромисса можно избежать. Изменения вступят в силу при следующем запуске приложения.";
 "settings_details.general.enhanced_web_security.title" = "Apple Enhanced Web Security";
 "settings_details.general.full_screen.title" = "Полноэкранный режим";
 "settings_details.general.launch_on_login.title" = "Запустить приложение при логине";
@@ -2696,7 +2696,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.fan_controls.power" = "Мощность";
 "watch.fan_controls.speed" = "Скорость";
 "watch.home.areas.empty" = "В этом пространстве нет совместимых объектов.";
-"watch.home.areas.section.controls.title" = "Controls";
+"watch.home.areas.section.controls.title" = "Управление";
 "watch.home.areas.section.sensors.title" = "Датчики";
 "watch.home.areas.title" = "Пространства";
 "watch.home.cancel_and_use_cache.title" = "Отменить и использовать кэш";
@@ -2891,6 +2891,7 @@ Importing replaces every category listed on this screen, including app settings.
 "watch.lock_controls.open_confirmation.title" = "Вы уверены, что хотите открыть \"%@\"?";
 "watch.lock_controls.unlock" = "Unlock";
 "watch.placeholder_complication_name" = "Заглушка";
+"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
 "watch.settings.auto" = "Авто";
 "watch.settings.client_certificate.available_on_watch" = "Available on this Watch";
 "watch.settings.client_certificate.import_instructions" = "Откройте Home Assistant на своем iPhone, чтобы импортировать сертификат, затем обновите здесь.";

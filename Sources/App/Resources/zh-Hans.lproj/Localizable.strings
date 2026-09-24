@@ -2892,6 +2892,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.lock_controls.open_confirmation.title" = "Are you sure you want to open \"%@\"?";
 "watch.lock_controls.unlock" = "解锁";
 "watch.placeholder_complication_name" = "占位符";
+"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
 "watch.settings.auto" = "自动";
 "watch.settings.client_certificate.available_on_watch" = "在此款手表可用";
 "watch.settings.client_certificate.import_instructions" = "在您的 iPhone 上打开 Home Assistant 以导入证书，然后在此处刷新页面。";

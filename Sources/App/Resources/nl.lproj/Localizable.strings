@@ -2893,6 +2893,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.lock_controls.open_confirmation.title" = "Weet je zeker dat je \"%@\" wilt openen?";
 "watch.lock_controls.unlock" = "Ontgrendel";
 "watch.placeholder_complication_name" = "Tijdelijke aanduiding";
+"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Beschikbaar op deze Watch";
 "watch.settings.client_certificate.import_instructions" = "Open Home Assistant op je iPhone om het certificaat te importeren en ververs vervolgens deze pagina.";
