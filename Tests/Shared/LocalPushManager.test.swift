@@ -532,6 +532,28 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(ha["notification_icon_color"] as? String, "#FF0000")
     }
 
+    func testLiveActivityLocalPushPromotesTimerFields() throws {
+        // `when_start` anchors the countdown bar; like `when`/`when_relative` it must be promoted
+        // out of `data` or the local-push flow silently drops it.
+        let event = try LocalPushEvent(data: .dictionary([
+            "message": "Washing",
+            "data": [
+                "live_update": true,
+                "tag": "laundry",
+                "chronometer": true,
+                "when": 1_700_003_600,
+                "when_start": 1_700_000_000,
+                "when_relative": false,
+            ],
+        ]))
+
+        let ha = try XCTUnwrap(event.contentWithoutServer.userInfo["homeassistant"] as? [String: Any])
+        XCTAssertEqual(ha["chronometer"] as? Bool, true)
+        XCTAssertEqual(ha["when"] as? Int, 1_700_003_600)
+        XCTAssertEqual(ha["when_start"] as? Int, 1_700_000_000)
+        XCTAssertEqual(ha["when_relative"] as? Bool, false)
+    }
+
     func testNonLiveActivityCommandSuppressesBannerButConfirms() throws {
         setUpManager(webhookID: "webhook1")
 

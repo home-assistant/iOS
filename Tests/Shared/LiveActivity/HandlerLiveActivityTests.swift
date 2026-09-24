@@ -202,6 +202,145 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(state.countdownEnd?.timeIntervalSince1970 ?? 0, 1_700_000_000, accuracy: 0.001)
     }
 
+    func testContentState_whenStartAbsolute_setsTimerStart() {
+        // `when_start` is always a Unix timestamp; the epoch `when` here is in the past, so this is
+        // also the unbounded count-up case, where the stored start is inert.
+        let payload: [String: Any] = [
+            "when": NSNumber(value: 1_700_003_600),
+            "when_start": NSNumber(value: 1_700_000_000),
+            "when_relative": false,
+        ]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        XCTAssertEqual(state.timerStart?.timeIntervalSince1970 ?? 0, 1_700_000_000, accuracy: 0.001)
+        XCTAssertEqual(state.countdownEnd?.timeIntervalSince1970 ?? 0, 1_700_003_600, accuracy: 0.001)
+        XCTAssertNil(state.chronometerStart)
+    }
+
+    func testContentState_whenStartWithRelativeWhen_staysAnEpochTimestamp() {
+        // `when_relative` applies to `when` only: a countdown 10 minutes out with a start sent as an
+        // epoch 20 minutes in the past.
+        let start = Date().addingTimeInterval(-1200)
+        let payload: [String: Any] = [
+            "when": NSNumber(value: 600),
+            "when_start": NSNumber(value: start.timeIntervalSince1970),
+            "when_relative": true,
+        ]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        XCTAssertEqual(
+            state.timerStart?.timeIntervalSince1970 ?? 0,
+            start.timeIntervalSince1970,
+            accuracy: 0.001
+        )
+    }
+
+    func testContentState_whenStartNotBeforeEnd_isIgnored() {
+        // A start at or after the end can't anchor a bar; fall back to now → end.
+        for whenStart in [1_700_000_000, 1_700_000_001] {
+            let payload: [String: Any] = [
+                "when": NSNumber(value: 1_700_000_000),
+                "when_start": NSNumber(value: whenStart),
+                "when_relative": false,
+            ]
+            let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+            XCTAssertNil(state.timerStart, "when_start \(whenStart) should be ignored")
+            XCTAssertNotNil(state.countdownEnd)
+        }
+    }
+
+    func testContentState_whenStartWithoutWhen_isIgnored() {
+        let payload: [String: Any] = ["when_start": NSNumber(value: 1_700_000_000)]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        XCTAssertNil(state.timerStart)
+        XCTAssertNil(state.countdownEnd)
+    }
+
+    func testContentState_boundedCountUpWithWhenStart_anchorsOnExplicitStart() {
+        // Bounded count-up: `when_start` replaces receipt time as the anchor and |when| is the total
+        // duration measured from it — 10 minutes into a 30-minute run shows 10:00 straight away.
+        let explicitStart = Date().addingTimeInterval(-600)
+        let payload: [String: Any] = [
+            "when": NSNumber(value: -1800),
+            "when_start": NSNumber(value: explicitStart.timeIntervalSince1970),
+            "when_relative": true,
+        ]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+
+        guard let start = state.chronometerStart, let end = state.countdownEnd else {
+            return XCTFail("bounded count-up should set both chronometerStart and countdownEnd")
+        }
+        XCTAssertEqual(start.timeIntervalSince1970, explicitStart.timeIntervalSince1970, accuracy: 0.001)
+        XCTAssertEqual(end.timeIntervalSince(start), 1800, accuracy: 0.001)
+        // Also kept as the sentinel that stops the registry's receipt-time carry-forward.
+        XCTAssertEqual(state.timerStart, start)
+    }
+
+    func testContentState_boundedCountUpWithFutureWhenStart_isKeptAsSent() {
+        // A scheduled start is not clamped to now: the dates stay deterministic and the views clamp
+        // to the range (0:00, empty bar) until it begins.
+        let explicitStart = Date().addingTimeInterval(300)
+        let payload: [String: Any] = [
+            "when": NSNumber(value: -1800),
+            "when_start": NSNumber(value: explicitStart.timeIntervalSince1970),
+            "when_relative": true,
+        ]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+
+        guard let start = state.chronometerStart, let end = state.countdownEnd else {
+            return XCTFail("bounded count-up should set both chronometerStart and countdownEnd")
+        }
+        XCTAssertEqual(start.timeIntervalSince1970, explicitStart.timeIntervalSince1970, accuracy: 0.001)
+        XCTAssertEqual(end.timeIntervalSince(start), 1800, accuracy: 0.001)
+        XCTAssertEqual(state.timerStart, start)
+    }
+
+    func testContentState_boundedCountUpWithoutWhenStart_anchorsOnNowWithNilTimerStart() {
+        // Omitting `when_start` keeps the receipt-time anchor and leaves the carry-forward enabled.
+        let payload: [String: Any] = ["when": NSNumber(value: -1800), "when_relative": true]
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        XCTAssertNotNil(state.chronometerStart)
+        XCTAssertNil(state.timerStart)
+    }
+
+    func testContentState_timerStart_roundTripsAsEpochSeconds() throws {
+        // The wire format of the new key is covered here because LiveActivityContractTests.swift is
+        // excluded from the Tests-Shared target. ActivityKit decodes content-state OS-side with a
+        // plain JSONDecoder, so `timer_start` has to survive as Unix epoch seconds.
+        let timerStart = Date(timeIntervalSince1970: 1_699_990_000)
+        let original = HALiveActivityAttributes.ContentState(
+            message: "Running",
+            chronometer: true,
+            countdownEnd: Date(timeIntervalSince1970: 1_700_000_000),
+            timerStart: timerStart
+        )
+
+        let data = try JSONEncoder().encode(original)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        XCTAssertEqual(json["timer_start"] as? Double, 1_699_990_000)
+
+        let decoded = try JSONDecoder().decode(HALiveActivityAttributes.ContentState.self, from: data)
+        XCTAssertEqual(decoded.timerStart, timerStart)
+    }
+
+    func testContentState_unboundedCountUpWithWhenStart_keepsWhenAsAnchor() {
+        // `when: 0` (now) is the canonical unbounded count-up, anchored on `when` itself:
+        // `when_start` must not promote it to a bounded count-up.
+        let payload: [String: Any] = [
+            "when": NSNumber(value: 0),
+            "when_start": NSNumber(value: Date().addingTimeInterval(-600).timeIntervalSince1970),
+            "when_relative": true,
+        ]
+        let before = Date()
+        let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
+        let after = Date()
+
+        XCTAssertNil(state.chronometerStart)
+        guard let end = state.countdownEnd else {
+            return XCTFail("when should still set countdownEnd")
+        }
+        XCTAssertGreaterThanOrEqual(end.timeIntervalSince1970, before.timeIntervalSince1970 - 0.1)
+        XCTAssertLessThanOrEqual(end.timeIntervalSince1970, after.timeIntervalSince1970 + 0.1)
+    }
+
     // MARK: - handle(_:) — app extension hand-off
 
     func testHandle_inAppExtension_enqueuesHandoffAndSkipsRegistry() throws {
@@ -386,14 +525,47 @@ final class LiveActivityRegistryChronometerAnchorTests: XCTestCase {
     private func countUpState(
         message: String = "m",
         start: Date,
-        duration: TimeInterval
+        duration: TimeInterval,
+        explicit: Bool = false
     ) -> HALiveActivityAttributes.ContentState {
         HALiveActivityAttributes.ContentState(
             message: message,
             chronometer: true,
             countdownEnd: start.addingTimeInterval(duration),
-            chronometerStart: start
+            chronometerStart: start,
+            timerStart: explicit ? start : nil
         )
+    }
+
+    /// An explicit `when_start` already anchors the update on the real start, so the previous
+    /// receipt-time anchor must not override it — even when the duration is unchanged.
+    func testCarryForward_newHasExplicitStart_returnsNewUntouched() {
+        let previousStart = Date(timeIntervalSince1970: 1_700_000_000)
+        let previous = countUpState(start: previousStart, duration: 1200)
+        let new = countUpState(
+            message: "updated",
+            start: previousStart.addingTimeInterval(-300),
+            duration: 1200,
+            explicit: true
+        )
+
+        let carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous, new: new)
+
+        XCTAssertEqual(carried, new)
+    }
+
+    /// Only the new state's explicit start matters: an update that drops `when_start` again falls
+    /// back to the receipt-time carry-forward against the previous anchor.
+    func testCarryForward_previousHadExplicitStart_newWithout_keepsPreviousAnchor() {
+        let previousStart = Date(timeIntervalSince1970: 1_700_000_000)
+        let previous = countUpState(start: previousStart, duration: 1200, explicit: true)
+        let new = countUpState(start: previousStart.addingTimeInterval(300), duration: 1200)
+
+        let carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous, new: new)
+
+        XCTAssertEqual(carried.chronometerStart, previousStart)
+        XCTAssertEqual(carried.countdownEnd, previous.countdownEnd)
+        XCTAssertNil(carried.timerStart)
     }
 
     /// An update re-sending the same negative `when` re-stamps the anchor at its own receipt

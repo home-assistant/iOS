@@ -420,19 +420,25 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     // MARK: - Bounded Count-Up Anchor
 
-    /// Preserve a bounded count-up's start anchor across updates.
+    /// Preserve a receipt-time bounded count-up anchor across updates.
     ///
-    /// A bounded count-up is requested with a negative relative `when`, which the handler resolves
-    /// to `chronometerStart = now` and `countdownEnd = now + |when|`. An update that re-sends the
-    /// same `when` re-stamps both from its own receipt time, which would visually reset the elapsed
-    /// timer to 0:00. When the previous state is a bounded count-up of the same duration (within
-    /// 1 s, absorbing parse-time jitter), keep its anchor and end so the timer keeps running;
-    /// a different duration means a new timer and re-anchors as sent.
+    /// A bounded count-up is requested with a negative relative `when`. Without `when_start` the
+    /// handler resolves it to `chronometerStart = now` and `countdownEnd = now + |when|`, so an
+    /// update that re-sends the same `when` re-stamps both from its own receipt time, which would
+    /// visually reset the elapsed timer to 0:00. When the previous state is a bounded count-up of
+    /// the same duration (within 1 s, absorbing parse-time jitter), keep its anchor and end so the
+    /// timer keeps running; a different duration means a new timer and re-anchors as sent.
+    ///
+    /// A `new` state carrying an explicit `timerStart` (sent `when_start`) is already anchored on
+    /// the real start, so it is returned untouched — the sender's start wins over whatever the
+    /// previous state was anchored on, regardless of duration. Only `new` is inspected: an update
+    /// that omits `when_start` again falls back to this carry-forward against the previous anchor.
     static func carryForwardChronometerAnchor(
         previous: HALiveActivityAttributes.ContentState,
         new: HALiveActivityAttributes.ContentState
     ) -> HALiveActivityAttributes.ContentState {
         guard new.chronometer == true,
+              new.timerStart == nil,
               let newStart = new.chronometerStart,
               let newEnd = new.countdownEnd,
               let previousStart = previous.chronometerStart,
