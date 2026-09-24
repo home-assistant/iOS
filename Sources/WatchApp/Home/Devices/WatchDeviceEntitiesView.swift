@@ -3,9 +3,11 @@ import Shared
 import SwiftUI
 
 /// The watch-compatible entities of one device, pushed by tapping a device section header on the
-/// area screen. Same two sections and same rows as the area screen; the device grouping is undone
-/// here because every row already belongs to the device the screen is named after. The navigation
-/// bar stays hidden — the custom header provides the back button, matching `WatchAreaEntitiesView`.
+/// area screen. Same two sections and same rows as the area screen; the screen's own device is
+/// unwrapped into loose rows because every row already belongs to the device the screen is named
+/// after, while a child device contributing more than one row to a section still gets its own. The
+/// navigation bar stays hidden — the custom header provides the back button, matching
+/// `WatchAreaEntitiesView`.
 struct WatchDeviceEntitiesView: View {
     let name: String
     @StateObject private var viewModel: WatchDeviceEntitiesViewModel
@@ -41,20 +43,46 @@ struct WatchDeviceEntitiesView: View {
                 } else {
                     if !sections.controls.isEmpty {
                         Section {
-                            ForEach(sections.controls.allEntries) { entry in
+                            ForEach(sections.controls.ungrouped) { entry in
                                 WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
                             }
                         } header: {
                             Text(verbatim: L10n.Watch.Home.Areas.Section.Controls.title)
                         }
+                        ForEach(sections.controls.deviceGroups) { group in
+                            Section {
+                                ForEach(group.entries) { entry in
+                                    WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
+                                }
+                            } header: {
+                                WatchAreaDeviceSectionHeader(
+                                    group: group,
+                                    serverId: viewModel.serverId,
+                                    showsParentName: false
+                                )
+                            }
+                        }
                     }
                     if !sections.sensors.isEmpty {
                         Section {
-                            ForEach(sections.sensors.allEntries) { entry in
+                            ForEach(sections.sensors.ungrouped) { entry in
                                 WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
                             }
                         } header: {
                             Text(verbatim: L10n.Watch.Home.Areas.Section.Sensors.title)
+                        }
+                        ForEach(sections.sensors.deviceGroups) { group in
+                            Section {
+                                ForEach(group.entries) { entry in
+                                    WatchMagicViewRow(item: entry.item, itemInfo: entry.info)
+                                }
+                            } header: {
+                                WatchAreaDeviceSectionHeader(
+                                    group: group,
+                                    serverId: viewModel.serverId,
+                                    showsParentName: false
+                                )
+                            }
                         }
                     }
                 }

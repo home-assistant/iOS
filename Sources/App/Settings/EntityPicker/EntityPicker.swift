@@ -133,6 +133,8 @@ struct EntityPicker: View {
                         }, label: {
                             EntityRowView(
                                 entity: entity,
+                                subtitle: viewModel.subtitles[entity.entityId],
+                                icon: viewModel.icons[entity.entityId],
                                 isSelected: isSelected(entity)
                             )
                         })
@@ -224,7 +226,8 @@ struct EntityPicker: View {
     private func sectionHeader(for group: EntityPickerGroup) -> some View {
         HStack {
             Text(group.title.uppercased())
-            if allowMultipleSelection {
+            // Selecting "all" of a single row says nothing the row itself doesn't.
+            if allowMultipleSelection, group.entities.count > 1 {
                 Spacer()
                 let allSelected = allEntitiesSelected(in: group)
                 Button(allSelected ? L10n.EntityPicker.removeAll : L10n.EntityPicker.selectAll) {
@@ -404,10 +407,11 @@ struct EntityPicker: View {
         }
     }
 
-    // Grouping by domain only says something when several domains are listed.
+    // Grouping only says something when there is more than one section to make: several domains, or
+    // devices to group the entities under.
     @ViewBuilder
     private var groupByPicker: some View {
-        if viewModel.selectableDomains.count > 1 {
+        if viewModel.selectableDomains.count > 1 || !viewModel.deviceRegistryData.isEmpty {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.GroupBy.title,
                 icon: .listBulletRectangle,

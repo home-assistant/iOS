@@ -73,7 +73,13 @@ public struct EntityFuzzySearchIndex {
             var result: [String: String] = [:]
             for registry in registries {
                 guard let deviceId = registry.deviceId, let device = devicesByDeviceId[deviceId] else { continue }
-                result[registry.entityId] = device.displayName
+                // A child device carries only its own part name, so the parent's name joins the
+                // same field and searching the hardware still finds the entity.
+                if let parentName = device.parentDeviceId.flatMap({ devicesByDeviceId[$0]?.displayName }) {
+                    result[registry.entityId] = "\(device.displayName) \(parentName)"
+                } else {
+                    result[registry.entityId] = device.displayName
+                }
             }
             return result
         } catch {

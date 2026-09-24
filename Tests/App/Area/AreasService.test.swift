@@ -11,7 +11,8 @@ extension AppDeviceRegistry {
         serverId: String = "test-server",
         configEntries: [String]? = [],
         identifiers: [[String]]? = [],
-        name: String? = nil
+        name: String? = nil,
+        parentDeviceId: String? = nil
     ) -> AppDeviceRegistry {
         let entry = DeviceRegistryEntry(
             areaId: areaId,
@@ -32,6 +33,7 @@ extension AppDeviceRegistry {
             modifiedAt: 0.0,
             nameByUser: nil,
             name: name,
+            parentDeviceId: parentDeviceId,
             primaryConfigEntry: nil,
             serialNumber: nil,
             swVersion: nil,
@@ -90,6 +92,44 @@ struct AreasServiceTests {
         #expect(result == [
             "1": ["8", "12", "13", "9", "7"],
             "2": ["14", "11", "15", "10"],
+        ])
+    }
+
+    @Test func childDeviceEntitiesLandInTheParentArea() async throws {
+        let result = AreasService().testGetAllEntitiesFromArea(
+            devicesAndAreas: [
+                .makeTest(areaId: "kitchen", deviceId: "strip"),
+                .makeTest(areaId: nil, deviceId: "outlet-1", parentDeviceId: "strip"),
+                .makeTest(areaId: "garage", deviceId: "outlet-2", parentDeviceId: "strip"),
+            ],
+            entitiesAndAreas: [
+                .makeTest(areaId: nil, entityId: "switch.strip", deviceId: "strip", hiddenBy: nil),
+                .makeTest(areaId: nil, entityId: "switch.outlet_1", deviceId: "outlet-1", hiddenBy: nil),
+                .makeTest(areaId: nil, entityId: "switch.outlet_2", deviceId: "outlet-2", hiddenBy: nil),
+            ]
+        )
+
+        #expect(result == [
+            "kitchen": ["switch.strip", "switch.outlet_1"],
+            "garage": ["switch.outlet_2"],
+        ])
+    }
+
+    @Test func entityAreaOverridesTheDeviceArea() async throws {
+        let result = AreasService().testGetAllEntitiesFromArea(
+            devicesAndAreas: [
+                .makeTest(areaId: "kitchen", deviceId: "strip"),
+                .makeTest(areaId: nil, deviceId: "outlet-1", parentDeviceId: "strip"),
+            ],
+            entitiesAndAreas: [
+                .makeTest(areaId: "garage", entityId: "switch.outlet_1", deviceId: "outlet-1", hiddenBy: nil),
+                .makeTest(areaId: nil, entityId: "switch.outlet_1_led", deviceId: "outlet-1", hiddenBy: nil),
+            ]
+        )
+
+        #expect(result == [
+            "garage": ["switch.outlet_1"],
+            "kitchen": ["switch.outlet_1_led"],
         ])
     }
 
