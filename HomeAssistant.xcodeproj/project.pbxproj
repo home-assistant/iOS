@@ -283,6 +283,8 @@
 		DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */; };
 		DE51600000000000000000A3 /* HADesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000A2 /* HADesignSystem */; };
 		DE51600000000000000000A5 /* HADesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000A4 /* HADesignSystem */; };
+		DE51600000000000000000B3 /* WebhookCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000B2 /* WebhookCrypto */; };
+		DE51600000000000000000B5 /* WebhookCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000B4 /* WebhookCrypto */; };
 		DE51600000000000000000C3 /* HAUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000C2 /* HAUtilities */; };
 		DE51600000000000000000D3 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D2 /* HAIconic */; };
 		DE51600000000000000000D5 /* HAIconic in Frameworks */ = {isa = PBXBuildFile; productRef = DE51600000000000000000D4 /* HAIconic */; };
@@ -2841,6 +2843,7 @@
 				DE51600000000000000000A5 /* HADesignSystem in Frameworks */,
 				DE51600000000000000000D5 /* HAIconic in Frameworks */,
 				DE51600000000000000000F5 /* HANetworking in Frameworks */,
+				DE51600000000000000000B5 /* WebhookCrypto in Frameworks */,
 				DE51600000000000000000E5 /* HAModels in Frameworks */,
 				CAFEBABE00000000000000A5 /* HAWatchCommunicationMessages in Frameworks */,
 				42886D382FFE883A004EB33B /* HAKit in Frameworks */,
@@ -2876,6 +2879,7 @@
 				DE51600000000000000000A3 /* HADesignSystem in Frameworks */,
 				DE51600000000000000000D3 /* HAIconic in Frameworks */,
 				DE51600000000000000000F3 /* HANetworking in Frameworks */,
+				DE51600000000000000000B3 /* WebhookCrypto in Frameworks */,
 				DE51600000000000000000E3 /* HAModels in Frameworks */,
 				CAFEBABE00000000000000A3 /* HAWatchCommunicationMessages in Frameworks */,
 				DE51600000000000000000C3 /* HAUtilities in Frameworks */,
@@ -3746,6 +3750,7 @@
 				DE51600000000000000000A4 /* HADesignSystem */,
 				DE51600000000000000000D4 /* HAIconic */,
 				DE51600000000000000000F4 /* HANetworking */,
+				DE51600000000000000000B4 /* WebhookCrypto */,
 				DE51600000000000000000E4 /* HAModels */,
 				CAFEBABE00000000000000A4 /* HAWatchCommunicationMessages */,
 				B19185B1C20DABFD5B0D1B5D /* GRDB */,
@@ -3864,6 +3869,7 @@
 				DE51600000000000000000A2 /* HADesignSystem */,
 				DE51600000000000000000D2 /* HAIconic */,
 				DE51600000000000000000F2 /* HANetworking */,
+				DE51600000000000000000B2 /* WebhookCrypto */,
 				DE51600000000000000000E2 /* HAModels */,
 				CAFEBABE00000000000000A2 /* HAWatchCommunicationMessages */,
 				DE51600000000000000000C2 /* HAUtilities */,
@@ -4147,6 +4153,7 @@
 				DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */,
 				DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */,
 				DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */,
+				DE51600000000000000000B1 /* XCLocalSwiftPackageReference "Sources/WebhookCrypto" */,
 				DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */,
 				CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */,
 				DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */,
@@ -6172,6 +6179,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HADesignSystem;
 		};
+		DE51600000000000000000B1 /* XCLocalSwiftPackageReference "Sources/WebhookCrypto" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/WebhookCrypto;
+		};
 		DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HAUtilities;
@@ -6825,6 +6836,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DE51600000000000000000A1 /* XCLocalSwiftPackageReference "Sources/HADesignSystem" */;
 			productName = HADesignSystem;
+		};
+		DE51600000000000000000B2 /* WebhookCrypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE51600000000000000000B1 /* XCLocalSwiftPackageReference "Sources/WebhookCrypto" */;
+			productName = WebhookCrypto;
+		};
+		DE51600000000000000000B4 /* WebhookCrypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE51600000000000000000B1 /* XCLocalSwiftPackageReference "Sources/WebhookCrypto" */;
+			productName = WebhookCrypto;
 		};
 		DE51600000000000000000C2 /* HAUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
