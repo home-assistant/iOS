@@ -22,15 +22,9 @@ public enum WatchUserDefaultsKey: String {
     /// read it too.
     case complicationRefreshNotificationsEnabled
     /// The one list of switched-on sensors every server shared before they were chosen per server.
-    /// Only read by `WatchSensorEnablementStore`'s split, which removes it once it has been handed
-    /// to each server.
+    /// Only read by `WatchSensorEnablementStore`, which keeps the per-server lists under keys of
+    /// its own and removes this one once it has been handed to each server.
     case enabledSensorIDs
-    /// Unique IDs of the sensors the watch reports about itself that the user switched on, by
-    /// server identifier.
-    case enabledSensorIDsByServer
-    /// Set once the shared list above has been handed to every server the watch had at the time,
-    /// which is what keeps a server added later from inheriting it.
-    case enabledSensorIDsSplitAcrossServers
     /// When the watch last sent its sensors successfully, to any server.
     case sensorReportLastSuccessAt
     /// What the last failed sensor report said, cleared by the next run that has no failure.
@@ -46,11 +40,10 @@ public final class WatchUserDefaults: WatchSensorSettings {
     /// list is off there and nothing about it is sent to that server.
     private let sensorEnablement: WatchSensorEnablementStore
 
-    /// - Parameter userDefaults: where the watch keeps its choices; the standard defaults unless a
-    ///   test substitutes its own suite.
-    public init(userDefaults: UserDefaults = UserDefaults()) {
-        self.userDefaults = userDefaults
-        self.sensorEnablement = WatchSensorEnablementStore(defaults: userDefaults, servers: { Current.servers.all })
+    init() {
+        let defaults = UserDefaults()
+        self.userDefaults = defaults
+        self.sensorEnablement = WatchSensorEnablementStore(defaults: defaults, servers: { Current.servers.all })
     }
 
     public func set(_ value: Any?, key: WatchUserDefaultsKey) {

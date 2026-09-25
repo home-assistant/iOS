@@ -23,15 +23,15 @@ struct WatchSensorEnablementStoreTests {
     /// Puts the defaults into the state an install that predates per-server enablement left them in:
     /// one list of switched-on sensors shared by every server.
     private func seedSharedSelection(_ uniqueIDs: [String]) {
-        defaults.set(uniqueIDs, forKey: WatchUserDefaultsKey.enabledSensorIDs.rawValue)
+        defaults.set(uniqueIDs, forKey: WatchSensorEnablementStore.Key.legacyEnabled)
     }
 
     private var storedByServer: [String: [String]] {
-        defaults.object(forKey: WatchUserDefaultsKey.enabledSensorIDsByServer.rawValue) as? [String: [String]] ?? [:]
+        defaults.object(forKey: WatchSensorEnablementStore.Key.enabledByServer) as? [String: [String]] ?? [:]
     }
 
     private var sharedSelectionRemains: Bool {
-        defaults.object(forKey: WatchUserDefaultsKey.enabledSensorIDs.rawValue) != nil
+        defaults.object(forKey: WatchSensorEnablementStore.Key.legacyEnabled) != nil
     }
 
     @Test func aFreshInstallStartsWithNothingEnabled() {
@@ -80,7 +80,7 @@ struct WatchSensorEnablementStoreTests {
         #expect(store.enabledSensorIDs(forServer: serverA.identifier) == ["battery_level", "battery_state"])
         #expect(store.enabledSensorIDs(forServer: serverB.identifier) == ["battery_level", "battery_state"])
         #expect(!sharedSelectionRemains)
-        #expect(defaults.bool(forKey: WatchUserDefaultsKey.enabledSensorIDsSplitAcrossServers.rawValue))
+        #expect(defaults.bool(forKey: WatchSensorEnablementStore.Key.splitAcrossServers))
     }
 
     @Test func aServerAddedAfterTheSplitStartsWithNothingEnabled() {
@@ -112,7 +112,7 @@ struct WatchSensorEnablementStoreTests {
 
         #expect(store.enabledSensorIDs(forServer: serverA.identifier).isEmpty)
         #expect(!sharedSelectionRemains)
-        #expect(defaults.bool(forKey: WatchUserDefaultsKey.enabledSensorIDsSplitAcrossServers.rawValue))
+        #expect(defaults.bool(forKey: WatchSensorEnablementStore.Key.splitAcrossServers))
     }
 
     @Test func splittingAtLaunchHandsTheSelectionToTheServersTheWatchHasThen() {
@@ -177,7 +177,7 @@ struct WatchSensorEnablementStoreTests {
         // The iPhone has no servers, so the selection belongs to nobody: a server it adds later
         // starts opt-in rather than inheriting choices made for servers that are gone.
         #expect(!sharedSelectionRemains)
-        #expect(defaults.bool(forKey: WatchUserDefaultsKey.enabledSensorIDsSplitAcrossServers.rawValue))
+        #expect(defaults.bool(forKey: WatchSensorEnablementStore.Key.splitAcrossServers))
         #expect(makeStore(servers: [serverB]).enabledSensorIDs(forServer: serverB.identifier).isEmpty)
     }
 }

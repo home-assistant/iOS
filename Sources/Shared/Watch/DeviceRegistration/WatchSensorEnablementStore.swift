@@ -8,11 +8,17 @@ import Foundation
 /// list is handed to each server the watch already has, once, so nothing the user switched on stops
 /// reporting where it used to. See `splitAcrossServersIfNeeded()` and `applySyncedServers(_:)`.
 public final class WatchSensorEnablementStore {
-    private enum Key {
+    /// The defaults keys the store owns. `WatchUserDefaults` is only compiled for the watch, so
+    /// they live here rather than in `WatchUserDefaultsKey` to keep the store, and its tests,
+    /// building on every platform.
+    enum Key {
         /// The one list every server shared before they were chosen per server. Only the split reads it.
-        static let legacyEnabled = WatchUserDefaultsKey.enabledSensorIDs.rawValue
-        static let enabledByServer = WatchUserDefaultsKey.enabledSensorIDsByServer.rawValue
-        static let splitAcrossServers = WatchUserDefaultsKey.enabledSensorIDsSplitAcrossServers.rawValue
+        static let legacyEnabled = "enabledSensorIDs"
+        /// The per-server allowlists: server identifier to the unique IDs enabled for it.
+        static let enabledByServer = "enabledSensorIDsByServer"
+        /// Set once the shared list has been handed to every server the watch had at the time,
+        /// which is what keeps a server added later from inheriting it.
+        static let splitAcrossServers = "enabledSensorIDsSplitAcrossServers"
     }
 
     private let defaults: UserDefaults
