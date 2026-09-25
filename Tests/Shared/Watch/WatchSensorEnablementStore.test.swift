@@ -12,7 +12,7 @@ struct WatchSensorEnablementStoreTests {
     private let serverB = Server.fake()
 
     init() throws {
-        defaults = try #require(UserDefaults(suiteName: Self.suiteName))
+        self.defaults = try #require(UserDefaults(suiteName: Self.suiteName))
         defaults.removePersistentDomain(forName: Self.suiteName)
     }
 
