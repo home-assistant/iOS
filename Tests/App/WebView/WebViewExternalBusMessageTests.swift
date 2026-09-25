@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+@testable import Shared
 import XCTest
 
 final class WebViewExternalBusMessageTests: XCTestCase {
@@ -12,6 +13,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.tagWrite.rawValue, "tag/write")
         XCTAssertEqual(WebViewExternalBusMessage.themeUpdate.rawValue, "theme-update")
         XCTAssertEqual(WebViewExternalBusMessage.matterCommission.rawValue, "matter/commission")
+        XCTAssertEqual(WebViewExternalBusMessage.matterShareDevice.rawValue, "matter/share_device")
         XCTAssertEqual(WebViewExternalBusMessage.threadImportCredentials.rawValue, "thread/import_credentials")
         XCTAssertEqual(WebViewExternalBusMessage.barCodeScanner.rawValue, "bar_code/scan")
         XCTAssertEqual(WebViewExternalBusMessage.barCodeScannerClose.rawValue, "bar_code/close")
@@ -46,7 +48,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
         XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 29)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 30)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -81,7 +83,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         let result = WebViewExternalBusMessage.configResult
 
         // Expected keys currently defined in WebViewExternalBusMessage.configResult
-        let expectedKeys: Set<String> = [
+        var expectedKeys: Set<String> = [
             "hasSettingsScreen",
             "hasSidebar",
             "canWriteTag",
@@ -99,8 +101,23 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasSplashscreen",
             "appVersion",
         ]
+        // Only announced where the device can share a Matter device.
+        if Current.matter.canShareDevice {
+            expectedKeys.insert("matterShareTarget")
+        }
 
         let actualKeys = Set(result.keys)
         XCTAssertEqual(actualKeys, expectedKeys)
+    }
+
+    @MainActor func testConfigResultAnnouncesMatterShareTargetWhenSupported() {
+        let canShareDevice = Current.matter.canShareDevice
+        defer { Current.matter.canShareDevice = canShareDevice }
+
+        Current.matter.canShareDevice = true
+        XCTAssertEqual(WebViewExternalBusMessage.configResult["matterShareTarget"] as? String, "apple_home")
+
+        Current.matter.canShareDevice = false
+        XCTAssertNil(WebViewExternalBusMessage.configResult["matterShareTarget"])
     }
 }

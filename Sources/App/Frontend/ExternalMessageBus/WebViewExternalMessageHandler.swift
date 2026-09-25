@@ -118,6 +118,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 webViewController.evaluateJavaScript("notifyThemeColors()", completion: nil)
             case .matterCommission:
                 matterComissioningHandler(incomingMessage: incomingMessage)
+            case .matterShareDevice:
+                handleMatterShareDevice(incomingMessage)
             case .threadImportCredentials:
                 transferKeychainThreadCredentialsToHARequested()
             case .barCodeScanner:
@@ -240,6 +242,36 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     }
 
     // swiftlint:enable cyclomatic_complexity
+
+    private func handleMatterShareDevice(_ incomingMessage: WebSocketMessage) {
+        let messageId = incomingMessage.ID ?? -1
+        guard let request = MatterShareRequest(payload: incomingMessage.Payload) else {
+            Current.Log.error("Received matter/share_device with an invalid payload")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: "failed",
+                message: "Invalid matter/share_device payload"
+            )).cauterize()
+            return
+        }
+        Task { @MainActor [self] in
+            let outgoing: WebSocketMessage
+            do {
+                try await Current.matter.shareDevice(request)
+                Current.Log.info("Matter device shared")
+                outgoing = .init(id: messageId, type: "result", result: [:])
+            } catch {
+                let code = MatterWrapper.shareErrorCode(for: error)
+                if code == "cancelled" {
+                    Current.Log.info("Sharing Matter device cancelled by user")
+                } else {
+                    Current.Log.error("Sharing Matter device failed: \(error)")
+                }
+                outgoing = .init(id: messageId, errorCode: code, message: error.localizedDescription)
+            }
+            sendExternalBus(message: outgoing).cauterize()
+        }
+    }
 
     func showSettingsViewController() {
         // Through the web view the message came from, so Settings opens in that window and no other.
