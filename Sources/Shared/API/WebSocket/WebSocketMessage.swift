@@ -9,6 +9,7 @@ public class WebSocketMessage: Codable {
     public var Message: String?
     public var HAVersion: String?
     public var command: String?
+    public var error: [String: String]?
 
     private enum CodingKeys: String, CodingKey {
         case MessageType = "type"
@@ -19,6 +20,7 @@ public class WebSocketMessage: Codable {
         case Message = "message"
         case HAVersion = "ha_version"
         case command = "command"
+        case error = "error"
     }
 
     public required init(from decoder: Decoder) throws {
@@ -31,6 +33,7 @@ public class WebSocketMessage: Codable {
         self.Message = try? values.decode(String.self, forKey: .Message)
         self.HAVersion = try? values.decode(String.self, forKey: .HAVersion)
         self.command = try values.decodeIfPresent(String.self, forKey: .command)
+        self.error = try? values.decode([String: String].self, forKey: .error)
     }
 
     public init?(_ dictionary: [String: Any]) {
@@ -61,6 +64,15 @@ public class WebSocketMessage: Codable {
         self.command = nil
     }
 
+    /// A failed `result`, which the frontend rejects with `{code, message}`.
+    public init(id: Int, errorCode: String, message: String) {
+        self.ID = id
+        self.MessageType = "result"
+        self.Success = false
+        self.error = ["code": errorCode, "message": message]
+        self.command = nil
+    }
+
     public init(id: Int = -1, command: String, payload: [String: Any]? = nil) {
         self.ID = id
         self.MessageType = "command"
@@ -87,6 +99,7 @@ public class WebSocketMessage: Codable {
             try container.encode(Payload, forKey: .Payload)
         }
         try container.encodeIfPresent(command, forKey: .command)
+        try container.encodeIfPresent(error, forKey: .error)
     }
 
     init(_ messageType: String) {

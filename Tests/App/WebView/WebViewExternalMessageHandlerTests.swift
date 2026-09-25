@@ -1,6 +1,7 @@
 import AppIntents
 import GRDB
 @testable import HomeAssistant
+import HomeKit
 import Improv_iOS
 import PromiseKit
 @testable import Shared
@@ -11,9 +12,11 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
     private var sut: WebViewExternalMessageHandler!
     private var mockWebViewController: MockWebViewController!
     private var originalMatterCommission: ((Server) -> Promise<String?>)!
+    private var originalMatterShareDevice: ((MatterShareRequest) async throws -> Void)!
 
     override func setUp() async throws {
         originalMatterCommission = Current.matter.commission
+        originalMatterShareDevice = Current.matter.shareDevice
         mockWebViewController = MockWebViewController()
         sut = WebViewExternalMessageHandler(
             improvManager: ImprovManager.shared
@@ -24,6 +27,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
     override func tearDown() async throws {
         Current.matter.commission = originalMatterCommission
         originalMatterCommission = nil
+        Current.matter.shareDevice = originalMatterShareDevice
+        originalMatterShareDevice = nil
         sut = nil
         mockWebViewController = nil
     }
@@ -209,6 +214,124 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(message["command"] as? String, WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue)
         XCTAssertEqual(payload["name"] as? String, deviceName)
     }
+
+    @MainActor func testHandleExternalMessageMatterShareDeviceRepliesSuccess() throws {
+        var receivedRequest: MatterShareRequest?
+        let expectation = expectation(description: "Matter share result sent")
+        mockWebViewController.evaluateJavaScriptExpectation = expectation
+        Current.matter.shareDevice = { request in
+            receivedRequest = request
+        }
+
+        sut.handleExternalMessage([
+            "id": 7,
+            "type": "matter/share_device",
+            "payload": Self.sharePayload,
+        ])
+
+        wait(for: [expectation], timeout: 1)
+        let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+
+        XCTAssertEqual(receivedRequest, MatterShareRequest(payload: Self.sharePayload))
+        XCTAssertEqual(receivedRequest?.deviceName, "Kitchen light")
+        XCTAssertEqual(message["id"] as? Int, 7)
+        XCTAssertEqual(message["type"] as? String, "result")
+        XCTAssertEqual(message["success"] as? Bool, true)
+        XCTAssertNil(message["error"])
+    }
+
+    @MainActor func testHandleExternalMessageMatterShareDeviceRepliesFailed() throws {
+        let expectation = expectation(description: "Matter share result sent")
+        mockWebViewController.evaluateJavaScriptExpectation = expectation
+        Current.matter.shareDevice = { _ in throw HMError(.communicationFailure) }
+
+        sut.handleExternalMessage([
+            "id": 8,
+            "type": "matter/share_device",
+            "payload": Self.sharePayload,
+        ])
+
+        wait(for: [expectation], timeout: 1)
+        let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let error = try XCTUnwrap(message["error"] as? [String: Any])
+
+        XCTAssertEqual(message["id"] as? Int, 8)
+        XCTAssertEqual(message["success"] as? Bool, false)
+        XCTAssertNil(message["result"])
+        XCTAssertEqual(error["code"] as? String, "failed")
+    }
+
+    @MainActor func testHandleExternalMessageMatterShareDeviceRepliesCancelled() throws {
+        let expectation = expectation(description: "Matter share result sent")
+        mockWebViewController.evaluateJavaScriptExpectation = expectation
+        Current.matter.shareDevice = { _ in throw HMError(.operationCancelled) }
+
+        sut.handleExternalMessage([
+            "id": 9,
+            "type": "matter/share_device",
+            "payload": Self.sharePayload,
+        ])
+
+        wait(for: [expectation], timeout: 1)
+        let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let error = try XCTUnwrap(message["error"] as? [String: Any])
+
+        XCTAssertEqual(message["success"] as? Bool, false)
+        XCTAssertEqual(error["code"] as? String, "cancelled")
+    }
+
+    @MainActor func testHandleExternalMessageMatterShareDeviceWithInvalidPayloadRepliesFailed() throws {
+        var called = false
+        let expectation = expectation(description: "Matter share result sent")
+        mockWebViewController.evaluateJavaScriptExpectation = expectation
+        Current.matter.shareDevice = { _ in called = true }
+
+        sut.handleExternalMessage([
+            "id": 10,
+            "type": "matter/share_device",
+            "payload": ["setup_pin_code": 20_202_021],
+        ])
+
+        wait(for: [expectation], timeout: 1)
+        let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let error = try XCTUnwrap(message["error"] as? [String: Any])
+
+        XCTAssertFalse(called)
+        XCTAssertEqual(message["id"] as? Int, 10)
+        XCTAssertEqual(message["success"] as? Bool, false)
+        XCTAssertEqual(error["code"] as? String, "failed")
+    }
+
+    @MainActor func testHandleExternalMessageMatterShareDeviceWithOnlyTheSetupCodeShares() throws {
+        var receivedRequest: MatterShareRequest?
+        let expectation = expectation(description: "Matter share result sent")
+        mockWebViewController.evaluateJavaScriptExpectation = expectation
+        Current.matter.shareDevice = { request in
+            receivedRequest = request
+        }
+
+        sut.handleExternalMessage([
+            "id": 11,
+            "type": "matter/share_device",
+            "payload": ["setup_qr_code": "MT:-24J0AFN00KA0648G00", "setup_pin_code": 20_202_021],
+        ])
+
+        wait(for: [expectation], timeout: 1)
+        let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+
+        XCTAssertEqual(receivedRequest?.window, .setupCode("MT:-24J0AFN00KA0648G00"))
+        XCTAssertEqual(message["success"] as? Bool, true)
+    }
+
+    private static let sharePayload: [String: Any] = [
+        "setup_qr_code": "MT:-24J0AFN00KA0648G00",
+        "setup_pin_code": 20_202_021,
+        "discriminator": 3840,
+        "vendor_id": 0xFFF1,
+        "product_id": 0x8000,
+        "device_name": "Kitchen light",
+        "remaining_seconds": 250,
+    ]
 
     @MainActor func testHandleExternalMessageShowAssistShowsAssist() {
         let dictionary: [String: Any] = [

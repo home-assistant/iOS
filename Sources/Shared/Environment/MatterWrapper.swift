@@ -1,3 +1,7 @@
+#if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+import HomeKit
+import Matter
+#endif
 #if canImport(MatterSupport)
 import MatterSupport
 #endif
@@ -28,6 +32,21 @@ public class MatterWrapper {
         return false
         #endif
     }
+
+    /// Whether a device already commissioned to Home Assistant can be shared to the platform's home app.
+    public lazy var canShareDevice: Bool = {
+        #if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 27, *) {
+            return HMAccessorySetupManager.isSupported
+        }
+        return true
+        #else
+        return false
+        #endif
+    }()
+
+    /// Where a shared device lands, so the frontend can label the action.
+    public let shareTarget = "apple_home"
 
     #if os(iOS)
     public var threadClientService: ThreadClientProtocol = ThreadClientService()
@@ -66,6 +85,61 @@ public class MatterWrapper {
         #else
         return .value(nil)
         #endif
+    }
+
+    /// Adds a device that is already commissioned to Home Assistant to Apple Home (Matter multi-admin),
+    /// through the commissioning window Home Assistant opened for it.
+    public var shareDevice: (_ request: MatterShareRequest) async throws -> Void = { request in
+        #if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+        guard let payload = MatterWrapper.setupPayload(for: request) else {
+            throw MatterShareError.invalidRequest
+        }
+        let setupRequest = HMAccessorySetupRequest()
+        setupRequest.matterPayload = payload
+        setupRequest.suggestedAccessoryName = request.deviceName
+        _ = try await HMAccessorySetupManager().performAccessorySetup(using: setupRequest)
+        #else
+        throw MatterShareError.unsupported
+        #endif
+    }
+
+    #if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+    /// The setup payload for the home app, built from the window's values where the server reported them and
+    /// otherwise by Apple's parser from the setup code. Nil if the setup code does not parse.
+    static func setupPayload(for request: MatterShareRequest) -> MTRSetupPayload? {
+        switch request.window {
+        case let .values(passcode, discriminator, vendorID, productID):
+            let payload = MTRSetupPayload(
+                setupPasscode: NSNumber(value: passcode),
+                discriminator: NSNumber(value: discriminator)
+            )
+            payload.hasShortDiscriminator = false
+            // Home Assistant opens the window on the device's operational network.
+            payload.discoveryCapabilities = .onNetwork
+            if let vendorID {
+                payload.vendorID = NSNumber(value: vendorID)
+            }
+            if let productID {
+                payload.productID = NSNumber(value: productID)
+            }
+            return payload
+        case let .setupCode(setupCode):
+            if #available(iOS 17.6, *) {
+                return MTRSetupPayload(payload: setupCode)
+            }
+            return try? MTRSetupPayload(onboardingPayload: setupCode)
+        }
+    }
+    #endif
+
+    /// Maps a share failure to the external bus error code.
+    public static func shareErrorCode(for error: Error) -> String {
+        #if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+        if let error = error as? HMError, error.code == .operationCancelled {
+            return "cancelled"
+        }
+        #endif
+        return "failed"
     }
     #endif
 }

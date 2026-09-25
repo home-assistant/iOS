@@ -15,6 +15,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case tagWrite = "tag/write"
     case themeUpdate = "theme-update"
     case matterCommission = "matter/commission"
+    case matterShareDevice = "matter/share_device"
     case threadImportCredentials = "thread/import_credentials"
     case threadStoreCredentialInAppleKeychain = "thread/store_in_platform_keychain"
     case barCodeScanner = "bar_code/scan"
@@ -37,7 +38,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
-        [
+        var result: [String: Any] = [
             "hasSettingsScreen": !Current.isCatalyst,
             "hasSidebar": AppLabsFeature.macNativeSidebar.isEnabled || AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
@@ -56,6 +57,11 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
         ]
+        // Absent means the frontend offers no share button.
+        if Current.matter.canShareDevice {
+            result["matterShareTarget"] = Current.matter.shareTarget
+        }
+        return result
     }
 }
 
