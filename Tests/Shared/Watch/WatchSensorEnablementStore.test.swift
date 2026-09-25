@@ -115,25 +115,69 @@ struct WatchSensorEnablementStoreTests {
         #expect(defaults.bool(forKey: WatchUserDefaultsKey.enabledSensorIDsSplitAcrossServers.rawValue))
     }
 
-    @Test func forgettingServersDropsTheirChoicesAndKeepsTheRest() {
+    @Test func splittingAtLaunchHandsTheSelectionToTheServersTheWatchHasThen() {
+        seedSharedSelection(["battery_level"])
+
+        makeStore(servers: [serverA]).splitAcrossServersIfNeeded()
+
+        let afterSync = makeStore(servers: [serverA, serverB])
+        #expect(afterSync.enabledSensorIDs(forServer: serverA.identifier) == ["battery_level"])
+        #expect(afterSync.enabledSensorIDs(forServer: serverB.identifier).isEmpty)
+        #expect(!sharedSelectionRemains)
+    }
+
+    @Test func splittingAtLaunchWithoutServersKeepsTheSelectionForLater() {
+        seedSharedSelection(["battery_level"])
+
+        makeStore(servers: []).splitAcrossServersIfNeeded()
+
+        #expect(sharedSelectionRemains)
+        #expect(storedByServer.isEmpty)
+    }
+
+    @Test func aSyncDropsTheChoicesOfServersItLeftOut() {
         let store = makeStore(servers: [serverA, serverB])
         store.setSensorEnabled(true, uniqueID: "battery_level", forServer: serverA.identifier)
         store.setSensorEnabled(true, uniqueID: "battery_state", forServer: serverB.identifier)
 
-        store.forgetServers(otherThan: [serverA.identifier])
+        store.applySyncedServers([serverA.identifier])
 
         #expect(store.enabledSensorIDs(forServer: serverA.identifier) == ["battery_level"])
         #expect(store.enabledSensorIDs(forServer: serverB.identifier).isEmpty)
         #expect(storedByServer.keys.sorted() == [serverA.identifier.rawValue])
     }
 
-    @Test func forgettingServersLeavesAPendingSplitAlone() {
+    @Test func aSyncThatKeepsEveryServerChangesNothing() {
+        let store = makeStore(servers: [serverA])
+        store.setSensorEnabled(true, uniqueID: "battery_level", forServer: serverA.identifier)
+
+        store.applySyncedServers([serverA.identifier])
+
+        #expect(storedByServer == [serverA.identifier.rawValue: ["battery_level"]])
+    }
+
+    @Test func aSyncFinishesAPendingSplitWithTheServersItRestored() {
+        seedSharedSelection(["battery_level"])
+        // Nothing read the store before the sync, so the split is still pending when it lands.
+        let store = makeStore(servers: [serverA])
+
+        store.applySyncedServers([serverA.identifier])
+
+        #expect(store.enabledSensorIDs(forServer: serverA.identifier) == ["battery_level"])
+        #expect(!sharedSelectionRemains)
+        #expect(makeStore(servers: [serverA, serverB]).enabledSensorIDs(forServer: serverB.identifier).isEmpty)
+    }
+
+    @Test func aSyncThatLeavesNoServersDropsAPendingSelection() {
         seedSharedSelection(["battery_level"])
         let store = makeStore(servers: [])
 
-        store.forgetServers(otherThan: [])
+        store.applySyncedServers([])
 
-        #expect(sharedSelectionRemains)
-        #expect(makeStore(servers: [serverA]).enabledSensorIDs(forServer: serverA.identifier) == ["battery_level"])
+        // The iPhone has no servers, so the selection belongs to nobody: a server it adds later
+        // starts opt-in rather than inheriting choices made for servers that are gone.
+        #expect(!sharedSelectionRemains)
+        #expect(defaults.bool(forKey: WatchUserDefaultsKey.enabledSensorIDsSplitAcrossServers.rawValue))
+        #expect(makeStore(servers: [serverB]).enabledSensorIDs(forServer: serverB.identifier).isEmpty)
     }
 }

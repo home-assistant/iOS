@@ -6,7 +6,7 @@ import Foundation
 /// while its unique ID is in that server's list, and a server the watch learns about later starts
 /// with nothing enabled. Installs that predate this stored one list shared by every server; that
 /// list is handed to each server the watch already has, once, so nothing the user switched on stops
-/// reporting where it used to. See `splitAcrossServersIfNeeded()`.
+/// reporting where it used to. See `splitAcrossServersIfNeeded()` and `applySyncedServers(_:)`.
 public final class WatchSensorEnablementStore {
     private enum Key {
         /// The one list every server shared before they were chosen per server. Only the split reads it.
@@ -37,7 +37,7 @@ public final class WatchSensorEnablementStore {
         lock.lock()
         defer { lock.unlock() }
 
-        splitAcrossServersIfNeeded()
+        splitWhileLocked()
         return enabledSensorIDsByServer[serverID.rawValue] ?? []
     }
 
@@ -49,7 +49,7 @@ public final class WatchSensorEnablementStore {
         lock.lock()
         defer { lock.unlock() }
 
-        splitAcrossServersIfNeeded()
+        splitWhileLocked()
 
         var byServer = enabledSensorIDsByServer
         var ids = byServer[serverID.rawValue] ?? []
@@ -62,12 +62,26 @@ public final class WatchSensorEnablementStore {
         enabledSensorIDsByServer = byServer
     }
 
-    /// Drops the allowlists of every server other than `serverIDs`, so the watch stops carrying
-    /// choices for servers the iPhone no longer has. A server that comes back is registered under
-    /// its identifier again and starts opt-in like any other new server, as it does on the iPhone.
-    public func forgetServers(otherThan serverIDs: [Identifier<Server>]) {
+    /// Settles the allowlists against the servers a sync from the iPhone just restored. The sync
+    /// carries the whole list, so a server it leaves out is one the iPhone no longer has: its
+    /// choices are dropped, and a server that comes back starts opt-in like any other new server,
+    /// as it does on the iPhone.
+    ///
+    /// A split still pending at this point is finished here rather than left for the next read,
+    /// because the servers it would hand the shared selection to are changing under it: the
+    /// servers restored get it, and when the sync leaves none, nobody does — a server the iPhone
+    /// adds later must not inherit a selection made for servers that are gone.
+    public func applySyncedServers(_ serverIDs: [Identifier<Server>]) {
         lock.lock()
         defer { lock.unlock() }
+
+        if !defaults.bool(forKey: Key.splitAcrossServers) {
+            if serverIDs.isEmpty {
+                finishSplit(handingTo: [])
+            } else {
+                splitWhileLocked()
+            }
+        }
 
         let keep = Set(serverIDs.map(\.rawValue))
         let byServer = enabledSensorIDsByServer
@@ -80,16 +94,34 @@ public final class WatchSensorEnablementStore {
 
     /// Gives every server the watch already has the one selection they used to share, once.
     ///
+    /// Run at launch, while the servers are still the ones the watch had before this version, so
+    /// the selection goes to them and not to whatever a later sync brings. Every read runs it too,
+    /// for a process that reaches a read first.
+    ///
     /// Does nothing while the watch has no servers — one that hasn't synced with its iPhone yet, or
     /// a process that reached here before they were restored — and is retried on the next read, so
     /// a selection is never split away to nobody and lost. The shared list is removed once it has
     /// been handed out, and nothing reads it again.
-    private func splitAcrossServersIfNeeded() {
+    public func splitAcrossServersIfNeeded() {
+        lock.lock()
+        defer { lock.unlock() }
+
+        splitWhileLocked()
+    }
+
+    /// The split itself, for callers already holding `lock`.
+    private func splitWhileLocked() {
         guard !defaults.bool(forKey: Key.splitAcrossServers) else { return }
 
         let serverIDs = servers().map(\.identifier.rawValue)
         guard !serverIDs.isEmpty else { return }
 
+        finishSplit(handingTo: serverIDs)
+    }
+
+    /// Hands the shared selection to `serverIDs` and marks the split done, so nothing inherits it
+    /// afterwards. Passing no servers drops the selection.
+    private func finishSplit(handingTo serverIDs: [String]) {
         let inherited = Set(defaults.stringArray(forKey: Key.legacyEnabled) ?? [])
         var byServer = enabledSensorIDsByServer
         for serverID in serverIDs {

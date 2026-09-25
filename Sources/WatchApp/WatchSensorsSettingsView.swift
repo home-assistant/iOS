@@ -7,19 +7,19 @@ import SwiftUI
 /// several this screen lists the servers and the switches live one step in. The status of the last
 /// report is device-wide, so it stays here either way.
 struct WatchSensorsSettingsView: View {
-    @State private var servers = Current.servers.all.sorted()
+    @StateObject private var viewModel = WatchSensorsSettingsViewModel()
     @State private var lastReportAt = WatchUserDefaults.shared.lastSensorReportAt
     @State private var lastError = WatchUserDefaults.shared.lastSensorReportError
 
     var body: some View {
         List {
-            if servers.isEmpty {
+            if viewModel.servers.isEmpty {
                 Section {
                     Text(verbatim: L10n.Watch.Settings.noServers)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-            } else if servers.count == 1, let server = servers.first {
+            } else if viewModel.servers.count == 1, let server = viewModel.servers.first {
                 WatchSensorTogglesSection(server: server)
             } else {
                 serversSection
@@ -29,7 +29,7 @@ struct WatchSensorsSettingsView: View {
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Sensors.title))
         .onAppear {
-            servers = Current.servers.all.sorted()
+            viewModel.reload()
         }
         .onReceive(NotificationCenter.default.publisher(for: WatchDeviceReporter.didFinishNotification)) { _ in
             lastReportAt = WatchUserDefaults.shared.lastSensorReportAt
@@ -41,7 +41,7 @@ struct WatchSensorsSettingsView: View {
     /// on this screen: it lists the servers, and the switches live one step in.
     private var serversSection: some View {
         Section {
-            ForEach(servers, id: \.identifier.rawValue) { server in
+            ForEach(viewModel.servers, id: \.identifier.rawValue) { server in
                 NavigationLink {
                     WatchServerSensorsSettingsView(server: server)
                 } label: {

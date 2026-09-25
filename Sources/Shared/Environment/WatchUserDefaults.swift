@@ -46,10 +46,11 @@ public final class WatchUserDefaults: WatchSensorSettings {
     /// list is off there and nothing about it is sent to that server.
     private let sensorEnablement: WatchSensorEnablementStore
 
-    init() {
-        let defaults = UserDefaults()
-        self.userDefaults = defaults
-        self.sensorEnablement = WatchSensorEnablementStore(defaults: defaults, servers: { Current.servers.all })
+    /// - Parameter userDefaults: where the watch keeps its choices; the standard defaults unless a
+    ///   test substitutes its own suite.
+    public init(userDefaults: UserDefaults = UserDefaults()) {
+        self.userDefaults = userDefaults
+        self.sensorEnablement = WatchSensorEnablementStore(defaults: userDefaults, servers: { Current.servers.all })
     }
 
     public func set(_ value: Any?, key: WatchUserDefaultsKey) {
@@ -183,10 +184,16 @@ public final class WatchUserDefaults: WatchSensorSettings {
         sensorEnablement.setSensorEnabled(enabled, uniqueID: uniqueID, forServer: serverID)
     }
 
-    /// Drops the sensor choices of every server other than `serverIDs`; called once a sync from the
-    /// iPhone has settled which servers the watch has.
-    public func forgetSensorEnablement(forServersOtherThan serverIDs: [Identifier<Server>]) {
-        sensorEnablement.forgetServers(otherThan: serverIDs)
+    /// Hands a selection made before sensors were chosen per server to the servers the watch has,
+    /// once. Run at launch, before a sync can change which servers those are.
+    public func splitSensorEnablementAcrossServersIfNeeded() {
+        sensorEnablement.splitAcrossServersIfNeeded()
+    }
+
+    /// Settles the sensor choices against the servers a sync from the iPhone just restored,
+    /// dropping those of every server it left out.
+    public func applySyncedServersToSensorEnablement(_ serverIDs: [Identifier<Server>]) {
+        sensorEnablement.applySyncedServers(serverIDs)
     }
 
     /// When the watch last sent its sensors successfully. `nil` until the first success.
