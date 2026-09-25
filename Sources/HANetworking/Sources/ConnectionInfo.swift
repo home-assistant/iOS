@@ -321,6 +321,28 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
+    /// Returns the most stable webhook URL for a time-critical background upload.
+    ///
+    /// Background location callbacks must not wait for Wi-Fi/SSID refreshes and the last-known
+    /// network state may still claim that the phone is at home. Prefer a configured remote path
+    /// that is reachable on both Wi-Fi and cellular, then fall back to the normal cached-state
+    /// evaluation for local-only installations.
+    /// This selects one endpoint, not a retry policy. If a configured remote endpoint is unreachable
+    /// on the local network or the internet is down, delivery fails even if internal HA is reachable.
+    /// We do not automatically replay a POST on another URL: a lost response does not prove that
+    /// HA did not process it. The durable caller must retain the event and decide when to retry.
+    public mutating func preferredBackgroundWebhookURL() -> URL? {
+        if let cloudhookURL {
+            return cloudhookURL
+        } else if useCloud, let remoteUIURL {
+            return remoteUIURL.sanitized().appendingPathComponent(webhookPath, isDirectory: false)
+        } else if let externalURL {
+            return externalURL.sanitized().appendingPathComponent(webhookPath, isDirectory: false)
+        } else {
+            return evaluateWebhookURL()
+        }
+    }
+
     public var webhookPath: String {
         "api/webhook/\(webhookID)"
     }

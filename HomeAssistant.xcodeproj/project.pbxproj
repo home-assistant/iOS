@@ -104,6 +104,7 @@
 		4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4C92D103ABB00245021 /* ExternalLink.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */; };
+		42F570303218000000000002 /* BackgroundWebhookRunner.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F570303218000000000001 /* BackgroundWebhookRunner.test.swift */; };
 		426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */; };
 		426A2EFB30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */; };
 		426A2EFD30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */; };
@@ -643,6 +644,7 @@
 		4254C4C92D103ABB00245021 /* ExternalLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLink.swift; sourceTree = "<group>"; };
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
+		42F570303218000000000001 /* BackgroundWebhookRunner.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundWebhookRunner.test.swift; sourceTree = "<group>"; };
 		426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspension.test.swift; sourceTree = "<group>"; };
 		426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspensionProtectedWork.test.swift; sourceTree = "<group>"; };
 		426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelsUpdaterSaveInDatabase.test.swift; sourceTree = "<group>"; };
@@ -3074,6 +3076,7 @@
 				42D6FE18300F900000D4BEB9 /* CabinPressureMonitor.test.swift */,
 				42F1C0DE302E000000A1B2C1 /* FlightDetector.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
+				42F570303218000000000001 /* BackgroundWebhookRunner.test.swift */,
 				42EDBB963002FBBE0051FC9B /* Additions */,
 				42EDBB6B3002FBBE0051FC9B /* Area */,
 				42EDBB9F3002FBBE0051FC9B /* Assist */,
@@ -4583,6 +4586,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
+				42F570303218000000000002 /* BackgroundWebhookRunner.test.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
 				FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */,
 				42D6FE19300F900000D4BEB9 /* CabinPressureMonitor.test.swift in Sources */,
