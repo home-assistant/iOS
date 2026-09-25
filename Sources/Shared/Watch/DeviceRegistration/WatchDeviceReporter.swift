@@ -66,7 +66,8 @@ public actor WatchDeviceReporter {
     public enum Outcome: Equatable {
         /// The switched-on sensors were sent.
         case reported(sensorCount: Int)
-        /// The watch is registered but no sensor is switched on, so there was nothing to send.
+        /// The watch is registered but no sensor is switched on for this server, so there was
+        /// nothing to send.
         case nothingEnabled
         case skipped(reason: String)
         case failed(String)
@@ -225,14 +226,15 @@ public actor WatchDeviceReporter {
     }
 
     /// Registers whichever sensors Home Assistant doesn't know with their current enablement, then
-    /// sends the switched-on ones.
+    /// sends the switched-on ones. Sensors are chosen per server, so what this server receives is
+    /// its own selection and nothing another server was switched on for.
     private func sync(
         server: Server,
         registration: WatchDeviceRegistration,
         timeout: TimeInterval
     ) async throws -> Outcome {
         let sensors = dependencies.currentSensors()
-        let enabledIDs = dependencies.settings.enabledSensorIDs
+        let enabledIDs = dependencies.settings.enabledSensorIDs(forServer: server.identifier)
 
         let describesAnotherVersion = registration.registeredAppVersion != AppConstants.version
 

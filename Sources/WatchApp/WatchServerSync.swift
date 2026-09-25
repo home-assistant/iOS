@@ -112,6 +112,9 @@ enum WatchServerSync {
         WatchUserDefaults.shared.set(Date(), key: .serversUpdatedAt)
         Current.servers.restoreState(data)
         applyURLOverrides()
+        // The restored state is the whole list, so any server it left out is one the iPhone no
+        // longer has; its sensor choices go with it, as they do on the iPhone when it is removed.
+        WatchUserDefaults.shared.forgetSensorEnablement(forServersOtherThan: Current.servers.all.map(\.identifier))
     }
 
     /// Re-apply each server's watch-local "Always use" URL choice. `ConnectionInfo` is overwritten on
