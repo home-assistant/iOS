@@ -1571,8 +1571,8 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "z. B. http://homeassistant.local:8123";
 "settings.connection_section.internal_base_url.requires_setup.title" = "Einrichtung erforderlich";
-"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "Um die interne URL zu verwenden, musst du deinen WLAN-Netzwerknamen (SSID) oder Hardware-Adressen angeben, andernfalls verwendet die App standardmäßig immer die externe URL.";
-"settings.connection_section.internal_base_url.ssid_required.title" = "Um die interne URL zu verwenden, musst du deinen WLAN-Netzwerknamen (SSID) angeben, andernfalls verwendet die App standardmäßig immer die externe URL.";
+"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "Um die interne URL zu verwenden, musst du deinen WLAN-Namen (SSID) oder Hardware-Adressen angeben, andernfalls verwendet die App standardmäßig immer die externe URL.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "Um die interne URL zu verwenden, musst du deinen WLAN-Namen (SSID) angeben, andernfalls verwendet die App standardmäßig immer die externe URL.";
 "settings.connection_section.internal_base_url.title" = "Interne URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Neue Hardwareadresse hinzufügen";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Interne URL wird verwendet, wenn die primäre Netzwerkschnittstelle dieselbe Hardwareadresse wie eine der gegebenen Adressen hat.";
@@ -1623,10 +1623,10 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.urls_how_it_works.criteria.met" = "Erfüllt";
 "settings.connection_section.urls_how_it_works.criteria.not_met" = "Nicht erfüllt";
 "settings.connection_section.urls_how_it_works.criteria.precise_location" = "„Genauer Standort“ ist eingeschaltet";
-"settings.connection_section.urls_how_it_works.criteria.ssids" = "Mindestens ein WLAN-Netzwerk aufgelistet";
+"settings.connection_section.urls_how_it_works.criteria.ssids" = "Mindestens ein WLAN aufgelistet";
 "settings.connection_section.urls_how_it_works.foreground.body" = "Du kommst nach Hause und öffnest die App. Der WLAN-Name wird sofort erkannt, er stimmt mit einem der aufgelisteten Netzwerke überein, und das Dashboard wird über die interne URL geladen. Dazu muss „Genauer Standort“ bereits aktiviert sein: Ist er deaktiviert, gibt iOS nur einen ungefähren Standort und niemals den Netzwerknamen weiter, sodass die App auch zuhause weiterhin die externe URL verwendet.";
 "settings.connection_section.urls_how_it_works.foreground.title" = "Während du die App verwendest";
-"settings.connection_section.urls_how_it_works.home.body" = "Wenn dieses Gerät mit einem der WLAN-Netzwerke verbunden ist, die die für diesen Home Assistant angegeben hast, wird die interne URL verwendet. Auf einem Mac gilt dasselbe für eine angegebene Hardware-Adresse.";
+"settings.connection_section.urls_how_it_works.home.body" = "Wenn dieses Gerät mit einem der WLANs verbunden ist, die du für diesen Home Assistant angegeben hast, wird die interne URL verwendet. Auf einem Mac gilt dasselbe für eine angegebene Hardware-Adresse.";
 "settings.connection_section.urls_how_it_works.home.title" = "In deinem Heimnetzwerk";
 "settings.connection_section.urls_how_it_works.intro" = "Dein Home Assistant kann auf zwei Arten erreicht werden: direkt über dein Heimnetzwerk oder über das Internet. Die App wählt für jede Anfrage eine der beiden Optionen aus, und diese Auswahl kann sich ändern, wenn du dich bewegst.";
 "settings.connection_section.urls_how_it_works.security_level.footer" = "Diese Einstellung legt nur fest, was passiert, wenn die interne URL die einzige URL dieses Home Assistant ist und diese nicht HTTPS-verschlüsselt ist. Mit „Am sichersten“ wird sie außerhalb deiner aufgelisteten Netzwerke nicht verwendet, sodass die App von außerhalb keine Verbindung herstellt. Bei „Weniger sicher“ kann sie überall verwendet werden. Nicht konfiguriert verhält sich so wie „Weniger sicher“, bis du eine Auswahl triffst, wobei in beiden Fällen eine interne HTTPS-URL verwendet wird.";
@@ -1917,7 +1917,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings.developer.sync_watch_context.title" = "Watch-Kontext synchronisieren";
 "settings.developer.web_view_below_status_bar.title" = "Webansicht immer unterhalb der Statusleiste anzeigen";
 "settings.event_log.title" = "Ereignisprotokoll";
-"settings.greetings.flight.footer" = "Zeigt eine freundliche Begrüßung an, sobald die App anhand der WLAN-Netzwerke an Bord, deiner Geschwindigkeit und deiner Flughöhe erkennt, dass du dich im Flugzeug befindest.";
+"settings.greetings.flight.footer" = "Zeigt eine freundliche Begrüßung an, sobald die App anhand der WLANs an Bord, deiner Geschwindigkeit und deiner Flughöhe erkennt, dass du dich im Flugzeug befindest.";
 "settings.greetings.flight.title" = "Flug";
 "settings.greetings.title" = "Grüße";
 "settings.location_history.detail.explanation" = "Der lila Kreis ist dein Standort und dessen Genauigkeit. Blaue Kreise sind deine Zonen. Du bist in einer Zone, wenn der lila Kreis einen blauen Kreis überlappt. Orange Kreise sind zusätzliche Bereiche für Kreise, die einen Durchmesser unter 100 Meter haben.";
@@ -1976,22 +1976,22 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings.sections.share_from_device.header" = "Von diesem Gerät teilen";
 "settings.sections.stay_informed.header" = "Bleibe auf dem Laufenden";
 "settings.server_select.title" = "Server";
-"settings.server_switching.by_location.footer" = "Beim Öffnen der App wird geprüft, ob du dich bei einem deiner Zuhause befindest – entweder verbunden mit dessen WLAN-Netzwerk oder innerhalb dessen „Zuhause“-Zone. Gehört dieses Zuhause zu einem anderen Server, wird dieser Server automatisch geöffnet. Die Überprüfung erfolgt ausschließlich auf diesem Gerät, solange die App genutzt wird, und dein Standort wird niemals gespeichert.";
+"settings.server_switching.by_location.footer" = "Beim Öffnen der App wird geprüft, ob du dich bei einem deiner Zuhause befindest – entweder verbunden mit dessen WLAN oder innerhalb dessen „Zuhause“-Zone. Gehört dieses Zuhause zu einem anderen Server, wird dieser Server automatisch geöffnet. Die Überprüfung erfolgt ausschließlich auf diesem Gerät, solange die App genutzt wird, und dein Standort wird niemals gespeichert.";
 "settings.server_switching.by_location.title" = "Server nach Standort wechseln";
-"settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
-"settings.server_switching.closest_server.source.location.title" = "Location";
-"settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
-"settings.server_switching.closest_server.source.network.title" = "Wi-Fi network";
+"settings.server_switching.closest_server.source.location.accessibility_label" = "Basierend auf deinem aktuellen Standort";
+"settings.server_switching.closest_server.source.location.title" = "Standort";
+"settings.server_switching.closest_server.source.network.accessibility_label" = "Basierend auf dem WLAN, mit dem du verbunden bist";
+"settings.server_switching.closest_server.source.network.title" = "WLAN";
 "settings.server_switching.closest_server.title" = "Nächstgelegener Server";
 "settings.server_switching.how_it_works.intro" = "Mit mehr als einem Zuhause kann die App den aktuell relevanten Server ermitteln und automatisch darauf umschalten. Sobald du dein zweites Zuhause betrittst, ist dessen Dashboard bereits verfügbar.";
 "settings.server_switching.how_it_works.location.body" = "Andernfalls wird dein Standort mit der „Zuhause“-Zone jedes Servers verglichen, und der nächstgelegene wird als näher betrachtet.";
 "settings.server_switching.how_it_works.location.title" = "Dann dein Standort";
 "settings.server_switching.how_it_works.privacy.body" = "Netzwerk- und Standortprüfungen erfolgen nur auf diesem Gerät und nur während der Nutzung der App. Dein Standort wird zu keinem Zeitpunkt gespeichert oder weitergegeben.";
 "settings.server_switching.how_it_works.privacy.title" = "Deine Privatsphäre";
-"settings.server_switching.how_it_works.switching.body" = "Wenn du die App beim Zuhause eines anderen Server öffnest, in dessen WLAN-Netzwerk oder innerhalb dessen „Zuhause“-Zone, wird dieser Server automatisch ausgewählt. Bei Überschneidungen von Standorten hat der gerade angezeigte Server immer Vorrang. Wenn du manuell wechselst, wird deine Auswahl beibehalten, bis du das Zuhause verlässt oder die App für eine Weile nicht mehr nutzt.";
+"settings.server_switching.how_it_works.switching.body" = "Wenn du die App beim Zuhause eines anderen Server öffnest, in dessen WLAN oder innerhalb dessen „Zuhause“-Zone, wird dieser Server automatisch ausgewählt. Bei Überschneidungen von Standorten hat der gerade angezeigte Server immer Vorrang. Wenn du manuell wechselst, wird deine Auswahl beibehalten, bis du das Zuhause verlässt oder die App für eine Weile nicht mehr nutzt.";
 "settings.server_switching.how_it_works.switching.title" = "Automatische Umschaltung";
 "settings.server_switching.how_it_works.title" = "Wie funktioniert das?";
-"settings.server_switching.how_it_works.wifi.body" = "Wenn dieses Gerät mit einem WLAN-Netzwerk verbunden ist, das zu einem deiner Server gehört, gilt dieser Server als der nächstgelegene. Eine Standortprüfung ist nicht erforderlich.";
+"settings.server_switching.how_it_works.wifi.body" = "Wenn dieses Gerät mit einem WLAN verbunden ist, das zu einem deiner Server gehört, gilt dieser Server als der nächstgelegene. Eine Standortprüfung ist nicht erforderlich.";
 "settings.server_switching.how_it_works.wifi.title" = "Heimnetzwerk zuerst";
 "settings.server_switching.switched_toast" = "Umgeschaltet auf %@";
 "settings.server_switching.title" = "Serverwechsel";
@@ -2102,7 +2102,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "settings_details.general.edge_to_edge.enabled.title" = "Aktivieren";
 "settings_details.general.edge_to_edge.footer" = "Die Benutzeroberfläche von Home Assistant auf unterstützten Geräten randlos anzeigen. Dies ist eine experimentelle Funktion, die jederzeit entfernt werden kann und unter Umständen Layoutprobleme verursacht.";
 "settings_details.general.edge_to_edge.title" = "Randlose Anzeige";
-"settings_details.general.enhanced_web_security.footer" = "iOS 27 renders pages loaded over plain HTTP in a hardened, much slower mode, which makes dashboards lag on a local connection. Home Assistant turns that off so your dashboards stay fast. Switch this on to keep Apple's protection instead, at the cost of performance. Serving Home Assistant over HTTPS avoids the trade-off entirely. Takes effect the next time the app starts.";
+"settings_details.general.enhanced_web_security.footer" = "iOS 27 rendert Seiten, die über einfaches HTTP geladen werden, in einem abgesicherten, deutlich langsameren Modus, was bei einer lokalen Verbindung zu Verzögerungen bei den Dashboards führt. Home Assistant deaktiviert diese Funktion, damit deine Dashboards schnell bleiben. Aktiviere diese Option, um stattdessen den Schutz von Apple beizubehalten – auf Kosten der Leistung. Wenn du Home Assistant über HTTPS nutzt, vermeidest du diesen Kompromiss vollständig. Die Änderung tritt beim nächsten Start der App in Kraft.";
 "settings_details.general.enhanced_web_security.title" = "Apple Enhanced Web Security";
 "settings_details.general.full_screen.title" = "Vollbild";
 "settings_details.general.launch_on_login.title" = "App bei Anmeldung starten";
@@ -2372,10 +2372,10 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.sensors.no_results" = "Keine Sensoren passen zu deiner Suche";
 "settings_sensors.sensors.search_prompt" = "Sensoren durchsuchen";
-"settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
-"settings_sensors.servers.header" = "Servers";
-"settings_sensors.servers.search_prompt" = "Search servers";
-"settings_sensors.servers.server_body" = "Decide which of your device sensors you want to share with this server.";
+"settings_sensors.servers.footer" = "Jeder Server erhält die Sensoren, die du für ihn auswählst; ein Sensor kann also an den einen, aber nicht an den anderen melden.";
+"settings_sensors.servers.header" = "Server";
+"settings_sensors.servers.search_prompt" = "Server suchen";
+"settings_sensors.servers.server_body" = "Entscheide, welche Sensoren deines Geräts du für diesen Server freigeben möchtest.";
 "settings_sensors.settings.footer" = "Änderungen werden bei der nächsten Aktualisierung übernommen.";
 "settings_sensors.settings.header" = "Einstellungen";
 "settings_sensors.title" = "Sensoren";
@@ -2722,7 +2722,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "watch.interaction.toast.generic" = "Mit deiner Apple Watch synchronisiert";
 "watch.interaction.toast.servers" = "Synchronisierte Server";
 "watch.interaction.toast.title" = "Apple Watch";
-"watch.internal_url_prompt.info.message" = "Wenn deine Watch die Internetverbindung deines iPhones nutzt, kann sie nicht erkennen, ob du dich in einer sicheren Umgebung befindest – sie hat keinen Zugriff auf den WLAN-Netzwerknamen. Um dich in öffentlichen WLAN-Netzwerken zu schützen, wird deine interne URL standardmäßig nicht verwendet.\
+"watch.internal_url_prompt.info.message" = "Wenn deine Watch die Internetverbindung deines iPhones nutzt, kann sie nicht erkennen, ob du dich in einer sicheren Umgebung befindest – sie hat keinen Zugriff auf den WLAN-Namen. Um dich in einem öffentlichen WLAN zu schützen, wird deine interne URL standardmäßig nicht verwendet.\
 \
 Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der Watch synchronisiert und ihre Komplikationen nicht aktualisiert.";
 "watch.internal_url_prompt.info.not_now" = "Jetzt nicht";
@@ -2894,6 +2894,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "watch.lock_controls.open_confirmation.title" = "Möchtest du „%@“ wirklich öffnen?";
 "watch.lock_controls.unlock" = "Entriegeln";
 "watch.placeholder_complication_name" = "Platzhalter";
+"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Auf dieser Watch verfügbar";
 "watch.settings.client_certificate.import_instructions" = "Öffne Home Assistant auf deinem iPhone, um das Zertifikat zu importieren, und aktualisiere dann diese Seite.";
