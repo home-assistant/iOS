@@ -21,8 +21,16 @@ public enum WatchUserDefaultsKey: String {
     /// shared app group (unlike the other keys) so the watch widget extension's own self fetch can
     /// read it too.
     case complicationRefreshNotificationsEnabled
-    /// Unique IDs of the sensors the watch reports about itself that the user switched on.
+    /// The one list of switched-on sensors every server shared before they were chosen per server.
+    /// Only read by `WatchSensorEnablementStore`'s split, which removes it once it has been handed
+    /// to each server.
     case enabledSensorIDs
+    /// Unique IDs of the sensors the watch reports about itself that the user switched on, by
+    /// server identifier.
+    case enabledSensorIDsByServer
+    /// Set once the shared list above has been handed to every server the watch had at the time,
+    /// which is what keeps a server added later from inheriting it.
+    case enabledSensorIDsSplitAcrossServers
     /// When the watch last sent its sensors successfully, to any server.
     case sensorReportLastSuccessAt
     /// What the last failed sensor report said, cleared by the next run that has no failure.
@@ -32,7 +40,17 @@ public enum WatchUserDefaultsKey: String {
 public final class WatchUserDefaults: WatchSensorSettings {
     public static var shared = WatchUserDefaults()
 
-    private let userDefaults = UserDefaults()
+    private let userDefaults: UserDefaults
+
+    /// Which sensors each server receives. Every sensor is opt-in, so an ID that isn't in a server's
+    /// list is off there and nothing about it is sent to that server.
+    private let sensorEnablement: WatchSensorEnablementStore
+
+    init() {
+        let defaults = UserDefaults()
+        self.userDefaults = defaults
+        self.sensorEnablement = WatchSensorEnablementStore(defaults: defaults, servers: { Current.servers.all })
+    }
 
     public func set(_ value: Any?, key: WatchUserDefaultsKey) {
         userDefaults.set(value, forKey: key.rawValue)
@@ -153,25 +171,22 @@ public final class WatchUserDefaults: WatchSensorSettings {
 
     // MARK: - Watch sensors (reported by the watch as a device of its own)
 
-    /// Unique IDs of the sensors the user switched on. Every sensor is opt-in, so an ID that isn't
-    /// here is off and nothing about it is sent.
-    public var enabledSensorIDs: Set<String> {
-        get { Set(userDefaults.stringArray(forKey: WatchUserDefaultsKey.enabledSensorIDs.rawValue) ?? []) }
-        set { userDefaults.set(newValue.sorted(), forKey: WatchUserDefaultsKey.enabledSensorIDs.rawValue) }
+    public func enabledSensorIDs(forServer serverID: Identifier<Server>) -> Set<String> {
+        sensorEnablement.enabledSensorIDs(forServer: serverID)
     }
 
-    public func isSensorEnabled(uniqueID: String) -> Bool {
-        enabledSensorIDs.contains(uniqueID)
+    public func isSensorEnabled(uniqueID: String, forServer serverID: Identifier<Server>) -> Bool {
+        sensorEnablement.isSensorEnabled(uniqueID: uniqueID, forServer: serverID)
     }
 
-    public func setSensorEnabled(_ enabled: Bool, uniqueID: String) {
-        var ids = enabledSensorIDs
-        if enabled {
-            ids.insert(uniqueID)
-        } else {
-            ids.remove(uniqueID)
-        }
-        enabledSensorIDs = ids
+    public func setSensorEnabled(_ enabled: Bool, uniqueID: String, forServer serverID: Identifier<Server>) {
+        sensorEnablement.setSensorEnabled(enabled, uniqueID: uniqueID, forServer: serverID)
+    }
+
+    /// Drops the sensor choices of every server other than `serverIDs`; called once a sync from the
+    /// iPhone has settled which servers the watch has.
+    public func forgetSensorEnablement(forServersOtherThan serverIDs: [Identifier<Server>]) {
+        sensorEnablement.forgetServers(otherThan: serverIDs)
     }
 
     /// When the watch last sent its sensors successfully. `nil` until the first success.
