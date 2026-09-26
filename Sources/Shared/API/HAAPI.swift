@@ -704,6 +704,7 @@ public class HomeAssistantAPI {
         zone: AppZone?
     ) -> Promise<Void> {
         let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
+        let supportsLocationTime = server.info.version >= .locationTimeOnLocationUpdate
         let localMetadata = WebhookResponseLocation.localMetdata(
             trigger: updateType,
             zone: zone
@@ -719,7 +720,13 @@ public class HomeAssistantAPI {
 
             switch server.info.setting(for: .locationPrivacy) {
             case .exact:
-                update = .init(trigger: updateType, location: rawLocation, zone: zone, currentSSID: currentSSID)
+                update = .init(
+                    trigger: updateType,
+                    location: rawLocation,
+                    zone: zone,
+                    currentSSID: currentSSID,
+                    includeLocationTime: supportsLocationTime
+                )
                 location = rawLocation
             case .zoneOnly:
                 let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
