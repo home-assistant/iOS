@@ -67,7 +67,7 @@
 "app_intents.active_entities.filter.switches" = "switches";
 "app_intents.active_entities.name_with_server" = "%1$@ on %2$@";
 "app_intents.active_entities.title" = "Get what is on";
-"app_intents.add_to.description" = "Adds a Home Assistant entity to the Apple Watch, CarPlay quick access or the Mac toolbar";
+"app_intents.add_to.description" = "Добавляет объект Home Assistant на панель быстрого доступа Apple Watch, CarPlay или на панель инструментов Mac";
 "app_intents.add_to.destination.name" = "Destination";
 "app_intents.add_to.dialog.added" = "Added %1$@ to %2$@";
 "app_intents.add_to.dialog.already_added" = "%1$@ is already in %2$@";
@@ -259,7 +259,7 @@
 "app_intents.perform_action.response_success" = "Готово";
 "app_intents.perform_action.title" = "Выполнить действие";
 "app_intents.readable_entity.entity.name" = "Объект";
-"app_intents.reminders.create.which_list" = "Which list?";
+"app_intents.reminders.create.which_list" = "Какой список?";
 "app_intents.reminders.error.list_hidden" = "That to-do list is no longer available to Siri";
 "app_intents.reminders.error.no_list" = "There are no to-do lists to add this to";
 "app_intents.reminders.get_items.description" = "Get the items on a Home Assistant to-do list";
@@ -1617,7 +1617,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.urls_how_it_works.criteria.always_location" = "Доступ к местоположению установлен на «Всегда»";
 "settings.connection_section.urls_how_it_works.criteria.footer" = "Переключатель «Точная геопозиция» необходим при каждом считывании названия сети Wi-Fi.  Опция «Всегда» используется только в фоновом режиме, поэтому без нее внутренний URL-адрес по-прежнему используется, пока приложение открыто. Если сеть не может быть идентифицирована, приложение работает в обычном режиме, как описано выше.";
 "settings.connection_section.urls_how_it_works.criteria.hardware_addresses" = "At least one hardware address listed";
-"settings.connection_section.urls_how_it_works.criteria.header" = "On this device";
+"settings.connection_section.urls_how_it_works.criteria.header" = "На этом устройстве";
 "settings.connection_section.urls_how_it_works.criteria.internal_url" = "Internal URL is set";
 "settings.connection_section.urls_how_it_works.criteria.listed_network" = "Connected to a listed network";
 "settings.connection_section.urls_how_it_works.criteria.met" = "Met";
@@ -1981,7 +1981,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
 "settings.server_switching.closest_server.source.location.title" = "Location";
 "settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
-"settings.server_switching.closest_server.source.network.title" = "Wi-Fi network";
+"settings.server_switching.closest_server.source.network.title" = "Wi-Fi сеть";
 "settings.server_switching.closest_server.title" = "Ближайший сервер";
 "settings.server_switching.how_it_works.intro" = "Если у вас несколько домов, приложение может определить, какой сервер важен в данный момент, и переключиться на него за вас. Зайдите в свой второй дом, и его панель управления уже там.";
 "settings.server_switching.how_it_works.location.body" = "В противном случае ваше местоположение сравнивается с домашней зоной каждого сервера, и ближайшим считается тот, который расположен ближе всего.";
@@ -2101,7 +2101,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_details.general.edge_to_edge.footer" = "Отображение пользовательского интерфейса Home Assistant от края до края на устройствах, которые его поддерживают. Это экспериментальная функция, которая может быть удалена в любое время, а также может вызвать проблемы с версткой.";
 "settings_details.general.edge_to_edge.title" = "Отображение от края до края";
 "settings_details.general.enhanced_web_security.footer" = "В iOS 27 страницы, загружаемые по обычному протоколу HTTP, отображаются в усиленном, гораздо более медленном режиме, из-за чего при локальном подключении панели управления работают с задержкой. Home Assistant отключает этот режим, чтобы панели работали быстро. Включите этот режим, чтобы воспользоваться защитой Apple, но пожертвовать производительностью. Если обслуживать Home Assistant по протоколу HTTPS, этого компромисса можно избежать. Изменения вступят в силу при следующем запуске приложения.";
-"settings_details.general.enhanced_web_security.title" = "Apple Enhanced Web Security";
+"settings_details.general.enhanced_web_security.title" = "Расширенная веб-безопасность Apple";
 "settings_details.general.full_screen.title" = "Полноэкранный режим";
 "settings_details.general.launch_on_login.title" = "Запустить приложение при логине";
 "settings_details.general.links.title" = "Ссылки";
@@ -2371,9 +2371,9 @@ Importing replaces every category listed on this screen, including app settings.
 "settings_sensors.sensors.no_results" = "Нет датчиков, соответствующих вашему запросу";
 "settings_sensors.sensors.search_prompt" = "Поиск датчиков";
 "settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
-"settings_sensors.servers.header" = "Servers";
-"settings_sensors.servers.search_prompt" = "Search servers";
-"settings_sensors.servers.server_body" = "Decide which of your device sensors you want to share with this server.";
+"settings_sensors.servers.header" = "Серверы";
+"settings_sensors.servers.search_prompt" = "Поиск серверов";
+"settings_sensors.servers.server_body" = "Решите, какими датчиками вашего устройства вы хотите поделиться с этим сервером.";
 "settings_sensors.settings.footer" = "Изменения будут применены при следующем обновлении.";
 "settings_sensors.settings.header" = "Настройки";
 "settings_sensors.title" = "Датчики";
@@ -3058,8 +3058,8 @@ Importing replaces every category listed on this screen, including app settings.
 "widgets.actions.parameters.action" = "Действие";
 "widgets.actions.title" = "Действия";
 "widgets.areas.description" = "Show the areas of your home, floor by floor.";
-"widgets.areas.empty.description" = "No areas found on this server.";
-"widgets.areas.next_page" = "More areas";
+"widgets.areas.empty.description" = "На этом сервере не найдено пространств.";
+"widgets.areas.next_page" = "Больше пространств";
 "widgets.areas.other_areas" = "Other areas";
 "widgets.areas.page.title" = "Show other areas";
 "widgets.areas.previous_page" = "Previous areas";

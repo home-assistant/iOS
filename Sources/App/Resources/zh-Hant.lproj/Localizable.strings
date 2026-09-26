@@ -2893,7 +2893,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.lock_controls.open_confirmation.title" = "確定要開啟 \"%@\"？";
 "watch.lock_controls.unlock" = "解鎖";
 "watch.placeholder_complication_name" = "Placeholder";
-"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
+"watch.relay.unanswered.message" = "iPhone 已收到請求，但未及時回報。請先確認是否已執行，再重試一次。";
 "watch.settings.auto" = "自動";
 "watch.settings.client_certificate.available_on_watch" = "Watch 上可用";
 "watch.settings.client_certificate.import_instructions" = "在 iPhone 上開啟 Home Assistant 以匯入憑證，然後重新整理此頁面。";

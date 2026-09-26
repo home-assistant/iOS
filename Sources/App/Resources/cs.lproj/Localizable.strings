@@ -2893,7 +2893,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "watch.lock_controls.open_confirmation.title" = "Opravdu chcete otevřít \"%@\"?";
 "watch.lock_controls.unlock" = "Odemknout";
 "watch.placeholder_complication_name" = "Zástupný symbol";
-"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
+"watch.relay.unanswered.message" = "iPhone požadavek přijal, ale neodpověděl včas. Než to zkusíte znovu, zkontrolujte, zda se požadavek provedl.";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Dostupné na těchto hodinkách";
 "watch.settings.client_certificate.import_instructions" = "Pro import certifikátu otevřete Home Assistanta na iPhonu a poté obnovte stránku.";
