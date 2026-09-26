@@ -87,6 +87,7 @@
 		420E64C12D676B2400A31E86 /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 420E64C02D676B2400A31E86 /* SnapshotTestingCustomDump */; };
 		421125C72F51DE9200971BAD /* StatePrecision.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421125C62F51DE9200971BAD /* StatePrecision.test.swift */; };
 		42A1B2C12F60000000000002 /* HomeAssistantAPIGetConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1B2C02F60000000000002 /* HomeAssistantAPIGetConfig.test.swift */; };
+		42A1B2C12F600000000000F1 /* HomeAssistantAPISubmitLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1B2C02F600000000000F1 /* HomeAssistantAPISubmitLocation.test.swift */; };
 		42A1B2C12F60000000000001 /* ServerInfo+ConfigResponse.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1B2C02F60000000000001 /* ServerInfo+ConfigResponse.test.swift */; };
 		42145A622DAFD49A00891E04 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */; };
@@ -632,6 +633,7 @@
 		4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataStoreHandler.swift; sourceTree = "<group>"; };
 		421125C62F51DE9200971BAD /* StatePrecision.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.test.swift; sourceTree = "<group>"; };
 		42A1B2C02F60000000000002 /* HomeAssistantAPIGetConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIGetConfig.test.swift; sourceTree = "<group>"; };
+		42A1B2C02F600000000000F1 /* HomeAssistantAPISubmitLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPISubmitLocation.test.swift; sourceTree = "<group>"; };
 		42A1B2C02F60000000000001 /* ServerInfo+ConfigResponse.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServerInfo+ConfigResponse.test.swift"; sourceTree = "<group>"; };
 		42145A652F7F4CC000891E04 /* EntityColorAttributesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityColorAttributesParser.swift; sourceTree = "<group>"; };
 		42164BB8301320720077A903 /* ComplicationFormula.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFormula.test.swift; sourceTree = "<group>"; };
@@ -3178,6 +3180,7 @@
 				42F467200000000000000001 /* NotificationSender */,
 				421125C62F51DE9200971BAD /* StatePrecision.test.swift */,
 				42A1B2C02F60000000000002 /* HomeAssistantAPIGetConfig.test.swift */,
+				42A1B2C02F600000000000F1 /* HomeAssistantAPISubmitLocation.test.swift */,
 				42A1B2C02F60000000000001 /* ServerInfo+ConfigResponse.test.swift */,
 				42EDBC163002FBD10051FC9B /* Models */,
 				42EDBC0C3002FBD10051FC9B /* Extensions */,
@@ -4734,6 +4737,7 @@
 				11764A6C26817FC3007D47F3 /* UserDefaultsValueSync.test.swift in Sources */,
 				421125C72F51DE9200971BAD /* StatePrecision.test.swift in Sources */,
 				42A1B2C12F60000000000002 /* HomeAssistantAPIGetConfig.test.swift in Sources */,
+				42A1B2C12F600000000000F1 /* HomeAssistantAPISubmitLocation.test.swift in Sources */,
 				42A1B2C12F60000000000001 /* ServerInfo+ConfigResponse.test.swift in Sources */,
 				114CBAED283AB92D00A9BAFF /* SecTrust+TestAdditions.swift in Sources */,
 				94802EABC64FDEEC9F875310 /* CallServiceResponse.test.swift in Sources */,

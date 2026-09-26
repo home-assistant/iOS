@@ -331,6 +331,7 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertEqual(json["altitude"] as? Double, 103)
         XCTAssertEqual(json["course"] as? Double, 106)
         XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
+        XCTAssertNil(json["location_time"])
     }
 
     func testGPSExit() {
@@ -448,5 +449,45 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertEqual(json["altitude"] as? Double, 103)
         XCTAssertEqual(json["course"] as? Double, 106)
         XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
+    }
+
+    func testLocationTimeIncludedWhenRequested() throws {
+        let fixTime = Date(timeIntervalSince1970: 1_790_426_575.123)
+
+        let model = WebhookUpdateLocation(
+            trigger: .Manual,
+            location: CLLocation(
+                coordinate: .init(latitude: 1.23, longitude: 4.56),
+                altitude: 103,
+                horizontalAccuracy: 104,
+                verticalAccuracy: 105,
+                timestamp: fixTime
+            ),
+            zone: nil,
+            includeLocationTime: true
+        )
+
+        let json = model.toJSON()
+        let locationTime = try XCTUnwrap(json["location_time"] as? String)
+        let parsed = try XCTUnwrap(DateFormatter.iso8601Milliseconds.date(from: locationTime))
+        XCTAssertEqual(parsed.timeIntervalSince1970, fixTime.timeIntervalSince1970, accuracy: 0.001)
+    }
+
+    func testLocationTimeOmittedWithoutLocation() {
+        let model = WebhookUpdateLocation(
+            trigger: .BeaconRegionEnter,
+            location: CLLocation(latitude: 1.23, longitude: 4.56),
+            zone: AppZone(
+                entityId: "zone.given_name",
+                serverIdentifier: "server1",
+                latitude: -2.34,
+                longitude: -5.67,
+                radius: 88.8
+            ),
+            includeLocationTime: true
+        )
+
+        // Beacon updates report the zone rather than the device location, so there is no fix to date.
+        XCTAssertNil(model.toJSON()["location_time"])
     }
 }
