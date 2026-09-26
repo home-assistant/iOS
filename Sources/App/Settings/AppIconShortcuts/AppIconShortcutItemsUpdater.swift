@@ -39,11 +39,6 @@ enum AppIconShortcutItemsUpdater {
     }
 
     static func update() {
-        let forcedShortcutItems = Self.forcedShortcutItems
-        if forcedShortcutItems.isEmpty == false {
-            publish(shortcutItems: forcedShortcutItems)
-        }
-
         // `loadInformation` fetches every entity, area, and device row for every server
         // synchronously on the calling thread, and `update()` runs at app launch — keep that work
         // off the main thread. The resulting items are published back on main.
@@ -73,8 +68,9 @@ enum AppIconShortcutItemsUpdater {
                             icon: icon(for: item, provider: magicItemProvider)
                         )
                     }
-                // Rebuilt rather than captured: the items are `UIApplicationShortcutItem`s, which
-                // shouldn't be handed across threads, and the property is a cheap pure rebuild.
+                // The forced items are published here, with the configured ones, rather than up
+                // front: publishing them alone first would replace the user's shortcuts before the
+                // guard above had a chance to keep them.
                 let shortcutItems = Self.forcedShortcutItems + configuredShortcutItems
                 publish(shortcutItems: shortcutItems)
             }
