@@ -13,6 +13,31 @@ enum AppIconShortcutItemsUpdater {
         let itemType: MagicItem.ItemType
     }
 
+    private static var databaseUpdateObserver: NSObjectProtocol?
+
+    /// Publishes the configured items now and again each time the database updater finishes a
+    /// server, so titles resolved before the entity table was synced (a fresh install, an imported
+    /// configuration) catch up without waiting for the next launch.
+    static func start() {
+        if databaseUpdateObserver == nil {
+            databaseUpdateObserver = NotificationCenter.default.addObserver(
+                forName: .appDatabaseUpdaterDidFinishRoutine,
+                object: nil,
+                queue: .main
+            ) { _ in
+                update()
+            }
+        }
+        update()
+    }
+
+    static func stop() {
+        if let databaseUpdateObserver {
+            NotificationCenter.default.removeObserver(databaseUpdateObserver)
+        }
+        databaseUpdateObserver = nil
+    }
+
     static func update() {
         let forcedShortcutItems = Self.forcedShortcutItems
         if forcedShortcutItems.isEmpty == false {
@@ -28,11 +53,18 @@ enum AppIconShortcutItemsUpdater {
         // process frozen mid-statement while holding the app-group SQLite file lock (0xdead10cc).
         AppDatabaseSuspension.performProtectedWork(named: .appIconShortcutItems) {
             let magicItemProvider = Current.magicItemProvider()
-            magicItemProvider.loadInformation { _ in
+            magicItemProvider.loadInformation { entitiesPerServer in
                 let config = (try? AppIconShortcutConfig.config()) ?? AppIconShortcutConfig()
-                let configuredShortcutItems = config.items
-                    .filter { $0.type != .unsupported }
-                    .prefix(maximumShortcutItems)
+                let items = Array(config.items.filter { $0.type != .unsupported }.prefix(maximumShortcutItems))
+                // A failed entity read leaves the server out of the result entirely (one whose
+                // entities were never synced still reports an empty list). Every title would then
+                // fall back to a bare entity id, so keep what is published and let the next update
+                // — the database updater finishing, or the next launch — try again.
+                guard !hasUnreadableServer(for: items, entitiesPerServer: entitiesPerServer) else {
+                    Current.Log.error("Keeping the published app icon shortcuts: entities could not be read")
+                    return
+                }
+                let configuredShortcutItems = items
                     .map { item in
                         UIApplicationShortcutItem(
                             type: shortcutType(for: item),
@@ -62,6 +94,16 @@ enum AppIconShortcutItemsUpdater {
             itemId: String(parts[2]),
             itemType: itemType
         )
+    }
+
+    private static func hasUnreadableServer(
+        for items: [MagicItem],
+        entitiesPerServer: [String: [HAAppEntity]]
+    ) -> Bool {
+        items.contains { item in
+            entitiesPerServer[item.serverId] == nil
+                && Current.servers.server(for: .init(rawValue: item.serverId)) != nil
+        }
     }
 
     private static func shortcutType(for item: MagicItem) -> String {
