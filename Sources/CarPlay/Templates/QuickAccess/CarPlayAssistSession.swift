@@ -596,7 +596,7 @@ final class CarPlayAssistSession: NSObject {
         NotificationCenter.default.removeObserver(self, name: .AVPlayerItemFailedToPlayToEndTime, object: nil)
         clearTTSPlayerObservers()
 
-        let playerItem = AVPlayerItem(url: url)
+        let playerItem = AVPlayerItem(asset: AVURLAsset.withMirroredCookies(url: url))
         ttsPlayer.automaticallyWaitsToMinimizeStalling = Current.settingsStore
             .carPlayAssistDebugSettings
             .avPlayerAutomaticallyWaitsToMinimizeStalling

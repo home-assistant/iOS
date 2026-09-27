@@ -58,6 +58,10 @@ public struct HANetworkingEnvironment {
     /// HACore wires this to `Current.appConfiguration == .debug`.
     public var isDebug: Bool = false
 
+    /// Cookie storage used by every native request. HACore wires this to the app-group storage,
+    /// which `WebViewCookieMirror` fills with the frontend WebView's cookies.
+    public var cookieStorage: HTTPCookieStorage = .shared
+
     /// Invoked when the server permanently rejects the refresh token (reauthentication needed). HACore
     /// wires this to log a client event, unsubscribe the model manager, disconnect the API connection,
     /// and mark onboarding as needed (`.unauthenticated`). No-op by default.
