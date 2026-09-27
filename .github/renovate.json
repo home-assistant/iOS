@@ -4,6 +4,11 @@
   "enabledManagers": ["bundler", "github-actions"],
   "semanticCommits": "disabled",
   "labels": ["dependencies"],
+  "lockFileMaintenance": {
+    "description": "Refresh Gemfile.lock weekly. This is what updates the fastlane plugins: they are declared without a version in fastlane/Pluginfile and only pinned in the lock file.",
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
   "packageRules": [
     {
       "description": "GitHub Actions: weekly, grouped into one PR with the same commit prefix and labels Dependabot used",
