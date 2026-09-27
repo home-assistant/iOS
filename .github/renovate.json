@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "enabledManagers": ["bundler", "github-actions"],
+  "semanticCommits": "disabled",
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "GitHub Actions: weekly, grouped into one PR with the same commit prefix and labels Dependabot used",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "groupSlug": "github-actions",
+      "commitMessagePrefix": "GitHub Actions:",
+      "addLabels": ["github_actions"],
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "description": "Leave runner labels and action version inputs alone, Dependabot never updated those",
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["github-runner", "uses-with"],
+      "enabled": false
+    }
+  ]
+}
