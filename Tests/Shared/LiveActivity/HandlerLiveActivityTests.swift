@@ -1,4 +1,5 @@
 #if canImport(ActivityKit)
+import ActivityKit
 import Foundation
 import PromiseKit
 @testable import Shared
@@ -285,6 +286,18 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
         LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
         XCTAssertNil(LiveActivityPendingStart.drainAll().first?.relevanceScore)
+    }
+
+    func testPendingStartDrain_passesQueuedRelevanceScoreToRegistry() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.6))
+        LiveActivityPendingStartObserver.drain()
+        let deadline = Date().addingTimeInterval(5)
+        while mockRegistry.startOrUpdateCalls.isEmpty, Date() < deadline {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+        }
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.first?.tag, "queued-tag")
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.first?.relevanceScore, 0.6)
+        XCTAssertTrue(LiveActivityPendingStart.drainAll().isEmpty)
     }
 
     private func makePendingRequest(relevanceScore: Double?) -> LiveActivityPendingStart.Request {
@@ -581,6 +594,93 @@ final class LiveActivityRegistryChronometerAnchorTests: XCTestCase {
 
         XCTAssertNil(carried.chronometerStart)
         XCTAssertEqual(carried.countdownEnd, new.countdownEnd)
+    }
+}
+
+// MARK: - LiveActivityRegistry.Update
+
+@available(iOS 17.2, *)
+final class LiveActivityRegistryUpdateTests: XCTestCase {
+    private func state(message: String = "m") -> HALiveActivityAttributes.ContentState {
+        HandlerStartOrUpdateLiveActivity.contentState(from: ["message": message])
+    }
+
+    private func previousContent(score: Double) -> ActivityContent<HALiveActivityAttributes.ContentState> {
+        ActivityContent(state: state(message: "previous"), staleDate: nil, relevanceScore: score)
+    }
+
+    func testContent_noScoreNoPrevious_usesDefaultScore() {
+        let content = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).content(after: nil)
+        XCTAssertEqual(content.relevanceScore, 0.5)
+        XCTAssertEqual(content.state.message, "m")
+    }
+
+    func testContent_noScore_keepsPreviousScore() {
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: nil)
+        XCTAssertEqual(update.content(after: previousContent(score: 0.8)).relevanceScore, 0.8)
+    }
+
+    func testContent_score_replacesPreviousScore() {
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.3)
+        XCTAssertEqual(update.content(after: previousContent(score: 0.8)).relevanceScore, 0.3)
+    }
+
+    func testContent_noTimer_staleDateIsThirtyMinutesOut() {
+        let content = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).content(after: nil)
+        XCTAssertEqual(content.staleDate?.timeIntervalSinceNow ?? 0, 30 * 60, accuracy: 5)
+    }
+
+    func testContent_countdown_staleDateFollowsTimerEnd() {
+        let end = Date().addingTimeInterval(600)
+        var timer = state()
+        timer.chronometer = true
+        timer.countdownEnd = end
+        let content = LiveActivityRegistry.Update(state: timer, relevanceScore: nil).content(after: nil)
+        XCTAssertEqual(content.staleDate, end.addingTimeInterval(2))
+    }
+
+    func testContent_pastCountdown_staleDateStaysInFuture() {
+        var timer = state()
+        timer.chronometer = true
+        timer.countdownEnd = Date().addingTimeInterval(-600)
+        let content = LiveActivityRegistry.Update(state: timer, relevanceScore: nil).content(after: nil)
+        XCTAssertGreaterThan(content.staleDate ?? .distantPast, Date())
+    }
+
+    func testContent_carriesForwardChronometerAnchor() {
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        var previous = state()
+        previous.chronometer = true
+        previous.chronometerStart = start
+        previous.countdownEnd = start.addingTimeInterval(1200)
+        var new = state(message: "updated")
+        new.chronometer = true
+        new.chronometerStart = start.addingTimeInterval(300)
+        new.countdownEnd = start.addingTimeInterval(1500)
+        let update = LiveActivityRegistry.Update(state: new, relevanceScore: nil)
+        let content = update.content(after: ActivityContent(state: previous, staleDate: nil))
+        XCTAssertEqual(content.state.chronometerStart, start)
+        XCTAssertEqual(content.state.countdownEnd, previous.countdownEnd)
+        XCTAssertEqual(content.state.message, "updated")
+    }
+
+    func testInheriting_noScore_takesPreviousScore() {
+        let previous = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.9)
+        let update = LiveActivityRegistry.Update(state: state(message: "next"), relevanceScore: nil)
+            .inheriting(previous)
+        XCTAssertEqual(update.relevanceScore, 0.9)
+        XCTAssertEqual(update.state.message, "next")
+    }
+
+    func testInheriting_score_keepsOwnScore() {
+        let previous = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.9)
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.2).inheriting(previous)
+        XCTAssertEqual(update.relevanceScore, 0.2)
+    }
+
+    func testInheriting_noPrevious_staysNil() {
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).inheriting(nil)
+        XCTAssertNil(update.relevanceScore)
     }
 }
 
