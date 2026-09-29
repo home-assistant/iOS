@@ -31,6 +31,9 @@ final class NativeTabBarViewModel: ObservableObject {
         NativeTabBarButtonLocator.frame(ofButtonTitled: $0, trailing: $1)
     }
 
+    /// The vertical bar draws its tabs out of process, so there is no spot on screen to zoom out of.
+    var usesVerticalBar = false
+
     private let allServers: () -> [Server]
     private let extrasStore: NativeTabBarExtrasStore
     private var extras: NativeTabBarExtras
@@ -165,7 +168,7 @@ final class NativeTabBarViewModel: ObservableObject {
             // Moving the selection there and back on the next turn is what makes SwiftUI un-highlight the tab.
             let previousTab = selection
             selection = tab
-            let tapped = tabItems.first { $0.tab == tab }
+            let tapped = usesVerticalBar ? nil : tabItems.first { $0.tab == tab }
             perform(tab, sourceFrame: tapped.flatMap { locateTabButton($0.title, $0.id == searchRoleItem?.id) })
             DispatchQueue.main.async { [weak self] in
                 guard let self, selection == tab else { return }
@@ -210,8 +213,11 @@ final class NativeTabBarViewModel: ObservableObject {
     }
 
     /// The presenter belongs to the scene the tab bar is showing in, so Settings opens in that window only.
-    func showAppSettings(using presenter: AppSettingsPresenter) {
-        presenter.presentSettings(zoomingFrom: Self.appSettingsTransitionID)
+    func showAppSettings(
+        using presenter: AppSettingsPresenter,
+        zoomingFrom sourceID: String? = NativeTabBarViewModel.appSettingsTransitionID
+    ) {
+        presenter.presentSettings(zoomingFrom: sourceID)
     }
 
     // MARK: - Servers
@@ -222,6 +228,10 @@ final class NativeTabBarViewModel: ObservableObject {
 
     var hasMultipleServers: Bool {
         servers.count > 1
+    }
+
+    var otherServers: [Server] {
+        servers.filter { $0.identifier != sidebar.server.identifier }
     }
 
     func open(server: Server) {
