@@ -14,7 +14,8 @@ import SharedPush
 ///
 /// Notification payload fields mirror the Android companion app:
 ///   tag, title, message, critical_text, progress, progress_max,
-///   chronometer, when, when_relative, notification_icon, notification_icon_color
+///   chronometer, when, when_relative, when_start, notification_icon,
+///   notification_icon_color
 @available(iOS 17.2, *)
 struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     private enum ValidationError: Error {
@@ -150,22 +151,39 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
 
         // `when` + `when_relative` → absolute timer end date.
         // Parsed as Double to preserve sub-second Unix timestamps sent by HA.
-        // A negative relative `when` is a bounded count-up: the timer counts up from now
-        // toward `|when|` seconds and freezes there — the sign is the direction, the
-        // magnitude is the duration. (Negative values never rendered before this existed,
-        // so the encoding is backward-compatible; Android shows an unbounded count-up.)
+        // A negative relative `when` is a bounded count-up: the timer counts up from its start
+        // toward `|when|` seconds and freezes there — the sign is the direction, the magnitude is
+        // the total duration. (Negative values never rendered before this existed, so the encoding
+        // is backward-compatible; Android shows an unbounded count-up.)
+        //
+        // `when_start` is the explicit timer start and is always a Unix timestamp — `when_relative`
+        // applies to `when` only, so re-sending the same start is idempotent. Per mode:
+        //   - bounded count-up: replaces receipt time as the anchor `|when|` is measured from;
+        //   - countdown: lower bound of the progress bar (start → end instead of now → end); the
+        //     chronometer text still counts now → end;
+        //   - unbounded count-up (`when` at or before now): inert — `when` is itself the anchor.
         var countdownEnd: Date?
         var chronometerStart: Date?
+        var timerStart: Date?
         if let when = (payload["when"] as? NSNumber).map(\.doubleValue) {
             let whenRelative = payload["when_relative"] as? Bool ?? false
+            let now = Date()
+            let explicitStart = (payload["when_start"] as? NSNumber)
+                .map { Date(timeIntervalSince1970: $0.doubleValue) }
             if whenRelative, when < 0 {
-                let now = Date()
-                chronometerStart = now
-                countdownEnd = now.addingTimeInterval(-when)
-            } else if whenRelative {
-                countdownEnd = Date().addingTimeInterval(when)
+                // A start in the future is kept as sent rather than clamped to now: the dates stay
+                // deterministic and the views clamp to the range (0:00, empty bar) until it begins.
+                let start = explicitStart ?? now
+                chronometerStart = start
+                countdownEnd = start.addingTimeInterval(-when)
+                timerStart = explicitStart
             } else {
-                countdownEnd = Date(timeIntervalSince1970: when)
+                let end = whenRelative ? now.addingTimeInterval(when) : Date(timeIntervalSince1970: when)
+                countdownEnd = end
+                // A start at or after the end can't anchor a bar and falls back to now → end.
+                if let explicitStart, explicitStart < end {
+                    timerStart = explicitStart
+                }
             }
         }
 
@@ -178,6 +196,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             chronometer: chronometer,
             countdownEnd: countdownEnd,
             chronometerStart: chronometerStart,
+            timerStart: timerStart,
             icon: icon,
             color: color,
             url: url,

@@ -58,6 +58,7 @@ struct HALockScreenView: View {
             } else if state.chronometer == true, let end = state.countdownEnd {
                 HAActivityTimerProgressBar(
                     start: state.chronometerStart,
+                    timerStart: state.timerStart,
                     end: end,
                     tint: barColor,
                     direction: state.resolvedProgressBarDirection

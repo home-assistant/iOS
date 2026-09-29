@@ -76,15 +76,29 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// Absolute end date for the timer.
         /// Computed from `when` + `when_relative` in the notification payload:
         ///   - `when_relative: true`  → `Date().addingTimeInterval(Double(when))`
-        ///   - `when_relative: true` with a negative `when` → `Date().addingTimeInterval(-Double(when))`
+        ///   - `when_relative: true` with a negative `when` → `start.addingTimeInterval(-Double(when))`,
+        ///     where `start` is the explicit `when_start` if sent, else receipt time
         ///     (bounded count-up toward `|when|` seconds; see `chronometerStart`)
         ///   - `when_relative: false` → `Date(timeIntervalSince1970: Double(when))`
         public var countdownEnd: Date?
 
         /// Start anchor for a bounded count-up timer, stamped when a negative relative `when`
-        /// is parsed: the timer shows elapsed time from this date and freezes on reaching
-        /// `countdownEnd`. Nil for countdowns and unbounded count-ups.
+        /// is parsed: the explicit `when_start` if sent, else receipt time. The timer shows
+        /// elapsed time from this date and freezes on reaching `countdownEnd`. Nil for
+        /// countdowns and unbounded count-ups.
         public var chronometerStart: Date?
+
+        /// Explicit timer start, parsed from `when_start` (always a Unix timestamp in seconds —
+        /// `when_relative` applies to `when` only). Nil when not sent. What it means depends on the
+        /// timer mode:
+        ///   - Countdown: the progress bar spans this → `countdownEnd` instead of re-ranging to
+        ///     now → `countdownEnd` on every update; the chronometer text still counts now → end.
+        ///     Dropped at parse time unless it precedes `countdownEnd`.
+        ///   - Bounded count-up: the parser anchors `chronometerStart` here (so both are equal) and
+        ///     the registry skips its receipt-time carry-forward — the sender's start always wins.
+        ///   - Unbounded count-up (`when` at or before now): inert. `when` is itself the anchor the
+        ///     text counts up from, and no bar renders once the end has passed.
+        public var timerStart: Date?
 
         /// MDI icon slug for display. Maps to `notification_icon`.
         public var icon: String?
@@ -160,6 +174,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case chronometer
             case countdownEnd = "countdown_end"
             case chronometerStart = "chronometer_start"
+            case timerStart = "timer_start"
             case icon
             case color
             case url
@@ -180,6 +195,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             chronometer: Bool? = nil,
             countdownEnd: Date? = nil,
             chronometerStart: Date? = nil,
+            timerStart: Date? = nil,
             icon: String? = nil,
             color: String? = nil,
             url: String? = nil,
@@ -196,6 +212,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.chronometer = chronometer
             self.countdownEnd = countdownEnd
             self.chronometerStart = chronometerStart
+            self.timerStart = timerStart
             self.icon = icon
             self.color = color
             self.url = url
@@ -233,6 +250,11 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             } else {
                 self.chronometerStart = nil
             }
+            if let timestamp = try container.decodeIfPresent(Double.self, forKey: .timerStart) {
+                self.timerStart = Date(timeIntervalSince1970: timestamp)
+            } else {
+                self.timerStart = nil
+            }
             self.icon = try container.decodeIfPresent(String.self, forKey: .icon)
             self.color = try container.decodeIfPresent(String.self, forKey: .color)
             self.url = try container.decodeIfPresent(String.self, forKey: .url)
@@ -255,6 +277,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             }
             if let chronometerStart {
                 try container.encode(chronometerStart.timeIntervalSince1970, forKey: .chronometerStart)
+            }
+            if let timerStart {
+                try container.encode(timerStart.timeIntervalSince1970, forKey: .timerStart)
             }
             try container.encodeIfPresent(icon, forKey: .icon)
             try container.encodeIfPresent(color, forKey: .color)

@@ -250,7 +250,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             homeassistant["live_update"] = true
             for key in [
                 "tag", "critical_text", "progress", "progress_max", "chronometer",
-                "when", "when_relative",
+                "when", "when_relative", "when_start",
                 NotificationPayloadKey.notificationIcon.rawValue,
                 NotificationPayloadKey.notificationIconColor.rawValue,
                 "background_color", "text_color", "progress_bar_color",

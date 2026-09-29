@@ -88,6 +88,7 @@ struct HALiveActivityCompactView: View {
 
                 HAActivityTimerProgressBar(
                     start: state.chronometerStart,
+                    timerStart: state.timerStart,
                     end: end,
                     tint: barColor,
                     direction: state.resolvedProgressBarDirection
