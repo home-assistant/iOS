@@ -90,6 +90,7 @@ struct NativeTabBarContainerView: View {
         }
         .tabViewSearchActivation(.searchTabSelection)
         .tabBarMinimizeBehavior(.onScrollDown)
+        .tint(viewModel.accentColor)
         .background(NativeTabBarLongPressInstaller {
             viewModel.showCustomize(zoomingFromButton: false)
         })

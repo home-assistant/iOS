@@ -55,6 +55,7 @@ struct MacSidebarView: View {
                             isSelected: false,
                             server: viewModel.server,
                             user: viewModel.user,
+                            accentColor: viewModel.accentColor,
                             accessory: .show,
                             onAccessoryTap: { viewModel.show(itemId: item.id) }
                         ) {}
@@ -82,6 +83,7 @@ struct MacSidebarView: View {
                             isSelected: viewModel.selectedItemId == item.id,
                             server: viewModel.server,
                             user: viewModel.user,
+                            accentColor: viewModel.accentColor,
                             isPinned: true
                         ) {
                             viewModel.select(itemId: item.id)
@@ -104,6 +106,7 @@ struct MacSidebarView: View {
             isSelected: !viewModel.isEditing && viewModel.selectedItemId == item.id,
             server: viewModel.server,
             user: viewModel.user,
+            accentColor: viewModel.accentColor,
             accessory: viewModel.isEditing && viewModel.canHide(item) ? .hide : nil,
             onAccessoryTap: { viewModel.hide(itemId: item.id) }
         ) {
