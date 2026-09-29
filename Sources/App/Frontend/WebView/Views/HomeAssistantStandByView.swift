@@ -31,6 +31,8 @@ struct HomeAssistantStandByView: View {
 
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
@@ -74,13 +76,20 @@ struct HomeAssistantStandByView: View {
         showsEmptyState ? WebViewEmptyStateIcon.logoSize : LaunchSplashOverlayView.Constants.splashLogoSize
     }
 
-    static func contentOffset(safeAreaInsets: EdgeInsets, showsEmptyState: Bool) -> CGSize {
+    static func contentOffset(
+        safeAreaInsets: EdgeInsets,
+        layoutDirection: LayoutDirection,
+        showsEmptyState: Bool
+    ) -> CGSize {
         guard !showsEmptyState else { return .zero }
         // The splash logo sits at an offset from the full-screen center while this content is laid
         // out inside the safe area; shift by the safe-area asymmetry plus the splash offset so the
-        // two logos coincide.
+        // two logos coincide. The offset is physical, so the semantic insets are mapped to sides first.
+        let (left, right) = layoutDirection == .rightToLeft
+            ? (safeAreaInsets.trailing, safeAreaInsets.leading)
+            : (safeAreaInsets.leading, safeAreaInsets.trailing)
         return CGSize(
-            width: (safeAreaInsets.trailing - safeAreaInsets.leading) / 2,
+            width: (right - left) / 2,
             height: (safeAreaInsets.bottom - safeAreaInsets.top) / 2
                 + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
         )
@@ -186,7 +195,11 @@ struct HomeAssistantStandByView: View {
                     .transition(.opacity)
             }
         }
-        .offset(Self.contentOffset(safeAreaInsets: safeAreaInsets, showsEmptyState: showsEmptyState))
+        .offset(Self.contentOffset(
+            safeAreaInsets: safeAreaInsets,
+            layoutDirection: layoutDirection,
+            showsEmptyState: showsEmptyState
+        ))
         .opacity(standByContentOpacity)
         // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
         // while buttons keep priority.
