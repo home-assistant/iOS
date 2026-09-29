@@ -24,6 +24,10 @@ public final class WatchConnectivityManager: NSObject {
         let perform: () -> Void
     }
 
+    public struct InteractiveSendTicket {
+        let queuedSequence: Int?
+    }
+
     /// State of the outbound interactive-send queue (see `WatchConnectivityManager+SendQueue`).
     let sendQueueLock = NSLock()
     var pendingInteractiveSends: [PendingInteractiveSend] = []

@@ -98,10 +98,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasEntityAddTo",
             "hasSplashscreen",
             "appVersion",
-            "toastComponentVersion",
         ]
 
         let actualKeys = Set(result.keys)
-        XCTAssertTrue(expectedKeys.isSubset(of: actualKeys), "Missing keys: \(expectedKeys.subtracting(actualKeys))")
+        XCTAssertEqual(actualKeys, expectedKeys)
     }
 }

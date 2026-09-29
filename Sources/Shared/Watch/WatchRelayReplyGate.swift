@@ -12,19 +12,22 @@ import Foundation
 /// resume with yet.
 final class WatchRelayReplyGate: @unchecked Sendable {
     private let lock = NSLock()
-    private var continuation: CheckedContinuation<WatchHTTPResponsePayload?, Never>?
+    private var continuation: CheckedContinuation<WatchRequestRelay.Delivery, Never>?
     private var isSettled = false
+    private var settledWith: WatchRequestRelay.Delivery?
+    private var ticket: WatchConnectivityManager.InteractiveSendTicket?
 
     /// Takes ownership of the wait.
     ///
     /// Returns `false` when it was already settled — only possible when the task was cancelled
     /// before the send went out — having resumed the continuation itself. The caller must then not
     /// go on to put anything on the link: nobody is left to read the answer.
-    func adopt(_ continuation: CheckedContinuation<WatchHTTPResponsePayload?, Never>) -> Bool {
+    func adopt(_ continuation: CheckedContinuation<WatchRequestRelay.Delivery, Never>) -> Bool {
         lock.lock()
         if isSettled {
+            let outcome = settledWith ?? .notSent
             lock.unlock()
-            continuation.resume(returning: nil)
+            continuation.resume(returning: outcome)
             return false
         }
         self.continuation = continuation
@@ -32,17 +35,34 @@ final class WatchRelayReplyGate: @unchecked Sendable {
         return true
     }
 
-    /// Hands `value` to whoever is waiting, if the wait is still open. Every later call does nothing.
-    func settle(_ value: WatchHTTPResponsePayload?) {
+    /// Hands `outcome` to whoever is waiting, if the wait is still open. Every later call does nothing.
+    func settle(_ outcome: WatchRequestRelay.Delivery) {
         lock.lock()
         guard !isSettled else {
             lock.unlock()
             return
         }
         isSettled = true
+        settledWith = outcome
         let waiting = continuation
         continuation = nil
         lock.unlock()
-        waiting?.resume(returning: value)
+        waiting?.resume(returning: outcome)
+    }
+
+    func hold(_ ticket: WatchConnectivityManager.InteractiveSendTicket) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard !isSettled else { return false }
+        self.ticket = ticket
+        return true
+    }
+
+    func takeTicket() -> WatchConnectivityManager.InteractiveSendTicket? {
+        lock.lock()
+        defer { lock.unlock() }
+        let held = ticket
+        ticket = nil
+        return held
     }
 }

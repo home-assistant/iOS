@@ -87,6 +87,10 @@ public struct MagicItem: Codable, Equatable, Hashable {
         type == .assistPipeline || type == .assistPrompt
     }
 
+    public func isSameStoredItem(as other: MagicItem) -> Bool {
+        id == other.id && (serverId == other.serverId || (type == .assistPrompt && other.type == .assistPrompt))
+    }
+
     /// Domain retrieved from id when item is entity else nil
     public var domain: Domain? {
         if let domainString = id.split(separator: ".").first, let domain = Domain(rawValue: String(domainString)) {
@@ -1093,7 +1097,12 @@ public extension MagicItem {
             // in this file.
             let result: Swift.Result<(Data, HTTPURLResponse), Error>
             do {
-                let response = try await ServerRequestPerformer.perform(request, server: server, onStep: onStep)
+                let response = try await ServerRequestPerformer.perform(
+                    request,
+                    server: server,
+                    priority: .userAction,
+                    onStep: onStep
+                )
                 result = .success(response)
             } catch {
                 result = .failure(error)
