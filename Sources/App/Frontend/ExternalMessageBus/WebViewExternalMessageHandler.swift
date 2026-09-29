@@ -527,6 +527,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         pipeline: String = "",
         autoStartRecording: Bool = false
     ) {
+        let presentsAsSheet = webViewController?.presentsNextAssistAsSheet ?? false
+        webViewController?.presentsNextAssistAsSheet = false
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
@@ -554,8 +556,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             ))
             let tappedSource = webViewController?.pendingAssistZoomSourceView
             webViewController?.pendingAssistZoomSourceView = nil
-            let presentsAsSheet = webViewController?.presentsNextAssistAsSheet ?? false
-            webViewController?.presentsNextAssistAsSheet = false
             if presentsAsSheet {
                 assistView.modalPresentationStyle = .automatic
             } else if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {

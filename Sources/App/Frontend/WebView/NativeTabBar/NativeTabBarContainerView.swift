@@ -98,7 +98,7 @@ struct NativeTabBarContainerView: View {
             viewModel.showCustomize(zoomingFromButton: false)
         })
         .background(VerticalBarObserver(hasVerticalBar: $hasVerticalBar))
-        .onChange(of: hasVerticalBar) { _, hasVerticalBar in
+        .onChange(of: hasVerticalBar, initial: true) { _, hasVerticalBar in
             viewModel.usesVerticalBar = hasVerticalBar
         }
         .sheet(isPresented: $viewModel.showsCustomize) {
