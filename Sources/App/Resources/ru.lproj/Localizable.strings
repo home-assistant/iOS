@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Введите запрос...";
 "assist.watch.mic_button.title" = "Нажмите, чтобы";
 "assist.watch.not_reachable.title" = "Assist требует подключения к iPhone. В данный момент ваш iPhone недоступен.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Громкость";
 "assist_pipeline_picker.no_pipelines" = "Нет доступных pipeline";
 "assist_pipeline_picker.placeholder" = "Выберите обработчик";

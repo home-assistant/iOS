@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Πατήστε για να";
 "assist.watch.not_reachable.title" = "Το Assist απαιτεί συνδεσιμότητα iPhone. Το iPhone σας δεν είναι προσβάσιμο αυτή τη στιγμή.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Ελεγχος έντασης";
 "assist_pipeline_picker.no_pipelines" = "Δεν υπάρχουν διαθέσιμα pipelines";
 "assist_pipeline_picker.placeholder" = "Επιλογή pipeline";

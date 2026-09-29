@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Typ een verzoek...";
 "assist.watch.mic_button.title" = "Tik om";
 "assist.watch.not_reachable.title" = "Assist vereist iPhone-connectiviteit. Je iPhone is nu niet bereikbaar.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Volumeregeling";
 "assist_pipeline_picker.no_pipelines" = "Geen pijplijnen beschikbaar";
 "assist_pipeline_picker.placeholder" = "Kies pijplijn";
