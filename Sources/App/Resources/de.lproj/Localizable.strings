@@ -2894,7 +2894,7 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "watch.lock_controls.open_confirmation.title" = "Möchtest du „%@“ wirklich öffnen?";
 "watch.lock_controls.unlock" = "Entriegeln";
 "watch.placeholder_complication_name" = "Platzhalter";
-"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
+"watch.relay.unanswered.message" = "Das iPhone hat die Anfrage empfangen, aber nicht rechtzeitig geantwortet. Prüfe, ob es lief, bevor du es erneut versuchst.";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Auf dieser Watch verfügbar";
 "watch.settings.client_certificate.import_instructions" = "Öffne Home Assistant auf deinem iPhone, um das Zertifikat zu importieren, und aktualisiere dann diese Seite.";
