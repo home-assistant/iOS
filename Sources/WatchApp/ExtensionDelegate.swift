@@ -70,6 +70,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // connection info doesn't carry the override across launches/syncs).
         WatchServerSync.applyURLOverrides()
 
+        // A sensor selection made before sensors were chosen per server goes to the servers the
+        // watch has right now, before a sync can replace them with ones it never reported to.
+        WatchUserDefaults.shared.splitSensorEnablementAcrossServersIfNeeded()
+
         // The persisted servers can reference an mTLS client certificate this Watch's Keychain no
         // longer has; ask the phone to re-send it rather than failing every request until the user
         // happens to hit refresh.
