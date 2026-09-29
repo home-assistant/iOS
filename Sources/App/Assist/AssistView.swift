@@ -85,10 +85,16 @@ struct AssistView: View {
     @State private var occlusionInsets = EdgeInsets()
     @StateObject private var softwareKeyboard = SoftwareKeyboardObserver()
 
-    init(viewModel: AssistViewModel, showCloseButton: Bool = true, forcesLegacyAppearance: Bool = false) {
+    init(
+        viewModel: AssistViewModel,
+        showCloseButton: Bool = true,
+        forcesLegacyAppearance: Bool = false,
+        forcesVerticalBar: Bool = false
+    ) {
         self._viewModel = .init(wrappedValue: viewModel)
         self.showCloseButton = showCloseButton
         self.forcesLegacyAppearance = forcesLegacyAppearance
+        self._hasVerticalBar = State(initialValue: forcesVerticalBar)
     }
 
     var body: some View {

@@ -40,6 +40,20 @@ struct SoftwareKeyboardObserverTests {
         #expect(!observer.isShown)
     }
 
+    @Test("The default observer reads the main screen and listens to the default notification center")
+    func defaultObserver() async throws {
+        let observer = SoftwareKeyboardObserver()
+        NotificationCenter.default.post(
+            name: UIResponder.keyboardWillChangeFrameNotification,
+            object: nil,
+            userInfo: [UIResponder.keyboardFrameEndUserInfoKey: CGRect(x: 0, y: 0, width: 466, height: 300)]
+        )
+        try await waitUntil { observer.isShown }
+        #expect(observer.isShown)
+        NotificationCenter.default.post(name: UIResponder.keyboardWillHideNotification, object: nil)
+        try await waitUntil { !observer.isShown }
+    }
+
     private func waitUntil(_ condition: () -> Bool) async throws {
         for _ in 0 ..< 100 where !condition() {
             try await Task.sleep(for: .milliseconds(10))
