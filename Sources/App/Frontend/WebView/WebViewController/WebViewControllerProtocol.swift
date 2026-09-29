@@ -24,6 +24,8 @@ protocol WebViewControllerProtocol: AnyObject {
     func presentOverlayController(controller: UIViewController, animated: Bool)
     func presentAlertController(controller: UIViewController, animated: Bool)
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
+    /// Gives the web view keyboard focus, so a scripted `focus()` raises the keyboard like a tap would.
+    func makeWebViewFirstResponder()
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
     func updateFrontendConnectionState(state: String)

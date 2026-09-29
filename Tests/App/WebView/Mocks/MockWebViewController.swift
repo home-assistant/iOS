@@ -89,6 +89,15 @@ final class MockWebViewController: WebViewControllerProtocol {
         overlayedController = controller
     }
 
+    private(set) var makeWebViewFirstResponderCalled = false
+    /// How many scripts had already run when the web view was made first responder.
+    private(set) var scriptsRunBeforeMakingWebViewFirstResponder: Int?
+
+    func makeWebViewFirstResponder() {
+        makeWebViewFirstResponderCalled = true
+        scriptsRunBeforeMakingWebViewFirstResponder = evaluateJavaScriptCallCount
+    }
+
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {
         evaluateJavaScriptCalled = true
         evaluateJavaScriptCallCount += 1

@@ -54,6 +54,24 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(mockWebViewController.lastEvaluatedJavaScriptScript, "notifyThemeColors()")
     }
 
+    /// Scripted focus only raises the keyboard when the web view holds keyboard focus, which a tap on the
+    /// frontend gives it but a tap on the native tab bar does not.
+    @MainActor func testHandleExternalMessageFocusElementMakesTheWebViewFirstResponderBeforeFocusing() {
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "focus_element",
+            "payload": ["element_id": "combo-box"],
+        ]
+        sut.handleExternalMessage(dictionary)
+
+        XCTAssertTrue(mockWebViewController.makeWebViewFirstResponderCalled)
+        XCTAssertEqual(mockWebViewController.scriptsRunBeforeMakingWebViewFirstResponder, 0)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+        XCTAssertTrue(mockWebViewController.lastEvaluatedJavaScriptScript?.contains("'combo-box'") == true)
+    }
+
     @MainActor func testHandleExternalMessageFrontendLoadedMarksFrontendLoaded() {
         let dictionary: [String: Any] = [
             "id": 1,
