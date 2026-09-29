@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "点按";
 "assist.watch.not_reachable.title" = "“语音助手”功能需要 iPhone 连接。您的 iPhone 当前无法访问。";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "音量控制";
 "assist_pipeline_picker.no_pipelines" = "没有可用的管道";
 "assist_pipeline_picker.placeholder" = "选取管道";

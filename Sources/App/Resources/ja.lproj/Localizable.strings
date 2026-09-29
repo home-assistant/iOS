@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "タップして";
 "assist.watch.not_reachable.title" = "アシストには iPhone の接続が必要です。現在、iPhone にアクセスできません。";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "音量調節";
 "assist_pipeline_picker.no_pipelines" = "利用可能なパイプラインはありません";
 "assist_pipeline_picker.placeholder" = "パイプラインを選択";

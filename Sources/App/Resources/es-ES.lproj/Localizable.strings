@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Introduce una solicitud...";
 "assist.watch.mic_button.title" = "Pulsa para";
 "assist.watch.not_reachable.title" = "Assist requiere conexión con el iPhone. No es posible contactar con tu iPhone en este momento.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Control de volumen";
 "assist_pipeline_picker.no_pipelines" = "No hay pipelines disponibles";
 "assist_pipeline_picker.placeholder" = "Seleccionar pipeline";
