@@ -202,6 +202,64 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(state.countdownEnd?.timeIntervalSince1970 ?? 0, 1_700_000_000, accuracy: 0.001)
     }
 
+    // MARK: - relevanceScore(from:)
+
+    func testRelevanceScore_missing_isNil() {
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: [:]))
+    }
+
+    func testRelevanceScore_double_isPassedThrough() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": 0.8]), 0.8)
+    }
+
+    func testRelevanceScore_integer_isPassedThrough() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": 1]), 1.0)
+    }
+
+    func testRelevanceScore_numericString_isParsed() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": " 0.25 "]), 0.25)
+    }
+
+    func testRelevanceScore_aboveOne_isClampedToOne() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": 7.5]), 1.0)
+    }
+
+    func testRelevanceScore_belowZero_isClampedToZero() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": -3]), 0.0)
+    }
+
+    func testRelevanceScore_nonNumericString_isNil() {
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": "high"]))
+    }
+
+    func testRelevanceScore_nonFinite_isNil() {
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": Double.nan]))
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": Double.infinity]))
+    }
+
+    // MARK: - LiveActivityPendingStart.Request
+
+    func testPendingStartRequest_decodesWithoutRelevanceScore() throws {
+        let json = #"{"tag":"t","title":"T","state":{"message":"m"},"alert":true}"#
+        let request = try JSONDecoder().decode(LiveActivityPendingStart.Request.self, from: Data(json.utf8))
+        XCTAssertNil(request.relevanceScore)
+    }
+
+    func testPendingStartRequest_roundTripsRelevanceScore() throws {
+        let request = LiveActivityPendingStart.Request(
+            tag: "t",
+            title: "T",
+            serverWebhookId: nil,
+            state: HandlerStartOrUpdateLiveActivity.contentState(from: ["message": "m"]),
+            relevanceScore: 0.4,
+            confirmID: nil,
+            alert: false
+        )
+        let data = try JSONEncoder().encode(request)
+        let decoded = try JSONDecoder().decode(LiveActivityPendingStart.Request.self, from: data)
+        XCTAssertEqual(decoded, request)
+    }
+
     // MARK: - handle(_:) — app extension hand-off
 
     func testHandle_inAppExtension_enqueuesHandoffAndSkipsRegistry() throws {
@@ -242,6 +300,29 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
         XCTAssertFalse(mockRegistry.startOrUpdateCalls[0].alert)
+    }
+
+    func testHandle_inAppExtension_handsOffRelevanceScore() throws {
+        Current.isAppExtension = true
+        let payload: [String: Any] = ["tag": "test-tag", "title": "Test", "relevance_score": 0.9]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.relevanceScore, 0.9)
+    }
+
+    func testHandle_inApp_passesClampedRelevanceScoreToRegistry() throws {
+        let payload: [String: Any] = ["tag": "my-activity", "title": "Test", "relevance_score": 1.7]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].relevanceScore, 1.0)
+    }
+
+    func testHandle_inApp_missingRelevanceScore_passesNil() throws {
+        let payload: [String: Any] = ["tag": "my-activity", "title": "Test"]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertNil(mockRegistry.startOrUpdateCalls[0].relevanceScore)
     }
 
     func testHandle_inAppExtension_invalidTag_doesNotEnqueue() throws {

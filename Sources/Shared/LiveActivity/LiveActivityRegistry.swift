@@ -7,6 +7,7 @@ import PromiseKit
 /// Stale date offset for all Live Activity content updates.
 /// Activities are marked stale after 30 minutes if no further updates arrive.
 private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
+private let kLiveActivityDefaultRelevanceScore: Double = 0.5
 
 public protocol LiveActivityRegistryProtocol: AnyObject {
     @available(iOS 17.2, *)
@@ -16,6 +17,7 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
         title: String,
         serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState,
+        relevanceScore: Double?,
         alert: Bool
     ) async throws -> Bool
     @available(iOS 17.2, *)
@@ -49,6 +51,11 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let observationTask: Task<Void, Never>
     }
 
+    private struct PendingUpdate {
+        let state: HALiveActivityAttributes.ContentState
+        let relevanceScore: Double?
+    }
+
     // MARK: - Webhook Constants (wire-format frozen — tested in LiveActivityContractTests)
 
     /// Webhook type for reporting a new per-activity push token to HA.
@@ -74,7 +81,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     /// Latest state received for a tag while it was still reserved (in-flight start).
     /// Applied to the activity immediately after `confirmReservation` completes.
-    private var pendingState: [String: HALiveActivityAttributes.ContentState] = [:]
+    private var pendingState: [String: PendingUpdate] = [:]
 
     /// Confirmed, running Live Activities keyed by tag.
     private var entries: [String: Entry] = [:]
@@ -107,12 +114,13 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return
         }
         entries[id] = entry
-        if let latestState = pending {
+        if let latest = pending {
             // A second push arrived while Activity.request() was in-flight — apply the newer state now.
-            let state = Self.carryForwardChronometerAnchor(previous: entry.activity.content.state, new: latestState)
+            let state = Self.carryForwardChronometerAnchor(previous: entry.activity.content.state, new: latest.state)
             let content = ActivityContent(
                 state: state,
-                staleDate: computeStaleDate(for: state)
+                staleDate: computeStaleDate(for: state),
+                relevanceScore: latest.relevanceScore ?? entry.activity.content.relevanceScore
             )
             await entry.activity.update(content)
         }
@@ -140,6 +148,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         title: String,
         serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState,
+        relevanceScore: Double?,
         alert: Bool
     ) async throws -> Bool {
         // UPDATE path — activity already running with this tag
@@ -147,7 +156,8 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             let state = Self.carryForwardChronometerAnchor(previous: existing.activity.content.state, new: state)
             let content = ActivityContent(
                 state: state,
-                staleDate: computeStaleDate(for: state)
+                staleDate: computeStaleDate(for: state),
+                relevanceScore: relevanceScore ?? existing.activity.content.relevanceScore
             )
             await existing.activity.update(
                 content,
@@ -162,7 +172,8 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             let state = Self.carryForwardChronometerAnchor(previous: live.content.state, new: state)
             let content = ActivityContent(
                 state: state,
-                staleDate: computeStaleDate(for: state)
+                staleDate: computeStaleDate(for: state),
+                relevanceScore: relevanceScore ?? live.content.relevanceScore
             )
             await live.update(
                 content,
@@ -177,7 +188,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         guard reserve(id: tag) else {
             if reserved.contains(tag) {
                 // Activity.request() is in-flight — save this state so confirmReservation applies it.
-                pendingState[tag] = state
+                pendingState[tag] = PendingUpdate(state: state, relevanceScore: relevanceScore)
                 Current.Log.info(
                     "LiveActivityRegistry: duplicate start for tag \(tag), will apply latest state on confirm"
                 )
@@ -203,7 +214,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             let content = ActivityContent(
                 state: state,
                 staleDate: computeStaleDate(for: state),
-                relevanceScore: 0.5
+                relevanceScore: relevanceScore ?? kLiveActivityDefaultRelevanceScore
             )
             activity = try Activity<HALiveActivityAttributes>.request(
                 attributes: attributes,

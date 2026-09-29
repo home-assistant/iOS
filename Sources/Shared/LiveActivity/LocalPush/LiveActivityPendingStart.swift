@@ -19,6 +19,7 @@ enum LiveActivityPendingStart {
         let title: String
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
+        let relevanceScore: Double?
         let confirmID: String?
         /// Whether a non-silent update should fire an ActivityKit alert (sound + haptic). Decoded
         /// with a default so a queue serialized by an older build still drains.
@@ -26,7 +27,7 @@ enum LiveActivityPendingStart {
 
         // Declared explicitly: providing both init(from:) and encode(to:) opts out of synthesis.
         private enum CodingKeys: String, CodingKey {
-            case tag, title, serverWebhookId, state, confirmID, alert
+            case tag, title, serverWebhookId, state, relevanceScore, confirmID, alert
         }
 
         init(
@@ -34,6 +35,7 @@ enum LiveActivityPendingStart {
             title: String,
             serverWebhookId: String?,
             state: HALiveActivityAttributes.ContentState,
+            relevanceScore: Double? = nil,
             confirmID: String?,
             alert: Bool
         ) {
@@ -41,6 +43,7 @@ enum LiveActivityPendingStart {
             self.title = title
             self.serverWebhookId = serverWebhookId
             self.state = state
+            self.relevanceScore = relevanceScore
             self.confirmID = confirmID
             self.alert = alert
         }
@@ -51,6 +54,7 @@ enum LiveActivityPendingStart {
             self.title = try container.decode(String.self, forKey: .title)
             self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
             self.state = try container.decode(HALiveActivityAttributes.ContentState.self, forKey: .state)
+            self.relevanceScore = try container.decodeIfPresent(Double.self, forKey: .relevanceScore)
             self.confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
             self.alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
         }
@@ -61,6 +65,7 @@ enum LiveActivityPendingStart {
             try container.encode(title, forKey: .title)
             try container.encodeIfPresent(serverWebhookId, forKey: .serverWebhookId)
             try container.encode(state, forKey: .state)
+            try container.encodeIfPresent(relevanceScore, forKey: .relevanceScore)
             try container.encodeIfPresent(confirmID, forKey: .confirmID)
             try container.encode(alert, forKey: .alert)
         }
@@ -273,6 +278,7 @@ public final class LiveActivityPendingStartObserver {
                                 title: request.title,
                                 serverWebhookId: request.serverWebhookId,
                                 state: request.state,
+                                relevanceScore: request.relevanceScore,
                                 alert: request.alert
                             )
                             if presented == true {

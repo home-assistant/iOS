@@ -59,6 +59,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                         title: request.title,
                         serverWebhookId: request.serverWebhookId,
                         state: request.state,
+                        relevanceScore: request.relevanceScore,
                         alert: false
                     )
                     if presented == true {
@@ -99,9 +100,24 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             title: title,
             serverWebhookId: payload["webhook_id"] as? String,
             state: contentState(from: payload),
+            relevanceScore: relevanceScore(from: payload),
             confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String,
             alert: (payload["silent"] as? Bool) != true
         )
+    }
+
+    static func relevanceScore(from payload: [String: Any]) -> Double? {
+        let raw: Double?
+        switch payload["relevance_score"] {
+        case let number as NSNumber:
+            raw = number.doubleValue
+        case let string as String:
+            raw = Double(string.trimmingCharacters(in: .whitespaces))
+        default:
+            raw = nil
+        }
+        guard let raw, raw.isFinite else { return nil }
+        return min(max(raw, 0), 1)
     }
 
     // MARK: - Privacy Disclosure
