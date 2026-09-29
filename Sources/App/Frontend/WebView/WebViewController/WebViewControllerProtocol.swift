@@ -10,6 +10,7 @@ protocol WebViewControllerProtocol: AnyObject {
     var assistZoomAnchorView: UIView? { get }
     /// A one-off zoom source for the next Assist presentation, set by the App Labs tab bar.
     var pendingAssistZoomSourceView: UIView? { get set }
+    var presentsNextAssistAsSheet: Bool { get set }
     var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }

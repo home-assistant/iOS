@@ -7,8 +7,6 @@ import SwiftUI
 struct NativeTabBarMoreView: View {
     private enum Constants {
         static let avatarSize: CGFloat = 28
-        static let badgeMinWidth: CGFloat = 18
-        static let badgeOffset: CGFloat = 6
     }
 
     @ObservedObject var viewModel: NativeTabBarViewModel
@@ -97,21 +95,7 @@ struct NativeTabBarMoreView: View {
                     }
                     if viewModel.hasMultipleServers {
                         Menu {
-                            Picker(L10n.ServersSelection.title, selection: Binding(
-                                get: { viewModel.sidebar.server.identifier },
-                                set: { viewModel.open(serverIdentifier: $0) }
-                            )) {
-                                ForEach(viewModel.servers, id: \.identifier) { server in
-                                    Text(server.info.name).tag(server.identifier)
-                                }
-                            }
-                            .pickerStyle(.inline)
-                            Divider()
-                            Button {
-                                viewModel.open(profile)
-                            } label: {
-                                Label(FrontendStrings.panelProfile, systemSymbol: .personCropCircle)
-                            }
+                            NativeTabBarProfileMenuItems(viewModel: viewModel, profile: profile)
                         } label: {
                             header
                         }
@@ -126,58 +110,14 @@ struct NativeTabBarMoreView: View {
                 }
             }
             if let notifications = viewModel.notificationsItem {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.open(notifications)
-                    } label: {
-                        Image(systemSymbol: .bell)
-                            .overlay(alignment: .topTrailing) {
-                                if notifications.badge > 0 {
-                                    Text(notifications.badge, format: .number)
-                                        .font(.caption2.bold())
-                                        .foregroundStyle(.white)
-                                        .padding(.horizontal, DesignSystem.Spaces.half)
-                                        .frame(minWidth: Constants.badgeMinWidth, minHeight: Constants.badgeMinWidth)
-                                        .background(Capsule().fill(Color.red))
-                                        .offset(x: Constants.badgeOffset, y: -Constants.badgeOffset)
-                                }
-                            }
-                    }
-                    .accessibilityLabel(notifications.title)
-                }
-                ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                NativeTabBarNotificationsToolbarItem(viewModel: viewModel, notifications: notifications)
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    if let settings = viewModel.settingsItem {
-                        Button {
-                            viewModel.open(settings)
-                        } label: {
-                            Label(L10n.TabBar.More.homeAssistantSettings, systemSymbol: .gearshape)
-                        }
-                    }
-                    Button {
-                        if let appSettingsPresenter {
-                            viewModel.showAppSettings(using: appSettingsPresenter)
-                        }
-                    } label: {
-                        Label(L10n.TabBar.More.appSettings, systemSymbol: .iphone)
-                    }
-                } label: {
-                    Image(systemSymbol: .gearshape)
-                }
-                .accessibilityLabel(L10n.Mac.Sidebar.settings)
-                .modify { view in
-                    if let transitionNamespace {
-                        view.matchedTransitionSource(
-                            id: NativeTabBarViewModel.appSettingsTransitionID,
-                            in: transitionNamespace
-                        )
-                    } else {
-                        view
-                    }
-                }
-            }
+            NativeTabBarSettingsToolbarItem(
+                viewModel: viewModel,
+                appSettingsTransitionID: NativeTabBarViewModel.appSettingsTransitionID,
+                transitionNamespace: transitionNamespace,
+                appSettingsPresenter: appSettingsPresenter
+            )
         }
     }
 }

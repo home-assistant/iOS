@@ -552,15 +552,20 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 preferredPipelineId: pipeline,
                 autoStartRecording: autoStartRecording
             ))
-            assistView.modalPresentationStyle = .fullScreen
             let tappedSource = webViewController?.pendingAssistZoomSourceView
             webViewController?.pendingAssistZoomSourceView = nil
-            if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+            let presentsAsSheet = webViewController?.presentsNextAssistAsSheet ?? false
+            webViewController?.presentsNextAssistAsSheet = false
+            if presentsAsSheet {
+                assistView.modalPresentationStyle = .automatic
+            } else if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+                assistView.modalPresentationStyle = .fullScreen
                 // Zoom out of the tapped tab bar spot when there is one, else the frontend's Assist anchor.
                 assistView.preferredTransition = .zoom { [weak self] _ in
                     tappedSource ?? self?.webViewController?.assistZoomAnchorView
                 }
             } else {
+                assistView.modalPresentationStyle = .fullScreen
                 assistView.modalTransitionStyle = .crossDissolve
             }
             webViewController?.presentOverlayController(controller: assistView, animated: true)

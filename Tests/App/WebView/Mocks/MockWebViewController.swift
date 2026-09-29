@@ -15,6 +15,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var overlayedController: UIViewController?
     var assistZoomAnchorView: UIView?
     var pendingAssistZoomSourceView: UIView?
+    var presentsNextAssistAsSheet = false
 
     var presentOverlayControllerCalled = false
     var presentControllerCalled = false

@@ -93,6 +93,8 @@ final class HomeAssistantViewModel: ObservableObject {
             guard let self, let webViewController else { return }
             if let sourceFrame {
                 webViewController.setAssistZoomOrigin(sourceFrame)
+            } else {
+                webViewController.presentsNextAssistAsSheet = true
             }
             webViewController.webViewExternalMessageHandler.showAssist(
                 server: server,
@@ -101,10 +103,16 @@ final class HomeAssistantViewModel: ObservableObject {
             )
         }
         sidebar.onShowNotifications = { [weak self] in
-            self?.webViewController?.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
-                command: .showNotifications,
-                payload: nil
-            )
+            guard let webViewController = self?.webViewController else { return }
+            NotificationDrawerToggle(
+                evaluateJavaScript: { webViewController.evaluateJavaScript($0, completion: $1) },
+                showDrawer: {
+                    webViewController.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+                        command: .showNotifications,
+                        payload: nil
+                    )
+                }
+            ).toggle()
         }
         sidebar.readLocalStorage = { [weak self] key, completion in
             guard let webViewController = self?.webViewController else {

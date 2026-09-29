@@ -11,6 +11,7 @@ struct NativeTabBarContainerView: View {
 
     @ObservedObject var viewModel: NativeTabBarViewModel
     @Environment(\.serverSelectionNamespace) private var transitionNamespace
+    @State private var hasVerticalBar = false
     let webViewController: WebViewController?
     let frontendOpacity: Double
     let frontendIgnoredSafeAreaEdges: Edge.Set
@@ -24,13 +25,15 @@ struct NativeTabBarContainerView: View {
             ForEach(viewModel.regularTabItems) { item in
                 Tab(value: item.tab) {
                     if item.sidebarItem != nil {
-                        NativeTabBarFrontendSlot(
-                            controller: webViewController,
-                            isActive: viewModel.selection == item.tab,
-                            onNeedsController: onNeedsWebViewController
+                        NativeTabBarFrontendTabView(
+                            viewModel: viewModel,
+                            item: item,
+                            webViewController: webViewController,
+                            frontendOpacity: frontendOpacity,
+                            frontendIgnoredSafeAreaEdges: frontendIgnoredSafeAreaEdges,
+                            showsBarItems: hasVerticalBar,
+                            onNeedsWebViewController: onNeedsWebViewController
                         )
-                        .opacity(frontendOpacity)
-                        .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
                     } else {
                         Color.clear
                     }
@@ -94,6 +97,10 @@ struct NativeTabBarContainerView: View {
         .background(NativeTabBarLongPressInstaller {
             viewModel.showCustomize(zoomingFromButton: false)
         })
+        .background(VerticalBarObserver(hasVerticalBar: $hasVerticalBar))
+        .onChange(of: hasVerticalBar) { _, hasVerticalBar in
+            viewModel.usesVerticalBar = hasVerticalBar
+        }
         .sheet(isPresented: $viewModel.showsCustomize) {
             NavigationStack {
                 NativeTabBarCustomizeView(viewModel: viewModel)
