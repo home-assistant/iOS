@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Gib eine Anfrage ein …";
 "assist.watch.mic_button.title" = "Tippe zum";
 "assist.watch.not_reachable.title" = "Assist erfordert eine iPhone-Verbindung. Dein iPhone ist derzeit nicht erreichbar.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Lautstärkeregler";
 "assist_pipeline_picker.no_pipelines" = "Keine Pipelines verfügbar";
 "assist_pipeline_picker.placeholder" = "Pipeline auswählen";

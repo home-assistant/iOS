@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Zadejte požadavek…";
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Ovládání hlasitosti";
 "assist_pipeline_picker.no_pipelines" = "Nejsou dostupné žádné pipeline";
 "assist_pipeline_picker.placeholder" = "Vyberte pipeline";

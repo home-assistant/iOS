@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Koppintson ide";
 "assist.watch.not_reachable.title" = "Az Assist használatához iPhone csatlakozás szükséges. Az Ön iPhone-ja jelenleg nem elérhető.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Hangerőszabályzó";
 "assist_pipeline_picker.no_pipelines" = "Nincsenek elérhető folyamatok";
 "assist_pipeline_picker.placeholder" = "Válasszon folyamatot";

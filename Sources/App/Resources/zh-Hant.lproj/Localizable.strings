@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "輸入請求...";
 "assist.watch.mic_button.title" = "點擊";
 "assist.watch.not_reachable.title" = "助理需要 iPhone 連線、目前無法存取您的 iPhone。";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "音量控制";
 "assist_pipeline_picker.no_pipelines" = "沒有可用的助理設定";
 "assist_pipeline_picker.placeholder" = "選擇助理設定";
