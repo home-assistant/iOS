@@ -268,6 +268,10 @@ final class HomeAssistantViewModel: ObservableObject {
         chrome.objectWillChange
             .sink { [weak self] _ in self?.objectWillChange.send() }
             .store(in: &cancellables)
+
+        tabBar.objectWillChange
+            .sink { [weak self] _ in self?.objectWillChange.send() }
+            .store(in: &cancellables)
     }
 
     private func bindOverlayState() {
