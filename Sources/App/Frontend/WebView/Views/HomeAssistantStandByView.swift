@@ -74,13 +74,16 @@ struct HomeAssistantStandByView: View {
         showsEmptyState ? WebViewEmptyStateIcon.logoSize : LaunchSplashOverlayView.Constants.splashLogoSize
     }
 
-    private func contentOffset(safeAreaInsets: EdgeInsets) -> CGFloat {
-        guard !showsEmptyState else { return 0 }
+    static func contentOffset(safeAreaInsets: EdgeInsets, showsEmptyState: Bool) -> CGSize {
+        guard !showsEmptyState else { return .zero }
         // The splash logo sits at an offset from the full-screen center while this content is laid
         // out inside the safe area; shift by the safe-area asymmetry plus the splash offset so the
         // two logos coincide.
-        return (safeAreaInsets.bottom - safeAreaInsets.top) / 2
-            + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+        return CGSize(
+            width: (safeAreaInsets.trailing - safeAreaInsets.leading) / 2,
+            height: (safeAreaInsets.bottom - safeAreaInsets.top) / 2
+                + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+        )
     }
 
     init(
@@ -183,7 +186,7 @@ struct HomeAssistantStandByView: View {
                     .transition(.opacity)
             }
         }
-        .offset(y: contentOffset(safeAreaInsets: safeAreaInsets))
+        .offset(Self.contentOffset(safeAreaInsets: safeAreaInsets, showsEmptyState: showsEmptyState))
         .opacity(standByContentOpacity)
         // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
         // while buttons keep priority.
