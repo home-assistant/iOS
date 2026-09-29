@@ -69,6 +69,19 @@ enum LiveActivityPendingStart {
             try container.encodeIfPresent(confirmID, forKey: .confirmID)
             try container.encode(alert, forKey: .alert)
         }
+
+        func inheritingRelevanceScore(from previous: Request?) -> Request {
+            guard relevanceScore == nil, let inherited = previous?.relevanceScore else { return self }
+            return Request(
+                tag: tag,
+                title: title,
+                serverWebhookId: serverWebhookId,
+                state: state,
+                relevanceScore: inherited,
+                confirmID: confirmID,
+                alert: alert
+            )
+        }
     }
 
     static func confirmLocalPushDelivery(for request: Request) {
@@ -104,8 +117,9 @@ enum LiveActivityPendingStart {
         lock.lock()
         defer { lock.unlock() }
         guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
-        var requests = load(from: defaults).filter { $0.tag != request.tag }
-        requests.append(request)
+        let queued = load(from: defaults)
+        var requests = queued.filter { $0.tag != request.tag }
+        requests.append(request.inheritingRelevanceScore(from: queued.first { $0.tag == request.tag }))
         store(requests, to: defaults)
         Current.Log.verbose("LiveActivityPendingStart: enqueued '\(request.tag)', pending=\(requests.count)")
     }

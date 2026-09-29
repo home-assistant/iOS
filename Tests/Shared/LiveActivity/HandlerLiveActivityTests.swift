@@ -232,6 +232,11 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": "high"]))
     }
 
+    func testRelevanceScore_bool_isNil() {
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": true]))
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": false]))
+    }
+
     func testRelevanceScore_nonFinite_isNil() {
         XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": Double.nan]))
         XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": Double.infinity]))
@@ -258,6 +263,40 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         let data = try JSONEncoder().encode(request)
         let decoded = try JSONDecoder().decode(LiveActivityPendingStart.Request.self, from: data)
         XCTAssertEqual(decoded, request)
+    }
+
+    func testPendingStartAppend_laterRequestWithoutScore_keepsQueuedScore() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.9))
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.relevanceScore, 0.9)
+    }
+
+    func testPendingStartAppend_laterRequestWithScore_replacesQueuedScore() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.9))
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.2))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.relevanceScore, 0.2)
+    }
+
+    func testPendingStartAppend_noQueuedScore_staysNil() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
+        XCTAssertNil(LiveActivityPendingStart.drainAll().first?.relevanceScore)
+    }
+
+    private func makePendingRequest(relevanceScore: Double?) -> LiveActivityPendingStart.Request {
+        LiveActivityPendingStart.Request(
+            tag: "queued-tag",
+            title: "T",
+            serverWebhookId: nil,
+            state: HandlerStartOrUpdateLiveActivity.contentState(from: ["message": "m"]),
+            relevanceScore: relevanceScore,
+            confirmID: nil,
+            alert: false
+        )
     }
 
     // MARK: - handle(_:) — app extension hand-off

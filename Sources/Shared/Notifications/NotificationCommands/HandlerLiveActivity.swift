@@ -110,6 +110,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
         let raw: Double?
         switch payload["relevance_score"] {
         case let number as NSNumber:
+            guard CFGetTypeID(number) != CFBooleanGetTypeID() else { return nil }
             raw = number.doubleValue
         case let string as String:
             raw = Double(string.trimmingCharacters(in: .whitespaces))
