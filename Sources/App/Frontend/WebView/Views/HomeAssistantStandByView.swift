@@ -84,13 +84,10 @@ struct HomeAssistantStandByView: View {
         guard !showsEmptyState else { return .zero }
         // The splash logo sits at an offset from the full-screen center while this content is laid
         // out inside the safe area; shift by the safe-area asymmetry plus the splash offset so the
-        // two logos coincide. The offset is physical, so the semantic insets are mapped to sides first.
-        let (left, right) = layoutDirection == .rightToLeft
-            ? (safeAreaInsets.trailing, safeAreaInsets.leading)
-            : (safeAreaInsets.leading, safeAreaInsets.trailing)
+        // two logos coincide.
         return CGSize(
-            width: (right - left) / 2,
-            height: (safeAreaInsets.bottom - safeAreaInsets.top) / 2
+            width: SafeAreaCenteringOffset.horizontal(safeAreaInsets: safeAreaInsets, layoutDirection: layoutDirection),
+            height: SafeAreaCenteringOffset.vertical(safeAreaInsets: safeAreaInsets)
                 + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
         )
     }
@@ -127,7 +124,15 @@ struct HomeAssistantStandByView: View {
             content(safeAreaInsets: proxy.safeAreaInsets)
         }
         .overlay(alignment: .bottom) {
-            ohfBrandingFooter
+            GeometryReader { proxy in
+                ohfBrandingFooter
+                    .offset(x: Self.contentOffset(
+                        safeAreaInsets: proxy.safeAreaInsets,
+                        layoutDirection: layoutDirection,
+                        showsEmptyState: showsEmptyState
+                    ).width)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            }
         }
         .onDisappear(perform: ohfBranding.markStandByDismissed)
     }
