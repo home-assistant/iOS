@@ -7,11 +7,11 @@ import UIKit
 @MainActor
 struct OcclusionRegionsReaderTests {
     private final class FakeRegion: NSObject {
-        @objc let active: Bool
+        @objc let isActive: Bool
         @objc let frame: CGRect
 
         init(active: Bool, frame: CGRect) {
-            self.active = active
+            self.isActive = active
             self.frame = frame
         }
     }

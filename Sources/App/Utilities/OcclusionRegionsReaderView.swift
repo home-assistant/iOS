@@ -42,9 +42,13 @@ final class OcclusionRegionsReaderView: UIView {
 
     static func frames(ofActiveRegions regions: [NSObject]) -> [CGRect] {
         regions.compactMap { region in
-            guard region.value(forKey: "active") as? Bool == true else { return nil }
+            guard describesRegion(region), region.value(forKey: "active") as? Bool == true else { return nil }
             return (region.value(forKey: "frame") as? NSValue)?.cgRectValue
         }
+    }
+
+    private static func describesRegion(_ object: NSObject) -> Bool {
+        ["isActive", "frame"].allSatisfy { object.responds(to: NSSelectorFromString($0)) }
     }
 
     override func layoutSubviews() {
