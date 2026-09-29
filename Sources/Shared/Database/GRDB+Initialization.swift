@@ -291,6 +291,9 @@ public final class AppDatabaseSuspension {
     /// This is what `LifecycleManager.didEnterBackground` calls rather than `suspend()`: work under
     /// `performProtectedWork` holds a background task, so the process is not about to be frozen, and
     /// suspending outright would abort the very write the transition used to kill the app for.
+    /// A background launch arms suspension the same way: the app icon shortcuts' entity read is
+    /// already under way as protected work by then, and suspending outright interrupted it
+    /// mid-statement, which published bare entity ids as the shortcut titles.
     ///
     /// The intent is recorded either way, so deferring is not forgetting: whichever access finishes
     /// last reads it back through `endProtectedAccess(suspend:)` and suspends then. Dropping it

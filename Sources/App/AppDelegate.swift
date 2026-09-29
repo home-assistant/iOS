@@ -498,7 +498,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupUIApplicationShortcutItems() {
-        AppIconShortcutItemsUpdater.update()
+        AppIconShortcutItemsUpdater.start()
     }
 
     private func migrateIfNeeded() {
