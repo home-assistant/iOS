@@ -27,6 +27,15 @@ final class ImmediateCommunicatorService {
         observers.removeAll { $0.delegate === observerDelegate }
     }
 
+    func evaluatePong(_ pong: HAWatchConnectivity.ImmediateMessage) {
+        let messages = PongPayload(content: pong.content).assistMessages
+        guard !messages.isEmpty else { return }
+        Current.Log.info("Received \(messages.map(\.identifier)) with the iPhone's pong")
+        for message in messages {
+            evaluateMessage(.init(identifier: message.identifier, content: message.content))
+        }
+    }
+
     func evaluateMessage(_ message: HAWatchConnectivity.ImmediateMessage) {
         guard let messageId = InteractiveImmediateResponses(rawValue: message.identifier) else {
             Current.Log.error("Received communicator message that cant be mapped to messages responses enum")
