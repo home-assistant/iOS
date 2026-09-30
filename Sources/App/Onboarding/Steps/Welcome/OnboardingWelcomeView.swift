@@ -31,6 +31,9 @@ struct OnboardingWelcomeView: View {
         .safeAreaInset(edge: .bottom, content: {
             continueButtonBlock
         })
+        // The same colour as the buttons' block, so the block does not stand out where the window shows
+        // through: on the Mac the window carries the desktop tint, which the colour does not.
+        .background(Color(uiColor: .systemBackground))
         .sheet(isPresented: $showLearnMore) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantCompanionGetStarted)
         }
