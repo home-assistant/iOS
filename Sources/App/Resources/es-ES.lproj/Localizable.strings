@@ -2401,7 +2401,9 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "tab_bar.item.search" = "Buscar";
 "tab_bar.more.app_settings" = "Ajustes de la aplicación";
 "tab_bar.more.customize" = "Personalizar";
+"tab_bar.more.edit_profile" = "Edit profile";
 "tab_bar.more.home_assistant_settings" = "Ajustes de Home Assistant";
+"tab_bar.more.other_servers" = "Other servers";
 "tab_bar.more.title" = "Más";
 "tags.allowed.delete_all" = "Borrar todas";
 "tags.allowed.delete_all.confirm.button" = "Borrar todas";
