@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(WatchConnectivity)
 import WatchConnectivity
+#endif
 
 /// Performs a watch HTTP request on the paired iPhone instead of on the watch, when the iPhone is
 /// close enough to answer immediately.
@@ -185,10 +187,14 @@ enum WatchRequestRelay {
                 return false
             }
         }
+        #if canImport(WatchConnectivity)
         let nsError = error as NSError
         guard nsError.domain == WCErrorDomain else { return false }
         return nsError.code == WCError.Code.messageReplyTimedOut.rawValue
             || nsError.code == WCError.Code.messageReplyFailed.rawValue
+        #else
+        return false
+        #endif
     }
 
     /// Bridges the callback-based send onto async. `WatchRelayReplyGate` arbitrates the race for

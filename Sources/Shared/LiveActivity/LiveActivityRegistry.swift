@@ -10,7 +10,7 @@ private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
 private let kLiveActivityDefaultRelevanceScore: Double = 0.5
 
 public protocol LiveActivityRegistryProtocol: AnyObject {
-    @available(iOS 17.2, *)
+    @available(iOS 17.2, macOS 14.2, *)
     @discardableResult
     func startOrUpdate(
         tag: String,
@@ -20,18 +20,18 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
         relevanceScore: Double?,
         alert: Bool
     ) async throws -> Bool
-    @available(iOS 17.2, *)
+    @available(iOS 17.2, macOS 14.2, *)
     func end(tag: String, dismissalPolicy: ActivityUIDismissalPolicy) async
-    @available(iOS 17.2, *)
+    @available(iOS 17.2, macOS 14.2, *)
     func reattach() async
-    @available(iOS 17.2, *)
+    @available(iOS 17.2, macOS 14.2, *)
     func startObservingPushToStartToken() async
-    @available(iOS 17.2, *)
+    @available(iOS 17.2, macOS 14.2, *)
     func startObservingRemoteActivityStarts() async
 }
 
 public extension LiveActivityRegistryProtocol {
-    @available(iOS 17.2, *)
+    @available(iOS 17.2, macOS 14.2, *)
     func startObservingRemoteActivityStarts() async {}
 }
 
@@ -42,7 +42,7 @@ public extension LiveActivityRegistryProtocol {
 ///
 /// The reservation pattern prevents TOCTOU races where two pushes with the same `tag`
 /// arrive back-to-back before the first `Activity.request(...)` completes.
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     // MARK: - Types
 

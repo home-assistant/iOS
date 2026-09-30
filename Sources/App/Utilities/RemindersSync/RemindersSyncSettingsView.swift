@@ -19,9 +19,17 @@ struct RemindersSyncSettingsView: View {
                     Text(L10n.RemindersSync.Settings.AccessDenied.body)
                         .foregroundStyle(.secondary)
                     Button(L10n.RemindersSync.Settings.openSettings) {
+                        #if os(macOS)
+                        // A Mac keeps the switch for this under Privacy & Security in System Settings.
+                        let settingsURL = "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders"
+                        if let url = URL(string: settingsURL) {
+                            URLOpener.shared.open(url, options: [:], completionHandler: nil)
+                        }
+                        #else
                         if let url = URL(string: UIApplication.openSettingsURLString) {
                             UIApplication.shared.open(url)
                         }
+                        #endif
                     }
                 }
             } else {

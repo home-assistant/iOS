@@ -1,3 +1,4 @@
+#if os(iOS)
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -101,3 +102,4 @@ struct AppIconSelectorView: View {
         AppIconSelectorView()
     }
 }
+#endif

@@ -1,14 +1,28 @@
+#if os(iOS)
 import BackgroundTasks
+#endif
 import Foundation
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 enum BackgroundRefreshManager {
     static let taskIdentifier = "io.robbie.homeassistant.backgroundfetch"
 
     private static let earliestBeginInterval: TimeInterval = 15 * 60
 
+    #if os(macOS)
+    // A Mac app is never suspended, so nothing has to wake it to refresh: the periodic update timer keeps
+    // running for as long as the app does. These exist so the launch sequence reads the same on both
+    // platforms.
+    static func register() {}
+
+    static func scheduleAppRefresh() {}
+    #else
     static func register() {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: taskIdentifier, using: .main) { task in
             handleAppRefresh(task: task)
@@ -48,7 +62,7 @@ enum BackgroundRefreshManager {
 
         Current.backgroundTask(withName: BackgroundTask.backgroundFetch.rawValue) { remaining in
             let updatePromise: Promise<Void>
-            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
+            if Current.settingsStore.isLocationEnabled(for: ApplicationState.current),
                Current.settingsStore.locationSources.backgroundFetch {
                 updatePromise = firstly {
                     Current.location.oneShotLocation(.BackgroundFetch, remaining)
@@ -71,4 +85,5 @@ enum BackgroundRefreshManager {
             complete(false)
         }
     }
+    #endif
 }

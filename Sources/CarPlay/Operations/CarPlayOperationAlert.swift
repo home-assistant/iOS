@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import Shared
@@ -34,3 +35,4 @@ enum CarPlayOperationAlert {
         )
     }
 }
+#endif

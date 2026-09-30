@@ -76,6 +76,8 @@ struct FocusNameFocusFilterAppIntent: SetFocusFilterIntent {
     }
 }
 
+// The protocol does not exist on the Mac, where an app is never suspended to begin with.
+#if !os(macOS)
 /// `LiveActivityIntent` is not about Live Activities here: a plain `SetFocusFilterIntent` is only
 /// reliably performed while the app is in the foreground, and silently skipped when iOS would have
 /// to launch the app to run it — which is every Focus that starts with the app closed, so the
@@ -86,3 +88,4 @@ struct FocusNameFocusFilterAppIntent: SetFocusFilterIntent {
 /// below the one that introduced the protocol.
 @available(iOS 17.0, *)
 extension FocusNameFocusFilterAppIntent: LiveActivityIntent {}
+#endif

@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 import Foundation
 import ServiceManagement
@@ -18,6 +19,10 @@ import SystemConfiguration
         self.networkMonitor = MacBridgeNetworkMonitor()
 
         super.init()
+
+        // Under Mac Catalyst the application delegate belongs to UIKit, so reaching its AppKit callbacks and
+        // repairing its windows means going behind its back. The native app implements both itself.
+        guard ProcessInfo.processInfo.isMacCatalystApp else { return }
 
         MacBridgeAppDelegateHandler.swizzleAppDelegate()
 
@@ -138,3 +143,4 @@ import SystemConfiguration
 }
 
 extension NSRunningApplication: MacBridgeRunningApplication {}
+#endif

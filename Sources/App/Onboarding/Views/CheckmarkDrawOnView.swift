@@ -12,7 +12,7 @@ struct CheckmarkDrawOnView: View {
                 .frame(height: 150)
                 .foregroundStyle(.haPrimary)
                 .modify({ view in
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         view
                             .symbolEffect(.drawOn.individually, options: .speed(0.7), isActive: isActive)
                             .sensoryFeedback(.success, trigger: isActive)

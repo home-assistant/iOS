@@ -1,7 +1,6 @@
 import HAKit
 import Shared
 import SwiftUI
-import UIKit
 @preconcurrency import WebKit
 
 // MARK: - URL Loading & Connection Lifecycle
@@ -10,7 +9,7 @@ extension WebViewController {
     func observeConnectionNotifications() {
         for name: Notification.Name in [
             HomeAssistantAPI.didConnectNotification,
-            UIApplication.didBecomeActiveNotification,
+            AppLifecycle.didBecomeActiveNotification,
         ] {
             NotificationCenter.default.addObserver(
                 self,
@@ -23,7 +22,7 @@ extension WebViewController {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(scheduleReconnectBackgroundTimer),
-            name: UIApplication.didEnterBackgroundNotification,
+            name: AppLifecycle.didEnterBackgroundNotification,
             object: nil
         )
 
@@ -336,7 +335,7 @@ extension WebViewController {
                     _ = webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
                 }
 
-                if UIApplication.shared.applicationState == .active {
+                if ApplicationState.current == .active {
                     timer.invalidate()
                 }
             }

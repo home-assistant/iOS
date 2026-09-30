@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 
 /// Where the app's own entries sit in the tab bar's list, per server.
@@ -23,3 +24,4 @@ struct NativeTabBarExtras: Codable, Equatable {
         }
     }
 }
+#endif

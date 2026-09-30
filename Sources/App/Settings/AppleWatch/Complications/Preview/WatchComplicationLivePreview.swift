@@ -1,3 +1,4 @@
+#if os(iOS)
 import Alamofire
 import Foundation
 import PromiseKit
@@ -346,3 +347,4 @@ struct WatchComplicationLivePreview: View {
         ComplicationRenderContext.formatValue(state, unit: unit, precision: precision)
     }
 }
+#endif

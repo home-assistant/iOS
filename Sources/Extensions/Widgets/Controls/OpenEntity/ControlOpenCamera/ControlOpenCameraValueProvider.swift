@@ -4,14 +4,14 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlOpenCameraItem {
     let entity: HAAppEntityAppIntentEntity
     let icon: SFSymbolEntity
     let displayText: String?
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlOpenCameraValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlOpenCameraConfiguration) async throws -> ControlOpenCameraItem {
         item(configuration: configuration)
@@ -56,7 +56,7 @@ struct ControlOpenCameraValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlOpenCameraConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.open_camera.configuration.title",
@@ -79,7 +79,7 @@ struct ControlOpenCameraConfiguration: ControlConfigurationIntent {
     var displayText: String?
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct CameraEntityOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
         let entities = ControlEntityProvider(domains: [.camera]).getEntities()

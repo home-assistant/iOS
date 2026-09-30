@@ -1,7 +1,6 @@
 #if !os(watchOS)
 import HAIconic
 import SwiftUI
-import UIKit
 
 /// A Material Design icon as a template `Image`, so the caller tints it with `foregroundStyle`.
 ///

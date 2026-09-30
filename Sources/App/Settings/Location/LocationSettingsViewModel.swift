@@ -3,7 +3,11 @@ import Foundation
 import GRDB
 import MapKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// View model backing `LocationSettingsView`. Tracks permission status, background refresh status,
 /// the persisted location-source toggles and exposes the list of zones for display.
@@ -13,7 +17,9 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
 
     @Published private(set) var locationAuthorizationStatus: CLAuthorizationStatus
     @Published private(set) var locationAccuracyAuthorization: CLAccuracyAuthorization
+    #if !os(macOS)
     @Published private(set) var backgroundRefreshStatus: UIBackgroundRefreshStatus
+    #endif
 
     // MARK: - Location source toggles
 
@@ -54,7 +60,9 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         let probe = CLLocationManager()
         self.locationAuthorizationStatus = probe.authorizationStatus
         self.locationAccuracyAuthorization = probe.accuracyAuthorization
+        #if !os(macOS)
         self.backgroundRefreshStatus = UIApplication.shared.backgroundRefreshStatus
+        #endif
 
         self.zoneEnabled = sources.zone
         self.backgroundFetchEnabled = sources.backgroundFetch
@@ -65,6 +73,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
 
         locationManager.delegate = self
 
+        #if !os(macOS)
         self.backgroundRefreshObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.backgroundRefreshStatusDidChangeNotification,
             object: nil,
@@ -75,6 +84,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
                 self?.backgroundRefreshStatus = status
             }
         }
+        #endif
 
         observeZones()
     }
@@ -90,7 +100,9 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         // Pick up any changes that may have occurred while the view was off-screen.
         locationAuthorizationStatus = locationManager.authorizationStatus
         locationAccuracyAuthorization = locationManager.accuracyAuthorization
+        #if !os(macOS)
         backgroundRefreshStatus = UIApplication.shared.backgroundRefreshStatus
+        #endif
         requestCurrentLocationIfAuthorized()
     }
 
@@ -122,7 +134,12 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         }
     }
 
+    /// A Mac app keeps running whether or not it is on screen, so there is no background refresh to
+    /// allow or deny: it always counts as available there.
     var backgroundRefreshDescription: String {
+        #if os(macOS)
+        return L10n.SettingsDetails.Location.BackgroundRefresh.enabled
+        #else
         switch backgroundRefreshStatus {
         case .available:
             return L10n.SettingsDetails.Location.BackgroundRefresh.enabled
@@ -131,6 +148,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         @unknown default:
             return L10n.SettingsDetails.Location.BackgroundRefresh.disabled
         }
+        #endif
     }
 
     // MARK: - Disabled-state helpers
@@ -144,7 +162,11 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     }
 
     private var isBackgroundRefreshAvailable: Bool {
+        #if os(macOS)
+        true
+        #else
         backgroundRefreshStatus == .available
+        #endif
     }
 
     var isZoneToggleDisabled: Bool {

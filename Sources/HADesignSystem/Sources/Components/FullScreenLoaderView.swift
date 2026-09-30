@@ -53,7 +53,7 @@ public struct FullScreenLoaderView: View {
             )
             if showsDelayedControls {
                 Group {
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         SettingsButton(action: settingsAction)
                             .padding(DesignSystem.Spaces.one)
                             .glassEffect(.regular.interactive(), in: Circle())

@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 import UIKit
 import WidgetKit
@@ -220,4 +221,5 @@ private func face(_ model: RectangularComplicationRenderModel) -> some View {
         textColor: .yellow
     )).padding()
 }
+#endif
 #endif

@@ -20,7 +20,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         }
         #endif
 
-        #if targetEnvironment(simulator)
+        #if targetEnvironment(simulator) || os(macOS)
+        // Neither the simulator nor a Mac has an app push provider to hand the connection to, so the app
+        // keeps it open itself.
         return NotificationManagerLocalPushInterfaceDirect(delegate: self)
         #else
         if Current.isCatalyst {
@@ -36,15 +38,17 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     /// Offers a notification's own actions when a plain tap on it has nothing else to do.
     let tapActionPresenter = NotificationTapActionPresenter()
 
+    #if os(iOS)
     /// Hidden, off-screen volume view; `MPVolumeView` only drives the hardware volume while in a window.
     private lazy var volumeControlView = MPVolumeView(frame: CGRect(x: -2000, y: -2000, width: 1, height: 1))
+    #endif
 
     override init() {
         super.init()
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
+            name: AppLifecycle.didBecomeActiveNotification,
             object: nil
         )
     }
@@ -59,11 +63,15 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     @objc private func didBecomeActive() {
         if Current.settingsStore.clearBadgeAutomatically {
+            #if os(macOS)
+            NSApp.dockTile.badgeLabel = nil
+            #else
             UIApplication.shared.applicationIconBadgeNumber = 0
+            #endif
         }
         localPushManager.scheduleAppOpenLocalPushRetries()
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, *) {
+        if #available(iOS 17.2, macOS 14.2, *) {
             // Catch ends and starts enqueued by the extension while the app was suspended.
             LiveActivityPendingEndObserver.drain()
             LiveActivityPendingStartObserver.drain()
@@ -145,15 +153,23 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             }
     }
 
+    /// A Mac's display brightness is not the app's to set, so the command is accepted and does nothing there.
     private func setScreenBrightness(_ level: Float) {
+        #if os(iOS)
         let clamped = CGFloat(min(max(level, 0), 1))
         DispatchQueue.main.async {
             UIScreen.main.brightness = clamped
             Current.Log.info("Kiosk set screen brightness to \(clamped)")
         }
+        #else
+        Current.Log.info("Ignoring kiosk brightness command, the screen brightness cannot be set on a Mac")
+        #endif
     }
 
+    /// A Mac has no volume view to drive the system volume through, so the command is accepted and does
+    /// nothing there.
     private func setSystemVolume(_ level: Float) {
+        #if os(iOS)
         let clamped = min(max(level, 0), 1)
         Current.sceneManager.webViewControllerPromise
             .done(on: .main) { [weak self] webViewController in
@@ -174,6 +190,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             }.catch { error in
                 Current.Log.error("Failed to set volume from push command: \(error)")
             }
+        #else
+        Current.Log.info("Ignoring kiosk volume command, the system volume cannot be set on a Mac")
+        #endif
     }
 
     func resetPushID() -> Promise<String> {
@@ -189,8 +208,13 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }
 
     func setupFirebase() {
+        #if os(macOS)
+        Current.Log.verbose("Calling NSApplication.shared.registerForRemoteNotifications()")
+        NSApplication.shared.registerForRemoteNotifications()
+        #else
         Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
         UIApplication.shared.registerForRemoteNotifications()
+        #endif
 
         Messaging.messaging().delegate = self
         Messaging.messaging().isAutoInitEnabled = Current.settingsStore.privacy.messaging
@@ -214,6 +238,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         Messaging.messaging().setAPNSToken(deviceToken, type: tokenType)
     }
 
+    #if os(iOS)
     func didReceiveRemoteNotification(
         userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
@@ -222,10 +247,19 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
         firstly {
             handleRemoteNotification(userInfo: userInfo)
-        }.done(
-            completionHandler
-        )
+        }.done { handled in
+            completionHandler(handled ? .newData : .failed)
+        }
     }
+    #else
+    /// AppKit hands over a remote notification without asking for a fetch result: a Mac app is never woken
+    /// in the background to fetch, so there is nobody to report one to.
+    func didReceiveRemoteNotification(userInfo: [String: Any]) {
+        Messaging.messaging().appDidReceiveMessage(userInfo)
+
+        handleRemoteNotification(userInfo: userInfo).cauterize()
+    }
+    #endif
 
     func localPushManager(
         _ manager: LocalPushManager,
@@ -234,13 +268,14 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         handleRemoteNotification(userInfo: userInfo).cauterize()
     }
 
-    private func handleRemoteNotification(userInfo: [AnyHashable: Any]) -> Guarantee<UIBackgroundFetchResult> {
+    /// Runs the command the notification carries, resolving to whether it was handled.
+    private func handleRemoteNotification(userInfo: [AnyHashable: Any]) -> Guarantee<Bool> {
         Current.Log.verbose("remote notification: \(userInfo)")
 
         return commandManager.handle(userInfo).map {
-            UIBackgroundFetchResult.newData
+            true
         }.recover { _ in
-            Guarantee<UIBackgroundFetchResult>.value(.failed)
+            Guarantee<Bool>.value(false)
         }
     }
 
@@ -255,7 +290,8 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
         let eventName = "ios.shortcut_run"
         let deviceDict: [String: String] = [
-            "sourceDevicePermanentID": AppConstants.PermanentID, "sourceDeviceName": UIDevice.current.name,
+            "sourceDevicePermanentID": AppConstants.PermanentID,
+            "sourceDeviceName": Current.device.deviceName(),
             "sourceDeviceID": Current.settingsStore.deviceID,
         ]
         var eventData: [String: Any] = ["name": shortcutName, "input": shortcutDict, "device": deviceDict]
@@ -478,7 +514,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
-           UIApplication.shared.applicationState != .background {
+           ApplicationState.current != .background {
             completionHandler([])
             return
         }
@@ -531,7 +567,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         // The command already ran above; the toast is only its visual confirmation, which the user can
         // switch off for a kiosk that should react silently.
-        if #available(iOS 18, *),
+        if #available(iOS 18, macOS 15, *),
            let toast = command.confirmationToast(id: request.identifier, settings: kioskSettings) {
             Task { @MainActor in
                 ToastPresenter.shared.show(toast: toast, duration: 4)
@@ -608,6 +644,13 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         .navigationViewStyle(.stack)
         let hostingController = rootView.embeddedInHostingController()
 
+        #if os(macOS)
+        Current.sceneManager.appCoordinator.done { coordinator in
+            coordinator.dismissPresentedContent {
+                coordinator.present(hostingController)
+            }
+        }
+        #else
         Current.sceneManager.appCoordinator.done {
             var rootViewController = $0.window?.rootViewController
             if let navigationController = rootViewController as? UINavigationController {
@@ -617,6 +660,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                 rootViewController?.present(hostingController, animated: true, completion: nil)
             })
         }
+        #endif
     }
 }
 

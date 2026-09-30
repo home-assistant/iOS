@@ -2,7 +2,11 @@ import CoreLocation
 import CoreMotion
 import Foundation
 import KeychainAccess
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public class SettingsStore {
     let keychain = AppConstants.Keychain
@@ -52,7 +56,7 @@ public class SettingsStore {
         Set(prefs.stringArray(forKey: seenTestFlightMessageIDsKey) ?? [])
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var matterLastPreferredNetWorkMacExtendedAddress: String? {
         get {
             keychain["matterLastPreferredNetWorkMacExtendedAddress"]
@@ -89,7 +93,7 @@ public class SettingsStore {
         }
     }
 
-    public func isLocationEnabled(for state: UIApplication.State) -> Bool {
+    public func isLocationEnabled(for state: ApplicationState) -> Bool {
         let authorizationStatus: CLAuthorizationStatus
 
         let locationManager = CLLocationManager()
@@ -642,7 +646,7 @@ public class SettingsStore {
         }
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var gestures: [AppGesture: HAGestureAction] {
         get {
             guard let data = prefs.data(forKey: "gesturesSettings"),

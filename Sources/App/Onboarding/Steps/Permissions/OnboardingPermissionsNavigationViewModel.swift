@@ -1,7 +1,11 @@
 import CoreLocation
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject {
     /// Defines the different steps in the onboarding permissions flow
@@ -287,9 +291,13 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                 return
             }
             // Open iOS settings for user to manually enable location
+            #if os(macOS)
+            URLOpener.shared.openSettings(destination: .location, completionHandler: nil)
+            #else
             if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
                 URLOpener.shared.open(settingsUrl, options: [:], completionHandler: nil)
             }
+            #endif
         case .authorizedWhenInUse, .authorizedAlways:
             // Permission already granted, apply the context-specific needs
             applyLocationPermissionNeeds()
@@ -375,8 +383,13 @@ extension OnboardingPermissionsNavigationViewModel: CLLocationManagerDelegate {
         }
 
         // Only proceed if we have some form of location authorization
+        #if os(macOS)
+        // A Mac grants location in a single step, straight to always, so that is the answer to act on.
+        guard manager.authorizationStatus == .authorizedAlways else { return }
+        #else
         // No need to proceed if permission is .authorizedAlways since the code has run before for .authorizedWhenInUse
         guard manager.authorizationStatus == .authorizedWhenInUse else { return }
+        #endif
         applyLocationPermissionNeeds()
     }
 }

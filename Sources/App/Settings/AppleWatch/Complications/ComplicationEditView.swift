@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
@@ -382,3 +383,4 @@ private struct TextAreaEditor: View {
         }
     }
 }
+#endif

@@ -1,6 +1,10 @@
 import Combine
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 // MARK: - Window Title
 

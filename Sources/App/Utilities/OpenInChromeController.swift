@@ -32,7 +32,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 private let googleChromeHTTPScheme: String = "googlechrome:"
 private let googleChromeHTTPSScheme: String = "googlechromes:"

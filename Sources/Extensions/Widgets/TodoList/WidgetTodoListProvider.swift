@@ -18,7 +18,7 @@ enum WidgetTodoListAppIntentTimelineProviderError: Error {
     case noListSelected
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetTodoListEntry
     typealias Intent = WidgetTodoListAppIntent

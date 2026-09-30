@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -18,3 +19,4 @@ enum CarPlayControlScreenFactory {
         }
     }
 }
+#endif

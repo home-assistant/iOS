@@ -8,7 +8,7 @@ import SwiftUI
 /// Shared by every home screen and lock screen layout, so they all derive the same numbers from an
 /// entry — and drop the same series when the server doesn't report one. The wide cards ask for
 /// `Figure.totals`, which pins them to the period's energy regardless of live power.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEnergyMetric: Identifiable, Equatable {
     /// Which energy series the figure describes. Carries the presentation that never varies with
     /// the entry: icon, label and colour.
@@ -253,7 +253,7 @@ struct WidgetEnergyMetric: Identifiable, Equatable {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 extension WidgetEnergyMetric {
     /// The drawing half of the metric, for the design system's energy components.
     ///

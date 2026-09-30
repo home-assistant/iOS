@@ -5,7 +5,12 @@ import HAKit
 import HAKit_PromiseKit
 import ObjectMapper
 import PromiseKit
+import UserNotifications
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
@@ -658,7 +663,7 @@ public class HomeAssistantAPI {
                 ]
 
                 #if os(iOS) && !targetEnvironment(macCatalyst)
-                if #available(iOS 17.2, *) {
+                if #available(iOS 17.2, macOS 14.2, *) {
                     // Push-to-start token (stored in Keychain at launch, updated via stream).
                     // The relay server uses this token to start a Live Activity entirely via APNs.
                     if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
@@ -1069,7 +1074,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public enum ManualUpdateType {
         case userRequested
         case appOpened
@@ -1093,7 +1098,7 @@ public class HomeAssistantAPI {
     }
 
     public static func manuallyUpdate(
-        applicationState: UIApplication.State,
+        applicationState: ApplicationState,
         type: ManualUpdateType
     ) -> Promise<Void> {
         Current.backgroundTask(withName: BackgroundTask.manualLocationUpdate.rawValue) { _ in

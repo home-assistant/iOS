@@ -1,7 +1,6 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 /// Renders a What's New icon, whether it is an SF Symbol or a Material Design glyph, in one colour.
 struct WhatsNewIconView: View {

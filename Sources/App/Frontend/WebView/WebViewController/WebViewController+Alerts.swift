@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 enum BannerDuration {
     case seconds(TimeInterval)
@@ -152,7 +151,7 @@ private extension BannerAction? {
 }
 
 protocol BannerPresenter: AnyObject {
-    func show(on viewController: UIViewController, request: BannerRequest)
+    func show(on viewController: PlatformViewController, request: BannerRequest)
     func hide(id: String)
 }
 
@@ -161,7 +160,7 @@ final class DefaultBannerPresenter: BannerPresenter {
     private var currentRequest: BannerRequest?
     private var autoDismissWorkItem: DispatchWorkItem?
 
-    func show(on viewController: UIViewController, request: BannerRequest) {
+    func show(on viewController: PlatformViewController, request: BannerRequest) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             if let currentRequest, currentOverlay != nil, currentRequest.matchesPresentation(of: request) {
@@ -170,7 +169,8 @@ final class DefaultBannerPresenter: BannerPresenter {
 
             dismissCurrent(animated: false)
 
-            viewController.loadViewIfNeeded()
+            // Reading the view is what loads it, on both platforms.
+            let containerView: PlatformView = viewController.view
 
             let overlay = BannerOverlayView(request: request)
             overlay.translatesAutoresizingMaskIntoConstraints = false
@@ -189,12 +189,12 @@ final class DefaultBannerPresenter: BannerPresenter {
                 }
             }
 
-            viewController.view.addSubview(overlay)
+            containerView.addSubview(overlay)
             NSLayoutConstraint.activate([
-                overlay.topAnchor.constraint(equalTo: viewController.view.topAnchor),
-                overlay.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
-                overlay.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
-                overlay.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor),
+                overlay.topAnchor.constraint(equalTo: containerView.topAnchor),
+                overlay.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                overlay.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                overlay.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             ])
 
             currentOverlay = overlay
@@ -245,6 +245,10 @@ final class DefaultBannerPresenter: BannerPresenter {
     }
 }
 
+#if os(macOS)
+/// The banner is drawn by `MacBannerOverlayView` on the Mac; the presenter above drives both the same way.
+private typealias BannerOverlayView = MacBannerOverlayView
+#else
 private final class BannerOverlayView: UIView {
     private let request: BannerRequest
     private let backgroundButton = UIButton(type: .custom)
@@ -439,6 +443,7 @@ private final class BannerOverlayView: UIView {
         onActionRequested?()
     }
 }
+#endif
 
 // MARK: - Alerts & Message Presentation
 
@@ -486,10 +491,10 @@ extension WebViewController {
     }
 
     func openDebug() {
-        let controller = UIHostingController(rootView: AnyView(
+        let controller = PlatformHostingController(rootView: AnyView(
             NavigationView {
                 VStack {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
+                    if Self.offersShakeToDebug {
                         HStack(spacing: DesignSystem.Spaces.half) {
                             Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
                             Toggle(isOn: .init(get: {
@@ -516,5 +521,14 @@ extension WebViewController {
             .navigationViewStyle(.stack)
         ))
         presentOverlayController(controller: controller, animated: true)
+    }
+
+    /// Shaking to open this screen is something only an iPhone is held to do.
+    private static var offersShakeToDebug: Bool {
+        #if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .phone
+        #else
+        false
+        #endif
     }
 }

@@ -5,7 +5,7 @@ import SwiftUI
 import WidgetKit
 
 /// Upcoming events from any number of Home Assistant calendars, merged into one list.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetCalendar: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -32,7 +32,7 @@ struct WidgetCalendar: Widget {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall, widget: {
     WidgetCalendar()
 }, timeline: {
@@ -48,7 +48,7 @@ struct WidgetCalendar: Widget {
     )
 })
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemMedium, widget: {
     WidgetCalendar()
 }, timeline: {
@@ -64,7 +64,7 @@ struct WidgetCalendar: Widget {
     )
 })
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemLarge, widget: {
     WidgetCalendar()
 }, timeline: {

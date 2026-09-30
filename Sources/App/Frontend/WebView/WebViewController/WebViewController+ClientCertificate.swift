@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 import WebKit
 
 // MARK: - Client certificate (mTLS)
@@ -96,10 +95,12 @@ extension WebViewController {
     /// Opens the same certificate import the onboarding uses, over the empty state. Importing stores the
     /// certificate on the server and reloads; cancelling leaves the empty state up.
     func presentClientCertificateImport() {
-        let controller = UIHostingController(
+        let controller = PlatformHostingController(
             rootView: NavigationView { makeClientCertificateImportView() }.navigationViewStyle(.stack)
         )
+        #if os(iOS)
         controller.modalPresentationStyle = .formSheet
+        #endif
         presentOverlayController(controller: controller, animated: true)
     }
 

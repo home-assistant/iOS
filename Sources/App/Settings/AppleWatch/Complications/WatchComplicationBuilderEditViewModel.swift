@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import GRDB
 import Shared
@@ -178,3 +179,4 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         config.name = "Complication-\(number)"
     }
 }
+#endif

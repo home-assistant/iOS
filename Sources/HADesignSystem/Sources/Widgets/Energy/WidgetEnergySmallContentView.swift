@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Compact card showing solar generation and grid flow. Which figures those are — live power when
 /// power sensors report it, the period's totals otherwise — is settled before they get here.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 public struct WidgetEnergySmallContentView: View {
     /// Wraps a rendered label in the control that runs it.
     public typealias ControlContent = (AnyView) -> AnyView
@@ -80,7 +80,7 @@ public struct WidgetEnergySmallContentView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Two sources") {
     WidgetEnergySmallContentView(
         stats: WidgetEnergySampleData.stats,
@@ -90,7 +90,7 @@ public struct WidgetEnergySmallContentView: View {
     .frame(width: 158, height: 158)
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Four sources") {
     WidgetEnergySmallContentView(
         stats: WidgetEnergySampleData.allSourceStats,

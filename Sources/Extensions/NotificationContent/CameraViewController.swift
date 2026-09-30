@@ -5,11 +5,15 @@ import KeychainAccess
 import PromiseKit
 import SFSafeSymbols
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UserNotifications
 import UserNotificationsUI
 
-class CameraViewController: UIViewController, NotificationCategory {
+class CameraViewController: PlatformViewController, NotificationCategory {
     enum CameraError: LocalizedError {
         case missingEntityId
         case missingAPI
@@ -24,11 +28,58 @@ class CameraViewController: UIViewController, NotificationCategory {
         }
     }
 
+    /// A stream controller: the view controller drawing one kind of stream and the handler that drives it.
+    typealias StreamController = CameraStreamHandler & PlatformViewController
+
     let entityId: String
     let api: HomeAssistantAPI
 
     private var isMuted = true
 
+    #if os(macOS)
+    private lazy var muteButton: NSButton = {
+        let button = NSButton()
+        button.isBordered = false
+        button.imagePosition = .imageOnly
+        button.contentTintColor = .white
+        button.symbolConfiguration = .init(pointSize: 15, weight: .semibold)
+        button.wantsLayer = true
+        button.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.4).cgColor
+        button.layer?.cornerRadius = 18
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.target = self
+        button.action = #selector(toggleMute)
+        return button
+    }()
+
+    private lazy var loadingIndicator: NSProgressIndicator = {
+        let indicator = NSProgressIndicator()
+        indicator.style = .spinning
+        indicator.controlSize = .regular
+        indicator.isIndeterminate = true
+        indicator.isDisplayedWhenStopped = false
+        // Drawn as it would be on a dark background so it shows over the stream, like the white one on iOS.
+        indicator.appearance = NSAppearance(named: .darkAqua)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+
+    #if DEBUG
+    private lazy var streamTypeLabel: NSTextField = {
+        let label = NSTextField(labelWithString: "")
+        label.textColor = .white
+        label.font = .systemFont(ofSize: 11, weight: .semibold)
+        label.drawsBackground = true
+        label.backgroundColor = NSColor.black.withAlphaComponent(0.4)
+        label.alignment = .center
+        label.wantsLayer = true
+        label.layer?.cornerRadius = 4
+        label.layer?.masksToBounds = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    #endif
+    #else
     private lazy var muteButton: UIButton = {
         let button = UIButton(type: .system)
         button.tintColor = .white
@@ -61,6 +112,7 @@ class CameraViewController: UIViewController, NotificationCategory {
         return label
     }()
     #endif
+    #endif
 
     required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String,
@@ -82,6 +134,12 @@ class CameraViewController: UIViewController, NotificationCategory {
         activeViewController?.pause()
     }
 
+    #if os(macOS)
+    override func loadView() {
+        view = NSView()
+    }
+    #endif
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -90,7 +148,13 @@ class CameraViewController: UIViewController, NotificationCategory {
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
-        loadingIndicator.startAnimating()
+        #if os(macOS)
+        NSLayoutConstraint.activate([
+            loadingIndicator.widthAnchor.constraint(equalToConstant: 32),
+            loadingIndicator.heightAnchor.constraint(equalToConstant: 32),
+        ])
+        #endif
+        setLoading(true)
 
         view.addSubview(muteButton)
         muteButton.isHidden = true
@@ -111,9 +175,11 @@ class CameraViewController: UIViewController, NotificationCategory {
         #endif
     }
 
-    var activeViewController: (UIViewController & CameraStreamHandler)? {
+    var activeViewController: StreamController? {
         willSet {
+            #if !os(macOS)
             activeViewController?.willMove(toParent: nil)
+            #endif
             newValue.flatMap { addChild($0) }
         }
         didSet {
@@ -121,7 +187,12 @@ class CameraViewController: UIViewController, NotificationCategory {
             oldValue?.removeFromParent()
 
             if let viewController = activeViewController {
+                #if os(macOS)
+                // Inserted beneath the overlays, which keeps them in front without re-adding them.
+                view.addSubview(viewController.view, positioned: .below, relativeTo: nil)
+                #else
                 view.addSubview(viewController.view)
+                #endif
                 viewController.view.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([
                     viewController.view.topAnchor.constraint(equalTo: view.topAnchor),
@@ -130,12 +201,14 @@ class CameraViewController: UIViewController, NotificationCategory {
                     viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                 ])
 
+                #if !os(macOS)
                 viewController.didMove(toParent: self)
 
                 view.bringSubviewToFront(loadingIndicator)
                 view.bringSubviewToFront(muteButton)
                 #if DEBUG
                 view.bringSubviewToFront(streamTypeLabel)
+                #endif
                 #endif
                 updateOverlays()
             }
@@ -161,7 +234,7 @@ class CameraViewController: UIViewController, NotificationCategory {
         }.then { [weak self, api, entityId] resultAndBaseURL -> Promise<Void> in
             let (result, baseURL) = resultAndBaseURL
             var controllers = Self.possibleControllers
-                .compactMap { controllerClass -> () -> Promise<UIViewController & CameraStreamHandler> in
+                .compactMap { controllerClass -> () -> Promise<StreamController> in
                     {
                         do {
                             return try .value(controllerClass.init(api: api, response: result, baseURL: baseURL))
@@ -172,7 +245,7 @@ class CameraViewController: UIViewController, NotificationCategory {
                 }
 
             // Prefer WebRTC; it rejects when unsupported so the chain falls through to HLS then MJPEG.
-            controllers.insert({ () -> Promise<UIViewController & CameraStreamHandler> in
+            controllers.insert({ () -> Promise<StreamController> in
                 .value(CameraStreamWebRTCViewController(api: api, cameraEntityId: entityId))
             }, at: 0)
 
@@ -209,24 +282,43 @@ class CameraViewController: UIViewController, NotificationCategory {
         updateMuteIcon()
 
         #if DEBUG
+        #if os(macOS)
+        streamTypeLabel.stringValue = " \(debugStreamName(for: active)) "
+        #else
         streamTypeLabel.text = " \(debugStreamName(for: active)) "
+        #endif
         #endif
     }
 
     private func updateMuteIcon() {
-        muteButton.setImage(UIImage(systemSymbol: isMuted ? .speakerSlashFill : .speakerWave3), for: .normal)
+        let image = UIImage(systemSymbol: isMuted ? .speakerSlashFill : .speakerWave3)
         // Label reflects the action the button performs, so VoiceOver conveys both purpose and state.
-        muteButton.accessibilityLabel = isMuted
+        let accessibilityLabel = isMuted
             ? L10n.Extensions.NotificationContent.Camera.unmute
             : L10n.Extensions.NotificationContent.Camera.mute
+        #if os(macOS)
+        muteButton.image = image
+        muteButton.setAccessibilityLabel(accessibilityLabel)
+        #else
+        muteButton.setImage(image, for: .normal)
+        muteButton.accessibilityLabel = accessibilityLabel
+        #endif
     }
 
     private func setLoading(_ loading: Bool) {
+        #if os(macOS)
+        if loading {
+            loadingIndicator.startAnimation(nil)
+        } else {
+            loadingIndicator.stopAnimation(nil)
+        }
+        #else
         if loading {
             loadingIndicator.startAnimating()
         } else {
             loadingIndicator.stopAnimating()
         }
+        #endif
     }
 
     @objc private func toggleMute() {
@@ -236,7 +328,7 @@ class CameraViewController: UIViewController, NotificationCategory {
     }
 
     #if DEBUG
-    private func debugStreamName(for controller: UIViewController & CameraStreamHandler) -> String {
+    private func debugStreamName(for controller: StreamController) -> String {
         if controller is CameraStreamWebRTCViewController {
             return "WebRTC"
         }
@@ -267,22 +359,22 @@ class CameraViewController: UIViewController, NotificationCategory {
         }
     }
 
-    private static var possibleControllers: [(UIViewController & CameraStreamHandler).Type] { [
+    private static var possibleControllers: [StreamController.Type] { [
         CameraStreamHLSViewController.self,
         CameraStreamMJPEGViewController.self,
     ] }
 
     private func viewController(
-        from controllerPromises: [() -> Promise<UIViewController & CameraStreamHandler>]
-    ) -> Promise<UIViewController & CameraStreamHandler> {
+        from controllerPromises: [() -> Promise<StreamController>]
+    ) -> Promise<StreamController> {
         var accumulatedErrors = [Error]()
-        var promise: Promise<UIViewController & CameraStreamHandler> = .init(
+        var promise: Promise<StreamController> = .init(
             error: CameraViewControllerError.noControllers
         )
 
         for nextPromise in controllerPromises {
             promise = promise
-                .recover { [weak self, extensionContext] error -> Promise<UIViewController & CameraStreamHandler> in
+                .recover { [weak self, extensionContext] error -> Promise<StreamController> in
                     // always tell the extension context the previous one failed, aka go back to showing pause
                     extensionContext?.mediaPlayingPaused()
                     // accumulate the error
@@ -324,7 +416,7 @@ class CameraViewController: UIViewController, NotificationCategory {
                 }
         }
 
-        return promise.recover { nextError -> Promise<UIViewController & CameraStreamHandler> in
+        return promise.recover { nextError -> Promise<StreamController> in
             throw CameraViewControllerError.accumulated(accumulatedErrors + [nextError])
         }
     }

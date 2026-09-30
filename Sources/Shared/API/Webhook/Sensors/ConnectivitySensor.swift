@@ -90,13 +90,13 @@ public class ConnectivitySensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        #if os(iOS)
+        #if !os(watchOS)
         let sensors: Promise<[WebhookSensor]> = firstly { () -> Guarantee<[Result<[WebhookSensor]>]> in
             var sensors = [Promise<[WebhookSensor]>]()
 
             sensors.append(ssid())
             sensors.append(connectionType())
-            #if !targetEnvironment(macCatalyst)
+            #if !(targetEnvironment(macCatalyst) || os(macOS))
             sensors.append(cellularProviders())
             #endif
 
@@ -120,7 +120,7 @@ public class ConnectivitySensor: SensorProvider {
         #endif
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
 
     private func ssid() -> Promise<[WebhookSensor]> {
         guard Current.connectivity.hasWiFi() else {
@@ -157,7 +157,7 @@ public class ConnectivitySensor: SensorProvider {
 
     #endif
 
-    #if os(iOS)
+    #if !os(watchOS)
 
     private func connectionType() -> Promise<[WebhookSensor]> {
         let simple = Current.connectivity.simpleNetworkType()
@@ -182,7 +182,7 @@ public class ConnectivitySensor: SensorProvider {
         ])
     }
 
-    #if !targetEnvironment(macCatalyst)
+    #if !(targetEnvironment(macCatalyst) || os(macOS))
     private func cellularProviders() -> Promise<[WebhookSensor]> {
         let networkInfo = Current.connectivity.telephonyCarriers()
         let radioTech = Current.connectivity.telephonyRadioAccessTechnology()

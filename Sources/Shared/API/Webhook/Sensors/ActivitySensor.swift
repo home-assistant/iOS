@@ -1,3 +1,4 @@
+#if !os(macOS)
 import CoreMotion
 import Foundation
 import PromiseKit
@@ -59,3 +60,4 @@ public class ActivitySensor: SensorProvider {
         return promise
     }
 }
+#endif

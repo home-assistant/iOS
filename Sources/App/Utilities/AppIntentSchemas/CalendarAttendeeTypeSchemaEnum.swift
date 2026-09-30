@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 
 /// Home Assistant reports no attendees, so no case is ever produced; the schema requires the shape.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEnum(schema: .calendar.attendeeType)
 enum CalendarAttendeeTypeSchemaEnum: String {
     case person

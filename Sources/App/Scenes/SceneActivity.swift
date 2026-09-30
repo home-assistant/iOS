@@ -1,4 +1,8 @@
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 enum SceneActivity: CaseIterable {
     case webView
@@ -53,6 +57,7 @@ enum SceneActivity: CaseIterable {
         }
     }
 
+    #if os(iOS)
     var configuration: UISceneConfiguration {
         switch self {
         case .webView, .settings, .about, .assist, .onboarding:
@@ -62,6 +67,7 @@ enum SceneActivity: CaseIterable {
         case .carPlay: return .init(name: configurationName, sessionRole: .carTemplateApplication)
         }
     }
+    #endif
 
     /// The size a window of this kind opens at before the user has ever placed it. `nil` leaves the window to
     /// macOS, which opens it at the frontmost window's frame.
@@ -72,13 +78,35 @@ enum SceneActivity: CaseIterable {
         }
     }
 
+    #if os(macOS)
+    /// The size a window of this kind opens at in the native Mac app before the user has ever placed it. A
+    /// SwiftUI window otherwise opens at the smallest size its content accepts.
+    var initialWindowSize: CGSize {
+        switch self {
+        case .webView, .carPlay: return .init(width: 1100, height: 760)
+        case .settings: return .init(width: 960, height: 680)
+        case .about: return .init(width: 480, height: 680)
+        case .assist: return defaultMacWindowSize ?? .init(width: 400, height: 600)
+        case .onboarding: return .init(width: 560, height: 720)
+        }
+    }
+
+    /// The smallest size a window of this kind can be resized to in the native Mac app: what the onboarding
+    /// screens shown in the main window need to lay out without overlapping.
+    var minimumWindowSize: CGSize {
+        .init(width: 480, height: 600)
+    }
+    #endif
+
     /// Windows that remember their geometry need a scene delegate to receive the lifecycle callbacks
     /// `WindowScenesManager` acts on. The main window's delegate is attached in `AppDelegate` instead, since it
     /// also carries quick-action and browser-launch behaviour.
+    #if os(iOS)
     private var sceneDelegateClass: AnyClass? {
         switch self {
         case .assist: return AssistWindowSceneDelegate.self
         case .webView, .settings, .about, .carPlay, .onboarding: return nil
         }
     }
+    #endif
 }

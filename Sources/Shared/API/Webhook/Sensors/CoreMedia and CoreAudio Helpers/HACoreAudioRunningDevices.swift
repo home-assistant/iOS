@@ -41,7 +41,7 @@ extension HACoreAudioRunningDevices {
     }
 }
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 extension HACoreAudioRunningDevices {
     init(processes: [HACoreAudioObjectProcess]) {
         var recording = Set<UInt32>()

@@ -10,7 +10,7 @@ struct SensorDetailView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: MaterialDesignIcons(serversideValueNamed: viewModel.sensor.Icon.orEmpty, fallback: .motionIcon),
                 title: viewModel.sensor.Name.orEmpty
@@ -95,6 +95,15 @@ struct SensorDetailView: View {
         return rows
     }
 
+    /// A Mac steps a value in a field that can also be typed into, rather than with a stepper alone.
+    private static var usesDecimalStepper: Bool {
+        #if os(macOS)
+        true
+        #else
+        UIDevice.current.userInterfaceIdiom == .mac
+        #endif
+    }
+
     private static func makeRow(for setting: WebhookSensorSetting) -> AnyView {
         {
             switch setting.type {
@@ -108,7 +117,7 @@ struct SensorDetailView: View {
                     }
                 )
             case let .stepper(getter, setter, minimum, maximum, step, displayValueFor):
-                if UIDevice.current.userInterfaceIdiom == .mac {
+                if usesDecimalStepper {
                     return AnyView(
                         SensorDetailsDecimalStepper(
                             title: setting.title,

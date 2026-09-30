@@ -1,6 +1,6 @@
 import Foundation
 
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 enum ReminderListResolution {
     case noLists
     case only(ReminderListSchemaEntity)

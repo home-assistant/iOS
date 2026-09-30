@@ -1,7 +1,7 @@
 import SFSafeSymbols
 import SwiftUI
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 public struct Toast {
     private(set) var id: String
     public var symbol: SFSymbol

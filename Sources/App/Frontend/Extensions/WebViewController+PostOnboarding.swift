@@ -20,9 +20,7 @@ extension WebViewController {
 
     private func showNotificationPermissionRequest() {
         let view = NotificationPermissionRequestView().embeddedInHostingController()
-        view.modalPresentationStyle = .overFullScreen
-        view.view.backgroundColor = .clear
-        view.modalTransitionStyle = .crossDissolve
+        view.presentsAsTransparentOverlay()
         present(view, animated: true)
     }
 }

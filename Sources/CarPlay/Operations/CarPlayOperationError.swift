@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 import HAKit
 import Shared
@@ -85,3 +86,4 @@ enum CarPlayOperationError: Error {
         return false
     }
 }
+#endif

@@ -158,7 +158,7 @@ struct WidgetCreationView: View {
                 )
             }
             Spacer()
-            #if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst) || os(macOS)
             Button {
                 viewModel.deleteItem(item)
             } label: {

@@ -1,11 +1,15 @@
 import MapKit
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UserNotifications
 import UserNotificationsUI
 
-class MapViewController: UIViewController, NotificationCategory, MKMapViewDelegate {
+class MapViewController: PlatformViewController, NotificationCategory, MKMapViewDelegate {
     let api: HomeAssistantAPI
     let location: CLLocationCoordinate2D
     let haDict: [String: Any]
@@ -49,6 +53,12 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         }
     }
 
+    #if os(macOS)
+    override func loadView() {
+        view = NSView()
+    }
+    #endif
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -83,7 +93,11 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         mapView.showsScale = (haDict["shows_scale"] != nil)
         mapView.showsTraffic = (haDict["shows_traffic"] != nil)
 
+        #if os(macOS)
+        mapView.setAccessibilityIdentifier("notification_map")
+        #else
         mapView.accessibilityIdentifier = "notification_map"
+        #endif
 
         let span = MKCoordinateSpan(
             latitudeDelta: CLLocationDegrees(templateValue: haDict["latitude_delta"]) ?? 0.1,

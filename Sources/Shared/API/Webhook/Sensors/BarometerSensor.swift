@@ -1,3 +1,4 @@
+#if !os(macOS)
 import CoreMotion
 import Foundation
 import PromiseKit
@@ -163,3 +164,4 @@ public class BarometerSensor: SensorProvider {
         )
     }
 }
+#endif

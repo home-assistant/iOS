@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import PromiseKit
 import Shared
@@ -144,3 +145,4 @@ extension ComplicationListViewModel {
         }
     }
 }
+#endif

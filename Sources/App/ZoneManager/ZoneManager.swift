@@ -3,7 +3,11 @@ import Foundation
 import GRDB
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 class ZoneManager {
     let locationManager: CLLocationManager
@@ -60,7 +64,11 @@ class ZoneManager {
     private func updateLocationManager(isInitial: Bool) {
         with(locationManager) {
             $0.delegate = collector
+            // A Mac app is never suspended, and Core Location raises an exception when an app without
+            // a location background mode asks for background updates there.
+            #if !os(macOS)
             $0.allowsBackgroundLocationUpdates = true
+            #endif
             $0.pausesLocationUpdatesAutomatically = false
 
             if Current.settingsStore.locationSources.significantLocationChange {

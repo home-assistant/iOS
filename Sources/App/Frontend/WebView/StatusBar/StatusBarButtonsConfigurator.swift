@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import UIKit
 
@@ -378,3 +379,4 @@ enum StatusBarButtonsConfigurator {
         }
     }
 }
+#endif

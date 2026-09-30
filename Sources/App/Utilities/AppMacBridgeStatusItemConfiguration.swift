@@ -1,5 +1,9 @@
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 class AppMacBridgeStatusItemConfiguration: MacBridgeStatusItemConfiguration {
     init(

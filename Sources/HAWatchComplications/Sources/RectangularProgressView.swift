@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 import UIKit
 import WidgetKit
@@ -221,4 +222,5 @@ public struct RectangularProgressView: View {
     .frame(width: 180)
     .padding()
 }
+#endif
 #endif

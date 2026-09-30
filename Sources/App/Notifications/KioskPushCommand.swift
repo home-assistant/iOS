@@ -169,7 +169,7 @@ enum KioskPushCommand: String, CaseIterable {
 
     /// The toast confirming this command ran, or `nil` when the kiosk is set to take commands
     /// silently. The command itself runs either way — this is only its visual confirmation.
-    @available(iOS 18, *)
+    @available(iOS 18, macOS 15, *)
     func confirmationToast(id: String, settings: KioskSettings) -> Toast? {
         guard settings.showRemoteCommandConfirmations else { return nil }
         return Toast(

@@ -74,7 +74,7 @@ struct WebRTCVideoPlayerControlsView<Content: View>: View {
                     .transition(.move(edge: .trailing).combined(with: .scale))
                 }
                 .modify({ view in
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         view
                             .buttonStyle(.glassProminent)
                     } else {

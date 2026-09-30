@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetTodoList: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -30,7 +30,7 @@ struct WidgetTodoList: Widget {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemMedium, widget: {
     WidgetTodoList()
 }, timeline: {
@@ -60,7 +60,7 @@ struct WidgetTodoList: Widget {
     )
 })
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall, widget: {
     WidgetTodoList()
 }, timeline: {
@@ -90,7 +90,7 @@ struct WidgetTodoList: Widget {
     )
 })
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemLarge, widget: {
     WidgetTodoList()
 }, timeline: {
@@ -119,7 +119,7 @@ struct WidgetTodoList: Widget {
         family: .systemMedium
     )
 })
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall, widget: {
     WidgetTodoList()
 }, timeline: {

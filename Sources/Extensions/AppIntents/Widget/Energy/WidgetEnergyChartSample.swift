@@ -7,7 +7,7 @@ import Foundation
 /// grid whatever solar can't cover, and returns whatever solar it can't use. Keeping them consistent
 /// matters because the chart splits generation into the part used at home and the part exported —
 /// sample data that ignored the relationship would render a stack no home could produce.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 enum WidgetEnergyChartSample {
     /// Hourly buckets covering the 24 hours from `dayStart`.
     static func day(startingAt dayStart: Date) -> [WidgetEnergyEntry.ChartPoint] {

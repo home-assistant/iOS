@@ -80,7 +80,7 @@ struct DatabaseTableDetailView: View {
                 .listRowBackground(Color.clear)
             }
             .modify { view in
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14.0, *) {
                     view.listSectionSpacing(DesignSystem.Spaces.one)
                 } else {
                     view

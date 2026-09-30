@@ -9,7 +9,7 @@ import WidgetKit
 /// The events are read through `Current.calendarsModel()`, which fetches from the server, refreshes
 /// the cache, and falls back to the cache when the server can't be reached — so the widget keeps
 /// showing the last known schedule while the phone is off the network.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetCalendarAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetCalendarEntry
     typealias Intent = WidgetCalendarAppIntent

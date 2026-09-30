@@ -8,10 +8,12 @@ import KeychainAccess
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 @preconcurrency import WebKit
 
-final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
+/// Hosts the Home Assistant frontend in a `WKWebView`. One class for both platforms: a `UIViewController` on
+/// iOS and an `NSViewController` on the Mac, with the chrome each platform draws around the web view kept
+/// behind `#if`.
+final class WebViewController: PlatformViewController, WKNavigationDelegate, WKUIDelegate {
     var webView: WKWebView!
     let server: Server
 
@@ -29,17 +31,21 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var emptyStateTitleObserver: AnyCancellable?
     var tokens = [HACancellable]()
 
+    #if os(iOS)
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
+    #endif
 
-    var statusBarView: UIView?
+    var statusBarView: PlatformView?
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
-    var assistZoomAnchorView: UIView?
-    var pendingAssistZoomSourceView: UIView?
+    var assistZoomAnchorView: PlatformView?
+    var pendingAssistZoomSourceView: PlatformView?
     var presentsNextAssistAsSheet = false
     /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
-    weak var detachedOverlayController: UIViewController?
+    weak var detachedOverlayController: PlatformViewController?
+    #if os(iOS)
     var tabBarAssistZoomAnchor: AssistZoomAnchorView?
+    #endif
     var webViewTopConstraint: NSLayoutConstraint?
     /// Pins the bottom of `statusBarView`; on iOS it follows the web view's top edge.
     var statusBarBottomConstraint: NSLayoutConstraint?
@@ -48,7 +54,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var initialURL: URL?
     var initialURLPath: String?
+    #if os(iOS)
     var statusBarButtonsStack: UIStackView?
+    #endif
     var lastNavigationWasServerError = false
     var didHandleServerErrorResponse = false
     var reconnectBackgroundTimer: Timer? {
@@ -99,7 +107,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var loadActiveURLTaskStartDate: Date?
 
     /// Wrapper around the application state; replaceable in tests.
-    var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+    var isAppInBackground: @MainActor () -> Bool = { ApplicationState.current == .background }
 
     var blankFrontendRecoveryAttempts = 0
     var contentProcessTerminations = 0
@@ -108,10 +116,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var hasRenderedFrontendCheck: (@MainActor ((Bool) -> Void) -> Void)?
 
     /// Where the window's title lands; replaceable in tests, which all share the host process's one scene.
-    var applyWindowSceneTitle: @MainActor (UIWindowScene, String) -> Void = { windowScene, title in
+    var applyWindowSceneTitle: @MainActor (PlatformWindowScene, String) -> Void = { windowScene, title in
         windowScene.title = title
     }
 
+    #if os(iOS)
     /// How far down a view must start to clear the window controls; replaceable in tests, which have none.
     var cornerAdaptedSafeAreaTop: @MainActor (UIView) -> CGFloat = { view in
         guard #available(iOS 26, *) else { return view.safeAreaInsets.top }
@@ -122,6 +131,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var userInterfaceIdiom: @MainActor (UIView) -> UIUserInterfaceIdiom = { view in
         view.traitCollection.userInterfaceIdiom
     }
+    #endif
 
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
@@ -144,6 +154,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// updateFrontendConnectionState in WebViewController+ProtocolConformance.swift)
     var emptyStateTimer: Timer?
 
+    #if os(macOS)
+    /// Drives the find bar; the web view is its client and `findBarContainer` gives the bar its place.
+    lazy var textFinder = NSTextFinder()
+    lazy var findBarContainer = WebViewFindBarContainer(webViewController: self)
+    /// Watches the window's appearance so the frontend can follow a switch between light and dark.
+    var appearanceObserver: NSKeyValueObservation?
+    #else
     var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersHomeIndicatorAutoHidden: Bool {
@@ -212,17 +229,20 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         return commands
     }
     #endif
+    #endif
 
     // MARK: - Initialization
 
     init(server: Server, shouldLoadImmediately: Bool = false) {
         self.server = server
+        #if os(iOS)
         self.leftEdgePanGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .left
         }
         self.rightEdgeGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .right
         }
+        #endif
 
         super.init(nibName: nil, bundle: nil)
 
@@ -230,8 +250,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             $0.isEligibleForHandoff = true
         }
 
+        #if os(iOS)
         leftEdgePanGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
         rightEdgeGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
+        #endif
 
         if shouldLoadImmediately {
             loadViewIfNeeded()
@@ -259,7 +281,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     deinit {
+        #if os(iOS)
         tabBarAssistZoomAnchor?.removeFromSuperview()
+        #else
+        self.appearanceObserver = nil
+        #endif
         self.urlObserver = nil
         self.windowTitleObserver = nil
         if let siriExposureObserver {
@@ -276,7 +302,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         WebKitEnhancedSecurity.prepareForConfiguredServers()
 
         let config = WKWebViewConfiguration()
+        #if os(iOS)
         config.allowsInlineMediaPlayback = true
+        #endif
         // Avoid interrupting background audio when the frontend loads media-capable elements.
         config.mediaTypesRequiringUserActionForPlayback = Current.settingsStore
             .mediaTypesRequiringUserActionForPlayback
@@ -286,9 +314,28 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     // MARK: - View Lifecycle
 
+    #if os(macOS)
+    /// AppKit has no view to hand a controller that was not loaded from a nib.
+    override func loadView() {
+        view = NSView()
+    }
+
+    // AppKit only gained these two in macOS 14. The extensions shared with iOS rely on them, so they are
+    // provided here for the releases before that.
+    override var viewIfLoaded: NSView? {
+        isViewLoaded ? view : nil
+    }
+
+    override func loadViewIfNeeded() {
+        _ = view
+    }
+    #endif
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        #if os(iOS)
         becomeFirstResponder()
+        #endif
 
         observeConnectionNotifications()
         setupKioskModeObservation()
@@ -296,7 +343,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
 
+        #if os(iOS)
         let statusBarView = setupStatusBarView()
+        #endif
 
         let config = Self.makeWebViewConfiguration()
 
@@ -332,24 +381,42 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         config.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
         config.defaultWebpagePreferences.preferredContentMode = Current.isCatalyst ? .desktop : .mobile
 
-        webView = WKWebView(frame: view!.frame, configuration: config)
+        webView = WKWebView(frame: view.frame, configuration: config)
+        #if os(macOS)
+        // AppKit's web view has no `isOpaque`; this is what lets the themed background show through
+        // while a page loads.
+        webView.setValue(false, forKey: "drawsBackground")
+        webView.allowsBackForwardNavigationGestures = true
+        #else
         webView.isOpaque = false
-        view!.addSubview(webView)
+        #endif
+        view.addSubview(webView)
 
+        #if os(iOS)
         setupGestures(numberOfTouchesRequired: 2)
         setupGestures(numberOfTouchesRequired: 3)
         setupEdgeGestures()
+        #endif
         setupURLObserver()
         setupWindowTitleObserver()
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
 
+        #if os(macOS)
+        setupWebViewConstraints()
+        textFinder.client = webView
+        textFinder.findBarContainer = findBarContainer
+        textFinder.isIncrementalSearchingEnabled = true
+        textFinder.incrementalSearchingShouldDimContentView = true
+        observeAppearance()
+        #else
         setupWebViewConstraints(statusBarView: statusBarView)
 
         // Above the web view so it lands where the frontend draws its Assist button; it takes no touches,
         // so the button underneath keeps working. Aligned to the web view so it follows the frontend's offset.
         assistZoomAnchorView = AssistZoomAnchorView.install(in: view, alignedTo: webView)
+        #endif
 
         NotificationCenter.default.addObserver(
             self,
@@ -363,13 +430,40 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         webView.isInspectable = true
 
+        #if os(iOS)
         webView.isFindInteractionEnabled = true
+        #endif
 
         postOnboardingNotificationPermission()
         checkForLocalSecurityLevelDecisionNeeded()
         onWebViewLoaded?(self)
     }
 
+    #if os(macOS)
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        loadActiveURLIfNeeded()
+    }
+
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        updateDatabaseAndPanels()
+        updateWindowSceneTitle()
+    }
+
+    override func viewWillDisappear() {
+        super.viewWillDisappear()
+        userActivity?.resignCurrent()
+    }
+
+    /// The frontend picks its theme from the colours the app reports, so it has to be told when the
+    /// window moves between light and dark.
+    private func observeAppearance() {
+        appearanceObserver = view.observe(\.effectiveAppearance) { [weak self] _, _ in
+            self?.webView?.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+        }
+    }
+    #else
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updateWindowControlsInset()
@@ -429,6 +523,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             webViewGestureHandler.handleGestureAction(action)
         }
     }
+    #endif
 }
 
 private extension Set<SettingsStore.MediaTypeRequiringUserActionForPlayback> {
@@ -466,7 +561,9 @@ extension WebViewController {
             .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
+                #if os(iOS)
                 self?.setNeedsStatusBarAppearanceUpdate()
+                #endif
             }
             .store(in: &kioskCancellables)
 

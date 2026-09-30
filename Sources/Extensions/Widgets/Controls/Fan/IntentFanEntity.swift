@@ -4,7 +4,7 @@ import GRDB
 import SFSafeSymbols
 import Shared
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 struct IntentFanEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Fan")
 
@@ -52,9 +52,11 @@ struct IntentFanEntity: AppEntity, EntityContextRepresentable {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 struct IntentFanAppEntityQuery: EntityQuery, EntityStringQuery {
-    #if WIDGET_EXTENSION
+    // The control's configuration reached the Mac in macOS 26, later than this query, which cannot depend
+    // on a type newer than itself: on the Mac the list is always grouped by server.
+    #if WIDGET_EXTENSION && !os(macOS)
     @IntentParameterDependency<ControlFanConfiguration>(\.$server)
     var config
     #endif
@@ -77,7 +79,7 @@ struct IntentFanAppEntityQuery: EntityQuery, EntityStringQuery {
     private func collection(
         for entitiesPerServer: [(Server, [IntentFanEntity])]
     ) -> IntentItemCollection<IntentFanEntity> {
-        #if WIDGET_EXTENSION
+        #if WIDGET_EXTENSION && !os(macOS)
         if let server = config?.server {
             let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
             return .init(items: items)

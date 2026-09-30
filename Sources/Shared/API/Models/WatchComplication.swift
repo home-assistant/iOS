@@ -1,6 +1,10 @@
 import Foundation
 import GRDB
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// A legacy (ClockKit-era) watch complication configuration.
 ///

@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import Shared
 import UIKit
@@ -17,7 +18,7 @@ final class WindowSizeObserver: NSObject {
     }
 
     private func startObserving() {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         guard #available(macCatalyst 16.0, *) else { return }
         observation = observe(\.observedScene?.effectiveGeometry, options: [.new]) { [activity] _, change in
             guard let newSystemFrame = change.newValue??.systemFrame,
@@ -32,3 +33,4 @@ final class WindowSizeObserver: NSObject {
         observation = nil
     }
 }
+#endif

@@ -3,7 +3,7 @@ import Foundation
 import SwiftUI
 
 /// Medium/large layout: period totals for solar and grid, monetary cost, and the net-grid chart.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 public struct WidgetEnergyMediumContentView: View {
     /// Wraps a rendered label in the control that runs it.
     public typealias ControlContent = (AnyView) -> AnyView
@@ -168,7 +168,7 @@ public struct WidgetEnergyMediumContentView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Two sources") {
     WidgetEnergyMediumContentView(
         stats: WidgetEnergySampleData.stats,
@@ -181,7 +181,7 @@ public struct WidgetEnergyMediumContentView: View {
     .frame(width: 338, height: 158)
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Four sources") {
     WidgetEnergyMediumContentView(
         stats: WidgetEnergySampleData.allSourceStats,

@@ -1,6 +1,6 @@
 import SwiftUI
 
-#if os(iOS)
+#if !os(watchOS)
 /// The app-wide switch style: the standard switch tinted with the Home Assistant brand color.
 /// Applied once at the SwiftUI hosting seams (`embeddedInHostingController`, the scene roots) so
 /// every toggle picks it up without per-view styling — `UISwitch.appearance()` no longer reaches

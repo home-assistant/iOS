@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import Shared
 
@@ -64,3 +65,4 @@ extension NativeTabBarViewModel {
         ]
     }
 }
+#endif

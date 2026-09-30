@@ -4,7 +4,9 @@ import Foundation
 import HAKit
 import HAKit_PromiseKit
 import PromiseKit
+#if os(iOS)
 import SafariServices
+#endif
 import Shared
 import SwiftUI
 
@@ -122,6 +124,7 @@ class IncomingURLHandler {
                 // instead of being dropped when `components.url` is nil.
                 let rawURL = explicitDestination ?? components.url?.absoluteString ?? ""
 
+                #if os(iOS)
                 if
                     let presenting = coordinator.presentedViewController,
                     presenting is SFSafariViewController {
@@ -152,6 +155,26 @@ class IncomingURLHandler {
                         isComingFromAppIntent: isComingFromAppIntent
                     )
                 }
+                #else
+                // A my.* link opens in the browser on the Mac, so there is nothing of ours on top to dismiss.
+                if let server {
+                    coordinator.open(
+                        from: .deeplink,
+                        server: server,
+                        urlString: rawURL,
+                        skipConfirm: isFromWidget,
+                        isComingFromAppIntent: isComingFromAppIntent
+                    )
+                } else {
+                    coordinator.openSelectingServer(
+                        from: .deeplink,
+                        urlString: rawURL,
+                        skipConfirm: isFromWidget,
+                        queryParameters: queryParameters,
+                        isComingFromAppIntent: isComingFromAppIntent
+                    )
+                }
+                #endif
             case .assist:
                 guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                       let queryParameters = components.queryItems else {
@@ -189,7 +212,7 @@ class IncomingURLHandler {
                                 }
                             }
                         }
-                    let controller = UIHostingController(rootView: AnyView(
+                    let controller = PlatformHostingController(rootView: AnyView(
                         NavigationStack {
                             mainView
                         }
@@ -267,6 +290,7 @@ class IncomingURLHandler {
         return handle(url: url)
     }
 
+    #if os(iOS)
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
         Current.backgroundTask(withName: BackgroundTask.shortcutItem.rawValue) { remaining -> Promise<Void> in
             switch shortcutItem.type {
@@ -299,6 +323,7 @@ class IncomingURLHandler {
             }
         }
     }
+    #endif
 
     private func handleAppIconShortcut(
         identifier: AppIconShortcutItemsUpdater.ShortcutIdentifier
@@ -596,7 +621,7 @@ class IncomingURLHandler {
     /// Presents on top of everything currently on screen. Used for the transient prompts (confirmations,
     /// results, tag approval) that only need to be seen — unlike `presentOverFrontend(_:)` they don't take
     /// the screen over, so a sheet the user opened stays where it was.
-    private func presentOnTopmost(_ controller: UIViewController, animated: Bool = true) {
+    private func presentOnTopmost(_ controller: PlatformViewController, animated: Bool = true) {
         let appCoordinator: AppCoordinator? = coordinator
         Current.sceneManager.webViewControllerPromise.done { webViewController in
             guard let appCoordinator else {
@@ -613,35 +638,28 @@ class IncomingURLHandler {
         handler: @escaping () -> Void,
         cancelHandler: (() -> Void)? = nil
     ) {
-        let alert = UIAlertController(
-            title: title,
-            message: message,
-            preferredStyle: UIAlertController.Style.alert
-        )
+        presentOnTopmost(AppAlert(title: title, message: message, actions: [
+            .init(title: L10n.cancelLabel, style: .cancel) { cancelHandler?() },
+            .init(title: L10n.yesLabel) { handler() },
+        ]))
+    }
 
-        alert.addAction(UIAlertAction(
-            title: L10n.cancelLabel,
-            style: .cancel,
-            handler: { _ in
-                cancelHandler?()
-            }
-        ))
-
-        alert.addAction(UIAlertAction(
-            title: L10n.yesLabel,
-            style: .default,
-            handler: { _ in
-                handler()
-            }
-        ))
-
-        presentOnTopmost(alert)
+    /// Shows an alert on top of everything currently on screen; see `presentOnTopmost(_:animated:)`.
+    private func presentOnTopmost(_ alert: AppAlert) {
+        #if os(macOS)
+        let appCoordinator: AppCoordinator? = coordinator
+        Current.sceneManager.webViewControllerPromise.done { webViewController in
+            alert.present(on: appCoordinator?.window ?? webViewController.presentationWindow)
+        }
+        #else
+        presentOnTopmost(alert.makeAlertController())
+        #endif
     }
 
     private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
         // Built empty first so `onDismiss` can weakly reference the controller it lives in: it has to dismiss
         // this sheet specifically — not whatever is top-most, which may be an overlay that appeared above it.
-        let controller = UIHostingController(rootView: AnyView(EmptyView()))
+        let controller = PlatformHostingController(rootView: AnyView(EmptyView()))
         controller.rootView = AnyView(TagApprovalBottomSheet(
             tag: tag,
             onAllowOnce: { [weak self] in
@@ -652,11 +670,17 @@ class IncomingURLHandler {
                 self?.fireApprovedTag(tag, type: type)
             },
             onDismiss: { [weak controller] in
+                #if os(macOS)
+                controller?.dismissSheet()
+                #else
                 controller?.dismiss(animated: false)
+                #endif
             }
         ))
+        #if os(iOS)
         controller.modalPresentationStyle = .overFullScreen
         controller.view.backgroundColor = .clear
+        #endif
         presentOnTopmost(controller, animated: false)
     }
 
@@ -687,13 +711,7 @@ class IncomingURLHandler {
     }
 
     private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(
-            title: title,
-            message: message,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-        presentOnTopmost(alert)
+        presentOnTopmost(AppAlert(title: title, message: message, actions: [.init(title: L10n.okLabel)]))
     }
 
     private func showMy(for url: URL) -> Bool {
@@ -710,8 +728,14 @@ class IncomingURLHandler {
             return false
         }
 
+        #if os(macOS)
+        // The Mac has no in-app browser: the page opens in the default one, and the link it redirects to
+        // comes back to the app through its URL scheme.
+        URLOpener.shared.open(updatedURL, options: [:], completionHandler: nil)
+        #else
         // not animated in because it looks weird during the app launch animation
         coordinator?.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
+        #endif
 
         return true
     }

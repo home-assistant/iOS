@@ -1,7 +1,11 @@
 import AVFoundation
 import CoreImage
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 protocol BarcodeScannerCameraDelegate: AnyObject {
     func didDetectBarcode(_ code: String, format: String)
@@ -17,15 +21,22 @@ final class BarcodeScannerCamera: NSObject, @unchecked Sendable {
     private let feedbackGenerator = UINotificationFeedbackGenerator()
     private var allBackCaptureDevices: [AVCaptureDevice] {
         AVCaptureDevice.DiscoverySession(
-            deviceTypes: [
-                .builtInTripleCamera,
-                .builtInDualCamera,
-                .builtInWideAngleCamera,
-            ],
+            deviceTypes: Self.backCaptureDeviceTypes,
             mediaType: .video,
             position: .back
         ).devices
     }
+
+    #if os(macOS)
+    /// A Mac has no multi-lens cameras.
+    private static let backCaptureDeviceTypes: [AVCaptureDevice.DeviceType] = [.builtInWideAngleCamera]
+    #else
+    private static let backCaptureDeviceTypes: [AVCaptureDevice.DeviceType] = [
+        .builtInTripleCamera,
+        .builtInDualCamera,
+        .builtInWideAngleCamera,
+    ]
+    #endif
 
     public var screenSize: CGSize? {
         didSet {
@@ -155,6 +166,12 @@ final class BarcodeScannerCamera: NSObject, @unchecked Sendable {
         ]
 
         metadataObjectTypes.append(.codabar)
+
+        #if os(macOS)
+        // Asking for a type the output cannot produce raises, and not every Mac camera offers them all.
+        let availableTypes = metadataOutput.availableMetadataObjectTypes
+        metadataObjectTypes = metadataObjectTypes.filter { availableTypes.contains($0) }
+        #endif
 
         metadataOutput.metadataObjectTypes = metadataObjectTypes
 
@@ -306,6 +323,8 @@ final class BarcodeScannerCamera: NSObject, @unchecked Sendable {
         }
     }
 
+    // A Mac is not held at an angle: its cameras are left at the orientation they deliver.
+    #if !os(macOS)
     private var deviceOrientation: UIDeviceOrientation {
         var orientation = UIDevice.current.orientation
         if orientation == UIDeviceOrientation.unknown {
@@ -313,6 +332,7 @@ final class BarcodeScannerCamera: NSObject, @unchecked Sendable {
         }
         return orientation
     }
+    #endif
 }
 
 extension BarcodeScannerCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -323,10 +343,12 @@ extension BarcodeScannerCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
     ) {
         guard let pixelBuffer = sampleBuffer.imageBuffer else { return }
 
+        #if !os(macOS)
         if connection.isVideoOrientationSupported,
            let videoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation) {
             connection.videoOrientation = videoOrientation
         }
+        #endif
 
         addToPreviewStream?(CIImage(cvPixelBuffer: pixelBuffer))
     }

@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import WebKit
 
@@ -155,3 +156,4 @@ final class HomeAssistantPullToRefreshObserver: NSObject {
         }
     }
 }
+#endif

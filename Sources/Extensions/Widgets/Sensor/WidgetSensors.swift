@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetSensors: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -57,7 +57,7 @@ struct WidgetSensors: Widget {
 }
 
 enum WidgetDetailsTableSupportedFamilies {
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     static var families: [WidgetFamily] {
         [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
     }

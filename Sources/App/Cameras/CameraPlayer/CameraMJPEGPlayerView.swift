@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 /// A SwiftUI view for displaying MJPEG camera streams.
 struct CameraMJPEGPlayerView: View {
@@ -68,8 +67,51 @@ struct CameraMJPEGPlayerView: View {
     }
 }
 
-// MARK: - UIViewControllerRepresentable wrapper
+// MARK: - View controller representable wrapper
 
+#if os(macOS)
+private struct MJPEGStreamContainerView: NSViewControllerRepresentable {
+    let server: Server
+    let cameraEntityId: String
+    @Binding var isLoading: Bool
+    @Binding var errorMessage: String?
+
+    func makeNSViewController(context: Context) -> MJPEGStreamViewController {
+        MJPEGStreamViewController(
+            server: server,
+            cameraEntityId: cameraEntityId,
+            coordinator: context.coordinator
+        )
+    }
+
+    func updateNSViewController(_ nsViewController: MJPEGStreamViewController, context: Context) {
+        // No updates needed
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(isLoading: $isLoading, errorMessage: $errorMessage)
+    }
+
+    class Coordinator {
+        @Binding var isLoading: Bool
+        @Binding var errorMessage: String?
+
+        init(isLoading: Binding<Bool>, errorMessage: Binding<String?>) {
+            _isLoading = isLoading
+            _errorMessage = errorMessage
+        }
+
+        func didReceiveFirstFrame() {
+            isLoading = false
+        }
+
+        func didEncounterError(_ error: Error) {
+            errorMessage = error.localizedDescription
+            isLoading = false
+        }
+    }
+}
+#else
 private struct MJPEGStreamContainerView: UIViewControllerRepresentable {
     let server: Server
     let cameraEntityId: String
@@ -111,16 +153,21 @@ private struct MJPEGStreamContainerView: UIViewControllerRepresentable {
         }
     }
 }
+#endif
 
-// MARK: - UIKit View Controller for MJPEG streaming
+// MARK: - View controller for MJPEG streaming
 
-private class MJPEGStreamViewController: UIViewController {
+private class MJPEGStreamViewController: PlatformViewController {
     private let server: Server
     private let cameraEntityId: String
     private weak var coordinator: MJPEGStreamContainerView.Coordinator?
 
     private var streamer: MJPEGStreamer?
+    #if os(macOS)
+    private let imageView = NSImageView()
+    #else
     private let imageView = UIImageView()
+    #endif
     private var hasReceivedFirstFrame = false
 
     init(
@@ -143,13 +190,31 @@ private class MJPEGStreamViewController: UIViewController {
         streamer?.cancel()
     }
 
+    #if os(macOS)
+    override func loadView() {
+        let container = NSView()
+        container.wantsLayer = true
+        container.layer?.backgroundColor = NSColor.black.cgColor
+        view = container
+    }
+    #endif
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        #if os(macOS)
+        imageView.imageScaling = .scaleProportionallyUpOrDown
+        // An image view asks for its image's own size; the stream fits the player, not the reverse.
+        for orientation in [NSLayoutConstraint.Orientation.horizontal, .vertical] {
+            imageView.setContentHuggingPriority(.defaultLow, for: orientation)
+            imageView.setContentCompressionResistancePriority(.defaultLow, for: orientation)
+        }
+        #else
         view.backgroundColor = .black
 
         imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = .black
+        #endif
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
 

@@ -90,7 +90,7 @@ public struct WidgetEnergyStatView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
         HStack {

@@ -41,7 +41,7 @@ struct MagicItemAddView: View {
 
         let resolvedPickerOptions = visiblePickerOptions ?? {
             var options: [PickerOption] = [.entities]
-            if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
+            if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, macOS 26.0, *) {
                 options.append(.assistPipelines)
             }
             return options
@@ -98,7 +98,7 @@ struct MagicItemAddView: View {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
             }
-            #if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst) || os(macOS)
             .toolbar(content: {
                 CloseButton {
                     dismiss()
@@ -107,7 +107,7 @@ struct MagicItemAddView: View {
             #endif
         }
         .navigationViewStyle(.stack)
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
             .frame(minWidth: 540, minHeight: 720)
         #else
             .presentationDetents([.large])

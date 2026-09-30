@@ -1,6 +1,5 @@
 #if !os(watchOS)
 import SwiftUI
-import UIKit
 
 /// The frontend's colour-contrast maths, from `common/color/rgb.ts`.
 ///
@@ -56,11 +55,10 @@ public enum ColorContrast {
     }
 
     private static func components(of color: Color) -> (Double, Double, Double)? {
-        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
-        guard UIColor(color).getRed(&red, green: &green, blue: &blue, alpha: &alpha) else {
+        guard let components = UIColor(color).rgbaComponents else {
             return nil
         }
-        return (Double(red), Double(green), Double(blue))
+        return (Double(components.red), Double(components.green), Double(components.blue))
     }
 }
 #endif

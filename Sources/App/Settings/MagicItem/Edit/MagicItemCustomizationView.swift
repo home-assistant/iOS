@@ -30,7 +30,7 @@ struct MagicItemCustomizationView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             if let info = viewModel.info {
                 mainInformationView(info: info)
                 customizationView(info: info)

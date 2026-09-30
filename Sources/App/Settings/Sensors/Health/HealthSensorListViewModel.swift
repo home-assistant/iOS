@@ -95,7 +95,7 @@ class HealthSensorListViewModel: ObservableObject {
     func refreshSensors() {
         firstly {
             HomeAssistantAPI.manuallyUpdate(
-                applicationState: UIApplication.shared.applicationState,
+                applicationState: ApplicationState.current,
                 type: .userRequested
             )
         }.catch { [weak self] error in

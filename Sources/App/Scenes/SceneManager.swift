@@ -1,8 +1,13 @@
 import Foundation
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
+#if os(iOS)
 // TODO: can i combine this with the enum?
 
 struct SceneQuery<DelegateType: UIWindowSceneDelegate> {
@@ -17,6 +22,7 @@ extension UIWindowSceneDelegate {
         pendingResolver(self)
     }
 }
+#endif
 
 /// The app-level coordinator for the primary web-view window. Implemented by `HomeAssistantView`'s
 /// coordinator as the web view migrates off `WebViewWindowController`; reached via `SceneManager.appCoordinator`.
@@ -48,9 +54,11 @@ enum OpenSource {
 }
 
 protocol AppCoordinator: AnyObject {
-    var presentedViewController: UIViewController? { get }
-    var window: UIWindow? { get }
-    func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?)
+    var presentedViewController: PlatformViewController? { get }
+    var window: PlatformWindow? { get }
+    func present(_ viewController: PlatformViewController, animated: Bool, completion: (() -> Void)?)
+    /// Shows an alert over whatever this window has on screen.
+    func present(alert: AppAlert)
     func show(alert: ServerAlert)
     func showSettings(pushOntoNavigationStack: Bool)
     func showAssistSettings()
@@ -89,7 +97,7 @@ protocol AppCoordinator: AnyObject {
 }
 
 extension AppCoordinator {
-    func present(_ viewController: UIViewController) {
+    func present(_ viewController: PlatformViewController) {
         present(viewController, animated: true, completion: nil)
     }
 
@@ -165,8 +173,21 @@ final class SceneManager {
     private(set) var webViewControllerPromise: Guarantee<WebViewController>
     private var webViewControllerSeal: (WebViewController) -> Void
 
+    #if os(macOS)
+    private struct WeakWebViewController {
+        weak var value: WebViewController?
+    }
+
+    /// Every frontend currently alive, one per window, so a menu command can reach the one in front.
+    private var registeredWebViewControllers: [WeakWebViewController] = []
+    #endif
+
     /// Called by `HomeAssistantView` whenever it creates or replaces its `WebViewController`.
     func setWebViewController(_ controller: WebViewController) {
+        #if os(macOS)
+        registeredWebViewControllers.removeAll { $0.value == nil || $0.value === controller }
+        registeredWebViewControllers.append(WeakWebViewController(value: controller))
+        #endif
         if webViewControllerPromise.isFulfilled {
             webViewControllerPromise = .value(controller)
         } else {
@@ -206,7 +227,7 @@ final class SceneManager {
     /// The coordinator showing `scene`, for requests that started in one window and belong there —
     /// a tap in that web view, a gesture on it. Falls back to the app-wide coordinator when the scene has
     /// none of its own (kiosk mode, a window still coming up). Call on the main thread.
-    func appCoordinator(for scene: UIWindowScene?) -> Guarantee<AppCoordinator> {
+    func appCoordinator(for scene: PlatformWindowScene?) -> Guarantee<AppCoordinator> {
         guard let scene else { return appCoordinatorPromise }
         // Newest registration first, so a scene that came back gets its current coordinator rather than one
         // left over from the container it replaced.
@@ -222,6 +243,40 @@ final class SceneManager {
         (self.appCoordinatorPromise, self.appCoordinatorSeal) = Guarantee<AppCoordinator>.pending()
     }
 
+    #if os(macOS)
+    /// Every window is a window of its own on the Mac.
+    public var supportsMultipleScenes: Bool { true }
+
+    /// The frontend shown in `window`, or the one the app showed last when that window has none of its own.
+    func webViewController(in window: NSWindow?) -> Guarantee<WebViewController> {
+        let inWindow = registeredWebViewControllers.compactMap(\.value).last {
+            $0.isViewLoaded && $0.view.window === window
+        }
+        if let inWindow {
+            return .value(inWindow)
+        }
+        return webViewControllerPromise
+    }
+
+    public func activateAnyScene(for activity: SceneActivity) {
+        MacWindowOpener.shared.open(activity)
+    }
+
+    public func activateAnyScene(for activity: SceneActivity, with userInfo: [AnyHashable: Any]) {
+        MacWindowOpener.shared.open(activity)
+    }
+
+    /// Confirms an action the user cannot otherwise see the result of, over the window it was started from.
+    public func showFullScreenConfirm(
+        icon: MaterialDesignIcons,
+        text: String,
+        onto window: Promise<NSWindow>
+    ) {
+        window.done { window in
+            MacConfirmationHUD.show(icon: icon, text: text, in: window)
+        }.cauterize()
+    }
+    #else
     fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {
         let (promise, outerResolver) = Guarantee<T>.pending()
 
@@ -291,7 +346,7 @@ final class SceneManager {
     }
 
     private func bringAppToFrontIfNeeded() {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         Current.macBridge.activateApp()
         #endif
     }
@@ -316,7 +371,7 @@ final class SceneManager {
             // Only activate scene if the app is already in foreground or transitioning to foreground
             // This prevents widgets, notifications, or background tasks from unexpectedly bringing the app to
             // foreground
-            let shouldActivate = UIApplication.shared.applicationState == .active ||
+            let shouldActivate = ApplicationState.current == .active ||
                 active.activationState == .foregroundInactive
 
             if shouldActivate {
@@ -324,7 +379,7 @@ final class SceneManager {
 
                 // Guarantee it runs on main thread when coming from widgets
                 DispatchQueue.main.async {
-                    if #available(iOS 17.0, *) {
+                    if #available(iOS 17.0, macOS 14.0, *) {
                         UIApplication.shared.activateSceneSession(for: .init(session: active.session, options: options))
                     } else {
                         UIApplication.shared.requestSceneSessionActivation(
@@ -394,4 +449,5 @@ final class SceneManager {
             hud.hide(animated: true, afterDelay: 3)
         }.cauterize()
     }
+    #endif
 }

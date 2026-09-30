@@ -9,6 +9,10 @@ struct ConditionalContainerView: View {
     @StateObject private var appSettings: AppSettingsPresenter
     @Environment(\.scenePhase) private var scenePhase
     @State private var showKioskSettings = false
+    #if os(macOS)
+    /// Held for as long as the kiosk keeps the screen on; ending it lets the display sleep again.
+    @State private var displaySleepAssertion: NSObjectProtocol?
+    #endif
     @Namespace private var serverSelectionNamespace
 
     /// The scene creates its own presenter; tests pass theirs so they can drive Settings from outside.
@@ -61,16 +65,16 @@ struct ConditionalContainerView: View {
         .injectingViewControllerProvider()
         // A sheet's content is hosted outside this view, so it is handed the presenter of its own accord.
         .environment(\.appSettingsPresenter, appSettings)
-        #if !targetEnvironment(macCatalyst)
+        #if !(targetEnvironment(macCatalyst) || os(macOS))
             .presentationDetents(sheetDetents, selection: $appSettings.detent)
             .presentationDragIndicator(offersCompactDetent ? .visible : .automatic)
             .modify { view in
-                if #available(iOS 18.0, *), appSettings.selectionRequest?.zoomsFromStandBy == true {
+                if #available(iOS 18.0, macOS 15.0, *), appSettings.selectionRequest?.zoomsFromStandBy == true {
                     view.navigationTransition(.zoom(
                         sourceID: HomeAssistantStandByView.serverSelectionTransitionID,
                         in: serverSelectionNamespace
                     ))
-                } else if #available(iOS 18.0, *), let sourceID = appSettings.zoomSourceID {
+                } else if #available(iOS 18.0, macOS 15.0, *), let sourceID = appSettings.zoomSourceID {
                     view.navigationTransition(.zoom(sourceID: sourceID, in: serverSelectionNamespace))
                 } else {
                     view
@@ -138,7 +142,23 @@ struct ConditionalContainerView: View {
     }
 
     private func applyKeepScreenOn() {
+        #if os(macOS)
+        // A Mac has no idle timer to switch off: the display stays awake while an activity that asks
+        // for it is in progress.
+        if kiosk.shouldKeepScreenOn {
+            if displaySleepAssertion == nil {
+                displaySleepAssertion = ProcessInfo.processInfo.beginActivity(
+                    options: .idleDisplaySleepDisabled,
+                    reason: "Kiosk mode keeps the screen on"
+                )
+            }
+        } else if let assertion = displaySleepAssertion {
+            ProcessInfo.processInfo.endActivity(assertion)
+            displaySleepAssertion = nil
+        }
+        #else
         UIApplication.shared.isIdleTimerDisabled = kiosk.shouldKeepScreenOn
+        #endif
     }
 
     private func refreshWebViewIfSettingsClosed(_ isPresented: Bool) {

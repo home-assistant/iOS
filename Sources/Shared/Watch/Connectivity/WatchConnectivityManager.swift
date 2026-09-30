@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(WatchConnectivity)
 import WatchConnectivity
+#endif
 
 /// In-house WatchConnectivity layer that replaces the `Communicator` pod. Owns a single `WCSession`
 /// (via an injected seam for testability), fans delegate callbacks out to `Observable`s on their
@@ -49,7 +51,7 @@ public final class WatchConnectivityManager: NSObject {
     /// Highest `WatchProtocolVersion` seen on anything the counterpart has sent this session.
     private let counterpartVersionLock = NSLock()
     private var cachedCounterpartProtocolVersion: Int?
-    #if os(iOS)
+    #if !os(watchOS)
     var complicationCompletions: [ObjectIdentifier: (Result<Int, Error>) -> Void] = [:]
 
     /// In-memory copy of the most recently observed watch state; see `lastKnownWatchState`.
@@ -66,7 +68,7 @@ public final class WatchConnectivityManager: NSObject {
     public let blob = HAWatchConnectivity.Observable<HAWatchConnectivity.Blob>()
     public let context = HAWatchConnectivity.Observable<HAWatchConnectivity.Context>()
     public let complicationInfo = HAWatchConnectivity.Observable<HAWatchConnectivity.ComplicationInfo>()
-    #if os(iOS)
+    #if !os(watchOS)
     public let watchState = HAWatchConnectivity.Observable<HAWatchConnectivity.WatchState>()
     #endif
 
@@ -76,7 +78,7 @@ public final class WatchConnectivityManager: NSObject {
     }
 
     static func defaultSession() -> WCSessionProtocol? {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || !canImport(WatchConnectivity)
         return nil
         #else
         return WCSession.isSupported() ? WCSession.default : nil
@@ -160,7 +162,7 @@ public final class WatchConnectivityManager: NSObject {
         HAWatchConnectivity.Context(content: session?.applicationContextProxy ?? [:])
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var currentWatchState: HAWatchConnectivity.WatchState {
         guard let session, session.isPairedProxy else { return .notPaired }
         guard session.isWatchAppInstalledProxy else { return .paired(.notInstalled) }
@@ -215,7 +217,7 @@ public final class WatchConnectivityManager: NSObject {
         notifyReachability()
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     func notifyWatchState() {
         let state = currentWatchState
         watchStateCacheLock.lock()
@@ -239,7 +241,7 @@ public final class WatchConnectivityManager: NSObject {
         }
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     /// Resolve a complication transfer completion by handle identity. On success reports the remaining
     /// daily budget read at finish time.
     func resolveComplicationTransfer(_ handle: WCTransferHandle, error: Error?) {

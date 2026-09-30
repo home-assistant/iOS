@@ -4,7 +4,6 @@ import PromiseKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 struct LocationSettingsView: View {
     @StateObject private var viewModel = LocationSettingsViewModel()
@@ -148,7 +147,7 @@ struct LocationSettingsView: View {
                     .padding(.horizontal, DesignSystem.Spaces.two)
                 }
                 .modify { view in
-                    if #available(iOS 17.0, *) {
+                    if #available(iOS 17.0, macOS 14.0, *) {
                         view.scrollClipDisabled()
                     } else {
                         view
@@ -182,6 +181,7 @@ struct LocationSettingsView: View {
             } footer: {
                 Text(L10n.SettingsDetails.Location.Zones.footer)
             }
+            #if !os(macOS)
             .modify { view in
                 if #available(iOS 26.0, *) {
                     view.listSectionMargins(.horizontal, .zero)
@@ -189,6 +189,7 @@ struct LocationSettingsView: View {
                     view
                 }
             }
+            #endif
         }
     }
 
@@ -198,7 +199,7 @@ struct LocationSettingsView: View {
         isUpdatingLocation = true
         firstly {
             HomeAssistantAPI.manuallyUpdate(
-                applicationState: UIApplication.shared.applicationState,
+                applicationState: ApplicationState.current,
                 type: .userRequested
             )
         }.ensure {
@@ -252,15 +253,15 @@ struct LocationZoneMapView: View {
     }
 }
 
-private struct ZoneMapRepresentable: UIViewRepresentable {
+private struct ZoneMapRepresentable {
     let coordinate: CLLocationCoordinate2D
     let radius: Double
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
-    func makeUIView(context: Context) -> MKMapView {
+    private func makeMapView(delegate: Coordinator) -> MKMapView {
         let mapView = MKMapView()
-        mapView.delegate = context.coordinator
+        mapView.delegate = delegate
         mapView.showsUserLocation = true
 
         let pin = MKPointAnnotation()
@@ -282,8 +283,6 @@ private struct ZoneMapRepresentable: UIViewRepresentable {
         return mapView
     }
 
-    func updateUIView(_ uiView: MKMapView, context: Context) {}
-
     final class Coordinator: NSObject, MKMapViewDelegate {
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             guard let circle = overlay as? MKCircle else {
@@ -298,6 +297,24 @@ private struct ZoneMapRepresentable: UIViewRepresentable {
         }
     }
 }
+
+#if os(macOS)
+extension ZoneMapRepresentable: NSViewRepresentable {
+    func makeNSView(context: Context) -> MKMapView {
+        makeMapView(delegate: context.coordinator)
+    }
+
+    func updateNSView(_ nsView: MKMapView, context: Context) {}
+}
+#else
+extension ZoneMapRepresentable: UIViewRepresentable {
+    func makeUIView(context: Context) -> MKMapView {
+        makeMapView(delegate: context.coordinator)
+    }
+
+    func updateUIView(_ uiView: MKMapView, context: Context) {}
+}
+#endif
 
 #Preview {
     NavigationView {

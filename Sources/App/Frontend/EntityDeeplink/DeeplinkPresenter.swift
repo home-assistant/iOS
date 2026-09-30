@@ -1,10 +1,16 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 enum DeeplinkPresenter {
     static let sheetHeightFraction: CGFloat = 0.7
+    #if os(iOS)
     private static let detentIdentifier = UISheetPresentationController.Detent.Identifier("deeplink")
+    #endif
 
     static func present(target: DeeplinkTarget, from webViewController: WebViewControllerProtocol) {
         Current.Log.info("Presenting deeplink sheet")
@@ -17,7 +23,10 @@ enum DeeplinkPresenter {
             onClose: closeAction(for: webViewController)
         ).embeddedInHostingController()
 
+        // A Mac sheet has no detents to pick from: the window presenting it decides its size.
+        #if os(iOS)
         configurePresentation(of: hostingController)
+        #endif
         webViewController.presentOverlayController(controller: hostingController, animated: true)
     }
 
@@ -31,6 +40,7 @@ enum DeeplinkPresenter {
         maximum * sheetHeightFraction
     }
 
+    #if os(iOS)
     private static func configurePresentation(of controller: UIViewController) {
         if Current.isCatalyst {
             controller.modalPresentationStyle = .formSheet
@@ -44,4 +54,5 @@ enum DeeplinkPresenter {
             sheet.prefersScrollingExpandsWhenScrolledToEdge = false
         }
     }
+    #endif
 }

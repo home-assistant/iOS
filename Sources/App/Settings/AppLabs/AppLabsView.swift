@@ -13,7 +13,7 @@ struct AppLabsView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: .flaskOutlineIcon,
                 title: L10n.Settings.AppLabs.title,

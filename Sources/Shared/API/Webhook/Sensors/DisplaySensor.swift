@@ -3,7 +3,7 @@ import PromiseKit
 
 final class DisplaySensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     static var notificationName: Notification.Name {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         return Current.macBridge.screensWillChangeNotification
         #else
         return .init(rawValue: "test_screensWillChangeNotification")

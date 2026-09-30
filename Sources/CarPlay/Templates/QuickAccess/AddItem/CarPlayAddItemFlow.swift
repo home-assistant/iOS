@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import Shared
@@ -337,3 +338,4 @@ final class CarPlayAddItemFlow {
         return item
     }
 }
+#endif

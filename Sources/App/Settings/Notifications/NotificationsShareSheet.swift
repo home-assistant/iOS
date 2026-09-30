@@ -1,3 +1,4 @@
+#if os(iOS)
 import SwiftUI
 
 struct NotificationsShareSheet: UIViewControllerRepresentable {
@@ -9,3 +10,4 @@ struct NotificationsShareSheet: UIViewControllerRepresentable {
 
     func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
+#endif

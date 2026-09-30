@@ -4,14 +4,14 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlOpenPageItem {
     let page: PageAppEntity
     let icon: SFSymbolEntity
     let displayText: String?
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlOpenPageValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlOpenPageConfiguration) async throws -> ControlOpenPageItem {
         item(configuration: configuration)
@@ -52,7 +52,7 @@ struct ControlOpenPageValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlOpenPageConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.open_page.configuration.title",

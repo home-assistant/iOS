@@ -1,3 +1,4 @@
+#if os(iOS)
 import PromiseKit
 import Shared
 import UIKit
@@ -83,3 +84,4 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
         WindowScenesManager.shared.didDiscardScene(scene)
     }
 }
+#endif

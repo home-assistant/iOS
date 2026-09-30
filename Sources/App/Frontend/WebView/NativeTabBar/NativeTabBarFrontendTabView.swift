@@ -1,8 +1,9 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
 /// A pinned page's tab: the frontend, with the avatar and bell in the bar beside it wherever the bars run vertically.
-@available(iOS 26, *)
+@available(iOS 26, macOS 26, *)
 struct NativeTabBarFrontendTabView: View {
     private enum Constants {
         static let avatarSize: CGFloat = 32
@@ -76,7 +77,7 @@ struct NativeTabBarFrontendTabView: View {
     }
 }
 
-@available(iOS 26, *)
+@available(iOS 26, macOS 26, *)
 #Preview {
     let viewModel = NativeTabBarViewModel.preview()
     NativeTabBarFrontendTabView(
@@ -89,3 +90,4 @@ struct NativeTabBarFrontendTabView: View {
         onNeedsWebViewController: {}
     )
 }
+#endif

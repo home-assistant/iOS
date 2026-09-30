@@ -16,7 +16,7 @@ final class FrontmostAppSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorPr
 
     override func observe() {
         super.observe()
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         guard !isObserving else { return }
         Current.macBridge.workspaceNotificationCenter.addObserver(
             self,
@@ -30,7 +30,7 @@ final class FrontmostAppSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorPr
 
     override func stopObserving() {
         super.stopObserving()
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         guard isObserving else { return }
         Current.macBridge.workspaceNotificationCenter.removeObserver(
             self,
@@ -57,7 +57,7 @@ final class FrontmostAppSensor: SensorProvider {
     }
 
     func sensors() -> Promise<[WebhookSensor]> {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         var sensors = [WebhookSensor]()
 
         let frontmost = Current.macBridge.frontmostApplication

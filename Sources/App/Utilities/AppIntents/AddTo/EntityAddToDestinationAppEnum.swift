@@ -1,7 +1,11 @@
 import AppIntents
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Where "Add entity to" puts an entity.
 ///
@@ -43,11 +47,15 @@ enum EntityAddToDestinationAppEnum: String, Codable, Sendable, AppEnum {
     var isAvailable: Bool {
         switch self {
         case .appleWatch:
-            !Current.isCatalyst
+            return !Current.isCatalyst
         case .carPlay:
-            !Current.isCatalyst && UIDevice.current.userInterfaceIdiom == .phone
+            #if os(macOS)
+            return false
+            #else
+            return !Current.isCatalyst && UIDevice.current.userInterfaceIdiom == .phone
+            #endif
         case .macToolbar:
-            Current.isCatalyst
+            return Current.isCatalyst
         }
     }
 

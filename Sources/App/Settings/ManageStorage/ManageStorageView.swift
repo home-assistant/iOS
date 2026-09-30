@@ -13,7 +13,7 @@ struct ManageStorageView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: nil,
                 headerImageAlternativeView: AnyView(

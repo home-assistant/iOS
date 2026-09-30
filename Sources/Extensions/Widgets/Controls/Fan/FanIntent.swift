@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 struct FanIntent: SetValueIntent {
     static var title: LocalizedStringResource = .init("app_intents.intent.fan.title", defaultValue: "Control fan")
 

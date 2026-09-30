@@ -1,7 +1,6 @@
 import Combine
 import Shared
 import SwiftUI
-import UIKit
 
 @MainActor
 final class HomeAssistantViewModel: ObservableObject {
@@ -32,8 +31,10 @@ final class HomeAssistantViewModel: ObservableObject {
     let reconnectManager: WebViewReconnectManager
     /// Feeds the App Labs native macOS sidebar and native iOS tab bar; only started once one of them is on screen.
     let sidebar: MacSidebarViewModel
+    #if os(iOS)
     /// Lays `sidebar` out as tabs for the App Labs native iOS tab bar.
     let tabBar: NativeTabBarViewModel
+    #endif
 
     @Published var webViewResetID = UUID()
     @Published var webViewController: WebViewController?
@@ -63,7 +64,9 @@ final class HomeAssistantViewModel: ObservableObject {
     // is enough to dismiss the loader. A recreated view model implies a fresh page load, which fires it again.
     private var frontendLoadedOnce = false
     private var reduceMotion = false
+    #if os(iOS)
     private var pullToRefreshObserver: HomeAssistantPullToRefreshObserver?
+    #endif
     private var cancellables = Set<AnyCancellable>()
 
     init(
@@ -81,11 +84,14 @@ final class HomeAssistantViewModel: ObservableObject {
         self.reconnectManager = reconnectManager ?? WebViewReconnectManager()
         self.onWebViewController = onWebViewController
         self.sidebar = MacSidebarViewModel(server: server, overlayState: self.overlayState)
+        #if os(iOS)
         self.tabBar = NativeTabBarViewModel(sidebar: sidebar, overlayState: self.overlayState)
+        #endif
 
         sidebar.onNavigate = { [weak self] path in
             self?.webViewController?.openSidebarPath(path)
         }
+        #if os(iOS)
         tabBar.onQuickSearch = { [weak self] in
             self?.webViewController?.webViewGestureHandler.handleGestureAction(.quickSearch)
         }
@@ -102,6 +108,7 @@ final class HomeAssistantViewModel: ObservableObject {
                 autoStartRecording: false
             )
         }
+        #endif
         sidebar.onShowNotifications = { [weak self] in
             guard let webViewController = self?.webViewController else { return }
             NotificationDrawerToggle(
@@ -238,6 +245,7 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     func handleWebViewLoaded(_ controller: WebViewController) {
+        #if os(iOS)
         guard !Current.isCatalyst else { return }
         pullToRefreshObserver = HomeAssistantPullToRefreshObserver(
             webView: controller.webView,
@@ -250,8 +258,10 @@ final class HomeAssistantViewModel: ObservableObject {
                 self?.performPullToRefresh(using: controller)
             }
         )
+        #endif
     }
 
+    #if os(iOS)
     private func performPullToRefresh(using controller: WebViewController?) {
         Current.Log.info("Pull-to-refresh: resetting frontend cache before reload")
         Current.websiteDataStoreHandler
@@ -259,6 +269,7 @@ final class HomeAssistantViewModel: ObservableObject {
                 controller?.pullToRefreshActions()
             }
     }
+    #endif
 
     private func bindObservableChildren() {
         overlayState.objectWillChange
@@ -269,9 +280,11 @@ final class HomeAssistantViewModel: ObservableObject {
             .sink { [weak self] _ in self?.objectWillChange.send() }
             .store(in: &cancellables)
 
+        #if os(iOS)
         tabBar.objectWillChange
             .sink { [weak self] _ in self?.objectWillChange.send() }
             .store(in: &cancellables)
+        #endif
     }
 
     private func bindOverlayState() {
@@ -283,7 +296,9 @@ final class HomeAssistantViewModel: ObservableObject {
                     self?.frontendLoadedOnce = false
                     self?.beginFullScreenLoaderCycle()
                 } else {
+                    #if os(iOS)
                     self?.pullToRefreshObserver?.finishRefreshing()
+                    #endif
                     self?.armLoaderWatchdog()
                 }
             }

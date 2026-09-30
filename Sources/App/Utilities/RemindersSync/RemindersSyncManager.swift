@@ -2,7 +2,11 @@ import EventKit
 import Foundation
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Orchestrates syncing between Apple Reminders lists and Home Assistant todo lists for every
 /// stored `RemindersSyncConfig`. Fetches both sides, diffs them via `RemindersSyncPlanner` and
@@ -49,7 +53,7 @@ final class RemindersSyncManager: ObservableObject {
         })
 
         notificationObservers.append(NotificationCenter.default.addObserver(
-            forName: UIApplication.willEnterForegroundNotification,
+            forName: AppLifecycle.willEnterForegroundNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -60,7 +64,7 @@ final class RemindersSyncManager: ObservableObject {
         })
 
         notificationObservers.append(NotificationCenter.default.addObserver(
-            forName: UIApplication.didEnterBackgroundNotification,
+            forName: AppLifecycle.didEnterBackgroundNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -131,7 +135,7 @@ final class RemindersSyncManager: ObservableObject {
     func requestAccess() async -> Bool {
         do {
             let granted: Bool
-            if #available(iOS 17.0, *) {
+            if #available(iOS 17.0, macOS 14.0, *) {
                 granted = try await eventStore.requestFullAccessToReminders()
             } else {
                 granted = try await eventStore.requestAccess(to: .reminder)
@@ -311,7 +315,7 @@ final class RemindersSyncManager: ObservableObject {
     /// database while backgrounded, GRDB goes back to the suspended state so nothing can hold the
     /// app-group SQLite lock when the process is frozen.
     private func suspendDatabaseIfBackgrounded() {
-        if UIApplication.shared.applicationState == .background {
+        if ApplicationState.current == .background {
             AppDatabaseSuspension.suspend()
         }
     }

@@ -28,7 +28,7 @@ struct WidgetAssistEntry: TimelineEntry {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetAssistProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetAssistEntry
     typealias Intent = WidgetAssistAppIntent

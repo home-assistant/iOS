@@ -1,7 +1,6 @@
 import GRDB
 import Shared
 import SwiftUI
-import UIKit
 
 /// The full Jinja editor presented from `JinjaTemplateButton`: the evaluated result in its own
 /// section at the top (with a placeholder until there is one), the syntax-highlighted editor below

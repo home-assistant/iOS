@@ -3,7 +3,7 @@ import SwiftUI
 
 struct SettingsServersView: View {
     var body: some View {
-        List {
+        GroupedList {
             Section(
                 header: Text(L10n.Settings.ConnectionSection.serversHeader),
                 footer: Text(L10n.Settings.ConnectionSection.serversReorderFooter)

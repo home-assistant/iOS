@@ -1,6 +1,10 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import WebKit
 
 extension WebViewController: WebViewControllerProtocol {
@@ -20,24 +24,41 @@ extension WebViewController: WebViewControllerProtocol {
         webView.goForward()
     }
 
-    var overlayedController: UIViewController? {
+    #if os(macOS)
+    var effectiveAppearance: NSAppearance {
+        view.effectiveAppearance
+    }
+
+    var isDarkAppearance: Bool {
+        view.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
+    }
+    #else
+    var isDarkAppearance: Bool {
+        traitCollection.userInterfaceStyle == .dark
+    }
+    #endif
+
+    var overlayedController: PlatformViewController? {
         presentedViewController ?? detachedOverlayController
     }
 
-    func presentOverlayController(controller: UIViewController, animated: Bool) {
+    func presentOverlayController(controller: PlatformViewController, animated: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.dismissOverlayController(animated: false, completion: { [weak self] in
                 guard let self else { return }
+                #if os(iOS)
                 if view.window == nil, NativeTabBarState.shared.isEnabled, let presenter = Self.topMostPresenter() {
                     detachedOverlayController = controller
                     presenter.present(controller, animated: animated, completion: nil)
-                } else {
-                    present(controller, animated: animated, completion: nil)
+                    return
                 }
+                #endif
+                present(controller, animated: animated, completion: nil)
             })
         }
     }
 
+    #if os(iOS)
     private static func topMostPresenter() -> UIViewController? {
         var presenter = NativeTabBarButtonLocator.keyWindow?.rootViewController
         while let presented = presenter?.presentedViewController {
@@ -45,15 +66,20 @@ extension WebViewController: WebViewControllerProtocol {
         }
         return presenter
     }
+    #endif
 
-    func presentAlertController(controller: UIViewController, animated: Bool) {
+    func presentAlertController(controller: PlatformViewController, animated: Bool) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            #if os(macOS)
+            (overlayedController?.sheetContentController ?? self).presentSheet(controller)
+            #else
             if let overlayedController {
                 overlayedController.present(controller, animated: animated, completion: nil)
             } else {
                 present(controller, animated: animated, completion: nil)
             }
+            #endif
         }
     }
 
@@ -62,10 +88,15 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func makeWebViewFirstResponder() {
+        #if os(macOS)
+        view.window?.makeFirstResponder(webView)
+        #else
         webView.becomeFirstResponder()
+        #endif
     }
 
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
+        #if os(iOS)
         if let detachedOverlayController, detachedOverlayController.presentingViewController != nil {
             self.detachedOverlayController = nil
             detachedOverlayController.presentingViewController?.dismiss(animated: animated) { [weak self] in
@@ -73,11 +104,16 @@ extension WebViewController: WebViewControllerProtocol {
             }
             return
         }
+        #endif
         dismissAllViewControllersAbove(completion: completion)
     }
 
     func dismissControllerAboveOverlayController() {
+        #if os(macOS)
+        overlayedController?.sheetContentController.dismissPresentedSheets()
+        #else
         overlayedController?.dismissAllViewControllersAbove()
+        #endif
     }
 
     func updateFrontendConnectionState(state: String) {

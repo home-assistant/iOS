@@ -1,10 +1,13 @@
+// The details widget exists only in the lock screen's accessory families, which a Mac does not have, so the
+// widget and everything that configures and feeds it are left out of the Mac build.
+#if !os(macOS)
 import AppIntents
 import HAKit
 import HAWatchComplications
 import Shared
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetDetailsEntry
     typealias Intent = WidgetDetailsAppIntent
@@ -212,7 +215,7 @@ enum WidgetDetailsDataSource {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetDetailsEntry: TimelineEntry {
     var date = Date()
 
@@ -235,3 +238,4 @@ enum WidgetDetailsDataError: Error {
     case apiError
     case badResponse
 }
+#endif

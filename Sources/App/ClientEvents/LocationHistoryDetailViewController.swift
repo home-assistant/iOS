@@ -1,3 +1,4 @@
+#if os(iOS)
 import GRDB
 import MapKit
 import Shared
@@ -129,82 +130,7 @@ final class LocationHistoryDetailViewController: UIViewController {
     }
 
     private func report() -> String {
-        var value = "# Debug Information\n\n"
-
-        let accuracyNote: String
-
-        if currentEntry.accuracy == 65 {
-            accuracyNote = " (from Wi-Fi)"
-        } else if currentEntry.accuracy == 1414 {
-            accuracyNote = " (from cell tower)"
-        } else {
-            accuracyNote = ""
-        }
-
-        let accuracyAuthorization: String
-
-        if let authorization = currentEntry.clAccuracyAuthorization {
-            switch authorization {
-            case .fullAccuracy: accuracyAuthorization = "full"
-            case .reducedAccuracy: accuracyAuthorization = "reduced"
-            @unknown default: accuracyAuthorization = "unknown"
-            }
-        } else {
-            accuracyAuthorization = "missing"
-        }
-
-        func latLongString(_ value: Double) -> String {
-            String(format: "%.06lf", value)
-        }
-
-        func distanceString(_ value: Double) -> String {
-            String(format: "%04.02lfm", max(0, value))
-        }
-
-        value.append(
-            """
-            ## Payload
-            ```json
-            \(currentEntry.payload)
-            ```
-
-            ## Location
-            - Trigger: \(currentEntry.trigger ?? "(unknown)")
-            - Center: (\(latLongString(currentEntry.latitude)), \(latLongString(currentEntry.longitude)))
-            - Accuracy: \(distanceString(currentEntry.accuracy))\(accuracyNote)
-            - Accuracy Authorization: \(accuracyAuthorization)
-
-            ## Regions
-            """ + "\n"
-        )
-
-        let allRegions = AppZone.all()
-            .flatMap(\.circularRegionsForMonitoring)
-            .sorted(by: { a, b in
-                a.distanceWithAccuracy(from: currentEntry.clLocation) < b
-                    .distanceWithAccuracy(from: currentEntry.clLocation)
-            })
-        for region in allRegions {
-            let regionLocation = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
-            let distanceWithoutAccuracy = regionLocation.distance(from: currentEntry.clLocation)
-            let distanceWithAccuracy = region.distanceWithAccuracy(from: currentEntry.clLocation)
-            let contains = region.containsWithAccuracy(currentEntry.clLocation)
-
-            value.append(
-                """
-                ### \(region.identifier)
-                - Center: (\(latLongString(region.center.latitude)), \(latLongString(region.center.longitude)))
-                - Radius: \(distanceString(region.radius))
-                - Distance From Perimeter: \(distanceString(distanceWithAccuracy))
-                - Distance From Center: \(distanceString(distanceWithoutAccuracy))
-                - Relative State: \(contains ? "inside" : "outside")
-                """
-            )
-
-            value.append("\n\n")
-        }
-
-        return value
+        currentEntry.debugReport()
     }
 
     @objc private func help(_ sender: AnyObject?) {
@@ -404,3 +330,4 @@ extension LocationHistoryDetailViewController: MKMapViewDelegate {
         }
     }
 }
+#endif

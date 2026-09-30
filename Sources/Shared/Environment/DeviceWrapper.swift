@@ -1,5 +1,7 @@
+import CryptoKit
 import Foundation
 #if canImport(IOKit)
+import IOKit
 import IOKit.ps
 #endif
 #if os(iOS)
@@ -19,7 +21,7 @@ public class DeviceWrapper {
     public lazy var batteryNotificationCenter = DeviceWrapperBatteryNotificationCenter()
 
     public lazy var batteries: () -> [DeviceBattery] = {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         let blob = IOPSCopyPowerSourcesInfo().takeRetainedValue()
         let powerSources = IOPSCopyPowerSourcesList(blob).takeRetainedValue() as [CFTypeRef]
 
@@ -39,7 +41,7 @@ public class DeviceWrapper {
     }
 
     public lazy var volumes: () -> [URLResourceKey: Int64]? = {
-        #if os(iOS)
+        #if os(iOS) || os(macOS)
         return try? URL(fileURLWithPath: NSHomeDirectory()).resourceValues(forKeys: [
             .volumeAvailableCapacityForImportantUsageKey,
             .volumeAvailableCapacityKey,
@@ -60,7 +62,9 @@ public class DeviceWrapper {
     }
 
     public lazy var identifierForVendor: () -> String? = {
-        #if os(iOS)
+        #if os(macOS)
+        return Self.vendorIdentifier()
+        #elseif os(iOS)
         return UIDevice.current.identifierForVendor?.uuidString
         #elseif os(watchOS)
         return WKInterfaceDevice.current().identifierForVendor?.uuidString
@@ -68,7 +72,7 @@ public class DeviceWrapper {
     }
 
     public lazy var inspecificModel: () -> String = {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         // UIDevice returns 'iPad' on Mac, so we hard-code it
         return "Mac"
         #elseif os(iOS)
@@ -79,7 +83,7 @@ public class DeviceWrapper {
     }
 
     public lazy var deviceName: () -> String = {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         return Current.macBridge.deviceName
         #elseif os(visionOS)
         // Since after iOS 16 device name is same as model
@@ -92,7 +96,7 @@ public class DeviceWrapper {
     }
 
     public lazy var systemName: () -> String = {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         // UIDevice returns 'iOS' on Mac, so we hard-code it
         return "macOS"
         #elseif os(visionOS)
@@ -107,7 +111,10 @@ public class DeviceWrapper {
     }
 
     public lazy var systemVersion: () -> String = {
-        #if os(iOS)
+        #if os(macOS)
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+        return "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+        #elseif os(iOS)
         if Current.isCatalyst {
             // Catalyst on 11.0 (at least 20A5354i) reports "14.0" to `UIDevice`
             let version = ProcessInfo.processInfo.operatingSystemVersion
@@ -119,6 +126,29 @@ public class DeviceWrapper {
         return WKInterfaceDevice.current().systemVersion
         #endif
     }
+
+    #if os(macOS)
+    /// AppKit has no identifier for vendor, so one is derived the way UIKit describes its own: stable for
+    /// this Mac and this app's vendor, and not the hardware identifier itself.
+    private static func vendorIdentifier() -> String? {
+        guard let hardwareUUID = hardwareUUID() else { return nil }
+        let digest = SHA256.hash(data: Data("\(hardwareUUID)|\(AppConstants.BundleID)".utf8))
+        let bytes = Array(digest.prefix(16))
+        return NSUUID(uuidBytes: bytes).uuidString
+    }
+
+    private static func hardwareUUID() -> String? {
+        let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+        guard service != 0 else { return nil }
+        defer { IOObjectRelease(service) }
+        return IORegistryEntryCreateCFProperty(
+            service,
+            kIOPlatformUUIDKey as CFString,
+            kCFAllocatorDefault,
+            0
+        )?.takeRetainedValue() as? String
+    }
+    #endif
 
     private static func sysctlModel() -> String {
         let name = "hw.model"
@@ -151,7 +181,7 @@ public class DeviceWrapper {
     }
 
     public lazy var idleTime: () -> Measurement<UnitDuration>? = {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         let seconds = CGEventSource.secondsSinceLastEventType(
             .combinedSessionState,
             eventType: /*
@@ -169,7 +199,7 @@ public class DeviceWrapper {
     }
 
     public var screens: () -> [DeviceScreen]? = {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         return Current.macBridge.screens.map { .init(identifier: $0.identifier, name: $0.name) }
         #else
         return nil

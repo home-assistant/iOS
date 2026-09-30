@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Bottom slot of the expanded Dynamic Island: the progress bar, and nothing at all when the
 /// content state has no bar to draw.
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 struct HAExpandedBottomView: View {
     let state: HALiveActivityAttributes.ContentState
 
@@ -34,7 +34,7 @@ struct HAExpandedBottomView: View {
     }
 }
 
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 #Preview {
     HAExpandedBottomView(
         state: .init(

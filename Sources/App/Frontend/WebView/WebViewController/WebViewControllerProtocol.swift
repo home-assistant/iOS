@@ -4,12 +4,12 @@ import Shared
 protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
     var connectionState: FrontEndConnectionState { get }
-    var overlayedController: UIViewController? { get }
+    var overlayedController: PlatformViewController? { get }
     /// Source view the zoom transition into Assist grows from; see `AssistZoomAnchorView`. Nil when the
     /// frontend isn't on screen to zoom out of, in which case Assist cross-dissolves in instead.
-    var assistZoomAnchorView: UIView? { get }
+    var assistZoomAnchorView: PlatformView? { get }
     /// A one-off zoom source for the next Assist presentation, set by the App Labs tab bar.
-    var pendingAssistZoomSourceView: UIView? { get set }
+    var pendingAssistZoomSourceView: PlatformView? { get set }
     var presentsNextAssistAsSheet: Bool { get set }
     var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
@@ -17,12 +17,19 @@ protocol WebViewControllerProtocol: AnyObject {
     /// The URL currently displayed, without the `external_auth` query item that only makes sense to the
     /// frontend running inside our webview.
     var currentPageURL: URL? { get }
+    #if os(macOS)
+    /// The appearance the frontend is drawn in, which its cached theme colours are keyed by.
+    var effectiveAppearance: NSAppearance { get }
+    #else
     var traitCollection: UITraitCollection { get }
+    #endif
+    /// Whether the frontend is being shown in dark mode.
+    var isDarkAppearance: Bool { get }
     /// The window the controller is on, for routing a request back to the scene it came from.
-    var presentationWindow: UIWindow? { get }
+    var presentationWindow: PlatformWindow? { get }
 
-    func presentOverlayController(controller: UIViewController, animated: Bool)
-    func presentAlertController(controller: UIViewController, animated: Bool)
+    func presentOverlayController(controller: PlatformViewController, animated: Bool)
+    func presentAlertController(controller: PlatformViewController, animated: Bool)
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
     /// Gives the web view keyboard focus, so a scripted `focus()` raises the keyboard like a tap would.
     func makeWebViewFirstResponder()

@@ -6,7 +6,7 @@ import SwiftUI
 /// progress bar share a single content inset. Split across the leading, center and trailing
 /// regions they do not: the system insets each region differently and drops center content below
 /// the TrueDepth camera, which staggers the rows.
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 struct HAExpandedContentView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
@@ -25,7 +25,7 @@ struct HAExpandedContentView: View {
     }
 }
 
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 #Preview {
     HAExpandedContentView(
         attributes: .init(tag: "preview", title: "Laundry"),

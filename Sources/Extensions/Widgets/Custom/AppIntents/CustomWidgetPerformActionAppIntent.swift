@@ -9,7 +9,7 @@ import SwiftUI
 /// Shortcuts action — already does, transport choice included, so this hands the item's stored
 /// action over to it and only adds what a tile needs around the call: haptics, a notification when
 /// it fails, and clearing the tile's pending confirmation afterwards.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct CustomWidgetPerformActionAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Perform action"
     static var isDiscoverable: Bool = false

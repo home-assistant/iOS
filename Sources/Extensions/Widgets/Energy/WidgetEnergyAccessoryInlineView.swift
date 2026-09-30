@@ -3,7 +3,7 @@ import SwiftUI
 import WidgetKit
 
 /// Lock screen inline layout: a single line combining the configured series, e.g. "↑12,4 ↓6,2 kWh".
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEnergyAccessoryInlineView: View {
     let entry: WidgetEnergyEntry
 
@@ -22,7 +22,9 @@ struct WidgetEnergyAccessoryInlineView: View {
     }
 }
 
-@available(iOS 17, *)
+// The accessory families do not exist on the Mac, so there is nothing to preview the layout in there.
+#if !os(macOS)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .accessoryInline) {
     WidgetEnergy()
 } timeline: {
@@ -35,3 +37,4 @@ struct WidgetEnergyAccessoryInlineView: View {
     WidgetEnergyEntry(period: .today, isConfigured: false)
     WidgetEnergyEntry(period: .today, isConfigured: false, noConnection: true)
 }
+#endif

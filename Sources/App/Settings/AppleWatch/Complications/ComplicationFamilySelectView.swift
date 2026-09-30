@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
@@ -72,3 +73,4 @@ struct ComplicationFamilySelectView: View {
         )
     }
 }
+#endif

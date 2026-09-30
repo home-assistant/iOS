@@ -1,7 +1,5 @@
+import HAIconic
 import SwiftUI
-#if canImport(UIKit)
-import UIKit
-#endif
 
 public extension ShapeStyle where Self == Color {
     static var haPrimary: Color { srgb(0x00, 0x9A, 0xC7, opacity: 1) }
@@ -141,17 +139,11 @@ private func displayP3(_ red: Double, _ green: Double, _ blue: Double, opacity: 
 private func adaptive(light: Color, dark: Color) -> Color {
     #if os(watchOS)
     return dark
-    #elseif canImport(UIKit)
-    return Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark ? UIColor(dark) : UIColor(light)
-    })
     #else
-    return light
+    return Color(UIColor.dynamic(light: UIColor(light), dark: UIColor(dark)))
     #endif
 }
 
-#if canImport(UIKit)
 public extension UIColor {
     static let haPrimary = UIColor(red: 0x00 / 255.0, green: 0x9A / 255.0, blue: 0xC7 / 255.0, alpha: 1)
 }
-#endif

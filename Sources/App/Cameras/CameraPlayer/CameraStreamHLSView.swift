@@ -136,11 +136,14 @@ struct CameraStreamHLSView: View {
 
     @MainActor
     private func setupPlayer(with url: URL, api: HomeAssistantAPI) {
+        // A Mac has no audio session: the player goes straight to the system output.
+        #if !os(macOS)
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
         } catch {
             Current.Log.error("Failed to set audio session category: \(error.localizedDescription)")
         }
+        #endif
 
         // A server behind a client certificate, or reached with a security exception, needs its
         // requests to go through the app's own session; AVFoundation cannot present either itself.

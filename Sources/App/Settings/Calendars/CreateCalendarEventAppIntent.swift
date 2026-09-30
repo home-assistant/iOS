@@ -5,7 +5,7 @@ import Shared
 /// Adds an event to a Home Assistant calendar, offering the fields from the frontend's event editor
 /// (`dialog-calendar-event-editor.ts`): summary, description, location, all-day, start/end and a
 /// repeat preset. Start and end are optional and default the way the editor opens a new event.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct CreateCalendarEventAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.calendar.create_event.title",

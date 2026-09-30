@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 import UIKit
@@ -33,7 +34,7 @@ struct WatchComplicationConfigurationSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         Button(role: .confirm) { dismiss() }
                     } else {
                         Button { dismiss() } label: { Image(systemSymbol: .checkmark) }
@@ -301,7 +302,7 @@ struct WatchComplicationConfigurationSheet: View {
             TextField(text: text) { Text(verbatim: "—") }
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 120)
-            #if !targetEnvironment(macCatalyst)
+            #if !(targetEnvironment(macCatalyst) || os(macOS))
                 .keyboardType(.numberPad)
             #endif
         }
@@ -931,3 +932,4 @@ extension ComplicationSlot {
         }
     }
 }
+#endif

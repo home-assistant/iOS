@@ -3,7 +3,7 @@ import CryptoKit
 import Shared
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEntitiesTimelineProvider: WidgetSingleEntryTimelineProvider {
     typealias Entry = WidgetEntitiesEntry
     typealias Intent = WidgetEntitiesAppIntent

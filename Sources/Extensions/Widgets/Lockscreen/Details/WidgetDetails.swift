@@ -1,10 +1,13 @@
+// The details widget exists only in the lock screen's accessory families, which a Mac does not have, so the
+// widget and everything that configures and feeds it are left out of the Mac build.
+#if !os(macOS)
 import HAWatchComplications
 import Intents
 import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetDetails: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -40,7 +43,7 @@ struct WidgetDetails: Widget {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 enum WidgetDetailsSupportedFamilies {
     static let families: [WidgetFamily] = [
         .accessoryInline,
@@ -50,7 +53,7 @@ enum WidgetDetailsSupportedFamilies {
 
 // A mirrored watch complication: the entry carries the render model and the widget draws it through
 // the shared rectangular complication content view.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .accessoryRectangular, widget: {
     WidgetDetails()
 }, timeline: {
@@ -73,3 +76,4 @@ enum WidgetDetailsSupportedFamilies {
         showConfirmationNotification: true
     )
 })
+#endif

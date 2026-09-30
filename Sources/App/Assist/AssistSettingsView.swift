@@ -81,7 +81,7 @@ struct AssistSettingsView: View {
 
     @ViewBuilder
     private var labs: some View {
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17.0, macOS 14.0, *) {
             Section {
                 Toggle(isOn: $viewModel.configuration.enableOnDeviceSTT) {
                     toggleLabel(symbol: .micFill, text: L10n.Assist.Settings.OnDeviceStt.title)

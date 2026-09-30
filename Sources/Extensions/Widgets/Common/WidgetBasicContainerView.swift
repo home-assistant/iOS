@@ -46,7 +46,7 @@ struct WidgetBasicContainerView: View {
     }
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 struct WidgetBasicContainerView_Previews: PreviewProvider {
     struct WidgetBasicContainerViewPreviewData {
         let modelsCount: Int
@@ -271,7 +271,7 @@ struct WidgetBasicContainerWrapperView: View {
     /// glyph or the time reloads this widget's timeline. Only offered where App Intents exist.
     private var refreshControl: (() -> AnyView)? {
         guard showLastUpdate else { return nil }
-        if #available(iOS 17, *) {
+        if #available(iOS 17, macOS 14, *) {
             let kind = widgetKind
             return { AnyView(WidgetRefreshButton(kind: kind, date: Current.date())) }
         }

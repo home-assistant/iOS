@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 
 class MacBridgeStatusItem: NSObject, NSMenuDelegate {
@@ -183,3 +184,4 @@ class MacBridgeStatusItemCallbackInfoImpl: MacBridgeStatusItemCallbackInfo {
         NSApp.activate(ignoringOtherApps: true)
     }
 }
+#endif

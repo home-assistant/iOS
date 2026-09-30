@@ -45,7 +45,7 @@ struct AssistPromptMagicItemView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             Section {
                 HStack {
                     Text(verbatim: L10n.MagicItem.Action.Assist.Pipeline.title)

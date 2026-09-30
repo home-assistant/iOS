@@ -13,7 +13,7 @@ struct WidgetCustomEntry: TimelineEntry {
     var showStates: Bool
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetCustomTimelineProvider: WidgetSingleEntryTimelineProvider {
     typealias Entry = WidgetCustomEntry
     typealias Intent = WidgetCustomAppIntent

@@ -1,6 +1,10 @@
 import Foundation
 import HAKit
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public enum Domain: String, CaseIterable {
     case automation

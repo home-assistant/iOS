@@ -1,6 +1,6 @@
 import Foundation
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 #if canImport(CoreMediaIO)
 import CoreMediaIO
 #endif
@@ -14,7 +14,7 @@ public protocol HACoreBlahProperty {
     func getPropertyData(objectID: UInt32, dataSize: UInt32, output: UnsafeMutableRawPointer) -> OSStatus
 }
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 #if canImport(CoreMediaIO)
 public struct HACoreMediaProperty<Type>: HACoreBlahProperty {
     public typealias ValueType = Type

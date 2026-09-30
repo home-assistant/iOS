@@ -6,7 +6,7 @@ struct CustomWidgetsListView: View {
     @State private var showDeleteConfirmation = false
     var body: some View {
         List {
-            if #available(iOS 17, *) {
+            if #available(iOS 17, macOS 14, *) {
                 header
                 yourWidgetsSection
             }
@@ -16,7 +16,7 @@ struct CustomWidgetsListView: View {
                 Text(verbatim: L10n.SettingsDetails.Widgets.ReloadAll.description)
             }
 
-            if #available(iOS 17, *) {
+            if #available(iOS 17, macOS 14, *) {
                 Button {
                     showDeleteConfirmation = true
 
@@ -101,7 +101,7 @@ struct CustomWidgetsListView: View {
                     Text(widget.name)
                 }
                 Spacer()
-                #if targetEnvironment(macCatalyst)
+                #if targetEnvironment(macCatalyst) || os(macOS)
                 Button {
                     viewModel.deleteWidget(widget)
                 } label: {

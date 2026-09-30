@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 /// Scene delegate for the Mac Assist window. Its only job is remembering the window's size and position
@@ -33,3 +34,4 @@ final class AssistWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
         WindowScenesManager.shared.didDiscardScene(scene)
     }
 }
+#endif

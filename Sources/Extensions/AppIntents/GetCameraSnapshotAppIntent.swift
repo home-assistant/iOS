@@ -1,9 +1,13 @@
 import AppIntents
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UniformTypeIdentifiers
 
-@available(iOS 17.0, watchOS 10.0, *)
+@available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct GetCameraSnapshotAppIntent: AppIntent, CustomIntentMigratedAppIntent {
     // Carries over shortcuts built with the deprecated SiriKit GetCameraImageIntent
     static let intentClassName = "GetCameraImageIntent"

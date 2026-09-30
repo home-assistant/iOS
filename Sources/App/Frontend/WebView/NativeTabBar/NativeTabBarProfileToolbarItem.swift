@@ -1,9 +1,10 @@
+#if os(iOS)
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 /// The user's avatar in a tab's bar: the server picker when there are several servers, otherwise Profile.
-@available(iOS 26, *)
+@available(iOS 26, macOS 26, *)
 struct NativeTabBarProfileToolbarItem: ToolbarContent {
     let viewModel: NativeTabBarViewModel
     let profile: MacSidebarItem
@@ -38,7 +39,7 @@ struct NativeTabBarProfileToolbarItem: ToolbarContent {
     }
 }
 
-@available(iOS 26, *)
+@available(iOS 26, macOS 26, *)
 #Preview {
     let viewModel = NativeTabBarViewModel.preview()
     NavigationStack {
@@ -54,3 +55,4 @@ struct NativeTabBarProfileToolbarItem: ToolbarContent {
             }
     }
 }
+#endif

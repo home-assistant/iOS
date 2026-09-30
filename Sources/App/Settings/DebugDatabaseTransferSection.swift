@@ -1,7 +1,6 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 import UniformTypeIdentifiers
 
 struct DebugDatabaseTransferSection: View {
@@ -189,7 +188,7 @@ struct DebugDatabaseTransferSection: View {
     }
 
     private func showProgressToast(title: String) {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ToastPresenter.shared.show(
                 id: "debug-database-transfer-\(part.rawValue)",
                 symbol: .arrowClockwise,
@@ -200,7 +199,7 @@ struct DebugDatabaseTransferSection: View {
     }
 
     private func showSuccessToast(title: String, message: String) {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ToastPresenter.shared.show(
                 id: "debug-database-transfer-\(part.rawValue)",
                 symbol: .checkmarkSealFill,
@@ -213,7 +212,7 @@ struct DebugDatabaseTransferSection: View {
     }
 
     private func showFailureToast(title: String, message: String) {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ToastPresenter.shared.show(
                 id: "debug-database-transfer-\(part.rawValue)",
                 symbol: .exclamationmarkTriangleFill,

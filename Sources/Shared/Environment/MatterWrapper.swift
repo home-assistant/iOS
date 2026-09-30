@@ -5,7 +5,7 @@ import PromiseKit
 
 public class MatterWrapper {
     public var isAvailable: Bool = {
-        #if canImport(MatterSupport) && !targetEnvironment(macCatalyst)
+        #if canImport(MatterSupport) && !(targetEnvironment(macCatalyst) || os(macOS))
         return true
         #else
         return false
@@ -14,7 +14,7 @@ public class MatterWrapper {
 
     public var threadCredentialsSharingEnabled: Bool {
         // For now mac is not returning thread credentials for some reason
-        #if canImport(ThreadNetwork) && !targetEnvironment(macCatalyst)
+        #if canImport(ThreadNetwork) && !(targetEnvironment(macCatalyst) || os(macOS))
         return true
         #else
         return false
@@ -22,14 +22,14 @@ public class MatterWrapper {
     }
 
     public var threadCredentialsStoreInKeychainEnabled: Bool {
-        #if canImport(ThreadNetwork) && !targetEnvironment(macCatalyst)
+        #if canImport(ThreadNetwork) && !(targetEnvironment(macCatalyst) || os(macOS))
         return true
         #else
         return false
         #endif
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var threadClientService: ThreadClientProtocol = ThreadClientService()
 
     public var lastCommissionServerIdentifier: Identifier<Server>? {
@@ -38,7 +38,7 @@ public class MatterWrapper {
     }
 
     public lazy var commission: (_ server: Server) -> Promise<String?> = { [self] server in
-        #if canImport(MatterSupport) && !targetEnvironment(macCatalyst)
+        #if canImport(MatterSupport) && !(targetEnvironment(macCatalyst) || os(macOS))
         lastCommissionServerIdentifier = server.identifier
         Current.settingsStore.matterLastCommissionedDeviceName = nil
 

@@ -1,7 +1,6 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 struct WhatsNewView: View {
     let release: WhatsNewRelease

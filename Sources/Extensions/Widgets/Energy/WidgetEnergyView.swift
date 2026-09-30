@@ -3,7 +3,7 @@ import SwiftUI
 import WidgetKit
 
 /// Routes the Energy widget entry to the layout for the current widget family.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEnergyView: View {
     @Environment(\.widgetFamily) private var family
 
@@ -13,12 +13,14 @@ struct WidgetEnergyView: View {
         // The accessory families own their empty state: they render on the lock screen, where the
         // home screen card's background and prose don't fit.
         switch family {
+        #if !os(macOS)
         case .accessoryCircular:
             WidgetEnergyAccessoryCircularView(entry: entry)
         case .accessoryRectangular:
             WidgetEnergyAccessoryRectangularView(entry: entry)
         case .accessoryInline:
             WidgetEnergyAccessoryInlineView(entry: entry)
+        #endif
         default:
             // A configured entry always draws its layout, even with nothing to show yet: the figures
             // and the chart come back empty rather than being replaced by prose. Only an entry the
@@ -58,7 +60,7 @@ struct WidgetEnergyView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall) {
     WidgetEnergy()
 } timeline: {
@@ -72,7 +74,7 @@ struct WidgetEnergyView: View {
     WidgetEnergyEntry(period: .today, isConfigured: true)
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Empty medium", as: .systemMedium) {
     WidgetEnergy()
 } timeline: {

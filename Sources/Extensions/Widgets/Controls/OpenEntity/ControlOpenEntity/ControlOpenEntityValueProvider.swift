@@ -4,14 +4,14 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlOpenEntityItem {
     let entity: HAAppEntityAppIntentEntity
     let icon: SFSymbolEntity
     let displayText: String?
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlOpenEntityValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlOpenEntityConfiguration) async throws -> ControlOpenEntityItem {
         item(configuration: configuration)
@@ -56,7 +56,7 @@ struct ControlOpenEntityValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlOpenEntityConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.open_entity.configuration.title",

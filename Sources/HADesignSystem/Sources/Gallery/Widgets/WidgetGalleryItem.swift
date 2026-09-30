@@ -51,6 +51,15 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
     }
 
     public var families: [WidgetFamily] {
+        #if os(macOS)
+        // The lock screen families do not exist on macOS.
+        switch self {
+        case .actions, .areas, .sensors, .calendar, .todoList: [.systemSmall, .systemMedium, .systemLarge]
+        case .assist, .energy: [.systemSmall, .systemMedium]
+        case .gauge: [.systemSmall]
+        case .details: []
+        }
+        #else
         switch self {
         case .actions: [.systemSmall, .systemMedium, .systemLarge, .accessoryCircular, .accessoryInline]
         case .areas: [.systemSmall, .systemMedium, .systemLarge]
@@ -62,6 +71,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
         case .gauge: [.systemSmall, .accessoryCircular]
         case .details: [.accessoryRectangular, .accessoryInline]
         }
+        #endif
     }
 
     @ViewBuilder public func preview(for family: WidgetFamily) -> some View {
@@ -131,8 +141,10 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
         switch family {
         case .systemSmall:
             WidgetAssistSingleView(title: "Assist", subtitle: "Home Assistant")
+        #if !os(macOS)
         case .accessoryCircular:
             WidgetCircularIconView(icon: .messageProcessingOutlineIcon)
+        #endif
         default:
             tileGrid(
                 models: Array(WidgetTileSampleData.assistPipelines.prefix(WidgetTileLayout.size(for: family))),
@@ -158,7 +170,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
 
     @ViewBuilder
     private func todoList(family: WidgetFamily) -> some View {
-        if #available(iOS 17, *) {
+        if #available(iOS 17, macOS 14, *) {
             WidgetTodoListContentView(
                 title: "Groceries",
                 items: Array(Self.todoItems.prefix(WidgetTileLayout.todoListSize(for: family))),
@@ -181,8 +193,9 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
 
     @ViewBuilder
     private func energy(family: WidgetFamily) -> some View {
-        if #available(iOS 17, *) {
+        if #available(iOS 17, macOS 14, *) {
             switch family {
+            #if !os(macOS)
             case .accessoryCircular:
                 WidgetEnergyAccessoryCircularContentView(stat: WidgetEnergySampleData.stats.first)
             case .accessoryRectangular:
@@ -197,6 +210,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
                     stats: WidgetEnergySampleData.stats,
                     emptyText: "No energy data"
                 )
+            #endif
             case .systemSmall:
                 WidgetEnergySmallContentView(
                     stats: WidgetEnergySampleData.stats,
@@ -218,7 +232,7 @@ public enum WidgetGalleryItem: String, CaseIterable, Identifiable {
 
     @ViewBuilder
     private func gauge(family: WidgetFamily) -> some View {
-        if #available(iOS 17, *) {
+        if #available(iOS 17, macOS 14, *) {
             WidgetGaugeContentView(
                 gaugeType: .normal,
                 value: 0.67,

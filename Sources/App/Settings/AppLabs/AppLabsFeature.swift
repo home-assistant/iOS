@@ -30,7 +30,7 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
         switch self {
         case .macNativeSidebar: return Current.isCatalyst
         case .iosNativeTabBar:
-            if #available(iOS 26, *) {
+            if #available(iOS 26, macOS 26, *) {
                 return !Current.isCatalyst
             }
             return false

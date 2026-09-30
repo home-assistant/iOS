@@ -2,7 +2,6 @@ import Foundation
 import HAKit
 import PromiseKit
 import SwiftUI
-import UIKit
 
 public extension HAEntity {
     func onPress(for api: HomeAssistantAPI) -> Promise<Void> {
@@ -16,7 +15,7 @@ public extension HAEntity {
 
     func getIcon() -> UIImage? {
         let image = getMDI()
-        #if os(iOS)
+        #if canImport(CarPlay)
         return image.carPlayIcon(color: stateIconColor())
         #else
         return image.image(ofSize: .init(width: 50, height: 50), color: nil)
@@ -35,7 +34,7 @@ public extension HAEntity {
                 domain: domain,
                 state: state.lowercased(),
                 attributes: attributes.dictionary,
-                customColor: customColor.map(Color.init)
+                customColor: customColor.map { Color($0) }
             )
         )
     }

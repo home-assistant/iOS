@@ -36,8 +36,10 @@ enum WidgetFamilySizes {
         case .systemMedium: return 6
         case .systemLarge: return 12
         case .systemExtraLarge, .systemExtraLargePortrait: return 20
+        #if !os(macOS)
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
+        #endif
         @unknown default:
             return 1
         }

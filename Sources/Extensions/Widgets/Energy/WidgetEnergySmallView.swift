@@ -4,7 +4,7 @@ import WidgetKit
 
 /// Compact card showing solar generation and grid flow. Prefers live instantaneous power (W) when
 /// power sensors are configured, otherwise falls back to the period's energy totals (kWh).
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEnergySmallView: View {
     let entry: WidgetEnergyEntry
 
@@ -22,7 +22,7 @@ struct WidgetEnergySmallView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall) {
     WidgetEnergy()
 } timeline: {

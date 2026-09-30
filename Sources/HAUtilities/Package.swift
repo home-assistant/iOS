@@ -5,6 +5,7 @@ let package = Package(
     name: "HAUtilities",
     platforms: [
         .iOS(.v16),
+        .macOS(.v13),
     ],
     products: [
         .library(name: "HAUtilities", targets: ["HAUtilities"]),

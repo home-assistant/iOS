@@ -1,11 +1,10 @@
-#if os(iOS)
+#if !os(watchOS)
 import Foundation
 import PromiseKit
-import UIKit
 
 public class PeriodicUpdateManager {
-    public let applicationStateGetter: () -> UIApplication.State
-    public init(applicationStateGetter: @escaping () -> UIApplication.State) {
+    public let applicationStateGetter: () -> ApplicationState
+    public init(applicationStateGetter: @escaping () -> ApplicationState) {
         self.applicationStateGetter = applicationStateGetter
     }
 

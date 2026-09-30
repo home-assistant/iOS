@@ -3,7 +3,11 @@ import Foundation
 import HAKit
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// ViewModel for ConnectionSettingsView, managing server connection settings and state
 @MainActor
@@ -226,7 +230,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         server.info.setSetting(value: privacy, for: .locationPrivacy)
         locationPrivacy = privacy
         HomeAssistantAPI.manuallyUpdate(
-            applicationState: UIApplication.shared.applicationState,
+            applicationState: ApplicationState.current,
             type: .programmatic
         ).cauterize()
     }
@@ -237,7 +241,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
         Current.api(for: server)?.registerSensors().cauterize()
     }
 
-    func shareServer() -> UIActivityViewController? {
+    /// The link that invites someone to this server, or nil when there is no address to invite them to.
+    func invitationURL() -> URL? {
         guard let invitationServerURL = server.info.connection.invitationURL() else {
             Current.Log.error("Invitation button failed, no invitation URL found for server \(server.identifier)")
             return nil
@@ -249,8 +254,15 @@ final class ConnectionSettingsViewModel: ObservableObject {
             return nil
         }
 
+        return invitationURL
+    }
+
+    #if !os(macOS)
+    func shareServer() -> UIActivityViewController? {
+        guard let invitationURL = invitationURL() else { return nil }
         return UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
     }
+    #endif
 
     func activateServer() {
         if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
