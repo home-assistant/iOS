@@ -4,9 +4,9 @@ import Foundation
 import Testing
 
 @MainActor
-struct WyomingSpeechRecognitionSessionTests {
+struct OnDeviceSpeechRecognitionSessionTests {
     /// Stands in for the Speech framework, which cannot be driven without speech authorisation.
-    private final class FakeRecognizer: WyomingSpeechRecognizing {
+    private final class FakeRecognizer: OnDeviceSpeechRecognizing {
         private(set) var appendedBuffers = 0
         private(set) var didEndAudio = false
         private(set) var didCancel = false
@@ -50,8 +50,8 @@ struct WyomingSpeechRecognitionSessionTests {
     private func makeSession(
         recognizer: FakeRecognizer,
         gracePeriod: TimeInterval = 30
-    ) throws -> WyomingSpeechRecognitionSession {
-        try WyomingSpeechRecognitionSession(
+    ) throws -> OnDeviceSpeechRecognitionSession {
+        try OnDeviceSpeechRecognitionSession(
             format: .init(rate: 16000, width: 2, channels: 1),
             gracePeriod: gracePeriod
         ) { recognizer }
@@ -174,7 +174,7 @@ struct WyomingSpeechRecognitionSessionTests {
         var built = false
 
         #expect(throws: WyomingProtocolError.self) {
-            _ = try WyomingSpeechRecognitionSession(format: .init(rate: 16000, width: 4, channels: 1)) {
+            _ = try OnDeviceSpeechRecognitionSession(format: .init(rate: 16000, width: 4, channels: 1)) {
                 built = true
                 return FakeRecognizer()
             }

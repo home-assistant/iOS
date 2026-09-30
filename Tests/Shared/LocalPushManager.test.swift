@@ -520,6 +520,7 @@ class LocalPushManagerTests: XCTestCase {
                 "text_color": "#FFFFFF",
                 "progress_bar_color": "#03A9F4",
                 "progress_bar_direction": "decreasing",
+                "relevance_score": 0.7,
             ],
         ]))
 
@@ -530,6 +531,7 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(ha["progress_bar_color"] as? String, "#03A9F4")
         XCTAssertEqual(ha["progress_bar_direction"] as? String, "decreasing")
         XCTAssertEqual(ha["notification_icon_color"] as? String, "#FF0000")
+        XCTAssertEqual(ha["relevance_score"] as? Double, 0.7)
     }
 
     func testNonLiveActivityCommandSuppressesBannerButConfirms() throws {

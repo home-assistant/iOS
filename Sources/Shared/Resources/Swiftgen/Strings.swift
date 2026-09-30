@@ -1496,6 +1496,10 @@ public enum L10n {
         /// Assist requires iPhone connectivity. Your iPhone is currently unreachable.
         public static var title: String { return L10n.tr("Localizable", "assist.watch.not_reachable.title") }
       }
+      public enum OnDeviceStt {
+        /// No speech was recognized.
+        public static var noSpeechRecognized: String { return L10n.tr("Localizable", "assist.watch.on_device_stt.no_speech_recognized") }
+      }
       public enum Volume {
         /// Volume control
         public static var title: String { return L10n.tr("Localizable", "assist.watch.volume.title") }
@@ -7834,8 +7838,12 @@ public enum L10n {
       public static var appSettings: String { return L10n.tr("Localizable", "tab_bar.more.app_settings") }
       /// Customize
       public static var customize: String { return L10n.tr("Localizable", "tab_bar.more.customize") }
+      /// Edit profile
+      public static var editProfile: String { return L10n.tr("Localizable", "tab_bar.more.edit_profile") }
       /// Home Assistant Settings
       public static var homeAssistantSettings: String { return L10n.tr("Localizable", "tab_bar.more.home_assistant_settings") }
+      /// Other servers
+      public static var otherServers: String { return L10n.tr("Localizable", "tab_bar.more.other_servers") }
       /// More
       public static var title: String { return L10n.tr("Localizable", "tab_bar.more.title") }
     }
