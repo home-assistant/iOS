@@ -36,7 +36,7 @@ struct HomeAssistantView: View, WebFrontendView {
     /// The themed status-bar strip keeps the last frontend-provided colour until WebKit sends a new update.
     private var themedStatusBar: some View {
         GeometryReader { proxy in
-            if let color = viewModel.overlayState.statusBarColor {
+            if let color = viewModel.overlayState.statusBarColor, showsThemedStatusBar {
                 Color(uiColor: color)
                     .frame(height: proxy.safeAreaInsets.top)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -85,6 +85,12 @@ struct HomeAssistantView: View, WebFrontendView {
     /// With the tab bar on, the web view is hosted by the selected tab instead of `frontendContent`.
     private var isNativeTabBarActive: Bool {
         nativeTabBar.isEnabled
+    }
+
+    /// The strip belongs to the frontend: over a native tab it would cover the bar items that share the
+    /// status bar's row on wide screens.
+    private var showsThemedStatusBar: Bool {
+        !isNativeTabBarActive || viewModel.tabBar.showsFrontend
     }
 
     private var frontendContent: some View {

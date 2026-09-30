@@ -125,7 +125,7 @@ class FocusSensorTests: XCTestCase {
     func testIsFocusedYesWhileNamedFilterRunStandsDespiteLiveNo() throws {
         setUpDependencies(
             status: .init(isFocused: false),
-            filterState: .init(name: "Personal", date: Date(), lastKnownName: "Personal")
+            filterState: .init(name: "Personal", date: Date())
         )
 
         let sensors = try hang(FocusSensor(request: request).sensors())
@@ -138,7 +138,7 @@ class FocusSensorTests: XCTestCase {
     func testIsFocusedYesFromNamedFilterRunWithoutAuthorization() throws {
         setUpDependencies(
             authorization: .denied,
-            filterState: .init(name: "Personal", date: Date(), lastKnownName: "Personal")
+            filterState: .init(name: "Personal", date: Date())
         )
 
         let sensors = try hang(FocusSensor(request: request).sensors())
@@ -151,7 +151,7 @@ class FocusSensorTests: XCTestCase {
     func testFilterResetRunDefersToTheReceivedStatus() throws {
         let now = Date()
         setUpDependencies(
-            filterState: .init(name: nil, date: now, lastKnownName: "Personal"),
+            filterState: .init(name: nil, date: now),
             receivedStatus: .init(isFocused: false, date: now, lastEndedDate: now)
         )
 
@@ -210,7 +210,7 @@ class FocusSensorTests: XCTestCase {
         let twoDaysAgo = now.addingTimeInterval(-48 * 60 * 60)
         setUpDependencies(
             status: .init(isFocused: true),
-            filterState: .init(name: nil, date: now, lastKnownName: "Personal"),
+            filterState: .init(name: nil, date: now),
             receivedStatus: .init(isFocused: false, date: twoDaysAgo, lastEndedDate: twoDaysAgo)
         )
 
@@ -291,11 +291,7 @@ class FocusSensorTests: XCTestCase {
 
         await fulfillment(of: [observationExpectation], timeout: 10)
 
-        Current.focusFilter.state.value = FocusFilterState(
-            name: "Personal",
-            date: Date(),
-            lastKnownName: "Personal"
-        )
+        Current.focusFilter.state.value = FocusFilterState(name: "Personal", date: Date())
 
         await fulfillment(of: [signalExpectation], timeout: 10)
     }

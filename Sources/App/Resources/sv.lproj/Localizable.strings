@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Ange en begäran...";
 "assist.watch.mic_button.title" = "Tryck för att";
 "assist.watch.not_reachable.title" = "Assistenten kräver iPhone-anslutning. Din iPhone är för närvarande inte nåbar.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Volymkontroll";
 "assist_pipeline_picker.no_pipelines" = "Inga pipelines tillgängliga";
 "assist_pipeline_picker.placeholder" = "Välj pipeline";

@@ -273,19 +273,40 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
+    /// How long the frontend gets to render the element it asked to focus, in attempts and the pause between them.
+    static let elementFocusAttempts = 20
+    static let elementFocusRetryInterval: TimeInterval = 0.15
+
     func handleElementFocus(elementId: String) {
         Current.Log.verbose("Handle element focus for element ID: \(elementId)")
+        focusElement(elementId: elementId, attemptsLeft: Self.elementFocusAttempts)
+    }
 
-        // JavaScript to find and focus element in both regular DOM and Shadow DOM
-        let script = """
+    /// Keyboard focus only follows a scripted `focus()` while the web view is first responder, and the
+    /// frontend asks before the element is always on the page, so this keeps trying until it is.
+    private func focusElement(elementId: String, attemptsLeft: Int) {
+        webViewController?.makeWebViewFirstResponder()
+        webViewController?
+            .evaluateJavaScript(Self.focusElementScript(elementId: elementId)) { [weak self] result, error in
+                if let error {
+                    Current.Log.error("Error focusing element \(elementId): \(error)")
+                    return
+                }
+                guard result as? Bool == false, attemptsLeft > 1 else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.elementFocusRetryInterval) {
+                    self?.focusElement(elementId: elementId, attemptsLeft: attemptsLeft - 1)
+                }
+            }
+    }
+
+    /// Finds the element through shadow roots and focuses it; a focus that is already on it is redone so the
+    /// keyboard follows. Evaluates to whether the element was found.
+    static func focusElementScript(elementId: String) -> String {
+        """
         (function() {
-            // Helper function to search through shadow DOM recursively
             function findElementInShadowDOM(elementId, root = document) {
-                // Try to find by ID in current root
                 let element = root.getElementById(elementId);
                 if (element) return element;
-
-                // Search through all elements with shadow roots
                 const allElements = root.querySelectorAll('*');
                 for (const el of allElements) {
                     if (el.shadowRoot) {
@@ -295,22 +316,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 return null;
             }
-
-            // Search for the element
-            const elementId = '\(elementId)';
-            const element = findElementInShadowDOM(elementId);
-
-            if (element) {
-                element.focus();
+            function activeElement() {
+                let active = document.activeElement;
+                while (active && active.shadowRoot && active.shadowRoot.activeElement) {
+                    active = active.shadowRoot.activeElement;
+                }
+                return active;
             }
+            function contains(ancestor, node) {
+                while (node) {
+                    if (node === ancestor) return true;
+                    node = node.parentNode || (node.host ? node.host : null);
+                }
+                return false;
+            }
+            const element = findElementInShadowDOM('\(elementId)');
+            if (!element) return false;
+            const active = activeElement();
+            if (active && contains(element, active)) {
+                active.blur();
+            }
+            element.focus();
+            return true;
         })();
         """
-
-        webViewController?.evaluateJavaScript(script) { _, error in
-            if let error {
-                Current.Log.error("Error focusing element \(elementId): \(error)")
-            }
-        }
     }
 
     @discardableResult
@@ -527,6 +556,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         pipeline: String = "",
         autoStartRecording: Bool = false
     ) {
+        let presentsAsSheet = webViewController?.presentsNextAssistAsSheet ?? false
+        webViewController?.presentsNextAssistAsSheet = false
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
@@ -552,15 +583,18 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 preferredPipelineId: pipeline,
                 autoStartRecording: autoStartRecording
             ))
-            assistView.modalPresentationStyle = .fullScreen
             let tappedSource = webViewController?.pendingAssistZoomSourceView
             webViewController?.pendingAssistZoomSourceView = nil
-            if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+            if presentsAsSheet {
+                assistView.modalPresentationStyle = .automatic
+            } else if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+                assistView.modalPresentationStyle = .fullScreen
                 // Zoom out of the tapped tab bar spot when there is one, else the frontend's Assist anchor.
                 assistView.preferredTransition = .zoom { [weak self] _ in
                     tappedSource ?? self?.webViewController?.assistZoomAnchorView
                 }
             } else {
+                assistView.modalPresentationStyle = .fullScreen
                 assistView.modalTransitionStyle = .crossDissolve
             }
             webViewController?.presentOverlayController(controller: assistView, animated: true)

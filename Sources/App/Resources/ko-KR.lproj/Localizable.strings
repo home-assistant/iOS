@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "요청을 입력하세요...";
 "assist.watch.mic_button.title" = "탭하여";
 "assist.watch.not_reachable.title" = "Assist 기능은 아이폰 연결이 필요합니다. 현재 아이폰에 연결할 수 없습니다.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "음량 조절";
 "assist_pipeline_picker.no_pipelines" = "사용 가능한 파이프라인이 없습니다";
 "assist_pipeline_picker.placeholder" = "파이프라인 선택";

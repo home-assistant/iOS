@@ -61,6 +61,10 @@ extension WebViewController: WebViewControllerProtocol {
         webView.evaluateJavaScript(script, completionHandler: completion)
     }
 
+    func makeWebViewFirstResponder() {
+        webView.becomeFirstResponder()
+    }
+
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
         if let detachedOverlayController, detachedOverlayController.presentingViewController != nil {
             self.detachedOverlayController = nil

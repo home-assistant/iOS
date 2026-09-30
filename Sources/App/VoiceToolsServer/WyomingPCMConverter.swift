@@ -5,7 +5,7 @@ import Shared
 /// Turns the little-endian 16-bit PCM a Wyoming client streams into the float buffers the speech
 /// recogniser is fed.
 ///
-/// Split out of `WyomingSpeechRecognitionSession` because it is the half that stands on its own:
+/// Split out of `OnDeviceSpeechRecognitionSession` because it is the half that stands on its own:
 /// converting audio needs no recogniser, no speech authorisation and no permission prompt, which is
 /// also what makes the frame arithmetic below testable.
 struct WyomingPCMConverter {
