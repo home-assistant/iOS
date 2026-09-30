@@ -7,13 +7,18 @@ import SwiftUI
 struct VoiceToolsServerLanguagesView: View {
     /// `nil` while the locales are still being probed.
     @State private var locales: [Locale]?
+    private let speechLocales: SupportedSpeechLocales
 
-    init() {}
+    /// The source is injectable so a test can open the screen against a probe it controls.
+    init(speechLocales: SupportedSpeechLocales = .shared) {
+        self.speechLocales = speechLocales
+    }
 
     /// Injectable so previews and snapshot tests render a fixed list instead of probing the speech
     /// daemon on the machine rendering them.
     init(locales: [Locale]) {
         self._locales = State(initialValue: locales)
+        self.speechLocales = .shared
     }
 
     var body: some View {
@@ -49,7 +54,10 @@ struct VoiceToolsServerLanguagesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             guard locales == nil else { return }
-            let supported = await SupportedSpeechLocales.shared.locales()
+            // Probed again on every open rather than read from the cache: this is the screen a user
+            // comes to after installing a dictation language, and refreshing here is also what
+            // makes the next `describe` advertise it without relaunching the app.
+            let supported = await speechLocales.refreshedLocales()
             locales = supported.sorted { displayName(for: $0) < displayName(for: $1) }
         }
     }
