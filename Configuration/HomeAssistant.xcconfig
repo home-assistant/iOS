@@ -45,7 +45,12 @@ SDKROOT = iphoneos
 SWIFT_VERSION = 5.0
 TARGETED_DEVICE_FAMILY = 1,2,6
 IPHONEOS_DEPLOYMENT_TARGET = 16.4
-MACOSX_DEPLOYMENT_TARGET = 13.3
+MACOSX_DEPLOYMENT_TARGET = 12.0
+// The native Mac app is built on the SwiftUI window and navigation API of macOS 13, and the Catalyst app
+// already needs macOS 13.3 through iOS 16.4. The targets that ship in the app pick this per variant;
+// the Launcher and MacBridge keep the plain setting above.
+HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_YES = 12.0
+HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_NO = 13.3
 WATCHOS_DEPLOYMENT_TARGET = 9.0
 
 CLANG_ENABLE_MODULES = YES

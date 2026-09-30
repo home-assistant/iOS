@@ -4957,6 +4957,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				PROVISIONING_SUFFIX = .ShareExtension;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = YES;
@@ -4979,6 +4980,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				PROVISIONING_SUFFIX = .ShareExtension;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = YES;
@@ -5627,6 +5629,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = YES;
@@ -5655,6 +5658,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = YES;
@@ -5704,6 +5708,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -5751,6 +5756,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -5836,6 +5842,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -5864,6 +5871,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -5941,6 +5949,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = YES;
@@ -5963,6 +5972,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = YES;
@@ -6025,6 +6035,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_MODULE_NAME = Shared;
 				PRODUCT_NAME = Shared;
@@ -6050,6 +6061,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*]" = "$(HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST))";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_MODULE_NAME = Shared;
 				PRODUCT_NAME = Shared;
