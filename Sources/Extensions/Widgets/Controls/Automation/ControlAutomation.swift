@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlAutomation: ControlWidget {
     var body: some ControlWidgetConfiguration {
         AppIntentControlConfiguration(

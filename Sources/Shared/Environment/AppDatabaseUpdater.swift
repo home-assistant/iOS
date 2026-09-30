@@ -4,7 +4,6 @@ import HADesignSystem
 import HAKit
 import SFSafeSymbols
 import SwiftUI
-import UIKit
 
 // MARK: - AppDatabaseUpdater
 
@@ -183,23 +182,27 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     static var shared = AppDatabaseUpdater()
 
     init() {
+        #if os(macOS)
+        // A Mac app keeps running at full speed when it is not frontmost, so an update is never cancelled
+        // for leaving the foreground: `_isForeground` stays at its initial `true`.
+        #else
         let center = NotificationCenter.default
         center.addObserver(
             self,
             selector: #selector(enterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
+            name: AppLifecycle.didEnterBackgroundNotification,
             object: nil
         )
         center.addObserver(
             self,
             selector: #selector(didBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
+            name: AppLifecycle.didBecomeActiveNotification,
             object: nil
         )
         center.addObserver(
             self,
             selector: #selector(willResignActive),
-            name: UIApplication.willResignActiveNotification,
+            name: AppLifecycle.willResignActiveNotification,
             object: nil
         )
 
@@ -216,6 +219,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             let state = Current.application?().applicationState
             self?.setForeground(state != nil && state != .background)
         }
+        #endif
     }
 
     @objc private func enterBackground() {
@@ -491,7 +495,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             userInfo: [AppDatabaseUpdaterUserInfo.phaseDescriptionKey: phase.localizedDescription]
         )
 
-        guard showProgress, #available(iOS 18, *) else { return }
+        guard showProgress, #available(iOS 18, macOS 15, *) else { return }
         ToastPresenter.shared.show(
             id: Self.progressToastID(serverId: server.identifier.rawValue),
             symbol: .arrowClockwise,
@@ -503,7 +507,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     @MainActor
     private func presentFinishedToast(server: Server, showProgress: Bool) {
-        guard showProgress, #available(iOS 18, *) else { return }
+        guard showProgress, #available(iOS 18, macOS 15, *) else { return }
         ToastPresenter.shared.show(
             id: Self.progressToastID(serverId: server.identifier.rawValue),
             symbol: .checkmarkSealFill,
@@ -518,7 +522,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         guard showProgress else { return }
         let id = Self.progressToastID(serverId: server.identifier.rawValue)
         Task { @MainActor in
-            guard #available(iOS 18, *) else { return }
+            guard #available(iOS 18, macOS 15, *) else { return }
             ToastPresenter.shared.hide(id: id)
         }
     }

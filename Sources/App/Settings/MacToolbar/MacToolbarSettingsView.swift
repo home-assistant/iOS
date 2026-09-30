@@ -5,7 +5,7 @@ struct MacToolbarSettingsView: View {
     @StateObject private var viewModel = MacToolbarSettingsViewModel()
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: .dockWindowIcon,
                 title: L10n.Settings.MacToolbar.title,

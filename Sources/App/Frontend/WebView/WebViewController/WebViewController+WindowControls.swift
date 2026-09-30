@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import UIKit
 
@@ -41,3 +42,4 @@ extension WebViewController {
         statusBarView?.isHidden = inset == 0
     }
 }
+#endif

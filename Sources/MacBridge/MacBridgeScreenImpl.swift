@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 
 class MacBridgeScreenImpl: NSObject, MacBridgeScreen {
@@ -20,3 +21,4 @@ class MacBridgeScreenImpl: NSObject, MacBridgeScreen {
         screen.localizedName
     }
 }
+#endif

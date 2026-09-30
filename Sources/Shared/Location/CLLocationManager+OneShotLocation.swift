@@ -201,7 +201,11 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         super.init()
 
+        // A Mac app is never suspended, and Core Location raises an exception when an app without a
+        // location background mode asks for background updates there.
+        #if !os(macOS)
         locationManager.allowsBackgroundLocationUpdates = !Current.isAppExtension
+        #endif
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate = self
 

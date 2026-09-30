@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import UIKit
 
@@ -41,3 +42,4 @@ extension WebViewController {
         webViewGestureHandler.handleGestureAction(action)
     }
 }
+#endif

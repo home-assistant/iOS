@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -63,3 +64,4 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
         )
     }
 }
+#endif

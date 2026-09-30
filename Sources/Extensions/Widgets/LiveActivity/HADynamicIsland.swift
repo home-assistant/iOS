@@ -9,7 +9,7 @@ import WidgetKit
 ///
 /// The expanded presentation uses the bottom region alone: it spans the island's full width, which
 /// is what keeps every row on one leading edge (see `HAExpandedContentView`).
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 func makeHADynamicIsland(
     attributes: HALiveActivityAttributes,
     state: HALiveActivityAttributes.ContentState

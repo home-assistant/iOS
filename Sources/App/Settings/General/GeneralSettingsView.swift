@@ -12,7 +12,7 @@ struct GeneralSettingsView: View {
     @State private var redrawHelper: UUID = .init()
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: .cogIcon,
                 title: L10n.SettingsDetails.General.title,
@@ -20,7 +20,7 @@ struct GeneralSettingsView: View {
             )
             appIconSelection
 
-            #if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst) || os(macOS)
             Section {
                 launchOnLogin
                 showAppInPicker
@@ -56,6 +56,7 @@ struct GeneralSettingsView: View {
 
     @ViewBuilder
     private var appIconSelection: some View {
+        #if !os(macOS)
         if !Current.isCatalyst {
             Section {
                 NavigationLink(destination: AppIconSelectorView()) {
@@ -68,6 +69,7 @@ struct GeneralSettingsView: View {
                 }
             }
         }
+        #endif
     }
 
     @ViewBuilder
@@ -176,7 +178,7 @@ struct GeneralSettingsView: View {
 
     // MARK: - Mac
 
-    #if targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst) || os(macOS)
     @ViewBuilder
     private var launchOnLogin: some View {
         let launcherIdentifier = AppConstants.BundleID.appending(".Launcher")

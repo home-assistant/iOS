@@ -211,7 +211,7 @@ public extension WatchConnectivityManager {
         completionLock.unlock()
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     /// Complication update transfer (does not require reachability). On success the result carries the
     /// remaining daily transfer budget so callers can log exhaustion.
     func transfer(

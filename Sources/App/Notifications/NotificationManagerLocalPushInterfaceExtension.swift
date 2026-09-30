@@ -4,6 +4,9 @@ import NetworkExtension
 import PromiseKit
 import Shared
 
+// Local push through an app push provider extension exists on iOS only, so everything that drives one is
+// left out of the Mac app, which keeps the connection open itself (`NotificationManagerLocalPushInterfaceDirect`).
+#if os(iOS)
 final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface {
     /// Delay in seconds before reloading managers after configuration changes.
     /// This allows the system to persist changes before attempting to reload them.
@@ -420,6 +423,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 }
+#endif
 
 enum LocalPushRetryDiagnostics {
     static func matchesExpectedNetworkConditions(server: Server, currentSSID: String?) -> Bool {
@@ -460,6 +464,7 @@ enum LocalPushRetryDiagnostics {
     }
 }
 
+#if os(iOS)
 extension NotificationManagerLocalPushInterfaceExtension: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         updateManagers(reason: .serverChanged)
@@ -474,3 +479,4 @@ extension NotificationManagerLocalPushInterfaceExtension: NEAppPushDelegate {
         // we do not have calls
     }
 }
+#endif

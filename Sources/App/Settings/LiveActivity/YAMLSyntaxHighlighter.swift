@@ -6,7 +6,7 @@ import UIKit
 /// Lightweight line-based YAML colorizer for the sample payloads. It only ever re-emits the
 /// original characters (never inserts or drops any), so selecting and copying preserves the
 /// exact source text.
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 enum YAMLSyntaxHighlighter {
     private enum Token {
         case comment

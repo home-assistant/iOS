@@ -1,6 +1,10 @@
 import Foundation
 import SFSafeSymbols
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public enum HAGestureActionCategory: String, CaseIterable {
     case homeAssistant
@@ -234,6 +238,7 @@ public enum AppGesture: CaseIterable, Codable {
         }
     }
 
+    #if os(iOS)
     public var direction: UISwipeGestureRecognizer.Direction? {
         switch self {
         case .swipeRight:
@@ -254,6 +259,7 @@ public enum AppGesture: CaseIterable, Codable {
             nil
         }
     }
+    #endif
 }
 
 public extension [AppGesture: HAGestureAction] {
@@ -269,6 +275,7 @@ public extension [AppGesture: HAGestureAction] {
         ]
     }
 
+    #if os(iOS)
     func getAction(for gesture: UISwipeGestureRecognizer, numberOfTouches: Int) -> HAGestureAction {
         switch gesture.direction {
         case .down:
@@ -314,4 +321,5 @@ public extension [AppGesture: HAGestureAction] {
             return .none
         }
     }
+    #endif
 }

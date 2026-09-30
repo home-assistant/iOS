@@ -1,6 +1,10 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Coordinates the "have a great flight" greeting: watches cabin pressure while the app is in the
 /// foreground, runs flight detection when the app becomes active or the web view loses connection,
@@ -29,7 +33,7 @@ final class FlightGreetingManager {
     func start() {
         guard didBecomeActiveObserver == nil else { return }
         didBecomeActiveObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didBecomeActiveNotification,
+            forName: AppLifecycle.didBecomeActiveNotification,
             object: nil,
             queue: .main
         ) { _ in
@@ -38,7 +42,7 @@ final class FlightGreetingManager {
             }
         }
         didEnterBackgroundObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didEnterBackgroundNotification,
+            forName: AppLifecycle.didEnterBackgroundNotification,
             object: nil,
             queue: .main
         ) { _ in
@@ -73,7 +77,7 @@ final class FlightGreetingManager {
     /// Shows the greeting toast, respecting the user setting and the once-per-flight cooldown.
     func presentGreetingToastIfAllowed() {
         guard Current.settingsStore.flightGreetingsEnabled, canGreet else { return }
-        guard #available(iOS 18, *) else { return }
+        guard #available(iOS 18, macOS 15, *) else { return }
         ToastPresenter.shared.show(
             id: Self.toastID,
             symbol: .airplane,
@@ -98,7 +102,7 @@ final class FlightGreetingManager {
     /// the app opened was the end of it.
     func startPressureMonitoringIfNeeded() {
         // The toast itself needs iOS 18, so below that there is nothing detection could lead to.
-        guard #available(iOS 18, *), Current.settingsStore.flightGreetingsEnabled, canGreet else {
+        guard #available(iOS 18, macOS 15, *), Current.settingsStore.flightGreetingsEnabled, canGreet else {
             CabinPressureMonitor.shared.stop()
             return
         }

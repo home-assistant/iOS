@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 import Foundation
 import ObjectiveC.runtime
@@ -110,3 +111,4 @@ private extension NSObject {
         return true
     }
 }
+#endif

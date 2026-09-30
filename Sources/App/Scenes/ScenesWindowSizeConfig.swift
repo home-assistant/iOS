@@ -1,6 +1,10 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Stores the last known Mac window frame per window kind, so each window reopens where the user left it.
 enum ScenesWindowSizeConfig {

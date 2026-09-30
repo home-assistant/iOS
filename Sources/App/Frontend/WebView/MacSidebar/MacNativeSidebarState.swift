@@ -1,7 +1,9 @@
 import Combine
 import Foundation
 import Shared
+#if os(iOS)
 import UIKit
+#endif
 
 /// Shared state of the App Labs native macOS sidebar: whether the feature is on and whether the
 /// column is currently shown. Driven by the toolbar, the View menu and the frontend's `sidebar/show`.
@@ -13,7 +15,9 @@ final class MacNativeSidebarState: ObservableObject {
         didSet {
             guard isVisible != oldValue else { return }
             Current.settingsStore.macNativeSidebarVisible = isVisible
+            #if os(iOS)
             UIMenuSystem.main.setNeedsRebuild()
+            #endif
         }
     }
 
@@ -32,7 +36,9 @@ final class MacNativeSidebarState: ObservableObject {
                 if isEnabled {
                     self?.isVisible = true
                 }
+                #if os(iOS)
                 UIMenuSystem.main.setNeedsRebuild()
+                #endif
             }
             .store(in: &cancellables)
     }

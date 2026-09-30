@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import Shared
 
@@ -95,4 +96,5 @@ fileprivate extension NSObject {
         }
     }
 }
+#endif
 #endif

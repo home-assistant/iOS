@@ -1,7 +1,7 @@
 import Foundation
 import PromiseKit
 import Shared
-#if !targetEnvironment(macCatalyst)
+#if !(targetEnvironment(macCatalyst) || os(macOS))
 import CoreNFC
 #endif
 
@@ -88,7 +88,7 @@ class TagActivityManager: TagManager {
     }
 }
 
-#if !targetEnvironment(macCatalyst)
+#if !(targetEnvironment(macCatalyst) || os(macOS))
 class iOSTagManager: TagActivityManager {
     override var isNFCAvailable: Bool {
         NFCNDEFReaderSession.readingAvailable

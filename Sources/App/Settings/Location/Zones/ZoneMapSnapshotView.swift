@@ -52,7 +52,11 @@ struct ZoneMapSnapshotView: View {
             longitudinalMeters: regionMeters
         )
         options.size = size
+        #if os(macOS)
+        options.appearance = NSAppearance(named: colorScheme == .dark ? .darkAqua : .aqua)
+        #else
         options.traitCollection = UITraitCollection(userInterfaceStyle: colorScheme == .dark ? .dark : .light)
+        #endif
 
         do {
             let snapshot = try await MKMapSnapshotter(options: options).start()
@@ -73,7 +77,18 @@ struct ZoneMapSnapshotView: View {
         let zoneColor = UIColor(Color.haPrimary)
 
         return UIGraphicsImageRenderer(size: size).image { _ in
+            #if os(macOS)
+            snapshot.image.draw(
+                in: CGRect(origin: .zero, size: size),
+                from: .zero,
+                operation: .sourceOver,
+                fraction: 1,
+                respectFlipped: true,
+                hints: nil
+            )
+            #else
             snapshot.image.draw(at: .zero)
+            #endif
 
             let circle = UIBezierPath(ovalIn: CGRect(
                 x: center.x - pointRadius,

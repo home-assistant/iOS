@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
@@ -110,3 +111,4 @@ struct ComplicationListView: View {
 #Preview("Legacy complications") {
     NavigationView { ComplicationListView() }
 }
+#endif

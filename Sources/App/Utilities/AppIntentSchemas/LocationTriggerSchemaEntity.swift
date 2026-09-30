@@ -5,7 +5,7 @@ import GeoToolbox
 
 /// Home Assistant todo items have no location trigger, so this only ever appears as nil. It exists
 /// because the schema requires the property to have this shape.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEntity(schema: .reminders.locationTrigger)
 struct LocationTriggerSchemaEntity: TransientAppEntity {
     var place: PlaceDescriptor

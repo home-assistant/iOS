@@ -2,14 +2,20 @@ import Alamofire
 import KeychainAccess
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UserNotifications
 import UserNotificationsUI
 
-class NotificationViewController: UIViewController, UNNotificationContentExtension {
-    var activeViewController: (UIViewController & NotificationCategory)? {
+class NotificationViewController: PlatformViewController, UNNotificationContentExtension {
+    var activeViewController: (PlatformViewController & NotificationCategory)? {
         willSet {
+            #if !os(macOS)
             activeViewController?.willMove(toParent: nil)
+            #endif
             newValue.flatMap { addChild($0) }
         }
         didSet {
@@ -19,14 +25,25 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             if let viewController = activeViewController {
                 view.addSubview(viewController.view)
                 viewController.view.translatesAutoresizingMaskIntoConstraints = false
+                #if os(macOS)
+                // The content decides its own height from its constraints and the notification is told
+                // that height through `preferredContentSize`. Until the system applies it the two
+                // disagree, so the bottom edge yields rather than fighting the frame the system set.
+                let bottom = viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                bottom.priority = .defaultLow
+                #else
+                let bottom = viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                #endif
                 NSLayoutConstraint.activate([
                     viewController.view.topAnchor.constraint(equalTo: view.topAnchor),
                     viewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                     viewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                    viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                    bottom,
                 ])
 
+                #if !os(macOS)
                 viewController.didMove(toParent: self)
+                #endif
             } else {
                 // 0 doesn't adjust size, must be a > check
                 preferredContentSize.height = .leastNonzeroMagnitude
@@ -34,7 +51,34 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         }
     }
 
-    private static var possibleControllers: [(UIViewController & NotificationCategory).Type] { [
+    #if os(macOS)
+    override func loadView() {
+        view = NSView()
+    }
+
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        updatePreferredContentSize()
+    }
+
+    /// Passes the height the content laid itself out to on to the system, which sizes the notification
+    /// from `preferredContentSize` rather than from the view's constraints. Only the height matters to
+    /// the system; the width is whatever it gave the notification.
+    private func updatePreferredContentSize() {
+        guard let contentView = activeViewController?.view, view.bounds.width > 0 else {
+            return
+        }
+
+        let height = contentView.frame.height
+        guard abs(preferredContentSize.height - height) > 0.5 else {
+            return
+        }
+
+        preferredContentSize = CGSize(width: view.bounds.width, height: height)
+    }
+    #endif
+
+    private static var possibleControllers: [(PlatformViewController & NotificationCategory).Type] { [
         CameraViewController.self,
         MapViewController.self,
         ImageAttachmentViewController.self,
@@ -46,7 +90,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         api: HomeAssistantAPI,
         attachmentURL: URL?,
         allowDownloads: Bool = true
-    ) -> Guarantee<(UIViewController & NotificationCategory)?> {
+    ) -> Guarantee<(PlatformViewController & NotificationCategory)?> {
         // Try based on current info (e.g. entity_id or attached via service extension)
 
         for controllerType in Self.possibleControllers {
@@ -109,7 +153,11 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
         activeViewController = NotificationLoadingViewController()
 
+        #if os(macOS)
+        var indicator: NSProgressIndicator?
+        #else
         var indicator: UIActivityIndicatorView?
+        #endif
 
         viewController(
             for: notification,
@@ -126,21 +174,40 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                let view = self?.view {
                 // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
                 indicator = {
+                    #if os(macOS)
+                    let indicator = NSProgressIndicator()
+                    indicator.style = .spinning
+                    indicator.controlSize = .small
+                    indicator.isIndeterminate = true
+                    #else
                     let indicator = UIActivityIndicatorView(style: .medium)
+                    #endif
                     indicator.translatesAutoresizingMaskIntoConstraints = false
                     view.addSubview(indicator)
                     NSLayoutConstraint.activate([
                         indicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                         indicator.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
                     ])
+                    #if os(macOS)
+                    NSLayoutConstraint.activate([
+                        indicator.widthAnchor.constraint(equalToConstant: 16),
+                        indicator.heightAnchor.constraint(equalToConstant: 16),
+                    ])
+                    indicator.startAnimation(nil)
+                    #else
                     indicator.startAnimating()
+                    #endif
                     return indicator
                 }()
             }
 
             return controller.start()
         }.ensure {
+            #if os(macOS)
+            indicator?.stopAnimation(nil)
+            #else
             indicator?.stopAnimating()
+            #endif
             indicator?.removeFromSuperview()
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")

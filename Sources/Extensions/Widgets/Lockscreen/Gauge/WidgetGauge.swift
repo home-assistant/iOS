@@ -1,10 +1,12 @@
+#if !os(macOS)
 import HAWatchComplications
+#endif
 import Intents
 import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetGauge: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -39,12 +41,17 @@ struct WidgetGauge: Widget {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 enum WidgetGaugeSupportedFamilies {
+    #if os(macOS)
+    /// A Mac has no lock screen, so the gauge is offered on the desktop and in Notification Center only.
+    static let families: [WidgetFamily] = [.systemSmall]
+    #else
     static let families: [WidgetFamily] = [.accessoryCircular, .systemSmall]
+    #endif
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall, widget: {
     WidgetGauge()
 }, timeline: {
@@ -61,7 +68,7 @@ enum WidgetGaugeSupportedFamilies {
     )
 })
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall, widget: {
     WidgetGauge()
 }, timeline: {
@@ -78,7 +85,8 @@ enum WidgetGaugeSupportedFamilies {
     )
 })
 
-@available(iOS 17, *)
+#if !os(macOS)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .accessoryCircular, widget: {
     WidgetGauge()
 }, timeline: {
@@ -97,7 +105,7 @@ enum WidgetGaugeSupportedFamilies {
 
 // A mirrored watch complication: the entry carries the render model and the widget draws it through
 // the shared circular complication content view.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .accessoryCircular, widget: {
     WidgetGauge()
 }, timeline: {
@@ -120,3 +128,4 @@ enum WidgetGaugeSupportedFamilies {
         showConfirmationNotification: true
     )
 })
+#endif

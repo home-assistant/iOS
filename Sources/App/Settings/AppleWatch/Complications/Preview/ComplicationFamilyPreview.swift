@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
@@ -49,4 +50,5 @@ struct ComplicationFamilyPreview: View {
     }
     .padding()
 }
+#endif
 #endif

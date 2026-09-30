@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import SFSafeSymbols
@@ -298,3 +299,4 @@ final class CarPlayPaginatedListTemplate {
         updateTemplate()
     }
 }
+#endif

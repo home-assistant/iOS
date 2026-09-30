@@ -1,6 +1,6 @@
+#if os(iOS)
 import Shared
 import SwiftUI
-import UIKit
 
 /// Opens Customize Tabs on a long press anywhere on the tab bar, which SwiftUI's `Tab` offers no hook for.
 struct NativeTabBarLongPressInstaller: UIViewRepresentable {
@@ -60,3 +60,4 @@ struct NativeTabBarLongPressInstaller: UIViewRepresentable {
         }
     }
 }
+#endif

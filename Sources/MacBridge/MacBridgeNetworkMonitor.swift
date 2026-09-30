@@ -1,3 +1,4 @@
+#if os(macOS)
 import CoreWLAN
 import Foundation
 import SystemConfiguration
@@ -115,3 +116,4 @@ class MacBridgeNetworkMonitor {
         }
     }
 }
+#endif

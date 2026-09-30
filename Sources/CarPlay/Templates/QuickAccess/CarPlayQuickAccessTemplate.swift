@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -1116,3 +1117,4 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         session.start()
     }
 }
+#endif

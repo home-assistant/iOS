@@ -6,7 +6,7 @@ import WidgetKit
 /// Lock screen inline layout: a single line combining the configured series, e.g. "↑12,4 ↓6,2 kWh".
 /// The system renders one leading symbol next to the text, so the per-series icons collapse into
 /// direction arrows carried by the text itself.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 public struct WidgetEnergyAccessoryInlineContentView: View {
     private let stats: [WidgetEnergyStatModel]
     /// What to say when there is nothing to report. Callers own the empty state, which is what
@@ -41,7 +41,7 @@ public struct WidgetEnergyAccessoryInlineContentView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     WidgetEnergyAccessoryInlineContentView(
         stats: WidgetEnergySampleData.stats,

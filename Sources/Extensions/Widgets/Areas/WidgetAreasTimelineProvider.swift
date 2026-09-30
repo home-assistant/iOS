@@ -6,7 +6,7 @@ import WidgetKit
 /// Builds the Areas widget's timeline out of the areas the app has already stored for the server,
 /// so the widget needs no connection of its own — the app's database is the same one the areas
 /// screen and the watch read.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetAreasTimelineProvider: WidgetSingleEntryTimelineProvider {
     typealias Entry = WidgetAreasEntry
     typealias Intent = WidgetAreasAppIntent

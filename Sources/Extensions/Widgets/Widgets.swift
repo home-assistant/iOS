@@ -5,7 +5,8 @@ import WidgetKit
 @main
 enum WidgetLauncher {
     static func main() {
-        if #available(iOSApplicationExtension 18.0, *) {
+        // Control Center controls, which the newer bundle adds, reached the Mac in macOS 26.
+        if #available(iOSApplicationExtension 18.0, macOSApplicationExtension 26.0, *) {
             WidgetsBundle18.main()
         } else {
             WidgetsBundle17.main()
@@ -13,7 +14,7 @@ enum WidgetLauncher {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetsBundle17: WidgetBundle {
     init() {
         MaterialDesignIcons.register()
@@ -35,13 +36,15 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetTodoList()
         WidgetAssist()
         WidgetGauge()
+        #if !os(macOS)
         WidgetDetails()
+        #endif
         WidgetSensors()
         WidgetScripts()
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct WidgetsBundle18: WidgetBundle {
     init() {
         MaterialDesignIcons.register()
@@ -76,7 +79,9 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetTodoList()
         WidgetAssist()
         WidgetGauge()
+        #if !os(macOS)
         WidgetDetails()
+        #endif
         WidgetSensors()
         WidgetScripts()
     }

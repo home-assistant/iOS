@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 
 /// Home Assistant has no location triggers, so no case is ever produced; the schema names both.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEnum(schema: .reminders.locationTriggerEvent)
 enum LocationTriggerEventSchemaEnum: String {
     case arrive

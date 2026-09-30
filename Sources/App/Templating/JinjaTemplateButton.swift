@@ -1,7 +1,6 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 /// A form row for a Jinja template: shows the template's rendered result (falling back to the
 /// template source, then the placeholder), and opens the full editor sheet when tapped.

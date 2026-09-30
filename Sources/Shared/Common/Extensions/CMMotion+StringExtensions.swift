@@ -1,3 +1,4 @@
+#if !os(macOS)
 import CoreMotion
 import Foundation
 
@@ -56,3 +57,4 @@ extension CMMotionActivityConfidence {
         }
     }
 }
+#endif

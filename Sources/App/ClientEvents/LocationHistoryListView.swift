@@ -85,7 +85,7 @@ struct LocationHistoryListView: View {
     }
 }
 
-final class LocationHistoryListViewHostingController: UIHostingController<LocationHistoryListView> {}
+final class LocationHistoryListViewHostingController: PlatformHostingController<LocationHistoryListView> {}
 
 private struct PreviewLocationHistoryListView: View {
     private var locationHistory: [LocationHistoryEntry]

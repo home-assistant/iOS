@@ -91,7 +91,7 @@ extension SensorPermissionStatus {
         }
     }
 
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     init(_ status: AVAudioApplication.recordPermission) {
         switch status {
         case .undetermined: self = .notDetermined
@@ -101,6 +101,7 @@ extension SensorPermissionStatus {
         }
     }
 
+    #if !os(macOS)
     init(_ status: AVAudioSession.RecordPermission) {
         switch status {
         case .undetermined: self = .notDetermined
@@ -109,6 +110,7 @@ extension SensorPermissionStatus {
         @unknown default: self = .notDetermined
         }
     }
+    #endif
 
     init(_ status: SFSpeechRecognizerAuthorizationStatus) {
         switch status {

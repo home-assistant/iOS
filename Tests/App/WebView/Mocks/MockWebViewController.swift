@@ -10,6 +10,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var canGoForward: Bool = false
     var currentPageURL: URL?
     var traitCollection: UITraitCollection = .init()
+    var isDarkAppearance: Bool { traitCollection.userInterfaceStyle == .dark }
     var server: Server = ServerFixture.standard
     var connectionState: FrontEndConnectionState = .connected
     var overlayedController: UIViewController?

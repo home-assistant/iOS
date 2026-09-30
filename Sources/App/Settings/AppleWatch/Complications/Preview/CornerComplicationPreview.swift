@@ -1,3 +1,4 @@
+#if os(iOS)
 import HAWatchComplications
 import Shared
 import SwiftUI
@@ -123,4 +124,5 @@ private struct CornerVariantsPreview: View {
         .padding()
     }
 }
+#endif
 #endif

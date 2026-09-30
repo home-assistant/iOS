@@ -151,7 +151,7 @@ struct KioskSettingsView: View {
     /// while the kiosk accepts the commands it would confirm. The screen and the settings search index
     /// share this predicate so search never advertises a row that is not on screen.
     static func showsCommandConfirmationRow(acceptRemoteCommands: Bool) -> Bool {
-        guard #available(iOS 18, *) else { return false }
+        guard #available(iOS 18, macOS 15, *) else { return false }
         return acceptRemoteCommands
     }
 

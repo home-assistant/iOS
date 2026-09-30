@@ -38,7 +38,7 @@ struct ServerSwitchingHowItWorksView: View {
     ]
 
     var body: some View {
-        List {
+        GroupedList {
             Section {
                 Text(L10n.Settings.ServerSwitching.HowItWorks.intro)
                     .font(.body)

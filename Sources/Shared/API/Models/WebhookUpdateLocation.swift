@@ -79,7 +79,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
                 self.horizontalAccuracy = zone.radius
             }
 
-            #if os(iOS)
+            #if !os(watchOS)
             // https://github.com/home-assistant/iOS/issues/32
             if let currentSSID, zone.ssidTrigger.contains(currentSSID) {
                 self.location = zone.center

@@ -1,3 +1,4 @@
+#if os(iOS)
 import Combine
 import Foundation
 import Shared
@@ -93,3 +94,4 @@ final class ComplicationsRootViewModel: ObservableObject {
         WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
     }
 }
+#endif

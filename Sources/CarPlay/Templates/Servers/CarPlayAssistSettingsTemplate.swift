@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import Shared
@@ -235,3 +236,4 @@ final class CarPlayAssistSettingsTemplate {
         return Locale.current.localizedString(forIdentifier: identifier)?.capitalizedFirst ?? identifier
     }
 }
+#endif

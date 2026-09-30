@@ -34,7 +34,7 @@ struct WidgetEntitiesStateCache: Codable {
     let states: [MagicItem: WidgetEntityState]
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 protocol WidgetSingleEntryTimelineProvider: AppIntentTimelineProvider {
     var expiration: Measurement<UnitDuration> { get }
     /// What the widget shows before it has an entry. Defaults to the gallery mock, which is what
@@ -47,7 +47,7 @@ protocol WidgetSingleEntryTimelineProvider: AppIntentTimelineProvider {
     func makeTimelineEntry(for configuration: Intent, in context: Context) async -> Entry
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 extension WidgetSingleEntryTimelineProvider {
     /// The gallery renders the placeholder, redacted, until the snapshot arrives. Serving the same
     /// mock keeps the card from flipping from one shape to another as it loads, and keeps the
@@ -93,7 +93,7 @@ enum WidgetMagicItemInfoProvider {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEntityStateProvider {
     /// How long the whole batch of state fetches gets before the entry is built from whatever
     /// arrived. WidgetKit budgets timeline generation, so a request that stalls — a server that

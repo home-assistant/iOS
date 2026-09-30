@@ -3,6 +3,12 @@ import SwiftUI
 
 struct BarcodeScannerView: View {
     static let cameraSquareSize: CGFloat = 320
+    #if os(macOS)
+    /// Presented on a Mac, the scanner takes its size from its content instead of from a screen it
+    /// covers, and everything in it but the instructions stretches to fit. This leaves room for the
+    /// camera square below them.
+    private static let minimumSize = CGSize(width: 480, height: 640)
+    #endif
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: BarcodeScannerViewModel
@@ -41,6 +47,9 @@ struct BarcodeScannerView: View {
 
             topInformation
         }
+        #if os(macOS)
+        .frame(minWidth: Self.minimumSize.width, minHeight: Self.minimumSize.height)
+        #endif
         .onAppear {
             cameraDataModel.delegate = viewModel
         }
@@ -143,8 +152,10 @@ struct BarcodeScannerView: View {
     BarcodeScannerView(title: "Scan QR-code", description: "Find the code on your device", incomingMessageId: 1)
 }
 
-final class BarcodeScannerHostingController: UIHostingController<BarcodeScannerView> {
+final class BarcodeScannerHostingController: PlatformHostingController<BarcodeScannerView> {
+    #if !os(macOS)
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         [.portrait]
     }
+    #endif
 }

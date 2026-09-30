@@ -2,7 +2,7 @@
 import Shared
 import SwiftUI
 
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 struct HAActivityProgressBar: View {
     let fraction: Double
     let fillColor: Color

@@ -1,6 +1,6 @@
+#if os(iOS)
 import Shared
 import SwiftUI
-import UIKit
 
 /// Recreates the `WebViewController` multi-touch swipe and screen-edge gestures for SwiftUI overlays that
 /// cover the webview (like the stand-by view), so the user's configured gesture actions keep working there.
@@ -82,3 +82,4 @@ struct WebFrontendGesturesOverlay: UIViewRepresentable {
 #Preview {
     WebFrontendGesturesOverlay { _ in }
 }
+#endif

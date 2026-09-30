@@ -1,10 +1,9 @@
 import Shared
 import SwiftUI
-import UIKit
 
-/// Hosts the UIKit `WebViewController` as a SwiftUI view. A server switch or SwiftUI identity reset builds a
+/// Hosts the `WebViewController` as a SwiftUI view. A server switch or SwiftUI identity reset builds a
 /// fresh controller and discards the previous one.
-struct FrontendView: UIViewControllerRepresentable {
+struct FrontendView {
     let server: Server
     var initialPath: String?
     var onWebViewController: ((WebViewController) -> Void)?
@@ -31,16 +30,6 @@ struct FrontendView: UIViewControllerRepresentable {
         self.overlayState = overlayState
     }
 
-    func makeUIViewController(context: Context) -> WebViewController {
-        let webViewController = makeWebViewController()
-        onWebViewController?(webViewController)
-        return webViewController
-    }
-
-    func updateUIViewController(_ webViewController: WebViewController, context: Context) {
-        // No-op: a server change recreates this view (keyed by server in `ContainerView`), never updates it.
-    }
-
     /// Non-private for tests.
     func makeWebViewController() -> WebViewController {
         let controller = WebViewController(server: server)
@@ -52,3 +41,29 @@ struct FrontendView: UIViewControllerRepresentable {
         return controller
     }
 }
+
+#if os(macOS)
+extension FrontendView: NSViewControllerRepresentable {
+    func makeNSViewController(context: Context) -> WebViewController {
+        let webViewController = makeWebViewController()
+        onWebViewController?(webViewController)
+        return webViewController
+    }
+
+    func updateNSViewController(_ webViewController: WebViewController, context: Context) {
+        // No-op: a server change recreates this view (keyed by server in `ContainerView`), never updates it.
+    }
+}
+#else
+extension FrontendView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> WebViewController {
+        let webViewController = makeWebViewController()
+        onWebViewController?(webViewController)
+        return webViewController
+    }
+
+    func updateUIViewController(_ webViewController: WebViewController, context: Context) {
+        // No-op: a server change recreates this view (keyed by server in `ContainerView`), never updates it.
+    }
+}
+#endif

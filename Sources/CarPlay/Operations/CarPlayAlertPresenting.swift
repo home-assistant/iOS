@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 
@@ -12,3 +13,4 @@ protocol CarPlayAlertPresenting: AnyObject {
 }
 
 extension CPInterfaceController: CarPlayAlertPresenting {}
+#endif

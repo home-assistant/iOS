@@ -3,7 +3,7 @@ import SwiftUI
 import WidgetKit
 
 /// Lock screen rectangular layout: the period title, then one row per configured energy series.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEnergyAccessoryRectangularView: View {
     let entry: WidgetEnergyEntry
 
@@ -17,7 +17,9 @@ struct WidgetEnergyAccessoryRectangularView: View {
     }
 }
 
-@available(iOS 17, *)
+// The accessory families do not exist on the Mac, so there is nothing to preview the layout in there.
+#if !os(macOS)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .accessoryRectangular) {
     WidgetEnergy()
 } timeline: {
@@ -36,3 +38,4 @@ struct WidgetEnergyAccessoryRectangularView: View {
     WidgetEnergyEntry(period: .today, isConfigured: false)
     WidgetEnergyEntry(period: .today, isConfigured: false, noConnection: true)
 }
+#endif

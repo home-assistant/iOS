@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 final class CameraOverlayPresenter {
     static let shared = CameraOverlayPresenter()
@@ -10,8 +9,18 @@ final class CameraOverlayPresenter {
         let serverIdentifier: Identifier<Server>
     }
 
+    #if os(macOS)
+    /// Presented on a Mac, the player takes its size from its content instead of from a screen it
+    /// covers. It is happy at any size, so it is given one to open at and a floor that keeps its
+    /// controls usable.
+    private enum PlayerSize {
+        static let minimum = CGSize(width: 480, height: 270)
+        static let ideal = CGSize(width: 960, height: 540)
+    }
+    #endif
+
     private(set) var displayedCamera: Camera?
-    private weak var overlayController: UIViewController?
+    private weak var overlayController: PlatformViewController?
     private var isDismissing = false
     private var pendingShow: (() -> Void)?
     private let kiosk: KioskModeManager
@@ -51,12 +60,23 @@ final class CameraOverlayPresenter {
             return
         }
 
-        let controller = CameraPlayerView(server: server, cameraEntityId: entityId, cameraName: cameraName)
+        let player = CameraPlayerView(server: server, cameraEntityId: entityId, cameraName: cameraName)
             .onDisappear { [weak self] in
                 self?.overlayDidDisappear(camera)
             }
+        #if os(macOS)
+        let controller = player
+            .frame(
+                minWidth: PlayerSize.minimum.width,
+                idealWidth: PlayerSize.ideal.width,
+                minHeight: PlayerSize.minimum.height,
+                idealHeight: PlayerSize.ideal.height
+            )
             .embeddedInHostingController()
+        #else
+        let controller = player.embeddedInHostingController()
         controller.modalPresentationStyle = .overFullScreen
+        #endif
 
         overlayController = controller
         displayedCamera = camera

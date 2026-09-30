@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 
 extension NSEvent {
@@ -9,3 +10,4 @@ extension NSEvent {
         }
     }
 }
+#endif

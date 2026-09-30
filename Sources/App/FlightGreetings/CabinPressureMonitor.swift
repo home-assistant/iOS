@@ -50,7 +50,12 @@ final class CabinPressureMonitor {
     }
 
     var isObserving: Bool {
-        Current.barometerObserver.hasSubscriber(id: Self.subscriberID)
+        #if os(macOS)
+        // No Mac has a barometer, so nothing is ever observed there.
+        return false
+        #else
+        return Current.barometerObserver.hasSubscriber(id: Self.subscriberID)
+        #endif
     }
 
     /// The highest pressure recently seen while the device had a network, which stands in for "the
@@ -73,11 +78,13 @@ final class CabinPressureMonitor {
 
         guard !isObserving else { return }
 
+        #if !os(macOS)
         let started = Current.barometerObserver.addSubscriber(id: Self.subscriberID) { [weak self] data, _ in
             guard let data else { return }
             self?.record(pressureKpa: data.pressure.doubleValue)
         }
         guard !started else { return }
+        #endif
         // Every foreground pass retries, so log the reason once rather than on each attempt.
         lock.lock()
         let shouldLog = !didLogUnavailable
@@ -89,7 +96,9 @@ final class CabinPressureMonitor {
     }
 
     func stop() {
+        #if !os(macOS)
         Current.barometerObserver.removeSubscriber(id: Self.subscriberID)
+        #endif
         lock.lock()
         samples.removeAll()
         didIndicateFlight = false
@@ -97,6 +106,7 @@ final class CabinPressureMonitor {
         lock.unlock()
     }
 
+    #if !os(macOS)
     private func record(pressureKpa: Double) {
         let now = Current.date()
         updateGroundBaselineIfNeeded(pressureKpa: pressureKpa, now: now)
@@ -141,6 +151,7 @@ final class CabinPressureMonitor {
         prefs.set(pressureKpa, forKey: Self.baselinePressureKey)
         prefs.set(now, forKey: Self.baselineDateKey)
     }
+    #endif
 
     static func evidence(
         samples: [CabinPressureSample],

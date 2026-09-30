@@ -1,3 +1,6 @@
+// The details widget exists only in the lock screen's accessory families, which a Mac does not have, so the
+// widget and everything that configures and feeds it are left out of the Mac build.
+#if !os(macOS)
 import AppIntents
 import Foundation
 import Shared
@@ -39,3 +42,4 @@ struct WidgetDetailsAttributeAppEntityQuery: EntityQuery {
         )
     }
 }
+#endif

@@ -14,7 +14,7 @@ public extension HomeAssistantAPI {
         // cap and could resurrect stale values (e.g. an old battery level bouncing back).
         var content: HAWatchConnectivity.Content = [:]
 
-        #if os(iOS)
+        #if !os(watchOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
         //
@@ -62,7 +62,7 @@ public extension HomeAssistantAPI {
     /// `transferFile` has no size cap — so an oversized context is delivered through a mirror push
     /// instead of failing.
     private static func syncRespectingSizeLimit(_ context: HAWatchConnectivity.Context) throws {
-        #if os(iOS)
+        #if !os(watchOS)
         if let size = WatchConnectivityManager.estimatePayloadSize(of: context.content),
            size > WatchMessageSizeLimits.applicationContext {
             Current.Log.error(
@@ -80,7 +80,7 @@ public extension HomeAssistantAPI {
     }
 
     static func SyncWatchContext() async -> NSError? {
-        #if os(iOS)
+        #if !os(watchOS)
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
             Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
             return nil
@@ -202,7 +202,7 @@ public extension HomeAssistantAPI {
         case failed(String)
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     /// Push the current context to the watch and report whether it worked, for the Complications
     /// settings "Reload" button. Distinguishes "no watch" (so the UI can explain why) from a transport
     /// failure (so the UI can show the error).
@@ -229,7 +229,7 @@ public extension HomeAssistantAPI {
     #endif
 
     func updateComplications(passively: Bool) -> Promise<Void> {
-        #if os(iOS)
+        #if !os(watchOS)
         guard case .paired = Communicator.shared.currentWatchState else {
             Current.Log.verbose("skipping complication updates; no paired watch")
             return .value(())
@@ -241,7 +241,7 @@ public extension HomeAssistantAPI {
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")
 
-            #if os(iOS)
+            #if !os(watchOS)
             // in case the user deleted the last complication, sync that fact up to the watch
             HomeAssistantAPI.syncWatchContext()
             #else
@@ -260,7 +260,7 @@ public extension HomeAssistantAPI {
     }
 }
 
-#if os(iOS)
+#if !os(watchOS)
 /// Coalesces and de-duplicates proactive pushes of the full watch database mirror to the Apple Watch
 /// over `transferFile` (background-capable), so the watch always ends up with the latest reference data
 /// without the user asking. Multiple triggers within `debounceInterval` collapse into a single push, and

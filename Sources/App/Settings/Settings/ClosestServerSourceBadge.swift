@@ -22,7 +22,7 @@ struct ClosestServerSourceBadge: View {
         .foregroundStyle(.secondary)
         .padding(.horizontal, DesignSystem.Spaces.one)
         .padding(.vertical, DesignSystem.Spaces.micro)
-        .background(Color(uiColor: .tertiarySystemFill), in: Capsule())
+        .background(Color(uiColor: .tertiaryFill), in: Capsule())
         // Keeps its shape wherever it is placed, rather than being squeezed by a neighbour
         // that wants the width.
         .fixedSize()

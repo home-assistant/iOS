@@ -5,7 +5,7 @@ struct GreetingsSettingsView: View {
     @State private var flightGreetingsEnabled = Current.settingsStore.flightGreetingsEnabled
 
     var body: some View {
-        List {
+        GroupedList {
             Section(footer: Text(L10n.Settings.Greetings.Flight.footer)) {
                 Toggle(L10n.Settings.Greetings.Flight.title, isOn: $flightGreetingsEnabled)
                     .onChange(of: flightGreetingsEnabled) { value in

@@ -1,5 +1,6 @@
 import Shared
 import SwiftUI
+import UserNotifications
 
 struct NotificationPermissionRequestView: View {
     @Environment(\.dismiss) private var dismiss
@@ -55,7 +56,11 @@ struct NotificationPermissionRequestView: View {
                 Current.Log.error("Error when requesting notifications permissions: \(error)")
             }
             DispatchQueue.main.async {
+                #if os(macOS)
+                NSApplication.shared.registerForRemoteNotifications()
+                #else
                 UIApplication.shared.registerForRemoteNotifications()
+                #endif
             }
         }
     }

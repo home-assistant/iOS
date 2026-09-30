@@ -1,9 +1,10 @@
+#if os(iOS)
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 /// The avatar menu's entries: Edit profile, then the other servers to switch to.
-@available(iOS 26, *)
+@available(iOS 26, macOS 26, *)
 struct NativeTabBarProfileMenuItems: View {
     let viewModel: NativeTabBarViewModel
     let profile: MacSidebarItem
@@ -26,7 +27,7 @@ struct NativeTabBarProfileMenuItems: View {
     }
 }
 
-@available(iOS 26, *)
+@available(iOS 26, macOS 26, *)
 #Preview {
     let viewModel = NativeTabBarViewModel.preview(additionalServers: [ServerFixture.withRemoteConnection])
     Menu {
@@ -37,3 +38,4 @@ struct NativeTabBarProfileMenuItems: View {
         Text(viewModel.sidebar.server.info.name)
     }
 }
+#endif

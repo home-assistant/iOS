@@ -1,3 +1,4 @@
+#if os(iOS)
 import HAKit
 import Shared
 import SwiftUI
@@ -54,3 +55,4 @@ struct NativeTabBarItemLabel: View {
         NativeTabBarItemLabel(item: .init(kind: .assist), server: ServerFixture.standard, user: nil)
     }
 }
+#endif

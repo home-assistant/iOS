@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 import HAKit
 import Shared
@@ -72,3 +73,4 @@ final class CarPlayQuickAccessViewModel {
         }
     }
 }
+#endif

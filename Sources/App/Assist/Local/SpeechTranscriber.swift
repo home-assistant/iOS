@@ -22,7 +22,7 @@ protocol SpeechTranscriberProtocol: AnyObject {
 
 /// A speech-to-text transcriber using Apple's Speech framework.
 /// Supports real-time transcription with partial results.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 @MainActor
 public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtocol {
     // MARK: - Types
@@ -216,7 +216,8 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     /// Configures the audio session, engine and recognition task for a session the caller has
     /// already marked as listening, and which it unwinds if this throws.
     private func startRecognition(with speechRecognizer: SFSpeechRecognizer) throws {
-        // Configure audio session
+        // Configure audio session. A Mac has none: the engine records from the system input as it is.
+        #if !os(macOS)
         if managesAudioSession {
             let audioSession = AVAudioSession.sharedInstance()
             // `.default` rather than `.measurement`, which the framework documents as disabling the
@@ -236,6 +237,7 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             // only when deactivating.
             try audioSession.setActive(true)
         }
+        #endif
 
         // Create audio engine
         audioEngine = AVAudioEngine()
@@ -319,9 +321,11 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         isListening = false
 
         // Deactivate audio session
+        #if !os(macOS)
         if managesAudioSession {
             try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         }
+        #endif
 
         if wasListening {
             onListeningStateChange?(false)

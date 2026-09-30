@@ -1,7 +1,6 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 struct HomeAssistantStandByView: View {
     static let logoDismissTapThreshold = 10
@@ -208,79 +207,81 @@ struct HomeAssistantStandByView: View {
         .opacity(standByContentOpacity)
         // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
         // while buttons keep priority.
-        .background {
-            if let onGestureAction {
-                WebFrontendGesturesOverlay(onGestureAction: onGestureAction)
+        #if os(iOS)
+            .background {
+                if let onGestureAction {
+                    WebFrontendGesturesOverlay(onGestureAction: onGestureAction)
+                }
             }
-        }
-        .background(Color(uiColor: .systemBackground))
-        .overlay(alignment: .topLeading) {
-            delayedSettingsButton
-        }
-        .safeAreaInset(edge: .top) {
-            if let emptyState {
-                WebViewEmptyStateHeader(
-                    style: emptyState.style,
-                    server: server,
-                    isLoading: isLoading,
-                    showsServerSelection: emptyState.style.showsServerPicker
-                        && Current.servers.all.count > 1
-                        && !Current.isCatalyst,
-                    showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
-                    settingsAction: emptyState.settingsAction,
-                    serverSelectionAction: selectServer,
-                    dismissAction: emptyState.dismissAction
-                )
-                .opacity(contentOpacity)
+        #endif
+            .background(Color(uiColor: .systemBackground))
+            .overlay(alignment: .topLeading) {
+                delayedSettingsButton
             }
-        }
-        .safeAreaInset(edge: .bottom) {
-            if let emptyState {
-                WebViewEmptyStateActionButtons(
-                    style: emptyState.style,
-                    availableReauthURLTypes: emptyState.availableReauthURLTypes,
-                    showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
-                    retryAction: emptyState.retryAction,
-                    settingsAction: emptyState.settingsAction,
-                    errorDetailsAction: emptyState.errorDetailsAction,
-                    reauthAction: emptyState.reauthAction,
-                    clientCertificateAction: emptyState.clientCertificateAction
-                )
-                .opacity(contentOpacity)
-            } else if showsCleanCacheAndReloadButton {
-                cleanCacheButton
-                    .transition(.opacity)
+            .safeAreaInset(edge: .top) {
+                if let emptyState {
+                    WebViewEmptyStateHeader(
+                        style: emptyState.style,
+                        server: server,
+                        isLoading: isLoading,
+                        showsServerSelection: emptyState.style.showsServerPicker
+                            && Current.servers.all.count > 1
+                            && !Current.isCatalyst,
+                        showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
+                        settingsAction: emptyState.settingsAction,
+                        serverSelectionAction: selectServer,
+                        dismissAction: emptyState.dismissAction
+                    )
+                    .opacity(contentOpacity)
+                }
             }
-        }
-        .animation(contentFadeAnimation, value: standByContentOpacity)
-        .animation(contentFadeAnimation, value: showsEmptyState)
-        .onAppear {
-            withAnimation(contentFadeAnimation) {
-                hasAppeared = true
-                showsEmptyStateContent = emptyState != nil
+            .safeAreaInset(edge: .bottom) {
+                if let emptyState {
+                    WebViewEmptyStateActionButtons(
+                        style: emptyState.style,
+                        availableReauthURLTypes: emptyState.availableReauthURLTypes,
+                        showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
+                        retryAction: emptyState.retryAction,
+                        settingsAction: emptyState.settingsAction,
+                        errorDetailsAction: emptyState.errorDetailsAction,
+                        reauthAction: emptyState.reauthAction,
+                        clientCertificateAction: emptyState.clientCertificateAction
+                    )
+                    .opacity(contentOpacity)
+                } else if showsCleanCacheAndReloadButton {
+                    cleanCacheButton
+                        .transition(.opacity)
+                }
             }
-        }
-        .onChange(of: emptyState != nil, perform: handleEmptyStateChange)
-        .task(id: showsEmptyState, restoreAnimatedLogoIfNeeded)
-        .onReceive(
-            NotificationCenter.default
-                .publisher(for: Current.connectivity.connectivityDidChangeNotification())
-        ) { _ in
-            networkType = Current.connectivity.simpleNetworkType()
-        }
-        // `$phase` replays its current value on subscription, so when the splash already finished
-        // (server switches, reloads) the pill fades in immediately on appear.
-        .onReceive(LaunchSplashOverlayState.shared.$phase, perform: fadeInServerPillIfNeeded)
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            guard !showsEmptyState else { return }
-            showsDelayedSettingsButton = false
-            showsCleanCacheButton = false
-            loaderCountdownRestartToken += 1
-        }
-        .task(
-            id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)],
-            runDelayedButtonsCountdown
-        )
+            .animation(contentFadeAnimation, value: standByContentOpacity)
+            .animation(contentFadeAnimation, value: showsEmptyState)
+            .onAppear {
+                withAnimation(contentFadeAnimation) {
+                    hasAppeared = true
+                    showsEmptyStateContent = emptyState != nil
+                }
+            }
+            .onChange(of: emptyState != nil, perform: handleEmptyStateChange)
+            .task(id: showsEmptyState, restoreAnimatedLogoIfNeeded)
+            .onReceive(
+                NotificationCenter.default
+                    .publisher(for: Current.connectivity.connectivityDidChangeNotification())
+            ) { _ in
+                networkType = Current.connectivity.simpleNetworkType()
+            }
+            // `$phase` replays its current value on subscription, so when the splash already finished
+            // (server switches, reloads) the pill fades in immediately on appear.
+            .onReceive(LaunchSplashOverlayState.shared.$phase, perform: fadeInServerPillIfNeeded)
+            .onReceive(NotificationCenter.default.publisher(for: AppLifecycle.willEnterForegroundNotification)) { _ in
+                guard !showsEmptyState else { return }
+                showsDelayedSettingsButton = false
+                showsCleanCacheButton = false
+                loaderCountdownRestartToken += 1
+            }
+            .task(
+                id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)],
+                runDelayedButtonsCountdown
+            )
     }
 
     private func handleEmptyStateChange(_ showsEmptyState: Bool) {
@@ -362,7 +363,7 @@ struct HomeAssistantStandByView: View {
 
     @ViewBuilder
     private var currentServerPill: some View {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, *) {
             GlassEffectContainer {
                 currentServerPillContent
             }
@@ -390,7 +391,7 @@ struct HomeAssistantStandByView: View {
             }
             .buttonStyle(.plain)
             .modify { view in
-                if #available(iOS 18.0, *), let serverSelectionNamespace {
+                if #available(iOS 18.0, macOS 15.0, *), let serverSelectionNamespace {
                     view.matchedTransitionSource(id: Self.serverSelectionTransitionID, in: serverSelectionNamespace)
                 } else {
                     view
@@ -409,7 +410,7 @@ struct HomeAssistantStandByView: View {
             .padding(.horizontal, DesignSystem.Spaces.two)
             .frame(height: Self.serverPillHeight)
             .modify { view in
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, macOS 26.0, *) {
                     view
                         .glassEffect(.regular.interactive(), in: .capsule)
                         .contentShape(Capsule())
@@ -428,7 +429,7 @@ struct HomeAssistantStandByView: View {
                 .foregroundStyle(Color.haPrimary)
                 .frame(width: Self.serverPillHeight, height: Self.serverPillHeight)
                 .modify { view in
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         view
                             .frame(
                                 width: Self.connectionTypeIndicatorSize.width,
@@ -485,7 +486,7 @@ struct HomeAssistantStandByView: View {
     }
 
     private func showConnectionTypeToast() {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ToastPresenter.shared.show(
                 id: Self.connectionTypeToastID,
                 symbol: connectionTypeIndicatorIcon,
@@ -533,7 +534,7 @@ struct HomeAssistantStandByView: View {
             .rotationEffect(.degrees(-45))
             .padding(DesignSystem.Spaces.one)
             .modify { view in
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, macOS 26.0, *) {
                     view
                         .glassEffect(.regular.interactive(), in: .circle)
                         .contentShape(.circle)

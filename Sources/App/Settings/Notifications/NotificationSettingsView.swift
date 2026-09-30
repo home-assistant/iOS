@@ -11,7 +11,7 @@ struct NotificationSettingsView: View {
     @StateObject private var viewModel = NotificationSettingsViewModel()
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: .bellIcon,
                 title: L10n.SettingsDetails.Notifications.title,
@@ -40,7 +40,7 @@ struct NotificationSettingsView: View {
             viewModel.refreshPermissionStatus()
         }
         .onReceive(
-            NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            NotificationCenter.default.publisher(for: AppLifecycle.didBecomeActiveNotification)
         ) { _ in
             viewModel.refreshPermissionStatus()
             viewModel.refreshBadgeCount()
@@ -114,8 +114,7 @@ struct NotificationSettingsView: View {
     private var badgeSection: some View {
         Section {
             Button {
-                UIApplication.shared.applicationIconBadgeNumber = 0
-                viewModel.refreshBadgeCount()
+                viewModel.clearBadge()
             } label: {
                 HStack {
                     Text(L10n.SettingsDetails.Notifications.BadgeSection.Button.title)
@@ -198,8 +197,22 @@ final class NotificationSettingsViewModel: ObservableObject {
     }
 
     func refreshBadgeCount() {
+        #if os(macOS)
+        // The Dock tile carries the badge as the text it shows.
+        let value = NSApp.dockTile.badgeLabel.flatMap { Int($0) } ?? 0
+        #else
         let value = UIApplication.shared.applicationIconBadgeNumber
+        #endif
         badgeCountText = NumberFormatter.localizedString(from: NSNumber(value: value), number: .decimal)
+    }
+
+    func clearBadge() {
+        #if os(macOS)
+        NSApp.dockTile.badgeLabel = nil
+        #else
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        #endif
+        refreshBadgeCount()
     }
 
     func refreshPermissionStatus() {

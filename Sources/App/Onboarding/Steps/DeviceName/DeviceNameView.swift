@@ -44,6 +44,8 @@ struct DeviceNameView: View {
         .onAppear {
             #if DEBUG
             deviceName = "Simulator \(UUID().uuidString.prefix(4))"
+            #elseif os(macOS)
+            deviceName = Current.device.deviceName()
             #else
             deviceName = UIDevice.current.name
             #endif

@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import WidgetKit
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct TodoItemCompleteAppIntent: AppIntent {
     static var title: LocalizedStringResource = "widgets.todo_list.complete_item_title"
     static var isDiscoverable: Bool = false

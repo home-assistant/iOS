@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import Shared
@@ -19,3 +20,4 @@ final class CarPlayNoServerAlert {
         interfaceController?.presentTemplate(alertTemplate, animated: true, completion: nil)
     }
 }
+#endif

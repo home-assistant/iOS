@@ -7,7 +7,7 @@ import WidgetKit
 ///
 /// Not discoverable: it exists to be the intent behind the widget's own arrows, and carries the
 /// widget's server, family and page count because the intent runs outside the view that knows them.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetAreasPageAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.areas.page.title",

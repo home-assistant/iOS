@@ -7,7 +7,7 @@ import Shared
 /// `todo.update_item` replaces the fields it is given, so anything the caller left out is refilled
 /// from the item as it stands. Moving an item between lists, flags, tags, URLs, recurrence and
 /// location triggers have no equivalent in the `todo` domain and are ignored.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppIntent(schema: .reminders.updateReminder)
 struct UpdateReminderSchemaIntent {
     var target: ReminderSchemaEntity

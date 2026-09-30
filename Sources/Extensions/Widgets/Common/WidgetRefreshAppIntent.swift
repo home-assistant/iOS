@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import WidgetKit
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetRefreshAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.refresh_title",

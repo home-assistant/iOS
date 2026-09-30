@@ -16,6 +16,7 @@ final class MockAppCoordinator: AppCoordinator {
     private(set) var selectServerCallCount = 0
     private(set) var selectServerZoomedFromStandBy = false
     private(set) var presentedViewControllers: [UIViewController] = []
+    private(set) var presentedAlerts: [AppAlert] = []
     var onPresent: ((UIViewController) -> Void)?
     var onOpenDeeplink: ((String) -> Void)?
     var onSelectServer: (() -> Void)?
@@ -30,6 +31,10 @@ final class MockAppCoordinator: AppCoordinator {
         presentedViewControllers.append(viewController)
         completion?()
         onPresent?(viewController)
+    }
+
+    func present(alert: AppAlert) {
+        presentedAlerts.append(alert)
     }
 
     func show(alert: ServerAlert) {}

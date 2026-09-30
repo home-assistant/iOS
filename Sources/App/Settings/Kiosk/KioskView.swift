@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 struct KioskView: View {
     @StateObject private var screensaver = KioskScreensaverController()

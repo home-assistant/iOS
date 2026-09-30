@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(WatchConnectivity)
 import WatchConnectivity
+#endif
 
 extension WatchConnectivityManager {
     // MARK: Internal receive entry points (testable without concrete WCSession types)
@@ -43,6 +45,9 @@ extension WatchConnectivityManager {
     }
 }
 
+#if !canImport(WatchConnectivity)
+extension WatchConnectivityManager: WCSessionDelegate {}
+#else
 extension WatchConnectivityManager: WCSessionDelegate {
     public func session(
         _ session: WCSession,
@@ -54,7 +59,7 @@ extension WatchConnectivityManager: WCSessionDelegate {
         }
         notifyState()
         notifyReachability()
-        #if os(iOS)
+        #if !os(watchOS)
         notifyWatchState()
         #endif
     }
@@ -63,7 +68,7 @@ extension WatchConnectivityManager: WCSessionDelegate {
         notifyReachability()
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public func sessionDidBecomeInactive(_ session: WCSession) {
         notifyState()
     }
@@ -125,8 +130,9 @@ extension WatchConnectivityManager: WCSessionDelegate {
                 "WatchConnectivity guaranteed message \(identifier) failed permanently: \(error.localizedDescription)"
             )
         }
-        #if os(iOS)
+        #if !os(watchOS)
         resolveComplicationTransfer(userInfoTransfer, error: error)
         #endif
     }
 }
+#endif

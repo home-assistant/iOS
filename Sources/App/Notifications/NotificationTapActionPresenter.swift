@@ -1,6 +1,10 @@
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UserNotifications
 
 /// Offers a notification's actions when the user taps it rather than pressing and holding to reveal them.
@@ -94,6 +98,82 @@ final class NotificationTapActionPresenter {
         return true
     }
 
+    #if os(macOS)
+    /// The alert listing `actions`, headed by the notification itself so it stays obvious which one is
+    /// being acted on.
+    func makeAlert(
+        for actions: [NotificationAction],
+        content: UNNotificationContent,
+        server: Server
+    ) -> AppAlert {
+        var alertActions: [AppAlert.Action] = actions.map { action in
+            AppAlert.Action(
+                title: action.title,
+                style: action.destructive ? .destructive : .default,
+                handler: { [weak self] in
+                    self?.select(action, content: content, server: server)
+                }
+            )
+        }
+
+        alertActions.append(AppAlert.Action(title: L10n.cancelLabel, style: .cancel))
+
+        return AppAlert(
+            title: content.title.isEmpty ? L10n.NotificationTapActions.title : content.title,
+            message: content.body.isEmpty ? nil : content.body,
+            actions: alertActions
+        )
+    }
+
+    /// A text-input action needs to know what to send before it can run, so it gets a second alert to
+    /// type into; everything else runs straight away.
+    func select(_ action: NotificationAction, content: UNNotificationContent, server: Server) {
+        guard action.textInput else {
+            perform(action, content: content, server: server, textInput: nil)
+            return
+        }
+
+        // The alert this was picked from is still closing, so the reply alert waits for the next run loop
+        // turn to take its place on the window.
+        DispatchQueue.main.async { [weak self] in
+            Current.sceneManager.appCoordinator.done { coordinator in
+                self?.presentTextInputAlert(for: action, content: content, server: server, on: coordinator.window)
+            }
+        }
+    }
+
+    /// The reply alert for a text-input action, matching the field the system would have shown under the
+    /// notification: the action's own placeholder and send button. An empty reply is still a reply — the
+    /// system's own response path forwards it (`UNTextInputNotificationResponse.userText` is
+    /// non-optional), so swallowing it here would lose an event the user asked to send.
+    private func presentTextInputAlert(
+        for action: NotificationAction,
+        content: UNNotificationContent,
+        server: Server,
+        on window: NSWindow?
+    ) {
+        let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 260, height: 22))
+        textField.placeholderString = action.textInputPlaceholder
+
+        let alert = NSAlert()
+        alert.messageText = action.title
+        alert.accessoryView = textField
+        alert.addButton(withTitle: action.textInputButtonTitle)
+        alert.addButton(withTitle: L10n.cancelLabel).keyEquivalent = "\u{1b}"
+        alert.window.initialFirstResponder = textField
+
+        let handle: (NSApplication.ModalResponse) -> Void = { [weak self] response in
+            guard response == .alertFirstButtonReturn else { return }
+            self?.perform(action, content: content, server: server, textInput: textField.stringValue)
+        }
+
+        if let window {
+            alert.beginSheetModal(for: window, completionHandler: handle)
+        } else {
+            handle(alert.runModal())
+        }
+    }
+    #else
     /// The alert listing `actions`, headed by the notification itself so it stays obvious which one is
     /// being acted on.
     func makeAlert(
@@ -169,6 +249,7 @@ final class NotificationTapActionPresenter {
     ) {
         perform(action, content: content, server: server, textInput: alert?.textFields?.first?.text ?? "")
     }
+    #endif
 
     /// Runs `action` as if the user had picked it from the notification itself: whatever URL it carries
     /// is opened, and Home Assistant hears which action fired, along with anything typed for it.
@@ -199,7 +280,13 @@ final class NotificationTapActionPresenter {
         }
     }
 
+    #if os(macOS)
+    private func present(_ alert: AppAlert) {
+        Current.sceneManager.appCoordinator.done { $0.present(alert: alert) }
+    }
+    #else
     private func present(_ alert: UIAlertController) {
         Current.sceneManager.appCoordinator.done { $0.present(alert) }
     }
+    #endif
 }

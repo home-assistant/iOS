@@ -1,4 +1,4 @@
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 
 class HACoreAudioObjectDevice: HACoreAudioObject {
     var deviceUID: String? {

@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct HACalendarEventAppEntityQuery: EntityQuery, EntityStringQuery {
     /// How far ahead the picker looks. Home Assistant only answers windowed queries, so the options
     /// need a bound; a month matches what the debug calendar screen fetches at a time.

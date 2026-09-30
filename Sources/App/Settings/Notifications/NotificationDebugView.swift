@@ -18,7 +18,7 @@ struct NotificationDebugView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             Section {
                 NavigationLink {
                     NotificationRateLimitView(initialPromise: ratePromise) { response in
@@ -41,21 +41,23 @@ struct NotificationDebugView: View {
                     Text(L10n.SettingsDetails.Location.Notifications.header)
                 }
 
+                #if os(macOS)
+                if let pushID = viewModel.pushID {
+                    ShareLink(item: pushID) {
+                        pushIDLabel
+                    }
+                } else {
+                    pushIDLabel
+                }
+                #else
                 Button {
                     guard let id = viewModel.pushID else { return }
                     shareItems = [id]
                     showShareSheet = true
                 } label: {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                        Text(L10n.SettingsDetails.Notifications.PushIdSection.header)
-                            .foregroundColor(.primary)
-                        Text(viewModel.pushIDDisplay)
-                            .foregroundColor(.secondary)
-                            .font(.footnote)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                    }
+                    pushIDLabel
                 }
+                #endif
 
                 Button {
                     viewModel.resetPushID { result in
@@ -86,15 +88,29 @@ struct NotificationDebugView: View {
                 ratePromise = promise
             }
         }
+        #if !os(macOS)
         .sheet(isPresented: $showShareSheet) {
             NotificationsShareSheet(activityItems: shareItems)
         }
+        #endif
         .alert(item: $resetAlert) { info in
             Alert(
                 title: Text(info.title),
                 message: Text(info.message),
                 dismissButton: .default(Text(L10n.okLabel))
             )
+        }
+    }
+
+    private var pushIDLabel: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+            Text(L10n.SettingsDetails.Notifications.PushIdSection.header)
+                .foregroundColor(.primary)
+            Text(viewModel.pushIDDisplay)
+                .foregroundColor(.secondary)
+                .font(.footnote)
+                .lineLimit(1)
+                .truncationMode(.middle)
         }
     }
 }

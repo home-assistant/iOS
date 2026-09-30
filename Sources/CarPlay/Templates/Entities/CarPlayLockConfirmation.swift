@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -114,3 +115,4 @@ enum CarPlayLockConfirmation {
         interfaceController?.presentTemplate(alert, animated: true, completion: nil)
     }
 }
+#endif

@@ -22,11 +22,10 @@ public enum WidgetEnergyPalette {
     /// Gas consumption. The frontend's `--energy-gas-color` (#8e021b) is a near-black red that only
     /// ever sits on a light dashboard; the widget draws it as label-sized text on either appearance,
     /// so dark mode gets a lightened variant rather than a figure that disappears into the card.
-    public static let gas = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.902, green: 0.318, blue: 0.376, alpha: 1)
-            : UIColor(red: 0.557, green: 0.008, blue: 0.106, alpha: 1)
-    })
+    public static let gas = Color(uiColor: .dynamic(
+        light: UIColor(red: 0.557, green: 0.008, blue: 0.106, alpha: 1),
+        dark: UIColor(red: 0.902, green: 0.318, blue: 0.376, alpha: 1)
+    ))
 
     /// Unit symbol for energy, sourced from Foundation rather than hardcoded.
     public static let energyUnit = UnitEnergy.kilowattHours.symbol

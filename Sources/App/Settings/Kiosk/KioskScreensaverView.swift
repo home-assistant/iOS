@@ -1,7 +1,6 @@
 import Combine
 import Shared
 import SwiftUI
-import UIKit
 
 struct KioskScreensaverView: View {
     let settings: KioskScreensaverSettings
@@ -173,13 +172,13 @@ final class KioskScreensaverController: ObservableObject {
             .sink { [weak self] in self?.apply($0) }
             .store(in: &cancellables)
 
-        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+        NotificationCenter.default.publisher(for: AppLifecycle.didBecomeActiveNotification)
             .sink { [weak self] _ in
                 self?.restartIdleTimer()
                 self?.updateBrightness()
             }
             .store(in: &cancellables)
-        NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)
+        NotificationCenter.default.publisher(for: AppLifecycle.willResignActiveNotification)
             .sink { [weak self] _ in
                 self?.idleTimer?.invalidate()
                 self?.restoreBrightness()
@@ -315,7 +314,7 @@ final class KioskScreensaverController: ObservableObject {
 
     private var shouldDimBrightness: Bool {
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        UIApplication.shared.applicationState == .active &&
+        ApplicationState.current == .active &&
             isEnabled &&
             isActive &&
             screensaver.dimEnabled &&
@@ -356,6 +355,47 @@ extension KioskScreensaverController: MotionDetectionObserver {
     }
 }
 
+#if os(macOS)
+/// Reports every click, drag, scroll and key press in its window: what touching the screen is on a Mac.
+struct KioskActivityDetector: NSViewRepresentable {
+    let onActivity: () -> Void
+
+    func makeNSView(context: Context) -> NSView {
+        let view = ActivityDetectingView()
+        view.onActivity = onActivity
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        (nsView as? ActivityDetectingView)?.onActivity = onActivity
+    }
+}
+
+private final class ActivityDetectingView: NSView {
+    var onActivity: (() -> Void)?
+    private var eventMonitor: Any?
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+
+        if let eventMonitor {
+            NSEvent.removeMonitor(eventMonitor)
+            self.eventMonitor = nil
+        }
+
+        guard window != nil else { return }
+        // The events are only watched on their way to whatever handles them, never consumed.
+        eventMonitor = NSEvent.addLocalMonitorForEvents(
+            matching: [.leftMouseDown, .rightMouseDown, .otherMouseDown, .leftMouseDragged, .scrollWheel, .keyDown]
+        ) { [weak self] event in
+            if let self, event.window === window {
+                onActivity?()
+            }
+            return event
+        }
+    }
+}
+#else
 struct KioskActivityDetector: UIViewRepresentable {
     let onActivity: () -> Void
 
@@ -414,3 +454,4 @@ private final class AnyTouchRecognizer: UIGestureRecognizer {
         onTouch?()
     }
 }
+#endif

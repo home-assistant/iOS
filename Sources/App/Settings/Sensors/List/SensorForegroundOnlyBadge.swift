@@ -12,7 +12,7 @@ struct SensorForegroundOnlyBadge: View {
             .foregroundStyle(.secondary)
             .padding(.horizontal, DesignSystem.Spaces.one)
             .padding(.vertical, DesignSystem.Spaces.micro)
-            .background(Color(uiColor: .tertiarySystemFill), in: Capsule())
+            .background(Color(uiColor: .tertiaryFill), in: Capsule())
             // Keeps its shape next to a state description that wants the width.
             .fixedSize()
             .accessibilityLabel(L10n.SettingsSensors.Sensors.ForegroundOnly.accessibilityLabel)

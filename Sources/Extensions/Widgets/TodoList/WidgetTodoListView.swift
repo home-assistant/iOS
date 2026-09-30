@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetTodoListView: View {
     @Environment(\.widgetFamily) private var widgetFamily
     private static let minuteFormatter: DateComponentsFormatter = {
@@ -151,7 +151,7 @@ struct WidgetTodoListView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 private enum WidgetTodoListPreviewSample {
     /// A mix of the three row shapes: no due date, one still to come, and one already past — which
     /// is the only one drawn in orange.
@@ -189,14 +189,14 @@ private enum WidgetTodoListPreviewSample {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Medium", as: .systemMedium, widget: {
     WidgetTodoList()
 }, timeline: {
     WidgetTodoListPreviewSample.entry(family: .systemMedium)
 })
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Small", as: .systemSmall, widget: {
     WidgetTodoList()
 }, timeline: {
@@ -204,7 +204,7 @@ private enum WidgetTodoListPreviewSample {
 })
 
 // No list picked yet: the prompt rather than the list.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Not configured", as: .systemMedium, widget: {
     WidgetTodoList()
 }, timeline: {

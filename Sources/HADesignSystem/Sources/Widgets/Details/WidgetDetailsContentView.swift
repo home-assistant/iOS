@@ -26,7 +26,7 @@ public struct WidgetDetailsContentView: View {
     }
 
     public var body: some View {
-        if family == .accessoryRectangular {
+        if family.isAccessoryRectangular {
             VStack(alignment: .leading) {
                 if let upperText {
                     Text(verbatim: upperText)
@@ -62,6 +62,7 @@ public struct WidgetDetailsContentView: View {
     }
 }
 
+#if !os(macOS)
 #Preview {
     WidgetDetailsContentView(
         upperText: "Living room",
@@ -71,4 +72,5 @@ public struct WidgetDetailsContentView: View {
     )
     .padding()
 }
+#endif
 #endif

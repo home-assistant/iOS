@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 import Shared
 
@@ -14,3 +15,4 @@ extension CarPlayQuickAccessTemplate {
         )
     }
 }
+#endif

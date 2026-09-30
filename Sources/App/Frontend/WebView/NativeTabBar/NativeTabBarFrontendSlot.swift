@@ -1,6 +1,6 @@
+#if os(iOS)
 import Shared
 import SwiftUI
-import UIKit
 
 /// Hosts the single web frontend inside a tab.
 struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
@@ -92,3 +92,4 @@ struct NativeTabBarFrontendSlot: UIViewControllerRepresentable {
         }
     }
 }
+#endif

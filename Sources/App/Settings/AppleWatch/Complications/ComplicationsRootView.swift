@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 import UIKit
@@ -150,3 +151,4 @@ extension ComplicationsRootView: SettingsScreenSearchable {
         ]
     }
 }
+#endif

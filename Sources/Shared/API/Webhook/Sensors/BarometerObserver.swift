@@ -1,3 +1,4 @@
+#if !os(macOS)
 import CoreMotion
 import Foundation
 
@@ -94,3 +95,4 @@ public final class BarometerObserver {
         }
     }
 }
+#endif

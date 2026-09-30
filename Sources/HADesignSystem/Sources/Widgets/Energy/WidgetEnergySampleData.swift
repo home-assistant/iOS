@@ -96,7 +96,7 @@ public enum WidgetEnergySampleData {
     /// Every series a dashboard can put on the widget, for the layouts that have to survive a home
     /// with all four. Battery reads the way the dashboard's total does — discharge positive — and
     /// gas carries its own unit rather than kWh, because a gas meter usually measures volume.
-    @available(iOS 17, *)
+    @available(iOS 17, macOS 14, *)
     public static var allSourceStats: [WidgetEnergyStatModel] {
         let batteryNet = batteryChartPoints.reduce(0) { $0 + $1.batteryDischarged - $1.batteryCharged }
         return stats + [

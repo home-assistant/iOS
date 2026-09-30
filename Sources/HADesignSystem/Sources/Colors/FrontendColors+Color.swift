@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import UIKit
 
 public extension FrontendColors {
     /// The resolved color for the light (default) theme, if the CSS value can be parsed.
@@ -132,9 +131,7 @@ private extension FrontendColors {
         #else
         let lightColor = light ?? dark ?? .clear
         let darkColor = dark ?? light ?? .clear
-        return Color(UIColor { traits in
-            traits.userInterfaceStyle == .dark ? UIColor(darkColor) : UIColor(lightColor)
-        })
+        return Color(UIColor.dynamic(light: UIColor(lightColor), dark: UIColor(darkColor)))
         #endif
     }
 

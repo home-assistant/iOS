@@ -1,3 +1,6 @@
+// The complication render models, and the content views that draw them, are not built for the Mac, where
+// no widget mirrors a watch complication.
+#if !os(macOS)
 import HAWatchComplications
 import Shared
 
@@ -7,7 +10,7 @@ import Shared
 /// Deliberately a field-for-field mirror of the in-app editor's `RectangularComplicationPreview` /
 /// `CircularComplicationPreview` — the widgets render through the exact same content views, so if the
 /// two mappings drift the lock screen stops matching the watch.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 extension ComplicationRenderContext {
     var rectangularRenderModel: RectangularComplicationRenderModel {
         RectangularComplicationRenderModel(
@@ -50,3 +53,4 @@ extension ComplicationRenderContext {
         )
     }
 }
+#endif

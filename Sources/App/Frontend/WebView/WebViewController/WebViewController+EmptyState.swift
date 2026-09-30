@@ -1,7 +1,6 @@
 import Alamofire
 import Shared
 import SwiftUI
-import UIKit
 
 // MARK: - Empty State
 
@@ -128,7 +127,7 @@ extension WebViewController {
     func presentLatestLoadErrorDetails() {
         guard let latestLoadError else { return }
         presentOverlayController(
-            controller: UIHostingController(rootView: ConnectionErrorDetailsView(
+            controller: PlatformHostingController(rootView: ConnectionErrorDetailsView(
                 server: server,
                 error: latestLoadError
             )),

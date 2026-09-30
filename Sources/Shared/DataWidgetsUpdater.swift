@@ -17,7 +17,8 @@ public enum DataWidgetsUpdater {
     }
 
     public static func updateControlCenterControls() {
-        if #available(iOS 18.0, *) {
+        // Controls reached the Mac a year after iOS.
+        if #available(iOS 18.0, macOS 26.0, *) {
             ControlCenter.shared.reloadAllControls()
         }
     }

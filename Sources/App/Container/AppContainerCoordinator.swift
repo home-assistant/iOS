@@ -2,7 +2,6 @@ import Foundation
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 
 /// App coordinator for the primary web view, owned by `ContainerView` — the SwiftUI replacement for
 /// `WebViewWindowController`'s presentation duties. It drives the active `WebFrontend` (published by the
@@ -52,8 +51,34 @@ final class AppContainerCoordinator: AppCoordinator {
         seals.forEach { $0(frontend) }
     }
 
-    var window: UIWindow? { frontend?.presentationWindow }
+    var window: PlatformWindow? { frontend?.presentationWindow }
 
+    #if os(macOS)
+    /// The controller every presentation of this window hangs off: the window's own content controller,
+    /// or the frontmost window's when the frontend is not on screen yet.
+    private var presentationRoot: NSViewController? {
+        (window ?? NSApp.keyWindow ?? NSApp.mainWindow)?.contentViewController
+    }
+
+    var presentedViewController: NSViewController? {
+        var current = presentationRoot
+        while let next = current?.presentedSheets.last {
+            current = next.sheetContentController
+        }
+        return current
+    }
+
+    func present(_ viewController: NSViewController, animated: Bool, completion: (() -> Void)?) {
+        presentedViewController?.presentSheet(viewController)
+        completion?()
+    }
+
+    func present(alert: AppAlert) {
+        // An alert goes on whichever window is showing on top of this one's content: a sheet that is up
+        // is a window of its own, and the alert belongs on it rather than behind it.
+        alert.present(on: window?.attachedSheet ?? window ?? NSApp.keyWindow)
+    }
+    #else
     /// The controller every presentation of this scene hangs off. Falls back to the active scene's key
     /// window because a full-screen presentation detaches the frontend's own view, which would otherwise
     /// leave us with no way to reach — or clear — what is on screen.
@@ -78,6 +103,11 @@ final class AppContainerCoordinator: AppCoordinator {
     func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
         presentedViewController?.present(viewController, animated: animated, completion: completion)
     }
+
+    func present(alert: AppAlert) {
+        present(alert.makeAlertController())
+    }
+    #endif
 
     func show(alert: ServerAlert) {
         frontend?.show(alert: alert)
@@ -167,9 +197,19 @@ final class AppContainerCoordinator: AppCoordinator {
 
         // Dismissing from the root tears down the whole presentation chain, SwiftUI sheets included. The
         // frontend's own overlays are the fallback for a link handled before there is a scene root.
+        #if os(macOS)
+        if let root = presentationRoot, !root.presentedSheets.isEmpty {
+            root.dismissPresentedSheets()
+            completion?()
+            return
+        }
+        #else
         if let root = presentationRoot, root.presentedViewController != nil {
             root.dismiss(animated: true, completion: completion)
-        } else if let frontend {
+            return
+        }
+        #endif
+        if let frontend {
             frontend.dismissOverlayController(animated: true, completion: completion)
         } else {
             completion?()
@@ -301,17 +341,17 @@ final class AppContainerCoordinator: AppCoordinator {
             return
         }
 
-        let alert = UIAlertController(
+        present(alert: AppAlert(
             title: L10n.Alerts.OpenUrlFromNotification.title,
             message: from.message(with: openUrlRaw),
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: L10n.alwaysOpenLabel, style: .default) { _ in
-            prefs.set(false, forKey: "confirmBeforeOpeningUrl")
-            triggerOpen()
-        })
-        alert.addAction(UIAlertAction(title: L10n.openLabel, style: .default) { _ in triggerOpen() })
-        present(alert)
+            actions: [
+                .init(title: L10n.cancelLabel, style: .cancel),
+                .init(title: L10n.alwaysOpenLabel) {
+                    prefs.set(false, forKey: "confirmBeforeOpeningUrl")
+                    triggerOpen()
+                },
+                .init(title: L10n.openLabel) { triggerOpen() },
+            ]
+        ))
     }
 }

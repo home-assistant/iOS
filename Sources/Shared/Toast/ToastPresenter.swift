@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// Example:
 /// ```swift
-/// if #available(iOS 18, *) {
+/// if #available(iOS 18, macOS 15, *) {
 ///     ToastPresenter.shared.show(
 ///         id: "my-toast",
 ///         symbol: .checkmarkSealFill,
@@ -17,7 +17,7 @@ import SwiftUI
 ///     )
 /// }
 /// ```
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 @MainActor
 public final class ToastPresenter: ObservableObject {
     public static let shared = ToastPresenter()

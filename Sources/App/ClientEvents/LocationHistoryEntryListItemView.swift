@@ -15,10 +15,14 @@ struct LocationHistoryEntryListItemView: View {
 
     var body: some View {
         NavigationLink {
+            #if os(macOS)
+            LocationHistoryDetailView(currentEntry: entry)
+            #else
             LocationHistoryDetailViewControllerWrapper(
                 currentEntry: entry
             )
             .edgesIgnoringSafeArea([.top, .bottom])
+            #endif
         } label: {
             VStack(alignment: .leading) {
                 Text(dateFormatter.string(from: entry.createdAt))

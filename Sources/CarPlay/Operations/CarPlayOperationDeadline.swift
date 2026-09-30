@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 import Shared
 
@@ -87,3 +88,4 @@ final class CarPlayOperationDeadline {
         report = nil
     }
 }
+#endif

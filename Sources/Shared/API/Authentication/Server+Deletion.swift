@@ -1,4 +1,4 @@
-#if os(iOS)
+#if !os(watchOS)
 import Foundation
 import HAKit
 import HANetworking

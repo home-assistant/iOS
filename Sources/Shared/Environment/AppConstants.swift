@@ -1,6 +1,10 @@
 import Foundation
 import KeychainAccess
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Contains shared constants
 public enum AppConstants {
@@ -53,12 +57,10 @@ public enum AppConstants {
 
     /// Home Assistant Blue
     public static var tintColor: UIColor {
-        #if os(iOS)
-        return UIColor { [lighterTintColor, darkerTintColor] (traitCollection: UITraitCollection) -> UIColor in
-            traitCollection.userInterfaceStyle == .dark ? lighterTintColor : darkerTintColor
-        }
-        #else
+        #if os(watchOS)
         return lighterTintColor
+        #else
+        return .dynamic(light: darkerTintColor, dark: lighterTintColor)
         #endif
     }
 

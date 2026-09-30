@@ -4,14 +4,14 @@ import GeoToolbox
 
 /// The union the calendar schema expects for an event's location. Home Assistant stores a plain
 /// string, so `.text` is the case it ever produces; the place case exists to satisfy the shape.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @UnionValue
 enum EventLocationCases {
     case place(PlaceDescriptor)
     case text(String)
 }
 
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 extension EventLocationCases {
     /// Home Assistant stores a location as a free string, so a structured place is flattened to
     /// its name rather than dropped.

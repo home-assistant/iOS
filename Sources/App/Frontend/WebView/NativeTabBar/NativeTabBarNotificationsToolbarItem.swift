@@ -1,8 +1,9 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
 /// The notifications bell, badged with the unread count, at the trailing end of a tab's bar.
-@available(iOS 26, *)
+@available(iOS 26, macOS 26, *)
 struct NativeTabBarNotificationsToolbarItem: ToolbarContent {
     private enum Constants {
         static let iconSize = CGSize(width: 24, height: 24)
@@ -28,7 +29,7 @@ struct NativeTabBarNotificationsToolbarItem: ToolbarContent {
     }
 }
 
-@available(iOS 26, *)
+@available(iOS 26, macOS 26, *)
 #Preview {
     let viewModel = NativeTabBarViewModel.preview()
     NavigationStack {
@@ -40,3 +41,4 @@ struct NativeTabBarNotificationsToolbarItem: ToolbarContent {
             }
     }
 }
+#endif

@@ -2,7 +2,6 @@ import Foundation
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 @MainActor
 final class ImportExportConfigurationViewModel: ObservableObject {
@@ -165,7 +164,7 @@ final class ImportExportConfigurationViewModel: ObservableObject {
         message: String? = nil,
         duration: TimeInterval? = nil
     ) {
-        guard #available(iOS 18, *) else { return }
+        guard #available(iOS 18, macOS 15, *) else { return }
         ToastPresenter.shared.show(
             id: Self.toastID,
             symbol: symbol,

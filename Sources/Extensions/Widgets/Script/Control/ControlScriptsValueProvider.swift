@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlScriptItem {
     let intentScriptEntity: IntentScriptEntity
     let icon: SFSymbolEntity
@@ -11,7 +11,7 @@ struct ControlScriptItem {
     let displayText: String?
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlScriptsValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlScriptsConfiguration) async throws -> ControlScriptItem {
         .init(
@@ -56,7 +56,7 @@ struct ControlScriptsValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlScriptsConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init("widgets.scripts.description", defaultValue: "Run Script")
 

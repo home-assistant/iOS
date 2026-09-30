@@ -1,6 +1,10 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 @MainActor
 final class WebViewReconnectManager: ObservableObject {
@@ -27,7 +31,7 @@ final class WebViewReconnectManager: ObservableObject {
 
     init(
         configuration: Configuration = .default,
-        isAppActive: @escaping @MainActor () -> Bool = { UIApplication.shared.applicationState == .active },
+        isAppActive: @escaping @MainActor () -> Bool = { ApplicationState.current == .active },
         scheduleTimer: @escaping TimerScheduler = WebViewReconnectManager.defaultScheduleTimer
     ) {
         self.configuration = configuration

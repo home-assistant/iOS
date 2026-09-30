@@ -37,7 +37,7 @@ struct SensorListView: View {
     }()
 
     var body: some View {
-        List {
+        GroupedList {
             if !viewModel.isSearching {
                 if let server = viewModel.server, isServerScoped {
                     AppleLikeListTopRowHeader(
@@ -178,11 +178,15 @@ struct SensorListView: View {
                 }
             }
         }
+        #if os(macOS)
+        .searchable(text: $viewModel.searchTerm, prompt: Text(searchPrompt))
+        #else
         .searchable(
             text: $viewModel.searchTerm,
             placement: .navigationBarDrawer(displayMode: .always),
             prompt: Text(searchPrompt)
         )
+        #endif
         .onAppear {
             permissionsViewModel.update()
             viewModel.refresh()

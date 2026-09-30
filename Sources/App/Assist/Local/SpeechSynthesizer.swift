@@ -43,6 +43,8 @@ final class SpeechSynthesizer: NSObject, SpeechSynthesizerProtocol, AVSpeechSynt
         synthesizer.stopSpeaking(at: .immediate)
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = voice
+        // A Mac has no audio session: the synthesizer speaks through the system output as it is.
+        #if !os(macOS)
         if managesAudioSession {
             do {
                 // The mode has to be named explicitly: it is a session property of its own that
@@ -60,6 +62,7 @@ final class SpeechSynthesizer: NSObject, SpeechSynthesizerProtocol, AVSpeechSynt
                 Current.Log.error("Failed to set audio session category for speech synthesis: \(error)")
             }
         }
+        #endif
         synthesizer.speak(utterance)
     }
 

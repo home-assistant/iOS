@@ -14,6 +14,8 @@ protocol WebRTCClientDelegate: AnyObject {
     func webRTCClient(_ client: WebRTCStreamClient, didReceiveData data: Data)
 }
 
+// The WebRTC build for macOS has no injectable audio device, and no audio session for one to configure.
+#if !os(macOS)
 /// Custom WebRTC audio device that supports playout only and never opens input.
 final class PlaybackOnlyRTCAudioDevice: NSObject, RTCAudioDevice {
     private enum Constants {
@@ -262,13 +264,16 @@ final class PlaybackOnlyRTCAudioDevice: NSObject, RTCAudioDevice {
         )
     }
 }
+#endif
 
 /// WebRTCClient manages a WebRTC peer connection, media tracks, and data channels.
 /// It abstracts the setup and control of a WebRTC session for use in the Home Assistant iOS app.
 ///
 /// - Note: Based on example project from WebRTC iOS SDK https://github.com/stasel/WebRTC
 final class WebRTCClient: NSObject, WebRTCStreamClient {
+    #if !os(macOS)
     private static let playbackOnlyAudioDevice = PlaybackOnlyRTCAudioDevice()
+    #endif
 
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
     // A new RTCPeerConnection should be created every new call, but the factory is shared.
@@ -277,11 +282,20 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         RTCInitializeSSL()
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
         let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
+        #if os(macOS)
+        // WebRTC's own audio device plays through the system output here. It only opens the
+        // microphone for a connection that sends audio, and this one is receive-only.
+        return RTCPeerConnectionFactory(
+            encoderFactory: videoEncoderFactory,
+            decoderFactory: videoDecoderFactory
+        )
+        #else
         return RTCPeerConnectionFactory(
             encoderFactory: videoEncoderFactory,
             decoderFactory: videoDecoderFactory,
             audioDevice: playbackOnlyAudioDevice
         )
+        #endif
     }()
 
     weak var delegate: WebRTCClientDelegate?

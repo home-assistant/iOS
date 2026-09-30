@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 struct HALiveActivityConfiguration: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: HALiveActivityAttributes.self) { context in
@@ -17,7 +17,7 @@ struct HALiveActivityConfiguration: Widget {
     }
 }
 
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 extension View {
     func haLiveActivityLockScreenChrome(
         attributes: HALiveActivityAttributes,
@@ -32,7 +32,7 @@ extension View {
 /// The widget extension can't reliably resolve the server on a physical device, so it forwards
 /// `webhook_id` and `url` for the app to resolve and navigate, instead of resolving here and
 /// bailing the whole tap (url included) on failure.
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 func haLiveActivityTapURL(
     attributes: HALiveActivityAttributes,
     state: HALiveActivityAttributes.ContentState
@@ -56,12 +56,12 @@ func haLiveActivityTapURL(
     return components?.url?.withWidgetAuthenticity()
 }
 
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 func haLiveActivityForegroundColor(for state: HALiveActivityAttributes.ContentState) -> Color? {
     HAActivityVisualStyle.foregroundColor(textColor: state.textColor, onBackground: state.backgroundColor)
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 func haLiveActivitySupplementalForegroundColor(for state: HALiveActivityAttributes.ContentState) -> Color? {
     haLiveActivityForegroundColor(for: state) ?? HAActivityVisualStyle.defaultSupplementalForegroundColor
 }

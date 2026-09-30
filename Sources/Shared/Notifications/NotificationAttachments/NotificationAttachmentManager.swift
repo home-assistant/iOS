@@ -1,7 +1,11 @@
 import Alamofire
 import Foundation
 import PromiseKit
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UniformTypeIdentifiers
 import UserNotifications
 
@@ -52,7 +56,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
                 // we'll try loading in the content extension, no need to decorate the thumbnail
                 throw error
             } else {
-                #if os(iOS)
+                #if !os(watchOS)
                 return try .value(self.attachment(for: error, api: api))
                 #else
                 throw error
@@ -142,7 +146,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
             if case NotificationAttachmentManagerServiceError.noAttachment = error {
                 throw error
             } else {
-                #if os(iOS)
+                #if !os(watchOS)
                 return try .value(self.savedImage(for: error, api: api).0)
                 #else
                 throw error
@@ -189,7 +193,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
         }
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     private func savedImage(
         for error: Error,
         api: HomeAssistantAPI
@@ -210,17 +214,20 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
         for error: Error,
         api: HomeAssistantAPI
     ) throws -> UNNotificationAttachment {
-        let (url, localizedString) = try savedImage(for: error, api: api)
+        let saved = try savedImage(for: error, api: api)
 
         return try with(UNNotificationAttachment(
             identifier: "error",
-            url: url,
+            url: saved.0,
             options: [
                 UNNotificationAttachmentOptionsTypeHintKey: UTType.png.identifier,
             ]
-        )) {
+        )) { attachment in
+            // An attachment has an accessibility label to carry the message in on iOS only.
+            #if os(iOS)
             // note: attachments don't actually support accessibility here (yet?) but this is used also for tests
-            $0.accessibilityLabel = localizedString
+            attachment.accessibilityLabel = saved.1
+            #endif
         }
     }
     #endif

@@ -107,7 +107,7 @@ public struct AppZone: Codable, FetchableRecord, PersistableRecord, Hashable, Id
     }
 
     public var regionsForMonitoring: [CLRegion] {
-        #if os(iOS)
+        #if !os(watchOS)
         if let beaconRegion {
             return [beaconRegion]
         } else {
@@ -125,7 +125,7 @@ public struct AppZone: Codable, FetchableRecord, PersistableRecord, Hashable, Id
         return region
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var beaconRegion: CLBeaconRegion? {
         guard let uuidString = beaconUUID else {
             return nil

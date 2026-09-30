@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 /// Reports whether its traits put the system bars in a vertical column, once per change.
@@ -8,7 +9,7 @@ final class VerticalBarObserverViewController: UIViewController {
     private var lastReported: Bool?
 
     static func hasVerticalBar(in traits: UITraitCollection) -> Bool {
-        guard #available(iOS 27.1, *), traits.responds(to: NSSelectorFromString(verticalBarEdgeKey)) else {
+        guard #available(iOS 27.1, macOS 27.1, *), traits.responds(to: NSSelectorFromString(verticalBarEdgeKey)) else {
             return false
         }
         let edge = traits.value(forKey: verticalBarEdgeKey) as? Int ?? 0
@@ -38,3 +39,4 @@ final class VerticalBarObserverViewController: UIViewController {
         onChange?(value)
     }
 }
+#endif

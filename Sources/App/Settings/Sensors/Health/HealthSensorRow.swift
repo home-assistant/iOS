@@ -11,7 +11,7 @@ struct HealthSensorRow: View {
 
     private var icon: UIImage {
         MaterialDesignIcons(serversideValueNamed: metric.icon)
-            .settingsIcon(for: UITraitCollection.current)
+            .settingsIcon()
     }
 
     private var subtitle: String? {

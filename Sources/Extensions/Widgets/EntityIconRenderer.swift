@@ -1,6 +1,10 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Renders the Material Design icon an entity resolves to as PNG data, for Spotlight results and
 /// for the entity's App Intents display representation.

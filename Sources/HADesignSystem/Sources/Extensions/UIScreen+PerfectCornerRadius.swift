@@ -1,4 +1,4 @@
-#if !os(watchOS)
+#if os(iOS)
 import Foundation
 import UIKit
 

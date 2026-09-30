@@ -4,7 +4,7 @@ import SwiftUI
 import WidgetKit
 
 /// Lock screen rectangular layout: the period title, then one row per configured energy series.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 public struct WidgetEnergyAccessoryRectangularContentView: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
@@ -98,7 +98,7 @@ public struct WidgetEnergyAccessoryRectangularContentView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Two sources") {
     WidgetEnergyAccessoryRectangularContentView(
         stats: WidgetEnergySampleData.stats,
@@ -108,7 +108,7 @@ public struct WidgetEnergyAccessoryRectangularContentView: View {
     .frame(width: 160, height: 72)
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Four sources") {
     WidgetEnergyAccessoryRectangularContentView(
         stats: WidgetEnergySampleData.allSourceStats,

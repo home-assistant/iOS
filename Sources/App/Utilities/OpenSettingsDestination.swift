@@ -1,5 +1,8 @@
 import Foundation
 import Shared
+#if os(iOS)
+import UIKit
+#endif
 
 enum OpenSettingsDestination {
     case location
@@ -40,7 +43,11 @@ enum OpenSettingsDestination {
                 return nil
             }
         } else {
+            #if os(macOS)
+            return nil
+            #else
             return URL(string: UIApplication.openSettingsURLString)!
+            #endif
         }
     }
 }

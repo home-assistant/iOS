@@ -1,7 +1,7 @@
 import AppIntents
 import Shared
 
-@available(iOS 17.0, watchOS 10.0, *)
+@available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct IntentCameraEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Camera")
     static let defaultQuery = IntentCameraEntityQuery()

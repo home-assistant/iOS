@@ -7,7 +7,7 @@ import Shared
 /// Distinct from the app target's `HACalendarAppEntity`, which the widget extension cannot see: the
 /// calendar Shortcuts entities are compiled into the app only, the same way `TodoListAppEntity` is
 /// the widget's own copy of a to-do list.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetCalendarAppEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init(
         "app_intents.calendar.entity.name",

@@ -37,6 +37,11 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
         /// Buffers arrive far faster than a screen refresh, and every level costs the main thread a
         /// published change, so they are emitted at about 30 Hz instead of once per buffer.
         static let levelInterval: TimeInterval = 1.0 / 30
+        #if os(macOS)
+        /// The rate the capture output is asked to convert to on a Mac, where there is no audio
+        /// session to state a preference on. It is the rate Assist pipelines work at.
+        static let macSampleRate: Double = 16000
+        #endif
     }
 
     weak var delegate: AudioRecorderDelegate?
@@ -85,7 +90,9 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     }
 
     private func setupAudioRecorder() {
+        #if !os(macOS)
         let audioSession = AVAudioSession.sharedInstance()
+        #endif
         guard let captureDevice = AVCaptureDevice.default(for: .audio) else {
             Current.Log.error("Failed to get capture device to record audio for Assist")
             delegate?.didFailToRecord(error: AudioRecorderError.captureDeviceUnavailable)
@@ -93,6 +100,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
         }
 
         do {
+            #if !os(macOS)
             if managesAudioSession {
                 try audioSession.setActive(false)
                 try audioSession.setCategory(.record, mode: .default)
@@ -100,20 +108,42 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
                 try audioSession.setPreferredSampleRate(16000.0)
                 try audioSession.setActive(true)
             }
+            #endif
             let audioInput = try AVCaptureDeviceInput(device: captureDevice)
 
             captureSession = AVCaptureSession()
+            #if !os(macOS)
             captureSession?.automaticallyConfiguresApplicationAudioSession = false
+            #endif
             captureSession?.addInput(audioInput)
 
-            Current.Log.info("Audio sample rate: \(audioSession.sampleRate)")
-            if audioSession.sampleRate == 0 {
+            #if os(macOS)
+            let sampleRate = Constants.macSampleRate
+            #else
+            let sampleRate = audioSession.sampleRate
+            #endif
+            Current.Log.info("Audio sample rate: \(sampleRate)")
+            if sampleRate == 0 {
                 throw AudioRecorderError.invalidSampleRate
             } else {
-                audioSampleRate = audioSession.sampleRate
+                audioSampleRate = sampleRate
             }
 
             let audioOutput = AVCaptureAudioDataOutput()
+            #if os(macOS)
+            // Left alone, a Mac's capture output hands over whatever the microphone produces, which
+            // is usually stereo floating point at the device's own rate. The audio session is what
+            // settles the format on iOS; here the output converts to the same 16-bit mono samples.
+            audioOutput.audioSettings = [
+                AVFormatIDKey: kAudioFormatLinearPCM,
+                AVSampleRateKey: sampleRate,
+                AVNumberOfChannelsKey: 1,
+                AVLinearPCMBitDepthKey: 16,
+                AVLinearPCMIsFloatKey: false,
+                AVLinearPCMIsBigEndianKey: false,
+                AVLinearPCMIsNonInterleaved: false,
+            ]
+            #endif
             audioOutput.setSampleBufferDelegate(self, queue: DispatchQueue.global(qos: .userInteractive))
             captureSession?.addOutput(audioOutput)
         } catch {

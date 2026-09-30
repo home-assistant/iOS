@@ -5,6 +5,7 @@ let package = Package(
     name: "HAModels",
     platforms: [
         .iOS(.v16),
+        .macOS(.v13),
         .watchOS(.v9),
     ],
     products: [

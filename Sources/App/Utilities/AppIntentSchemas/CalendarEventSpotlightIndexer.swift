@@ -11,7 +11,7 @@ import Shared
 /// Only events are indexed here. Calendars and to-do lists already reach Spotlight through
 /// `HACalendarAppEntity` and `HAAppEntityAppIntentEntity`, so indexing their schema counterparts
 /// would put the same thing in the index twice.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 enum CalendarEventSpotlightIndexer {
     private static let stateKey = "spotlightIndexedCalendarEventIds"
     private static let batchSize = 100

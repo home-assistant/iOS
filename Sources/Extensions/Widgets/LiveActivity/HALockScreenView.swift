@@ -8,7 +8,7 @@ import WidgetKit
 ///
 /// The system hard-truncates at 160 points height — padding counts against this limit.
 /// Keep layout tight and avoid decorative spacing.
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 struct HALockScreenView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState

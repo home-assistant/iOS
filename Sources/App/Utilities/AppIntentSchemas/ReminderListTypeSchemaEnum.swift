@@ -3,7 +3,7 @@ import Foundation
 
 /// Home Assistant has one kind of todo list, so this is always `.standard`. The schema requires
 /// that case by name.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEnum(schema: .reminders.listType)
 enum ReminderListTypeSchemaEnum: String {
     case standard

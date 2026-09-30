@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Trailing slot of the compact Dynamic Island: the chronometer, the critical text or the progress
 /// percentage, whichever the content state carries.
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 struct HACompactTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
 
@@ -44,7 +44,7 @@ struct HACompactTrailingView: View {
     }
 }
 
-@available(iOS 17.2, *)
+@available(iOS 17.2, macOS 14.2, *)
 #Preview {
     VStack(alignment: .trailing, spacing: DesignSystem.Spaces.one) {
         HACompactTrailingView(

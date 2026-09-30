@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 struct SwitchIntent: SetValueIntent {
     static var title: LocalizedStringResource = .init("app_intents.intent.switch.title", defaultValue: "Control switch")
 

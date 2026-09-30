@@ -55,11 +55,7 @@ public extension Color {
         // gamut) report two components and previously caused this method to return nil,
         // breaking ColorPicker round-trips. Use `getRed:green:blue:alpha:` instead — it
         // converts grayscale colors to their RGB equivalents.
-        var r: CGFloat = 0
-        var g: CGFloat = 0
-        var b: CGFloat = 0
-        var a: CGFloat = 1
-        guard uic.getRed(&r, green: &g, blue: &b, alpha: &a) else {
+        guard let (r, g, b, a) = uic.rgbaComponents else {
             return nil
         }
 

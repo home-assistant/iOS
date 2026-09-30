@@ -80,7 +80,7 @@ public extension NotificationSnoozeAction {
     /// seeded with while the iPhone shows the edited ones. The push coordinator debounces and
     /// de-duplicates, so calling this after each individual edit is cheap.
     private static func scheduleWatchSync() {
-        #if os(iOS)
+        #if !os(watchOS)
         WatchMirrorPushCoordinator.schedule(reason: .notificationSnoozeActionsChanged)
         #endif
     }

@@ -48,7 +48,7 @@ struct FocusHowItWorksView: View {
     ]
 
     var body: some View {
-        List {
+        GroupedList {
             Section {
                 Text(L10n.Focus.HowItWorks.intro)
                     .font(.body)

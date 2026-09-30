@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlSceneItem {
     let intentSceneEntity: IntentSceneEntity
     let icon: SFSymbolEntity
@@ -11,7 +11,7 @@ struct ControlSceneItem {
     let displayText: String?
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlScenesValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlSceneConfiguration) async throws -> ControlSceneItem {
         .init(
@@ -56,7 +56,7 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlSceneConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init("widgets.scripts.description", defaultValue: "Run Scene")
 

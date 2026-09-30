@@ -1,6 +1,10 @@
 import HADesignSystem
 import ObjectiveC.runtime
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public struct Style {
     #if os(iOS)

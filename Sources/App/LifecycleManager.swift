@@ -1,11 +1,15 @@
 import Foundation
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 class LifecycleManager {
     private let periodicUpdateManager = PeriodicUpdateManager(
-        applicationStateGetter: { UIApplication.shared.applicationState }
+        applicationStateGetter: { ApplicationState.current }
     )
     private var underlyingActive: UInt32 = 0
     private(set) var isActive: Bool {
@@ -25,7 +29,7 @@ class LifecycleManager {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
+            name: AppLifecycle.didBecomeActiveNotification,
             object: nil
         )
         if Current.isCatalyst {
@@ -42,22 +46,26 @@ class LifecycleManager {
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(warmConnect),
-                name: UIApplication.willEnterForegroundNotification,
+                name: AppLifecycle.willEnterForegroundNotification,
                 object: nil
             )
         }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(willEnterForeground),
-            name: UIApplication.willEnterForegroundNotification,
+            name: AppLifecycle.willEnterForegroundNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didEnterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
+            name: AppLifecycle.didEnterBackgroundNotification,
             object: nil
         )
+        #if os(macOS)
+        // A Mac app has no foreground transition to mark it active, so it is from the moment it launches.
+        self.isActive = true
+        #endif
     }
 
     func didFinishLaunching() {
@@ -66,7 +74,7 @@ class LifecycleManager {
         // database access could be caught holding the app-group SQLite file lock when the process
         // freezes (0xdead10cc). Catalyst is excluded like the rest of its lifecycle handling: it can
         // report .background at launch without a foreground transition ever following to resume.
-        if !Current.isCatalyst, UIApplication.shared.applicationState == .background {
+        if !Current.isCatalyst, ApplicationState.current == .background {
             AppDatabaseSuspension.suspendIfIdle()
         }
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
@@ -82,7 +90,7 @@ class LifecycleManager {
         // connects to it whenever it likes, so it has to be up before anything asks for it. A
         // background launch is skipped — the settings it reads live in the database that was just
         // suspended above, and the first foreground starts it anyway.
-        if Current.isCatalyst || UIApplication.shared.applicationState != .background {
+        if Current.isCatalyst || ApplicationState.current != .background {
             Task { @MainActor in
                 WyomingServerController.shared.applyConfiguration()
             }
@@ -110,7 +118,7 @@ class LifecycleManager {
     /// that ended while the app was backgrounded so Core stops pushing to them.
     private func syncLiveActivities() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, *) {
+        if #available(iOS 17.2, macOS 14.2, *) {
             Task { await Current.liveActivityRegistry?.reattach() }
         }
         #endif
@@ -170,7 +178,7 @@ class LifecycleManager {
         needsAppOpenLocationUpdate = false
 
         HomeAssistantAPI.manuallyUpdate(
-            applicationState: UIApplication.shared.applicationState,
+            applicationState: ApplicationState.current,
             type: .appOpened
         ).catch { error in
             Current.Log.error("failed to update location on app open: \(error)")

@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 struct PermissionRequestView: View {
     @Environment(\.dismiss) private var dismiss

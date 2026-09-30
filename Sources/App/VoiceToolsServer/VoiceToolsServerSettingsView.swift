@@ -34,7 +34,7 @@ struct VoiceToolsServerSettingsView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: .accountVoiceIcon,
                 title: L10n.Settings.VoiceToolsServer.title,

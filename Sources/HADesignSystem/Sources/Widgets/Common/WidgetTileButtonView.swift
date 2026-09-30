@@ -39,6 +39,7 @@ public struct WidgetTileButtonView: View {
 
     public var body: some View {
         switch family {
+        #if !os(macOS)
         case .accessoryCircular, .accessoryRectangular:
             WidgetCircularIconView(icon: model.icon)
         case .accessoryInline:
@@ -47,6 +48,7 @@ public struct WidgetTileButtonView: View {
             } icon: {
                 WidgetAccessoryIconView(icon: model.icon, size: Self.inlineIconSize)
             }
+        #endif
         default:
             tileView
         }
@@ -209,7 +211,7 @@ public struct WidgetTileButtonView: View {
                 }
             }
             .modify { view in
-                if #available(iOS 18, *) {
+                if #available(iOS 18, macOS 15, *) {
                     view.widgetAccentable()
                 } else {
                     view

@@ -20,7 +20,7 @@ public struct PillView: View {
             .padding(DesignSystem.Spaces.one)
             .padding(.horizontal)
             .modify { view in
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, macOS 26.0, *) {
                     view
                         .glassEffect(.clear.interactive().tint(selected ? Color.haPrimary : nil), in: .capsule)
                         .contentShape(Capsule())

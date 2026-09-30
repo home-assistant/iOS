@@ -3,7 +3,7 @@ import Foundation
 
 /// Which occurrences of a recurring event an edit or deletion applies to. Maps onto Home
 /// Assistant's `recurrence_range`, which is empty for one occurrence and `THISANDFUTURE` otherwise.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEnum(schema: .calendar.eventSpan)
 enum EventSpanSchemaEnum: String {
     case this

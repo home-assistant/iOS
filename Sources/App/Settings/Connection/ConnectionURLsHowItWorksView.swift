@@ -46,7 +46,7 @@ struct ConnectionURLsHowItWorksView: View {
     ]
 
     var body: some View {
-        List {
+        GroupedList {
             Section {
                 Text(L10n.Settings.ConnectionSection.UrlsHowItWorks.intro)
                     .font(.body)

@@ -6,7 +6,7 @@ import WidgetKit
 /// Lock screen circular layout. A circular accessory only has room for one figure, so the widget
 /// hands over the headline series — the grid flow when it has one, otherwise whichever series the
 /// home does report.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 public struct WidgetEnergyAccessoryCircularContentView: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
@@ -56,7 +56,7 @@ public struct WidgetEnergyAccessoryCircularContentView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     WidgetEnergyAccessoryCircularContentView(stat: WidgetEnergySampleData.stats.first)
         .frame(width: 76, height: 76)

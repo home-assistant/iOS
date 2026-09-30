@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import PromiseKit
 import RealmSwift
@@ -352,3 +353,4 @@ extension ComplicationEditViewModel {
         }
     }
 }
+#endif

@@ -1,7 +1,6 @@
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 @preconcurrency import WebKit
 
 // MARK: - Public Navigation API

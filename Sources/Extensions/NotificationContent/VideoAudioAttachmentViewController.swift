@@ -1,11 +1,15 @@
-import MobileCoreServices
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
+import MobileCoreServices
 import UIKit
+#endif
 import UserNotifications
 import UserNotificationsUI
 
-class PlayerAttachmentViewController: UIViewController, NotificationCategory {
+class PlayerAttachmentViewController: PlatformViewController, NotificationCategory {
     enum PlayerAttachmentError: Error {
         case noAttachment
     }
@@ -45,10 +49,18 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
         }
     }
 
+    #if os(macOS)
+    override func loadView() {
+        view = NSView()
+    }
+    #endif
+
     var videoViewController: CameraStreamHLSViewController? {
         willSet {
             videoViewController?.url.stopAccessingSecurityScopedResource()
+            #if !os(macOS)
             videoViewController?.willMove(toParent: nil)
+            #endif
             newValue.flatMap { addChild($0) }
         }
         didSet {
@@ -65,7 +77,9 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
                     videoViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                 ])
 
+                #if !os(macOS)
                 videoViewController.didMove(toParent: self)
+                #endif
             }
         }
     }

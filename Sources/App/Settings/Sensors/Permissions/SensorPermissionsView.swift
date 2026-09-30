@@ -6,7 +6,7 @@ struct SensorPermissionsView: View {
     @StateObject private var viewModel = SensorPermissionsViewModel()
 
     var body: some View {
-        List {
+        GroupedList {
             ForEach(viewModel.availablePermissions) { permission in
                 Section {
                     Button {

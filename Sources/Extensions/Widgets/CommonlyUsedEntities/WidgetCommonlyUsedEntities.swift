@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetCommonlyUsedEntities: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(

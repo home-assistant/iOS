@@ -1,7 +1,11 @@
 import CoreLocation
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Opens the server whose home the user is at when the app becomes active — arriving at a second
 /// home brings up that home's server, like Apple Home selecting the home you're at. Being at a home
@@ -37,7 +41,7 @@ final class LocationBasedServerSwitcher {
 
     /// The app's activation state, telling a link that is opening the app from one handled while it
     /// is already up. Replaceable in tests.
-    var applicationStateGetter: () -> UIApplication.State = { UIApplication.shared.applicationState }
+    var applicationStateGetter: () -> ApplicationState = { ApplicationState.current }
 
     /// Whether an evaluation is in flight. Non-private for tests.
     var isEvaluating: Bool { evaluationTask != nil }
@@ -45,7 +49,7 @@ final class LocationBasedServerSwitcher {
     func start() {
         guard didBecomeActiveObserver == nil else { return }
         didBecomeActiveObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didBecomeActiveNotification,
+            forName: AppLifecycle.didBecomeActiveNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -54,7 +58,7 @@ final class LocationBasedServerSwitcher {
             }
         }
         didEnterBackgroundObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didEnterBackgroundNotification,
+            forName: AppLifecycle.didEnterBackgroundNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in

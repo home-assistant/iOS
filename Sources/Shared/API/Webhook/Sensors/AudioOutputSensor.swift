@@ -5,6 +5,7 @@ import HAKit
 import Intents
 import PromiseKit
 
+#if os(iOS)
 final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     /// Activating or deactivating an audio session (Assist recording, TTS playback, a camera stream)
     /// fires several route changes in a row, and each signal costs a full sensor update, so wait for
@@ -41,6 +42,7 @@ final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, Sensor
         isObserving = false
     }
 }
+#endif
 
 /// iOS AudioOutputSensor
 final class AudioOutputSensor: SensorProvider {

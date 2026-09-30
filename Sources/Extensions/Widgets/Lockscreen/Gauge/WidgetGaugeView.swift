@@ -1,9 +1,11 @@
+#if !os(macOS)
 import HAWatchComplications
+#endif
 import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetGaugeView: View {
     @Environment(\.widgetFamily) private var family
     var entry: WidgetGaugeEntry
@@ -12,6 +14,19 @@ struct WidgetGaugeView: View {
     private static let systemSmallPadding: CGFloat = 10
 
     var body: some View {
+        #if os(macOS)
+        // No complication is mirrored on the Mac, so an entry is always drawn as the widget's own gauge.
+        WidgetGaugeContentView(
+            gaugeType: entry.gaugeType.designSystemType,
+            value: entry.value,
+            valueLabel: entry.valueLabel,
+            label: entry.label,
+            min: entry.min,
+            max: entry.max,
+            family: family,
+            logo: Image(.logo)
+        )
+        #else
         // A mirrored complication renders through the very same content view the watch and the
         // complication editor use, so it carries its own gauge style, colors and slots.
         if let model = entry.complicationModel {
@@ -28,8 +43,10 @@ struct WidgetGaugeView: View {
                 logo: Image(.logo)
             )
         }
+        #endif
     }
 
+    #if !os(macOS)
     /// The complication content view. The lock screen renders it bare, the way the watch face does.
     /// The Home Screen is full-color, so the complication gets the black face it was designed for —
     /// its white text and icon would otherwise be invisible on a light tile.
@@ -45,9 +62,10 @@ struct WidgetGaugeView: View {
             CircularComplicationContentView(model: model)
         }
     }
+    #endif
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall, widget: {
     WidgetGauge()
 }, timeline: {
@@ -64,7 +82,7 @@ struct WidgetGaugeView: View {
     )
 })
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall, widget: {
     WidgetGauge()
 }, timeline: {
@@ -81,7 +99,7 @@ struct WidgetGaugeView: View {
     )
 })
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemSmall, widget: {
     WidgetGauge()
 }, timeline: {
@@ -98,7 +116,8 @@ struct WidgetGaugeView: View {
     )
 })
 
-@available(iOS 17, *)
+#if !os(macOS)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .accessoryCircular, widget: {
     WidgetGauge()
 }, timeline: {
@@ -114,3 +133,4 @@ struct WidgetGaugeView: View {
         showConfirmationNotification: true
     )
 })
+#endif

@@ -1,7 +1,6 @@
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 
 extension WebViewController: OnboardingStateObserver {
     /// Surfaces the re-authentication empty state when the server rejects this server's refresh
@@ -48,19 +47,26 @@ extension WebViewController {
             authDetails.clientCertificate = connectionInfo.clientCertificate
 
             let loginViewModel = OnboardingAuthLoginViewModel(authDetails: authDetails)
-            let loginController = UIHostingController(
+            let loginController = PlatformHostingController(
                 rootView: OnboardingAuthLoginView(viewModel: loginViewModel, style: .modal)
             )
+            #if os(iOS)
             loginController.isModalInPresentation = true
+            #endif
             present(loginController, animated: true)
 
             firstly {
                 loginViewModel.resultPromise
             }.ensureThen {
                 Guarantee { seal in
+                    #if os(macOS)
+                    loginController.dismissSheet()
+                    seal(())
+                    #else
                     loginController.dismiss(animated: true) {
                         seal(())
                     }
+                    #endif
                 }
             }.then { result -> Promise<(URL?, TokenInfo)> in
                 // The login web view may have been redirected to a different port/scheme; re-authenticate
@@ -118,12 +124,15 @@ extension WebViewController {
     }
 
     private func showReauthFailureAlert(error: Error) {
-        let alert = UIAlertController(
+        let alert = AppAlert(
             title: L10n.Alerts.AuthRequired.title,
             message: error.localizedDescription,
-            preferredStyle: .alert
+            actions: [.init(title: L10n.okLabel)]
         )
-        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default))
-        present(alert, animated: true)
+        #if os(macOS)
+        alert.present(on: view.window)
+        #else
+        present(alert.makeAlertController(), animated: true)
+        #endif
     }
 }

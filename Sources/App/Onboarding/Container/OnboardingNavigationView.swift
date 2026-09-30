@@ -94,14 +94,14 @@ struct OnboardingNavigationView: View {
         case let .deviceName(request):
             DeviceNameView(request: request)
                 .navigationBarBackButtonHidden(true)
-                .toolbar(.hidden, for: .navigationBar)
+                .toolbar(.hidden, for: .platformNavigationBar)
         case let .permissions(server):
             OnboardingPermissionsNavigationView(
                 onboardingServer: server,
                 onDismiss: { finishFlow() }
             )
             .navigationBarBackButtonHidden(true)
-            .toolbar(.hidden, for: .navigationBar)
+            .toolbar(.hidden, for: .platformNavigationBar)
         case let .clientCertificate(request):
             // Mac Catalyst only; the user resolves the step through the page's own buttons.
             ClientCertificateOnboardingView(

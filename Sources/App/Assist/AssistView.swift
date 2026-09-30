@@ -134,8 +134,8 @@ struct AssistView: View {
                         }
                     }
 
-                    #if !targetEnvironment(macCatalyst)
-                    if #available(iOS 26.0, *) {
+                    #if !(targetEnvironment(macCatalyst) || os(macOS))
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         ToolbarItem(placement: .topBarTrailing) {
                             settingsButton
                         }
@@ -144,16 +144,21 @@ struct AssistView: View {
                     #endif
                 }
                 .sheet(isPresented: $showSettings) {
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         AssistSettingsView()
+                        #if !os(macOS)
                             .navigationTransition(
                                 .zoom(sourceID: Constants.settingsGeometryID, in: settingsGeometry)
                             )
+                        #endif
                     }
                 }
         }
         .navigationViewStyle(.stack)
-        .background(VerticalBarObserver(hasVerticalBar: $hasVerticalBar))
+        #if !os(macOS)
+            // Only an iPhone lays its bars out in a vertical column.
+            .background(VerticalBarObserver(hasVerticalBar: $hasVerticalBar))
+        #endif
     }
 
     @ViewBuilder
@@ -279,7 +284,7 @@ struct AssistView: View {
         .padding(.vertical, Constants.bubbleVerticalPadding)
         .padding(.horizontal, Constants.bubbleHorizontalPadding)
         .modify { view in
-            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+            if #available(iOS 26.0, macOS 26.0, *), !forcesLegacyAppearance {
                 view.glassEffect(
                     .regular.tint(glassTintForChatItemType(item.itemType)),
                     in: RoundedCorner(
@@ -362,7 +367,7 @@ struct AssistView: View {
         }
         .scrollDismissesKeyboard(.immediately)
         .modify { view in
-            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+            if #available(iOS 26.0, macOS 26.0, *), !forcesLegacyAppearance {
                 // Softens the conversation as it runs under the navigation bar.
                 view.scrollEdgeEffectStyle(.soft, for: .top)
             } else {
@@ -373,7 +378,10 @@ struct AssistView: View {
             bottomBar
                 .padding(.leading, occlusionInsets.leading)
                 .padding(.trailing, occlusionInsets.trailing)
+            #if !os(macOS)
+                // A Mac window has no camera cutout reaching into it, so there is nothing to read.
                 .background(OcclusionRegionsReader(insets: $occlusionInsets))
+            #endif
                 .ignoresSafeArea(edges: hasVerticalBar ? .horizontal : [])
         }
     }
@@ -405,7 +413,7 @@ struct AssistView: View {
             inputActionButton
         }
         .modify { view in
-            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+            if #available(iOS 26.0, macOS 26.0, *), !forcesLegacyAppearance {
                 GlassEffectContainer(spacing: Constants.inputRowGlassSpacing) {
                     view
                 }
@@ -444,7 +452,7 @@ struct AssistView: View {
                 }
         )
         .modify { view in
-            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+            if #available(iOS 26.0, macOS 26.0, *), !forcesLegacyAppearance {
                 view.glassEffect(.regular.interactive(), in: .capsule)
             } else {
                 view
@@ -465,7 +473,7 @@ struct AssistView: View {
                 }
             }
             .modify { view in
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14.0, *) {
                     view
                         .onKeyPress(.upArrow) {
                             viewModel.recallPreviousRequest() ? .handled : .ignored
@@ -492,7 +500,7 @@ struct AssistView: View {
             .frame(height: Constants.inputActionButtonHeight)
             .padding(DesignSystem.Spaces.oneAndHalf)
             .modify { view in
-                if #available(iOS 26.0, *), !forcesLegacyAppearance {
+                if #available(iOS 26.0, macOS 26.0, *), !forcesLegacyAppearance {
                     view.glassEffect(.regular.interactive().tint(.haPrimary), in: .circle)
                 } else {
                     view
@@ -549,7 +557,7 @@ struct AssistView: View {
         }
         .buttonStyle(.plain)
         .modify { view in
-            if #available(iOS 26.0, *), !forcesLegacyAppearance {
+            if #available(iOS 26.0, macOS 26.0, *), !forcesLegacyAppearance {
                 view.glassEffect(.regular.interactive(), in: .circle)
             } else {
                 view

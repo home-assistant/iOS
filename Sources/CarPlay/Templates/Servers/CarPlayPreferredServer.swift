@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 import Shared
 
@@ -19,3 +20,4 @@ enum CarPlayPreferredServer {
         prefs.set(server.identifier.rawValue, forKey: preferenceKey)
     }
 }
+#endif

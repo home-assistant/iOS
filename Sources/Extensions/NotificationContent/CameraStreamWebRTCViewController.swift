@@ -1,12 +1,16 @@
 import Foundation
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import WebRTC
 
 /// Hosts the in-app WebRTC player as a `CameraStreamHandler` so live camera notifications prefer
 /// WebRTC, falling back to HLS/MJPEG. Resolves `promise` on first frame; rejects on failure/timeout.
-final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHandler {
+final class CameraStreamWebRTCViewController: PlatformViewController, CameraStreamHandler {
     enum WebRTCError: LocalizedError {
         /// WebRTC needs the entity id, which isn't in `StreamCameraResponse`; use `init(api:cameraEntityId:)`.
         case requiresEntityID
@@ -72,9 +76,20 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         viewModel.stop()
     }
 
+    #if os(macOS)
+    override func loadView() {
+        let container = NSView()
+        container.wantsLayer = true
+        container.layer?.backgroundColor = NSColor.black.cgColor
+        view = container
+    }
+    #endif
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        #if !os(macOS)
         view.backgroundColor = .black
+        #endif
         attachPlayer()
         startTimeout()
     }
@@ -121,7 +136,9 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
             controller.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+        #if !os(macOS)
         controller.didMove(toParent: self)
+        #endif
         playerViewController = controller
         lastSize = CGSize(width: 16, height: 9)
     }
@@ -130,7 +147,9 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         timeoutWorkItem?.cancel()
         timeoutWorkItem = nil
         viewModel.stop()
+        #if !os(macOS)
         playerViewController?.willMove(toParent: nil)
+        #endif
         playerViewController?.view.removeFromSuperview()
         playerViewController?.removeFromParent()
         playerViewController = nil

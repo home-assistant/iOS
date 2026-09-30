@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 
 /// A tab of the App Labs native iOS tab bar.
@@ -7,3 +8,4 @@ enum NativeTabBarTab: Hashable {
     case search
     case assist
 }
+#endif
