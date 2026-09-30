@@ -5,7 +5,7 @@ description: How the native macOS app is built from the shared iOS code. Use whe
 
 # The native macOS app
 
-The same targets build for iOS, Mac Catalyst and native macOS (`SUPPORTED_PLATFORMS = iphoneos iphonesimulator macosx`). The project-wide `MACOSX_DEPLOYMENT_TARGET` stays at 12.0 for the Launcher and MacBridge; the app, `Shared` and the extensions set it per variant through `HA_MACOSX_DEPLOYMENT_TARGET_MACCATALYST_$(IS_MACCATALYST)`, which is 13.3 natively (the SwiftUI window and navigation API) and matches what Catalyst already requires through iOS 16.4. Native macOS is `#if os(macOS)`; under Catalyst `os(iOS)` is true. `Current.isCatalyst` means "running on a Mac" and is true for both Mac variants, and code that was `#if targetEnvironment(macCatalyst)` now reads `#if targetEnvironment(macCatalyst) || os(macOS)`: when in doubt about what the native app should do, do what the Catalyst app does.
+The same targets build for iOS, Mac Catalyst and native macOS (`SUPPORTED_PLATFORMS = iphoneos iphonesimulator macosx`). The deployment target is macOS 13.3 for every Mac target: what the Catalyst app already requires through iOS 16.4, and what the native app's SwiftUI windows need. Native macOS is `#if os(macOS)`; under Catalyst `os(iOS)` is true. `Current.isCatalyst` means "running on a Mac" and is true for both Mac variants, and code that was `#if targetEnvironment(macCatalyst)` now reads `#if targetEnvironment(macCatalyst) || os(macOS)`: when in doubt about what the native app should do, do what the Catalyst app does.
 
 ## Build and run
 
