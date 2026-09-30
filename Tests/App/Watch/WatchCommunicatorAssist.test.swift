@@ -13,7 +13,10 @@ final class WatchCommunicatorAssistTests: XCTestCase {
     private var recognizerFailure: Error?
     private var configuration = AssistConfiguration()
     private var watchSpeaksOnDevice = true
+    private var watchReadsResponsesFromPong = true
     private var watchUnreachable = false
+    private var failsLater = false
+    private var lateFailures: [() -> Void] = []
     private var sentMessages: [HAWatchConnectivity.ImmediateMessage] = []
     private var service: WatchCommunicatorService!
 
@@ -30,7 +33,10 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         recognizerFailure = nil
         configuration = AssistConfiguration()
         watchSpeaksOnDevice = true
+        watchReadsResponsesFromPong = true
         watchUnreachable = false
+        failsLater = false
+        lateFailures = []
         sentMessages = []
 
         service = WatchCommunicatorService()
@@ -45,13 +51,16 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         }
         service.send = { [weak self] message, failed in
             guard let self else { return }
-            if watchUnreachable {
+            if failsLater {
+                lateFailures.append { failed(HAWatchConnectivity.ConnectivityError.replyTimedOut) }
+            } else if watchUnreachable {
                 failed(HAWatchConnectivity.ConnectivityError.notReachable)
             } else {
                 sentMessages.append(message)
             }
         }
         service.watchSpeaksOnDevice = { [weak self] in self?.watchSpeaksOnDevice ?? true }
+        service.watchReadsAssistResponsesFromPong = { [weak self] in self?.watchReadsResponsesFromPong ?? true }
     }
 
     override func tearDown() {
@@ -441,6 +450,42 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         flushMainQueue()
 
         sendPrompt("Is the window open?")
+
+        XCTAssertTrue(ping().isEmpty)
+    }
+
+    func testLateFailuresGoBackWithThePongInTheOrderTheResponsesWereMade() {
+        failsLater = true
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
+        service.didReceiveIntentEndContent("The door is locked.")
+        service.didReceiveEvent(.runEnd)
+
+        lateFailures.reversed().forEach { $0() }
+
+        XCTAssertEqual(ping().map(\.identifier), [
+            InteractiveImmediateResponses.assistSTTResponse.rawValue,
+            InteractiveImmediateResponses.assistIntentEndResponse.rawValue,
+        ])
+    }
+
+    func testLateFailureOfAPreviousRunIsNotHandedToTheNextOne() {
+        failsLater = true
+        sendRecording()
+        service.didReceiveIntentEndContent("The door is locked.")
+        service.didReceiveEvent(.runEnd)
+
+        sendPrompt("Is the window open?")
+        lateFailures.forEach { $0() }
+
+        XCTAssertTrue(ping().isEmpty)
+    }
+
+    func testResponsesAreNotKeptForAWatchThatCannotReadThemFromThePong() {
+        service.watchReadsAssistResponsesFromPong = WatchCommunicatorService().watchReadsAssistResponsesFromPong
+        watchUnreachable = true
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
 
         XCTAssertTrue(ping().isEmpty)
     }

@@ -20,11 +20,18 @@ final class WatchCommunicatorService {
         (Communicator.shared.counterpartProtocolVersion ?? 0) >= WatchProtocolVersion.assistOnDeviceTTS
     }
 
+    var watchReadsAssistResponsesFromPong: () -> Bool = {
+        (Communicator.shared.counterpartProtocolVersion ?? 0) >= WatchProtocolVersion.assistResponsesInPong
+    }
+
     var send: (HAWatchConnectivity.ImmediateMessage, @escaping (Error) -> Void) -> Void = {
         Communicator.shared.send($0, errorHandler: $1)
     }
 
-    private var undeliveredAssistMessages: [HAWatchConnectivity.ImmediateMessage] = []
+    private typealias UndeliveredAssistMessage = (sequence: Int, message: HAWatchConnectivity.ImmediateMessage)
+    private var undeliveredAssistMessages: [UndeliveredAssistMessage] = []
+    private var assistMessageSequence = 0
+    private var assistRunFirstSequence = 1
     private var isAssistRunInProgress = false
 
     /// One in-progress chunked audio upload from the watch.
@@ -1086,7 +1093,7 @@ extension WatchCommunicatorService {
     }
 
     func handlePing(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
-        let deliverable = assistMessagesDeliverableByPong
+        let deliverable = assistMessagesDeliverableByPong.map(\.message)
         undeliveredAssistMessages.removeFirst(deliverable.count)
         if !deliverable.isEmpty {
             Current.Log.info("Handing \(deliverable.map(\.identifier)) to the watch with its pong")
@@ -1099,9 +1106,9 @@ extension WatchCommunicatorService {
         ))
     }
 
-    private var assistMessagesDeliverableByPong: ArraySlice<HAWatchConnectivity.ImmediateMessage> {
+    private var assistMessagesDeliverableByPong: ArraySlice<UndeliveredAssistMessage> {
         guard isAssistRunInProgress, let answerIndex = undeliveredAssistMessages.firstIndex(where: {
-            $0.identifier == InteractiveImmediateResponses.assistIntentEndResponse.rawValue
+            $0.message.identifier == InteractiveImmediateResponses.assistIntentEndResponse.rawValue
         }) else {
             return undeliveredAssistMessages[...]
         }
@@ -1110,22 +1117,30 @@ extension WatchCommunicatorService {
 
     private func beginAssistRun() {
         undeliveredAssistMessages.removeAll()
+        assistRunFirstSequence = assistMessageSequence + 1
         isAssistRunInProgress = true
     }
 
     private func sendMessage(message: HAWatchConnectivity.ImmediateMessage) {
+        assistMessageSequence += 1
+        let sequence = assistMessageSequence
         guard undeliveredAssistMessages.isEmpty else {
-            undeliveredAssistMessages.append(message)
+            undeliveredAssistMessages.append((sequence: sequence, message: message))
             return
         }
         send(message) { [weak self] error in
-            Current.Log.error(
-                "Could not push \(message.identifier) to the watch, keeping it for its next ping: \(error.localizedDescription)"
-            )
+            Current.Log.error("Could not push \(message.identifier) to the watch: \(error.localizedDescription)")
             DispatchQueue.main.async {
-                self?.undeliveredAssistMessages.append(message)
+                self?.keepForPong(message, sequence: sequence)
             }
         }
+    }
+
+    private func keepForPong(_ message: HAWatchConnectivity.ImmediateMessage, sequence: Int) {
+        guard sequence >= assistRunFirstSequence, watchReadsAssistResponsesFromPong() else { return }
+        let index = undeliveredAssistMessages.firstIndex { $0.sequence > sequence }
+            ?? undeliveredAssistMessages.endIndex
+        undeliveredAssistMessages.insert((sequence: sequence, message: message), at: index)
     }
 
     private func initAssistServiceIfNeeded(server: Server) -> AssistServiceProtocol {
