@@ -13,6 +13,7 @@ final class WatchCommunicatorAssistTests: XCTestCase {
     private var recognizerFailure: Error?
     private var configuration = AssistConfiguration()
     private var watchSpeaksOnDevice = true
+    private var watchUnreachable = false
     private var sentMessages: [HAWatchConnectivity.ImmediateMessage] = []
     private var service: WatchCommunicatorService!
 
@@ -29,6 +30,7 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         recognizerFailure = nil
         configuration = AssistConfiguration()
         watchSpeaksOnDevice = true
+        watchUnreachable = false
         sentMessages = []
 
         service = WatchCommunicatorService()
@@ -41,7 +43,14 @@ final class WatchCommunicatorAssistTests: XCTestCase {
             }
             return self?.recognizer ?? FakeSpeechRecognizer()
         }
-        service.send = { [weak self] in self?.sentMessages.append($0) }
+        service.send = { [weak self] message, failed in
+            guard let self else { return }
+            if watchUnreachable {
+                failed(HAWatchConnectivity.ConnectivityError.notReachable)
+            } else {
+                sentMessages.append(message)
+            }
+        }
         service.watchSpeaksOnDevice = { [weak self] in self?.watchSpeaksOnDevice ?? true }
     }
 
@@ -82,6 +91,20 @@ final class WatchCommunicatorAssistTests: XCTestCase {
 
     private func messages(_ response: InteractiveImmediateResponses) -> [HAWatchConnectivity.ImmediateMessage] {
         sentMessages.filter { $0.identifier == response.rawValue }
+    }
+
+    private func flushMainQueue() {
+        let flushed = expectation(description: "main queue flushed")
+        DispatchQueue.main.async { flushed.fulfill() }
+        wait(for: [flushed], timeout: 1)
+    }
+
+    private func ping() -> [(identifier: String, content: [String: Any])] {
+        flushMainQueue()
+        var pong: HAWatchConnectivity.ImmediateMessage?
+        service.handlePing(.init(identifier: InteractiveImmediateMessages.ping.rawValue, reply: { pong = $0 }))
+        XCTAssertEqual(pong?.identifier, InteractiveImmediateResponses.pong.rawValue)
+        return PongPayload(content: pong?.content ?? [:]).assistMessages
     }
 
     private func waitUntil(_ condition: () -> Bool) {
@@ -294,6 +317,150 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         XCTAssertNil(bare.content["voiceIdentifier"])
 
         XCTAssertNil(AssistOnDeviceTTSPayload(content: ["voiceIdentifier": "voice"]))
+    }
+
+    // MARK: - Watch the phone cannot push to
+
+    func testReachableWatchGetsResponsesDirectlyAndAnEmptyPong() {
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
+        service.didReceiveIntentEndContent("The door is locked.")
+
+        XCTAssertEqual(messages(.assistSTTResponse).count, 1)
+        XCTAssertEqual(messages(.assistIntentEndResponse).count, 1)
+        XCTAssertTrue(ping().isEmpty)
+    }
+
+    func testTranscriptThePhoneCannotPushGoesBackWithTheNextPong() {
+        watchUnreachable = true
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
+
+        let pong = ping()
+        XCTAssertTrue(sentMessages.isEmpty)
+        XCTAssertEqual(pong.map(\.identifier), [InteractiveImmediateResponses.assistSTTResponse.rawValue])
+        let transcripts = pong.compactMap { AssistTextResponsePayload(content: $0.content)?.text }
+        XCTAssertEqual(transcripts, ["Is the door locked?"])
+        XCTAssertTrue(ping().isEmpty)
+    }
+
+    func testResponseTheConnectivityLayerRefusesGoesBackWithTheNextPong() {
+        service.send = WatchCommunicatorService().send
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
+
+        XCTAssertEqual(ping().map(\.identifier), [InteractiveImmediateResponses.assistSTTResponse.rawValue])
+    }
+
+    func testPingFromTheWatchIsAnsweredWithTheResponsesThePhoneCouldNotPush() {
+        watchUnreachable = true
+        service.setupMessages()
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
+        flushMainQueue()
+
+        var pongs: [HAWatchConnectivity.ImmediateMessage] = []
+        let answered = expectation(description: "pong")
+        answered.assertForOverFulfill = false
+        Communicator.shared.interactiveImmediateMessage.notify(.init(
+            identifier: InteractiveImmediateMessages.ping.rawValue,
+            reply: { pongs.append($0); answered.fulfill() }
+        ))
+        wait(for: [answered], timeout: 1)
+
+        XCTAssertEqual(
+            pongs.flatMap { PongPayload(content: $0.content).assistMessages.map(\.identifier) },
+            [InteractiveImmediateResponses.assistSTTResponse.rawValue]
+        )
+    }
+
+    func testPongHoldsTheAnswerUntilTheRunEndsSoTheSpeechAfterItIsNotLost() {
+        watchUnreachable = true
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
+        service.didReceiveIntentEndContent("The door is locked.")
+
+        XCTAssertEqual(ping().map(\.identifier), [InteractiveImmediateResponses.assistSTTResponse.rawValue])
+
+        service.didReceiveTtsMediaUrl(URL(string: "https://example.com/api/tts_proxy/answer.mp3")!)
+        service.didReceiveEvent(.runEnd)
+
+        XCTAssertEqual(ping().map(\.identifier), [
+            InteractiveImmediateResponses.assistIntentEndResponse.rawValue,
+            InteractiveImmediateResponses.assistTTSResponse.rawValue,
+        ])
+    }
+
+    func testAnErrorEndsTheRunAndReleasesTheHeldAnswer() {
+        watchUnreachable = true
+        sendRecording()
+        service.didReceiveIntentEndContent("The door is locked.")
+        service.didReceiveError(code: "tts-failed", message: "Speech failed")
+
+        XCTAssertEqual(ping().map(\.identifier), [
+            InteractiveImmediateResponses.assistIntentEndResponse.rawValue,
+            InteractiveImmediateResponses.assistError.rawValue,
+        ])
+    }
+
+    func testResponsesQueueBehindAnUndeliveredOneToKeepTheirOrder() {
+        watchUnreachable = true
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
+        flushMainQueue()
+
+        watchUnreachable = false
+        service.didReceiveIntentEndContent("The door is locked.")
+        service.didReceiveEvent(.runEnd)
+
+        XCTAssertTrue(sentMessages.isEmpty)
+        XCTAssertEqual(ping().map(\.identifier), [
+            InteractiveImmediateResponses.assistSTTResponse.rawValue,
+            InteractiveImmediateResponses.assistIntentEndResponse.rawValue,
+        ])
+    }
+
+    func testResponsesGoStraightToTheWatchAgainOnceThePongClearedTheBacklog() {
+        watchUnreachable = true
+        sendRecording()
+        service.didReceiveSttContent("Is the door locked?")
+        XCTAssertEqual(ping().count, 1)
+
+        watchUnreachable = false
+        service.didReceiveIntentEndContent("The door is locked.")
+
+        XCTAssertEqual(messages(.assistIntentEndResponse).count, 1)
+        XCTAssertTrue(ping().isEmpty)
+    }
+
+    func testANewRunDropsResponsesLeftOverFromThePreviousOne() {
+        watchUnreachable = true
+        sendRecording()
+        service.didReceiveIntentEndContent("The door is locked.")
+        service.didReceiveEvent(.runEnd)
+        flushMainQueue()
+
+        sendPrompt("Is the window open?")
+
+        XCTAssertTrue(ping().isEmpty)
+    }
+
+    func testPongPayloadRoundTripsItsMessagesAndSkipsMalformedOnes() {
+        let payload = PongPayload(assistMessages: [
+            (identifier: InteractiveImmediateResponses.assistIntentEndResponse.rawValue, content: ["content": "Done"]),
+        ])
+        XCTAssertTrue(PropertyListSerialization.propertyList(payload.content, isValidFor: .binary))
+
+        let decoded = PongPayload(content: payload.content).assistMessages
+        XCTAssertEqual(decoded.map(\.identifier), [InteractiveImmediateResponses.assistIntentEndResponse.rawValue])
+        XCTAssertEqual(decoded.first?.content["content"] as? String, "Done")
+
+        XCTAssertTrue(PongPayload().content.isEmpty)
+        XCTAssertTrue(PongPayload(content: [:]).assistMessages.isEmpty)
+        XCTAssertTrue(PongPayload(content: ["assistMessages": [
+            ["identifier": "assistIntentEndResponse"],
+            ["content": ["content": "Done"]],
+        ]]).assistMessages.isEmpty)
     }
 }
 
