@@ -1,3 +1,4 @@
+import Combine
 import Shared
 import SwiftUI
 
@@ -6,6 +7,10 @@ import SwiftUI
 /// container it would otherwise be presented from. Settings requested by the frontend external bus is pushed
 /// onto the container's navigation stack; every other entry point (gestures, empty state, …) uses a sheet.
 /// On Catalyst it opens in its own scene.
+///
+/// One instance per scene, owned by that scene's `ConditionalContainerView` and handed to everything below it
+/// through `EnvironmentValues.appSettingsPresenter`: a shared presenter would open Settings in every window
+/// the iPad has on screen rather than in the one the request came from.
 ///
 /// The same sheet is also the server picker: at the medium detent the servers cover Settings as buttons that
 /// activate them, and expanding uncovers Settings as usual. The two swap freely in both directions — Settings
@@ -27,8 +32,6 @@ final class AppSettingsPresenter: ObservableObject {
         let zoomsFromStandBy: Bool
         let onSelect: (Server) -> Void
     }
-
-    static let shared = AppSettingsPresenter()
 
     @Published var isSheetPresented = false
     /// The container's navigation stack on iPhone: `AppSettingsPushRoute.settings` while Settings is pushed
@@ -60,10 +63,25 @@ final class AppSettingsPresenter: ObservableObject {
     /// The `matchedTransitionSource` the sheet zooms out of, when the entry point has one.
     @Published private(set) var zoomSourceID: String?
 
-    private init() {}
+    /// The coordinator of the scene this presenter belongs to, set by `ContainerView`. The picker activates
+    /// the server the user chose through it, so picking in one window can't act on another.
+    weak var appCoordinator: AppCoordinator?
+
+    private var dismissAllCancellable: AnyCancellable?
+
+    init() {
+        // Settings isn't view state, so it can't clear itself through `dismissesOnAppNavigation`; it listens
+        // for the same request instead.
+        self.dismissAllCancellable = AppPresentationDismisser.shared.dismissAllPublisher
+            .sink { [weak self] in
+                self?.isSheetPresented = false
+                self?.isPushPresented = false
+            }
+    }
 
     /// Opens the sheet on Settings itself.
     func presentSettings(zoomingFrom sourceID: String? = nil) {
+        guard !openSettingsSceneIfCatalyst() else { return }
         selectionRequest = nil
         zoomSourceID = sourceID
         mode = .full
@@ -88,14 +106,19 @@ final class AppSettingsPresenter: ObservableObject {
     /// on Catalyst, where the sheet has no detents to drag and Settings is its own scene: closing the sheet
     /// there drops the request like any other dismissal.
     func showFullSettings() {
-        if Current.isCatalyst, Current.sceneManager.supportsMultipleScenes {
-            isSheetPresented = false
-            Current.sceneManager.activateAnyScene(for: .settings)
-            return
-        }
+        guard !openSettingsSceneIfCatalyst() else { return }
         mode = .full
         isFullSettingsMounted = true
         detent = .large
+    }
+
+    /// On Catalyst with multiple scenes Settings is a window of its own, so it is activated instead of being
+    /// presented here. Reports whether it took over the request.
+    private func openSettingsSceneIfCatalyst() -> Bool {
+        guard Current.isCatalyst, Current.sceneManager.supportsMultipleScenes else { return false }
+        isSheetPresented = false
+        Current.sceneManager.activateAnyScene(for: .settings)
+        return true
     }
 
     /// Covers Settings with the picker again, following the sheet back down to the medium detent.
@@ -115,6 +138,8 @@ final class AppSettingsPresenter: ObservableObject {
 
         if let request {
             request.onSelect(server)
+        } else if let appCoordinator {
+            appCoordinator.activate(server: server)
         } else {
             Current.sceneManager.appCoordinator.done { coordinator in
                 coordinator.activate(server: server)

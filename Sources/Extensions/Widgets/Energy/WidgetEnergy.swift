@@ -24,14 +24,13 @@ struct WidgetEnergy: Widget {
 
 enum WidgetEnergySupportedFamilies {
     @available(iOS 17.0, *)
-    static let families: [WidgetFamily] = [
-        .systemSmall,
-        .systemMedium,
-        .systemLarge,
-        .accessoryCircular,
-        .accessoryRectangular,
-        .accessoryInline,
-    ]
+    static var families: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges + [
+            .accessoryCircular,
+            .accessoryRectangular,
+            .accessoryInline,
+        ]
+    }
 
     /// Families that lead with a single headline figure, where the instantaneous power reads better
     /// than the period total. Resolving it costs one REST call per power sensor, so the families

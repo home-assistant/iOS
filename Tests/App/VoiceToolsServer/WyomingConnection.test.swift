@@ -134,7 +134,7 @@ struct WyomingConnectionTests {
 
     /// Opens a listener on a system-assigned port with a client attached, and tears both down.
     private func withClient(
-        makeRecognizer: @escaping WyomingRecognizerFactory = { _ in StubRecognizer() },
+        makeRecognizer: @escaping OnDeviceRecognizerFactory = { _ in StubRecognizer() },
         _ work: (Client) async throws -> Void
     ) async throws {
         let recorder = StateRecorder()
@@ -166,7 +166,7 @@ struct WyomingConnectionTests {
     /// Answers the moment the audio ends, so a whole transcription exchange runs without speech
     /// authorisation and without waiting on a real recogniser.
     @MainActor
-    private final class StubRecognizer: WyomingSpeechRecognizing {
+    private final class StubRecognizer: OnDeviceSpeechRecognizing {
         static let transcript = "turn on the kitchen light"
 
         private var onTranscript: ((String, Bool) -> Void)?

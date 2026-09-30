@@ -5,6 +5,10 @@ on:
       version:
         required: true
         description: "New Version Number"
+
+permissions:
+  contents: read
+
 jobs:
   bump:
     runs-on: ubuntu-latest

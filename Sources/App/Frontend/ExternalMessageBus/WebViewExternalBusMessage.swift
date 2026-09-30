@@ -32,6 +32,9 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case cameraPlayerShow = "camera/show"
     case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
     case sidebarShow = "sidebar/show"
+    case moreInfoOpened = "more_info/opened"
+    case moreInfoClosed = "more_info/closed"
+    case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
         [
@@ -52,13 +55,6 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasEntityAddTo": true,
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
-            "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
-                if #available(iOS 18, *), !Current.isCatalyst {
-                    return ToastPresenter.toastComponentVersion
-                } else {
-                    return -1
-                }
-            }(),
         ]
     }
 }

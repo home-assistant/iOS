@@ -16,11 +16,13 @@ public enum TagManagerHandleResult {
 public enum TagManagerError: LocalizedError {
     case nfcUnavailable
     case notHomeAssistantTag
+    case invalidURL
 
     public var errorDescription: String? {
         switch self {
         case .nfcUnavailable: return L10n.Nfc.notAvailable
         case .notHomeAssistantTag: return L10n.Nfc.Read.Error.notHomeAssistant
+        case .invalidURL: return L10n.Nfc.Write.Error.invalidUrl
         }
     }
 }
@@ -29,6 +31,13 @@ public protocol TagManager {
     var isNFCAvailable: Bool { get }
     func readNFC() -> Promise<String>
     func writeNFC(value: String) -> Promise<String>
+    /// Writes a deep link to a tag, instead of a Home Assistant tag identifier, so that scanning the tag
+    /// opens the link in the app rather than firing a tag event. The deep link travels wrapped in the
+    /// app's NFC universal link, since that is the only form an iPhone routes back to the app on a scan.
+    /// - Parameters:
+    ///   - deeplink: The deep link a scan of the tag should open.
+    ///   - alertMessage: What the system NFC sheet tells the user to do while it waits for a tag.
+    func writeNFC(deeplink: URL, alertMessage: String) -> Promise<Void>
     func handle(userActivity: NSUserActivity) -> TagManagerHandleResult
     func fireEvent(tag: String) -> Promise<Void>
 }
@@ -63,6 +72,10 @@ class EmptyTagManager: TagManager {
     }
 
     func writeNFC(value: String) -> Promise<String> {
+        .init(error: TagManagerError.nfcUnavailable)
+    }
+
+    func writeNFC(deeplink: URL, alertMessage: String) -> Promise<Void> {
         .init(error: TagManagerError.nfcUnavailable)
     }
 

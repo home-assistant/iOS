@@ -347,6 +347,7 @@ public class HomeAssistantAPI {
                     return register()
                 case .unregisteredIdentifier,
                      .unacceptableStatusCode,
+                     .requiresMainThread,
                      .replaced,
                      .none:
                     // not a WebhookError, or not one we think requires reintegration
@@ -361,6 +362,7 @@ public class HomeAssistantAPI {
                 promises.append(getConfig())
                 promises.append(Current.modelManager.fetch(apis: [self]))
                 promises.append(updateComplications(passively: false).asVoid())
+                promises.append(registerSensorsIfAppVersionChanged())
             }
 
             promises.append(UpdateSensors(trigger: reason.updateSensorTrigger).asVoid())
@@ -383,6 +385,35 @@ public class HomeAssistantAPI {
                 "event_data": eventData,
             ])
         )
+    }
+
+    private static let persistentEventRequestTimeout: TimeInterval = 30
+
+    /// Starts a persisted background event upload synchronously.
+    ///
+    /// A successful result proves URLSession owns a resumed background task. A failure means no
+    /// task was created, allowing an outbox owner to leave the event immediately retryable. Calls
+    /// made off the main thread fail without creating a task.
+    public func startPersistentEvent(
+        eventType: String,
+        eventData: [String: Any],
+        eventIdentifier: UUID
+    ) -> Swift.Result<Task<Void, Error>, Error> {
+        Current.webhooks.startPersistedBackground(
+            server: server,
+            request: .init(type: "fire_event", data: [
+                "event_type": eventType,
+                "event_data": eventData,
+            ]),
+            requestIdentifier: eventIdentifier.uuidString,
+            requestTimeout: Self.persistentEventRequestTimeout
+        )
+    }
+
+    public func reconcilePersistentEvent(
+        eventIdentifier: UUID
+    ) async -> PersistedBackgroundRequestState {
+        await Current.webhooks.reconcilePersistedBackground(requestIdentifier: eventIdentifier.uuidString)
     }
 
     public func temporaryDownloadFileURL(appropriateFor downloadingURL: URL? = nil) -> URL? {
@@ -459,20 +490,18 @@ public class HomeAssistantAPI {
 
         return promise.done { [self] config in
             let previousVersion = server.info.version
-            let fetchedVersion = try? Version(hassVersion: config.Version)
 
             server.update { serverInfo in
-                serverInfo.connection.cloudhookURL = config.CloudhookURL
-                serverInfo.connection.set(address: config.RemoteUIURL, for: .remoteUI)
-                serverInfo.remoteName = config.LocationName ?? ServerInfo.defaultName
-                serverInfo.hassDeviceId = config.hassDeviceId
-
-                if let fetchedVersion {
-                    serverInfo.version = fetchedVersion
-                }
+                serverInfo.apply(config)
             }
 
-            if let fetchedVersion, fetchedVersion != previousVersion {
+            if LegacyWatchSensors.needsRetiring(reportedBy: config, on: server) {
+                Task { [server] in await LegacyWatchSensors.retire(reportedBy: config, on: server) }
+            }
+
+            let fetchedVersion = server.info.version
+
+            if fetchedVersion != previousVersion {
                 Current.Log
                     .info("Server \(server.identifier) version changed from \(previousVersion) to \(fetchedVersion)")
                 let changedServer = server
@@ -919,6 +948,17 @@ public class HomeAssistantAPI {
             self.textInput = (response as? UNTextInputNotificationResponse)?.userText
         }
 
+        /// Builds the same info for an action the app ran itself, without a `UNNotificationResponse`.
+        /// The watch needs this: watchOS never hands a text-input response back to the app for a
+        /// forwarded notification, so the watch collects the reply and fires the event on its own
+        /// (see `DynamicNotificationViewModel.perform(textInputAction:)`).
+        public init(content: UNNotificationContent, actionIdentifier: String, textInput: String?) {
+            self.identifier = UNNotificationContent.uncombinedAction(from: actionIdentifier)
+            self.category = content.categoryIdentifier
+            self.actionData = content.userInfo["homeassistant"]
+            self.textInput = textInput
+        }
+
         public init(map: ObjectMapper.Map) throws {
             self.identifier = try map.value("identifier")
             self.category = try? map.value("category")
@@ -1000,7 +1040,23 @@ public class HomeAssistantAPI {
             Current.webhooks.send(server: server, request: .init(type: "register_sensor", data: sensor.toJSON()))
         }.tap { result in
             Current.Log.info("finished registering sensors: \(result)")
-        }.asVoid()
+        }.asVoid().get { [server] _ in
+            guard uniqueIDs == nil else { return }
+            SensorRegistrationVersionStore.recordRegistration(for: server.identifier)
+        }
+    }
+
+    func registerSensorsIfAppVersionChanged() -> Promise<Void> {
+        guard SensorRegistrationVersionStore.needsRegistration(for: server.identifier) else {
+            return .value(())
+        }
+
+        Current.Log.info("registering all sensors with \(server.identifier) for this version of the app")
+
+        return registerSensors().recover { error -> Promise<Void> in
+            Current.Log.error("failed to register sensors for this version of the app: \(error)")
+            return .value(())
+        }
     }
 
     public func UpdateSensors(
@@ -1073,24 +1129,22 @@ public class HomeAssistantAPI {
         Current.backgroundTask(withName: BackgroundTask.manualLocationUpdate.rawValue) { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
-                    let locationManager = CLLocationManager()
+                    // Reading `accuracyAuthorization` is a synchronous XPC round-trip to locationd,
+                    // and on a cold launch it also waits for the daemon connection to come up. On
+                    // the main thread — where `manuallyUpdate` is called from — that was half of
+                    // the app's reported hangs, all of them inside this closure.
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        guard Current.locationManager.accuracyAuthorization != .fullAccuracy,
+                              type.allowsTemporaryAccess else {
+                            // Already precise, or this trigger may not ask: nothing to request.
+                            return seal(())
+                        }
 
-                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
-                        // already have full accuracy, don't need to request
-                        return seal(())
-                    }
-
-                    guard type.allowsTemporaryAccess else {
-                        return seal(())
-                    }
-
-                    Current.Log.info("requesting full accuracy for manual update")
-                    locationManager.requestTemporaryFullAccuracyAuthorization(
-                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
-                    ) { error in
-                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
-
-                        withExtendedLifetime(locationManager) {
+                        Current.Log.info("requesting full accuracy for manual update")
+                        Current.locationManager.requestTemporaryFullAccuracyAuthorization(
+                            purposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                        ) { error in
+                            Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
                             seal(())
                         }
                     }
@@ -1659,7 +1713,11 @@ extension HomeAssistantAPI: SensorObserver {
     ) {
         Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
             firstly { () -> Promise<Void> in
-                guard case let .settingsChange(changedUniqueIDs) = reason, !changedUniqueIDs.isEmpty else {
+                guard case let .settingsChange(changedUniqueIDs, serverIDs) = reason,
+                      !changedUniqueIDs.isEmpty,
+                      // An empty list is a change that isn't about one server, so every one of them
+                      // re-registers; otherwise only the servers whose selection actually moved do.
+                      serverIDs.isEmpty || serverIDs.contains(server.identifier) else {
                     return .value(())
                 }
                 // Carries the new enablement to Home Assistant, which only `register_sensor` can do.

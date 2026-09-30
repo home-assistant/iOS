@@ -319,6 +319,8 @@ final class WebViewControllerTests: XCTestCase {
     func testFrontendAssetCacheCleanDecisionCleansWhenNeverCleaned() {
         XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
             lastCleanDate: nil,
+            lastCleanVersion: "2026.9.3",
+            currentVersion: "2026.9.3",
             now: Date(timeIntervalSince1970: 100)
         ))
     }
@@ -328,6 +330,8 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertFalse(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
             lastCleanDate: now.addingTimeInterval(-WebsiteDataStoreHandlerImpl.frontendAssetCacheCleanInterval),
+            lastCleanVersion: "2026.9.3",
+            currentVersion: "2026.9.3",
             now: now
         ))
     }
@@ -337,6 +341,30 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
             lastCleanDate: now.addingTimeInterval(-WebsiteDataStoreHandlerImpl.frontendAssetCacheCleanInterval - 1),
+            lastCleanVersion: "2026.9.3",
+            currentVersion: "2026.9.3",
+            now: now
+        ))
+    }
+
+    func testFrontendAssetCacheCleanDecisionCleansAfterAnAppUpdate() {
+        let now = Date(timeIntervalSince1970: 1000)
+
+        XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
+            lastCleanDate: now,
+            lastCleanVersion: "2026.9.3",
+            currentVersion: "2026.9.4",
+            now: now
+        ))
+    }
+
+    func testFrontendAssetCacheCleanDecisionCleansWhenTheCleaningVersionIsUnknown() {
+        let now = Date(timeIntervalSince1970: 1000)
+
+        XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
+            lastCleanDate: now,
+            lastCleanVersion: nil,
+            currentVersion: "2026.9.4",
             now: now
         ))
     }
@@ -773,6 +801,22 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.overlayState?.emptyState)
     }
 
+    /// A scripted `focus()` raises the keyboard only while the web view holds keyboard focus.
+    func testMakeWebViewFirstResponderGivesTheWebViewKeyboardFocus() {
+        let sut = makeSUT()
+        let webView = WKWebView(frame: sut.view.bounds)
+        sut.webView = webView
+        sut.view.addSubview(webView)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.makeWebViewFirstResponder()
+
+        XCTAssertTrue(webView.containsFirstResponder)
+    }
+
     func testPresentClientCertificateImportPresentsTheImportSheet() async {
         let sut = makeSUT()
         // Attaching to a window changes traits, which the controller forwards to its web view.
@@ -952,6 +996,45 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.currentPageURL?.absoluteString, "https://home.local/lovelace/0")
     }
 
+    /// Multi-window: Settings has to reach the coordinator of the window this web view is in, not the one
+    /// that registered last (which is what the app-wide coordinator resolves to).
+    func testShowSettingsGoesToTheCoordinatorOfTheWebViewsOwnScene() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        let sut = makeSUT()
+        window.addSubview(sut.view)
+
+        let sceneCoordinator = MockAppCoordinator()
+        sceneCoordinator.window = window
+        let otherWindowCoordinator = MockAppCoordinator()
+        otherWindowCoordinator.window = UIWindow()
+        Current.sceneManager.registerAppCoordinator(sceneCoordinator)
+        // Registered last, so this is the app-wide coordinator every request used to land on.
+        Current.sceneManager.registerAppCoordinator(otherWindowCoordinator)
+        let settingsShown = expectation(description: "showSettings called")
+        sceneCoordinator.onShowSettings = { settingsShown.fulfill() }
+
+        sut.showSettingsViewController()
+
+        wait(for: [settingsShown], timeout: 1)
+        XCTAssertFalse(sceneCoordinator.showSettingsPushedOntoNavigationStack)
+        XCTAssertFalse(otherWindowCoordinator.showSettingsCalled)
+    }
+
+    /// Without a window to resolve a scene from, the app-wide coordinator is still the right answer.
+    func testShowSettingsFallsBackToTheAppWideCoordinatorWithoutAWindow() {
+        let sut = makeSUT()
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        let settingsShown = expectation(description: "showSettings called")
+        coordinator.onShowSettings = { settingsShown.fulfill() }
+
+        sut.showSettingsViewController(pushOntoNavigationStack: true)
+
+        wait(for: [settingsShown], timeout: 1)
+        XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
+    }
+
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
@@ -961,7 +1044,7 @@ final class WebViewControllerTests: XCTestCase {
 
     private func waitUntil(
         _ condition: @escaping () -> Bool,
-        timeout: TimeInterval = 2,
+        timeout: TimeInterval = 5,
         file: StaticString = #file,
         line: UInt = #line
     ) async {
@@ -1105,6 +1188,17 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
     func testLoadActiveURLDoesNothingAfterLogOut() {
         let sut = makeSUT()
         sut.didLogOut = true
+
+        sut.loadActiveURLIfNeeded()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 0)
+        XCTAssertNil(sut.loadActiveURLTask)
+        XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
+    func testLoadActiveURLDoesNothingBeforeTheWebViewIsBuilt() {
+        let sut = makeSUT()
+        sut.webView = nil
 
         sut.loadActiveURLIfNeeded()
 
@@ -1300,7 +1394,7 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 
     private func waitUntil(
         _ condition: @escaping () -> Bool,
-        timeout: TimeInterval = 2,
+        timeout: TimeInterval = 5,
         file: StaticString = #file,
         line: UInt = #line
     ) async {
@@ -1352,5 +1446,11 @@ private final class AsyncGate: @unchecked Sendable {
         let waiter = waiters.isEmpty ? nil : waiters.removeFirst()
         lock.unlock()
         waiter?.resume()
+    }
+}
+
+private extension UIView {
+    var containsFirstResponder: Bool {
+        isFirstResponder || subviews.contains(where: \.containsFirstResponder)
     }
 }

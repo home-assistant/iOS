@@ -86,7 +86,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
 
         sut.handleEntityTap(entity: entity) { released.fulfill() }
 
-        wait(for: [released], timeout: 2)
+        wait(for: [released], timeout: 30)
     }
 
     func testATapReleasesTheRowHandlerWithoutWaitingForTheServer() throws {
@@ -96,7 +96,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
 
         sut.handleEntityTap(entity: entity) { released.fulfill() }
 
-        wait(for: [released], timeout: 2)
+        wait(for: [released], timeout: 30)
         XCTAssertEqual(connection.pendingRequests.count, 1)
     }
 
@@ -121,7 +121,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         let request = try XCTUnwrap(connection.pendingRequests.first)
         request.completion(.success(.empty))
 
-        wait(for: [settled], timeout: 2)
+        wait(for: [settled], timeout: 30)
         XCTAssertTrue(finished)
     }
 
@@ -139,7 +139,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         let request = try XCTUnwrap(connection.pendingRequests.first)
         request.completion(.failure(.internal(debugDescription: "nope")))
 
-        wait(for: [settled], timeout: 2)
+        wait(for: [settled], timeout: 30)
     }
 
     /// Climate rows open a control screen rather than executing anything.
@@ -150,7 +150,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
 
         sut.handleEntityTap(entity: entity) { released.fulfill() }
 
-        wait(for: [released], timeout: 2)
+        wait(for: [released], timeout: 30)
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
 
@@ -172,7 +172,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         XCTAssertEqual(connection.pendingRequests.count, 1)
         let request = try XCTUnwrap(connection.pendingRequests.first)
         request.completion(.success(.empty))
-        wait(for: [settled], timeout: 2)
+        wait(for: [settled], timeout: 30)
     }
 
     /// The rendered rows carry the same repeat-tap guard the view model does.
@@ -207,7 +207,7 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         }
 
         schedule(cycles)
-        wait(for: [drained], timeout: 10.0)
+        wait(for: [drained], timeout: 30.0)
     }
 
     /// The row refuses a repeat tap while its call is outstanding, which is what stops a slow

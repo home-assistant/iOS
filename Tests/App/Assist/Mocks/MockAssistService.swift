@@ -13,10 +13,22 @@ final class MockAssistService: AssistServiceProtocol {
     var replacedServer: Shared.Server?
     var shouldStartListeningAgainAfterPlaybackEnd: Bool = false
     var resetShouldStartListeningAgainAfterPlaybackEndCalled: Bool = false
+    var holdsPipelinesCompletion = false
+    private var pendingPipelinesCompletion: ((PipelineResponse?) -> Void)?
 
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
         fetchPipelinesCalled = true
-        completion(pipelineResponse)
+        if holdsPipelinesCompletion {
+            pendingPipelinesCompletion = completion
+        } else {
+            completion(pipelineResponse)
+        }
+    }
+
+    func completePendingPipelinesFetch() {
+        let completion = pendingPipelinesCompletion
+        pendingPipelinesCompletion = nil
+        completion?(pipelineResponse)
     }
 
     func replaceServer(server: Shared.Server) {

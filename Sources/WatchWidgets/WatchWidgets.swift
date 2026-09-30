@@ -7,6 +7,9 @@ struct WatchWidgetsBundle: WidgetBundle {
         if #available(watchOS 10.0, *) {
             WatchWidgets()
         }
+        if #available(watchOS 26.0, *) {
+            WatchControlAssist()
+        }
     }
 }
 

@@ -8,6 +8,7 @@ import XCGLogger
 struct DebugView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
     @State private var showShareSheet = false
     @State private var logsURL: URL?
@@ -674,8 +675,8 @@ struct DebugView: View {
     }
 
     private func dismissSettingsAfterReset() {
-        AppSettingsPresenter.shared.isSheetPresented = false
-        AppSettingsPresenter.shared.isPushPresented = false
+        appSettingsPresenter?.isSheetPresented = false
+        appSettingsPresenter?.isPushPresented = false
         dismiss()
     }
 

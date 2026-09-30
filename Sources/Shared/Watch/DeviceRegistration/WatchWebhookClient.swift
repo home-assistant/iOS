@@ -118,24 +118,9 @@ public enum WatchWebhookClient {
         }
     }
 
-    /// The real transport: the server's certificate-aware session.
+    /// The real transport, shared with every other server request (and relayed through the iPhone
+    /// on watchOS when it's reachable).
     public static func perform(_ request: URLRequest, server: Server) async throws -> (Data, HTTPURLResponse) {
-        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
-        // The session strongly retains its delegate until invalidated; do it once the task ends.
-        defer { session.finishTasksAndInvalidate() }
-
-        return try await withCheckedThrowingContinuation { continuation in
-            session.dataTask(with: request) { data, response, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-                guard let response = response as? HTTPURLResponse else {
-                    continuation.resume(throwing: WebhookError.invalidResponse)
-                    return
-                }
-                continuation.resume(returning: (data ?? Data(), response))
-            }.resume()
-        }
+        try await ServerRequestPerformer.perform(request, server: server, priority: .background)
     }
 }

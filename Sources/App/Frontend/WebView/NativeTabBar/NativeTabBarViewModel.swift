@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Shared
+import SwiftUI
 
 /// Lays the list's first entries out as tabs, then More, and tracks in which tab the single web frontend shows.
 @MainActor
@@ -19,6 +20,7 @@ final class NativeTabBarViewModel: ObservableObject {
     @Published private(set) var moreShowsFrontend = false
     @Published var showsCustomize = false
     private(set) var customizeZoomsFromButton = true
+    @Published private(set) var accentColor: Color = .haPrimary
 
     let sidebar: MacSidebarViewModel
     /// Opens the frontend's own quick search; the Search tab is an action, never a selected tab.
@@ -28,6 +30,9 @@ final class NativeTabBarViewModel: ObservableObject {
     var locateTabButton: (_ title: String, _ trailing: Bool) -> CGRect? = {
         NativeTabBarButtonLocator.frame(ofButtonTitled: $0, trailing: $1)
     }
+
+    /// The vertical bar draws its tabs out of process, so there is no spot on screen to zoom out of.
+    var usesVerticalBar = false
 
     private let allServers: () -> [Server]
     private let extrasStore: NativeTabBarExtrasStore
@@ -55,6 +60,7 @@ final class NativeTabBarViewModel: ObservableObject {
         self.mainItems = sidebar.mainItems
         self.fixedItems = sidebar.fixedItems
         self.hiddenSidebarItems = sidebar.hiddenItems
+        self.accentColor = sidebar.accentColor
         rebuild()
         self.selection = tabItems.first?.sidebarItem.map { .panel(id: $0.id) } ?? .more
         self.lastFrontendTab = selection
@@ -67,6 +73,13 @@ final class NativeTabBarViewModel: ObservableObject {
                 self?.fixedItems = fixedItems
                 self?.hiddenSidebarItems = hiddenItems
                 self?.rebuild()
+            }
+            .store(in: &cancellables)
+
+        sidebar.$accentColor
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] accentColor in
+                self?.accentColor = accentColor
             }
             .store(in: &cancellables)
 
@@ -155,7 +168,7 @@ final class NativeTabBarViewModel: ObservableObject {
             // Moving the selection there and back on the next turn is what makes SwiftUI un-highlight the tab.
             let previousTab = selection
             selection = tab
-            let tapped = tabItems.first { $0.tab == tab }
+            let tapped = usesVerticalBar ? nil : tabItems.first { $0.tab == tab }
             perform(tab, sourceFrame: tapped.flatMap { locateTabButton($0.title, $0.id == searchRoleItem?.id) })
             DispatchQueue.main.async { [weak self] in
                 guard let self, selection == tab else { return }
@@ -199,8 +212,12 @@ final class NativeTabBarViewModel: ObservableObject {
         }
     }
 
-    func showAppSettings() {
-        AppSettingsPresenter.shared.presentSettings(zoomingFrom: Self.appSettingsTransitionID)
+    /// The presenter belongs to the scene the tab bar is showing in, so Settings opens in that window only.
+    func showAppSettings(
+        using presenter: AppSettingsPresenter,
+        zoomingFrom sourceID: String? = NativeTabBarViewModel.appSettingsTransitionID
+    ) {
+        presenter.presentSettings(zoomingFrom: sourceID)
     }
 
     // MARK: - Servers
@@ -211,6 +228,10 @@ final class NativeTabBarViewModel: ObservableObject {
 
     var hasMultipleServers: Bool {
         servers.count > 1
+    }
+
+    var otherServers: [Server] {
+        servers.filter { $0.identifier != sidebar.server.identifier }
     }
 
     func open(server: Server) {

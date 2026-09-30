@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 80
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
@@ -39,7 +39,7 @@ env:
 jobs:
   onboarding:
     name: "Onboarding"
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 90
     # Naming any scope denies the rest, so the failure report has to ask for what it needs:
     # `issues` to file or update the report, `actions` to read back which step failed.
@@ -164,6 +164,14 @@ jobs:
           --require-component websocket_api
           --output "$RUNNER_TEMP/homeassistant-config.json"
           --summary "$GITHUB_STEP_SUMMARY"
+
+      # Same as the CI workflow: the lane runs with package resolution disabled, so the packages
+      # have to be checked out before it, which a restore-only cache cannot guarantee.
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-UI
 
       - name: Run onboarding flow
         run: >-

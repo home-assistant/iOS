@@ -14,6 +14,7 @@ extension WebViewController {
         didHandleServerErrorResponse = false
         didReceiveClientCertificateChallenge = false
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
+        forgetOnscreenEntity()
     }
 
     func webView(
@@ -98,6 +99,10 @@ extension WebViewController {
             recordClientCertificateIssueIfNeeded(for: error)
             showEmptyState()
         }
+    }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        handleContentProcessTermination()
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

@@ -6,7 +6,7 @@ import Testing
 private final class ReporterCallLog {
     private let lock = NSLock()
     private var registrations = 0
-    private var sent = [(type: String, data: Any)]()
+    private var sent = [(type: String, server: Identifier<Server>, data: Any)]()
 
     var registerCount: Int {
         lock.lock()
@@ -14,10 +14,15 @@ private final class ReporterCallLog {
         return registrations
     }
 
-    var sends: [(type: String, data: Any)] {
+    var sends: [(type: String, server: Identifier<Server>, data: Any)] {
         lock.lock()
         defer { lock.unlock() }
         return sent
+    }
+
+    /// What was sent to one server, in order.
+    func sends(to server: Identifier<Server>) -> [(type: String, server: Identifier<Server>, data: Any)] {
+        sends.filter { $0.server == server }
     }
 
     func recordRegistration() {
@@ -26,10 +31,10 @@ private final class ReporterCallLog {
         registrations += 1
     }
 
-    func record(type: String, data: Any) {
+    func record(type: String, server: Identifier<Server>, data: Any) {
         lock.lock()
         defer { lock.unlock() }
-        sent.append((type, data))
+        sent.append((type, server, data))
     }
 }
 
@@ -59,7 +64,8 @@ struct WatchDeviceReporterTests {
             webhookSecret: nil,
             cloudhookURL: nil,
             registeredAt: now,
-            deviceName: identity.deviceName
+            deviceName: identity.deviceName,
+            registeredAppVersion: AppConstants.version
         )
     }
 
@@ -74,16 +80,18 @@ struct WatchDeviceReporterTests {
 
     /// A reporter whose `send` answers with `responses` in order, repeating the last one.
     private func reporter(
+        servers: [Server]? = nil,
         hasActiveURL: Bool = true,
         responses: [Any],
         registerDelay: TimeInterval = 0
     ) -> WatchDeviceReporter {
         let lock = NSLock()
         var remaining = responses
+        let servers = servers ?? [server]
         return WatchDeviceReporter(dependencies: .init(
             settings: settings,
             registrations: store,
-            servers: { [server] },
+            servers: { servers },
             hasActiveURL: { _ in hasActiveURL },
             currentSensors: { sensors },
             identity: { _ in identity },
@@ -95,12 +103,13 @@ struct WatchDeviceReporterTests {
                 try store.set(registration, for: server.identifier)
                 return registration
             },
-            send: { type, data, _, _, _ in
-                log.record(type: type, data: data)
+            send: { type, data, server, _, _ in
+                log.record(type: type, server: server.identifier, data: data)
                 lock.lock()
                 defer { lock.unlock() }
                 let response = remaining.first ?? ()
                 if remaining.count > 1 { remaining.removeFirst() }
+                if let error = response as? Error { throw error }
                 return response
             },
             now: { now }
@@ -128,7 +137,7 @@ struct WatchDeviceReporterTests {
     }
 
     @Test func sendsTheSensorsSwitchedOn() async throws {
-        settings.enabledSensorIDs = ["battery_level"]
+        settings.setEnabledSensorIDs(["battery_level"], forServer: server.identifier)
         let reporter = reporter(responses: [["success": true], ["success": true], Self.accepted])
 
         let reports = await reporter.report(trigger: .backgroundRefresh)
@@ -145,11 +154,51 @@ struct WatchDeviceReporterTests {
         #expect(settings.lastSensorReportError == nil)
     }
 
+    @Test func eachServerReceivesItsOwnSelection() async throws {
+        let other = Server.fake()
+        settings.setEnabledSensorIDs(["battery_level"], forServer: server.identifier)
+        // Every send is answered as accepted; registrations ignore the body and the update finds
+        // nothing rejected, whichever server the send was for.
+        let reporter = reporter(servers: [server, other], responses: [Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports == [
+            .init(server: server.identifier, outcome: .reported(sensorCount: 1)),
+            .init(server: other.identifier, outcome: .nothingEnabled),
+        ])
+        #expect(log.registerCount == 2)
+
+        // The server with a switch on gets that sensor registered enabled and its value sent.
+        let toServer = log.sends(to: server.identifier)
+        #expect(toServer.map(\.type) == ["register_sensor", "register_sensor", "update_sensor_states"])
+        let registeredLevel = try #require(
+            toServer.compactMap { $0.data as? [String: Any] }.first { $0["unique_id"] as? String == "battery_level" }
+        )
+        #expect(registeredLevel["disabled"] as? Bool == false)
+        #expect(store.registration(for: server.identifier)?.registeredSensorEnablement == [
+            "battery_level": true,
+            "battery_state": false,
+        ])
+
+        // The other server was never switched on for anything, so it gets both sensors registered
+        // off and no values at all.
+        let toOther = log.sends(to: other.identifier)
+        #expect(toOther.map(\.type) == ["register_sensor", "register_sensor"])
+        let otherPayloads = toOther.compactMap { $0.data as? [String: Any] }
+        #expect(otherPayloads.allSatisfy { $0["disabled"] as? Bool == true })
+        #expect(otherPayloads.allSatisfy { $0["state"] as? String == "unavailable" })
+        #expect(store.registration(for: other.identifier)?.registeredSensorEnablement == [
+            "battery_level": false,
+            "battery_state": false,
+        ])
+    }
+
     @Test func registersOnlyTheSensorWhoseSwitchChanged() async throws {
         var known = registration
         known.registeredSensorEnablement = ["battery_level": false, "battery_state": false]
         try store.set(known, for: server.identifier)
-        settings.enabledSensorIDs = ["battery_state"]
+        settings.setEnabledSensorIDs(["battery_state"], forServer: server.identifier)
         let reporter = reporter(responses: [["success": true], Self.accepted])
 
         let reports = await reporter.report(trigger: .settingsChange)
@@ -164,11 +213,110 @@ struct WatchDeviceReporterTests {
         #expect(store.registration(for: server.identifier)?.registeredSensorEnablement["battery_state"] == true)
     }
 
+    @Test func registersEverySensorAgainAfterAnAppUpdate() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.setEnabledSensorIDs(["battery_level", "battery_state"], forServer: server.identifier)
+        let reporter = reporter(responses: [["success": true], ["success": true], Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 2))
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor", "update_sensor_states"])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func registersEverySensorAgainForARegistrationMadeBeforeTheVersionWasTracked() async throws {
+        var known = registration
+        known.registeredAppVersion = nil
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.setEnabledSensorIDs(["battery_level", "battery_state"], forServer: server.identifier)
+        let reporter = reporter(responses: [["success": true], ["success": true], Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 2))
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor", "update_sensor_states"])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func registersEverySensorAgainEvenWhenTheyAreAllSwitchedOff() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": false, "battery_state": false]
+        try store.set(known, for: server.identifier)
+        let reporter = reporter(responses: [["success": true], ["success": true]])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .nothingEnabled)
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor"])
+        let payloads = log.sends.compactMap { $0.data as? [String: Any] }
+        #expect(payloads.allSatisfy { $0["disabled"] as? Bool == true })
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func keepsTheOldVersionWhenARegistrationFailsPartWayThrough() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.setEnabledSensorIDs(["battery_level", "battery_state"], forServer: server.identifier)
+        let reporter = reporter(responses: [["success": true], ReporterTestError.any])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        guard case .failed = reports.first?.outcome else {
+            Issue.record("expected a failure, got \(String(describing: reports.first?.outcome))")
+            return
+        }
+        #expect(log.sends.map(\.type) == ["register_sensor", "register_sensor"])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == "2020.1")
+    }
+
+    @Test func registersEverythingAgainOnTheRunAfterAFailedOne() async throws {
+        var known = registration
+        known.registeredAppVersion = "2020.1"
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.setEnabledSensorIDs(["battery_level", "battery_state"], forServer: server.identifier)
+
+        _ = await reporter(responses: [["success": true], ReporterTestError.any])
+            .report(trigger: .settingsChange)
+        let afterFailure = log.sends.count
+
+        _ = await reporter(responses: [["success": true], ["success": true], Self.accepted])
+            .report(trigger: .settingsChange)
+
+        #expect(log.sends.dropFirst(afterFailure).map(\.type) == [
+            "register_sensor",
+            "register_sensor",
+            "update_sensor_states",
+        ])
+        #expect(store.registration(for: server.identifier)?.registeredAppVersion == AppConstants.version)
+    }
+
+    @Test func doesNotRegisterAgainOnceTheVersionHasBeenRecorded() async throws {
+        var known = registration
+        known.registeredSensorEnablement = ["battery_level": true, "battery_state": true]
+        try store.set(known, for: server.identifier)
+        settings.setEnabledSensorIDs(["battery_level", "battery_state"], forServer: server.identifier)
+        let reporter = reporter(responses: [Self.accepted])
+
+        let reports = await reporter.report(trigger: .settingsChange)
+
+        #expect(reports.first?.outcome == .reported(sensorCount: 2))
+        #expect(log.sends.map(\.type) == ["update_sensor_states"])
+    }
+
     @Test func registersAgainOnceWhenTheServerForgotTheDevice() async throws {
         var known = registration
         known.registeredSensorEnablement = ["battery_level": true, "battery_state": false]
         try store.set(known, for: server.identifier)
-        settings.enabledSensorIDs = ["battery_level"]
+        settings.setEnabledSensorIDs(["battery_level"], forServer: server.identifier)
         // Empty body: Home Assistant's answer for a webhook it no longer knows. Then, after the new
         // registration, both sensors register and the update is accepted.
         let reporter = reporter(responses: [(), ["success": true], ["success": true], Self.accepted])
@@ -194,7 +342,7 @@ struct WatchDeviceReporterTests {
         var known = registration
         known.registeredSensorEnablement = ["battery_level": true, "battery_state": false]
         try store.set(known, for: server.identifier)
-        settings.enabledSensorIDs = ["battery_level"]
+        settings.setEnabledSensorIDs(["battery_level"], forServer: server.identifier)
         let notRegistered: [String: Any] = [
             "battery_level": ["success": false, "error": ["code": "not_registered", "message": "unknown"]],
             "battery_state": ["success": true],
@@ -212,7 +360,7 @@ struct WatchDeviceReporterTests {
         var known = registration
         known.registeredSensorEnablement = ["battery_level": true, "battery_state": false]
         try store.set(known, for: server.identifier)
-        settings.enabledSensorIDs = ["battery_level"]
+        settings.setEnabledSensorIDs(["battery_level"], forServer: server.identifier)
         let rejected: [String: Any] = [
             "battery_level": ["success": false, "error": ["code": "invalid_format", "message": "Bad value"]],
             "battery_state": ["success": true],
@@ -252,7 +400,7 @@ struct WatchDeviceReporterTests {
         known.deviceName = "Apple Watch"
         known.registeredSensorEnablement = ["battery_level": true, "battery_state": false]
         try store.set(known, for: server.identifier)
-        settings.enabledSensorIDs = ["battery_level"]
+        settings.setEnabledSensorIDs(["battery_level"], forServer: server.identifier)
         let reporter = reporter(responses: [["device_name": identity.deviceName], Self.accepted])
 
         let reports = await reporter.report(trigger: .backgroundRefresh)
@@ -373,7 +521,7 @@ struct WatchDeviceReporterTests {
     }
 
     @Test func overlappingTriggersRegisterOnce() async {
-        settings.enabledSensorIDs = ["battery_level"]
+        settings.setEnabledSensorIDs(["battery_level"], forServer: server.identifier)
         let reporter = reporter(responses: [["success": true], ["success": true], Self.accepted], registerDelay: 0.2)
 
         async let first = reporter.report(trigger: .backgroundRefresh)
@@ -399,4 +547,8 @@ struct WatchDeviceReporterTests {
 
         #expect(error.errorDescription == "Home Assistant rejected battery_level: Bad value")
     }
+}
+
+private enum ReporterTestError: Error {
+    case any
 }

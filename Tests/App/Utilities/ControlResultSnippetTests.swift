@@ -6,8 +6,8 @@ import Testing
 
 /// Covers the card the control commands show once they have changed something.
 struct ControlResultSnippetTests {
-    private static func light(serverId: String) -> ControllableEntityAppEntity {
-        ControllableEntityAppEntity(
+    private static func light(serverId: String) -> HAAppEntityAppIntentEntity {
+        HAAppEntityAppIntentEntity(
             id: "\(serverId)-light.kitchen",
             entityId: "light.kitchen",
             serverId: serverId,

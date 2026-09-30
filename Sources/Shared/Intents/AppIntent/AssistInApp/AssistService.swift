@@ -124,31 +124,69 @@ public final class AssistService: AssistServiceProtocol {
 
     private func assistWithAudio(pipelineId: String?, audioSampleRate: Double, tts: Bool) {
         lastPipelineIdUsed = pipelineId
-        Current.api(for: server)?.connection.subscribe(to: AssistRequests.assistByVoiceTypedSubscription(
-            preferredPipelineId: pipelineId,
-            audioSampleRate: audioSampleRate,
-            conversationId: conversationId,
-            hassDeviceId: server.info.hassDeviceId,
-            tts: tts
-        )) { [weak self] cancellable, data in
-            guard let self else { return }
-            self.cancellable = cancellable
-            handleAssistEvent(data: data, cancellable: cancellable)
-        }
+        cancellable = Current.api(for: server)?.connection.subscribe(
+            to: AssistRequests.assistByVoiceTypedSubscription(
+                preferredPipelineId: pipelineId,
+                audioSampleRate: audioSampleRate,
+                conversationId: conversationId,
+                hassDeviceId: server.info.hassDeviceId,
+                tts: tts
+            ),
+            initiated: { [weak self] result in
+                self?.handleSubscriptionInitiated(result)
+            },
+            handler: { [weak self] cancellable, data in
+                guard let self else { return }
+                self.cancellable = cancellable
+                handleAssistEvent(data: data, cancellable: cancellable)
+            }
+        )
     }
 
     private func assistWithText(input: String, pipelineId: String?, expectTTS: Bool) {
         lastPipelineIdUsed = pipelineId
-        Current.api(for: server)?.connection.subscribe(to: AssistRequests.assistByTextTypedSubscription(
-            preferredPipelineId: pipelineId,
-            inputText: input,
-            conversationId: conversationId,
-            hassDeviceId: server.info.hassDeviceId,
-            tts: expectTTS
-        )) { [weak self] cancellable, data in
-            guard let self else { return }
-            self.cancellable = cancellable
-            handleAssistEvent(data: data, cancellable: cancellable)
+        cancellable = Current.api(for: server)?.connection.subscribe(
+            to: AssistRequests.assistByTextTypedSubscription(
+                preferredPipelineId: pipelineId,
+                inputText: input,
+                conversationId: conversationId,
+                hassDeviceId: server.info.hassDeviceId,
+                tts: expectTTS
+            ),
+            initiated: { [weak self] result in
+                self?.handleSubscriptionInitiated(result)
+            },
+            handler: { [weak self] cancellable, data in
+                guard let self else { return }
+                self.cancellable = cancellable
+                handleAssistEvent(data: data, cancellable: cancellable)
+            }
+        )
+    }
+
+    /// The backend can reject `assist_pipeline/run` outright — an unavailable STT provider on the
+    /// pipeline (`stt-provider-missing`), an unknown pipeline id, a permission problem. That arrives
+    /// as the subscription's *initial result*, not as a pipeline `error` event, so nothing reaches
+    /// `handleAssistEvent`. Without this the run simply never produces anything: the watch stays on
+    /// its "waiting for pipeline" spinner until its extended runtime session expires, and in-app
+    /// Assist keeps its typing indicator forever. Report it like any other pipeline error so the UI
+    /// can show the reason.
+    private func handleSubscriptionInitiated(_ result: Result<HAData, HAError>) {
+        guard case let .failure(error) = result else { return }
+        sttBinaryHandlerId = nil
+        Current.Log.error("Assist pipeline failed to start: \(error.localizedDescription)")
+        // A rejected run is not retryable: HAKit keeps the subscription registered and re-sends it
+        // on every reconnect, which would re-report the same failure for the rest of the session.
+        cancellable?.cancel()
+        cancellable = nil
+        switch error {
+        case let .external(externalError):
+            delegate?.didReceiveError(code: externalError.code, message: externalError.message)
+        case .internal, .underlying:
+            delegate?.didReceiveError(
+                code: "pipeline_run_failed",
+                message: error.localizedDescription
+            )
         }
     }
 

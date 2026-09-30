@@ -116,6 +116,38 @@ final class SpotlightEntityIndexer: ServerObserver {
         needsReindexOnForeground = true
     }
 
+    /// Reindexes the named entities on request from the system, which asks when it notices the index
+    /// may be stale rather than waiting for the next database change.
+    @available(iOS 27.0, *)
+    func reindex(entityIds: [String]) async throws {
+        guard let snapshot = await Task.detached(priority: .utility) { Self.makeSnapshot() }.value else {
+            return
+        }
+        let entities = Self.entitiesToReindex(from: snapshot.entities, matching: entityIds)
+        guard !entities.isEmpty else { return }
+        try await index.indexAppEntities(entities)
+    }
+
+    /// The entities the system named, picked out of the current snapshot.
+    ///
+    /// Split out so the selection can be tested without driving the indexer, which only runs from
+    /// the system's requests, the same reason `indexableServers` below is its own function. The
+    /// system may name identifiers the snapshot no longer holds, so anything unknown is dropped
+    /// rather than reported.
+    nonisolated static func entitiesToReindex(
+        from entities: [HAAppEntityAppIntentEntity],
+        matching identifiers: [String]
+    ) -> [HAAppEntityAppIntentEntity] {
+        let wanted = Set(identifiers)
+        return entities.filter { wanted.contains($0.id) }
+    }
+
+    /// Rebuilds the whole index on request from the system.
+    @available(iOS 27.0, *)
+    func reindexEverything() async {
+        await reindex(reason: "system asked for a reindex")
+    }
+
     private func reindexAfterForegroundIfNeeded() {
         guard needsReindexOnForeground else { return }
         needsReindexOnForeground = false
@@ -142,6 +174,14 @@ final class SpotlightEntityIndexer: ServerObserver {
             // actor, so the check and the clear can't interleave with a replacement.
             guard !Task.isCancelled else { return }
             self?.reindexTask = nil
+        }
+    }
+
+    /// Events are indexed on their own because the entity is iOS 27; see
+    /// `CalendarEventSpotlightIndexer` for why it isn't part of the snapshot.
+    private func reindexCalendarEvents() async {
+        if #available(iOS 27.0, *) {
+            await CalendarEventSpotlightIndexer.reindex(index: index, defaults: defaults)
         }
     }
 
@@ -197,6 +237,7 @@ final class SpotlightEntityIndexer: ServerObserver {
                 entityIds: indexedIds,
                 calendarIds: indexedCalendarIds
             ))
+            await reindexCalendarEvents()
             // The entities that changed are the ones App Shortcut phrases name.
             HomeAssistantAppShortcuts.updateAppShortcutParameters()
             Current.Log

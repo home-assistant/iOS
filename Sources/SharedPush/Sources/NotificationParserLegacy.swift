@@ -255,7 +255,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 NotificationPayloadKey.notificationIconColor.rawValue,
                 "background_color", "text_color", "progress_bar_color",
                 "progress_bar_direction",
-                "silent", "url",
+                "silent", "url", "relevance_score",
             ] {
                 if let value = data[key] {
                     homeassistant[key] = value

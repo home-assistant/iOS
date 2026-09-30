@@ -13,6 +13,12 @@ final class MockAppCoordinator: AppCoordinator {
     private(set) var openedServers: [Server] = []
     private(set) var openedDeeplinks: [(server: Server, urlString: String)] = []
     private(set) var openedDeeplinksSelectingServer: [String] = []
+    private(set) var selectServerCallCount = 0
+    private(set) var selectServerZoomedFromStandBy = false
+    private(set) var presentedViewControllers: [UIViewController] = []
+    var onPresent: ((UIViewController) -> Void)?
+    var onOpenDeeplink: ((String) -> Void)?
+    var onSelectServer: (() -> Void)?
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
     var onOpenServer: (() -> Void)?
@@ -20,7 +26,12 @@ final class MockAppCoordinator: AppCoordinator {
     var presentedViewController: UIViewController?
     var window: UIWindow?
 
-    func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {}
+    func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
+        presentedViewControllers.append(viewController)
+        completion?()
+        onPresent?(viewController)
+    }
+
     func show(alert: ServerAlert) {}
 
     func showSettings(pushOntoNavigationStack: Bool) {
@@ -47,7 +58,12 @@ final class MockAppCoordinator: AppCoordinator {
         activatedServers.append(server)
     }
 
-    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {}
+    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {
+        selectServerCallCount += 1
+        selectServerZoomedFromStandBy = zoomsFromStandBy
+        onSelectServer?()
+    }
+
     func presentInvitation(url: URL?) {}
     func setup() {}
 
@@ -60,6 +76,7 @@ final class MockAppCoordinator: AppCoordinator {
         isComingFromAppIntent: Bool
     ) {
         openedDeeplinks.append((server, urlString))
+        onOpenDeeplink?(urlString)
     }
 
     func openSelectingServer(

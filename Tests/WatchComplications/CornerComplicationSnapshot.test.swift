@@ -27,9 +27,19 @@ struct CornerComplicationSnapshotTests {
             .background(.black)
     }
 
+    /// The icon slot carrying a configured color, which the face has to draw instead of tinting it away.
+    private static func customIconColor(
+        _ model: CornerComplicationRenderModel
+    ) -> CornerComplicationRenderModel {
+        var model = model
+        model.iconImage = customColoredComplicationIcon()
+        return model
+    }
+
     private static var variants: [(String, CornerComplicationRenderModel)] {
         [
             ("icon-name-value-gauge", .sample()),
+            ("custom-icon-color", customIconColor(.sample(showValue: false, title: nil, fraction: nil))),
             ("value-name-gauge", .sample(icon: false)),
             ("value-name-no-gauge", .sample(icon: false, fraction: nil)),
             ("value-only", .sample(icon: false, title: nil, fraction: nil)),
@@ -45,6 +55,9 @@ struct CornerComplicationSnapshotTests {
             // A legacy Graphic Corner "Gauge Text" complication: ClockKit drew its outer text flat and
             // large in the corner tip, so it opts out of the curve and keeps that size.
             ("flat-outer-text-gauge", .sample(icon: false, value: "16.6", title: nil, curvesText: false)),
+            // A legacy Graphic Corner "Stack Text" complication: ClockKit curved both of its lines, so its
+            // Outer area rides the corner's own curve and its Inner area the arc, with no gauge.
+            ("legacy-stack-text", .sample(icon: false, value: "Living Room", title: "21.5°", fraction: nil)),
         ]
     }
 }
