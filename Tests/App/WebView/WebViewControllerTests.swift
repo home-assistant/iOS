@@ -801,6 +801,22 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.overlayState?.emptyState)
     }
 
+    /// A scripted `focus()` raises the keyboard only while the web view holds keyboard focus.
+    func testMakeWebViewFirstResponderGivesTheWebViewKeyboardFocus() {
+        let sut = makeSUT()
+        let webView = WKWebView(frame: sut.view.bounds)
+        sut.webView = webView
+        sut.view.addSubview(webView)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.makeWebViewFirstResponder()
+
+        XCTAssertTrue(webView.containsFirstResponder)
+    }
+
     func testPresentClientCertificateImportPresentsTheImportSheet() async {
         let sut = makeSUT()
         // Attaching to a window changes traits, which the controller forwards to its web view.
@@ -1430,5 +1446,11 @@ private final class AsyncGate: @unchecked Sendable {
         let waiter = waiters.isEmpty ? nil : waiters.removeFirst()
         lock.unlock()
         waiter?.resume()
+    }
+}
+
+private extension UIView {
+    var containsFirstResponder: Bool {
+        isFirstResponder || subviews.contains(where: \.containsFirstResponder)
     }
 }

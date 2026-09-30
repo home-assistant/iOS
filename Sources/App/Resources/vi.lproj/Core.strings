@@ -80,7 +80,7 @@
 "component::ecoforest::entity::sensor::status::state::off" = "Tắt";
 "component::ecoforest::entity::sensor::status::state::on" = "Bật";
 "component::ecoforest::entity::sensor::status::state::stand_by" = "Chờ";
-"component::event::title" = "Event";
+"component::event::title" = "Sự kiện";
 "component::fan::entity_component::_::state::off" = "Tắt";
 "component::fan::entity_component::_::state::on" = "Bật";
 "component::fan::entity_component::_::state_attributes::oscillating::state::false" = "Không";
@@ -278,7 +278,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::timer::entity_component::_::state::paused" = "Đã tạm dừng";
 "component::timer::entity_component::_::state_attributes::editable::state::false" = "Không";
 "component::timer::entity_component::_::state_attributes::editable::state::true" = "Có";
-"component::timer::title" = "Hẹn giờ";
+"component::timer::title" = "Bộ đếm giờ";
 "component::todo::title" = "Danh sách việc cần làm";
 "component::transmission::entity::sensor::transmission_status::state::idle" = "Nhàn rỗi";
 "component::tuya::entity::select::basic_anti_flicker::state:::0" = "Bị vô hiệu hóa";
