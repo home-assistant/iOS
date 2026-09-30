@@ -1,4 +1,3 @@
-import AVFoundation
 import Foundation
 import HAKit
 import Shared
@@ -147,9 +146,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         cameraEntityId: String,
         supportsTalkback: Bool = false,
         makeClient: @escaping (WebRTCClientConfiguration, _ supportsTalkback: Bool) -> WebRTCStreamClient = {
-            WebRTCClient(configuration: $0, supportsTalkback: $1)
+            WebRTCClient(configuration: $0, media: $1 ? .talkback : .playback)
         },
-        requestMicrophonePermission: @escaping () async -> Bool = WebRTCViewPlayerViewModel.requestRecordPermission,
+        requestMicrophonePermission: @escaping () async -> Bool = WebRTCMicrophonePermission.request,
         timing: Timing = .production
     ) {
         self.server = server
@@ -410,20 +409,6 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         isTalking = false
     }
 
-    static func requestRecordPermission() async -> Bool {
-        await withCheckedContinuation { continuation in
-            if #available(iOS 17.0, *) {
-                AVAudioApplication.requestRecordPermission { granted in
-                    continuation.resume(returning: granted)
-                }
-            } else {
-                AVAudioSession.sharedInstance().requestRecordPermission { granted in
-                    continuation.resume(returning: granted)
-                }
-            }
-        }
-    }
-
     private func determineTalkbackSupport(completion: @escaping () -> Void) {
         cancelTalkbackSupportLookup()
         guard let api = Current.api(for: server) else {
@@ -634,24 +619,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     }
 
     private func handleCandidate(_ data: HAData) {
-        guard let candidateDict: [String: Any] = try? data.decode("candidate"),
-              let candidateStr = candidateDict["candidate"] as? String,
-              !candidateStr.isEmpty else {
-            // An empty/null candidate signals end-of-candidates; nothing to add.
-            return
-        }
-        // JSON numbers arrive bridged, so read the index through NSNumber rather than casting
-        // straight to Int32 — a failed cast would silently file a video candidate under the audio
-        // m-line. When the backend sends neither field the frontend defaults `sdpMid` to "0",
-        // because a candidate needs one of the two to be accepted at all.
-        let sdpMLineIndex = (candidateDict["sdpMLineIndex"] as? NSNumber)?.int32Value ?? 0
-        let sdpMidFallback: String? = candidateDict["sdpMLineIndex"] == nil ? "0" : nil
-        let sdpMid = candidateDict["sdpMid"] as? String ?? sdpMidFallback
-        let candidate = RTCIceCandidate(
-            sdp: candidateStr,
-            sdpMLineIndex: sdpMLineIndex,
-            sdpMid: sdpMid
-        )
+        guard let candidate = WebRTCSignalingCandidate.remoteCandidate(from: data) else { return }
         webRTCClient?.set(remoteCandidate: candidate) { error in
             if let error {
                 Current.Log.error("Failed to add remote candidate: \(error.localizedDescription)")
@@ -686,11 +654,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         api.connection.send(.init(type: .webSocket(Constants.candidate.rawValue), data: [
             "entity_id": cameraEntityId,
             "session_id": sessionId,
-            "candidate": [
-                "candidate": candidate.sdp,
-                "sdpMid": candidate.sdpMid ?? "0",
-                "sdpMLineIndex": candidate.sdpMLineIndex,
-            ],
+            "candidate": WebRTCSignalingCandidate.payload(for: candidate),
         ])) { result in
             switch result {
             case let .success(data):

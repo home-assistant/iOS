@@ -298,11 +298,15 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         )
     }()
 
-    private static func configureRecordingAudioSession() {
+    private static func configureRecordingAudioSession(for media: WebRTCClientMedia) {
         let configuration = RTCAudioSessionConfiguration.webRTC()
         configuration.category = AVAudioSession.Category.playAndRecord.rawValue
         configuration.mode = AVAudioSession.Mode.videoChat.rawValue
-        configuration.categoryOptions = [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP]
+        var options: AVAudioSession.CategoryOptions = [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP]
+        if media == .microphone {
+            options.insert(.mixWithOthers)
+        }
+        configuration.categoryOptions = options
         RTCAudioSessionConfiguration.setWebRTC(configuration)
     }
 
@@ -325,7 +329,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
 
     weak var delegate: WebRTCClientDelegate?
     private let factory: RTCPeerConnectionFactory
-    private let supportsTalkback: Bool
+    private let media: WebRTCClientMedia
     private let peerConnection: RTCPeerConnection
     private var remoteVideoTrack: RTCVideoTrack?
     private var remoteAudioTrack: RTCAudioTrack?
@@ -344,12 +348,12 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         fatalError("WebRTCClient:init is unavailable")
     }
 
-    init(configuration: WebRTCClientConfiguration, supportsTalkback: Bool = false) {
-        self.supportsTalkback = supportsTalkback
-        let factory = supportsTalkback ? WebRTCClient.recordingFactory : WebRTCClient.playbackFactory
+    init(configuration: WebRTCClientConfiguration, media: WebRTCClientMedia = .playback) {
+        self.media = media
+        let factory = media.recordsMicrophone ? WebRTCClient.recordingFactory : WebRTCClient.playbackFactory
         self.factory = factory
-        if supportsTalkback {
-            WebRTCClient.configureRecordingAudioSession()
+        if media.recordsMicrophone {
+            WebRTCClient.configureRecordingAudioSession(for: media)
         }
 
         let config = RTCConfiguration()
@@ -422,7 +426,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
 
     func closeConnection() {
         peerConnection.close()
-        guard supportsTalkback else { return }
+        guard media.recordsMicrophone else { return }
         WebRTCClient.restorePlaybackAudioSession()
     }
 
@@ -503,22 +507,30 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         localAudioTrack?.isEnabled = enabled
     }
 
+    private func addMicrophoneTransceiver(direction: RTCRtpTransceiverDirection, isEnabled: Bool) {
+        let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "audio0")
+        audioTrack.isEnabled = isEnabled
+        localAudioTrack = audioTrack
+        let audioTransceiverInit = RTCRtpTransceiverInit()
+        audioTransceiverInit.direction = direction
+        audioTransceiverInit.streamIds = ["stream"]
+        peerConnection.addTransceiver(with: audioTrack, init: audioTransceiverInit)
+    }
+
     private func createMediaTracks() {
-        // Receive-only transceivers, matching the frontend player: we never send media, so no
-        // local track or capturer is needed (RTCCameraVideoCapturer is unavailable in app
-        // extensions anyway), and the offer negotiates recvonly m-lines.
-        if supportsTalkback {
-            let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "audio0")
-            audioTrack.isEnabled = false
-            localAudioTrack = audioTrack
-            let audioTransceiverInit = RTCRtpTransceiverInit()
-            audioTransceiverInit.direction = .sendRecv
-            audioTransceiverInit.streamIds = ["stream"]
-            peerConnection.addTransceiver(with: audioTrack, init: audioTransceiverInit)
-        } else {
+        switch media {
+        case .playback:
+            // Receive-only transceivers, matching the frontend player: we never send media, so no
+            // local track or capturer is needed (RTCCameraVideoCapturer is unavailable in app
+            // extensions anyway), and the offer negotiates recvonly m-lines.
             let audioTransceiverInit = RTCRtpTransceiverInit()
             audioTransceiverInit.direction = .recvOnly
             peerConnection.addTransceiver(of: .audio, init: audioTransceiverInit)
+        case .talkback:
+            addMicrophoneTransceiver(direction: .sendRecv, isEnabled: false)
+        case .microphone:
+            addMicrophoneTransceiver(direction: .sendOnly, isEnabled: true)
+            return
         }
 
         let videoTransceiverInit = RTCRtpTransceiverInit()

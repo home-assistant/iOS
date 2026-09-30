@@ -24,6 +24,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
     private let entityControlDonation: EntityControlDonation
+    private let cameraMicrophoneBridge: CameraMicrophoneBridge
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
@@ -33,10 +34,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     init(
         improvManager: any ImprovManagerProtocol,
-        entityControlDonation: EntityControlDonation = .init()
+        entityControlDonation: EntityControlDonation = .init(),
+        cameraMicrophoneBridge: CameraMicrophoneBridge = .init()
     ) {
         self.improvManager = improvManager
         self.entityControlDonation = entityControlDonation
+        self.cameraMicrophoneBridge = cameraMicrophoneBridge
+        cameraMicrophoneBridge.onSessionEnded = { [weak self] cameraEntityId, error in
+            self?.notifyCameraMicrophoneStopped(cameraEntityId: cameraEntityId, error: error)
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -61,6 +67,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
+                stopCameraMicrophoneLeftByPreviousPage()
                 let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -203,6 +210,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
+            case .cameraMicrophoneStart:
+                startCameraMicrophone(incomingMessage: incomingMessage, server: webViewController.server)
+            case .cameraMicrophoneStop:
+                cameraMicrophoneBridge.stop(cameraEntityId: incomingMessage.Payload?["entity_id"] as? String)
             case .frontendReloadAndClearCache:
                 reloadAndClearFrontendCache()
             case .sidebarShow:
@@ -714,6 +725,47 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             cameraName: cameraName,
             on: webViewController
         )
+    }
+
+    // MARK: - Camera microphone
+
+    private func startCameraMicrophone(incomingMessage: WebSocketMessage, server: Server) {
+        let messageId = incomingMessage.ID ?? -1
+        guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+            Current.Log.error("Received camera/microphone/start but entity_id was not string! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: "invalid_payload",
+                errorMessage: "entity_id is required"
+            ))
+            return
+        }
+        cameraMicrophoneBridge.start(cameraEntityId: entityId, server: server) { [weak self] result in
+            switch result {
+            case .success:
+                self?.sendExternalBus(message: .init(id: messageId, type: "result", result: [:]))
+            case let .failure(error):
+                self?.sendExternalBus(message: .init(
+                    id: messageId,
+                    errorCode: error.code,
+                    errorMessage: error.message
+                ))
+            }
+        }
+    }
+
+    private func stopCameraMicrophoneLeftByPreviousPage() {
+        cameraMicrophoneBridge.stop(cameraEntityId: nil)
+    }
+
+    private func notifyCameraMicrophoneStopped(cameraEntityId: String, error: CameraMicrophoneError) {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.cameraMicrophoneStopped.rawValue,
+            payload: [
+                "entity_id": cameraEntityId,
+                "reason": error.code,
+            ]
+        ))
     }
 }
 
