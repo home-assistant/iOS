@@ -17,7 +17,7 @@ description: "SwiftUI and UIKit UI conventions for Home Assistant iOS. Use when 
 - **Keep everything in `body`**: build the view's content inline inside `body`. Do not abstract portions out into separate reusable subviews (helper view structs or computed `some View` properties) just to break `body` up. Extract a new struct only when it is genuinely reused elsewhere, and when you do, it gets its own file (see above).
 - **Always add a `#Preview`**: every SwiftUI view must ship with a preview so it can be checked quickly in Xcode.
 - **Settings screens are a `GroupedList`**: a screen made of sections of settings rows uses `GroupedList` from `HADesignSystem` rather than `List`, so it draws as a grouped form on the Mac. A `List` stays for lists of data.
-- **No navigation title under an Apple-like header**: when a screen's `GroupedList` opens with `AppleLikeListTopRowHeader`, that header is the screen's title, so do not also apply `.navigationTitle` — the two titles end up stacked once the header scrolls under the bar. Screens without the header (a "How it works?" explainer, say) still set `.navigationTitle` as usual.
+- **No navigation title under an Apple-like header**: when a screen's `List` or `GroupedList` opens with `AppleLikeListTopRowHeader`, that header is the screen's title, so do not also apply `.navigationTitle` — the two titles end up stacked once the header scrolls under the bar. Screens without the header (a "How it works?" explainer, say) still set `.navigationTitle` as usual.
 - **Snapshot tests for new features**: any new feature that adds UI must include snapshot tests (see the `ha-ios-testing` skill).
 
 ## Design System & Reusable Components (`HADesignSystem`)
