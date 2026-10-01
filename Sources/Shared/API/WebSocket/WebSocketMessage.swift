@@ -6,6 +6,7 @@ public class WebSocketMessage: Codable {
     public var Success: Bool?
     public var Payload: [String: Any]?
     public var Result: [String: Any]?
+    public var ErrorInfo: [String: String]?
     public var Message: String?
     public var HAVersion: String?
     public var command: String?
@@ -16,6 +17,7 @@ public class WebSocketMessage: Codable {
         case Success = "success"
         case Payload = "payload"
         case Result = "result"
+        case ErrorInfo = "error"
         case Message = "message"
         case HAVersion = "ha_version"
         case command = "command"
@@ -28,6 +30,7 @@ public class WebSocketMessage: Codable {
         self.Success = try? values.decode(Bool.self, forKey: .Success)
         self.Payload = try? values.decode([String: Any].self, forKey: .Payload)
         self.Result = try? values.decode([String: Any].self, forKey: .Result)
+        self.ErrorInfo = try? values.decode([String: String].self, forKey: .ErrorInfo)
         self.Message = try? values.decode(String.self, forKey: .Message)
         self.HAVersion = try? values.decode(String.self, forKey: .HAVersion)
         self.command = try values.decodeIfPresent(String.self, forKey: .command)
@@ -41,6 +44,7 @@ public class WebSocketMessage: Codable {
         self.ID = dictionary["id"] as? Int
         self.Payload = dictionary["payload"] as? [String: Any]
         self.Result = dictionary["result"] as? [String: Any]
+        self.ErrorInfo = dictionary["error"] as? [String: String]
         self.Success = dictionary["success"] as? Bool
         self.command = dictionary["command"] as? String
     }
@@ -58,6 +62,14 @@ public class WebSocketMessage: Codable {
         self.MessageType = type
         self.Result = result
         self.Success = success
+        self.command = nil
+    }
+
+    public init(id: Int, errorCode: String, errorMessage: String) {
+        self.ID = id
+        self.MessageType = "result"
+        self.Success = false
+        self.ErrorInfo = ["code": errorCode, "message": errorMessage]
         self.command = nil
     }
 
@@ -82,6 +94,9 @@ public class WebSocketMessage: Codable {
         }
         if let Result {
             try container.encode(Result, forKey: .Result)
+        }
+        if let ErrorInfo {
+            try container.encode(ErrorInfo, forKey: .ErrorInfo)
         }
         if let Payload {
             try container.encode(Payload, forKey: .Payload)
