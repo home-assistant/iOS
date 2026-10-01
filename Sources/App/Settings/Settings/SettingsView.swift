@@ -92,6 +92,8 @@ struct SettingsView: View {
         }
     }
 
+    /// The native Mac app takes the system sidebar as it comes: its material, its selection and its
+    /// search field. Catalyst has no such list style, so there the sidebar is drawn by hand.
     private var macOSSidebarContent: some View {
         List(selection: $macSidebarSelection) {
             if isSearching {
@@ -117,8 +119,6 @@ struct SettingsView: View {
                 .listRowBackground(Color.clear)
             #endif
         }
-        // The native Mac app takes the system sidebar as it comes: its material, its selection and its
-        // search field. Catalyst has no such list style, so there the sidebar is drawn by hand.
         #if os(macOS)
         .listStyle(.sidebar)
         .labelStyle(MacSettingsSidebarLabelStyle())

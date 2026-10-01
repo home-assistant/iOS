@@ -169,8 +169,12 @@ final class DefaultBannerPresenter: BannerPresenter {
 
             dismissCurrent(animated: false)
 
-            // Reading the view is what loads it, on both platforms.
-            let containerView: PlatformView = viewController.view
+            #if os(macOS)
+            // `loadViewIfNeeded()` needs macOS 14; reading the view loads it on every release.
+            _ = viewController.view
+            #else
+            viewController.loadViewIfNeeded()
+            #endif
 
             let overlay = BannerOverlayView(request: request)
             overlay.translatesAutoresizingMaskIntoConstraints = false
@@ -189,12 +193,12 @@ final class DefaultBannerPresenter: BannerPresenter {
                 }
             }
 
-            containerView.addSubview(overlay)
+            viewController.view.addSubview(overlay)
             NSLayoutConstraint.activate([
-                overlay.topAnchor.constraint(equalTo: containerView.topAnchor),
-                overlay.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-                overlay.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                overlay.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+                overlay.topAnchor.constraint(equalTo: viewController.view.topAnchor),
+                overlay.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
+                overlay.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
+                overlay.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor),
             ])
 
             currentOverlay = overlay
@@ -494,7 +498,9 @@ extension WebViewController {
         let controller = PlatformHostingController(rootView: AnyView(
             NavigationView {
                 VStack {
-                    if Self.offersShakeToDebug {
+                    #if os(iOS)
+                    // Shaking to open this screen is something only an iPhone is held to do.
+                    if UIDevice.current.userInterfaceIdiom == .phone {
                         HStack(spacing: DesignSystem.Spaces.half) {
                             Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
                             Toggle(isOn: .init(get: {
@@ -508,6 +514,7 @@ extension WebViewController {
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
                         .padding(DesignSystem.Spaces.one)
                     }
+                    #endif
                     DebugView()
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {
@@ -521,14 +528,5 @@ extension WebViewController {
             .navigationViewStyle(.stack)
         ))
         presentOverlayController(controller: controller, animated: true)
-    }
-
-    /// Shaking to open this screen is something only an iPhone is held to do.
-    private static var offersShakeToDebug: Bool {
-        #if os(iOS)
-        UIDevice.current.userInterfaceIdiom == .phone
-        #else
-        false
-        #endif
     }
 }

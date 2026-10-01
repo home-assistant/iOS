@@ -166,4 +166,27 @@ final class AppContainerCoordinatorTests: XCTestCase {
 
         XCTAssertTrue(scene.windows.allSatisfy { $0.overrideUserInterfaceStyle == .dark })
     }
+
+    /// With the preference on, a link coming from outside is confirmed before the frontend moves.
+    func testOpeningALinkAsksFirstWhenConfirmationIsOn() throws {
+        let previous = prefs.object(forKey: "confirmBeforeOpeningUrl")
+        defer { prefs.set(previous, forKey: "confirmBeforeOpeningUrl") }
+        prefs.set(true, forKey: "confirmBeforeOpeningUrl")
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        coordinator.open(
+            from: .deeplink,
+            server: server,
+            urlString: "/lovelace/dashboard",
+            skipConfirm: false,
+            isComingFromAppIntent: false
+        )
+
+        waitUntil { self.window.rootViewController?.presentedViewController != nil }
+        let alert = try XCTUnwrap(window.rootViewController?.presentedViewController as? UIAlertController)
+        XCTAssertEqual(alert.title, L10n.Alerts.OpenUrlFromNotification.title)
+        XCTAssertEqual(alert.actions.map(\.title), [L10n.cancelLabel, L10n.alwaysOpenLabel, L10n.openLabel])
+        XCTAssertTrue(frontend.openedInlineURLs.isEmpty)
+    }
 }

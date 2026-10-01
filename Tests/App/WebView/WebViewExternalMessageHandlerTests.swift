@@ -683,4 +683,32 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         }
         try await work(server)
     }
+
+    /// A toast the frontend asks for shows through the shared presenter, and goes away by its id.
+    @MainActor func testHandleExternalMessageToastShowAndHide() throws {
+        guard #available(iOS 18, *) else { return }
+        defer { ToastPresenter.shared.hide(id: "bus-toast") }
+
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "toast/show",
+            "payload": ["id": "bus-toast", "message": "Saved", "dismissable": true],
+        ])
+
+        let shown = try XCTUnwrap(ToastPresenter.shared.toast)
+        XCTAssertEqual(shown.id, "bus-toast")
+        XCTAssertEqual(shown.title, "Saved")
+
+        sut.handleExternalMessage([
+            "id": 2,
+            "message": "",
+            "command": "",
+            "type": "toast/hide",
+            "payload": ["id": "bus-toast"],
+        ])
+
+        XCTAssertNil(ToastPresenter.shared.toast)
+    }
 }

@@ -19,10 +19,10 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
     private var dataPlayer: AVAudioPlayer?
     private var downloadTask: URLSessionDataTask?
 
+    /// A Mac has no audio session to configure, and its players go straight to the system output.
     func play(url: URL, server: Server?) {
         stopCurrentPlayback()
 
-        // A Mac has no audio session to configure, and its players go straight to the system output.
         #if !os(macOS)
         let audioSession = AVAudioSession.sharedInstance()
 

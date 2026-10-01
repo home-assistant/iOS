@@ -39,11 +39,11 @@ final class SpeechSynthesizer: NSObject, SpeechSynthesizerProtocol, AVSpeechSynt
         synthesizer.delegate = self
     }
 
+    /// A Mac has no audio session: the synthesizer speaks through the system output as it is.
     func speak(_ text: String) {
         synthesizer.stopSpeaking(at: .immediate)
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = voice
-        // A Mac has no audio session: the synthesizer speaks through the system output as it is.
         #if !os(macOS)
         if managesAudioSession {
             do {

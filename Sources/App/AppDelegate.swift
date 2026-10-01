@@ -86,6 +86,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     #endif
 
     private var watchCommunicatorService: WatchCommunicatorService?
+    private var liveActivityPendingEndObserver: Any?
+    private var liveActivityPendingStartObserver: Any?
 
     func application(
         _ application: UIApplication,
@@ -300,59 +302,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         IntentHandlerFactory.handler(for: intent)
-    }
-
-    private func setupWatchCommunicator() {
-        watchCommunicatorService = WatchCommunicatorService()
-        watchCommunicatorService?.setup()
-    }
-
-    private var liveActivityPendingEndObserver: Any?
-    private var liveActivityPendingStartObserver: Any?
-
-    private func setupLiveActivityReattachment() {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, *) {
-            // Pre-warm the registry on the main thread before spawning background Tasks.
-            // This avoids a lazy-init race if a push notification handler accesses it
-            // concurrently from a background thread.
-            guard let registry = Current.liveActivityRegistry else { return }
-
-            // Register before draining so ends/starts enqueued while the app was gone aren't missed.
-            let pendingEndObserver = LiveActivityPendingEndObserver()
-            liveActivityPendingEndObserver = pendingEndObserver
-            pendingEndObserver.drain()
-
-            // Starts handed off by the PushProvider extension (local-push live_update notifications,
-            // which can't touch ActivityKit in-process). Drained here and on foreground.
-            let pendingStartObserver = LiveActivityPendingStartObserver()
-            liveActivityPendingStartObserver = pendingStartObserver
-            pendingStartObserver.drain()
-
-            Task {
-                // Re-attach observation tasks (push token + lifecycle) to any Live Activities
-                // that survived the previous process termination. Must run before the first
-                // notification handler fires so no push token updates are missed.
-                await registry.reattach()
-            }
-
-            // Begin observing the push-to-start token stream on a separate Task.
-            // The stream is infinite; this Task is kept alive for the app's lifetime.
-            Task {
-                await registry.startObservingPushToStartToken()
-            }
-
-            // Observe activities that ActivityKit starts directly from APNs push-to-start.
-            // The stream is infinite; this Task is kept alive for the app's lifetime.
-            Task {
-                await registry.startObservingRemoteActivityStarts()
-            }
-        }
-        #endif
-    }
-
-    private func setupUIApplicationShortcutItems() {
-        AppIconShortcutItemsUpdater.start()
     }
 }
 #else
@@ -594,22 +543,7 @@ extension AppDelegate {
                     return
                 }
 
-                let alert = AppAlert(
-                    title: L10n.Alerts.Deprecations.NotificationCategory.title,
-                    message: L10n.Alerts.Deprecations.NotificationCategory.message("iOS-2022.4"),
-                    actions: [
-                        .init(title: L10n.Nfc.List.learnMore) {
-                            userDefaults.set(true, forKey: seenKey)
-                            openURLInBrowser(
-                                URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications")!,
-                                nil
-                            )
-                        },
-                        .init(title: L10n.okLabel, style: .cancel) {
-                            userDefaults.set(true, forKey: seenKey)
-                        },
-                    ]
-                )
+                let alert = Self.notificationCategoryDeprecationAlert(userDefaults: userDefaults, seenKey: seenKey)
                 sceneManager.appCoordinator.done {
                     $0.present(alert: alert)
                 }
@@ -617,6 +551,34 @@ extension AppDelegate {
                 Current.Log.error("couldn't check for if user: \(error)")
             }
     }
+
+    /// Tells an admin that notification categories are now configured on the server. Either button marks
+    /// the alert as seen so it stays away afterwards; the first one also opens the documentation.
+    static func notificationCategoryDeprecationAlert(userDefaults: UserDefaults, seenKey: String) -> AppAlert {
+        AppAlert(
+            title: L10n.Alerts.Deprecations.NotificationCategory.title,
+            message: L10n.Alerts.Deprecations.NotificationCategory.message("iOS-2022.4"),
+            actions: [
+                .init(title: L10n.Nfc.List.learnMore) {
+                    userDefaults.set(true, forKey: seenKey)
+                    openURLInBrowser(
+                        URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications")!,
+                        nil
+                    )
+                },
+                .init(title: L10n.okLabel, style: .cancel) {
+                    userDefaults.set(true, forKey: seenKey)
+                },
+            ]
+        )
+    }
+
+    #if os(iOS)
+    private func setupWatchCommunicator() {
+        watchCommunicatorService = WatchCommunicatorService()
+        watchCommunicatorService?.setup()
+    }
+    #endif
 
     func setupLocalization() {
         Current.localized.add(stringProvider: { request in
@@ -627,6 +589,49 @@ extension AppDelegate {
             }
         })
     }
+
+    #if os(iOS)
+    private func setupLiveActivityReattachment() {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            // Pre-warm the registry on the main thread before spawning background Tasks.
+            // This avoids a lazy-init race if a push notification handler accesses it
+            // concurrently from a background thread.
+            guard let registry = Current.liveActivityRegistry else { return }
+
+            // Register before draining so ends/starts enqueued while the app was gone aren't missed.
+            let pendingEndObserver = LiveActivityPendingEndObserver()
+            liveActivityPendingEndObserver = pendingEndObserver
+            pendingEndObserver.drain()
+
+            // Starts handed off by the PushProvider extension (local-push live_update notifications,
+            // which can't touch ActivityKit in-process). Drained here and on foreground.
+            let pendingStartObserver = LiveActivityPendingStartObserver()
+            liveActivityPendingStartObserver = pendingStartObserver
+            pendingStartObserver.drain()
+
+            Task {
+                // Re-attach observation tasks (push token + lifecycle) to any Live Activities
+                // that survived the previous process termination. Must run before the first
+                // notification handler fires so no push token updates are missed.
+                await registry.reattach()
+            }
+
+            // Begin observing the push-to-start token stream on a separate Task.
+            // The stream is infinite; this Task is kept alive for the app's lifetime.
+            Task {
+                await registry.startObservingPushToStartToken()
+            }
+
+            // Observe activities that ActivityKit starts directly from APNs push-to-start.
+            // The stream is infinite; this Task is kept alive for the app's lifetime.
+            Task {
+                await registry.startObservingRemoteActivityStarts()
+            }
+        }
+        #endif
+    }
+    #endif
 
     private func setupFirebase() {
         let optionsFile: String = {
@@ -690,6 +695,12 @@ extension AppDelegate {
         statusItemManager.apiDidConnect()
         #endif
     }
+
+    #if os(iOS)
+    private func setupUIApplicationShortcutItems() {
+        AppIconShortcutItemsUpdater.start()
+    }
+    #endif
 
     private func migrateIfNeeded() {
         resetLocalPush()

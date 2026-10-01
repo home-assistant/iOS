@@ -214,9 +214,9 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     }
 
     /// Configures the audio session, engine and recognition task for a session the caller has
-    /// already marked as listening, and which it unwinds if this throws.
+    /// already marked as listening, and which it unwinds if this throws. A Mac has no audio session:
+    /// the engine records from the system input as it is.
     private func startRecognition(with speechRecognizer: SFSpeechRecognizer) throws {
-        // Configure audio session. A Mac has none: the engine records from the system input as it is.
         #if !os(macOS)
         if managesAudioSession {
             let audioSession = AVAudioSession.sharedInstance()

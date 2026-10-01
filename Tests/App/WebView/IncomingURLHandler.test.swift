@@ -2,6 +2,7 @@ import GRDB
 @testable import HomeAssistant
 @testable import Shared
 import Testing
+import UIKit
 
 /// Routing of `homeassistant://` deep links. The `camera` link used to open the native camera player;
 /// it now lands on the entity's more-info dialog, so links created before the change keep working.
@@ -96,6 +97,29 @@ struct IncomingURLHandlerTests {
                 #expect(components.path == "/ios-input-test/0")
                 #expect(coordinator.openedDeeplinks.isEmpty)
             }
+        }
+    }
+
+    /// A link to a route the app does not have is still "handled" — with an error on top of whatever is on
+    /// screen, rather than silently.
+    @MainActor @Test func unknownRouteShowsAnError() throws {
+        try withFakeServer { server, coordinator, handler in
+            // The prompt waits for a frontend to exist; `webView` is created in `viewDidLoad`, so load it first.
+            let webViewController = WebViewController(server: server)
+            webViewController.loadViewIfNeeded()
+            Current.sceneManager.setWebViewController(webViewController)
+            let url = try #require(URL(string: "\(AppConstants.deeplinkURL.absoluteString)no-such-route"))
+
+            #expect(handler.handle(url: url))
+
+            let deadline = Date().addingTimeInterval(5)
+            while coordinator.presentedViewControllers.isEmpty, Date() < deadline {
+                RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+            }
+            let alert = try #require(coordinator.presentedViewControllers.last as? UIAlertController)
+            #expect(alert.title == L10n.errorLabel)
+            #expect(alert.message == L10n.UrlHandler.NoService.message("no-such-route"))
+            #expect(alert.actions.map(\.title) == [L10n.okLabel])
         }
     }
 }

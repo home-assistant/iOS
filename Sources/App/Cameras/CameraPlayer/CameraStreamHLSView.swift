@@ -134,9 +134,9 @@ struct CameraStreamHLSView: View {
         return baseURL.appendingPathComponent(relativePath)
     }
 
+    /// A Mac has no audio session: the player goes straight to the system output.
     @MainActor
     private func setupPlayer(with url: URL, api: HomeAssistantAPI) {
-        // A Mac has no audio session: the player goes straight to the system output.
         #if !os(macOS)
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)

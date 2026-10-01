@@ -37,9 +37,11 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         }
     }
 
+    #if targetEnvironment(macCatalyst) || os(macOS)
     /// Sensor updates run on a concurrent queue and two can overlap, so every access takes the lock.
     private var observedObjects = Set<ObservedObjectType>()
     private let observedObjectsLock = NSLock()
+    #endif
 
     required init(signal: @escaping () -> Void) {
         self.signal = signal
@@ -51,6 +53,7 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         ])
     }
 
+    #if targetEnvironment(macCatalyst) || os(macOS)
     private func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
         // Claimed before the listener is installed, so an overlapping update cannot install a second one.
         guard observedObjectsLock.withLock({ observedObjects.insert(object).inserted }) else { return }
@@ -68,6 +71,7 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
             _ = observedObjects.remove(object)
         }
     }
+    #endif
 
     // object IDs both alias to UInt32 so we can't rely on the type system to know which method to call
 
