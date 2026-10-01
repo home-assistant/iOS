@@ -23,7 +23,7 @@ let package = Package(
         ),
         .testTarget(
             name: "HADesignSystemTests",
-            dependencies: ["HADesignSystem"],
+            dependencies: ["HADesignSystem", "HAIconic"],
             path: "Tests"
         ),
     ]

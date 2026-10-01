@@ -284,6 +284,61 @@ jobs:
   # so the reason lands where the discussion is. The review is dismissed automatically
   # as soon as a push clears the bar, and a maintainer can dismiss it to land a change
   # whose new code genuinely cannot be unit tested.
+  build-mac:
+    name: Build Mac (${{ matrix.variant }})
+    runs-on: xcode-27
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: Catalyst
+            destination: generic/platform=macOS,variant=Mac Catalyst
+          - variant: native
+            destination: generic/platform=macOS
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme App-Debug
+
+      - name: Build
+        run: >-
+          xcodebuild build
+          -project HomeAssistant.xcodeproj
+          -scheme App-Debug
+          -destination "${{ matrix.destination }}"
+          -skipPackagePluginValidation
+          -skipMacroValidation
+          COMPILER_INDEX_STORE_ENABLE=NO
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Test HADesignSystem on macOS
+        if: matrix.variant == 'native'
+        run: swift test --package-path Sources/HADesignSystem
+
   patch-coverage:
     name: Patch coverage
     needs: test
