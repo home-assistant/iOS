@@ -152,9 +152,15 @@ final class WatchAssistViewModel: ObservableObject {
 
     private func timerAction() {
         Current.Log.verbose("Ping iPhone")
-        Communicator.shared.send(.init(identifier: InteractiveImmediateMessages.ping.rawValue, reply: { _ in
-            Current.Log.verbose("Pong from iPhone")
-        }))
+        Communicator.shared.send(.init(
+            identifier: InteractiveImmediateMessages.ping.rawValue,
+            reply: { [immediateCommunicatorService] pong in
+                Current.Log.verbose("Pong from iPhone")
+                DispatchQueue.main.async {
+                    immediateCommunicatorService.evaluatePong(pong)
+                }
+            }
+        ))
     }
 
     private func showUnreacheableMessage() {

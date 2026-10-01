@@ -323,7 +323,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         do {
             try session.setActive(false)
         } catch {
-            Current.Log.error("Failed to release talkback audio session on close: \(error.localizedDescription)")
+            Current.Log.error("Failed to release the microphone audio session on close: \(error.localizedDescription)")
         }
     }
 

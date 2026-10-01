@@ -390,7 +390,7 @@
 "assist.text_field.placeholder" = "Typ een verzoek...";
 "assist.watch.mic_button.title" = "Tik om";
 "assist.watch.not_reachable.title" = "Assist vereist iPhone-connectiviteit. Je iPhone is nu niet bereikbaar.";
-"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
+"assist.watch.on_device_stt.no_speech_recognized" = "Er werd geen spraak herkend.";
 "assist.watch.volume.title" = "Volumeregeling";
 "assist_pipeline_picker.no_pipelines" = "Geen pijplijnen beschikbaar";
 "assist_pipeline_picker.placeholder" = "Kies pijplijn";
@@ -2401,9 +2401,9 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "tab_bar.item.search" = "Zoeken";
 "tab_bar.more.app_settings" = "App-instellingen";
 "tab_bar.more.customize" = "Customize";
-"tab_bar.more.edit_profile" = "Edit profile";
+"tab_bar.more.edit_profile" = "Profiel bewerken";
 "tab_bar.more.home_assistant_settings" = "Home Assistant-instellingen";
-"tab_bar.more.other_servers" = "Other servers";
+"tab_bar.more.other_servers" = "Andere servers";
 "tab_bar.more.title" = "Meer";
 "tags.allowed.delete_all" = "Verwijder alles";
 "tags.allowed.delete_all.confirm.button" = "Verwijder alles";

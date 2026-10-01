@@ -2401,9 +2401,9 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "tab_bar.item.search" = "搜尋";
 "tab_bar.more.app_settings" = "應用程式設定";
 "tab_bar.more.customize" = "自訂";
-"tab_bar.more.edit_profile" = "Edit profile";
+"tab_bar.more.edit_profile" = "編輯個人資料";
 "tab_bar.more.home_assistant_settings" = "Home Assistant 設定";
-"tab_bar.more.other_servers" = "Other servers";
+"tab_bar.more.other_servers" = "其他伺服器";
 "tab_bar.more.title" = "更多";
 "tags.allowed.delete_all" = "全部刪除";
 "tags.allowed.delete_all.confirm.button" = "全部刪除";
