@@ -22,6 +22,9 @@ public struct GroupedList<Content: View>: View {
             content
         }
         .formStyle(.grouped)
+        // A button in a row is the row's action, drawn as text the way a list draws it on iOS, rather than
+        // a push button with a bezel of its own sitting inside the row.
+        .buttonStyle(.borderless)
         #else
         List {
             content

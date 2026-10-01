@@ -346,6 +346,18 @@ public class SettingsStore {
         }
     }
 
+    /// Whether the app's own "Allow notifications?" prompt has been answered. The system's permission is
+    /// what decides afterwards; this only keeps the prompt from coming back when the system could not record
+    /// an answer, as on a Mac build that is not signed for notifications.
+    public var notificationPermissionPromptAnswered: Bool {
+        get {
+            prefs.bool(forKey: "notificationPermissionPromptAnswered")
+        }
+        set {
+            prefs.set(newValue, forKey: "notificationPermissionPromptAnswered")
+        }
+    }
+
     public var macNativeFeaturesOnly: Bool {
         get {
             prefs.bool(forKey: "macNativeFeaturesOnly")

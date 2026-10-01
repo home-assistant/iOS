@@ -5,7 +5,7 @@ struct CustomWidgetsListView: View {
     @StateObject private var viewModel = WidgetBuilderViewModel()
     @State private var showDeleteConfirmation = false
     var body: some View {
-        List {
+        GroupedList {
             if #available(iOS 17, macOS 14, *) {
                 header
                 yourWidgetsSection

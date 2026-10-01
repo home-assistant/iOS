@@ -2,6 +2,9 @@ import PromiseKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 import UserNotifications
 import WebKit
 import XCGLogger
@@ -125,17 +128,16 @@ struct DebugView: View {
             criticalSection
 
             if tapsOnCasitaLogo < 10 {
-                Button(action: {
-                    feedbackGenerator.notificationOccurred(.success)
-                    tapsOnCasitaLogo += 1
-                }, label: {
-                    Image(uiImage: Asset.casita.image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 100, height: 100, alignment: .center)
-                })
-                .frame(maxWidth: .infinity, alignment: .center)
-                .listRowBackground(Color.clear)
+                #if os(macOS)
+                // A grouped form draws every row in a card, which the logo is not meant to have; a section
+                // header is drawn outside one.
+                Section {} header: {
+                    casitaButton
+                }
+                #else
+                casitaButton
+                    .listRowBackground(Color.clear)
+                #endif
             } else {
                 developerSection
             }
@@ -206,12 +208,22 @@ struct DebugView: View {
         }
 
         logsURL = url
+        #if os(macOS)
+        // The log files themselves, selected in their folder; the folder alone when it is still empty.
+        let logFiles = (try? FileManager.default.contentsOfDirectory(
+            at: url,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )) ?? []
+        NSWorkspace.shared.activateFileViewerSelecting(logFiles.isEmpty ? [url] : logFiles)
+        #else
         if Current.isCatalyst {
             URLOpener.shared.open(url, options: [:], completionHandler: nil)
         } else {
             loadingLogs = true
             showShareSheet = true
         }
+        #endif
     }
 
     private var deleteKeychainAlert: some ViewModifier {
@@ -254,6 +266,19 @@ struct DebugView: View {
                     .animation(.easeOut(duration: 2), value: showProgressView)
             }
         }
+    }
+
+    private var casitaButton: some View {
+        Button(action: {
+            feedbackGenerator.notificationOccurred(.success)
+            tapsOnCasitaLogo += 1
+        }, label: {
+            Image(uiImage: Asset.casita.image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 100, height: 100, alignment: .center)
+        })
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var criticalSection: some View {

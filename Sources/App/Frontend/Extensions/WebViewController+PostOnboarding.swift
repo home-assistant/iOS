@@ -10,6 +10,7 @@ extension WebViewController {
         let delayedSeconds: CGFloat = 3
         DispatchQueue.main.asyncAfter(deadline: .now() + delayedSeconds) { [weak self] in
             Task {
+                guard !Current.settingsStore.notificationPermissionPromptAnswered else { return }
                 let settings = await Current.userNotificationCenter.notificationSettings()
                 if ![.authorized, .denied].contains(settings.authorizationStatus) {
                     self?.showNotificationPermissionRequest()

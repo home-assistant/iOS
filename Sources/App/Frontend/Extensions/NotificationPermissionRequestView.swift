@@ -51,6 +51,7 @@ struct NotificationPermissionRequestView: View {
 
     private func triggerNativePopup() {
         dismiss()
+        Current.settingsStore.notificationPermissionPromptAnswered = true
         UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { _, error in
             if let error {
                 Current.Log.error("Error when requesting notifications permissions: \(error)")
