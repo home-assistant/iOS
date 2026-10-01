@@ -24,6 +24,10 @@ public final class WatchConnectivityManager: NSObject {
         let perform: () -> Void
     }
 
+    public struct InteractiveSendTicket {
+        let queuedSequence: Int?
+    }
+
     /// State of the outbound interactive-send queue (see `WatchConnectivityManager+SendQueue`).
     let sendQueueLock = NSLock()
     var pendingInteractiveSends: [PendingInteractiveSend] = []
@@ -41,6 +45,10 @@ public final class WatchConnectivityManager: NSObject {
     /// callback, so `mostRecentlyReceivedContext` never blocks the caller.
     private let receivedContextLock = NSLock()
     private var cachedReceivedContext: [String: Any]?
+
+    /// Highest `WatchProtocolVersion` seen on anything the counterpart has sent this session.
+    private let counterpartVersionLock = NSLock()
+    private var cachedCounterpartProtocolVersion: Int?
     #if os(iOS)
     var complicationCompletions: [ObjectIdentifier: (Result<Int, Error>) -> Void] = [:]
 
@@ -76,6 +84,31 @@ public final class WatchConnectivityManager: NSObject {
     }
 
     public var isSupported: Bool { session != nil }
+
+    /// The counterpart's message-protocol version, as stamped on the last thing it sent, or `nil`
+    /// while nothing has arrived yet.
+    ///
+    /// Lets a sender skip a message identifier the counterpart's build predates. That matters
+    /// because an unrecognized identifier is never replied to at all (see
+    /// `WatchConnectivityManager.receiveMessage`, which replies empty, and the counterpart services,
+    /// which drop it): the sender only learns by waiting out the full reply timeout. Treat `nil` as
+    /// "too old" — the version arrives with the first message of any kind, and both sides exchange
+    /// several within seconds of becoming reachable.
+    public var counterpartProtocolVersion: Int? {
+        counterpartVersionLock.lock()
+        defer { counterpartVersionLock.unlock() }
+        return cachedCounterpartProtocolVersion
+    }
+
+    /// Records the version stamped on an inbound envelope. Monotonic: messages from a build that
+    /// predates versioning carry no version, and one of those arriving after a versioned message
+    /// (a queued `transferUserInfo`, say) must not walk the capability back.
+    func recordCounterpartProtocolVersion(_ version: Int?) {
+        guard let version else { return }
+        counterpartVersionLock.lock()
+        defer { counterpartVersionLock.unlock() }
+        cachedCounterpartProtocolVersion = max(cachedCounterpartProtocolVersion ?? 0, version)
+    }
 
     public var currentReachability: HAWatchConnectivity.Reachability {
         guard let session else { return .notReachable }

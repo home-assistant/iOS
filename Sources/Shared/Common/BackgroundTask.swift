@@ -26,6 +26,9 @@ public enum BackgroundTask: String {
     case legacyModelCleanup = "legacy-model-cleanup"
     case focusFilterSensorUpdate = "focus-filter-sensor-update"
     case watchMirrorPush = "watch-mirror-push"
+    case panelsSave = "panels-save"
+    case appIconShortcutItems = "app-icon-shortcut-items"
+    case frontendThemeSave = "frontend-theme-save"
 }
 
 public enum BackgroundTaskError: Error {

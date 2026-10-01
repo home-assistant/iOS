@@ -17,9 +17,15 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     var urlObserver: NSKeyValueObservation?
     var windowTitleObserver: NSKeyValueObservation?
-    /// Watches `.siriEntityExposureDidChange` so the page published on `userActivity` follows the
-    /// user's Siri exposure setting; see `WebViewController+OnscreenPage`.
+    /// Watches `.siriEntityExposureDidChange` so what is published on `userActivity` follows the
+    /// user's Siri exposure setting; see `WebViewController+OnscreenContent`.
     var siriExposureObserver: NSObjectProtocol?
+    /// The entity the frontend's more-info dialog is showing, reported over the external bus.
+    var onscreenEntityId: String?
+    /// The path the dialog opened over, so a route change is recognised as having closed it.
+    var onscreenEntityPath: String?
+    /// The in-flight publish of what is on screen, cancelled when a newer one replaces it.
+    var onscreenContentTask: Task<Void, Never>?
     var emptyStateTitleObserver: AnyCancellable?
     var tokens = [HACancellable]()
 
@@ -30,6 +36,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
     var pendingAssistZoomSourceView: UIView?
+    var presentsNextAssistAsSheet = false
     /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
     weak var detachedOverlayController: UIViewController?
     var tabBarAssistZoomAnchor: AssistZoomAnchorView?
@@ -94,6 +101,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
+    var blankFrontendRecoveryAttempts = 0
+    var contentProcessTerminations = 0
+
+    /// Answers the blank-frontend probe instead of the live page; replaceable in tests.
+    var hasRenderedFrontendCheck: (@MainActor ((Bool) -> Void) -> Void)?
+
     /// Where the window's title lands; replaceable in tests, which all share the host process's one scene.
     var applyWindowSceneTitle: @MainActor (UIWindowScene, String) -> Void = { windowScene, title in
         windowScene.title = title
@@ -103,6 +116,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var cornerAdaptedSafeAreaTop: @MainActor (UIView) -> CGFloat = { view in
         guard #available(iOS 26, *) else { return view.safeAreaInsets.top }
         return view.directionalEdgeInsets(for: .safeArea(cornerAdaptation: .vertical)).top
+    }
+
+    /// Which idiom the frontend is being shown in; only iPad windows get controls drawn over them.
+    var userInterfaceIdiom: @MainActor (UIView) -> UIUserInterfaceIdiom = { view in
+        view.traitCollection.userInterfaceIdiom
     }
 
     /// Handler for messages sent from the webview to the app
@@ -247,12 +265,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if let siriExposureObserver {
             NotificationCenter.default.removeObserver(siriExposureObserver)
         }
+        onscreenContentTask?.cancel()
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
         loadActiveURLTask?.cancel()
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {
+        // WebKit reads this when the web view is built, so it has to be settled first.
+        WebKitEnhancedSecurity.prepareForConfiguredServers()
+
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         // Avoid interrupting background audio when the frontend loads media-capable elements.
@@ -270,7 +292,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         observeConnectionNotifications()
         setupKioskModeObservation()
-        observeSiriExposureForOnscreenPage()
+        observeSiriExposureForOnscreenContent()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
 
@@ -480,11 +502,8 @@ extension WebViewController {
         }
     }
 
-    /// Kiosk mode is also what hides the frontend's hamburger for the App Labs native tab bar: the tabs
-    /// and the More tab already expose every sidebar page, so the button would only open More.
     func updateFrontendKioskMode() {
-        let enable = (Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar)
-            || AppLabsFeature.iosNativeTabBar.isEnabled
+        let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
         webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": enable]

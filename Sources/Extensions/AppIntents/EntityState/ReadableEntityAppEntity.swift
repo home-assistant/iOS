@@ -1,18 +1,17 @@
 import AppIntents
 import Foundation
-import SFSafeSymbols
 import Shared
 
-/// An entity a spoken question can report on.
+/// An entity a spoken question can ask about.
 ///
-/// Its own type rather than `HAAppEntityAppIntentEntity`, whose query is shared with the details and
-/// gauge widgets: those legitimately offer diagnostics and sensors with no room, and a question
-/// should not. The list here is the same one the control commands offer, widened to what is safe to
-/// read.
+/// A type of its own for the same reason `ControllableEntityAppEntity` is one: the parameter type is
+/// what Siri fills a phrase's list from, and what the system reaches for when a Spotlight result is
+/// tapped. Reading a state is harmless, but it is still not what tapping an entity in search should
+/// do — the indexed type is left to `ShowEntityDetailsAppIntent` alone, which opens it.
 @available(macOS 13.0, watchOS 9.4, *)
 struct ReadableEntityAppEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init(
-        "app_intents.readable_entity.entity.name",
+        "app_intents.entity_state.parameter.entity",
         defaultValue: "Entity"
     ))
 
@@ -34,6 +33,13 @@ struct ReadableEntityAppEntity: AppEntity, EntityContextRepresentable {
     @Property(title: .init("app_intents.entity.property.server", defaultValue: "Server"))
     var serverName: String
 
+    var domain: Domain? {
+        Domain(entityId: entityId)
+    }
+
+    /// Deliberately carries no image, so the question's own glyph reaches the Spotlight row rather
+    /// than the domain's. See `ControllableEntityAppEntity` for why the glyph is the only part of
+    /// that row a command can vary.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
@@ -41,13 +47,10 @@ struct ReadableEntityAppEntity: AppEntity, EntityContextRepresentable {
         )
     }
 
+    /// A picker groups by server, but a row stands alone in Siri's disambiguation, where two homes
+    /// can share a name — so the server leads the context line once there is more than one.
     var subtitle: String? {
         contextSubtitle(serverName: serverName)
-    }
-
-    /// The domain the command resolves its service from, e.g. `cover` opens rather than turns on.
-    var domain: Domain? {
-        Domain(entityId: entityId)
     }
 
     init(

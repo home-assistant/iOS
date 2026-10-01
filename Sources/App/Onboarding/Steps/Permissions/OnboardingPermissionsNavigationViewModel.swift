@@ -10,6 +10,9 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         case disclaimer
         /// Location permission request step for sharing location with Home Assistant
         case location
+        /// Privacy choices step, replacing the location permission step for every server added
+        /// after the first one
+        case privacy
         /// Local access permission step for secure local connections
         case localAccess
         /// Home network SSID input step for trusted network configuration
@@ -71,6 +74,10 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     private let locationManager = CLLocationManager()
     private let onboardingServer: Server
 
+    /// What the location permission grants once it is answered. The location step only ever shares
+    /// the exact location; the privacy step sets whichever level the user picked there.
+    private var grantedLocationPrivacy: ServerLocationPrivacy = .exact
+
     // MARK: - Step Management
 
     /// Returns all available steps in the onboarding flow
@@ -116,15 +123,22 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                         info.connection.connectionAccessSecurityLevel = .mostSecure
                     }
 
-                    // Discovery may have pinned the internal URL while the SSID was still unknown
-                    // (see `OnboardingAuth`); since the home network step is skipped, nothing will
-                    // set `internalSSIDs` to clear that override, so clear it here to avoid staying
-                    // pinned to the internal URL when off the home network
                     if info.connection.overrideActiveURLType == .internal {
                         info.connection.overrideActiveURLType = nil
                     }
                 }
             }
+
+            // The location permission screen is the first server's way of settling what this device
+            // sends; a server added next to an existing one asks for the privacy choices instead,
+            // rather than silently starting on the defaults with the permission already answered.
+            // The server being onboarded is registered before this flow starts, so it is the other
+            // entries in the registry that say whether the app already had a server.
+            let isAdditionalServer = Current.servers.all.contains { $0.identifier != onboardingServer.identifier }
+            if isAdditionalServer {
+                defaultSteps = defaultSteps.map { $0 == .location ? .privacy : $0 }
+            }
+
             self.steps = defaultSteps
         }
 
@@ -181,6 +195,41 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         }
     }
 
+    // MARK: - Privacy Choices
+
+    /// Stores what an additional server receives from this device and moves on.
+    /// - Note: A location choice other than `never` only produces anything once iOS has granted the
+    ///         permission, so it is requested here when the user has not answered it yet. When it
+    ///         was already denied the choice is still stored, so it takes effect as soon as the
+    ///         permission is granted in the Settings app, and the flow moves on rather than
+    ///         stranding the user on this step.
+    func savePrivacyChoices(locationPrivacy: ServerLocationPrivacy, sensorPrivacy: ServerSensorPrivacy) {
+        onboardingServer.info.setSetting(value: sensorPrivacy, for: .sensorPrivacy)
+        onboardingServer.info.setSetting(value: locationPrivacy, for: .locationPrivacy)
+
+        if sensorPrivacy == .all, let api = Current.api(for: onboardingServer) {
+            // Onboarding held the sensors back until this choice (see `OnboardingAuth`), so this is
+            // what registers them, the same way changing the setting later in the server's settings
+            // does.
+            Task {
+                try? await api.registerSensors().asyncValue()
+            }
+        }
+
+        guard locationPrivacy != .never else {
+            nextStep()
+            return
+        }
+
+        switch Current.location.permissionStatus() {
+        case .denied, .restricted:
+            nextStep()
+        default:
+            grantedLocationPrivacy = locationPrivacy
+            requestLocationPermissionToShareWithHomeAssistant()
+        }
+    }
+
     // MARK: - Location Permission Management
 
     /// Requests location permission specifically for sharing location data with Home Assistant
@@ -209,6 +258,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     func setLessSecureLocalConnection() {
         onboardingServer.update { info in
             info.connection.connectionAccessSecurityLevel = .lessSecure
+            info.connection.overrideActiveURLType = nil
         }
     }
 
@@ -223,7 +273,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Enables location-related sensors when permission is granted
     /// - Note: Affects geocoded location, WiFi BSSID, and SSID sensors
     private func enableLocationSensor() {
-        onboardingServer.info.setSetting(value: ServerLocationPrivacy.exact, for: .locationPrivacy)
+        onboardingServer.info.setSetting(value: grantedLocationPrivacy, for: .locationPrivacy)
     }
 
     /// Handles the actual location permission request based on current authorization status
@@ -304,6 +354,11 @@ extension OnboardingPermissionsNavigationViewModel: CLLocationManagerDelegate {
             disableLocationSensor()
             if locationPermissionContext == .lessSecureLocalConnection {
                 applyLocationPermissionNeeds()
+            } else if currentStep == .privacy {
+                // Unlike the location step, the privacy step has no skip action to fall back on.
+                // The refusal answers its location question as `never` (just stored above), so the
+                // flow moves on instead of leaving the user on a screen that looks unanswered.
+                nextStep()
             }
         case .authorizedAlways:
             // Full location access granted - no additional action needed

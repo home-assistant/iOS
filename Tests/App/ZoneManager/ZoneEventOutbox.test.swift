@@ -1,5 +1,6 @@
 import Foundation
 @testable import HomeAssistant
+@testable import Shared
 import XCTest
 
 final class ZoneEventOutboxTests: XCTestCase {
@@ -25,6 +26,7 @@ final class ZoneEventOutboxTests: XCTestCase {
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         var outbox: AtomicFileZoneEventOutbox? = AtomicFileZoneEventOutbox(fileURL: fileURL)
@@ -43,7 +45,8 @@ final class ZoneEventOutboxTests: XCTestCase {
         let event = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_exited",
-            eventData: ["zone": "zone.beacon"]
+            eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date()
         )
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
 
@@ -79,12 +82,14 @@ final class ZoneEventOutboxTests: XCTestCase {
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let latestEntry = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
@@ -100,12 +105,14 @@ final class ZoneEventOutboxTests: XCTestCase {
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let exit = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_exited",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
@@ -124,18 +131,21 @@ final class ZoneEventOutboxTests: XCTestCase {
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let exit = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_exited",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let reentry = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
@@ -153,12 +163,14 @@ final class ZoneEventOutboxTests: XCTestCase {
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
             eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let garageEntry = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
             eventData: ["zone": "zone.garage"],
+            createdAt: Current.date(),
             isBeacon: true
         )
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
@@ -199,11 +211,7 @@ final class ZoneEventOutboxTests: XCTestCase {
             isBeacon: true,
             deliveryStartedAt: now.addingTimeInterval(-120)
         )
-        let initialOutbox = AtomicFileZoneEventOutbox(
-            fileURL: fileURL,
-            date: { now.addingTimeInterval(-121) }
-        )
-        try initialOutbox.append(event)
+        try JSONEncoder().encode([event]).write(to: fileURL, options: .atomic)
 
         let reloadedOutbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
 
@@ -215,7 +223,8 @@ final class ZoneEventOutboxTests: XCTestCase {
         let event = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.beacon"]
+            eventData: ["zone": "zone.beacon"],
+            createdAt: Current.date()
         )
         let outbox = AtomicFileZoneEventOutbox(
             fileURL: fileURL,
@@ -227,11 +236,15 @@ final class ZoneEventOutboxTests: XCTestCase {
         }
     }
 
-    func testCorruptStoreReadFailureIsPropagated() throws {
-        try Data("not-json".utf8).write(to: fileURL, options: .atomic)
+    func testCorruptStoreIsQuarantinedAndReadRecovers() throws {
+        let corrupt = Data("not-json".utf8)
+        try corrupt.write(to: fileURL, options: .atomic)
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
-
-        XCTAssertThrowsError(try outbox.pendingEvents())
+        XCTAssertTrue(try outbox.pendingEvents().isEmpty)
+        let quarantine = fileURL.deletingPathExtension().appendingPathExtension("corrupt.json")
+        XCTAssertEqual(try Data(contentsOf: quarantine), corrupt)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: fileURL.path))
+        XCTAssertTrue(try outbox.pendingEvents().isEmpty)
     }
 
     private func makeEvent(
@@ -282,7 +295,7 @@ final class ZoneEventOutboxTests: XCTestCase {
         let now = Date(timeIntervalSince1970: 1000)
         let event = try makeEvent(started: true)
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
-        try outbox.append(event)
+        try JSONEncoder().encode([event]).write(to: fileURL, options: .atomic)
         try outbox.clearDeliveryStarted(id: event.id)
 
         let reloaded = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
@@ -314,7 +327,7 @@ final class ZoneEventOutboxTests: XCTestCase {
     func testFailedMutationsLeaveStoredEventUnchanged() throws {
         struct TestError: Error {}
         let now = Date(timeIntervalSince1970: 1000)
-        let event = try makeEvent()
+        let event = try makeEvent(started: true)
         let original = try JSONEncoder().encode([event])
         try original.write(to: fileURL, options: .atomic)
         let outbox = AtomicFileZoneEventOutbox(
@@ -324,7 +337,6 @@ final class ZoneEventOutboxTests: XCTestCase {
         )
         let mutations: [() throws -> Void] = [
             { try outbox.append(self.makeEvent()) },
-            { try outbox.markDeliveryStarted(id: event.id, at: now) },
             { try outbox.clearDeliveryStarted(id: event.id) },
             { try outbox.remove(id: event.id) },
         ]
@@ -334,19 +346,23 @@ final class ZoneEventOutboxTests: XCTestCase {
         }
         let expired = AtomicFileZoneEventOutbox(
             fileURL: fileURL,
-            date: { now.addingTimeInterval(121) },
+            date: { now.addingTimeInterval(10801) },
             writeData: { _, _ in throw TestError() }
         )
-        XCTAssertThrowsError(try expired.pendingEvents()) { XCTAssertTrue($0 is TestError) }
+        XCTAssertTrue(try expired.pendingEvents().isEmpty)
         XCTAssertEqual(try Data(contentsOf: fileURL), original)
     }
 
-    func testCorruptStoreIsNotOverwrittenByAppend() throws {
+    func testCorruptStoreAppendPreservesEvidenceAndNewEventSurvivesRelaunch() throws {
         let original = Data("not-json".utf8)
         try original.write(to: fileURL, options: .atomic)
-        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
-        XCTAssertThrowsError(try outbox.append(makeEvent(createdAt: Date())))
-        XCTAssertEqual(try Data(contentsOf: fileURL), original)
+        let now = Date(timeIntervalSince1970: 1000)
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
+        let event = try makeEvent()
+        try outbox.append(event)
+        let quarantine = fileURL.deletingPathExtension().appendingPathExtension("corrupt.json")
+        XCTAssertEqual(try Data(contentsOf: quarantine), original)
+        XCTAssertEqual(try AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now }).pendingEvents(), [event])
     }
 
     func testBeaconCoalescingDoesNotCrossServerOrMissingZone() throws {
@@ -372,21 +388,6 @@ final class ZoneEventOutboxTests: XCTestCase {
         XCTAssertEqual(try outbox.pendingEvents(), events)
     }
 
-    func testLegacyEventWithoutOptionalMetadataDecodes() throws {
-        let event = try makeEvent()
-        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(event)) as? [String: Any])
-        object.removeValue(forKey: "isBeacon")
-        object.removeValue(forKey: "deliveryStartedAt")
-        let decoded = try JSONDecoder().decode(
-            PendingZoneEvent.self,
-            from: JSONSerialization.data(withJSONObject: object)
-        )
-        XCTAssertEqual(decoded.id, event.id)
-        XCTAssertEqual(decoded.eventData, event.eventData)
-        XCTAssertNil(decoded.isBeacon)
-        XCTAssertNil(decoded.deliveryStartedAt)
-    }
-
     func testInvalidEventPayloadIsRejected() {
         let invalidPayloads: [[String: Any]] = [
             ["invalid": Date()],
@@ -398,7 +399,8 @@ final class ZoneEventOutboxTests: XCTestCase {
             XCTAssertThrowsError(try PendingZoneEvent(
                 serverIdentifier: "server-id",
                 eventType: "ios.zone_entered",
-                eventData: payload
+                eventData: payload,
+                createdAt: Current.date()
             )) { error in
                 XCTAssertEqual(error as? PendingZoneEvent.PayloadError, .invalidJSONObject)
             }
@@ -413,7 +415,8 @@ final class ZoneEventOutboxTests: XCTestCase {
         let event = try PendingZoneEvent(
             serverIdentifier: "server-id",
             eventType: "ios.zone_entered",
-            eventData: payload
+            eventData: payload,
+            createdAt: Current.date()
         )
         let decoded = try XCTUnwrap(event.decodedEventData)
         XCTAssertTrue(NSDictionary(dictionary: payload).isEqual(to: decoded))
@@ -437,7 +440,7 @@ final class ZoneEventOutboxTests: XCTestCase {
             isBeacon: true
         )
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
-        try outbox.append(first)
+        try JSONEncoder().encode([first]).write(to: fileURL, options: .atomic)
         try outbox.append(second)
         XCTAssertEqual(try outbox.pendingEvents(), [first, second])
     }
@@ -454,27 +457,17 @@ final class ZoneEventOutboxTests: XCTestCase {
         XCTAssertNil(decoded.decodedEventData)
     }
 
-    func testIncomingStartedBeaconDoesNotReplaceQueuedTransition() throws {
+    func testStartedAppendIsRejectedWithoutChangingStore() throws {
         let now = Date(timeIntervalSince1970: 1000)
-        let queued = try PendingZoneEvent(
-            serverIdentifier: "server-id",
-            eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.home"],
-            createdAt: now,
-            isBeacon: true
-        )
-        let started = try PendingZoneEvent(
-            serverIdentifier: queued.serverIdentifier,
-            eventType: queued.eventType,
-            eventData: ["zone": "zone.home"],
-            createdAt: now,
-            isBeacon: true,
-            deliveryStartedAt: now
-        )
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
+        let queued = try makeEvent()
         try outbox.append(queued)
-        try outbox.append(started)
-        XCTAssertEqual(try outbox.pendingEvents(), [queued, started])
+        let original = try Data(contentsOf: fileURL)
+        XCTAssertThrowsError(try outbox.append(makeEvent(started: true))) { error in
+            XCTAssertEqual(error as? AtomicFileZoneEventOutbox.OutboxError, .deliveryAlreadyStarted)
+        }
+        XCTAssertEqual(try Data(contentsOf: fileURL), original)
+        XCTAssertEqual(try outbox.pendingEvents(), [queued])
     }
 
     func testMarkingExpiredEventDoesNotReviveIt() throws {
@@ -501,13 +494,16 @@ final class ZoneEventOutboxTests: XCTestCase {
         XCTAssertEqual(try reloaded.pendingEvents(), [expected])
     }
 
-    func testExpiredAppendStillReportsCorruptStore() throws {
+    func testExpiredAppendRecoversCorruptStoreWithoutKeepingStaleEvent() throws {
         let original = Data("not-json".utf8)
         try original.write(to: fileURL, options: .atomic)
         let now = Date(timeIntervalSince1970: 1000)
         let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now.addingTimeInterval(121) })
-        XCTAssertThrowsError(try outbox.append(makeEvent()))
-        XCTAssertEqual(try Data(contentsOf: fileURL), original)
+        try outbox.append(makeEvent())
+        XCTAssertTrue(try outbox.pendingEvents().isEmpty)
+        XCTAssertEqual(
+            try Data(contentsOf: fileURL.deletingPathExtension().appendingPathExtension("corrupt.json")), original
+        )
     }
 
     func testExpiredUpdateCleanupWriteFailurePreservesStore() throws {
@@ -527,22 +523,152 @@ final class ZoneEventOutboxTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: fileURL), original)
     }
 
-    func testConcurrentInstancesPreserveEveryAppend() throws {
+    func testConcurrentCallsToSingleOwnerPreserveEveryAppend() throws {
         let now = Date(timeIntervalSince1970: 1000)
         let events = try (0 ..< 40).map { _ in try makeEvent() }
-        let url = try XCTUnwrap(fileURL)
-        // Distinct owners of the same file must coordinate the whole transaction.
-        let outboxes = events.map { _ in AtomicFileZoneEventOutbox(fileURL: url, date: { now }) }
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
         DispatchQueue.concurrentPerform(iterations: events.count) { index in
             do {
-                try outboxes[index].append(events[index])
+                try outbox.append(events[index])
             } catch {
                 XCTFail("Concurrent append failed: \(error)")
             }
         }
-        let reloaded = AtomicFileZoneEventOutbox(fileURL: url, date: { now })
-        let stored = try reloaded.pendingEvents()
+        let stored = try AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now }).pendingEvents()
         XCTAssertEqual(stored.count, events.count)
         XCTAssertEqual(Set(stored.map(\.id)), Set(events.map(\.id)))
+    }
+
+    func testStartedDeadlineAllowsReconciliationThenUnblocksNextServer() throws {
+        let created = Date(timeIntervalSince1970: 1000)
+        var now = created.addingTimeInterval(10800)
+        let stuck = try makeEvent(started: true)
+        let next = try PendingZoneEvent(
+            serverIdentifier: "other-server", eventType: "ios.zone_entered",
+            eventData: ["zone": "zone.home"], createdAt: now
+        )
+        try JSONEncoder().encode([stuck, next]).write(to: fileURL, options: .atomic)
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
+        XCTAssertEqual(try outbox.pendingEvents(), [stuck, next])
+        now = now.addingTimeInterval(1)
+        XCTAssertEqual(try outbox.pendingEvents(), [next])
+        XCTAssertEqual(try AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now }).pendingEvents(), [next])
+    }
+
+    func testStartedDeadlineFreesFullCapacity() throws {
+        let now = Date(timeIntervalSince1970: 11801)
+        let expired = try (0 ..< 100).map { _ in try makeEvent(started: true) }
+        try JSONEncoder().encode(expired).write(to: fileURL, options: .atomic)
+        let incoming = try makeEvent(createdAt: now)
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
+        try outbox.append(incoming)
+        XCTAssertEqual(try outbox.pendingEvents(), [incoming])
+    }
+
+    func testRepeatedMarkCannotExtendStartedDeadline() throws {
+        let created = Date(timeIntervalSince1970: 1000)
+        var now = created
+        let event = try makeEvent()
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
+        try outbox.append(event)
+        try outbox.markDeliveryStarted(id: event.id, at: now)
+        now = created.addingTimeInterval(10800)
+        try outbox.markDeliveryStarted(id: event.id, at: now)
+        XCTAssertEqual(try outbox.pendingEvents().first?.deliveryStartedAt, created)
+        now = now.addingTimeInterval(1)
+        XCTAssertTrue(try outbox.pendingEvents().isEmpty)
+    }
+
+    func testPruneWriteFailureReturnsFreshEventsAndLaterMutationPersistsCleanup() throws {
+        struct TestError: Error {}
+        let now = Date(timeIntervalSince1970: 2000)
+        let expired = try makeEvent()
+        let fresh = try makeEvent(createdAt: now)
+        let original = try JSONEncoder().encode([expired, fresh])
+        try original.write(to: fileURL, options: .atomic)
+        var failWrite = true
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now }, writeData: { data, url in
+            if failWrite { throw TestError() }
+            try data.write(to: url, options: .atomic)
+        })
+        XCTAssertEqual(try outbox.pendingEvents(), [fresh])
+        XCTAssertEqual(try Data(contentsOf: fileURL), original)
+        failWrite = false
+        try outbox.markDeliveryStarted(id: fresh.id, at: now)
+        var started = fresh
+        started.deliveryStartedAt = now
+        XCTAssertEqual(try JSONDecoder().decode([PendingZoneEvent].self, from: Data(contentsOf: fileURL)), [started])
+    }
+
+    func testRepeatedCorruptionPreservesBothQuarantines() throws {
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
+        let first = Data("broken-first".utf8)
+        let second = Data("broken-second".utf8)
+        try first.write(to: fileURL, options: .atomic)
+        XCTAssertTrue(try outbox.pendingEvents().isEmpty)
+        try second.write(to: fileURL, options: .atomic)
+        XCTAssertTrue(try outbox.pendingEvents().isEmpty)
+        let files = try FileManager.default.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
+        XCTAssertEqual(files.count, 2)
+        XCTAssertEqual(try Set(files.map { try Data(contentsOf: $0) }), Set([first, second]))
+    }
+
+    func testMalformedEntryQuarantinesWholeArrayAndAllowsNewAppend() throws {
+        let now = Date(timeIntervalSince1970: 1000)
+        let event = try makeEvent()
+        let encoded = try JSONEncoder().encode(event)
+        let original = Data("[".utf8) + encoded + Data(",{}]".utf8)
+        try original.write(to: fileURL, options: .atomic)
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now })
+        try outbox.append(event)
+        XCTAssertEqual(try outbox.pendingEvents(), [event])
+        XCTAssertEqual(
+            try Data(contentsOf: fileURL.deletingPathExtension().appendingPathExtension("corrupt.json")), original
+        )
+    }
+
+    func testReadIOFailureDoesNotQuarantineOrOverwrite() throws {
+        // Reading a directory is an I/O error, not malformed JSON.
+        try FileManager.default.createDirectory(at: fileURL, withIntermediateDirectories: false)
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
+        XCTAssertThrowsError(try outbox.pendingEvents())
+        XCTAssertThrowsError(try outbox.append(makeEvent(createdAt: Current.date())))
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: directoryURL.path), ["outbox.json"])
+    }
+
+    func testUnknownRemovalDoesNotCreateFileOrWriteExistingStore() throws {
+        struct TestError: Error {}
+        let now = Date(timeIntervalSince1970: 1000)
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL, date: { now }, writeData: { _, _ in
+            throw TestError()
+        })
+        try outbox.remove(id: UUID())
+        XCTAssertFalse(FileManager.default.fileExists(atPath: fileURL.path))
+        let original = try JSONEncoder().encode([makeEvent()])
+        try original.write(to: fileURL, options: .atomic)
+        try outbox.remove(id: UUID())
+        XCTAssertEqual(try Data(contentsOf: fileURL), original)
+    }
+
+    func testDefaultClockReadsCurrentDateDynamically() throws {
+        let originalDate = Current.date
+        defer { Current.date = originalDate }
+        let now = Date(timeIntervalSince1970: 1000)
+        Current.date = { now }
+        let outbox = AtomicFileZoneEventOutbox(fileURL: fileURL)
+        let event = try makeEvent(createdAt: Current.date())
+        try outbox.append(event)
+        XCTAssertEqual(try outbox.pendingEvents(), [event])
+        Current.date = { now.addingTimeInterval(121) }
+        XCTAssertTrue(try outbox.pendingEvents().isEmpty)
+    }
+
+    func testAppendCreatesMissingApplicationSupportParent() throws {
+        let now = Date(timeIntervalSince1970: 1000)
+        let nestedURL = directoryURL.appendingPathComponent("Application Support/outbox.json")
+        let outbox = AtomicFileZoneEventOutbox(fileURL: nestedURL, date: { now })
+        let event = try makeEvent()
+        try outbox.append(event)
+        XCTAssertEqual(try AtomicFileZoneEventOutbox(fileURL: nestedURL, date: { now }).pendingEvents(), [event])
     }
 }

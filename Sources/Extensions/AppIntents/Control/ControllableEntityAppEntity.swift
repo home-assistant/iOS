@@ -1,14 +1,20 @@
 import AppIntents
 import Foundation
-import SFSafeSymbols
 import Shared
 
-/// An entity a spoken command can switch on or off, across every domain that supports it.
+/// An entity a spoken command can switch on or off, or a whole room's worth of them.
+///
+/// A type of its own rather than the shared `HAAppEntityAppIntentEntity`, for the same reason
+/// `OpenableEntityAppEntity` is one: Siri and Spotlight take a phrase's entity list — and what a
+/// tapped Spotlight result does — from the parameter type itself. While this command shared the type
+/// the Spotlight index publishes, tapping a search result ran "turn off" instead of opening the
+/// entity, with nothing in the row to say so. Keeping the command on its own type leaves the indexed
+/// one to `ShowEntityDetailsAppIntent` alone.
 @available(macOS 13.0, watchOS 9.4, *)
 struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init(
-        "app_intents.controllable_entity.entity.name",
-        defaultValue: "Controllable Entity"
+        "app_intents.controllable_entity.parameter.entity",
+        defaultValue: "Entity"
     ))
 
     static let defaultQuery = ControllableEntityAppEntityQuery()
@@ -32,6 +38,20 @@ struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
     @Property(title: .init("app_intents.entity.property.server", defaultValue: "Server"))
     var serverName: String
 
+    /// The domain the command resolves its service from, e.g. a scene activates where a light
+    /// switches.
+    var domain: Domain? {
+        areaTarget?.domain ?? Domain(entityId: entityId)
+    }
+
+    /// Deliberately carries no image, which is what lets the command's own glyph reach the row.
+    ///
+    /// Spotlight builds one row per shortcut per entity and titles every one of them with the entity's
+    /// name, so a light turns up as a column of rows reading the same thing. The glyph is the only part
+    /// of that row a command can vary — the system draws this image where there is one and falls back
+    /// to the App Shortcut's `systemImageName` where there is not — so leaving it out is what makes
+    /// switching, dimming and asking distinguishable at a glance. `HomeAssistantAppShortcuts` holds
+    /// the symbols and the test that keeps them distinct.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
@@ -48,9 +68,15 @@ struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
         return contextSubtitle(serverName: serverName)
     }
 
-    /// The domain the command resolves its service from, e.g. `cover` opens rather than turns on.
-    var domain: Domain? {
-        areaTarget?.domain ?? Domain(entityId: entityId)
+    /// What a service call should be addressed to: one entity, or the whole area this stands for.
+    ///
+    /// Home Assistant scopes an area target by the calling service's domain, so `light.turn_on`
+    /// against an area reaches its lights and nothing else in the room.
+    var serviceTarget: [String: Any] {
+        if let areaTarget {
+            return ["area_id": areaTarget.areaId]
+        }
+        return ["entity_id": entityId]
     }
 
     init(
@@ -73,17 +99,6 @@ struct ControllableEntityAppEntity: AppEntity, EntityContextRepresentable {
         self.deviceName = deviceName
         self.floorName = floorName
         self.serverName = serverName
-    }
-
-    /// What a service call should be addressed to: one entity, or the whole area this stands for.
-    ///
-    /// Home Assistant scopes an area target by the calling service's domain, so `light.turn_on`
-    /// against an area reaches its lights and nothing else in the room.
-    var serviceTarget: [String: Any] {
-        if let areaTarget {
-            return ["area_id": areaTarget.areaId]
-        }
-        return ["entity_id": entityId]
     }
 
     /// A whole area of one domain, standing in for every entity of that kind in the room.

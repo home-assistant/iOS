@@ -319,6 +319,8 @@ final class WebViewControllerTests: XCTestCase {
     func testFrontendAssetCacheCleanDecisionCleansWhenNeverCleaned() {
         XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
             lastCleanDate: nil,
+            lastCleanVersion: "2026.9.3",
+            currentVersion: "2026.9.3",
             now: Date(timeIntervalSince1970: 100)
         ))
     }
@@ -328,6 +330,8 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertFalse(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
             lastCleanDate: now.addingTimeInterval(-WebsiteDataStoreHandlerImpl.frontendAssetCacheCleanInterval),
+            lastCleanVersion: "2026.9.3",
+            currentVersion: "2026.9.3",
             now: now
         ))
     }
@@ -337,6 +341,30 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
             lastCleanDate: now.addingTimeInterval(-WebsiteDataStoreHandlerImpl.frontendAssetCacheCleanInterval - 1),
+            lastCleanVersion: "2026.9.3",
+            currentVersion: "2026.9.3",
+            now: now
+        ))
+    }
+
+    func testFrontendAssetCacheCleanDecisionCleansAfterAnAppUpdate() {
+        let now = Date(timeIntervalSince1970: 1000)
+
+        XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
+            lastCleanDate: now,
+            lastCleanVersion: "2026.9.3",
+            currentVersion: "2026.9.4",
+            now: now
+        ))
+    }
+
+    func testFrontendAssetCacheCleanDecisionCleansWhenTheCleaningVersionIsUnknown() {
+        let now = Date(timeIntervalSince1970: 1000)
+
+        XCTAssertTrue(WebsiteDataStoreHandlerImpl.shouldCleanFrontendAssetCache(
+            lastCleanDate: now,
+            lastCleanVersion: nil,
+            currentVersion: "2026.9.4",
             now: now
         ))
     }
@@ -773,6 +801,22 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.overlayState?.emptyState)
     }
 
+    /// A scripted `focus()` raises the keyboard only while the web view holds keyboard focus.
+    func testMakeWebViewFirstResponderGivesTheWebViewKeyboardFocus() {
+        let sut = makeSUT()
+        let webView = WKWebView(frame: sut.view.bounds)
+        sut.webView = webView
+        sut.view.addSubview(webView)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.makeWebViewFirstResponder()
+
+        XCTAssertTrue(webView.containsFirstResponder)
+    }
+
     func testPresentClientCertificateImportPresentsTheImportSheet() async {
         let sut = makeSUT()
         // Attaching to a window changes traits, which the controller forwards to its web view.
@@ -1152,6 +1196,17 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         XCTAssertNil(sut.loadActiveURLTaskStartDate)
     }
 
+    func testLoadActiveURLDoesNothingBeforeTheWebViewIsBuilt() {
+        let sut = makeSUT()
+        sut.webView = nil
+
+        sut.loadActiveURLIfNeeded()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 0)
+        XCTAssertNil(sut.loadActiveURLTask)
+        XCTAssertNil(sut.loadActiveURLTaskStartDate)
+    }
+
     /// The cache-clean check is asynchronous, so a log out can land between the two halves of an
     /// attempt that already passed the guard on the way in.
     func testLoadActiveURLDoesNothingWhenLogOutLandsDuringCacheCleanCheck() {
@@ -1391,5 +1446,11 @@ private final class AsyncGate: @unchecked Sendable {
         let waiter = waiters.isEmpty ? nil : waiters.removeFirst()
         lock.unlock()
         waiter?.resume()
+    }
+}
+
+private extension UIView {
+    var containsFirstResponder: Bool {
+        isFirstResponder || subviews.contains(where: \.containsFirstResponder)
     }
 }

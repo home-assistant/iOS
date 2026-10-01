@@ -25,10 +25,10 @@ enum ComplicationStateFetcher {
         }
     }
 
-    /// Performs `request` on the server's mTLS/self-signed-aware session (so local servers work),
-    /// invalidating the session afterwards as `MagicItem.sendRESTServiceCall` does. On failure the
-    /// data is nil and `failure` says why (transport error, HTTP status), so diagnostics can show
-    /// the actual cause instead of a generic "unavailable".
+    /// Performs `request` through the shared transport, which uses the server's mTLS/self-signed-aware
+    /// session (so local servers work) and hands the request to the iPhone when it's reachable. On
+    /// failure the data is nil and `failure` says why (transport error, HTTP status), so diagnostics
+    /// can show the actual cause instead of a generic "unavailable".
     /// `token` is the bearer already applied to `request`: when the server answers 401, that exact
     /// token is reported rejected so the next fetch refreshes instead of re-sending it — otherwise
     /// every refresh cycle logs invalid auth server-side until the watch's IP gets banned.
@@ -51,17 +51,13 @@ enum ComplicationStateFetcher {
         server: Server,
         token: String
     ) async -> (data: Data?, failure: String?) {
-        let session = HomeAssistantAPI.makeCertificateAwareURLSession(
-            server: server,
-            configuration: boundedSessionConfiguration()
-        )
-        defer { session.finishTasksAndInvalidate() }
         do {
-            let (data, response) = try await session.data(for: request)
-            guard let http = response as? HTTPURLResponse else {
-                Current.Log.error("[Complication] no HTTP response for \(request.url?.absoluteString ?? "?")")
-                return (nil, "no HTTP response")
-            }
+            let (data, http) = try await ServerRequestPerformer.perform(
+                request,
+                server: server,
+                configuration: boundedSessionConfiguration(),
+                priority: .background
+            )
             guard (200 ..< 300).contains(http.statusCode) else {
                 Current.Log.error("[Complication] HTTP \(http.statusCode) for \(request.url?.absoluteString ?? "?")")
                 if http.statusCode == 401 {

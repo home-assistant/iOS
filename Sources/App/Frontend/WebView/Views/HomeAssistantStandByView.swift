@@ -31,6 +31,8 @@ struct HomeAssistantStandByView: View {
 
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
@@ -74,13 +76,20 @@ struct HomeAssistantStandByView: View {
         showsEmptyState ? WebViewEmptyStateIcon.logoSize : LaunchSplashOverlayView.Constants.splashLogoSize
     }
 
-    private func contentOffset(safeAreaInsets: EdgeInsets) -> CGFloat {
-        guard !showsEmptyState else { return 0 }
+    static func contentOffset(
+        safeAreaInsets: EdgeInsets,
+        layoutDirection: LayoutDirection,
+        showsEmptyState: Bool
+    ) -> CGSize {
+        guard !showsEmptyState else { return .zero }
         // The splash logo sits at an offset from the full-screen center while this content is laid
         // out inside the safe area; shift by the safe-area asymmetry plus the splash offset so the
         // two logos coincide.
-        return (safeAreaInsets.bottom - safeAreaInsets.top) / 2
-            + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+        return CGSize(
+            width: SafeAreaCenteringOffset.horizontal(safeAreaInsets: safeAreaInsets, layoutDirection: layoutDirection),
+            height: SafeAreaCenteringOffset.vertical(safeAreaInsets: safeAreaInsets)
+                + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+        )
     }
 
     init(
@@ -115,7 +124,15 @@ struct HomeAssistantStandByView: View {
             content(safeAreaInsets: proxy.safeAreaInsets)
         }
         .overlay(alignment: .bottom) {
-            ohfBrandingFooter
+            GeometryReader { proxy in
+                ohfBrandingFooter
+                    .offset(x: Self.contentOffset(
+                        safeAreaInsets: proxy.safeAreaInsets,
+                        layoutDirection: layoutDirection,
+                        showsEmptyState: showsEmptyState
+                    ).width)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            }
         }
         .onDisappear(perform: ohfBranding.markStandByDismissed)
     }
@@ -183,7 +200,11 @@ struct HomeAssistantStandByView: View {
                     .transition(.opacity)
             }
         }
-        .offset(y: contentOffset(safeAreaInsets: safeAreaInsets))
+        .offset(Self.contentOffset(
+            safeAreaInsets: safeAreaInsets,
+            layoutDirection: layoutDirection,
+            showsEmptyState: showsEmptyState
+        ))
         .opacity(standByContentOpacity)
         // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
         // while buttons keep priority.

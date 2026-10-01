@@ -5,6 +5,9 @@ import SwiftUI
 import UIKit
 
 class SensorDetailViewModel: ObservableObject, SensorObserver {
+    /// The server this sensor is being configured for. Enablement is per server, so the switch
+    /// below only speaks for this one.
+    let server: Server
     @Published private(set) var sensor: WebhookSensor
     @Published var isEnabled: Bool
     @Published var stateDescription: String?
@@ -15,9 +18,10 @@ class SensorDetailViewModel: ObservableObject, SensorObserver {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(sensor: WebhookSensor) {
+    init(sensor: WebhookSensor, server: Server) {
+        self.server = server
         self.sensor = sensor
-        self.isEnabled = Current.sensors.isEnabled(sensor: sensor)
+        self.isEnabled = Current.sensors.isEnabled(sensor: sensor, for: server)
         self.stateDescription = sensor.StateDescription
         self.deviceClass = sensor.DeviceClass?.rawValue
         self.icon = sensor.Icon
@@ -43,7 +47,7 @@ class SensorDetailViewModel: ObservableObject, SensorObserver {
                 guard let self else { return }
                 DispatchQueue.main.async {
                     self.sensor = updated
-                    self.isEnabled = Current.sensors.isEnabled(sensor: updated)
+                    self.isEnabled = Current.sensors.isEnabled(sensor: updated, for: self.server)
                     self.stateDescription = updated.StateDescription
                     self.deviceClass = updated.DeviceClass?.rawValue
                     self.icon = updated.Icon
@@ -62,7 +66,7 @@ class SensorDetailViewModel: ObservableObject, SensorObserver {
     }
 
     func setEnabled(_ enabled: Bool) {
-        Current.sensors.setEnabled(enabled, for: sensor)
+        Current.sensors.setEnabled(enabled, for: sensor, on: server)
         isEnabled = enabled
 
         guard enabled, let uniqueID = sensor.UniqueID else { return }

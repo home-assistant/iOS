@@ -193,6 +193,12 @@ struct NativeTabBarViewModelTests {
         sut.didSelect(.assist)
         #expect(sourceFrames.count == 2)
         #expect(sourceFrames.last == CGRect(x: 1, y: 2, width: 3, height: 4))
+
+        sut.usesVerticalBar = true
+        sut.didSelect(.assist)
+        #expect(sourceFrames.count == 3)
+        #expect(sourceFrames[2] == nil)
+        sut.usesVerticalBar = false
         #expect(sut.selection == .assist)
         #expect(!sut.showsFrontend)
 
@@ -422,14 +428,27 @@ struct NativeTabBarViewModelTests {
         #expect(presenter.zoomSourceID == NativeTabBarViewModel.appSettingsTransitionID)
     }
 
+    @Test("A pinned tab's gear opens the settings sheet without a zoom source")
+    func showAppSettingsFromATab() {
+        let sut = makeFixture("appSettingsTab").sut
+        let presenter = AppSettingsPresenter()
+
+        sut.showAppSettings(using: presenter, zoomingFrom: nil)
+        #expect(presenter.isSheetPresented)
+        #expect(presenter.mode == .full)
+        #expect(presenter.zoomSourceID == nil)
+    }
+
     @Test("Switching to another server goes through the app coordinator; the current one is left alone")
     func openServer() async {
         let other = ServerFixture.withRemoteConnection
         let single = makeFixture("singleServer").sut
         #expect(!single.hasMultipleServers)
+        #expect(single.otherServers.isEmpty)
 
         let sut = makeFixture("openServer", additionalServers: [other]).sut
         #expect(sut.hasMultipleServers)
+        #expect(sut.otherServers.map(\.identifier) == [other.identifier])
         #expect(sut.servers.map(\.identifier) == [ServerFixture.standard.identifier, other.identifier])
 
         let coordinator = MockAppCoordinator()

@@ -453,9 +453,12 @@ class IncomingURLHandler {
         guard let action = item.action, action != .default else { return nil }
 
         switch action {
-        case .default, .nothing:
-            // The retired "nothing" resolves through the interaction type, to the more-info dialog.
+        case .default:
             return nil
+        case .nothing:
+            // There is no widget to reload from an app icon shortcut, so the tap ends here rather
+            // than showing the confirmation overlay for a no-op.
+            return .value(())
         case .toggle, .mainAction, .turnOn, .turnOff:
             // These resolve through the item's interaction type, the way a widget tile's do, so
             // falling through keeps the confirmation overlay and error handling.
@@ -481,8 +484,16 @@ class IncomingURLHandler {
         case let .performAction(serverId, actionId, payload):
             return performAction(serverId: serverId, actionId: actionId, payload: payload)
         case let .navigate(path):
+            var normalizedPath = path.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if URL(string: normalizedPath)?.scheme == nil {
+                while normalizedPath.hasPrefix("/") {
+                    normalizedPath.removeFirst()
+                }
+            }
+
             if let url = AppConstants.navigateDeeplinkURL(
-                path: path,
+                path: normalizedPath,
                 serverId: item.serverId,
                 avoidUnnecessaryReload: true
             ) {
