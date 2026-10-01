@@ -318,7 +318,12 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         guard !identifiers.isEmpty else { return }
 
         guard let detectedBeacon = samples.first(where: isBeaconInsideRange) else {
-            reconcileEmptyBeaconSample(identifiers: Array(identifiers), manager: manager)
+            if samples.isEmpty {
+                reconcileEmptyBeaconSample(identifiers: Array(identifiers), manager: manager)
+            } else {
+                // A weak observation is not evidence of absence; require a new empty streak.
+                identifiers.forEach { beaconReconciliationStates.removeValue(forKey: $0) }
+            }
             return
         }
 

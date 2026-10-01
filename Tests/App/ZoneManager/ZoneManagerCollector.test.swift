@@ -3,6 +3,7 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import UIKit
 import XCTest
 
 class ZoneManagerCollectorTests: XCTestCase {
@@ -1043,6 +1044,78 @@ class ZoneManagerCollectorTests: XCTestCase {
         collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
 
         XCTAssertTrue(delegate.events.isEmpty)
+    }
+
+    func testWeakNonemptySamplesResetExitReconciliationWithoutCreatingExit() throws {
+        let region = try storedBeaconRegion(entityId: "weak-samples", inRegion: true)
+        collector = makeCollector(beaconExitReconciliationDuration: 0, beaconExitMinimumEmptySamples: 3)
+        collector.delegate = delegate
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -60)],
+            satisfying: region.beaconIdentityConstraint, manager: locationManager
+        )
+        delegate.events.removeAll()
+        for proximity in [CLProximity.far, .unknown] {
+            for _ in 0 ..< 2 {
+                collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+            }
+            for _ in 0 ..< 3 {
+                collector.didRange(
+                    samples: [.init(proximity: proximity, rssi: -95)],
+                    satisfying: region.beaconIdentityConstraint, manager: locationManager
+                )
+            }
+            XCTAssertTrue(delegate.events.isEmpty)
+        }
+        for _ in 0 ..< 2 {
+            collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        }
+        XCTAssertTrue(delegate.events.isEmpty)
+        collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        XCTAssertEqual(delegate.events.count, 1)
+        XCTAssertEqual(delegate.events.first?.eventType, .region(region, .outside))
+    }
+
+    func testRealBackgroundAdapterDeniedLeasePreventsRanging() throws {
+        var acquisitions = 0
+        let execution = UIApplicationBeaconScanBackgroundExecution(
+            beginTask: { _ in acquisitions += 1; return .invalid },
+            endTask: { _ in XCTFail("An invalid lease must never be ended") }
+        )
+        collector = makeCollector(backgroundExecution: execution)
+        collector.delegate = delegate
+        let region = try storedBeaconRegion(entityId: "denied-lease")
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        XCTAssertEqual(acquisitions, 1)
+        XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
+        XCTAssertTrue(delegate.events.isEmpty)
+        execution.end()
+        scheduler.advance(by: 30)
+        XCTAssertTrue(delegate.events.isEmpty)
+    }
+
+    func testRealBackgroundAdapterEndsGrantedLeaseExactlyOnce() {
+        var acquisitions = 0
+        var expiration: (() -> Void)?
+        var ended = [UIBackgroundTaskIdentifier]()
+        let identifier = UIBackgroundTaskIdentifier(rawValue: 42)
+        let execution = UIApplicationBeaconScanBackgroundExecution(
+            beginTask: { handler in
+                acquisitions += 1
+                expiration = handler
+                return identifier
+            },
+            endTask: { ended.append($0) }
+        )
+        var expirations = 0
+        execution.begin { [weak execution] in expirations += 1; execution?.end() }
+        execution.begin { XCTFail("A live lease cannot be replaced") }
+        XCTAssertEqual(acquisitions, 1)
+        expiration?()
+        execution.end()
+        XCTAssertEqual(expirations, 1)
+        XCTAssertEqual(ended, [identifier])
     }
 
     func testFarBeaconDoesNotCreateEntry() throws {
