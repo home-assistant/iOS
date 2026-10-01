@@ -3,7 +3,7 @@ import ActivityKit
 import Shared
 import SwiftUI
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 struct LiveActivitySettingsView: View {
     // MARK: State
 
@@ -743,7 +743,7 @@ struct LiveActivitySettingsView: View {
 
 // MARK: - Sample model
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 private struct LiveActivitySample: Identifiable {
     /// One state in a sample's timeline. Single-stage samples have exactly one.
     struct Stage {
@@ -871,7 +871,7 @@ private struct LiveActivitySample: Identifiable {
 
 // MARK: - Sample detail
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 private struct LiveActivitySampleDetailView: View {
     let sample: LiveActivitySample
     let onStart: (LiveActivitySample) -> Void
@@ -914,7 +914,7 @@ private struct LiveActivitySampleDetailView: View {
 
 // MARK: - YAML viewer
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 private struct LiveActivityYAMLView: View {
     let yaml: String
 
@@ -950,7 +950,7 @@ private struct LiveActivityYAMLView: View {
 
 // MARK: - Activity row
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 private struct ActivityRow: View {
     let snapshot: ActivitySnapshot
     let onEnd: () -> Void
@@ -981,7 +981,7 @@ private struct ActivityRow: View {
 
 // MARK: - Snapshot model
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 private struct ActivitySnapshot: Identifiable {
     let id: String
     let tag: String
@@ -998,7 +998,7 @@ private struct ActivitySnapshot: Identifiable {
 #endif
 
 #if os(iOS) && !targetEnvironment(macCatalyst)
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 extension LiveActivitySettingsView: SettingsScreenSearchable {
     static var settingsSearchEntries: [SettingsSearchEntry] {
         [

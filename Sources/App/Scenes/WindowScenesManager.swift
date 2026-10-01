@@ -87,7 +87,7 @@ final class WindowScenesManager {
         let screenSize = scene.screen.bounds.size
         guard let systemFrame = systemFrame(for: activity, screenSize: screenSize) else { return }
 
-        #if targetEnvironment(macCatalyst) || os(macOS)
+        #if targetEnvironment(macCatalyst)
         Current.Log.info("Sizing \(activity.configurationName) window to \(systemFrame)")
         scene.requestGeometryUpdate(.Mac(systemFrame: systemFrame)) { error in
             Current.Log.info(userInfo: ["Failed to request mac geometry": error.localizedDescription])

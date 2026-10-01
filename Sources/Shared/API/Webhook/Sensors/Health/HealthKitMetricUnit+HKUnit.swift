@@ -62,7 +62,7 @@ public extension HealthKitMetricUnit {
         case .internationalUnit:
             return HKUnit.internationalUnit()
         case .effortScore:
-            if #available(iOS 18.0, macOS 15.0, *) {
+            if #available(iOS 18.0, *) {
                 return HKUnit.appleEffortScore()
             } else {
                 return nil

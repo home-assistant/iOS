@@ -34,7 +34,7 @@ struct WatchComplicationConfigurationSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    if #available(iOS 26.0, macOS 26.0, *) {
+                    if #available(iOS 26.0, *) {
                         Button(role: .confirm) { dismiss() }
                     } else {
                         Button { dismiss() } label: { Image(systemSymbol: .checkmark) }

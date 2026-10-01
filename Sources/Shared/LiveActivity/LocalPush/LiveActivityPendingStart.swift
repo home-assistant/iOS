@@ -11,7 +11,7 @@ import Foundation
 /// ⚠️ A start delivered via local push while the app is suspended therefore only materializes
 /// when the app is next active — not in real time. Real-time background starts require APNs
 /// push-to-start, which the registry already supports.
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 enum LiveActivityPendingStart {
     /// A serialized start/update request mirroring the arguments of `startOrUpdate`.
     struct Request: Codable, Equatable {
@@ -191,7 +191,7 @@ enum LiveActivityPendingStart {
 
 /// App-side drain for `LiveActivityPendingEnd`. Retain one instance to keep the Darwin
 /// observer registered.
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 public final class LiveActivityPendingEndObserver {
     public init() {
         let callback: CFNotificationCallback = { _, observer, _, _, _ in
@@ -244,7 +244,7 @@ public final class LiveActivityPendingEndObserver {
 
 /// App-side drain for `LiveActivityPendingStart`. Retain one instance to keep the Darwin
 /// observer registered.
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 public final class LiveActivityPendingStartObserver {
     public init() {
         let callback: CFNotificationCallback = { _, observer, _, _, _ in

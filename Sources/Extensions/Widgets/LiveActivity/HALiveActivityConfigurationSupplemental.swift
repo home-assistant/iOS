@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 18.0, macOS 15.0, *)
+@available(iOS 18.0, *)
 struct HALiveActivityConfigurationSupplemental: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: HALiveActivityAttributes.self) { context in
@@ -17,7 +17,7 @@ struct HALiveActivityConfigurationSupplemental: Widget {
     }
 }
 
-@available(iOS 18.0, macOS 15.0, *)
+@available(iOS 18.0, *)
 #Preview(
     "Lock Screen & Smart Stack",
     as: .content,
@@ -47,7 +47,7 @@ struct HALiveActivityConfigurationSupplemental: Widget {
     )
 }
 
-@available(iOS 18.0, macOS 15.0, *)
+@available(iOS 18.0, *)
 #Preview(
     "Dynamic Island Compact",
     as: .dynamicIsland(.compact),
@@ -77,7 +77,7 @@ struct HALiveActivityConfigurationSupplemental: Widget {
     )
 }
 
-@available(iOS 18.0, macOS 15.0, *)
+@available(iOS 18.0, *)
 #Preview(
     "Dynamic Island",
     as: .dynamicIsland(.expanded),

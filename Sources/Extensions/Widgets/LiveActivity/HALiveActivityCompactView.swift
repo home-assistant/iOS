@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 struct HALiveActivityCompactView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState

@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Title and message block of the expanded Dynamic Island. The message is dropped when the
 /// content state has none.
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 struct HAExpandedTitleView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
@@ -28,7 +28,7 @@ struct HAExpandedTitleView: View {
     }
 }
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 #Preview {
     HAExpandedTitleView(
         attributes: .init(tag: "preview", title: "Laundry"),

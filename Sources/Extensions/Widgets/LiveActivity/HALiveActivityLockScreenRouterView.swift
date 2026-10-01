@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 18.0, macOS 15.0, *)
+@available(iOS 18.0, *)
 struct HALiveActivityLockScreenRouterView: View {
     @Environment(\.activityFamily) private var activityFamily
     let attributes: HALiveActivityAttributes

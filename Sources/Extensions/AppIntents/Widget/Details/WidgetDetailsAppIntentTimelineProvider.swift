@@ -7,7 +7,7 @@ import HAWatchComplications
 import Shared
 import WidgetKit
 
-@available(iOS 17, macOS 14, *)
+@available(iOS 17, *)
 struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetDetailsEntry
     typealias Intent = WidgetDetailsAppIntent
@@ -215,7 +215,7 @@ enum WidgetDetailsDataSource {
     }
 }
 
-@available(iOS 17, macOS 14, *)
+@available(iOS 17, *)
 struct WidgetDetailsEntry: TimelineEntry {
     var date = Date()
 

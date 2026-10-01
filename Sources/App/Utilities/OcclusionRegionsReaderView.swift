@@ -73,7 +73,7 @@ final class OcclusionRegionsReaderView: UIView {
     }
 
     private func reservedOcclusionRegions() -> [NSObject] {
-        guard #available(iOS 27.1, macOS 27.1, *),
+        guard #available(iOS 27.1, *),
               let kindClass = NSClassFromString(Self.kindClassName) as? NSObject.Type,
               kindClass.responds(to: NSSelectorFromString(Self.occlusionKindSelector)),
               responds(to: NSSelectorFromString(Self.regionsSelector)),

@@ -15,7 +15,7 @@ import SharedPush
 /// Notification payload fields mirror the Android companion app:
 ///   tag, title, message, critical_text, progress, progress_max,
 ///   chronometer, when, when_relative, notification_icon, notification_icon_color
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
     private enum ValidationError: Error {
         case missingTag

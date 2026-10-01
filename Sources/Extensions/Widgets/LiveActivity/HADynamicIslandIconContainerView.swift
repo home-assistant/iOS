@@ -2,7 +2,7 @@
 import Shared
 import SwiftUI
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 struct HADynamicIslandIconContainerView: View {
     let slug: String?
     let color: String?
@@ -29,7 +29,7 @@ struct HADynamicIslandIconContainerView: View {
     }
 }
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 #Preview {
     HADynamicIslandIconContainerView(slug: "washing-machine", color: "#03A9F4")
         .padding(DesignSystem.Spaces.two)

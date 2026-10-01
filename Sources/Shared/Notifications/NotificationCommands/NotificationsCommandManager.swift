@@ -56,7 +56,7 @@ public class NotificationCommandManager {
         // Support data.live_update: true — the same field Android uses for Live Updates.
         // A single YAML automation can target both platforms with no platform-specific keys.
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, macOS 14.2, *), hadict["live_update"] as? Bool == true,
+        if #available(iOS 17.2, *), hadict["live_update"] as? Bool == true,
            let handler = commands["live_activity"] {
             return handler.handle(hadict)
         }
@@ -118,7 +118,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         // ActivityKit works only in the app, not the PushProvider extension, so the extension
         // hands the end off via the App Group queue + a Darwin signal for the app to drain.
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, macOS 14.2, *), let tag = payload["tag"] as? String, !tag.isEmpty {
+        if #available(iOS 17.2, *), let tag = payload["tag"] as? String, !tag.isEmpty {
             if Current.isAppExtension {
                 Current.Log.verbose("Handing off live activity end for tag \(tag) to the app")
                 LiveActivityPendingEnd.append(tag: tag)

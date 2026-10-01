@@ -52,14 +52,14 @@ struct WatchComplicationBuilderEditView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                if #available(iOS 26.0, macOS 26.0, *) {
+                if #available(iOS 26.0, *) {
                     Button(role: .close) { dismiss() }
                 } else {
                     Button { dismiss() } label: { Image(systemSymbol: .xmark) }
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                if #available(iOS 26.0, macOS 26.0, *) {
+                if #available(iOS 26.0, *) {
                     Button(role: .confirm) { save() }.disabled(!viewModel.isValid)
                 } else {
                     Button { save() } label: { Image(systemSymbol: .checkmark) }
@@ -296,7 +296,7 @@ struct WatchComplicationBuilderEditView: View {
     /// fixed-radius border does not — the two diverge. A `ConcentricRectangle` matches that clip on
     /// the outer corners (with a fixed minimum for the inner ones), keeping fill and border in sync.
     private var sourceCardShape: AnyShape {
-        if #available(iOS 26.0, macOS 26.0, *) {
+        if #available(iOS 26.0, *) {
             AnyShape(ConcentricRectangle(
                 corners: .concentric(minimum: .fixed(DesignSystem.CornerRadius.oneAndHalf)),
                 isUniform: true

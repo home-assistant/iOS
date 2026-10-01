@@ -21,7 +21,7 @@ enum LiveActivityPendingEnd {
         }
         // A newer end supersedes a stale start queued earlier for the same tag. Done before
         // taking our lock so the two queues are never held simultaneously (no lock-order inversion).
-        if #available(iOS 17.2, macOS 14.2, *) {
+        if #available(iOS 17.2, *) {
             LiveActivityPendingStart.remove(tag: tag)
         }
         lock.lock()

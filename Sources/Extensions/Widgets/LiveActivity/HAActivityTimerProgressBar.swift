@@ -11,7 +11,7 @@ import SwiftUI
 /// The count-up branches are also a safety requirement: `Date.now ... end` traps when `end`
 /// is already past (ClosedRange requires lowerBound <= upperBound), which would crash the
 /// widget render for any chronometer whose end date has passed.
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 struct HAActivityChronometerText: View {
     let end: Date
     let start: Date?
@@ -34,7 +34,7 @@ struct HAActivityChronometerText: View {
     }
 }
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 struct HAActivityTimerProgressBar: View {
     let start: Date?
     let end: Date

@@ -7,7 +7,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, macOS 14, *)
+@available(iOS 17, *)
 struct WidgetDetails: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -43,7 +43,7 @@ struct WidgetDetails: Widget {
     }
 }
 
-@available(iOS 17, macOS 14, *)
+@available(iOS 17, *)
 enum WidgetDetailsSupportedFamilies {
     static let families: [WidgetFamily] = [
         .accessoryInline,
@@ -53,7 +53,7 @@ enum WidgetDetailsSupportedFamilies {
 
 // A mirrored watch complication: the entry carries the render model and the widget draws it through
 // the shared rectangular complication content view.
-@available(iOS 17, macOS 14, *)
+@available(iOS 17, *)
 #Preview(as: .accessoryRectangular, widget: {
     WidgetDetails()
 }, timeline: {

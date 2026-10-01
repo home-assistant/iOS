@@ -18,7 +18,7 @@ final class WindowSizeObserver: NSObject {
     }
 
     private func startObserving() {
-        #if targetEnvironment(macCatalyst) || os(macOS)
+        #if targetEnvironment(macCatalyst)
         guard #available(macCatalyst 16.0, *) else { return }
         observation = observe(\.observedScene?.effectiveGeometry, options: [.new]) { [activity] _, change in
             guard let newSystemFrame = change.newValue??.systemFrame,

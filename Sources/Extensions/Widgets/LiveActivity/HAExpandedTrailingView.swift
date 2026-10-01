@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Trailing slot of the expanded Dynamic Island: the chronometer, the critical text or the progress
 /// percentage, whichever the content state carries, in the order the compact trailing slot uses.
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 struct HAExpandedTrailingView: View {
     let state: HALiveActivityAttributes.ContentState
     private let minimumScaleFactor: CGFloat = 0.7
@@ -39,7 +39,7 @@ struct HAExpandedTrailingView: View {
     }
 }
 
-@available(iOS 17.2, macOS 14.2, *)
+@available(iOS 17.2, *)
 #Preview {
     HAExpandedTrailingView(
         state: .init(message: "Charging paused", criticalText: "20%", icon: "battery-alert", color: "#F44336")

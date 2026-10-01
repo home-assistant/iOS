@@ -663,7 +663,7 @@ public class HomeAssistantAPI {
                 ]
 
                 #if os(iOS) && !targetEnvironment(macCatalyst)
-                if #available(iOS 17.2, macOS 14.2, *) {
+                if #available(iOS 17.2, *) {
                     // Push-to-start token (stored in Keychain at launch, updated via stream).
                     // The relay server uses this token to start a Live Activity entirely via APNs.
                     if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {

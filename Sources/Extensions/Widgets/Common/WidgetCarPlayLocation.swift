@@ -13,7 +13,7 @@ extension WidgetConfiguration {
         // into the non-extension `App` target, where an `iOSApplicationExtension` check does not refine
         // the `iOS`-only availability of these symbols.
         #if !os(macOS)
-        if #available(iOS 26.0, macOS 26.0, *) {
+        if #available(iOS 26.0, *) {
             return self.disfavoredLocations([.carPlay], for: families)
         } else {
             return self

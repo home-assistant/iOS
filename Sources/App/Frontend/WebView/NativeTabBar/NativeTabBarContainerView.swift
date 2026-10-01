@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 /// The App Labs native iOS tab bar.
-@available(iOS 26, macOS 26, *)
+@available(iOS 26, *)
 struct NativeTabBarContainerView: View {
     private enum Constants {
         static var tabIconSize: CGFloat { 24 }
@@ -129,7 +129,7 @@ struct NativeTabBarContainerView: View {
     }
 }
 
-@available(iOS 26, macOS 26, *)
+@available(iOS 26, *)
 #Preview {
     NativeTabBarContainerView(
         viewModel: .preview(),

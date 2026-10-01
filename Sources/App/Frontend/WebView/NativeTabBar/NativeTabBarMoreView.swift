@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 /// The More tab: the rest of the list under a bar with the profile picker, notifications and settings.
-@available(iOS 26, macOS 26, *)
+@available(iOS 26, *)
 struct NativeTabBarMoreView: View {
     private enum Constants {
         static let avatarSize: CGFloat = 28
@@ -123,7 +123,7 @@ struct NativeTabBarMoreView: View {
     }
 }
 
-@available(iOS 26, macOS 26, *)
+@available(iOS 26, *)
 #Preview {
     NavigationStack {
         NativeTabBarMoreView(viewModel: .preview())

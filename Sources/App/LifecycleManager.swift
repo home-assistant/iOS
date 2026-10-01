@@ -118,7 +118,7 @@ class LifecycleManager {
     /// that ended while the app was backgrounded so Core stops pushing to them.
     private func syncLiveActivities() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, macOS 14.2, *) {
+        if #available(iOS 17.2, *) {
             Task { await Current.liveActivityRegistry?.reattach() }
         }
         #endif

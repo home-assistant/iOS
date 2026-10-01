@@ -6,7 +6,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17.0, macOS 14.0, *)
+@available(iOS 17.0, *)
 struct WidgetDetailsView: View {
     @Environment(\.widgetFamily) var family: WidgetFamily
 
@@ -30,7 +30,7 @@ struct WidgetDetailsView: View {
 
 // The widget's own text lines, which is what an entry without a mirrored complication draws.
 // `WidgetDetails` previews the complication path.
-@available(iOS 17, macOS 14, *)
+@available(iOS 17, *)
 #Preview("Rectangular", as: .accessoryRectangular, widget: {
     WidgetDetails()
 }, timeline: {
@@ -44,7 +44,7 @@ struct WidgetDetailsView: View {
     )
 })
 
-@available(iOS 17, macOS 14, *)
+@available(iOS 17, *)
 #Preview("Inline", as: .accessoryInline, widget: {
     WidgetDetails()
 }, timeline: {

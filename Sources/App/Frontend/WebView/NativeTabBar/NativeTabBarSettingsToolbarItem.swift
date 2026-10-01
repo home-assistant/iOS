@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 /// The settings gear at the trailing end of the More tab's bar: Home Assistant Settings for admins, and App Settings.
-@available(iOS 26, macOS 26, *)
+@available(iOS 26, *)
 struct NativeTabBarSettingsToolbarItem: ToolbarContent {
     private enum Constants {
         static let iconSize = CGSize(width: 24, height: 24)
@@ -57,7 +57,7 @@ struct NativeTabBarSettingsToolbarItem: ToolbarContent {
     }
 }
 
-@available(iOS 26, macOS 26, *)
+@available(iOS 26, *)
 #Preview {
     NavigationStack {
         Color.clear

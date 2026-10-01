@@ -154,7 +154,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             SettingsNotificationsView()
         case .liveActivities:
             #if os(iOS) && !targetEnvironment(macCatalyst)
-            if #available(iOS 17.2, macOS 14.2, *) {
+            if #available(iOS 17.2, *) {
                 LiveActivitySettingsView()
             }
             #else
@@ -298,7 +298,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .notifications: return NotificationSettingsView.settingsSearchEntries
         case .liveActivities:
             #if os(iOS) && !targetEnvironment(macCatalyst)
-            if #available(iOS 17.2, macOS 14.2, *) {
+            if #available(iOS 17.2, *) {
                 return LiveActivitySettingsView.settingsSearchEntries
             }
             return []
@@ -378,7 +378,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     private static var canShowLiveActivities: Bool {
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, macOS 14.2, *) {
+        if #available(iOS 17.2, *) {
             return true
         } else {
             return false
