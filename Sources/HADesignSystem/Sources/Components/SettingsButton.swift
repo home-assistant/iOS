@@ -24,6 +24,11 @@ public struct SettingsButton: View {
                     ofSize: .init(width: 25, height: 25), color: UIColor(tint)
                 )
             )
+            #if os(macOS)
+            // As a sheet's primary action AppKit draws the button filled with the accent colour, which is
+            // the tint the icon is drawn in; a template takes the button's own label colour instead.
+            .renderingMode(.template)
+            #endif
         })
     }
 }
