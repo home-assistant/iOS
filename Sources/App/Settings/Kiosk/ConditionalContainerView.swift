@@ -65,7 +65,11 @@ struct ConditionalContainerView: View {
         .injectingViewControllerProvider()
         // A sheet's content is hosted outside this view, so it is handed the presenter of its own accord.
         .environment(\.appSettingsPresenter, appSettings)
-        #if !(targetEnvironment(macCatalyst) || os(macOS))
+        #if os(macOS)
+            // A Mac sheet takes its content's ideal size, and a list has none of its own: without this the
+            // picker shows up as a bare title bar.
+            .frame(minWidth: 440, idealWidth: 480, minHeight: 360, idealHeight: 420)
+        #else
             .presentationDetents(sheetDetents, selection: $appSettings.detent)
             .presentationDragIndicator(offersCompactDetent ? .visible : .automatic)
             .modify { view in
