@@ -67,13 +67,13 @@ struct ZoneMapSnapshotView: View {
     }
 
     private func drawZoneOverlay(on snapshot: MKMapSnapshotter.Snapshot, size: CGSize) -> UIImage {
-        let center = snapshot.point(for: coordinate)
+        let center = snapshot.topLeftPoint(for: coordinate)
         // Project a point on the circle's edge to know the radius in screen points.
         let edgeCoordinate = coordinate.moving(
             distance: .init(value: radius, unit: .meters),
             direction: .init(value: 90, unit: .degrees)
         )
-        let pointRadius = abs(snapshot.point(for: edgeCoordinate).x - center.x)
+        let pointRadius = abs(snapshot.topLeftPoint(for: edgeCoordinate).x - center.x)
         let zoneColor = UIColor(Color.haPrimary)
 
         return UIGraphicsImageRenderer(size: size).image { _ in

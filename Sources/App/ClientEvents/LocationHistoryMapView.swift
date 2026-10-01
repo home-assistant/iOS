@@ -168,9 +168,9 @@ struct LocationHistoryMapView: NSViewRepresentable {
 
                 for circle in circles {
                     guard let color = fillColor(for: circle) else { continue }
-                    let center = snapshot.point(for: circle.coordinate)
+                    let center = snapshot.topLeftPoint(for: circle.coordinate)
                     // Project a point on the circle's edge to know the radius in points.
-                    let edge = snapshot.point(for: circle.coordinate.moving(
+                    let edge = snapshot.topLeftPoint(for: circle.coordinate.moving(
                         distance: .init(value: circle.radius, unit: .meters),
                         direction: .init(value: 90, unit: .degrees)
                     ))
@@ -184,7 +184,7 @@ struct LocationHistoryMapView: NSViewRepresentable {
                     )).fill()
                 }
 
-                let position = snapshot.point(for: pin)
+                let position = snapshot.topLeftPoint(for: pin)
                 let dotRadius: CGFloat = 6
                 let dot = UIBezierPath(ovalIn: CGRect(
                     x: position.x - dotRadius,
