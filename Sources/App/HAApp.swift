@@ -31,6 +31,11 @@ struct HAApp: App {
                 )
         }
         .defaultSize(SceneActivity.webView.initialWindowSize)
+        #if os(macOS)
+        // The page's title is the window's name in the Window menu and the Dock, not a label in the toolbar:
+        // the frontend shows the page's own title, and the toolbar is for the items the user puts there.
+        .windowToolbarStyle(.unifiedCompact(showsTitle: false))
+        #endif
         .commands {
             MainWindowGroupCommands()
             AppMenuBarCommands()
