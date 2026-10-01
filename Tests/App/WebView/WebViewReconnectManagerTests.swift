@@ -50,6 +50,68 @@ final class WebViewReconnectManagerTests: XCTestCase {
         XCTAssertEqual(scheduler.scheduledDelays, [10, 30, 10])
     }
 
+    func testRecoverySignalReconnectsImmediatelyAndResetsBackoff() {
+        let scheduler = RecordingScheduler()
+        let signals = RecordingRecoverySignalObserver()
+        var reconnectCount = 0
+        let sut = WebViewReconnectManager(
+            isAppActive: { true },
+            scheduleTimer: scheduler.schedule(delay:action:),
+            observeRecoverySignals: signals.observe(action:)
+        )
+
+        sut.start {
+            reconnectCount += 1
+        }
+        scheduler.fireLast()
+        XCTAssertEqual(scheduler.scheduledDelays, [10, 30])
+
+        signals.fire()
+
+        XCTAssertEqual(reconnectCount, 2)
+        XCTAssertEqual(scheduler.scheduledDelays, [10, 30, 10])
+    }
+
+    func testRecoverySignalIsIgnoredWhileInactive() {
+        let scheduler = RecordingScheduler()
+        let signals = RecordingRecoverySignalObserver()
+        var isActive = false
+        var reconnectCount = 0
+        let sut = WebViewReconnectManager(
+            isAppActive: { isActive },
+            scheduleTimer: scheduler.schedule(delay:action:),
+            observeRecoverySignals: signals.observe(action:)
+        )
+
+        sut.start {
+            reconnectCount += 1
+        }
+
+        signals.fire()
+        XCTAssertEqual(reconnectCount, 0)
+
+        isActive = true
+        signals.fire()
+        XCTAssertEqual(reconnectCount, 1)
+    }
+
+    func testStopCancelsRecoverySignalObserver() {
+        let scheduler = RecordingScheduler()
+        let signals = RecordingRecoverySignalObserver()
+        let sut = WebViewReconnectManager(
+            isAppActive: { true },
+            scheduleTimer: scheduler.schedule(delay:action:),
+            observeRecoverySignals: signals.observe(action:)
+        )
+
+        sut.start {}
+        XCTAssertEqual(signals.cancelCount, 0)
+
+        sut.stop()
+
+        XCTAssertEqual(signals.cancelCount, 1)
+    }
+
     func testInactiveAppDoesNotReconnectAndKeepsCurrentDelay() {
         let scheduler = RecordingScheduler()
         var isActive = false
@@ -95,5 +157,24 @@ private final class RecordingScheduler {
 
     func fireLast() {
         timers.last?.action()
+    }
+}
+
+
+@MainActor
+private final class RecordingRecoverySignalObserver {
+    private var action: (@MainActor () -> Void)?
+    private(set) var cancelCount = 0
+
+    func observe(action: @escaping @MainActor () -> Void) -> () -> Void {
+        self.action = action
+        return { [weak self] in
+            self?.cancelCount += 1
+            self?.action = nil
+        }
+    }
+
+    func fire() {
+        action?()
     }
 }
