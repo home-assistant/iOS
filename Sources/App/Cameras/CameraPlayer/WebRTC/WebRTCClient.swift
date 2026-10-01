@@ -298,11 +298,15 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         )
     }()
 
-    private static func configureRecordingAudioSession() {
+    private static func configureRecordingAudioSession(for media: WebRTCClientMedia) {
         let configuration = RTCAudioSessionConfiguration.webRTC()
         configuration.category = AVAudioSession.Category.playAndRecord.rawValue
         configuration.mode = AVAudioSession.Mode.videoChat.rawValue
-        configuration.categoryOptions = [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP, .mixWithOthers]
+        var options: AVAudioSession.CategoryOptions = [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP]
+        if media == .microphone {
+            options.insert(.mixWithOthers)
+        }
+        configuration.categoryOptions = options
         RTCAudioSessionConfiguration.setWebRTC(configuration)
     }
 
@@ -329,6 +333,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
     private let peerConnection: RTCPeerConnection
     private var remoteVideoTrack: RTCVideoTrack?
     private var remoteAudioTrack: RTCAudioTrack?
+    private var localAudioTrack: RTCAudioTrack?
     private var localDataChannel: RTCDataChannel?
     private var remoteDataChannel: RTCDataChannel?
     /// The view remote video renders into. Held here because the track that ends up carrying the
@@ -348,7 +353,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         let factory = media.recordsMicrophone ? WebRTCClient.recordingFactory : WebRTCClient.playbackFactory
         self.factory = factory
         if media.recordsMicrophone {
-            WebRTCClient.configureRecordingAudioSession()
+            WebRTCClient.configureRecordingAudioSession(for: media)
         }
 
         let config = RTCConfiguration()
@@ -498,10 +503,16 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         return !deadStates.contains(peerConnection.connectionState)
     }
 
-    private func addMicrophoneTransceiver() {
+    func setMicrophoneEnabled(_ enabled: Bool) {
+        localAudioTrack?.isEnabled = enabled
+    }
+
+    private func addMicrophoneTransceiver(direction: RTCRtpTransceiverDirection, isEnabled: Bool) {
         let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "audio0")
+        audioTrack.isEnabled = isEnabled
+        localAudioTrack = audioTrack
         let audioTransceiverInit = RTCRtpTransceiverInit()
-        audioTransceiverInit.direction = .sendOnly
+        audioTransceiverInit.direction = direction
         audioTransceiverInit.streamIds = ["stream"]
         peerConnection.addTransceiver(with: audioTrack, init: audioTransceiverInit)
     }
@@ -515,8 +526,10 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
             let audioTransceiverInit = RTCRtpTransceiverInit()
             audioTransceiverInit.direction = .recvOnly
             peerConnection.addTransceiver(of: .audio, init: audioTransceiverInit)
+        case .talkback:
+            addMicrophoneTransceiver(direction: .sendRecv, isEnabled: false)
         case .microphone:
-            addMicrophoneTransceiver()
+            addMicrophoneTransceiver(direction: .sendOnly, isEnabled: true)
             return
         }
 

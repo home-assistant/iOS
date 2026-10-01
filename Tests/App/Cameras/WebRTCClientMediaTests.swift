@@ -17,6 +17,13 @@ final class WebRTCClientMediaTests: XCTestCase {
         ])
     }
 
+    func testTheTalkbackClientSendsAudioAndOnlyReceivesVideo() throws {
+        XCTAssertEqual(try offeredMedia(for: .talkback), [
+            .init(kind: "audio", direction: "sendrecv"),
+            .init(kind: "video", direction: "recvonly"),
+        ])
+    }
+
     func testTheMicrophoneClientOnlySendsAudio() throws {
         XCTAssertEqual(try offeredMedia(for: .microphone), [
             .init(kind: "audio", direction: "sendonly"),
@@ -25,6 +32,7 @@ final class WebRTCClientMediaTests: XCTestCase {
 
     func testOnlyClientsThatSendAudioRecordTheMicrophone() {
         XCTAssertFalse(WebRTCClientMedia.playback.recordsMicrophone)
+        XCTAssertTrue(WebRTCClientMedia.talkback.recordsMicrophone)
         XCTAssertTrue(WebRTCClientMedia.microphone.recordsMicrophone)
     }
 

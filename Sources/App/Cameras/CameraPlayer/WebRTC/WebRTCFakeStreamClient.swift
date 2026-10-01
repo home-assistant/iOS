@@ -18,6 +18,7 @@ final class WebRTCFakeStreamClient: WebRTCStreamClient {
     private(set) var remoteCandidates: [RemoteCandidate] = []
     private(set) var rendererCount = 0
     private(set) var isClosed = false
+    private(set) var isMicrophoneEnabled = false
     private var isMuted = true
 
     init(configuration: WebRTCClientConfiguration) {
@@ -57,6 +58,10 @@ final class WebRTCFakeStreamClient: WebRTCStreamClient {
 
     func isAudioMuted() -> Bool {
         isMuted
+    }
+
+    func setMicrophoneEnabled(_ enabled: Bool) {
+        isMicrophoneEnabled = enabled
     }
 
     func closeConnection() {
