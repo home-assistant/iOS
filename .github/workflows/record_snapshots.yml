@@ -54,6 +54,16 @@ jobs:
           -project HomeAssistant.xcodeproj
           -scheme Tests-Unit
 
+      # The badge is small enough that its removal stays inside the comparison's tolerance, so
+      # the references that draw it do not all fail. Dropping the ones that render the Apple
+      # Health row makes them missing instead, which is always re-recorded.
+      - name: Drop the references that render the Apple Health row
+        run: >-
+          rm -f
+          Tests/App/Settings/__Snapshots__/SensorListView.test/sensorListWithOneServerShowsItsSensors.*.png
+          Tests/App/Settings/__Snapshots__/SensorListView.test/serverScopedSensorListIsTitledAfterItsServer.*.png
+          Tests/App/Settings/__Snapshots__/SensorListView.test/serverScopedSensorListShowsItsSensors.*.png
+
       # `SNAPSHOT_TESTING_RECORD` is read from the test process environment, so it has to
       # reach the simulator through the scheme rather than the runner's shell.
       - name: Record failing snapshots through the scheme
@@ -90,6 +100,18 @@ jobs:
       - name: Push re-recorded references
         run: |
           git checkout -- HomeAssistant.xcodeproj/xcshareddata/xcschemes/Tests-Unit.xcscheme
+          # A reference the run failed to record would otherwise be committed as a deletion.
+          for name in sensorListWithOneServerShowsItsSensors \
+                      serverScopedSensorListIsTitledAfterItsServer \
+                      serverScopedSensorListShowsItsSensors; do
+            for mode in light dark; do
+              path="Tests/App/Settings/__Snapshots__/SensorListView.test/$name.$mode.png"
+              if [ ! -f "$path" ]; then
+                echo "::error::$path was not recorded"
+                exit 1
+              fi
+            done
+          done
           git add -- 'Tests/App/Settings/__Snapshots__/SensorListView.test'
           if git diff --cached --quiet; then
             echo "No snapshot changed"
