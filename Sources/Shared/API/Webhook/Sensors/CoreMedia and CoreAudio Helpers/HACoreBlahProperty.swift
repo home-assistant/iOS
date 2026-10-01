@@ -166,6 +166,29 @@ extension HACoreAudioProperty {
         )
     }
 
+    static var defaultOutputDevice: HACoreAudioProperty<AudioDeviceID> {
+        /*
+         The AudioObjectID of the default output AudioDevice.
+         */
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioHardwarePropertyDefaultOutputDevice),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
+    static var transportType: HACoreAudioProperty<UInt32> {
+        /*
+         A UInt32 whose value indicates how the AudioDevice is connected to the CPU, one of the
+         kAudioDeviceTransportType constants.
+         */
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyTransportType),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
     static var allDevices: HACoreAudioProperty<[AudioDeviceID]> {
         /*
          An array of the AudioObjectIDs that represent all the devices currently available to the system.

@@ -8,6 +8,34 @@ public class ProcessInfoBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner 
     ) -> Promise<PromiseValue> {
         ProcessInfo.processInfo.backgroundTask(withName: name, wrapping: wrapping)
     }
+
+    #if os(macOS)
+    private static let inFlightLock = NSLock()
+    private static var inFlightCount = 0
+
+    /// How many background tasks are running right now.
+    public static var inFlight: Int {
+        inFlightLock.withLock { inFlightCount }
+    }
+
+    fileprivate static func adjustInFlight(by delta: Int) {
+        inFlightLock.withLock { inFlightCount += delta }
+    }
+
+    /// Calls `completion` on the main thread once no background task is running, checked from `after`
+    /// seconds on so work that is only just being queued is seen, or when `timeout` passes. Polled by a
+    /// timer in the common run loop modes, which keep running while AppKit waits on a termination reply.
+    public static func whenIdle(after: TimeInterval, timeout: TimeInterval, completion: @escaping () -> Void) {
+        let start = Date()
+        let timer = Timer(timeInterval: 0.1, repeats: true) { timer in
+            let elapsed = Date().timeIntervalSince(start)
+            guard elapsed >= timeout || (elapsed >= after && inFlight == 0) else { return }
+            timer.invalidate()
+            completion()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+    }
+    #endif
 }
 
 private extension ProcessInfo {
@@ -25,8 +53,10 @@ private extension ProcessInfo {
                     options: [.automaticTerminationDisabled, .suddenTerminationDisabled, .background],
                     reason: name
                 )
+                ProcessInfoBackgroundTaskRunner.adjustInFlight(by: 1)
                 return (activity, nil)
             }, endBackgroundTask: { [self] activity in
+                ProcessInfoBackgroundTaskRunner.adjustInFlight(by: -1)
                 endActivity(activity)
             }, wrapping: wrapping
         )

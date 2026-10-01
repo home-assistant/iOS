@@ -51,12 +51,10 @@ extension AppEnvironment {
 extension AppEnvironment {
     // The adaptor creates the delegate before anything else in the app runs, so it is always there to ask.
     var sceneManager: SceneManager {
-        // swiftlint:disable:next force_unwrapping
         AppDelegate.shared!.sceneManager
     }
 
     var notificationManager: NotificationManager {
-        // swiftlint:disable:next force_unwrapping
         AppDelegate.shared!.notificationManager
     }
 }
@@ -315,7 +313,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let notificationManager = NotificationManager()
     fileprivate let statusItemManager = StatusItemManager()
     private var zoneManager: ZoneManager?
-    private var menuObserver: NSObjectProtocol?
 
     override init() {
         super.init()
@@ -337,9 +334,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 SensorPermissionRequester.shared.requestPermissionsIfNeeded(forSensorUniqueIDs: uniqueIDs)
             }
         }
-
-        // A Mac app is never suspended, so nothing it sends needs to go out through a background session.
-        Current.isBackgroundRequestsImmediate = { false }
 
         Current.tags = TagActivityManager()
         // swiftlint:enable prohibit_environment_assignment
@@ -382,7 +376,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         LocationBasedServerSwitcher.shared.start()
 
         statusItemManager.configure()
-        removeEmptyMenus()
 
         checkForUpdate()
         checkForAlerts()
@@ -405,28 +398,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Current.sceneManager.activateAnyScene(for: .settings)
     }
 
-    /// SwiftUI keeps a menu in the menu bar after every command in it has been removed, which leaves an
-    /// empty Format menu behind. It rebuilds the menu bar when its commands change, so the check runs again
-    /// each time a menu is added.
-    private func removeEmptyMenus() {
-        menuObserver = NotificationCenter.default.addObserver(
-            forName: NSMenu.didAddItemNotification,
-            object: nil,
-            queue: .main
-        ) { note in
-            guard let menu = note.object as? NSMenu, menu === NSApp.mainMenu else { return }
-            DispatchQueue.main.async(execute: Self.removeEmptyMenusFromMenuBar)
-        }
-        Self.removeEmptyMenusFromMenuBar()
-    }
-
-    private static func removeEmptyMenusFromMenuBar() {
-        guard let mainMenu = NSApp.mainMenu else { return }
-        for item in mainMenu.items where item.submenu?.items.isEmpty == true {
-            mainMenu.removeItem(item)
-        }
-    }
-
     /// The Dock icon was clicked with no window on screen. When "Open Home Assistant UI in browser" is on
     /// there is no in-app web view to show, so the browser opens instead of a new window.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -444,10 +415,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         // Posted before termination is under way, so whoever observes it can still start the work it needs
-        // to finish, such as reporting that the Mac is no longer active.
+        // to finish, such as reporting that the Mac is no longer active; the reply waits for that work.
         NotificationCenter.default.post(name: Current.macBridge.terminationWillBeginNotification, object: nil)
-        return .terminateNow
+        ProcessInfoBackgroundTaskRunner.whenIdle(
+            after: Self.terminationSettleTime,
+            timeout: Self.terminationGracePeriod
+        ) {
+            Current.Log.info("terminating with \(ProcessInfoBackgroundTaskRunner.inFlight) background tasks left")
+            sender.reply(toApplicationShouldTerminate: true)
+        }
+        return .terminateLater
     }
+
+    /// How long the work the notification above starts gets to begin before an idle app quits.
+    private static let terminationSettleTime: TimeInterval = 0.5
+    private static let terminationGracePeriod: TimeInterval = 5
 
     func applicationWillTerminate(_ notification: Notification) {
         Current.forceCloseWarningManager.postImmediateWarning()

@@ -16,6 +16,11 @@ class HACoreAudioObjectSystem: HACoreAudioObject {
         }
     }
 
+    var defaultOutputDevice: HACoreAudioObjectDevice? {
+        guard let id = value(for: .defaultOutputDevice), id != kAudioObjectUnknown else { return nil }
+        return HACoreAudioObjectDevice(id: id)
+    }
+
     var allInputDevices: [HACoreAudioObjectDevice] {
         allDevices.filter(\.isInput)
     }
