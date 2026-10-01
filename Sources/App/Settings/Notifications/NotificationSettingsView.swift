@@ -192,26 +192,19 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
     }
 
-    init() {
+    private let badge: AppIconBadge
+
+    init(badge: AppIconBadge = .application) {
+        self.badge = badge
         refreshBadgeCount()
     }
 
     func refreshBadgeCount() {
-        #if os(macOS)
-        // The Dock tile carries the badge as the text it shows.
-        let value = NSApp.dockTile.badgeLabel.flatMap { Int($0) } ?? 0
-        #else
-        let value = UIApplication.shared.applicationIconBadgeNumber
-        #endif
-        badgeCountText = NumberFormatter.localizedString(from: NSNumber(value: value), number: .decimal)
+        badgeCountText = NumberFormatter.localizedString(from: NSNumber(value: badge.count()), number: .decimal)
     }
 
     func clearBadge() {
-        #if os(macOS)
-        NSApp.dockTile.badgeLabel = nil
-        #else
-        UIApplication.shared.applicationIconBadgeNumber = 0
-        #endif
+        badge.clear()
         refreshBadgeCount()
     }
 

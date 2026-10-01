@@ -28,6 +28,9 @@ final class AppContainerCoordinatorTests: XCTestCase {
 
     override func tearDown() {
         presenter = nil
+        window.isHidden = true
+        window.rootViewController = nil
+        window = nil
         super.tearDown()
     }
 
@@ -173,7 +176,6 @@ final class AppContainerCoordinatorTests: XCTestCase {
         defer { prefs.set(previous, forKey: "confirmBeforeOpeningUrl") }
         prefs.set(true, forKey: "confirmBeforeOpeningUrl")
         window.makeKeyAndVisible()
-        defer { window.isHidden = true }
 
         coordinator.open(
             from: .deeplink,
@@ -185,6 +187,7 @@ final class AppContainerCoordinatorTests: XCTestCase {
 
         waitUntil { self.window.rootViewController?.presentedViewController != nil }
         let alert = try XCTUnwrap(window.rootViewController?.presentedViewController as? UIAlertController)
+        defer { alert.dismiss(animated: false) }
         XCTAssertEqual(alert.title, L10n.Alerts.OpenUrlFromNotification.title)
         XCTAssertEqual(alert.actions.map(\.title), [L10n.cancelLabel, L10n.alwaysOpenLabel, L10n.openLabel])
         XCTAssertTrue(frontend.openedInlineURLs.isEmpty)

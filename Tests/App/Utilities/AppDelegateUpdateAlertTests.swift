@@ -24,6 +24,7 @@ private final class FakeUpdater: Updater {
 final class AppDelegateUpdateAlertTests: XCTestCase {
     private var updater: FakeUpdater!
     private var coordinator: MockAppCoordinator!
+    private var previousCoordinator: AppCoordinator?
     private var previousUpdater: Updater!
     private var previousOpener: URLOpening!
     private var opener: MockURLOpener!
@@ -37,12 +38,18 @@ final class AppDelegateUpdateAlertTests: XCTestCase {
         previousOpener = URLOpener.shared
         Current.updater = updater
         URLOpener.shared = opener
+        // The scene manager is process-wide, so the mock would answer for every later test unless whatever
+        // was registered before is put back.
+        previousCoordinator = Current.sceneManager.appCoordinator.value
         Current.sceneManager.registerAppCoordinator(coordinator)
     }
 
     override func tearDown() {
         Current.updater = previousUpdater
         URLOpener.shared = previousOpener
+        if let previousCoordinator {
+            Current.sceneManager.registerAppCoordinator(previousCoordinator)
+        }
         super.tearDown()
     }
 

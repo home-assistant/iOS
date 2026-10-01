@@ -7,8 +7,8 @@ import SharedTesting
 import SwiftUI
 import Testing
 
-/// Lays out the settings screens that share one grouped list on every platform, so their bodies are
-/// evaluated the way the Mac evaluates them and a row that stops building is caught here.
+/// iOS smoke tests: lays out the settings screens that moved to the shared grouped list, so a row that
+/// stops building is caught here. What the Mac draws is checked by hand on a Mac.
 // Serialized: the tests swap `Current.servers`, which concurrent tests would race on.
 @MainActor
 @Suite(.serialized)

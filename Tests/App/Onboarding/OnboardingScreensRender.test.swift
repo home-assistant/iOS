@@ -5,8 +5,7 @@ import SharedTesting
 import SwiftUI
 import Testing
 
-/// Lays out the onboarding screens so their bodies are evaluated, including the navigation bar they hide
-/// or colour through the platform's own placement.
+/// iOS smoke tests: lays out the onboarding screens so a body that stops building is caught here.
 @MainActor
 @Suite(.serialized)
 struct OnboardingScreensRenderTests {

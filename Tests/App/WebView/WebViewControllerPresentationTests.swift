@@ -11,7 +11,13 @@ final class WebViewControllerPresentationTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        sut = WebViewController(server: .fake())
+        // Showing the controller loads the server's address, so it is one that is refused at once rather
+        // than a host the network would be asked for.
+        let server = Server.fake { info in
+            info.connection.set(address: URL(string: "http://127.0.0.1:1"), for: .external)
+            _ = info.connection.evaluateActiveURL()
+        }
+        sut = WebViewController(server: server)
         sut.loadViewIfNeeded()
         window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
         window.rootViewController = sut

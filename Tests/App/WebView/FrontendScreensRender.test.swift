@@ -5,8 +5,8 @@ import SharedTesting
 import SwiftUI
 import Testing
 
-/// Lays out the frontend's companion screens so their bodies are evaluated with the Mac-aware
-/// availability checks they carry.
+/// iOS smoke tests: lays out the frontend's companion screens so a body that stops building is caught
+/// here. What the Mac draws is checked by hand on a Mac.
 // Serialized: the tests swap `Current.servers`, which concurrent tests would race on.
 @MainActor
 @Suite(.serialized)

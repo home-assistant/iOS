@@ -63,15 +63,11 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     @objc private func didBecomeActive() {
         if Current.settingsStore.clearBadgeAutomatically {
-            #if os(macOS)
-            NSApp.dockTile.badgeLabel = nil
-            #else
-            UIApplication.shared.applicationIconBadgeNumber = 0
-            #endif
+            AppIconBadge.application.clear()
         }
         localPushManager.scheduleAppOpenLocalPushRetries()
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, macOS 14.2, *) {
+        if #available(iOS 17.2, *) {
             // Catch ends and starts enqueued by the extension while the app was suspended.
             LiveActivityPendingEndObserver.drain()
             LiveActivityPendingStartObserver.drain()

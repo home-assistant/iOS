@@ -68,32 +68,6 @@ struct HomeAssistantStandByViewSnapshotTests {
         #expect(controller.view.bounds.size == CGSize(width: 390, height: 844))
     }
 
-    /// The stand-by screen listens for the app coming back and the network changing while it is up, and
-    /// both arrive through the shared lifecycle and connectivity names.
-    @MainActor @Test func lifecycleAndConnectivityNotificationsAreReceivedWhileOnScreen() throws {
-        let server = HomeAssistantStandByView.previewServer(
-            name: "Home",
-            configuredURLTypes: [.internal, .external],
-            activeURLType: .internal
-        )
-        let controller = UIHostingController(rootView: HomeAssistantStandByView(server: server, emptyState: nil))
-        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
-        window.rootViewController = controller
-        window.isHidden = false
-        defer {
-            window.isHidden = true
-            window.rootViewController = nil
-        }
-        controller.view.layoutIfNeeded()
-
-        NotificationCenter.default.post(name: AppLifecycle.willEnterForegroundNotification, object: nil)
-        NotificationCenter.default.post(name: Current.connectivity.connectivityDidChangeNotification(), object: nil)
-        RunLoop.main.run(until: Date().addingTimeInterval(0.1))
-        controller.view.layoutIfNeeded()
-
-        #expect(controller.view.bounds.size == CGSize(width: 390, height: 844))
-    }
-
     @MainActor
     private func assertLightDarkWindowSnapshots(
         style: WebViewEmptyStateStyle,

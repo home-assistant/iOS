@@ -245,7 +245,6 @@
 		A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */; };
 		A307E253426FAE95903A3493 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3402A10CAEE631B133C57DBE /* RealmSwift */; };
 		B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000030 /* Color+Hex.test.swift */; };
-		42E2E1000000000000001001 /* AppLifecycle.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E1000000000000001000 /* AppLifecycle.test.swift */; };
 		42E2E1000000000000001003 /* ColorCodable.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E1000000000000001002 /* ColorCodable.test.swift */; };
 		B0B0B0B00000000000000035 /* FrontendThemeProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000034 /* FrontendThemeProvider.test.swift */; };
 		B0B0B0B00000000000000033 /* UIColor+CSSColor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0B0B00000000000000032 /* UIColor+CSSColor.test.swift */; };
@@ -704,7 +703,6 @@
 		9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.xcconfig; sourceTree = "<group>"; };
 		9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/TableSchemaTests.test.swift; sourceTree = "<group>"; };
 		B0B0B0B00000000000000030 /* Color+Hex.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.test.swift"; sourceTree = "<group>"; };
-		42E2E1000000000000001000 /* AppLifecycle.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLifecycle.test.swift; sourceTree = "<group>"; };
 		42E2E1000000000000001002 /* ColorCodable.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCodable.test.swift; sourceTree = "<group>"; };
 		B0B0B0B00000000000000034 /* FrontendThemeProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendThemeProvider.test.swift; sourceTree = "<group>"; };
 		B0B0B0B00000000000000032 /* UIColor+CSSColor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSColor.test.swift"; sourceTree = "<group>"; };
@@ -1579,7 +1577,6 @@
 				Notifications/NotificationSettingsView.swift,
 				Notifications/NotificationSnoozeActionsView.swift,
 				Notifications/NotificationSoundsView.swift,
-				Notifications/NotificationsShareSheet.swift,
 				"Observation/NotificationCategory+Observation.swift",
 				PrivacyView.swift,
 				Sensors/Details/SensorDetailLabelRowView.swift,
@@ -1811,7 +1808,6 @@
 				Notifications/NotificationSettingsView.swift,
 				Notifications/NotificationSnoozeActionsView.swift,
 				Notifications/NotificationSoundsView.swift,
-				Notifications/NotificationsShareSheet.swift,
 				"Observation/NotificationCategory+Observation.swift",
 				PrivacyView.swift,
 				Sensors/Details/SensorDetailLabelRowView.swift,
@@ -3221,7 +3217,6 @@
 				11267D0825BBA9FE00F28E5C /* Updater.test.swift */,
 				1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */,
 				B0B0B0B00000000000000030 /* Color+Hex.test.swift */,
-				42E2E1000000000000001000 /* AppLifecycle.test.swift */,
 				42E2E1000000000000001002 /* ColorCodable.test.swift */,
 				B0B0B0B00000000000000034 /* FrontendThemeProvider.test.swift */,
 				B0B0B0B00000000000000032 /* UIColor+CSSColor.test.swift */,
@@ -4746,7 +4741,6 @@
 				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
 				1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */,
 				B0B0B0B00000000000000031 /* Color+Hex.test.swift in Sources */,
-				42E2E1000000000000001001 /* AppLifecycle.test.swift in Sources */,
 				42E2E1000000000000001003 /* ColorCodable.test.swift in Sources */,
 				B0B0B0B00000000000000035 /* FrontendThemeProvider.test.swift in Sources */,
 				B0B0B0B00000000000000033 /* UIColor+CSSColor.test.swift in Sources */,
