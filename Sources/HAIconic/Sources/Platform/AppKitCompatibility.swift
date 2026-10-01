@@ -14,22 +14,6 @@ public typealias UIFont = NSFont
 public typealias UIEdgeInsets = NSEdgeInsets
 public typealias UIBezierPath = NSBezierPath
 
-// MARK: - Corners
-
-public struct UIRectCorner: OptionSet, Sendable {
-    public let rawValue: UInt
-
-    public init(rawValue: UInt) {
-        self.rawValue = rawValue
-    }
-
-    public static let topLeft = UIRectCorner(rawValue: 1 << 0)
-    public static let topRight = UIRectCorner(rawValue: 1 << 1)
-    public static let bottomLeft = UIRectCorner(rawValue: 1 << 2)
-    public static let bottomRight = UIRectCorner(rawValue: 1 << 3)
-    public static let allCorners: UIRectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
-}
-
 // MARK: - Insets
 
 public extension NSEdgeInsets {
@@ -70,9 +54,11 @@ public extension NSImage {
         case alwaysTemplate
     }
 
-    /// The scale bitmaps are rendered at. AppKit images are resolution independent, so this is the scale of
-    /// the screen they are most likely to be drawn on.
-    static var defaultRenderingScale: CGFloat { NSScreen.main?.backingScaleFactor ?? 2 }
+    /// The scale bitmaps are rendered at: the densest screen attached, so an image stays sharp when its
+    /// window moves between screens of different densities.
+    static var defaultRenderingScale: CGFloat {
+        NSScreen.screens.map(\.backingScaleFactor).max() ?? 2
+    }
 
     var scale: CGFloat {
         guard let representation = representations.first, size.width > 0 else { return 1 }
@@ -121,15 +107,12 @@ public extension NSImage {
 // MARK: - Colors
 
 public extension NSColor {
-    /// The color resolved against the current appearance and converted to sRGB, or nil for a color that has
-    /// no component representation (a pattern color). Reading components straight off a catalog or dynamic
-    /// `NSColor` raises, so every component read goes through here.
+    /// The color resolved against the current appearance and converted to extended sRGB, the space UIKit's
+    /// `getRed` reports in, or nil for a color that has no component representation (a pattern color).
+    /// Reading components straight off a catalog or dynamic `NSColor` raises, so every component read goes
+    /// through here.
     var resolvedSRGB: NSColor? {
-        var resolved: NSColor?
-        NSAppearance.currentDrawing().performAsCurrentDrawingAppearance {
-            resolved = usingColorSpace(.sRGB)
-        }
-        return resolved
+        usingColorSpace(.extendedSRGB)
     }
 }
 
@@ -146,12 +129,14 @@ public extension NSColor {
     static var separator: NSColor { .separatorColor }
     static var opaqueSeparator: NSColor { .gridColor }
 
+    /// The page is the window; what sits on it is lighter than the window in the dark and white in the
+    /// light, as a grouped form's cards are, so a card does not vanish into the page.
     static var systemBackground: NSColor { .windowBackgroundColor }
-    static var secondarySystemBackground: NSColor { .controlBackgroundColor }
-    static var tertiarySystemBackground: NSColor { .underPageBackgroundColor }
+    static var secondarySystemBackground: NSColor { .dynamic(light: gray(255, 255, 255), dark: gray(50, 50, 52)) }
+    static var tertiarySystemBackground: NSColor { .dynamic(light: gray(245, 245, 247), dark: gray(64, 64, 66)) }
     static var systemGroupedBackground: NSColor { .windowBackgroundColor }
-    static var secondarySystemGroupedBackground: NSColor { .controlBackgroundColor }
-    static var tertiarySystemGroupedBackground: NSColor { .underPageBackgroundColor }
+    static var secondarySystemGroupedBackground: NSColor { secondarySystemBackground }
+    static var tertiarySystemGroupedBackground: NSColor { tertiarySystemBackground }
 
     static var systemGray2: NSColor { .dynamic(light: gray(174, 174, 178), dark: gray(99, 99, 102)) }
     static var systemGray3: NSColor { .dynamic(light: gray(199, 199, 204), dark: gray(72, 72, 74)) }
@@ -182,137 +167,5 @@ public extension Image {
 
 public func UIRectFill(_ rect: CGRect) {
     rect.fill()
-}
-
-public final class UIGraphicsImageRendererContext {
-    public let cgContext: CGContext
-
-    init(cgContext: CGContext) {
-        self.cgContext = cgContext
-    }
-}
-
-/// Draws into a bitmap with a top-left origin, like its UIKit namesake, so drawing code written for iOS
-/// lays out the same way. The drawing runs once, up front, rather than each time the image is displayed.
-public final class UIGraphicsImageRenderer {
-    private let size: CGSize
-    private let scale: CGFloat
-
-    public init(size: CGSize, scale: CGFloat = NSImage.defaultRenderingScale) {
-        self.size = size
-        self.scale = scale
-    }
-
-    public func image(actions: (UIGraphicsImageRendererContext) -> Void) -> NSImage {
-        let pixelsWide = Int((size.width * scale).rounded(.up))
-        let pixelsHigh = Int((size.height * scale).rounded(.up))
-
-        guard pixelsWide > 0, pixelsHigh > 0, let bitmap = NSBitmapImageRep(
-            bitmapDataPlanes: nil,
-            pixelsWide: pixelsWide,
-            pixelsHigh: pixelsHigh,
-            bitsPerSample: 8,
-            samplesPerPixel: 4,
-            hasAlpha: true,
-            isPlanar: false,
-            colorSpaceName: .deviceRGB,
-            bytesPerRow: 0,
-            bitsPerPixel: 0
-        ) else {
-            return NSImage(size: size)
-        }
-        bitmap.size = size
-
-        guard let bitmapContext = NSGraphicsContext(bitmapImageRep: bitmap) else {
-            return NSImage(size: size)
-        }
-
-        let cgContext = bitmapContext.cgContext
-        cgContext.translateBy(x: 0, y: size.height)
-        cgContext.scaleBy(x: 1, y: -1)
-
-        NSGraphicsContext.saveGraphicsState()
-        NSGraphicsContext.current = NSGraphicsContext(cgContext: cgContext, flipped: true)
-        actions(UIGraphicsImageRendererContext(cgContext: cgContext))
-        NSGraphicsContext.restoreGraphicsState()
-
-        let image = NSImage(size: size)
-        image.addRepresentation(bitmap)
-        return image
-    }
-
-    public func pngData(actions: (UIGraphicsImageRendererContext) -> Void) -> Data {
-        image(actions: actions).pngData() ?? Data()
-    }
-}
-
-// MARK: - Pasteboard
-
-/// The general pasteboard, under the name and shape the shared screens already use to copy text.
-public final class UIPasteboard {
-    public static let general = UIPasteboard()
-
-    private init() {}
-
-    public var string: String? {
-        get {
-            NSPasteboard.general.string(forType: .string)
-        }
-        set {
-            NSPasteboard.general.clearContents()
-            if let newValue {
-                NSPasteboard.general.setString(newValue, forType: .string)
-            }
-        }
-    }
-}
-
-// MARK: - Haptics
-
-/// A Mac has one kind of haptic, played by a Force Touch trackpad, so every notification type feels alike.
-public final class UINotificationFeedbackGenerator {
-    public enum FeedbackType {
-        case success
-        case warning
-        case error
-    }
-
-    public init() {}
-
-    public func prepare() {}
-
-    public func notificationOccurred(_ notificationType: FeedbackType) {
-        NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .default)
-    }
-}
-
-/// The tick a Force Touch trackpad plays as something snaps into alignment.
-public final class UISelectionFeedbackGenerator {
-    public init() {}
-
-    public func prepare() {}
-
-    public func selectionChanged() {
-        NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
-    }
-}
-
-/// A Mac has one kind of haptic, played by a Force Touch trackpad, so every impact style feels alike.
-public final class UIImpactFeedbackGenerator {
-    public enum FeedbackStyle {
-        case light
-        case medium
-        case heavy
-        case soft
-        case rigid
-    }
-
-    public init(style: FeedbackStyle = .medium) {}
-
-    public func prepare() {}
-
-    public func impactOccurred() {
-        NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .default)
-    }
 }
 #endif

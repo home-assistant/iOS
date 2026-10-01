@@ -82,19 +82,14 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         Self.previewSample()
     }
 
-    /// The complication content views are not built for the Mac, which has no watch complications to
-    /// mirror in the first place.
     private func entry(for configuration: WidgetGaugeAppIntent, in context: Context) async throws -> Entry {
         switch configuration.source {
         case .entity:
             return try await entityEntry(for: configuration)
+        #if !os(macOS)
         case .complication:
-            #if os(macOS)
-            Current.Log.error("Failed to fetch data for gauge widget: complications are not mirrored on the Mac")
-            throw WidgetGaugeDataError.noComplication
-            #else
             return try await complicationEntry(for: configuration)
-            #endif
+        #endif
         case .template:
             return try await templateEntry(for: configuration)
         }

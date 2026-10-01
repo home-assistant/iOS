@@ -261,6 +261,10 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         // Get input node
         let inputNode = audioEngine.inputNode
         let recordingFormat = inputNode.outputFormat(forBus: 0)
+        // A machine without an audio input reports an empty format, and installing a tap for it raises.
+        guard recordingFormat.sampleRate > 0, recordingFormat.channelCount > 0 else {
+            throw TranscriberError.notAvailable
+        }
 
         // Capture recognitionRequest locally so the tap closure does not access a @MainActor property
         // from a background thread. The level's rate limit is held the same way, and the tap calls

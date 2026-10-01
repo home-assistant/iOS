@@ -9,13 +9,6 @@ import SwiftUI
 
 // MARK: - Navigation bar
 
-/// Stands in for `NavigationBarItem.TitleDisplayMode`. A Mac window has a single title style.
-public enum NavigationBarTitleDisplayMode {
-    case automatic
-    case inline
-    case large
-}
-
 public extension View {
     func navigationBarTitleDisplayMode(_ displayMode: NavigationBarTitleDisplayMode) -> some View {
         self
@@ -31,7 +24,8 @@ public extension View {
 }
 
 public extension NavigationViewStyle where Self == DefaultNavigationViewStyle {
-    /// A Mac window has room for the columns a stack style exists to avoid.
+    /// Only a name: the default style, which lays a `NavigationView` out in columns. A screen that must stack
+    /// uses `NavigationStack` instead.
     static var stack: DefaultNavigationViewStyle { .automatic }
 }
 
@@ -78,14 +72,6 @@ public extension ListStyle where Self == InsetListStyle {
     static var grouped: InsetListStyle { .inset }
 }
 
-/// Stands in for `ListSectionSpacing`. A Mac list spaces its sections itself.
-public enum ListSectionSpacing {
-    case `default`
-    case compact
-
-    public static func custom(_ spacing: CGFloat) -> ListSectionSpacing { .default }
-}
-
 public extension View {
     func listSectionSpacing(_ spacing: ListSectionSpacing) -> some View {
         self
@@ -101,38 +87,6 @@ public extension View {
 }
 
 // MARK: - Text input
-
-/// Stands in for `UIKeyboardType`. A Mac has one keyboard, so the choice is dropped.
-public enum KeyboardType {
-    case `default`
-    case asciiCapable
-    case numbersAndPunctuation
-    case URL
-    case numberPad
-    case phonePad
-    case namePhonePad
-    case emailAddress
-    case decimalPad
-    case twitter
-    case webSearch
-    case asciiCapableNumberPad
-}
-
-/// Stands in for `TextInputAutocapitalization`. A Mac text field never capitalizes on its own.
-public enum TextInputAutocapitalization {
-    case never
-    case words
-    case sentences
-    case characters
-}
-
-/// Stands in for `UITextAutocapitalizationType`, which the older `autocapitalization(_:)` modifier takes.
-public enum TextAutocapitalizationType {
-    case none
-    case words
-    case sentences
-    case allCharacters
-}
 
 public extension View {
     func keyboardType(_ type: KeyboardType) -> some View {

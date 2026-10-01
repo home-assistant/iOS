@@ -309,8 +309,12 @@ public class AppEnvironment {
     public var impactFeedback: ImpactFeedbackGeneratorProtocol = ImpactFeedbackGenerator()
 
     #if os(macOS)
+    /// Answered from the main thread, which `isActive` belongs to; a caller on another thread waits for it.
     public lazy var isForegroundApp = {
-        NSApplication.shared.isActive
+        if Thread.isMainThread {
+            return NSApplication.shared.isActive
+        }
+        return DispatchQueue.main.sync { NSApplication.shared.isActive }
     }
     #else
     /// Wrapper around UIApplication for use in shared framework
