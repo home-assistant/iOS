@@ -170,7 +170,18 @@ final class SceneManager {
     /// The current foreground `WebViewController`, published by `HomeAssistantView` (the SwiftUI web-frontend
     /// host) as the web view migrates off `WebViewWindowController`. Consumers that only need the web view
     /// read this instead of `webViewWindowControllerPromise.then(\.webViewControllerPromise)`.
+    #if os(macOS)
+    /// The frontend the app showed last. With every frontend window closed it is pending again, and asking
+    /// for it opens a window, whose frontend then resolves it.
+    var webViewControllerPromise: Guarantee<WebViewController> {
+        openFrontendWindowIfNeeded()
+        return storedWebViewControllerPromise
+    }
+
+    private var storedWebViewControllerPromise: Guarantee<WebViewController>
+    #else
     private(set) var webViewControllerPromise: Guarantee<WebViewController>
+    #endif
     private var webViewControllerSeal: (WebViewController) -> Void
 
     #if os(macOS)
@@ -187,13 +198,51 @@ final class SceneManager {
         #if os(macOS)
         registeredWebViewControllers.removeAll { $0.value == nil || $0.value === controller }
         registeredWebViewControllers.append(WeakWebViewController(value: controller))
-        #endif
+        if storedWebViewControllerPromise.isFulfilled {
+            storedWebViewControllerPromise = .value(controller)
+        } else {
+            webViewControllerSeal(controller)
+        }
+        #else
         if webViewControllerPromise.isFulfilled {
             webViewControllerPromise = .value(controller)
         } else {
             webViewControllerSeal(controller)
         }
+        #endif
     }
+
+    #if os(macOS)
+    /// Called when a frontend's window closes. With no frontend left, whoever asks for one next opens a
+    /// window rather than reaching the one that is gone.
+    func unregisterWebViewController(_ controller: WebViewController) {
+        registeredWebViewControllers.removeAll { $0.value == nil || $0.value === controller }
+        if registeredWebViewControllers.isEmpty {
+            (storedWebViewControllerPromise, webViewControllerSeal) = Guarantee<WebViewController>.pending()
+        }
+    }
+
+    /// Called when a coordinator's window closes; see `unregisterWebViewController(_:)`.
+    func unregisterAppCoordinator(_ coordinator: AppCoordinator) {
+        registeredAppCoordinators.removeAll { $0.value == nil || $0.value === coordinator }
+        if registeredAppCoordinators.isEmpty {
+            (appCoordinatorPromise, appCoordinatorSeal) = Guarantee<AppCoordinator>.pending()
+            everyFrontendWindowClosed = true
+        }
+    }
+
+    /// Set once the user has closed the last frontend window, which is the only time a request without a
+    /// window has to open one: at launch the scene opens its own, and in browser mode there is none to open.
+    private var everyFrontendWindowClosed = false
+
+    private func openFrontendWindowIfNeeded() {
+        guard everyFrontendWindowClosed, !Current.settingsStore.macNativeFeaturesOnly else { return }
+        everyFrontendWindowClosed = false
+        DispatchQueue.main.async {
+            MacWindowOpener.shared.open(.webView)
+        }
+    }
+    #endif
 
     private var appCoordinatorPromise: Guarantee<AppCoordinator>
     private var appCoordinatorSeal: (AppCoordinator) -> Void
@@ -210,12 +259,20 @@ final class SceneManager {
     /// The app-wide coordinator, for requests that arrive without a window behind them (deep links,
     /// notifications, App Intents). Anything triggered from a window should go through
     /// `appCoordinator(for:)` so it stays in that window.
-    var appCoordinator: Guarantee<AppCoordinator> { appCoordinatorPromise }
+    var appCoordinator: Guarantee<AppCoordinator> {
+        #if os(macOS)
+        openFrontendWindowIfNeeded()
+        #endif
+        return appCoordinatorPromise
+    }
 
     /// Called by `HomeAssistantView` once its coordinator exists.
     func registerAppCoordinator(_ coordinator: AppCoordinator) {
         registeredAppCoordinators.removeAll { $0.value == nil || $0.value === coordinator }
         registeredAppCoordinators.append(WeakAppCoordinator(value: coordinator))
+        #if os(macOS)
+        everyFrontendWindowClosed = false
+        #endif
 
         if appCoordinatorPromise.isFulfilled {
             appCoordinatorPromise = .value(coordinator)
@@ -228,7 +285,7 @@ final class SceneManager {
     /// a tap in that web view, a gesture on it. Falls back to the app-wide coordinator when the scene has
     /// none of its own (kiosk mode, a window still coming up). Call on the main thread.
     func appCoordinator(for scene: PlatformWindowScene?) -> Guarantee<AppCoordinator> {
-        guard let scene else { return appCoordinatorPromise }
+        guard let scene else { return appCoordinator }
         // Newest registration first, so a scene that came back gets its current coordinator rather than one
         // left over from the container it replaced.
         let coordinators = registeredAppCoordinators.reversed().compactMap(\.value)
@@ -239,7 +296,11 @@ final class SceneManager {
     }
 
     init() {
+        #if os(macOS)
+        (self.storedWebViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
+        #else
         (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
+        #endif
         (self.appCoordinatorPromise, self.appCoordinatorSeal) = Guarantee<AppCoordinator>.pending()
     }
 
@@ -247,15 +308,12 @@ final class SceneManager {
     /// Every window is a window of its own on the Mac.
     public var supportsMultipleScenes: Bool { true }
 
-    /// The frontend shown in `window`, or the one the app showed last when that window has none of its own.
-    func webViewController(in window: NSWindow?) -> Guarantee<WebViewController> {
-        let inWindow = registeredWebViewControllers.compactMap(\.value).last {
+    /// The frontend shown in `window`, if it shows one.
+    func webViewController(in window: NSWindow?) -> WebViewController? {
+        guard let window else { return nil }
+        return registeredWebViewControllers.compactMap(\.value).last {
             $0.isViewLoaded && $0.view.window === window
         }
-        if let inWindow {
-            return .value(inWindow)
-        }
-        return webViewControllerPromise
     }
 
     public func activateAnyScene(for activity: SceneActivity) {
@@ -346,7 +404,7 @@ final class SceneManager {
     }
 
     private func bringAppToFrontIfNeeded() {
-        #if targetEnvironment(macCatalyst) || os(macOS)
+        #if targetEnvironment(macCatalyst)
         Current.macBridge.activateApp()
         #endif
     }

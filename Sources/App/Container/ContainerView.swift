@@ -98,6 +98,14 @@ struct ContainerView: View {
             Current.sceneManager.setWebViewController(webViewController)
         }
         .id(server.identifier.rawValue)
+        #if os(macOS)
+            .onDisappear {
+                if let webViewController = coordinator.frontend as? WebViewController {
+                    Current.sceneManager.unregisterWebViewController(webViewController)
+                }
+                Current.sceneManager.unregisterAppCoordinator(coordinator)
+            }
+        #endif
 
         if #available(iOS 26, macOS 26, *), nativeTabBar.isEnabled {
             homeAssistant

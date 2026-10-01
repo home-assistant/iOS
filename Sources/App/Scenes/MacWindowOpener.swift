@@ -45,7 +45,7 @@ final class MacWindowOpener {
     func existingWindow(for activity: SceneActivity) -> NSWindow? {
         NSApp.windows.first { window in
             guard let identifier = window.identifier?.rawValue else { return false }
-            return identifier.hasPrefix(activity.activityIdentifier) && window.canBecomeKey
+            return identifier.hasPrefix(activity.activityIdentifier) && window.canBecomeKey && window.isVisible
         }
     }
 }

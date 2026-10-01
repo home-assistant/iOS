@@ -47,6 +47,7 @@ struct HAApp: App {
                 .injectingViewControllerProvider()
         }
         .defaultSize(SceneActivity.settings.initialWindowSize)
+        .commandsRemoved()
 
         Window(L10n.About.title, id: SceneActivity.about.activityIdentifier) {
             NavigationStack {
@@ -55,6 +56,7 @@ struct HAApp: App {
             .injectingViewControllerProvider()
         }
         .defaultSize(SceneActivity.about.initialWindowSize)
+        .commandsRemoved()
 
         Window(L10n.Assist.ModernUi.Header.title, id: SceneActivity.assist.activityIdentifier) {
             AssistWindowView()
