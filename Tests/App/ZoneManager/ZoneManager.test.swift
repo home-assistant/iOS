@@ -469,7 +469,12 @@ class ZoneManagerTests: XCTestCase {
             XCTAssertEqual(event.id, pending.id)
             removed.fulfill()
         }
-        let manager = newZoneManager(zoneEventOutbox: outbox, zoneEventRetryDelay: { _ in 0 })
+        let manager = ZoneManager(
+            locationManager: locationManager, collector: collector, processor: processor,
+            regionFilter: regionFilter, syncExecutor: { $0() }, zoneEventOutbox: outbox,
+            zoneEventRetryDelay: { _ in 0 }
+        )
+        managers.append(manager)
         manager.applicationDidBecomeActive()
         XCTAssertTrue(api.createdEvents.isEmpty)
         // The main-queue retry cannot run until this actor yields; no second wake is sent.
