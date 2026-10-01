@@ -4083,8 +4083,10 @@ public enum L10n {
       public static func about(_ p1: Any) -> String {
         return L10n.tr("Localizable", "menu.application.about", String(describing: p1))
       }
-      /// Settings…
+      /// Preferences…
       public static var preferences: String { return L10n.tr("Localizable", "menu.application.preferences") }
+      /// Settings…
+      public static var settings: String { return L10n.tr("Localizable", "menu.application.settings") }
     }
     public enum File {
       /// Update Sensors

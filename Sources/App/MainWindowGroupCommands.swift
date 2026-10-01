@@ -24,7 +24,7 @@ struct AppMenuBarCommands: Commands {
         }
 
         CommandGroup(replacing: .appSettings) {
-            Button(L10n.Menu.Application.preferences) {
+            Button(L10n.Menu.Application.settings) {
                 Current.sceneManager.activateAnyScene(for: .settings)
             }
             .keyboardShortcut(",", modifiers: .command)

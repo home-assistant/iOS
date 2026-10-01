@@ -95,7 +95,7 @@ final class StatusItemManager {
 
     private func preferencesMenu() -> AppMacBridgeStatusItemMenuItem {
         .init(
-            name: L10n.Menu.Application.preferences,
+            name: L10n.Menu.Application.settings,
             keyEquivalentModifier: [.command],
             keyEquivalent: ","
         ) { callbackInfo in
