@@ -66,6 +66,7 @@ public struct CornerComplicationContentView: View {
         guard let fraction = model.fraction else { return startAngle }
         return startAngle + (endAngle - startAngle) * fraction
     }
+
     private var gaugeMarkerPoint: CGPoint {
         let radians = currentAngle * .pi / 180
         return CGPoint(

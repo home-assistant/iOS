@@ -186,7 +186,6 @@ struct CornerComplicationView: View {
     )
 }
 
-
 @available(watchOS 10.0, *)
 #Preview("Value only, no gauge", as: .accessoryCorner) {
     WatchWidgets()
