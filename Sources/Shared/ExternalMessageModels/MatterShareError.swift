@@ -1,17 +1,17 @@
 import Foundation
 
-public enum MatterShareError: LocalizedError {
-    /// The setup code the frontend sent could not be turned into a setup payload.
+/// Descriptions are for the log; the frontend shows its own text.
+public enum MatterShareError: Error, CustomStringConvertible {
     case invalidRequest
-    /// This platform cannot share Matter devices.
+    /// Reachable on Mac Catalyst alone, where `canShareDevice` is false and the frontend offers nothing.
     case unsupported
 
-    public var errorDescription: String? {
+    public var description: String {
         switch self {
         case .invalidRequest:
-            return "The setup code could not be read"
+            return "the commissioning window could not be read"
         case .unsupported:
-            return "Sharing Matter devices is not supported on this device"
+            return "sharing Matter devices is not supported on this device"
         }
     }
 }

@@ -244,32 +244,35 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     // swiftlint:enable cyclomatic_complexity
 
     private func handleMatterShareDevice(_ incomingMessage: WebSocketMessage) {
-        let messageId = incomingMessage.ID ?? -1
+        guard let messageId = incomingMessage.ID else {
+            Current.Log.error("Received matter/share_device without a message id")
+            return
+        }
         guard let request = MatterShareRequest(payload: incomingMessage.Payload) else {
             Current.Log.error("Received matter/share_device with an invalid payload")
             sendExternalBus(message: .init(
                 id: messageId,
-                errorCode: "failed",
-                message: "Invalid matter/share_device payload"
+                error: MatterWrapper.shareError(for: MatterShareError.invalidRequest)
             )).cauterize()
             return
         }
-        Task { @MainActor [self] in
+        Task { @MainActor [weak self] in
             let outgoing: WebSocketMessage
             do {
                 try await Current.matter.shareDevice(request)
                 Current.Log.info("Matter device shared")
                 outgoing = .init(id: messageId, type: "result", result: [:])
             } catch {
-                let code = MatterWrapper.shareErrorCode(for: error)
-                if code == "cancelled" {
+                let busError = MatterWrapper.shareError(for: error)
+                if busError.isCanceled {
                     Current.Log.info("Sharing Matter device cancelled by user")
                 } else {
+                    // Full error for the log; only the bus message must be free of system text.
                     Current.Log.error("Sharing Matter device failed: \(error)")
                 }
-                outgoing = .init(id: messageId, errorCode: code, message: error.localizedDescription)
+                outgoing = .init(id: messageId, error: busError)
             }
-            sendExternalBus(message: outgoing).cauterize()
+            self?.sendExternalBus(message: outgoing).cauterize()
         }
     }
 

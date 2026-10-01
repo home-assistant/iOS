@@ -9,7 +9,7 @@ public class WebSocketMessage: Codable {
     public var Message: String?
     public var HAVersion: String?
     public var command: String?
-    public var error: [String: String]?
+    public var error: ResultError?
 
     private enum CodingKeys: String, CodingKey {
         case MessageType = "type"
@@ -33,7 +33,6 @@ public class WebSocketMessage: Codable {
         self.Message = try? values.decode(String.self, forKey: .Message)
         self.HAVersion = try? values.decode(String.self, forKey: .HAVersion)
         self.command = try values.decodeIfPresent(String.self, forKey: .command)
-        self.error = try? values.decode([String: String].self, forKey: .error)
     }
 
     public init?(_ dictionary: [String: Any]) {
@@ -64,12 +63,33 @@ public class WebSocketMessage: Codable {
         self.command = nil
     }
 
-    /// A failed `result`, which the frontend rejects with `{code, message}`.
-    public init(id: Int, errorCode: String, message: String) {
+    /// The frontend branches on `code` and shows its own text.
+    public struct ResultError: Codable, Equatable {
+        private static let canceledCode = "canceled"
+        private static let failedCode = "failed"
+
+        public let code: String
+        /// English detail for the app's log, never shown to the user.
+        public let message: String
+
+        public static func canceled(_ message: String) -> Self {
+            .init(code: canceledCode, message: message)
+        }
+
+        public static func failed(_ message: String) -> Self {
+            .init(code: failedCode, message: message)
+        }
+
+        public var isCanceled: Bool {
+            code == Self.canceledCode
+        }
+    }
+
+    public init(id: Int, error: ResultError) {
         self.ID = id
         self.MessageType = "result"
         self.Success = false
-        self.error = ["code": errorCode, "message": message]
+        self.error = error
         self.command = nil
     }
 
@@ -109,7 +129,7 @@ public class WebSocketMessage: Codable {
 
 extension WebSocketMessage: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
-        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)))"
+        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)), error: \(String(describing: error)))"
     }
 
     public var debugDescription: String {

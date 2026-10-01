@@ -12,7 +12,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
     private var sut: WebViewExternalMessageHandler!
     private var mockWebViewController: MockWebViewController!
     private var originalMatterCommission: ((Server) -> Promise<String?>)!
-    private var originalMatterShareDevice: ((MatterShareRequest) async throws -> Void)!
+    private var originalMatterShareDevice: (@MainActor (MatterShareRequest) async throws -> Void)!
 
     override func setUp() async throws {
         originalMatterCommission = Current.matter.commission
@@ -230,14 +230,20 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ])
 
         wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1, "the contract allows one reply")
         let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
 
-        XCTAssertEqual(receivedRequest, MatterShareRequest(payload: Self.sharePayload))
+        XCTAssertEqual(
+            receivedRequest?.window,
+            .values(passcode: 20_202_021, discriminator: 3840, vendorID: 0xFFF1, productID: 0x8001)
+        )
         XCTAssertEqual(receivedRequest?.deviceName, "Kitchen light")
         XCTAssertEqual(message["id"] as? Int, 7)
         XCTAssertEqual(message["type"] as? String, "result")
         XCTAssertEqual(message["success"] as? Bool, true)
+        XCTAssertTrue(try XCTUnwrap(message["result"] as? [String: Any]).isEmpty)
         XCTAssertNil(message["error"])
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1, "the contract allows one reply")
     }
 
     @MainActor func testHandleExternalMessageMatterShareDeviceRepliesFailed() throws {
@@ -252,6 +258,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ])
 
         wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1, "the contract allows one reply")
         let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
         let error = try XCTUnwrap(message["error"] as? [String: Any])
 
@@ -259,6 +266,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(message["success"] as? Bool, false)
         XCTAssertNil(message["result"])
         XCTAssertEqual(error["code"] as? String, "failed")
+        XCTAssertFalse((error["message"] as? String ?? "").isEmpty, "the contract requires a message")
     }
 
     @MainActor func testHandleExternalMessageMatterShareDeviceRepliesCancelled() throws {
@@ -273,11 +281,12 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ])
 
         wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1, "the contract allows one reply")
         let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
         let error = try XCTUnwrap(message["error"] as? [String: Any])
 
         XCTAssertEqual(message["success"] as? Bool, false)
-        XCTAssertEqual(error["code"] as? String, "cancelled")
+        XCTAssertEqual(error["code"] as? String, "canceled")
     }
 
     @MainActor func testHandleExternalMessageMatterShareDeviceWithInvalidPayloadRepliesFailed() throws {
@@ -293,6 +302,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ])
 
         wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1, "the contract allows one reply")
         let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
         let error = try XCTUnwrap(message["error"] as? [String: Any])
 
@@ -317,10 +327,29 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ])
 
         wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1, "the contract allows one reply")
         let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
 
         XCTAssertEqual(receivedRequest?.window, .setupCode("MT:-24J0AFN00KA0648G00"))
         XCTAssertEqual(message["success"] as? Bool, true)
+    }
+
+    /// Inverted expectation: the reply would come from a `Task`, so an immediate assert passes either way.
+    @MainActor func testHandleExternalMessageMatterShareDeviceWithoutIdDoesNotShareOrReply() {
+        var called = false
+        let expectation = expectation(description: "no Matter share result sent")
+        expectation.isInverted = true
+        mockWebViewController.evaluateJavaScriptExpectation = expectation
+        Current.matter.shareDevice = { _ in called = true }
+
+        sut.handleExternalMessage([
+            "type": "matter/share_device",
+            "payload": Self.sharePayload,
+        ])
+
+        wait(for: [expectation], timeout: 0.5)
+        XCTAssertFalse(called)
+        XCTAssertNil(mockWebViewController.lastEvaluatedJavaScriptScript)
     }
 
     private static let sharePayload: [String: Any] = [
@@ -328,7 +357,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         "setup_pin_code": 20_202_021,
         "discriminator": 3840,
         "vendor_id": 0xFFF1,
-        "product_id": 0x8000,
+        "product_id": 0x8001,
         "device_name": "Kitchen light",
         "remaining_seconds": 250,
     ]

@@ -83,11 +83,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         let result = WebViewExternalBusMessage.configResult
 
         // Expected keys currently defined in WebViewExternalBusMessage.configResult
-        var expectedKeys: Set<String> = [
+        let expectedKeys: Set<String> = [
             "hasSettingsScreen",
             "hasSidebar",
             "canWriteTag",
             "canCommissionMatter",
+            "canShareMatterDeviceToAppleHome",
             "hasMatterStatusReport",
             "canImportThreadCredentials",
             "hasBarCodeScanner",
@@ -101,23 +102,25 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasSplashscreen",
             "appVersion",
         ]
-        // Only announced where the device can share a Matter device.
-        if Current.matter.canShareDevice {
-            expectedKeys.insert("matterShareTarget")
-        }
 
         let actualKeys = Set(result.keys)
         XCTAssertEqual(actualKeys, expectedKeys)
     }
 
-    @MainActor func testConfigResultAnnouncesMatterShareTargetWhenSupported() {
+    @MainActor func testConfigResultReportsWhetherMatterDevicesCanBeSharedToAppleHome() {
         let canShareDevice = Current.matter.canShareDevice
         defer { Current.matter.canShareDevice = canShareDevice }
 
         Current.matter.canShareDevice = true
-        XCTAssertEqual(WebViewExternalBusMessage.configResult["matterShareTarget"] as? String, "apple_home")
+        XCTAssertEqual(
+            WebViewExternalBusMessage.configResult["canShareMatterDeviceToAppleHome"] as? Bool,
+            true
+        )
 
         Current.matter.canShareDevice = false
-        XCTAssertNil(WebViewExternalBusMessage.configResult["matterShareTarget"])
+        XCTAssertEqual(
+            WebViewExternalBusMessage.configResult["canShareMatterDeviceToAppleHome"] as? Bool,
+            false
+        )
     }
 }

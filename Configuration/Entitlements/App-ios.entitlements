@@ -16,8 +16,6 @@
 	<true/>
 	<key>com.apple.developer.homekit</key>
 	<true/>
-	<key>com.apple.developer.matter.allow-setup-payload</key>
-	<true/>
 	<key>com.apple.developer.networking.wifi-info</key>
 	<true/>
 	<key>com.apple.developer.nfc.readersession.formats</key>
