@@ -31,7 +31,7 @@ final class WebViewReconnectManager: ObservableObject {
 
     init(
         configuration: Configuration = .default,
-        isAppActive: @escaping @MainActor () -> Bool = { ApplicationState.current == .active },
+        isAppActive: @escaping @MainActor () -> Bool = WebViewReconnectManager.defaultIsAppActive,
         scheduleTimer: @escaping TimerScheduler = WebViewReconnectManager.defaultScheduleTimer
     ) {
         self.configuration = configuration
@@ -67,6 +67,17 @@ final class WebViewReconnectManager: ObservableObject {
         cancelTimer = scheduleTimer(delay) { [weak self] in
             self?.performScheduledAttempt()
         }
+    }
+
+    /// On iOS the frontend is only worth reconnecting while the app is in front; a Mac keeps rendering
+    /// its windows while another app is, so there any window on screen counts.
+    @MainActor
+    static func defaultIsAppActive() -> Bool {
+        #if os(macOS)
+        return NSApp.windows.contains { $0.isVisible && $0.occlusionState.contains(.visible) }
+        #else
+        return ApplicationState.current == .active
+        #endif
     }
 
     private func performScheduledAttempt() {

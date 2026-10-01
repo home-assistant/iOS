@@ -32,6 +32,12 @@ final class WebViewFindBarContainer: NSObject, NSTextFinderBarContainer {
         webViewController?.webView
     }
 
+    /// Keeps the bar under the toolbar as the window's layout changes, such as entering full screen.
+    func layoutIfVisible() {
+        guard isFindBarVisible else { return }
+        layout()
+    }
+
     private func layout() {
         guard let webViewController, webViewController.isViewLoaded else { return }
         let container = webViewController.view

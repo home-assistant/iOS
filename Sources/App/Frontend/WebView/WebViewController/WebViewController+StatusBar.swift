@@ -299,6 +299,7 @@ extension WebViewController {
         return false;
     }
     """
+
     @objc func showFindInteraction() {
         #if os(macOS)
         textFinder.performAction(.showFindInterface)
@@ -310,3 +311,13 @@ extension WebViewController {
         #endif
     }
 }
+
+#if os(macOS)
+extension WebViewController: NSUserInterfaceValidations {
+    func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+        guard item.action == #selector(performTextFinderAction(_:)) else { return true }
+        guard let action = NSTextFinder.Action(rawValue: item.tag) else { return false }
+        return textFinder.validateAction(action)
+    }
+}
+#endif

@@ -285,6 +285,8 @@ final class WebViewController: PlatformViewController, WKNavigationDelegate, WKU
         tabBarAssistZoomAnchor?.removeFromSuperview()
         #else
         self.appearanceObserver = nil
+        textFinder.client = nil
+        textFinder.findBarContainer = nil
         #endif
         self.urlObserver = nil
         self.windowTitleObserver = nil
@@ -383,9 +385,7 @@ final class WebViewController: PlatformViewController, WKNavigationDelegate, WKU
 
         webView = WKWebView(frame: view.frame, configuration: config)
         #if os(macOS)
-        // AppKit's web view has no `isOpaque`; this is what lets the themed background show through
-        // while a page loads.
-        webView.setValue(false, forKey: "drawsBackground")
+        webView.makeBackgroundTransparent()
         webView.allowsBackForwardNavigationGestures = true
         #else
         webView.isOpaque = false
@@ -445,15 +445,28 @@ final class WebViewController: PlatformViewController, WKNavigationDelegate, WKU
         loadActiveURLIfNeeded()
     }
 
+    /// The Edit > Find menu items: Find Next, Find Previous, Use Selection for Find and the bar itself.
+    override func performTextFinderAction(_ sender: Any?) {
+        guard let item = sender as? NSMenuItem, let action = NSTextFinder.Action(rawValue: item.tag) else { return }
+        textFinder.performAction(action)
+    }
+
     override func viewDidAppear() {
         super.viewDidAppear()
         updateDatabaseAndPanels()
         updateWindowSceneTitle()
+        userActivity?.becomeCurrent()
+        updateOnscreenContent()
     }
 
     override func viewWillDisappear() {
         super.viewWillDisappear()
         userActivity?.resignCurrent()
+    }
+
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        findBarContainer.layoutIfVisible()
     }
 
     /// The frontend picks its theme from the colours the app reports, so it has to be told when the

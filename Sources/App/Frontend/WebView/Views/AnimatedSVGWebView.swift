@@ -53,8 +53,7 @@ final class AnimatedSVGWebView: WKWebView {
         self.resourceName = resourceName
         super.init(frame: .zero, configuration: WKWebViewConfiguration())
         #if os(macOS)
-        // AppKit's web view has no `isOpaque`; this is what makes it transparent.
-        setValue(false, forKey: "drawsBackground")
+        makeBackgroundTransparent()
         #else
         isOpaque = false
         backgroundColor = .clear
