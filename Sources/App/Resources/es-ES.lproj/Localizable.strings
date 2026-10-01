@@ -390,7 +390,7 @@
 "assist.text_field.placeholder" = "Introduce una solicitud...";
 "assist.watch.mic_button.title" = "Pulsa para";
 "assist.watch.not_reachable.title" = "Assist requiere conexión con el iPhone. No es posible contactar con tu iPhone en este momento.";
-"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No se reconoció ninguna voz.";
 "assist.watch.volume.title" = "Control de volumen";
 "assist_pipeline_picker.no_pipelines" = "No hay pipelines disponibles";
 "assist_pipeline_picker.placeholder" = "Seleccionar pipeline";
@@ -2401,9 +2401,9 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "tab_bar.item.search" = "Buscar";
 "tab_bar.more.app_settings" = "Ajustes de la aplicación";
 "tab_bar.more.customize" = "Personalizar";
-"tab_bar.more.edit_profile" = "Edit profile";
+"tab_bar.more.edit_profile" = "Editar perfil";
 "tab_bar.more.home_assistant_settings" = "Ajustes de Home Assistant";
-"tab_bar.more.other_servers" = "Other servers";
+"tab_bar.more.other_servers" = "Otros servidores";
 "tab_bar.more.title" = "Más";
 "tags.allowed.delete_all" = "Borrar todas";
 "tags.allowed.delete_all.confirm.button" = "Borrar todas";
@@ -2896,7 +2896,7 @@ Aunque ninguna URL se considera segura, los datos de este servidor no se sincron
 "watch.lock_controls.open_confirmation.title" = "¿Estás seguro de que quieres abrir «%@»?";
 "watch.lock_controls.unlock" = "Desbloquear";
 "watch.placeholder_complication_name" = "Marcador de posición";
-"watch.relay.unanswered.message" = "The iPhone received the request but didn't report back in time. Check whether it ran before trying again.";
+"watch.relay.unanswered.message" = "El iPhone recibió la solicitud, pero no respondió a tiempo. Comprueba si se ha ejecutado antes de volver a intentarlo.";
 "watch.settings.auto" = "Auto";
 "watch.settings.client_certificate.available_on_watch" = "Disponible en este Watch";
 "watch.settings.client_certificate.import_instructions" = "Abre Home Assistant en tu iPhone para importar el certificado y, a continuación, actualiza esta página.";

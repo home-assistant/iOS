@@ -2401,9 +2401,9 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "tab_bar.item.search" = "Hledat";
 "tab_bar.more.app_settings" = "Nastavení aplikace";
 "tab_bar.more.customize" = "Přizpůsobit";
-"tab_bar.more.edit_profile" = "Edit profile";
+"tab_bar.more.edit_profile" = "Upravit profil";
 "tab_bar.more.home_assistant_settings" = "Nastavení Home Assistanta";
-"tab_bar.more.other_servers" = "Other servers";
+"tab_bar.more.other_servers" = "Ostatní servery";
 "tab_bar.more.title" = "Více";
 "tags.allowed.delete_all" = "Smazat vše";
 "tags.allowed.delete_all.confirm.button" = "Smazat vše";
