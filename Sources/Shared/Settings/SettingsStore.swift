@@ -24,8 +24,14 @@ public class SettingsStore {
         }
     }
 
+    static let integrationDeviceIDKey = "integrationDeviceID"
+
+    /// The identifier the server knows this installation by. It is taken from the platform's vendor
+    /// identifier the first time it is needed and kept from then on, so a build that derives it
+    /// differently (the Mac moving from Catalyst to the native app) keeps the registration it has
+    /// rather than registering a second device.
     public var integrationDeviceID: String {
-        let baseString = Current.device.identifierForVendor() ?? deviceID
+        let baseString = persistedIntegrationDeviceID ?? deviceID
 
         switch Current.appConfiguration {
         case .debug:
@@ -42,6 +48,19 @@ public class SettingsStore {
         set {
             keychain["deviceID"] = newValue
         }
+    }
+
+    /// The vendor identifier as first seen, stored alongside the other registration data in the app group.
+    /// Nothing is stored while the platform has no identifier to give, so a later read can still pick it up.
+    private var persistedIntegrationDeviceID: String? {
+        if let stored = prefs.string(forKey: Self.integrationDeviceIDKey) {
+            return stored
+        }
+        guard let current = Current.device.identifierForVendor() else {
+            return nil
+        }
+        prefs.set(current, forKey: Self.integrationDeviceIDKey)
+        return current
     }
 
     private var seenWhatsNewReleaseIDs: Set<String> {
