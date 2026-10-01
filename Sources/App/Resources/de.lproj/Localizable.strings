@@ -390,7 +390,7 @@
 "assist.text_field.placeholder" = "Gib eine Anfrage ein …";
 "assist.watch.mic_button.title" = "Tippe zum";
 "assist.watch.not_reachable.title" = "Assist erfordert eine iPhone-Verbindung. Dein iPhone ist derzeit nicht erreichbar.";
-"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
+"assist.watch.on_device_stt.no_speech_recognized" = "Es wurde keine Sprache erkannt.";
 "assist.watch.volume.title" = "Lautstärkeregler";
 "assist_pipeline_picker.no_pipelines" = "Keine Pipelines verfügbar";
 "assist_pipeline_picker.placeholder" = "Pipeline auswählen";
@@ -492,7 +492,7 @@
 "carPlay.labels.settings.troubleshooting.section.title" = "Problemlösungen";
 "carPlay.labels.settings.troubleshooting.title" = "Problemlösungen";
 "carPlay.labels.tab.settings" = "Einstellungen";
-"carPlay.lock.confirmation.title" = "Bist du sicher, dass du die Aktion Abschließen von %@ ausführen möchtest?";
+"carPlay.lock.confirmation.title" = "Bist du sicher, dass du %@ verriegeln möchtest?";
 "carPlay.navigation.button.next" = "Weiter";
 "carPlay.navigation.button.previous" = "Zurück";
 "carPlay.navigation.tab.actions" = "Aktionen";
@@ -533,16 +533,16 @@
 "carPlay.tabs.active.delete_action.title" = "Nach links wischen, um den Tab zu entfernen";
 "carPlay.tabs.active.title" = "Aktiv";
 "carPlay.tabs.inactive.title" = "Inaktiv";
-"carPlay.unlock.confirmation.title" = "Bist du sicher, dass du die Aktion Aufschließen von %@ ausführen möchtest?";
+"carPlay.unlock.confirmation.title" = "Bist du sicher, dass du %@ entriegeln möchtest?";
 "carplay.labels.already_added_server" = "Bereits hinzugefügt";
 "carplay.labels.empty_domain_list" = "Keine Domänen verfügbar";
 "carplay.labels.no_servers_available" = "Keine Server verfügbar. Füge einen Server in der App hinzu.";
 "carplay.labels.servers" = "Server";
-"carplay.lock.confirmation.title" = "Bist du sicher, dass du die Aktion Abschließen von %@ ausführen möchtest?";
+"carplay.lock.confirmation.title" = "Bist du sicher, dass du %@ verriegeln möchtest?";
 "carplay.navigation.button.next" = "Weiter";
 "carplay.navigation.button.previous" = "Zurück";
 "carplay.tab.quick_access.layout" = "Anordnung";
-"carplay.unlock.confirmation.title" = "Bist du sicher, dass du die Aktion Aufschließen von %@ ausführen möchtest?";
+"carplay.unlock.confirmation.title" = "Bist du sicher, dass du %@ entriegeln möchtest?";
 "cl_error.description.deferred_accuracy_too_low" = "Der Aufschieben-Modus wird für die angeforderte Genauigkeit nicht unterstützt.";
 "cl_error.description.deferred_canceled" = "Die Anforderung für verzögerte Aktualisierungen wurde von deiner App oder vom Standortmanager abgebrochen.";
 "cl_error.description.deferred_distance_filtered" = "Der Aufschieben-Modus unterstützt keine Distanzfilter.";
@@ -2401,7 +2401,9 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "tab_bar.item.search" = "Suchen";
 "tab_bar.more.app_settings" = "App-Einstellungen";
 "tab_bar.more.customize" = "Anpassen";
+"tab_bar.more.edit_profile" = "Profil bearbeiten";
 "tab_bar.more.home_assistant_settings" = "Home Assistant-Einstellungen";
+"tab_bar.more.other_servers" = "Andere Server";
 "tab_bar.more.title" = "Weitere";
 "tags.allowed.delete_all" = "Alle löschen";
 "tags.allowed.delete_all.confirm.button" = "Alle löschen";

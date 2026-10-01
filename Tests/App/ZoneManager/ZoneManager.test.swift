@@ -485,6 +485,122 @@ class ZoneManagerTests: XCTestCase {
     }
 
     @MainActor
+    func testExpiredRunningUploadCannotBlockNextServer() async throws {
+        let originalDate = Current.date
+        var now = Date(timeIntervalSince1970: 1000)
+        Current.date = { now }
+        defer { Current.date = originalDate }
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let backing = AtomicFileZoneEventOutbox(fileURL: directory.appendingPathComponent("outbox.json"))
+        let first = try PendingZoneEvent(
+            serverIdentifier: apis[0].server.identifier.rawValue, eventType: "ios.zone_entered",
+            eventData: ["zone": "zone.first"], createdAt: now
+        )
+        try backing.append(first)
+        let (heldDelivery, heldSeal) = Promise<Void>.pending()
+        defer { heldSeal.fulfill(()) }
+        apis[0].persistentEventResult = heldDelivery
+        let removed = expectation(description: "next server delivered while first transport is held")
+        let outbox = ObservingZoneEventOutbox(outbox: backing) { id in
+            XCTAssertNotEqual(id, first.id, "Expired upload must not mutate the queue after completion")
+            removed.fulfill()
+        }
+        let manager = newZoneManager(zoneEventOutbox: outbox, scheduleZoneEventRetryWork: { _, _ in })
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(apis[0].createdEventIdentifiers, [first.id])
+        XCTAssertNotNil(try backing.pendingEvents().first?.deliveryStartedAt)
+
+        now = now.addingTimeInterval(10801)
+        let second = try PendingZoneEvent(
+            serverIdentifier: apis[1].server.identifier.rawValue, eventType: "ios.zone_entered",
+            eventData: ["zone": "zone.second"], createdAt: now
+        )
+        try backing.append(second)
+        manager.applicationDidBecomeActive()
+        await fulfillment(of: [removed], timeout: 5)
+        XCTAssertEqual(apis[1].createdEventIdentifiers, [second.id])
+        XCTAssertTrue(try backing.pendingEvents().isEmpty)
+        XCTAssertTrue(heldDelivery.isPending, "Progress must not depend on the abandoned transport finishing")
+    }
+
+    @MainActor
+    func testUnavailableReconciliationEventuallyExpiresAndNextServerDrains() async throws {
+        let originalDate = Current.date
+        var now = Date(timeIntervalSince1970: 1000)
+        Current.date = { now }
+        defer { Current.date = originalDate }
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let backing = AtomicFileZoneEventOutbox(fileURL: directory.appendingPathComponent("outbox.json"))
+        let first = try PendingZoneEvent(
+            serverIdentifier: apis[0].server.identifier.rawValue, eventType: "ios.zone_entered",
+            eventData: ["zone": "zone.first"], createdAt: now
+        )
+        try backing.append(first)
+        try backing.markDeliveryStarted(id: first.id, at: now)
+        apis[0].persistentEventReconciliationState = .unavailable(TestError.anyError)
+        let retry = expectation(description: "unavailable lookup completed without resending")
+        let removed = expectation(description: "next server delivered after reconciliation deadline")
+        let outbox = ObservingZoneEventOutbox(outbox: backing) { id in
+            XCTAssertNotEqual(id, first.id)
+            removed.fulfill()
+        }
+        let manager = newZoneManager(zoneEventOutbox: outbox, scheduleZoneEventRetryWork: { _, _ in
+            retry.fulfill()
+        })
+        await fulfillment(of: [retry], timeout: 5)
+        XCTAssertTrue(apis[0].createdEventIdentifiers.isEmpty)
+        XCTAssertEqual(try backing.pendingEvents().map(\.id), [first.id])
+
+        now = now.addingTimeInterval(10801)
+        let next = try PendingZoneEvent(
+            serverIdentifier: apis[1].server.identifier.rawValue, eventType: "ios.zone_exited",
+            eventData: ["zone": "zone.second"], createdAt: now
+        )
+        try backing.append(next)
+        manager.applicationDidBecomeActive()
+        await fulfillment(of: [removed], timeout: 5)
+        XCTAssertEqual(apis[1].createdEventIdentifiers, [next.id])
+        XCTAssertTrue(apis[0].createdEventIdentifiers.isEmpty)
+        XCTAssertTrue(try backing.pendingEvents().isEmpty)
+    }
+
+    @MainActor
+    func testCorruptOutboxRecoversThroughActualRegionEventDelivery() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("outbox.json")
+        let corrupt = Data("broken-json".utf8)
+        try corrupt.write(to: url)
+        let backing = AtomicFileZoneEventOutbox(fileURL: url)
+        let removed = expectation(description: "new event is persisted, uploaded and removed")
+        let outbox = ObservingZoneEventOutbox(outbox: backing) { _ in removed.fulfill() }
+        let manager = newZoneManager(zoneEventOutbox: outbox)
+        let api = apis[0]
+        let zone = try addedZones([
+            AppZone(entityId: "zone.recovery", serverIdentifier: api.server.identifier.rawValue),
+        ])[0]
+        processor.promiseToReturn = .value(())
+        let region = CLBeaconRegion(uuid: UUID(), identifier: zone.identifier)
+        api.beforePersistentEventStart = { id in
+            XCTAssertEqual(try? backing.pendingEvents().first?.id, id)
+            XCTAssertNotNil(try? backing.pendingEvents().first?.deliveryStartedAt)
+        }
+        manager.collector(collector, didCollect: .init(eventType: .region(region, .inside), associatedZone: zone))
+        await fulfillment(of: [removed], timeout: 5)
+        XCTAssertEqual(api.createdEvents.count, 1)
+        XCTAssertEqual(api.createdEvents.first?.eventData["zone"] as? String, "zone.recovery")
+        XCTAssertEqual(api.ephemeralEventCount, 0)
+        XCTAssertTrue(try backing.pendingEvents().isEmpty)
+        XCTAssertEqual(
+            try Data(contentsOf: url.deletingPathExtension().appendingPathExtension("corrupt.json")),
+            corrupt
+        )
+    }
+
+    @MainActor
     func testExpiredDuringStartMarkerIsNotUploadedAndNextEventDrains() async throws {
         var now = Date()
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -523,7 +639,7 @@ class ZoneManagerTests: XCTestCase {
         let api = apis[1]
         let pending = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue, eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.test"]
+            eventData: ["zone": "zone.test"], createdAt: Current.date()
         )
         outbox.events = [pending]
         outbox.failMark = true
@@ -546,7 +662,7 @@ class ZoneManagerTests: XCTestCase {
         let api = apis[1]
         let pending = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue, eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.test"]
+            eventData: ["zone": "zone.test"], createdAt: Current.date()
         )
         outbox.events = [pending]
         outbox.failRemove = true
@@ -571,7 +687,7 @@ class ZoneManagerTests: XCTestCase {
         let api = apis[1]
         let pending = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue, eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.test"], deliveryStartedAt: Date()
+            eventData: ["zone": "zone.test"], createdAt: Current.date(), deliveryStartedAt: Date()
         )
         outbox.events = [pending]
         api.persistentEventReconciliationState = .completed(.success(()))
@@ -590,7 +706,7 @@ class ZoneManagerTests: XCTestCase {
         let api = apis[1]
         let pending = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue, eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.test"], deliveryStartedAt: Date()
+            eventData: ["zone": "zone.test"], createdAt: Current.date(), deliveryStartedAt: Date()
         )
         outbox.events = [pending]
         api.persistentEventReconciliationState = .unavailable(TestError.anyError)
@@ -620,7 +736,7 @@ class ZoneManagerTests: XCTestCase {
         let api = apis[1]
         let pending = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue, eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.test"], deliveryStartedAt: Date()
+            eventData: ["zone": "zone.test"], createdAt: Current.date(), deliveryStartedAt: Date()
         )
         outbox.events = [pending]
         api.persistentEventReconciliationState = .absent
@@ -639,7 +755,7 @@ class ZoneManagerTests: XCTestCase {
         let api = apis[1]
         let pending = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue, eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.test"]
+            eventData: ["zone": "zone.test"], createdAt: Current.date()
         )
         outbox.events = [pending]
         outbox.failRead = true
@@ -681,7 +797,7 @@ class ZoneManagerTests: XCTestCase {
         let api = apis[1]
         let pending = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue, eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.test"], deliveryStartedAt: Date()
+            eventData: ["zone": "zone.test"], createdAt: Current.date(), deliveryStartedAt: Date()
         )
         outbox.events = [pending]
         api.persistentEventReconciliationState = .completed(.failure(TestError.anyError))
@@ -1187,7 +1303,7 @@ class ZoneManagerTests: XCTestCase {
         let validEvent = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue,
             eventType: "ios.zone_exited",
-            eventData: ["zone": "zone.zid"]
+            eventData: ["zone": "zone.zid"], createdAt: Current.date()
         )
         let outbox = FakeZoneEventOutbox()
         outbox.events = [malformedEvent, validEvent]
@@ -1482,7 +1598,7 @@ class ZoneManagerTests: XCTestCase {
         var pending = try PendingZoneEvent(
             serverIdentifier: api.server.identifier.rawValue,
             eventType: "ios.zone_entered",
-            eventData: ["zone": "zone.beacon"],
+            eventData: ["zone": "zone.beacon"], createdAt: Current.date(),
             isBeacon: true
         )
         pending.deliveryStartedAt = Date()

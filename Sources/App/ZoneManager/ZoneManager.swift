@@ -322,6 +322,12 @@ class ZoneManager {
 
     private func flushPendingZoneEvents() {
         guard let pendingEvents = loadPendingZoneEvents() else { return }
+        // Disk expiry also ends in-memory ownership. A never-completing transport must
+        // not keep a removed event blocking every server on subsequent wakes.
+        let pendingIDs = Set(pendingEvents.map(\.id))
+        drainingZoneEventIDs.formIntersection(pendingIDs)
+        reconcilingZoneEventIDs.formIntersection(pendingIDs)
+        confirmedZoneEventIDs.formIntersection(pendingIDs)
         guard !pendingEvents.isEmpty else {
             zoneEventRetryAttempt = 0
             zoneEventRetryIdentifier = nil
@@ -417,14 +423,15 @@ class ZoneManager {
         drainingZoneEventIDs.insert(pendingEvent.id)
         zoneEventRetryIdentifier = nil
         logBeaconDeliveryStage("background_upload_started", pendingEvent: pendingEvent)
-        if pendingEvent.isBeacon == true {
+        if pendingEvent.isBeacon {
             scheduleBeaconUploadWatchdog(for: pendingEvent)
         }
 
         Task { [weak self] in
             let result = await delivery.result
             await MainActor.run {
-                self?.handleZoneEventResult(result, pendingEvent: pendingEvent)
+                guard let self, drainingZoneEventIDs.contains(pendingEvent.id) else { return }
+                handleZoneEventResult(result, pendingEvent: pendingEvent)
             }
         }
     }
@@ -436,7 +443,7 @@ class ZoneManager {
             let state = await api.reconcilePersistentEvent(eventIdentifier: pendingEvent.id)
             await MainActor.run {
                 guard let self else { return }
-                reconcilingZoneEventIDs.remove(pendingEvent.id)
+                guard reconcilingZoneEventIDs.remove(pendingEvent.id) != nil else { return }
                 switch state {
                 case let .running(delivery):
                     attach(delivery: delivery, to: pendingEvent)
@@ -526,7 +533,7 @@ class ZoneManager {
         pendingEvent: PendingZoneEvent,
         detail: String? = nil
     ) {
-        guard pendingEvent.isBeacon == true else { return }
+        guard pendingEvent.isBeacon else { return }
         Current.clientEventStore.addEvent(ClientEvent(
             text: "Beacon delivery: \(stage)",
             type: .networkRequest,
