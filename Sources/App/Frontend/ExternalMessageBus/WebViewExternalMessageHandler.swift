@@ -456,16 +456,9 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                         .error(
                             "Error saving credentials in keychain while comissioning matter device, error: \(error.localizedDescription)"
                         )
-                    let alert = AppAlert(
-                        title: L10n.Thread.SaveCredential.Fail.Alert.title(error.localizedDescription),
-                        message: L10n.Thread.SaveCredential.Fail.Alert.message,
-                        actions: [
-                            .init(title: L10n.cancelLabel),
-                            .init(title: L10n.continueLabel, style: .destructive) { [weak self] in
-                                self?.comissionMatterDevice()
-                            },
-                        ]
-                    )
+                    let alert = Self.threadCredentialSaveFailedAlert(error: error) { [weak self] in
+                        self?.comissionMatterDevice()
+                    }
                     #if os(macOS)
                     alert.present(on: self?.webViewController?.presentationWindow)
                     #else
@@ -525,6 +518,18 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         } else {
             Current.Log.verbose("Not hiding toast with id \(id), Toast not available on this OS version.")
         }
+    }
+
+    /// Offers to go on commissioning a Matter device after its Thread credential could not be saved.
+    static func threadCredentialSaveFailedAlert(error: Error, continueAnyway: @escaping () -> Void) -> AppAlert {
+        AppAlert(
+            title: L10n.Thread.SaveCredential.Fail.Alert.title(error.localizedDescription),
+            message: L10n.Thread.SaveCredential.Fail.Alert.message,
+            actions: [
+                .init(title: L10n.cancelLabel),
+                .init(title: L10n.continueLabel, style: .destructive, handler: continueAnyway),
+            ]
+        )
     }
 
     private func cleanPreferredThreadCredentials() {

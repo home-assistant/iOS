@@ -100,26 +100,56 @@ struct IncomingURLHandlerTests {
         }
     }
 
+    /// The prompts wait for a frontend to exist; `webView` is created in `viewDidLoad`, so it is loaded first.
+    @MainActor
+    private func withFrontend(_ server: Server, _ body: () throws -> Void) rethrows {
+        let webViewController = WebViewController(server: server)
+        webViewController.loadViewIfNeeded()
+        Current.sceneManager.setWebViewController(webViewController)
+        try body()
+    }
+
+    @MainActor
+    private func waitForPresentation(on coordinator: MockAppCoordinator) {
+        let deadline = Date().addingTimeInterval(5)
+        while coordinator.presentedViewControllers.isEmpty, Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        }
+    }
+
     /// A link to a route the app does not have is still "handled" — with an error on top of whatever is on
     /// screen, rather than silently.
     @MainActor @Test func unknownRouteShowsAnError() throws {
         try withFakeServer { server, coordinator, handler in
-            // The prompt waits for a frontend to exist; `webView` is created in `viewDidLoad`, so load it first.
-            let webViewController = WebViewController(server: server)
-            webViewController.loadViewIfNeeded()
-            Current.sceneManager.setWebViewController(webViewController)
-            let url = try #require(URL(string: "\(AppConstants.deeplinkURL.absoluteString)no-such-route"))
+            try withFrontend(server) {
+                let url = try #require(URL(string: "\(AppConstants.deeplinkURL.absoluteString)no-such-route"))
 
-            #expect(handler.handle(url: url))
+                #expect(handler.handle(url: url))
 
-            let deadline = Date().addingTimeInterval(5)
-            while coordinator.presentedViewControllers.isEmpty, Date() < deadline {
-                RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+                waitForPresentation(on: coordinator)
+                let alert = try #require(coordinator.presentedViewControllers.last as? UIAlertController)
+                #expect(alert.title == L10n.errorLabel)
+                #expect(alert.message == L10n.UrlHandler.NoService.message("no-such-route"))
+                #expect(alert.actions.map(\.title) == [L10n.okLabel])
             }
-            let alert = try #require(coordinator.presentedViewControllers.last as? UIAlertController)
-            #expect(alert.title == L10n.errorLabel)
-            #expect(alert.message == L10n.UrlHandler.NoService.message("no-such-route"))
-            #expect(alert.actions.map(\.title) == [L10n.okLabel])
+        }
+    }
+
+    /// Firing an event from a link is confirmed first, and cancelling leaves the server alone.
+    @MainActor @Test func fireEventLinkAsksBeforeFiring() throws {
+        try withFakeServer { server, coordinator, handler in
+            try withFrontend(server) {
+                let url = try #require(URL(string: "\(AppConstants.deeplinkURL.absoluteString)fire_event/custom_event"))
+
+                #expect(handler.handle(url: url))
+
+                waitForPresentation(on: coordinator)
+                let alert = try #require(coordinator.presentedViewControllers.last as? UIAlertController)
+                #expect(alert.title == L10n.UrlHandler.FireEvent.Confirm.title)
+                #expect(alert.message == L10n.UrlHandler.FireEvent.Confirm.message("custom_event"))
+                #expect(alert.actions.map(\.title) == [L10n.cancelLabel, L10n.yesLabel])
+                #expect(alert.actions.map(\.style) == [.cancel, .default])
+            }
         }
     }
 }

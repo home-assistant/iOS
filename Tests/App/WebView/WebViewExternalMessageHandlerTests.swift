@@ -711,4 +711,21 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         XCTAssertNil(ToastPresenter.shared.toast)
     }
+
+    /// When the Thread credential cannot be stored, the user can still go on commissioning the device.
+    @MainActor func testThreadCredentialFailureAlertOffersToContinue() {
+        var continued = false
+        let alert = WebViewExternalMessageHandler.threadCredentialSaveFailedAlert(
+            error: URLError(.cannotConnectToHost)
+        ) {
+            continued = true
+        }
+
+        XCTAssertEqual(alert.message, L10n.Thread.SaveCredential.Fail.Alert.message)
+        XCTAssertEqual(alert.actions.map(\.title), [L10n.cancelLabel, L10n.continueLabel])
+        XCTAssertEqual(alert.actions.last?.style, .destructive)
+
+        alert.actions.last?.handler?()
+        XCTAssertTrue(continued)
+    }
 }
