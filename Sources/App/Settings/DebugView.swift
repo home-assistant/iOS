@@ -2,9 +2,6 @@ import PromiseKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
-#if os(macOS)
-import AppKit
-#endif
 import UserNotifications
 import WebKit
 import XCGLogger
@@ -208,22 +205,12 @@ struct DebugView: View {
         }
 
         logsURL = url
-        #if os(macOS)
-        // The log files themselves, selected in their folder; the folder alone when it is still empty.
-        let logFiles = (try? FileManager.default.contentsOfDirectory(
-            at: url,
-            includingPropertiesForKeys: nil,
-            options: [.skipsHiddenFiles]
-        )) ?? []
-        NSWorkspace.shared.activateFileViewerSelecting(logFiles.isEmpty ? [url] : logFiles)
-        #else
         if Current.isCatalyst {
             URLOpener.shared.open(url, options: [:], completionHandler: nil)
         } else {
             loadingLogs = true
             showShareSheet = true
         }
-        #endif
     }
 
     private var deleteKeychainAlert: some ViewModifier {

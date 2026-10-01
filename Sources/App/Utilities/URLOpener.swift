@@ -63,11 +63,37 @@ final class URLOpener: URLOpening {
     ) {
         Current.Log.verbose("Opening URL: \(url.absoluteString)")
         #if os(macOS)
+        if url.isFileURL {
+            completion?(Self.revealInFinder(url))
+            return
+        }
         completion?(NSWorkspace.shared.open(url))
         #else
         UIApplication.shared.open(url, options: options, completionHandler: completion)
         #endif
     }
+
+    #if os(macOS)
+    /// Shows a file selected in Finder, or a folder's contents; Launch Services would hand a file to the app
+    /// that owns it instead.
+    private static func revealInFinder(_ url: URL) -> Bool {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return false }
+        var selection = [url]
+        if isDirectory.boolValue {
+            let contents = try? FileManager.default.contentsOfDirectory(
+                at: url,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            )
+            if let contents, !contents.isEmpty {
+                selection = contents
+            }
+        }
+        NSWorkspace.shared.activateFileViewerSelecting(selection)
+        return true
+    }
+    #endif
 
     /// Returns a Boolean value indicating whether an app is available to handle a URL scheme.
     /// - Parameter url: A URL (Universal Resource Locator). The URL's scheme is used to identify the app that can open
