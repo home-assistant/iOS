@@ -27,6 +27,8 @@ struct HomeAssistantStandByView: View {
     /// renders the settled state straight away, which is what a snapshot needs: the fade is driven
     /// frame by frame, and a test window gets no frames.
     private let contentFadeAnimation: Animation?
+    /// Where the lifecycle and connectivity notifications arrive from; a test posts to a center of its own.
+    private let notificationCenter: NotificationCenter
 
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
@@ -102,7 +104,8 @@ struct HomeAssistantStandByView: View {
         onCleanCacheAndReload: (() -> Void)? = nil,
         delayedSettingsButtonDelay: Duration = .seconds(5),
         cleanCacheButtonDelay: Duration = .seconds(15),
-        contentFadeAnimation: Animation? = DesignSystem.Animation.default
+        contentFadeAnimation: Animation? = DesignSystem.Animation.default,
+        notificationCenter: NotificationCenter = .default
     ) {
         self.server = server
         self.emptyState = emptyState
@@ -115,6 +118,7 @@ struct HomeAssistantStandByView: View {
         self.delayedSettingsButtonDelay = delayedSettingsButtonDelay
         self.cleanCacheButtonDelay = cleanCacheButtonDelay
         self.contentFadeAnimation = contentFadeAnimation
+        self.notificationCenter = notificationCenter
         self._showsAnimatedLogo = State(initialValue: emptyState == nil)
     }
 
@@ -264,15 +268,14 @@ struct HomeAssistantStandByView: View {
             .onChange(of: emptyState != nil, perform: handleEmptyStateChange)
             .task(id: showsEmptyState, restoreAnimatedLogoIfNeeded)
             .onReceive(
-                NotificationCenter.default
-                    .publisher(for: Current.connectivity.connectivityDidChangeNotification())
+                notificationCenter.publisher(for: Current.connectivity.connectivityDidChangeNotification())
             ) { _ in
                 networkType = Current.connectivity.simpleNetworkType()
             }
             // `$phase` replays its current value on subscription, so when the splash already finished
             // (server switches, reloads) the pill fades in immediately on appear.
             .onReceive(LaunchSplashOverlayState.shared.$phase, perform: fadeInServerPillIfNeeded)
-            .onReceive(NotificationCenter.default.publisher(for: AppLifecycle.willEnterForegroundNotification)) { _ in
+            .onReceive(notificationCenter.publisher(for: AppLifecycle.willEnterForegroundNotification)) { _ in
                 guard !showsEmptyState else { return }
                 showsDelayedSettingsButton = false
                 showsCleanCacheButton = false

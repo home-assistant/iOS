@@ -141,6 +141,13 @@ struct SettingsScreensRenderTests {
         }
     }
 
+    /// CarPlay and app icon shortcuts can add an Assist pipeline as well as an entity.
+    @Test func magicItemAddForCarPlay() {
+        withFakeServers {
+            renderInWindow(NavigationView { MagicItemAddView(context: .carPlay) { _ in } })
+        }
+    }
+
     @Test func clientEventsLog() {
         renderInWindow(NavigationView { ClientEventsLogView() })
     }
