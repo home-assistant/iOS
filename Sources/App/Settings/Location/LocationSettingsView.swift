@@ -13,7 +13,7 @@ struct LocationSettingsView: View {
     @State private var showAllZones = false
 
     var body: some View {
-        Form {
+        GroupedList {
             zoneSections
             permissionsSection
             locationHistorySection
