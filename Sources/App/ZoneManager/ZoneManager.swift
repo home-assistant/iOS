@@ -20,7 +20,9 @@ class ZoneManager {
     private var reconcilingZoneEventIDs = Set<UUID>()
     private var confirmedZoneEventIDs = Set<UUID>()
     private var zoneEventRetryAttempt = 0
-    private var zoneEventRetryWorkItem: DispatchWorkItem?
+    private var zoneEventRetryIdentifier: UUID?
+    private var synchronizedRegions = Set<CLRegion>()
+    private let scheduleZoneEventRetryWork: (TimeInterval, @escaping () -> Void) -> Void
     private let zoneEventRetryDelay: (Int) -> TimeInterval
 
     init(
@@ -34,6 +36,9 @@ class ZoneManager {
         zoneEventOutbox: ZoneEventOutbox = AtomicFileZoneEventOutbox(),
         zoneEventRetryDelay: @escaping (Int) -> TimeInterval = { attempt in
             min(pow(2, Double(max(0, attempt - 1))), 30)
+        },
+        scheduleZoneEventRetryWork: @escaping (TimeInterval, @escaping () -> Void) -> Void = { delay, work in
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
         }
     ) {
         self.locationManager = locationManager
@@ -43,6 +48,7 @@ class ZoneManager {
         self.syncExecutor = syncExecutor
         self.zoneEventOutbox = zoneEventOutbox
         self.zoneEventRetryDelay = zoneEventRetryDelay
+        self.scheduleZoneEventRetryWork = scheduleZoneEventRetryWork
         self.zones = AppZone.trackedZones()
 
         self.collector.delegate = self
@@ -76,7 +82,6 @@ class ZoneManager {
     }
 
     deinit {
-        zoneEventRetryWorkItem?.cancel()
         observationToken?.cancel()
         NotificationCenter.default.removeObserver(self)
         Current.Log.info("going away")
@@ -87,15 +92,15 @@ class ZoneManager {
     }
 
     @objc func applicationDidBecomeActive() {
+        flushPendingZoneEvents()
+
         guard Current.settingsStore.locationSources.zone else {
             collector.stopBackgroundBeaconMonitoring(manager: locationManager)
             return
         }
 
-        flushPendingZoneEvents()
-
         collector.startForegroundBeaconScanning(
-            in: locationManager.monitoredRegions,
+            in: synchronizedRegions,
             manager: locationManager
         )
         collector.stopBackgroundBeaconMonitoring(manager: locationManager)
@@ -107,7 +112,7 @@ class ZoneManager {
             return
         }
         collector.startBackgroundBeaconMonitoring(
-            in: locationManager.monitoredRegions,
+            in: synchronizedRegions,
             manager: locationManager
         )
         collector.stopForegroundBeaconScanning(manager: locationManager)
@@ -223,11 +228,7 @@ class ZoneManager {
 
         switch event.eventType {
         case let .region(region, state):
-            guard let api = Current.api(for: server) else {
-                Current.Log.error("No API available to fire ZoneManager event, server: \(server)")
-                return
-            }
-            let eventInfo = api.zoneStateEvent(region: region, state: state, zone: zone)
+            let eventInfo = HomeAssistantAPI.zoneStateEvent(server: server, region: region, state: state, zone: zone)
             enqueueZoneEvent(
                 serverIdentifier: server.identifier.rawValue,
                 eventType: eventInfo.eventType,
@@ -323,8 +324,7 @@ class ZoneManager {
         guard let pendingEvents = loadPendingZoneEvents() else { return }
         guard !pendingEvents.isEmpty else {
             zoneEventRetryAttempt = 0
-            zoneEventRetryWorkItem?.cancel()
-            zoneEventRetryWorkItem = nil
+            zoneEventRetryIdentifier = nil
             return
         }
         guard drainingZoneEventIDs.isEmpty, reconcilingZoneEventIDs.isEmpty else { return }
@@ -352,12 +352,22 @@ class ZoneManager {
             return
         }
         guard let eventData = pending.decodedEventData else {
-            removeUnreadableZoneEvent(pending, remainingEvents: Array(pendingEvents.dropFirst()))
+            removeUndeliverableZoneEvent(
+                pending, remainingEvents: Array(pendingEvents.dropFirst()), reason: "Event data is unreadable"
+            )
             return
         }
         guard let server = Current.servers.server(forServerIdentifier: pending.serverIdentifier) else {
-            logZoneEventDrainBlocked(pending, reason: "Server is unavailable")
-            scheduleZoneEventRetry()
+            // Missing during keychain restoration does not establish permanent removal.
+            guard !Current.servers.isMirrorRestorePending else {
+                scheduleZoneEventRetry()
+                return
+            }
+            removeUndeliverableZoneEvent(
+                pending,
+                remainingEvents: Array(pendingEvents.dropFirst()),
+                reason: "Server was removed"
+            )
             return
         }
         guard let api = Current.api(for: server) else {
@@ -388,24 +398,24 @@ class ZoneManager {
         }
     }
 
-    private func removeUnreadableZoneEvent(
+    private func removeUndeliverableZoneEvent(
         _ pendingEvent: PendingZoneEvent,
-        remainingEvents: [PendingZoneEvent]
+        remainingEvents: [PendingZoneEvent],
+        reason: String
     ) {
-        logZoneEventDrainBlocked(pendingEvent, reason: "Event data is unreadable")
+        logZoneEventDrainBlocked(pendingEvent, reason: reason)
         do {
             try zoneEventOutbox.remove(id: pendingEvent.id)
             drainPendingZoneEvents(remainingEvents)
         } catch {
-            logZoneEventOutboxFailure("remove unreadable event", error: error)
+            logZoneEventOutboxFailure("remove undeliverable event", error: error)
             scheduleZoneEventRetry()
         }
     }
 
     private func attach(delivery: Task<Void, Error>, to pendingEvent: PendingZoneEvent) {
         drainingZoneEventIDs.insert(pendingEvent.id)
-        zoneEventRetryWorkItem?.cancel()
-        zoneEventRetryWorkItem = nil
+        zoneEventRetryIdentifier = nil
         logBeaconDeliveryStage("background_upload_started", pendingEvent: pendingEvent)
         if pendingEvent.isBeacon == true {
             scheduleBeaconUploadWatchdog(for: pendingEvent)
@@ -432,6 +442,11 @@ class ZoneManager {
                     attach(delivery: delivery, to: pendingEvent)
                 case let .completed(result):
                     handleZoneEventResult(result, pendingEvent: pendingEvent)
+                case let .unavailable(error):
+                    // A timed-out lookup does not prove the upload is absent. Keep its marker
+                    // and reconcile again instead of starting a potentially duplicate upload.
+                    logZoneEventDrainBlocked(pendingEvent, reason: error.localizedDescription)
+                    scheduleZoneEventRetry()
                 case .absent:
                     if clearDeliveryStarted(for: pendingEvent) {
                         flushPendingZoneEvents()
@@ -472,16 +487,16 @@ class ZoneManager {
     }
 
     private func scheduleZoneEventRetry() {
-        guard zoneEventRetryWorkItem == nil else { return }
+        guard zoneEventRetryIdentifier == nil else { return }
         zoneEventRetryAttempt += 1
+        let identifier = UUID()
+        zoneEventRetryIdentifier = identifier
         let delay = zoneEventRetryDelay(zoneEventRetryAttempt)
-        let workItem = DispatchWorkItem { [weak self] in
-            guard let self else { return }
-            zoneEventRetryWorkItem = nil
+        scheduleZoneEventRetryWork(delay) { [weak self] in
+            guard let self, zoneEventRetryIdentifier == identifier else { return }
+            zoneEventRetryIdentifier = nil
             flushPendingZoneEvents()
         }
-        zoneEventRetryWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
     }
 
     private func logZoneEventDrainBlocked(_ pendingEvent: PendingZoneEvent, reason: String) {
@@ -560,6 +575,7 @@ class ZoneManager {
         // these mutations and can't re-add the same regions.
         let expectedRegions = Set(expected.map(\.region))
         Self.runOnMain { [self] in
+            synchronizedRegions = expectedRegions
             // process removals before additions
             // this is important because the system is focused on identifier
             for region in needsRemoval.map(\.region) {

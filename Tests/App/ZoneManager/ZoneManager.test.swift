@@ -277,7 +277,10 @@ class ZoneManagerTests: XCTestCase {
     private func newZoneManager(
         syncExecutor: @escaping (@escaping () -> Void) -> Void = { $0() },
         zoneEventOutbox: ZoneEventOutbox = FakeZoneEventOutbox(),
-        zoneEventRetryDelay: @escaping (Int) -> TimeInterval = { _ in 1 }
+        zoneEventRetryDelay: @escaping (Int) -> TimeInterval = { _ in 1 },
+        scheduleZoneEventRetryWork: @escaping (TimeInterval, @escaping () -> Void) -> Void = { delay, work in
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
+        }
     ) -> ZoneManager {
         let manager = ZoneManager(
             locationManager: locationManager,
@@ -286,7 +289,8 @@ class ZoneManagerTests: XCTestCase {
             regionFilter: regionFilter,
             syncExecutor: syncExecutor,
             zoneEventOutbox: zoneEventOutbox,
-            zoneEventRetryDelay: zoneEventRetryDelay
+            zoneEventRetryDelay: zoneEventRetryDelay,
+            scheduleZoneEventRetryWork: scheduleZoneEventRetryWork
         )
         managers.append(manager)
         return manager
@@ -321,6 +325,158 @@ class ZoneManagerTests: XCTestCase {
         collector.handoffCalls.removeAll()
         manager.applicationWillResignActive()
         XCTAssertEqual(collector.handoffCalls, ["startBackground", "stopForeground"])
+    }
+
+    func testLifecycleHandoffsUseSynchronizedRegionsWithoutReadingLocationDaemon() {
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "cached-beacon")
+        regionFilter.regionsBlock = { AnyCollection([region]) }
+        let manager = newZoneManager()
+        locationManager.monitoredRegionsReadsWereOnMainThread.removeAll()
+
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(collector.scannedRegions, [region])
+        manager.applicationWillResignActive()
+        XCTAssertEqual(collector.backgroundMonitoredRegions, [region])
+        XCTAssertTrue(locationManager.monitoredRegionsReadsWereOnMainThread.isEmpty)
+    }
+
+    func testZonePayloadPreservesDeviceMetadataAndStateMapping() {
+        let api = apis[0]
+        let zone = AppZone(entityId: "zone.home", serverIdentifier: api.server.identifier.rawValue)
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "home@beacon")
+        let expected: [String: Any] = [
+            "sourceDevicePermanentID": AppConstants.PermanentID,
+            "sourceDeviceName": api.server.info.mobileAppDeviceName,
+            "sourceDeviceID": Current.settingsStore.deviceID,
+            "zone": "zone.home",
+            "multi_region_zone_id": "beacon",
+        ]
+        for state in [CLRegionState.inside, .outside, .unknown] {
+            let payload = api.zoneStateEvent(region: region, state: state, zone: zone)
+            XCTAssertEqual(payload.eventType, state == .inside ? "ios.zone_entered" : "ios.zone_exited")
+            XCTAssertEqual(payload.eventData as NSDictionary, expected as NSDictionary)
+        }
+    }
+
+    @MainActor
+    func testUnavailableURLPersistsPayloadAndDeliversOnLaterWake() async throws {
+        let outbox = FakeZoneEventOutbox()
+        processor.promiseToReturn = .value(())
+        let api = apis[0]
+        let connection = api.server.info.connection
+        api.server.update { $0.connection.set(address: nil, for: .external) }
+        defer { api.server.update { $0.connection = connection } }
+        XCTAssertNil(Current.api(for: api.server))
+        let manager = newZoneManager(zoneEventOutbox: outbox, zoneEventRetryDelay: { _ in 60 })
+        let zone = AppZone(entityId: "zone.home", serverIdentifier: api.server.identifier.rawValue)
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "home@beacon")
+        manager.collector(collector, didCollect: .init(eventType: .region(region, .inside), associatedZone: zone))
+
+        let pending = try XCTUnwrap(outbox.events.first)
+        XCTAssertEqual(outbox.events.count, 1)
+        XCTAssertEqual(pending.eventType, "ios.zone_entered")
+        XCTAssertEqual(pending.decodedEventData?["zone"] as? String, "zone.home")
+        XCTAssertEqual(pending.decodedEventData?["multi_region_zone_id"] as? String, "beacon")
+        XCTAssertEqual(pending.decodedEventData?["sourceDeviceName"] as? String, api.server.info.mobileAppDeviceName)
+        XCTAssertNil(pending.deliveryStartedAt)
+        XCTAssertTrue(api.createdEvents.isEmpty)
+
+        let removed = expectation(description: "queued payload delivered after URL recovery")
+        outbox.observeRemoval { _ in removed.fulfill() }
+        api.server.update { $0.connection = connection }
+        manager.applicationDidBecomeActive()
+        await fulfillment(of: [removed], timeout: 5)
+        XCTAssertEqual(api.createdEventIdentifiers, [pending.id])
+        XCTAssertTrue(outbox.events.isEmpty)
+    }
+
+    @MainActor
+    func testDeletedServerStartedHeadIsRemovedAndNextServerDrains() async throws {
+        let outbox = FakeZoneEventOutbox()
+        var orphan = try PendingZoneEvent(
+            serverIdentifier: "deleted-server", eventType: "ios.zone_entered", eventData: [:], createdAt: Date()
+        )
+        orphan.deliveryStartedAt = Date()
+        let next = try PendingZoneEvent(
+            serverIdentifier: apis[0].server.identifier.rawValue,
+            eventType: "ios.zone_exited", eventData: [:], createdAt: Date()
+        )
+        outbox.events = [orphan, next]
+        let removed = expectation(description: "orphan then deliverable event removed")
+        removed.expectedFulfillmentCount = 2
+        var removedIDs = [UUID]()
+        outbox.observeRemoval { event in
+            removedIDs.append(event.id)
+            removed.fulfill()
+        }
+        let servers = try XCTUnwrap(Current.servers as? FakeServerManager)
+        servers.isMirrorRestorePending = true
+        defer { servers.isMirrorRestorePending = false }
+        let manager = newZoneManager(zoneEventOutbox: outbox, zoneEventRetryDelay: { _ in 60 })
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(outbox.events.map(\.id), [orphan.id, next.id])
+        XCTAssertTrue(apis[0].createdEvents.isEmpty)
+        servers.isMirrorRestorePending = false
+        outbox.failRemove = true
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(outbox.events.map(\.id), [orphan.id, next.id])
+        XCTAssertTrue(apis[0].createdEvents.isEmpty)
+        outbox.failRemove = false
+        manager.applicationDidBecomeActive()
+        await fulfillment(of: [removed], timeout: 5)
+        XCTAssertEqual(removedIDs, [orphan.id, next.id])
+        XCTAssertEqual(apis[0].createdEventIdentifiers, [next.id])
+        XCTAssertTrue(outbox.events.isEmpty)
+    }
+
+    @MainActor
+    func testObsoleteRetryCannotConsumeReplacementRetry() async throws {
+        let outbox = FakeZoneEventOutbox()
+        outbox.failRead = true
+        var retries = [() -> Void]()
+        let manager = newZoneManager(
+            zoneEventOutbox: outbox,
+            scheduleZoneEventRetryWork: { _, work in retries.append(work) }
+        )
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(retries.count, 1)
+        let obsolete = retries[0]
+        outbox.failRead = false
+        manager.applicationDidBecomeActive() // An empty outbox invalidates the old retry.
+        outbox.failRead = true
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(retries.count, 2)
+        obsolete() // Simulate a canceled callback which had already been dequeued.
+        XCTAssertEqual(retries.count, 2)
+        retries[1]()
+        XCTAssertEqual(retries.count, 3, "The replacement must still own its retry generation")
+        outbox.failRead = false
+        retries[2]()
+    }
+
+    @MainActor
+    func testScheduledRetryRecoversOutboxReadFailureWithoutAnotherWake() async throws {
+        let outbox = FakeZoneEventOutbox()
+        let api = apis[0]
+        let pending = try PendingZoneEvent(
+            serverIdentifier: api.server.identifier.rawValue,
+            eventType: "ios.zone_entered", eventData: ["zone": "zone.home"], createdAt: Date()
+        )
+        outbox.events = [pending]
+        outbox.failRead = true
+        let removed = expectation(description: "scheduled retry delivers the persisted event")
+        outbox.observeRemoval { event in
+            XCTAssertEqual(event.id, pending.id)
+            removed.fulfill()
+        }
+        let manager = newZoneManager(zoneEventOutbox: outbox, zoneEventRetryDelay: { _ in 0 })
+        manager.applicationDidBecomeActive()
+        XCTAssertTrue(api.createdEvents.isEmpty)
+        // The main-queue retry cannot run until this actor yields; no second wake is sent.
+        outbox.failRead = false
+        await fulfillment(of: [removed], timeout: 5)
+        XCTAssertEqual(api.createdEventIdentifiers, [pending.id])
+        XCTAssertTrue(outbox.events.isEmpty)
     }
 
     @MainActor
@@ -421,6 +577,36 @@ class ZoneManagerTests: XCTestCase {
         await fulfillment(of: [removed], timeout: 5)
         XCTAssertTrue(outbox.events.isEmpty)
         XCTAssertTrue(api.createdEvents.isEmpty)
+    }
+
+    @MainActor
+    func testUnavailableReconciliationRetainsMarkerUntilLaterWakeConfirmsSuccess() async throws {
+        let outbox = FakeZoneEventOutbox()
+        let api = apis[1]
+        let pending = try PendingZoneEvent(
+            serverIdentifier: api.server.identifier.rawValue, eventType: "ios.zone_entered",
+            eventData: ["zone": "zone.test"], deliveryStartedAt: Date()
+        )
+        outbox.events = [pending]
+        api.persistentEventReconciliationState = .unavailable(TestError.anyError)
+        let retryScheduled = expectation(description: "unavailable result schedules reconciliation retry")
+        let manager = newZoneManager(zoneEventOutbox: outbox, zoneEventRetryDelay: { _ in
+            retryScheduled.fulfill()
+            return 60
+        })
+        await fulfillment(of: [retryScheduled], timeout: 5)
+
+        XCTAssertEqual(outbox.events.map(\.id), [pending.id])
+        XCTAssertEqual(outbox.events.first?.deliveryStartedAt, pending.deliveryStartedAt)
+        XCTAssertTrue(api.createdEventIdentifiers.isEmpty)
+
+        let removed = expectation(description: "later reconciliation confirms original upload")
+        outbox.observeRemoval { _ in removed.fulfill() }
+        api.persistentEventReconciliationState = .completed(.success(()))
+        manager.applicationDidBecomeActive()
+        await fulfillment(of: [removed], timeout: 5)
+        XCTAssertTrue(outbox.events.isEmpty)
+        XCTAssertTrue(api.createdEventIdentifiers.isEmpty)
     }
 
     @MainActor
@@ -1098,6 +1284,7 @@ class ZoneManagerTests: XCTestCase {
         let removed = expectation(description: "app-active retry removed delivered event")
         outbox.observeRemoval { _ in removed.fulfill() }
         api.persistentEventResult = .value(())
+        Current.settingsStore.locationSources.zone = false
         manager.applicationDidBecomeActive()
 
         await fulfillment(of: [removed], timeout: 1)
@@ -1240,7 +1427,7 @@ class ZoneManagerTests: XCTestCase {
     }
 
     @MainActor
-    func testCoalescedBeaconExitWaitsForInFlightEntry() async throws {
+    func testBeaconExitWaitsForInFlightEntry() async throws {
         let directoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: directoryURL) }

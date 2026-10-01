@@ -837,6 +837,10 @@ public class HomeAssistantAPI {
     }
 
     public var sharedEventDeviceInfo: [String: String] {
+        Self.eventDeviceInfo(for: server)
+    }
+
+    private static func eventDeviceInfo(for server: Server) -> [String: String] {
         [
             "sourceDevicePermanentID": AppConstants.PermanentID,
             "sourceDeviceName": server.info.mobileAppDeviceName,
@@ -903,7 +907,18 @@ public class HomeAssistantAPI {
         state: CLRegionState,
         zone: AppZone
     ) -> (eventType: String, eventData: [String: Any]) {
-        var eventData: [String: Any] = sharedEventDeviceInfo
+        Self.zoneStateEvent(server: server, region: region, state: state, zone: zone)
+    }
+
+    /// Construct a durable payload even when the server has no usable URL.
+    @available(watchOS, unavailable)
+    public static func zoneStateEvent(
+        server: Server,
+        region: CLRegion,
+        state: CLRegionState,
+        zone: AppZone
+    ) -> (eventType: String, eventData: [String: Any]) {
+        var eventData: [String: Any] = eventDeviceInfo(for: server)
         eventData["zone"] = zone.entityId
         if region.identifier.contains("@"), let subId = region.identifier.split(separator: "@").last {
             eventData["multi_region_zone_id"] = String(subId)
