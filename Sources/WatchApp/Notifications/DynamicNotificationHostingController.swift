@@ -21,8 +21,30 @@ final class DynamicNotificationHostingController: WKUserNotificationHostingContr
     }
 
     override func didReceive(_ notification: UNNotification) {
-        notificationActions = notification.request.content.userInfoActions
-        viewModel.didReceive(notification)
+        let payloadActions = notification.request.content.userInfoPayloadActions
+        let split = NotificationActionSplit(payloadActions: payloadActions)
+
+        // The actions `split` hands back to the app are the ones watchOS would drop the reply for;
+        // everything else stays with the system, including the snooze presets `userInfoActions`
+        // falls back to when the payload carries no actions of its own.
+        if payloadActions.isEmpty {
+            notificationActions = notification.request.content.userInfoActions
+        } else {
+            notificationActions = split.systemHandled.map(\.action)
+        }
+
+        viewModel.presentTextInput = { [weak self] completion in
+            guard let self else {
+                completion(nil)
+                return
+            }
+
+            presentTextInputController(withSuggestions: nil, allowedInputMode: .plain) { results in
+                completion(results?.compactMap { $0 as? String }.first)
+            }
+        }
+
+        viewModel.didReceive(notification, textInputActions: split.appHandled)
     }
 
     override func suggestionsForResponseToAction(

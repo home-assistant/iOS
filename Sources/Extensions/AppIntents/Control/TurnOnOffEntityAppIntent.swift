@@ -22,7 +22,11 @@ struct TurnOnOffEntityAppIntent: AppIntent {
         Summary("\(\.$action) \(\.$entity)")
     }
 
-    @Parameter(title: .init("app_intents.turn_on_off.action.name", defaultValue: "Action"), default: .on)
+    /// Toggling is the default because it is the only direction that is right whatever state the
+    /// entity is already in: an action dropped into a shortcut without the direction being set, or a
+    /// command that never says which way, flips the entity rather than silently only ever switching it
+    /// on. The App Shortcuts still fix the direction, since "turn off" has to mean off.
+    @Parameter(title: .init("app_intents.turn_on_off.action.name", defaultValue: "Action"), default: .toggle)
     var action: TurnOnOffActionAppEnum
 
     @Parameter(title: .init("app_intents.controllable_entity.parameter.entity", defaultValue: "Entity"))

@@ -28,8 +28,8 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
         /// the orb barely moving.
         static let powerFloor: Float = -45
         static let powerCeiling: Float = -15
-        /// The meter now drives the voice orb as well as the silence check, so it is read at about
-        /// 20 Hz — often enough for the orb to follow speech, cheap enough for the watch.
+        /// The meter drives the voice orb, so it is read at about 20 Hz — often enough for the orb
+        /// to follow speech, cheap enough for the watch.
         static let meteringInterval: TimeInterval = 1.0 / 20
     }
 
@@ -38,9 +38,6 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     weak var delegate: WatchAudioRecorderDelegate?
 
     private var meteringTimer: Timer?
-    private var silenceTimer: Timer?
-    private let silenceThreshold: TimeInterval = 3.0
-    private let silenceLevel: Float = -50.0
 
     private var firstLaunch = true
 
@@ -118,23 +115,12 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
                 let averagePower = audioRecorder.averagePower(forChannel: 0)
                 let range = Constants.powerCeiling - Constants.powerFloor
                 delegate?.didUpdateAudioLevel(max(0, min(1, (averagePower - Constants.powerFloor) / range)))
-
-                // The first drop into silence starts the countdown that ends the recording. Metering
-                // carries on through it — it is what the voice orb is drawn from — so the countdown is
-                // tracked by its own timer rather than by replacing this one.
-                guard averagePower < silenceLevel, silenceTimer == nil else { return }
-                silenceTimer = Timer
-                    .scheduledTimer(withTimeInterval: silenceThreshold, repeats: false) { [weak self] _ in
-                        self?.stopRecording()
-                    }
             }
     }
 
     private func stopMonitoringAudioLevels() {
         meteringTimer?.invalidate()
         meteringTimer = nil
-        silenceTimer?.invalidate()
-        silenceTimer = nil
     }
 }
 

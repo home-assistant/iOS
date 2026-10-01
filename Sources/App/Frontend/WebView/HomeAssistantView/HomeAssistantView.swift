@@ -36,7 +36,7 @@ struct HomeAssistantView: View, WebFrontendView {
     /// The themed status-bar strip keeps the last frontend-provided colour until WebKit sends a new update.
     private var themedStatusBar: some View {
         GeometryReader { proxy in
-            if let color = viewModel.overlayState.statusBarColor {
+            if let color = viewModel.overlayState.statusBarColor, showsThemedStatusBar {
                 Color(uiColor: color)
                     .frame(height: proxy.safeAreaInsets.top)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -55,9 +55,7 @@ struct HomeAssistantView: View, WebFrontendView {
                     frontendOpacity: viewModel.webViewContentOpacity,
                     frontendIgnoredSafeAreaEdges: viewModel.webViewIgnoredSafeAreaEdges,
                     onNeedsWebViewController: viewModel.ensureWebViewController
-                ) {
-                    standByView
-                }
+                )
             }
             // The frontend chrome keeps one structural identity whichever App Labs layout is on, so its
             // appear/disappear fades never race each other when a layout is toggled.
@@ -89,6 +87,12 @@ struct HomeAssistantView: View, WebFrontendView {
         nativeTabBar.isEnabled
     }
 
+    /// The strip belongs to the frontend: over a native tab it would cover the bar items that share the
+    /// status bar's row on wide screens.
+    private var showsThemedStatusBar: Bool {
+        !isNativeTabBarActive || viewModel.tabBar.showsFrontend
+    }
+
     private var frontendContent: some View {
         ZStack {
             // The frontend content group is separate from the standby overlay so it can fade with pull-to-refresh and
@@ -110,9 +114,9 @@ struct HomeAssistantView: View, WebFrontendView {
                 value: viewModel.isWebViewCoveredByStandBy
             )
             noActiveURLState
-            if !isNativeTabBarActive {
-                standByView
-            }
+            // Layered above the native tab bar, not inside a tab: the bar belongs to the `TabView`, so
+            // covering it is what takes it off screen while stand-by is up.
+            standByView
         }
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.emptyState != nil)
         .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.showsNoActiveURL)
@@ -207,7 +211,7 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @ViewBuilder
     private var standByView: some View {
-        if viewModel.shouldShowStandByView, !viewModel.overlayState.showsNoActiveURL {
+        if viewModel.isStandByViewVisible {
             HomeAssistantStandByView(
                 server: viewModel.server,
                 emptyState: viewModel.displayedEmptyState,

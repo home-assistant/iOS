@@ -24,6 +24,8 @@ struct MacSidebarRow: View {
     let isSelected: Bool
     let server: Server
     let user: HAResponseCurrentUser?
+    /// The frontend's `--primary-color` for this server; see ``MacSidebarViewModel/accentColor``.
+    var accentColor: Color = .haPrimary
     var isPinned = false
     var accessory: Accessory?
     var onAccessoryTap: (() -> Void)?
@@ -35,14 +37,20 @@ struct MacSidebarRow: View {
         Button(action: action) {
             HStack(spacing: DesignSystem.Spaces.one) {
                 if item.kind == .profile {
-                    MacSidebarAvatarView(server: server, title: item.title, user: user, size: Constants.iconSize)
+                    MacSidebarAvatarView(
+                        server: server,
+                        title: item.title,
+                        user: user,
+                        size: Constants.iconSize,
+                        accentColor: accentColor
+                    )
                 } else {
                     Image(uiImage: item.icon.image(
                         ofSize: .init(width: Constants.iconSize, height: Constants.iconSize),
                         color: .label
                     ))
                     .renderingMode(.template)
-                    .foregroundStyle(Color.haPrimary)
+                    .foregroundStyle(accentColor)
                     .frame(width: Constants.iconSize, height: Constants.iconSize)
                 }
                 Text(item.title)
@@ -57,7 +65,7 @@ struct MacSidebarRow: View {
                         .padding(.horizontal, DesignSystem.Spaces.one)
                         .padding(.vertical, DesignSystem.Spaces.micro)
                         .frame(minWidth: Constants.badgeMinWidth)
-                        .background(Capsule().fill(Color.haPrimary))
+                        .background(Capsule().fill(accentColor))
                 }
                 if let accessory {
                     Button {

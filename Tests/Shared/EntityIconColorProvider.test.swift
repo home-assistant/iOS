@@ -151,23 +151,38 @@ struct EntityIconColorProviderTests {
 
     // MARK: - User override
 
-    @Test func aPickedColorOnlyAppliesWhileActive() throws {
+    @Test func aPickedColorAlwaysApplies() throws {
         let picked = Color(hex: "#FF00FF")
         try expectColor(
             EntityIconColorProvider.iconColor(domain: "light", state: "on", customColor: picked),
             isHex: "#FF00FF"
         )
-        // Off, the tile reads as off rather than as the picked color, as the tile card does.
+        // Unlike the tile card, an inactive entity keeps the picked color rather than reading as off.
         try expectColor(
             EntityIconColorProvider.iconColor(domain: "light", state: "off", customColor: picked),
-            isHex: "#9E9E9E"
+            isHex: "#FF00FF"
         )
-        // …and it beats a light's own color while on.
+        // It beats a light's own color while on…
         try expectColor(
             EntityIconColorProvider.iconColor(
                 domain: "light",
                 state: "on",
                 liveColor: Color(hex: "#FF8C00"),
+                customColor: picked
+            ),
+            isHex: "#FF00FF"
+        )
+        // …and the domain's own state color, which an unpicked lock would take.
+        try expectColor(
+            EntityIconColorProvider.iconColor(domain: "lock", state: "unlocked", customColor: picked),
+            isHex: "#FF00FF"
+        )
+        // The attribute-reading overload resolves to the same color.
+        try expectColor(
+            EntityIconColorProvider.iconColor(
+                domain: "light",
+                state: "off",
+                attributes: ["rgb_color": [255, 140, 0]],
                 customColor: picked
             ),
             isHex: "#FF00FF"

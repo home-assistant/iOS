@@ -20,7 +20,6 @@ final class AssistViewModelTests: XCTestCase {
 
     private func makeSut(
         autoStartRecording: Bool = false,
-        focusInputOnAppear: Bool = false,
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
         speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
     ) -> AssistViewModel {
@@ -30,7 +29,6 @@ final class AssistViewModelTests: XCTestCase {
             audioPlayer: mockAudioPlayer,
             assistService: mockAssistService,
             autoStartRecording: autoStartRecording,
-            focusInputOnAppear: focusInputOnAppear,
             speechTranscriber: speechTranscriber,
             speechSynthesizer: speechSynthesizer
         )
@@ -58,26 +56,54 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func testOnAppearFocusInput() async throws {
-        sut = makeSut(focusInputOnAppear: true)
+    func testOnAppearWithoutAutoStartRecordingFocusesInput() async throws {
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
 
         sut.initialRoutine()
         await Task.yield()
         XCTAssertTrue(sut.focusOnInput)
-        XCTAssertFalse(sut.focusInputOnAppear)
         XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
     }
 
     @MainActor
-    func testOnAppearAutoStartRecordingIgnoresFocusInput() async throws {
-        sut = makeSut(autoStartRecording: true, focusInputOnAppear: true)
+    func testOnAppearFocusesInputBeforePipelinesLoad() async throws {
+        mockAssistService.holdsPipelinesCompletion = true
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        XCTAssertTrue(sut.focusOnInput)
+
+        mockAssistService.completePendingPipelinesFetch()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+    }
+
+    @MainActor
+    func testOnAppearAutoStartRecordingDoesNotFocusInput() async throws {
+        sut = makeSut(autoStartRecording: true)
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
 
         sut.initialRoutine()
         await Task.yield()
         XCTAssertFalse(sut.focusOnInput)
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    @MainActor
+    func testNewSessionWithAutoStartRecordingRemovesInputFocus() async throws {
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+
+        sut.didRequestNewSession(.init(
+            server: ServerFixture.standard,
+            pipelineId: "",
+            autoStartRecording: true
+        ))
+        await Task.yield()
+        XCTAssertFalse(sut.focusOnInput)
     }
 
     @MainActor
@@ -536,5 +562,42 @@ final class AssistViewModelTests: XCTestCase {
         await Task.yield()
 
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    /// Recording starts before the pipeline is subscribed, so a run the server refuses arrives with
+    /// the microphone still live. The error has to take the view out of its listening state too,
+    /// otherwise it keeps recording into a pipeline that will never accept the audio.
+    @MainActor
+    func testErrorWhileRecordingStopsRecording() async {
+        sut.isRecording = true
+
+        sut.didReceiveError(code: "stt-provider-missing", message: "No speech-to-text provider")
+        await waitUntilNotRecording()
+
+        XCTAssertFalse(sut.isRecording)
+        XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// An error outside a recording — a failed prompt, say — has no microphone to release, so it
+    /// must not reach for the recorder.
+    @MainActor
+    func testErrorWhileNotRecordingLeavesRecorderAlone() async {
+        sut.isRecording = false
+
+        sut.didReceiveError(code: "pipeline_run_failed", message: "socket died")
+        await Task.yield()
+
+        XCTAssertFalse(mockAudioRecorder.stopRecordingCalled)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// The stop is scheduled onto the main actor, so it lands a turn after the error arrives.
+    @MainActor
+    private func waitUntilNotRecording(timeout: TimeInterval = 2) async {
+        let deadline = Date().addingTimeInterval(timeout)
+        while sut.isRecording, Date() < deadline {
+            await Task.yield()
+        }
     }
 }

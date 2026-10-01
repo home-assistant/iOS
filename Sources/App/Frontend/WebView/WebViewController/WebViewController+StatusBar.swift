@@ -17,11 +17,15 @@ extension WebViewController {
         view.addSubview(statusBarView)
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
 
+        // Re-pinned to the top of the web view on iOS, once there is one; see `setupWebViewConstraints`.
+        let bottomConstraint = statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+        statusBarBottomConstraint = bottomConstraint
+
         NSLayoutConstraint.activate([
             statusBarView.topAnchor.constraint(equalTo: view.topAnchor),
             statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor),
             statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            bottomConstraint,
         ])
 
         return statusBarView

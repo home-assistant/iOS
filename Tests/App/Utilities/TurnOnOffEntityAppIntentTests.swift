@@ -6,6 +6,13 @@ import Testing
 
 /// One intent now switches both ways, so each direction is checked for the service it sends.
 struct TurnOnOffEntityAppIntentTests {
+    /// Toggling is the only direction that is right whatever state the entity is already in, so it is
+    /// what an action dropped into a shortcut without the direction set does. The App Shortcuts still
+    /// pass a direction of their own, since "turn off" has to mean off.
+    @Test func theActionDefaultsToToggle() {
+        #expect(TurnOnOffEntityAppIntent().action == .toggle)
+    }
+
     private static func entity(serverId: String, entityId: String = "light.kitchen") -> ControllableEntityAppEntity {
         .init(
             id: "\(serverId)-\(entityId)",
@@ -71,6 +78,27 @@ struct TurnOnOffEntityAppIntentTests {
         }
         _ = try? await task.value
         return first?.data["service"] as? String
+    }
+
+    /// The watch takes the spoken sentence alone, with no card to build, so the runner's own entry
+    /// point is exercised rather than only the one the app's card goes through.
+    @Test func performSpeaksWhatItDid() async throws {
+        try await withMockedServer { server, connection in
+            let entity = Self.entity(serverId: server.identifier.rawValue)
+            let task = Task { try await ControlEntityIntentRunner.perform(.turnOn, on: entity) }
+            var waited = 0
+            while connection.pendingRequests.isEmpty, waited < 400 {
+                try await Task.sleep(nanoseconds: 5_000_000)
+                waited += 1
+            }
+            for pending in connection.pendingRequests {
+                pending.completion(.success(Self.stateResponse(entityId: entity.entityId)))
+            }
+
+            let dialog = try await task.value
+
+            #expect(dialog.contains(entity.displayString))
+        }
     }
 
     @Test func onSendsTurnOn() async throws {

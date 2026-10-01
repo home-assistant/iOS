@@ -1,20 +1,15 @@
 import GRDB
-import HAKit
-import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
 import Testing
 
-/// Exercises the entity list behind "get entity state": it offers what a person would ask about,
-/// and leaves out what they would not.
+/// The entity list behind "get entity state", which asks about entities rather than switching them.
+///
+/// Like the on/off list it offers a narrowed set — the readable domains, in rooms — while resolving
+/// anything, so an id saved in a shortcut keeps working after the entity leaves that set.
+@Suite(.serialized)
 struct ReadableEntityAppEntityQueryTests {
-    private static func makeEntity(
-        serverId: String,
-        entityId: String,
-        name: String,
-        entityCategory: Int? = nil,
-        isHidden: Bool? = nil
-    ) -> HAAppEntity {
+    private static func makeEntity(serverId: String, entityId: String, name: String) -> HAAppEntity {
         HAAppEntity(
             id: ServerEntity.uniqueId(serverId: serverId, entityId: entityId),
             entityId: entityId,
@@ -23,12 +18,12 @@ struct ReadableEntityAppEntityQueryTests {
             name: name,
             icon: nil,
             rawDeviceClass: nil,
-            entityCategory: entityCategory,
-            isHidden: isHidden
+            entityCategory: nil,
+            isHidden: nil
         )
     }
 
-    private func seed(serverId: String, entities: [HAAppEntity]) async throws {
+    private func seed(serverId: String, entities: [HAAppEntity], inArea: Set<String>) async throws {
         try await Current.database().write { db in
             try HAAppEntity
                 .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
@@ -36,11 +31,6 @@ struct ReadableEntityAppEntityQueryTests {
             for entity in entities {
                 try entity.insert(db)
             }
-        }
-    }
-
-    private func seedArea(serverId: String, name: String, entities: Set<String>) async throws {
-        try await Current.database().write { db in
             try AppArea
                 .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
                 .deleteAll(db)
@@ -48,12 +38,12 @@ struct ReadableEntityAppEntityQueryTests {
                 id: "\(serverId)-area",
                 serverId: serverId,
                 areaId: "area",
-                name: name,
+                name: "Bathroom",
                 aliases: [],
                 picture: nil,
                 icon: nil,
                 sortOrder: nil,
-                entities: entities,
+                entities: inArea,
                 floorId: nil,
                 floorName: nil
             ).insert(db)
@@ -69,146 +59,100 @@ struct ReadableEntityAppEntityQueryTests {
         try await body(server.identifier.rawValue)
     }
 
-    /// The three kinds nobody asks Siri about: a diagnostic reading, a configuration control, and
-    /// an entity the user hid.
-    @Test func leavesOutDiagnosticConfigurationAndHiddenEntities() async throws {
+    /// A sensor is the thing people ask about most, and a room is what makes it worth naming.
+    @Test func offersReadableEntitiesThatSitInARoom() async throws {
         try await withFakeServer { serverId in
-            try await seed(serverId: serverId, entities: [
-                Self.makeEntity(serverId: serverId, entityId: "sensor.temperature", name: "Temperature"),
-                Self.makeEntity(serverId: serverId, entityId: "sensor.uptime", name: "Uptime", entityCategory: 1),
-                Self.makeEntity(serverId: serverId, entityId: "switch.led", name: "LED", entityCategory: 2),
-                Self.makeEntity(serverId: serverId, entityId: "light.hidden", name: "Hidden", isHidden: true),
-            ])
-            try await seedArea(
+            try await seed(
                 serverId: serverId,
-                name: "Kitchen",
-                entities: ["sensor.temperature", "sensor.uptime", "switch.led", "light.hidden"]
+                entities: [
+                    Self.makeEntity(serverId: serverId, entityId: "sensor.humidity", name: "Humidity"),
+                    Self.makeEntity(serverId: serverId, entityId: "sensor.orphan", name: "Orphan"),
+                ],
+                inArea: ["sensor.humidity"]
             )
-            let collection = try await ReadableEntityAppEntityQuery().suggestedEntities()
-            let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
 
-            #expect(ids.contains("sensor.temperature"))
-            #expect(!ids.contains("sensor.uptime"))
-            #expect(!ids.contains("switch.led"))
-            #expect(!ids.contains("light.hidden"))
+            let offered = try await ReadableEntityAppEntityQuery().suggestedEntities()
+            let ids = offered.sections.flatMap(\.items).map(\.value.entityId)
+
+            #expect(ids == ["sensor.humidity"])
         }
     }
 
-    /// An entity in no room is one nobody names out loud.
-    @Test func leavesOutEntitiesWithNoArea() async throws {
+    /// The domain and area filters are on the offered list alone: a question saved against an entity
+    /// that has since left its room still names something.
+    @Test func resolvesAnEntityThatIsNoLongerOffered() async throws {
         try await withFakeServer { serverId in
-            try await seed(serverId: serverId, entities: [
-                Self.makeEntity(serverId: serverId, entityId: "light.kitchen", name: "Kitchen"),
-                Self.makeEntity(serverId: serverId, entityId: "light.orphan", name: "Orphan"),
-            ])
-            try await seedArea(serverId: serverId, name: "Kitchen", entities: ["light.kitchen"])
-            let collection = try await ReadableEntityAppEntityQuery().suggestedEntities()
-            let ids = collection.sections.flatMap(\.items).map(\.value.entityId)
+            let orphan = Self.makeEntity(serverId: serverId, entityId: "sensor.orphan", name: "Orphan")
+            try await seed(serverId: serverId, entities: [orphan], inArea: [])
 
-            #expect(ids.contains("light.kitchen"))
-            #expect(!ids.contains("light.orphan"))
+            let resolved = try await ReadableEntityAppEntityQuery().entities(for: [orphan.id])
+
+            #expect(resolved.count == 1)
+            #expect(resolved.first?.entityId == "sensor.orphan")
+            #expect(resolved.first?.displayString == "Orphan")
         }
     }
 
-    @Test func resolvesAndMatchesByName() async throws {
+    @Test func matchesOnName() async throws {
         try await withFakeServer { serverId in
-            let entity = Self.makeEntity(serverId: serverId, entityId: "sensor.humidity", name: "Humidity")
-            try await seed(serverId: serverId, entities: [entity])
-            try await seedArea(serverId: serverId, name: "Bathroom", entities: ["sensor.humidity"])
-
-            let resolved = try await ReadableEntityAppEntityQuery().entities(for: [entity.id])
-            #expect(resolved.first?.entityId == "sensor.humidity")
-            #expect(resolved.first?.displayString == "Humidity")
+            try await seed(
+                serverId: serverId,
+                entities: [
+                    Self.makeEntity(serverId: serverId, entityId: "sensor.humidity", name: "Humidity"),
+                    Self.makeEntity(serverId: serverId, entityId: "sensor.pressure", name: "Pressure"),
+                ],
+                inArea: ["sensor.humidity", "sensor.pressure"]
+            )
 
             let matched = try await ReadableEntityAppEntityQuery().entities(matching: "humid")
-            #expect(matched.sections.flatMap(\.items).map(\.value.entityId).contains("sensor.humidity"))
+            let names = matched.sections.flatMap(\.items).map(\.value.displayString)
+
+            #expect(names.contains("Humidity"))
+            #expect(!names.contains("Pressure"))
         }
     }
-}
 
-/// The question itself: the entity it names, and what it reads back.
-struct GetEntityStateAppIntentTests {
-    private static func entity(serverId: String) -> ReadableEntityAppEntity {
-        .init(
-            id: "\(serverId)-sensor.humidity",
+    /// The row a picker draws: the entity's name on top and its context underneath, with no image of
+    /// its own — the glyph is the App Shortcut's, so a question's row is not mistaken for a command's.
+    @Test func theRowIsTitledByTheEntityNameAndCarriesNoImage() {
+        let previous = Current.servers
+        defer { Current.servers = previous }
+        Current.servers = FakeServerManager(initial: 1)
+
+        let representation = ReadableEntityAppEntity(
+            id: "s1-sensor.humidity",
             entityId: "sensor.humidity",
-            serverId: serverId,
-            serverName: "Home",
+            serverId: "s1",
+            serverName: "Cabin",
             areaName: "Bathroom",
-            deviceName: "Sensor",
-            floorName: "Ground floor",
+            displayString: "Humidity",
+            iconName: "mdi:water-percent"
+        ).displayRepresentation
+
+        #expect(String(localized: representation.title) == "Humidity")
+        #expect(representation.subtitle.map { String(localized: $0) } == "Bathroom")
+        #expect(representation.image == nil)
+    }
+
+    /// A row stands alone in Siri's disambiguation, where two homes can share a name.
+    @Test func theContextLineNamesTheServerOnlyWhenThereIsMoreThanOne() {
+        let entity = ReadableEntityAppEntity(
+            id: "s1-sensor.humidity",
+            entityId: "sensor.humidity",
+            serverId: "s1",
+            serverName: "Cabin",
+            areaName: "Bathroom",
             displayString: "Humidity",
             iconName: "mdi:water-percent"
         )
-    }
 
-    private static func stateResponse(_ state: String) -> HAData {
-        .dictionary([
-            "entity_id": "sensor.humidity",
-            "state": state,
-            "last_changed": "2026-09-06T10:00:00.000000+00:00",
-            "last_updated": "2026-09-06T10:00:00.000000+00:00",
-            "attributes": ["friendly_name": "Humidity", "unit_of_measurement": "%"],
-            "context": ["id": "test", "parent_id": NSNull(), "user_id": NSNull()],
-        ])
-    }
+        let previous = Current.servers
+        defer { Current.servers = previous }
 
-    private func withMockedServer(_ body: (Server, HAMockConnection) async throws -> Void) async throws {
-        let previousServers = Current.servers
-        let previousApis = Current.cachedApis
-        defer {
-            Current.servers = previousServers
-            Current.cachedApis = previousApis
-        }
-        let manager = FakeServerManager(initial: 0)
-        let server = manager.addFake()
-        Current.servers = manager
-        let connection = HAMockConnection()
-        let api = HomeAssistantAPI(server: server)
-        api.connection = connection
-        Current.cachedApis = [server.identifier: api]
-        try await body(server, connection)
-    }
+        Current.servers = FakeServerManager(initial: 1)
+        #expect(entity.subtitle == "Bathroom")
 
-    @Test func readingAStateAsksTheServerAndKeepsTheContext() async throws {
-        try await withMockedServer { server, connection in
-            var intent = GetEntityStateAppIntent()
-            intent.entity = Self.entity(serverId: server.identifier.rawValue)
-
-            let task = Task { try await intent.perform() }
-            var waited = 0
-            while connection.pendingRequests.isEmpty, waited < 300 {
-                try await Task.sleep(nanoseconds: 5_000_000)
-                waited += 1
-            }
-            for pending in connection.pendingRequests {
-                pending.completion(.success(Self.stateResponse("58")))
-            }
-            _ = try await task.value
-            #expect(!connection.pendingRequests.isEmpty)
-        }
-    }
-
-    /// The state entity keeps what the question knew about the entity, so the answer can name the
-    /// room without asking again.
-    @Test func theStateCarriesTheEntitysContext() throws {
-        let live = try HAEntity(data: Self.stateResponse("58"))
-        let state = HAEntityStateAppEntity(entity: Self.entity(serverId: "s1"), state: live)
-
-        #expect(state.name == "Humidity")
-        #expect(state.entityId == "sensor.humidity")
-        #expect(state.state == "58")
-        #expect(state.areaName == "Bathroom")
-        #expect(state.deviceName == "Sensor")
-        #expect(state.floorName == "Ground floor")
-        #expect(state.serverName == "Home")
-        #expect(state.iconName == "mdi:water-percent")
-        #expect(state.unitOfMeasurement == "%")
-    }
-
-    @Test func theEntityDescribesItself() {
-        let entity = Self.entity(serverId: "s1")
-        #expect(!String(describing: entity.displayRepresentation).isEmpty)
-        #expect(entity.domain == .sensor)
+        Current.servers = FakeServerManager(initial: 2)
+        #expect(entity.subtitle == "Cabin • Bathroom")
     }
 }

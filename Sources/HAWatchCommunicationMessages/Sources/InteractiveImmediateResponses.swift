@@ -18,6 +18,7 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case assistSTTResponse
     case assistIntentEndResponse
     case assistTTSResponse
+    case assistOnDeviceTTS
     case assistError
     case watchConfigResponse
     case emptyWatchConfigResponse
@@ -41,4 +42,7 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     /// area the vacuum has segments mapped to, already resolved against the phone's area registry.
     /// An empty list means the vacuum supports cleaning by area but nothing has been mapped yet.
     case vacuumCleanableAreasResponse
+    /// Phone → watch: reply to `httpRequest`, carrying a `WatchHTTPResponsePayload` — either the
+    /// server's own status/headers/body, or why the phone couldn't produce one.
+    case httpRequestResponse
 }

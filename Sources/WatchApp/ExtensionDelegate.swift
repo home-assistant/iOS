@@ -70,6 +70,10 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // connection info doesn't carry the override across launches/syncs).
         WatchServerSync.applyURLOverrides()
 
+        // A sensor selection made before sensors were chosen per server goes to the servers the
+        // watch has right now, before a sync can replace them with ones it never reported to.
+        WatchUserDefaults.shared.splitSensorEnablementAcrossServersIfNeeded()
+
         // The persisted servers can reference an mTLS client certificate this Watch's Keychain no
         // longer has; ask the phone to re-send it rather than failing every request until the user
         // happens to hit refresh.
@@ -588,32 +592,14 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
             return
         }
 
-        firstly { () -> Promise<Void> in
-            let (promise, seal) = Promise<Void>.pending()
-
-            if Communicator.shared.currentReachability == .immediatelyReachable {
-                Current.Log.info("sending via phone")
-                Communicator.shared.send(.init(
-                    identifier: InteractiveImmediateMessages.pushAction.rawValue,
-                    content: ["PushActionInfo": info.toJSON(), "Server": server.identifier.rawValue],
-                    reply: { message in
-                        Current.Log.verbose("Received reply dictionary \(message)")
-                        seal.fulfill(())
-                    }
-                ), errorHandler: { error in
-                    Current.Log.error("Received error when sending immediate message \(error)")
-                    seal.reject(error)
-                })
-            } else {
-                Current.Log.info("sending via local")
-                Current.api(for: server)?.handlePushAction(for: info)
-                    .pipe(to: seal.resolve)
+        Task {
+            do {
+                try await WatchPushActionSender.send(info, server: server)
+            } catch {
+                Current.Log.error("failed to send notification action: \(error)")
             }
-
-            return promise
-        }.ensure {
             completionHandler()
-        }.cauterize()
+        }
     }
 }
 

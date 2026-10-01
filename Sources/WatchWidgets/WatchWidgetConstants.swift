@@ -71,6 +71,10 @@ enum WatchWidgetConstants {
         widgetBundleID
     }
 
+    static var controlAssistKind: String {
+        widgetBundleID + ".control.assist"
+    }
+
     static let supportedFamilies: [WidgetFamily] = [
         .accessoryCircular,
         .accessoryRectangular,

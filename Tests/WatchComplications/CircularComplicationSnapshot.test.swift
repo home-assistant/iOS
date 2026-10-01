@@ -31,6 +31,16 @@ struct CircularComplicationSnapshotTests {
             .background(.black)
     }
 
+    /// The icon slot carrying a configured color, which the face has to draw instead of tinting it
+    /// away — an icon-only layout, so the glyph fills the disc.
+    private static func customIconColor(
+        _ model: CircularComplicationRenderModel
+    ) -> CircularComplicationRenderModel {
+        var model = model
+        model.iconImage = customColoredComplicationIcon()
+        return model
+    }
+
     private static var variants: [(String, CircularComplicationRenderModel)] {
         [
             ("icon-value-name-open", .sample()),
@@ -48,6 +58,7 @@ struct CircularComplicationSnapshotTests {
             ("zero-fraction", .sample(value: "0%", fraction: 0)),
             ("full-fraction", .sample(value: "100%", fraction: 1)),
             ("long-value", .sample(icon: false, value: "1234", title: nil)),
+            ("custom-icon-color", customIconColor(.sample(value: "", showValue: false, title: nil, fraction: nil))),
             ("custom-text-color", .sample(title: "Solar", textColor: .yellow)),
         ]
     }

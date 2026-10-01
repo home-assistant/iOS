@@ -51,6 +51,8 @@ struct AssistView: View {
         /// so it tightens against the screen sides and lifts clear of the keyboard.
         static let barHorizontalPaddingKeyboardOpen: CGFloat = DesignSystem.Spaces.oneAndHalf
         static let inputRowBottomPaddingKeyboardOpen: CGFloat = DesignSystem.Spaces.one
+        static let barHorizontalPaddingVerticalBar: CGFloat = DesignSystem.Spaces.two
+        static let inputRowBottomPaddingVerticalBar: CGFloat = -DesignSystem.Spaces.two
         static let inputFieldHeight: CGFloat = 40
         static let inputActionButtonHeight: CGFloat = 40
         /// Height of the input row, driven by its tallest element (the action button plus its padding).
@@ -79,11 +81,20 @@ struct AssistView: View {
     private let showCloseButton: Bool
     /// Renders the pre-iOS 26 materials instead of Liquid Glass, so the legacy look stays previewable.
     private let forcesLegacyAppearance: Bool
+    @State private var hasVerticalBar = false
+    @State private var occlusionInsets = EdgeInsets()
+    @StateObject private var softwareKeyboard = SoftwareKeyboardObserver()
 
-    init(viewModel: AssistViewModel, showCloseButton: Bool = true, forcesLegacyAppearance: Bool = false) {
+    init(
+        viewModel: AssistViewModel,
+        showCloseButton: Bool = true,
+        forcesLegacyAppearance: Bool = false,
+        forcesVerticalBar: Bool = false
+    ) {
         self._viewModel = .init(wrappedValue: viewModel)
         self.showCloseButton = showCloseButton
         self.forcesLegacyAppearance = forcesLegacyAppearance
+        self._hasVerticalBar = State(initialValue: forcesVerticalBar)
     }
 
     var body: some View {
@@ -94,9 +105,7 @@ struct AssistView: View {
                 viewModel.subscribeForConfigChanges()
             }
             .onChange(of: viewModel.focusOnInput) { newValue in
-                if newValue {
-                    isFirstResponder = true
-                }
+                isFirstResponder = newValue
             }
             .onDisappear {
                 assistSession.inProgress = false
@@ -126,11 +135,11 @@ struct AssistView: View {
                     }
 
                     #if !targetEnvironment(macCatalyst)
-                    ToolbarItem(placement: .topBarTrailing) {
-                        if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, *) {
+                        ToolbarItem(placement: .topBarTrailing) {
                             settingsButton
-                                .matchedTransitionSource(id: Constants.settingsGeometryID, in: settingsGeometry)
                         }
+                        .matchedTransitionSource(id: Constants.settingsGeometryID, in: settingsGeometry)
                     }
                     #endif
                 }
@@ -144,27 +153,47 @@ struct AssistView: View {
                 }
         }
         .navigationViewStyle(.stack)
+        .background(VerticalBarObserver(hasVerticalBar: $hasVerticalBar))
     }
 
+    @ViewBuilder
     private var closeButton: some View {
-        Button {
-            dismiss()
-        } label: {
-            Image(systemSymbol: .xmark)
+        if hasVerticalBar {
+            Button {
+                dismiss()
+            } label: {
+                Label(L10n.closeLabel, systemSymbol: .xmark)
+            }
+            .keyboardShortcut(.cancelAction)
+        } else {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemSymbol: .xmark)
+            }
+            .buttonStyle(.plain)
+            .tint(Color(uiColor: .label))
+            .keyboardShortcut(.cancelAction)
         }
-        .buttonStyle(.plain)
-        .tint(Color(uiColor: .label))
-        .keyboardShortcut(.cancelAction)
     }
 
+    @ViewBuilder
     private var settingsButton: some View {
-        Button {
-            showSettings = true
-        } label: {
-            Image(systemSymbol: .gearshapeFill)
+        if hasVerticalBar {
+            Button {
+                showSettings = true
+            } label: {
+                Label(L10n.Mac.Sidebar.settings, systemSymbol: .gearshapeFill)
+            }
+        } else {
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemSymbol: .gearshapeFill)
+            }
+            .buttonStyle(.plain)
+            .tint(Color(uiColor: .label))
         }
-        .buttonStyle(.plain)
-        .tint(Color(uiColor: .label))
     }
 
     /// A single pipeline is not a choice, so the circle only appears when there is something to
@@ -207,18 +236,24 @@ struct AssistView: View {
     /// The keyboard pins the bar to its top edge, where the floating insets read as too loose. On Mac
     /// the field keeps focus with no keyboard on screen, so the bar stays as it is.
     private var isKeyboardVisible: Bool {
-        isFirstResponder && !Current.isCatalyst
+        isFirstResponder && softwareKeyboard.isShown && !Current.isCatalyst
     }
 
     private var barHorizontalPadding: CGFloat {
-        isKeyboardVisible ? Constants.barHorizontalPaddingKeyboardOpen : Constants.barHorizontalPadding
+        if isKeyboardVisible {
+            return Constants.barHorizontalPaddingKeyboardOpen
+        }
+        return hasVerticalBar ? Constants.barHorizontalPaddingVerticalBar : Constants.barHorizontalPadding
     }
 
     private var barBottomPadding: CGFloat {
         if Current.isCatalyst {
             return Constants.inputRowBottomPaddingMac
         }
-        return isKeyboardVisible ? Constants.inputRowBottomPaddingKeyboardOpen : Constants.inputRowBottomPadding
+        if isKeyboardVisible {
+            return Constants.inputRowBottomPaddingKeyboardOpen
+        }
+        return hasVerticalBar ? Constants.inputRowBottomPaddingVerticalBar : Constants.inputRowBottomPadding
     }
 
     private var selectedPipelineName: String {
@@ -336,6 +371,10 @@ struct AssistView: View {
         }
         .safeAreaInset(edge: .bottom) {
             bottomBar
+                .padding(.leading, occlusionInsets.leading)
+                .padding(.trailing, occlusionInsets.trailing)
+                .background(OcclusionRegionsReader(insets: $occlusionInsets))
+                .ignoresSafeArea(edges: hasVerticalBar ? .horizontal : [])
         }
     }
 

@@ -8,15 +8,10 @@ public struct FocusFilterState: Codable, Equatable {
     public var name: String?
     /// When the filter last ran, so writing the same name twice still notifies observers.
     public var date: Date
-    /// The last non-empty name any filter run ever reported, surviving the nil-name runs that
-    /// clear `name`. iOS doesn't re-run the filter when the same Focus quickly reactivates, so
-    /// this is the only durable record of which Focus the user was last in.
-    public var lastKnownName: String?
 
-    public init(name: String?, date: Date, lastKnownName: String? = nil) {
+    public init(name: String?, date: Date) {
         self.name = name
         self.date = date
-        self.lastKnownName = lastKnownName
     }
 }
 
@@ -56,8 +51,7 @@ public class FocusFilterWrapper {
     }
 
     /// Called by the Focus Filter's App Intent when a Focus activates — and, with `nil`, when one
-    /// deactivates. A nil run must not erase the last name we knew: iOS skips re-running the
-    /// filter for quick reactivations, so the previous name is carried forward instead.
+    /// deactivates.
     public lazy var setActiveFocusName: (String?) -> Void = { [weak self] name in
         guard let self else { return }
         let previous = state.value
@@ -71,26 +65,14 @@ public class FocusFilterWrapper {
             return
         }
 
-        let lastKnownName: String?
-        if let name, !name.isEmpty {
-            lastKnownName = name
-        } else {
-            lastKnownName = previous?.lastKnownName ?? previous?.name
-        }
-        state.value = FocusFilterState(name: name, date: now, lastKnownName: lastKnownName)
+        state.value = FocusFilterState(name: name, date: now)
     }
 
-    /// Stops reporting a name the user deleted in settings, including the sticky `lastKnownName`
-    /// copy — otherwise a deleted name keeps being reported until another Focus runs. A filter
-    /// still paired with it reports it again the next time it runs, which is when the name exists
-    /// again as far as the app is concerned.
+    /// Stops reporting a name the user deleted in settings. A filter still paired with it reports
+    /// it again the next time it runs, which is when the name exists again as far as the app is
+    /// concerned.
     public lazy var forgetFocusName: (String) -> Void = { [weak self] name in
-        guard let self, let previous = state.value,
-              previous.name == name || previous.lastKnownName == name else { return }
-        state.value = FocusFilterState(
-            name: previous.name == name ? nil : previous.name,
-            date: Current.date(),
-            lastKnownName: previous.lastKnownName == name ? nil : previous.lastKnownName
-        )
+        guard let self, let previous = state.value, previous.name == name else { return }
+        state.value = FocusFilterState(name: nil, date: Current.date())
     }
 }
