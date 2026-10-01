@@ -124,7 +124,6 @@ struct SensorListView: View {
                         } label: {
                             HStack {
                                 Text(L10n.SettingsSensors.Health.Sensors.title)
-                                LabsLabel()
                                 Spacer()
                                 Text("\(viewModel.enabledHealthSensorCount)")
                                     .foregroundStyle(.secondary)
