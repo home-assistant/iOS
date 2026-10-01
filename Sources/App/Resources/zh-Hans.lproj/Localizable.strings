@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "点按";
 "assist.watch.not_reachable.title" = "“语音助手”功能需要 iPhone 连接。您的 iPhone 当前无法访问。";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "音量控制";
 "assist_pipeline_picker.no_pipelines" = "没有可用的管道";
 "assist_pipeline_picker.placeholder" = "选取管道";
@@ -2397,7 +2398,9 @@ The server only answers while the app is open, and stops when you leave it.";
 "tab_bar.item.search" = "Search";
 "tab_bar.more.app_settings" = "App Settings";
 "tab_bar.more.customize" = "Customize";
+"tab_bar.more.edit_profile" = "Edit profile";
 "tab_bar.more.home_assistant_settings" = "Home Assistant Settings";
+"tab_bar.more.other_servers" = "Other servers";
 "tab_bar.more.title" = "More";
 "tags.allowed.delete_all" = "全部删除";
 "tags.allowed.delete_all.confirm.button" = "全部删除";

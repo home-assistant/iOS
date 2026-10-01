@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Digite uma solicitação...";
 "assist.watch.mic_button.title" = "Toque para";
 "assist.watch.not_reachable.title" = "O Assist requer conectividade com o iPhone. Seu iPhone está inacessível no momento.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Controle de volume";
 "assist_pipeline_picker.no_pipelines" = "Nenhum 'pipeline' disponível";
 "assist_pipeline_picker.placeholder" = "Escolher pipeline";
@@ -2400,7 +2401,9 @@ O servidor só responde enquanto o aplicativo está aberto, e para quando você 
 "tab_bar.item.search" = "Pesquisar";
 "tab_bar.more.app_settings" = "Configurações do aplicativo";
 "tab_bar.more.customize" = "Personalizar";
+"tab_bar.more.edit_profile" = "Edit profile";
 "tab_bar.more.home_assistant_settings" = "Configurações do Home Assistant";
+"tab_bar.more.other_servers" = "Other servers";
 "tab_bar.more.title" = "Mais";
 "tags.allowed.delete_all" = "Excluir tudo";
 "tags.allowed.delete_all.confirm.button" = "Excluir tudo";

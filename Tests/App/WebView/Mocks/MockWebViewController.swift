@@ -15,6 +15,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var overlayedController: UIViewController?
     var assistZoomAnchorView: UIView?
     var pendingAssistZoomSourceView: UIView?
+    var presentsNextAssistAsSheet = false
 
     var presentOverlayControllerCalled = false
     var presentControllerCalled = false
@@ -86,6 +87,15 @@ final class MockWebViewController: WebViewControllerProtocol {
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         presentOverlayControllerCalled = true
         overlayedController = controller
+    }
+
+    private(set) var makeWebViewFirstResponderCalled = false
+    /// How many scripts had already run when the web view was made first responder.
+    private(set) var scriptsRunBeforeMakingWebViewFirstResponder: Int?
+
+    func makeWebViewFirstResponder() {
+        makeWebViewFirstResponderCalled = true
+        scriptsRunBeforeMakingWebViewFirstResponder = evaluateJavaScriptCallCount
     }
 
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {

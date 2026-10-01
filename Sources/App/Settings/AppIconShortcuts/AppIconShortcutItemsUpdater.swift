@@ -14,6 +14,9 @@ enum AppIconShortcutItemsUpdater {
     }
 
     private static var databaseUpdateObserver: NSObjectProtocol?
+    private static let generationLock = NSLock()
+    private static var requestedGeneration = 0
+    private static var publishedGeneration = 0
 
     /// Publishes the configured items now and again each time the database updater finishes a
     /// server, so titles resolved before the entity table was synced (a fresh install, an imported
@@ -38,7 +41,8 @@ enum AppIconShortcutItemsUpdater {
         databaseUpdateObserver = nil
     }
 
-    static func update() {
+    static func update(completion: @escaping @Sendable () -> Void = {}) {
+        let generation = nextGeneration()
         // `loadInformation` fetches every entity, area, and device row for every server
         // synchronously on the calling thread, and `update()` runs at app launch — keep that work
         // off the main thread. The resulting items are published back on main.
@@ -57,6 +61,7 @@ enum AppIconShortcutItemsUpdater {
                 // — the database updater finishing, or the next launch — try again.
                 guard !hasUnreadableServer(for: items, entitiesPerServer: entitiesPerServer) else {
                     Current.Log.error("Keeping the published app icon shortcuts: entities could not be read")
+                    DispatchQueue.main.async(execute: completion)
                     return
                 }
                 let configuredShortcutItems = items
@@ -72,7 +77,7 @@ enum AppIconShortcutItemsUpdater {
                 // front: publishing them alone first would replace the user's shortcuts before the
                 // guard above had a chance to keep them.
                 let shortcutItems = Self.forcedShortcutItems + configuredShortcutItems
-                publish(shortcutItems: shortcutItems)
+                publish(shortcutItems: shortcutItems, generation: generation, completion: completion)
             }
         }
     }
@@ -119,9 +124,24 @@ enum AppIconShortcutItemsUpdater {
         ]
     }
 
-    private static func publish(shortcutItems: [UIApplicationShortcutItem]) {
+    private static func nextGeneration() -> Int {
+        generationLock.lock()
+        defer { generationLock.unlock() }
+        requestedGeneration += 1
+        return requestedGeneration
+    }
+
+    private static func publish(
+        shortcutItems: [UIApplicationShortcutItem],
+        generation: Int,
+        completion: @escaping @Sendable () -> Void
+    ) {
         DispatchQueue.main.async {
-            UIApplication.shared.shortcutItems = shortcutItems
+            if generation > publishedGeneration {
+                publishedGeneration = generation
+                UIApplication.shared.shortcutItems = shortcutItems
+            }
+            completion()
         }
     }
 

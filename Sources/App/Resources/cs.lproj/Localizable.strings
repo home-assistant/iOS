@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Zadejte požadavek…";
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
+"assist.watch.on_device_stt.no_speech_recognized" = "Nebyla rozpoznána žádná řeč.";
 "assist.watch.volume.title" = "Ovládání hlasitosti";
 "assist_pipeline_picker.no_pipelines" = "Nejsou dostupné žádné pipeline";
 "assist_pipeline_picker.placeholder" = "Vyberte pipeline";
@@ -2400,7 +2401,9 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "tab_bar.item.search" = "Hledat";
 "tab_bar.more.app_settings" = "Nastavení aplikace";
 "tab_bar.more.customize" = "Přizpůsobit";
+"tab_bar.more.edit_profile" = "Edit profile";
 "tab_bar.more.home_assistant_settings" = "Nastavení Home Assistanta";
+"tab_bar.more.other_servers" = "Other servers";
 "tab_bar.more.title" = "Více";
 "tags.allowed.delete_all" = "Smazat vše";
 "tags.allowed.delete_all.confirm.button" = "Smazat vše";

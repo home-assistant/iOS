@@ -69,6 +69,15 @@ struct AssistViewSnapshotTests {
         assert(viewModel, named: "pipelines-picker")
     }
 
+    /// On the iPhone Duo the bar buttons carry titles for the vertical bar and the input row reaches the
+    /// screen edges; this renders that state on a regular phone.
+    @available(iOS 18, *)
+    @MainActor @Test func verticalBar() {
+        let viewModel = makeViewModel()
+        viewModel.inputText = "Turn on the porch light"
+        assert(viewModel, named: "vertical-bar", forcesVerticalBar: true)
+    }
+
     // MARK: - Helpers
 
     @MainActor
@@ -87,6 +96,7 @@ struct AssistViewSnapshotTests {
     private func assert(
         _ viewModel: AssistViewModel,
         named: String,
+        forcesVerticalBar: Bool = false,
         precision: Float = defaultSnapshotPrecision,
         perceptualPrecision: Float = defaultSnapshotPrecision,
         fileID: StaticString = #fileID,
@@ -95,7 +105,7 @@ struct AssistViewSnapshotTests {
         line: UInt = #line,
         column: UInt = #column
     ) {
-        let view = AssistView(viewModel: viewModel)
+        let view = AssistView(viewModel: viewModel, forcesVerticalBar: forcesVerticalBar)
             .environment(\.assistOrbFixedTime, Self.orbFixedTime)
 
         assertLightDarkSnapshots(

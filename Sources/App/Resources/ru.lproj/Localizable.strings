@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Введите запрос...";
 "assist.watch.mic_button.title" = "Нажмите, чтобы";
 "assist.watch.not_reachable.title" = "Assist требует подключения к iPhone. В данный момент ваш iPhone недоступен.";
+"assist.watch.on_device_stt.no_speech_recognized" = "Речь не была распознана.";
 "assist.watch.volume.title" = "Громкость";
 "assist_pipeline_picker.no_pipelines" = "Нет доступных pipeline";
 "assist_pipeline_picker.placeholder" = "Выберите обработчик";
@@ -1248,7 +1249,7 @@
 "notification_service.parser.camera.invalid_entity" = "указанный entity_id недействителен.";
 "notification_service.parser.url.invalid_url" = "Указанный URL-адрес был недействительным.";
 "notification_service.parser.url.no_url" = "URL-адрес не был предоставлен.";
-"notification_tap_actions.title" = "Actions";
+"notification_tap_actions.title" = "Действия";
 "notifications_configurator.action.example_trigger.title" = "Example Trigger";
 "notifications_configurator.action.rows.authentication_required.footer" = "Когда пользователь выбирает действие с этой опцией, система предложит пользователю разблокировать устройство. После разблокировки Home Assistant будет уведомлен о выбранном действии.";
 "notifications_configurator.action.rows.authentication_required.title" = "Требуется аутентификация";
@@ -2398,7 +2399,9 @@ Importing replaces every category listed on this screen, including app settings.
 "tab_bar.item.search" = "Search";
 "tab_bar.more.app_settings" = "Настройки приложения";
 "tab_bar.more.customize" = "Customize";
+"tab_bar.more.edit_profile" = "Edit profile";
 "tab_bar.more.home_assistant_settings" = "Настройки Home Assistant";
+"tab_bar.more.other_servers" = "Other servers";
 "tab_bar.more.title" = "More";
 "tags.allowed.delete_all" = "Удалить все";
 "tags.allowed.delete_all.confirm.button" = "Удалить все";

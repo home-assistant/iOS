@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Ange en begäran...";
 "assist.watch.mic_button.title" = "Tryck för att";
 "assist.watch.not_reachable.title" = "Assistenten kräver iPhone-anslutning. Din iPhone är för närvarande inte nåbar.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Volymkontroll";
 "assist_pipeline_picker.no_pipelines" = "Inga pipelines tillgängliga";
 "assist_pipeline_picker.placeholder" = "Välj pipeline";
@@ -2395,7 +2396,9 @@ The server only answers while the app is open, and stops when you leave it.";
 "tab_bar.item.search" = "Sök";
 "tab_bar.more.app_settings" = "Inställningar för appen";
 "tab_bar.more.customize" = "Anpassa";
+"tab_bar.more.edit_profile" = "Edit profile";
 "tab_bar.more.home_assistant_settings" = "Inställningar för Home Assistant";
+"tab_bar.more.other_servers" = "Other servers";
 "tab_bar.more.title" = "Mer";
 "tags.allowed.delete_all" = "Radera alla";
 "tags.allowed.delete_all.confirm.button" = "Radera alla";

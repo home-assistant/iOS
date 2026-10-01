@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.title" = "Appuyer pour";
 "assist.watch.not_reachable.title" = "Assist nécessite la connectivité de l'iPhone. Votre iPhone est actuellement injoignable.";
+"assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Contrôle du volume";
 "assist_pipeline_picker.no_pipelines" = "Aucun pipeline disponible";
 "assist_pipeline_picker.placeholder" = "Choisir un pipeline";
@@ -2400,7 +2401,9 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "tab_bar.item.search" = "Search";
 "tab_bar.more.app_settings" = "App Settings";
 "tab_bar.more.customize" = "Customize";
+"tab_bar.more.edit_profile" = "Edit profile";
 "tab_bar.more.home_assistant_settings" = "Home Assistant Settings";
+"tab_bar.more.other_servers" = "Other servers";
 "tab_bar.more.title" = "More";
 "tags.allowed.delete_all" = "Tout supprimer";
 "tags.allowed.delete_all.confirm.button" = "Tout supprimer";

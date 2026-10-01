@@ -1,4 +1,5 @@
 #if canImport(ActivityKit)
+import ActivityKit
 import Foundation
 import PromiseKit
 @testable import Shared
@@ -202,6 +203,115 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(state.countdownEnd?.timeIntervalSince1970 ?? 0, 1_700_000_000, accuracy: 0.001)
     }
 
+    // MARK: - relevanceScore(from:)
+
+    func testRelevanceScore_missing_isNil() {
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: [:]))
+    }
+
+    func testRelevanceScore_double_isPassedThrough() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": 0.8]), 0.8)
+    }
+
+    func testRelevanceScore_integer_isPassedThrough() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": 1]), 1.0)
+    }
+
+    func testRelevanceScore_numericString_isParsed() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": " 0.25 "]), 0.25)
+    }
+
+    func testRelevanceScore_aboveOne_isClampedToOne() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": 7.5]), 1.0)
+    }
+
+    func testRelevanceScore_belowZero_isClampedToZero() {
+        XCTAssertEqual(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": -3]), 0.0)
+    }
+
+    func testRelevanceScore_nonNumericString_isNil() {
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": "high"]))
+    }
+
+    func testRelevanceScore_bool_isNil() {
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": true]))
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": false]))
+    }
+
+    func testRelevanceScore_nonFinite_isNil() {
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": Double.nan]))
+        XCTAssertNil(HandlerStartOrUpdateLiveActivity.relevanceScore(from: ["relevance_score": Double.infinity]))
+    }
+
+    // MARK: - LiveActivityPendingStart.Request
+
+    func testPendingStartRequest_decodesWithoutRelevanceScore() throws {
+        let json = #"{"tag":"t","title":"T","state":{"message":"m"},"alert":true}"#
+        let request = try JSONDecoder().decode(LiveActivityPendingStart.Request.self, from: Data(json.utf8))
+        XCTAssertNil(request.relevanceScore)
+    }
+
+    func testPendingStartRequest_roundTripsRelevanceScore() throws {
+        let request = LiveActivityPendingStart.Request(
+            tag: "t",
+            title: "T",
+            serverWebhookId: nil,
+            state: HandlerStartOrUpdateLiveActivity.contentState(from: ["message": "m"]),
+            relevanceScore: 0.4,
+            confirmID: nil,
+            alert: false
+        )
+        let data = try JSONEncoder().encode(request)
+        let decoded = try JSONDecoder().decode(LiveActivityPendingStart.Request.self, from: data)
+        XCTAssertEqual(decoded, request)
+    }
+
+    func testPendingStartAppend_laterRequestWithoutScore_keepsQueuedScore() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.9))
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.relevanceScore, 0.9)
+    }
+
+    func testPendingStartAppend_laterRequestWithScore_replacesQueuedScore() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.9))
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.2))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.relevanceScore, 0.2)
+    }
+
+    func testPendingStartAppend_noQueuedScore_staysNil() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
+        XCTAssertNil(LiveActivityPendingStart.drainAll().first?.relevanceScore)
+    }
+
+    func testPendingStartDrain_passesQueuedRelevanceScoreToRegistry() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.6))
+        LiveActivityPendingStartObserver.drain()
+        let deadline = Date().addingTimeInterval(5)
+        while mockRegistry.startOrUpdateCalls.isEmpty, Date() < deadline {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+        }
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.first?.tag, "queued-tag")
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.first?.relevanceScore, 0.6)
+        XCTAssertTrue(LiveActivityPendingStart.drainAll().isEmpty)
+    }
+
+    private func makePendingRequest(relevanceScore: Double?) -> LiveActivityPendingStart.Request {
+        LiveActivityPendingStart.Request(
+            tag: "queued-tag",
+            title: "T",
+            serverWebhookId: nil,
+            state: HandlerStartOrUpdateLiveActivity.contentState(from: ["message": "m"]),
+            relevanceScore: relevanceScore,
+            confirmID: nil,
+            alert: false
+        )
+    }
+
     // MARK: - handle(_:) — app extension hand-off
 
     func testHandle_inAppExtension_enqueuesHandoffAndSkipsRegistry() throws {
@@ -242,6 +352,29 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertNoThrow(try hang(sut.handle(payload)))
         XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
         XCTAssertFalse(mockRegistry.startOrUpdateCalls[0].alert)
+    }
+
+    func testHandle_inAppExtension_handsOffRelevanceScore() throws {
+        Current.isAppExtension = true
+        let payload: [String: Any] = ["tag": "test-tag", "title": "Test", "relevance_score": 0.9]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.relevanceScore, 0.9)
+    }
+
+    func testHandle_inApp_passesClampedRelevanceScoreToRegistry() throws {
+        let payload: [String: Any] = ["tag": "my-activity", "title": "Test", "relevance_score": 1.7]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls[0].relevanceScore, 1.0)
+    }
+
+    func testHandle_inApp_missingRelevanceScore_passesNil() throws {
+        let payload: [String: Any] = ["tag": "my-activity", "title": "Test"]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+        XCTAssertNil(mockRegistry.startOrUpdateCalls[0].relevanceScore)
     }
 
     func testHandle_inAppExtension_invalidTag_doesNotEnqueue() throws {
@@ -461,6 +594,93 @@ final class LiveActivityRegistryChronometerAnchorTests: XCTestCase {
 
         XCTAssertNil(carried.chronometerStart)
         XCTAssertEqual(carried.countdownEnd, new.countdownEnd)
+    }
+}
+
+// MARK: - LiveActivityRegistry.Update
+
+@available(iOS 17.2, *)
+final class LiveActivityRegistryUpdateTests: XCTestCase {
+    private func state(message: String = "m") -> HALiveActivityAttributes.ContentState {
+        HandlerStartOrUpdateLiveActivity.contentState(from: ["message": message])
+    }
+
+    private func previousContent(score: Double) -> ActivityContent<HALiveActivityAttributes.ContentState> {
+        ActivityContent(state: state(message: "previous"), staleDate: nil, relevanceScore: score)
+    }
+
+    func testContent_noScoreNoPrevious_usesDefaultScore() {
+        let content = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).content(after: nil)
+        XCTAssertEqual(content.relevanceScore, 0.5)
+        XCTAssertEqual(content.state.message, "m")
+    }
+
+    func testContent_noScore_keepsPreviousScore() {
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: nil)
+        XCTAssertEqual(update.content(after: previousContent(score: 0.8)).relevanceScore, 0.8)
+    }
+
+    func testContent_score_replacesPreviousScore() {
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.3)
+        XCTAssertEqual(update.content(after: previousContent(score: 0.8)).relevanceScore, 0.3)
+    }
+
+    func testContent_noTimer_staleDateIsThirtyMinutesOut() {
+        let content = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).content(after: nil)
+        XCTAssertEqual(content.staleDate?.timeIntervalSinceNow ?? 0, 30 * 60, accuracy: 5)
+    }
+
+    func testContent_countdown_staleDateFollowsTimerEnd() {
+        let end = Date().addingTimeInterval(600)
+        var timer = state()
+        timer.chronometer = true
+        timer.countdownEnd = end
+        let content = LiveActivityRegistry.Update(state: timer, relevanceScore: nil).content(after: nil)
+        XCTAssertEqual(content.staleDate, end.addingTimeInterval(2))
+    }
+
+    func testContent_pastCountdown_staleDateStaysInFuture() {
+        var timer = state()
+        timer.chronometer = true
+        timer.countdownEnd = Date().addingTimeInterval(-600)
+        let content = LiveActivityRegistry.Update(state: timer, relevanceScore: nil).content(after: nil)
+        XCTAssertGreaterThan(content.staleDate ?? .distantPast, Date())
+    }
+
+    func testContent_carriesForwardChronometerAnchor() {
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        var previous = state()
+        previous.chronometer = true
+        previous.chronometerStart = start
+        previous.countdownEnd = start.addingTimeInterval(1200)
+        var new = state(message: "updated")
+        new.chronometer = true
+        new.chronometerStart = start.addingTimeInterval(300)
+        new.countdownEnd = start.addingTimeInterval(1500)
+        let update = LiveActivityRegistry.Update(state: new, relevanceScore: nil)
+        let content = update.content(after: ActivityContent(state: previous, staleDate: nil))
+        XCTAssertEqual(content.state.chronometerStart, start)
+        XCTAssertEqual(content.state.countdownEnd, previous.countdownEnd)
+        XCTAssertEqual(content.state.message, "updated")
+    }
+
+    func testInheriting_noScore_takesPreviousScore() {
+        let previous = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.9)
+        let update = LiveActivityRegistry.Update(state: state(message: "next"), relevanceScore: nil)
+            .inheriting(previous)
+        XCTAssertEqual(update.relevanceScore, 0.9)
+        XCTAssertEqual(update.state.message, "next")
+    }
+
+    func testInheriting_score_keepsOwnScore() {
+        let previous = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.9)
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.2).inheriting(previous)
+        XCTAssertEqual(update.relevanceScore, 0.2)
+    }
+
+    func testInheriting_noPrevious_staysNil() {
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).inheriting(nil)
+        XCTAssertNil(update.relevanceScore)
     }
 }
 

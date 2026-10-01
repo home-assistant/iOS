@@ -45,7 +45,7 @@ struct AssistSettingsView: View {
             .navigationTitle(L10n.Assist.Settings.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
                         dismiss()
                     }

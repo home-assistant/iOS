@@ -390,6 +390,7 @@
 "assist.text_field.placeholder" = "Bir istek girin...";
 "assist.watch.mic_button.title" = "Dokunun";
 "assist.watch.not_reachable.title" = "Assist için iPhone bağlantısı gerekir. iPhone'unuza şu anda erişilemiyor.";
+"assist.watch.on_device_stt.no_speech_recognized" = "Herhangi bir konuşma algılanmadı.";
 "assist.watch.volume.title" = "Ses seviyesi kontrolü";
 "assist_pipeline_picker.no_pipelines" = "Mevcut işlem hattı yok";
 "assist_pipeline_picker.placeholder" = "İşlem hattını seçin";
@@ -2400,7 +2401,9 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "tab_bar.item.search" = "Ara";
 "tab_bar.more.app_settings" = "Uygulama Ayarları";
 "tab_bar.more.customize" = "Özelleştir";
+"tab_bar.more.edit_profile" = "Edit profile";
 "tab_bar.more.home_assistant_settings" = "Home Assistant Ayarları";
+"tab_bar.more.other_servers" = "Other servers";
 "tab_bar.more.title" = "Daha fazla";
 "tags.allowed.delete_all" = "Tümünü sil";
 "tags.allowed.delete_all.confirm.button" = "Tümünü sil";
