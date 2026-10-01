@@ -122,11 +122,8 @@ final class WebViewReconnectManager: ObservableObject {
 
         let monitor = NWPathMonitor()
         let queue = DispatchQueue(label: "io.robbie.HomeAssistant.webview-reconnect-network")
-        var previousStatus: NWPath.Status?
         monitor.pathUpdateHandler = { path in
-            let recovered = previousStatus != nil && previousStatus != .satisfied && path.status == .satisfied
-            previousStatus = path.status
-            guard recovered else { return }
+            guard path.status == .satisfied else { return }
             Task { @MainActor in
                 action()
             }
