@@ -30,3 +30,7 @@ struct SafariWebView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {}
 }
 #endif
+
+#Preview {
+    SafariWebView(url: URL(string: "https://www.home-assistant.io")!)
+}

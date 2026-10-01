@@ -11,7 +11,6 @@ struct YamlPreviewSection: View {
     let shareTitle: String
     let yaml: String
 
-    @State private var showShareSheet = false
     @State private var showYamlSheet = false
 
     init(
@@ -42,55 +41,20 @@ struct YamlPreviewSection: View {
                 }
             }
 
-            #if os(macOS)
             ShareLink(item: yaml) {
-                shareLabel
+                Label {
+                    Text(shareTitle)
+                        .foregroundColor(.primary)
+                } icon: {
+                    Image(systemSymbol: .squareAndArrowUp)
+                }
             }
-            #else
-            Button {
-                showShareSheet = true
-            } label: {
-                shareLabel
-            }
-            #endif
         }
-        #if !os(macOS)
-        .sheet(isPresented: $showShareSheet) {
-            YamlShareSheet(activityItems: [yaml])
-        }
-        #endif
         .sheet(isPresented: $showYamlSheet) {
             YamlCodePreviewView(yaml: yaml)
         }
     }
-
-    private var shareLabel: some View {
-        Label {
-            Text(shareTitle)
-                .foregroundColor(.primary)
-        } icon: {
-            Image(systemSymbol: .squareAndArrowUp)
-        }
-    }
 }
-
-#if !os(macOS)
-/// A SwiftUI wrapper around `UIActivityViewController` used to share YAML or
-/// other plain text content from settings screens. The Mac shares through a `ShareLink` instead.
-struct YamlShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-    var applicationActivities: [UIActivity]?
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(
-            activityItems: activityItems,
-            applicationActivities: applicationActivities
-        )
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
-#endif
 
 /// Full-screen readable YAML preview, presented as a sheet from
 /// `YamlPreviewSection`. Provides a copy-to-pasteboard button and close action.

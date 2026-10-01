@@ -106,7 +106,7 @@ struct JinjaTextEditor: NSViewRepresentable {
 
     /// Hands scrolling on to the enclosing form while the text fits, which is nearly always: the editor
     /// grows with its text and only scrolls itself when something holds it to a smaller height.
-    final class EditorScrollView: NSScrollView {
+    fileprivate final class EditorScrollView: NSScrollView {
         override func scrollWheel(with event: NSEvent) {
             if let documentView, documentView.frame.height > contentSize.height {
                 super.scrollWheel(with: event)
@@ -118,7 +118,7 @@ struct JinjaTextEditor: NSViewRepresentable {
 
     /// The text view, reporting what the editor needs to hear of: clicks, to catch the ones on an entity
     /// pill, and a change between light and dark.
-    final class EditorTextView: NSTextView {
+    fileprivate final class EditorTextView: NSTextView {
         /// Asked about every click before the text view acts on it. Returns true when the click landed
         /// on an entity pill and has been dealt with.
         var onMouseDown: ((CGPoint) -> Bool)?
@@ -153,7 +153,7 @@ struct JinjaTextEditor: NSViewRepresentable {
 
     final class Coordinator: NSObject, NSTextViewDelegate {
         var parent: JinjaTextEditor
-        weak var textView: EditorTextView?
+        fileprivate weak var textView: EditorTextView?
         /// Held here because a text view whose text system was assembled by hand doesn't keep its
         /// storage alive.
         var textStorage: NSTextStorage?

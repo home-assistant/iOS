@@ -33,28 +33,28 @@ struct MacWebViewTitleBar: NSViewRepresentable {
     static func dismantleNSView(_ nsView: NSView, coordinator: Coordinator) {
         coordinator.removeToolbar()
     }
-}
 
-private final class MacWebViewTitleBarAnchorView: NSView {
-    private let attachToolbar: (NSWindow?) -> Void
+    private final class MacWebViewTitleBarAnchorView: NSView {
+        private let attachToolbar: (NSWindow?) -> Void
 
-    init(attachToolbar: @escaping (NSWindow?) -> Void) {
-        self.attachToolbar = attachToolbar
-        super.init(frame: .zero)
-    }
+        init(attachToolbar: @escaping (NSWindow?) -> Void) {
+            self.attachToolbar = attachToolbar
+            super.init(frame: .zero)
+        }
 
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
 
-    override func viewDidMoveToWindow() {
-        super.viewDidMoveToWindow()
-        attachToolbar(window)
-    }
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            attachToolbar(window)
+        }
 
-    override func hitTest(_ point: NSPoint) -> NSView? {
-        nil
+        override func hitTest(_ point: NSPoint) -> NSView? {
+            nil
+        }
     }
 }
 #else

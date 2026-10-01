@@ -277,18 +277,15 @@ struct CarPlayConfigurationView: View {
             NavigationLink {
                 CarPlayTabsSelectionView(viewModel: viewModel)
             } label: {
-                tabsSummary
+                Text(viewModel.config.tabs.map { viewModel.config.name(for: $0) }.joined(separator: ", "))
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             #else
-            tabsSummary
+            Text(viewModel.config.tabs.map { viewModel.config.name(for: $0) }.joined(separator: ", "))
+                .frame(maxWidth: .infinity, alignment: .leading)
             #endif
         }
         .animation(.bouncy, value: viewModel.config.tabs)
-    }
-
-    private var tabsSummary: some View {
-        Text(viewModel.config.tabs.map { viewModel.config.name(for: $0) }.joined(separator: ", "))
-            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var resetView: some View {

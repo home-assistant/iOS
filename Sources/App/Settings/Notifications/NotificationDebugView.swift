@@ -5,8 +5,6 @@ import SwiftUI
 struct NotificationDebugView: View {
     @StateObject private var viewModel = NotificationDebugViewModel()
 
-    @State private var showShareSheet = false
-    @State private var shareItems: [Any] = []
     @State private var resetAlert: ResetAlertInfo?
     @State private var ratePromise: Promise<RateLimitResponse>?
     @State private var rateLimitRemaining: Int?
@@ -41,23 +39,18 @@ struct NotificationDebugView: View {
                     Text(L10n.SettingsDetails.Location.Notifications.header)
                 }
 
-                #if os(macOS)
-                if let pushID = viewModel.pushID {
-                    ShareLink(item: pushID) {
-                        pushIDLabel
+                ShareLink(item: viewModel.pushID ?? "") {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                        Text(L10n.SettingsDetails.Notifications.PushIdSection.header)
+                            .foregroundColor(.primary)
+                        Text(viewModel.pushIDDisplay)
+                            .foregroundColor(.secondary)
+                            .font(.footnote)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
                     }
-                } else {
-                    pushIDLabel
                 }
-                #else
-                Button {
-                    guard let id = viewModel.pushID else { return }
-                    shareItems = [id]
-                    showShareSheet = true
-                } label: {
-                    pushIDLabel
-                }
-                #endif
+                .disabled(viewModel.pushID == nil)
 
                 Button {
                     viewModel.resetPushID { result in
@@ -88,29 +81,12 @@ struct NotificationDebugView: View {
                 ratePromise = promise
             }
         }
-        #if !os(macOS)
-        .sheet(isPresented: $showShareSheet) {
-            NotificationsShareSheet(activityItems: shareItems)
-        }
-        #endif
         .alert(item: $resetAlert) { info in
             Alert(
                 title: Text(info.title),
                 message: Text(info.message),
                 dismissButton: .default(Text(L10n.okLabel))
             )
-        }
-    }
-
-    private var pushIDLabel: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            Text(L10n.SettingsDetails.Notifications.PushIdSection.header)
-                .foregroundColor(.primary)
-            Text(viewModel.pushIDDisplay)
-                .foregroundColor(.secondary)
-                .font(.footnote)
-                .lineLimit(1)
-                .truncationMode(.middle)
         }
     }
 }

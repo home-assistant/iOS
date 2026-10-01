@@ -85,3 +85,7 @@ struct ShareActivityView: UIViewControllerRepresentable {
     ) {}
 }
 #endif
+
+#Preview {
+    ShareActivityView(activityItems: ["Home Assistant"])
+}

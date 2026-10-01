@@ -125,16 +125,27 @@ struct DebugView: View {
             criticalSection
 
             if tapsOnCasitaLogo < 10 {
-                #if os(macOS)
-                // A grouped form draws every row in a card, which the logo is not meant to have; a section
-                // header is drawn outside one.
-                Section {} header: {
-                    casitaButton
+                Button(action: {
+                    feedbackGenerator.notificationOccurred(.success)
+                    tapsOnCasitaLogo += 1
+                }, label: {
+                    Image(uiImage: Asset.casita.image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 100, height: 100, alignment: .center)
+                })
+                .frame(maxWidth: .infinity, alignment: .center)
+                .modify { button in
+                    #if os(macOS)
+                    // A grouped form draws every row in a card, which the logo is not meant to have; a
+                    // section header is drawn outside one.
+                    Section {} header: {
+                        button
+                    }
+                    #else
+                    button.listRowBackground(Color.clear)
+                    #endif
                 }
-                #else
-                casitaButton
-                    .listRowBackground(Color.clear)
-                #endif
             } else {
                 developerSection
             }
@@ -253,19 +264,6 @@ struct DebugView: View {
                     .animation(.easeOut(duration: 2), value: showProgressView)
             }
         }
-    }
-
-    private var casitaButton: some View {
-        Button(action: {
-            feedbackGenerator.notificationOccurred(.success)
-            tapsOnCasitaLogo += 1
-        }, label: {
-            Image(uiImage: Asset.casita.image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100, alignment: .center)
-        })
-        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var criticalSection: some View {

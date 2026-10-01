@@ -12,20 +12,11 @@ struct MacSwiftUISheetHostView: View {
         Color.clear
             .frame(width: 0, height: 0)
             .sheet(isPresented: $model.isPresented, onDismiss: { model.onDismiss?() }) {
-                sizedScreen
+                model.screen
+                    .frame(width: model.size?.width, height: model.size?.height)
                     .environment(\.isPresentedInMacSheet, true)
                     .background(ViewControllerResolver(onResolve: onResolveContentController))
             }
-    }
-
-    @ViewBuilder
-    private var sizedScreen: some View {
-        if let size = model.size {
-            model.screen
-                .frame(width: size.width, height: size.height)
-        } else {
-            model.screen
-        }
     }
 }
 

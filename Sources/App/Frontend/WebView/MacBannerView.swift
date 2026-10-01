@@ -12,6 +12,12 @@ struct MacBannerView: View {
     let onDismiss: () -> Void
     let onAction: () -> Void
 
+    /// How far below its resting place the banner starts and ends its slide.
+    private static let hiddenOffset: CGFloat = 120
+    private static let shadowRadius: CGFloat = 18
+    private static let shadowOffset: CGFloat = 6
+    private static let shadowOpacity: CGFloat = 0.18
+
     var body: some View {
         ZStack(alignment: .bottom) {
             if request.dimming != .none {
@@ -26,61 +32,57 @@ struct MacBannerView: View {
                     .accessibilityAddTraits(request.dimming.isInteractive ? .isButton : [])
             }
 
-            banner
-                .padding(DesignSystem.Spaces.two)
-                .background(GeometryReader { proxy in
-                    Color.clear
-                        .onAppear { model.bannerFrame = proxy.frame(in: .global) }
-                        .onChange(of: proxy.frame(in: .global)) { model.bannerFrame = $0 }
-                })
-                .offset(y: model.isPresented ? 0 : 120)
-                .opacity(model.isPresented ? 1 : 0)
+            HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                    if let title = request.title {
+                        Text(title)
+                            .font(.headline)
+                    }
+                    if let message = request.message {
+                        Text(message)
+                            .font(.subheadline)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundStyle(Color(uiColor: request.style.foregroundColor))
+
+                if let action = request.action {
+                    Button(action: onAction) {
+                        HStack(spacing: DesignSystem.Spaces.half) {
+                            if let image = action.image {
+                                Image(uiImage: image)
+                                    .renderingMode(.template)
+                            }
+                            if let title = action.title {
+                                Text(title)
+                                    .font(.headline)
+                            }
+                        }
+                        .foregroundStyle(Color(uiColor: action.tintColor))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(action.accessibilityLabel ?? action.title ?? "")
+                }
+            }
+            .padding(.vertical, DesignSystem.Spaces.oneAndHalf)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .background(
+                Color(uiColor: request.style.backgroundColor),
+                in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
+            )
+            .shadow(color: .black.opacity(Self.shadowOpacity), radius: Self.shadowRadius, y: Self.shadowOffset)
+            .accessibilityIdentifier(request.id)
+            .padding(DesignSystem.Spaces.two)
+            .background(GeometryReader { proxy in
+                Color.clear
+                    .onAppear { model.bannerFrame = proxy.frame(in: .global) }
+                    .onChange(of: proxy.frame(in: .global)) { model.bannerFrame = $0 }
+            })
+            .offset(y: model.isPresented ? 0 : Self.hiddenOffset)
+            .opacity(model.isPresented ? 1 : 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.easeOut(duration: Self.animationDuration), value: model.isPresented)
-    }
-
-    private var banner: some View {
-        HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                if let title = request.title {
-                    Text(title)
-                        .font(.headline)
-                }
-                if let message = request.message {
-                    Text(message)
-                        .font(.subheadline)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .foregroundStyle(Color(uiColor: request.style.foregroundColor))
-
-            if let action = request.action {
-                Button(action: onAction) {
-                    HStack(spacing: DesignSystem.Spaces.half) {
-                        if let image = action.image {
-                            Image(uiImage: image)
-                                .renderingMode(.template)
-                        }
-                        if let title = action.title {
-                            Text(title)
-                                .font(.headline)
-                        }
-                    }
-                    .foregroundStyle(Color(uiColor: action.tintColor))
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(action.accessibilityLabel ?? action.title ?? "")
-            }
-        }
-        .padding(.vertical, DesignSystem.Spaces.oneAndHalf)
-        .padding(.horizontal, DesignSystem.Spaces.two)
-        .background(
-            Color(uiColor: request.style.backgroundColor),
-            in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
-        )
-        .shadow(color: .black.opacity(0.18), radius: 18, y: 6)
-        .accessibilityIdentifier(request.id)
     }
 }
 

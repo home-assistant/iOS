@@ -10,17 +10,6 @@ public protocol WCTransferHandle: AnyObject {}
 #if canImport(WatchConnectivity)
 extension WCSessionUserInfoTransfer: WCTransferHandle {}
 extension WCSessionFileTransfer: WCTransferHandle {}
-#else
-// WatchConnectivity does not exist on macOS. These stand in for the two framework types the session
-// abstraction names, so the connectivity layer still compiles there; with no session to hand it, the
-// manager reports itself as unsupported and every send fails the way it does on an iPad.
-public protocol WCSessionDelegate: AnyObject {}
-
-public enum WCSessionActivationState: Int {
-    case notActivated
-    case inactive
-    case activated
-}
 #endif
 
 /// The subset of `WCSession` the connectivity layer touches, abstracted for testability. `…Proxy`

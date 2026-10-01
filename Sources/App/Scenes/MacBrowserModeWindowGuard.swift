@@ -38,4 +38,8 @@ struct MacBrowserModeWindowGuard: NSViewRepresentable {
         }
     }
 }
+
+#Preview {
+    MacBrowserModeWindowGuard()
+}
 #endif

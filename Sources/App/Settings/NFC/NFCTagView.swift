@@ -4,7 +4,6 @@ import SwiftUI
 struct NFCTagView: View {
     let identifier: String
 
-    @State private var showShareSheet = false
     @State private var showYamlSheet = false
 
     var body: some View {
@@ -15,14 +14,9 @@ struct NFCTagView: View {
         }
         .navigationTitle(L10n.Nfc.Detail.title)
         .navigationBarTitleDisplayMode(.inline)
-        #if !os(macOS)
-            .sheet(isPresented: $showShareSheet) {
-                NFCShareSheet(activityItems: [identifier])
-            }
-        #endif
-            .sheet(isPresented: $showYamlSheet) {
-                YamlCodeView(yaml: yamlExample)
-            }
+        .sheet(isPresented: $showYamlSheet) {
+            YamlCodeView(yaml: yamlExample)
+        }
     }
 
     private var identifierSection: some View {
@@ -47,31 +41,19 @@ struct NFCTagView: View {
                 }
             }
 
-            #if os(macOS)
             ShareLink(item: identifier) {
-                shareLabel
+                Label {
+                    Text(L10n.Nfc.Detail.share)
+                        .foregroundColor(.primary)
+                } icon: {
+                    Image(uiImage: MaterialDesignIcons.exportIcon.image(
+                        ofSize: CGSize(width: 24, height: 24),
+                        color: .label
+                    ))
+                    .renderingMode(.template)
+                    .rotationEffect(.degrees(-90))
+                }
             }
-            #else
-            Button {
-                showShareSheet = true
-            } label: {
-                shareLabel
-            }
-            #endif
-        }
-    }
-
-    private var shareLabel: some View {
-        Label {
-            Text(L10n.Nfc.Detail.share)
-                .foregroundColor(.primary)
-        } icon: {
-            Image(uiImage: MaterialDesignIcons.exportIcon.image(
-                ofSize: CGSize(width: 24, height: 24),
-                color: .label
-            ))
-            .renderingMode(.template)
-            .rotationEffect(.degrees(-90))
         }
     }
 
@@ -137,24 +119,6 @@ struct NFCTagView: View {
         """
     }
 }
-
-// MARK: - Activity View Controller (Share Sheet)
-
-#if !os(macOS)
-struct NFCShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-    let applicationActivities: [UIActivity]? = nil
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(
-            activityItems: activityItems,
-            applicationActivities: applicationActivities
-        )
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
-#endif
 
 // MARK: - YAML Code View
 

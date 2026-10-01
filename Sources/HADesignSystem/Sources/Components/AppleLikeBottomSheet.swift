@@ -76,6 +76,21 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     /// The card alone, for when a Mac sheet is the panel around it: no dimming, no slide-in, and dismissed
     /// as soon as it is asked to be.
     private var macSheetCard: some View {
+        card
+            .frame(width: AppleLikeBottomSheetConstants.regularWidth)
+            .fixedSize(horizontal: false, vertical: true)
+            .onAppear {
+                state = .initial
+            }
+            .onChange(of: state) { newValue in
+                if newValue == .dismiss {
+                    performDismiss()
+                }
+            }
+    }
+    #endif
+
+    private var card: some View {
         VStack(spacing: .zero) {
             header
             content
@@ -83,19 +98,8 @@ public struct AppleLikeBottomSheet<Content: View>: View {
                 .padding(contentInsets)
         }
         .padding(.horizontal)
-        .frame(width: AppleLikeBottomSheetConstants.regularWidth)
         .frame(minHeight: bottomSheetMinHeight)
-        .fixedSize(horizontal: false, vertical: true)
-        .onAppear {
-            state = .initial
-        }
-        .onChange(of: state) { newValue in
-            if newValue == .dismiss {
-                performDismiss()
-            }
-        }
     }
-    #endif
 
     private var overlay: some View {
         VStack {
@@ -133,27 +137,20 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     private var bottomSheet: some View {
-        VStack(spacing: .zero) {
-            header
-            content
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(contentInsets)
-        }
-        .padding(.horizontal)
-        .frame(minHeight: bottomSheetMinHeight)
-        .frame(maxWidth: maxWidth, alignment: .center)
-        .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
-        .shadow(color: .black.opacity(0.2), radius: 20)
-        .padding(DesignSystem.Spaces.one)
-        .fixedSize(horizontal: false, vertical: true)
-        .offset(y: displayBottomSheet ? 0 : bottomSheetMinHeight)
-        .onAppear {
-            state = .initial
-            withAnimation(.bouncy) {
-                displayBottomSheet = true
+        card
+            .frame(maxWidth: maxWidth, alignment: .center)
+            .background(Color(uiColor: .systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
+            .shadow(color: .black.opacity(0.2), radius: 20)
+            .padding(DesignSystem.Spaces.one)
+            .fixedSize(horizontal: false, vertical: true)
+            .offset(y: displayBottomSheet ? 0 : bottomSheetMinHeight)
+            .onAppear {
+                state = .initial
+                withAnimation(.bouncy) {
+                    displayBottomSheet = true
+                }
             }
-        }
     }
 
     private func performDismiss() {
