@@ -1,0 +1,101 @@
+name: Record Snapshots
+
+# Temporary: re-records the snapshot references touched by this branch and pushes
+# them back. Delete before merging.
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - bgoncal/health-sensors-remove-labs-badge
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+  BUNDLE_PATH: vendor/bundle
+
+concurrency:
+  group: record-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  record:
+    runs-on: xcode-27
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8  # v1.327.0
+        with:
+          ruby-version: .ruby-version
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+
+      # `SNAPSHOT_TESTING_RECORD` is read from the test process environment, so it has to
+      # reach the simulator through the scheme rather than the runner's shell.
+      - name: Record failing snapshots through the scheme
+        run: |
+          python3 - <<'PY'
+          import re
+
+          path = 'HomeAssistant.xcodeproj/xcshareddata/xcschemes/Tests-Unit.xcscheme'
+          scheme = open(path).read()
+          scheme = scheme.replace('shouldUseLaunchSchemeArgsEnv = "YES"', 'shouldUseLaunchSchemeArgsEnv = "NO"', 1)
+          variables = (
+              '      <EnvironmentVariables>\n'
+              '         <EnvironmentVariable\n'
+              '            key = "SNAPSHOT_TESTING_RECORD"\n'
+              '            value = "failed"\n'
+              '            isEnabled = "YES">\n'
+              '         </EnvironmentVariable>\n'
+              '      </EnvironmentVariables>\n'
+          )
+          scheme = scheme.replace('   </TestAction>', variables + '   </TestAction>', 1)
+          open(path, 'w').write(scheme)
+          PY
+
+      - name: Run snapshot tests
+        continue-on-error: true
+        run: >-
+          xcodebuild test
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+          -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest'
+          -only-testing:Tests-App/SensorListViewTests
+          COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Push re-recorded references
+        run: |
+          git checkout -- HomeAssistant.xcodeproj/xcshareddata/xcschemes/Tests-Unit.xcscheme
+          git add -- 'Tests/App/Settings/__Snapshots__/SensorListView.test'
+          if git diff --cached --quiet; then
+            echo "No snapshot changed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update snapshot references"
+          git push origin HEAD:${{ github.ref_name }}
