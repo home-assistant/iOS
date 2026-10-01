@@ -544,7 +544,11 @@ struct ConnectionSettingsView: View {
                     Task {
                         do {
                             try await viewModel.deleteServer()
+                            // On the Mac this screen is the detail of the Settings window, which moves on to
+                            // another entry by itself; dismissing it would close the window.
+                            #if !os(macOS)
                             dismiss()
+                            #endif
                         } catch {
                             Current.Log.error("Failed to delete server: \(error)")
                             deleteError = error

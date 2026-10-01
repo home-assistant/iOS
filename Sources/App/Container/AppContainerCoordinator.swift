@@ -65,7 +65,8 @@ final class AppContainerCoordinator: AppCoordinator {
         while let next = current?.presentedSheets.last {
             current = next.sheetContentController
         }
-        return current
+        // A sheet SwiftUI put up itself (the server picker) is not in the stack above, but is still on top.
+        return current?.foreignSheetContentController ?? current
     }
 
     func present(_ viewController: NSViewController, animated: Bool, completion: (() -> Void)?) {
@@ -350,7 +351,7 @@ final class AppContainerCoordinator: AppCoordinator {
                     prefs.set(false, forKey: "confirmBeforeOpeningUrl")
                     triggerOpen()
                 },
-                .init(title: L10n.openLabel) { triggerOpen() },
+                .init(title: L10n.openLabel, isPreferred: true) { triggerOpen() },
             ]
         ))
     }

@@ -647,9 +647,16 @@ class IncomingURLHandler {
     /// Shows an alert on top of everything currently on screen; see `presentOnTopmost(_:animated:)`.
     private func presentOnTopmost(_ alert: AppAlert) {
         #if os(macOS)
-        let appCoordinator: AppCoordinator? = coordinator
+        if let coordinator {
+            coordinator.present(alert: alert)
+            return
+        }
         Current.sceneManager.webViewControllerPromise.done { webViewController in
-            alert.present(on: appCoordinator?.window ?? webViewController.presentationWindow)
+            alert
+                .present(
+                    on: webViewController.presentationWindow?.attachedSheet ?? webViewController
+                        .presentationWindow
+                )
         }
         #else
         presentOnTopmost(alert.makeAlertController())
@@ -677,10 +684,7 @@ class IncomingURLHandler {
                 #endif
             }
         ))
-        #if os(iOS)
-        controller.modalPresentationStyle = .overFullScreen
-        controller.view.backgroundColor = .clear
-        #endif
+        controller.presentsAsTransparentOverlay()
         presentOnTopmost(controller, animated: false)
     }
 

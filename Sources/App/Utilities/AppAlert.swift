@@ -17,11 +17,14 @@ struct AppAlert {
 
         var title: String
         var style: Style = .default
+        /// The action Return presses on the Mac, as `UIAlertController.preferredAction` is on iOS.
+        var isPreferred = false
         var handler: (() -> Void)?
 
-        init(title: String, style: Style = .default, handler: (() -> Void)? = nil) {
+        init(title: String, style: Style = .default, isPreferred: Bool = false, handler: (() -> Void)? = nil) {
             self.title = title
             self.style = style
+            self.isPreferred = isPreferred
             self.handler = handler
         }
     }
@@ -36,16 +39,38 @@ struct AppAlert {
         self.actions = actions
     }
 
+    /// The order the Mac's buttons go in. The first one is pressed by Return, so it is the preferred action,
+    /// else the cancel action, else the first ordinary one; a destructive action never comes first unless it
+    /// is all there is.
+    var macButtonOrder: [Action] {
+        let first = actions.first(where: \.isPreferred)
+            ?? actions.first(where: { $0.style == .cancel })
+            ?? actions.first(where: { $0.style == .default })
+            ?? actions.first
+        guard let first else { return [] }
+        let rest = actions.filter { $0.title != first.title || $0.style != first.style }
+        return [first] + rest
+    }
+
+    /// What the Mac shows as the bold message and the text under it: a title is the message, and without
+    /// one the message itself takes its place rather than sitting under an empty line.
+    var macTexts: (message: String, informative: String) {
+        if let title {
+            return (title, message ?? "")
+        }
+        return (message ?? "", "")
+    }
+
     #if os(macOS)
     /// Shows the alert as a sheet on `window`, or as an app-modal alert when there is no window to attach
     /// it to. Call on the main thread.
     func present(on window: NSWindow?) {
         let alert = NSAlert()
-        alert.messageText = title ?? ""
-        alert.informativeText = message ?? ""
+        let texts = macTexts
+        alert.messageText = texts.message
+        alert.informativeText = texts.informative
 
-        // AppKit gives the first button the default role, so the confirming actions go in ahead of cancel.
-        let ordered = actions.filter { $0.style != .cancel } + actions.filter { $0.style == .cancel }
+        let ordered = macButtonOrder
         for action in ordered {
             let button = alert.addButton(withTitle: action.title)
             button.hasDestructiveAction = action.style == .destructive
@@ -75,7 +100,11 @@ struct AppAlert {
             case .cancel: .cancel
             case .destructive: .destructive
             }
-            controller.addAction(UIAlertAction(title: action.title, style: style) { _ in action.handler?() })
+            let alertAction = UIAlertAction(title: action.title, style: style) { _ in action.handler?() }
+            controller.addAction(alertAction)
+            if action.isPreferred {
+                controller.preferredAction = alertAction
+            }
         }
         return controller
     }

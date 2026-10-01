@@ -4,6 +4,7 @@ import ObjectiveC
 import SwiftUI
 
 private var swiftUISheetPresentationsKey: UInt8 = 0
+private var closingSheetPresentationsKey: UInt8 = 0
 private var sheetPresenterKey: UInt8 = 0
 
 /// Sheets on a Mac window, for code that presents controllers the way it does on iOS. A controller holding
@@ -20,6 +21,14 @@ extension NSViewController {
         get { objc_getAssociatedObject(self, &swiftUISheetPresentationsKey) as? [MacSwiftUISheetPresentation] ?? [] }
         set {
             objc_setAssociatedObject(self, &swiftUISheetPresentationsKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+
+    /// Sheets told to close, kept until SwiftUI reports them gone so their hosts can be taken down then.
+    private var closingSheetPresentations: [MacSwiftUISheetPresentation] {
+        get { objc_getAssociatedObject(self, &closingSheetPresentationsKey) as? [MacSwiftUISheetPresentation] ?? [] }
+        set {
+            objc_setAssociatedObject(self, &closingSheetPresentationsKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
@@ -47,6 +56,14 @@ extension NSViewController {
     /// The controllers presented from this one as sheets, oldest first.
     var presentedSheets: [NSViewController] {
         (presentedViewControllers ?? []) + swiftUISheetPresentations.map(\.carrier)
+    }
+
+    /// The content of a sheet on this controller's window that is not in `presentedSheets`, such as one
+    /// SwiftUI put up itself, unless that sheet is on its way out.
+    var foreignSheetContentController: NSViewController? {
+        guard let sheet = view.window?.attachedSheet, let content = sheet.contentViewController else { return nil }
+        let closing = closingSheetPresentations.contains { $0.contentController?.view.window === sheet }
+        return closing ? nil : content
     }
 
     /// The controller to present from in order to land on top of this one: for a SwiftUI screen shown in a
@@ -82,6 +99,7 @@ extension NSViewController {
             record.host.removeFromParent()
             record.carrier.swiftUISheetPresenter = nil
             swiftUISheetPresentations.removeAll { $0 === record }
+            closingSheetPresentations.removeAll { $0 === record }
         }
 
         viewController.swiftUISheetPresenter = self
@@ -91,11 +109,12 @@ extension NSViewController {
         view.addSubview(host.view)
     }
 
-    /// Closes this controller's sheet, whichever kind it was presented in.
+    /// Closes this controller's sheet, whichever kind it was presented in. A SwiftUI sheet leaves the
+    /// stack at once, so whatever is presented next goes on what is under it rather than in it.
     func dismissSheet() {
         if let presenter = swiftUISheetPresenter,
            let presentation = presenter.swiftUISheetPresentations.first(where: { $0.carrier === self }) {
-            presentation.model.isPresented = false
+            presenter.close(presentation)
         } else {
             dismiss(nil)
         }
@@ -104,11 +123,17 @@ extension NSViewController {
     /// Closes every sheet presented from this controller, newest first.
     func dismissPresentedSheets() {
         for presentation in swiftUISheetPresentations.reversed() {
-            presentation.model.isPresented = false
+            close(presentation)
         }
         for presented in (presentedViewControllers ?? []).reversed() {
             dismiss(presented)
         }
+    }
+
+    private func close(_ presentation: MacSwiftUISheetPresentation) {
+        swiftUISheetPresentations.removeAll { $0 === presentation }
+        closingSheetPresentations.append(presentation)
+        presentation.model.isPresented = false
     }
 }
 #endif

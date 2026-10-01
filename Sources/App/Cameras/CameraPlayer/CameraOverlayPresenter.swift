@@ -73,6 +73,7 @@ final class CameraOverlayPresenter {
                 idealHeight: PlayerSize.ideal.height
             )
             .embeddedInHostingController()
+        controller.preferredContentSize = PlayerSize.ideal
         #else
         let controller = player.embeddedInHostingController()
         controller.modalPresentationStyle = .overFullScreen

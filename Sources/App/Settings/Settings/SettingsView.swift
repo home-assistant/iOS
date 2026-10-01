@@ -60,6 +60,11 @@ struct SettingsView: View {
             // next one the user picks.
             .id(macSidebarSelection)
         }
+        .onChange(of: serversObserver.servers.map(\.identifier)) { identifiers in
+            if case let .server(identifier) = macSidebarSelection, !identifiers.contains(identifier) {
+                macSidebarSelection = .item(.general)
+            }
+        }
     }
     #else
     @ViewBuilder
@@ -353,9 +358,13 @@ struct SettingsView: View {
             let serverResults = serverSearchResults
             if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) || !serverResults.isEmpty {
                 Section {
+                    // The native sidebar lists the servers themselves; the servers screen's own rows are
+                    // labels there, so the screen is left out of its results.
+                    #if !os(macOS)
                     if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
                         settingsItemRow(.servers, searchQuery: trimmedSearchQuery)
                     }
+                    #endif
                     ForEach(serverResults, id: \.identifier) { server in
                         MacSettingsSidebarLink(destination: ConnectionSettingsView(server: server)) {
                             serverSearchRow(server: server)
