@@ -86,10 +86,17 @@ struct TurnOnOffEntityAppIntentTests {
         try await withMockedServer { server, connection in
             let entity = Self.entity(serverId: server.identifier.rawValue)
             let task = Task { try await ControlEntityIntentRunner.perform(.turnOn, on: entity) }
+            // The request only lands once the network information has been refreshed, which takes a while on
+            // a loaded machine; giving up keeps a slow refresh from hanging the run on an unanswered perform.
             var waited = 0
-            while connection.pendingRequests.isEmpty, waited < 400 {
+            while connection.pendingRequests.isEmpty, waited < 2000 {
                 try await Task.sleep(nanoseconds: 5_000_000)
                 waited += 1
+            }
+            guard !connection.pendingRequests.isEmpty else {
+                task.cancel()
+                Issue.record("the intent sent no request within 10 seconds")
+                return
             }
             for pending in connection.pendingRequests {
                 pending.completion(.success(Self.stateResponse(entityId: entity.entityId)))
