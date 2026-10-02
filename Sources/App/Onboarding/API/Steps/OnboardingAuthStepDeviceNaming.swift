@@ -46,10 +46,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     static var firstUserDeviceNameInput = true
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        // racing the request, not the whole flow, importantly.
-        // otherwise we'd fail out before the user finished typing.
-
-        return fetchDeviceListWithTimeout().then { [self] registeredDevices -> Promise<Void> in
+        fetchDeviceListWithTimeout().then { [self] registeredDevices -> Promise<Void> in
             guard !registeredDevices.contains(where: { $0.id == Current.settingsStore.integrationDeviceID }) else {
                 // if the integration is registered already, we will take over that one, so we don't need to look
                 return .value(())
@@ -124,6 +121,8 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
             }
         }
 
+        // racing the request, not the whole flow, importantly.
+        // otherwise we'd fail out before the user finished typing.
         return race(timeout, fetchDeviceList())
     }
 
