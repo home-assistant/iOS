@@ -333,8 +333,14 @@ struct WyomingConnectionTests {
     }
 
     /// The listener is open to anything on the local network, so a peer opening sockets without
-    /// ever closing them must not be able to exhaust the process.
-    @Test func refusesConnectionsPastItsLimit() async throws {
+    /// ever closing them must not be able to exhaust the process. The cap bounds what the table
+    /// can hold — it does not decide which peer wins. Past it the oldest connection goes, because
+    /// the newest is the one with a live request behind it.
+    ///
+    /// Turning the newcomer away instead is what used to strand this server: sockets left behind
+    /// by hosts that went away without closing filled the table, and from then on Home Assistant
+    /// could not get a connection at all until the app was relaunched.
+    @Test func dropsTheOldestConnectionPastItsLimit() async throws {
         let recorder = StateRecorder()
         let server = WyomingServer(
             port: .any,
@@ -348,19 +354,29 @@ struct WyomingConnectionTests {
         let boundPort = try await recorder.boundPort()
         let port = try #require(NWEndpoint.Port(rawValue: boundPort))
 
-        // One more than the cap, all held open at once. Only the first is written to: accepting the
-        // socket is what the cap acts on, and a send to a refused connection has nobody to complete
-        // it.
+        // One more than the cap, all held open at once and none of them saying anything — which is
+        // what a host that went away without closing leaves behind. Spaced out so the server
+        // accepts them in the order they were made and "the oldest" means the first of them.
         var clients: [Client] = []
         for _ in 0 ... 8 {
             clients.append(Client(port: port))
+            try await Task.sleep(for: .milliseconds(50))
         }
 
-        // The connection within the cap still answers, which is what proves the refusal was
-        // selective rather than the listener falling over.
-        try await clients[0].send(WyomingEvent(kind: .ping))
-        let firstReply = try await clients[0].receive()
-        #expect(firstReply.kind == .pong)
+        // The newest answers: a table full of sockets that went quiet does not turn it away.
+        let newest = try #require(clients.last)
+        try await newest.send(WyomingEvent(kind: .ping))
+        let reply = try await newest.receive()
+        #expect(reply.kind == .pong)
+
+        // And the table is still bounded: room for it was made by closing the oldest.
+        var oldestWasDropped = false
+        do {
+            _ = try await clients[0].receive()
+        } catch {
+            oldestWasDropped = true
+        }
+        #expect(oldestWasDropped)
 
         for client in clients {
             client.cancel()

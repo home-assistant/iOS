@@ -16,6 +16,13 @@ actor WyomingServer {
         /// a retry overlapping a request. The cap is what keeps a misbehaving peer on the local
         /// network from opening sockets until the app runs out of them.
         static let maximumConnections = 8
+        /// Keepalive is what makes the stack notice a peer that vanished without closing, rather
+        /// than leaving the socket established here forever. The connection's own idle timeout
+        /// already covers a peer that is merely quiet; this covers one that is unreachable while
+        /// this server is mid-answer and has stopped reading.
+        static let keepaliveIdleSeconds = 30
+        static let keepaliveIntervalSeconds = 10
+        static let keepaliveFailuresBeforeDrop = 3
     }
 
     private let requestedPort: NWEndpoint.Port
@@ -28,8 +35,17 @@ actor WyomingServer {
     private let onStateChange: @Sendable (WyomingServerState) -> Void
     private let queue = DispatchQueue(label: "io.home-assistant.wyoming-server", qos: .userInitiated)
 
+    /// One accepted socket. The sequence orders them by arrival, which is what makes "the oldest"
+    /// a thing the server can pick out when it has to make room.
+    private struct Accepted {
+        let sequence: UInt64
+        let handler: WyomingConnection
+        let task: Task<Void, Never>
+    }
+
     private var listener: NWListener?
-    private var connections: [UUID: (handler: WyomingConnection, task: Task<Void, Never>)] = [:]
+    private var connections: [UUID: Accepted] = [:]
+    private var nextSequence: UInt64 = 0
 
     init(
         port: NWEndpoint.Port,
@@ -55,6 +71,12 @@ actor WyomingServer {
         // closed port stays in TIME_WAIT; without this that restart fails with "address in use".
         parameters.allowLocalEndpointReuse = true
         parameters.includePeerToPeer = false
+        if let tcp = parameters.defaultProtocolStack.internetProtocol as? NWProtocolTCP.Options {
+            tcp.enableKeepalive = true
+            tcp.keepaliveIdle = Constants.keepaliveIdleSeconds
+            tcp.keepaliveInterval = Constants.keepaliveIntervalSeconds
+            tcp.keepaliveCount = Constants.keepaliveFailuresBeforeDrop
+        }
 
         let listener: NWListener
         do {
@@ -98,21 +120,27 @@ actor WyomingServer {
         listener?.cancel()
         listener = nil
 
-        for connection in connections.values {
-            // Closing the socket is what ends the handler: its read is parked on a continuation
-            // that cancelling the task alone would never resume.
-            let handler = connection.handler
-            Task { await handler.close() }
-            connection.task.cancel()
+        // Over a copy of the keys: `close` removes the entry it is given, which would otherwise be
+        // a mutation in the middle of iterating the dictionary it comes from.
+        for id in Array(connections.keys) {
+            close(id)
         }
-        connections.removeAll()
     }
 
     private func accept(_ connection: NWConnection) {
-        guard listener != nil, connections.count < Constants.maximumConnections else {
-            Current.Log.warning("Wyoming: refusing connection, \(connections.count) already open")
+        guard listener != nil else {
             connection.cancel()
             return
+        }
+
+        // Turning the newcomer away would mean a few stale sockets locking Home Assistant out
+        // until the app is relaunched — the cap is there to bound memory, not to decide which
+        // peer wins. The newest connection is the one with a live request behind it, so room is
+        // made for it by dropping the connection that has been sitting here longest.
+        while connections.count >= Constants.maximumConnections {
+            guard let oldest = connections.min(by: { $0.value.sequence < $1.value.sequence }) else { break }
+            Current.Log.warning("Wyoming: \(connections.count) connections open, closing the oldest to make room")
+            close(oldest.key)
         }
 
         let id = UUID()
@@ -128,7 +156,17 @@ actor WyomingServer {
             await handler.run()
             finished(id)
         }
-        connections[id] = (handler, task)
+        nextSequence += 1
+        connections[id] = Accepted(sequence: nextSequence, handler: handler, task: task)
+    }
+
+    private func close(_ id: UUID) {
+        guard let accepted = connections.removeValue(forKey: id) else { return }
+        // Closing the socket is what ends the handler: its read is parked on a continuation that
+        // cancelling the task alone would never resume.
+        let handler = accepted.handler
+        Task { await handler.close() }
+        accepted.task.cancel()
     }
 
     private func finished(_ id: UUID) {

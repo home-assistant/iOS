@@ -122,4 +122,46 @@ struct WyomingServerTests {
         let info = try event.decodeData(Info.self)
         #expect(info.tts.first?.installed == true)
     }
+
+    /// The bug this guards against: a peer that goes away without closing leaves its socket
+    /// established here, and once enough of them have piled up the listener used to turn every new
+    /// connection away. Home Assistant was then locked out until the app was relaunched — removing
+    /// and re-adding the integration entry looked like the fix because it made Home Assistant drop
+    /// the sockets it was still holding.
+    @Test func answersAClientAfterStaleConnectionsFillTheTable() async throws {
+        let recorder = StateRecorder()
+        let server = WyomingServer(
+            port: .any,
+            serviceName: "Wyoming server tests",
+            fallbackLocale: Locale(identifier: "en-US"),
+            advertisesOverBonjour: false,
+            onStateChange: { recorder.record($0) }
+        )
+        await server.start()
+        defer { Task { await server.stop() } }
+
+        let boundPort = try await recorder.boundPort()
+        let port = try #require(NWEndpoint.Port(rawValue: boundPort))
+
+        // Connect and say nothing, which is what a host that has vanished leaves behind. More than
+        // the table holds, so the oldest are still being dropped by the time the real client calls.
+        var stale: [NWConnection] = []
+        defer { stale.forEach { $0.cancel() } }
+        for _ in 0 ..< 12 {
+            let connection = NWConnection(host: .ipv4(.loopback), port: port, using: .tcp)
+            connection.start(queue: .global())
+            stale.append(connection)
+        }
+        try await Task.sleep(for: .seconds(1))
+
+        let connection = NWConnection(host: .ipv4(.loopback), port: port, using: .tcp)
+        connection.start(queue: .global())
+        defer { connection.cancel() }
+
+        try await send(WyomingEvent(kind: .describe), over: connection)
+        var buffer = Data()
+        let event = try await receiveEvent(from: connection, buffer: &buffer)
+
+        #expect(event.kind == .info)
+    }
 }

@@ -106,4 +106,25 @@ struct WyomingServerControllerTests {
             controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: false))
         }
     }
+
+    /// A listener can die under a running app — an interface coming and going, or the port being
+    /// taken while it rebinds. The settings it was bound to used to stay recorded as applied, so
+    /// every later `applyConfiguration` and every foreground read them as already satisfied and
+    /// left the dead listener alone. On the Mac, where the app never leaves the screen, that meant
+    /// no voice tools until the app was quit and reopened.
+    @Test func bindsAgainAfterTheListenerFails() throws {
+        try withTestDatabase {
+            let controller = WyomingServerController()
+            let configuration = VoiceToolsServerConfiguration(isEnabled: true, port: 10804)
+            controller.applyConfiguration(configuration)
+
+            controller.listenerFailed()
+            controller.applyConfiguration(configuration)
+
+            // Had the settings still counted as applied, this would have returned without touching
+            // the listener and left whatever the failure put there.
+            #expect(controller.state == .starting || controller.state == .running(port: 10804))
+            controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: false))
+        }
+    }
 }
