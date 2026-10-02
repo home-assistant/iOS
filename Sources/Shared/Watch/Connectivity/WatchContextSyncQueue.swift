@@ -14,7 +14,7 @@ final class WatchContextSyncQueue: @unchecked Sendable {
 
     /// The awaited variant gave up waiting for WCSession. The update may still complete later.
     struct TimedOut: LocalizedError {
-        var errorDescription: String? { "Timed out waiting for the watch to accept the update" }
+        var errorDescription: String? { L10n.Watch.ContextSync.timedOut }
     }
 
     private let perform: (HAWatchConnectivity.Context) throws -> Void

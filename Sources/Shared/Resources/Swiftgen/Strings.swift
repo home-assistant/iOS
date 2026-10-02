@@ -8698,6 +8698,10 @@ public enum L10n {
         }
       }
     }
+    public enum ContextSync {
+      /// Timed out waiting for the watch to accept the update.
+      public static var timedOut: String { return L10n.tr("Localizable", "watch.context_sync.timed_out") }
+    }
     public enum CoverControls {
       /// Close
       public static var close: String { return L10n.tr("Localizable", "watch.cover_controls.close") }

@@ -188,8 +188,10 @@ final class ComplicationEditViewModel: ObservableObject {
 
     private func pushUpdate(server: Server?) {
         // The context carries the full complication set, so a deleted last complication reaches
-        // older watch builds even when there is nothing left for the server to render.
+        // older watch builds even when there is nothing left for the server to render; current
+        // watch builds read it from the database mirror, so push that too.
         HomeAssistantAPI.syncWatchContext()
+        WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
         guard let server else { return }
         (
             Current.api(for: server)?.updateComplications(passively: false) ??

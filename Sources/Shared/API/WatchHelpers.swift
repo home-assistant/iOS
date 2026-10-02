@@ -182,7 +182,8 @@ public extension HomeAssistantAPI {
     /// settings "Reload" button. Distinguishes "no watch" (so the UI can explain why) from a transport
     /// failure (so the UI can show the error).
     static func reloadWatchComplications() async -> WatchReloadOutcome {
-        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
+        // The cached state, for the same reason as `hasWatchToSync`.
+        guard case .paired(.installed) = Communicator.shared.lastKnownWatchState else {
             Current.Log.warning("Watch reload requested but watch not paired or app not installed")
             return .watchUnavailable
         }

@@ -2,37 +2,37 @@ import Foundation
 @testable import Shared
 import Testing
 
-/// Counts the syncs a `WatchContextSyncQueue` performs and can be told to fail them.
-private final class RecordingSync: @unchecked Sendable {
-    private let lock = NSLock()
-    private var count = 0
-    private let performed = DispatchSemaphore(value: 0)
-
-    var error: Error?
-
-    var performCount: Int {
-        lock.lock(); defer { lock.unlock() }
-        return count
-    }
-
-    func perform(_ context: HAWatchConnectivity.Context) throws {
-        lock.lock()
-        count += 1
-        lock.unlock()
-        performed.signal()
-        if let error { throw error }
-    }
-
-    func waitForPerform() -> Bool {
-        performed.wait(timeout: .now() + 5) == .success
-    }
-}
-
-private struct SyncFailed: LocalizedError {
-    var errorDescription: String? { "sync failed" }
-}
-
 struct WatchContextSync_test {
+    /// Counts the syncs a `WatchContextSyncQueue` performs and can be told to fail them.
+    private final class RecordingSync: @unchecked Sendable {
+        private let lock = NSLock()
+        private var count = 0
+        private let performed = DispatchSemaphore(value: 0)
+
+        var error: Error?
+
+        var performCount: Int {
+            lock.lock(); defer { lock.unlock() }
+            return count
+        }
+
+        func perform(_ context: HAWatchConnectivity.Context) throws {
+            lock.lock()
+            count += 1
+            lock.unlock()
+            performed.signal()
+            if let error { throw error }
+        }
+
+        func waitForPerform() -> Bool {
+            performed.wait(timeout: .now() + 5) == .success
+        }
+    }
+
+    private struct SyncFailed: LocalizedError {
+        var errorDescription: String? { "sync failed" }
+    }
+
     @Test func awaitedSyncSkipsWithoutAWatch() async {
         let fake = RecordingSync()
         let queue = WatchContextSyncQueue(label: "test", perform: fake.perform)
@@ -82,7 +82,6 @@ struct WatchContextSync_test {
         #expect(fake.performCount == 0)
     }
 
-    #if os(iOS)
     @Test func reloadReportsSuccess() async {
         let fake = RecordingSync()
         let queue = WatchContextSyncQueue(label: "test", perform: fake.perform)
@@ -102,7 +101,6 @@ struct WatchContextSync_test {
 
         #expect(outcome == .failed("sync failed"))
     }
-    #endif
 
     @Test func sharedQueueReportsTheSessionError() async {
         // The test host has no activated session with a paired counterpart, so the real sync must
