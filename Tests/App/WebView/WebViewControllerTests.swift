@@ -150,6 +150,107 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(overlayState.emptyState)
     }
 
+    /// The frontend usually loses its connection *because* the app went to the background, and gets it back
+    /// as soon as it is on screen again. Showing the empty state in the meantime would greet the returning
+    /// user with an error that is already out of date.
+    func testShowEmptyStateIsDeferredWhileTheAppIsNotActive() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isAppActive = { false }
+        sut.connectionState = .disconnected
+
+        sut.showEmptyState()
+
+        XCTAssertNil(overlayState.emptyState)
+        XCTAssertTrue(sut.isEmptyStateDeferredUntilActive)
+    }
+
+    func testShowEmptyStateIsNotDeferredForAuthenticationProblemsWhileTheAppIsNotActive() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isAppActive = { false }
+        sut.connectionState = .authInvalid
+
+        sut.showEmptyState()
+
+        XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+    }
+
+    func testBecomingActiveGivesADeferredEmptyStateTheGracePeriodInsteadOfShowingIt() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isAppActive = { false }
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+
+        sut.isAppActive = { true }
+        sut.applicationDidBecomeActive()
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(overlayState.emptyState)
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
+    func testBecomingActiveDropsADeferredEmptyStateOnceTheFrontendIsReady() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isEmptyStateDeferredUntilActive = true
+        sut.connectionState = .loaded
+
+        sut.applicationDidBecomeActive()
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(overlayState.emptyState)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    func testHideEmptyStateForgetsADeferredEmptyState() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isAppActive = { false }
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+
+        sut.hideEmptyState()
+        sut.isAppActive = { true }
+        sut.applicationDidBecomeActive()
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    /// A grace period the app slept through gave the frontend no time to reconnect, so it starts over.
+    func testBecomingActiveAfterTheBackgroundRestartsAPendingGracePeriod() throws {
+        let sut = makeSUT()
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+        let pendingTimer = try XCTUnwrap(sut.emptyStateTimer)
+
+        sut.applicationDidEnterBackground()
+        sut.applicationDidBecomeActive()
+
+        XCTAssertFalse(pendingTimer.isValid)
+        XCTAssertNotNil(sut.emptyStateTimer)
+        XCTAssertFalse(pendingTimer === sut.emptyStateTimer)
+    }
+
+    /// Dismissing a system alert or the app switcher activates the app without it having been away.
+    func testBecomingActiveWithoutBackgroundingKeepsAPendingGracePeriod() throws {
+        let sut = makeSUT()
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+        let pendingTimer = try XCTUnwrap(sut.emptyStateTimer)
+
+        sut.applicationDidBecomeActive()
+
+        XCTAssertTrue(pendingTimer === sut.emptyStateTimer)
+        XCTAssertTrue(pendingTimer.isValid)
+    }
+
     func testExternalAuthFailureMarksDisconnectedAndArmsEmptyStateTimer() {
         let sut = makeSUT()
         let overlayState = WebFrontendOverlayState()
@@ -1037,6 +1138,7 @@ final class WebViewControllerTests: XCTestCase {
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
+        sut.isAppActive = { true }
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
         sut.setValue(containerView, forKey: "view")
         return sut
@@ -1276,6 +1378,31 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         XCTAssertNil(sut.loadActiveURLTaskStartDate)
     }
 
+    /// A page that failed to load while the app was away is not coming back on its own, and nothing is
+    /// behind the deferred empty state to look at, so activation reloads it: the loader goes up, and a
+    /// failure that persists shows the empty state right away this time.
+    func testBecomingActiveReloadsAFrontendWhosePageFailedWhileTheAppWasNotActive() async {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isAppActive = { false }
+        sut.connectionState = .disconnected
+        sut.latestLoadError = URLError(.notConnectedToInternet)
+        sut.showEmptyState()
+        XCTAssertTrue(sut.isEmptyStateDeferredUntilActive)
+
+        sut.isAppActive = { true }
+        sut.applicationDidBecomeActive()
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(overlayState.emptyState)
+        // Server.fake()'s active URL; set when the provisional navigation starts.
+        await waitUntil { sut.webView.url != nil }
+        XCTAssertEqual(sut.webView.url?.host, "homeassistant.local")
+        // The hard reload armed the grace period the way any reload does.
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
     func testLoadActiveURLRequestsNavigationAndClearsInFlightState() async {
         let sut = makeSUT()
 
@@ -1379,6 +1506,7 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
+        sut.isAppActive = { true }
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
         // KVC-setting the view bypasses loadView/viewDidLoad, so the webView the URL-loading
         // paths dereference must be provided explicitly.

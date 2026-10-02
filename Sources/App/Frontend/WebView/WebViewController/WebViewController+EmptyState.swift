@@ -27,7 +27,21 @@ extension WebViewController {
 
     /// Shows the disconnected/unauthenticated empty state as a SwiftUI overlay in `HomeAssistantView` (via
     /// `overlayState`) rather than an alpha-animated subview, so app-level sheets can float over it.
+    ///
+    /// While the app is not active the disconnected variant is held back instead: nobody can see it, and
+    /// the usual reason the frontend is disconnected is the backgrounding itself (its socket died, or the
+    /// web content process was reclaimed, while the app was away), which a frontend that is on screen
+    /// again recovers from in a moment. `applicationDidBecomeActive()` gives it the grace period for
+    /// that, so the user coming back sees the frontend or the loader rather than an error that is
+    /// already out of date. Authentication and certificate problems are shown regardless: time does not
+    /// fix those, and the frontend has nothing to retry.
     func showEmptyState() {
+        if !isAppActive(), emptyStateStyle(for: connectionState) == .disconnected {
+            Current.Log.info("Deferring the disconnected empty state until the app is active")
+            isEmptyStateDeferredUntilActive = true
+            return
+        }
+        isEmptyStateDeferredUntilActive = false
         withAnimation(DesignSystem.Animation.easeInOutFaster) {
             overlayState?.emptyState = makeEmptyStateContent()
         }
@@ -61,6 +75,7 @@ extension WebViewController {
     }
 
     @objc func hideEmptyState() {
+        isEmptyStateDeferredUntilActive = false
         withAnimation(DesignSystem.Animation.easeInOutFaster) {
             overlayState?.emptyState = nil
         }
@@ -71,6 +86,40 @@ extension WebViewController {
 
     var shouldShowErrorDetailsButton: Bool {
         connectionState == .disconnected && latestLoadError != nil
+    }
+
+    @objc func applicationDidEnterBackground() {
+        didEnterBackgroundSinceLastActivation = true
+    }
+
+    /// Settles what the background left behind now that the outcome is visible. A deferred empty state
+    /// does not simply appear: a frontend whose page failed to load is reloaded, which puts the loader up
+    /// and lets a failure that persists show the empty state right away, and a frontend whose page is
+    /// still there gets the grace period to reconnect on its own. A grace period that was already running
+    /// when the app went to the background starts over, since the frontend could not use the part the
+    /// app slept through.
+    @objc func applicationDidBecomeActive() {
+        let returnedFromBackground = didEnterBackgroundSinceLastActivation
+        didEnterBackgroundSinceLastActivation = false
+
+        guard isEmptyStateDeferredUntilActive else {
+            if returnedFromBackground, emptyStateTimer != nil {
+                Current.Log.info("Restarting the empty state grace period after returning from the background")
+                scheduleEmptyStateAfterGracePeriod()
+            }
+            return
+        }
+        isEmptyStateDeferredUntilActive = false
+
+        guard !connectionState.isReadyForDisplay, overlayState?.emptyState == nil else { return }
+
+        if latestLoadError != nil || contentProcessTerminations > 0 {
+            Current.Log.info("Reloading the frontend that failed while the app was not active")
+            refresh()
+        } else {
+            Current.Log.info("Giving the frontend its grace period to reconnect now that the app is active")
+            scheduleEmptyStateAfterGracePeriod()
+        }
     }
 
     /// Arms the grace timer that shows the empty state unless a `connected`/`loaded` frontend state

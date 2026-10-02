@@ -101,6 +101,17 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
+    /// Whether the app is active, i.e. on screen and receiving events; replaceable in tests.
+    var isAppActive: @MainActor () -> Bool = { UIApplication.shared.applicationState == .active }
+
+    /// Set when the disconnected empty state was asked for while the app was not active. Nobody could
+    /// see it, and the frontend gets its grace period again once the app is; see `showEmptyState()`.
+    var isEmptyStateDeferredUntilActive = false
+
+    /// Set on entering the background and consumed by the next activation, which is how an activation
+    /// that follows a backgrounding is told apart from one that follows a system alert or the app switcher.
+    var didEnterBackgroundSinceLastActivation = false
+
     var blankFrontendRecoveryAttempts = 0
     var contentProcessTerminations = 0
 

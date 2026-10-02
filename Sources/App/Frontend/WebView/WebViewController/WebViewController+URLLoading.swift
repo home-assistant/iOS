@@ -29,6 +29,20 @@ extension WebViewController {
 
         NotificationCenter.default.addObserver(
             self,
+            selector: #selector(applicationDidEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
             selector: #selector(serverVersionDidChange(_:)),
             name: HomeAssistantAPI.serverVersionDidChangeNotification,
             object: nil
