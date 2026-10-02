@@ -18,19 +18,20 @@ actor WyomingConnection {
         /// enough that a long answer is not one enormous write, large enough to keep the framing
         /// overhead irrelevant.
         static let synthesizedChunkBytes = 4096
-        /// How long a client may leave this server waiting for its next event before the socket is
-        /// closed from under it.
-        ///
-        /// Nothing in TCP tells a reader that is only ever reading that its peer has gone: a host
-        /// that slept, lost its route, or was unplugged leaves the connection established on this
-        /// side for as long as the process lives. Those sockets are what fills the server's small
-        /// connection table, and once it is full Home Assistant cannot get in at all.
-        ///
-        /// A minute is far longer than any real gap. Home Assistant opens a connection per request
-        /// and sends straight away, and streams speech as `audio-chunk` events about 90 ms apart —
-        /// it only waits on this server, never the other way round.
-        static let idleReadTimeout: TimeInterval = 60
     }
+
+    /// How long a client may leave this server waiting for its next event before the socket is
+    /// closed from under it.
+    ///
+    /// Nothing in TCP tells a reader that is only ever reading that its peer has gone: a host that
+    /// slept, lost its route, or was unplugged leaves the connection established on this side for
+    /// as long as the process lives. Those sockets are what fills the server's small connection
+    /// table, and once it is full Home Assistant cannot get in at all.
+    ///
+    /// A minute is far longer than any real gap. Home Assistant opens a connection per request and
+    /// sends straight away, and streams speech as `audio-chunk` events about 90 ms apart — it only
+    /// waits on this server, never the other way round.
+    static let defaultIdleReadTimeout: TimeInterval = 60
 
     /// `transcribe` names the language Home Assistant's pipeline is configured for.
     private struct TranscribeRequest: Decodable {
@@ -62,6 +63,8 @@ actor WyomingConnection {
     /// Used when the client transcribes without naming a language, which the protocol allows.
     private let fallbackLocale: Locale
     private let makeRecognizer: OnDeviceRecognizerFactory
+    /// Shortened by tests, which cannot wait out a minute of silence to prove the socket closes.
+    private let idleReadTimeout: TimeInterval
     private let synthesizer = WyomingSpeechSynthesizer()
 
     private var buffer = Data()
@@ -72,12 +75,14 @@ actor WyomingConnection {
         connection: NWConnection,
         queue: DispatchQueue,
         fallbackLocale: Locale,
-        makeRecognizer: @escaping OnDeviceRecognizerFactory
+        makeRecognizer: @escaping OnDeviceRecognizerFactory,
+        idleReadTimeout: TimeInterval = WyomingConnection.defaultIdleReadTimeout
     ) {
         self.connection = connection
         self.queue = queue
         self.fallbackLocale = fallbackLocale
         self.makeRecognizer = makeRecognizer
+        self.idleReadTimeout = idleReadTimeout
     }
 
     /// Reads and answers events until the client hangs up or the task is cancelled.
@@ -223,11 +228,11 @@ actor WyomingConnection {
         // `receive` cannot be given a deadline and the continuation below only resumes when the
         // socket does something, so the watchdog closes the socket instead: that is what resumes a
         // read parked against a peer that is never going to answer.
-        let watchdog = DispatchWorkItem { [connection] in
-            Current.Log.warning("Wyoming: closing a connection idle for \(Int(Constants.idleReadTimeout))s")
+        let watchdog = DispatchWorkItem { [connection, idleReadTimeout] in
+            Current.Log.warning("Wyoming: closing a connection idle for \(Int(idleReadTimeout))s")
             connection.cancel()
         }
-        queue.asyncAfter(deadline: .now() + Constants.idleReadTimeout, execute: watchdog)
+        queue.asyncAfter(deadline: .now() + idleReadTimeout, execute: watchdog)
         defer { watchdog.cancel() }
 
         return try await withCheckedThrowingContinuation { continuation in

@@ -34,7 +34,15 @@ final class WyomingServerController: ObservableObject {
     /// the listener that replaced it.
     private var generation = 0
     private var retry: Task<Void, Never>?
-    private var retryDelay = Constants.firstRetryDelay
+    /// Shortened by tests, which cannot wait out the real backoff to prove the port is bound again.
+    private let firstRetryDelay: TimeInterval
+    private var retryDelay: TimeInterval
+
+    init(firstRetryDelay: TimeInterval? = nil) {
+        let first = firstRetryDelay ?? Constants.firstRetryDelay
+        self.firstRetryDelay = first
+        self.retryDelay = first
+    }
 
     /// The settings a listener is bound to. The port is all of it: everything else a Wyoming
     /// client asks for is read per request.
@@ -98,7 +106,7 @@ final class WyomingServerController: ObservableObject {
 
         switch state {
         case .running:
-            retryDelay = Constants.firstRetryDelay
+            retryDelay = firstRetryDelay
         case .failed:
             listenerFailed()
         case .stopped, .starting:

@@ -127,4 +127,26 @@ struct WyomingServerControllerTests {
             controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: false))
         }
     }
+
+    /// And it binds again on its own. On the Mac there is no foreground to come back on, so a
+    /// listener that died has to be retried rather than wait for something to ask.
+    @Test func retriesOnItsOwnAfterTheListenerFails() async throws {
+        let database = try DatabaseQueue(path: ":memory:")
+        for table in DatabaseQueue.tables() {
+            try table.createIfNeeded(database: database)
+        }
+        let previousDatabase = Current.database
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let controller = WyomingServerController(firstRetryDelay: 0.1)
+        controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: true, port: 10805))
+        controller.listenerFailed()
+
+        // Nothing is asked of it in between: the retry is what puts the listener back.
+        try await Task.sleep(for: .milliseconds(500))
+
+        #expect(controller.state != .stopped)
+        controller.applyConfiguration(VoiceToolsServerConfiguration(isEnabled: false))
+    }
 }

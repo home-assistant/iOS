@@ -49,13 +49,15 @@ struct WyomingConnectionTests {
     private final class Client {
         /// Generous: synthesising a sentence on a busy runner is not instant, but an unanswered
         /// request still has to fail long before the job's own timeout.
-        private static let readTimeout: TimeInterval = 60
+        private static let defaultReadTimeout: TimeInterval = 60
 
         private let connection: NWConnection
+        private let readTimeout: TimeInterval
         private var buffer = Data()
 
-        init(port: NWEndpoint.Port) {
+        init(port: NWEndpoint.Port, readTimeout: TimeInterval = Client.defaultReadTimeout) {
             self.connection = NWConnection(host: .ipv4(.loopback), port: port, using: .tcp)
+            self.readTimeout = readTimeout
             connection.start(queue: .global())
         }
 
@@ -68,7 +70,7 @@ struct WyomingConnectionTests {
             _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, Error>) in
                 let pending = Pending(continuation)
                 let deadline = DispatchWorkItem { pending.resume(with: .failure(TestError.timedOut)) }
-                DispatchQueue.global().asyncAfter(deadline: .now() + Self.readTimeout, execute: deadline)
+                DispatchQueue.global().asyncAfter(deadline: .now() + readTimeout, execute: deadline)
 
                 connection.send(content: data, completion: .contentProcessed { error in
                     deadline.cancel()
@@ -114,7 +116,7 @@ struct WyomingConnectionTests {
             try await withCheckedThrowingContinuation { continuation in
                 let pending = Pending(continuation)
                 let deadline = DispatchWorkItem { pending.resume(with: .failure(TestError.timedOut)) }
-                DispatchQueue.global().asyncAfter(deadline: .now() + Self.readTimeout, execute: deadline)
+                DispatchQueue.global().asyncAfter(deadline: .now() + readTimeout, execute: deadline)
 
                 connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, _, isComplete, error in
                     deadline.cancel()
@@ -348,6 +350,9 @@ struct WyomingConnectionTests {
             fallbackLocale: Locale(identifier: "en-US"),
             advertisesOverBonjour: false,
             makeRecognizer: { _ in StubRecognizer() },
+            // Long enough that the idle watchdog cannot be what closes anything here: the only
+            // thing that can close a socket within this test is the cap making room.
+            idleReadTimeout: 600,
             onStateChange: { recorder.record($0) }
         )
         await server.start()
@@ -356,10 +361,12 @@ struct WyomingConnectionTests {
 
         // One more than the cap, all held open at once and none of them saying anything — which is
         // what a host that went away without closing leaves behind. Spaced out so the server
-        // accepts them in the order they were made and "the oldest" means the first of them.
+        // accepts them in the order they were made and "the oldest" means the first of them. The
+        // oldest reads with a short deadline so a connection that was *not* dropped is told apart
+        // from one that was, rather than both ending in an error.
         var clients: [Client] = []
-        for _ in 0 ... 8 {
-            clients.append(Client(port: port))
+        for index in 0 ... 8 {
+            clients.append(Client(port: port, readTimeout: index == 0 ? 2 : 60))
             try await Task.sleep(for: .milliseconds(50))
         }
 
@@ -373,6 +380,9 @@ struct WyomingConnectionTests {
         var oldestWasDropped = false
         do {
             _ = try await clients[0].receive()
+        } catch TestError.timedOut {
+            // Still open: the deadline passed with the socket neither closed nor answering.
+            oldestWasDropped = false
         } catch {
             oldestWasDropped = true
         }
