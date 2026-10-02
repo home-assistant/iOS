@@ -118,6 +118,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 webViewController.evaluateJavaScript("notifyThemeColors()", completion: nil)
             case .matterCommission:
                 matterComissioningHandler(incomingMessage: incomingMessage)
+            case .matterShareDevice:
+                handleMatterShareDevice(incomingMessage)
             case .threadImportCredentials:
                 transferKeychainThreadCredentialsToHARequested()
             case .barCodeScanner:
@@ -240,6 +242,39 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     }
 
     // swiftlint:enable cyclomatic_complexity
+
+    private func handleMatterShareDevice(_ incomingMessage: WebSocketMessage) {
+        guard let messageId = incomingMessage.ID else {
+            Current.Log.error("Received matter/share_device without a message id")
+            return
+        }
+        guard let request = MatterShareRequest(payload: incomingMessage.Payload) else {
+            Current.Log.error("Received matter/share_device with an invalid payload")
+            sendExternalBus(message: .init(
+                id: messageId,
+                error: MatterWrapper.shareError(for: MatterShareError.invalidRequest)
+            )).cauterize()
+            return
+        }
+        Task { @MainActor [weak self] in
+            let outgoing: WebSocketMessage
+            do {
+                try await Current.matter.shareDevice(request)
+                Current.Log.info("Matter device shared")
+                outgoing = .init(id: messageId, type: "result", result: [:])
+            } catch {
+                let busError = MatterWrapper.shareError(for: error)
+                if busError.isCanceled {
+                    Current.Log.info("Sharing Matter device cancelled by user")
+                } else {
+                    // Full error for the log; only the bus message must be free of system text.
+                    Current.Log.error("Sharing Matter device failed: \(error)")
+                }
+                outgoing = .init(id: messageId, error: busError)
+            }
+            self?.sendExternalBus(message: outgoing).cauterize()
+        }
+    }
 
     func showSettingsViewController() {
         // Through the web view the message came from, so Settings opens in that window and no other.

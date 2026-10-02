@@ -15,6 +15,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case tagWrite = "tag/write"
     case themeUpdate = "theme-update"
     case matterCommission = "matter/commission"
+    case matterShareDevice = "matter/share_device"
     case threadImportCredentials = "thread/import_credentials"
     case threadStoreCredentialInAppleKeychain = "thread/store_in_platform_keychain"
     case barCodeScanner = "bar_code/scan"
@@ -42,6 +43,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasSidebar": AppLabsFeature.macNativeSidebar.isEnabled || AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
+            "canShareMatterDeviceToAppleHome": Current.matter.canShareDevice,
             "hasMatterStatusReport": Current.matter.isAvailable,
             "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
             "hasBarCodeScanner": true,
