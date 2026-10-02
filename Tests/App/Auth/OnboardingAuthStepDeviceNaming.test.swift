@@ -148,6 +148,80 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
+    func testSaveShowsUnreachableErrorWhenDeviceListFails() throws {
+        let requestExpectation = expectation(description: "device name request")
+        var nameRequest: OnboardingDeviceNameRequest?
+        presenter.$path
+            .compactMap { path -> OnboardingDeviceNameRequest? in
+                guard case let .deviceName(request) = path.last else { return nil }
+                return request
+            }
+            .sink { request in
+                nameRequest = request
+                requestExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        _ = step.perform(point: .beforeRegister)
+        try respond(result: .success([
+            .init(name: deviceName, identifier: "any_other"),
+        ]))
+        wait(for: [requestExpectation], timeout: 10.0)
+
+        let request = try XCTUnwrap(nameRequest)
+        let errorExpectation = expectErrorMessage(on: request)
+        request.save("Another Name")
+
+        let command = try XCTUnwrap(connection.pendingRequests.last)
+        command.completion(.failure(.internal(debugDescription: "unit-test")))
+        wait(for: [errorExpectation], timeout: 10.0)
+
+        XCTAssertEqual(request.errorMessage, L10n.Onboarding.DeviceNameCheck.Error.unreachable)
+        XCTAssertFalse(request.isSaving)
+    }
+
+    func testSaveShowsUnreachableErrorWhenDeviceListNeverAnswers() throws {
+        step.timeout = 0.5
+
+        let requestExpectation = expectation(description: "device name request")
+        var nameRequest: OnboardingDeviceNameRequest?
+        presenter.$path
+            .compactMap { path -> OnboardingDeviceNameRequest? in
+                guard case let .deviceName(request) = path.last else { return nil }
+                return request
+            }
+            .sink { request in
+                nameRequest = request
+                requestExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        _ = step.perform(point: .beforeRegister)
+        try respond(result: .success([
+            .init(name: deviceName, identifier: "any_other"),
+        ]))
+        wait(for: [requestExpectation], timeout: 10.0)
+
+        let request = try XCTUnwrap(nameRequest)
+        let errorExpectation = expectErrorMessage(on: request)
+        // the device list request is left unanswered
+        request.save("Another Name")
+        wait(for: [errorExpectation], timeout: 10.0)
+
+        XCTAssertEqual(request.errorMessage, L10n.Onboarding.DeviceNameCheck.Error.unreachable)
+        XCTAssertFalse(request.isSaving)
+    }
+
+    private func expectErrorMessage(on request: OnboardingDeviceNameRequest) -> XCTestExpectation {
+        let expectation = expectation(description: "error message")
+        request.$errorMessage
+            .compactMap { $0 }
+            .first()
+            .sink { _ in expectation.fulfill() }
+            .store(in: &cancellables)
+        return expectation
+    }
+
     private func setupPresenter(
         delay: DispatchTimeInterval = .seconds(0),
         actions: (Operation, String?)...

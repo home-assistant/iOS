@@ -4471,6 +4471,8 @@ public enum L10n {
         public static func title(_ p1: Any) -> String {
           return L10n.tr("Localizable", "onboarding.device_name_check.error.title", String(describing: p1))
         }
+        /// Couldn't reach Home Assistant to check the device name. Check your connection and try again.
+        public static var unreachable: String { return L10n.tr("Localizable", "onboarding.device_name_check.error.unreachable") }
       }
     }
     public enum Invitation {
