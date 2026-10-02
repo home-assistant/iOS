@@ -180,9 +180,15 @@ public final class WatchConnectivityManager: NSObject {
     /// watch-related UI — should read this instead of blocking on the live getters. `.notPaired`
     /// until the session has activated.
     public var lastKnownWatchState: HAWatchConnectivity.WatchState {
+        observedWatchState ?? .notPaired
+    }
+
+    /// `lastKnownWatchState` without the default: nil until the session has activated and reported
+    /// a state, for callers that must tell "no watch" from "not known yet".
+    public var observedWatchState: HAWatchConnectivity.WatchState? {
         watchStateCacheLock.lock()
         defer { watchStateCacheLock.unlock() }
-        return cachedWatchState ?? .notPaired
+        return cachedWatchState
     }
     #endif
 

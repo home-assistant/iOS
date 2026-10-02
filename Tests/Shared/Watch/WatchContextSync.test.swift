@@ -1,5 +1,4 @@
 import Foundation
-import PromiseKit
 @testable import Shared
 import Testing
 
@@ -127,14 +126,10 @@ struct WatchContextSync_test {
     }
 
     #if os(iOS)
-    @Test func complicationUpdateSkipsWithoutAPairedWatch() async throws {
+    @Test func complicationUpdateResolvesWithoutAPairedWatch() async throws {
         let api = HomeAssistantAPI(server: .fake())
 
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            api.updateComplications(passively: true)
-                .done { continuation.resume() }
-                .catch { continuation.resume(throwing: $0) }
-        }
+        try await api.updateComplications(passively: true).asyncValue()
     }
     #endif
 }

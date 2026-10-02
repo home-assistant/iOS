@@ -509,6 +509,19 @@ struct WatchConnectivityWatchState_test {
         #expect(manager.currentWatchState == .paired(.installed(.enabled(numberOfUpdatesAvailableToday: 7), nil)))
     }
 
+    @Test func watchStateIsUnknownUntilTheSessionReportsOne() {
+        let fake = FakeWCSession()
+        fake.isPairedProxy = false
+        let manager = WatchConnectivityManager(session: fake)
+
+        #expect(manager.observedWatchState == nil)
+        #expect(manager.lastKnownWatchState == .notPaired)
+
+        manager.notifyWatchState()
+
+        #expect(manager.observedWatchState == .notPaired)
+    }
+
     @Test func complicationTransferResolvesWithRemainingBudget() throws {
         let fake = FakeWCSession()
         fake.remainingComplicationUserInfoTransfersProxy = 12

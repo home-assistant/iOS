@@ -193,9 +193,10 @@ public extension HomeAssistantAPI {
 
     func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
-        // The cached state: this runs once per server on every connect, and the live getters block
-        // on WCSession's operation queue.
-        guard case .paired = Communicator.shared.lastKnownWatchState else {
+        // The cached state, read without blocking on WCSession (see `hasWatchToSync`). It is unknown
+        // until the session has activated, and then the update goes ahead: this runs once per server
+        // at connect, and skipping would leave the templates unrendered for the whole session.
+        if let watchState = Communicator.shared.observedWatchState, case .notPaired = watchState {
             Current.Log.verbose("skipping complication updates; no paired watch")
             return .value(())
         }
