@@ -46,21 +46,10 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     static var firstUserDeviceNameInput = true
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        let devices = fetchDeviceList()
-
-        let timeout: Promise<[RegisteredDevice]> = after(seconds: timeout).then { () -> Promise<[RegisteredDevice]> in
-            switch api.connection.state {
-            case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
-                throw error
-            default:
-                throw OnboardingAuthError(kind: .invalidURL, data: nil)
-            }
-        }
-
         // racing the request, not the whole flow, importantly.
-        // otherwise we'd fail out before the user finished typing.
+        // otherwise we'd fail out before the user finished typing.
 
-        return race(timeout, devices).then { [self] registeredDevices -> Promise<Void> in
+        return fetchDeviceListWithTimeout().then { [self] registeredDevices -> Promise<Void> in
             guard !registeredDevices.contains(where: { $0.id == Current.settingsStore.integrationDeviceID }) else {
                 // if the integration is registered already, we will take over that one, so we don't need to look
                 return .value(())
@@ -93,7 +82,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
                 }
 
                 // Fetch updated device list to ensure we have current data
-                fetchDeviceList().done { updatedDevices in
+                fetchDeviceListWithTimeout().done { updatedDevices in
                     if updatedDevices.contains(where: { $0.matches(name: name) }) {
                         // Name conflicts with a registered device; keep the screen up with an inline error
                         request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.title(name))
@@ -107,7 +96,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
                     }
                 }.catch { _ in
                     // If we can't verify the name is free, keep the screen up with an inline error
-                    request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.title(name))
+                    request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.unreachable)
                 }
             }, onCancel: {
                 resetFirstUserDeviceNameInput()
@@ -121,6 +110,21 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     // In case the flow is completed or cancelled, we reset the first user device name input flag.
     private func resetFirstUserDeviceNameInput() {
         OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = true
+    }
+
+    /// Fetches the device list, failing after `timeout` instead of waiting indefinitely for a
+    /// websocket that may never answer.
+    private func fetchDeviceListWithTimeout() -> Promise<[RegisteredDevice]> {
+        let timeout: Promise<[RegisteredDevice]> = after(seconds: timeout).then { () -> Promise<[RegisteredDevice]> in
+            switch api.connection.state {
+            case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
+                throw error
+            default:
+                throw OnboardingAuthError(kind: .invalidURL, data: nil)
+            }
+        }
+
+        return race(timeout, fetchDeviceList())
     }
 
     private func fetchDeviceList() -> Promise<[RegisteredDevice]> {
