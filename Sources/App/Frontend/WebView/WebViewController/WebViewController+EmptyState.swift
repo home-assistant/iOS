@@ -28,16 +28,16 @@ extension WebViewController {
     /// Shows the disconnected/unauthenticated empty state as a SwiftUI overlay in `HomeAssistantView` (via
     /// `overlayState`) rather than an alpha-animated subview, so app-level sheets can float over it.
     ///
-    /// While the app is not active the disconnected variant is held back instead: nobody can see it, and
+    /// While the scene is not active the disconnected variant is held back instead: nobody can see it, and
     /// the usual reason the frontend is disconnected is the backgrounding itself (its socket died, or the
-    /// web content process was reclaimed, while the app was away), which a frontend that is on screen
-    /// again recovers from in a moment. `applicationDidBecomeActive()` gives it the grace period for
-    /// that, so the user coming back sees the frontend or the loader rather than an error that is
-    /// already out of date. Authentication and certificate problems are shown regardless: time does not
-    /// fix those, and the frontend has nothing to retry.
+    /// web content process was reclaimed, while the scene was away), which a frontend that is on screen
+    /// again recovers from in a moment. `handleSceneDidActivate()` gives it the grace period for that, so
+    /// the user coming back sees the frontend or the loader rather than an error that is already out of
+    /// date. Authentication and certificate problems are shown regardless: time does not fix those, and
+    /// the frontend has nothing to retry.
     func showEmptyState() {
-        if !isAppActive(), emptyStateStyle(for: connectionState) == .disconnected {
-            Current.Log.info("Deferring the disconnected empty state until the app is active")
+        if !isSceneActive(frontendWindowScene), emptyStateStyle(for: connectionState) == .disconnected {
+            Current.Log.info("Deferring the disconnected empty state until the scene is active")
             isEmptyStateDeferredUntilActive = true
             return
         }
@@ -88,7 +88,31 @@ extension WebViewController {
         connectionState == .disconnected && latestLoadError != nil
     }
 
-    @objc func applicationDidEnterBackground() {
+    /// The scene this frontend is shown in, once its view is in a window.
+    var frontendWindowScene: UIWindowScene? {
+        viewIfLoaded?.window?.windowScene
+    }
+
+    @objc func sceneDidEnterBackground(_ notification: Notification) {
+        guard concernsFrontendScene(notification) else { return }
+        handleSceneDidEnterBackground()
+    }
+
+    @objc func sceneDidActivate(_ notification: Notification) {
+        guard concernsFrontendScene(notification) else { return }
+        handleSceneDidActivate()
+    }
+
+    /// Scene notifications are posted for every scene in the process, and with several windows open the
+    /// others' transitions say nothing about this frontend. A frontend that is not in a window cannot
+    /// tell the scenes apart, so for it every scene counts, as the application's state would.
+    private func concernsFrontendScene(_ notification: Notification) -> Bool {
+        guard let scene = notification.object as? UIScene else { return false }
+        guard let frontendWindowScene else { return true }
+        return scene === frontendWindowScene
+    }
+
+    func handleSceneDidEnterBackground() {
         didEnterBackgroundSinceLastActivation = true
     }
 
@@ -96,9 +120,9 @@ extension WebViewController {
     /// does not simply appear: a frontend whose page failed to load is reloaded, which puts the loader up
     /// and lets a failure that persists show the empty state right away, and a frontend whose page is
     /// still there gets the grace period to reconnect on its own. A grace period that was already running
-    /// when the app went to the background starts over, since the frontend could not use the part the
-    /// app slept through.
-    @objc func applicationDidBecomeActive() {
+    /// when the scene went to the background starts over, since the frontend could not use the part the
+    /// scene slept through.
+    func handleSceneDidActivate() {
         let returnedFromBackground = didEnterBackgroundSinceLastActivation
         didEnterBackgroundSinceLastActivation = false
 
@@ -114,10 +138,10 @@ extension WebViewController {
         guard !connectionState.isReadyForDisplay, overlayState?.emptyState == nil else { return }
 
         if latestLoadError != nil || contentProcessTerminations > 0 {
-            Current.Log.info("Reloading the frontend that failed while the app was not active")
+            Current.Log.info("Reloading the frontend that failed while the scene was not active")
             refresh()
         } else {
-            Current.Log.info("Giving the frontend its grace period to reconnect now that the app is active")
+            Current.Log.info("Giving the frontend its grace period to reconnect now that the scene is active")
             scheduleEmptyStateAfterGracePeriod()
         }
     }

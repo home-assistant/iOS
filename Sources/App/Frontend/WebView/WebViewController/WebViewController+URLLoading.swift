@@ -29,15 +29,15 @@ extension WebViewController {
 
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(applicationDidEnterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
+            selector: #selector(sceneDidEnterBackground(_:)),
+            name: UIScene.didEnterBackgroundNotification,
             object: nil
         )
 
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(applicationDidBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
+            selector: #selector(sceneDidActivate(_:)),
+            name: UIScene.didActivateNotification,
             object: nil
         )
 

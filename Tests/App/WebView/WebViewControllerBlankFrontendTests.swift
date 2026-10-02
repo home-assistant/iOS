@@ -278,7 +278,7 @@ final class WebViewControllerBlankFrontendTests: XCTestCase {
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
-        sut.isAppActive = { true }
+        sut.isSceneActive = { _ in true }
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
         sut.setValue(containerView, forKey: "view")
         sut.webView = WKWebView(frame: containerView.bounds)
