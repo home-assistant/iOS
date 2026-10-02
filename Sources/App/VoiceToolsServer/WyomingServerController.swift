@@ -16,12 +16,33 @@ final class WyomingServerController: ObservableObject {
 
     @Published private(set) var state: WyomingServerState = .stopped
 
+    private enum Constants {
+        static let firstRetryDelay: TimeInterval = 5
+        /// Capped rather than unbounded: a port someone else is holding may be given up at any
+        /// time, so this keeps trying for as long as the app runs without filling the log.
+        static let maximumRetryDelay: TimeInterval = 300
+    }
+
     private var server: WyomingServer?
     private var configuration: VoiceToolsServerConfiguration?
     private var isForeground = true
     /// What the running listener was started with, so a settings change that does not affect it
     /// does not tear a working server down and put it back up.
     private var runningSettings: Settings?
+    /// Which listener the state reports belong to. A listener that has been replaced goes on
+    /// reporting as it winds down, and without this its `.cancelled` would land as the state of
+    /// the listener that replaced it.
+    private var generation = 0
+    private var retry: Task<Void, Never>?
+    /// Shortened by tests, which cannot wait out the real backoff to prove the port is bound again.
+    private let firstRetryDelay: TimeInterval
+    private var retryDelay: TimeInterval
+
+    init(firstRetryDelay: TimeInterval? = nil) {
+        let first = firstRetryDelay ?? Constants.firstRetryDelay
+        self.firstRetryDelay = first
+        self.retryDelay = first
+    }
 
     /// The settings a listener is bound to. The port is all of it: everything else a Wyoming
     /// client asks for is read per request.
@@ -62,6 +83,8 @@ final class WyomingServerController: ObservableObject {
         runningSettings = settings
         state = .starting
 
+        generation += 1
+        let generation = generation
         let server = WyomingServer(
             port: port,
             serviceName: WyomingServiceCatalog.advertisedDeviceName(),
@@ -70,14 +93,58 @@ final class WyomingServerController: ObservableObject {
             // this device serves is configured independently of how Assist behaves in the app.
             fallbackLocale: Locale.current,
             onStateChange: { [weak self] state in
-                Task { @MainActor in self?.state = state }
+                Task { @MainActor in self?.listener(generation, reported: state) }
             }
         )
         self.server = server
         Task { await server.start() }
     }
 
+    private func listener(_ generation: Int, reported state: WyomingServerState) {
+        guard generation == self.generation else { return }
+        self.state = state
+
+        switch state {
+        case .running:
+            retryDelay = firstRetryDelay
+        case .failed:
+            listenerFailed()
+        case .stopped, .starting:
+            break
+        }
+    }
+
+    /// Forgets the settings the dead listener was bound to and lines up another attempt.
+    ///
+    /// Nothing else is going to notice it died. On the Mac the app sits in front for days at a
+    /// time, so there is no foreground to come back on, and `reconcile` would read these settings
+    /// as the ones already applied and leave the dead listener where it is. Clearing them is what
+    /// lets the retry bind the port again.
+    ///
+    /// Not private only so a test can reach it: there is no way to make a real `NWListener` fail
+    /// on demand from a test runner.
+    func listenerFailed() {
+        runningSettings = nil
+        scheduleRetry()
+    }
+
+    /// Binds the port again after a listener failed — a Wi-Fi interface coming and going, or
+    /// another process holding the port while it shuts down — backing off so a port that is gone
+    /// for good is not retried in a tight loop.
+    private func scheduleRetry() {
+        retry?.cancel()
+        let delay = retryDelay
+        retryDelay = min(retryDelay * 2, Constants.maximumRetryDelay)
+        retry = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled else { return }
+            self?.reconcile()
+        }
+    }
+
     private func stop() {
+        retry?.cancel()
+        retry = nil
         guard let server else {
             state = .stopped
             return

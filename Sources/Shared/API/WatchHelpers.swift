@@ -79,95 +79,60 @@ public extension HomeAssistantAPI {
         try Communicator.shared.sync(context)
     }
 
+    /// Sync the current context and wait for the outcome, for callers that show feedback (the Debug
+    /// "Sync watch context" button). The update runs on `watchContextSyncQueue`, never on the
+    /// caller's thread, and gives up after `watchContextSyncTimeout` rather than parking the caller
+    /// behind a stalled WCSession.
     static func SyncWatchContext() async -> NSError? {
-        #if !os(watchOS)
-        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
-            Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
-            return nil
-        }
-        #endif
-
-        let context = await HAWatchConnectivity.Context(content: HomeAssistantAPI.watchContext())
-
-        #if os(watchOS)
-        // `updateApplicationContext` waits synchronously on WCSession's internal operation queue,
-        // which stalls indefinitely while the companion channel is wedged. This method runs in a
-        // cooperative-pool task on every lifecycle transition, and the watch's cooperative pool is
-        // only two threads wide — two stuck updates wedged the entire pool (and GCD's worker
-        // budget with it), killing all async work in the app: direct sync, token refresh, even
-        // URLSession callbacks for magic items. So the blocking call is handed to a dedicated
-        // serial queue instead, gated to a single in-flight update, and never awaited here.
-        enqueueWatchContextSync(context)
-        return nil
-        #else
-        do {
-            try syncRespectingSizeLimit(context)
-            Current.Log.info("updated context")
-            Current.clientEventStore.addEvent(.init(
-                text: "Synced watch context to Apple Watch (updateApplicationContext)",
-                type: .database
-            ))
-        } catch let error as NSError {
-            Current.Log.error("Updating the context failed: \(error)")
-            Current.clientEventStore.addEvent(.init(
-                text: "Failed to sync watch context: \(error.localizedDescription)",
-                type: .database
-            ))
-            return error
-        }
-
-        return nil
-        #endif
+        await syncWatchContextAndWait(hasWatch: hasWatchToSync, on: watchContextSyncQueue)
     }
 
-    #if os(watchOS)
-    /// Dedicated home for the blocking `updateApplicationContext` call. A private serial queue
-    /// runs on GCD's overcommit band, so a call stuck inside WCSession costs one extra thread
-    /// without draining the worker budget the rest of the app depends on.
-    private static let watchContextSyncQueue = DispatchQueue(label: "watch-context-sync", qos: .utility)
-    private static let watchContextSyncGate = NSLock()
-    private static var watchContextSyncInFlight = false
-    /// The newest context that arrived while an update was in flight, delivered as soon as that update
-    /// returns. Only the newest is kept — the ones it replaces are already obsolete.
-    private static var pendingWatchContext: HAWatchConnectivity.Context?
+    /// Fire-and-forget context sync for every lifecycle trigger. Never waits: the update is handed
+    /// to `watchContextSyncQueue`, where a stalled WCSession costs one parked thread instead of the
+    /// cooperative pool (see `WatchContextSyncQueue`).
+    static func syncWatchContext() {
+        Task { await syncWatchContextInBackground(hasWatch: hasWatchToSync, on: watchContextSyncQueue) }
+    }
 
-    /// Hand the context to `updateApplicationContext` off the caller's thread, keeping at most one
-    /// update in flight: a call stuck inside WCSession would otherwise park a thread per caller.
-    /// Later contexts are coalesced rather than dropped — the in-flight call is carrying an *older*
-    /// snapshot, so discarding the new one would strand the watch on stale data until some unrelated
-    /// trigger happened to sync again.
-    private static func enqueueWatchContextSync(_ context: HAWatchConnectivity.Context) {
-        watchContextSyncGate.lock()
-        guard !watchContextSyncInFlight else {
-            pendingWatchContext = context
-            watchContextSyncGate.unlock()
-            Current.Log.info("Coalescing watch context sync: previous update still in flight (WCSession stalled?)")
-            return
-        }
-        watchContextSyncInFlight = true
-        watchContextSyncGate.unlock()
+    /// `SyncWatchContext()` with its inputs explicit, so tests can drive it.
+    internal static func syncWatchContextAndWait(hasWatch: Bool, on queue: WatchContextSyncQueue) async -> NSError? {
+        guard hasWatch else { return nil }
+        let context = await HAWatchConnectivity.Context(content: watchContext())
+        return await queue.sync(context, timeout: watchContextSyncTimeout).map { $0 as NSError }
+    }
 
-        watchContextSyncQueue.async {
-            var next: HAWatchConnectivity.Context? = context
-            while let current = next {
-                syncWatchContextNow(current)
-                // Claim the next context (or stand down) under the same lock the producer takes, so a
-                // context enqueued right as this update finishes can't be stranded.
-                watchContextSyncGate.lock()
-                if let pending = pendingWatchContext {
-                    next = pending
-                    pendingWatchContext = nil
-                } else {
-                    next = nil
-                    watchContextSyncInFlight = false
-                }
-                watchContextSyncGate.unlock()
-            }
+    /// `syncWatchContext()` with its inputs explicit, so tests can drive it.
+    internal static func syncWatchContextInBackground(hasWatch: Bool, on queue: WatchContextSyncQueue) async {
+        guard hasWatch else { return }
+        let context = await HAWatchConnectivity.Context(content: watchContext())
+        queue.enqueue(context)
+    }
+
+    /// Whether there is a counterpart to send the context to.
+    private static var hasWatchToSync: Bool {
+        #if !os(watchOS)
+        // The cached state: the live `currentWatchState` getters wait on WCSession's operation queue
+        // too, and the callers run on the cooperative pool.
+        guard case .paired(.installed) = Communicator.shared.lastKnownWatchState else {
+            Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
+            return false
         }
+        #endif
+        return true
+    }
+
+    /// How long an awaited sync waits for WCSession before reporting a timeout.
+    static let watchContextSyncTimeout: TimeInterval = 10
+
+    /// Dedicated home for the blocking `updateApplicationContext` call. Its private serial queue runs
+    /// on GCD's overcommit band, so a call stuck inside WCSession costs one extra thread without
+    /// draining the worker budget the rest of the app depends on.
+    internal static let watchContextSyncQueue = WatchContextSyncQueue(label: "watch-context-sync") { context in
+        try syncWatchContextNow(context)
     }
 
     /// The blocking `updateApplicationContext` call itself, always on `watchContextSyncQueue`.
-    private static func syncWatchContextNow(_ context: HAWatchConnectivity.Context) {
+    private static func syncWatchContextNow(_ context: HAWatchConnectivity.Context) throws {
         do {
             try syncRespectingSizeLimit(context)
             Current.Log.info("updated context")
@@ -181,15 +146,7 @@ public extension HomeAssistantAPI {
                 text: "Failed to sync watch context: \(error.localizedDescription)",
                 type: .database
             ))
-        }
-    }
-    #endif
-
-    /// Fire-and-forget `SyncWatchContext()` for callers that cannot await; sync errors are logged
-    /// by `SyncWatchContext()` itself.
-    static func syncWatchContext() {
-        Task {
-            _ = await SyncWatchContext()
+            throw error
         }
     }
 
@@ -202,35 +159,43 @@ public extension HomeAssistantAPI {
         case failed(String)
     }
 
+    /// The reload itself, once the caller has checked a watch is there; split out so tests can drive it.
+    internal static func reloadWatchComplications(on queue: WatchContextSyncQueue) async -> WatchReloadOutcome {
+        // Current watch builds read complications from the database mirror and ignore the context
+        // keys below, so the reload has to travel that way too — and, once the rows land, ask the
+        // watch to fetch their values and re-render. Without this the button only refreshed watches
+        // old enough to still read the context.
+        #if !os(watchOS)
+        WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
+        #endif
+        let context = await HAWatchConnectivity.Context(content: watchContext())
+        if let error = await queue.sync(context, timeout: watchContextSyncTimeout) {
+            Current.Log.error("Watch reload failed: \(error.localizedDescription)")
+            return .failed(error.localizedDescription)
+        }
+        Current.Log.info("Watch reload: context synced")
+        return .success
+    }
+
     #if !os(watchOS)
     /// Push the current context to the watch and report whether it worked, for the Complications
     /// settings "Reload" button. Distinguishes "no watch" (so the UI can explain why) from a transport
     /// failure (so the UI can show the error).
     static func reloadWatchComplications() async -> WatchReloadOutcome {
-        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
+        // The cached state, for the same reason as `hasWatchToSync`.
+        guard case .paired(.installed) = Communicator.shared.lastKnownWatchState else {
             Current.Log.warning("Watch reload requested but watch not paired or app not installed")
             return .watchUnavailable
         }
-        // Current watch builds read complications from the database mirror and ignore the context
-        // keys below, so the reload has to travel that way too — and, once the rows land, ask the
-        // watch to fetch their values and re-render. Without this the button only refreshed watches
-        // old enough to still read the context.
-        WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
-        let context = await HAWatchConnectivity.Context(content: watchContext())
-        do {
-            try syncRespectingSizeLimit(context)
-            Current.Log.info("Watch reload: context synced")
-            return .success
-        } catch {
-            Current.Log.error("Watch reload failed: \(error.localizedDescription)")
-            return .failed(error.localizedDescription)
-        }
+        return await reloadWatchComplications(on: watchContextSyncQueue)
     }
     #endif
 
     func updateComplications(passively: Bool) -> Promise<Void> {
         #if !os(watchOS)
-        guard case .paired = Communicator.shared.currentWatchState else {
+        // The cached state: this runs once per server on every connect, and the live getters block
+        // on WCSession's operation queue.
+        guard case .paired = Communicator.shared.lastKnownWatchState else {
             Current.Log.verbose("skipping complication updates; no paired watch")
             return .value(())
         }
@@ -241,10 +206,7 @@ public extension HomeAssistantAPI {
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")
 
-            #if !os(watchOS)
-            // in case the user deleted the last complication, sync that fact up to the watch
-            HomeAssistantAPI.syncWatchContext()
-            #else
+            #if os(watchOS)
             // in case the user updated just the complication's metadata, force a refresh
             NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
             #endif
