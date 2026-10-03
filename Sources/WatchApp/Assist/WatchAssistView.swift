@@ -54,14 +54,14 @@ struct WatchAssistView: View {
                     }
                 })
             })
-            // Touch is push-to-talk: pressing records, lifting sends. The button's action is left
-            // to the Double Tap hand gesture below, which has no finger to lift and so keeps the
-            // tap-to-send flow.
-            .buttonStyle(WatchPushToTalkButtonStyle(onPressingChanged: { isPressing in
-                if isPressing {
-                    viewModel.beginPushToTalk()
-                } else {
-                    viewModel.endPushToTalk()
+            // Touch is push-to-talk: pressing records, lifting sends, and a press that turns into a
+            // scroll of the chat is dropped. The button's action is left to the Double Tap hand
+            // gesture below, which has no finger to lift and so keeps the tap-to-send flow.
+            .buttonStyle(WatchPushToTalkButtonStyle(onPhaseChange: { phase in
+                switch phase {
+                case .began: viewModel.beginPushToTalk()
+                case .released: viewModel.endPushToTalk()
+                case .cancelled: viewModel.cancelPushToTalk()
                 }
             }))
             .modify { view in
@@ -304,6 +304,8 @@ private final class PreviewWatchAudioRecorder: ObservableObject, WatchAudioRecor
     func startRecording() {}
 
     func stopRecording() {}
+
+    func cancelRecording() {}
 }
 
 private final class PreviewAudioPlayer: AudioPlayerProtocol {

@@ -146,11 +146,18 @@ final class WatchAssistViewModel: ObservableObject {
         startRecording(submission: .release)
     }
 
-    /// Push-to-talk: the finger lifted (or the gesture was cancelled). Only sends a recording the
-    /// press started; a tap-to-send recording keeps waiting for its tap.
+    /// Push-to-talk: the finger lifted. Only sends a recording the press started; a tap-to-send
+    /// recording keeps waiting for its tap.
     func endPushToTalk() {
         guard state == .recording, recordingSubmission == .release else { return }
         stopRecording()
+    }
+
+    /// Push-to-talk: the press was taken over by something else, such as a scroll of the chat.
+    /// The user was not asking anything, so the recording is dropped rather than sent.
+    func cancelPushToTalk() {
+        guard state == .recording, recordingSubmission == .release else { return }
+        audioRecorder.cancelRecording()
     }
 
     private func startRecording(submission: RecordingSubmission) {
@@ -265,6 +272,13 @@ extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
     func didStopRecording() {
         runInMainThread { [weak self] in
             self?.state = .waitingForPipelineResponse
+            self?.audioLevel = 0
+        }
+    }
+
+    func didCancelRecording() {
+        runInMainThread { [weak self] in
+            self?.state = .idle
             self?.audioLevel = 0
         }
     }
