@@ -500,6 +500,8 @@ public extension Version {
     static let frontendGetIconsEntityComponent: Version = .init(major: 2024, minor: 2, prerelease: "any0")
     /// Core accepts `in_zones` in update_location payloads from 2026.6.0.
     static let inZonesOnLocationUpdate: Version = .init(major: 2026, minor: 6, patch: 0, prerelease: "any0")
+    /// Core accepts `location_time` in update_location payloads from 2026.11.0, and rejects it before.
+    static let locationTimeOnLocationUpdate: Version = .init(major: 2026, minor: 11, patch: 0, prerelease: "any0")
     /// Frontend sends `frontend/loaded` when its launch screen is removed from 2026.8.0.
     static let frontendLoadedExternalBus: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
     /// Frontend handles safe-area insets itself from 2026.8.0, so the app can display edge-to-edge by default.
