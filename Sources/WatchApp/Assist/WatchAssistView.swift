@@ -12,7 +12,6 @@ struct WatchAssistView: View {
         static let micButtonProgressPadding: CGFloat = DesignSystem.Spaces.half
         static let micRecordingTextFontSize: CGFloat = 11
         static let progressViewScale: CGFloat = 2
-        static let releasePillTopPadding: CGFloat = DesignSystem.Spaces.one
     }
 
     @StateObject private var viewModel: WatchAssistViewModel
@@ -74,6 +73,7 @@ struct WatchAssistView: View {
             }
         }
         .animation(.easeInOut, value: viewModel.state)
+        .animation(.easeInOut, value: viewModel.recordingSubmission)
         .onAppear {
             // Always re-subscribe: `endRoutine()` (onDisappear — e.g. pushing the volume screen)
             // unsubscribes the view model from responses, and without this the screen comes back
@@ -135,7 +135,6 @@ struct WatchAssistView: View {
             if viewModel.recordingSubmission == .release {
                 releaseToSendPill
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .padding(.top, Constants.releasePillTopPadding)
                     .allowsHitTesting(false)
                     .transition(.opacity)
             }
@@ -161,7 +160,7 @@ struct WatchAssistView: View {
     @ViewBuilder
     private var micButton: some View {
         if ![.loading, .recording].contains(viewModel.state), !viewModel.showChatLoader {
-            HStack(spacing: DesignSystem.Spaces.one) {
+            HStack(spacing: DesignSystem.Spaces.micro) {
                 if viewModel.assistService.deviceReachable {
                     Text(verbatim: L10n.Assist.Watch.MicButton.TapOrHold.title)
                     Image(systemSymbol: .micFill)
@@ -215,11 +214,12 @@ struct WatchAssistView: View {
                     size: .watch,
                     accessibilityLabel: L10n.Assist.Button.Listening.title
                 )
-                VStack(spacing: .zero) {
-                    Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
-                        .font(.system(size: Constants.micRecordingTextFontSize))
-                        .foregroundStyle(.gray)
-                    if viewModel.recordingSubmission == .tap {
+                // While holding, the pill at the top is the only hint the screen needs.
+                if viewModel.recordingSubmission == .tap {
+                    VStack(spacing: .zero) {
+                        Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
+                            .font(.system(size: Constants.micRecordingTextFontSize))
+                            .foregroundStyle(.gray)
                         Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
                             .font(.footnote.bold())
                     }
@@ -243,13 +243,13 @@ struct WatchAssistView: View {
             .font(.footnote.bold())
             .foregroundStyle(.white)
             .padding(.horizontal, DesignSystem.Spaces.two)
-            .padding(.vertical, DesignSystem.Spaces.one)
+            .padding(.vertical, DesignSystem.Spaces.half)
             .modify { view in
                 if #available(watchOS 26.0, *) {
-                    view.glassEffect(.regular.tint(Color.haPrimary), in: .capsule)
+                    view.glassEffect(.regular, in: .capsule)
                 } else {
                     view
-                        .background(Color.haPrimary)
+                        .background(Color.gray.opacity(0.3))
                         .clipShape(Capsule())
                 }
             }
