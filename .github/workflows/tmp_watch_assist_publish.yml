@@ -1,0 +1,78 @@
+name: TMP Watch Assist screenshots publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Run id holding the watch-assist-screenshots-2 artifact
+        required: true
+      artifact:
+        description: Artifact name
+        required: false
+        default: watch-assist-screenshots-2
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact }}
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifact
+
+      - name: Encode screenshots
+        run: |
+          ls -laR artifact/screenshots
+          python3 -c "import PIL" 2>/dev/null || pip install --quiet pillow
+          python3 - <<'PY'
+          import base64, hashlib, pathlib, io
+          from PIL import Image
+          out = pathlib.Path("encoded"); out.mkdir(exist_ok=True)
+          for png in sorted(pathlib.Path("artifact/screenshots").glob("*.png")):
+              im = Image.open(png).convert("RGB")
+              buf = io.BytesIO(); im.save(buf, "JPEG", quality=80, optimize=True)
+              data = buf.getvalue()
+              b64 = base64.b64encode(data).decode()
+              (out / f"{png.stem}.b64").write_text(b64)
+              print(png.stem, im.size, len(data), "bytes jpeg", len(b64), "b64", hashlib.sha256(data).hexdigest()[:16])
+          PY
+
+      - name: Annotate idle
+        run: |
+          f=encoded/idle.b64; [ -e "$f" ] || exit 0
+          python3 - "$f" <<'PY'
+          import sys, zlib, pathlib
+          p = pathlib.Path(sys.argv[1]); s = p.read_text(); n = 3800
+          chunks = [s[i:i+n] for i in range(0, len(s), n)]
+          for i, c in enumerate(chunks, 1):
+              print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+          PY
+
+      - name: Annotate recording-tap
+        run: |
+          f=encoded/recording-tap.b64; [ -e "$f" ] || exit 0
+          python3 - "$f" <<'PY'
+          import sys, zlib, pathlib
+          p = pathlib.Path(sys.argv[1]); s = p.read_text(); n = 3800
+          chunks = [s[i:i+n] for i in range(0, len(s), n)]
+          for i, c in enumerate(chunks, 1):
+              print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+          PY
+
+      - name: Annotate recording-release
+        run: |
+          f=encoded/recording-release.b64; [ -e "$f" ] || exit 0
+          python3 - "$f" <<'PY'
+          import sys, zlib, pathlib
+          p = pathlib.Path(sys.argv[1]); s = p.read_text(); n = 3800
+          chunks = [s[i:i+n] for i in range(0, len(s), n)]
+          for i, c in enumerate(chunks, 1):
+              print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+          PY
