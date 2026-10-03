@@ -3945,6 +3945,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "magic_item.display_text.title") }
     }
     public enum IconColor {
+      /// Color
+      public static var color: String { return L10n.tr("Localizable", "magic_item.icon_color.color") }
+      /// Custom
+      public static var custom: String { return L10n.tr("Localizable", "magic_item.icon_color.custom") }
+      /// Default
+      public static var `default`: String { return L10n.tr("Localizable", "magic_item.icon_color.default") }
       /// Icon color
       public static var title: String { return L10n.tr("Localizable", "magic_item.icon_color.title") }
     }
