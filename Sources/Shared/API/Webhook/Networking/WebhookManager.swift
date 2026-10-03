@@ -807,9 +807,8 @@ class WebhookSessionInfo: CustomStringConvertible, Hashable {
 
             return with(configuration) {
                 $0.sharedContainerIdentifier = AppConstants.AppGroupID
-                $0.httpCookieStorage = nil
+                $0.httpCookieStorage = HANetworkingEnvironment.current.cookieStorage
                 $0.httpCookieAcceptPolicy = .never
-                $0.httpShouldSetCookies = false
                 $0.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
                 $0.httpAdditionalHeaders = [

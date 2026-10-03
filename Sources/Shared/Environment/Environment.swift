@@ -158,6 +158,11 @@ public class AppEnvironment {
         HANetworkingEnvironment.current.bundleID = AppConstants.BundleID
         HANetworkingEnvironment.current.defaultServerName = ServerInfo.defaultName
         HANetworkingEnvironment.current.isDebug = Current.appConfiguration == .debug
+        // `.shared` is per process, and the extensions and the background webhook session are
+        // separate processes.
+        HANetworkingEnvironment.current.cookieStorage = .sharedCookieStorage(
+            forGroupContainerIdentifier: AppConstants.AppGroupID
+        )
         HANetworkingEnvironment.current.handleReauthenticationRequired = { server, statusCode, errorDescription in
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Refresh token is invalid, notifying user",

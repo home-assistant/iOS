@@ -1,6 +1,7 @@
 import Foundation
 import Network
 import os
+import Shared
 
 @MainActor
 class ConnectivityChecker {
@@ -227,6 +228,7 @@ class ConnectivityChecker {
         request.httpMethod = "HEAD"
 
         let config = URLSessionConfiguration.ephemeral
+        config.httpCookieStorage = HANetworkingEnvironment.current.cookieStorage
         let session = URLSession(configuration: config)
 
         let (_, response) = try await session.data(for: request)

@@ -1,3 +1,4 @@
+import AVFoundation
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
@@ -78,6 +79,17 @@ final class CameraHLSAssetLoaderTests: XCTestCase {
 
         XCTAssertEqual(asset.url, url)
         XCTAssertNotNil(loader)
+    }
+
+    /// AVFoundation loads the stream over its own connection, so the cookies used by native requests
+    /// only reach the server if the asset carries them.
+    func testAPlainServerIsSentTheMirroredCookies() async throws {
+        let (api, cleanUp) = makeAPI()
+        defer { cleanUp() }
+
+        try await CookieRecordingServer.expectMirroredCookie(path: "api/hls/index.m3u8") { url in
+            _ = try await CameraHLSAssetLoader.asset(for: url, api: api).asset.load(.duration)
+        }
     }
 
     /// Builds an API against a throwaway server, optionally with its connection adjusted, and hands
