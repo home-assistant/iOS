@@ -97,6 +97,33 @@ jobs:
           TEST_RUNNER_SNAPSHOT_TESTING_RECORD: failed
         run: bundle exec fastlane test
 
+      # The lane stops at the first scheme that fails, and recording always fails the iOS run, so the
+      # watch scheme gets a step of its own to prove the watch app still builds and passes.
+      - name: Run watch tests
+        continue-on-error: true
+        env:
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: failed
+        run: |
+          udid=$(xcrun simctl list devices available --json | python3 -c '
+          import json, re, sys
+          devices = json.load(sys.stdin)["devices"]
+          matches = [
+              (runtime, device)
+              for runtime, entries in devices.items() if "watchOS" in runtime
+              for device in entries if device["name"] == "Apple Watch Series 12 (46mm)"
+          ]
+          print(max(matches, key=lambda match: [int(n) for n in re.findall(r"\d+", match[0])])[1]["udid"])
+          ')
+          set -o pipefail
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme WatchApp \
+            -only-testing:HomeAssistant-WatchAppTests \
+            -destination "platform=watchOS Simulator,id=$udid" \
+            -disableAutomaticPackageResolution \
+            COMPILER_INDEX_STORE_ENABLE=NO 2>&1 \
+            | grep -E "error:|\*\* [A-Z ]+ \*\*|Test Suite|Executed|passed after|failed after" | tail -200
+
       - name: Commit recorded snapshots
         run: |
           git config user.name "github-actions[bot]"
