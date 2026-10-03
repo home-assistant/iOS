@@ -28,8 +28,7 @@ public extension HAEntity {
     /// read the same as the widgets and the frontend itself.
     ///
     /// - Parameter customColor: a color the user picked for this entity on the calling surface,
-    ///   which wins over everything below it while the entity is active (see
-    ///   ``EntityIconColorProvider`` for the domains that keep it whatever their state).
+    ///   which wins over everything below it whatever the entity's state.
     func stateIconColor(customColor: UIColor? = nil) -> UIColor? {
         UIColor(
             EntityIconColorProvider.iconColor(

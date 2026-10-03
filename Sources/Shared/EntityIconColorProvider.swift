@@ -5,9 +5,8 @@ import SwiftUI
 /// The color an entity's icon is drawn with, following home-assistant/frontend's tile card
 /// (`hui-tile-card`'s `_computeStateColor` plus the neutral defaults its stylesheet sets):
 ///
-/// 1. a color the user picked for the item, while the entity is active — and, departing from the
-///    tile card, whatever the state for scripts, scenes and automations, whose state says nothing
-///    about whether a device is on (see ``Domain/hasIrrelevantState``);
+/// 1. a color the user picked for the item, whatever the entity's state — the one place this
+///    departs from the tile card, which drops a picked color while the entity is inactive;
 /// 2. a light's own color, when it reports one;
 /// 3. the `--state-…` palette for the entity's domain, device class and state — see
 ///    ``EntityStateColor``;
@@ -23,7 +22,7 @@ public enum EntityIconColorProvider {
     ///   - liveColor: the light's own color, from ``liveColor(domain:rgbColor:hsColor:)``.
     ///   - groupMemberDomain: for a `group`, the single domain all its members share.
     ///   - customColor: a color the user picked for this entity on this surface, which takes
-    ///     precedence over everything below it while the entity is active.
+    ///     precedence over everything below it.
     public static func iconColor(
         domain: String,
         deviceClass: String? = nil,
@@ -35,15 +34,11 @@ public enum EntityIconColorProvider {
         let normalizedState = state.lowercased()
         let active = EntityStateActive.isActive(domain: domain, state: normalizedState)
 
-        // As in the frontend's tile card, a picked color is what an active entity shows, and an
-        // inactive one reads as off so a switched-off light doesn't look on. A script that isn't
-        // running is "off" too, yet nothing about it is off, so scripts, scenes and automations
-        // keep their picked color; otherwise a CarPlay row turned grey as soon as its state loaded.
+        // A color the user picked for this item wins outright. The frontend's tile card drops it
+        // while the entity is inactive; the companion app keeps it, because a picked color is how
+        // an item is told apart at a glance on a watch face, a widget or a CarPlay list.
         if let customColor {
-            if active || Domain(rawValue: domain)?.hasIrrelevantState == true {
-                return customColor
-            }
-            return neutralColor(active: false)
+            return customColor
         }
 
         // A light that is on shows its own color rather than the domain accent.
