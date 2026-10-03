@@ -1304,6 +1304,7 @@ Al momento, mTLS è supportato solo su iOS 17 e versioni successive; potrebbero 
 "onboarding.connection_test_result.local_network_permission.description" = "L'autorizzazione alla privacy \"Rete locale\" potrebbe essere stata negata. Puoi modificarla nell'app Impostazioni di sistema.";
 "onboarding.device_name_check.error.prompt" = "Quale dispositivo dovrebbe essere usato invece?";
 "onboarding.device_name_check.error.title" = "Esiste già un dispositivo con il nome '%1$@'";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Accetta";
 "onboarding.invitation.address_title" = "Home Assistant address";
 "onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
@@ -2677,6 +2678,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Icona";
 "watch.configurator.sections.ring.footer" = "L'anello che mostra il progresso attorno al testo.";
 "watch.configurator.sections.ring.header" = "Anello";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";

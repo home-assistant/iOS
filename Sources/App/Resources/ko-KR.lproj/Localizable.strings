@@ -1304,6 +1304,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "\"로컬 네트워크\" 개인 정보 보호 권한이 거부되었을 수 있습니다. 시스템 설정 앱에서 변경할 수 있습니다.";
 "onboarding.device_name_check.error.prompt" = "대신 어떤 기기 이름을 사용해야 합니까?";
 "onboarding.device_name_check.error.title" = "이름이 ' %1$@ '인 기기가 이미 존재합니다.";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "수락";
 "onboarding.invitation.address_title" = "Home Assistant 주소";
 "onboarding.invitation.description" = "Home Assistant는 로컬 제어와 개인정보 보호를 최우선으로 하는 오픈 소스 홈 자동화입니다.";
@@ -2677,6 +2678,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.configurator.sections.icon.header" = "아이콘";
 "watch.configurator.sections.ring.footer" = "텍스트를 둘러싼 진행률을 보여 주는 링입니다.";
 "watch.configurator.sections.ring.header" = "링";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "닫기";
 "watch.cover_controls.open" = "열기";
 "watch.cover_controls.position" = "위치";

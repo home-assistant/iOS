@@ -247,7 +247,7 @@ final class CameraOverlayPresenterTests: XCTestCase {
         try showAndPresent(frontDoor)
         webViewController.presentOverlayControllerCalled = false
 
-        presenter.overlayDidSwitchCamera(to: backyard.entityId, on: server)
+        presenter.overlayDidSwitchCamera(to: backyard.entityId)
 
         XCTAssertEqual(presenter.displayedCamera, backyard)
         XCTAssertTrue(presenter.isDisplaying(backyard))

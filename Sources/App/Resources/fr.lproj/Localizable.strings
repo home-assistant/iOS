@@ -1304,6 +1304,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.connection_test_result.local_network_permission.description" = "L'autorisation de confidentialité « Réseau local » a peut-être été refusée. Vous pouvez modifier cela dans l'application Paramètres système.";
 "onboarding.device_name_check.error.prompt" = "Quel nom de périphérique doit être utilisé à la place ?";
 "onboarding.device_name_check.error.title" = "Un périphérique existe déjà avec le nom « %1$@ »";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Accepter";
 "onboarding.invitation.address_title" = "Adresse Home Assistant";
 "onboarding.invitation.description" = "Home Assistant est une solution domotique open source qui privilégie le contrôle local et la confidentialité.";
@@ -2677,6 +2678,7 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "watch.configurator.sections.icon.header" = "Icône";
 "watch.configurator.sections.ring.footer" = "L'anneau montrant les progrès entourant le texte.";
 "watch.configurator.sections.ring.header" = "Anneau";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Fermer";
 "watch.cover_controls.open" = "Ouvrir";
 "watch.cover_controls.position" = "Position";

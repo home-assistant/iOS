@@ -1304,6 +1304,7 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "onboarding.connection_test_result.local_network_permission.description" = "Oprávnění soukromí pro položku \"Sítě a bezdrátové připojení\" mohlo být odepřeno. Toto můžete změnit v nastavení iPhonu.";
 "onboarding.device_name_check.error.prompt" = "Jaký název zařízení by měl být místo toho použit?";
 "onboarding.device_name_check.error.title" = "Zařízení s názvem \"%1$@\" již existuje";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Přijmout";
 "onboarding.invitation.address_title" = "Adresa Home Assistanta";
 "onboarding.invitation.description" = "Home Assistant je open source domácí automatizace, která klade důraz na lokální ovládání a soukromí.";
@@ -2677,6 +2678,7 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "watch.configurator.sections.icon.header" = "Ikona";
 "watch.configurator.sections.ring.footer" = "Kroužek znázorňující průběh kolem textu.";
 "watch.configurator.sections.ring.header" = "Kroužek";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Zavřít";
 "watch.cover_controls.open" = "Otevřít";
 "watch.cover_controls.position" = "Pozice";

@@ -365,7 +365,8 @@ struct CameraPlayerView: View {
         #endif
     }
 
-    private func switchCamera(to entityId: String) {
+    /// Non-private for tests.
+    func switchCamera(to entityId: String) {
         guard entityId != cameraEntityId else { return }
         // Show the loader while the new camera's capabilities are fetched and its stream connects.
         // Changing `cameraEntityId` re-identifies `content`, tearing down the current player first.

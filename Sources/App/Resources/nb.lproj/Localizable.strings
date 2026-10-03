@@ -1304,6 +1304,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.connection_test_result.local_network_permission.description" = "Personverntillatelse for «Lokalt nettverk» kan ha blitt nektet. Du kan endre dette i appen for systeminnstillinger.";
 "onboarding.device_name_check.error.prompt" = "Hvilket enhetsnavn bør brukes i stedet?";
 "onboarding.device_name_check.error.title" = "Det finnes allerede en enhet med navnet ' %1$@ '";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Aksepter";
 "onboarding.invitation.address_title" = "Home Assistant address";
 "onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
@@ -2677,6 +2678,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Ringen viser fremgang rundt teksten.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";

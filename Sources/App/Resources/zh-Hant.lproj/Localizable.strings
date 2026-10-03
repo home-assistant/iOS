@@ -1304,6 +1304,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "\"區域網絡\"隱私權限可能設為拒絕。您可以在系統設定應用中更改此設定。";
 "onboarding.device_name_check.error.prompt" = "所要使用的裝置名稱？";
 "onboarding.device_name_check.error.title" = "裝置已存在名稱 '%1$@'";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "接受";
 "onboarding.invitation.address_title" = "Home Assistant 位址";
 "onboarding.invitation.description" = "Home Assistant 是一款以本地控制和隱私優先的開源家庭自動化系統。";
@@ -2677,6 +2678,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.configurator.sections.icon.header" = "圖示";
 "watch.configurator.sections.ring.footer" = "文字周圍的圓環顯示進度。";
 "watch.configurator.sections.ring.header" = "圓環";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "關閉";
 "watch.cover_controls.open" = "開啟";
 "watch.cover_controls.position" = "位置";

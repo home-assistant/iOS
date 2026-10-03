@@ -83,9 +83,7 @@ final class CameraOverlayPresenter {
             server: server,
             cameraEntityId: entityId,
             cameraName: cameraName,
-            onCameraChange: { [weak self] entityId in
-                self?.overlayDidSwitchCamera(to: entityId, on: server)
-            }
+            onCameraChange: overlayDidSwitchCamera(to:)
         )
         #if os(macOS)
         // The Mac shows the player in a sheet SwiftUI owns, which hosts the view again outside this
@@ -179,9 +177,9 @@ final class CameraOverlayPresenter {
 
     /// Called when the picker inside the overlay switches to another camera, so a later show command for
     /// that camera is ignored and one for the camera it replaced is not.
-    func overlayDidSwitchCamera(to entityId: String, on server: Server) {
-        guard overlayController != nil else { return }
-        displayedCamera = Camera(entityId: entityId, serverIdentifier: server.identifier)
+    func overlayDidSwitchCamera(to entityId: String) {
+        guard overlayController != nil, let serverIdentifier = displayedCamera?.serverIdentifier else { return }
+        displayedCamera = Camera(entityId: entityId, serverIdentifier: serverIdentifier)
     }
 
     private func dismissDirectly(_ controller: PlatformViewController) {

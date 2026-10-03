@@ -1304,6 +1304,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "\"Yerel Ağ\" gizlilik izni reddedilmiş olabilir. Bunu sistem Ayarları uygulamasında değiştirebilirsiniz.";
 "onboarding.device_name_check.error.prompt" = "Bunun yerine hangi cihaz adı kullanılmalıdır?";
 "onboarding.device_name_check.error.title" = "%1$@ ' adında bir cihaz zaten var";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Kabul et";
 "onboarding.invitation.address_title" = "Home Assistant adresi";
 "onboarding.invitation.description" = "Home Assistant, yerel kontrolü ve gizliliği ön planda tutan açık kaynaklı bir ev otomasyon sistemidir.";
@@ -2677,6 +2678,7 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "watch.configurator.sections.icon.header" = "Simge";
 "watch.configurator.sections.ring.footer" = "Metni çevreleyen ilerlemeyi gösteren halka.";
 "watch.configurator.sections.ring.header" = "Halka";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Kapat";
 "watch.cover_controls.open" = "Aç";
 "watch.cover_controls.position" = "Pozisyon";

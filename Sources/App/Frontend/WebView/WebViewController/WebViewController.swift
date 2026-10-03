@@ -109,6 +109,30 @@ final class WebViewController: PlatformViewController, WKNavigationDelegate, WKU
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { ApplicationState.current == .background }
 
+    /// Whether the scene showing this frontend is active, i.e. on screen and receiving events; replaceable
+    /// in tests. The scene's state rather than the application's: with several windows open, one frontend
+    /// can be in the background while the app as a whole stays active. Without a scene to ask (the view is
+    /// not in a window) the application's state is the best answer available.
+    var isSceneActive: @MainActor (PlatformWindowScene?) -> Bool = { scene in
+        #if os(macOS)
+        // A Mac window is the scene; it is "active" while someone can see it. Minimised or hidden with
+        // the app, it is as good as backgrounded.
+        guard let scene else { return !NSApp.isHidden }
+        return scene.isVisible && !scene.isMiniaturized && !NSApp.isHidden
+        #else
+        guard let scene else { return UIApplication.shared.applicationState == .active }
+        return scene.activationState == .foregroundActive
+        #endif
+    }
+
+    /// Set when the disconnected empty state was asked for while the scene was not active. Nobody could
+    /// see it, and the frontend gets its grace period again once the scene is; see `showEmptyState()`.
+    var isEmptyStateDeferredUntilActive = false
+
+    /// Set when the scene enters the background and consumed by its next activation, which is how an
+    /// activation that follows a backgrounding is told apart from one that follows a system alert.
+    var didEnterBackgroundSinceLastActivation = false
+
     var blankFrontendRecoveryAttempts = 0
     var contentProcessTerminations = 0
 

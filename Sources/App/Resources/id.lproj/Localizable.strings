@@ -1304,6 +1304,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.connection_test_result.local_network_permission.description" = "Izin privasi \"Jaringan Lokal\" mungkin telah ditolak. Anda dapat mengubahnya di aplikasi Pengaturan sistem.";
 "onboarding.device_name_check.error.prompt" = "Nama perangkat apa yang ingin digunakan?";
 "onboarding.device_name_check.error.title" = "Sudah ada perangkat dengan nama '%1$@'";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Terima";
 "onboarding.invitation.address_title" = "Home Assistant address";
 "onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
@@ -2676,6 +2677,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Cincin menunjukkan kemajuan di sekitar teks.";
 "watch.configurator.sections.ring.header" = "Cincin";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";

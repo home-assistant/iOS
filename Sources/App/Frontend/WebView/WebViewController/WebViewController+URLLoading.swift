@@ -26,6 +26,33 @@ extension WebViewController {
             object: nil
         )
 
+        // The Mac has no scenes: a window leaving the screen (minimised, or the app hidden) is the
+        // background, and it coming back is the activation.
+        #if os(macOS)
+        let sceneDidEnterBackgroundNames = [NSWindow.didMiniaturizeNotification, NSApplication.didHideNotification]
+        let sceneDidActivateNames = [NSWindow.didDeminiaturizeNotification, NSApplication.didUnhideNotification]
+        #else
+        let sceneDidEnterBackgroundNames = [UIScene.didEnterBackgroundNotification]
+        let sceneDidActivateNames = [UIScene.didActivateNotification]
+        #endif
+        for name in sceneDidEnterBackgroundNames {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(sceneDidEnterBackground(_:)),
+                name: name,
+                object: nil
+            )
+        }
+
+        for name in sceneDidActivateNames {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(sceneDidActivate(_:)),
+                name: name,
+                object: nil
+            )
+        }
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(serverVersionDidChange(_:)),
