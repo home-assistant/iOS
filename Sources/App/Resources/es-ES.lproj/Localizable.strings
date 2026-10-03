@@ -1304,6 +1304,7 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "onboarding.connection_test_result.local_network_permission.description" = "Es posible que se haya denegado el permiso de Red local. Puedes modificarlo en la aplicación Ajustes del sistema.";
 "onboarding.device_name_check.error.prompt" = "¿Qué nombre de dispositivo se debería utilizar en su lugar?";
 "onboarding.device_name_check.error.title" = "Ya existe un dispositivo con el nombre \"%1$@\".";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Aceptar";
 "onboarding.invitation.address_title" = "Dirección de Home Assistant";
 "onboarding.invitation.description" = "Home Assistant es una solución de domótica de código abierto que da prioridad al control local y a la privacidad.";
@@ -2677,6 +2678,7 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "watch.configurator.sections.icon.header" = "Icono";
 "watch.configurator.sections.ring.footer" = "El anillo que muestra el progreso alrededor del texto.";
 "watch.configurator.sections.ring.header" = "Anillo";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Cerrar";
 "watch.cover_controls.open" = "Abrir";
 "watch.cover_controls.position" = "Posición";

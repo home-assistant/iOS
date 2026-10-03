@@ -1304,6 +1304,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "“本地网络”隐私权限可能已被拒绝。您可以在系统“设置”应用中更改此设置。";
 "onboarding.device_name_check.error.prompt" = "应改用什么设备名称 ？";
 "onboarding.device_name_check.error.title" = "已存在名称为\"%1$@\"的设备。";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "接受";
 "onboarding.invitation.address_title" = "Home Assistant 地址";
 "onboarding.invitation.description" = "Home Assistant 是一款开源的家庭自动化系统，它将本地控制和隐私置于首位。";
@@ -2676,6 +2677,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "图标";
 "watch.configurator.sections.ring.footer" = "显示围绕文本的进度环。";
 "watch.configurator.sections.ring.header" = "环";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "关闭";
 "watch.cover_controls.open" = "打开";
 "watch.cover_controls.position" = "位置";

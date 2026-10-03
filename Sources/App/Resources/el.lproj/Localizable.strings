@@ -1304,6 +1304,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "Η άδεια απορρήτου \"Τοπικό δίκτυο\" ενδέχεται να μην έχει χορηγηθεί. Μπορείτε να το αλλάξετε αυτό στην εφαρμογή Ρυθμίσεις του συστήματος.";
 "onboarding.device_name_check.error.prompt" = "Ποιο όνομα συσκευής θα πρέπει να χρησιμοποιηθεί αντ' αυτού;";
 "onboarding.device_name_check.error.title" = "Υπάρχει ήδη μια συσκευή με το όνομα \"%1$@\"";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Αποδοχή";
 "onboarding.invitation.address_title" = "Διεύθυνση Home Assistant";
 "onboarding.invitation.description" = "Το Home Assistant είναι ένα σύστημα αυτοματισμών σπιτιού ανοιχτού κώδικα που θέτει τον τοπικό έλεγχο και την ιδιωτικότητα σε προτεραιότητα.";
@@ -2677,6 +2678,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Εικονίδιο";
 "watch.configurator.sections.ring.footer" = "Ο δακτύλιος που δείχνει την πρόοδο που περιβάλλει το κείμενο.";
 "watch.configurator.sections.ring.header" = "Δακτύλιος";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";

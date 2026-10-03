@@ -1304,6 +1304,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.connection_test_result.local_network_permission.description" = "A \"Helyi hálózat\" adatvédelmi engedély lehet, hogy meg lett vonva. Ezt a rendszerbeállítások alkalmazásban módosíthatja.";
 "onboarding.device_name_check.error.prompt" = "Milyen eszköznevet kell helyette használni?";
 "onboarding.device_name_check.error.title" = "Már létezik egy eszköz a '%1$@' névvel.";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Elfogadás";
 "onboarding.invitation.address_title" = "Home Assistant cím";
 "onboarding.invitation.description" = "A Home Assistant egy nyílt forráskódú otthonautomatizálási rendszer, amely a helyi irányítást és az adatvédelmet helyezi előtérbe.";
@@ -2676,6 +2677,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "A szöveget körülvevő, a haladást mutató gyűrű.";
 "watch.configurator.sections.ring.header" = "Gyűrű";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";

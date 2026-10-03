@@ -1304,6 +1304,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.connection_test_result.local_network_permission.description" = "\"Kohaliku võrgu\" privaatsusluba võib olla keelatud. Seda saad muuta  rakenduse süsteemiseadetes.";
 "onboarding.device_name_check.error.prompt" = "Millist seadme nime tuleks selle asemel kasutada?";
 "onboarding.device_name_check.error.title" = "Seade nimega \"%1$@\" on juba olemas.";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Nõustu";
 "onboarding.invitation.address_title" = "Home Assistanti aadress";
 "onboarding.invitation.description" = "Home Assistant on avatud lähtekoodiga koduautomaatika mis seab esikohale kohaliku kontrolli ja privaatsuse.";
@@ -2677,6 +2678,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Ikoon";
 "watch.configurator.sections.ring.footer" = "Rõngas mis näitab teksti ümber edenemist.";
 "watch.configurator.sections.ring.header" = "Sõõr";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";
