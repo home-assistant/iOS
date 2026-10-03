@@ -1,19 +1,20 @@
 name: TMP Watch Assist screenshots publish
 
 on:
+  push:
+    branches:
+      - watch-assist-push-to-talk-screenshots
+    paths:
+      - .github/workflows/tmp_watch_assist_publish.yml
   workflow_dispatch:
-    inputs:
-      run_id:
-        description: Run id holding the watch-assist-screenshots-2 artifact
-        required: true
-      artifact:
-        description: Artifact name
-        required: false
-        default: watch-assist-screenshots-2
 
 permissions:
   contents: read
   actions: read
+
+env:
+  SOURCE_RUN_ID: "37156491365"
+  SOURCE_ARTIFACT: watch-assist-screenshots-2
 
 jobs:
   publish:
@@ -22,34 +23,51 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.artifact }}
-          run-id: ${{ inputs.run_id }}
+          name: ${{ env.SOURCE_ARTIFACT }}
+          run-id: ${{ env.SOURCE_RUN_ID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: artifact
 
       - name: Encode screenshots
         run: |
-          ls -laR artifact/screenshots
-          python3 -c "import PIL" 2>/dev/null || pip install --quiet pillow
+          ls -laR artifact
+          pip install --quiet pillow
           python3 - <<'PY'
-          import base64, hashlib, pathlib, io
+          import base64, hashlib, io, pathlib
           from PIL import Image
           out = pathlib.Path("encoded"); out.mkdir(exist_ok=True)
+          summary = []
           for png in sorted(pathlib.Path("artifact/screenshots").glob("*.png")):
+              raw = png.read_bytes()
               im = Image.open(png).convert("RGB")
-              buf = io.BytesIO(); im.save(buf, "JPEG", quality=80, optimize=True)
-              data = buf.getvalue()
-              b64 = base64.b64encode(data).decode()
+              for quality in (85, 75, 65, 55, 45):
+                  buf = io.BytesIO(); im.save(buf, "JPEG", quality=quality, optimize=True)
+                  b64 = base64.b64encode(buf.getvalue()).decode()
+                  if len(b64) <= 72000:
+                      break
               (out / f"{png.stem}.b64").write_text(b64)
-              print(png.stem, im.size, len(data), "bytes jpeg", len(b64), "b64", hashlib.sha256(data).hexdigest()[:16])
+              colors = len(set(im.getdata()))
+              summary.append(f"{png.stem} size={im.size} png={len(raw)} pngsha={hashlib.sha256(raw).hexdigest()[:12]} colors={colors} jpegq={quality} b64={len(b64)}")
+          text = " | ".join(summary)
+          print(text)
+          print(f"::notice title=img-summary::{text}")
           PY
+
+      - name: App logs
+        run: |
+          for f in artifact/logs/*.log; do
+            [ -s "$f" ] || continue
+            body=$(tail -c 3000 "$f" | tr '\n' ' ' | tr -d '\r')
+            echo "::notice title=applog $(basename "$f")::$body"
+          done
 
       - name: Annotate idle
         run: |
-          f=encoded/idle.b64; [ -e "$f" ] || exit 0
-          python3 - "$f" <<'PY'
+          python3 - encoded/idle.b64 <<'PY'
           import sys, zlib, pathlib
-          p = pathlib.Path(sys.argv[1]); s = p.read_text(); n = 3800
+          p = pathlib.Path(sys.argv[1])
+          if not p.exists(): sys.exit(0)
+          s = p.read_text(); n = 8000
           chunks = [s[i:i+n] for i in range(0, len(s), n)]
           for i, c in enumerate(chunks, 1):
               print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
@@ -57,10 +75,11 @@ jobs:
 
       - name: Annotate recording-tap
         run: |
-          f=encoded/recording-tap.b64; [ -e "$f" ] || exit 0
-          python3 - "$f" <<'PY'
+          python3 - encoded/recording-tap.b64 <<'PY'
           import sys, zlib, pathlib
-          p = pathlib.Path(sys.argv[1]); s = p.read_text(); n = 3800
+          p = pathlib.Path(sys.argv[1])
+          if not p.exists(): sys.exit(0)
+          s = p.read_text(); n = 8000
           chunks = [s[i:i+n] for i in range(0, len(s), n)]
           for i, c in enumerate(chunks, 1):
               print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
@@ -68,10 +87,11 @@ jobs:
 
       - name: Annotate recording-release
         run: |
-          f=encoded/recording-release.b64; [ -e "$f" ] || exit 0
-          python3 - "$f" <<'PY'
+          python3 - encoded/recording-release.b64 <<'PY'
           import sys, zlib, pathlib
-          p = pathlib.Path(sys.argv[1]); s = p.read_text(); n = 3800
+          p = pathlib.Path(sys.argv[1])
+          if not p.exists(): sys.exit(0)
+          s = p.read_text(); n = 8000
           chunks = [s[i:i+n] for i in range(0, len(s), n)]
           for i, c in enumerate(chunks, 1):
               print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
