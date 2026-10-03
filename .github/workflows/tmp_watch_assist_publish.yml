@@ -43,7 +43,7 @@ jobs:
               for quality in (85, 75, 65, 55, 45):
                   buf = io.BytesIO(); im.save(buf, "JPEG", quality=quality, optimize=True)
                   b64 = base64.b64encode(buf.getvalue()).decode()
-                  if len(b64) <= 72000:
+                  if len(b64) <= 64000:
                       break
               (out / f"{png.stem}.b64").write_text(b64)
               colors = len(set(im.getdata()))
@@ -53,46 +53,80 @@ jobs:
           print(f"::notice title=img-summary::{text}")
           PY
 
-      - name: App logs
+      - name: Annotate idle part 1
         run: |
-          for f in artifact/logs/*.log; do
-            [ -s "$f" ] || continue
-            body=$(tail -c 3000 "$f" | tr '\n' ' ' | tr -d '\r')
-            echo "::notice title=applog $(basename "$f")::$body"
-          done
-
-      - name: Annotate idle
-        run: |
-          python3 - encoded/idle.b64 <<'PY'
+          python3 - encoded/idle.b64 1 9 <<'PY'
           import sys, zlib, pathlib
-          p = pathlib.Path(sys.argv[1])
+          p = pathlib.Path(sys.argv[1]); lo, hi = int(sys.argv[2]), int(sys.argv[3])
           if not p.exists(): sys.exit(0)
-          s = p.read_text(); n = 8000
+          s = p.read_text(); n = 4000
           chunks = [s[i:i+n] for i in range(0, len(s), n)]
           for i, c in enumerate(chunks, 1):
-              print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+              if lo <= i <= hi:
+                  print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
           PY
 
-      - name: Annotate recording-tap
+      - name: Annotate idle part 2
         run: |
-          python3 - encoded/recording-tap.b64 <<'PY'
+          python3 - encoded/idle.b64 10 18 <<'PY'
           import sys, zlib, pathlib
-          p = pathlib.Path(sys.argv[1])
+          p = pathlib.Path(sys.argv[1]); lo, hi = int(sys.argv[2]), int(sys.argv[3])
           if not p.exists(): sys.exit(0)
-          s = p.read_text(); n = 8000
+          s = p.read_text(); n = 4000
           chunks = [s[i:i+n] for i in range(0, len(s), n)]
           for i, c in enumerate(chunks, 1):
-              print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+              if lo <= i <= hi:
+                  print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
           PY
 
-      - name: Annotate recording-release
+      - name: Annotate recording-tap part 1
         run: |
-          python3 - encoded/recording-release.b64 <<'PY'
+          python3 - encoded/recording-tap.b64 1 9 <<'PY'
           import sys, zlib, pathlib
-          p = pathlib.Path(sys.argv[1])
+          p = pathlib.Path(sys.argv[1]); lo, hi = int(sys.argv[2]), int(sys.argv[3])
           if not p.exists(): sys.exit(0)
-          s = p.read_text(); n = 8000
+          s = p.read_text(); n = 4000
           chunks = [s[i:i+n] for i in range(0, len(s), n)]
           for i, c in enumerate(chunks, 1):
-              print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+              if lo <= i <= hi:
+                  print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+          PY
+
+      - name: Annotate recording-tap part 2
+        run: |
+          python3 - encoded/recording-tap.b64 10 18 <<'PY'
+          import sys, zlib, pathlib
+          p = pathlib.Path(sys.argv[1]); lo, hi = int(sys.argv[2]), int(sys.argv[3])
+          if not p.exists(): sys.exit(0)
+          s = p.read_text(); n = 4000
+          chunks = [s[i:i+n] for i in range(0, len(s), n)]
+          for i, c in enumerate(chunks, 1):
+              if lo <= i <= hi:
+                  print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+          PY
+
+      - name: Annotate recording-release part 1
+        run: |
+          python3 - encoded/recording-release.b64 1 9 <<'PY'
+          import sys, zlib, pathlib
+          p = pathlib.Path(sys.argv[1]); lo, hi = int(sys.argv[2]), int(sys.argv[3])
+          if not p.exists(): sys.exit(0)
+          s = p.read_text(); n = 4000
+          chunks = [s[i:i+n] for i in range(0, len(s), n)]
+          for i, c in enumerate(chunks, 1):
+              if lo <= i <= hi:
+                  print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+          PY
+
+      - name: Annotate recording-release part 2
+        run: |
+          python3 - encoded/recording-release.b64 10 18 <<'PY'
+          import sys, zlib, pathlib
+          p = pathlib.Path(sys.argv[1]); lo, hi = int(sys.argv[2]), int(sys.argv[3])
+          if not p.exists(): sys.exit(0)
+          s = p.read_text(); n = 4000
+          chunks = [s[i:i+n] for i in range(0, len(s), n)]
+          for i, c in enumerate(chunks, 1):
+              if lo <= i <= hi:
+                  print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
           PY
