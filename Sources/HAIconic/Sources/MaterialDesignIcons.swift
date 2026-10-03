@@ -21,16 +21,17 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     }
 
     public convenience init(named iconName: String, fallback: MaterialDesignIcons) {
-        let existing: MaterialDesignIcons
-
-        if let found = Self.allCases.first(where: { $0.name == iconName.lowercased() }) {
-            existing = found
-        } else {
-            existing = fallback
-        }
+        // Looked up in a dictionary built once, rather than scanning every icon: a list resolves a
+        // glyph for each of its rows, repeatedly, while it scrolls.
+        let existing = Self.byName[iconName.lowercased()] ?? fallback
 
         self.init(name: existing.name, unicode: existing.unicode)
     }
+
+    private static let byName: [String: MaterialDesignIcons] = Dictionary(
+        allCases.map { ($0.name, $0) },
+        uniquingKeysWith: { first, _ in first }
+    )
 
     private init(name: String, unicode: String) {
         self.name = name

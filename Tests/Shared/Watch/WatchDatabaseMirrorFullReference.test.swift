@@ -354,6 +354,7 @@ struct WatchDatabaseMirrorFullReferenceTests {
             modifiedAt: nil,
             nameByUser: nil,
             name: nil,
+            parentDeviceId: nil,
             primaryConfigEntry: nil,
             serialNumber: nil,
             swVersion: nil,

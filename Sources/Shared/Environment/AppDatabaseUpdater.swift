@@ -796,9 +796,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             return
         }
 
-        let appDeviceRegistries = registryEntries.map { entry in
-            AppDeviceRegistry(serverId: serverId, registry: entry)
-        }
+        let appDeviceRegistries = AppDeviceRegistry.resolvingChildDevices(registryEntries, serverId: serverId)
 
         // Skip the delete+reinsert when nothing changed (common on forced/periodic refreshes).
         // Uses GRDB's async read so the comparison fetch suspends instead of blocking the thread.

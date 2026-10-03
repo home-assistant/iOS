@@ -197,6 +197,7 @@ public enum DatabaseTables {
         case modifiedAt
         case nameByUser
         case name
+        case parentDeviceId
         case primaryConfigEntry
         case serialNumber
         case swVersion
