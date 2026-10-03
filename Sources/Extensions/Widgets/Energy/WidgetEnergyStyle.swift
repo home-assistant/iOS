@@ -51,7 +51,7 @@ enum WidgetEnergyStyle {
     /// home screen card does: a server the app has no URL to reach points at the URL configuration,
     /// an entry that was never set up says so, and one that is configured but came back without
     /// usable data — or failed to load — reports missing data instead.
-    @available(iOS 17, *)
+    @available(iOS 17, macOS 14, *)
     static func emptyStateText(for entry: WidgetEnergyEntry) -> String {
         if entry.noConnection {
             return L10n.Widgets.Energy.noConnection

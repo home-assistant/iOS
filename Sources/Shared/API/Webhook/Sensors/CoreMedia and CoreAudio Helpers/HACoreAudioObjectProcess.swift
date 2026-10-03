@@ -1,6 +1,6 @@
 import Foundation
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 import CoreAudio
 
 /// One of the processes doing audio IO on the system, from `kAudioHardwarePropertyProcessObjectList`.

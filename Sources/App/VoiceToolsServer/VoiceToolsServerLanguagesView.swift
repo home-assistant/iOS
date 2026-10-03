@@ -22,7 +22,7 @@ struct VoiceToolsServerLanguagesView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             if let locales {
                 if locales.isEmpty {
                     Section {

@@ -1,6 +1,10 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public struct ThemeColors: Codable {
     public enum Color: String, CaseIterable {
@@ -35,6 +39,11 @@ public struct ThemeColors: Codable {
             }
         }
 
+        #if os(macOS)
+        init(appearance: NSAppearance) {
+            self = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua ? .dark : .light
+        }
+        #else
         init(traitCollection: UITraitCollection) {
             switch traitCollection.userInterfaceStyle {
             case .dark: self = .dark
@@ -42,19 +51,37 @@ public struct ThemeColors: Codable {
             default: self = .light
             }
         }
+        #endif
     }
 
+    #if os(macOS)
+    static func cachedThemeColors(for appearance: NSAppearance) -> ThemeColors {
+        cachedThemeColors(for: InterfaceStyle(appearance: appearance))
+    }
+
+    static func updateCache(with messageBody: [String: Any], for appearance: NSAppearance) {
+        updateCache(with: messageBody, for: InterfaceStyle(appearance: appearance))
+    }
+    #else
     static func cachedThemeColors(for traitCollection: UITraitCollection) -> ThemeColors {
-        let style = InterfaceStyle(traitCollection: traitCollection)
-        let cached = prefs.object(forKey: style.userDefaultsKey) as? [Color.RawValue: String] ?? [:]
-        Current.Log.verbose("loaded cached colors \(cached)")
-        return ThemeColors(values: cached)
+        cachedThemeColors(for: InterfaceStyle(traitCollection: traitCollection))
     }
 
     static func updateCache(
         with messageBody: [String: Any],
         for traitCollection: UITraitCollection
     ) {
+        updateCache(with: messageBody, for: InterfaceStyle(traitCollection: traitCollection))
+    }
+    #endif
+
+    private static func cachedThemeColors(for style: InterfaceStyle) -> ThemeColors {
+        let cached = prefs.object(forKey: style.userDefaultsKey) as? [Color.RawValue: String] ?? [:]
+        Current.Log.verbose("loaded cached colors \(cached)")
+        return ThemeColors(values: cached)
+    }
+
+    private static func updateCache(with messageBody: [String: Any], for style: InterfaceStyle) {
         func rawValue(for key: Color) -> String? {
             messageBody[key.rawValue]
                 .flatMap { $0 as? String }?
@@ -66,7 +93,6 @@ public struct ThemeColors: Codable {
             dictionary[color.rawValue] = rawValue(for: color)
         }
         Current.Log.verbose("caching color values \(dictionary)")
-        let style = InterfaceStyle(traitCollection: traitCollection)
         prefs.set(dictionary, forKey: style.userDefaultsKey)
     }
 }

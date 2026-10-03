@@ -284,8 +284,8 @@ public class AppEnvironment {
         #endif
     }
 
-    #if os(iOS)
-    #if !targetEnvironment(macCatalyst)
+    #if !os(watchOS)
+    #if os(iOS) && !targetEnvironment(macCatalyst)
     /// Call `_ = Current.liveActivityRegistry` on the main thread at launch (before any
     /// background thread can access it) to avoid a lazy-init race between concurrent callers.
     public lazy var liveActivityRegistry: LiveActivityRegistryProtocol? = {
@@ -307,6 +307,16 @@ public class AppEnvironment {
     public var requestSensorPermissions: ([String]) -> Void = { _ in }
 
     public var impactFeedback: ImpactFeedbackGeneratorProtocol = ImpactFeedbackGenerator()
+
+    #if os(macOS)
+    /// Answered from the main thread, which `isActive` belongs to; a caller on another thread waits for it.
+    public lazy var isForegroundApp = {
+        if Thread.isMainThread {
+            return NSApplication.shared.isActive
+        }
+        return DispatchQueue.main.sync { NSApplication.shared.isActive }
+    }
+    #else
     /// Wrapper around UIApplication for use in shared framework
     public var application: (() -> UIApplication)?
 
@@ -317,6 +327,7 @@ public class AppEnvironment {
     public lazy var isForegroundApp = {
         self.application?().applicationState == .active
     }
+    #endif
     #endif
 
     public var style: Style = .init()
@@ -402,7 +413,10 @@ public class AppEnvironment {
     }
 
     public var sensors = with(SensorContainer()) {
+        #if !os(macOS)
+        // Core Motion has no activity classification on the Mac.
         $0.register(provider: ActivitySensor.self)
+        #endif
         $0.register(provider: PedometerSensor.self)
         $0.register(provider: BatterySensor.self)
         $0.register(provider: StorageSensor.self)
@@ -421,7 +435,10 @@ public class AppEnvironment {
         $0.register(provider: AppVersionSensor.self)
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
+        #if !os(macOS)
+        // No Mac has a barometer.
         $0.register(provider: BarometerSensor.self)
+        #endif
         $0.register(provider: KioskModeSensor.self)
         $0.register(provider: KioskBrightnessSensor.self)
         $0.register(provider: KioskVolumeSensor.self)
@@ -454,7 +471,11 @@ public class AppEnvironment {
     /// reporting built on it stays testable from the iOS unit-test target.
     public var watchDeviceRegistrations: WatchDeviceRegistrationStore = KeychainWatchDeviceRegistrationStore()
 
-    #if targetEnvironment(macCatalyst)
+    #if os(macOS)
+    /// The native app links the AppKit implementation directly.
+    public var macBridge: MacBridge = MacBridgeImpl()
+    #elseif targetEnvironment(macCatalyst)
+    /// Mac Catalyst cannot link AppKit, so the implementation lives in a bundle loaded at runtime.
     public var macBridge: MacBridge = {
         guard let pluginUrl = Bundle(for: AppEnvironment.self).builtInPlugInsURL,
               let bundle = Bundle(url: pluginUrl.appendingPathComponent("MacBridge.bundle")) else {
@@ -508,7 +529,7 @@ public class AppEnvironment {
     /// `Production` for the App Store) is what tells them apart; the payload is signed, not encrypted.
     static func isTestFlightReceipt() -> Bool {
         guard let url = Bundle.main.appStoreReceiptURL else { return false }
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         guard let receipt = try? Data(contentsOf: url),
               let marker = "ProductionSandbox".data(using: .utf8) else { return false }
         return receipt.range(of: marker) != nil
@@ -517,7 +538,7 @@ public class AppEnvironment {
         #endif
     }
 
-    #if os(iOS)
+    #if os(iOS) || os(macOS)
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
     #elseif os(watchOS)
     public var isAppExtension = false
@@ -537,8 +558,9 @@ public class AppEnvironment {
         }
     }()
 
+    /// Whether the app is running on a Mac, natively or through Mac Catalyst.
     public var isCatalyst: Bool = {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         return true
         #else
         return false
@@ -645,6 +667,7 @@ public class AppEnvironment {
         return log
     }()
 
+    #if !os(macOS)
     /// Wrapper around CMMotionActivityManager
     public struct Motion {
         private let underlyingManager = CMMotionActivityManager()
@@ -669,13 +692,19 @@ public class AppEnvironment {
     }
 
     public var motion = Motion()
+    #endif
 
     /// Wrapper around CMPedometeer
     public struct Pedometer {
         private let underlyingPedometer = CMPedometer()
         public var isAuthorized: () -> Bool = {
+            #if os(macOS)
+            // No Mac counts steps, and Core Motion has no authorization to ask about there.
+            return false
+            #else
             guard !Current.isCatalyst else { return false }
             return CMPedometer.authorizationStatus() == .authorized
+            #endif
         }
 
         public var isStepCountingAvailable: () -> Bool = CMPedometer.isStepCountingAvailable
@@ -692,6 +721,7 @@ public class AppEnvironment {
     public var healthKitService = HealthKitService()
     #endif
 
+    #if !os(macOS)
     /// Wrapper around CMAltimeter for barometric pressure readings
     public struct Barometer {
         private let underlyingAltimeter = CMAltimeter()
@@ -719,6 +749,7 @@ public class AppEnvironment {
     /// Multiplexes the single altimeter session `Barometer` exposes, so more than one consumer can
     /// read pressure at a time.
     public var barometerObserver = BarometerObserver()
+    #endif
 
     public var device = DeviceWrapper()
 

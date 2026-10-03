@@ -20,7 +20,7 @@ struct WidgetScriptsEntry: TimelineEntry {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetScriptsEntry
     typealias Intent = WidgetScriptsAppIntent

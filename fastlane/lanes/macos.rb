@@ -6,6 +6,8 @@ platform :mac do
 
     specifiers = provisioning_profile_specifiers(sdk: 'macosx')
     developer_id_app_path = build_mac_app(
+      # The project also builds natively for macOS; the release is still the Catalyst app and its profiles.
+      destination: 'generic/platform=macOS,variant=Mac Catalyst',
       export_method: 'developer-id',
       skip_package_dependencies_resolution: true,
       skip_profile_detection: true,

@@ -26,7 +26,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private let entityControlDonation: EntityControlDonation
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
-    private var improvController: UIViewController?
+    private var improvController: PlatformViewController?
 
     private var nextOutgoingMessageID = 1
     private var pendingCommands: [Int: PendingExternalBusCommand] = [:]
@@ -374,28 +374,24 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
 
         let threadManagementView =
-            UIHostingController(
+            PlatformHostingController(
                 rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
                     .buildTransferToHomeAssistant(server: webViewController.server)
             )
-        threadManagementView.view.backgroundColor = .clear
-        threadManagementView.modalPresentationStyle = .overFullScreen
-        threadManagementView.modalTransitionStyle = .crossDissolve
+        threadManagementView.presentsAsTransparentOverlay()
         webViewController.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func transferHAThreadCredentialsToKeychain(macExtendedAddress: String, activeOperationalDataset: String) {
         let threadManagementView =
-            UIHostingController(
+            PlatformHostingController(
                 rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
                     .buildTransferToAppleKeychain(
                         macExtendedAddress: macExtendedAddress,
                         activeOperationalDataset: activeOperationalDataset
                     )
             )
-        threadManagementView.view.backgroundColor = .clear
-        threadManagementView.modalPresentationStyle = .overFullScreen
-        threadManagementView.modalTransitionStyle = .crossDissolve
+        threadManagementView.presentsAsTransparentOverlay()
         webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
@@ -411,7 +407,9 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             alternativeOptionLabel: alternativeOptionLabel,
             incomingMessageId: incomingMessageId
         ))
+        #if os(iOS)
         barcodeController.modalPresentationStyle = .fullScreen
+        #endif
         webViewController?.presentOverlayController(controller: barcodeController, animated: true)
     }
 
@@ -458,16 +456,17 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                         .error(
                             "Error saving credentials in keychain while comissioning matter device, error: \(error.localizedDescription)"
                         )
-                    let alert = UIAlertController(
-                        title: L10n.Thread.SaveCredential.Fail.Alert.title(error.localizedDescription),
-                        message: L10n.Thread.SaveCredential.Fail.Alert.message,
-                        preferredStyle: .alert
-                    )
-                    alert.addAction(.init(title: L10n.cancelLabel, style: .default))
-                    alert.addAction(.init(title: L10n.continueLabel, style: .destructive, handler: { [weak self] _ in
+                    let alert = Self.threadCredentialSaveFailedAlert(error: error) { [weak self] in
                         self?.comissionMatterDevice()
-                    }))
-                    self?.webViewController?.presentOverlayController(controller: alert, animated: false)
+                    }
+                    #if os(macOS)
+                    alert.present(on: self?.webViewController?.presentationWindow)
+                    #else
+                    self?.webViewController?.presentOverlayController(
+                        controller: alert.makeAlertController(),
+                        animated: false
+                    )
+                    #endif
                 } else {
                     Current.Log
                         .verbose(
@@ -498,7 +497,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     @MainActor
     private func showToast(payload: ToastShowPayload) {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ToastPresenter.shared.show(
                 id: payload.id,
                 symbol: .infoCircleFill,
@@ -514,11 +513,23 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     @MainActor
     private func hideToast(id: String) {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ToastPresenter.shared.hide(id: id)
         } else {
             Current.Log.verbose("Not hiding toast with id \(id), Toast not available on this OS version.")
         }
+    }
+
+    /// Offers to go on commissioning a Matter device after its Thread credential could not be saved.
+    static func threadCredentialSaveFailedAlert(error: Error, continueAnyway: @escaping () -> Void) -> AppAlert {
+        AppAlert(
+            title: L10n.Thread.SaveCredential.Fail.Alert.title(error.localizedDescription),
+            message: L10n.Thread.SaveCredential.Fail.Alert.message,
+            actions: [
+                .init(title: L10n.cancelLabel),
+                .init(title: L10n.continueLabel, style: .destructive, handler: continueAnyway),
+            ]
+        )
     }
 
     private func cleanPreferredThreadCredentials() {
@@ -577,6 +588,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             )
             Current.sceneManager.activateAnyScene(for: .assist)
         } else {
+            #if os(iOS)
             // On iOS/iPad, present modally as before
             let assistView = UIHostingController(rootView: AssistView.build(
                 server: server,
@@ -598,6 +610,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 assistView.modalTransitionStyle = .crossDissolve
             }
             webViewController?.presentOverlayController(controller: assistView, animated: true)
+            #endif
         }
     }
 
@@ -611,7 +624,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         default:
             // Mac Catalyst doesn't trigger bluetooth permission for some reason
             guard !Current.isCatalyst else { return }
-            let bluetoothPermissionView = UIHostingController(rootView: BluetoothPermissionView())
+            let bluetoothPermissionView = PlatformHostingController(rootView: BluetoothPermissionView())
             webViewController?.presentOverlayController(controller: bluetoothPermissionView, animated: true)
         }
     }
@@ -621,7 +634,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         improvManager.delegate = nil
 
         improvController =
-            UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(
+            PlatformHostingController(rootView: ImprovDiscoverView<ImprovManager>(
                 improvManager: improvManager,
                 deviceName: deviceName,
                 redirectRequest: { [weak self] redirectUrlPath in
@@ -630,9 +643,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             ))
 
         guard let improvController else { return }
-        improvController.modalTransitionStyle = .crossDissolve
-        improvController.modalPresentationStyle = .overFullScreen
-        improvController.view.backgroundColor = .clear
+        improvController.presentsAsTransparentOverlay()
         webViewController?.presentOverlayController(controller: improvController, animated: true)
     }
 

@@ -3,7 +3,7 @@ import HAKit
 import Shared
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEnergyAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetEnergyEntry
     typealias Intent = WidgetEnergyAppIntent

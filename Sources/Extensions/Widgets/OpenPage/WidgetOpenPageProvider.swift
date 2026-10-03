@@ -11,7 +11,7 @@ struct WidgetOpenPageEntry: TimelineEntry {
     var isPreview = false
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetOpenPageProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetOpenPageEntry
     typealias Intent = WidgetOpenPageAppIntent

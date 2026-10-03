@@ -1,7 +1,11 @@
 import Foundation
 import HAKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Reads the theme mode of the server one frontend scene is showing, and reports it to the applier.
 @MainActor
@@ -18,7 +22,7 @@ final class FrontendThemeModeObserver {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(sceneDidActivate),
-            name: UIScene.didActivateNotification,
+            name: FrontendThemeModeApplier.sceneDidActivateNotification,
             object: nil
         )
     }

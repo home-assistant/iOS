@@ -1,3 +1,4 @@
+#if os(iOS)
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -37,3 +38,4 @@ struct NativeTabBarProfileMenuItems: View {
         Text(viewModel.sidebar.server.info.name)
     }
 }
+#endif

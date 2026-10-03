@@ -1,3 +1,4 @@
+#if os(iOS)
 import HAWatchComplications
 import Shared
 import SwiftUI
@@ -181,4 +182,5 @@ private func rectangularFace(_ context: ComplicationRenderContext) -> some View 
     ))
     .padding()
 }
+#endif
 #endif

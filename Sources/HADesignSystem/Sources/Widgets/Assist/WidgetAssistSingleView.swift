@@ -2,7 +2,6 @@
 import Foundation
 import HAIconic
 import SwiftUI
-import UIKit
 import WidgetKit
 
 /// The small Assist widget: the Assist glyph over the action and the pipeline it will open.
@@ -45,7 +44,7 @@ public struct WidgetAssistSingleView: View {
                 }
             }
             .modify { view in
-                if #available(iOS 18, *) {
+                if #available(iOS 18, macOS 15, *) {
                     view.widgetAccentable()
                 } else {
                     view

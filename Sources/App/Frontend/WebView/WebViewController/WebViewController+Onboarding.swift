@@ -1,7 +1,6 @@
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 
 // MARK: - Onboarding & Security Level
 

@@ -133,7 +133,11 @@ protocol KeyboardReadable {
 
 extension KeyboardReadable {
     var keyboardPublisher: AnyPublisher<Bool, Never> {
-        Publishers.Merge(
+        #if os(macOS)
+        // A Mac has no software keyboard, so there is never a change to publish.
+        return Empty(completeImmediately: false).eraseToAnyPublisher()
+        #else
+        return Publishers.Merge(
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillShowNotification)
                 .map { _ in true },
@@ -143,5 +147,6 @@ extension KeyboardReadable {
                 .map { _ in false }
         )
         .eraseToAnyPublisher()
+        #endif
     }
 }

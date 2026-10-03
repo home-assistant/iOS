@@ -3,7 +3,7 @@ import CoreSpotlight
 import Foundation
 import Shared
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 extension HAAppEntityAppIntentEntity: IndexedEntity {
     /// Augments what App Intents derives from `displayRepresentation` with everything a person might
     /// type, and with the context line, which a search result needs as `contentDescription`: Spotlight

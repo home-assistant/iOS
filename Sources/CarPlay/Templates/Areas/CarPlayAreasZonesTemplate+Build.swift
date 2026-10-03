@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 
 extension CarPlayAreasZonesTemplate {
@@ -5,3 +6,4 @@ extension CarPlayAreasZonesTemplate {
         CarPlayAreasZonesTemplate(viewModel: .init())
     }
 }
+#endif

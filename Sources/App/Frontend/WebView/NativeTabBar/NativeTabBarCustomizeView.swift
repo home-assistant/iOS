@@ -1,3 +1,4 @@
+#if os(iOS)
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -95,3 +96,4 @@ struct NativeTabBarCustomizeView: View {
         NativeTabBarCustomizeView(viewModel: .preview(hiddenPanelPaths: ["logbook"]))
     }
 }
+#endif

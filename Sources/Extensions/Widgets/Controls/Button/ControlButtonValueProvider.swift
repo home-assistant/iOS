@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlButtonValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlButtonConfiguration) async throws -> ControlEntityItem {
         item(entity: configuration.entity, iconName: configuration.icon, displayText: configuration.displayText)
@@ -56,7 +56,7 @@ struct ControlButtonValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlButtonConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.button.title",

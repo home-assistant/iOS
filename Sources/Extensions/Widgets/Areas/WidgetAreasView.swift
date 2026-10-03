@@ -5,7 +5,7 @@ import WidgetKit
 
 /// The Areas widget: the design system draws the floors, the area tiles and the paging arrows; this
 /// adds the deep link each tile opens and the intents the arrows run.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetAreasView: View {
     @Environment(\.widgetFamily) private var widgetFamily
 
@@ -77,7 +77,7 @@ struct WidgetAreasView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     WidgetAreasView(entry: .preview(family: .systemMedium))
         .frame(width: 338, height: 158)

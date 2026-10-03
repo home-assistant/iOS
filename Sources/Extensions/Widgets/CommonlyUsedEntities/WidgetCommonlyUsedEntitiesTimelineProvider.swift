@@ -13,7 +13,7 @@ struct WidgetCommonlyUsedEntitiesEntry: TimelineEntry {
     var serverName: String?
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetCommonlyUsedEntitiesTimelineProvider: WidgetSingleEntryTimelineProvider {
     typealias Entry = WidgetCommonlyUsedEntitiesEntry
     typealias Intent = WidgetCommonlyUsedEntitiesAppIntent

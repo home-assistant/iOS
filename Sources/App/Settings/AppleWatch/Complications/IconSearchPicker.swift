@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
@@ -98,3 +99,4 @@ private struct IconSearchSheet: View {
         .navigationViewStyle(.stack)
     }
 }
+#endif

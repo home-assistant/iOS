@@ -8,7 +8,7 @@ import WidgetKit
 ///
 /// Everything is rendered against `referenceDate` rather than the clock, so a timeline entry always
 /// draws the moment it was built for — and so the view can be snapshotted.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetCalendarView: View {
     @Environment(\.widgetFamily) private var widgetFamily
 
@@ -69,7 +69,7 @@ struct WidgetCalendarView: View {
 // The family-specific previews live on `WidgetCalendar`, through WidgetKit's own preview macro:
 // `\.widgetFamily` is read-only inside the widget extension, so a plain preview here cannot choose
 // a family. These two cover the states that do not depend on one.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Events") {
     WidgetCalendarView(
         referenceDate: WidgetCalendarPreviewSample.referenceDate,
@@ -86,7 +86,7 @@ struct WidgetCalendarView: View {
     .frame(width: 338, height: 158)
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Not configured") {
     WidgetCalendarView(
         referenceDate: WidgetCalendarPreviewSample.referenceDate,

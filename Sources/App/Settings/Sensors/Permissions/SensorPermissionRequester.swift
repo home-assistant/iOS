@@ -6,7 +6,11 @@ import Foundation
 import PromiseKit
 import Shared
 import Speech
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UserNotifications
 
 /// Reads and requests the device permissions behind the sensors.
@@ -33,7 +37,12 @@ final class SensorPermissionRequester {
     func isAvailable(_ permission: SensorPermission) -> Bool {
         switch permission {
         case .motion:
+            #if os(macOS)
+            // No Mac has the motion coprocessor this permission guards.
+            return false
+            #else
             return Current.motion.isActivityAvailable()
+            #endif
         case .focus:
             return Current.focusStatus.isAvailable()
         case .location, .notification, .camera, .microphone, .speech, .bluetooth, .localNetwork:
@@ -45,7 +54,12 @@ final class SensorPermissionRequester {
     func status(for permission: SensorPermission) -> SensorPermissionStatus {
         switch permission {
         case .motion:
+            #if os(macOS)
+            // Never shown: the permission is not available on a Mac, so there is nothing to grant.
+            return .restricted
+            #else
             return .init(CMMotionActivityManager.authorizationStatus())
+            #endif
         case .focus:
             return .init(Current.focusStatus.authorizationStatus())
         case .location:
@@ -53,10 +67,16 @@ final class SensorPermissionRequester {
         case .camera:
             return .init(AVCaptureDevice.authorizationStatus(for: .video))
         case .microphone:
-            if #available(iOS 17.0, *) {
+            if #available(iOS 17.0, macOS 14.0, *) {
                 return .init(AVAudioApplication.shared.recordPermission)
             } else {
+                #if os(macOS)
+                // A Mac has no audio session; before macOS 14 the capture device answers for the
+                // microphone.
+                return .init(AVCaptureDevice.authorizationStatus(for: .audio))
+                #else
                 return .init(AVAudioSession.sharedInstance().recordPermission)
+                #endif
             }
         case .speech:
             return .init(SFSpeechRecognizer.authorizationStatus())
@@ -118,7 +138,7 @@ final class SensorPermissionRequester {
 
     private func refreshSensors() {
         HomeAssistantAPI.manuallyUpdate(
-            applicationState: UIApplication.shared.applicationState,
+            applicationState: ApplicationState.current,
             // Not `.userRequested`: this follows a permission prompt on its own, and that type also
             // asks for temporary full location accuracy, which has nothing to do with the sensor
             // the user just switched on.
@@ -143,14 +163,20 @@ final class SensorPermissionRequester {
                 Task { @MainActor in completion() }
             }
         case .microphone:
-            if #available(iOS 17.0, *) {
+            if #available(iOS 17.0, macOS 14.0, *) {
                 AVAudioApplication.requestRecordPermission { _ in
                     Task { @MainActor in completion() }
                 }
             } else {
+                #if os(macOS)
+                AVCaptureDevice.requestAccess(for: .audio) { _ in
+                    Task { @MainActor in completion() }
+                }
+                #else
                 AVAudioSession.sharedInstance().requestRecordPermission { _ in
                     Task { @MainActor in completion() }
                 }
+                #endif
             }
         case .speech:
             SFSpeechRecognizer.requestAuthorization { _ in

@@ -45,7 +45,7 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
         VStack {
             if contents.isEmpty {
                 empty
-            } else if family == .accessoryCircular {
+            } else if family.isAccessoryCircular {
                 circularAccessory
             } else {
                 grid
@@ -69,7 +69,7 @@ public struct WidgetTileContainerView<Item: WidgetTileRepresentable>: View {
     /// where the mark reads as "this is the Home Assistant widget, and it is empty".
     @ViewBuilder
     private var empty: some View {
-        if family == .accessoryCircular {
+        if family.isAccessoryCircular {
             WidgetCircularIconView(icon: .homeAssistantIcon)
         } else {
             emptyView()

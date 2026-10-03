@@ -1,13 +1,37 @@
+#if os(iOS)
 import BackgroundTasks
+#endif
 import Foundation
 import Shared
 
-/// Schedules background Reminders syncs through `BGTaskScheduler` at the frequency the user
-/// picked in the sync settings. The frequency is only the earliest allowed start; iOS decides
-/// when (and whether) the refresh actually runs.
+/// Schedules background Reminders syncs at the frequency the user picked in the sync settings.
+///
+/// On iOS that goes through `BGTaskScheduler`, where the frequency is only the earliest allowed start and
+/// the system decides when (and whether) the refresh actually runs. A Mac app is never suspended, so
+/// there it is a plain repeating timer that runs for as long as the app does.
 enum RemindersSyncBackgroundRefresher {
     static let taskIdentifier = "io.robbie.homeassistant.reminderssync"
 
+    #if os(macOS)
+    private static var timer: Timer?
+
+    static func register() {}
+
+    /// (Re)starts the timer, or stops it when background refresh is off or there is nothing to sync.
+    static func schedule() {
+        timer?.invalidate()
+        timer = nil
+
+        let interval = RemindersSyncSettings.current.backgroundRefreshInterval
+        guard interval > 0, !RemindersSyncConfig.all().isEmpty else { return }
+
+        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
+            Task { @MainActor in
+                await RemindersSyncManager.shared.syncAll()
+            }
+        }
+    }
+    #else
     static func register() {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: taskIdentifier, using: .main) { task in
             handleAppRefresh(task: task)
@@ -57,4 +81,5 @@ enum RemindersSyncBackgroundRefresher {
             complete(false)
         }
     }
+    #endif
 }

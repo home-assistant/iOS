@@ -114,7 +114,7 @@ struct NotificationHistoryView: View {
             }
             .listRowBackground(Color.clear)
             .modify { view in
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14.0, *) {
                     view.scrollClipDisabled(true)
                 } else {
                     view
@@ -124,7 +124,7 @@ struct NotificationHistoryView: View {
             Text(L10n.SettingsDetails.Notifications.History.footer)
         }
         .modify { view in
-            if #available(iOS 17.0, *) {
+            if #available(iOS 17.0, macOS 14.0, *) {
                 view.listSectionSpacing(DesignSystem.Spaces.one)
             } else {
                 view

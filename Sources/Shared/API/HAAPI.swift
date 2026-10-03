@@ -5,7 +5,12 @@ import HAKit
 import HAKit_PromiseKit
 import ObjectMapper
 import PromiseKit
+import UserNotifications
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
@@ -1069,7 +1074,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public enum ManualUpdateType {
         case userRequested
         case appOpened
@@ -1093,7 +1098,7 @@ public class HomeAssistantAPI {
     }
 
     public static func manuallyUpdate(
-        applicationState: UIApplication.State,
+        applicationState: ApplicationState,
         type: ManualUpdateType
     ) -> Promise<Void> {
         Current.backgroundTask(withName: BackgroundTask.manualLocationUpdate.rawValue) { _ in

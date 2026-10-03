@@ -42,7 +42,7 @@ public struct ServersPickerPillList: View {
             .listRowBackground(Color.clear)
             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             .modify { view in
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14.0, *) {
                     view.listSectionSpacing(DesignSystem.Spaces.half)
                 } else {
                     view

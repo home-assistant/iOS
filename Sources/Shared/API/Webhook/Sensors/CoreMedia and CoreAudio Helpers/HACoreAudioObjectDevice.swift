@@ -1,4 +1,5 @@
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
+import CoreAudio
 
 class HACoreAudioObjectDevice: HACoreAudioObject {
     var deviceUID: String? {
@@ -23,6 +24,26 @@ class HACoreAudioObjectDevice: HACoreAudioObject {
             return cfString.takeRetainedValue() as String
         } else {
             return nil
+        }
+    }
+
+    /// The connection the device is reached over, named the way the iOS audio route names its ports.
+    var transportTypeName: String? {
+        guard let transportType = value(for: .transportType) else { return nil }
+        switch transportType {
+        case UInt32(kAudioDeviceTransportTypeBuiltIn): return "Built-in Speaker"
+        case UInt32(kAudioDeviceTransportTypeBluetooth): return "Bluetooth A2DP"
+        case UInt32(kAudioDeviceTransportTypeBluetoothLE): return "Bluetooth LE"
+        case UInt32(kAudioDeviceTransportTypeUSB): return "Usb Audio"
+        case UInt32(kAudioDeviceTransportTypeHDMI): return "HDMI"
+        case UInt32(kAudioDeviceTransportTypeDisplayPort): return "DisplayPort"
+        case UInt32(kAudioDeviceTransportTypeAirPlay): return "AirPlay"
+        case UInt32(kAudioDeviceTransportTypeThunderbolt): return "Thunderbolt"
+        case UInt32(kAudioDeviceTransportTypePCI): return "PCI"
+        case UInt32(kAudioDeviceTransportTypeFireWire): return "FireWire"
+        case UInt32(kAudioDeviceTransportTypeAggregate): return "Aggregate"
+        case UInt32(kAudioDeviceTransportTypeVirtual): return "Virtual"
+        default: return "Unknown"
         }
     }
 

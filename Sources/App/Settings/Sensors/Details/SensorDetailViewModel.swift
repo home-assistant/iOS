@@ -2,7 +2,6 @@ import Combine
 import Foundation
 import Shared
 import SwiftUI
-import UIKit
 
 class SensorDetailViewModel: ObservableObject, SensorObserver {
     /// The server this sensor is being configured for. Enablement is per server, so the switch

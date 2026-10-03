@@ -7,7 +7,7 @@ import WidgetKit
 /// The Home Screen is full-color and roomy, so every gauge type is drawn as a ``WidgetGaugeArcView``
 /// there — consistent sizing and labels. The lock screen accessories hand the job back to the
 /// system gauge, which is what makes them match the rest of the lock screen.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 public struct WidgetGaugeContentView: View {
     /// Inset around the gauge within the `.systemSmall` tile.
     private static let systemSmallPadding: CGFloat = 10
@@ -130,7 +130,7 @@ public struct WidgetGaugeContentView: View {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 #Preview {
     WidgetGaugeContentView(
         gaugeType: .normal,

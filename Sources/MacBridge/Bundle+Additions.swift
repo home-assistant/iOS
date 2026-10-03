@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 
 extension Bundle {
@@ -5,3 +6,4 @@ extension Bundle {
         Bundle.main.bundlePath.contains("PlugIns")
     }
 }
+#endif

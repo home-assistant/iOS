@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>${ENV_URL_HANDLER}</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<false/>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
+	<key>INAlternativeAppNames</key>
+	<array>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>HA</string>
+			<key>INAlternativeAppNamePronunciationHint</key>
+			<string>H A</string>
+		</dict>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Hass</string>
+		</dict>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Home</string>
+		</dict>
+	</array>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>ReloadWidgetsAppIntent</string>
+		<string>ScriptAppIntent</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.lifestyle</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>googlechrome</string>
+		<string>googlechromes</string>
+		<string>googlechrome-x-callback</string>
+		<string>fb</string>
+		<string>tweetbot</string>
+		<string>twitter</string>
+		<string>shortcuts</string>
+		<string>firefox</string>
+		<string>firefox-focus</string>
+		<string>firefox-klar</string>
+	</array>
+	<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Used to scan for Improv devices</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_hass-mobile-app._tcp</string>
+		<string>_home-assistant._tcp</string>
+		<string>_matter._tcp</string>
+		<string>_wyoming._tcp</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Take photos and send them to your Home Assistant server.</string>
+	<key>NSCrossWebsiteTrackingUsageDescription</key>
+	<string>Optionally enable cross-website tracking if your configuration requires it.</string>
+	<key>NSFocusStatusUsageDescription</key>
+	<string>Report your focus status as a sensor.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Locate and communicate with your Home Assistant instance.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We suggest selecting "Always Allow" for the best location experience.
+			Selecting "Only While Using the App" will disable iBeacons, geofences,
+			background location updates and accurate reporting.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We always need access to your location for features like iBeacons, geofences,
+			background location updates and accurate reporting.</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>TemporaryFullAccuracyReasonManualUpdate</key>
+		<string>[localized in strings file]</string>
+	</dict>
+	<key>NSLocationUsageDescription</key>
+	<string>When enabled, your device location is sent to your Home Assistant server as a device
+			tracker.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Only allowing location access while app is in use will disable iBeacons, geofences,
+			background location updates and accurate reporting.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record audio using your Home Assistant frontend.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Photo Library access is needed to allow saving photos from the web view.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo Library access is needed to allow saving photos from the web view.</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>Reminders access is used to sync the Reminders lists you choose with your Home Assistant to-do lists.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>Reminders access is used to sync the Reminders lists you choose with your Home Assistant to-do lists.</string>
+	<key>NSSiriUsageDescription</key>
+	<string>We use Siri to allow created shortcuts to interact with the app.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Used to dictate text to Assist.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.apple.corespotlightitem</string>
+		<string>INSendMessageIntent</string>
+		<string>ReloadWidgetsAppIntent</string>
+		<string>ScriptAppIntent</string>
+	</array>
+</dict>
+</plist>

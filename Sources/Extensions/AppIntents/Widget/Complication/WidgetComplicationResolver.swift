@@ -5,7 +5,7 @@ import Shared
 /// Loads a watch complication the user already built and resolves it into the shared
 /// `ComplicationRenderContext`, so a lock-screen widget can render it through the very same content
 /// views the watch and the complication editor use.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 enum WidgetComplicationResolver {
     enum ResolveError: Error {
         case noComplication

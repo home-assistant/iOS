@@ -53,7 +53,7 @@ struct OnboardingAuthLoginView: View {
             }
             .navigationTitle(viewModel.authDetails.url.host ?? "")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(.visible, for: .platformNavigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -72,6 +72,17 @@ struct OnboardingAuthLoginView: View {
     }
 
     /// Hosts the view model's `WKWebView`; all WebKit behavior lives on the view model.
+    #if os(macOS)
+    private struct LoginWebView: NSViewRepresentable {
+        let webView: WKWebView
+
+        func makeNSView(context: Context) -> WKWebView {
+            webView
+        }
+
+        func updateNSView(_ nsView: WKWebView, context: Context) {}
+    }
+    #else
     private struct LoginWebView: UIViewRepresentable {
         let webView: WKWebView
 
@@ -81,6 +92,7 @@ struct OnboardingAuthLoginView: View {
 
         func updateUIView(_ uiView: WKWebView, context: Context) {}
     }
+    #endif
 }
 
 #Preview {

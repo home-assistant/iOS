@@ -6,7 +6,7 @@ import Shared
 ///
 /// Home Assistant todo items carry a summary, a description, a due date and a status. Flags, tags,
 /// URLs, location triggers and recurrence have no equivalent, so they stay empty or nil.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEntity(schema: .reminders.reminder)
 struct ReminderSchemaEntity {
     static let defaultQuery = ReminderSchemaEntityQuery()

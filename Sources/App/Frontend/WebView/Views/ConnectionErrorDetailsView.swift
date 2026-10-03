@@ -318,9 +318,7 @@ struct ConnectionErrorDetailsView: View {
                 icon: Image("github.fill"),
                 title: L10n.Connection.Error.Details.Button.searchGithub,
                 url: searchURL,
-                tint: .init(uiColor: .init(dynamicProvider: { trait in
-                    trait.userInterfaceStyle == .dark ? .white : .black
-                }))
+                tint: .init(uiColor: .dynamic(light: .black, dark: .white))
             )
         }
     }

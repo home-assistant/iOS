@@ -1,6 +1,10 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// The app's own preferences, in a form that can travel inside a configuration export.
 ///
@@ -111,8 +115,19 @@ struct AppSettingsSnapshot: Codable, Equatable {
                 .map(\.rawValue)
                 .sorted(),
             carPlayAssistDebugSettings: store.carPlayAssistDebugSettings,
-            appIcon: UIApplication.shared.alternateIconName ?? AppIcon.Release.rawValue
+            appIcon: currentAppIcon
         )
+    }
+
+    /// `AppIcon.rawValue` of the icon the app shows. A Mac app has no alternate icons to switch to, so
+    /// there it is always the release one.
+    @MainActor
+    private static var currentAppIcon: String {
+        #if os(macOS)
+        AppIcon.Release.rawValue
+        #else
+        UIApplication.shared.alternateIconName ?? AppIcon.Release.rawValue
+        #endif
     }
 
     /// Writes every captured setting back through `SettingsStore`, so the same change notifications
@@ -207,8 +222,10 @@ struct AppSettingsSnapshot: Codable, Equatable {
         store.menuItemTemplate = (server, menuItemTemplate)
     }
 
+    /// Does nothing on a Mac, where the app has no alternate icons to switch to.
     @MainActor
     private func applyAppIcon() {
+        #if !os(macOS)
         guard let appIcon, AppIcon(rawValue: appIcon) != nil else { return }
         let iconName: String? = appIcon == AppIcon.Release.rawValue ? nil : appIcon
         guard UIApplication.shared.alternateIconName != iconName else { return }
@@ -217,5 +234,6 @@ struct AppSettingsSnapshot: Codable, Equatable {
                 Current.Log.error("Failed to apply imported app icon \(appIcon): \(error.localizedDescription)")
             }
         }
+        #endif
     }
 }

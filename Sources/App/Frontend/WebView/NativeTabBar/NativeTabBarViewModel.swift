@@ -1,3 +1,4 @@
+#if os(iOS)
 import Combine
 import Foundation
 import Shared
@@ -382,3 +383,4 @@ final class NativeTabBarViewModel: ObservableObject {
         moreShowsFrontend = false
     }
 }
+#endif

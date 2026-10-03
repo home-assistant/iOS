@@ -5,6 +5,11 @@ struct SettingsView: View {
     private enum Constants {
         static let macSidebarRowHeight: CGFloat = 32
         static let macSidebarBottomPadding: CGFloat = DesignSystem.Spaces.three
+        #if os(macOS)
+        static let macSidebarMinWidth: CGFloat = 220
+        static let macSidebarIdealWidth: CGFloat = 260
+        static let macSidebarMaxWidth: CGFloat = 360
+        #endif
     }
 
     var embedInOwnNavigation: Bool = true
@@ -21,11 +26,15 @@ struct SettingsView: View {
 
     var body: some View {
         Group {
+            #if os(macOS)
+            macOSView
+            #else
             if Current.isCatalyst {
                 macOSView
             } else {
                 iOSView
             }
+            #endif
         }
         .onAppear {
             isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
@@ -34,6 +43,30 @@ struct SettingsView: View {
 
     // MARK: - macOS Split View
 
+    #if os(macOS)
+    private var macOSView: some View {
+        NavigationSplitView {
+            macOSSidebarContent
+                .navigationSplitViewColumnWidth(
+                    min: Constants.macSidebarMinWidth,
+                    ideal: Constants.macSidebarIdealWidth,
+                    max: Constants.macSidebarMaxWidth
+                )
+        } detail: {
+            NavigationStack {
+                macOSDetail
+            }
+            // A stack per sidebar entry, so a screen pushed under one entry is not left showing under the
+            // next one the user picks.
+            .id(macSidebarSelection)
+        }
+        .onChange(of: serversObserver.servers.map(\.identifier)) { identifiers in
+            if case let .server(identifier) = macSidebarSelection, !identifiers.contains(identifier) {
+                macSidebarSelection = .item(.general)
+            }
+        }
+    }
+    #else
     @ViewBuilder
     private var macOSView: some View {
         // Use navigation view since navigation stack has bugs on Mac Catalyst
@@ -44,6 +77,7 @@ struct SettingsView: View {
         }
         .navigationViewStyle(.columns)
     }
+    #endif
 
     @ViewBuilder
     private var macOSDetail: some View {
@@ -63,6 +97,8 @@ struct SettingsView: View {
         }
     }
 
+    /// The native Mac app takes the system sidebar as it comes: its material, its selection and its
+    /// search field. Catalyst has no such list style, so there the sidebar is drawn by hand.
     private var macOSSidebarContent: some View {
         List(selection: $macSidebarSelection) {
             if isSearching {
@@ -80,12 +116,20 @@ struct SettingsView: View {
                 // Settings items grouped by user objective
                 settingsSections(SettingsSection.allCases, matching: nil)
             }
+            #if !os(macOS)
             Color.clear
                 .frame(height: Constants.macSidebarBottomPadding)
                 .listRowInsets(EdgeInsets())
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
+            #endif
         }
+        #if os(macOS)
+        .listStyle(.sidebar)
+        .labelStyle(MacSettingsSidebarLabelStyle())
+        .searchable(text: $searchText, placement: .sidebar, prompt: Text(L10n.Settings.Search.prompt))
+        .navigationTitle(L10n.Settings.NavigationBar.title)
+        #else
         .listStyle(.plain)
         .environment(\.defaultMinListRowHeight, Constants.macSidebarRowHeight)
         .labelStyle(MacSettingsSidebarLabelStyle())
@@ -100,6 +144,7 @@ struct SettingsView: View {
                 }
             }
         }
+        #endif
     }
 
     private var macOSPlaceholder: some View {
@@ -111,6 +156,7 @@ struct SettingsView: View {
 
     // MARK: - iOS List View
 
+    #if !os(macOS)
     // When pushed onto the container's stack (`embedInOwnNavigation == false`) items are pushed as
     // `AppSettingsPushRoute.item` instead, resolved by `ContainerView`: that path must stay
     // single-typed or SwiftUI's path diffing can fatally error comparing elements of different types.
@@ -230,6 +276,7 @@ struct SettingsView: View {
             }
         }
     }
+    #endif
 
     private var translationKeysWarningSection: some View {
         Section {
@@ -311,11 +358,15 @@ struct SettingsView: View {
             let serverResults = serverSearchResults
             if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) || !serverResults.isEmpty {
                 Section {
+                    // The native sidebar lists the servers themselves; the servers screen's own rows are
+                    // labels there, so the screen is left out of its results.
+                    #if !os(macOS)
                     if SettingsItem.servers.matches(searchQuery: trimmedSearchQuery) {
                         settingsItemRow(.servers, searchQuery: trimmedSearchQuery)
                     }
+                    #endif
                     ForEach(serverResults, id: \.identifier) { server in
-                        NavigationLink(destination: ConnectionSettingsView(server: server)) {
+                        MacSettingsSidebarLink(destination: ConnectionSettingsView(server: server)) {
                             serverSearchRow(server: server)
                         }
                         .tag(MacSettingsSidebarSelection.server(server.identifier))
@@ -375,6 +426,11 @@ struct SettingsView: View {
         header: String,
         @ViewBuilder content: () -> some View
     ) -> some View {
+        #if os(macOS)
+        Section(header: Text(header)) {
+            content()
+        }
+        #else
         if Current.isCatalyst {
             Section {
                 Text(header)
@@ -398,6 +454,7 @@ struct SettingsView: View {
                 content()
             }
         }
+        #endif
     }
 
     @ViewBuilder
@@ -419,7 +476,7 @@ struct SettingsView: View {
         } else if Current.isCatalyst {
             // The Catalyst sidebar lives in a `NavigationView`, which value-based links don't
             // support, so it keeps the eager destination.
-            NavigationLink(destination: item.destinationView) {
+            MacSettingsSidebarLink(destination: item.destinationView) {
                 settingsItemLabel(item, subtitle: subtitle)
             }
             .tag(MacSettingsSidebarSelection.item(item))
@@ -484,6 +541,7 @@ struct SettingsView: View {
         }
     }
 
+    #if !os(macOS)
     private var aboutViewContent: some View {
         AboutView()
             .navigationBarTitleDisplayMode(.inline)
@@ -495,6 +553,7 @@ struct SettingsView: View {
                 }
             }
     }
+    #endif
 }
 
 #Preview {

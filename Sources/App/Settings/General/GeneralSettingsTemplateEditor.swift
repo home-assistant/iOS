@@ -16,7 +16,7 @@ struct GeneralSettingsTemplateEditor: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             Section(L10n.WebView.UniqueServerSelection.title) {
                 ServersPickerPillList(selectedServerId: $selectedServerId)
                     .padding(.vertical, DesignSystem.Spaces.half)

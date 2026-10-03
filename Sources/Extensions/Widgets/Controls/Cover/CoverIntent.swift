@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 struct CoverIntent: SetValueIntent {
     static var title: LocalizedStringResource = .init("app_intents.intent.cover.title", defaultValue: "Control cover")
 

@@ -1,6 +1,6 @@
 import Foundation
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 #if canImport(CoreMediaIO)
 import CoreMediaIO
 #endif
@@ -14,7 +14,7 @@ public protocol HACoreBlahProperty {
     func getPropertyData(objectID: UInt32, dataSize: UInt32, output: UnsafeMutableRawPointer) -> OSStatus
 }
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 #if canImport(CoreMediaIO)
 public struct HACoreMediaProperty<Type>: HACoreBlahProperty {
     public typealias ValueType = Type
@@ -161,6 +161,29 @@ extension HACoreAudioProperty {
          */
         .init(
             mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceUID),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
+    static var defaultOutputDevice: HACoreAudioProperty<AudioDeviceID> {
+        /*
+         The AudioObjectID of the default output AudioDevice.
+         */
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioHardwarePropertyDefaultOutputDevice),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
+    static var transportType: HACoreAudioProperty<UInt32> {
+        /*
+         A UInt32 whose value indicates how the AudioDevice is connected to the CPU, one of the
+         kAudioDeviceTransportType constants.
+         */
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyTransportType),
             mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
             mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
         )

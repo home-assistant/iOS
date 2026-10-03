@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
@@ -89,3 +90,4 @@ struct NativeTabBarFrontendTabView: View {
         onNeedsWebViewController: {}
     )
 }
+#endif

@@ -1,5 +1,20 @@
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
+#if os(macOS)
+public extension NSImage {
+    convenience init(size: CGSize, color: NSColor) {
+        self.init(size: size, flipped: false) { rect in
+            color.setFill()
+            rect.fill()
+            return true
+        }
+    }
+}
+#else
 public extension UIImage {
     convenience init(size: CGSize, color: UIColor) {
         // why is UIGraphicsImageRenderer not available on watchOS?
@@ -16,6 +31,7 @@ public extension UIImage {
         self.init(cgImage: image.cgImage!, scale: image.scale, orientation: image.imageOrientation)
     }
 }
+#endif
 
 public extension MaterialDesignIcons {
     convenience init(serversideValueNamed value: String, fallback: MaterialDesignIcons? = nil) {

@@ -1,3 +1,6 @@
+// The details widget exists only in the lock screen's accessory families, which a Mac does not have, so the
+// widget and everything that configures and feeds it are left out of the Mac build.
+#if !os(macOS)
 import HAWatchComplications
 import Intents
 import Shared
@@ -73,3 +76,4 @@ enum WidgetDetailsSupportedFamilies {
         showConfirmationNotification: true
     )
 })
+#endif

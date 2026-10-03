@@ -1,5 +1,44 @@
 import SwiftUI
 
+#if os(macOS)
+struct WebRTCVideoPlayerViewControllerWrapper: NSViewControllerRepresentable {
+    private let viewModel: WebRTCViewPlayerViewModel
+    @Binding var isVideoPlaying: Bool
+
+    init(viewModel: WebRTCViewPlayerViewModel, isVideoPlaying: Binding<Bool>) {
+        self.viewModel = viewModel
+        self._isVideoPlaying = isVideoPlaying
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
+    func makeNSViewController(context: Context) -> WebRTCVideoPlayerViewController {
+        let vc = WebRTCVideoPlayerViewController(viewModel: viewModel)
+        vc.onVideoStarted = { [weak coordinator = context.coordinator] in
+            coordinator?.videoDidStart()
+        }
+        return vc
+    }
+
+    func updateNSViewController(_ nsViewController: WebRTCVideoPlayerViewController, context: Context) {
+        /* no-op */
+    }
+
+    class Coordinator {
+        var parent: WebRTCVideoPlayerViewControllerWrapper
+
+        init(parent: WebRTCVideoPlayerViewControllerWrapper) {
+            self.parent = parent
+        }
+
+        func videoDidStart() {
+            parent.isVideoPlaying = true
+        }
+    }
+}
+#else
 struct WebRTCVideoPlayerViewControllerWrapper: UIViewControllerRepresentable {
     private let viewModel: WebRTCViewPlayerViewModel
     @Binding var isVideoPlaying: Bool
@@ -37,3 +76,4 @@ struct WebRTCVideoPlayerViewControllerWrapper: UIViewControllerRepresentable {
         }
     }
 }
+#endif

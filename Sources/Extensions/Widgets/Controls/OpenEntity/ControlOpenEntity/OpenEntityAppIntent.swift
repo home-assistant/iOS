@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 // AppIntent that open app needs to have it's target the widget extension AND app target!
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct OpenEntityAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.open_entity.configuration.title",
@@ -13,7 +13,7 @@ struct OpenEntityAppIntent: AppIntent {
 
     static var openAppWhenRun: Bool = true
     // `openAppWhenRun` is deprecated from iOS 26; both stay until the deployment target passes 26.
-    @available(iOS 26.0, watchOS 26.0, *)
+    @available(iOS 26.0, macOS 26.0, watchOS 26.0, *)
     static var supportedModes: IntentModes { .foreground }
 
     @Parameter(

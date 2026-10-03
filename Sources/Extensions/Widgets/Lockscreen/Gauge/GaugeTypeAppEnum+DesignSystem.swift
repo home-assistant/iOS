@@ -1,7 +1,7 @@
 import Foundation
 import Shared
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 extension GaugeTypeAppEnum {
     /// The design system's own gauge shapes, which is what its gauge components are built around.
     var designSystemType: WidgetGaugeType {

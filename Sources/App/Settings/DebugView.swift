@@ -2,6 +2,7 @@ import PromiseKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
+import UserNotifications
 import WebKit
 import XCGLogger
 
@@ -48,7 +49,7 @@ struct DebugView: View {
     }()
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: .bugIcon,
                 title: L10n.Settings.Debugging.Header.title,
@@ -98,7 +99,7 @@ struct DebugView: View {
                     )
                 }
 
-                if #available(iOS 17, *), !Current.isCatalyst {
+                if #available(iOS 17, macOS 14, *), !Current.isCatalyst {
                     NavigationLink {
                         ThreadCredentialsManagementView()
                     } label: {
@@ -114,7 +115,7 @@ struct DebugView: View {
                     }
                 }
             } footer: {
-                if #available(iOS 17, *), !Current.isCatalyst {
+                if #available(iOS 17, macOS 14, *), !Current.isCatalyst {
                     Text(
                         L10n.Settings.Debugging.Thread.footer
                     )
@@ -134,7 +135,17 @@ struct DebugView: View {
                         .frame(width: 100, height: 100, alignment: .center)
                 })
                 .frame(maxWidth: .infinity, alignment: .center)
-                .listRowBackground(Color.clear)
+                .modify { button in
+                    #if os(macOS)
+                    // A grouped form draws every row in a card, which the logo is not meant to have; a
+                    // section header is drawn outside one.
+                    Section {} header: {
+                        button
+                    }
+                    #else
+                    button.listRowBackground(Color.clear)
+                    #endif
+                }
             } else {
                 developerSection
             }
@@ -657,7 +668,7 @@ struct DebugView: View {
     }
 
     private func showResetAppToast(message: String) {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ToastPresenter.shared.show(
                 id: Self.resetAppToastID,
                 symbol: .exclamationmarkTriangle,
@@ -669,7 +680,7 @@ struct DebugView: View {
     }
 
     private func hideResetAppToast() {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             ToastPresenter.shared.hide(id: Self.resetAppToastID)
         }
     }
@@ -726,7 +737,7 @@ private struct MediaTypesRequiringUserActionForPlaybackView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             Section {
                 ForEach(SettingsStore.MediaTypeRequiringUserActionForPlayback.allCases, id: \.self) { mediaType in
                     Button {
@@ -777,7 +788,7 @@ private struct CarPlayDebugSettingsView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             assistSessionSection
             ttsPlaybackSection
             ttsSessionSection

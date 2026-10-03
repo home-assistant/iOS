@@ -1,5 +1,6 @@
 import Foundation
 @testable import HomeAssistant
+import UIKit
 import XCTest
 
 @MainActor
@@ -33,6 +34,17 @@ final class WebViewReconnectManagerTests: XCTestCase {
         scheduler.fireLast()
         XCTAssertEqual(reconnectCount, 4)
         XCTAssertEqual(scheduler.scheduledDelays, [10, 30, 60, 600, 600])
+    }
+
+    /// Without an override, the app counts as active exactly while UIKit says it is.
+    func testTheDefaultsReadTheApplicationState() {
+        let sut = WebViewReconnectManager()
+        defer { sut.stop() }
+
+        XCTAssertEqual(
+            WebViewReconnectManager.defaultIsAppActive(),
+            UIApplication.shared.applicationState == .active
+        )
     }
 
     func testStopResetsBackoff() {

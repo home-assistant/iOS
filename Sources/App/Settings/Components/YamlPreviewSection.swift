@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 /// A reusable SwiftUI section that renders a YAML preview with a share button.
 ///
@@ -12,7 +11,6 @@ struct YamlPreviewSection: View {
     let shareTitle: String
     let yaml: String
 
-    @State private var showShareSheet = false
     @State private var showYamlSheet = false
 
     init(
@@ -43,9 +41,7 @@ struct YamlPreviewSection: View {
                 }
             }
 
-            Button {
-                showShareSheet = true
-            } label: {
+            ShareLink(item: yaml) {
                 Label {
                     Text(shareTitle)
                         .foregroundColor(.primary)
@@ -54,29 +50,10 @@ struct YamlPreviewSection: View {
                 }
             }
         }
-        .sheet(isPresented: $showShareSheet) {
-            YamlShareSheet(activityItems: [yaml])
-        }
         .sheet(isPresented: $showYamlSheet) {
             YamlCodePreviewView(yaml: yaml)
         }
     }
-}
-
-/// A SwiftUI wrapper around `UIActivityViewController` used to share YAML or
-/// other plain text content from settings screens.
-struct YamlShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-    var applicationActivities: [UIActivity]?
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(
-            activityItems: activityItems,
-            applicationActivities: applicationActivities
-        )
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 /// Full-screen readable YAML preview, presented as a sheet from

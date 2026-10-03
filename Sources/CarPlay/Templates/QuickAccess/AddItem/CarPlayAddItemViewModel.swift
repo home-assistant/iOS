@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 import Shared
 
@@ -328,3 +329,4 @@ private extension Pipeline {
         return !stt.isEmpty && !tts.isEmpty
     }
 }
+#endif

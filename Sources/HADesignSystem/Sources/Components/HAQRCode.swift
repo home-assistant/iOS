@@ -1,7 +1,6 @@
 #if !os(watchOS)
 import CoreImage.CIFilterBuiltins
 import SwiftUI
-import UIKit
 
 /// A QR code drawn from a string. The SwiftUI counterpart of the frontend's `ha-qr-code`.
 ///

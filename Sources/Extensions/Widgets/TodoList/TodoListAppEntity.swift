@@ -4,7 +4,7 @@ import GRDB
 import SFSafeSymbols
 import Shared
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct TodoListAppEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widgets.todo_list.title")
 
@@ -38,7 +38,7 @@ struct TodoListAppEntity: AppEntity {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct TodoListAppEntityQuery: EntityQuery, EntityStringQuery {
     @IntentParameterDependency<WidgetTodoListAppIntent>(\.$server)
     var requirement

@@ -157,7 +157,7 @@ public final class NetworkReachability {
         case .wifi:
             return .wifi
         case .cellular:
-            #if !targetEnvironment(macCatalyst)
+            #if !(targetEnvironment(macCatalyst) || os(macOS))
             return Self.getWWANNetworkType()
             #else
             return .cellular
@@ -165,7 +165,7 @@ public final class NetworkReachability {
         }
     }
 
-    #if !targetEnvironment(macCatalyst)
+    #if !(targetEnvironment(macCatalyst) || os(macOS))
     static func getWWANNetworkType() -> NetworkType {
         let networkTypes = (CTTelephonyNetworkInfo().serviceCurrentRadioAccessTechnology ?? [:])
             .sorted(by: { $0.key < $1.key })

@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlEntityItem {
     let id: String
     let entityId: String
@@ -14,7 +14,7 @@ struct ControlEntityItem {
     let value: Bool
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlLightsValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlLightsConfiguration) async throws -> ControlEntityItem {
         try await ControlRefreshDelay.wait()
@@ -93,7 +93,7 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlLightsConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init("widgets.lights.description", defaultValue: "Turn on/off Light")
 

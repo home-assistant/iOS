@@ -1,7 +1,11 @@
 import Foundation
 import ImageIO
 @preconcurrency import Intents
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UserNotifications
 
 public protocol NotificationCommunicationDecorator {
@@ -140,7 +144,7 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
     }
 
     private static func makeMDIImage(name: String, foreground: UIColor, background: UIColor) -> INImage? {
-        #if os(iOS)
+        #if !os(watchOS)
         return INImage(
             icon: MaterialDesignIcons(serversideValueNamed: name, fallback: .bellIcon),
             foreground: foreground,
@@ -164,7 +168,7 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
         guard let thumbnail = CGImageSourceCreateThumbnailAtIndex(source, 0, downsampleOptions) else {
             return nil
         }
-        #if os(iOS)
+        #if !os(watchOS)
         return UIImage(cgImage: thumbnail).pngData()
         #else
         return nil

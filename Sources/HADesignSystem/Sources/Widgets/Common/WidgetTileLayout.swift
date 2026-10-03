@@ -22,8 +22,10 @@ public enum WidgetTileLayout {
             case .systemMedium: return 4
             case .systemLarge: return 10
             case .systemExtraLarge, .systemExtraLargePortrait: return 20
+            #if !os(macOS)
             case .accessoryRectangular, .accessoryCircular, .accessoryInline:
                 return 1
+            #endif
             @unknown default:
                 return 1
             }
@@ -33,8 +35,10 @@ public enum WidgetTileLayout {
             case .systemMedium: return 6
             case .systemLarge: return 12
             case .systemExtraLarge, .systemExtraLargePortrait: return 20
+            #if !os(macOS)
             case .accessoryRectangular, .accessoryCircular, .accessoryInline:
                 return 1
+            #endif
             @unknown default:
                 return 1
             }
@@ -53,8 +57,10 @@ public enum WidgetTileLayout {
         case .systemMedium: return 3
         case .systemLarge, .systemExtraLarge: return 6
         case .systemExtraLargePortrait: return 12
+        #if !os(macOS)
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
+        #endif
         @unknown default:
             return 1
         }
@@ -68,8 +74,10 @@ public enum WidgetTileLayout {
         case .systemMedium: return 3
         case .systemLarge: return 6
         case .systemExtraLarge, .systemExtraLargePortrait: return 12
+        #if !os(macOS)
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
+        #endif
         @unknown default:
             return 1
         }
@@ -88,8 +96,10 @@ public enum WidgetTileLayout {
         case .systemMedium: return 2
         case .systemLarge, .systemExtraLargePortrait: return 4
         case .systemExtraLarge: return 3
+        #if !os(macOS)
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
+        #endif
         @unknown default:
             return 1
         }
@@ -102,8 +112,10 @@ public enum WidgetTileLayout {
         case .systemMedium: return 4
         case .systemLarge: return 10
         case .systemExtraLarge, .systemExtraLargePortrait: return 20
+        #if !os(macOS)
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
+        #endif
         @unknown default:
             return 1
         }
@@ -111,8 +123,10 @@ public enum WidgetTileLayout {
 
     public static func columns(family: WidgetFamily, modelCount: Int) -> Int {
         switch family {
+        #if !os(macOS)
         case .accessoryCircular, .accessoryInline, .accessoryRectangular:
             return 1
+        #endif
         case .systemSmall: return 1
         case .systemMedium: return 2
         // The portrait extra-large family is no wider than a large one, only taller, so it takes the

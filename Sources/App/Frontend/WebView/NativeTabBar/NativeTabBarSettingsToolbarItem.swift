@@ -1,3 +1,4 @@
+#if os(iOS)
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -70,3 +71,4 @@ struct NativeTabBarSettingsToolbarItem: ToolbarContent {
             }
     }
 }
+#endif

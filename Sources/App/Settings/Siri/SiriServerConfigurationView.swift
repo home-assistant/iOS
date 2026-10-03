@@ -14,7 +14,7 @@ struct SiriServerConfigurationView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             exposureSection(
                 header: L10n.Settings.Siri.Configure.Calendars.header,
                 footer: L10n.Settings.Siri.Configure.Calendars.footer,

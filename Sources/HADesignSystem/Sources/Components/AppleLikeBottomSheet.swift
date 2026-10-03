@@ -9,6 +9,7 @@ public enum AppleLikeBottomSheetViewState {
 
 private enum AppleLikeBottomSheetConstants {
     static let closebuttonSize: CGFloat = 30
+    static let regularWidth: CGFloat = 400
 }
 
 /// A sheet that rises from the bottom of the screen, drawn the way iOS draws one.
@@ -19,6 +20,9 @@ private enum AppleLikeBottomSheetConstants {
 public struct AppleLikeBottomSheet<Content: View>: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #if os(macOS)
+    @Environment(\.isPresentedInMacSheet) private var isPresentedInMacSheet
+    #endif
     /// Used for appear and disappear bottom sheet animation
     @State private var displayBottomSheet = false
     private let title: String?
@@ -57,6 +61,47 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     public var body: some View {
+        #if os(macOS)
+        if isPresentedInMacSheet {
+            macSheetCard
+        } else {
+            overlay
+        }
+        #else
+        overlay
+        #endif
+    }
+
+    #if os(macOS)
+    /// The card alone, for when a Mac sheet is the panel around it: no dimming, no slide-in, and dismissed
+    /// as soon as it is asked to be.
+    private var macSheetCard: some View {
+        card
+            .frame(width: AppleLikeBottomSheetConstants.regularWidth)
+            .fixedSize(horizontal: false, vertical: true)
+            .onAppear {
+                state = .initial
+            }
+            .onChange(of: state) { newValue in
+                if newValue == .dismiss {
+                    performDismiss()
+                }
+            }
+    }
+    #endif
+
+    private var card: some View {
+        VStack(spacing: .zero) {
+            header
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(contentInsets)
+        }
+        .padding(.horizontal)
+        .frame(minHeight: bottomSheetMinHeight)
+    }
+
+    private var overlay: some View {
         VStack {
             Spacer()
             bottomSheet
@@ -73,7 +118,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         }
         .onChange(of: state) { newValue in
             if newValue == .dismiss {
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14.0, *) {
                     withAnimation(.bouncy) {
                         displayBottomSheet = false
                     } completion: {
@@ -92,27 +137,20 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     private var bottomSheet: some View {
-        VStack(spacing: .zero) {
-            header
-            content
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(contentInsets)
-        }
-        .padding(.horizontal)
-        .frame(minHeight: bottomSheetMinHeight)
-        .frame(maxWidth: maxWidth, alignment: .center)
-        .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
-        .shadow(color: .black.opacity(0.2), radius: 20)
-        .padding(DesignSystem.Spaces.one)
-        .fixedSize(horizontal: false, vertical: true)
-        .offset(y: displayBottomSheet ? 0 : bottomSheetMinHeight)
-        .onAppear {
-            state = .initial
-            withAnimation(.bouncy) {
-                displayBottomSheet = true
+        card
+            .frame(maxWidth: maxWidth, alignment: .center)
+            .background(Color(uiColor: .systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
+            .shadow(color: .black.opacity(0.2), radius: 20)
+            .padding(DesignSystem.Spaces.one)
+            .fixedSize(horizontal: false, vertical: true)
+            .offset(y: displayBottomSheet ? 0 : bottomSheetMinHeight)
+            .onAppear {
+                state = .initial
+                withAnimation(.bouncy) {
+                    displayBottomSheet = true
+                }
             }
-        }
     }
 
     private func performDismiss() {
@@ -128,17 +166,22 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         if horizontalSizeClass == .compact {
             .infinity
         } else {
-            400
+            AppleLikeBottomSheetConstants.regularWidth
         }
     }
 
     private var perfectCornerRadius: CGFloat {
         let cornerRadius: CGFloat = {
+            #if os(macOS)
+            // A Mac sheet floats inside its window rather than hugging a curved display edge.
+            return 50
+            #else
             if horizontalSizeClass == .compact {
                 return UIScreen.main.displayCornerRadius - DesignSystem.Spaces.one
             } else {
                 return 50
             }
+            #endif
         }()
         let minimumCornerRadius = DesignSystem.CornerRadius.one
         return cornerRadius > minimumCornerRadius ? cornerRadius : minimumCornerRadius

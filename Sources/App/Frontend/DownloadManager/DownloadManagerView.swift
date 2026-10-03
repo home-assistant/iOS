@@ -1,7 +1,7 @@
 import Shared
 import SwiftUI
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct DownloadManagerView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -65,7 +65,7 @@ struct DownloadManagerView: View {
         let checkmark = Image(systemSymbol: .checkmark)
             .foregroundStyle(.green)
             .font(.system(size: 100))
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             checkmark
                 .symbolEffect(
                     .bounce,
@@ -134,7 +134,7 @@ struct DownloadManagerView: View {
 }
 
 #Preview {
-    if #available(iOS 17.0, *) {
+    if #available(iOS 17.0, macOS 14.0, *) {
         DownloadManagerView(viewModel: .init())
     } else {
         Text("Hey there")

@@ -6,7 +6,7 @@ import Shared
 ///
 /// Attendees are accepted because the schema requires the parameter, but Home Assistant's calendar
 /// API has nowhere to put them, so they are ignored rather than silently half-applied.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppIntent(schema: .calendar.createEvent)
 struct CreateEventSchemaIntent {
     var title: String

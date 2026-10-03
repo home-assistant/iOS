@@ -1,7 +1,6 @@
 import HAKit
 import Shared
 import SwiftUI
-import UIKit
 @preconcurrency import WebKit
 
 // MARK: - URL Loading & Connection Lifecycle
@@ -10,7 +9,7 @@ extension WebViewController {
     func observeConnectionNotifications() {
         for name: Notification.Name in [
             HomeAssistantAPI.didConnectNotification,
-            UIApplication.didBecomeActiveNotification,
+            AppLifecycle.didBecomeActiveNotification,
         ] {
             NotificationCenter.default.addObserver(
                 self,
@@ -23,23 +22,36 @@ extension WebViewController {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(scheduleReconnectBackgroundTimer),
-            name: UIApplication.didEnterBackgroundNotification,
+            name: AppLifecycle.didEnterBackgroundNotification,
             object: nil
         )
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(sceneDidEnterBackground(_:)),
-            name: UIScene.didEnterBackgroundNotification,
-            object: nil
-        )
+        // The Mac has no scenes: a window leaving the screen (minimised, or the app hidden) is the
+        // background, and it coming back is the activation.
+        #if os(macOS)
+        let sceneDidEnterBackgroundNames = [NSWindow.didMiniaturizeNotification, NSApplication.didHideNotification]
+        let sceneDidActivateNames = [NSWindow.didDeminiaturizeNotification, NSApplication.didUnhideNotification]
+        #else
+        let sceneDidEnterBackgroundNames = [UIScene.didEnterBackgroundNotification]
+        let sceneDidActivateNames = [UIScene.didActivateNotification]
+        #endif
+        for name in sceneDidEnterBackgroundNames {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(sceneDidEnterBackground(_:)),
+                name: name,
+                object: nil
+            )
+        }
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(sceneDidActivate(_:)),
-            name: UIScene.didActivateNotification,
-            object: nil
-        )
+        for name in sceneDidActivateNames {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(sceneDidActivate(_:)),
+                name: name,
+                object: nil
+            )
+        }
 
         NotificationCenter.default.addObserver(
             self,
@@ -350,7 +362,7 @@ extension WebViewController {
                     _ = webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
                 }
 
-                if UIApplication.shared.applicationState == .active {
+                if ApplicationState.current == .active {
                     timer.invalidate()
                 }
             }

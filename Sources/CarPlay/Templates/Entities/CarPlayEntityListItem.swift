@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -213,3 +214,4 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         return baseState
     }
 }
+#endif

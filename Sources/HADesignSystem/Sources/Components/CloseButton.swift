@@ -13,7 +13,7 @@ public struct CloseButton: View {
         case large
 
         var size: CGFloat {
-            #if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst) || os(macOS)
             switch self {
             case .small:
                 return 24
@@ -52,7 +52,7 @@ public struct CloseButton: View {
     }
 
     public var body: some View {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, *) {
             Button(role: .close) {
                 tapAction()
             }

@@ -16,7 +16,7 @@ import Foundation
 /// command entity types deliberately set none and these symbols reach the row instead. The cover pair
 /// shows the shape of it — an open curtain against a closed one — and `HomeAssistantAppShortcutsTests`
 /// pins every symbol as real and distinct.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct HomeAssistantAppShortcuts: AppShortcutsProvider {
     static let shortcutTileColor: ShortcutTileColor = .lightBlue
 

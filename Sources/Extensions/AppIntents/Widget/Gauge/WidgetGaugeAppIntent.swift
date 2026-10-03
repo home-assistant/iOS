@@ -171,6 +171,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                     }
                 }
             }
+            #if !os(macOS)
             Case(.complication) {
                 When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
                     Summary {
@@ -190,6 +191,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                     }
                 }
             }
+            #endif
             DefaultCase {
                 When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
                     Switch(\.$gaugeType) {

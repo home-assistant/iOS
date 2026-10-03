@@ -1,6 +1,5 @@
 import HAIconic
 import SwiftUI
-import UIKit
 
 /// Animated orb shown while Assist is listening. Voice activity is shown by a plain circle behind the
 /// orb that grows and shrinks with the microphone input level (0...1), no glow or shadow involved.
@@ -194,7 +193,7 @@ public struct AssistVoiceOrbView: View {
             .frame(width: metrics.orbSize, height: metrics.orbSize)
             .clipShape(Circle())
             .modify { view in
-                if #available(iOS 26.0, watchOS 26.0, *), !forcesLegacyAppearance {
+                if #available(iOS 26.0, macOS 26.0, watchOS 26.0, *), !forcesLegacyAppearance {
                     view.glassEffect(
                         .regular.tint(Color.haPrimary.opacity(appearance.orbGlassTintOpacity)),
                         in: .circle

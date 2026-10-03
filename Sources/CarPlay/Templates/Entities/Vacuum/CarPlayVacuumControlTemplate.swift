@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -273,3 +274,4 @@ final class CarPlayVacuumControlTemplate: CarPlayTemplateProvider {
         interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
     }
 }
+#endif

@@ -1,7 +1,6 @@
 import Foundation
 import HADesignSystem
 import SwiftUI
-import UIKit
 
 /// The resolved rendering inputs a complication face needs, derived once from a
 /// `WatchComplicationConfig` plus the live entity state (or rendered templates).

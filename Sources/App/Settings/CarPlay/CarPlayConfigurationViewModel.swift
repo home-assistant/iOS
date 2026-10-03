@@ -1,7 +1,11 @@
 import Combine
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 final class CarPlayConfigurationViewModel: ObservableObject {
     @Published private(set) var config = CarPlayConfig()

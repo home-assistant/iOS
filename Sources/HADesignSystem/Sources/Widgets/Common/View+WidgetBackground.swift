@@ -7,7 +7,7 @@ public extension View {
     /// The widget's container background, falling back to a plain background before iOS 17 knew
     /// about one.
     func widgetBackground(_ backgroundView: some ShapeStyle) -> some View {
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17.0, macOS 14.0, *) {
             return containerBackground(backgroundView, for: .widget)
         } else {
             return background(backgroundView)

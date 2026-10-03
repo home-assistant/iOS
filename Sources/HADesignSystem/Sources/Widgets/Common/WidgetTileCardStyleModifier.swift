@@ -42,7 +42,7 @@ public struct WidgetTileCardStyleModifier: ViewModifier {
                 shape
                     .stroke(Color.tileBorder, lineWidth: sizeStyle == .single ? 0 : 1)
                     .modify { view in
-                        if #available(iOS 18, *) {
+                        if #available(iOS 18, macOS 15, *) {
                             view.widgetAccentable()
                         } else {
                             view

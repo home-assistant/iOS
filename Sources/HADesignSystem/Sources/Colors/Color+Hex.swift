@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import UIKit
 
 /// Builds a colour from the hex notation the palette is written in.
 ///
@@ -71,19 +70,17 @@ public extension UIColor {
     }
 
     convenience init(_ rgba: String, defaultColor: UIColor = .clear) {
-        if let color = UIColor(rgbaString: rgba) {
-            self.init(cgColor: color.cgColor)
-        } else {
-            self.init(cgColor: defaultColor.cgColor)
-        }
+        let color = UIColor(rgbaString: rgba) ?? defaultColor
+        #if os(macOS)
+        // `NSColor(cgColor:)` is failable, where going through Core Image is not.
+        self.init(ciColor: CIColor(cgColor: color.cgColor))
+        #else
+        self.init(cgColor: color.cgColor)
+        #endif
     }
 
     func hexString(_ includeAlpha: Bool = true) -> String {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        guard getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return "" }
+        guard let (red, green, blue, alpha) = rgbaComponents else { return "" }
 
         guard red >= 0, red <= 1, green >= 0, green <= 1, blue >= 0, blue <= 1 else {
             return ""

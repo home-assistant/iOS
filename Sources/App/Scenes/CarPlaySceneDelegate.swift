@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Combine
 import GRDB
@@ -362,3 +363,4 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
         allTemplates.forEach { $0.templateWillAppear(template: aTemplate) }
     }
 }
+#endif

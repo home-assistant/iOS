@@ -1,6 +1,8 @@
-#if os(iOS)
+#if !os(watchOS)
 import GRDB
+#if os(iOS)
 import UIKit
+#endif
 import XCGLogger
 import ZIPFoundation
 
@@ -13,6 +15,7 @@ public extension XCGLogger {
         }
     }
 
+    #if os(iOS)
     func export(from source: UIViewController, sender: UIView, openURLHandler: (URL) -> Void) {
         Current.Log.verbose("Logs directory is: \(Shared.AppConstants.LogsDirectory)")
         guard let archiveURL = archiveURL() else { return }
@@ -43,6 +46,7 @@ public extension XCGLogger {
 
         source.present(controller, animated: true, completion: nil)
     }
+    #endif
 
     func archiveURL() -> URL? {
         Current.Log.verbose("Logs directory is: \(Shared.AppConstants.LogsDirectory)")

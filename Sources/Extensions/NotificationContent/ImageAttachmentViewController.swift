@@ -1,18 +1,35 @@
+import ImageIO
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+import WebKit
+#endif
 import UniformTypeIdentifiers
 import UserNotifications
 import UserNotificationsUI
-import WebKit
 
-class ImageAttachmentViewController: UIViewController, NotificationCategory {
+class ImageAttachmentViewController: PlatformViewController, NotificationCategory {
     let attachmentURL: URL
     let needsEndSecurityScoped: Bool
     let image: UIImage
     let imageData: Data
     let imageUTI: UTType
 
+    #if os(macOS)
+    // An AppKit image view plays an animated GIF itself, so every image type is shown the same way.
+    enum ImageViewType {
+        case imageView(NSImageView)
+
+        var view: NSView {
+            switch self {
+            case let .imageView(imageView): return imageView
+            }
+        }
+    }
+    #else
     enum ImageViewType {
         case imageView(UIImageView)
         case webView(WKWebView)
@@ -24,6 +41,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
             }
         }
     }
+    #endif
 
     let visibleView: ImageViewType
 
@@ -56,6 +74,17 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
                 self.imageUTI = .jpeg
             }
 
+            #if os(macOS)
+            self.visibleView = .imageView(with(NSImageView()) {
+                $0.imageScaling = .scaleProportionallyUpOrDown
+                $0.animates = true
+                // An image view asks for its image's own size; the image fits the notification, not the reverse.
+                for orientation in [NSLayoutConstraint.Orientation.horizontal, .vertical] {
+                    $0.setContentHuggingPriority(.defaultLow, for: orientation)
+                    $0.setContentCompressionResistancePriority(.defaultLow, for: orientation)
+                }
+            })
+            #else
             if imageUTI.conforms(to: .gif) {
                 // use a WebView for gif so we can animate without pulling in a third party library
                 let config = with(WKWebViewConfiguration()) {
@@ -84,6 +113,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
                     $0.contentMode = .scaleAspectFit
                 })
             }
+            #endif
 
         } catch {
             attachmentURL.stopAccessingSecurityScopedResource()
@@ -130,6 +160,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
         lastAttachmentURL = attachmentURL
 
         switch visibleView {
+        #if !os(macOS)
         case let .webView(webView):
             let mime = imageUTI.preferredMIMEType
             webView.load(
@@ -138,6 +169,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
                 characterEncodingName: "UTF-8",
                 baseURL: attachmentURL
             )
+        #endif
         case let .imageView(imageView):
             imageView.image = image
         }
@@ -148,6 +180,9 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
     }
 
     override func loadView() {
+        #if os(macOS)
+        view = NSView()
+        #else
         class UnanimatingView: UIView {
             override func layoutSubviews() {
                 // avoids the image view sizing up from nothing when initially displaying
@@ -159,6 +194,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
         }
 
         view = UnanimatingView()
+        #endif
     }
 
     override func viewDidLoad() {

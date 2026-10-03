@@ -31,7 +31,7 @@ final class EntityAddToHandler {
                 let domain = Domain(entityId: entityId)
 
                 // CarPlay is available on iPhone only (not iPad) for supported domains
-                #if !targetEnvironment(macCatalyst)
+                #if !(targetEnvironment(macCatalyst) || os(macOS))
                 if !Current.isCatalyst, UIDevice.current.userInterfaceIdiom == .phone {
                     let isCarPlaySupported = domain.map { Domain.carPlaySupported.contains($0) } ?? false
                     if isCarPlaySupported {
@@ -163,7 +163,9 @@ final class EntityAddToHandler {
         let watchSettingsView = WatchConfigurationView(needsNavigationStack: true, viewModel: viewModel)
             .preferredColorScheme(.dark)
         let viewController = watchSettingsView.embeddedInHostingController()
+        #if os(iOS)
         viewController.overrideUserInterfaceStyle = .dark
+        #endif
         webViewController.presentOverlayController(controller: viewController, animated: true)
     }
 
@@ -265,6 +267,9 @@ final class EntityAddToHandler {
 
         let hostingController = selectionView.embeddedInHostingController()
 
+        #if os(macOS)
+        webViewController.presentOverlayController(controller: hostingController, animated: true)
+        #else
         if Current.isCatalyst {
             let navigationController = UINavigationController(rootViewController: hostingController)
             webViewController.presentOverlayController(controller: navigationController, animated: true)
@@ -277,6 +282,7 @@ final class EntityAddToHandler {
             }
             webViewController.presentOverlayController(controller: hostingController, animated: true)
         }
+        #endif
     }
 
     private func handleWidgetSelection(

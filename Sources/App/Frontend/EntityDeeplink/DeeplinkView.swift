@@ -13,7 +13,7 @@ struct DeeplinkView: View {
 
     var body: some View {
         NavigationView {
-            List {
+            GroupedList {
                 Section {
                     AppleLikeListTopRowHeader(
                         image: .linkVariantIcon,
@@ -65,7 +65,7 @@ struct DeeplinkView: View {
                             }
                     }
                     .modify { view in
-                        if #available(iOS 17.0, *) {
+                        if #available(iOS 17.0, macOS 14.0, *) {
                             view.listSectionSpacing(DesignSystem.Spaces.two)
                         } else {
                             view
@@ -74,7 +74,7 @@ struct DeeplinkView: View {
                 }
             }
             .modify { view in
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14.0, *) {
                     view
                         .listSectionSpacing(.zero)
                         .contentMargins(.top, 0)
@@ -107,7 +107,7 @@ struct DeeplinkView: View {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 #Preview {
     Color.clear
         .sheet(isPresented: .constant(true)) {

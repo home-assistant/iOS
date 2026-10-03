@@ -3,13 +3,13 @@ import Foundation
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlAssistItem {
     let pipeline: AssistPipelineEntity
     let displayText: String?
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlAssistValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlAssistConfiguration) async throws -> ControlAssistItem {
         .init(pipeline: configuration.pipeline ?? placeholder(), displayText: configuration.displayText)
@@ -28,7 +28,7 @@ struct ControlAssistValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlAssistConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = "Assist"
 

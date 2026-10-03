@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import Shared
 
@@ -45,3 +46,4 @@ final class NativeTabBarExtrasStore {
         }
     }
 }
+#endif

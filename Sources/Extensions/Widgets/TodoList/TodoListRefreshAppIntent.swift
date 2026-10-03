@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import WidgetKit
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct TodoListRefreshAppIntent: AppIntent {
     static var title: LocalizedStringResource = "widgets.todo_list.refresh_title"
     static var isDiscoverable: Bool = false

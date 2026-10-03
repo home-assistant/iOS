@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 struct CalendarSchemaEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [CalendarSchemaEntity] {
         identifiers.compactMap {

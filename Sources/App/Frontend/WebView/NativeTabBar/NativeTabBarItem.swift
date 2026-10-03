@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import Shared
 
@@ -53,3 +54,4 @@ struct NativeTabBarItem: Identifiable, Hashable {
         }
     }
 }
+#endif

@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlFanValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlFanConfiguration) async throws -> ControlEntityItem {
         try await ControlRefreshDelay.wait()
@@ -83,7 +83,7 @@ struct ControlFanValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlFanConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.fan.description",

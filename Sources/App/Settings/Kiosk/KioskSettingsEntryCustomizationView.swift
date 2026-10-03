@@ -30,7 +30,7 @@ struct KioskSettingsEntryCustomizationView: View {
                     Spacer()
                     ZStack {
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(uiColor: .tertiarySystemFill))
+                            .fill(Color(uiColor: .tertiaryFill))
                             .frame(height: 140)
                         KioskSettingsEntryIcon(
                             backgroundColor: backgroundColor.wrappedValue,

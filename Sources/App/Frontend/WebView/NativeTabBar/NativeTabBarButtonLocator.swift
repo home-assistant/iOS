@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 /// Finds where the tab bar draws a tab, in window coordinates, so a presentation can zoom out of it.
@@ -60,3 +61,4 @@ enum NativeTabBarButtonLocator {
         }
     }
 }
+#endif

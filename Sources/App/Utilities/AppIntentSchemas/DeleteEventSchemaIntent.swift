@@ -3,7 +3,7 @@ import Foundation
 import Shared
 
 /// Removes an event from a Home Assistant calendar.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppIntent(schema: .calendar.deleteEvent)
 struct DeleteEventSchemaIntent {
     var entity: CalendarEventSchemaEntity

@@ -1,7 +1,9 @@
 import Foundation
 import GRDB
 import KeychainAccess
+#if os(iOS)
 import SafariServices
+#endif
 import Security
 import Shared
 
@@ -90,7 +92,7 @@ func deleteKeychainCompletely() throws {
     // survive the forced restart so startup can recover the server list.
 }
 
-func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
+func openURLInBrowser(_ urlToOpen: URL, _ sender: PlatformViewController?) {
     guard ["http", "https"].contains(urlToOpen.scheme?.lowercased()) else {
         URLOpener.shared.open(urlToOpen, options: [:], completionHandler: nil)
         return
@@ -109,9 +111,11 @@ func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
         OpenInFirefoxControllerSwift(type: .focus).openInFirefox(urlToOpen)
     case .FirefoxKlar where OpenInFirefoxControllerSwift(type: .klar).isFirefoxInstalled():
         OpenInFirefoxControllerSwift(type: .klar).openInFirefox(urlToOpen)
+    #if os(iOS)
     case .SafariInApp where sender != nil:
         let sfv = SFSafariViewController(url: urlToOpen)
         sender!.present(sfv, animated: true)
+    #endif
     default:
         URLOpener.shared.open(urlToOpen, options: [:], completionHandler: nil)
     }

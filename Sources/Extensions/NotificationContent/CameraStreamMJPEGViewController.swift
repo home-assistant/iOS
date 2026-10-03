@@ -2,13 +2,21 @@ import Alamofire
 import Foundation
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
-class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
+class CameraStreamMJPEGViewController: PlatformViewController, CameraStreamHandler {
     let api: HomeAssistantAPI
     let response: StreamCameraResponse
     let baseURL: URL
+    #if os(macOS)
+    let imageView: NSImageView
+    #else
     let imageView: UIImageView
+    #endif
     let streamer: MJPEGStreamer
     let promise: Promise<Void>
     var didUpdateState: (CameraStreamHandlerState) -> Void = { _ in }
@@ -48,7 +56,11 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
         self.response = response
         self.baseURL = baseURL
         self.streamer = api.VideoStreamer()
+        #if os(macOS)
+        self.imageView = NSImageView()
+        #else
         self.imageView = UIImageView()
+        #endif
         (self.promise, self.seal) = Promise<Void>.pending()
         super.init(nibName: nil, bundle: nil)
     }
@@ -62,10 +74,25 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
         streamer.cancel()
     }
 
+    #if os(macOS)
+    override func loadView() {
+        view = NSView()
+    }
+    #endif
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        #if os(macOS)
+        imageView.imageScaling = .scaleProportionallyUpOrDown
+        // An image view asks for its image's own size; the stream fits the notification, not the reverse.
+        for orientation in [NSLayoutConstraint.Orientation.horizontal, .vertical] {
+            imageView.setContentHuggingPriority(.defaultLow, for: orientation)
+            imageView.setContentCompressionResistancePriority(.defaultLow, for: orientation)
+        }
+        #else
         imageView.contentMode = .scaleAspectFit
+        #endif
         view.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

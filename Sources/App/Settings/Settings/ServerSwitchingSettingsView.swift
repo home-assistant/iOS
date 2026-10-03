@@ -13,7 +13,7 @@ struct ServerSwitchingSettingsView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             Section {
                 if Current.servers.all.count > 1 {
                     Toggle(isOn: .init(get: {

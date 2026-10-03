@@ -10,7 +10,7 @@ import Shared
 ///
 /// For a recurring series the scope decides whether just the picked occurrence goes or everything
 /// from it onwards, matching the choice the frontend prompts for before deleting.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct DeleteCalendarEventAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.calendar.delete_event.title",

@@ -3,7 +3,7 @@ import Foundation
 import Shared
 
 /// Removes items from Home Assistant todo lists.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppIntent(schema: .reminders.deleteReminders)
 struct DeleteRemindersSchemaIntent {
     var entities: [ReminderSchemaEntity]

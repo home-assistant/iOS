@@ -3,7 +3,7 @@ import Foundation
 
 /// How far a delete reaches into a recurring series, matching the frontend's `RecurrenceRange`
 /// (`src/data/calendar.ts`). Ignored for events that do not recur.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 enum CalendarEventDeleteScopeAppEnum: String, Codable, Sendable, AppEnum {
     /// `RecurrenceRange.THISEVENT`, which the frontend represents as an empty string. Nothing is
     /// sent for it: `deleteCalendarEvent` omits empty values, and omitting `recurrence_range`

@@ -1,5 +1,10 @@
 import Foundation
+import HAIconic
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Parses the colour notations the Home Assistant frontend hands back.
 ///

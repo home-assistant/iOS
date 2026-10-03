@@ -53,7 +53,7 @@ public struct LabsLabel: View {
     }
 
     private var infoSheet: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack {
                     Text(info ?? "")
@@ -64,7 +64,6 @@ public struct LabsLabel: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("Labs")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationViewStyle(.stack)
             .safeAreaInset(edge: .bottom) {
                 Button(action: {
                     openURL(HADesignSystemEnvironment.current.reportIssueURL)

@@ -3,7 +3,7 @@ import Foundation
 import Shared
 
 /// Lookups and date formatting shared by the reminders schema intents.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 enum RemindersSchemaSupport {
     static func api(for list: ReminderListSchemaEntity) throws -> HomeAssistantAPI {
         guard let server = Current.servers.server(for: .init(rawValue: list.serverId)),

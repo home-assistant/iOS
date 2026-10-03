@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import Shared
 import UIKit
@@ -32,3 +33,4 @@ final class WindowSizeObserver: NSObject {
         observation = nil
     }
 }
+#endif

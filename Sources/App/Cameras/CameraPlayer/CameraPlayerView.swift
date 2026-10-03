@@ -34,6 +34,13 @@ struct CameraPlayerView: View {
 
     private let maxTitleTextWidth: CGFloat = 100
     private let topScrimHeight: CGFloat = 140
+    #if os(macOS)
+    /// AppKit draws a menu item's image at the size it comes in, so the picker's stills are made as
+    /// small as a menu row.
+    private let snapshotThumbnailSize = CGSize(width: 32, height: 32)
+    #else
+    private let snapshotThumbnailSize = CGSize(width: 120, height: 120)
+    #endif
 
     init(
         server: Server,
@@ -110,31 +117,39 @@ struct CameraPlayerView: View {
                         nameBadge
                     }
                 }
+            #if !os(macOS)
+                // A Mac window keeps its toolbar; only the items in it come and go with the controls.
                 .modify { view in
-                    if #available(iOS 18.0, *) {
+                    if #available(iOS 18.0, macOS 15.0, *) {
                         view.toolbarVisibility(controlsVisible ? .automatic : .hidden, for: .navigationBar)
                     } else {
                         view
                     }
                 }
+            #endif
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     /// Liquid Glass backs the toolbar items from iOS 26 onwards, so the scrim is only needed before that.
     private var needsTopScrim: Bool {
-        if #available(iOS 26.0, *) {
+        #if os(macOS)
+        // A Mac window's toolbar sits beside the stream rather than over it.
+        return false
+        #else
+        if #available(iOS 26.0, macOS 26.0, *) {
             return false
         } else {
             return true
         }
+        #endif
     }
 
     /// Mirrors the navigation bar visibility so the scrim comes and goes with the items it backs. Hiding
     /// the bar requires `toolbarVisibility`, so before iOS 18 the toolbar — and therefore the scrim —
     /// stays on screen even while the controls are dimmed.
     private var isToolbarVisible: Bool {
-        if #available(iOS 18.0, *) {
+        if #available(iOS 18.0, macOS 15.0, *) {
             return controlsVisible
         } else {
             return true
@@ -324,7 +339,7 @@ struct CameraPlayerView: View {
             guard cache.shouldFetch(key) else { continue }
             do {
                 let image = try await api.getCameraSnapshot(cameraEntityID: camera.entityId).asyncValue()
-                let thumbnail = await image.byPreparingThumbnail(ofSize: CGSize(width: 120, height: 120)) ?? image
+                let thumbnail = await makeThumbnail(of: image)
                 cache.store(thumbnail, for: key)
                 cameraSnapshots[camera.entityId] = thumbnail
             } catch {
@@ -332,6 +347,22 @@ struct CameraPlayerView: View {
                 Current.Log.error("Failed to load snapshot for \(camera.entityId): \(error)")
             }
         }
+    }
+
+    private func makeThumbnail(of image: UIImage) async -> UIImage {
+        #if os(macOS)
+        let scale = min(
+            snapshotThumbnailSize.width / image.size.width,
+            snapshotThumbnailSize.height / image.size.height
+        )
+        guard scale.isFinite, scale < 1 else { return image }
+        let size = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+        #else
+        return await image.byPreparingThumbnail(ofSize: snapshotThumbnailSize) ?? image
+        #endif
     }
 
     /// Non-private for tests.

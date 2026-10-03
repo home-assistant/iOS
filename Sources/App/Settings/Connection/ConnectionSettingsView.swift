@@ -10,7 +10,9 @@ struct ConnectionSettingsView: View {
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
     @State private var showShareSheet = false
     @State private var showSecurityLevelPicker = false
+    #if !os(macOS)
     @State private var activityViewController: UIActivityViewController?
+    #endif
     @State private var isDeleteConfirmationPresented = false
     @State private var deleteError: Error?
     @State private var showDeleteError = false
@@ -32,7 +34,7 @@ struct ConnectionSettingsView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             detailsSection
             clientCertificateSection
             privacySection
@@ -49,6 +51,14 @@ struct ConnectionSettingsView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 if viewModel.canShareServer {
+                    #if os(macOS)
+                    if let invitationURL = viewModel.invitationURL() {
+                        ShareLink(item: invitationURL) {
+                            Image(systemSymbol: .squareAndArrowUp)
+                        }
+                        .tint(.haPrimary)
+                    }
+                    #else
                     Button {
                         if let activityVC = viewModel.shareServer() {
                             activityViewController = activityVC
@@ -58,14 +68,17 @@ struct ConnectionSettingsView: View {
                         Image(systemSymbol: .squareAndArrowUp)
                     }
                     .tint(.haPrimary)
+                    #endif
                 }
             }
         }
+        #if !os(macOS)
         .sheet(isPresented: $showShareSheet) {
             if let activityVC = activityViewController {
                 embed(activityVC)
             }
         }
+        #endif
         .sheet(isPresented: $showInternalURLSheet) {
             NavigationView {
                 ConnectionURLView(
@@ -276,7 +289,7 @@ struct ConnectionSettingsView: View {
                 )
             )
 
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, macOS 26.0, *) {
                 NavigationLink {
                     ConnectionURLView(
                         server: viewModel.server,
@@ -420,7 +433,7 @@ struct ConnectionSettingsView: View {
 
     private var privacySection: some View {
         Section(header: Text(L10n.SettingsDetails.Privacy.title)) {
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, macOS 26.0, *) {
                 NavigationLink {
                     PrivacyPickerView(
                         title: L10n.Settings.ConnectionSection.LocationSendType.title,
@@ -531,7 +544,11 @@ struct ConnectionSettingsView: View {
                     Task {
                         do {
                             try await viewModel.deleteServer()
+                            // On the Mac this screen is the detail of the Settings window, which moves on to
+                            // another entry by itself; dismissing it would close the window.
+                            #if !os(macOS)
                             dismiss()
+                            #endif
                         } catch {
                             Current.Log.error("Failed to delete server: \(error)")
                             deleteError = error
@@ -731,7 +748,7 @@ private struct PrivacyPickerView<T: CaseIterable & Hashable>: View where T: RawR
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        List {
+        GroupedList {
             Section {
                 ForEach(options, id: \.self) { option in
                     Button {

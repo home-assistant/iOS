@@ -68,6 +68,48 @@ struct HomeAssistantStandByViewSnapshotTests {
         #expect(controller.view.bounds.size == CGSize(width: 390, height: 844))
     }
 
+    /// The stand-by screen listens for the network changing and the app coming back while it is up, and
+    /// reads the network type again when told. The notifications go through a center of the test's own, so
+    /// nothing else in the process hears them.
+    @MainActor @Test func notificationsWhileOnScreenReadTheNetworkTypeAgain() async throws {
+        let previousNetworkType = Current.connectivity.simpleNetworkType
+        defer { Current.connectivity.simpleNetworkType = previousNetworkType }
+        var networkTypeReads = 0
+        Current.connectivity.simpleNetworkType = {
+            networkTypeReads += 1
+            return .wifi
+        }
+
+        let server = HomeAssistantStandByView.previewServer(
+            name: "Home",
+            configuredURLTypes: [.internal, .external],
+            activeURLType: .internal
+        )
+        let center = NotificationCenter()
+        let controller = UIHostingController(rootView: HomeAssistantStandByView(
+            server: server,
+            emptyState: nil,
+            contentFadeAnimation: nil,
+            notificationCenter: center
+        ))
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = controller
+        window.isHidden = false
+        defer {
+            window.isHidden = true
+            window.rootViewController = nil
+        }
+        controller.view.layoutIfNeeded()
+        let readsBefore = networkTypeReads
+
+        center.post(name: AppLifecycle.willEnterForegroundNotification, object: nil)
+        center.post(name: Current.connectivity.connectivityDidChangeNotification(), object: nil)
+        await Task.yield()
+        controller.view.layoutIfNeeded()
+
+        #expect(networkTypeReads == readsBefore + 1)
+    }
+
     @MainActor
     private func assertLightDarkWindowSnapshots(
         style: WebViewEmptyStateStyle,

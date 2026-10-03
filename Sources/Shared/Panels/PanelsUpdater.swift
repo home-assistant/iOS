@@ -2,7 +2,11 @@ import Foundation
 import GRDB
 import HAKit
 import PromiseKit
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public protocol PanelsUpdaterProtocol {
     func update()
@@ -20,7 +24,7 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(enterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
+            name: AppLifecycle.didEnterBackgroundNotification,
             object: nil
         )
     }

@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 
 /// Home Assistant does not report an event status, so this exists only to satisfy the schema shape.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEnum(schema: .calendar.eventStatus)
 enum CalendarEventStatusSchemaEnum: String {
     case confirmed

@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetScripts: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -48,6 +48,11 @@ struct WidgetScripts: Widget {
 
 enum WidgetScriptsSupportedFamilies {
     static var families: [WidgetFamily] {
-        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges + [.accessoryCircular]
+        #if os(macOS)
+        // A Mac has no lock screen for the accessory family to appear on.
+        return [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
+        #else
+        return [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges + [.accessoryCircular]
+        #endif
     }
 }

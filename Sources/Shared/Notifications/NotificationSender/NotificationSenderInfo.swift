@@ -1,5 +1,9 @@
 import Foundation
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public struct NotificationSenderInfo: Equatable {
     public enum Source: Equatable {

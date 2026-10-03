@@ -3,7 +3,11 @@ import CoreSpotlight
 import CryptoKit
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Publishes the entities and calendars cached in the local database to Spotlight, so searching the
 /// system for an entity's name (or its area, device or server) finds it and opens its more-info
@@ -12,7 +16,7 @@ import UIKit
 /// The index is rebuilt from the database rather than kept in sync incrementally: a full snapshot is
 /// cheap to derive, and comparing its signature against the last indexed one means a refresh that
 /// changed nothing costs a single hash instead of thousands of Spotlight writes.
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 @MainActor
 final class SpotlightEntityIndexer: ServerObserver {
     static let shared = SpotlightEntityIndexer()
@@ -73,7 +77,7 @@ final class SpotlightEntityIndexer: ServerObserver {
         // without a foreground transition ever following, which would defer the reindex forever.
         if !Current.isCatalyst {
             backgroundObserver = NotificationCenter.default.addObserver(
-                forName: UIApplication.didEnterBackgroundNotification,
+                forName: AppLifecycle.didEnterBackgroundNotification,
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
@@ -82,7 +86,7 @@ final class SpotlightEntityIndexer: ServerObserver {
                 }
             }
             foregroundObserver = NotificationCenter.default.addObserver(
-                forName: UIApplication.willEnterForegroundNotification,
+                forName: AppLifecycle.willEnterForegroundNotification,
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
@@ -118,7 +122,7 @@ final class SpotlightEntityIndexer: ServerObserver {
 
     /// Reindexes the named entities on request from the system, which asks when it notices the index
     /// may be stale rather than waiting for the next database change.
-    @available(iOS 27.0, *)
+    @available(iOS 27.0, macOS 27.0, *)
     func reindex(entityIds: [String]) async throws {
         guard let snapshot = await Task.detached(priority: .utility) { Self.makeSnapshot() }.value else {
             return
@@ -143,7 +147,7 @@ final class SpotlightEntityIndexer: ServerObserver {
     }
 
     /// Rebuilds the whole index on request from the system.
-    @available(iOS 27.0, *)
+    @available(iOS 27.0, macOS 27.0, *)
     func reindexEverything() async {
         await reindex(reason: "system asked for a reindex")
     }
@@ -180,7 +184,7 @@ final class SpotlightEntityIndexer: ServerObserver {
     /// Events are indexed on their own because the entity is iOS 27; see
     /// `CalendarEventSpotlightIndexer` for why it isn't part of the snapshot.
     private func reindexCalendarEvents() async {
-        if #available(iOS 27.0, *) {
+        if #available(iOS 27.0, macOS 27.0, *) {
             await CalendarEventSpotlightIndexer.reindex(index: index, defaults: defaults)
         }
     }
@@ -189,7 +193,7 @@ final class SpotlightEntityIndexer: ServerObserver {
         // A trigger fired while backgrounded (background refresh, servers changing) lands here with
         // the coalescing delay already spent; defer it to the foreground instead of reading the
         // database from an unprotected background process.
-        if !Current.isCatalyst, UIApplication.shared.applicationState == .background {
+        if !Current.isCatalyst, ApplicationState.current == .background {
             needsReindexOnForeground = true
             return
         }

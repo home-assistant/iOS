@@ -11,7 +11,7 @@ import WidgetKit
 /// rest of the tile opens the entity in the app. Entities with no single main action — sensors,
 /// locks, media players — open in the app from both halves. States are always shown; the only
 /// display option the configuration offers is the last update time.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEntities: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(

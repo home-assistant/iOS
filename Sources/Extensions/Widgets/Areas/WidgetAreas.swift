@@ -5,7 +5,7 @@ import WidgetKit
 
 /// The areas of a server, floor by floor, in the order Home Assistant lists them — and a page at a
 /// time, since no widget family holds a whole home.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetAreas: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -23,7 +23,7 @@ struct WidgetAreas: Widget {
     }
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 #Preview("Large", as: .systemLarge) {
     WidgetAreas()
 } timeline: {
@@ -31,7 +31,7 @@ struct WidgetAreas: Widget {
     WidgetAreasEntry.preview(family: .systemLarge, page: 1)
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 #Preview("Small", as: .systemSmall) {
     WidgetAreas()
 } timeline: {

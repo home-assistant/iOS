@@ -1,7 +1,11 @@
 import AppIntents
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 extension WebViewController {
     /// Publishes what the frontend is showing onto the web view's user activity.
@@ -35,7 +39,7 @@ extension WebViewController {
                 knownPanelPaths: Self.knownPanelPaths(serverId: serverId)
             )
             guard !Task.isCancelled, let self else { return }
-            if #available(iOS 18.4, *) {
+            if #available(iOS 18.4, macOS 15.4, *) {
                 publishOnscreenEntityElements(identifiers)
             }
         }
@@ -48,7 +52,7 @@ extension WebViewController {
     ///
     /// The web view is one opaque view, so the element takes its whole area — there is no way to know
     /// where inside it the dialog was drawn, and the dialog covers it anyway.
-    @available(iOS 18.4, *)
+    @available(iOS 18.4, macOS 15.4, *)
     func publishOnscreenEntityElements(_ identifiers: [EntityIdentifier]) {
         guard let webView else { return }
         guard !identifiers.isEmpty else {
@@ -62,7 +66,7 @@ extension WebViewController {
 
     /// One element per identifier, all of them the entity the dialog is showing under a different
     /// type, so whichever type a command's parameter takes finds it.
-    @available(iOS 18.4, *)
+    @available(iOS 18.4, macOS 15.4, *)
     static func onscreenEntityElements(
         _ identifiers: [EntityIdentifier],
         bounds: CGRect
@@ -161,7 +165,7 @@ extension WebViewController {
         }
 
         var entityIdentifiers: [EntityIdentifier] = []
-        if #available(iOS 18.2, *), let onscreenEntityId {
+        if #available(iOS 18.2, macOS 15.2, *), let onscreenEntityId {
             entityIdentifiers = await OnscreenEntityIdentifier.makeAll(
                 entityId: onscreenEntityId,
                 serverId: serverId
@@ -173,7 +177,7 @@ extension WebViewController {
         guard !Task.isCancelled else { return [] }
 
         userActivity.title = page?.title
-        if #available(iOS 18.2, *) {
+        if #available(iOS 18.2, macOS 15.2, *) {
             // The page stands in whenever the dialog names nothing the system could resolve.
             userActivity.appEntityIdentifier = entityIdentifiers.first
                 ?? page.flatMap { OnscreenPageIdentifier.make(for: $0) }

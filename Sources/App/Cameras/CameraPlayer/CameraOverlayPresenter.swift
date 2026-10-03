@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 final class CameraOverlayPresenter {
     static let shared = CameraOverlayPresenter()
@@ -10,8 +9,24 @@ final class CameraOverlayPresenter {
         let serverIdentifier: Identifier<Server>
     }
 
+    #if os(macOS)
+    /// Carries the hosted view's appearance callbacks to the controller that is created after the view.
+    private final class MacOverlayLifecycle {
+        var onAppear: (() -> Void)?
+        var onDisappear: (() -> Void)?
+    }
+
+    /// Presented on a Mac, the player takes its size from its content instead of from a screen it
+    /// covers. It is happy at any size, so it is given one to open at and a floor that keeps its
+    /// controls usable.
+    private enum PlayerSize {
+        static let minimum = CGSize(width: 480, height: 270)
+        static let ideal = CGSize(width: 960, height: 540)
+    }
+    #endif
+
     private(set) var displayedCamera: Camera?
-    private weak var overlayController: UIViewController?
+    private weak var overlayController: PlatformViewController?
     /// Set from `show` until the overlay has appeared: the web view presents on a later turn of the main
     /// queue, so for a moment the overlay exists without being on screen.
     private var isPresenting = false
@@ -64,13 +79,37 @@ final class CameraOverlayPresenter {
         // request would present its camera when this overlay is eventually dismissed.
         pendingShow = nil
 
-        let controller = CameraPlayerView(
+        let player = CameraPlayerView(
             server: server,
             cameraEntityId: entityId,
             cameraName: cameraName,
             onCameraChange: overlayDidSwitchCamera(to:)
         )
-        .embeddedInHostingController { CameraOverlayHostingController(rootView: $0) }
+        #if os(macOS)
+        // The Mac shows the player in a sheet SwiftUI owns, which hosts the view again outside this
+        // controller, so the view reports its own appearance; a sheet is never covered by another one.
+        let lifecycle = MacOverlayLifecycle()
+        let controller = player
+            .frame(
+                minWidth: PlayerSize.minimum.width,
+                idealWidth: PlayerSize.ideal.width,
+                minHeight: PlayerSize.minimum.height,
+                idealHeight: PlayerSize.ideal.height
+            )
+            .onAppear { lifecycle.onAppear?() }
+            .onDisappear { lifecycle.onDisappear?() }
+            .embeddedInHostingController()
+        controller.preferredContentSize = PlayerSize.ideal
+        lifecycle.onAppear = { [weak self, weak controller] in
+            guard let controller else { return }
+            self?.overlayDidAppear(controller)
+        }
+        lifecycle.onDisappear = { [weak self, weak controller] in
+            guard let controller else { return }
+            self?.overlayDidDisappear(controller)
+        }
+        #else
+        let controller = player.embeddedInHostingController { CameraOverlayHostingController(rootView: $0) }
         controller.onAppear = { [weak self, weak controller] in
             guard let controller else { return }
             self?.overlayDidAppear(controller)
@@ -80,6 +119,7 @@ final class CameraOverlayPresenter {
             self?.overlayDidDisappear(controller)
         }
         controller.modalPresentationStyle = .overFullScreen
+        #endif
 
         overlayController = controller
         displayedCamera = camera
@@ -119,7 +159,7 @@ final class CameraOverlayPresenter {
     }
 
     /// Called by the hosting controller once the overlay is on screen.
-    func overlayDidAppear(_ controller: UIViewController) {
+    func overlayDidAppear(_ controller: PlatformViewController) {
         guard controller === overlayController else { return }
         isPresenting = false
         guard hideWhenPresented else { return }
@@ -129,7 +169,7 @@ final class CameraOverlayPresenter {
     }
 
     /// Called by the hosting controller when the overlay has been dismissed.
-    func overlayDidDisappear(_ controller: UIViewController) {
+    func overlayDidDisappear(_ controller: PlatformViewController) {
         // Only the overlay on record matters: a replaced one going away must not clear its successor.
         guard controller === overlayController else { return }
         clearState()
@@ -142,10 +182,15 @@ final class CameraOverlayPresenter {
         displayedCamera = Camera(entityId: entityId, serverIdentifier: serverIdentifier)
     }
 
-    private func dismissDirectly(_ controller: UIViewController) {
+    private func dismissDirectly(_ controller: PlatformViewController) {
+        #if os(macOS)
+        controller.dismissSheet()
+        dismissalDidFinish()
+        #else
         (controller.presentingViewController ?? controller).dismiss(animated: true) { [weak self] in
             self?.dismissalDidFinish()
         }
+        #endif
     }
 
     private func dismissalDidFinish() {

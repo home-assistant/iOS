@@ -5,6 +5,7 @@ let package = Package(
     name: "HADesignSystem",
     platforms: [
         .iOS(.v16),
+        .macOS(.v13),
         .watchOS(.v9),
     ],
     products: [
@@ -22,7 +23,7 @@ let package = Package(
         ),
         .testTarget(
             name: "HADesignSystemTests",
-            dependencies: ["HADesignSystem"],
+            dependencies: ["HADesignSystem", "HAIconic"],
             path: "Tests"
         ),
     ]

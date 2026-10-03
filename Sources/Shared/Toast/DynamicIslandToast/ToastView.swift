@@ -1,13 +1,12 @@
 import SFSafeSymbols
 import SwiftUI
-import UIKit
 
 public extension View {
     /// Renders the currently presented `ToastPresenter.shared` toast as a top overlay. Attach once at
     /// the app root. The overlay is non-interactive, so it never blocks touches to the content beneath.
     @ViewBuilder
     func toastOverlay() -> some View {
-        if #available(iOS 18, *) {
+        if #available(iOS 18, macOS 15, *) {
             modifier(ToastOverlayModifier())
         } else {
             self
@@ -15,16 +14,24 @@ public extension View {
     }
 }
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 private struct ToastOverlayModifier: ViewModifier {
     @ObservedObject private var presenter = ToastPresenter.shared
 
     func body(content: Content) -> some View {
+        #if os(macOS)
+        // A Mac window has no status bar or Dynamic Island to draw over, so the toast is an overlay
+        // inside the window rather than a window of its own.
+        content
+            .overlay(alignment: .top) { ToastWindowContent() }
+        #else
         content
             .background(ToastWindowInstaller(isPresenting: presenter.toast != nil))
+        #endif
     }
 }
 
+#if !os(macOS)
 @available(iOS 18, *)
 private struct ToastWindowInstaller: UIViewRepresentable {
     let isPresenting: Bool
@@ -129,8 +136,9 @@ private final class ToastWindow: UIWindow {
         nil
     }
 }
+#endif
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 private struct ToastWindowContent: View {
     @ObservedObject private var presenter = ToastPresenter.shared
 
@@ -142,7 +150,7 @@ private struct ToastWindowContent: View {
 
 // Animation adapted from Kavsoft's SwiftUI Dynamic Island toast:
 // https://www.patreon.com/posts/swiftui-dynamic-147414349
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 public struct ToastView: View {
     public let toast: Toast?
     public let isExpanded: Bool
@@ -172,7 +180,7 @@ public struct ToastView: View {
 
             ZStack {
                 Group {
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         ConcentricRectangle(corners: .concentric(minimum: .fixed(30)), isUniform: true)
                             .fill(.black)
                     } else {

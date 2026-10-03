@@ -1,7 +1,6 @@
 import Foundation
 import Shared
 import SwiftUI
-import UIKit
 
 final class DeeplinkViewModel: ObservableObject {
     let target: DeeplinkTarget

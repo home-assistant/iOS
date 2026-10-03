@@ -27,7 +27,7 @@ struct ServerSelectionListView: View {
                 .environment(\.defaultMinListRowHeight, 60)
             }
             .modify { view in
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14.0, *) {
                     view.listSectionSpacing(DesignSystem.Spaces.one)
                 } else {
                     view
@@ -42,7 +42,13 @@ struct ServerSelectionListView: View {
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
+                    #if os(macOS)
+                    // A sheet's buttons sit in a row at its bottom, where a cog would be the odd one out
+                    // beside the Close button.
+                    Button(L10n.Settings.NavigationBar.title, action: expandAction)
+                    #else
                     SettingsButton(tint: Color.haPrimary, action: expandAction)
+                    #endif
                 }
             }
         }

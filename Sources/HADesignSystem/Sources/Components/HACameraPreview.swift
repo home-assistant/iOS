@@ -1,7 +1,6 @@
 #if !os(watchOS)
 import AVFoundation
 import SwiftUI
-import UIKit
 
 /// A live camera feed that reports the barcodes it sees. The capture half of the frontend's
 /// `ha-qr-scanner`, which does the same job with `getUserMedia` and a `<video>` element.
@@ -11,7 +10,7 @@ import UIKit
 ///
 /// Nothing starts until this appears on screen, and everything stops when it leaves: a capture
 /// session left running holds the camera and the indicator stays lit.
-public struct HACameraPreview: UIViewRepresentable {
+public struct HACameraPreview {
     private let types: [AVMetadataObject.ObjectType]
     private let onScan: (String) -> Void
 
@@ -24,24 +23,35 @@ public struct HACameraPreview: UIViewRepresentable {
         self.onScan = onScan
     }
 
-    public func makeUIView(context: Context) -> PreviewView {
-        let view = PreviewView()
-        context.coordinator.start(on: view, types: types)
-        return view
-    }
-
-    public func updateUIView(_ uiView: PreviewView, context: Context) {
-        context.coordinator.onScan = onScan
-    }
-
-    public static func dismantleUIView(_ uiView: PreviewView, coordinator: Coordinator) {
-        coordinator.stop()
-    }
-
     public func makeCoordinator() -> Coordinator {
         Coordinator(onScan: onScan)
     }
 
+    #if os(macOS)
+    /// A view backed by the preview layer itself, rather than one holding a sublayer: this way the
+    /// layer resizes with the view and there is no manual frame bookkeeping when the window resizes.
+    public final class PreviewView: NSView {
+        override public init(frame frameRect: NSRect) {
+            super.init(frame: frameRect)
+            wantsLayer = true
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override public func makeBackingLayer() -> CALayer {
+            AVCaptureVideoPreviewLayer()
+        }
+
+        /// Optional only to keep a force-cast out of the code — `makeBackingLayer` above guarantees
+        /// the type, so this never returns `nil` in practice.
+        var previewLayer: AVCaptureVideoPreviewLayer? {
+            layer as? AVCaptureVideoPreviewLayer
+        }
+    }
+    #else
     /// A view backed by the preview layer itself, rather than one holding a sublayer: this way the
     /// layer resizes with the view and there is no manual frame bookkeeping on rotation.
     public final class PreviewView: UIView {
@@ -53,6 +63,7 @@ public struct HACameraPreview: UIViewRepresentable {
             layer as? AVCaptureVideoPreviewLayer
         }
     }
+    #endif
 
     public final class Coordinator: NSObject, AVCaptureMetadataOutputObjectsDelegate {
         var onScan: (String) -> Void
@@ -114,6 +125,40 @@ public struct HACameraPreview: UIViewRepresentable {
         }
     }
 }
+
+#if os(macOS)
+extension HACameraPreview: NSViewRepresentable {
+    public func makeNSView(context: Context) -> PreviewView {
+        let view = PreviewView()
+        context.coordinator.start(on: view, types: types)
+        return view
+    }
+
+    public func updateNSView(_ nsView: PreviewView, context: Context) {
+        context.coordinator.onScan = onScan
+    }
+
+    public static func dismantleNSView(_ nsView: PreviewView, coordinator: Coordinator) {
+        coordinator.stop()
+    }
+}
+#else
+extension HACameraPreview: UIViewRepresentable {
+    public func makeUIView(context: Context) -> PreviewView {
+        let view = PreviewView()
+        context.coordinator.start(on: view, types: types)
+        return view
+    }
+
+    public func updateUIView(_ uiView: PreviewView, context: Context) {
+        context.coordinator.onScan = onScan
+    }
+
+    public static func dismantleUIView(_ uiView: PreviewView, coordinator: Coordinator) {
+        coordinator.stop()
+    }
+}
+#endif
 
 extension HACameraPreview: FrontendComponent {
     public static var frontendComponentName: String { "ha-qr-scanner" }

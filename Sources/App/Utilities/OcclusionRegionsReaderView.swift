@@ -1,5 +1,5 @@
+#if os(iOS)
 import SwiftUI
-import UIKit
 
 /// Reads the system's reserved occlusion regions and reports the horizontal insets that keep content clear of them.
 final class OcclusionRegionsReaderView: UIView {
@@ -85,3 +85,4 @@ final class OcclusionRegionsReaderView: UIView {
         return regions
     }
 }
+#endif

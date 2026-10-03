@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import SFSafeSymbols
 import Shared
@@ -51,3 +52,4 @@ enum WebViewControllerButtons {
         navigationButton(symbol: .docOnClipboard, accessibilityLabel: L10n.Mac.Paste.accessibilityLabel)
     }
 }
+#endif

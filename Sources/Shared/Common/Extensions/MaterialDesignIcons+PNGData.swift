@@ -1,5 +1,9 @@
 import Foundation
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public extension MaterialDesignIcons {
     /// PNG data for the icon a server-side value names, sized for an App Intents

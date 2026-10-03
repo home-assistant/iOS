@@ -1,5 +1,16 @@
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
+
+#if os(macOS)
+/// AppKit opens a URL without options, so the dictionary is only ever empty on the Mac.
+typealias URLOpeningOptions = [String: Any]
+#else
+typealias URLOpeningOptions = [UIApplication.OpenExternalURLOptionsKey: Any]
+#endif
 
 /// A protocol for opening URLs, allowing for easy mocking and testing.
 protocol URLOpening {
@@ -10,7 +21,7 @@ protocol URLOpening {
     ///   - completion: An optional completion handler to call when the operation completes.
     func open(
         _ url: URL,
-        options: [UIApplication.OpenExternalURLOptionsKey: Any],
+        options: URLOpeningOptions,
         completionHandler completion: ((Bool) -> Void)?
     )
 
@@ -47,12 +58,42 @@ final class URLOpener: URLOpening {
     ///   - completion: An optional completion handler to call when the operation completes.
     func open(
         _ url: URL,
-        options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:],
+        options: URLOpeningOptions = [:],
         completionHandler completion: ((Bool) -> Void)? = nil
     ) {
         Current.Log.verbose("Opening URL: \(url.absoluteString)")
+        #if os(macOS)
+        if url.isFileURL {
+            completion?(Self.revealInFinder(url))
+            return
+        }
+        completion?(NSWorkspace.shared.open(url))
+        #else
         UIApplication.shared.open(url, options: options, completionHandler: completion)
+        #endif
     }
+
+    #if os(macOS)
+    /// Shows a file selected in Finder, or a folder's contents; Launch Services would hand a file to the app
+    /// that owns it instead.
+    private static func revealInFinder(_ url: URL) -> Bool {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return false }
+        var selection = [url]
+        if isDirectory.boolValue {
+            let contents = try? FileManager.default.contentsOfDirectory(
+                at: url,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            )
+            if let contents, !contents.isEmpty {
+                selection = contents
+            }
+        }
+        NSWorkspace.shared.activateFileViewerSelecting(selection)
+        return true
+    }
+    #endif
 
     /// Returns a Boolean value indicating whether an app is available to handle a URL scheme.
     /// - Parameter url: A URL (Universal Resource Locator). The URL's scheme is used to identify the app that can open
@@ -60,7 +101,11 @@ final class URLOpener: URLOpening {
     /// - Returns: false if there is no app installed for handling the URL's scheme, or if you have not declared the
     /// URL's scheme in your Info.plist; otherwise, true.
     func canOpenURL(_ url: URL) -> Bool {
+        #if os(macOS)
+        NSWorkspace.shared.urlForApplication(toOpen: url) != nil
+        #else
         UIApplication.shared.canOpenURL(url)
+        #endif
     }
 
     func openSettings(destination: OpenSettingsDestination, completionHandler: ((Bool) -> Void)? = nil) {
@@ -78,7 +123,7 @@ final class URLOpener: URLOpening {
 #if DEBUG
 /// A mock URL opener for testing purposes.
 final class MockURLOpener: URLOpening {
-    var openedURLs: [(url: URL, options: [UIApplication.OpenExternalURLOptionsKey: Any])] = []
+    var openedURLs: [(url: URL, options: URLOpeningOptions)] = []
     /// Called after a URL is recorded, so a test can wait for an open that happens asynchronously.
     var onOpen: ((URL) -> Void)?
     var canOpenURLResult: Bool = true
@@ -87,7 +132,7 @@ final class MockURLOpener: URLOpening {
 
     func open(
         _ url: URL,
-        options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:],
+        options: URLOpeningOptions = [:],
         completionHandler completion: ((Bool) -> Void)? = nil
     ) {
         openedURLs.append((url, options))

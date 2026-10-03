@@ -1,7 +1,11 @@
 import Foundation
 import SFSafeSymbols
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 typealias MaterialDesignIcon = MaterialDesignIcons
 
@@ -37,7 +41,7 @@ enum WhatsNewTargetPlatform: String, Hashable {
     case mac
 
     static var current: WhatsNewTargetPlatform {
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         return .mac
         #else
         switch UIDevice.current.userInterfaceIdiom {

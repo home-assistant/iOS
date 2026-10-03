@@ -3,7 +3,7 @@ import SwiftUI
 
 /// A circular gauge whose tinted arc fills only `0…value`, leaving the remainder as a dim track —
 /// matching Apple's Batteries widget. Used on the full-color Home Screen.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 public struct WidgetGaugeArcView: View {
     /// Gauge value in `0…1`.
     public let value: Double
@@ -188,7 +188,7 @@ public struct WidgetGaugeArcView: View {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 #Preview {
     WidgetGaugeArcView(value: 0.67, centerLabel: "67%", minLabel: "0", maxLabel: "100")
         .tint(Color.haPrimary)

@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 struct HomeAssistantView: View, WebFrontendView {
     private enum Constants {
@@ -48,6 +47,7 @@ struct HomeAssistantView: View, WebFrontendView {
 
     var body: some View {
         ZStack {
+            #if os(iOS)
             if #available(iOS 26, *), isNativeTabBarActive {
                 NativeTabBarContainerView(
                     viewModel: viewModel.tabBar,
@@ -57,6 +57,7 @@ struct HomeAssistantView: View, WebFrontendView {
                     onNeedsWebViewController: viewModel.ensureWebViewController
                 )
             }
+            #endif
             // The frontend chrome keeps one structural identity whichever App Labs layout is on, so its
             // appear/disappear fades never race each other when a layout is toggled.
             HStack(spacing: 0) {
@@ -90,7 +91,11 @@ struct HomeAssistantView: View, WebFrontendView {
     /// The strip belongs to the frontend: over a native tab it would cover the bar items that share the
     /// status bar's row on wide screens.
     private var showsThemedStatusBar: Bool {
+        #if os(iOS)
         !isNativeTabBarActive || viewModel.tabBar.showsFrontend
+        #else
+        true
+        #endif
     }
 
     private var frontendContent: some View {

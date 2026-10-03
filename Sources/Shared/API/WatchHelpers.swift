@@ -14,7 +14,7 @@ public extension HomeAssistantAPI {
         // cap and could resurrect stale values (e.g. an old battery level bouncing back).
         var content: HAWatchConnectivity.Content = [:]
 
-        #if os(iOS)
+        #if !os(watchOS)
         // Servers are delivered on demand via the `serversConfigSync` interactive message (see
         // WatchCommunicatorService), mirroring how the watch configuration is fetched — not here.
         //
@@ -62,7 +62,7 @@ public extension HomeAssistantAPI {
     /// `transferFile` has no size cap — so an oversized context is delivered through a mirror push
     /// instead of failing.
     private static func syncRespectingSizeLimit(_ context: HAWatchConnectivity.Context) throws {
-        #if os(iOS)
+        #if !os(watchOS)
         if let size = WatchConnectivityManager.estimatePayloadSize(of: context.content),
            size > WatchMessageSizeLimits.applicationContext {
             Current.Log.error(
@@ -110,7 +110,7 @@ public extension HomeAssistantAPI {
 
     /// Whether there is a counterpart to send the context to.
     private static var hasWatchToSync: Bool {
-        #if os(iOS)
+        #if !os(watchOS)
         // The cached state: the live `currentWatchState` getters wait on WCSession's operation queue
         // too, and the callers run on the cooperative pool.
         guard case .paired(.installed) = Communicator.shared.lastKnownWatchState else {
@@ -165,7 +165,7 @@ public extension HomeAssistantAPI {
         // keys below, so the reload has to travel that way too — and, once the rows land, ask the
         // watch to fetch their values and re-render. Without this the button only refreshed watches
         // old enough to still read the context.
-        #if os(iOS)
+        #if !os(watchOS)
         WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
         #endif
         let context = await HAWatchConnectivity.Context(content: watchContext())
@@ -177,7 +177,7 @@ public extension HomeAssistantAPI {
         return .success
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     /// Push the current context to the watch and report whether it worked, for the Complications
     /// settings "Reload" button. Distinguishes "no watch" (so the UI can explain why) from a transport
     /// failure (so the UI can show the error).
@@ -192,7 +192,7 @@ public extension HomeAssistantAPI {
     #endif
 
     func updateComplications(passively: Bool) -> Promise<Void> {
-        #if os(iOS)
+        #if !os(watchOS)
         // The cached state: this runs once per server on every connect, and the live getters block
         // on WCSession's operation queue.
         guard case .paired = Communicator.shared.lastKnownWatchState else {
@@ -222,7 +222,7 @@ public extension HomeAssistantAPI {
     }
 }
 
-#if os(iOS)
+#if !os(watchOS)
 /// Coalesces and de-duplicates proactive pushes of the full watch database mirror to the Apple Watch
 /// over `transferFile` (background-capable), so the watch always ends up with the latest reference data
 /// without the user asking. Multiple triggers within `debounceInterval` collapse into a single push, and

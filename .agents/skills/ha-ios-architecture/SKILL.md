@@ -8,7 +8,7 @@ description: Home Assistant iOS project layout, build setup, and the "World" dep
 Home Assistant for Apple Platforms is a native Swift companion app for [Home Assistant](https://www.home-assistant.io/) home automation. The primary user interaction is through a `WKWebView` displaying the Home Assistant web frontend, with native features for notifications, sensors, location tracking, widgets, CarPlay, Apple Watch, and more.
 
 - **Language**: Swift 5.8+
-- **Platforms**: iOS, watchOS, macOS (Catalyst), CarPlay
+- **Platforms**: iOS, watchOS, macOS (native, with the Catalyst build kept until it is retired; see the `ha-ios-macos` skill), CarPlay
 - **Build System**: Xcode 27.0+, Swift Package Manager
 - **Project**: Open `HomeAssistant.xcodeproj` directly (dependencies are managed via Swift Package Manager)
 
@@ -39,7 +39,7 @@ Sources/
 ├── Shared/           # Shared code across all platforms
 ├── Watch/            # watchOS-specific code
 ├── WatchApp/         # watchOS app target
-├── MacBridge/        # macOS Catalyst bridge
+├── MacBridge/        # AppKit-only code: a bundle loaded by the Catalyst app, compiled into Shared natively
 ├── CarPlay/          # CarPlay integration
 ├── Extensions/       # App Extensions (widgets, notifications, intents)
 ├── Improv/           # Improv BLE provisioning

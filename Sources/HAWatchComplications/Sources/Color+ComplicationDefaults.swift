@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 
 public extension Color {
@@ -15,3 +16,4 @@ public extension Color {
     /// watch widget extension can link it on its own (see `WatchWidgets`' own mirrored copy).
     static let complicationDefaultTint = Color(red: 0, green: 154 / 255, blue: 199 / 255)
 }
+#endif

@@ -1,10 +1,12 @@
 import AppIntents
 import HAKit
+#if !os(macOS)
 import HAWatchComplications
+#endif
 import Shared
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetGaugeEntry
     typealias Intent = WidgetGaugeAppIntent
@@ -84,13 +86,16 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         switch configuration.source {
         case .entity:
             return try await entityEntry(for: configuration)
+        #if !os(macOS)
         case .complication:
             return try await complicationEntry(for: configuration)
+        #endif
         case .template:
             return try await templateEntry(for: configuration)
         }
     }
 
+    #if !os(macOS)
     /// Mirrors one of the user's circular watch complications: the entry carries the resolved render
     /// model and the view draws it through the shared complication content view, so the complication's
     /// own gauge style, colors and slots decide how it looks — not the widget's `gaugeType`.
@@ -114,6 +119,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             showConfirmationNotification: configuration.showConfirmationNotification
         )
     }
+    #endif
 
     /// Builds the gauge from a single picked entity's live state, fetched over the REST `/states`
     /// endpoint (no admin required). The 0…1 fill maps the numeric state across the configured
@@ -246,7 +252,7 @@ enum WidgetGaugeDataSource {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetGaugeEntry: TimelineEntry {
     var date = Date()
 
@@ -258,9 +264,11 @@ struct WidgetGaugeEntry: TimelineEntry {
     var label: String?
     var min: String?
     var max: String?
+    #if !os(macOS)
     /// Set only by the complication source: every family renders this through the shared circular
     /// watch complication content view instead of the widget's own gauge.
     var complicationModel: CircularComplicationRenderModel?
+    #endif
 
     var runScript: Bool
     var script: IntentScriptEntity?

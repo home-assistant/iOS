@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(WatchConnectivity)
 import WatchConnectivity
+#endif
 
 public extension HAWatchConnectivity {
     enum ConnectivityError: LocalizedError {
@@ -54,8 +56,12 @@ public extension HAWatchConnectivity.ConnectivityError {
             }
             return false
         }
+        #if canImport(WatchConnectivity)
         let nsError = error as NSError
         return nsError.domain == WCErrorDomain && nsError.code == WCError.Code.notReachable.rawValue
+        #else
+        return false
+        #endif
     }
 }
 

@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 extension WebViewController {
@@ -14,3 +15,4 @@ extension WebViewController {
         pendingAssistZoomSourceView = anchor
     }
 }
+#endif

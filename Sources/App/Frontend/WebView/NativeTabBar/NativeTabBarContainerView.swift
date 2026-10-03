@@ -1,3 +1,4 @@
+#if os(iOS)
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -149,3 +150,4 @@ struct NativeTabBarContainerView: View {
         onNeedsWebViewController: {}
     )
 }
+#endif

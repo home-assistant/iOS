@@ -31,6 +31,9 @@ struct OnboardingWelcomeView: View {
         .safeAreaInset(edge: .bottom, content: {
             continueButtonBlock
         })
+        #if os(macOS)
+        .background(Color(uiColor: .systemBackground))
+        #endif
         .sheet(isPresented: $showLearnMore) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantCompanionGetStarted)
         }
@@ -85,9 +88,9 @@ struct OnboardingWelcomeView: View {
 
 #Preview {
     NavigationView {
-        if #available(iOS 18.0, *) {
+        if #available(iOS 18.0, macOS 15.0, *) {
             OnboardingWelcomeView(continueAction: {})
-                .toolbarVisibility(.hidden, for: .navigationBar)
+                .toolbarVisibility(.hidden, for: .platformNavigationBar)
         } else {
             OnboardingWelcomeView(continueAction: {})
         }

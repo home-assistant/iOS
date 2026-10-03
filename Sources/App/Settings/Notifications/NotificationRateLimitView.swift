@@ -15,7 +15,7 @@ struct NotificationRateLimitView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             content
         }
         .navigationTitle(L10n.SettingsDetails.Notifications.RateLimits.header)

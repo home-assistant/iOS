@@ -1,7 +1,6 @@
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 import WebKit
 
 // MARK: - WebView
@@ -118,7 +117,7 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17.0, macOS 14.0, *) {
             let viewModel = DownloadManagerViewModel()
             download.delegate = viewModel
             // Present via `ContainerView`'s sheet (SwiftUI) instead of a UIKit overlay; the same view model
@@ -196,6 +195,99 @@ extension WebViewController {
     }
 
     // WKUIDelegate
+    #if os(macOS)
+    func webView(
+        _ webView: WKWebView,
+        runJavaScriptConfirmPanelWithMessage message: String,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        guard presentedViewController == nil, view.window?.attachedSheet == nil else {
+            Current.Log.error("attempted to present an alert when already presenting, bailing")
+            completionHandler(false)
+            return
+        }
+
+        AppAlert(message: message, actions: [
+            .init(title: L10n.Alerts.Confirm.ok) { completionHandler(true) },
+            .init(title: L10n.Alerts.Confirm.cancel, style: .cancel) { completionHandler(false) },
+        ]).present(on: view.window)
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        runJavaScriptTextInputPanelWithPrompt prompt: String,
+        defaultText: String?,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping (String?) -> Void
+    ) {
+        guard presentedViewController == nil, view.window?.attachedSheet == nil else {
+            Current.Log.error("attempted to present an alert when already presenting, bailing")
+            completionHandler(nil)
+            return
+        }
+
+        let alert = NSAlert()
+        alert.messageText = prompt
+        alert.addButton(withTitle: L10n.Alerts.Prompt.ok)
+        alert.addButton(withTitle: L10n.Alerts.Prompt.cancel)
+
+        let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 260, height: 24))
+        textField.stringValue = defaultText ?? ""
+        alert.accessoryView = textField
+        alert.window.initialFirstResponder = textField
+
+        let handle: (NSApplication.ModalResponse) -> Void = { response in
+            completionHandler(response == .alertFirstButtonReturn ? textField.stringValue : nil)
+        }
+
+        if let window = view.window {
+            alert.beginSheetModal(for: window, completionHandler: handle)
+        } else {
+            handle(alert.runModal())
+        }
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        runJavaScriptAlertPanelWithMessage message: String,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping () -> Void
+    ) {
+        guard presentedViewController == nil, view.window?.attachedSheet == nil else {
+            Current.Log.error("attempted to present an alert when already presenting, bailing")
+            completionHandler()
+            return
+        }
+
+        AppAlert(message: message, actions: [
+            .init(title: L10n.Alerts.Alert.ok) { completionHandler() },
+        ]).present(on: view.window)
+    }
+
+    /// The frontend's file inputs: AppKit's web view asks its delegate for the open panel.
+    func webView(
+        _ webView: WKWebView,
+        runOpenPanelWith parameters: WKOpenPanelParameters,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping ([URL]?) -> Void
+    ) {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = parameters.allowsMultipleSelection
+        panel.canChooseDirectories = parameters.allowsDirectories
+        panel.canChooseFiles = true
+
+        let handle: (NSApplication.ModalResponse) -> Void = { response in
+            completionHandler(response == .OK ? panel.urls : nil)
+        }
+
+        if let window = view.window {
+            panel.beginSheetModal(for: window, completionHandler: handle)
+        } else {
+            handle(panel.runModal())
+        }
+    }
+    #else
     func webView(
         _ webView: WKWebView,
         runJavaScriptConfirmPanelWithMessage message: String,
@@ -288,6 +380,7 @@ extension WebViewController {
             present(alertController, animated: true, completion: nil)
         }
     }
+    #endif
 
     func webView(
         _ webView: WKWebView,
@@ -300,6 +393,7 @@ extension WebViewController {
     }
 }
 
+#if os(iOS)
 extension WebViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
@@ -308,6 +402,7 @@ extension WebViewController: UIGestureRecognizerDelegate {
         true
     }
 }
+#endif
 
 extension WebViewController {
     enum MainFrameErrorResponseDecision: Equatable {

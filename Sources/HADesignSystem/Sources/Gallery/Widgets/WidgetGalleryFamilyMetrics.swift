@@ -13,18 +13,22 @@ public enum WidgetGalleryFamilyMetrics {
         case .systemSmall: return .init(width: 158, height: 158)
         case .systemMedium: return .init(width: 338, height: 158)
         case .systemLarge: return .init(width: 338, height: 354)
+        #if !os(macOS)
         case .accessoryCircular: return .init(width: 76, height: 76)
         case .accessoryRectangular: return .init(width: 172, height: 76)
         case .accessoryInline: return .init(width: 240, height: 26)
+        #endif
         default: return .init(width: 338, height: 354)
         }
     }
 
     public static func cornerRadius(for family: WidgetFamily) -> CGFloat {
         switch family {
+        #if !os(macOS)
         case .accessoryCircular: return size(for: family).width / 2
         case .accessoryInline: return DesignSystem.CornerRadius.one
         case .accessoryRectangular: return DesignSystem.CornerRadius.two
+        #endif
         default: return DesignSystem.CornerRadius.three
         }
     }
@@ -40,9 +44,11 @@ public enum WidgetGalleryFamilyMetrics {
         case .systemSmall: return "Small"
         case .systemMedium: return "Medium"
         case .systemLarge: return "Large"
+        #if !os(macOS)
         case .accessoryCircular: return "Lock screen · Circular"
         case .accessoryRectangular: return "Lock screen · Rectangular"
         case .accessoryInline: return "Lock screen · Inline"
+        #endif
         default: return "Extra large"
         }
     }

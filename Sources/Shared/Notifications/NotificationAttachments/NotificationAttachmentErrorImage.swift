@@ -1,6 +1,6 @@
 import Foundation
 
-#if os(iOS)
+#if !os(watchOS)
 enum NotificationAttachmentErrorImage {
     static func saveImage(
         for error: Error,
@@ -50,10 +50,23 @@ enum NotificationAttachmentErrorImage {
         let rendererRect = stringRect
             .insetBy(dx: -padding, dy: -padding)
 
-        try UIGraphicsImageRenderer(size: rendererRect.size, format: UIGraphicsImageRendererFormat.preferred())
+        #if os(macOS)
+        let renderer = UIGraphicsImageRenderer(size: rendererRect.size)
+        #else
+        let renderer = UIGraphicsImageRenderer(
+            size: rendererRect.size,
+            format: UIGraphicsImageRendererFormat.preferred()
+        )
+        #endif
+
+        try renderer
             .pngData { context in
                 UIColor.white.setFill()
+                #if os(macOS)
+                UIRectFill(rendererRect)
+                #else
                 context.fill(rendererRect)
+                #endif
                 message.draw(with: stringRect, options: [.usesLineFragmentOrigin], context: nil)
             }
             .write(to: temporaryURL)

@@ -20,9 +20,9 @@ public class NotificationCommandManager {
     public init() {
         register(command: "request_location_update", handler: HandlerLocationUpdate())
         register(command: "clear_notification", handler: HandlerClearNotification())
-        #if os(iOS)
+        #if !os(watchOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
-        #if !targetEnvironment(macCatalyst)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
         }
@@ -74,7 +74,7 @@ public class NotificationCommandManager {
     }
 
     public func updateComplications() -> Promise<Void> {
-        #if os(iOS)
+        #if !os(watchOS)
         HandlerUpdateComplications().handle([:])
         #else
         return .value(())
@@ -145,7 +145,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
     }
 }
 
-#if os(iOS)
+#if !os(watchOS)
 private struct HandlerUpdateComplications: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
         Promise<Void> { seal in
@@ -163,7 +163,9 @@ private struct HandlerUpdateComplications: NotificationCommandHandler {
         }
     }
 }
+#endif
 
+#if os(iOS) || os(macOS)
 private struct HandlerUpdateWidgets: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
         Current.Log.verbose("Reloading widgets triggered by notification command")

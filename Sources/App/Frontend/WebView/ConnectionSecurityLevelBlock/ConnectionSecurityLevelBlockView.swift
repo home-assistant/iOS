@@ -52,7 +52,7 @@ struct ConnectionSecurityLevelBlockView: View {
                 showHomeNetworkSettings = false
                 showConnectionSecurityPreferences = false
             }
-            #if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst) || os(macOS)
             .fullScreenCover(isPresented: $showHomeNetworkSettings) {
                 homeNetworkView
             }
@@ -74,11 +74,7 @@ struct ConnectionSecurityLevelBlockView: View {
                         case .notDetermined:
                             Current.Log.info("Location permission not determined")
                         case .denied, .restricted:
-                            URLOpener.shared.open(
-                                URL(string: UIApplication.openSettingsURLString)!,
-                                options: [:],
-                                completionHandler: nil
-                            )
+                            URLOpener.shared.openSettings(destination: .location, completionHandler: nil)
                         case .authorizedWhenInUse, .authorizedAlways:
                             // Handle permission change - reload requirements to update UI
                             viewModel.loadRequirements()

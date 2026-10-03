@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 import UIKit
 
@@ -203,4 +204,5 @@ private func face(_ model: CornerComplicationRenderModel) -> some View {
 #Preview("Legacy flat outer text + gauge") {
     face(.sample(icon: false, value: "16.6", title: nil, curvesText: false)).padding()
 }
+#endif
 #endif

@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import UIKit
 
@@ -180,3 +181,4 @@ final class HUDLabel: UILabel {
         didSet { onTextChange?() }
     }
 }
+#endif
