@@ -844,6 +844,28 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.availableAuthenticationURLTypes, [.remoteUI])
     }
 
+    func testBackgroundWebhookPrefersEnabledCloudOverExternalAndCachedInternal() {
+        let externalURL = URL(string: "https://external.example.com")!
+        let cloudURL = URL(string: "https://cloud.example.com")!
+        var info = makeConnectionInfo(
+            externalURL: externalURL,
+            internalURL: URL(string: "http://internal.example.com"),
+            remoteUIURL: cloudURL
+        )
+        info.internalSSIDs = ["unit_tests"]
+        setNetworkState(NetworkState(ssid: "unit_tests"))
+        info.useCloud = true
+        XCTAssertEqual(
+            info.preferredBackgroundWebhookURL(),
+            cloudURL.appendingPathComponent(info.webhookPath, isDirectory: false)
+        )
+        info.useCloud = false
+        XCTAssertEqual(
+            info.preferredBackgroundWebhookURL(),
+            externalURL.appendingPathComponent(info.webhookPath, isDirectory: false)
+        )
+    }
+
     private func makeConnectionInfo(
         externalURL: URL?,
         internalURL: URL?,
