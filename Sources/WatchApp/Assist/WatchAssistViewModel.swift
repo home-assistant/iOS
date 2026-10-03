@@ -24,8 +24,18 @@ final class WatchAssistViewModel: ObservableObject {
         case waitingForPipelineResponse
     }
 
+    /// What ends the recording in progress and sends it.
+    enum RecordingSubmission {
+        /// A tap: recordings started for the user (home screen, complication, Double Tap) keep
+        /// this flow, since no finger is on the screen to lift.
+        case tap
+        /// Lifting the finger: the user pressed the chat screen to ask something else.
+        case release
+    }
+
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
+    @Published var recordingSubmission: RecordingSubmission = .tap
     /// Normalized microphone input level (0...1) driving the voice orb while recording
     @Published var audioLevel: Double = 0
     @Published var showChatLoader = false
@@ -124,8 +134,32 @@ final class WatchAssistViewModel: ObservableObject {
         runtimeSessions.end(.assist)
     }
 
+    /// Tap-to-send flow: starts a recording, or sends the one in progress.
     func assist() {
+        startRecording(submission: .tap)
+    }
+
+    /// Push-to-talk: the user pressed the chat screen. Nothing happens over a recording in
+    /// progress, so a tap-to-send recording is not turned into one that ends on release.
+    func beginPushToTalk() {
+        guard ![.recording, .loading].contains(state) else { return }
+        startRecording(submission: .release)
+    }
+
+    /// Push-to-talk: the finger lifted (or the gesture was cancelled). Only sends a recording the
+    /// press started; a tap-to-send recording keeps waiting for its tap.
+    func endPushToTalk() {
+        guard state == .recording, recordingSubmission == .release else { return }
+        stopRecording()
+    }
+
+    private func startRecording(submission: RecordingSubmission) {
         if assistService.deviceReachable {
+            // The recorder toggles: over a recording in progress this call sends it, and how that
+            // recording was started still describes it until it is over.
+            if state != .recording {
+                recordingSubmission = submission
+            }
             // Extra message just to wake up iPhone from the background
             Communicator.shared.send(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup"))
             audioRecorder.startRecording()

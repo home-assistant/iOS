@@ -54,7 +54,16 @@ struct WatchAssistView: View {
                     }
                 })
             })
-            .buttonStyle(.plain)
+            // Touch is push-to-talk: pressing records, lifting sends. The button's action is left
+            // to the Double Tap hand gesture below, which has no finger to lift and so keeps the
+            // tap-to-send flow.
+            .buttonStyle(WatchPushToTalkButtonStyle(onPressingChanged: { isPressing in
+                if isPressing {
+                    viewModel.beginPushToTalk()
+                } else {
+                    viewModel.endPushToTalk()
+                }
+            }))
             .modify { view in
                 if #available(watchOS 11, *) {
                     view.handGestureShortcut(.primaryAction)
@@ -145,7 +154,7 @@ struct WatchAssistView: View {
         if ![.loading, .recording].contains(viewModel.state), !viewModel.showChatLoader {
             HStack(spacing: DesignSystem.Spaces.one) {
                 if viewModel.assistService.deviceReachable {
-                    Text(verbatim: L10n.Assist.Watch.MicButton.title)
+                    Text(verbatim: L10n.Assist.Watch.MicButton.Hold.title)
                     Image(systemSymbol: .micFill)
                 } else {
                     Image(systemSymbol: .iphoneSlash)
@@ -201,7 +210,7 @@ struct WatchAssistView: View {
                     Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
                         .font(.system(size: Constants.micRecordingTextFontSize))
                         .foregroundStyle(.gray)
-                    Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                    Text(verbatim: sendRequestTitle)
                         .font(.footnote.bold())
                 }
             }
@@ -215,6 +224,13 @@ struct WatchAssistView: View {
             } else {
                 $0.background(.black.opacity(0.5))
             }
+        }
+    }
+
+    private var sendRequestTitle: String {
+        switch viewModel.recordingSubmission {
+        case .tap: return L10n.Watch.Assist.Button.SendRequest.title
+        case .release: return L10n.Watch.Assist.Button.ReleaseToSend.title
         }
     }
 
@@ -246,17 +262,22 @@ struct WatchAssistView: View {
     WatchAssistView(viewModel: .preview)
 }
 
-#Preview("Recording") {
-    WatchAssistView(viewModel: .previewRecording)
+#Preview("Recording, tap to send") {
+    WatchAssistView(viewModel: .previewRecording(submission: .tap))
+}
+
+#Preview("Recording, release to send") {
+    WatchAssistView(viewModel: .previewRecording(submission: .release))
 }
 
 private extension WatchAssistViewModel {
-    static var previewRecording: WatchAssistViewModel {
+    static func previewRecording(submission: RecordingSubmission) -> WatchAssistViewModel {
         let viewModel = WatchAssistViewModel.preview
         // The preview recorder does nothing, so an unreachable phone would be the only thing to move
         // the session out of the state this preview is here to show.
         viewModel.assistService.deviceReachable = true
         viewModel.state = .recording
+        viewModel.recordingSubmission = submission
         viewModel.audioLevel = 0.6
         return viewModel
     }
