@@ -270,11 +270,15 @@ final class PlaybackOnlyRTCAudioDevice: NSObject, RTCAudioDevice {
 final class WebRTCClient: NSObject, WebRTCStreamClient {
     private static let playbackOnlyAudioDevice = PlaybackOnlyRTCAudioDevice()
 
-    // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
-    // A new RTCPeerConnection should be created every new call, but the factory is shared.
-    private static let factory: RTCPeerConnectionFactory = {
+    private static let sslInitialized: Void = {
         WebRTCFieldTrials.registerBeforeCreatingFactory()
         RTCInitializeSSL()
+    }()
+
+    // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
+    // A new RTCPeerConnection should be created every new call, but the factory is shared.
+    private static let playbackFactory: RTCPeerConnectionFactory = {
+        _ = sslInitialized
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
         let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
         return RTCPeerConnectionFactory(
@@ -284,7 +288,44 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         )
     }()
 
+    private static let recordingFactory: RTCPeerConnectionFactory = {
+        _ = sslInitialized
+        let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
+        let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
+        return RTCPeerConnectionFactory(
+            encoderFactory: videoEncoderFactory,
+            decoderFactory: videoDecoderFactory
+        )
+    }()
+
+    private static func configureRecordingAudioSession() {
+        let configuration = RTCAudioSessionConfiguration.webRTC()
+        configuration.category = AVAudioSession.Category.playAndRecord.rawValue
+        configuration.mode = AVAudioSession.Mode.videoChat.rawValue
+        configuration.categoryOptions = [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP, .mixWithOthers]
+        RTCAudioSessionConfiguration.setWebRTC(configuration)
+    }
+
+    private static func restorePlaybackAudioSession() {
+        let configuration = RTCAudioSessionConfiguration.webRTC()
+        configuration.category = AVAudioSession.Category.playback.rawValue
+        configuration.mode = AVAudioSession.Mode.moviePlayback.rawValue
+        configuration.categoryOptions = [.mixWithOthers]
+        RTCAudioSessionConfiguration.setWebRTC(configuration)
+
+        let session = RTCAudioSession.sharedInstance()
+        session.lockForConfiguration()
+        defer { session.unlockForConfiguration() }
+        do {
+            try session.setActive(false)
+        } catch {
+            Current.Log.error("Failed to release the microphone audio session on close: \(error.localizedDescription)")
+        }
+    }
+
     weak var delegate: WebRTCClientDelegate?
+    private let factory: RTCPeerConnectionFactory
+    private let media: WebRTCClientMedia
     private let peerConnection: RTCPeerConnection
     private var remoteVideoTrack: RTCVideoTrack?
     private var remoteAudioTrack: RTCAudioTrack?
@@ -302,7 +343,14 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         fatalError("WebRTCClient:init is unavailable")
     }
 
-    init(configuration: WebRTCClientConfiguration) {
+    init(configuration: WebRTCClientConfiguration, media: WebRTCClientMedia = .playback) {
+        self.media = media
+        let factory = media.recordsMicrophone ? WebRTCClient.recordingFactory : WebRTCClient.playbackFactory
+        self.factory = factory
+        if media.recordsMicrophone {
+            WebRTCClient.configureRecordingAudioSession()
+        }
+
         let config = RTCConfiguration()
         config.iceServers = configuration.iceServers
 
@@ -353,7 +401,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
             optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue]
         )
 
-        guard let peerConnection = WebRTCClient.factory.peerConnection(
+        guard let peerConnection = factory.peerConnection(
             with: config,
             constraints: constraints,
             delegate: nil
@@ -373,6 +421,8 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
 
     func closeConnection() {
         peerConnection.close()
+        guard media.recordsMicrophone else { return }
+        WebRTCClient.restorePlaybackAudioSession()
     }
 
     // MARK: Signaling
@@ -448,13 +498,27 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         return !deadStates.contains(peerConnection.connectionState)
     }
 
-    private func createMediaTracks() {
-        // Receive-only transceivers, matching the frontend player: we never send media, so no
-        // local track or capturer is needed (RTCCameraVideoCapturer is unavailable in app
-        // extensions anyway), and the offer negotiates recvonly m-lines.
+    private func addMicrophoneTransceiver() {
+        let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "audio0")
         let audioTransceiverInit = RTCRtpTransceiverInit()
-        audioTransceiverInit.direction = .recvOnly
-        peerConnection.addTransceiver(of: .audio, init: audioTransceiverInit)
+        audioTransceiverInit.direction = .sendOnly
+        audioTransceiverInit.streamIds = ["stream"]
+        peerConnection.addTransceiver(with: audioTrack, init: audioTransceiverInit)
+    }
+
+    private func createMediaTracks() {
+        switch media {
+        case .playback:
+            // Receive-only transceivers, matching the frontend player: we never send media, so no
+            // local track or capturer is needed (RTCCameraVideoCapturer is unavailable in app
+            // extensions anyway), and the offer negotiates recvonly m-lines.
+            let audioTransceiverInit = RTCRtpTransceiverInit()
+            audioTransceiverInit.direction = .recvOnly
+            peerConnection.addTransceiver(of: .audio, init: audioTransceiverInit)
+        case .microphone:
+            addMicrophoneTransceiver()
+            return
+        }
 
         let videoTransceiverInit = RTCRtpTransceiverInit()
         videoTransceiverInit.direction = .recvOnly
