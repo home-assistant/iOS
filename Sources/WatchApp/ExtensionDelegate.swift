@@ -51,6 +51,11 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
+        #if DEBUG
+        // TEMPORARY: no permission alert over CI screenshots.
+        if WatchAssistScreenshot.requestedState != nil { return }
+        #endif
+
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
 
         // No `registerForRemoteNotifications()` here: the watch target carries no `aps-environment`

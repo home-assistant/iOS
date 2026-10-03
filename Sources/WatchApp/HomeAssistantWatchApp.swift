@@ -16,10 +16,20 @@ struct HomeAssistantWatchApp: App {
 
     var body: some Scene {
         WindowGroup {
+            #if DEBUG
+            if let state = WatchAssistScreenshot.requestedState {
+                WatchAssistScreenshot.view(for: state)
+                    .tint(.haPrimary)
+            } else {
+                WatchHomeView()
+                    .tint(.haPrimary)
+            }
+            #else
             WatchHomeView()
                 // Toggles (and other tinted controls) render in the brand color app-wide;
                 // watchOS has no UISwitch appearance proxy, so the tint cascades from the root.
                 .tint(.haPrimary)
+            #endif
         }
 
         // Every category the server can send renders the same dynamic interface; both casings
