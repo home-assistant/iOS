@@ -101,6 +101,17 @@ final class CarPlayEntityListItemTests: XCTestCase {
         try assertSameColor(color, offEntity.stateIconColor())
     }
 
+    /// The app's tint was `#00AEF8` until September 2025, and the customization screen seeded items
+    /// with it back then. An off light carrying it reads as off, not as a light that is on.
+    func testAColorSeededWithTheFormerTintIsNotTreatedAsConfigured() throws {
+        let offEntity = try entity(state: "off")
+        let item = magicItem(customization: .init(iconColor: "00AEF8"))
+
+        let color = iconColor(entity: offEntity, item: item)
+
+        try assertSameColor(color, offEntity.stateIconColor())
+    }
+
     /// Rows outside Quick Access carry no magic item at all, so they stay on the state color.
     func testAnEntityRowWithoutAMagicItemUsesTheStateColor() throws {
         let onEntity = try entity(state: "on")

@@ -1156,6 +1156,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "magic_item.background_color.title" = "Background color";
 "magic_item.display_text.title" = "Display text";
 "magic_item.edit" = "Save";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Icon color";
 "magic_item.icon_name.title" = "Icon name";
 "magic_item.item_type.action.list.title" = "iOS Actions";

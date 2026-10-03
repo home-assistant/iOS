@@ -84,7 +84,7 @@ struct MagicItemCustomizationView: View {
         Section {
             HStack(spacing: DesignSystem.Spaces.two) {
                 if viewModel.item.type == .assistPipeline {
-                    let iconColor: UIColor = if let iconColorHex = viewModel.item.customization?.iconColor {
+                    let iconColor: UIColor = if let iconColorHex = viewModel.item.customization?.customIconColor {
                         UIColor(Color(hex: iconColorHex))
                     } else {
                         .haPrimary
@@ -102,7 +102,7 @@ struct MagicItemCustomizationView: View {
                             viewModel.item.customization?.iconIsCustomized = true
                         }),
                         selectedColor: .init(get: {
-                            if let iconColorHex = viewModel.item.customization?.iconColor {
+                            if let iconColorHex = viewModel.item.customization?.customIconColor {
                                 return Color(hex: iconColorHex)
                             } else {
                                 return Color.haPrimary
@@ -131,17 +131,30 @@ struct MagicItemCustomizationView: View {
     @ViewBuilder
     private func customizationView(info: MagicItem.Info) -> some View {
         Section {
-            // Seeding the picker is a read, so it must not write the seed back: an entity only
-            // drops the color the frontend gives it once the user actually picks one here.
-            ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                if let configIconColor = viewModel.item.customization?.iconColor {
-                    return Color(hex: configIconColor)
+            // "Default" lets the entity keep the color the frontend gives it for its state. Only
+            // "Custom" fixes the icon to a color, so what the user chose is never left to a guess.
+            Picker(L10n.MagicItem.IconColor.title, selection: .init(get: {
+                viewModel.item.customization?.customIconColor != nil
+            }, set: { isCustom in
+                if isCustom {
+                    viewModel.item.customization?.useCustomIconColor(MagicItem.defaultIconColorHex)
+                } else {
+                    viewModel.item.customization?.useDefaultIconColor()
                 }
-                return Color.haPrimary
-            }, set: { newColor in
-                viewModel.item.customization?.iconColor = newColor.hex()
-                viewModel.item.customization?.iconColorIsCustomized = true
-            }), supportsOpacity: false)
+            })) {
+                Text(verbatim: L10n.MagicItem.IconColor.default).tag(false)
+                Text(verbatim: L10n.MagicItem.IconColor.custom).tag(true)
+            }
+            .pickerStyle(.menu)
+            if let customIconColor = viewModel.item.customization?.customIconColor {
+                ColorPicker(L10n.MagicItem.IconColor.color, selection: .init(get: {
+                    Color(hex: customIconColor)
+                }, set: { newColor in
+                    if let hex = newColor.hex() {
+                        viewModel.item.customization?.useCustomIconColor(hex)
+                    }
+                }), supportsOpacity: false)
+            }
             if context != .carPlay {
                 Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
                 if useCustomColors {
