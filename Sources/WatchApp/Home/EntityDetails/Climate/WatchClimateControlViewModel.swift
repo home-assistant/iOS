@@ -37,6 +37,8 @@ final class WatchClimateControlViewModel: ObservableObject {
     let itemInfo: MagicItem.Info
 
     private let poller: WatchEntityStatePoller
+    /// The latest snapshot, which the icon takes its state color from.
+    private var entity: HAEntity?
     private var pendingControls: Set<PendingControl> = []
     private var debounceWorkItems: [PendingControl: DispatchWorkItem] = [:]
     private var pendingClearWorkItems: [PendingControl: DispatchWorkItem] = [:]
@@ -47,6 +49,7 @@ final class WatchClimateControlViewModel: ObservableObject {
         self.item = item
         self.itemInfo = itemInfo
         self.poller = WatchEntityStatePoller(entityId: item.id, serverId: item.serverId)
+        self.entity = initialEntity
         self.control = initialEntity.map(ClimateControlState.init(entity:))
     }
 
@@ -59,11 +62,14 @@ final class WatchClimateControlViewModel: ObservableObject {
         item.icon(info: itemInfo)
     }
 
+    /// The color follows the entity's state, as on the home rows. Only a custom *color* overrides it,
+    /// whatever the state.
     var iconColor: UIColor {
-        if let hex = itemInfo.customization?.iconColor {
-            return UIColor(hex: hex)
+        let customColor = itemInfo.customization?.customIconColor.map { UIColor(hex: $0) }
+        if let entity {
+            return entity.stateIconColor(customColor: customColor) ?? .white
         }
-        return .white
+        return customColor ?? .white
     }
 
     func startStateUpdates() {
@@ -71,6 +77,7 @@ final class WatchClimateControlViewModel: ObservableObject {
             guard let self else { return }
             isStale = snapshot.isStale
             guard let entity = snapshot.entity else { return }
+            self.entity = entity
             var updated = ClimateControlState(entity: entity)
             // Keep the values the user just changed until the server echoes them back.
             if let control {
