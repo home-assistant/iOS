@@ -84,7 +84,7 @@ struct MagicItemCustomizationView: View {
         Section {
             HStack(spacing: DesignSystem.Spaces.two) {
                 if viewModel.item.type == .assistPipeline {
-                    let iconColor: UIColor = if let iconColorHex = viewModel.item.customization?.customIconColor {
+                    let iconColor: UIColor = if let iconColorHex = viewModel.item.customization?.iconColor {
                         UIColor(Color(hex: iconColorHex))
                     } else {
                         .haPrimary
@@ -131,29 +131,17 @@ struct MagicItemCustomizationView: View {
     @ViewBuilder
     private func customizationView(info: MagicItem.Info) -> some View {
         Section {
-            // "Default" lets the entity keep the color the frontend gives it for its state. Only
-            // "Custom" fixes the icon to a color, so what the user chose is never left to a guess.
-            Picker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                viewModel.item.customization?.customIconColor != nil
-            }, set: { isCustom in
-                if isCustom {
-                    viewModel.item.customization?.useCustomIconColor(MagicItem.defaultIconColorHex)
-                } else {
-                    viewModel.item.customization?.useDefaultIconColor()
-                }
-            })) {
+            Picker(L10n.MagicItem.IconColor.title, selection: $viewModel.usesCustomIconColor) {
                 Text(verbatim: L10n.MagicItem.IconColor.default).tag(false)
                 Text(verbatim: L10n.MagicItem.IconColor.custom).tag(true)
             }
             .pickerStyle(.menu)
-            if let customIconColor = viewModel.item.customization?.customIconColor {
-                ColorPicker(L10n.MagicItem.IconColor.color, selection: .init(get: {
-                    Color(hex: customIconColor)
-                }, set: { newColor in
-                    if let hex = newColor.hex() {
-                        viewModel.item.customization?.useCustomIconColor(hex)
-                    }
-                }), supportsOpacity: false)
+            if viewModel.usesCustomIconColor {
+                ColorPicker(
+                    L10n.MagicItem.IconColor.color,
+                    selection: $viewModel.customIconColor,
+                    supportsOpacity: false
+                )
             }
             if context != .carPlay {
                 Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
