@@ -1304,6 +1304,7 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.connection_test_result.local_network_permission.description" = "\"Lähiverkko\" tietosuojalupa on evätty. Voit muuttaa tämän järjestelmän asetuksissa";
 "onboarding.device_name_check.error.prompt" = "Mitä nimeä laitteelle pitäisi käyttää sen sijaan?";
 "onboarding.device_name_check.error.title" = "Laite on jo olemassa nimellä '%1$@'";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Hyväksy";
 "onboarding.invitation.address_title" = "Home Assistant address";
 "onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
@@ -2677,6 +2678,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Kuvake";
 "watch.configurator.sections.ring.footer" = "Edistysrengas textin ympärillä.";
 "watch.configurator.sections.ring.header" = "Rengas";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Sulje";
 "watch.cover_controls.open" = "Avaa";
 "watch.cover_controls.position" = "Sijainti";

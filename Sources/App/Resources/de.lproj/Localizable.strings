@@ -1304,6 +1304,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.connection_test_result.local_network_permission.description" = "Die Datenschutzgenehmigung „Lokales Netzwerk“ wurde möglicherweise verweigert. Du kannst dies in der App „Einstellungen“ ändern.";
 "onboarding.device_name_check.error.prompt" = "Welcher Gerätename sollte stattdessen verwendet werden?";
 "onboarding.device_name_check.error.title" = "Ein Gerät mit dem Namen '%1$@' existiert bereits";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Annehmen";
 "onboarding.invitation.address_title" = "Home Assistant-Adresse";
 "onboarding.invitation.description" = "Home Assistant ist eine quelloffene Hausautomatisierung, bei der lokale Steuerung und Datenschutz an erster Stelle stehen.";
@@ -2678,6 +2679,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "watch.configurator.sections.icon.header" = "Symbol";
 "watch.configurator.sections.ring.footer" = "Der Ring zeigt den Fortschritt rund um den Text an.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Schließen";
 "watch.cover_controls.open" = "Öffnen";
 "watch.cover_controls.position" = "Position";

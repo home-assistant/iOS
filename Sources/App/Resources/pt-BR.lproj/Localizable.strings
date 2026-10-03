@@ -1304,6 +1304,7 @@ As tags funcionarão em qualquer dispositivo com o Home Assistant instalado que 
 "onboarding.connection_test_result.local_network_permission.description" = "A permissão de privacidade da \"Rede Local\" pode ter sido negada. Você pode alterar isso no aplicativo em Configurações do sistema.";
 "onboarding.device_name_check.error.prompt" = "Qual nome de dispositivo deve ser usado?";
 "onboarding.device_name_check.error.title" = "Já existe um dispositivo com o nome '%1$@'";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Aceitar";
 "onboarding.invitation.address_title" = "Endereço do Home Assistant";
 "onboarding.invitation.description" = "O Home Assistant é uma automação residencial de código aberto que prioriza o controle local e a privacidade.";
@@ -2677,6 +2678,7 @@ O servidor só responde enquanto o aplicativo está aberto, e para quando você 
 "watch.configurator.sections.icon.header" = "Ícone";
 "watch.configurator.sections.ring.footer" = "O anel mostrando o progresso em torno do texto.";
 "watch.configurator.sections.ring.header" = "Anel";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Fechar";
 "watch.cover_controls.open" = "Abrir";
 "watch.cover_controls.position" = "Posição";

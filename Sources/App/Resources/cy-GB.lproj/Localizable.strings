@@ -1304,6 +1304,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";
 "onboarding.device_name_check.error.prompt" = "What device name should be used instead?";
 "onboarding.device_name_check.error.title" = "A device already exists with the name '%1$@'";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.address_title" = "Home Assistant address";
 "onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
@@ -2677,6 +2678,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Eicon";
 "watch.configurator.sections.ring.footer" = "Y cylch yn dangos cynnydd o amgylch y testun.";
 "watch.configurator.sections.ring.header" = "Cylch";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";

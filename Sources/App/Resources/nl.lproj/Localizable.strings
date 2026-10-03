@@ -68,10 +68,10 @@
 "app_intents.active_entities.name_with_server" = "%1$@ on %2$@";
 "app_intents.active_entities.title" = "Get what is on";
 "app_intents.add_to.description" = "Adds a Home Assistant entity to the Apple Watch, CarPlay quick access or the Mac toolbar";
-"app_intents.add_to.destination.name" = "Destination";
+"app_intents.add_to.destination.name" = "Bestemming";
 "app_intents.add_to.dialog.added" = "Added %1$@ to %2$@";
 "app_intents.add_to.dialog.already_added" = "%1$@ is already in %2$@";
-"app_intents.add_to.entity.name" = "Entity";
+"app_intents.add_to.entity.name" = "Entiteit";
 "app_intents.add_to.error.unavailable" = "%@ isn't available on this device";
 "app_intents.add_to.error.unsupported" = "%1$@ can't be added to %2$@";
 "app_intents.add_to.title" = "Entiteit toevoegen aan";
@@ -1304,6 +1304,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.connection_test_result.local_network_permission.description" = "De privacy toestemming \"Lokaal netwerk\" is mogelijk geweigerd. Je kan dit wijzigen in de systeem instellingen app.";
 "onboarding.device_name_check.error.prompt" = "Welke apparaat moet in plaats daarvan worden gebruikt?";
 "onboarding.device_name_check.error.title" = "Er bestaat al een apparaat met de naam ' %1$@ '";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Accepteren";
 "onboarding.invitation.address_title" = "Home Assistant-adres";
 "onboarding.invitation.description" = "Home Assistant is een open-source systeem voor huisautomatisering dat lokale bediening en privacy op de eerste plaats zet.";
@@ -2677,6 +2678,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "watch.configurator.sections.icon.header" = "Icoon";
 "watch.configurator.sections.ring.footer" = "De ring toont de voortgang van de tekst.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Sluit";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Positie";

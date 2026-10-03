@@ -1304,6 +1304,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";
 "onboarding.device_name_check.error.prompt" = "Quin nom de dispositiu hauria d'utilitzar?";
 "onboarding.device_name_check.error.title" = "Ja existeix un dispositiu amb el nom \"%1$@\"";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Accepta";
 "onboarding.invitation.address_title" = "Home Assistant address";
 "onboarding.invitation.description" = "Home Assistant is open source home automation that puts local control and privacy first.";
@@ -2677,6 +2678,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Icona";
 "watch.configurator.sections.ring.footer" = "L'anell que mostra el progrés envoltant el text";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";

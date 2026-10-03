@@ -1304,6 +1304,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "「ローカル ネットワーク」のプライバシー許可が拒否された可能性があります。これは、システム設定アプリで変更できます。";
 "onboarding.device_name_check.error.prompt" = "代わりにどのデバイス名を使用する必要がありますか？";
 "onboarding.device_name_check.error.title" = "'%1$@' という名前のデバイスは既に存在します";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "受け入れる";
 "onboarding.invitation.address_title" = "ホームアシスタントのアドレス";
 "onboarding.invitation.description" = "Home Assistantは、ローカル制御とプライバシーを最優先に考えたオープンソースのホームオートメーションシステムです。";
@@ -2676,6 +2677,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "アイコン";
 "watch.configurator.sections.ring.footer" = "テキストを囲む進捗状況を示すリング。";
 "watch.configurator.sections.ring.header" = "リング";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Close";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Position";

@@ -1300,6 +1300,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.connection_test_result.local_network_permission.description" = "Sekretessbehörighet för \"Lokalt nätverk\" kan ha nekats. Du kan ändra detta i appen Inställningar.";
 "onboarding.device_name_check.error.prompt" = "Vilket enhetsnamn ska användas istället?";
 "onboarding.device_name_check.error.title" = "Det finns redan en enhet med namnet '%1$@'";
+"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
 "onboarding.invitation.accept_button" = "Acceptera";
 "onboarding.invitation.address_title" = "Home Assistant adress";
 "onboarding.invitation.description" = "Home Assistant är hemautomation med öppen källkod som sätter lokal kontroll och integritet i första rummet.";
@@ -2672,6 +2673,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Ringen visar förloppet runt texten.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
 "watch.cover_controls.close" = "Stäng";
 "watch.cover_controls.open" = "Öppna";
 "watch.cover_controls.position" = "Position";
