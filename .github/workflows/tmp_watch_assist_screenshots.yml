@@ -67,55 +67,65 @@ jobs:
         run: |
           UDID="${{ steps.sim.outputs.udid }}"
           APP=$(find build/Build/Products -maxdepth 2 -name "HomeAssistant-WatchApp.app" | head -1)
-          echo "App: $APP"
-          codesign -d --entitlements :- "$APP" 2>&1 | head -40 || true
           BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$APP/Info.plist")
-          echo "Bundle: $BUNDLE_ID"
           xcrun simctl install "$UDID" "$APP"
           mkdir -p screenshots logs
-          for state in idle recording-tap recording-release; do
-            xcrun simctl launch --terminate-running-process \
-              --stdout="$PWD/logs/$state.stdout.log" --stderr="$PWD/logs/$state.stderr.log" \
-              "$UDID" "$BUNDLE_ID" "assist-screenshot=$state"
-            sleep 12
-            echo "--- process check ($state):"
-            pgrep -fl "HomeAssistant-WatchApp" || echo "app process not running"
-            xcrun simctl io "$UDID" screenshot "screenshots/$state.png"
-            xcrun simctl terminate "$UDID" "$BUNDLE_ID" || true
-            sleep 2
-          done
-          echo "--- app stderr/stdout:"
-          tail -n 60 logs/*.log || true
-          echo "--- crash reports:"
-          ls -la ~/Library/Logs/DiagnosticReports/ 2>/dev/null | tail -20 || true
-          for report in ~/Library/Logs/DiagnosticReports/HomeAssistant-WatchApp*; do
-            [ -e "$report" ] || continue
-            echo "=== $report"
-            head -c 6000 "$report"
-            echo
-          done
-          echo "--- unified log for the app:"
-          xcrun simctl spawn "$UDID" log show --last 3m --style compact \
-            --predicate 'processImagePath CONTAINS "HomeAssistant-WatchApp" OR eventMessage CONTAINS "HomeAssistant-WatchApp"' \
-            2>/dev/null | grep -v "^Filtering" | tail -n 120 || true
+          xcrun simctl launch \
+            --stdout="$PWD/logs/cycle.stdout.log" --stderr="$PWD/logs/cycle.stderr.log" \
+            "$UDID" "$BUNDLE_ID" "assist-screenshot=cycle"
+          launched=$(date +%s)
+          shoot() {
+            while [ $(( $(date +%s) - launched )) -lt "$2" ]; do sleep 1; done
+            xcrun simctl io "$UDID" screenshot "screenshots/$1.png"
+          }
+          shoot idle 10
+          shoot recording-tap 24
+          shoot recording-release 39
           ls -la screenshots
+          tail -n 40 logs/*.log || true
 
-      - name: Print screenshots as base64
-        if: always()
+      - name: Encode screenshots
         run: |
+          mkdir -p encoded
           for f in screenshots/*.png; do
-            [ -e "$f" ] || continue
-            name=$(basename "$f")
-            echo "BEGIN_IMAGE $name $(wc -c < "$f") $(shasum -a 256 "$f" | cut -c1-16)"
-            base64 -i "$f" | tr -d '\n'
-            echo
-            echo "END_IMAGE $name"
+            name=$(basename "$f" .png)
+            sips -s format jpeg -s formatOptions 80 "$f" --out "encoded/$name.jpg" >/dev/null
+            base64 -i "encoded/$name.jpg" | tr -d '\n' > "encoded/$name.b64"
+            echo "::notice title=img-summary $name::png=$(wc -c < "$f") jpg=$(wc -c < "encoded/$name.jpg") b64=$(wc -c < "encoded/$name.b64")"
           done
+          cat > annotate.py <<'PY'
+          import sys, zlib, pathlib
+          p = pathlib.Path(sys.argv[1]); lo, hi = int(sys.argv[2]), int(sys.argv[3])
+          if not p.exists(): sys.exit(0)
+          s = p.read_text(); n = 4000
+          chunks = [s[i:i+n] for i in range(0, len(s), n)]
+          for i, c in enumerate(chunks, 1):
+              if lo <= i <= hi:
+                  print(f"::notice title=img {p.stem} {i}/{len(chunks)} crc={zlib.crc32(c.encode()):08x}::{c}")
+          PY
+
+      - name: Annotate idle part 1
+        run: python3 annotate.py encoded/idle.b64 1 9
+
+      - name: Annotate idle part 2
+        run: python3 annotate.py encoded/idle.b64 10 18
+
+      - name: Annotate recording-tap part 1
+        run: python3 annotate.py encoded/recording-tap.b64 1 9
+
+      - name: Annotate recording-tap part 2
+        run: python3 annotate.py encoded/recording-tap.b64 10 18
+
+      - name: Annotate recording-release part 1
+        run: python3 annotate.py encoded/recording-release.b64 1 9
+
+      - name: Annotate recording-release part 2
+        run: python3 annotate.py encoded/recording-release.b64 10 18
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: always()
         with:
-          name: watch-assist-screenshots-2
+          name: watch-assist-screenshots-3
           path: |
             screenshots
             logs

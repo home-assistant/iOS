@@ -38,6 +38,16 @@ enum WatchAssistScreenshot {
             viewModel.state = .recording
             viewModel.recordingSubmission = .release
             viewModel.audioLevel = 0.6
+        case "cycle":
+            // One launch walks through every state: relaunching brings up a permission alert.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 15) {
+                viewModel.state = .recording
+                viewModel.recordingSubmission = .tap
+                viewModel.audioLevel = 0.6
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
+                viewModel.recordingSubmission = .release
+            }
         default:
             break
         }
