@@ -240,6 +240,18 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.customization = customization
             self.contextSubtitle = contextSubtitle
         }
+
+        /// The same info carrying `customization`, for an item edited before whatever built the info
+        /// has seen the edit.
+        public func replacingCustomization(_ customization: Customization?) -> Info {
+            .init(
+                id: id,
+                name: name,
+                iconName: iconName,
+                customization: customization,
+                contextSubtitle: contextSubtitle
+            )
+        }
     }
 
     /// Icon for given magic item type

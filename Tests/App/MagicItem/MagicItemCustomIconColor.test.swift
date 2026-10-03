@@ -56,6 +56,28 @@ struct MagicItemCustomIconColorTests {
         #expect(MagicItem.Customization(iconColor: "00AEF8").customIconColor == nil)
     }
 
+    /// Rows read an item's color from its info, so an item edited before the info is rebuilt — on the
+    /// watch, offline — gets an info carrying its new customization and nothing else changed.
+    @Test func anInfoTakesTheEditedCustomization() {
+        let info = MagicItem.Info(
+            id: "1-light.kitchen",
+            name: "Kitchen light",
+            iconName: "mdi:lightbulb",
+            customization: .init(iconColor: "00AEF8"),
+            contextSubtitle: "Home • Kitchen"
+        )
+        var edited = MagicItem.Customization()
+        edited.useCustomIconColor("#FF9800")
+
+        let updated = info.replacingCustomization(edited)
+
+        #expect(updated.customization?.customIconColor == "#FF9800")
+        #expect(updated.id == info.id)
+        #expect(updated.name == info.name)
+        #expect(updated.iconName == info.iconName)
+        #expect(updated.contextSubtitle == info.contextSubtitle)
+    }
+
     /// Items saved before ``MagicItem/Customization/iconColorIsCustomized`` existed don't carry it.
     private func decodedCustomization(iconColor: String) throws -> MagicItem.Customization {
         let json = "{\"iconColor\": \"\(iconColor)\", \"requiresConfirmation\": false}"
