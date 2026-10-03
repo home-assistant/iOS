@@ -1489,9 +1489,9 @@ public enum L10n {
     }
     public enum Watch {
       public enum MicButton {
-        public enum Hold {
-          /// Hold to
-          public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.hold.title") }
+        public enum TapOrHold {
+          /// Tap or hold to
+          public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.tap_or_hold.title") }
         }
       }
       public enum NotReachable {
