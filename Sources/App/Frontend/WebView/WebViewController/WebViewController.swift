@@ -27,6 +27,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             overlayState?.isMoreInfoDialogOpen = onscreenEntityId != nil
         }
     }
+
     /// The path the dialog opened over, so a route change is recognised as having closed it.
     var onscreenEntityPath: String?
     /// The in-flight publish of what is on screen, cancelled when a newer one replaces it.
