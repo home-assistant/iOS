@@ -267,6 +267,34 @@ struct WebViewControllerOnscreenContentTests {
         }
     }
 
+    /// The App Labs tab bar hides behind the dialog, and reads whether one is up off the overlay state,
+    /// whichever way the entity came to be dropped.
+    @Test("The dialog opening and closing is mirrored onto the overlay state")
+    func theDialogIsMirroredOntoTheOverlayState() async throws {
+        try await withExposureDatabase { _ in
+            let sut = WebViewController(server: .fake())
+            sut.setValue(UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640)), forKey: "view")
+            sut.webView = WKWebView(frame: .zero)
+            let overlayState = WebFrontendOverlayState()
+            sut.overlayState = overlayState
+            #expect(!overlayState.isMoreInfoDialogOpen)
+
+            sut.setOnscreenEntity(entityId: "light.kitchen")
+            #expect(overlayState.isMoreInfoDialogOpen)
+
+            sut.clearOnscreenEntity(entityId: "light.hallway")
+            #expect(overlayState.isMoreInfoDialogOpen)
+
+            sut.clearOnscreenEntity(entityId: "light.kitchen")
+            #expect(!overlayState.isMoreInfoDialogOpen)
+
+            sut.setOnscreenEntity(entityId: "light.kitchen")
+            sut.forgetOnscreenEntity()
+            #expect(!overlayState.isMoreInfoDialogOpen)
+            await sut.onscreenContentTask?.value
+        }
+    }
+
     /// A new document means the dialog is gone, and the page that would have said so is the one being
     /// replaced. This is the reload case — pull to refresh — where the path never changes.
     @Test("Loading a new document forgets the entity that was on screen")
