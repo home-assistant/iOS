@@ -22,14 +22,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: artifact
 
-      - name: Print screenshots as base64 JPEG
+      - name: Print screenshots as base64
         run: |
-          ls -laR artifact
+          ls -laR artifact/screenshots
           for f in artifact/screenshots/*.png; do
-            name=$(basename "$f" .png)
-            convert "$f" -quality 80 "$name.jpg"
-            echo "BEGIN_IMAGE $name.jpg $(wc -c < "$name.jpg")"
-            base64 -w 0 "$name.jpg"
+            name=$(basename "$f")
+            echo "BEGIN_IMAGE $name $(wc -c < "$f") $(sha256sum "$f" | cut -c1-16)"
+            base64 -w 0 "$f"
             echo
-            echo "END_IMAGE $name.jpg"
+            echo "END_IMAGE $name"
           done
