@@ -203,6 +203,16 @@ struct WatchComplicationConfigurationSheet: View {
                     }
                     .pickerStyle(.segmented)
                 }
+                if currentFamily == .corner {
+                    Picker(selection: cornerGaugeDisplayBinding) {
+                        ForEach(WatchComplicationConfig.CornerGaugeDisplay.allCases) { display in
+                            Text(verbatim: display.title).tag(display)
+                        }
+                    } label: {
+                        Text(L10n.Watch.Complications.CornerGaugeDisplay.title)
+                    }
+                    .pickerStyle(.segmented)
+                }
                 // Numeric range + min/max labels only apply to entity gauges.
                 if viewModel.config.kind == .entity {
                     numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
@@ -396,6 +406,13 @@ struct WatchComplicationConfigurationSheet: View {
         Binding(
             get: { viewModel.config.gaugeStyle(for: currentFamily) },
             set: { value in updateOptions { $0.gaugeStyle = value.rawValue } }
+        )
+    }
+
+    private var cornerGaugeDisplayBinding: Binding<WatchComplicationConfig.CornerGaugeDisplay> {
+        Binding(
+            get: { viewModel.config.cornerGaugeDisplay(for: currentFamily) },
+            set: { value in updateOptions { $0.cornerGaugeDisplay = value.rawValue } }
         )
     }
 

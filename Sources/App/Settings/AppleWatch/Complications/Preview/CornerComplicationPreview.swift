@@ -26,8 +26,20 @@ struct CornerComplicationPreview: View {
             showsValue: context.showsValue,
             fraction: context.showsGauge ? context.fraction : nil,
             tint: context.tint,
-            textColor: context.textColor
+            textColor: context.textColor,
+            gaugeDisplay: context.config.cornerGaugeDisplay(for: context.config.widgetFamily).renderModelDisplay
         )
+    }
+}
+
+private extension WatchComplicationConfig.CornerGaugeDisplay {
+    var renderModelDisplay: CornerComplicationRenderModel.GaugeDisplay {
+        switch self {
+        case .gauge:
+            return .gauge
+        case .progress:
+            return .progress
+        }
     }
 }
 

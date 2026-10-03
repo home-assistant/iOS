@@ -8295,6 +8295,14 @@ public enum L10n {
         /// When the progress bar or gauge is visible, the template result should be a number between 0 and 1.
         public static var valueTemplateFooter: String { return L10n.tr("Localizable", "watch.complications.builder.value_template_footer") }
       }
+      public enum CornerGaugeDisplay {
+        /// Gauge
+        public static var gauge: String { return L10n.tr("Localizable", "watch.complications.corner_gauge_display.gauge") }
+        /// Progress bar
+        public static var progress: String { return L10n.tr("Localizable", "watch.complications.corner_gauge_display.progress") }
+        /// Corner indicator
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.corner_gauge_display.title") }
+      }
       public enum Family {
         /// Circular
         public static var circular: String { return L10n.tr("Localizable", "watch.complications.family.circular") }

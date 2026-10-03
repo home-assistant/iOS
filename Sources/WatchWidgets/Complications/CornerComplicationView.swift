@@ -97,10 +97,17 @@ struct CornerComplicationView: View {
     @ViewBuilder
     private func bezelLabel(_ complication: WatchWidgetComplicationSnapshot) -> some View {
         if let fraction = complication.fraction(for: family) {
-            Gauge(value: fraction) {
-                arcLabel(complication)
+            if complication.usesProgressGauge(for: family) {
+                ProgressView(value: fraction) {
+                    arcLabel(complication)
+                }
+                .tint(complication.tintColor(for: family))
+            } else {
+                Gauge(value: fraction) {
+                    arcLabel(complication)
+                }
+                .tint(complication.tintColor(for: family))
             }
-            .tint(complication.tintColor(for: family))
         } else {
             arcLabel(complication)
         }
@@ -140,6 +147,13 @@ struct CornerComplicationView: View {
 }
 
 @available(watchOS 10.0, *)
+#Preview("Value + name + progress", as: .accessoryCorner) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryCorner, complication: .previewSample(cornerGaugeDisplay: "progress"))
+}
+
+@available(watchOS 10.0, *)
 #Preview("Value + name, no gauge", as: .accessoryCorner) {
     WatchWidgets()
 } timeline: {
@@ -158,6 +172,17 @@ struct CornerComplicationView: View {
         date: .now,
         family: .accessoryCorner,
         complication: .previewSample(showName: false)
+    )
+}
+
+@available(watchOS 10.0, *)
+#Preview("Value only + progress", as: .accessoryCorner) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(
+        date: .now,
+        family: .accessoryCorner,
+        complication: .previewSample(cornerGaugeDisplay: "progress", showName: false)
     )
 }
 

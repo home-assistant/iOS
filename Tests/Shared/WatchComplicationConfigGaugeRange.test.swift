@@ -88,4 +88,35 @@ struct WatchComplicationConfigGaugeRangeTests {
         #expect(config().gaugeRange(for: .circular) == nil)
         #expect(config(gaugeMin: 0).gaugeRange(for: .circular) == nil)
     }
+
+    @Test func cornerGaugeDisplayDefaultsToGauge() {
+        #expect(config().cornerGaugeDisplay(for: .corner) == .gauge)
+    }
+
+    @Test func cornerGaugeDisplayReadsCornerOverride() {
+        let config = WatchComplicationConfig(
+            serverId: "server-1",
+            families: [
+                WatchComplicationConfig.Family.corner.rawValue: .init(
+                    cornerGaugeDisplay: WatchComplicationConfig.CornerGaugeDisplay.progress.rawValue
+                ),
+            ]
+        )
+
+        #expect(config.cornerGaugeDisplay(for: .corner) == .progress)
+    }
+
+    @Test func cornerGaugeDisplayIgnoresOtherFamilies() {
+        let config = WatchComplicationConfig(
+            serverId: "server-1",
+            families: [
+                WatchComplicationConfig.Family.circular.rawValue: .init(
+                    cornerGaugeDisplay: WatchComplicationConfig.CornerGaugeDisplay.progress.rawValue
+                ),
+            ]
+        )
+
+        #expect(config.cornerGaugeDisplay(for: .circular) == .gauge)
+        #expect(config.cornerGaugeDisplay(for: .corner) == .gauge)
+    }
 }
