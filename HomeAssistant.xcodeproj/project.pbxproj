@@ -1336,6 +1336,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				CameraPlayer/CameraMJPEGPlayerView.swift,
+				CameraPlayer/CameraOverlayHostingController.swift,
 				CameraPlayer/CameraOverlayPresenter.swift,
 				CameraPlayer/CameraPlayerView.swift,
 				CameraPlayer/CameraStreamHLSView.swift,

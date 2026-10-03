@@ -13,6 +13,8 @@ struct CameraPlayerView: View {
     @Environment(\.dismiss) private var dismiss
     private let server: Server
     private let cameraName: String?
+    /// Called when the picker switches to another camera, with the new entity id.
+    private let onCameraChange: ((String) -> Void)?
 
     @State private var cameraEntityId: String
     /// The streaming methods to try for the current camera and which one is showing.
@@ -40,10 +42,16 @@ struct CameraPlayerView: View {
     private let snapshotThumbnailSize = CGSize(width: 120, height: 120)
     #endif
 
-    init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
+    init(
+        server: Server,
+        cameraEntityId: String,
+        cameraName: String? = nil,
+        onCameraChange: ((String) -> Void)? = nil
+    ) {
         self.server = server
         self._cameraEntityId = State(initialValue: cameraEntityId)
         self.cameraName = cameraName
+        self.onCameraChange = onCameraChange
     }
 
     var body: some View {
@@ -365,6 +373,7 @@ struct CameraPlayerView: View {
         playback.clear()
         cameraEntityId = entityId
         loadMetadata()
+        onCameraChange?(entityId)
     }
 }
 
