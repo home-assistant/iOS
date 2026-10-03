@@ -8,27 +8,113 @@ on:
 
 permissions:
   contents: read
-  actions: read
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
 
 jobs:
-  show:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  screenshots:
+    runs-on: xcode-27
+    timeout-minutes: 90
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: watch-assist-screenshots
-          run-id: 37153090514
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: artifact
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme WatchApp
+
+      - name: Pick and boot a watch simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, re, sys
+          devices = json.load(sys.stdin)["devices"]
+          best = None
+          for runtime, items in devices.items():
+              if "watchOS" not in runtime:
+                  continue
+              version = [int(x) for x in re.findall(r"\d+", runtime)]
+              for device in items:
+                  preferred = device["name"] == "Apple Watch Series 12 (46mm)"
+                  key = (preferred, version)
+                  if best is None or key > best[0]:
+                      best = (key, device["udid"], device["name"], runtime)
+          print(best[1])
+          print(best[2], best[3], file=sys.stderr)
+          ')
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+
+      - name: Build watch app
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project HomeAssistant.xcodeproj \
+            -scheme WatchApp \
+            -configuration Debug \
+            -destination "platform=watchOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath build \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            > build.log 2>&1 || { tail -300 build.log; exit 1; }
+          grep -E "error:" build.log || true
+
+      - name: Take screenshots
+        run: |
+          UDID="${{ steps.sim.outputs.udid }}"
+          APP=$(find build/Build/Products -maxdepth 2 -name "HomeAssistant-WatchApp.app" | head -1)
+          echo "App: $APP"
+          codesign -d --entitlements :- "$APP" 2>&1 | head -40 || true
+          BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$APP/Info.plist")
+          echo "Bundle: $BUNDLE_ID"
+          xcrun simctl install "$UDID" "$APP"
+          mkdir -p screenshots logs
+          for state in idle recording-tap recording-release; do
+            xcrun simctl launch --terminate-running-process \
+              --stdout="$PWD/logs/$state.stdout.log" --stderr="$PWD/logs/$state.stderr.log" \
+              "$UDID" "$BUNDLE_ID" "assist-screenshot=$state"
+            sleep 12
+            echo "--- process check ($state):"
+            pgrep -fl "HomeAssistant-WatchApp" || echo "app process not running"
+            xcrun simctl io "$UDID" screenshot "screenshots/$state.png"
+            xcrun simctl terminate "$UDID" "$BUNDLE_ID" || true
+            sleep 2
+          done
+          echo "--- app stderr/stdout:"
+          tail -n 60 logs/*.log || true
+          echo "--- crash reports:"
+          ls -la ~/Library/Logs/DiagnosticReports/ 2>/dev/null | tail -20 || true
+          for report in ~/Library/Logs/DiagnosticReports/HomeAssistant-WatchApp*; do
+            [ -e "$report" ] || continue
+            echo "=== $report"
+            head -c 6000 "$report"
+            echo
+          done
+          echo "--- unified log for the app:"
+          xcrun simctl spawn "$UDID" log show --last 3m --style compact \
+            --predicate 'processImagePath CONTAINS "HomeAssistant-WatchApp" OR eventMessage CONTAINS "HomeAssistant-WatchApp"' \
+            2>/dev/null | grep -v "^Filtering" | tail -n 120 || true
+          ls -la screenshots
 
       - name: Print screenshots as base64
+        if: always()
         run: |
-          ls -laR artifact/screenshots
-          for f in artifact/screenshots/*.png; do
+          for f in screenshots/*.png; do
+            [ -e "$f" ] || continue
             name=$(basename "$f")
-            echo "BEGIN_IMAGE $name $(wc -c < "$f") $(sha256sum "$f" | cut -c1-16)"
-            base64 -w 0 "$f"
+            echo "BEGIN_IMAGE $name $(wc -c < "$f") $(shasum -a 256 "$f" | cut -c1-16)"
+            base64 -i "$f" | tr -d '\n'
             echo
             echo "END_IMAGE $name"
           done
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        if: always()
+        with:
+          name: watch-assist-screenshots-2
+          path: |
+            screenshots
+            logs
+            build.log
