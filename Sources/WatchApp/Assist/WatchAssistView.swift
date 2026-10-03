@@ -12,6 +12,7 @@ struct WatchAssistView: View {
         static let micButtonProgressPadding: CGFloat = DesignSystem.Spaces.half
         static let micRecordingTextFontSize: CGFloat = 11
         static let progressViewScale: CGFloat = 2
+        static let releasePillTopPadding: CGFloat = DesignSystem.Spaces.one
     }
 
     @StateObject private var viewModel: WatchAssistViewModel
@@ -130,6 +131,14 @@ struct WatchAssistView: View {
         if viewModel.state == .recording {
             micRecording
                 .transition(.opacity)
+            // The finger holding the screen covers the middle, so the hint sits at the top.
+            if viewModel.recordingSubmission == .release {
+                releaseToSendPill
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .padding(.top, Constants.releasePillTopPadding)
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+            }
         }
         ProgressView()
             .progressViewStyle(.circular)
@@ -210,8 +219,10 @@ struct WatchAssistView: View {
                     Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
                         .font(.system(size: Constants.micRecordingTextFontSize))
                         .foregroundStyle(.gray)
-                    Text(verbatim: sendRequestTitle)
-                        .font(.footnote.bold())
+                    if viewModel.recordingSubmission == .tap {
+                        Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                            .font(.footnote.bold())
+                    }
                 }
             }
         })
@@ -227,11 +238,21 @@ struct WatchAssistView: View {
         }
     }
 
-    private var sendRequestTitle: String {
-        switch viewModel.recordingSubmission {
-        case .tap: return L10n.Watch.Assist.Button.SendRequest.title
-        case .release: return L10n.Watch.Assist.Button.ReleaseToSend.title
-        }
+    private var releaseToSendPill: some View {
+        Text(verbatim: L10n.Watch.Assist.Button.ReleaseToSend.title)
+            .font(.footnote.bold())
+            .foregroundStyle(.white)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .padding(.vertical, DesignSystem.Spaces.one)
+            .modify { view in
+                if #available(watchOS 26.0, *) {
+                    view.glassEffect(.regular.tint(Color.haPrimary), in: .capsule)
+                } else {
+                    view
+                        .background(Color.haPrimary)
+                        .clipShape(Capsule())
+                }
+            }
     }
 
     private var chatList: some View {
