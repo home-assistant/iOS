@@ -25,6 +25,11 @@ final class WebFrontendOverlayState: ObservableObject {
     /// notifications, App Intents), so a host that has the frontend off screen can bring it back.
     let externalNavigationRequests = PassthroughSubject<Void, Never>()
 
+    /// True while the frontend's more-info dialog is up, as reported over the external bus. The App Labs
+    /// tab bar steps aside for it and comes back when the dialog closes or the frontend moves on to
+    /// another route; see `WebViewController+OnscreenContent`.
+    @Published var isMoreInfoDialogOpen = false
+
     /// Theme color for the top status-bar inset, drawn by `HomeAssistantView` over the (always edge-to-edge)
     /// web view. Nil when there should be no themed bar — i.e. edge-to-edge / full-screen is enabled, or on
     /// Catalyst (where the native status-bar view handles it).

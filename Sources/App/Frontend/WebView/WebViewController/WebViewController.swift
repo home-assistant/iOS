@@ -20,8 +20,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Watches `.siriEntityExposureDidChange` so what is published on `userActivity` follows the
     /// user's Siri exposure setting; see `WebViewController+OnscreenContent`.
     var siriExposureObserver: NSObjectProtocol?
-    /// The entity the frontend's more-info dialog is showing, reported over the external bus.
-    var onscreenEntityId: String?
+    /// The entity the frontend's more-info dialog is showing, reported over the external bus. Mirrored
+    /// onto `overlayState` so the App Labs tab bar can hide while the dialog is up.
+    var onscreenEntityId: String? {
+        didSet {
+            overlayState?.isMoreInfoDialogOpen = onscreenEntityId != nil
+        }
+    }
     /// The path the dialog opened over, so a route change is recognised as having closed it.
     var onscreenEntityPath: String?
     /// The in-flight publish of what is on screen, cancelled when a newer one replaces it.
@@ -79,6 +84,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var overlayState: WebFrontendOverlayState? {
         didSet {
             observeEmptyStateForWindowTitle()
+            overlayState?.isMoreInfoDialogOpen = onscreenEntityId != nil
         }
     }
 
