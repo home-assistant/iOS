@@ -10,12 +10,20 @@ class ZoneManager {
     let collector: ZoneManagerCollector
     let processor: ZoneManagerProcessor
     let regionFilter: ZoneManagerRegionFilter
+    let zoneEventOutbox: ZoneEventOutbox
     private(set) var zones: [AppZone]
 
     private var observationToken: AnyDatabaseCancellable?
     private let syncExecutor: (@escaping () -> Void) -> Void
-
     private static let regionSyncQueue = DispatchQueue(label: "zone-manager-region-sync", qos: .utility)
+    private var drainingZoneEventIDs = Set<UUID>()
+    private var reconcilingZoneEventIDs = Set<UUID>()
+    private var confirmedZoneEventIDs = Set<UUID>()
+    private var zoneEventRetryAttempt = 0
+    private var zoneEventRetryIdentifier: UUID?
+    private var synchronizedRegions = Set<CLRegion>()
+    private let scheduleZoneEventRetryWork: (TimeInterval, @escaping () -> Void) -> Void
+    private let zoneEventRetryDelay: (Int) -> TimeInterval
 
     init(
         locationManager: CLLocationManager = .init(),
@@ -24,6 +32,13 @@ class ZoneManager {
         regionFilter: ZoneManagerRegionFilter = ZoneManagerRegionFilterImpl(),
         syncExecutor: @escaping (@escaping () -> Void) -> Void = { work in
             ZoneManager.regionSyncQueue.async(execute: work)
+        },
+        zoneEventOutbox: ZoneEventOutbox = AtomicFileZoneEventOutbox(),
+        zoneEventRetryDelay: @escaping (Int) -> TimeInterval = { attempt in
+            min(pow(2, Double(max(0, attempt - 1))), 30)
+        },
+        scheduleZoneEventRetryWork: @escaping (TimeInterval, @escaping () -> Void) -> Void = { delay, work in
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
         }
     ) {
         self.locationManager = locationManager
@@ -31,6 +46,9 @@ class ZoneManager {
         self.processor = processor
         self.regionFilter = regionFilter
         self.syncExecutor = syncExecutor
+        self.zoneEventOutbox = zoneEventOutbox
+        self.zoneEventRetryDelay = zoneEventRetryDelay
+        self.scheduleZoneEventRetryWork = scheduleZoneEventRetryWork
         self.zones = AppZone.trackedZones()
 
         self.collector.delegate = self
@@ -39,6 +57,9 @@ class ZoneManager {
         log(state: .initialize)
 
         updateLocationManager(isInitial: true)
+        DispatchQueue.main.async { [weak self] in
+            self?.flushPendingZoneEvents()
+        }
 
         NotificationCenter.default.addObserver(
             self,
@@ -46,15 +67,55 @@ class ZoneManager {
             name: SettingsStore.locationRelatedSettingDidChange,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillResignActive),
+            name: UIApplication.willResignActiveNotification,
+            object: nil
+        )
     }
 
     deinit {
         observationToken?.cancel()
+        NotificationCenter.default.removeObserver(self)
         Current.Log.info("going away")
     }
 
     @objc private func locationSettingDidChange() {
         updateLocationManager(isInitial: false)
+    }
+
+    @objc func applicationDidBecomeActive() {
+        flushPendingZoneEvents()
+
+        guard Current.settingsStore.locationSources.zone else {
+            collector.stopBackgroundBeaconMonitoring(manager: locationManager)
+            return
+        }
+
+        collector.startForegroundBeaconScanning(
+            in: synchronizedRegions,
+            manager: locationManager
+        )
+        collector.stopBackgroundBeaconMonitoring(manager: locationManager)
+    }
+
+    @objc func applicationWillResignActive() {
+        guard Current.settingsStore.locationSources.zone else {
+            collector.stopForegroundBeaconScanning(manager: locationManager)
+            return
+        }
+        collector.startBackgroundBeaconMonitoring(
+            in: synchronizedRegions,
+            manager: locationManager
+        )
+        collector.stopForegroundBeaconScanning(manager: locationManager)
     }
 
     private func updateLocationManager(isInitial: Bool) {
@@ -153,34 +214,338 @@ class ZoneManager {
     }
 
     private func fire(event: ZoneManagerEvent) {
-        guard let zone = event.associatedZone,
-              let server = Current.servers.server(forServerIdentifier: zone.serverIdentifier) else { return }
+        if case .locationChange = event.eventType {
+            flushPendingZoneEvents()
+            return
+        }
+
+        guard let zone = event.associatedZone else {
+            return
+        }
+        guard let server = Current.servers.server(forServerIdentifier: zone.serverIdentifier) else {
+            return
+        }
 
         switch event.eventType {
         case let .region(region, state):
-            guard let api = Current.api(for: server) else {
-                Current.Log.error("No API available to fire ZoneManager event, server: \(server)")
-                return
-            }
-            let eventInfo = api.zoneStateEvent(region: region, state: state, zone: zone)
-            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).pipe { result in
-                switch result {
-                case .fulfilled:
-                    Current.Log.info("Fired ZoneManager event")
-                case let .rejected(error):
-                    let message = "Failed to fire ZoneManager event: \(error.localizedDescription)"
-                    Current.Log.error(message)
-                    Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
-                    Current.notificationDispatcher.send(.init(
-                        id: .debug,
-                        title: "DEBUG: Failed to fire ZoneManager",
-                        body: message
-                    ))
-                }
-            }
+            let eventInfo = HomeAssistantAPI.zoneStateEvent(server: server, region: region, state: state, zone: zone)
+            enqueueZoneEvent(
+                serverIdentifier: server.identifier.rawValue,
+                eventType: eventInfo.eventType,
+                eventData: eventInfo.eventData,
+                isBeacon: region is CLBeaconRegion
+            )
         case .locationChange:
             break
         }
+    }
+
+    private func enqueueZoneEvent(
+        serverIdentifier: String,
+        eventType: String,
+        eventData: [String: Any],
+        isBeacon: Bool
+    ) {
+        do {
+            let pending = try PendingZoneEvent(
+                serverIdentifier: serverIdentifier,
+                eventType: eventType,
+                eventData: eventData,
+                createdAt: Current.date(),
+                isBeacon: isBeacon
+            )
+            // Persist before any asynchronous URL resolution or URLSession task creation.
+            // iOS may suspend us at either boundary; the next wake can then resume delivery.
+            try zoneEventOutbox.append(pending)
+            logBeaconDeliveryStage("outbox_persisted", pendingEvent: pending)
+            flushPendingZoneEvents()
+        } catch {
+            let message = "Failed to persist ZoneManager event before delivery: \(error.localizedDescription)"
+            Current.Log.error(message)
+            Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
+        }
+    }
+
+    private func startZoneEvent(
+        api: HomeAssistantAPI,
+        pendingEvent: PendingZoneEvent,
+        eventData: [String: Any]
+    ) -> Bool {
+        let startResult = api.startPersistentEvent(
+            eventType: pendingEvent.eventType,
+            eventData: eventData,
+            eventIdentifier: pendingEvent.id
+        )
+
+        guard case let .success(delivery) = startResult else {
+            if case let .failure(error) = startResult {
+                let message = "Failed to start ZoneManager background upload; queued for retry: " +
+                    error.localizedDescription
+                Current.Log.error(message)
+                Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
+            }
+            clearDeliveryStarted(for: pendingEvent)
+            scheduleZoneEventRetry()
+            return false
+        }
+
+        attach(delivery: delivery, to: pendingEvent)
+        return true
+    }
+
+    private func handleZoneEventResult(
+        _ result: Swift.Result<Void, Error>,
+        pendingEvent: PendingZoneEvent
+    ) {
+        drainingZoneEventIDs.remove(pendingEvent.id)
+
+        switch result {
+        case .success:
+            zoneEventRetryAttempt = 0
+            logBeaconDeliveryStage("webhook_confirmed", pendingEvent: pendingEvent)
+            confirmedZoneEventIDs.insert(pendingEvent.id)
+            removeConfirmedZoneEvent(pendingEvent)
+            Current.Log.info("Fired ZoneManager event")
+        case let .failure(error):
+            logBeaconDeliveryStage(
+                "webhook_failed",
+                pendingEvent: pendingEvent,
+                detail: error.localizedDescription
+            )
+            let message = "Failed to fire ZoneManager event; queued for retry: \(error.localizedDescription)"
+            Current.Log.error(message)
+            Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
+            clearDeliveryStarted(for: pendingEvent)
+            scheduleZoneEventRetry()
+        }
+    }
+
+    private func flushPendingZoneEvents() {
+        guard let pendingEvents = loadPendingZoneEvents() else { return }
+        // Disk expiry also ends in-memory ownership. A never-completing transport must
+        // not keep a removed event blocking every server on subsequent wakes.
+        let pendingIDs = Set(pendingEvents.map(\.id))
+        drainingZoneEventIDs.formIntersection(pendingIDs)
+        reconcilingZoneEventIDs.formIntersection(pendingIDs)
+        confirmedZoneEventIDs.formIntersection(pendingIDs)
+        guard !pendingEvents.isEmpty else {
+            zoneEventRetryAttempt = 0
+            zoneEventRetryIdentifier = nil
+            return
+        }
+        guard drainingZoneEventIDs.isEmpty, reconcilingZoneEventIDs.isEmpty else { return }
+
+        drainPendingZoneEvents(pendingEvents)
+    }
+
+    private func loadPendingZoneEvents() -> [PendingZoneEvent]? {
+        do {
+            return try zoneEventOutbox.pendingEvents()
+        } catch {
+            logZoneEventOutboxFailure("read", error: error)
+            scheduleZoneEventRetry()
+            return nil
+        }
+    }
+
+    private func drainPendingZoneEvents(_ pendingEvents: [PendingZoneEvent]) {
+        guard let pending = pendingEvents.first else {
+            flushPendingZoneEvents()
+            return
+        }
+        if confirmedZoneEventIDs.contains(pending.id) {
+            removeConfirmedZoneEvent(pending)
+            return
+        }
+        guard let eventData = pending.decodedEventData else {
+            removeUndeliverableZoneEvent(
+                pending, remainingEvents: Array(pendingEvents.dropFirst()), reason: "Event data is unreadable"
+            )
+            return
+        }
+        guard let server = Current.servers.server(forServerIdentifier: pending.serverIdentifier) else {
+            // Missing during keychain restoration does not establish permanent removal.
+            guard !Current.servers.isMirrorRestorePending else {
+                scheduleZoneEventRetry()
+                return
+            }
+            removeUndeliverableZoneEvent(
+                pending,
+                remainingEvents: Array(pendingEvents.dropFirst()),
+                reason: "Server was removed"
+            )
+            return
+        }
+        guard let api = Current.api(for: server) else {
+            logZoneEventDrainBlocked(pending, reason: "Home Assistant API is unavailable")
+            scheduleZoneEventRetry()
+            return
+        }
+        if pending.deliveryStartedAt != nil {
+            reconcileZoneEvent(api: api, pendingEvent: pending)
+            return
+        }
+
+        do {
+            try zoneEventOutbox.markDeliveryStarted(id: pending.id, at: Current.date())
+            // Marking can prune an event that expired since the first read. Never upload
+            // the stale snapshot when the store no longer contains its start marker.
+            let markedEvents = try zoneEventOutbox.pendingEvents()
+            guard let marked = markedEvents.first,
+                  marked.id == pending.id,
+                  marked.deliveryStartedAt != nil else {
+                flushPendingZoneEvents()
+                return
+            }
+            _ = startZoneEvent(api: api, pendingEvent: marked, eventData: eventData)
+        } catch {
+            logZoneEventOutboxFailure("mark delivery started", error: error)
+            scheduleZoneEventRetry()
+        }
+    }
+
+    private func removeUndeliverableZoneEvent(
+        _ pendingEvent: PendingZoneEvent,
+        remainingEvents: [PendingZoneEvent],
+        reason: String
+    ) {
+        logZoneEventDrainBlocked(pendingEvent, reason: reason)
+        do {
+            try zoneEventOutbox.remove(id: pendingEvent.id)
+            drainPendingZoneEvents(remainingEvents)
+        } catch {
+            logZoneEventOutboxFailure("remove undeliverable event", error: error)
+            scheduleZoneEventRetry()
+        }
+    }
+
+    private func attach(delivery: Task<Void, Error>, to pendingEvent: PendingZoneEvent) {
+        drainingZoneEventIDs.insert(pendingEvent.id)
+        zoneEventRetryIdentifier = nil
+        logBeaconDeliveryStage("background_upload_started", pendingEvent: pendingEvent)
+        if pendingEvent.isBeacon {
+            scheduleBeaconUploadWatchdog(for: pendingEvent)
+        }
+
+        Task { [weak self] in
+            let result = await delivery.result
+            await MainActor.run {
+                guard let self, drainingZoneEventIDs.contains(pendingEvent.id) else { return }
+                handleZoneEventResult(result, pendingEvent: pendingEvent)
+            }
+        }
+    }
+
+    private func reconcileZoneEvent(api: HomeAssistantAPI, pendingEvent: PendingZoneEvent) {
+        guard reconcilingZoneEventIDs.insert(pendingEvent.id).inserted else { return }
+
+        Task { [weak self] in
+            let state = await api.reconcilePersistentEvent(eventIdentifier: pendingEvent.id)
+            await MainActor.run {
+                guard let self else { return }
+                guard reconcilingZoneEventIDs.remove(pendingEvent.id) != nil else { return }
+                switch state {
+                case let .running(delivery):
+                    attach(delivery: delivery, to: pendingEvent)
+                case let .completed(result):
+                    handleZoneEventResult(result, pendingEvent: pendingEvent)
+                case let .unavailable(error):
+                    // A timed-out lookup does not prove the upload is absent. Keep its marker
+                    // and reconcile again instead of starting a potentially duplicate upload.
+                    logZoneEventDrainBlocked(pendingEvent, reason: error.localizedDescription)
+                    scheduleZoneEventRetry()
+                case .absent:
+                    if clearDeliveryStarted(for: pendingEvent) {
+                        flushPendingZoneEvents()
+                    } else {
+                        scheduleZoneEventRetry()
+                    }
+                }
+            }
+        }
+    }
+
+    @discardableResult
+    private func clearDeliveryStarted(for pendingEvent: PendingZoneEvent) -> Bool {
+        do {
+            try zoneEventOutbox.clearDeliveryStarted(id: pendingEvent.id)
+            return true
+        } catch {
+            logZoneEventOutboxFailure("clear delivery state", error: error)
+            return false
+        }
+    }
+
+    private func removeConfirmedZoneEvent(_ pendingEvent: PendingZoneEvent) {
+        do {
+            try zoneEventOutbox.remove(id: pendingEvent.id)
+            confirmedZoneEventIDs.remove(pendingEvent.id)
+            flushPendingZoneEvents()
+        } catch {
+            logZoneEventOutboxFailure("remove confirmed event", error: error)
+            scheduleZoneEventRetry()
+        }
+    }
+
+    private func logZoneEventOutboxFailure(_ operation: String, error: Error) {
+        let message = "ZoneManager outbox failed to \(operation): \(error.localizedDescription)"
+        Current.Log.error(message)
+        Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
+    }
+
+    private func scheduleZoneEventRetry() {
+        guard zoneEventRetryIdentifier == nil else { return }
+        zoneEventRetryAttempt += 1
+        let identifier = UUID()
+        zoneEventRetryIdentifier = identifier
+        let delay = zoneEventRetryDelay(zoneEventRetryAttempt)
+        scheduleZoneEventRetryWork(delay) { [weak self] in
+            guard let self, zoneEventRetryIdentifier == identifier else { return }
+            zoneEventRetryIdentifier = nil
+            flushPendingZoneEvents()
+        }
+    }
+
+    private func logZoneEventDrainBlocked(_ pendingEvent: PendingZoneEvent, reason: String) {
+        let message = "ZoneManager outbox drain blocked: \(reason)"
+        Current.Log.error(message)
+        Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
+    }
+
+    private func scheduleBeaconUploadWatchdog(for pendingEvent: PendingZoneEvent) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15) { [weak self] in
+            guard let self,
+                  drainingZoneEventIDs.contains(pendingEvent.id),
+                  (try? self.zoneEventOutbox.pendingEvents())?.contains(where: {
+                      $0.id == pendingEvent.id
+                  }) == true else { return }
+
+            logBeaconDeliveryStage(
+                "webhook_stalled",
+                pendingEvent: pendingEvent,
+                detail: "No completion after 15 seconds"
+            )
+        }
+    }
+
+    private func logBeaconDeliveryStage(
+        _ stage: String,
+        pendingEvent: PendingZoneEvent,
+        detail: String? = nil
+    ) {
+        guard pendingEvent.isBeacon else { return }
+        Current.clientEventStore.addEvent(ClientEvent(
+            text: "Beacon delivery: \(stage)",
+            type: .networkRequest,
+            payload: [
+                "stage": stage,
+                "event_id": pendingEvent.id.uuidString,
+                "event_type": pendingEvent.eventType,
+                "created_at": ISO8601DateFormatter().string(from: pendingEvent.createdAt),
+                "recorded_at": ISO8601DateFormatter().string(from: Current.date()),
+                "detail": detail ?? "",
+            ]
+        ))
     }
 
     private func sync(zones: AnyCollection<AppZone>) {
@@ -215,7 +580,9 @@ class ZoneManager {
         // Applied on the main thread because the collector (and its ignore-next-state bookkeeping)
         // is only ever touched from there; synchronously, so the next queued sync's reads observe
         // these mutations and can't re-add the same regions.
+        let expectedRegions = Set(expected.map(\.region))
         Self.runOnMain { [self] in
+            synchronizedRegions = expectedRegions
             // process removals before additions
             // this is important because the system is focused on identifier
             for region in needsRemoval.map(\.region) {
@@ -240,6 +607,14 @@ class ZoneManager {
 
                 collector.ignoreNextState(for: region)
                 locationManager.startMonitoring(for: region)
+            }
+
+            if UIApplication.shared.applicationState == .active {
+                collector.startForegroundBeaconScanning(in: expectedRegions, manager: locationManager)
+                collector.stopBackgroundBeaconMonitoring(manager: locationManager)
+            } else {
+                collector.startBackgroundBeaconMonitoring(in: expectedRegions, manager: locationManager)
+                collector.stopForegroundBeaconScanning(manager: locationManager)
             }
         }
 
@@ -276,6 +651,18 @@ extension ZoneManager: ZoneManagerCollectorDelegate {
     }
 
     func collector(_ collector: ZoneManagerCollector, didCollect event: ZoneManagerEvent) {
+        if case let .region(region, state) = event.eventType, region is CLBeaconRegion {
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Beacon delivery: accepted_sample",
+                type: .locationUpdate,
+                payload: [
+                    "stage": "accepted_sample",
+                    "region": region.identifier,
+                    "state": String(describing: state),
+                    "recorded_at": ISO8601DateFormatter().string(from: Current.date()),
+                ]
+            ))
+        }
         fire(event: event)
         perform(event: event)
     }

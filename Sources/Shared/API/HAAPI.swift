@@ -347,6 +347,7 @@ public class HomeAssistantAPI {
                     return register()
                 case .unregisteredIdentifier,
                      .unacceptableStatusCode,
+                     .requiresMainThread,
                      .replaced,
                      .none:
                     // not a WebhookError, or not one we think requires reintegration
@@ -384,6 +385,35 @@ public class HomeAssistantAPI {
                 "event_data": eventData,
             ])
         )
+    }
+
+    private static let persistentEventRequestTimeout: TimeInterval = 30
+
+    /// Starts a persisted background event upload synchronously.
+    ///
+    /// A successful result proves URLSession owns a resumed background task. A failure means no
+    /// task was created, allowing an outbox owner to leave the event immediately retryable. Calls
+    /// made off the main thread fail without creating a task.
+    public func startPersistentEvent(
+        eventType: String,
+        eventData: [String: Any],
+        eventIdentifier: UUID
+    ) -> Swift.Result<Task<Void, Error>, Error> {
+        Current.webhooks.startPersistedBackground(
+            server: server,
+            request: .init(type: "fire_event", data: [
+                "event_type": eventType,
+                "event_data": eventData,
+            ]),
+            requestIdentifier: eventIdentifier.uuidString,
+            requestTimeout: Self.persistentEventRequestTimeout
+        )
+    }
+
+    public func reconcilePersistentEvent(
+        eventIdentifier: UUID
+    ) async -> PersistedBackgroundRequestState {
+        await Current.webhooks.reconcilePersistedBackground(requestIdentifier: eventIdentifier.uuidString)
     }
 
     public func temporaryDownloadFileURL(appropriateFor downloadingURL: URL? = nil) -> URL? {
@@ -807,6 +837,10 @@ public class HomeAssistantAPI {
     }
 
     public var sharedEventDeviceInfo: [String: String] {
+        Self.eventDeviceInfo(for: server)
+    }
+
+    private static func eventDeviceInfo(for server: Server) -> [String: String] {
         [
             "sourceDevicePermanentID": AppConstants.PermanentID,
             "sourceDeviceName": server.info.mobileAppDeviceName,
@@ -873,7 +907,18 @@ public class HomeAssistantAPI {
         state: CLRegionState,
         zone: AppZone
     ) -> (eventType: String, eventData: [String: Any]) {
-        var eventData: [String: Any] = sharedEventDeviceInfo
+        Self.zoneStateEvent(server: server, region: region, state: state, zone: zone)
+    }
+
+    /// Construct a durable payload even when the server has no usable URL.
+    @available(watchOS, unavailable)
+    public static func zoneStateEvent(
+        server: Server,
+        region: CLRegion,
+        state: CLRegionState,
+        zone: AppZone
+    ) -> (eventType: String, eventData: [String: Any]) {
+        var eventData: [String: Any] = eventDeviceInfo(for: server)
         eventData["zone"] = zone.entityId
         if region.identifier.contains("@"), let subId = region.identifier.split(separator: "@").last {
             eventData["multi_region_zone_id"] = String(subId)
