@@ -5,7 +5,7 @@ import HAKit
 import XCTest
 
 /// Covers which color a Quick Access entity row paints its icon with: the one the driver picked in
-/// the CarPlay configuration when there is one, and the entity's live state color otherwise.
+/// the CarPlay configuration while the entity is active, and the entity's live state color otherwise.
 final class CarPlayEntityListItemTests: XCTestCase {
     private let serverId = "server-1"
 
@@ -61,13 +61,26 @@ final class CarPlayEntityListItemTests: XCTestCase {
         }
     }
 
-    /// The regression: an inactive entity used to drop the picked color for the neutral "off" grey,
-    /// so a configured row turned grey as soon as its state arrived.
-    func testAnInactiveEntityKeepsTheConfiguredIconColor() throws {
+    /// A light that is off reads as off, as in the frontend, rather than looking on in its picked color.
+    func testAnInactiveEntityDropsTheConfiguredIconColor() throws {
         let offEntity = try entity(state: "off")
         let item = magicItem(customization: .init(iconColor: "#FF0000", iconColorIsCustomized: true))
 
         let color = iconColor(entity: offEntity, item: item)
+
+        try assertSameColor(color, offEntity.stateIconColor())
+    }
+
+    /// A script that isn't running reports "off", which says nothing about whether anything is on, so
+    /// its row keeps the picked color instead of turning grey as soon as its state arrives.
+    func testAnIdleScriptKeepsTheConfiguredIconColor() throws {
+        let idleScript = try entity(id: "script.good_night", state: "off")
+        let item = magicItem(
+            id: "script.good_night",
+            customization: .init(iconColor: "#FF0000", iconColorIsCustomized: true)
+        )
+
+        let color = iconColor(entity: idleScript, item: item)
 
         try assertSameColor(color, UIColor(hex: "#FF0000"))
     }

@@ -151,16 +151,24 @@ struct EntityIconColorProviderTests {
 
     // MARK: - User override
 
-    @Test func aPickedColorAlwaysApplies() throws {
+    @Test func aPickedColorAppliesWhileActive() throws {
         let picked = Color(hex: "#FF00FF")
         try expectColor(
             EntityIconColorProvider.iconColor(domain: "light", state: "on", customColor: picked),
             isHex: "#FF00FF"
         )
-        // Unlike the tile card, an inactive entity keeps the picked color rather than reading as off.
+        // Off, the tile reads as off rather than as the picked color, as the tile card does.
         try expectColor(
             EntityIconColorProvider.iconColor(domain: "light", state: "off", customColor: picked),
-            isHex: "#FF00FF"
+            isHex: "#9E9E9E"
+        )
+        try expectColor(
+            EntityIconColorProvider.iconColor(domain: "switch", state: "off", customColor: picked),
+            isHex: "#9E9E9E"
+        )
+        try expectColor(
+            EntityIconColorProvider.iconColor(domain: "lock", state: "locked", customColor: picked),
+            isHex: "#9E9E9E"
         )
         // It beats a light's own color while on…
         try expectColor(
@@ -181,12 +189,45 @@ struct EntityIconColorProviderTests {
         try expectColor(
             EntityIconColorProvider.iconColor(
                 domain: "light",
-                state: "off",
+                state: "on",
                 attributes: ["rgb_color": [255, 140, 0]],
                 customColor: picked
             ),
             isHex: "#FF00FF"
         )
+        try expectColor(
+            EntityIconColorProvider.iconColor(
+                domain: "light",
+                state: "off",
+                attributes: ["rgb_color": [255, 140, 0]],
+                customColor: picked
+            ),
+            isHex: "#9E9E9E"
+        )
+    }
+
+    /// A script that isn't running reports "off" and a disabled automation does too, but neither says
+    /// whether anything is on, so dropping the picked color for them only made the item go grey.
+    @Test func aPickedColorAppliesWhateverTheStateWhenTheStateIsIrrelevant() throws {
+        let picked = Color(hex: "#FF00FF")
+        try expectColor(
+            EntityIconColorProvider.iconColor(domain: "script", state: "off", customColor: picked),
+            isHex: "#FF00FF"
+        )
+        try expectColor(
+            EntityIconColorProvider.iconColor(domain: "automation", state: "off", customColor: picked),
+            isHex: "#FF00FF"
+        )
+        try expectColor(
+            EntityIconColorProvider.iconColor(
+                domain: "scene",
+                state: "2024-01-01T00:00:00+00:00",
+                customColor: picked
+            ),
+            isHex: "#FF00FF"
+        )
+        // Without a picked color they still take the frontend's inactive color.
+        try expectColor(color(domain: "script", state: "off"), isHex: "#9E9E9E")
     }
 
     // MARK: - Active state

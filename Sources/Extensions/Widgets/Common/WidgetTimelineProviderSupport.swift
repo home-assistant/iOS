@@ -16,7 +16,8 @@ struct WidgetEntityState: Codable {
     let groupMemberDomain: String?
 
     /// The icon color home-assistant/frontend gives this entity, or `customColor` when the user
-    /// picked one, which wins whatever the entity's state.
+    /// picked one — which, as in the tile card, only applies while the entity is active (see
+    /// ``EntityIconColorProvider`` for the domains that keep it whatever their state).
     func iconColor(domain: Domain?, customColor: Color? = nil) -> Color {
         EntityIconColorProvider.iconColor(
             domain: domain?.rawValue ?? "",
