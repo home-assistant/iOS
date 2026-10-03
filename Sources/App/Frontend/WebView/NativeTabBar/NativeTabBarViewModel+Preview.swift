@@ -9,7 +9,7 @@ extension NativeTabBarViewModel {
         hiddenPanelPaths: [String] = [],
         additionalServers: [Server] = [],
         isAdmin: Bool = true,
-        overlayState: WebFrontendOverlayState = WebFrontendOverlayState(),
+        overlayState: WebFrontendOverlayState? = nil,
         suiteName: String = "NativeTabBarPreview"
     ) -> NativeTabBarViewModel {
         let server = ServerFixture.standard
@@ -27,6 +27,7 @@ extension NativeTabBarViewModel {
             for: server.identifier.rawValue
         )
 
+        let overlayState = overlayState ?? WebFrontendOverlayState()
         return NativeTabBarViewModel(
             sidebar: MacSidebarViewModel(
                 server: server,
