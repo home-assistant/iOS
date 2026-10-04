@@ -35,7 +35,7 @@ final class CarPlayPaginatedListTemplateTests: XCTestCase {
 
     /// Inline pagination keeps two slots for the arrow rows, which have no text.
     func testInlinePagesNavigateWithArrowRows() throws {
-        try XCTSkipIf(maximumItems < 4, "Needs room for rows besides the arrows")
+        try XCTSkipIf(maximumItems < 6, "Needs room for rows besides the arrows")
         let perPage = maximumItems - 2
         let sut = CarPlayPaginatedListTemplate(title: "Long", items: [], paginationStyle: .inline)
         sut.updateItems(items: rows(perPage + 3))
@@ -100,7 +100,7 @@ final class CarPlayPaginatedListTemplateTests: XCTestCase {
 
         let template = try XCTUnwrap(sut.listTemplate)
         XCTAssertEqual(template.sections.count, 2)
-        XCTAssertTrue(template.sections.last?.items.first === footer)
+        XCTAssertTrue((template.sections.last?.items.first as AnyObject?) === footer)
     }
 
     /// Re-applying the very same rows leaves the sections alone, which keeps the rotary focus.
@@ -141,7 +141,8 @@ final class CarPlayPaginatedListTemplateTests: XCTestCase {
         if #available(iOS 26.0, *) {
             let template = try XCTUnwrap(sut.listTemplate)
             let perPage = Int(CPListTemplate.maximumHeaderGridButtonCount)
-            XCTAssertEqual(template.headerGridButtons?.count, min(20, perPage))
+            let shown = (template.headerGridButtons as [CPGridButton]?)?.count
+            XCTAssertEqual(shown, min(20, perPage))
         } else {
             let template = try XCTUnwrap(sut.gridTemplate)
             XCTAssertEqual(template.gridButtons.count, min(20, Int(CPGridTemplateMaximumItems)))

@@ -81,9 +81,8 @@ final class AreasServiceFetchTests: XCTestCase {
             area("kitchen", name: "Kitchen", floorId: "ground"),
             area("office", name: "Office"),
         ]))
-        connection.responses[Self.floorsCommand] = .success(HAData(value: [
-            ["aliases": [String](), "floor_id": "ground", "name": "Ground floor", "level": 0],
-        ]))
+        let floor: [String: Any] = ["aliases": [String](), "floor_id": "ground", "name": "Ground floor", "level": 0]
+        connection.responses[Self.floorsCommand] = .success(HAData(value: [floor]))
         let service = AreasService()
 
         let result = await service.fetchAreasAndItsEntities(for: server)

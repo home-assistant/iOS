@@ -125,10 +125,11 @@ final class ConnectionSecurityLevelBlockViewModelTests: XCTestCase {
     /// Lays the block screen out in each state so SwiftUI evaluates its body.
     func testBlockScreenLaysOutWithAndWithoutRequirements() {
         setNetwork(ssid: "MyWifi")
-        for (permission, server) in [
-            (LocationPermissionState.authorizedAlways, Server.fake()),
+        let states: [(LocationPermissionState, Server)] = [
+            (.authorizedAlways, Server.fake()),
             (.denied, serverWithoutHomeNetwork()),
-        ] {
+        ]
+        for (permission, server) in states {
             locationManager.permissionState = permission
             let controller = UIHostingController(rootView: ConnectionSecurityLevelBlockView(server: server))
             // On the host app's scene, so the window really appears and `onAppear` runs.
