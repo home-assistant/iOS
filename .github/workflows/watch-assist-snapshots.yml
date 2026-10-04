@@ -25,6 +25,9 @@ concurrency:
 jobs:
   snapshots:
     runs-on: xcode-27
+    permissions:
+      # Only to store the screenshots as git blobs, which no branch or tag points at.
+      contents: write
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -66,6 +69,8 @@ jobs:
           git checkout HEAD -- Sources/WatchApp/Assist/WatchAssistView.swift
           .github/watch-assist-snapshots/capture.sh branch
 
-      - name: Print snapshots
+      - name: Upload snapshots
         if: always()
-        run: .github/watch-assist-snapshots/print.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: .github/watch-assist-snapshots/upload.sh

@@ -51,8 +51,6 @@ while read -r udid name; do
     xcrun simctl launch --terminate-running-process "$udid" "$bundle" -AssistSnapshot "$scenario" > /dev/null
     sleep 7
     xcrun simctl io "$udid" screenshot --type=png "$out/$slug-$scenario.png" > /dev/null 2>&1
-    sips -Z 248 -s format jpeg -s formatOptions 70 "$out/$slug-$scenario.png" \
-      --out "$out/$slug-$scenario.jpg" > /dev/null
     echo "Captured $label $name $scenario"
   done
 done <<< "$devices"
