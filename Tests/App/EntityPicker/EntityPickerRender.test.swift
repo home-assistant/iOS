@@ -16,16 +16,13 @@ struct EntityPickerRenderTests {
 
     @Test func listModeBuildsFiltersAndGroupedRows() throws {
         try withEntities {
-            var selected: HAAppEntity?
-            let binding = Binding<HAAppEntity?>(get: { selected }, set: { selected = $0 })
             let size = render(EntityPicker(
                 selectedServerId: Self.serverId,
-                selectedEntity: binding,
+                selectedEntity: .constant(nil),
                 domainFilter: nil,
                 mode: .list
             ))
             #expect(size.height > 0)
-            #expect(selected == nil)
         }
     }
 

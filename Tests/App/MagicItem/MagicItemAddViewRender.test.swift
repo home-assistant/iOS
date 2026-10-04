@@ -43,7 +43,11 @@ struct MagicItemAddViewRenderTests {
 
     @Test func areasTab() throws {
         try withDatabase {
-            render(MagicItemAddView(context: .watch, initialItemType: .areas, visiblePickerOptions: Self.allOptions) { _ in
+            render(MagicItemAddView(
+                context: .watch,
+                initialItemType: .areas,
+                visiblePickerOptions: Self.allOptions
+            ) { _ in
             })
         }
     }

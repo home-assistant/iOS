@@ -77,8 +77,14 @@ struct EnergyStatisticsTests {
         let metadata = try EnergyStatisticsMetadata(data: HAData(value: raw))
 
         #expect(metadata.byStatId.count == 2)
-        #expect(metadata.byStatId["sensor.gas"] == EnergyStatisticsMetadata.Entry(unitClass: "volume", displayUnit: "m³"))
-        #expect(metadata.byStatId["sensor.grid"] == EnergyStatisticsMetadata.Entry(unitClass: "energy", displayUnit: "kWh"))
+        #expect(
+            metadata.byStatId["sensor.gas"] == EnergyStatisticsMetadata
+                .Entry(unitClass: "volume", displayUnit: "m³")
+        )
+        #expect(
+            metadata.byStatId["sensor.grid"] == EnergyStatisticsMetadata
+                .Entry(unitClass: "energy", displayUnit: "kWh")
+        )
     }
 
     @Test func metadataDecodingRequiresAnArray() {

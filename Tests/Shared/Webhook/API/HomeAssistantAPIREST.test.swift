@@ -56,15 +56,15 @@ final class HomeAssistantAPIRESTTests: XCTestCase {
         })
     }
 
-    private func assertNoActiveURL<T>(_ promise: Promise<T>, file: StaticString = #filePath, line: UInt = #line) {
+    private func assertNoActiveURL(_ promise: Promise<some Any>, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertThrowsError(try hang(promise), file: file, line: line) { error in
             XCTAssertTrue(error is ServerConnectionError, "\(error)", file: file, line: line)
         }
     }
 
-    private func assertStatusCode<T>(
+    private func assertStatusCode(
         _ statusCode: Int,
-        from promise: Promise<T>,
+        from promise: Promise<some Any>,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {

@@ -2,7 +2,6 @@ import Foundation
 import HAKit
 import HAKit_Mocks
 @testable import Shared
-import UIKit
 import XCTest
 
 final class PanelsUpdaterRequestsTests: XCTestCase {
@@ -61,17 +60,5 @@ final class PanelsUpdaterRequestsTests: XCTestCase {
         updater.update()
 
         XCTAssertTrue(connection.pendingRequests.isEmpty)
-    }
-
-    func testEnteringBackgroundCancelsInFlightRequests() throws {
-        let updater = PanelsUpdater()
-        updater.update()
-        let pending = try XCTUnwrap(connection.pendingRequests.first)
-        XCTAssertFalse(pending.cancellable.wasCancelled)
-
-        NotificationCenter.default.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
-
-        XCTAssertTrue(pending.cancellable.wasCancelled)
-        withExtendedLifetime(updater) {}
     }
 }

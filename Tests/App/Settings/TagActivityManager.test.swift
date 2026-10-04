@@ -33,7 +33,8 @@ struct TagActivityManagerTests {
 
     @Test func aLinkCarryingAURLOpensIt() throws {
         let activity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
-        activity.webpageURL = URL(string: "https://my.home-assistant.io/redirect/nfc/?url=homeassistant://navigate/energy")
+        activity
+            .webpageURL = URL(string: "https://my.home-assistant.io/redirect/nfc/?url=homeassistant://navigate/energy")
 
         guard case let .open(url) = TagActivityManager().handle(userActivity: activity) else {
             Issue.record("Expected the link's url to be opened")

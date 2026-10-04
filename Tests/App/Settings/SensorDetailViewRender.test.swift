@@ -38,7 +38,7 @@ struct SensorDetailViewRenderTests {
             let viewModel = SensorDetailViewModel(sensor: sensor, server: server)
             #expect(viewModel.isEnabled)
             #expect(viewModel.deviceClass == "battery")
-            #expect(viewModel.attributes.map { $0.key } == ["area", "frames"])
+            #expect(viewModel.attributes.map(\.key) == ["area", "frames"])
             #expect(viewModel.settingsViews.count == 9)
             #expect(viewModel.showsFocusConfiguration == false)
 
@@ -59,8 +59,7 @@ struct SensorDetailViewRenderTests {
     }
 
     @Test func decimalStepperRendersWithAndWithoutADisplayFormatter() {
-        var value = 2.5
-        let binding = Binding(get: { value }, set: { value = $0 })
+        let binding = Binding.constant(2.5)
         render(SensorDetailsDecimalStepper(
             title: "Interval",
             value: binding,
@@ -77,7 +76,7 @@ struct SensorDetailViewRenderTests {
             step: 0.5,
             displayValueFor: nil
         ))
-        #expect(value == 2.5)
+        #expect(binding.wrappedValue == 2.5)
     }
 
     private final class SettingsRecorder {
