@@ -244,7 +244,8 @@ struct OnDeviceSpeechRecognitionSessionTests {
         recognizer.report("Turn on the kitchen light.", isFinal: true)
 
         #expect(listeningEnded == 1)
-        #expect(try await session.finish() == "Turn on the kitchen light.")
+        let transcript = try await session.finish()
+        #expect(transcript == "Turn on the kitchen light.")
         #expect(listeningEnded == 1)
     }
 
@@ -262,7 +263,8 @@ struct OnDeviceSpeechRecognitionSessionTests {
         try await Task.sleep(nanoseconds: pastTheSilence)
         recognizer.report("Turn on the kitchen light.", isFinal: true)
 
-        #expect(try await pending.value == "Turn on the kitchen light.")
+        let transcript = try await pending.value
+        #expect(transcript == "Turn on the kitchen light.")
         #expect(listeningEnded == 0)
     }
 

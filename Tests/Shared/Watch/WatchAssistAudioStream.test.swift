@@ -14,10 +14,12 @@ struct WatchAssistAudioStreamTests {
 
         private(set) var sent: [Sent] = []
 
-        var send: WatchAssistAudioStream.Send {
-            { [unowned self] message, timeout, fail in
-                self.sent.append(.init(message: message, timeout: timeout, fail: fail))
-            }
+        func record(
+            _ message: HAWatchConnectivity.InteractiveImmediateMessage,
+            _ timeout: TimeInterval,
+            _ fail: @escaping (Error) -> Void
+        ) {
+            sent.append(.init(message: message, timeout: timeout, fail: fail))
         }
 
         func sent(_ identifier: InteractiveImmediateMessages) -> [Sent] {
@@ -62,7 +64,7 @@ struct WatchAssistAudioStreamTests {
             pipelineId: "pipeline",
             serverId: "server",
             phoneSupportsStreaming: phoneSupportsStreaming,
-            send: link.send
+            send: link.record
         )
         stream.onStopRecording = { recorded.stoppedRecording += 1 }
         stream.onFailure = { _ in recorded.failures += 1 }

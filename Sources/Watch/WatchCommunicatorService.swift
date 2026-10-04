@@ -1104,7 +1104,7 @@ extension WatchCommunicatorService {
     ) async {
         let transcript: Result<String, Error>
         do {
-            transcript = .success(try await session.finish())
+            transcript = try await .success(session.finish())
         } catch {
             transcript = .failure(error)
         }
