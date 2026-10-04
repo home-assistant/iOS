@@ -25,6 +25,11 @@ final class WatchAssistService: ObservableObject {
 
     private var reachabilityObservation: HAWatchConnectivity.ObservationToken?
     private var cancellable: Cancellable?
+    /// The recording in progress, kept after it is submitted until the next one starts so the rest
+    /// of it can still go out.
+    private var audioStream: WatchAssistAudioStream?
+    /// The whole recording being uploaded; a newer recording supersedes it.
+    private var uploadingRecordingId: String?
 
     init(serverId: String, pipelineId: String) {
         self.serverId = serverId
@@ -33,6 +38,8 @@ final class WatchAssistService: ObservableObject {
     }
 
     deinit {
+        // Assist closed mid-recording: the iPhone drops the run instead of waiting for the rest.
+        audioStream?.cancel()
         endRoutine()
     }
 
@@ -72,20 +79,93 @@ final class WatchAssistService: ObservableObject {
         })
     }
 
-    func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Error?) -> Void) {
+    /// Starts sending a recording while it is made: the iPhone hears the audio as the user speaks,
+    /// and `onStopRecording` runs once it heard them stop. `onFailure` runs if the stream breaks.
+    func beginAudio(
+        sampleRate: Double,
+        onStopRecording: @escaping () -> Void,
+        onFailure: @escaping (Error) -> Void
+    ) {
+        audioStream?.cancel()
+        uploadingRecordingId = nil
+        let stream = WatchAssistAudioStream(
+            sampleRate: sampleRate,
+            pipelineId: pipelineId,
+            serverId: serverId,
+            phoneSupportsStreaming: phoneSupportsStreaming,
+            send: { Self.send($0, timeout: $1, errorHandler: $2) }
+        )
+        stream.onStopRecording = onStopRecording
+        stream.onFailure = onFailure
+        audioStream = stream
+        stream.start()
+    }
+
+    func appendAudio(_ audio: Data) {
+        audioStream?.append(audio)
+    }
+
+    /// The recording ended: the end of a stream goes out, and a recording that was not streamed is
+    /// uploaded whole. `onFailure` runs if the iPhone does not get it.
+    func submitAudio(onFailure: @escaping (Error) -> Void) {
+        guard let audioStream else { return }
+        switch audioStream.submit() {
+        case .sent:
+            break
+        case let .upload(recording):
+            upload(audio: recording, sampleRate: audioStream.sampleRate) { error in
+                if let error {
+                    onFailure(error)
+                }
+            }
+        }
+    }
+
+    /// The recording was dropped: the user was not asking anything.
+    func cancelAudio() {
+        audioStream?.cancel()
+        audioStream = nil
+    }
+
+    /// The iPhone stopped listening to the stream `streamId`.
+    func phoneStoppedListening(streamId: String) {
+        guard audioStream?.id == streamId else { return }
+        audioStream?.phoneStoppedListening()
+    }
+
+    /// An iPhone known to predate streaming gets the whole recording once it ends. One whose
+    /// version is not known yet — nothing has come back from it since launch — is tried: a stream
+    /// it does not answer falls back to the whole recording.
+    private var phoneSupportsStreaming: Bool {
+        let version = Communicator.shared.counterpartProtocolVersion ?? WatchProtocolVersion.assistAudioStream
+        return version >= WatchProtocolVersion.assistAudioStream
+    }
+
+    private static func send(
+        _ message: HAWatchConnectivity.InteractiveImmediateMessage,
+        timeout: TimeInterval,
+        errorHandler: @escaping (Error) -> Void
+    ) {
+        Communicator.shared.send(.init(
+            identifier: message.identifier,
+            content: message.content,
+            reply: { reply in
+                DispatchQueue.main.async {
+                    message.reply(reply)
+                }
+            }
+        ), timeout: timeout, priority: .userAction, errorHandler: { error in
+            DispatchQueue.main.async {
+                errorHandler(error)
+            }
+        })
+    }
+
+    /// Uploads a finished recording, for an iPhone that does not stream it.
+    private func upload(audio audioData: Data, sampleRate: Double, completion: @escaping (Error?) -> Void) {
         cancellable?.cancel()
         guard Communicator.shared.currentReachability == .immediatelyReachable else {
             completion(WatchSendError.notImmediate)
-            return
-        }
-
-        let audioData: Data
-        do {
-            audioData = try Data(contentsOf: audioURL)
-            try FileManager.default.removeItem(at: audioURL)
-        } catch {
-            Current.Log.error("Watch assist failed: \(error.localizedDescription)")
-            completion(error)
             return
         }
 
@@ -93,11 +173,13 @@ final class WatchAssistService: ObservableObject {
 
         let chunkSize = 32 * 1024 // 32 KB
         let totalChunks = max(1, Int(ceil(Double(audioData.count) / Double(chunkSize))))
+        // Unique per recording so the phone never mixes chunks of an aborted/retried attempt into a
+        // later one.
+        let recordingId = UUID().uuidString
+        uploadingRecordingId = recordingId
         sendChunk(
             index: 0,
-            // Unique per recording so the phone never mixes chunks of an aborted/retried attempt
-            // into a later one.
-            recordingId: UUID().uuidString,
+            recordingId: recordingId,
             audioData: audioData,
             chunkSize: chunkSize,
             totalChunks: totalChunks,
@@ -140,13 +222,14 @@ final class WatchAssistService: ObservableObject {
             ).content,
             reply: { [weak self] _ in
                 DispatchQueue.main.async {
+                    guard let self, self.uploadingRecordingId == recordingId else { return }
                     let next = index + 1
                     guard next < totalChunks else {
                         Current.Log.verbose("All \(totalChunks) assist audio chunk(s) acknowledged")
                         completion(nil)
                         return
                     }
-                    self?.sendChunk(
+                    self.sendChunk(
                         index: next,
                         recordingId: recordingId,
                         audioData: audioData,

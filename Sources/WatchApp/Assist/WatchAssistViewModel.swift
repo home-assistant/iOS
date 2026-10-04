@@ -271,23 +271,20 @@ final class WatchAssistViewModel: ObservableObject {
         }
     }
 
-    private func sendAudioData(audioURL: URL, audioSampleRate: Double) {
-        guard assistService.deviceReachable else {
-            showUnreacheableMessage()
-            return
-        }
+    /// The recording ended, by hand or because the iPhone heard the user stop speaking.
+    private func submitRecording() {
         showChatLoader(show: true)
-        assistService.assist(audioURL: audioURL, sampleRate: audioSampleRate) { [weak self] error in
-            if let error {
-                Current.Log.error("Failed to assist from watch error: \(error.localizedDescription)")
-                self?.updateState(state: .idle)
-                #if DEBUG
-                self?.appendChatItem(.init(content: error.localizedDescription, itemType: .info))
-                #endif
-            } else {
-                Current.Log.info("sendAudioData succeeded")
-            }
+        assistService.submitAudio { [weak self] error in
+            self?.didFailToSendAudio(error)
         }
+    }
+
+    private func didFailToSendAudio(_ error: Error) {
+        Current.Log.error("Failed to send Assist audio from watch: \(error.localizedDescription)")
+        // A recording still going has nowhere to go any more.
+        audioRecorder.cancelRecording()
+        appendChatItem(.init(content: L10n.Assist.Watch.NotReachable.title, itemType: .error))
+        updateState(state: .idle)
     }
 
     func appendChatItem(_ item: AssistChatItem) {
@@ -313,21 +310,36 @@ final class WatchAssistViewModel: ObservableObject {
 
 extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
     @MainActor
-    func didStartRecording() {
+    func didStartRecording(sampleRate: Double) {
         // Set straight away rather than on a later turn of the main queue: a press that started the
         // recording can lift while the recorder is still being set up, and lifting must find it.
         state = .recording
+        // The iPhone listens while the user speaks, and stops the recording once they are done.
+        assistService.beginAudio(
+            sampleRate: sampleRate,
+            onStopRecording: { [weak self] in
+                self?.stopRecording()
+            },
+            onFailure: { [weak self] error in
+                self?.didFailToSendAudio(error)
+            }
+        )
+    }
+
+    @MainActor
+    func didRecordAudio(_ audio: Data) {
+        assistService.appendAudio(audio)
     }
 
     @MainActor
     func didStopRecording() {
-        runInMainThread { [weak self] in
-            self?.state = .waitingForPipelineResponse
-            self?.audioLevel = 0
-        }
+        state = .waitingForPipelineResponse
+        audioLevel = 0
+        submitRecording()
     }
 
     func didCancelRecording() {
+        assistService.cancelAudio()
         runInMainThread { [weak self] in
             self?.state = .idle
             self?.audioLevel = 0
@@ -340,14 +352,6 @@ extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
             let shaped = pow(Double(level), Constants.audioLevelCurve)
             let smoothing = shaped > audioLevel ? Constants.audioLevelAttack : Constants.audioLevelRelease
             audioLevel = audioLevel * (1 - smoothing) + shaped * smoothing
-        }
-    }
-
-    @MainActor
-    func didFinishRecording(audioURL: URL, audioSampleRate: Double) {
-        sendAudioData(audioURL: audioURL, audioSampleRate: audioSampleRate)
-        runInMainThread { [weak self] in
-            self?.state = .waitingForPipelineResponse
         }
     }
 
@@ -387,8 +391,14 @@ extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
     func didReceiveError(code: String, message: String) {
         Current.Log.error("Watch Assist error: \(code)")
         appendChatItem(.init(content: message, itemType: .error))
-        stopRecording()
+        // The iPhone streams the recording into the run that failed, so there is nothing left to
+        // send it to.
+        audioRecorder.cancelRecording()
         // A failed round-trip is over too: return to idle so the keep-alive ping-pong stops.
         updateState(state: .idle)
+    }
+
+    func didReceiveAudioStreamStop(streamId: String) {
+        assistService.phoneStoppedListening(streamId: streamId)
     }
 }
