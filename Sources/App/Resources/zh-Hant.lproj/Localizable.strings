@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "啟用後，即使助理設定已設定為文字轉語音、助理也不會以語音回應。仍然可以看到文字回應。";
 "assist.settings.tts_mute.toggle" = "靜音語音回應";
 "assist.text_field.placeholder" = "輸入請求...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "點擊";
 "assist.watch.not_reachable.title" = "助理需要 iPhone 連線、目前無法存取您的 iPhone。";
 "assist.watch.on_device_stt.no_speech_recognized" = "未辨識到任何語音。";
@@ -1156,6 +1157,9 @@
 "magic_item.background_color.title" = "背景顏色";
 "magic_item.display_text.title" = "顯示文字";
 "magic_item.edit" = "儲存";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "圖示顏色";
 "magic_item.icon_name.title" = "圖示名稱";
 "magic_item.item_type.action.list.title" = "iOS 操作";
@@ -1304,7 +1308,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "\"區域網絡\"隱私權限可能設為拒絕。您可以在系統設定應用中更改此設定。";
 "onboarding.device_name_check.error.prompt" = "所要使用的裝置名稱？";
 "onboarding.device_name_check.error.title" = "裝置已存在名稱 '%1$@'";
-"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
+"onboarding.device_name_check.error.unreachable" = "無法連線至 Home Assistant 以檢查裝置名稱。請檢查連線並再試一次。";
 "onboarding.invitation.accept_button" = "接受";
 "onboarding.invitation.address_title" = "Home Assistant 位址";
 "onboarding.invitation.description" = "Home Assistant 是一款以本地控制和隱私優先的開源家庭自動化系統。";
@@ -2477,6 +2481,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "vacuum.control.start" = "開始";
 "vacuum.control.stop" = "停止";
 "watch.assist.button.recording.title" = "錄製中...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "點擊以傳送請求";
 "watch.assist.lack_config.error.title" = "請設定使用 iOS companion App 設定助理";
 "watch.complications.builder.color" = "測量顏色";
@@ -2678,7 +2683,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.configurator.sections.icon.header" = "圖示";
 "watch.configurator.sections.ring.footer" = "文字周圍的圓環顯示進度。";
 "watch.configurator.sections.ring.header" = "圓環";
-"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
+"watch.context_sync.timed_out" = "等待手錶接受更新時逾時。";
 "watch.cover_controls.close" = "關閉";
 "watch.cover_controls.open" = "開啟";
 "watch.cover_controls.position" = "位置";

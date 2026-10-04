@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Quando habilitado, o Assist não reproduzirá respostas em áudio mesmo que o pipeline tenha conversão de texto em fala configurada. Você ainda verá as respostas em texto.";
 "assist.settings.tts_mute.toggle" = "Silenciar respostas de voz";
 "assist.text_field.placeholder" = "Digite uma solicitação...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Toque para";
 "assist.watch.not_reachable.title" = "O Assist requer conectividade com o iPhone. Seu iPhone está inacessível no momento.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
@@ -1156,6 +1157,9 @@ Este servidor requer um certificado de cliente (mTLS), mas a operação foi canc
 "magic_item.background_color.title" = "Cor de fundo";
 "magic_item.display_text.title" = "Exibir texto";
 "magic_item.edit" = "Salvar";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Cor do ícone";
 "magic_item.icon_name.title" = "Nome do ícone";
 "magic_item.item_type.action.list.title" = "Ações do iOS";
@@ -2477,6 +2481,7 @@ O servidor só responde enquanto o aplicativo está aberto, e para quando você 
 "vacuum.control.start" = "Iniciar";
 "vacuum.control.stop" = "Parar";
 "watch.assist.button.recording.title" = "Gravando...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Toque para enviar solicitação";
 "watch.assist.lack_config.error.title" = "Configure o Assist usando o aplicativo complementar do iOS";
 "watch.complications.builder.color" = "Cor do medidor";

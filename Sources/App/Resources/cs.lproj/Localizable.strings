@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Pokud je tato povoleno, Assist nepřehrává zvukové odpovědi, a to ani v případě, že je v kanálu nastaven převod textu na řeč. Textové odpovědi se však budou zobrazovat i nadále.";
 "assist.settings.tts_mute.toggle" = "Ztlumit hlasové odpovědi";
 "assist.text_field.placeholder" = "Zadejte požadavek…";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
 "assist.watch.on_device_stt.no_speech_recognized" = "Nebyla rozpoznána žádná řeč.";
@@ -1156,6 +1157,9 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "magic_item.background_color.title" = "Barva pozadí";
 "magic_item.display_text.title" = "Zobrazit text";
 "magic_item.edit" = "Uložit";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Barva ikony";
 "magic_item.icon_name.title" = "Název ikony";
 "magic_item.item_type.action.list.title" = "Akce iOS";
@@ -1304,7 +1308,7 @@ Aktuálně je mTLS podporováno jen v systému iOS 17+. Může způsobovat probl
 "onboarding.connection_test_result.local_network_permission.description" = "Oprávnění soukromí pro položku \"Sítě a bezdrátové připojení\" mohlo být odepřeno. Toto můžete změnit v nastavení iPhonu.";
 "onboarding.device_name_check.error.prompt" = "Jaký název zařízení by měl být místo toho použit?";
 "onboarding.device_name_check.error.title" = "Zařízení s názvem \"%1$@\" již existuje";
-"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
+"onboarding.device_name_check.error.unreachable" = "Nepodařilo se spojit s Home Assistantem a ověřit název zařízení. Zkontrolujte připojení a zkuste to znovu.";
 "onboarding.invitation.accept_button" = "Přijmout";
 "onboarding.invitation.address_title" = "Adresa Home Assistanta";
 "onboarding.invitation.description" = "Home Assistant je open source domácí automatizace, která klade důraz na lokální ovládání a soukromí.";
@@ -2477,6 +2481,7 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "vacuum.control.start" = "Spustit";
 "vacuum.control.stop" = "Zastavit";
 "watch.assist.button.recording.title" = "Nahrávání...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Klepnutím odešlete požadavek";
 "watch.assist.lack_config.error.title" = "Nastavte Assist pomocí doprovodné aplikace pro iOS";
 "watch.complications.builder.color" = "Barva ukazatele";
@@ -2678,7 +2683,7 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "watch.configurator.sections.icon.header" = "Ikona";
 "watch.configurator.sections.ring.footer" = "Kroužek znázorňující průběh kolem textu.";
 "watch.configurator.sections.ring.header" = "Kroužek";
-"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
+"watch.context_sync.timed_out" = "Časový limit pro čekání na přijetí aktualizace hodinkami vypršel.";
 "watch.cover_controls.close" = "Zavřít";
 "watch.cover_controls.open" = "Otevřít";
 "watch.cover_controls.position" = "Pozice";

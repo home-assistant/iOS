@@ -389,6 +389,7 @@
 "assist.settings.tts_mute.toggle" = "Mute voice responses";
 "assist.text_field.placeholder" = "Enter a request...";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
+"assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Volume control";

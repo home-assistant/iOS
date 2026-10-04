@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "När funktionen är aktiverad kommer Assist inte att spela upp ljudsvar, även om text-till-tal-funktionen är konfigurerad i pipelinen. Du kommer fortfarande att se textsvaren.";
 "assist.settings.tts_mute.toggle" = "Stäng av röstsvar";
 "assist.text_field.placeholder" = "Ange en begäran...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Tryck för att";
 "assist.watch.not_reachable.title" = "Assistenten kräver iPhone-anslutning. Din iPhone är för närvarande inte nåbar.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
@@ -1154,6 +1155,9 @@
 "magic_item.background_color.title" = "Bakgrundsfärg";
 "magic_item.display_text.title" = "Visa text";
 "magic_item.edit" = "Spara";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Ikonfärg";
 "magic_item.icon_name.title" = "Ikonnamn";
 "magic_item.item_type.action.list.title" = "iOS Actions";
@@ -2472,6 +2476,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "vacuum.control.start" = "Starta";
 "vacuum.control.stop" = "Stoppa";
 "watch.assist.button.recording.title" = "Spelar in...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Tryck för att skicka förfrågan";
 "watch.assist.lack_config.error.title" = "Vänligen konfigurera Assistenten med hjälp av iOS Companion App";
 "watch.complications.builder.color" = "Mätarens färg";
