@@ -49,13 +49,18 @@ struct OnDeviceSpeechRecognitionSessionTests {
     /// grace period shortens it.
     private func makeSession(
         recognizer: FakeRecognizer,
-        gracePeriod: TimeInterval = 30
+        gracePeriod: TimeInterval = 30,
+        silenceTimeout: TimeInterval = OnDeviceSpeechRecognitionSession.defaultSilenceTimeout
     ) throws -> OnDeviceSpeechRecognitionSession {
         try OnDeviceSpeechRecognitionSession(
             format: .init(rate: 16000, width: 2, channels: 1),
-            gracePeriod: gracePeriod
+            gracePeriod: gracePeriod,
+            silenceTimeout: silenceTimeout
         ) { recognizer }
     }
+
+    /// Long enough for a pause shorter than it to never end the listening.
+    private let pastTheSilence: UInt64 = 200_000_000
 
     private func pcm(_ samples: [Int16]) -> Data {
         samples.withUnsafeBufferPointer { Data(buffer: $0) }
@@ -157,6 +162,80 @@ struct OnDeviceSpeechRecognitionSessionTests {
 
         let recognised = try await session.finish()
         #expect(recognised == "first")
+    }
+
+    /// A client streaming live audio stops recording once the speaker pauses, without waiting for
+    /// the user to say they are done.
+    @Test func endsListeningOnceTheSpeakerPauses() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("turn on the")
+        try await Task.sleep(nanoseconds: pastTheSilence)
+
+        #expect(listeningEnded == 1)
+    }
+
+    /// Silence before the first word is the user getting ready to speak, not the end of a request.
+    @Test func keepsListeningUntilWordsAreHeard() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("")
+        try await Task.sleep(nanoseconds: pastTheSilence)
+
+        #expect(listeningEnded == 0)
+    }
+
+    @Test func endsListeningWhenTheRecognizerAlreadyHasItsAnswer() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("Turn on the kitchen light.", isFinal: true)
+
+        #expect(listeningEnded == 1)
+        #expect(try await session.finish() == "Turn on the kitchen light.")
+        #expect(listeningEnded == 1)
+    }
+
+    /// Once the audio has ended there is no recording left to stop.
+    @Test func finishingEndsTheWaitForAPause() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+        recognizer.report("turn on the")
+
+        let pending = Task { try await session.finish() }
+        try await Task.sleep(nanoseconds: pastTheSilence)
+        recognizer.report("Turn on the kitchen light.", isFinal: true)
+
+        #expect(try await pending.value == "Turn on the kitchen light.")
+        #expect(listeningEnded == 0)
+    }
+
+    @Test func cancellingEndsTheWaitForAPause() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+        recognizer.report("turn on the")
+
+        session.cancel()
+        try await Task.sleep(nanoseconds: pastTheSilence)
+
+        #expect(listeningEnded == 0)
     }
 
     @Test func cancellingStopsTheRecognizer() throws {
