@@ -2,7 +2,11 @@ import Shared
 import SwiftUI
 
 /// Temporary, CI only: shows the Assist recording screen in the state named by the `AssistSnapshot`
-/// launch argument (`tap-0`, `release-60`, …) so the screen can be captured with `simctl`.
+/// launch argument so the screen can be captured with `simctl`.
+/// - `tap-<level>` / `release-<level>`: that recording state, already settled, at that level (0...100).
+/// - `hold`: the real press-and-hold flow, through the view model: the screen is idle, then a press
+///   starts a recording, the view model turns it into release-to-send once the press lasts, and the
+///   voice level rises to the loudest.
 struct WatchAssistSnapshotRoot: View {
     var body: some View {
         if let scenario = UserDefaults.standard.string(forKey: "AssistSnapshot") {
@@ -13,6 +17,8 @@ struct WatchAssistSnapshotRoot: View {
     }
 }
 
+private let snapshotRecorder = SnapshotRecorder()
+
 private struct WatchAssistSnapshotScreen: View {
     let scenario: String
     @State private var viewModel = WatchAssistSnapshotScreen.makeViewModel()
@@ -21,15 +27,21 @@ private struct WatchAssistSnapshotScreen: View {
         WatchAssistView(viewModel: viewModel)
             .environment(\.assistOrbFixedTime, 0)
             .task {
-                // After the screen's own appearance work, which starts a (fake) recording.
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                apply()
+                if scenario == "hold" {
+                    try? await Task.sleep(nanoseconds: 3_000_000_000)
+                    snapshotRecorder.isArmed = true
+                    // What the push-to-talk button style calls when the finger lands.
+                    viewModel.beginPushToTalk(at: Date())
+                } else {
+                    // After the screen's own appearance work.
+                    try? await Task.sleep(nanoseconds: 1_500_000_000)
+                    applySettledState()
+                }
             }
     }
 
-    private func apply() {
+    private func applySettledState() {
         let parts = scenario.split(separator: "-")
-        viewModel.assistService.deviceReachable = true
         viewModel.recordingSubmission = parts.first == "release" ? .release : .tap
         viewModel.audioLevel = (parts.count > 1 ? Double(parts[1]) ?? 0 : 0) / 100
         viewModel.state = .recording
@@ -38,7 +50,7 @@ private struct WatchAssistSnapshotScreen: View {
     private static func makeViewModel() -> WatchAssistViewModel {
         let viewModel = WatchAssistViewModel(
             assistService: WatchAssistService(serverId: "snapshot", pipelineId: "snapshot"),
-            audioRecorder: SnapshotRecorder(),
+            audioRecorder: snapshotRecorder,
             audioPlayer: AudioPlayer(),
             immediateCommunicatorService: ImmediateCommunicatorService()
         )
@@ -51,12 +63,42 @@ private struct WatchAssistSnapshotScreen: View {
     }
 }
 
+/// Stands in for the microphone: once armed, a start reports a recording, and the level follows
+/// what the real recorder emits — nothing for the first second, then 20 times a second, here rising
+/// from silence to the loudest over two seconds and staying there.
 private final class SnapshotRecorder: ObservableObject, WatchAudioRecorderProtocol {
     weak var delegate: WatchAudioRecorderDelegate?
+    var isArmed = false
+    private var isRecording = false
+    private var levelTimer: Timer?
 
-    func startRecording() {}
+    func startRecording() {
+        guard isArmed else { return }
+        if isRecording {
+            stopRecording()
+            return
+        }
+        isRecording = true
+        delegate?.didStartRecording(sampleRate: 16000)
+        let levelsStart = Date().addingTimeInterval(1)
+        levelTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 20, repeats: true) { [weak self] _ in
+            let elapsed = Date().timeIntervalSince(levelsStart)
+            guard let self, elapsed >= 0 else { return }
+            delegate?.didUpdateAudioLevel(Float(min(1, elapsed / 2)))
+        }
+    }
 
-    func stopRecording() {}
+    func stopRecording() {
+        guard isRecording else { return }
+        isRecording = false
+        levelTimer?.invalidate()
+        delegate?.didStopRecording()
+    }
 
-    func cancelRecording() {}
+    func cancelRecording() {
+        guard isRecording else { return }
+        isRecording = false
+        levelTimer?.invalidate()
+        delegate?.didCancelRecording()
+    }
 }

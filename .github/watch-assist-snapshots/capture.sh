@@ -53,4 +53,11 @@ while read -r udid name; do
     xcrun simctl io "$udid" screenshot --type=png "$out/$slug-$scenario.png" > /dev/null 2>&1
     echo "Captured $label $name $scenario"
   done
+  # The press-and-hold flow as it plays out: screenshots back to back, from the idle screen through
+  # the press, the switch to release-to-send and the voice getting louder.
+  xcrun simctl launch --terminate-running-process "$udid" "$bundle" -AssistSnapshot hold > /dev/null
+  for frame in $(seq -w 1 36); do
+    xcrun simctl io "$udid" screenshot --type=png "$out/$slug-hold-$frame.png" > /dev/null 2>&1
+  done
+  echo "Captured $label $name hold"
 done <<< "$devices"
