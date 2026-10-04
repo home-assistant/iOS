@@ -74,11 +74,7 @@ final class AppDatabaseUpdaterTests: XCTestCase {
         Current.connectivity.refreshNetworkInformation = {}
         Current.setCachedApi(api, for: server.identifier)
 
-        updater = AppDatabaseUpdater()
-        // The updater seeds its foreground state on the main queue; let that run before updating.
-        let seeded = expectation(description: "foreground state seeded")
-        DispatchQueue.main.async { seeded.fulfill() }
-        wait(for: [seeded], timeout: 5)
+        updater = makeUpdater()
     }
 
     override func tearDown() {
@@ -151,8 +147,11 @@ final class AppDatabaseUpdaterTests: XCTestCase {
         areasProvider.configure(serverId: server.identifier.rawValue)
         runUpdate(forceUpdate: true)
 
-        // Same registry and areas, but a different device list.
+        // Same registry and areas, but a different device list. A fresh updater, so the run isn't
+        // deduplicated against the first one while that is still being dequeued.
         connection.responses = Self.responses(deviceNames: ["Bridge", "Speaker"])
+        updater.stop()
+        updater = makeUpdater()
         runUpdate(forceUpdate: true)
 
         let serverId = server.identifier.rawValue
@@ -201,6 +200,15 @@ final class AppDatabaseUpdaterTests: XCTestCase {
     }
 
     // MARK: - Helpers
+
+    private func makeUpdater() -> AppDatabaseUpdater {
+        let updater = AppDatabaseUpdater()
+        // The updater seeds its foreground state on the main queue; let that run before updating.
+        let seeded = expectation(description: "foreground state seeded")
+        DispatchQueue.main.async { seeded.fulfill() }
+        wait(for: [seeded], timeout: 5)
+        return updater
+    }
 
     private func runUpdate(forceUpdate: Bool) {
         let server = server!
