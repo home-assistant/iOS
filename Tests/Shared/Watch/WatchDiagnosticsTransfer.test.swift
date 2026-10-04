@@ -18,7 +18,8 @@ struct WatchDiagnosticsTransferTests {
 
         #expect(saved.lastPathComponent == fileName)
         #expect(saved.deletingLastPathComponent().standardizedFileURL == AppConstants.LogsDirectory.standardizedFileURL)
-        #expect(try Data(contentsOf: saved) == Data("archive".utf8))
+        let stored1 = try Data(contentsOf: saved)
+        #expect(stored1 == Data("archive".utf8))
     }
 
     @Test func aNewArchiveReplacesThePreviousOne() throws {
@@ -37,7 +38,8 @@ struct WatchDiagnosticsTransferTests {
 
         #expect(second.lastPathComponent == "received.watch-logs.zip")
         #expect(FileManager.default.fileExists(atPath: first.path) == false)
-        #expect(try Data(contentsOf: second) == Data("second".utf8))
+        let stored2 = try Data(contentsOf: second)
+        #expect(stored2 == Data("second".utf8))
     }
 
     @Test func blobIdentifierIsStable() {

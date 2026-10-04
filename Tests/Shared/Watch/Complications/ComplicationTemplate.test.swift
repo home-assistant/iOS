@@ -11,17 +11,32 @@ struct ComplicationTemplateTests {
     }
 
     @Test func styleSharesOneLabelAcrossFamilies() {
-        #expect(ComplicationTemplate.CircularSmallRingImage.style == L10n.Watch.Labels.ComplicationTemplate.Style.ringImage)
+        #expect(
+            ComplicationTemplate.CircularSmallRingImage.style == L10n.Watch.Labels.ComplicationTemplate.Style
+                .ringImage
+        )
         #expect(ComplicationTemplate.UtilitarianSmallRingImage.style == ComplicationTemplate.ExtraLargeRingImage.style)
-        #expect(ComplicationTemplate.GraphicCornerStackText.style == L10n.Watch.Labels.ComplicationTemplate.Style.stackText)
+        #expect(
+            ComplicationTemplate.GraphicCornerStackText.style == L10n.Watch.Labels.ComplicationTemplate.Style
+                .stackText
+        )
         #expect(
             ComplicationTemplate.GraphicRectangularStandardBody.style
                 == ComplicationTemplate.ModularLargeStandardBody.style
         )
         #expect(ComplicationTemplate.UtilitarianLargeFlat.style == L10n.Watch.Labels.ComplicationTemplate.Style.flat)
-        #expect(ComplicationTemplate.GraphicCircularImage.style == ComplicationTemplate.GraphicCornerCircularImage.style)
-        #expect(ComplicationTemplate.GraphicRectangularTextGauge.style == L10n.Watch.Labels.ComplicationTemplate.Style.textGauge)
-        #expect(ComplicationTemplate.GraphicCornerTextImage.style == L10n.Watch.Labels.ComplicationTemplate.Style.textImage)
+        #expect(
+            ComplicationTemplate.GraphicCircularImage.style == ComplicationTemplate.GraphicCornerCircularImage
+                .style
+        )
+        #expect(
+            ComplicationTemplate.GraphicRectangularTextGauge.style == L10n.Watch.Labels.ComplicationTemplate.Style
+                .textGauge
+        )
+        #expect(
+            ComplicationTemplate.GraphicCornerTextImage.style == L10n.Watch.Labels.ComplicationTemplate.Style
+                .textImage
+        )
         #expect(
             ComplicationTemplate.GraphicBezelCircularText.description
                 == L10n.Watch.Labels.ComplicationTemplate.GraphicBezelCircularText.description

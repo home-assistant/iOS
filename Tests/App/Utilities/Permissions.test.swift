@@ -98,7 +98,10 @@ final class PermissionsTests: XCTestCase {
             L10n.Onboarding.Permissions.Location.Bullet.history,
             L10n.Onboarding.Permissions.Location.Bullet.wifi,
         ])
-        XCTAssertEqual(PermissionType.motion.enableBulletPoints.map(\.icon), [.walkIcon, .mapMarkerDistanceIcon, .bikeIcon])
+        XCTAssertEqual(
+            PermissionType.motion.enableBulletPoints.map(\.icon),
+            [.walkIcon, .mapMarkerDistanceIcon, .bikeIcon]
+        )
         XCTAssertEqual(PermissionType.notification.enableBulletPoints.map(\.text), [
             L10n.Onboarding.Permissions.Notification.Bullet.alert,
             L10n.Onboarding.Permissions.Notification.Bullet.commands,

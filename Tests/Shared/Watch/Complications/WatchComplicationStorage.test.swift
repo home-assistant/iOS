@@ -73,7 +73,8 @@ struct WatchComplicationStorageTests {
 
             let forA: [WatchComplication] = try WatchComplication.all(forServerIdentifier: "a")
             #expect(Set(forA.map(\.identifier)) == ["a1", "a2"])
-            #expect(try WatchComplication.all(forServerIdentifier: "missing").isEmpty)
+            let stored1 = try WatchComplication.all(forServerIdentifier: "missing")
+            #expect(stored1.isEmpty)
         }
     }
 
@@ -86,7 +87,8 @@ struct WatchComplicationStorageTests {
 
             try drop.delete()
 
-            #expect(try storedIdentifiers() == ["keep"])
+            let stored2 = try storedIdentifiers()
+            #expect(stored2 == ["keep"])
         }
     }
 
@@ -99,10 +101,12 @@ struct WatchComplicationStorageTests {
                 complication("new2", server: "b", createdAt: 3000),
             ])
 
-            #expect(try storedIdentifiers() == ["new1", "new2"])
+            let stored3 = try storedIdentifiers()
+            #expect(stored3 == ["new1", "new2"])
 
             try WatchComplication.replaceAll([])
-            #expect(try storedIdentifiers().isEmpty)
+            let stored4 = try storedIdentifiers()
+            #expect(stored4.isEmpty)
         }
     }
 
@@ -113,7 +117,8 @@ struct WatchComplicationStorageTests {
 
             try WatchComplication.deleteOrphans(keepingServerIdentifiers: ["a"])
 
-            #expect(try storedIdentifiers() == ["known"])
+            let stored5 = try storedIdentifiers()
+            #expect(stored5 == ["known"])
         }
     }
 
@@ -122,7 +127,8 @@ struct WatchComplicationStorageTests {
             try WatchComplicationConfig(id: "late", serverId: "a", sortOrder: 2).save()
             try WatchComplicationConfig(id: "early", serverId: "a", sortOrder: 1).save()
 
-            #expect(try storedConfigIds() == ["early", "late"])
+            let stored6 = try storedConfigIds()
+            #expect(stored6 == ["early", "late"])
         }
     }
 
@@ -133,16 +139,19 @@ struct WatchComplicationStorageTests {
             try WatchComplicationConfig(id: "second", serverId: "b", sortOrder: 1).save()
 
             try first.delete()
-            #expect(try storedConfigIds() == ["second"])
+            let stored7 = try storedConfigIds()
+            #expect(stored7 == ["second"])
 
             try WatchComplicationConfig.replaceAll([
                 WatchComplicationConfig(id: "x", serverId: "a", sortOrder: 0),
                 WatchComplicationConfig(id: "y", serverId: "gone", sortOrder: 1),
             ])
-            #expect(try storedConfigIds() == ["x", "y"])
+            let stored8 = try storedConfigIds()
+            #expect(stored8 == ["x", "y"])
 
             try WatchComplicationConfig.deleteOrphans(keepingServerIds: ["a"])
-            #expect(try storedConfigIds() == ["x"])
+            let stored9 = try storedConfigIds()
+            #expect(stored9 == ["x"])
         }
     }
 

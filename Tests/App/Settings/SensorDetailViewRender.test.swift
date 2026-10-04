@@ -38,7 +38,7 @@ struct SensorDetailViewRenderTests {
             let viewModel = SensorDetailViewModel(sensor: sensor, server: server)
             #expect(viewModel.isEnabled)
             #expect(viewModel.deviceClass == "battery")
-            #expect(viewModel.attributes.map(\.key) == ["area", "frames"])
+            #expect(viewModel.attributes.map { $0.key } == ["area", "frames"])
             #expect(viewModel.settingsViews.count == 9)
             #expect(viewModel.showsFocusConfiguration == false)
 
