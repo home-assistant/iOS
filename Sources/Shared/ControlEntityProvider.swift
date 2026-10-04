@@ -198,10 +198,10 @@ public final class ControlEntityProvider {
     /// requested entity, so it is cancelled as soon as that arrives.
     ///
     /// Returns `nil` when the batch can't be made — a server too old for it, no API, a websocket that
-    /// can't deliver it in time, or a refused subscription — so the caller can fall back to
-    /// `state(server:entityId:)`. An entity the server doesn't have is left out, as a REST request for
-    /// it would have failed.
-    public func states(server: Server, entityIds: [String]) async -> [String: State]? {
+    /// can't deliver it, a refused subscription, or no answer within `timeout` — so the caller can fall
+    /// back to `state(server:entityId:)`. An entity the server doesn't have is left out, as a REST
+    /// request for it would have failed.
+    public func states(server: Server, entityIds: [String], timeout: TimeInterval) async -> [String: State]? {
         guard !entityIds.isEmpty else { return [:] }
 
         guard server.info.version >= .canSubscribeEntitiesByIds else {
@@ -218,7 +218,11 @@ public final class ControlEntityProvider {
             return nil
         }
 
-        guard let entities = await sendStatesSubscription(connection: connection, entityIds: entityIds) else {
+        guard let entities = await sendStatesSubscription(
+            connection: connection,
+            entityIds: entityIds,
+            timeout: timeout
+        ) else {
             return nil
         }
 
@@ -268,13 +272,25 @@ public final class ControlEntityProvider {
     }
 
     /// Sends `subscribe_entities` for `entityIds` and returns its first event's entities, honoring task
-    /// cancellation the same way `sendStateRequest` does. A refused subscription resolves to `nil`.
+    /// cancellation the same way `sendStateRequest` does. A refused or unanswered subscription resolves
+    /// to `nil`.
     private func sendStatesSubscription(
         connection: HAConnection,
-        entityIds: [String]
+        entityIds: [String],
+        timeout: TimeInterval
     ) async -> [String: HACompressedEntityState]? {
         typealias Entities = [String: HACompressedEntityState]
         let request = PendingRequest<Entities>(cancelsOnSettle: true)
+
+        // HAKit drops a subscription it couldn't send within its retry window without calling either
+        // handler, and a websocket that never comes up never answers, so only a timeout guarantees one.
+        let timeoutTask = Task {
+            try? await Task.sleep(nanoseconds: UInt64(max(timeout, 0) * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            Current.Log.info("Giving up on batched states after \(timeout)s without an answer")
+            request.finish(with: nil)
+        }
+        defer { timeoutTask.cancel() }
 
         // A websocket that drops into a reconnect backoff, or is rejected, while the subscription is
         // out won't deliver it in time either. Giving up then leaves the caller time to fall back.

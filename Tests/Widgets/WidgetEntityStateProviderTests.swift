@@ -104,15 +104,15 @@ final class WidgetEntityStateProviderTests: XCTestCase {
     /// Cores before 2022.4 don't accept `entity_ids`, so their tiles are read over REST.
     func testServerTooOldForTheBatchIsReadOverREST() async throws {
         let (server, connection) = addServer(version: Version(major: 2022, minor: 3))
-        let items = [item("light.kitchen", on: server), item("switch.desk", on: server)]
+        let tile = item("light.kitchen", on: server)
         let provider = stateProvider()
 
-        let fetch = Task { await provider.states(showStates: true, items: items) }
+        let fetch = Task { await provider.states(showStates: true, items: [tile]) }
 
-        try await answerStateRequests(on: connection, count: items.count)
+        try await answerStateRequest(on: connection)
 
         let states = await fetch.value
-        XCTAssertEqual(items.map { states[$0]?.value }, ["On", "On"])
+        XCTAssertEqual(states[tile]?.value, "On")
         XCTAssertTrue(connection.pendingSubscriptions.isEmpty)
     }
 
@@ -120,17 +120,17 @@ final class WidgetEntityStateProviderTests: XCTestCase {
     /// subscription is cancelled so HAKit doesn't retry it later.
     func testRefusedSubscriptionFallsBackToREST() async throws {
         let (server, connection) = addServer()
-        let items = [item("light.kitchen", on: server), item("switch.desk", on: server)]
+        let tile = item("light.kitchen", on: server)
         let provider = stateProvider()
 
-        let fetch = Task { await provider.states(showStates: true, items: items) }
+        let fetch = Task { await provider.states(showStates: true, items: [tile]) }
 
         let subscription = try await pendingSubscription(on: connection)
         subscription.initiated(.failure(.external(.init(code: "unknown_command", message: "Unknown command."))))
-        try await answerStateRequests(on: connection, count: items.count)
+        try await answerStateRequest(on: connection)
 
         let states = await fetch.value
-        XCTAssertEqual(items.map { states[$0]?.value }, ["On", "On"])
+        XCTAssertEqual(states[tile]?.value, "On")
         XCTAssertTrue(subscription.cancellable.wasCancelled)
     }
 
@@ -139,15 +139,15 @@ final class WidgetEntityStateProviderTests: XCTestCase {
     func testWebsocketInBackoffSkipsTheBatch() async throws {
         let (server, connection) = addServer()
         connection.setState(.disconnected(reason: Self.backoff), waitForQueue: false)
-        let items = [item("light.kitchen", on: server)]
+        let tile = item("light.kitchen", on: server)
         let provider = stateProvider()
 
-        let fetch = Task { await provider.states(showStates: true, items: items) }
+        let fetch = Task { await provider.states(showStates: true, items: [tile]) }
 
-        try await answerStateRequests(on: connection, count: items.count)
+        try await answerStateRequest(on: connection)
 
         let states = await fetch.value
-        XCTAssertEqual(states[items[0]]?.value, "On")
+        XCTAssertEqual(states[tile]?.value, "On")
         XCTAssertTrue(connection.pendingSubscriptions.isEmpty)
     }
 
@@ -155,17 +155,20 @@ final class WidgetEntityStateProviderTests: XCTestCase {
     /// straight away, leaving the rest of the deadline to the REST fallback.
     func testWebsocketFallingIntoBackoffFallsBackToREST() async throws {
         let (server, connection) = addServer()
-        let items = [item("light.kitchen", on: server), item("switch.desk", on: server)]
+        let tile = item("light.kitchen", on: server)
         let provider = stateProvider()
 
-        let fetch = Task { await provider.states(showStates: true, items: items) }
+        let fetch = Task { await provider.states(showStates: true, items: [tile]) }
 
         let subscription = try await pendingSubscription(on: connection)
+        // The mock records the subscription before it starts connecting, which would overwrite a
+        // backoff set any earlier.
+        try await waitUntil(connection, is: .connecting)
         connection.setState(.disconnected(reason: Self.backoff), waitForQueue: false)
-        try await answerStateRequests(on: connection, count: items.count)
+        try await answerStateRequest(on: connection)
 
         let states = await fetch.value
-        XCTAssertEqual(items.map { states[$0]?.value }, ["On", "On"])
+        XCTAssertEqual(states[tile]?.value, "On")
         XCTAssertTrue(subscription.cancellable.wasCancelled)
     }
 
@@ -185,7 +188,7 @@ final class WidgetEntityStateProviderTests: XCTestCase {
         subscription.handler(subscription.cancellable, entitiesEvent([
             "light.kitchen": ["s": "off", "a": [String: Any]()],
         ]))
-        try await answerStateRequests(on: oldConnection, count: 1)
+        try await answerStateRequest(on: oldConnection)
 
         let states = await fetch.value
         XCTAssertEqual(states[currentLight]?.value, "Off")
@@ -208,7 +211,7 @@ final class WidgetEntityStateProviderTests: XCTestCase {
         let (server, connection) = addServer()
 
         let fetch = Task {
-            await ControlEntityProvider(domains: []).states(server: server, entityIds: ["light.kitchen"])
+            await ControlEntityProvider(domains: []).states(server: server, entityIds: ["light.kitchen"], timeout: 60)
         }
 
         let subscription = try await pendingSubscription(on: connection)
@@ -216,6 +219,22 @@ final class WidgetEntityStateProviderTests: XCTestCase {
 
         let states = await fetch.value
         XCTAssertNil(states)
+        XCTAssertTrue(subscription.cancellable.wasCancelled)
+    }
+
+    /// A subscription that gets no answer — HAKit dropping it, or a websocket that never comes up —
+    /// gives up after the timeout so the caller can fall back, and is dropped.
+    func testBatchWithoutAnAnswerGivesUpAfterTheTimeout() async throws {
+        let (server, connection) = addServer()
+
+        let states = await ControlEntityProvider(domains: []).states(
+            server: server,
+            entityIds: ["light.kitchen"],
+            timeout: 0.05
+        )
+
+        XCTAssertNil(states)
+        let subscription = try XCTUnwrap(connection.pendingSubscriptions.first)
         XCTAssertTrue(subscription.cancellable.wasCancelled)
     }
 
@@ -287,22 +306,31 @@ final class WidgetEntityStateProviderTests: XCTestCase {
             }
             try await Task.sleep(nanoseconds: 10 * NSEC_PER_MSEC)
         }
-        throw NeverSent()
+        throw TimedOut()
     }
 
-    /// Waits for `count` REST `/states` requests and answers each with an entity that is on.
-    private func answerStateRequests(on connection: HAMockConnection, count: Int) async throws {
+    /// Waits for the REST `/states` request and answers it with an entity that is on. Each test sends
+    /// at most one per connection: the mock's request list isn't safe to append to from several tasks.
+    private func answerStateRequest(on connection: HAMockConnection) async throws {
         for _ in 0 ..< 200 {
-            if connection.pendingRequests.count >= count {
-                for request in connection.pendingRequests {
-                    request.completion(.success(HAData(value: ["state": "on", "attributes": [String: Any]()])))
-                }
+            if let request = connection.pendingRequests.first {
+                request.completion(.success(HAData(value: ["state": "on", "attributes": [String: Any]()])))
                 return
             }
             try await Task.sleep(nanoseconds: 10 * NSEC_PER_MSEC)
         }
-        throw NeverSent()
+        throw TimedOut()
     }
 
-    private struct NeverSent: Error {}
+    private func waitUntil(_ connection: HAMockConnection, is state: HAConnectionState) async throws {
+        for _ in 0 ..< 200 {
+            if connection.state == state {
+                return
+            }
+            try await Task.sleep(nanoseconds: 10 * NSEC_PER_MSEC)
+        }
+        throw TimedOut()
+    }
+
+    private struct TimedOut: Error {}
 }

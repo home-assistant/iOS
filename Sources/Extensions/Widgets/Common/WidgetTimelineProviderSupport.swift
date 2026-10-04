@@ -100,6 +100,9 @@ struct WidgetEntityStateProvider {
     /// stopped answering, an active URL that is no longer reachable — has to cost the widget one
     /// stale tile rather than the entire refresh.
     private static let fetchDeadline: TimeInterval = 8
+    /// How long a server's batch gets before its tiles fall back to one REST request each. Shorter than
+    /// `fetchDeadline`, so a websocket that is slow to come up still leaves that fallback time to run.
+    private static let batchTimeout: TimeInterval = 5
 
     let logPrefix: String
     let cacheValiditySeconds: TimeInterval
@@ -163,9 +166,9 @@ struct WidgetEntityStateProvider {
     ///
     /// Each server is asked once, for all of its items. A request per tile queued the later tiles
     /// behind the first few, where a websocket reset in the widget process could drop them, so a
-    /// refresh came back with only its first handful of states. A server that can't take the batch
-    /// falls back to one REST request per item, sent all at once so they cost the slowest of them
-    /// rather than their sum.
+    /// refresh came back with only its first handful of states. A server that can't take the batch, or
+    /// doesn't answer it within `batchTimeout`, falls back to one REST request per item, sent all at
+    /// once so they cost the slowest of them rather than their sum.
     private func fetchStates(for items: [MagicItem]) async -> [MagicItem: WidgetEntityState] {
         let itemsPerServer = Dictionary(grouping: items.filter { $0.domain != nil }, by: \.serverId)
         guard !itemsPerServer.isEmpty else { return [:] }
@@ -198,7 +201,7 @@ struct WidgetEntityStateProvider {
                     states.merge(fetchedStates) { _, fetched in fetched }
                 case let .batchUnavailable(serverItems):
                     for item in serverItems {
-                        group.addTask {
+                        group.addTaskUnlessCancelled {
                             guard let state = await fetchState(for: item) else { return .fetched([:]) }
                             return .fetched([item: state])
                         }
@@ -225,7 +228,11 @@ struct WidgetEntityStateProvider {
 
         let provider = ControlEntityProvider(domains: [])
         let entityIds = Array(Set(items.map(\.id))).sorted()
-        guard let fetched = await provider.states(server: server, entityIds: entityIds) else {
+        guard let fetched = await provider.states(
+            server: server,
+            entityIds: entityIds,
+            timeout: Self.batchTimeout
+        ) else {
             return .batchUnavailable(items)
         }
 
