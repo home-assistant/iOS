@@ -1137,6 +1137,32 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.currentPageURL)
     }
 
+    func testOpenPanelRetriesNavigationUntilFrontendIsReady() async throws {
+        let server = Server.fake { info in
+            info.version = .canNavigateMoreInfoDialogThroughFrontend
+        }
+        let sut = makeSUT(server: server)
+        let messageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = messageHandler
+        let url = try XCTUnwrap(URL(
+            string: "https://home.local/?more-info-entity-id=binary_sensor.front_door"
+        ))
+
+        sut.openPanel(url)
+
+        XCTAssertTrue(messageHandler.sendExternalBusCommandWithRetryCalled)
+        XCTAssertEqual(messageHandler.sendExternalBusCommandWithRetryCommand, .navigate)
+        XCTAssertEqual(
+            messageHandler.sendExternalBusCommandWithRetryPayload?["path"] as? String,
+            "/?more-info-entity-id=binary_sensor.front_door"
+        )
+        XCTAssertFalse(messageHandler.sendExternalBusCalled)
+
+        sut.webView = WKWebView(frame: .zero)
+        messageHandler.sendExternalBusCommandWithRetryCompletion?(false)
+        await waitUntil { sut.webView.url == url }
+    }
+
     func testCurrentPageURLDropsTheQueryWhenOnlyExternalAuthWasPresent() async throws {
         let sut = makeSUT()
         sut.webView = WKWebView(frame: .zero)

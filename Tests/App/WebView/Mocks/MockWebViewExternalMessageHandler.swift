@@ -13,6 +13,7 @@ final class MockWebViewExternalMessageHandler: WebViewExternalMessageHandlerProt
     var sendExternalBusCommandWithRetryCalled = false
     var sendExternalBusCommandWithRetryCommand: WebViewExternalBusOutgoingMessage?
     var sendExternalBusCommandWithRetryPayload: [String: Any]?
+    var sendExternalBusCommandWithRetryCompletion: ((Bool) -> Void)?
     var scanImprovCalled = false
     var stopImprovScanIfNeededCalled = false
     var showAssistCalled = false
@@ -39,6 +40,15 @@ final class MockWebViewExternalMessageHandler: WebViewExternalMessageHandlerProt
         sendExternalBusCommandWithRetryCalled = true
         sendExternalBusCommandWithRetryCommand = command
         sendExternalBusCommandWithRetryPayload = payload
+    }
+
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    ) {
+        sendExternalBusCommandWithRetry(command: command, payload: payload)
+        sendExternalBusCommandWithRetryCompletion = completion
     }
 
     func scanImprov() {
