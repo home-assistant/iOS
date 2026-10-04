@@ -1102,7 +1102,7 @@ extension WatchCommunicatorService {
         server: Server,
         configuration: AssistConfiguration
     ) async {
-        let transcript: Result<String, Error>
+        let transcript: Swift.Result<String, Error>
         do {
             transcript = try await .success(session.finish())
         } catch {
