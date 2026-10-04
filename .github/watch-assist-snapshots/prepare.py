@@ -28,11 +28,12 @@ replace_once(
     "            WatchAssistSnapshotRoot()\n",
 )
 
+# Dropped outright rather than skipped for snapshot launches: installing the app also launches it in
+# the background, without the snapshot argument, and that launch would put the prompt up.
 delegate = WATCH_APP / "ExtensionDelegate.swift"
 lines = delegate.read_text().splitlines(keepends=True)
 start = next(i for i, line in enumerate(lines) if "requestAuthorization(options: options)" in line)
-lines[start] = 'if UserDefaults.standard.string(forKey: "AssistSnapshot") == nil {\n' + lines[start]
-lines[start + 2] = lines[start + 2] + "}\n"
+del lines[start:start + 3]
 delegate.write_text("".join(lines))
 
 print("Prepared the watch app for Assist snapshots")

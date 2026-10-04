@@ -28,7 +28,7 @@ app=$(find ~/Library/Developer/Xcode/DerivedData -maxdepth 6 \
 bundle=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Info.plist")
 echo "Built $app ($bundle)"
 
-# The smallest and the largest watch of the newest watchOS runtime, as "<udid> <name>" lines.
+# The smallest, a middle and the largest watch of the newest watchOS runtime, as "<udid> <name>" lines.
 devices=$(xcrun simctl list devices available -j | python3 -c '
 import json, re, sys
 runtimes = json.load(sys.stdin)["devices"]
@@ -37,7 +37,7 @@ newest = max(watch, key=lambda k: [int(n) for n in re.findall(r"\d+", k.split("w
 sized = [(int(re.search(r"\((\d+)mm\)", d["name"]).group(1)), d) for d in watch[newest]
          if re.search(r"\((\d+)mm\)", d["name"])]
 sized.sort(key=lambda pair: pair[0])
-for _, device in {id(d): (s, d) for s, d in (sized[0], sized[-1])}.values():
+for _, device in {id(d): (s, d) for s, d in (sized[0], sized[len(sized) // 2], sized[-1])}.values():
     print(device["udid"], device["name"])
 ')
 echo "$devices"
