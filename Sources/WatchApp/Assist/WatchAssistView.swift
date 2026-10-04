@@ -200,49 +200,48 @@ struct WatchAssistView: View {
     // Not a button of its own: the tap that sends the recording belongs to the push-to-talk screen
     // around it, which would otherwise compete with it for the touch.
     private var micRecording: some View {
-        AssistVoiceOrbView(
-            level: viewModel.audioLevel,
-            size: .watch,
-            accessibilityLabel: L10n.Assist.Button.Listening.title
-        )
-        // Hung under the orb rather than stacked with it, so the orb stays put when a hold turns the
-        // recording into release-to-send and this hint goes away. It hangs from a line along the orb's
-        // bottom edge: an alignment guide moving it out of the orb's frame is not honoured here.
-        .overlay(alignment: .bottom) {
-            Color.clear
-                .frame(height: .zero)
-                .overlay(alignment: .top) {
-                    if viewModel.recordingSubmission == .tap {
-                        VStack(spacing: .zero) {
-                            Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
-                                .font(.system(size: Constants.micRecordingTextFontSize))
-                                .foregroundStyle(.gray)
-                            Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
-                                .font(.footnote.bold())
-                        }
-                        // Wider than the orb it hangs from, which is all the overlay offers it.
-                        .fixedSize()
-                        .padding(.top, DesignSystem.Spaces.one)
-                        .transition(.opacity)
-                    }
-                }
-        }
-        .ignoresSafeArea()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // The finger holding the screen covers the middle, so while holding the hint sits at the top,
-        // as far from the orb's activity circle as the screen allows.
-        .overlay(alignment: .top) {
-            if viewModel.recordingSubmission == .release {
-                releaseToSendPill
-                    .transition(.opacity)
+        // Each hint keeps its room while the other one shows, so the orb between them never moves when
+        // a press turns into a hold. Both stay a two-unit space clear of the orb's loudest activity
+        // circle, which grows only as far as the room left between them.
+        VStack(spacing: DesignSystem.Spaces.two) {
+            // The finger holding the screen covers the middle, so while holding the hint sits on top.
+            releaseToSendPill
+                .opacity(viewModel.recordingSubmission == .release ? 1 : 0)
+                .accessibilityHidden(viewModel.recordingSubmission != .release)
+            GeometryReader { proxy in
+                AssistVoiceOrbView(
+                    level: viewModel.audioLevel,
+                    size: .watch,
+                    accessibilityLabel: L10n.Assist.Button.Listening.title,
+                    maximumDiameter: min(proxy.size.width, proxy.size.height)
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+            tapToSendHint
+                .opacity(viewModel.recordingSubmission == .tap ? 1 : 0)
+                .accessibilityHidden(viewModel.recordingSubmission != .tap)
         }
+        // Down into the bottom safe area, which on the watch is the screen's rounded corners: a centred
+        // line clears them, and the orb gets that much more room to grow.
+        .padding(.bottom, DesignSystem.Spaces.half)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea(edges: .bottom)
         .modify {
             if #available(watchOS 10, *) {
                 $0.background(.regularMaterial)
             } else {
                 $0.background(.black.opacity(0.5))
             }
+        }
+    }
+
+    private var tapToSendHint: some View {
+        VStack(spacing: .zero) {
+            Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
+                .font(.system(size: Constants.micRecordingTextFontSize))
+                .foregroundStyle(.gray)
+            Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                .font(.footnote.bold())
         }
     }
 

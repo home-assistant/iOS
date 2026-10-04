@@ -8,6 +8,9 @@ public struct AssistVoiceOrbView: View {
     private let level: Double
     private let size: AssistVoiceOrbSize
     private let accessibilityLabel: String
+    /// The most room the orb may take, its activity circle at the loudest level included. `nil` gives
+    /// the circle its full growth.
+    private let maximumDiameter: CGFloat?
     /// Renders the pre-iOS 26 fill and border instead of Liquid Glass, so the legacy look stays
     /// previewable alongside the current one.
     private let forcesLegacyAppearance: Bool
@@ -19,11 +22,13 @@ public struct AssistVoiceOrbView: View {
         level: Double,
         size: AssistVoiceOrbSize = .regular,
         accessibilityLabel: String,
+        maximumDiameter: CGFloat? = nil,
         forcesLegacyAppearance: Bool = false
     ) {
         self.level = level
         self.size = size
         self.accessibilityLabel = accessibilityLabel
+        self.maximumDiameter = maximumDiameter
         self.forcesLegacyAppearance = forcesLegacyAppearance
     }
 
@@ -153,20 +158,30 @@ public struct AssistVoiceOrbView: View {
     }
 
     public var body: some View {
+        let metrics = Constants.Metrics.matching(size)
+        let fit = AssistVoiceOrbFit(
+            restingDiameter: metrics.activityCircleSize * Constants.activityCircleScale,
+            loudestDiameter: metrics.activityCircleSize
+                * (Constants.activityCircleScale + Constants.activityCircleScalePerLevel),
+            maximumDiameter: maximumDiameter
+        )
+        let fittedLevel = level * fit.levelScale
         Group {
             if let fixedTime {
-                orb(at: fixedTime)
+                orb(at: fixedTime, level: fittedLevel)
             } else {
                 TimelineView(.animation) { context in
-                    orb(at: context.date.timeIntervalSinceReferenceDate)
+                    orb(at: context.date.timeIntervalSinceReferenceDate, level: fittedLevel)
                 }
             }
         }
-        .animation(Constants.levelAnimation, value: level)
+        .scaleEffect(fit.scale)
+        .frame(width: metrics.orbSize * fit.scale, height: metrics.orbSize * fit.scale)
+        .animation(Constants.levelAnimation, value: fittedLevel)
         .accessibilityLabel(accessibilityLabel)
     }
 
-    private func orb(at time: TimeInterval) -> some View {
+    private func orb(at time: TimeInterval, level: Double) -> some View {
         let appearance = Constants.Appearance.matching(colorScheme)
         let metrics = Constants.Metrics.matching(size)
 
