@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 @testable import HomeAssistant
+import SFSafeSymbols
 @testable import Shared
 import SwiftUI
 import Testing

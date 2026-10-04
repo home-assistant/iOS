@@ -217,17 +217,18 @@ final class CameraStreamServerStreamingTests: XCTestCase {
         }
 
         private func receive() {
-            connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { [weak self] data, _, isComplete, error in
-                guard let self else { return }
-                if let data {
-                    lock.lock()
-                    buffer.append(data)
-                    lock.unlock()
+            connection
+                .receive(minimumIncompleteLength: 1, maximumLength: 65536) { [weak self] data, _, isComplete, error in
+                    guard let self else { return }
+                    if let data {
+                        lock.lock()
+                        buffer.append(data)
+                        lock.unlock()
+                    }
+                    if !isComplete, error == nil {
+                        receive()
+                    }
                 }
-                if !isComplete, error == nil {
-                    receive()
-                }
-            }
         }
     }
 }

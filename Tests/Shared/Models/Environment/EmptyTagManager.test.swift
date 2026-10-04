@@ -41,8 +41,8 @@ final class EmptyTagManagerTests: XCTestCase {
         XCTAssertEqual(TagManagerError.invalidURL.errorDescription, L10n.Nfc.Write.Error.invalidUrl)
     }
 
-    private func assertRejectedAsUnavailable<T>(
-        _ promise: Promise<T>,
+    private func assertRejectedAsUnavailable(
+        _ promise: Promise<some Any>,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {

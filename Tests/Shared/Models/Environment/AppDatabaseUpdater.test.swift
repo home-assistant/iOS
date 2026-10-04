@@ -355,7 +355,7 @@ final class AppDatabaseUpdaterTests: XCTestCase {
         }
 
         init(server: Server) {
-            token = NotificationCenter.default.addObserver(
+            self.token = NotificationCenter.default.addObserver(
                 forName: .appDatabaseUpdaterDidChangePhase,
                 object: nil,
                 queue: nil
