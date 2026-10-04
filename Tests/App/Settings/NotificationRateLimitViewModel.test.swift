@@ -45,7 +45,7 @@ final class NotificationRateLimitViewModelTests: XCTestCase {
     }
 
     func testRefreshUsesTheInitialPromiseAndReportsTheResponse() async {
-        let viewModel = NotificationRateLimitViewModel(initialPromise: .value(makeResponse(remaining: 123)))
+        let viewModel = NotificationRateLimitViewModel(initialPromise: Promise.value(makeResponse(remaining: 123)))
         var reportedRemaining: Int?
         viewModel.onChange = { reportedRemaining = $0.rateLimits.remaining }
 
@@ -63,7 +63,7 @@ final class NotificationRateLimitViewModelTests: XCTestCase {
 
     /// Once loaded, appearing again doesn't reload.
     func testRefreshIfNeededOnlyLoadsOnce() async {
-        let viewModel = NotificationRateLimitViewModel(initialPromise: .value(makeResponse()))
+        let viewModel = NotificationRateLimitViewModel(initialPromise: Promise.value(makeResponse()))
         var changes = 0
         viewModel.onChange = { _ in changes += 1 }
 
@@ -77,7 +77,7 @@ final class NotificationRateLimitViewModelTests: XCTestCase {
     }
 
     func testAFailingPromiseShowsTheError() async {
-        let viewModel = NotificationRateLimitViewModel(initialPromise: .init(error: URLError(.notConnectedToInternet)))
+        let viewModel = NotificationRateLimitViewModel(initialPromise: Promise<RateLimitResponse>(error: URLError(.notConnectedToInternet)))
 
         await viewModel.refresh()
 
@@ -90,7 +90,7 @@ final class NotificationRateLimitViewModelTests: XCTestCase {
 
     /// The initial promise is used once; refreshing again asks the push server, which needs a push ID.
     func testRefreshingAgainWithoutAPushIDFails() async {
-        let viewModel = NotificationRateLimitViewModel(initialPromise: .value(makeResponse()))
+        let viewModel = NotificationRateLimitViewModel(initialPromise: Promise.value(makeResponse()))
         await viewModel.refresh()
 
         await viewModel.refresh()
@@ -107,7 +107,8 @@ final class NotificationRateLimitViewModelTests: XCTestCase {
         promise.done { _ in
             XCTFail("Expected the promise to be rejected")
         }.catch { error in
-            if case NotificationRateLimitViewModel.RateLimitError.noPushId = error {
+            if let rateLimitError = error as? NotificationRateLimitViewModel.RateLimitError,
+               case .noPushId = rateLimitError {
                 expectation.fulfill()
             } else {
                 XCTFail("Unexpected error \(error)")
@@ -118,7 +119,7 @@ final class NotificationRateLimitViewModelTests: XCTestCase {
     }
 
     func testTimerUpdatesTheCountdownUntilStopped() async throws {
-        let viewModel = NotificationRateLimitViewModel(initialPromise: .value(makeResponse()))
+        let viewModel = NotificationRateLimitViewModel(initialPromise: Promise.value(makeResponse()))
         await viewModel.refresh()
 
         viewModel.startTimer()
