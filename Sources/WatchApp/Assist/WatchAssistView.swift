@@ -200,48 +200,42 @@ struct WatchAssistView: View {
     // Not a button of its own: the tap that sends the recording belongs to the push-to-talk screen
     // around it, which would otherwise compete with it for the touch.
     private var micRecording: some View {
-        // Each hint keeps its room while the other one shows, so the orb between them never moves when
-        // a press turns into a hold. Both stay a two-unit space clear of the orb's loudest activity
-        // circle, which grows only as far as the room left between them.
-        VStack(spacing: DesignSystem.Spaces.two) {
-            // The finger holding the screen covers the middle, so while holding the hint sits on top.
-            releaseToSendPill
-                .opacity(viewModel.recordingSubmission == .release ? 1 : 0)
-                .accessibilityHidden(viewModel.recordingSubmission != .release)
-            GeometryReader { proxy in
-                AssistVoiceOrbView(
-                    level: viewModel.audioLevel,
-                    size: .watch,
-                    accessibilityLabel: L10n.Assist.Button.Listening.title,
-                    maximumDiameter: min(proxy.size.width, proxy.size.height)
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        VStack(spacing: DesignSystem.Spaces.one) {
+            AssistVoiceOrbView(
+                level: viewModel.audioLevel,
+                size: .watch,
+                accessibilityLabel: L10n.Assist.Button.Listening.title
+            )
+            // Laid over the orb rather than stacked above it, so the orb's activity circle never
+            // covers the hint and the orb does not move to make room for it.
+            .overlay(alignment: .top) {
+                if viewModel.recordingSubmission == .release {
+                    releaseToSendPill
+                        // Wider than the orb it sits on, which is all the overlay offers it.
+                        .fixedSize()
+                        .alignmentGuide(.top) { $0[.bottom] + DesignSystem.Spaces.one }
+                        .transition(.opacity)
+                }
             }
-            tapToSendHint
-                .opacity(viewModel.recordingSubmission == .tap ? 1 : 0)
-                .accessibilityHidden(viewModel.recordingSubmission != .tap)
+            // While holding, the pill above the orb is the only hint the screen needs.
+            if viewModel.recordingSubmission == .tap {
+                VStack(spacing: .zero) {
+                    Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
+                        .font(.system(size: Constants.micRecordingTextFontSize))
+                        .foregroundStyle(.gray)
+                    Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                        .font(.footnote.bold())
+                }
+            }
         }
-        // Down into the bottom safe area, which on the watch is the screen's rounded corners: a centred
-        // line clears them, and the orb gets that much more room to grow.
-        .padding(.bottom, DesignSystem.Spaces.half)
+        .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .ignoresSafeArea(edges: .bottom)
         .modify {
             if #available(watchOS 10, *) {
                 $0.background(.regularMaterial)
             } else {
                 $0.background(.black.opacity(0.5))
             }
-        }
-    }
-
-    private var tapToSendHint: some View {
-        VStack(spacing: .zero) {
-            Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
-                .font(.system(size: Constants.micRecordingTextFontSize))
-                .foregroundStyle(.gray)
-            Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
-                .font(.footnote.bold())
         }
     }
 
