@@ -200,24 +200,14 @@ struct WatchAssistView: View {
     // Not a button of its own: the tap that sends the recording belongs to the push-to-talk screen
     // around it, which would otherwise compete with it for the touch.
     private var micRecording: some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
-            AssistVoiceOrbView(
-                level: viewModel.audioLevel,
-                size: .watch,
-                accessibilityLabel: L10n.Assist.Button.Listening.title
-            )
-            // Laid over the orb rather than stacked above it, so the orb's activity circle never
-            // covers the hint and the orb does not move to make room for it.
-            .overlay(alignment: .top) {
-                if viewModel.recordingSubmission == .release {
-                    releaseToSendPill
-                        // Wider than the orb it sits on, which is all the overlay offers it.
-                        .fixedSize()
-                        .alignmentGuide(.top) { $0[.bottom] + DesignSystem.Spaces.one }
-                        .transition(.opacity)
-                }
-            }
-            // While holding, the pill above the orb is the only hint the screen needs.
+        AssistVoiceOrbView(
+            level: viewModel.audioLevel,
+            size: .watch,
+            accessibilityLabel: L10n.Assist.Button.Listening.title
+        )
+        // Hung under the orb rather than stacked with it, so the orb stays put when a hold turns the
+        // recording into release-to-send and this hint goes away.
+        .overlay(alignment: .bottom) {
             if viewModel.recordingSubmission == .tap {
                 VStack(spacing: .zero) {
                     Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
@@ -226,10 +216,22 @@ struct WatchAssistView: View {
                     Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
                         .font(.footnote.bold())
                 }
+                // Wider than the orb it hangs from, which is all the overlay offers it.
+                .fixedSize()
+                .alignmentGuide(.bottom) { $0[.top] - DesignSystem.Spaces.one }
+                .transition(.opacity)
             }
         }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // The finger holding the screen covers the middle, so while holding the hint sits at the top,
+        // where neither the finger nor the orb's activity circle reaches it.
+        .overlay(alignment: .top) {
+            if viewModel.recordingSubmission == .release {
+                releaseToSendPill
+                    .transition(.opacity)
+            }
+        }
         .modify {
             if #available(watchOS 10, *) {
                 $0.background(.regularMaterial)
