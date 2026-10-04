@@ -48,6 +48,9 @@ while read -r udid name; do
   xcrun simctl bootstatus "$udid" -b > /dev/null
   xcrun simctl install "$udid" "$app"
   for scenario in "${scenarios[@]}"; do
+    # Stored as well as passed: a launch the system makes on its own, without the argument, still
+    # opens on the scenario rather than the home screen.
+    xcrun simctl spawn "$udid" defaults write "$bundle" AssistSnapshot -string "$scenario"
     xcrun simctl launch --terminate-running-process "$udid" "$bundle" -AssistSnapshot "$scenario" > /dev/null
     sleep 7
     xcrun simctl io "$udid" screenshot --type=png "$out/$slug-$scenario.png" > /dev/null 2>&1
@@ -55,6 +58,7 @@ while read -r udid name; do
   done
   # The press-and-hold flow as it plays out: screenshots back to back, from the idle screen through
   # the press, the switch to release-to-send and the voice getting louder.
+  xcrun simctl spawn "$udid" defaults write "$bundle" AssistSnapshot -string hold
   xcrun simctl launch --terminate-running-process "$udid" "$bundle" -AssistSnapshot hold > /dev/null
   for frame in $(seq -w 1 36); do
     xcrun simctl io "$udid" screenshot --type=png "$out/$slug-hold-$frame.png" > /dev/null 2>&1
