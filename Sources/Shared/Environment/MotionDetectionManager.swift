@@ -140,10 +140,43 @@ public class MotionDetectionManager: NSObject {
     private var observers = NSHashTable<AnyObject>(options: .weakMemory)
     private var wantsRunning = false
 
+    // MARK: - Capture health
+
+    /// How often the stall watchdog checks that frames are still arriving.
+    private static let stallCheckInterval: TimeInterval = 5
+
+    /// System uptime of the last frame the camera delivered. Written on the processing
+    /// queue, read by the stall watchdog on the session queue.
+    private let lastFrameUptime = HAProtected<TimeInterval>(value: 0)
+    /// System uptime of the last time capture was started or rebuilt. Session queue only.
+    private var lastCaptureStartUptime: TimeInterval = 0
+    /// Rebuilds since frames last arrived; drives the watchdog's back-off. Session queue only.
+    private var recoveryAttempts = 0
+    /// Runs on the session queue while capture should be running.
+    private var stallWatchdog: DispatchSourceTimer?
+
     override public init() {
         super.init()
         self.captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureSessionRuntimeError(_:)),
+            name: .AVCaptureSessionRuntimeError,
+            object: captureSession
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureSessionWasInterrupted(_:)),
+            name: .AVCaptureSessionWasInterrupted,
+            object: captureSession
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureSessionInterruptionEnded),
+            name: .AVCaptureSessionInterruptionEnded,
+            object: captureSession
+        )
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationDidEnterBackground),
@@ -213,16 +246,20 @@ public class MotionDetectionManager: NSObject {
                 }
                 if self.isCaptureSessionConfigured, !self.captureSession.isRunning {
                     self.previousSamples = nil
+                    self.lastCaptureStartUptime = ProcessInfo.processInfo.systemUptime
                     self.captureSession.startRunning()
                     Current.Log.info("Motion detection: capture session started")
                 }
+                self.startStallWatchdog()
             }
         }
     }
 
     private func stopSession() {
         sessionQueue.async { [weak self] in
-            guard let self, captureSession.isRunning else { return }
+            guard let self else { return }
+            stopStallWatchdog()
+            guard captureSession.isRunning else { return }
             captureSession.stopRunning()
             previousSamples = nil
             Current.Log.info("Motion detection: capture session stopped")
@@ -246,6 +283,110 @@ public class MotionDetectionManager: NSObject {
             // may have been rotated since the session last ran.
             refreshVideoOrientation()
         }
+    }
+
+    // MARK: - Recovery
+
+    @objc private func captureSessionRuntimeError(_ notification: Notification) {
+        // The session has stopped. The stall watchdog rebuilds it once frames have been
+        // missing for a while, which also gives a camera service that was just killed
+        // time to come back.
+        let error = notification.userInfo?[AVCaptureSessionErrorKey] ?? "unknown"
+        Current.Log.error("Motion detection: capture session runtime error: \(error)")
+    }
+
+    @objc private func captureSessionWasInterrupted(_ notification: Notification) {
+        // iOS suspended capture (another app took the camera, Split View, system
+        // pressure) and resumes it by itself; the watchdog leaves it alone meanwhile.
+        let reason = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] ?? "unknown"
+        Current.Log.info("Motion detection: capture interrupted (reason: \(reason))")
+    }
+
+    @objc private func captureSessionInterruptionEnded() {
+        Current.Log.info("Motion detection: capture interruption ended")
+        sessionQueue.async { [weak self] in
+            // Give the session a full stall window to resume before judging it.
+            self?.lastCaptureStartUptime = ProcessInfo.processInfo.systemUptime
+        }
+    }
+
+    /// How long capture may go without a frame before it's rebuilt. Doubles after each
+    /// rebuild that didn't bring frames back, so a camera that stays broken isn't
+    /// restarted (and logged) every few seconds.
+    static func captureStallTimeout(afterRecoveryAttempts attempts: Int) -> TimeInterval {
+        min(10 * pow(2, Double(min(attempts, 5))), 300)
+    }
+
+    private func startStallWatchdog() {
+        guard stallWatchdog == nil else { return }
+        let timer = DispatchSource.makeTimerSource(queue: sessionQueue)
+        timer.schedule(deadline: .now() + Self.stallCheckInterval, repeating: Self.stallCheckInterval)
+        timer.setEventHandler { [weak self] in
+            self?.checkForStalledCapture()
+        }
+        timer.resume()
+        stallWatchdog = timer
+    }
+
+    private func stopStallWatchdog() {
+        stallWatchdog?.cancel()
+        stallWatchdog = nil
+        recoveryAttempts = 0
+    }
+
+    /// Rebuilds capture once frames have stopped arriving. Nothing else restarts it
+    /// while the app stays in the foreground, as a kiosk does, so after the camera
+    /// service dies or the session hits a runtime error the stream would stay dark
+    /// until the app was relaunched.
+    private func checkForStalledCapture() {
+        guard wantsRunning, !captureSession.isInterrupted else { return }
+
+        let now = ProcessInfo.processInfo.systemUptime
+        let lastFrame = lastFrameUptime.read { $0 }
+        if lastFrame > lastCaptureStartUptime {
+            recoveryAttempts = 0
+        }
+
+        let silence = now - max(lastFrame, lastCaptureStartUptime)
+        guard silence >= Self.captureStallTimeout(afterRecoveryAttempts: recoveryAttempts) else { return }
+
+        recoveryAttempts += 1
+        Current.Log.error(
+            "Motion detection: no frames for \(Int(silence)) s, rebuilding capture (attempt \(recoveryAttempts))"
+        )
+        rebuildCaptureSession()
+    }
+
+    /// Tears the capture pipeline down and builds it again around a freshly looked-up
+    /// device, rather than only restarting it, so that nothing left over from a camera
+    /// service that went away can keep it from delivering frames.
+    private func rebuildCaptureSession() {
+        if captureSession.isRunning {
+            captureSession.stopRunning()
+        }
+
+        captureSession.beginConfiguration()
+        for input in captureSession.inputs {
+            captureSession.removeInput(input)
+        }
+        for output in captureSession.outputs {
+            captureSession.removeOutput(output)
+        }
+        captureSession.commitConfiguration()
+        videoOutput?.setSampleBufferDelegate(nil, queue: nil)
+        videoOutput = nil
+        isCaptureSessionConfigured = false
+        captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+
+        lastCaptureStartUptime = ProcessInfo.processInfo.systemUptime
+        configureCaptureSession()
+        guard isCaptureSessionConfigured else { return }
+
+        processingQueue.async { [weak self] in
+            self?.previousSamples = nil
+        }
+        captureSession.startRunning()
+        Current.Log.info("Motion detection: capture session rebuilt and started")
     }
 
     // MARK: - Orientation
@@ -441,6 +582,7 @@ extension MotionDetectionManager: AVCaptureVideoDataOutputSampleBufferDelegate {
         from connection: AVCaptureConnection
     ) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        lastFrameUptime.mutate { $0 = ProcessInfo.processInfo.systemUptime }
 
         // Feed the MJPEG stream server every frame (no-op when no client is connected).
         Current.cameraStreamServer.handle(frame: pixelBuffer)

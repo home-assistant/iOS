@@ -27,5 +27,17 @@ class MotionDetectionManagerTests: XCTestCase {
     func testChangedRatioAllPixelsChanged() {
         XCTAssertEqual(MotionDetectionManager.changedRatio(previous: [0, 0], current: [255, 255]), 1)
     }
+
+    func testCaptureStallTimeoutDoublesAfterEachFailedRecovery() {
+        XCTAssertEqual(MotionDetectionManager.captureStallTimeout(afterRecoveryAttempts: 0), 10)
+        XCTAssertEqual(MotionDetectionManager.captureStallTimeout(afterRecoveryAttempts: 1), 20)
+        XCTAssertEqual(MotionDetectionManager.captureStallTimeout(afterRecoveryAttempts: 2), 40)
+        XCTAssertEqual(MotionDetectionManager.captureStallTimeout(afterRecoveryAttempts: 4), 160)
+    }
+
+    func testCaptureStallTimeoutIsCappedAtFiveMinutes() {
+        XCTAssertEqual(MotionDetectionManager.captureStallTimeout(afterRecoveryAttempts: 5), 300)
+        XCTAssertEqual(MotionDetectionManager.captureStallTimeout(afterRecoveryAttempts: 1000), 300)
+    }
 }
 #endif

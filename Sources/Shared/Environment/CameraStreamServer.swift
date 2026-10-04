@@ -3,6 +3,7 @@ import Foundation
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import CoreImage
 import CoreVideo
+import HAKit
 import KeychainAccess
 import Network
 
@@ -26,6 +27,22 @@ public class CameraStreamServer {
 
     private static let boundary = "hacameraframe"
 
+    /// A client that hasn't taken a frame for this long has stopped reading. It's
+    /// dropped rather than kept connected with nothing reaching it.
+    private static let stalledClientTimeout: TimeInterval = 30
+
+    /// A streaming client, and when the frame it is being sent was handed over.
+    private final class Client {
+        let connection: NWConnection
+        /// System uptime when the frame in flight was handed to the connection; `nil`
+        /// once it has gone out and the client is ready for the next one.
+        var sendStartedAt: TimeInterval?
+
+        init(connection: NWConnection) {
+            self.connection = connection
+        }
+    }
+
     /// Encoding in a plain SDR color space stops Core Image from trying (and failing,
     /// noisily) to build an HDR gain map for the JPEG when the camera delivers
     /// wide-gamut buffers.
@@ -35,10 +52,12 @@ public class CameraStreamServer {
     private let queue = DispatchQueue(label: "camera-stream-server")
     private let encodingQueue = DispatchQueue(label: "camera-stream-encoding")
     private var listener: NWListener?
-    private var connections: [ObjectIdentifier: NWConnection] = [:]
+    private var clients: [ObjectIdentifier: Client] = [:]
     private var active = false
     private var isObservingCamera = false
     private lazy var ciContext = CIContext(options: [.workingColorSpace: Self.sdrColorSpace])
+    /// Set while a frame is being encoded; frames that arrive meanwhile are dropped.
+    private let isEncodingFrame = HAProtected<Bool>(value: false)
 
     /// Called (on the main queue) whenever the streaming state changes, so the
     /// Camera Stream sensor can push an update.
@@ -53,11 +72,11 @@ public class CameraStreamServer {
     }
 
     public var isStreaming: Bool {
-        queue.sync { !connections.isEmpty }
+        queue.sync { !clients.isEmpty }
     }
 
     public var clientCount: Int {
-        queue.sync { connections.count }
+        queue.sync { clients.count }
     }
 
     /// The URL clients should use to consume the stream, based on the Wi-Fi
@@ -176,8 +195,17 @@ public class CameraStreamServer {
         let portValue = UInt16(min(max(port, 1024), 65535))
         guard let nwPort = NWEndpoint.Port(rawValue: portValue) else { return }
 
+        // Keepalive probes find clients that vanished without closing the connection
+        // (power loss, dropped Wi-Fi), which nothing else would notice while the camera
+        // isn't producing frames.
+        let tcpOptions = NWProtocolTCP.Options()
+        tcpOptions.enableKeepalive = true
+        tcpOptions.keepaliveIdle = 10
+        tcpOptions.keepaliveInterval = 5
+        tcpOptions.keepaliveCount = 3
+
         do {
-            let listener = try NWListener(using: .tcp, on: nwPort)
+            let listener = try NWListener(using: NWParameters(tls: nil, tcp: tcpOptions), on: nwPort)
             listener.newConnectionHandler = { [weak self] connection in
                 self?.queue.async {
                     self?.setup(connection: connection)
@@ -199,10 +227,10 @@ public class CameraStreamServer {
     private func stopListener() {
         listener?.cancel()
         listener = nil
-        for connection in connections.values {
-            connection.cancel()
+        for client in clients.values {
+            client.connection.cancel()
         }
-        connections.removeAll()
+        clients.removeAll()
     }
 
     // MARK: - Connections
@@ -210,7 +238,10 @@ public class CameraStreamServer {
     private func setup(connection: NWConnection) {
         connection.stateUpdateHandler = { [weak self] state in
             switch state {
-            case .failed, .cancelled:
+            case .failed:
+                // Cancelling releases the connection and lands back here as `.cancelled`.
+                connection.cancel()
+            case .cancelled:
                 self?.queue.async {
                     self?.remove(connection: connection)
                 }
@@ -284,9 +315,10 @@ public class CameraStreamServer {
             guard let self else { return }
             queue.async {
                 if error == nil {
-                    self.connections[ObjectIdentifier(connection)] = connection
-                    Current.Log.info("Camera stream: client connected (\(self.connections.count) total)")
+                    self.clients[ObjectIdentifier(connection)] = Client(connection: connection)
+                    Current.Log.info("Camera stream: client connected (\(self.clients.count) total)")
                     self.notifyStateChange()
+                    self.watchForDisconnect(on: connection)
                 } else {
                     connection.cancel()
                 }
@@ -294,9 +326,23 @@ public class CameraStreamServer {
         })
     }
 
+    /// Keeps reading from a streaming client so a hang-up is noticed even while nothing
+    /// is being sent to it. A client that closes its end leaves the connection `.ready`;
+    /// short of reading, only a failed write reveals it, and nothing is written while
+    /// the camera isn't delivering frames.
+    private func watchForDisconnect(on connection: NWConnection) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { [weak self] _, _, isComplete, error in
+            guard isComplete || error != nil else {
+                self?.watchForDisconnect(on: connection)
+                return
+            }
+            connection.cancel()
+        }
+    }
+
     private func remove(connection: NWConnection) {
-        guard connections.removeValue(forKey: ObjectIdentifier(connection)) != nil else { return }
-        Current.Log.info("Camera stream: client disconnected (\(connections.count) left)")
+        guard clients.removeValue(forKey: ObjectIdentifier(connection)) != nil else { return }
+        Current.Log.info("Camera stream: client disconnected (\(clients.count) left)")
         notifyStateChange()
     }
 
@@ -379,10 +425,21 @@ public class CameraStreamServer {
     ///
     /// The closure capture retains the `CVPixelBuffer` (CoreVideo objects are
     /// ARC-managed in Swift), so the buffer stays valid for async encoding; the
-    /// output's `alwaysDiscardsLateVideoFrames` prevents pool starvation.
+    /// output's `alwaysDiscardsLateVideoFrames` prevents pool starvation. Only one
+    /// frame is encoded at a time and the rest are dropped, so the stream never holds
+    /// more than one buffer from the camera's pool however far encoding falls behind.
     public func handle(frame: CVPixelBuffer) {
+        let claimedEncoder = isEncodingFrame.mutate { isEncoding -> Bool in
+            guard !isEncoding else { return false }
+            isEncoding = true
+            return true
+        }
+        guard claimedEncoder else { return }
+
         encodingQueue.async { [weak self] in
-            guard let self, !queue.sync(execute: { self.connections.isEmpty }) else { return }
+            guard let self else { return }
+            defer { isEncodingFrame.mutate { $0 = false } }
+            guard !queue.sync(execute: { self.clients.isEmpty }) else { return }
 
             let image = CIImage(cvPixelBuffer: frame, options: [.colorSpace: Self.sdrColorSpace])
             guard let jpeg = ciContext.jpegRepresentation(
@@ -403,10 +460,36 @@ public class CameraStreamServer {
             payload.append(Data("\r\n".utf8))
 
             queue.async {
-                for connection in self.connections.values {
-                    connection.send(content: payload, completion: .idempotent)
-                }
+                self.broadcast(payload)
             }
+        }
+    }
+
+    /// Sends a frame to every client that has taken the previous one. A client still
+    /// busy with an earlier frame skips this one instead of queueing it, so a slow
+    /// reader can't make unsent frames pile up in memory.
+    private func broadcast(_ payload: Data) {
+        let now = ProcessInfo.processInfo.systemUptime
+        for client in clients.values {
+            if let sendStartedAt = client.sendStartedAt {
+                if now - sendStartedAt > Self.stalledClientTimeout {
+                    Current.Log.info("Camera stream: dropping a client that stopped reading")
+                    client.connection.cancel()
+                    remove(connection: client.connection)
+                }
+                continue
+            }
+
+            client.sendStartedAt = now
+            client.connection.send(content: payload, completion: .contentProcessed { [weak self, weak client] error in
+                self?.queue.async {
+                    guard let client else { return }
+                    client.sendStartedAt = nil
+                    if error != nil {
+                        client.connection.cancel()
+                    }
+                }
+            })
         }
     }
 }
