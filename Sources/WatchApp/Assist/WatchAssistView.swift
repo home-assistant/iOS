@@ -54,9 +54,10 @@ struct WatchAssistView: View {
                     }
                 })
             })
-            // Touch is push-to-talk: pressing records, lifting sends, and a press that turns into a
-            // scroll of the chat is dropped. The button's action is left to the Double Tap hand
-            // gesture below, which has no finger to lift and so keeps the tap-to-send flow.
+            // Touch either taps or holds: a tap starts a recording and the next tap sends it, while a
+            // hold records until the finger lifts. A press that turns into a scroll of the chat is
+            // dropped. The button's action is left to the Double Tap hand gesture below, which has
+            // no finger to lift and so keeps the tap-to-send flow.
             .buttonStyle(WatchPushToTalkButtonStyle(onPhaseChange: { phase in
                 switch phase {
                 case .began: viewModel.beginPushToTalk()
@@ -131,13 +132,6 @@ struct WatchAssistView: View {
         if viewModel.state == .recording {
             micRecording
                 .transition(.opacity)
-            // The finger holding the screen covers the middle, so the hint sits at the top.
-            if viewModel.recordingSubmission == .release {
-                releaseToSendPill
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .allowsHitTesting(false)
-                    .transition(.opacity)
-            }
         }
         ProgressView()
             .progressViewStyle(.circular)
@@ -203,30 +197,37 @@ struct WatchAssistView: View {
             .clipShape(Circle())
     }
 
-    @ViewBuilder
+    // Not a button of its own: the tap that sends the recording belongs to the push-to-talk screen
+    // around it, which would otherwise compete with it for the touch.
     private var micRecording: some View {
-        Button(action: {
-            viewModel.assist()
-        }, label: {
-            VStack(spacing: DesignSystem.Spaces.one) {
-                AssistVoiceOrbView(
-                    level: viewModel.audioLevel,
-                    size: .watch,
-                    accessibilityLabel: L10n.Assist.Button.Listening.title
-                )
-                // While holding, the pill at the top is the only hint the screen needs.
-                if viewModel.recordingSubmission == .tap {
-                    VStack(spacing: .zero) {
-                        Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
-                            .font(.system(size: Constants.micRecordingTextFontSize))
-                            .foregroundStyle(.gray)
-                        Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
-                            .font(.footnote.bold())
-                    }
+        VStack(spacing: DesignSystem.Spaces.one) {
+            AssistVoiceOrbView(
+                level: viewModel.audioLevel,
+                size: .watch,
+                accessibilityLabel: L10n.Assist.Button.Listening.title
+            )
+            // Laid over the orb rather than stacked above it, so the orb's activity circle never
+            // covers the hint and the orb does not move to make room for it.
+            .overlay(alignment: .top) {
+                if viewModel.recordingSubmission == .release {
+                    releaseToSendPill
+                        // Wider than the orb it sits on, which is all the overlay offers it.
+                        .fixedSize()
+                        .alignmentGuide(.top) { $0[.bottom] + DesignSystem.Spaces.one }
+                        .transition(.opacity)
                 }
             }
-        })
-        .buttonStyle(.plain)
+            // While holding, the pill above the orb is the only hint the screen needs.
+            if viewModel.recordingSubmission == .tap {
+                VStack(spacing: .zero) {
+                    Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
+                        .font(.system(size: Constants.micRecordingTextFontSize))
+                        .foregroundStyle(.gray)
+                    Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                        .font(.footnote.bold())
+                }
+            }
+        }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .modify {
