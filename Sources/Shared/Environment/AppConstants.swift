@@ -479,6 +479,8 @@ public extension Version {
     static let localPushConfirm: Version = .init(major: 2021, minor: 10, prerelease: "any0")
     static let externalBusCommandRestart: Version = .init(major: 2021, minor: 12, prerelease: "b6")
     static let updateLocationGPSOptional: Version = .init(major: 2022, minor: 2, prerelease: "any0")
+    /// `subscribe_entities` accepts `entity_ids`, so one subscription reads just the entities asked for.
+    static let canSubscribeEntitiesByIds: Version = .init(major: 2022, minor: 4, prerelease: "any0")
     static let conversationWebhook: Version = .init(major: 2023, minor: 2, prerelease: "any0")
     static let externalBusCommandSidebar: Version = .init(major: 2023, minor: 4, prerelease: "b3")
     /// render_template accepts `report_errors`, so template errors arrive as subscription events

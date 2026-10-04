@@ -185,24 +185,131 @@ public final class ControlEntityProvider {
             return nil
         }
 
-        let rawStateValue = (state["state"] as? String) ?? "N/A"
-        var stateValue = StatePrecision.adjustPrecision(
+        return makeState(
+            server: server,
+            entityId: entityId,
+            rawStateValue: (state["state"] as? String) ?? "N/A",
+            attributes: state["attributes"] as? [String: Any]
+        )
+    }
+
+    /// Fetches several entities' states from one server in a single `subscribe_entities` round trip,
+    /// rather than one REST `/states` request each. The subscription's first event carries every
+    /// requested entity, so it is cancelled as soon as that arrives.
+    ///
+    /// Returns `nil` when the batch can't be made — a server too old for it, no API, a websocket that
+    /// can't deliver it in time, or a refused subscription — so the caller can fall back to
+    /// `state(server:entityId:)`. An entity the server doesn't have is left out, as a REST request for
+    /// it would have failed.
+    public func states(server: Server, entityIds: [String]) async -> [String: State]? {
+        guard !entityIds.isEmpty else { return [:] }
+
+        guard server.info.version >= .canSubscribeEntitiesByIds else {
+            return nil
+        }
+
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch states data")
+            return nil
+        }
+
+        guard Self.canBatchStates(over: connection.state) else {
+            Current.Log.info("Not batching states while the websocket is \(connection.state)")
+            return nil
+        }
+
+        guard let entities = await sendStatesSubscription(connection: connection, entityIds: entityIds) else {
+            return nil
+        }
+
+        var states: [String: State] = [:]
+        for (entityId, entity) in entities {
+            states[entityId] = makeState(
+                server: server,
+                entityId: entityId,
+                rawStateValue: entity.state ?? "N/A",
+                attributes: entity.attributes
+            )
+        }
+        return states
+    }
+
+    /// Whether a batch sent over a websocket in this state can expect an answer in time. One waiting
+    /// out HAKit's reconnect backoff, or one the server rejected, won't carry the subscription until
+    /// long after a widget has had to render, while REST requests don't need the websocket at all.
+    static func canBatchStates(over state: HAConnectionState) -> Bool {
+        switch state {
+        case .ready, .connecting, .authenticating, .disconnected(reason: .disconnected):
+            return true
+        case .disconnected(reason: .waitingToReconnect), .disconnected(reason: .rejected):
+            return false
+        }
+    }
+
+    private func makeState(
+        server: Server,
+        entityId: String,
+        rawStateValue: String,
+        attributes: [String: Any]?
+    ) -> State {
+        let stateValue = StatePrecision.adjustPrecision(
             serverId: server.identifier.rawValue,
             entityId: entityId,
             stateValue: rawStateValue
-        )
-        stateValue = stateValue.capitalizedFirst
-
-        let attributes = state["attributes"] as? [String: Any]
-        let unitOfMeasurement = attributes?["unit_of_measurement"] as? String
+        ).capitalizedFirst
 
         return buildState(
             entityId: entityId,
             rawStateValue: rawStateValue.lowercased(),
             stateValue: stateValue,
             attributes: attributes,
-            unitOfMeasurement: unitOfMeasurement
+            unitOfMeasurement: attributes?["unit_of_measurement"] as? String
         )
+    }
+
+    /// Sends `subscribe_entities` for `entityIds` and returns its first event's entities, honoring task
+    /// cancellation the same way `sendStateRequest` does. A refused subscription resolves to `nil`.
+    private func sendStatesSubscription(
+        connection: HAConnection,
+        entityIds: [String]
+    ) async -> [String: HACompressedEntityState]? {
+        typealias Entities = [String: HACompressedEntityState]
+        let request = PendingRequest<Entities>(cancelsOnSettle: true)
+
+        // A websocket that drops into a reconnect backoff, or is rejected, while the subscription is
+        // out won't deliver it in time either. Giving up then leaves the caller time to fall back.
+        let stateObserver = NotificationCenter.default.addObserver(
+            forName: HAConnectionState.didTransitionToStateNotification,
+            object: connection,
+            queue: nil
+        ) { _ in
+            let state = connection.state
+            guard !Self.canBatchStates(over: state) else { return }
+            Current.Log.info("Giving up on batched states as the websocket is \(state)")
+            request.finish(with: nil)
+        }
+        defer { NotificationCenter.default.removeObserver(stateObserver) }
+
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { (continuation: CheckedContinuation<Entities?, Never>) in
+                let token = connection.subscribe(
+                    to: .subscribeEntities(data: ["entity_ids": entityIds]),
+                    initiated: { result in
+                        if case let .failure(error) = result {
+                            Current.Log.error("Failed to subscribe to entities for their states: \(error)")
+                            request.finish(with: nil)
+                        }
+                    },
+                    handler: { _, updates in
+                        request.finish(with: updates.add ?? [:])
+                    }
+                )
+
+                request.adopt(continuation: continuation, token: token)
+            }
+        } onCancel: {
+            request.cancel()
+        }
     }
 
     /// Sends the `/states/<entity>` request in a way that honors task cancellation.
@@ -213,7 +320,7 @@ public final class ControlEntityProvider {
     /// the widgets fetch every tile's state against a deadline — would hang on that instead of giving
     /// up, which is worse than the slow request they were guarding against.
     private func sendStateRequest(connection: HAConnection, entityId: String) async -> HAData? {
-        let request = PendingStateRequest()
+        let request = PendingRequest<HAData>(cancelsOnSettle: false)
 
         return await withTaskCancellationHandler {
             await withCheckedContinuation { (continuation: CheckedContinuation<HAData?, Never>) in
@@ -237,11 +344,15 @@ public final class ControlEntityProvider {
         }
     }
 
-    /// Shared one-shot ownership of a state request's continuation, so exactly one of HAKit's
-    /// completion handler and the cancellation handler resumes it — whichever gets there first.
-    private final class PendingStateRequest: @unchecked Sendable {
+    /// Shared one-shot ownership of a request's continuation, so exactly one of HAKit's handlers and
+    /// the cancellation handler resumes it — whichever gets there first.
+    private final class PendingRequest<Value>: @unchecked Sendable {
         private let lock = NSLock()
-        private var continuation: CheckedContinuation<HAData?, Never>?
+        /// Whether finishing also cancels the HAKit request. A single request is done once it
+        /// answers, but a subscription keeps streaming, and a refused one keeps being retried, until
+        /// it is cancelled.
+        private let cancelsOnSettle: Bool
+        private var continuation: CheckedContinuation<Value?, Never>?
         private var token: HACancellable?
         /// Whether the request has already been settled, by completing or by being cancelled.
         /// `earlyResult` is only meaningful once this is true, which is what lets it stay a single
@@ -249,11 +360,15 @@ public final class ControlEntityProvider {
         private var isSettled = false
         /// A result that landed before `adopt` ran, which `send` is free to do by calling back
         /// synchronously.
-        private var earlyResult: HAData?
+        private var earlyResult: Value?
+
+        init(cancelsOnSettle: Bool) {
+            self.cancelsOnSettle = cancelsOnSettle
+        }
 
         /// Takes ownership of the continuation and the in-flight request, resuming straight away if
         /// the request already settled while it was being handed over.
-        func adopt(continuation: CheckedContinuation<HAData?, Never>, token: HACancellable) {
+        func adopt(continuation: CheckedContinuation<Value?, Never>, token: HACancellable) {
             lock.lock()
             guard !isSettled else {
                 let result = earlyResult
@@ -267,7 +382,7 @@ public final class ControlEntityProvider {
             lock.unlock()
         }
 
-        func finish(with data: HAData?) {
+        func finish(with value: Value?) {
             lock.lock()
             guard !isSettled else {
                 lock.unlock()
@@ -275,14 +390,18 @@ public final class ControlEntityProvider {
             }
             isSettled = true
             guard let continuation else {
-                earlyResult = data
+                earlyResult = value
                 lock.unlock()
                 return
             }
+            let token = token
             self.continuation = nil
-            token = nil
+            self.token = nil
             lock.unlock()
-            continuation.resume(returning: data)
+            if cancelsOnSettle {
+                token?.cancel()
+            }
+            continuation.resume(returning: value)
         }
 
         func cancel() {

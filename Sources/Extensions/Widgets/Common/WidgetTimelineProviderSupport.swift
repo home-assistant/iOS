@@ -159,41 +159,51 @@ struct WidgetEntityStateProvider {
         return states
     }
 
-    /// Fetches every item's state at once, giving up on whatever has not arrived by the deadline.
+    /// Fetches every item's state, giving up on whatever has not arrived by the deadline.
     ///
-    /// The REST API only offers one request per entity, but running them one after another made a
-    /// refresh cost the *sum* of its round trips, so the tiles at the end of a large widget's list
-    /// ran out of budget and rendered without a state. Concurrently the batch costs the slowest
-    /// single request instead.
+    /// Each server is asked once, for all of its items. A request per tile queued the later tiles
+    /// behind the first few, where a websocket reset in the widget process could drop them, so a
+    /// refresh came back with only its first handful of states. A server that can't take the batch
+    /// falls back to one REST request per item, sent all at once so they cost the slowest of them
+    /// rather than their sum.
     private func fetchStates(for items: [MagicItem]) async -> [MagicItem: WidgetEntityState] {
-        guard !items.isEmpty else { return [:] }
+        let itemsPerServer = Dictionary(grouping: items.filter { $0.domain != nil }, by: \.serverId)
+        guard !itemsPerServer.isEmpty else { return [:] }
 
-        return await withTaskGroup(of: (MagicItem, WidgetEntityState?)?.self) { group in
-            for item in items {
-                group.addTask { await fetchState(for: item) }
+        return await withTaskGroup(of: FetchOutcome?.self) { group in
+            for (serverId, serverItems) in itemsPerServer {
+                group.addTask { await fetchServerStates(serverId: serverId, items: serverItems) }
             }
 
             // The deadline is a task of its own rather than a wrapper around each request, so that
-            // it bounds the batch as a whole. `nil` is how it identifies itself; a fetch that failed
-            // still reports which item it was for.
+            // it bounds the whole fetch, fallbacks included. `nil` is how it identifies itself.
             group.addTask {
                 try? await Task.sleep(nanoseconds: UInt64(Self.fetchDeadline * 1_000_000_000))
                 return nil
             }
 
             var states: [MagicItem: WidgetEntityState] = [:]
-            var outstanding = items.count
+            var outstanding = itemsPerServer.count
 
-            for await result in group {
-                guard let (item, state) = result else {
+            while let next = await group.next() {
+                guard let outcome = next else {
                     Current.Log.error(
                         "\(logPrefix) widget state fetch hit its deadline with \(outstanding) request(s) outstanding"
                     )
                     break
                 }
 
-                if let state {
-                    states[item] = state
+                switch outcome {
+                case let .fetched(fetchedStates):
+                    states.merge(fetchedStates) { _, fetched in fetched }
+                case let .batchUnavailable(serverItems):
+                    for item in serverItems {
+                        group.addTask {
+                            guard let state = await fetchState(for: item) else { return .fetched([:]) }
+                            return .fetched([item: state])
+                        }
+                    }
+                    outstanding += serverItems.count
                 }
 
                 outstanding -= 1
@@ -207,13 +217,38 @@ struct WidgetEntityStateProvider {
         }
     }
 
-    private func fetchState(for item: MagicItem) async -> (MagicItem, WidgetEntityState?) {
+    /// One server's items, read in a single batch.
+    private func fetchServerStates(serverId: String, items: [MagicItem]) async -> FetchOutcome {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
+            return .fetched([:])
+        }
+
+        let provider = ControlEntityProvider(domains: [])
+        let entityIds = Array(Set(items.map(\.id))).sorted()
+        guard let fetched = await provider.states(server: server, entityIds: entityIds) else {
+            return .batchUnavailable(items)
+        }
+
+        var states: [MagicItem: WidgetEntityState] = [:]
+        for item in items {
+            guard let state = fetched[item.id] else {
+                Current.Log.error(
+                    "Failed to get state for entity in \(logPrefix) widget, entityId: \(item.id), serverId: \(serverId)"
+                )
+                continue
+            }
+            states[item] = widgetEntityState(from: state, serverId: serverId, entityId: item.id)
+        }
+        return .fetched(states)
+    }
+
+    private func fetchState(for item: MagicItem) async -> WidgetEntityState? {
         let serverId = item.serverId
         let entityId = item.id
 
         guard let domain = item.domain,
               let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
-            return (item, nil)
+            return nil
         }
 
         guard let state = await ControlEntityProvider(domains: [domain]).state(
@@ -223,17 +258,25 @@ struct WidgetEntityStateProvider {
             Current.Log.error(
                 "Failed to get state for entity in \(logPrefix) widget, entityId: \(entityId), serverId: \(serverId)"
             )
-            return (item, nil)
+            return nil
         }
 
-        return (item, .init(
+        return widgetEntityState(from: state, serverId: serverId, entityId: entityId)
+    }
+
+    private func widgetEntityState(
+        from state: ControlEntityProvider.State,
+        serverId: String,
+        entityId: String
+    ) -> WidgetEntityState {
+        .init(
             value: stateValueFormatter(state, serverId, entityId),
             domainState: state.domainState,
             rawState: state.rawState,
             deviceClass: state.deviceClass,
             liveColorHex: state.liveColor?.hex(),
             groupMemberDomain: state.groupMemberDomain
-        ))
+        )
     }
 
     private func readCache() -> WidgetEntitiesStateCache? {
@@ -272,5 +315,13 @@ struct WidgetEntityStateProvider {
                 "Failed to cache states in \(logPrefix) widget, error: \(error.localizedDescription)"
             )
         }
+    }
+
+    /// What one of `fetchStates`' tasks came back with.
+    private enum FetchOutcome {
+        /// The states that arrived, keyed by their item. Items that got none are left out.
+        case fetched([MagicItem: WidgetEntityState])
+        /// A server that couldn't take a batch, whose items are fetched one at a time instead.
+        case batchUnavailable([MagicItem])
     }
 }
