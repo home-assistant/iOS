@@ -43,7 +43,7 @@ final class WebViewExternalMessageHandlerRoutingTests: XCTestCase {
     }
 
     /// Handles `dictionary` and returns the message the handler answers the frontend with.
-    private func reply(
+    private func replyMessage(
         to dictionary: [String: Any],
         file: StaticString = #filePath,
         line: UInt = #line
@@ -104,7 +104,7 @@ final class WebViewExternalMessageHandlerRoutingTests: XCTestCase {
     // MARK: - Config
 
     func testConfigGetAnswersWithTheAppsCapabilities() throws {
-        let reply = try reply(to: message("config/get", id: 42))
+        let reply = try replyMessage(to: message("config/get", id: 42))
 
         XCTAssertEqual(reply["id"] as? Int, 42)
         XCTAssertEqual(reply["type"] as? String, "result")
@@ -147,7 +147,7 @@ final class WebViewExternalMessageHandlerRoutingTests: XCTestCase {
     // MARK: - Tags
 
     func testTagReadAnswersWithTheTagThatWasRead() throws {
-        let reply = try reply(to: message("tag/read", id: 3))
+        let reply = try replyMessage(to: message("tag/read", id: 3))
 
         XCTAssertEqual(reply["id"] as? Int, 3)
         let result = try XCTUnwrap(reply["result"] as? [String: Any])
@@ -156,7 +156,11 @@ final class WebViewExternalMessageHandlerRoutingTests: XCTestCase {
     }
 
     func testTagWriteWritesTheTagAndReportsSuccess() throws {
-        let reply = try reply(to: message("tag/write", id: 4, payload: ["tag": "front-door", "name": "Front door"]))
+        let reply = try replyMessage(to: message(
+            "tag/write",
+            id: 4,
+            payload: ["tag": "front-door", "name": "Front door"]
+        ))
 
         XCTAssertEqual(tags.writtenValues, ["front-door"])
         XCTAssertEqual(reply["id"] as? Int, 4)
@@ -165,7 +169,7 @@ final class WebViewExternalMessageHandlerRoutingTests: XCTestCase {
     }
 
     func testTagWriteWithoutATagReportsFailure() throws {
-        let reply = try reply(to: message("tag/write", id: 5, payload: ["tag": ""]))
+        let reply = try replyMessage(to: message("tag/write", id: 5, payload: ["tag": ""]))
 
         XCTAssertTrue(tags.writtenValues.isEmpty)
         let result = try XCTUnwrap(reply["result"] as? [String: Any])
@@ -175,7 +179,11 @@ final class WebViewExternalMessageHandlerRoutingTests: XCTestCase {
     // MARK: - Entity "add to"
 
     func testAddToActionsAreListedForTheEntity() throws {
-        let reply = try reply(to: message("entity/add_to/get_actions", id: 8, payload: ["entity_id": "light.kitchen"]))
+        let reply = try replyMessage(to: message(
+            "entity/add_to/get_actions",
+            id: 8,
+            payload: ["entity_id": "light.kitchen"]
+        ))
 
         XCTAssertEqual(reply["id"] as? Int, 8)
         let result = try XCTUnwrap(reply["result"] as? [String: Any])
@@ -225,7 +233,7 @@ final class WebViewExternalMessageHandlerRoutingTests: XCTestCase {
         XCTAssertEqual(request.id, "BarcodeScannerMessage")
         XCTAssertEqual(request.message, "Hold still")
         XCTAssertEqual(request.duration, .seconds(3))
-        XCTAssertEqual(request.dimming, .none)
+        XCTAssertEqual(request.dimming, BannerDimming.none)
     }
 
     // MARK: - Toasts
@@ -254,7 +262,7 @@ final class WebViewExternalMessageHandlerRoutingTests: XCTestCase {
         let wasVisible = sidebar.isVisible
         defer { sidebar.isVisible = wasVisible }
         var moreRequests = 0
-        let subscription = NativeTabBarState.shared.moreRequests.sink { moreRequests += 1 }
+        let subscription = NativeTabBarState.shared.moreRequests.sink { _ in moreRequests += 1 }
         defer { subscription.cancel() }
 
         sut.handleExternalMessage(message("sidebar/show"))

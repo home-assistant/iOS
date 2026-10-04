@@ -27,68 +27,68 @@ struct HAEntityCarPlayCoverageTests {
         _ entityId: String,
         state: String,
         deviceClass: String? = nil
-    ) throws -> MaterialDesignIcons {
+    ) -> MaterialDesignIcons? {
         var attributes: [String: Any] = [:]
         if let deviceClass {
             attributes["device_class"] = deviceClass
         }
-        return try entity(entityId, state: state, attributes: attributes).getMDI()
+        return (try? entity(entityId, state: state, attributes: attributes))?.getMDI()
     }
 
-    @Test func fixedDomainIcons() throws {
-        #expect(try mdi("input_button.doorbell", state: "unknown") == .gestureTapButtonIcon)
-        #expect(try mdi("light.kitchen", state: "on") == .lightbulbIcon)
-        #expect(try mdi("scene.movie", state: "unknown") == .paletteOutlineIcon)
-        #expect(try mdi("script.open_gate", state: "off") == .scriptTextOutlineIcon)
-        #expect(try mdi("sensor.power", state: "12") == .eyeIcon)
-        #expect(try mdi("binary_sensor.motion", state: "on") == .radioboxBlankIcon)
-        #expect(try mdi("zone.home", state: "2") == .mapIcon)
-        #expect(try mdi("person.anna", state: "home") == .accountIcon)
-        #expect(try mdi("camera.porch", state: "idle") == .cameraIcon)
-        #expect(try mdi("fan.bedroom", state: "on") == .fanIcon)
-        #expect(try mdi("automation.lights", state: "on") == .homeAutomationIcon)
-        #expect(try mdi("todo.shopping", state: "3") == .checkboxMarkedOutlineIcon)
-        #expect(try mdi("climate.living_room", state: "heat") == .homeThermometerOutlineIcon)
+    @Test func fixedDomainIcons() {
+        #expect(mdi("input_button.doorbell", state: "unknown") == .gestureTapButtonIcon)
+        #expect(mdi("light.kitchen", state: "on") == .lightbulbIcon)
+        #expect(mdi("scene.movie", state: "unknown") == .paletteOutlineIcon)
+        #expect(mdi("script.open_gate", state: "off") == .scriptTextOutlineIcon)
+        #expect(mdi("sensor.power", state: "12") == .eyeIcon)
+        #expect(mdi("binary_sensor.motion", state: "on") == .radioboxBlankIcon)
+        #expect(mdi("zone.home", state: "2") == .mapIcon)
+        #expect(mdi("person.anna", state: "home") == .accountIcon)
+        #expect(mdi("camera.porch", state: "idle") == .cameraIcon)
+        #expect(mdi("fan.bedroom", state: "on") == .fanIcon)
+        #expect(mdi("automation.lights", state: "on") == .homeAutomationIcon)
+        #expect(mdi("todo.shopping", state: "3") == .checkboxMarkedOutlineIcon)
+        #expect(mdi("climate.living_room", state: "heat") == .homeThermometerOutlineIcon)
     }
 
-    @Test func unmodeledDomainsUseTheDomainIconAndUnknownDomainsABookmark() throws {
-        #expect(try mdi("vacuum.robot", state: "docked") == Domain.vacuum.icon(deviceClass: nil, state: nil))
-        #expect(try mdi("not_a_domain.thing", state: "on") == .bookmarkIcon)
+    @Test func unmodeledDomainsUseTheDomainIconAndUnknownDomainsABookmark() {
+        #expect(mdi("vacuum.robot", state: "docked") == Domain.vacuum.icon(deviceClass: nil, state: nil))
+        #expect(mdi("not_a_domain.thing", state: "on") == .bookmarkIcon)
     }
 
-    @Test func buttonIconsFollowTheDeviceClass() throws {
-        #expect(try mdi("button.reboot", state: "unknown", deviceClass: "restart") == .restartIcon)
-        #expect(try mdi("button.firmware", state: "unknown", deviceClass: "update") == .packageUpIcon)
-        #expect(try mdi("button.press", state: "unknown") == .gestureTapButtonIcon)
+    @Test func buttonIconsFollowTheDeviceClass() {
+        #expect(mdi("button.reboot", state: "unknown", deviceClass: "restart") == .restartIcon)
+        #expect(mdi("button.firmware", state: "unknown", deviceClass: "update") == .packageUpIcon)
+        #expect(mdi("button.press", state: "unknown") == .gestureTapButtonIcon)
     }
 
-    @Test func inputBooleanIconsFollowTheState() throws {
-        #expect(try mdi("input_boolean.guest", state: "on") == .checkCircleOutlineIcon)
-        #expect(try mdi("input_boolean.guest", state: "off") == .closeCircleOutlineIcon)
-        #expect(try mdi("input_boolean.guest", state: "not_a_state") == .toggleSwitchOutlineIcon)
-        #expect(try mdi("input_boolean.ha_ios_placeholder", state: "on") == .toggleSwitchOutlineIcon)
+    @Test func inputBooleanIconsFollowTheState() {
+        #expect(mdi("input_boolean.guest", state: "on") == .checkCircleOutlineIcon)
+        #expect(mdi("input_boolean.guest", state: "off") == .closeCircleOutlineIcon)
+        #expect(mdi("input_boolean.guest", state: "not_a_state") == .toggleSwitchOutlineIcon)
+        #expect(mdi("input_boolean.ha_ios_placeholder", state: "on") == .toggleSwitchOutlineIcon)
     }
 
-    @Test func lockIconsFollowTheState() throws {
-        #expect(try mdi("lock.front", state: "locked") == .lockIcon)
-        #expect(try mdi("lock.front", state: "unlocked") == .lockOpenIcon)
-        #expect(try mdi("lock.front", state: "jammed") == .lockAlertIcon)
-        #expect(try mdi("lock.front", state: "locking") == .lockClockIcon)
-        #expect(try mdi("lock.front", state: "unlocking") == .lockClockIcon)
-        #expect(try mdi("lock.front", state: "not_a_state") == .lockIcon)
+    @Test func lockIconsFollowTheState() {
+        #expect(mdi("lock.front", state: "locked") == .lockIcon)
+        #expect(mdi("lock.front", state: "unlocked") == .lockOpenIcon)
+        #expect(mdi("lock.front", state: "jammed") == .lockAlertIcon)
+        #expect(mdi("lock.front", state: "locking") == .lockClockIcon)
+        #expect(mdi("lock.front", state: "unlocking") == .lockClockIcon)
+        #expect(mdi("lock.front", state: "not_a_state") == .lockIcon)
     }
 
-    @Test func switchIconsFollowTheDeviceClassAndState() throws {
-        #expect(try mdi("switch.plug", state: "on", deviceClass: "outlet") == .powerPlugIcon)
-        #expect(try mdi("switch.plug", state: "off", deviceClass: "outlet") == .powerPlugOffIcon)
-        #expect(try mdi("switch.toggle", state: "on", deviceClass: "switch") == .toggleSwitchIcon)
-        #expect(try mdi("switch.toggle", state: "off", deviceClass: "switch") == .toggleSwitchOffIcon)
-        #expect(try mdi("switch.relay", state: "on") == .flashIcon)
-        #expect(try mdi("switch.relay", state: "not_a_state") == .lightSwitchIcon)
-        #expect(try mdi("switch.ha_ios_placeholder", state: "on") == .lightSwitchIcon)
+    @Test func switchIconsFollowTheDeviceClassAndState() {
+        #expect(mdi("switch.plug", state: "on", deviceClass: "outlet") == .powerPlugIcon)
+        #expect(mdi("switch.plug", state: "off", deviceClass: "outlet") == .powerPlugOffIcon)
+        #expect(mdi("switch.toggle", state: "on", deviceClass: "switch") == .toggleSwitchIcon)
+        #expect(mdi("switch.toggle", state: "off", deviceClass: "switch") == .toggleSwitchOffIcon)
+        #expect(mdi("switch.relay", state: "on") == .flashIcon)
+        #expect(mdi("switch.relay", state: "not_a_state") == .lightSwitchIcon)
+        #expect(mdi("switch.ha_ios_placeholder", state: "on") == .lightSwitchIcon)
     }
 
-    @Test func coverIconsFollowTheDeviceClassAndState() throws {
+    @Test func coverIconsFollowTheDeviceClassAndState() {
         let expected: [(String?, String, MaterialDesignIcons)] = [
             ("garage", "opening", .arrowUpBoxIcon),
             ("garage", "closing", .arrowDownBoxIcon),
@@ -121,11 +121,11 @@ struct HAEntityCarPlayCoverageTests {
 
         for (deviceClass, state, icon) in expected {
             #expect(
-                try mdi("cover.test", state: state, deviceClass: deviceClass) == icon,
+                mdi("cover.test", state: state, deviceClass: deviceClass) == icon,
                 "\(deviceClass ?? "nil") \(state)"
             )
         }
-        #expect(try mdi("cover.test", state: "not_a_state") == .bookmarkIcon)
+        #expect(mdi("cover.test", state: "not_a_state") == .bookmarkIcon)
     }
 
     @Test func attributeIconWinsOverEverything() throws {
@@ -178,7 +178,8 @@ struct HAEntityCarPlayCoverageTests {
         api.connection = connection
 
         let light = try entity("light.kitchen", state: "off")
-        #expect(await succeeds(light.onPress(for: api)))
+        let lightSucceeded = await succeeds(light.onPress(for: api))
+        #expect(lightSucceeded)
         let request = try #require(connection.sentRequests.first)
         #expect(request.type.command == "call_service")
         #expect(request.data["domain"] as? String == "light")
@@ -186,7 +187,8 @@ struct HAEntityCarPlayCoverageTests {
 
         // A domain the app doesn't know has nothing to run, which isn't a failure.
         let unknown = try entity("not_a_domain.thing", state: "on")
-        #expect(await succeeds(unknown.onPress(for: api)))
+        let unknownSucceeded = await succeeds(unknown.onPress(for: api))
+        #expect(unknownSucceeded)
         #expect(connection.sentRequests.count == 1)
     }
 
@@ -197,7 +199,8 @@ struct HAEntityCarPlayCoverageTests {
         api.connection = connection
 
         let light = try entity("light.kitchen", state: "off")
-        #expect(await !succeeds(light.onPress(for: api)))
+        let succeeded = await succeeds(light.onPress(for: api))
+        #expect(!succeeded)
     }
 
     private func succeeds(_ promise: Promise<Void>) async -> Bool {

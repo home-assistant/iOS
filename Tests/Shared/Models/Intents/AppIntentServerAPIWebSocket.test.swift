@@ -42,10 +42,10 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     // MARK: - callAction
 
     func testCallActionSendsCallServiceAndReturnsTheResponse() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
             try await AppIntentServerAPI.callAction(
-                server: server,
+                server: currentServer,
                 domain: "calendar",
                 service: "get_events",
                 data: ["entity_id": "calendar.home"],
@@ -71,10 +71,10 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     }
 
     func testCallActionFailureCancelsTheRequestAndThrows() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
             try await AppIntentServerAPI.callAction(
-                server: server,
+                server: currentServer,
                 domain: "light",
                 service: "turn_on",
                 data: [:],
@@ -116,9 +116,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     // MARK: - renderTemplate
 
     func testRenderTemplateReturnsTheFirstRenderAndUnsubscribes() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.renderTemplate(server: server, template: "{{ 1 + 1 }}")
+            try await AppIntentServerAPI.renderTemplate(server: currentServer, template: "{{ 1 + 1 }}")
         }
 
         let subscription = try await pendingSubscription(.webSocket("render_template"))
@@ -135,9 +135,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     }
 
     func testRenderTemplateRejectedByTheServerThrows() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.renderTemplate(server: server, template: "{{ states(")
+            try await AppIntentServerAPI.renderTemplate(server: currentServer, template: "{{ states(")
         }
 
         let subscription = try await pendingSubscription(.webSocket("render_template"))
@@ -155,9 +155,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     // MARK: - actionDefinitions
 
     func testActionDefinitionsCombineServicesIconsAndTranslations() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.actionDefinitions(server: server)
+            try await AppIntentServerAPI.actionDefinitions(server: currentServer)
         }
 
         let services: [String: [String: [String: Any]]] = [
@@ -227,9 +227,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
 
     /// Icons and translations only decorate the list, so failing to fetch them must not lose it.
     func testActionDefinitionsSurviveFailedFrontendLookups() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.actionDefinitions(server: server)
+            try await AppIntentServerAPI.actionDefinitions(server: currentServer)
         }
 
         let services: [String: [String: [String: Any]]] = [
@@ -254,9 +254,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     }
 
     func testActionDefinitionsIgnoreUnexpectedPayloads() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.actionDefinitions(server: server)
+            try await AppIntentServerAPI.actionDefinitions(server: currentServer)
         }
 
         try await pendingRequest(.getServices).completion(.success(.primitive("unexpected")))
@@ -274,9 +274,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     // MARK: - entities
 
     func testEntitiesForADomainAreFilteredAndSortedByName() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.entities(server: server, domain: .light)
+            try await AppIntentServerAPI.entities(server: currentServer, domain: .light)
         }
 
         try await deliverStates()
@@ -286,9 +286,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     }
 
     func testEntitiesForSeveralDomains() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.entities(server: server, domains: [.light, .switch])
+            try await AppIntentServerAPI.entities(server: currentServer, domains: [.light, .switch])
         }
 
         try await deliverStates()
@@ -300,9 +300,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     // MARK: - entityState
 
     func testEntityStateReadsTheStateOverTheSocket() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.entityState(server: server, entityId: "light.kitchen")
+            try await AppIntentServerAPI.entityState(server: currentServer, entityId: "light.kitchen")
         }
 
         let request = try await pendingRequest(.rest(.get, "states/light.kitchen"))
@@ -323,9 +323,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     }
 
     func testEntityStateThatCannotBeDecodedThrows() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.entityState(server: server, entityId: "light.kitchen")
+            try await AppIntentServerAPI.entityState(server: currentServer, entityId: "light.kitchen")
         }
 
         try await pendingRequest(.rest(.get, "states/light.kitchen")).completion(.success(.dictionary([
@@ -343,9 +343,13 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     // MARK: - assist
 
     func testAssistReturnsTheSpokenAnswer() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.assist(server: server, prompt: "turn on the lights", pipelineId: "pipeline-1")
+            try await AppIntentServerAPI.assist(
+                server: currentServer,
+                prompt: "turn on the lights",
+                pipelineId: "pipeline-1"
+            )
         }
 
         let subscription = try await pendingSubscription(.webSocket("assist_pipeline/run"))
@@ -367,9 +371,9 @@ final class AppIntentServerAPIWebSocketTests: XCTestCase {
     }
 
     func testAssistPipelineErrorThrows() async throws {
-        let server: Server = self.server
+        let currentServer: Server = server
         let task = Task {
-            try await AppIntentServerAPI.assist(server: server, prompt: "hello", pipelineId: nil)
+            try await AppIntentServerAPI.assist(server: currentServer, prompt: "hello", pipelineId: nil)
         }
 
         let subscription = try await pendingSubscription(.webSocket("assist_pipeline/run"))

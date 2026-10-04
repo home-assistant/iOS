@@ -83,7 +83,7 @@ final class ConnectionURLViewModelTests: XCTestCase {
             L10n.Settings.ConnectionSection.ExternalBaseUrl.placeholder
         )
         XCTAssertEqual(ConnectionURLViewModel(server: server, urlType: .remoteUI).placeholder, "")
-        XCTAssertEqual(ConnectionURLViewModel(server: server, urlType: .none).placeholder, "")
+        XCTAssertEqual(ConnectionURLViewModel(server: server, urlType: ConnectionInfo.URLType.none).placeholder, "")
     }
 
     func testRemovingSSIDsAndHardwareAddresses() {
