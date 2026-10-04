@@ -74,6 +74,17 @@ struct EntityPickerRenderTests {
         }
     }
 
+    @Test func entityRowsRenderEachVariant() throws {
+        try withEntities {
+            let size = render(List {
+                EntityRowView(entity: Self.entities[0])
+                EntityRowView(entity: Self.entities[1], isSelected: true)
+                EntityRowView(optionalTitle: "Custom title", accessoryImageSystemSymbol: .plusCircleFill)
+            })
+            #expect(size.height > 0)
+        }
+    }
+
     private static let entities: [HAAppEntity] = [
         HAAppEntity(
             id: "\(serverId)-light.kitchen",

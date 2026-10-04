@@ -81,8 +81,12 @@ final class ControlEntityProviderTests: XCTestCase {
         )
     }
 
-    private func respond(to entityId: String, with value: Any) {
-        connection.responses["states/\(entityId)"] = .success(HAData(value: value))
+    private func respond(to entityId: String, with value: [String: Any]) {
+        connection.responses["states/\(entityId)"] = .success(.dictionary(value))
+    }
+
+    private func respondWithAList(to entityId: String) {
+        connection.responses["states/\(entityId)"] = .success(HAData(value: [1, 2]))
     }
 
     // MARK: - Listing
@@ -148,7 +152,7 @@ final class ControlEntityProviderTests: XCTestCase {
 
     func testAttributesAreReturnedRaw() async {
         respond(to: "light.kitchen", with: ["state": "on", "attributes": ["brightness": 128]])
-        respond(to: "light.list", with: [1, 2])
+        respondWithAList(to: "light.list")
         let provider = ControlEntityProvider(domains: [])
 
         let attributes = await provider.attributes(server: alpha, entityId: "light.kitchen")
@@ -244,7 +248,7 @@ final class ControlEntityProviderTests: XCTestCase {
     }
 
     func testStateFailuresReadAsNoState() async {
-        respond(to: "sensor.list", with: [1, 2])
+        respondWithAList(to: "sensor.list")
         let provider = ControlEntityProvider(domains: [])
 
         let notADictionary = await provider.state(server: alpha, entityId: "sensor.list")

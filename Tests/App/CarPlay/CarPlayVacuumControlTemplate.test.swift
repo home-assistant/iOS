@@ -41,7 +41,7 @@ final class CarPlayVacuumControlTemplateTests: XCTestCase {
         super.tearDown()
     }
 
-    private func attributes(features: Int = allFeatures) -> [String: Any] {
+    private func attributes(features: Int = CarPlayVacuumControlTemplateTests.allFeatures) -> [String: Any] {
         [
             "friendly_name": "Robbie",
             "supported_features": features,
@@ -51,7 +51,7 @@ final class CarPlayVacuumControlTemplateTests: XCTestCase {
         ]
     }
 
-    private func makeSut(state: String = "docked", features: Int = allFeatures) throws {
+    private func makeSut(state: String = "docked", features: Int = CarPlayVacuumControlTemplateTests.allFeatures) throws {
         let entity = try CarPlayTestHelpers.entity(
             "vacuum.robbie",
             state: state,
