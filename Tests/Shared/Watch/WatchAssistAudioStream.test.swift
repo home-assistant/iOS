@@ -282,6 +282,8 @@ struct WatchAssistAudioStreamTests {
 
         stream.cancel()
         stream.append(audio(minimumChunk))
+        // A cancel the iPhone never gets leaves its run to time out on its own.
+        try link.failLast()
 
         #expect(link.sent(.assistAudioStreamCancel).count == 1)
         #expect(link.chunks.isEmpty)

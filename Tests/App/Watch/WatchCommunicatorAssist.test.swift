@@ -493,24 +493,49 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         XCTAssertTrue(assistService.finishSendingAudioCalled)
     }
 
-    func testStreamedAudioReachesItsHandlerThroughTheMessageRouter() {
+    func testStreamMessagesReachTheirHandlersThroughTheMessageRouter() {
         service.setupMessages()
-        let payload = AssistAudioStreamChunkPayload(streamId: "stream", sequence: 0, audio: Data(), isFinal: false)
 
-        let answered = expectation(description: "chunk acknowledged")
-        answered.assertForOverFulfill = false
+        route(.assistAudioStreamStart, AssistAudioStreamStartPayload(
+            streamId: "stream",
+            sampleRate: 16000,
+            pipelineId: "pipeline",
+            serverId: server.identifier.rawValue
+        ).content)
+        route(.assistAudioStreamChunk, AssistAudioStreamChunkPayload(
+            streamId: "stream",
+            sequence: 0,
+            audio: Data([1, 2]),
+            isFinal: false
+        ).content)
+        route(.assistAudioStreamCancel, AssistAudioStreamEndPayload(streamId: "stream").content)
+
+        XCTAssertEqual(
+            assistService.assistSource,
+            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
+        )
+        XCTAssertTrue(assistService.cancelRunCalled)
+    }
+
+    /// Delivers a message the way the watch's arrive. Every listener gets it on the main queue, so
+    /// once the queue is flushed this service has handled it.
+    private func route(_ identifier: InteractiveImmediateMessages, _ content: [String: Any]) {
         Communicator.shared.interactiveImmediateMessage.notify(.init(
-            identifier: InteractiveImmediateMessages.assistAudioStreamChunk.rawValue,
-            content: payload.content,
-            reply: { [weak self] in
-                self?.streamReplies.append($0)
-                answered.fulfill()
-            }
+            identifier: identifier.rawValue,
+            content: content,
+            reply: { _ in }
         ))
-        wait(for: [answered], timeout: 1)
+        flushMainQueue()
+    }
 
-        // No stream was started, so the phone is not listening to this one.
-        XCTAssertEqual(acks.first, AssistAudioStreamAckPayload(streamId: "stream", isListening: false))
+    func testChunkAfterAGapIsStillSent() {
+        startStream()
+        service.didReceiveGreenLightForAudioInput()
+
+        streamChunk(Data([1, 2]), sequence: 0)
+        streamChunk(Data([5, 6]), sequence: 2)
+
+        XCTAssertEqual(assistService.audioChunksSent, [Data([1, 2]), Data([5, 6])])
     }
 
     // MARK: - Streamed recordings, on-device speech-to-text
