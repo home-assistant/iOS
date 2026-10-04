@@ -206,26 +206,31 @@ struct WatchAssistView: View {
             accessibilityLabel: L10n.Assist.Button.Listening.title
         )
         // Hung under the orb rather than stacked with it, so the orb stays put when a hold turns the
-        // recording into release-to-send and this hint goes away.
+        // recording into release-to-send and this hint goes away. It hangs from a line along the orb's
+        // bottom edge: an alignment guide moving it out of the orb's frame is not honoured here.
         .overlay(alignment: .bottom) {
-            if viewModel.recordingSubmission == .tap {
-                VStack(spacing: .zero) {
-                    Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
-                        .font(.system(size: Constants.micRecordingTextFontSize))
-                        .foregroundStyle(.gray)
-                    Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
-                        .font(.footnote.bold())
+            Color.clear
+                .frame(height: .zero)
+                .overlay(alignment: .top) {
+                    if viewModel.recordingSubmission == .tap {
+                        VStack(spacing: .zero) {
+                            Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
+                                .font(.system(size: Constants.micRecordingTextFontSize))
+                                .foregroundStyle(.gray)
+                            Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                                .font(.footnote.bold())
+                        }
+                        // Wider than the orb it hangs from, which is all the overlay offers it.
+                        .fixedSize()
+                        .padding(.top, DesignSystem.Spaces.one)
+                        .transition(.opacity)
+                    }
                 }
-                // Wider than the orb it hangs from, which is all the overlay offers it.
-                .fixedSize()
-                .alignmentGuide(.bottom) { $0[.top] - DesignSystem.Spaces.one }
-                .transition(.opacity)
-            }
         }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // The finger holding the screen covers the middle, so while holding the hint sits at the top,
-        // where neither the finger nor the orb's activity circle reaches it.
+        // as far from the orb's activity circle as the screen allows.
         .overlay(alignment: .top) {
             if viewModel.recordingSubmission == .release {
                 releaseToSendPill
