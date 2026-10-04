@@ -132,13 +132,6 @@ struct WatchAssistView: View {
         if viewModel.state == .recording {
             micRecording
                 .transition(.opacity)
-            // The finger holding the screen covers the middle, so the hint sits at the top.
-            if viewModel.recordingSubmission == .release {
-                releaseToSendPill
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .allowsHitTesting(false)
-                    .transition(.opacity)
-            }
         }
         ProgressView()
             .progressViewStyle(.circular)
@@ -213,7 +206,18 @@ struct WatchAssistView: View {
                 size: .watch,
                 accessibilityLabel: L10n.Assist.Button.Listening.title
             )
-            // While holding, the pill at the top is the only hint the screen needs.
+            // Laid over the orb rather than stacked above it, so the orb's activity circle never
+            // covers the hint and the orb does not move to make room for it.
+            .overlay(alignment: .top) {
+                if viewModel.recordingSubmission == .release {
+                    releaseToSendPill
+                        // Wider than the orb it sits on, which is all the overlay offers it.
+                        .fixedSize()
+                        .alignmentGuide(.top) { $0[.bottom] + DesignSystem.Spaces.one }
+                        .transition(.opacity)
+                }
+            }
+            // While holding, the pill above the orb is the only hint the screen needs.
             if viewModel.recordingSubmission == .tap {
                 VStack(spacing: .zero) {
                     Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
