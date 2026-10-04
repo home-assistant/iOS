@@ -4,6 +4,10 @@ import Foundation
 /// audio follows in `assistAudioStreamChunk` messages while the user is still speaking. The audio is
 /// 16-bit mono PCM at `sampleRate`. Key names cross the wire — never rename them.
 public struct AssistAudioStreamStartPayload: Equatable {
+    /// Rates a recording can have. Anything else — not a number, or far beyond any microphone — is
+    /// a malformed message, and would trap where the rate is turned into a whole number.
+    private static let validSampleRates: ClosedRange<Double> = 1 ... 1_000_000
+
     /// Unique per recording, so the phone never mixes the audio of one recording into another.
     public let streamId: String
     public let sampleRate: Double
@@ -20,6 +24,7 @@ public struct AssistAudioStreamStartPayload: Equatable {
     public init?(content: [String: Any]) {
         guard let streamId = content["streamId"] as? String,
               let sampleRate = content["sampleRate"] as? Double,
+              Self.validSampleRates.contains(sampleRate),
               let pipelineId = content["pipelineId"] as? String,
               let serverId = content["serverId"] as? String else {
             return nil

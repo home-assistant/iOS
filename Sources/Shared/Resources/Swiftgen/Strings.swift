@@ -1488,6 +1488,14 @@ public enum L10n {
       public static var placeholder: String { return L10n.tr("Localizable", "assist.text_field.placeholder") }
     }
     public enum Watch {
+      public enum AudioStream {
+        /// Home Assistant never received the recording.
+        public static var notReceived: String { return L10n.tr("Localizable", "assist.watch.audio_stream.not_received") }
+        /// Server not found on iPhone.
+        public static var serverNotFound: String { return L10n.tr("Localizable", "assist.watch.audio_stream.server_not_found") }
+        /// The iPhone could not read the recording.
+        public static var unreadable: String { return L10n.tr("Localizable", "assist.watch.audio_stream.unreadable") }
+      }
       public enum MicButton {
         /// Tap to
         public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.title") }

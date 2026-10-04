@@ -240,11 +240,13 @@ final class WatchAssistService: ObservableObject {
                     )
                 }
             }
-        ), priority: .userAction, errorHandler: { error in
+        ), priority: .userAction, errorHandler: { [weak self] error in
             Current.Log.error(
                 "Assist audio chunk \(index + 1)/\(totalChunks) failed: \(error.localizedDescription)"
             )
             DispatchQueue.main.async {
+                // A newer recording superseded this upload, so its failure is not the user's concern.
+                guard let self, self.uploadingRecordingId == recordingId else { return }
                 completion(error)
             }
         })

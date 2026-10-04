@@ -308,6 +308,20 @@ struct WatchAssistAudioStreamTests {
         #expect(link.sent.isEmpty)
     }
 
+    /// The rate is turned into a whole number on the iPhone, which traps for some values.
+    @Test(arguments: [Double.nan, .infinity, -16000, 0, 1e300])
+    func startWithASampleRateNoMicrophoneRecordsAtIsRejected(sampleRate: Double) {
+        var content = AssistAudioStreamStartPayload(
+            streamId: "s",
+            sampleRate: 16000,
+            pipelineId: "p",
+            serverId: "h"
+        ).content
+        content["sampleRate"] = sampleRate
+
+        #expect(AssistAudioStreamStartPayload(content: content) == nil)
+    }
+
     @Test func payloadsSurviveTheRoundTripAndRejectMissingKeys() {
         let start = AssistAudioStreamStartPayload(streamId: "s", sampleRate: 16000, pipelineId: "p", serverId: "h")
         #expect(AssistAudioStreamStartPayload(content: start.content) == start)

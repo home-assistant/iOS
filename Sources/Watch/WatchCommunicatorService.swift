@@ -1268,7 +1268,7 @@ extension WatchCommunicatorService {
                 identifier: InteractiveImmediateResponses.assistError.rawValue,
                 content: AssistErrorPayload(
                     code: "invalid_payload",
-                    message: "The iPhone could not read the recording"
+                    message: L10n.Assist.Watch.AudioStream.unreadable
                 ).content
             ))
             // Answered anyway: without a reply the watch waits out its timeout before giving up.
@@ -1335,7 +1335,7 @@ extension WatchCommunicatorService {
     private func startAssistAudioStream(_ payload: AssistAudioStreamStartPayload) {
         guard let server = assistTargetServer(for: payload.serverId) else {
             Current.Log.error("Assist audio stream targets unknown server \(payload.serverId)")
-            didReceiveError(code: "unknown_server", message: "Server not found on iPhone")
+            didReceiveError(code: "unknown_server", message: L10n.Assist.Watch.AudioStream.serverNotFound)
             return
         }
 
@@ -1469,7 +1469,7 @@ extension WatchCommunicatorService {
             // A watch that submitted the recording is waiting for an answer that will not come. One
             // that did not may still be recording, to send it whole once it is done.
             if stream.isSubmitted {
-                didReceiveError(code: "audio_stream_timeout", message: "The pipeline never took the recording")
+                didReceiveError(code: "audio_stream_timeout", message: L10n.Assist.Watch.AudioStream.notReceived)
             }
         }
         assistAudioStream?.abandonment = abandonment
