@@ -16,7 +16,7 @@ struct WatchAssistAudioStreamTests {
 
         var send: WatchAssistAudioStream.Send {
             { [unowned self] message, timeout, fail in
-                sent.append(.init(message: message, timeout: timeout, fail: fail))
+                self.sent.append(.init(message: message, timeout: timeout, fail: fail))
             }
         }
 
@@ -173,6 +173,22 @@ struct WatchAssistAudioStreamTests {
         stream.append(audio(minimumChunk, 1))
 
         try link.failLast()
+        stream.append(audio(minimumChunk, 2))
+
+        #expect(stream.submit() == .upload(audio(minimumChunk, 1) + audio(minimumChunk, 2)))
+        #expect(link.chunks.isEmpty)
+    }
+
+    /// An answer that is not an acknowledgement — the counterpart's reply to an envelope it could
+    /// not read is empty — says nothing about streaming, so the recording is kept whole.
+    @Test func uploadsTheWholeRecordingWhenThePhonesAnswerCannotBeRead() throws {
+        let link = FakeLink()
+        let stream = makeStream(link: link)
+        stream.append(audio(minimumChunk, 1))
+
+        try #require(link.sent.last).message.reply(.init(
+            identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue
+        ))
         stream.append(audio(minimumChunk, 2))
 
         #expect(stream.submit() == .upload(audio(minimumChunk, 1) + audio(minimumChunk, 2)))

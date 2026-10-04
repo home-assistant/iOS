@@ -417,6 +417,20 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         startStream()
 
         waitUntil { assistService.cancelRunCalled }
+
+        // The watch may still be recording, to send the recording whole once it is done.
+        XCTAssertTrue(messages(.assistError).isEmpty)
+    }
+
+    func testSubmittedStreamThePipelineNeverTakesIsReportedToTheWatch() {
+        service.assistAudioStreamTimeout = 0.05
+        startStream()
+        streamChunk(Data([1, 2]), sequence: 0, isFinal: true)
+
+        waitUntil { assistService.cancelRunCalled }
+
+        let errors = messages(.assistError).compactMap { AssistErrorPayload(content: $0.content) }
+        XCTAssertEqual(errors.map(\.code), ["audio_stream_timeout"])
     }
 
     func testPipelineErrorEndsTheStream() {
@@ -453,6 +467,19 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         XCTAssertTrue(acks.isEmpty)
         let errors = messages(.assistError).compactMap { AssistErrorPayload(content: $0.content) }
         XCTAssertEqual(errors.map(\.code), ["invalid_payload"])
+    }
+
+    func testUnreadableStreamStartLeavesTheStreamInProgressAlone() {
+        startStream()
+
+        service.handleAssistAudioStreamStart(.init(
+            identifier: InteractiveImmediateMessages.assistAudioStreamStart.rawValue,
+            content: [:],
+            reply: { _ in }
+        ))
+        streamChunk(Data([1, 2]), sequence: 0)
+
+        XCTAssertEqual(acks.last, AssistAudioStreamAckPayload(streamId: "stream", isListening: true))
     }
 
     func testWholeRecordingFromAWatchThatGaveUpStreamingReplacesTheStream() {
@@ -528,6 +555,29 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         )
         streamChunk(Data([3, 4]), sequence: 1)
         XCTAssertEqual(acks.last?.isListening, false)
+    }
+
+    /// Transcribing takes a moment: a recording the user started meanwhile must not be ended by the
+    /// previous one's transcript, nor have that transcript answered while it is being made.
+    func testTranscriptOfAReplacedRequestIsDropped() {
+        configuration = AssistConfiguration(enableOnDeviceSTT: true)
+        recognizer.finalTranscript = "Turn on the lights"
+        startStream("first")
+        streamChunk(Data([1, 2]), sequence: 0, isFinal: true, streamId: "first")
+
+        configuration = AssistConfiguration()
+        startStream("second")
+        waitUntil { recognizer.didEndAudio }
+        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+
+        XCTAssertEqual(
+            assistService.assistSource,
+            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
+        )
+        XCTAssertTrue(messages(.assistSTTResponse).isEmpty)
+        XCTAssertTrue(messages(.assistError).isEmpty)
+        streamChunk(Data([3, 4]), sequence: 0, streamId: "second")
+        XCTAssertEqual(acks.last, AssistAudioStreamAckPayload(streamId: "second", isListening: true))
     }
 
     func testCancelledOnDeviceStreamStopsTheRecognizer() {

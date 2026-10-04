@@ -208,8 +208,12 @@ public final class WatchAssistAudioStream {
     private func didAcknowledgeStart(_ reply: HAWatchConnectivity.ImmediateMessage) {
         // Not starting any more: it gave up waiting, or the recording already ended.
         guard mode == .starting else { return }
+        guard let acknowledgement = AssistAudioStreamAckPayload(content: reply.content) else {
+            sendWholeRecording(because: "the iPhone's answer to it could not be read")
+            return
+        }
         isAwaitingAcknowledgement = false
-        guard AssistAudioStreamAckPayload(content: reply.content)?.isListening == true else {
+        guard acknowledgement.isListening else {
             // The iPhone could not start listening, and reports why with an Assist error.
             phoneStoppedListening()
             return
@@ -220,7 +224,11 @@ public final class WatchAssistAudioStream {
 
     private func didFailToStart(_ error: Error) {
         guard mode == .starting else { return }
-        Current.Log.info("Assist audio stream was not acknowledged, sending the whole recording: \(error)")
+        sendWholeRecording(because: "\(error)")
+    }
+
+    private func sendWholeRecording(because reason: String) {
+        Current.Log.info("Assist audio stream was not acknowledged, sending the whole recording: \(reason)")
         isAwaitingAcknowledgement = false
         mode = .buffering
     }

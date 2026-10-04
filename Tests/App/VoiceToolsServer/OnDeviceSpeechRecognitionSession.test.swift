@@ -62,6 +62,11 @@ struct OnDeviceSpeechRecognitionSessionTests {
     /// Long enough for a pause shorter than it to never end the listening.
     private let pastTheSilence: UInt64 = 200_000_000
 
+    /// 0.1 s of 16 kHz audio: more than the 0.05 s pause the silence tests wait for.
+    private var pause: Data {
+        pcm(Array(repeating: 0, count: 1600))
+    }
+
     private func pcm(_ samples: [Int16]) -> Data {
         samples.withUnsafeBufferPointer { Data(buffer: $0) }
     }
@@ -174,9 +179,44 @@ struct OnDeviceSpeechRecognitionSessionTests {
         session.append(pcm([1, 2]))
 
         recognizer.report("turn on the")
+        session.append(pause)
         try await Task.sleep(nanoseconds: pastTheSilence)
 
         #expect(listeningEnded == 1)
+    }
+
+    /// Audio streamed over a link can stall: time passing without audio arriving is not the speaker
+    /// pausing, so the listening ends only once the audio of a pause has arrived.
+    @Test func waitsForTheAudioOfThePauseToArrive() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("turn on the")
+        try await Task.sleep(nanoseconds: pastTheSilence)
+        #expect(listeningEnded == 0)
+
+        session.append(pause)
+        try await Task.sleep(nanoseconds: pastTheSilence)
+        #expect(listeningEnded == 1)
+    }
+
+    /// New words restart the wait, however much audio came before them.
+    @Test func newWordsRestartTheWaitForAPause() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("turn on")
+        session.append(pause)
+        recognizer.report("turn on the kitchen")
+        try await Task.sleep(nanoseconds: pastTheSilence)
+
+        #expect(listeningEnded == 0)
     }
 
     /// Silence before the first word is the user getting ready to speak, not the end of a request.
@@ -188,6 +228,7 @@ struct OnDeviceSpeechRecognitionSessionTests {
         session.append(pcm([1, 2]))
 
         recognizer.report("")
+        session.append(pause)
         try await Task.sleep(nanoseconds: pastTheSilence)
 
         #expect(listeningEnded == 0)
@@ -215,6 +256,7 @@ struct OnDeviceSpeechRecognitionSessionTests {
         session.onListeningEnded = { listeningEnded += 1 }
         session.append(pcm([1, 2]))
         recognizer.report("turn on the")
+        session.append(pause)
 
         let pending = Task { try await session.finish() }
         try await Task.sleep(nanoseconds: pastTheSilence)
@@ -231,6 +273,7 @@ struct OnDeviceSpeechRecognitionSessionTests {
         session.onListeningEnded = { listeningEnded += 1 }
         session.append(pcm([1, 2]))
         recognizer.report("turn on the")
+        session.append(pause)
 
         session.cancel()
         try await Task.sleep(nanoseconds: pastTheSilence)

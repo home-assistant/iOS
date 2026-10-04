@@ -28,6 +28,8 @@ final class WatchAssistService: ObservableObject {
     /// The recording in progress, kept after it is submitted until the next one starts so the rest
     /// of it can still go out.
     private var audioStream: WatchAssistAudioStream?
+    /// The whole recording being uploaded; a newer recording supersedes it.
+    private var uploadingRecordingId: String?
 
     init(serverId: String, pipelineId: String) {
         self.serverId = serverId
@@ -85,6 +87,7 @@ final class WatchAssistService: ObservableObject {
         onFailure: @escaping (Error) -> Void
     ) {
         audioStream?.cancel()
+        uploadingRecordingId = nil
         let stream = WatchAssistAudioStream(
             sampleRate: sampleRate,
             pipelineId: pipelineId,
@@ -170,11 +173,13 @@ final class WatchAssistService: ObservableObject {
 
         let chunkSize = 32 * 1024 // 32 KB
         let totalChunks = max(1, Int(ceil(Double(audioData.count) / Double(chunkSize))))
+        // Unique per recording so the phone never mixes chunks of an aborted/retried attempt into a
+        // later one.
+        let recordingId = UUID().uuidString
+        uploadingRecordingId = recordingId
         sendChunk(
             index: 0,
-            // Unique per recording so the phone never mixes chunks of an aborted/retried attempt
-            // into a later one.
-            recordingId: UUID().uuidString,
+            recordingId: recordingId,
             audioData: audioData,
             chunkSize: chunkSize,
             totalChunks: totalChunks,
@@ -217,13 +222,14 @@ final class WatchAssistService: ObservableObject {
             ).content,
             reply: { [weak self] _ in
                 DispatchQueue.main.async {
+                    guard let self, self.uploadingRecordingId == recordingId else { return }
                     let next = index + 1
                     guard next < totalChunks else {
                         Current.Log.verbose("All \(totalChunks) assist audio chunk(s) acknowledged")
                         completion(nil)
                         return
                     }
-                    self?.sendChunk(
+                    self.sendChunk(
                         index: next,
                         recordingId: recordingId,
                         audioData: audioData,

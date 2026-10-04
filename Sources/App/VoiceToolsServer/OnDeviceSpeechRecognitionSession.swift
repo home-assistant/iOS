@@ -15,9 +15,10 @@ final class OnDeviceSpeechRecognitionSession {
     static let defaultSilenceTimeout: TimeInterval = 1.5
 
     /// Called once, while the audio is still streaming in, when there is no point sending more: the
-    /// transcript stayed unchanged for `silenceTimeout` after it first had words, so the speaker is
-    /// done, or the recogniser already settled on its answer. Lets a client streaming live audio stop
-    /// recording without waiting for the user, then call `finish()`; nothing is detected while `nil`.
+    /// words stayed the same through `silenceTimeout` of audio after there first were some, so the
+    /// speaker is done, or the recogniser already settled on its answer. Lets a client streaming live
+    /// audio stop recording without waiting for the user, then call `finish()`; nothing is detected
+    /// while `nil`.
     var onListeningEnded: (() -> Void)?
 
     private let recognizer: any OnDeviceSpeechRecognizing
@@ -29,6 +30,8 @@ final class OnDeviceSpeechRecognitionSession {
     private var receivedAudio = false
     private var audioEnded = false
     private var didReportListeningEnded = false
+    /// Seconds of audio appended since the words last changed.
+    private var audioSinceNewSpeech: TimeInterval = 0
     private var result: Result<String, Error>?
     private var continuation: CheckedContinuation<String, Error>?
     private var graceTask: Task<Void, Never>?
@@ -65,6 +68,7 @@ final class OnDeviceSpeechRecognitionSession {
     func append(_ audio: Data) {
         guard let buffer = converter.convert(audio) else { return }
         receivedAudio = true
+        audioSinceNewSpeech += Double(buffer.frameLength) / buffer.format.sampleRate
         recognizer.append(buffer)
     }
 
@@ -103,7 +107,8 @@ final class OnDeviceSpeechRecognitionSession {
         if isFinal {
             complete(.success(transcript))
         } else if isNewSpeech {
-            startSilenceTimeout()
+            audioSinceNewSpeech = 0
+            startSilenceTimeout(after: silenceTimeout)
         }
     }
 
@@ -117,14 +122,21 @@ final class OnDeviceSpeechRecognitionSession {
         }
     }
 
-    /// Restarted whenever the words change: only a pause that outlasts it ends the listening.
-    private func startSilenceTimeout() {
+    /// Restarted whenever the words change. The pause is measured in audio, not in time: audio that
+    /// streams in over a link can stall, and a stall is not the speaker pausing, so the wait goes on
+    /// until a whole `silenceTimeout` of audio has arrived without new words.
+    private func startSilenceTimeout(after delay: TimeInterval) {
         guard onListeningEnded != nil, !audioEnded, !latestTranscript.isEmpty else { return }
         silenceTask?.cancel()
         silenceTask = Task { @MainActor [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64((self?.silenceTimeout ?? 0) * 1_000_000_000))
-            guard !Task.isCancelled else { return }
-            self?.endListening()
+            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+            guard !Task.isCancelled, let self else { return }
+            let missingSilence = silenceTimeout - audioSinceNewSpeech
+            if missingSilence > 0 {
+                startSilenceTimeout(after: missingSilence)
+            } else {
+                endListening()
+            }
         }
     }
 

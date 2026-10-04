@@ -46,7 +46,11 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
         static let levelDelay: TimeInterval = 1
         /// What Home Assistant's speech-to-text expects, and what recordings were always made in.
         static let sampleRate: Double = 16000
-        static let tapBufferSize: AVAudioFrameCount = 4096
+        /// Small, so the audio and the orb's level keep flowing between buffers.
+        static let tapBufferSize: AVAudioFrameCount = 1024
+        /// The tap only hands over whole buffers, so the microphone stays on this much longer once
+        /// the recording is stopped: the buffer still filling holds the end of what was said.
+        static let stopTail: TimeInterval = 0.3
     }
 
     /// The buffer one conversion feeds the converter, handed over once.
@@ -69,7 +73,8 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     /// Identifies the recording in progress, from the start until its stop is delivered. Audio the
     /// tap hands over for any other recording is dropped.
     private var recordingID: UUID?
-    /// Whether the microphone is still captured for `recordingID`.
+    /// Whether the recording `recordingID` is still going: `false` from the moment it is stopped,
+    /// while the microphone captures the tail.
     private var isCapturing = false
 
     override init() {
@@ -110,23 +115,26 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
 
     func stopRecording() {
         guard let recordingID, isCapturing else { return }
-        finishCapture()
-        // The tap hands its audio to the main queue, so the stop goes through the main queue too:
-        // the audio captured before it is delivered first.
-        DispatchQueue.main.async { [weak self] in
+        isCapturing = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.stopTail) { [weak self] in
             guard let self, self.recordingID == recordingID else { return }
-            self.recordingID = nil
-            delegate?.didStopRecording()
+            finishCapture()
+            // The tap hands its audio to the main queue, so the stop goes through the main queue
+            // too: the audio captured before it is delivered first.
+            DispatchQueue.main.async { [weak self] in
+                guard let self, self.recordingID == recordingID else { return }
+                self.recordingID = nil
+                delegate?.didStopRecording()
+            }
         }
     }
 
+    /// Also drops a recording that is stopping but has not delivered its stop yet.
     func cancelRecording() {
-        guard recordingID != nil, isCapturing else { return }
+        guard recordingID != nil else { return }
         finishCapture()
         recordingID = nil
-        DispatchQueue.main.async { [weak self] in
-            self?.delegate?.didCancelRecording()
-        }
+        delegate?.didCancelRecording()
     }
 
     private func startCapture() throws {
@@ -186,13 +194,21 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
         self.engine = engine
         self.recordingID = recordingID
         isCapturing = true
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(engineConfigurationChanged),
+            name: .AVAudioEngineConfigurationChange,
+            object: engine
+        )
     }
 
     private func finishCapture() {
         isCapturing = false
-        engine?.inputNode.removeTap(onBus: 0)
-        engine?.stop()
-        engine = nil
+        guard let engine else { return }
+        NotificationCenter.default.removeObserver(self, name: .AVAudioEngineConfigurationChange, object: engine)
+        engine.inputNode.removeTap(onBus: 0)
+        engine.stop()
+        self.engine = nil
     }
 
     /// The microphone's audio as 16-bit mono PCM at `Constants.sampleRate`, or `nil` when it yields
@@ -234,6 +250,14 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
         let decibels = 20 * log10(max(sqrt(meanSquare), .leastNormalMagnitude))
         let range = Constants.powerCeiling - Constants.powerFloor
         return max(0, min(1, (decibels - Constants.powerFloor) / range))
+    }
+
+    /// The audio route changed — headphones connected, say — and the engine stopped with it: what was
+    /// said so far is sent rather than waiting on a microphone that is no longer captured.
+    @objc private func engineConfigurationChanged(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            self?.stopRecording()
+        }
     }
 
     /// An interruption — a call, an alarm — takes the microphone away: what was said so far is sent.

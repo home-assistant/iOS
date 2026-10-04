@@ -33,6 +33,8 @@ final class WatchCommunicatorService {
     private var assistMessageSequence = 0
     private var assistRunFirstSequence = 1
     private var isAssistRunInProgress = false
+    /// Counts the watch's Assist requests, so work finishing after a newer one started is dropped.
+    private var assistRunID = 0
 
     /// One in-progress chunked audio upload from the watch.
     private struct AudioChunkSession {
@@ -1059,6 +1061,7 @@ extension WatchCommunicatorService {
         server: Server,
         configuration: AssistConfiguration
     ) {
+        let runID = assistRunID
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -1066,6 +1069,7 @@ extension WatchCommunicatorService {
                 session.append(WAVDataChunk.pcm(in: data))
                 await runPipeline(
                     onTranscriptOf: session,
+                    runID: runID,
                     pipelineId: pipelineId,
                     server: server,
                     configuration: configuration
@@ -1088,15 +1092,28 @@ extension WatchCommunicatorService {
     }
 
     /// Runs the pipeline on the text the phone's own recognizer heard once its audio has ended.
+    /// Transcribing takes a moment, so a request the watch made in the meantime wins: the transcript
+    /// of request `runID` is dropped once a newer one started.
     @MainActor
     private func runPipeline(
         onTranscriptOf session: OnDeviceSpeechRecognitionSession,
+        runID: Int,
         pipelineId: String,
         server: Server,
         configuration: AssistConfiguration
     ) async {
+        let transcript: Result<String, Error>
         do {
-            let input = try await session.finish().trimmingCharacters(in: .whitespacesAndNewlines)
+            transcript = .success(try await session.finish())
+        } catch {
+            transcript = .failure(error)
+        }
+        guard runID == assistRunID else {
+            Current.Log.info("Dropping the transcript of a watch Assist request a newer one replaced")
+            return
+        }
+        do {
+            let input = try transcript.get().trimmingCharacters(in: .whitespacesAndNewlines)
             guard !input.isEmpty else {
                 didReceiveError(
                     code: "no_speech_recognized",
@@ -1184,6 +1201,7 @@ extension WatchCommunicatorService {
     }
 
     private func beginAssistRun() {
+        assistRunID += 1
         undeliveredAssistMessages.removeAll()
         assistRunFirstSequence = assistMessageSequence + 1
         isAssistRunInProgress = true
@@ -1246,7 +1264,13 @@ extension WatchCommunicatorService {
     func handleAssistAudioStreamStart(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
         guard let payload = AssistAudioStreamStartPayload(content: message.content) else {
             Current.Log.error("Invalid assist audio stream start")
-            didReceiveError(code: "invalid_payload", message: "The iPhone could not read the recording")
+            sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistError.rawValue,
+                content: AssistErrorPayload(
+                    code: "invalid_payload",
+                    message: "The iPhone could not read the recording"
+                ).content
+            ))
             // Answered anyway: without a reply the watch waits out its timeout before giving up.
             message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue))
             return
@@ -1403,9 +1427,11 @@ extension WatchCommunicatorService {
         _ stream: AssistAudioStream,
         with recognition: OnDeviceSpeechRecognitionSession
     ) {
+        let runID = assistRunID
         Task { @MainActor [weak self] in
             await self?.runPipeline(
                 onTranscriptOf: recognition,
+                runID: runID,
                 pipelineId: stream.pipelineId,
                 server: stream.server,
                 configuration: stream.configuration
@@ -1437,9 +1463,14 @@ extension WatchCommunicatorService {
         guard let streamId = assistAudioStream?.id else { return }
         assistAudioStream?.abandonment?.cancel()
         let abandonment = DispatchWorkItem { [weak self] in
-            guard let self, assistAudioStream?.id == streamId else { return }
+            guard let self, let stream = assistAudioStream, stream.id == streamId else { return }
             Current.Log.warning("Dropping assist audio stream \(streamId): the watch stopped sending audio")
             dropAssistAudioStream(cancellingRun: true)
+            // A watch that submitted the recording is waiting for an answer that will not come. One
+            // that did not may still be recording, to send it whole once it is done.
+            if stream.isSubmitted {
+                didReceiveError(code: "audio_stream_timeout", message: "The pipeline never took the recording")
+            }
         }
         assistAudioStream?.abandonment = abandonment
         DispatchQueue.main.asyncAfter(deadline: .now() + assistAudioStreamTimeout, execute: abandonment)
