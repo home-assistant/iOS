@@ -15,8 +15,8 @@ final class WatchAssistViewModel: ObservableObject {
         static let audioLevelRelease: Double = 0.25
         /// Below 1: lifts quiet speech up the scale, so normal talking moves the orb noticeably.
         static let audioLevelCurve: Double = 0.65
-        /// A press that starts a recording becomes a hold, sent when the finger lifts, once it has
-        /// lasted this long. Lifting sooner is a tap: the recording goes on until the next tap.
+        /// A press that starts a recording is a hold, sent when the finger lifts, once it lasts this
+        /// long. Lifting sooner is a tap: the recording goes on until the next tap.
         static let tapDuration: TimeInterval = 0.3
     }
 
@@ -38,9 +38,9 @@ final class WatchAssistViewModel: ObservableObject {
 
     /// What lifting the finger pressing the chat screen does.
     private enum Press {
-        /// The press started the recording in progress: lifting sends it if the press became a hold,
-        /// and leaves it going until the next tap otherwise.
-        case startedRecording
+        /// The press started the recording in progress when the finger landed at this time: lifting
+        /// sends it if the press was a hold, and leaves it going until the next tap otherwise.
+        case startedRecording(at: Date)
         /// The press landed on a recording already in progress: lifting sends it.
         case sendsRecording
     }
@@ -50,7 +50,7 @@ final class WatchAssistViewModel: ObservableObject {
     @Published var recordingSubmission: RecordingSubmission = .tap
     /// The finger on the chat screen; `nil` while nothing presses it.
     private var press: Press?
-    /// Flips the recording to release-to-send once the press has lasted long enough to be a hold.
+    /// Shows the recording as release-to-send once the press has lasted long enough to be a hold.
     private var holdRecognition: DispatchWorkItem?
     /// Normalized microphone input level (0...1) driving the voice orb while recording
     @Published var audioLevel: Double = 0
@@ -158,21 +158,21 @@ final class WatchAssistViewModel: ObservableObject {
 
     /// The user pressed the chat screen. Over a recording in progress the press is a tap that sends
     /// it; otherwise the press starts one.
-    func beginPushToTalk() {
+    func beginPushToTalk(at time: Date) {
         switch state {
         case .loading:
             return
         case .recording:
             press = .sendsRecording
         case .idle, .waitingForPipelineResponse:
-            press = .startedRecording
+            press = .startedRecording(at: time)
             // The recording starts as tap-to-send: a quick tap keeps that flow, and only a press
             // that lasts becomes release-to-send, so a tap never flashes the hint.
             startRecording()
-            // Scheduled once the recorder has started: setting it up holds the main thread, and a
-            // tap lifted meanwhile must still count as a tap.
+            // Only the hint waits on this: whether the press was a hold is measured from the touch
+            // times when the finger lifts.
             let holdRecognition = DispatchWorkItem { [weak self] in
-                guard let self, press == .startedRecording, state == .recording else { return }
+                guard let self, case .startedRecording? = press, state == .recording else { return }
                 recordingSubmission = .release
             }
             self.holdRecognition = holdRecognition
@@ -182,13 +182,17 @@ final class WatchAssistViewModel: ObservableObject {
 
     /// The finger lifted. A hold sends the recording it started and a tap sends the one in progress,
     /// while the tap that starts a recording leaves it going until the next one.
-    func endPushToTalk() {
+    func endPushToTalk(at time: Date) {
         guard let press else { return }
         finishPushToTalkPress()
-        // The hold is what the screen shows: lifting sends only once "Release to send" is up.
-        let isHold = recordingSubmission == .release
-        guard state == .recording, press == .sendsRecording || isHold else { return }
-        stopRecording()
+        guard state == .recording else { return }
+        switch press {
+        case let .startedRecording(began) where time.timeIntervalSince(began) < Constants.tapDuration:
+            // The hint can be up even so, when the lift waited for the main thread to handle it.
+            recordingSubmission = .tap
+        case .startedRecording, .sendsRecording:
+            stopRecording()
+        }
     }
 
     /// The press was taken over by something else, such as a scroll of the chat. The user was not
@@ -197,7 +201,7 @@ final class WatchAssistViewModel: ObservableObject {
     func cancelPushToTalk() {
         guard let press else { return }
         finishPushToTalkPress()
-        guard press == .startedRecording else { return }
+        guard case .startedRecording = press else { return }
         audioRecorder.cancelRecording()
     }
 
@@ -310,9 +314,9 @@ final class WatchAssistViewModel: ObservableObject {
 extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
     @MainActor
     func didStartRecording() {
-        runInMainThread { [weak self] in
-            self?.state = .recording
-        }
+        // Set straight away rather than on a later turn of the main queue: a press that started the
+        // recording can lift while the recorder is still being set up, and lifting must find it.
+        state = .recording
     }
 
     @MainActor

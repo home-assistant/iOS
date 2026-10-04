@@ -60,8 +60,8 @@ struct WatchAssistView: View {
             // no finger to lift and so keeps the tap-to-send flow.
             .buttonStyle(WatchPushToTalkButtonStyle(onPhaseChange: { phase in
                 switch phase {
-                case .began: viewModel.beginPushToTalk()
-                case .released: viewModel.endPushToTalk()
+                case let .began(time): viewModel.beginPushToTalk(at: time)
+                case let .released(time): viewModel.endPushToTalk(at: time)
                 case .cancelled: viewModel.cancelPushToTalk()
                 }
             }))

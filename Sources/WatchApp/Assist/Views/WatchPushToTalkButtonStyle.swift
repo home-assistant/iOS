@@ -6,10 +6,10 @@ import SwiftUI
 /// the Double Tap hand gesture and VoiceOver activation still perform it.
 struct WatchPushToTalkButtonStyle: PrimitiveButtonStyle {
     enum Phase {
-        /// A finger landed on the label.
-        case began
-        /// The finger lifted off the label.
-        case released
+        /// A finger landed on the label at this time.
+        case began(Date)
+        /// The finger lifted off the label at this time.
+        case released(Date)
         /// The press was taken over by another gesture before the finger lifted.
         case cancelled
     }
@@ -24,30 +24,37 @@ struct WatchPushToTalkButtonStyle: PrimitiveButtonStyle {
     private struct PressTrackingLabel: View {
         let configuration: PrimitiveButtonStyleConfiguration
         let onPhaseChange: (Phase) -> Void
-        // Reset by SwiftUI when the gesture ends or is cancelled, which is the only signal a
-        // cancellation gives: `onEnded` runs for a lift alone, so a reset without it is a cancel.
-        @GestureState private var isPressing = false
-        @State private var didRelease = false
+        // The times are the touch events' own, so work holding the main thread between them does
+        // not stretch or shorten the press. Reset by SwiftUI when the gesture ends or is cancelled,
+        // which is the only signal a cancellation gives: `onEnded` runs for a lift alone, so a reset
+        // without it is a cancel.
+        @GestureState private var pressBegan: Date?
+        @State private var releasedAt: Date?
 
         var body: some View {
             configuration.label
                 .contentShape(Rectangle())
                 .gesture(
                     DragGesture(minimumDistance: 0)
-                        .updating($isPressing) { _, isPressing, _ in
-                            isPressing = true
+                        .updating($pressBegan) { value, pressBegan, _ in
+                            // The first event of the press is the touch-down.
+                            if pressBegan == nil {
+                                pressBegan = value.time
+                            }
                         }
-                        .onEnded { _ in
-                            didRelease = true
+                        .onEnded { value in
+                            releasedAt = value.time
                         }
                 )
-                .onChange(of: isPressing) { isPressing in
-                    if isPressing {
-                        didRelease = false
-                        onPhaseChange(.began)
+                .onChange(of: pressBegan) { pressBegan in
+                    if let pressBegan {
+                        releasedAt = nil
+                        onPhaseChange(.began(pressBegan))
+                    } else if let releasedAt {
+                        self.releasedAt = nil
+                        onPhaseChange(.released(releasedAt))
                     } else {
-                        onPhaseChange(didRelease ? .released : .cancelled)
-                        didRelease = false
+                        onPhaseChange(.cancelled)
                     }
                 }
         }
