@@ -195,7 +195,7 @@ struct ComplicationEditViewModelTests {
             viewModel.gaugeStyle = .ring
             viewModel.icon = MaterialDesignIcons(named: "battery")
             for area in viewModel.activeTextAreas {
-                viewModel.textAreaValues[area.slug] = .init(text: "Outer text", color: .red)
+                viewModel.textAreaValues[area.slug] = .init(text: "Corner text", color: .red)
             }
 
             var notified = false
@@ -208,9 +208,10 @@ struct ComplicationEditViewModelTests {
 
             viewModel.save()
 
-            let saved = try #require(try database.read { db in
+            let fetched = try database.read { db in
                 try WatchComplication.fetchOne(db, key: "complication-1")
-            })
+            }
+            let saved = try #require(fetched)
             #expect(notified)
             #expect(saved.name == "Battery")
             #expect(!saved.isPublic)
@@ -231,7 +232,7 @@ struct ComplicationEditViewModelTests {
 
             let textAreas = try #require(data["textAreas"] as? [String: [String: Any]])
             #expect(Set(textAreas.keys) == Set(viewModel.activeTextAreas.map(\.slug)))
-            #expect(textAreas["Outer"]?["text"] as? String == "Outer text")
+            #expect(textAreas["Leading"]?["text"] as? String == "Corner text")
         }
     }
 
@@ -253,17 +254,19 @@ struct ComplicationEditViewModelTests {
             columns.column2Alignment = .trailing
             columns.save()
 
-            let savedRing = try #require(try database.read { db in
+            let fetchedRing = try database.read { db in
                 try WatchComplication.fetchOne(db, key: "ring")
-            })
+            }
+            let savedRing = try #require(fetchedRing)
             #expect(savedRing.name == nil)
             let ringData = try #require(savedRing.Data["ring"] as? [String: Any])
             #expect(ringData["ring_value"] as? String == "0.2")
             #expect(ringData["ring_type"] as? String == "closed")
 
-            let savedColumns = try #require(try database.read { db in
+            let fetchedColumns = try database.read { db in
                 try WatchComplication.fetchOne(db, key: "columns")
-            })
+            }
+            let savedColumns = try #require(fetchedColumns)
             let alignment = try #require(savedColumns.Data["column2alignment"] as? [String: Any])
             #expect(alignment["column2alignment"] as? String == "trailing")
         }
@@ -273,20 +276,25 @@ struct ComplicationEditViewModelTests {
         try withWorld(serverIds: []) { database in
             let config = WatchComplication(identifier: "to-delete", family: .utilitarianLarge)
             try config.save()
-            #expect(try database.read { db in try WatchComplication.fetchCount(db) } == 1)
+            let countBefore = try database.read { db in try WatchComplication.fetchCount(db) }
+            #expect(countBefore == 1)
 
             ComplicationEditViewModel(config: config, isNew: false).delete()
 
-            #expect(try database.read { db in try WatchComplication.fetchCount(db) } == 0)
+            let countAfter = try database.read { db in try WatchComplication.fetchCount(db) }
+            #expect(countAfter == 0)
         }
     }
 
     // MARK: - Preview validation
 
     @Test func percentileValidationAcceptsFractionsOnly() throws {
-        #expect(try ComplicationEditViewModel.validatePercentile("0.5") == "0.5")
-        #expect(try ComplicationEditViewModel.validatePercentile(0.25) == "0.25")
-        #expect(try ComplicationEditViewModel.validatePercentile(1) == "1")
+        let fromString = try ComplicationEditViewModel.validatePercentile("0.5")
+        let fromDouble = try ComplicationEditViewModel.validatePercentile(0.25)
+        let fromInt = try ComplicationEditViewModel.validatePercentile(1)
+        #expect(fromString == "0.5")
+        #expect(fromDouble == "0.25")
+        #expect(fromInt == "1")
 
         #expect(throws: ComplicationEditViewModel.RenderValueError.self) {
             try ComplicationEditViewModel.validatePercentile(2)
@@ -308,8 +316,10 @@ struct ComplicationEditViewModelTests {
     }
 
     @Test func textValidationDescribesAnyValue() throws {
-        #expect(try ComplicationEditViewModel.validateText(42) == "42")
-        #expect(try ComplicationEditViewModel.validateText("Hello") == "Hello")
+        let number = try ComplicationEditViewModel.validateText(42)
+        let text = try ComplicationEditViewModel.validateText("Hello")
+        #expect(number == "42")
+        #expect(text == "Hello")
     }
 
     // MARK: - Option enums
