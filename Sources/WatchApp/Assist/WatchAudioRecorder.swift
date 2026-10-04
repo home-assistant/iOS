@@ -5,6 +5,8 @@ import Shared
 protocol WatchAudioRecorderDelegate: AnyObject {
     func didStartRecording()
     func didStopRecording()
+    /// The recording was discarded by `cancelRecording()`: nothing is sent.
+    func didCancelRecording()
     func didFinishRecording(audioURL: URL, audioSampleRate: Double)
     func didFailRecording(error: Error)
     /// Normalized microphone input level (0...1) emitted while recording, for UI feedback.
@@ -19,6 +21,8 @@ protocol WatchAudioRecorderProtocol: ObservableObject {
     var delegate: WatchAudioRecorderDelegate? { get set }
     func startRecording()
     func stopRecording()
+    /// Stop without delivering the audio.
+    func cancelRecording()
 }
 
 final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
@@ -38,6 +42,9 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     weak var delegate: WatchAudioRecorderDelegate?
 
     private var meteringTimer: Timer?
+    /// Set by `cancelRecording()`: the recorder's finish callback arrives after `stop()`, so this is
+    /// what tells it to drop the file instead of handing it over.
+    private var isDiscarding = false
 
     private var firstLaunch = true
 
@@ -89,6 +96,14 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
         delegate?.didStopRecording()
     }
 
+    func cancelRecording() {
+        guard let audioRecorder, audioRecorder.isRecording else { return }
+        isDiscarding = true
+        audioRecorder.stop()
+        self.audioRecorder = nil
+        stopMonitoringAudioLevels()
+    }
+
     private func getAudioFileURL() -> URL {
         let sharedGroupContainerDirectory = AppConstants.AppGroupContainer
         return sharedGroupContainerDirectory.appendingPathComponent("assist.wav")
@@ -126,6 +141,12 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
 
 extension WatchAudioRecorder: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        // Nothing to clean up: the next recording writes over the same file.
+        if isDiscarding {
+            isDiscarding = false
+            delegate?.didCancelRecording()
+            return
+        }
         if let audioSampleRate {
             delegate?.didFinishRecording(audioURL: getAudioFileURL(), audioSampleRate: audioSampleRate)
         } else {

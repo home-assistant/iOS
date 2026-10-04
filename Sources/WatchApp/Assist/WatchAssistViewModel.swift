@@ -15,6 +15,9 @@ final class WatchAssistViewModel: ObservableObject {
         static let audioLevelRelease: Double = 0.25
         /// Below 1: lifts quiet speech up the scale, so normal talking moves the orb noticeably.
         static let audioLevelCurve: Double = 0.65
+        /// A press released sooner than this is a tap, not a hold: the recording goes on and waits
+        /// for the tap that sends it, as it did before push-to-talk.
+        static let tapDuration: TimeInterval = 0.3
     }
 
     enum State {
@@ -24,8 +27,22 @@ final class WatchAssistViewModel: ObservableObject {
         case waitingForPipelineResponse
     }
 
+    /// What ends the recording in progress and sends it.
+    enum RecordingSubmission {
+        /// A tap: recordings started for the user (home screen, complication, Double Tap) keep
+        /// this flow, since no finger is on the screen to lift.
+        case tap
+        /// Lifting the finger: the user is holding the chat screen to ask something else.
+        case release
+    }
+
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
+    @Published var recordingSubmission: RecordingSubmission = .tap
+    /// When the finger landed for the push-to-talk recording in progress; `nil` outside one.
+    private var pushToTalkBegan: Date?
+    /// Flips the recording to release-to-send once the press has lasted long enough to be a hold.
+    private var holdRecognition: DispatchWorkItem?
     /// Normalized microphone input level (0...1) driving the voice orb while recording
     @Published var audioLevel: Double = 0
     @Published var showChatLoader = false
@@ -110,6 +127,7 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     func endRoutine() {
+        finishPushToTalkPress()
         stopRecording()
         speechSynthesizer.stop()
         assistService.endRoutine()
@@ -124,8 +142,59 @@ final class WatchAssistViewModel: ObservableObject {
         runtimeSessions.end(.assist)
     }
 
+    /// Tap-to-send flow: starts a recording, or sends the one in progress.
     func assist() {
+        startRecording()
+    }
+
+    /// Push-to-talk: the user pressed the chat screen. Nothing happens over a recording in
+    /// progress, so a tap-to-send recording is not turned into one that ends on release.
+    func beginPushToTalk() {
+        guard ![.recording, .loading].contains(state) else { return }
+        pushToTalkBegan = Current.date()
+        // The recording starts as tap-to-send: a quick tap keeps that flow, as before push-to-talk,
+        // and only a press that lasts becomes release-to-send, so a tap never flashes the hint.
+        startRecording()
+        let holdRecognition = DispatchWorkItem { [weak self] in
+            guard let self, pushToTalkBegan != nil, state == .recording else { return }
+            recordingSubmission = .release
+        }
+        self.holdRecognition = holdRecognition
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.tapDuration, execute: holdRecognition)
+    }
+
+    /// Push-to-talk: the finger lifted. A hold sends the recording the press started; a quick tap
+    /// leaves it going as a tap-to-send recording. A recording started any other way is never
+    /// touched here.
+    func endPushToTalk() {
+        guard let pushToTalkBegan else { return }
+        finishPushToTalkPress()
+        let isTap = Current.date().timeIntervalSince(pushToTalkBegan) < Constants.tapDuration
+        guard !isTap, state == .recording else { return }
+        stopRecording()
+    }
+
+    /// Push-to-talk: the press was taken over by something else, such as a scroll of the chat.
+    /// The user was not asking anything, so the recording is dropped rather than sent.
+    func cancelPushToTalk() {
+        guard pushToTalkBegan != nil else { return }
+        finishPushToTalkPress()
+        audioRecorder.cancelRecording()
+    }
+
+    private func finishPushToTalkPress() {
+        pushToTalkBegan = nil
+        holdRecognition?.cancel()
+        holdRecognition = nil
+    }
+
+    private func startRecording() {
         if assistService.deviceReachable {
+            // The recorder toggles: over a recording in progress this call sends it, and how that
+            // recording ends still describes it until it is over.
+            if state != .recording {
+                recordingSubmission = .tap
+            }
             // Extra message just to wake up iPhone from the background
             Communicator.shared.send(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup"))
             audioRecorder.startRecording()
@@ -231,6 +300,13 @@ extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
     func didStopRecording() {
         runInMainThread { [weak self] in
             self?.state = .waitingForPipelineResponse
+            self?.audioLevel = 0
+        }
+    }
+
+    func didCancelRecording() {
+        runInMainThread { [weak self] in
+            self?.state = .idle
             self?.audioLevel = 0
         }
     }

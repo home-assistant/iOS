@@ -1489,8 +1489,10 @@ public enum L10n {
     }
     public enum Watch {
       public enum MicButton {
-        /// Tap to
-        public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.title") }
+        public enum TapOrHold {
+          /// Tap or hold to
+          public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.tap_or_hold.title") }
+        }
       }
       public enum NotReachable {
         /// Assist requires iPhone connectivity. Your iPhone is currently unreachable.
@@ -8143,6 +8145,10 @@ public enum L10n {
         public enum Recording {
           /// Recording...
           public static var title: String { return L10n.tr("Localizable", "watch.assist.button.recording.title") }
+        }
+        public enum ReleaseToSend {
+          /// Release to send
+          public static var title: String { return L10n.tr("Localizable", "watch.assist.button.release_to_send.title") }
         }
         public enum SendRequest {
           /// Tap to send request
