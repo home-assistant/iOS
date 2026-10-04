@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Als deze optie is ingeschakeld, speelt Assist geen audiorespons af, zelfs niet als de pijplijn tekst-naar-spraak heeft geconfigureerd. Je zult nog steeds tekstreacties te zien krijgen.";
 "assist.settings.tts_mute.toggle" = "Spraakreacties dempen";
 "assist.text_field.placeholder" = "Typ een verzoek...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Tik om";
 "assist.watch.not_reachable.title" = "Assist vereist iPhone-connectiviteit. Je iPhone is nu niet bereikbaar.";
 "assist.watch.on_device_stt.no_speech_recognized" = "Er werd geen spraak herkend.";
@@ -1156,6 +1157,9 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "magic_item.background_color.title" = "Achtergrondkleur";
 "magic_item.display_text.title" = "Tekst weergeven";
 "magic_item.edit" = "Opslaan";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Icoon kleur";
 "magic_item.icon_name.title" = "Icoon naam";
 "magic_item.item_type.action.list.title" = "iOS-acties";
@@ -2477,6 +2481,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "vacuum.control.start" = "Start";
 "vacuum.control.stop" = "Stop";
 "watch.assist.button.recording.title" = "Opnemen...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Tik om aanvraag te versturen";
 "watch.assist.lack_config.error.title" = "Configureer Assist met behulp van de iOS-companion app";
 "watch.complications.builder.color" = "Kleur van de meter";

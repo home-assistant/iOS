@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "활성화되면 파이프라인에 텍스트 음성 변환이 구성되어 있어도 Assist가 오디오 응답을 재생하지 않습니다. 문자 응답은 계속 표시됩니다.";
 "assist.settings.tts_mute.toggle" = "음성 응답 음소거";
 "assist.text_field.placeholder" = "요청을 입력하세요...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "탭하여";
 "assist.watch.not_reachable.title" = "Assist 기능은 아이폰 연결이 필요합니다. 현재 아이폰에 연결할 수 없습니다.";
 "assist.watch.on_device_stt.no_speech_recognized" = "음성이 인식되지 않았습니다.";
@@ -1156,6 +1157,9 @@
 "magic_item.background_color.title" = "배경색";
 "magic_item.display_text.title" = "텍스트 표시";
 "magic_item.edit" = "저장하기";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "아이콘 색상";
 "magic_item.icon_name.title" = "아이콘 이름";
 "magic_item.item_type.action.list.title" = "iOS 동작";
@@ -2477,6 +2481,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "vacuum.control.start" = "시작";
 "vacuum.control.stop" = "중지";
 "watch.assist.button.recording.title" = "녹화중...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "요청을 보내려면 탭하세요";
 "watch.assist.lack_config.error.title" = "iOS 컴패니언 앱을 사용하여 Assist를 구성하세요.";
 "watch.complications.builder.color" = "게이지 색상";

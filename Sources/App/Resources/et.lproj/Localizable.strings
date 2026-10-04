@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Kui see on lubatud, ei esita Assist helivastuseid isegi siis, kui voos on tekstist kõneks teisendamine seadistatud. Tekstvastuseid näed ikkagi.";
 "assist.settings.tts_mute.toggle" = "Vaigista häälvastused";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Puuduta, et";
 "assist.watch.not_reachable.title" = "Assist nõuab iPhone'i ühenduvust.  iPhone pole praegu kättesaadav.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
@@ -1156,6 +1157,9 @@
 "magic_item.background_color.title" = "Tausta värv";
 "magic_item.display_text.title" = "Kuva tekst";
 "magic_item.edit" = "Salvesta";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Ikooni värv";
 "magic_item.icon_name.title" = "Ikooni nimi";
 "magic_item.item_type.action.list.title" = "iOS-i toimingud";
@@ -2477,6 +2481,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "vacuum.control.start" = "Start";
 "vacuum.control.stop" = "Stop";
 "watch.assist.button.recording.title" = "Salvestamine...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Puuduta päringu saatmiseks";
 "watch.assist.lack_config.error.title" = "Seadista Assist iOS-i kaasrakenduse abil";
 "watch.complications.builder.color" = "Mõõdiku värv";

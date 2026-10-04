@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "启用此功能后，即使管道已配置文本转语音功能，语音助手也不会播放语音答复。您仍然可以看到文本答复。";
 "assist.settings.tts_mute.toggle" = "语音答复静音";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "点按";
 "assist.watch.not_reachable.title" = "“语音助手”功能需要 iPhone 连接。您的 iPhone 当前无法访问。";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
@@ -1156,6 +1157,9 @@
 "magic_item.background_color.title" = "背景颜色";
 "magic_item.display_text.title" = "显示文本";
 "magic_item.edit" = "保存";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "图标颜色";
 "magic_item.icon_name.title" = "图标名称";
 "magic_item.item_type.action.list.title" = "iOS 操作";
@@ -2476,6 +2480,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "vacuum.control.start" = "启动";
 "vacuum.control.stop" = "停止";
 "watch.assist.button.recording.title" = "正在录音...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "点击发送请求";
 "watch.assist.lack_config.error.title" = "请配置语音助手使用 iOS companion 应用";
 "watch.complications.builder.color" = "Gauge color";

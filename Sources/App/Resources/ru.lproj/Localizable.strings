@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Если эта функция включена, Assist не будет воспроизводить аудио ответы, даже если в конвейере настроена функция преобразования текста в речь. Вы по-прежнему будете видеть текстовые ответы.";
 "assist.settings.tts_mute.toggle" = "Отключение голосовых ответов";
 "assist.text_field.placeholder" = "Введите запрос...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Нажмите, чтобы";
 "assist.watch.not_reachable.title" = "Assist требует подключения к iPhone. В данный момент ваш iPhone недоступен.";
 "assist.watch.on_device_stt.no_speech_recognized" = "Речь не была распознана.";
@@ -1156,6 +1157,9 @@
 "magic_item.background_color.title" = "Цвет фона";
 "magic_item.display_text.title" = "Отображаемый текст";
 "magic_item.edit" = "Сохранить";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Цвет значка";
 "magic_item.icon_name.title" = "Название значка";
 "magic_item.item_type.action.list.title" = "IOS Действия";
@@ -2475,6 +2479,7 @@ Home Assistant — это приложение с открытым исходн�
 "vacuum.control.start" = "Старт";
 "vacuum.control.stop" = "Стоп";
 "watch.assist.button.recording.title" = "Запись...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Нажмите, чтобы отправить запрос";
 "watch.assist.lack_config.error.title" = "Пожалуйста, настройте Assist с помощью приложения-компаньона iOS";
 "watch.complications.builder.color" = "Цвет шкалы";
