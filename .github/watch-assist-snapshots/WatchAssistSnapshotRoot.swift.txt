@@ -1,0 +1,62 @@
+import Shared
+import SwiftUI
+
+/// Temporary, CI only: shows the Assist recording screen in the state named by the `AssistSnapshot`
+/// launch argument (`tap-0`, `release-60`, …) so the screen can be captured with `simctl`.
+struct WatchAssistSnapshotRoot: View {
+    var body: some View {
+        if let scenario = UserDefaults.standard.string(forKey: "AssistSnapshot") {
+            WatchAssistSnapshotScreen(scenario: scenario)
+        } else {
+            WatchHomeView()
+        }
+    }
+}
+
+private struct WatchAssistSnapshotScreen: View {
+    let scenario: String
+    @State private var viewModel = WatchAssistSnapshotScreen.makeViewModel()
+
+    var body: some View {
+        WatchAssistView(viewModel: viewModel)
+            .environment(\.assistOrbFixedTime, 0)
+            .task {
+                // After the screen's own appearance work, which starts a (fake) recording.
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                apply()
+            }
+    }
+
+    private func apply() {
+        let parts = scenario.split(separator: "-")
+        viewModel.assistService.deviceReachable = true
+        viewModel.recordingSubmission = parts.first == "release" ? .release : .tap
+        viewModel.audioLevel = (parts.count > 1 ? Double(parts[1]) ?? 0 : 0) / 100
+        viewModel.state = .recording
+    }
+
+    private static func makeViewModel() -> WatchAssistViewModel {
+        let viewModel = WatchAssistViewModel(
+            assistService: WatchAssistService(serverId: "snapshot", pipelineId: "snapshot"),
+            audioRecorder: SnapshotRecorder(),
+            audioPlayer: AudioPlayer(),
+            immediateCommunicatorService: ImmediateCommunicatorService()
+        )
+        viewModel.chatItems = [
+            .init(content: "Turn on the kitchen lights", itemType: .input),
+            .init(content: "Done, 3 lights are now on.", itemType: .output),
+        ]
+        viewModel.assistService.deviceReachable = true
+        return viewModel
+    }
+}
+
+private final class SnapshotRecorder: ObservableObject, WatchAudioRecorderProtocol {
+    weak var delegate: WatchAudioRecorderDelegate?
+
+    func startRecording() {}
+
+    func stopRecording() {}
+
+    func cancelRecording() {}
+}
