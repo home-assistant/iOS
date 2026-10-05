@@ -353,7 +353,7 @@ private struct WatchComplicationsDiagnosticsView: View {
                 }
                 .disabled(isRefreshingAll || configs.isEmpty)
             } footer: {
-                Text(verbatim: L10n.Watch.Settings.Complications.footer)
+                Text(verbatim: L10n.Watch.Settings.Complications.footer(AppConstants.homeAssistantLinkName))
             }
 
             if configs.isEmpty {

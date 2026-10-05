@@ -637,7 +637,7 @@
 "connection.active_url_type.toast.external" = "Using the external URL.";
 "connection.active_url_type.toast.internal" = "Using the internal URL.";
 "connection.active_url_type.toast.none" = "No active URL is currently available for this server.";
-"connection.active_url_type.toast.remote_ui" = "Using Cloud Remote UI URL.";
+"connection.active_url_type.toast.remote_ui" = "Using %@ Remote UI URL.";
 "connection.active_url_type.toast.title" = "Connection type";
 "connection.error.details.button.clipboard" = "Copy to clipboard";
 "connection.error.details.button.discord" = "Ask in Discord";
@@ -648,8 +648,8 @@
 "connection.error.details.label.description" = "Description";
 "connection.error.details.label.domain" = "Domain";
 "connection.error.details.title" = "Connection error";
-"connection.error.failed_connect.cloud.title" = "Make sure your Home Assistant Cloud subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
-"connection.error.failed_connect.cloud_inactive.title" = "You have disabled Home Assistant Cloud use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.cloud.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
 "connection.error.failed_connect.subtitle" = "Check your connection and try again. If you are not at home make sure you have configured remote access.";
 "connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
 "connection.error.failed_connect.url" = "The app is currently connecting to";
@@ -1555,7 +1555,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.client_certificate.remove_confirmation.message" = "The certificate will be removed from the device. You will need to import it again to use mTLS authentication.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Remove";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Remove Certificate?";
-"settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
+"settings.connection_section.cloud_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "Reachable";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Reachable (HTTP %li)";
 "settings.connection_section.cloudhook.check_reachability.result" = "Result";
@@ -1577,7 +1577,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
 "settings.connection_section.external_base_url.title" = "External URL";
 "settings.connection_section.header" = "Connection";
-"settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "e.g. http://homeassistant.local:8123/";
 "settings.connection_section.internal_base_url.requires_setup.title" = "Requires setup";
 "settings.connection_section.internal_base_url.ssid_bssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.";
@@ -1619,7 +1618,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.update_database.progress.entities" = "Updating entities";
 "settings.connection_section.urls_how_it_works.active.header" = "In use right now";
 "settings.connection_section.urls_how_it_works.active.none" = "No URL can be used with the current settings";
-"settings.connection_section.urls_how_it_works.away.body" = "When no listed network matches, the Home Assistant Cloud URL is used if cloud is turned on, and the external URL otherwise.";
+"settings.connection_section.urls_how_it_works.away.body" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
 "settings.connection_section.urls_how_it_works.away.title" = "Anywhere else";
 "settings.connection_section.urls_how_it_works.background.body" = "Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so without it your home network goes unrecognised and these connect the same way they do when you are away.";
 "settings.connection_section.urls_how_it_works.background.title" = "While the app is in the background";
@@ -1646,7 +1645,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.webhook.active.title" = "Currently used";
 "settings.connection_section.webhook.active.unavailable" = "No URL available";
 "settings.connection_section.webhook.endpoints.footer" = "Treat these URLs as sensitive. Anyone with them can send requests to this mobile app webhook.";
-"settings.connection_section.webhook.footer" = "The app sends sensor, location and other updates to this webhook. Home Assistant Cloud provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.footer" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
 "settings.connection_section.webhook.in_use" = "In use";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Authenticating";
@@ -2922,7 +2921,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.client_events.share" = "Share";
 "watch.settings.client_events.title" = "Logs";
 "watch.settings.complications.empty" = "No complications configured yet.";
-"watch.settings.complications.footer" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).";
+"watch.settings.complications.footer" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
 "watch.settings.complications.last_attempt" = "Last attempt: %@";
 "watch.settings.complications.list_footer" = "Tap a complication to see when it last updated and to retry.";
 "watch.settings.complications.never" = "Not yet updated";

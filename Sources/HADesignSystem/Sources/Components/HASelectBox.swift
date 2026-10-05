@@ -90,7 +90,7 @@ public struct HASelectBox: View {
             options: [
                 .init(
                     id: "cloud",
-                    label: "Home Assistant Cloud",
+                    label: "Home Assistant Link",
                     description: "The easiest way to connect from anywhere."
                 ),
                 .init(id: "manual", label: "Manual", description: "Enter the address of your instance yourself."),
