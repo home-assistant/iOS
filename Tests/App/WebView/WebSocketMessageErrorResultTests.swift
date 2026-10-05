@@ -31,7 +31,7 @@ final class WebSocketMessageErrorResultTests: XCTestCase {
             "id": 3,
             "type": "result",
             "success": false,
-            "error": ["code": "unknown_command", "message": "Unknown command camera/microphone/stopped"],
+            "error": ["code": "unknown_command", "message": "Unknown command webrtc/stream/stopped"],
         ])
 
         XCTAssertEqual(message?.ErrorInfo?["code"], "unknown_command")

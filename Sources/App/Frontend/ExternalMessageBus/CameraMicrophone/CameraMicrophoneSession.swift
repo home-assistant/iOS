@@ -33,11 +33,12 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
     private let timing: Timing
 
     private var state: State = .idle
-    private var startCompletion: ((Result<Void, CameraMicrophoneError>) -> Void)?
+    private var startCompletion: ((Result<String, CameraMicrophoneError>) -> Void)?
     private var client: WebRTCStreamClient?
     private var connectionGate: WebRTCServerConnectionGate?
     private var offerSubscription: HACancellable?
-    private var sessionId: String?
+    private(set) var sessionId: String?
+    private var isIceConnected = false
     private var pendingCandidates: [RTCIceCandidate] = []
     private var timeoutWorkItem: DispatchWorkItem?
     private var disconnectRecoveryWorkItem: DispatchWorkItem?
@@ -62,7 +63,7 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         tearDown()
     }
 
-    func start(completion: @escaping (Result<Void, CameraMicrophoneError>) -> Void) {
+    func start(completion: @escaping (Result<String, CameraMicrophoneError>) -> Void) {
         guard state == .idle else {
             completion(.failure(.interrupted))
             return
@@ -186,6 +187,7 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         for candidate in candidates {
             sendCandidate(candidate)
         }
+        reportStartIfReady()
     }
 
     private func handleAnswer(_ data: HAData) {
@@ -227,13 +229,8 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         switch connectionState {
         case .connected, .completed:
             cancelDisconnectRecovery()
-            guard state == .starting else { return }
-            state = .connected
-            cancelTimeout()
-            Current.Log.info("Camera microphone for \(cameraEntityId) is connected")
-            let completion = startCompletion
-            startCompletion = nil
-            completion?(.success(()))
+            isIceConnected = true
+            reportStartIfReady()
         case .failed:
             finish(with: .connectionFailed)
         case .disconnected:
@@ -241,6 +238,16 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         default:
             break
         }
+    }
+
+    private func reportStartIfReady() {
+        guard state == .starting, isIceConnected, let sessionId else { return }
+        state = .connected
+        cancelTimeout()
+        Current.Log.info("Camera microphone for \(cameraEntityId) is connected in session \(sessionId)")
+        let completion = startCompletion
+        startCompletion = nil
+        completion?(.success(sessionId))
     }
 
     private func finish(with error: CameraMicrophoneError, notifiesEnd: Bool = true) {
@@ -266,7 +273,7 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         offerSubscription = nil
         client?.closeConnection()
         client = nil
-        sessionId = nil
+        isIceConnected = false
         pendingCandidates.removeAll()
     }
 

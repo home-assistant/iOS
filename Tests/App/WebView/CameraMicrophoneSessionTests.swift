@@ -5,6 +5,11 @@ import HAKit_Mocks
 import XCTest
 
 final class CameraMicrophoneSessionTests: XCTestCase {
+    private enum StartOutcome: Equatable {
+        case started(sessionId: String)
+        case failed(CameraMicrophoneError)
+    }
+
     private var previousServers: ServerManager!
     private var server: Server!
     private var api: HomeAssistantAPI!
@@ -13,7 +18,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
     private var clients: [WebRTCFakeStreamClient] = []
     private var isMicrophoneGranted = true
     private var permissionRequests = 0
-    private var startOutcomes: [CameraMicrophoneError?] = []
+    private var startOutcomes: [StartOutcome] = []
     private var endErrors: [CameraMicrophoneError] = []
 
     private let patientTiming = CameraMicrophoneSession.Timing(connectionTimeout: 30, disconnectedGracePeriod: 30)
@@ -65,7 +70,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         start()
         spinMain(until: { !startOutcomes.isEmpty })
 
-        XCTAssertEqual(startOutcomes, [.microphoneDenied])
+        XCTAssertEqual(startOutcomes, [.failed(.microphoneDenied)])
         XCTAssertEqual(permissionRequests, 1)
         XCTAssertTrue(connection.pendingRequests.isEmpty)
         XCTAssertTrue(clients.isEmpty)
@@ -116,7 +121,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         start()
         spinMain(until: { !startOutcomes.isEmpty })
 
-        XCTAssertEqual(startOutcomes, [.serverUnavailable])
+        XCTAssertEqual(startOutcomes, [.failed(.serverUnavailable)])
         XCTAssertTrue(connection.pendingRequests.isEmpty)
     }
 
@@ -124,7 +129,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         start()
         start()
 
-        XCTAssertEqual(startOutcomes, [.interrupted])
+        XCTAssertEqual(startOutcomes, [.failed(.interrupted)])
         spinMain(until: { !clientConfigRequests.isEmpty })
         XCTAssertEqual(permissionRequests, 1)
         XCTAssertEqual(clientConfigRequests.count, 1)
@@ -132,23 +137,41 @@ final class CameraMicrophoneSessionTests: XCTestCase {
 
     // MARK: - Connecting
 
-    func testTheStartIsAnsweredOnceTheConnectionIsUp() throws {
-        _ = try startAndOffer()
+    func testTheStartIsAnsweredWithTheSessionOnceTheConnectionIsUp() throws {
+        let offer = try startAndOffer()
         let client = try XCTUnwrap(clients.first)
 
+        offer.handler(offer.cancellable, .init(value: ["type": "session", "session_id": "abc"]))
         client.changeConnectionState(.checking)
         flushMainQueue()
         XCTAssertTrue(startOutcomes.isEmpty)
+        XCTAssertFalse(session.isConnected)
 
         client.changeConnectionState(.connected)
         flushMainQueue()
 
-        XCTAssertEqual(startOutcomes, [nil])
+        XCTAssertEqual(startOutcomes, [.started(sessionId: "abc")])
+        XCTAssertEqual(session.sessionId, "abc")
         XCTAssertTrue(session.isConnected)
 
         client.changeConnectionState(.completed)
         flushMainQueue()
-        XCTAssertEqual(startOutcomes, [nil], "The start is only answered once")
+        XCTAssertEqual(startOutcomes, [.started(sessionId: "abc")])
+    }
+
+    func testAConnectionThatComesUpBeforeTheSessionWaitsForIt() throws {
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+
+        client.changeConnectionState(.connected)
+        flushMainQueue()
+        XCTAssertTrue(startOutcomes.isEmpty)
+        XCTAssertFalse(session.isConnected)
+
+        offer.handler(offer.cancellable, .init(value: ["type": "session", "session_id": "abc"]))
+
+        XCTAssertEqual(startOutcomes, [.started(sessionId: "abc")])
+        XCTAssertTrue(session.isConnected)
     }
 
     func testLocalCandidatesWaitForTheSessionAndThenFlush() throws {
@@ -233,7 +256,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
             message: "Camera does not support two way audio"
         ))))
 
-        XCTAssertEqual(startOutcomes, [.signalingFailed("Camera does not support two way audio")])
+        XCTAssertEqual(startOutcomes, [.failed(.signalingFailed("Camera does not support two way audio"))])
         XCTAssertTrue(try XCTUnwrap(clients.first).isClosed)
         XCTAssertEqual(connection.cancelledSubscriptions.map(\.type.command), ["camera/webrtc/offer"])
     }
@@ -244,7 +267,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
 
         offer.initiated(.failure(error))
 
-        XCTAssertEqual(startOutcomes, [.signalingFailed(error.localizedDescription)])
+        XCTAssertEqual(startOutcomes, [.failed(.signalingFailed(error.localizedDescription))])
     }
 
     func testASignalingErrorWhileConnectingFailsTheStartWithItsCode() throws {
@@ -252,15 +275,14 @@ final class CameraMicrophoneSessionTests: XCTestCase {
 
         offer.handler(offer.cancellable, .init(value: ["type": "error", "code": "webrtc_offer_failed"]))
 
-        XCTAssertEqual(startOutcomes, [.signalingFailed("webrtc_offer_failed")])
+        XCTAssertEqual(startOutcomes, [.failed(.signalingFailed("webrtc_offer_failed"))])
         XCTAssertTrue(endErrors.isEmpty)
     }
 
     func testASignalingErrorAfterConnectingEndsTheSession() throws {
         let offer = try startAndOffer()
         let client = try XCTUnwrap(clients.first)
-        client.changeConnectionState(.connected)
-        flushMainQueue()
+        connect(offer, client)
 
         offer.handler(offer.cancellable, .init(value: [
             "type": "error",
@@ -269,6 +291,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         ]))
 
         XCTAssertEqual(endErrors, [.signalingFailed("Stream ended")])
+        XCTAssertEqual(session.sessionId, "abc")
         XCTAssertFalse(session.isConnected)
         XCTAssertTrue(client.isClosed)
         XCTAssertEqual(connection.cancelledSubscriptions.map(\.type.command), ["camera/webrtc/offer"])
@@ -280,15 +303,14 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         try XCTUnwrap(clients.first).changeConnectionState(.failed)
         flushMainQueue()
 
-        XCTAssertEqual(startOutcomes, [.connectionFailed])
+        XCTAssertEqual(startOutcomes, [.failed(.connectionFailed)])
         XCTAssertTrue(endErrors.isEmpty)
     }
 
     func testAConnectionThatFailsAfterConnectingEndsTheSession() throws {
-        _ = try startAndOffer()
+        let offer = try startAndOffer()
         let client = try XCTUnwrap(clients.first)
-        client.changeConnectionState(.connected)
-        flushMainQueue()
+        connect(offer, client)
 
         client.changeConnectionState(.failed)
         flushMainQueue()
@@ -299,10 +321,9 @@ final class CameraMicrophoneSessionTests: XCTestCase {
 
     func testAConnectionThatStaysDisconnectedEndsTheSession() throws {
         session = makeSession(timing: .init(connectionTimeout: 30, disconnectedGracePeriod: 0.2))
-        _ = try startAndOffer()
+        let offer = try startAndOffer()
         let client = try XCTUnwrap(clients.first)
-        client.changeConnectionState(.connected)
-        flushMainQueue()
+        connect(offer, client)
 
         client.changeConnectionState(.disconnected)
         spinMain(until: { !endErrors.isEmpty })
@@ -314,10 +335,9 @@ final class CameraMicrophoneSessionTests: XCTestCase {
     func testAConnectionThatRecoversWithinTheGracePeriodKeepsStreaming() throws {
         let timing = CameraMicrophoneSession.Timing(connectionTimeout: 30, disconnectedGracePeriod: 1)
         session = makeSession(timing: timing)
-        _ = try startAndOffer()
+        let offer = try startAndOffer()
         let client = try XCTUnwrap(clients.first)
-        client.changeConnectionState(.connected)
-        flushMainQueue()
+        connect(offer, client)
 
         client.changeConnectionState(.disconnected)
         flushMainQueue()
@@ -335,20 +355,19 @@ final class CameraMicrophoneSessionTests: XCTestCase {
 
         spinMain(until: { !startOutcomes.isEmpty })
 
-        XCTAssertEqual(startOutcomes, [.timedOut])
+        XCTAssertEqual(startOutcomes, [.failed(.timedOut)])
         XCTAssertTrue(try XCTUnwrap(clients.first).isClosed)
     }
 
     func testAConnectedSessionIsNotTimedOut() throws {
         let timing = CameraMicrophoneSession.Timing(connectionTimeout: 1, disconnectedGracePeriod: 30)
         session = makeSession(timing: timing)
-        _ = try startAndOffer()
-        try XCTUnwrap(clients.first).changeConnectionState(.connected)
-        flushMainQueue()
+        let offer = try startAndOffer()
+        try connect(offer, XCTUnwrap(clients.first))
 
         spinMain(for: timing.connectionTimeout * 3)
 
-        XCTAssertEqual(startOutcomes, [nil])
+        XCTAssertEqual(startOutcomes, [.started(sessionId: "abc")])
         XCTAssertTrue(endErrors.isEmpty)
         XCTAssertTrue(session.isConnected)
     }
@@ -360,7 +379,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         session.stop()
         spinMain(for: 0.1)
 
-        XCTAssertEqual(startOutcomes, [.interrupted])
+        XCTAssertEqual(startOutcomes, [.failed(.interrupted)])
         XCTAssertTrue(connection.pendingRequests.isEmpty)
         XCTAssertTrue(clients.isEmpty)
     }
@@ -370,22 +389,21 @@ final class CameraMicrophoneSessionTests: XCTestCase {
 
         session.stop()
 
-        XCTAssertEqual(startOutcomes, [.interrupted])
+        XCTAssertEqual(startOutcomes, [.failed(.interrupted)])
         XCTAssertTrue(endErrors.isEmpty)
         XCTAssertTrue(try XCTUnwrap(clients.first).isClosed)
         XCTAssertEqual(connection.cancelledSubscriptions.map(\.type.command), ["camera/webrtc/offer"])
     }
 
     func testStoppingAConnectedSessionDoesNotReportAnEnd() throws {
-        _ = try startAndOffer()
+        let offer = try startAndOffer()
         let client = try XCTUnwrap(clients.first)
-        client.changeConnectionState(.connected)
-        flushMainQueue()
+        connect(offer, client)
 
         session.stop()
         session.stop()
 
-        XCTAssertEqual(startOutcomes, [nil])
+        XCTAssertEqual(startOutcomes, [.started(sessionId: "abc")])
         XCTAssertTrue(endErrors.isEmpty)
         XCTAssertFalse(session.isConnected)
         XCTAssertTrue(client.isClosed)
@@ -401,7 +419,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         flushMainQueue()
         offer.handler(offer.cancellable, .init(value: ["type": "session", "session_id": "abc"]))
 
-        XCTAssertEqual(startOutcomes, [.interrupted])
+        XCTAssertEqual(startOutcomes, [.failed(.interrupted)])
         XCTAssertFalse(session.isConnected)
         XCTAssertTrue(candidateRequests.isEmpty)
     }
@@ -453,12 +471,18 @@ final class CameraMicrophoneSessionTests: XCTestCase {
     private func start() {
         session.start { [weak self] result in
             switch result {
-            case .success:
-                self?.startOutcomes.append(nil)
+            case let .success(sessionId):
+                self?.startOutcomes.append(.started(sessionId: sessionId))
             case let .failure(error):
-                self?.startOutcomes.append(error)
+                self?.startOutcomes.append(.failed(error))
             }
         }
+    }
+
+    private func connect(_ offer: HAMockConnection.PendingSubscription, _ client: WebRTCFakeStreamClient) {
+        offer.handler(offer.cancellable, .init(value: ["type": "session", "session_id": "abc"]))
+        client.changeConnectionState(.connected)
+        flushMainQueue()
     }
 
     private func startAndOffer() throws -> HAMockConnection.PendingSubscription {

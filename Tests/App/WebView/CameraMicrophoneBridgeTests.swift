@@ -4,16 +4,16 @@ import UIKit
 import XCTest
 
 final class CameraMicrophoneBridgeTests: XCTestCase {
-    private struct EndedSession: Equatable {
-        let cameraEntityId: String
-        let error: CameraMicrophoneError
+    private enum StartOutcome: Equatable {
+        case started(sessionId: String)
+        case failed(CameraMicrophoneError)
     }
 
     private var notificationCenter: NotificationCenter!
     private var bridge: CameraMicrophoneBridge!
     private var sessions: [FakeCameraMicrophoneSession] = []
-    private var startOutcomes: [CameraMicrophoneError?] = []
-    private var endedSessions: [EndedSession] = []
+    private var startOutcomes: [StartOutcome] = []
+    private var endedSessionIds: [String] = []
     private let server = ServerFixture.standard
 
     override func setUp() {
@@ -21,14 +21,14 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
         notificationCenter = NotificationCenter()
         sessions = []
         startOutcomes = []
-        endedSessions = []
+        endedSessionIds = []
         bridge = CameraMicrophoneBridge(notificationCenter: notificationCenter) { [weak self] server, cameraEntityId in
             let session = FakeCameraMicrophoneSession(server: server, cameraEntityId: cameraEntityId)
             self?.sessions.append(session)
             return session
         }
-        bridge.onSessionEnded = { [weak self] cameraEntityId, error in
-            self?.endedSessions.append(.init(cameraEntityId: cameraEntityId, error: error))
+        bridge.onSessionEnded = { [weak self] sessionId in
+            self?.endedSessionIds.append(sessionId)
         }
     }
 
@@ -47,11 +47,11 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
         XCTAssertEqual(session.server.identifier, server.identifier)
         XCTAssertEqual(session.startCount, 1)
         XCTAssertEqual(bridge.activeCameraEntityId, "camera.front_door")
-        XCTAssertTrue(startOutcomes.isEmpty, "The start is only answered once the session is up")
+        XCTAssertTrue(startOutcomes.isEmpty)
 
-        session.connect()
+        session.connect(sessionId: "session-1")
 
-        XCTAssertEqual(startOutcomes, [nil])
+        XCTAssertEqual(startOutcomes, [.started(sessionId: "session-1")])
         XCTAssertEqual(bridge.activeCameraEntityId, "camera.front_door")
     }
 
@@ -60,98 +60,109 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
 
         try XCTUnwrap(sessions.first).fail(.microphoneDenied)
 
-        XCTAssertEqual(startOutcomes, [.microphoneDenied])
+        XCTAssertEqual(startOutcomes, [.failed(.microphoneDenied)])
         XCTAssertNil(bridge.activeCameraEntityId)
-        XCTAssertTrue(endedSessions.isEmpty)
+        XCTAssertTrue(endedSessionIds.isEmpty)
     }
 
-    func testStartingAnotherCameraInterruptsTheConnectedOneAndReportsIt() throws {
+    func testStartingAnotherStreamInterruptsTheConnectedOneAndReportsIt() throws {
         start("camera.front_door")
-        try XCTUnwrap(sessions.first).connect()
+        try XCTUnwrap(sessions.first).connect(sessionId: "session-1")
 
         start("camera.garden")
 
         XCTAssertEqual(sessions.count, 2)
         XCTAssertEqual(sessions[0].stopCount, 1)
-        XCTAssertEqual(endedSessions, [.init(cameraEntityId: "camera.front_door", error: .interrupted)])
+        XCTAssertEqual(endedSessionIds, ["session-1"])
         XCTAssertEqual(bridge.activeCameraEntityId, "camera.garden")
     }
 
-    func testStartingAnotherCameraWhileTheFirstIsConnectingAnswersTheFirstStart() throws {
+    func testStartingAnotherStreamWhileTheFirstIsConnectingAnswersTheFirstStart() throws {
         start("camera.front_door")
 
         start("camera.garden")
 
-        XCTAssertEqual(startOutcomes, [.interrupted])
+        XCTAssertEqual(startOutcomes, [.failed(.interrupted)])
         XCTAssertEqual(sessions[0].stopCount, 1)
-        XCTAssertTrue(endedSessions.isEmpty)
+        XCTAssertTrue(endedSessionIds.isEmpty)
         XCTAssertEqual(bridge.activeCameraEntityId, "camera.garden")
     }
 
-    func testStopOnlyEndsTheSessionOfTheCameraItNames() throws {
+    func testStopOnlyEndsTheSessionItNames() throws {
         start("camera.front_door")
         let session = try XCTUnwrap(sessions.first)
-        session.connect()
+        session.connect(sessionId: "session-1")
 
-        bridge.stop(cameraEntityId: "camera.garden")
+        bridge.stop(sessionId: "session-2")
         XCTAssertEqual(session.stopCount, 0)
         XCTAssertEqual(bridge.activeCameraEntityId, "camera.front_door")
 
-        bridge.stop(cameraEntityId: "camera.front_door")
+        bridge.stop(sessionId: "session-1")
         XCTAssertEqual(session.stopCount, 1)
         XCTAssertNil(bridge.activeCameraEntityId)
-        XCTAssertTrue(endedSessions.isEmpty, "The frontend asked for this stop, so it is not told about it")
+        XCTAssertTrue(endedSessionIds.isEmpty)
     }
 
-    func testStopWithoutACameraEndsWhicheverSessionIsActive() throws {
+    func testStopDoesNotEndAStreamThatIsStillConnecting() throws {
         start("camera.front_door")
 
-        bridge.stop(cameraEntityId: nil)
+        bridge.stop(sessionId: "session-1")
+
+        XCTAssertEqual(try XCTUnwrap(sessions.first).stopCount, 0)
+        XCTAssertEqual(bridge.activeCameraEntityId, "camera.front_door")
+    }
+
+    func testStopActiveSessionEndsWhicheverSessionIsActive() throws {
+        start("camera.front_door")
+
+        bridge.stopActiveSession()
 
         XCTAssertEqual(try XCTUnwrap(sessions.first).stopCount, 1)
         XCTAssertNil(bridge.activeCameraEntityId)
+        XCTAssertEqual(startOutcomes, [.failed(.interrupted)])
     }
 
-    func testStopWithoutASessionDoesNothing() {
-        bridge.stop(cameraEntityId: nil)
+    func testStoppingWithoutASessionDoesNothing() {
+        bridge.stop(sessionId: "session-1")
+        bridge.stopActiveSession()
 
         XCTAssertTrue(sessions.isEmpty)
-        XCTAssertTrue(endedSessions.isEmpty)
+        XCTAssertTrue(endedSessionIds.isEmpty)
     }
 
     func testASessionEndingOnItsOwnIsReported() throws {
         start("camera.front_door")
         let session = try XCTUnwrap(sessions.first)
-        session.connect()
+        session.connect(sessionId: "session-1")
 
         session.end(.connectionFailed)
 
-        XCTAssertEqual(endedSessions, [.init(cameraEntityId: "camera.front_door", error: .connectionFailed)])
+        XCTAssertEqual(endedSessionIds, ["session-1"])
         XCTAssertNil(bridge.activeCameraEntityId)
     }
 
     func testAnEndFromASessionThatWasAlreadyReplacedIsIgnored() throws {
         start("camera.front_door")
         let replaced = try XCTUnwrap(sessions.first)
-        replaced.connect()
+        replaced.connect(sessionId: "session-1")
         start("camera.garden")
 
         replaced.end(.connectionFailed)
 
-        XCTAssertEqual(endedSessions, [.init(cameraEntityId: "camera.front_door", error: .interrupted)])
+        XCTAssertEqual(endedSessionIds, ["session-1"])
         XCTAssertEqual(bridge.activeCameraEntityId, "camera.garden")
     }
 
     func testGoingToTheBackgroundInterruptsTheSessionAndReportsIt() throws {
         start("camera.front_door")
         let session = try XCTUnwrap(sessions.first)
-        session.connect()
+        session.connect(sessionId: "session-1")
 
         notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
         flushMainQueue()
 
         XCTAssertEqual(session.stopCount, 1)
-        XCTAssertEqual(endedSessions, [.init(cameraEntityId: "camera.front_door", error: .interrupted)])
+        XCTAssertEqual(endedSessionIds, ["session-1"])
         XCTAssertNil(bridge.activeCameraEntityId)
     }
 
@@ -159,7 +170,7 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
         notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
         flushMainQueue()
 
-        XCTAssertTrue(endedSessions.isEmpty)
+        XCTAssertTrue(endedSessionIds.isEmpty)
     }
 
     func testReleasingTheBridgeStopsTheActiveSession() throws {
@@ -178,10 +189,10 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
     private func start(_ cameraEntityId: String) {
         bridge.start(cameraEntityId: cameraEntityId, server: server) { [weak self] result in
             switch result {
-            case .success:
-                self?.startOutcomes.append(nil)
+            case let .success(sessionId):
+                self?.startOutcomes.append(.started(sessionId: sessionId))
             case let .failure(error):
-                self?.startOutcomes.append(error)
+                self?.startOutcomes.append(.failed(error))
             }
         }
     }
