@@ -5,7 +5,7 @@ import WebRTC
 
 /// WebRTC client configuration provided by the server, mirroring what the frontend fetches via
 /// `camera/webrtc/get_client_config` before opening a peer connection. This is how user-configured
-/// STUN/TURN servers (e.g. from go2rtc or Home Assistant Cloud) reach the client — required for
+/// STUN/TURN servers (e.g. from go2rtc or Home Assistant Link) reach the client — required for
 /// remote connections that can't be established with a direct or STUN-derived path.
 struct WebRTCClientConfiguration {
     let iceServers: [RTCIceServer]
