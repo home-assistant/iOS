@@ -28,11 +28,15 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
     func startObservingPushToStartToken() async
     @available(iOS 17.2, *)
     func startObservingRemoteActivityStarts() async
+    @available(iOS 17.2, *)
+    func syncPushToStartToken() async
 }
 
 public extension LiveActivityRegistryProtocol {
     @available(iOS 17.2, *)
     func startObservingRemoteActivityStarts() async {}
+    @available(iOS 17.2, *)
+    func syncPushToStartToken() async {}
 }
 
 /// Thread-safe registry for active `Activity<HALiveActivityAttributes>` instances.
@@ -337,17 +341,39 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Call this once at app launch; the stream is infinite and self-managing.
     public func startObservingPushToStartToken() async {
         for await tokenData in Activity<HALiveActivityAttributes>.pushToStartTokenUpdates {
-            let tokenHex = tokenData.map { String(format: "%02x", $0) }.joined()
             Current.Log.verbose("LiveActivityRegistry: new push-to-start token")
-
-            // Store in Keychain — this token is higher-value than a per-activity token
-            // (it can start any new activity) so UserDefaults is intentionally avoided.
-            AppConstants.Keychain[LiveActivityRegistry.pushToStartTokenKeychainKey] = tokenHex
+            storePushToStartToken(tokenData)
 
             // Report to all HA servers via registration update so the token is available
             // in the HA device registry immediately.
-            reportPushToStartToken(tokenHex)
+            reportPushToStartToken()
         }
+    }
+
+    /// Re-send the push-to-start token to every HA server and wait for the registration updates.
+    ///
+    /// The stream above reports a token only when ActivityKit issues one, and that report is sent once.
+    /// If it failed, or Core holds a token ActivityKit has since replaced, remote starts are silently
+    /// dropped until the next registration update. This takes ActivityKit's current token when it has
+    /// one, so the user-triggered sync can repair that without toggling the permission in Settings.
+    public func syncPushToStartToken() async {
+        if let tokenData = Activity<HALiveActivityAttributes>.pushToStartToken {
+            storePushToStartToken(tokenData)
+        }
+        for api in Current.apis {
+            do {
+                _ = try await api.updateRegistration().asyncValue()
+            } catch {
+                Current.Log.error("LiveActivityRegistry: failed to sync push-to-start token: \(error)")
+            }
+        }
+    }
+
+    /// Store in Keychain — this token is higher-value than a per-activity token
+    /// (it can start any new activity) so UserDefaults is intentionally avoided.
+    private func storePushToStartToken(_ tokenData: Data) {
+        let tokenHex = tokenData.map { String(format: "%02x", $0) }.joined()
+        AppConstants.Keychain[Self.pushToStartTokenKeychainKey] = tokenHex
     }
 
     /// Observe activities started remotely by ActivityKit push-to-start notifications.
@@ -622,7 +648,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Report the push-to-start token to all HA servers via registration update.
     /// HA stores this alongside the FCM push token in the device registry.
     /// Fire-and-forget: errors are logged but do not block the token observation loop.
-    private func reportPushToStartToken(_ tokenHex: String) {
+    private func reportPushToStartToken() {
         for api in Current.apis {
             api.updateRegistration().catch { error in
                 Current.Log.error("LiveActivityRegistry: failed to report push-to-start token: \(error)")

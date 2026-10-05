@@ -95,6 +95,7 @@ struct LiveActivitySettingsView: View {
     private func syncActivities() {
         Task {
             await Current.liveActivityRegistry?.reattach()
+            await Current.liveActivityRegistry?.syncPushToStartToken()
             await loadActivities()
             didSync = true
         }
