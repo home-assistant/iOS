@@ -388,8 +388,11 @@
 "assist.settings.tts_mute.footer" = "Wenn diese Option aktiviert ist, werden keine Audioantworten wiedergegeben, selbst wenn die Pipeline über eine Text-zu-Sprache-Funktion verfügt. Textantworten werden weiterhin angezeigt.";
 "assist.settings.tts_mute.toggle" = "Sprachantworten stummschalten";
 "assist.text_field.placeholder" = "Gib eine Anfrage ein …";
-"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
-"assist.watch.mic_button.title" = "Tippe zum";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
+"assist.watch.mic_button.tap_or_hold.title" = "Tippe oder halte für";
+"assist.watch.mic_button.title" = "Tippe für";
 "assist.watch.not_reachable.title" = "Assist erfordert eine iPhone-Verbindung. Dein iPhone ist derzeit nicht erreichbar.";
 "assist.watch.on_device_stt.no_speech_recognized" = "Es wurde keine Sprache erkannt.";
 "assist.watch.volume.title" = "Lautstärkeregler";
@@ -1157,9 +1160,9 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "magic_item.background_color.title" = "Hintergrundfarbe";
 "magic_item.display_text.title" = "Text anzeigen";
 "magic_item.edit" = "Speichern";
-"magic_item.icon_color.color" = "Color";
-"magic_item.icon_color.custom" = "Custom";
-"magic_item.icon_color.default" = "Default";
+"magic_item.icon_color.color" = "Farbe";
+"magic_item.icon_color.custom" = "Eigene";
+"magic_item.icon_color.default" = "Standard";
 "magic_item.icon_color.title" = "Icon-Farbe";
 "magic_item.icon_name.title" = "Icon-Name";
 "magic_item.item_type.action.list.title" = "iOS-Aktionen";
@@ -2482,7 +2485,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "vacuum.control.start" = "Starten";
 "vacuum.control.stop" = "Stoppen";
 "watch.assist.button.recording.title" = "Aufnahme …";
-"watch.assist.button.release_to_send.title" = "Release to send";
+"watch.assist.button.release_to_send.title" = "Zum Senden loslassen";
 "watch.assist.button.send_request.title" = "Tippen, um Anfrage zu senden";
 "watch.assist.lack_config.error.title" = "Bitte konfiguriere Assist mit der iOS-Companion-App";
 "watch.complications.builder.color" = "Skalen-Farbe";
@@ -2684,7 +2687,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "watch.configurator.sections.icon.header" = "Symbol";
 "watch.configurator.sections.ring.footer" = "Der Ring zeigt den Fortschritt rund um den Text an.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.context_sync.timed_out" = "Wartezeit überschritten, dass die Uhr die Aktualisierung annimmt.";
+"watch.context_sync.timed_out" = "Zeitüberschreitung beim Warten, dass die Uhr die Aktualisierung annimmt.";
 "watch.cover_controls.close" = "Schließen";
 "watch.cover_controls.open" = "Öffnen";
 "watch.cover_controls.position" = "Position";

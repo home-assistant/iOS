@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "アシストを有効にすると、パイプラインでテキスト読み上げが設定されていても、音声応答は再生されません。テキストによる応答は引き続き表示されます。";
 "assist.settings.tts_mute.toggle" = "音声応答をミュート";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "タップして";
 "assist.watch.not_reachable.title" = "アシストには iPhone の接続が必要です。現在、iPhone にアクセスできません。";

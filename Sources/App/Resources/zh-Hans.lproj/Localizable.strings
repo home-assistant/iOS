@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "启用此功能后，即使管道已配置文本转语音功能，语音助手也不会播放语音答复。您仍然可以看到文本答复。";
 "assist.settings.tts_mute.toggle" = "语音答复静音";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "点按";
 "assist.watch.not_reachable.title" = "“语音助手”功能需要 iPhone 连接。您的 iPhone 当前无法访问。";

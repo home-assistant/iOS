@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "Etkinleştirildiğinde, işlem hattında metinden sese dönüştürme yapılandırılmış olsa bile Assist sesli yanıtları oynatmaz. Yine de metin yanıtlarını göreceksiniz.";
 "assist.settings.tts_mute.toggle" = "Sesli yanıtları sessize al";
 "assist.text_field.placeholder" = "Bir istek girin...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Dokunun";
 "assist.watch.not_reachable.title" = "Assist için iPhone bağlantısı gerekir. iPhone'unuza şu anda erişilemiyor.";

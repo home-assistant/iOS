@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "활성화되면 파이프라인에 텍스트 음성 변환이 구성되어 있어도 Assist가 오디오 응답을 재생하지 않습니다. 문자 응답은 계속 표시됩니다.";
 "assist.settings.tts_mute.toggle" = "음성 응답 음소거";
 "assist.text_field.placeholder" = "요청을 입력하세요...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "탭하여";
 "assist.watch.not_reachable.title" = "Assist 기능은 아이폰 연결이 필요합니다. 현재 아이폰에 연결할 수 없습니다.";
