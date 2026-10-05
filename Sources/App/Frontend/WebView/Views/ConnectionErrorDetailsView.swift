@@ -146,8 +146,8 @@ struct ConnectionErrorDetailsView: View {
                     verbatim: L10n.Connection.Error.FailedConnect.CloudInactive
                         .title(AppConstants.homeAssistantLinkName)
                 )
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
+                .font(.callout)
+                .foregroundStyle(.secondary)
             }
         }
     }
