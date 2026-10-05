@@ -388,7 +388,10 @@
 "assist.settings.tts_mute.footer" = "Cuando esté activada, Assist no reproducirá respuestas de audio aunque el pipeline tenga configurada la conversión de texto a voz. Seguirás viendo las respuestas en texto.";
 "assist.settings.tts_mute.toggle" = "Silenciar las respuestas de voz";
 "assist.text_field.placeholder" = "Introduce una solicitud...";
-"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
+"assist.watch.mic_button.tap_or_hold.title" = "Toca o mantén pulsado para";
 "assist.watch.mic_button.title" = "Pulsa para";
 "assist.watch.not_reachable.title" = "Assist requiere conexión con el iPhone. No es posible contactar con tu iPhone en este momento.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No se reconoció ninguna voz.";
@@ -1158,8 +1161,8 @@ Este servidor requiere un certificado de cliente (mTLS), pero la operación se h
 "magic_item.display_text.title" = "Texto a mostrar";
 "magic_item.edit" = "Guardar";
 "magic_item.icon_color.color" = "Color";
-"magic_item.icon_color.custom" = "Custom";
-"magic_item.icon_color.default" = "Default";
+"magic_item.icon_color.custom" = "Personalizado";
+"magic_item.icon_color.default" = "Por defecto";
 "magic_item.icon_color.title" = "Color del icono";
 "magic_item.icon_name.title" = "Nombre del icono";
 "magic_item.item_type.action.list.title" = "Acciones de iOS";
@@ -1308,7 +1311,7 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "onboarding.connection_test_result.local_network_permission.description" = "Es posible que se haya denegado el permiso de Red local. Puedes modificarlo en la aplicación Ajustes del sistema.";
 "onboarding.device_name_check.error.prompt" = "¿Qué nombre de dispositivo se debería utilizar en su lugar?";
 "onboarding.device_name_check.error.title" = "Ya existe un dispositivo con el nombre \"%1$@\".";
-"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
+"onboarding.device_name_check.error.unreachable" = "No se ha podido conectar con Home Assistant para comprobar el nombre del dispositivo. Comprueba tu conexión e inténtalo de nuevo.";
 "onboarding.invitation.accept_button" = "Aceptar";
 "onboarding.invitation.address_title" = "Dirección de Home Assistant";
 "onboarding.invitation.description" = "Home Assistant es una solución de domótica de código abierto que da prioridad al control local y a la privacidad.";
@@ -2481,7 +2484,7 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "vacuum.control.start" = "Comenzar";
 "vacuum.control.stop" = "Parar";
 "watch.assist.button.recording.title" = "Grabando...";
-"watch.assist.button.release_to_send.title" = "Release to send";
+"watch.assist.button.release_to_send.title" = "Soltar para enviar";
 "watch.assist.button.send_request.title" = "Pulsa para enviar la solicitud";
 "watch.assist.lack_config.error.title" = "Configura Assist mediante la aplicación complementaria para iOS.";
 "watch.complications.builder.color" = "Color del medidor";
@@ -2683,7 +2686,7 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "watch.configurator.sections.icon.header" = "Icono";
 "watch.configurator.sections.ring.footer" = "El anillo que muestra el progreso alrededor del texto.";
 "watch.configurator.sections.ring.header" = "Anillo";
-"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
+"watch.context_sync.timed_out" = "Se ha agotado el tiempo de espera mientras se esperaba a que el reloj aceptara la actualización.";
 "watch.cover_controls.close" = "Cerrar";
 "watch.cover_controls.open" = "Abrir";
 "watch.cover_controls.position" = "Posición";

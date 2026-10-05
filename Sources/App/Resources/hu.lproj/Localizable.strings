@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "Ha engedélyezve van, az Assist nem játszik le hangválaszokat, még akkor sem, ha a folyamat szöveg-beszéd funkcióval van konfigurálva. A szöveges válaszokat továbbra is látni fogja.";
 "assist.settings.tts_mute.toggle" = "Hangválaszok elnémítása";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Koppintson ide";
 "assist.watch.not_reachable.title" = "Az Assist használatához iPhone csatlakozás szükséges. Az Ön iPhone-ja jelenleg nem elérhető.";

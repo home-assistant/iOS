@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "Если эта функция включена, Assist не будет воспроизводить аудио ответы, даже если в конвейере настроена функция преобразования текста в речь. Вы по-прежнему будете видеть текстовые ответы.";
 "assist.settings.tts_mute.toggle" = "Отключение голосовых ответов";
 "assist.text_field.placeholder" = "Введите запрос...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Нажмите, чтобы";
 "assist.watch.not_reachable.title" = "Assist требует подключения к iPhone. В данный момент ваш iPhone недоступен.";
@@ -1157,7 +1160,7 @@
 "magic_item.background_color.title" = "Цвет фона";
 "magic_item.display_text.title" = "Отображаемый текст";
 "magic_item.edit" = "Сохранить";
-"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.color" = "Цвет";
 "magic_item.icon_color.custom" = "Custom";
 "magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Цвет значка";
@@ -2404,9 +2407,9 @@ Home Assistant — это приложение с открытым исходн�
 "tab_bar.item.search" = "Search";
 "tab_bar.more.app_settings" = "Настройки приложения";
 "tab_bar.more.customize" = "Customize";
-"tab_bar.more.edit_profile" = "Edit profile";
+"tab_bar.more.edit_profile" = "Редактировать профиль";
 "tab_bar.more.home_assistant_settings" = "Настройки Home Assistant";
-"tab_bar.more.other_servers" = "Other servers";
+"tab_bar.more.other_servers" = "Другие серверы";
 "tab_bar.more.title" = "More";
 "tags.allowed.delete_all" = "Удалить все";
 "tags.allowed.delete_all.confirm.button" = "Удалить все";

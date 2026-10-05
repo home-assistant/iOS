@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "Als deze optie is ingeschakeld, speelt Assist geen audiorespons af, zelfs niet als de pijplijn tekst-naar-spraak heeft geconfigureerd. Je zult nog steeds tekstreacties te zien krijgen.";
 "assist.settings.tts_mute.toggle" = "Spraakreacties dempen";
 "assist.text_field.placeholder" = "Typ een verzoek...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Tik om";
 "assist.watch.not_reachable.title" = "Assist vereist iPhone-connectiviteit. Je iPhone is nu niet bereikbaar.";
