@@ -75,7 +75,7 @@ struct ConnectionURLView: View {
             urlTextField
             securityWarning
         } else {
-            Text(L10n.Settings.ConnectionSection.cloudOverridesExternal(AppConstants.homeAssistantLinkName))
+            Text(L10n.Settings.ConnectionSection.cloudLinkOverridesExternal(AppConstants.homeAssistantLinkName))
                 .foregroundColor(.secondary)
                 .font(.footnote)
         }

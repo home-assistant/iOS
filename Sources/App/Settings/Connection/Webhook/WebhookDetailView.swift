@@ -38,7 +38,7 @@ struct WebhookDetailView: View {
                     }
                 }
             } footer: {
-                Text(L10n.Settings.ConnectionSection.Webhook.footer(AppConstants.homeAssistantLinkName))
+                Text(L10n.Settings.ConnectionSection.Webhook.footerLink(AppConstants.homeAssistantLinkName))
             }
 
             ForEach(Array(viewModel.endpoints.enumerated()), id: \.element.id) { index, endpoint in

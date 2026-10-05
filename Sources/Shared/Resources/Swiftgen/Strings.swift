@@ -2323,8 +2323,8 @@ public enum L10n {
         /// No active URL is currently available for this server.
         public static var `none`: String { return L10n.tr("Localizable", "connection.active_url_type.toast.none") }
         /// Using %@ Remote UI URL.
-        public static func remoteUi(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "connection.active_url_type.toast.remote_ui", String(describing: p1))
+        public static func remoteUiLink(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "connection.active_url_type.toast.remote_ui_link", String(describing: p1))
         }
         /// Connection type
         public static var title: String { return L10n.tr("Localizable", "connection.active_url_type.toast.title") }
@@ -2364,16 +2364,16 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "connection.error.failed_connect.title") }
         /// The app is currently connecting to
         public static var url: String { return L10n.tr("Localizable", "connection.error.failed_connect.url") }
-        public enum Cloud {
-          /// Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)
-          public static func title(_ p1: Any) -> String {
-            return L10n.tr("Localizable", "connection.error.failed_connect.cloud.title", String(describing: p1))
-          }
-        }
-        public enum CloudInactive {
+        public enum CloudInactiveLink {
           /// You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.
           public static func title(_ p1: Any) -> String {
-            return L10n.tr("Localizable", "connection.error.failed_connect.cloud_inactive.title", String(describing: p1))
+            return L10n.tr("Localizable", "connection.error.failed_connect.cloud_inactive_link.title", String(describing: p1))
+          }
+        }
+        public enum CloudLink {
+          /// Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "connection.error.failed_connect.cloud_link.title", String(describing: p1))
           }
         }
       }
@@ -5177,8 +5177,8 @@ public enum L10n {
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
       /// When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.
-      public static func cloudOverridesExternal(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external", String(describing: p1))
+      public static func cloudLinkOverridesExternal(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.connection_section.cloud_link_overrides_external", String(describing: p1))
       }
       /// Connected via
       public static var connectingVia: String { return L10n.tr("Localizable", "settings.connection_section.connecting_via") }
@@ -5427,8 +5427,8 @@ public enum L10n {
         }
         public enum Away {
           /// When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.
-          public static func body(_ p1: Any) -> String {
-            return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body", String(describing: p1))
+          public static func bodyLink(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body_link", String(describing: p1))
           }
           /// Anywhere else
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.title") }
@@ -5488,8 +5488,8 @@ public enum L10n {
       }
       public enum Webhook {
         /// The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.
-        public static func footer(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "settings.connection_section.webhook.footer", String(describing: p1))
+        public static func footerLink(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.connection_section.webhook.footer_link", String(describing: p1))
         }
         /// In use
         public static var inUse: String { return L10n.tr("Localizable", "settings.connection_section.webhook.in_use") }
@@ -9483,8 +9483,8 @@ public enum L10n {
         /// No complications configured yet.
         public static var empty: String { return L10n.tr("Localizable", "watch.settings.complications.empty") }
         /// Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).
-        public static func footer(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "watch.settings.complications.footer", String(describing: p1))
+        public static func footerLink(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.settings.complications.footer_link", String(describing: p1))
         }
         /// Last attempt: %@
         public static func lastAttempt(_ p1: Any) -> String {

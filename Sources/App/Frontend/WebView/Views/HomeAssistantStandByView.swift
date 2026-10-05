@@ -471,12 +471,12 @@ struct HomeAssistantStandByView: View {
         }
     }
 
-    private var connectionTypeToastMessage: String {
+    var connectionTypeToastMessage: String {
         switch server.info.connection.activeURLType {
         case .internal:
             L10n.Connection.ActiveUrlType.Toast.internal
         case .remoteUI:
-            L10n.Connection.ActiveUrlType.Toast.remoteUi(AppConstants.homeAssistantLinkName)
+            L10n.Connection.ActiveUrlType.Toast.remoteUiLink(AppConstants.homeAssistantLinkName)
         case .external:
             L10n.Connection.ActiveUrlType.Toast.external
         case .none:
