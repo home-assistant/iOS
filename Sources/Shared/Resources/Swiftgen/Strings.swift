@@ -2322,8 +2322,10 @@ public enum L10n {
         public static var `internal`: String { return L10n.tr("Localizable", "connection.active_url_type.toast.internal") }
         /// No active URL is currently available for this server.
         public static var `none`: String { return L10n.tr("Localizable", "connection.active_url_type.toast.none") }
-        /// Using Home Assistant Link Remote UI URL.
-        public static var remoteUi: String { return L10n.tr("Localizable", "connection.active_url_type.toast.remote_ui") }
+        /// Using %@ Remote UI URL.
+        public static func remoteUi(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "connection.active_url_type.toast.remote_ui", String(describing: p1))
+        }
         /// Connection type
         public static var title: String { return L10n.tr("Localizable", "connection.active_url_type.toast.title") }
       }
@@ -2363,12 +2365,16 @@ public enum L10n {
         /// The app is currently connecting to
         public static var url: String { return L10n.tr("Localizable", "connection.error.failed_connect.url") }
         public enum Cloud {
-          /// Make sure your Home Assistant Link subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)
-          public static var title: String { return L10n.tr("Localizable", "connection.error.failed_connect.cloud.title") }
+          /// Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "connection.error.failed_connect.cloud.title", String(describing: p1))
+          }
         }
         public enum CloudInactive {
-          /// You have disabled Home Assistant Link use in the app, if you need it for remote access please open companion app settings and enable it.
-          public static var title: String { return L10n.tr("Localizable", "connection.error.failed_connect.cloud_inactive.title") }
+          /// You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "connection.error.failed_connect.cloud_inactive.title", String(describing: p1))
+          }
         }
       }
     }
@@ -5170,8 +5176,10 @@ public enum L10n {
       public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
-      /// When connecting via Home Assistant Link, the External URL will not be used. You do not need to configure one unless you want to disable Home Assistant Link.
-      public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
+      /// When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.
+      public static func cloudOverridesExternal(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external", String(describing: p1))
+      }
       /// Connected via
       public static var connectingVia: String { return L10n.tr("Localizable", "settings.connection_section.connecting_via") }
       /// Details
@@ -5304,10 +5312,6 @@ public enum L10n {
         /// External URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.external_base_url.title") }
       }
-      public enum HomeAssistantCloud {
-        /// Home Assistant Link
-        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.home_assistant_cloud.title") }
-      }
       public enum InternalBaseUrl {
         /// e.g. http://homeassistant.local:8123/
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder") }
@@ -5422,8 +5426,10 @@ public enum L10n {
           public static var `none`: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.active.none") }
         }
         public enum Away {
-          /// When no listed network matches, the Home Assistant Link URL is used if it is turned on, and the external URL otherwise.
-          public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body") }
+          /// When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.
+          public static func body(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body", String(describing: p1))
+          }
           /// Anywhere else
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.title") }
         }
@@ -5481,8 +5487,10 @@ public enum L10n {
         public static var useAnyway: String { return L10n.tr("Localizable", "settings.connection_section.validate_error.use_anyway") }
       }
       public enum Webhook {
-        /// The app sends sensor, location and other updates to this webhook. Home Assistant Link provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.
-        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.webhook.footer") }
+        /// The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.
+        public static func footer(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.connection_section.webhook.footer", String(describing: p1))
+        }
         /// In use
         public static var inUse: String { return L10n.tr("Localizable", "settings.connection_section.webhook.in_use") }
         /// Webhook
@@ -9474,8 +9482,10 @@ public enum L10n {
       public enum Complications {
         /// No complications configured yet.
         public static var empty: String { return L10n.tr("Localizable", "watch.settings.complications.empty") }
-        /// Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Home Assistant Link URL).
-        public static var footer: String { return L10n.tr("Localizable", "watch.settings.complications.footer") }
+        /// Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).
+        public static func footer(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.settings.complications.footer", String(describing: p1))
+        }
         /// Last attempt: %@
         public static func lastAttempt(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.settings.complications.last_attempt", String(describing: p1))

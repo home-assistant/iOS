@@ -476,7 +476,7 @@ struct HomeAssistantStandByView: View {
         case .internal:
             L10n.Connection.ActiveUrlType.Toast.internal
         case .remoteUI:
-            L10n.Connection.ActiveUrlType.Toast.remoteUi
+            L10n.Connection.ActiveUrlType.Toast.remoteUi(AppConstants.homeAssistantLinkName)
         case .external:
             L10n.Connection.ActiveUrlType.Toast.external
         case .none:
