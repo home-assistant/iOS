@@ -11,6 +11,8 @@ public protocol AssistServiceProtocol {
     func assist(source: AssistSource)
     func sendAudioData(_ data: Data)
     func finishSendingAudio()
+    /// Abandons the run in progress without finishing its audio, so nothing heard so far is acted on.
+    func cancelRun()
 }
 
 public protocol AssistServiceDelegate: AnyObject {
@@ -106,6 +108,13 @@ public final class AssistService: AssistServiceProtocol {
     public func finishSendingAudio() {
         guard let sttBinaryHandlerId else { return }
         _ = Current.api(for: server)?.connection.send(.init(type: .sttData(.init(rawValue: sttBinaryHandlerId))))
+    }
+
+    /// Home Assistant cancels a pipeline run when its subscription is dropped.
+    public func cancelRun() {
+        sttBinaryHandlerId = nil
+        cancellable?.cancel()
+        cancellable = nil
     }
 
     private func saveInDatabase(_ response: PipelineResponse) {

@@ -10,8 +10,9 @@ import Foundation
 /// - 2 — the phone performs HTTP requests relayed from the watch (`httpRequest`).
 /// - 3 — the watch speaks Assist answers itself (`assistOnDeviceTTS`).
 /// - 4 — the watch reads the Assist responses the phone hands back in its `pong` (`PongPayload`).
+/// - 5 — the watch streams Assist recordings while they are made (`assistAudioStreamStart`).
 public enum WatchProtocolVersion {
-    public static let current = 4
+    public static let current = 5
 
     /// The version the phone must be at before the watch relays an HTTP request to it. An older
     /// phone drops the unknown identifier without replying, so relaying to one would cost a full
@@ -25,4 +26,8 @@ public enum WatchProtocolVersion {
     /// The version the watch must be at before the phone keeps an Assist response it could not push
     /// for the watch's next `pong`. An older watch ignores what a `pong` carries.
     public static let assistResponsesInPong = 4
+
+    /// The version the phone must be at before the watch streams an Assist recording to it. An older
+    /// phone drops the unknown identifiers, so the watch uploads the finished recording instead.
+    public static let assistAudioStream = 5
 }

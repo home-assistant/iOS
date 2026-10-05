@@ -10,6 +10,9 @@ final class MockAssistService: AssistServiceProtocol {
     var assistSource: AssistSource?
     var audioDataSent: Data?
     var finishSendingAudioCalled = false
+    var cancelRunCalled = false
+    /// Every chunk `sendAudioData` received, in order.
+    var audioChunksSent: [Data] = []
     var replacedServer: Shared.Server?
     var shouldStartListeningAgainAfterPlaybackEnd: Bool = false
     var resetShouldStartListeningAgainAfterPlaybackEndCalled: Bool = false
@@ -42,10 +45,15 @@ final class MockAssistService: AssistServiceProtocol {
     func sendAudioData(_ data: Data) {
         sendAudioDataCalled = true
         audioDataSent = data
+        audioChunksSent.append(data)
     }
 
     func finishSendingAudio() {
         finishSendingAudioCalled = true
+    }
+
+    func cancelRun() {
+        cancelRunCalled = true
     }
 
     func resetShouldStartListeningAgainAfterPlaybackEnd() {
