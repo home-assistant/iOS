@@ -3718,7 +3718,7 @@ public enum L10n {
       public static var button: String { return L10n.tr("Localizable", "live_activity.sync.button") }
       /// Synced
       public static var done: String { return L10n.tr("Localizable", "live_activity.sync.done") }
-      /// Reports running Live Activities and this device's Live Activity start token to Home Assistant, and releases tokens for any that have ended. Runs automatically when the app opens.
+      /// Reports running Live Activities and this device's Live Activity start token to Home Assistant, and releases tokens for any that have ended. Runs automatically when the app opens and when you open this screen.
       public static var footer: String { return L10n.tr("Localizable", "live_activity.sync.footer") }
     }
     public enum TokenUnreachable {

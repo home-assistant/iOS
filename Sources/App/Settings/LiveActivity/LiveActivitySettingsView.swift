@@ -88,17 +88,27 @@ struct LiveActivitySettingsView: View {
                 }
             }
         }
-        .task { await loadActivities() }
+        .task {
+            await loadActivities()
+            await sync()
+            await loadActivities()
+        }
         .listTopContentMargin()
     }
 
     private func syncActivities() {
         Task {
-            await Current.liveActivityRegistry?.reattach()
-            await Current.liveActivityRegistry?.syncPushToStartToken()
+            await sync()
             await loadActivities()
             didSync = true
         }
+    }
+
+    /// Also run when the screen opens: a user checking this screen is usually troubleshooting
+    /// remote starts, so refresh the push-to-start token Core holds without needing a tap.
+    private func sync() async {
+        await Current.liveActivityRegistry?.reattach()
+        await Current.liveActivityRegistry?.syncPushToStartToken()
     }
 
     // MARK: - Sections
