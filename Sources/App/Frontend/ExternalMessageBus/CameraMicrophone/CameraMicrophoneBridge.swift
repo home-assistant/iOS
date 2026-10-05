@@ -5,7 +5,7 @@ import UIKit
 final class CameraMicrophoneBridge {
     typealias MakeSession = (_ server: Server, _ cameraEntityId: String) -> CameraMicrophoneSessionProtocol
 
-    var onSessionEnded: ((_ cameraEntityId: String, _ error: CameraMicrophoneError) -> Void)?
+    var onSessionEnded: ((_ sessionId: String) -> Void)?
 
     var activeCameraEntityId: String? {
         session?.cameraEntityId
@@ -41,15 +41,17 @@ final class CameraMicrophoneBridge {
     func start(
         cameraEntityId: String,
         server: Server,
-        completion: @escaping (Result<Void, CameraMicrophoneError>) -> Void
+        completion: @escaping (Result<String, CameraMicrophoneError>) -> Void
     ) {
         interruptActiveSession()
         let session = makeSession(server, cameraEntityId)
         self.session = session
-        session.onEnd = { [weak self, weak session] error in
+        session.onEnd = { [weak self, weak session] _ in
             guard let self, let session, self.session === session else { return }
             self.session = nil
-            onSessionEnded?(session.cameraEntityId, error)
+            if let sessionId = session.sessionId {
+                onSessionEnded?(sessionId)
+            }
         }
         session.start { [weak self, weak session] result in
             if case .failure = result, let self, let session, self.session === session {
@@ -59,8 +61,14 @@ final class CameraMicrophoneBridge {
         }
     }
 
-    func stop(cameraEntityId: String?) {
-        guard let session, cameraEntityId == nil || cameraEntityId == session.cameraEntityId else { return }
+    func stop(sessionId: String) {
+        guard let session, session.sessionId == sessionId else { return }
+        self.session = nil
+        session.stop()
+    }
+
+    func stopActiveSession() {
+        guard let session else { return }
         self.session = nil
         session.stop()
     }
@@ -70,8 +78,8 @@ final class CameraMicrophoneBridge {
         self.session = nil
         let wasConnected = session.isConnected
         session.stop()
-        if wasConnected {
-            onSessionEnded?(session.cameraEntityId, .interrupted)
+        if wasConnected, let sessionId = session.sessionId {
+            onSessionEnded?(sessionId)
         }
     }
 }

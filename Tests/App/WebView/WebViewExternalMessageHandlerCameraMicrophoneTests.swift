@@ -35,15 +35,16 @@ final class WebViewExternalMessageHandlerCameraMicrophoneTests: XCTestCase {
         XCTAssertEqual(session.startCount, 1)
     }
 
-    @MainActor func testAConnectedSessionAnswersTheStartWithSuccess() throws {
+    @MainActor func testAConnectedSessionAnswersTheStartWithItsSession() throws {
         sut.handleExternalMessage(startMessage(id: 7, entityId: "camera.front_door"))
         let session = try XCTUnwrap(sessions.first)
 
-        let reply = try messageSentToTheFrontend { session.connect() }
+        let reply = try messageSentToTheFrontend { session.connect(sessionId: "session-1") }
 
         XCTAssertEqual(reply["id"] as? Int, 7)
         XCTAssertEqual(reply["type"] as? String, "result")
         XCTAssertEqual(reply["success"] as? Bool, true)
+        XCTAssertEqual(reply["result"] as? [String: String], ["session_id": "session-1"])
         XCTAssertNil(reply["error"])
     }
 
@@ -64,7 +65,11 @@ final class WebViewExternalMessageHandlerCameraMicrophoneTests: XCTestCase {
 
     @MainActor func testAStartWithoutACameraIsRejected() throws {
         let reply = try messageSentToTheFrontend {
-            sut.handleExternalMessage(["id": 9, "type": "camera/microphone/start"])
+            sut.handleExternalMessage([
+                "id": 9,
+                "type": "webrtc/stream/start",
+                "payload": ["stream_type": "microphone"],
+            ])
         }
 
         XCTAssertTrue(sessions.isEmpty)
@@ -73,29 +78,59 @@ final class WebViewExternalMessageHandlerCameraMicrophoneTests: XCTestCase {
         XCTAssertEqual((reply["error"] as? [String: String])?["code"], "invalid_payload")
     }
 
-    @MainActor func testStopEndsTheSessionOfTheCamera() throws {
+    @MainActor func testAStartForAnUnsupportedStreamTypeIsRejected() throws {
+        let reply = try messageSentToTheFrontend {
+            sut.handleExternalMessage(startMessage(id: 9, entityId: "camera.front_door", streamType: "video"))
+        }
+
+        XCTAssertTrue(sessions.isEmpty)
+        XCTAssertEqual(reply["id"] as? Int, 9)
+        XCTAssertEqual(reply["success"] as? Bool, false)
+        XCTAssertEqual(reply["error"] as? [String: String], [
+            "code": "unsupported_stream_type",
+            "message": "Unsupported stream_type: video",
+        ])
+    }
+
+    @MainActor func testAStartWithoutAStreamTypeIsRejected() throws {
+        let reply = try messageSentToTheFrontend {
+            sut.handleExternalMessage([
+                "id": 9,
+                "type": "webrtc/stream/start",
+                "payload": ["entity_id": "camera.front_door"],
+            ])
+        }
+
+        XCTAssertTrue(sessions.isEmpty)
+        XCTAssertEqual((reply["error"] as? [String: String])?["code"], "unsupported_stream_type")
+    }
+
+    @MainActor func testStopEndsTheSessionItNames() throws {
         sut.handleExternalMessage(startMessage(id: 7, entityId: "camera.front_door"))
         let session = try XCTUnwrap(sessions.first)
+        _ = try messageSentToTheFrontend { session.connect(sessionId: "session-1") }
 
-        sut.handleExternalMessage(stopMessage(entityId: "camera.garden"))
+        sut.handleExternalMessage(stopMessage(sessionId: "session-2"))
         XCTAssertEqual(session.stopCount, 0)
 
-        sut.handleExternalMessage(stopMessage(entityId: "camera.front_door"))
+        sut.handleExternalMessage(stopMessage(sessionId: "session-1"))
         XCTAssertEqual(session.stopCount, 1)
     }
 
-    @MainActor func testStopWithoutACameraEndsTheActiveSession() throws {
+    @MainActor func testStopWithoutASessionIsIgnored() throws {
         sut.handleExternalMessage(startMessage(id: 7, entityId: "camera.front_door"))
+        let session = try XCTUnwrap(sessions.first)
+        _ = try messageSentToTheFrontend { session.connect(sessionId: "session-1") }
 
-        sut.handleExternalMessage(["id": 10, "type": "camera/microphone/stop"])
+        sut.handleExternalMessage(["id": 10, "type": "webrtc/stream/stop"])
 
-        XCTAssertEqual(try XCTUnwrap(sessions.first).stopCount, 1)
+        XCTAssertEqual(session.stopCount, 0)
     }
 
     @MainActor func testANewFrontendPageStopsTheMicrophoneOfThePreviousOne() throws {
         sut.handleExternalMessage(startMessage(id: 7, entityId: "camera.front_door"))
         let session = try XCTUnwrap(sessions.first)
-        _ = try messageSentToTheFrontend { session.connect() }
+        _ = try messageSentToTheFrontend { session.connect(sessionId: "session-1") }
 
         _ = try messageSentToTheFrontend {
             sut.handleExternalMessage(["id": 1, "type": "config/get"])
@@ -107,35 +142,36 @@ final class WebViewExternalMessageHandlerCameraMicrophoneTests: XCTestCase {
     @MainActor func testASessionEndingOnItsOwnTellsTheFrontend() throws {
         sut.handleExternalMessage(startMessage(id: 7, entityId: "camera.front_door"))
         let session = try XCTUnwrap(sessions.first)
-        _ = try messageSentToTheFrontend { session.connect() }
+        _ = try messageSentToTheFrontend { session.connect(sessionId: "session-1") }
 
         let command = try messageSentToTheFrontend { session.end(.connectionFailed) }
 
         XCTAssertEqual(command["type"] as? String, "command")
-        XCTAssertEqual(command["command"] as? String, "camera/microphone/stopped")
-        XCTAssertEqual(command["payload"] as? [String: String], [
-            "entity_id": "camera.front_door",
-            "reason": "connection_failed",
-        ])
+        XCTAssertEqual(command["command"] as? String, "webrtc/stream/stopped")
+        XCTAssertEqual(command["payload"] as? [String: String], ["session_id": "session-1"])
     }
 
-    @MainActor func testTheConfigurationAdvertisesTheCameraMicrophone() throws {
+    @MainActor func testTheConfigurationAdvertisesTheCameraMicrophoneStream() throws {
         let reply = try messageSentToTheFrontend {
             sut.handleExternalMessage(["id": 1, "type": "config/get"])
         }
 
         let result = try XCTUnwrap(reply["result"] as? [String: Any])
-        XCTAssertEqual(result["hasCameraMicrophone"] as? Bool, !Current.isCatalyst)
+        XCTAssertEqual(result["hasCameraMicrophoneStream"] as? Bool, !Current.isCatalyst)
     }
 
     // MARK: - Helpers
 
-    private func startMessage(id: Int, entityId: String) -> [String: Any] {
-        ["id": id, "type": "camera/microphone/start", "payload": ["entity_id": entityId]]
+    private func startMessage(id: Int, entityId: String, streamType: String = "microphone") -> [String: Any] {
+        [
+            "id": id,
+            "type": "webrtc/stream/start",
+            "payload": ["stream_type": streamType, "entity_id": entityId],
+        ]
     }
 
-    private func stopMessage(entityId: String) -> [String: Any] {
-        ["id": 11, "type": "camera/microphone/stop", "payload": ["entity_id": entityId]]
+    private func stopMessage(sessionId: String) -> [String: Any] {
+        ["id": 11, "type": "webrtc/stream/stop", "payload": ["session_id": sessionId]]
     }
 
     @MainActor private func messageSentToTheFrontend(

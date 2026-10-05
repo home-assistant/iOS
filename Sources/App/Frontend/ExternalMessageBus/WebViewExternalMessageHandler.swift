@@ -40,8 +40,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         self.improvManager = improvManager
         self.entityControlDonation = entityControlDonation
         self.cameraMicrophoneBridge = cameraMicrophoneBridge
-        cameraMicrophoneBridge.onSessionEnded = { [weak self] cameraEntityId, error in
-            self?.notifyCameraMicrophoneStopped(cameraEntityId: cameraEntityId, error: error)
+        cameraMicrophoneBridge.onSessionEnded = { [weak self] sessionId in
+            self?.notifyWebRTCStreamStopped(sessionId: sessionId)
         }
     }
 
@@ -67,7 +67,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
-                stopCameraMicrophoneLeftByPreviousPage()
+                stopWebRTCStreamLeftByPreviousPage()
                 let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -210,10 +210,14 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
-            case .cameraMicrophoneStart:
-                startCameraMicrophone(incomingMessage: incomingMessage, server: webViewController.server)
-            case .cameraMicrophoneStop:
-                cameraMicrophoneBridge.stop(cameraEntityId: incomingMessage.Payload?["entity_id"] as? String)
+            case .webRTCStreamStart:
+                startWebRTCStream(incomingMessage: incomingMessage, server: webViewController.server)
+            case .webRTCStreamStop:
+                guard let sessionId = incomingMessage.Payload?["session_id"] as? String else {
+                    Current.Log.error("Received webrtc/stream/stop but session_id was not string! \(incomingMessage)")
+                    return
+                }
+                cameraMicrophoneBridge.stop(sessionId: sessionId)
             case .frontendReloadAndClearCache:
                 reloadAndClearFrontendCache()
             case .sidebarShow:
@@ -727,12 +731,22 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         )
     }
 
-    // MARK: - Camera microphone
+    // MARK: - WebRTC streams
 
-    private func startCameraMicrophone(incomingMessage: WebSocketMessage, server: Server) {
+    private func startWebRTCStream(incomingMessage: WebSocketMessage, server: Server) {
         let messageId = incomingMessage.ID ?? -1
+        let streamType = incomingMessage.Payload?["stream_type"] as? String
+        guard streamType.flatMap(WebRTCStreamType.init(rawValue:)) == .microphone else {
+            Current.Log.error("Received webrtc/stream/start with an unsupported stream_type! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: "unsupported_stream_type",
+                errorMessage: "Unsupported stream_type: \(streamType ?? "none")"
+            ))
+            return
+        }
         guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
-            Current.Log.error("Received camera/microphone/start but entity_id was not string! \(incomingMessage)")
+            Current.Log.error("Received webrtc/stream/start but entity_id was not string! \(incomingMessage)")
             sendExternalBus(message: .init(
                 id: messageId,
                 errorCode: "invalid_payload",
@@ -742,8 +756,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
         cameraMicrophoneBridge.start(cameraEntityId: entityId, server: server) { [weak self] result in
             switch result {
-            case .success:
-                self?.sendExternalBus(message: .init(id: messageId, type: "result", result: [:]))
+            case let .success(sessionId):
+                self?.sendExternalBus(message: .init(id: messageId, type: "result", result: ["session_id": sessionId]))
             case let .failure(error):
                 self?.sendExternalBus(message: .init(
                     id: messageId,
@@ -754,17 +768,14 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
-    private func stopCameraMicrophoneLeftByPreviousPage() {
-        cameraMicrophoneBridge.stop(cameraEntityId: nil)
+    private func stopWebRTCStreamLeftByPreviousPage() {
+        cameraMicrophoneBridge.stopActiveSession()
     }
 
-    private func notifyCameraMicrophoneStopped(cameraEntityId: String, error: CameraMicrophoneError) {
+    private func notifyWebRTCStreamStopped(sessionId: String) {
         sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.cameraMicrophoneStopped.rawValue,
-            payload: [
-                "entity_id": cameraEntityId,
-                "reason": error.code,
-            ]
+            command: WebViewExternalBusOutgoingMessage.webRTCStreamStopped.rawValue,
+            payload: ["session_id": sessionId]
         ))
     }
 }

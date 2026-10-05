@@ -36,8 +36,8 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.entityAddToGetActions.rawValue, "entity/add_to/get_actions")
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
         XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
-        XCTAssertEqual(WebViewExternalBusMessage.cameraMicrophoneStart.rawValue, "camera/microphone/start")
-        XCTAssertEqual(WebViewExternalBusMessage.cameraMicrophoneStop.rawValue, "camera/microphone/stop")
+        XCTAssertEqual(WebViewExternalBusMessage.webRTCStreamStart.rawValue, "webrtc/stream/start")
+        XCTAssertEqual(WebViewExternalBusMessage.webRTCStreamStop.rawValue, "webrtc/stream/stop")
         XCTAssertEqual(
             WebViewExternalBusMessage.frontendReloadAndClearCache.rawValue,
             "frontend/reload_and_clear_cache"
@@ -75,10 +75,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
-        XCTAssertEqual(
-            WebViewExternalBusOutgoingMessage.cameraMicrophoneStopped.rawValue,
-            "camera/microphone/stopped"
-        )
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.webRTCStreamStopped.rawValue, "webrtc/stream/stopped")
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 11)
     }
@@ -99,7 +96,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasAssist",
             "hasAssistSettings",
             "hasCameraPlayer",
-            "hasCameraMicrophone",
+            "hasCameraMicrophoneStream",
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",
