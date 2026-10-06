@@ -19,7 +19,9 @@ struct WatchLocationSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             } else if viewModel.servers.count == 1, let server = viewModel.servers.first {
+                // Keyed by server so a sync that replaces the only server doesn't carry its choice over.
                 WatchLocationPrivacySection(server: server)
+                    .id(server.identifier.rawValue)
             } else {
                 Section {
                     ForEach(viewModel.servers, id: \.identifier.rawValue) { server in

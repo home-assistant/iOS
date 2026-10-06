@@ -3,6 +3,8 @@ import Foundation
 @testable import Shared
 import Testing
 
+// Serialized: the tests override the process-wide `Current.device.batteries`.
+@Suite(.serialized)
 struct WebhookUpdateLocationPrivacyTests {
     private let fix = CLLocation(
         coordinate: .init(latitude: 1.5, longitude: 2.5),
