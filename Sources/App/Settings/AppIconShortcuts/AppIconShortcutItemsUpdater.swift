@@ -13,22 +13,58 @@ enum AppIconShortcutItemsUpdater {
         let itemType: MagicItem.ItemType
     }
 
-    static func update() {
-        let forcedShortcutItems = Self.forcedShortcutItems
-        if forcedShortcutItems.isEmpty == false {
-            publish(shortcutItems: forcedShortcutItems)
-        }
+    private static var databaseUpdateObserver: NSObjectProtocol?
+    private static let generationLock = NSLock()
+    private static var requestedGeneration = 0
+    private static var publishedGeneration = 0
 
+    /// Publishes the configured items now and again each time the database updater finishes a
+    /// server, so titles resolved before the entity table was synced (a fresh install, an imported
+    /// configuration) catch up without waiting for the next launch.
+    static func start() {
+        if databaseUpdateObserver == nil {
+            databaseUpdateObserver = NotificationCenter.default.addObserver(
+                forName: .appDatabaseUpdaterDidFinishRoutine,
+                object: nil,
+                queue: .main
+            ) { _ in
+                update()
+            }
+        }
+        update()
+    }
+
+    static func stop() {
+        if let databaseUpdateObserver {
+            NotificationCenter.default.removeObserver(databaseUpdateObserver)
+        }
+        databaseUpdateObserver = nil
+    }
+
+    static func update(completion: @escaping @Sendable () -> Void = {}) {
+        let generation = nextGeneration()
         // `loadInformation` fetches every entity, area, and device row for every server
         // synchronously on the calling thread, and `update()` runs at app launch — keep that work
         // off the main thread. The resulting items are published back on main.
-        DispatchQueue.global(qos: .utility).async {
+        //
+        // It runs as protected work because launch is exactly when the user is most likely to
+        // background the app again: on a plain queue those reads were the app's largest crash, the
+        // process frozen mid-statement while holding the app-group SQLite file lock (0xdead10cc).
+        AppDatabaseSuspension.performProtectedWork(named: .appIconShortcutItems) {
             let magicItemProvider = Current.magicItemProvider()
-            magicItemProvider.loadInformation { _ in
+            magicItemProvider.loadInformation { entitiesPerServer in
                 let config = (try? AppIconShortcutConfig.config()) ?? AppIconShortcutConfig()
-                let configuredShortcutItems = config.items
-                    .filter { $0.type != .unsupported }
-                    .prefix(maximumShortcutItems)
+                let items = Array(config.items.filter { $0.type != .unsupported }.prefix(maximumShortcutItems))
+                // A failed entity read leaves the server out of the result entirely (one whose
+                // entities were never synced still reports an empty list). Every title would then
+                // fall back to a bare entity id, so keep what is published and let the next update
+                // — the database updater finishing, or the next launch — try again.
+                guard !hasUnreadableServer(for: items, entitiesPerServer: entitiesPerServer) else {
+                    Current.Log.error("Keeping the published app icon shortcuts: entities could not be read")
+                    DispatchQueue.main.async(execute: completion)
+                    return
+                }
+                let configuredShortcutItems = items
                     .map { item in
                         UIApplicationShortcutItem(
                             type: shortcutType(for: item),
@@ -37,8 +73,11 @@ enum AppIconShortcutItemsUpdater {
                             icon: icon(for: item, provider: magicItemProvider)
                         )
                     }
-                let shortcutItems = forcedShortcutItems + configuredShortcutItems
-                publish(shortcutItems: shortcutItems)
+                // The forced items are published here, with the configured ones, rather than up
+                // front: publishing them alone first would replace the user's shortcuts before the
+                // guard above had a chance to keep them.
+                let shortcutItems = Self.forcedShortcutItems + configuredShortcutItems
+                publish(shortcutItems: shortcutItems, generation: generation, completion: completion)
             }
         }
     }
@@ -58,6 +97,16 @@ enum AppIconShortcutItemsUpdater {
         )
     }
 
+    private static func hasUnreadableServer(
+        for items: [MagicItem],
+        entitiesPerServer: [String: [HAAppEntity]]
+    ) -> Bool {
+        items.contains { item in
+            entitiesPerServer[item.serverId] == nil
+                && Current.servers.server(for: .init(rawValue: item.serverId)) != nil
+        }
+    }
+
     private static func shortcutType(for item: MagicItem) -> String {
         let separator = shortcutTypeSeparator
         return "\(shortcutTypePrefix)\(item.serverId)\(separator)\(item.type.rawValue)\(separator)\(item.id)"
@@ -75,9 +124,24 @@ enum AppIconShortcutItemsUpdater {
         ]
     }
 
-    private static func publish(shortcutItems: [UIApplicationShortcutItem]) {
+    private static func nextGeneration() -> Int {
+        generationLock.lock()
+        defer { generationLock.unlock() }
+        requestedGeneration += 1
+        return requestedGeneration
+    }
+
+    private static func publish(
+        shortcutItems: [UIApplicationShortcutItem],
+        generation: Int,
+        completion: @escaping @Sendable () -> Void
+    ) {
         DispatchQueue.main.async {
-            UIApplication.shared.shortcutItems = shortcutItems
+            if generation > publishedGeneration {
+                publishedGeneration = generation
+                UIApplication.shared.shortcutItems = shortcutItems
+            }
+            completion()
         }
     }
 

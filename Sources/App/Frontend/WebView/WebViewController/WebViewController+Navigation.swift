@@ -10,6 +10,7 @@ extension WebViewController {
     /// avoidUnnecessaryReload Avoids reloading when the URL is the same as the current one
     func open(inline url: URL, avoidUnnecessaryReload: Bool = false) {
         loadViewIfNeeded()
+        overlayState?.externalNavigationRequests.send()
 
         // these paths do not show frontend pages, and so we don't want to display them in our webview
         // otherwise the user will get stuck. e.g. /api is loaded by frigate to show video clips and images
@@ -37,6 +38,7 @@ extension WebViewController {
     /// Used for OpenPage intent
     func openPanel(_ url: URL) {
         loadViewIfNeeded()
+        overlayState?.externalNavigationRequests.send()
 
         guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil || server.info
             .version >= .canNavigateMoreInfoDialogThroughFrontend else {
@@ -104,9 +106,13 @@ extension WebViewController {
         webView.reload()
     }
 
-    func showSettingsViewController() {
+    func showSettingsViewController(pushOntoNavigationStack: Bool) {
         getLatestConfig()
-        Current.sceneManager.appCoordinator.done { $0.showSettings() }
+        // Settings opens in the window the request came from: with multiple windows on screen, the app-wide
+        // coordinator is whichever scene registered last rather than this one.
+        Current.sceneManager.appCoordinator(for: view.window?.windowScene).done {
+            $0.showSettings(pushOntoNavigationStack: pushOntoNavigationStack)
+        }
     }
 
     func getLatestConfig() {

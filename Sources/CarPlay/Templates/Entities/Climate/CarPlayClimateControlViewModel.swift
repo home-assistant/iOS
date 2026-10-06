@@ -174,16 +174,22 @@ final class CarPlayClimateControlViewModel {
 
     private func send(service: Service, data: [String: Any]) {
         guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available for CarPlay climate service call on \(entityId)")
+            templateProvider?.presentOperationFailure(.noConnection)
             return
+        }
+        let entityId = entityId
+        let deadline = CarPlayOperationDeadline(server: server) { [weak self] error in
+            guard let error else { return }
+            self?.templateProvider?.presentOperationFailure(error)
         }
         connection.send(.callEntityService(domain: .climate, service, entityId: entityId, data: data)).promise
             .done { _ in
-                Current.Log.verbose("CarPlay climate \(service.rawValue) succeeded for \(self.entityId)")
+                Current.Log.verbose("CarPlay climate \(service.rawValue) succeeded for \(entityId)")
+                deadline.succeed()
             }
-            .catch { [weak self] error in
-                guard let self else { return }
+            .catch { error in
                 Current.Log.error("CarPlay climate \(service.rawValue) failed for \(entityId): \(error)")
+                deadline.fail(error)
             }
     }
 }

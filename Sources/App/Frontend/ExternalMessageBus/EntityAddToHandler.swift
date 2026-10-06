@@ -60,6 +60,12 @@ final class EntityAddToHandler {
 
                 if domain != nil {
                     actions.append(DeeplinkAction())
+
+                    // Writing the deep link onto a tag needs NFC hardware, which Catalyst and the
+                    // older devices never have.
+                    if Current.tags.isNFCAvailable {
+                        actions.append(NFCTagAction())
+                    }
                 }
 
                 seal.fulfill(actions)
@@ -114,6 +120,13 @@ final class EntityAddToHandler {
                 case .deeplink:
                     openDeeplink(entityId: entityId, webViewController: webViewController)
                     seal.fulfill(())
+
+                case .nfcTag:
+                    writeDeeplinkToNFCTag(entityId: entityId).done {
+                        seal.fulfill(())
+                    }.catch { error in
+                        seal.reject(error)
+                    }
 
                 case .none:
                     seal.reject(EntityAddToError.unknownActionType)
@@ -197,31 +210,23 @@ final class EntityAddToHandler {
     }
 
     private func openDeeplink(entityId: String, webViewController: WebViewControllerProtocol) {
-        Current.Log.info("Opening deeplink for entity \(entityId)")
+        DeeplinkPresenter.present(target: .entity(id: entityId), from: webViewController)
+    }
 
-        let hostingController = DeeplinkView(
-            viewModel: DeeplinkViewModel(
-                entityId: entityId,
-                serverName: webViewController.server.info.name
-            ),
-            onClose: { [weak webViewController] in
-                webViewController?.overlayedController?.dismiss(animated: true, completion: nil)
-            }
-        ).embeddedInHostingController()
-
-        if Current.isCatalyst {
-            hostingController.modalPresentationStyle = .formSheet
-        } else if let sheet = hostingController.sheetPresentationController {
-            let detent = UISheetPresentationController.Detent.custom(identifier: .init("deeplink")) { context in
-                context.maximumDetentValue * 0.7
-            }
-            sheet.detents = [detent, .large()]
-            sheet.selectedDetentIdentifier = detent.identifier
-            sheet.prefersGrabberVisible = true
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+    /// Writes the same deep link the `DeeplinkAction` hands out onto an NFC tag, so that scanning the
+    /// tag opens the entity's more info dialog. The system NFC sheet is the whole UI here: it asks for
+    /// the tag, reports success, and shows any write failure.
+    private func writeDeeplinkToNFCTag(entityId: String) -> Promise<Void> {
+        guard let deeplink = DeeplinkTarget.entity(id: entityId).url(serverName: nil) else {
+            Current.Log.error("Could not build a deeplink for entity \(entityId) to write to an NFC tag")
+            return .init(error: EntityAddToError.invalidPayload)
         }
 
-        webViewController.presentOverlayController(controller: hostingController, animated: true)
+        Current.Log.info("Writing deeplink for entity \(entityId) to an NFC tag")
+        return Current.tags.writeNFC(
+            deeplink: deeplink,
+            alertMessage: L10n.Nfc.Write.Deeplink.startMessage(Current.device.inspecificModel())
+        )
     }
 
     private func openWidgetBuilder(

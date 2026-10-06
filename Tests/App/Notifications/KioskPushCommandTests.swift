@@ -1,6 +1,6 @@
 @testable import HomeAssistant
 import SFSafeSymbols
-import Shared
+@testable import Shared
 import XCTest
 
 final class KioskPushCommandTests: XCTestCase {
@@ -51,6 +51,39 @@ final class KioskPushCommandTests: XCTestCase {
     func testEveryCommandResolvesASymbol() {
         for command in KioskPushCommand.allCases {
             XCTAssertFalse(command.symbol.rawValue.isEmpty, "\(command) has no symbol")
+        }
+    }
+
+    // MARK: - Confirmation toast
+
+    @available(iOS 18, *)
+    func testConfirmationToastCarriesTheCommandPresentation() throws {
+        let command = KioskPushCommand.showScreensaver
+        let toast = try XCTUnwrap(command.confirmationToast(id: "notification-1", settings: KioskSettings()))
+
+        XCTAssertEqual(toast.id, "notification-1")
+        XCTAssertEqual(toast.symbol, .moonStarsFill)
+        XCTAssertEqual(toast.title, L10n.Kiosk.PushCommand.showScreensaver)
+        XCTAssertEqual(toast.message, L10n.Kiosk.PushCommand.subtitle)
+    }
+
+    @available(iOS 18, *)
+    func testEveryCommandConfirmsItselfByDefault() {
+        // Confirmations default to on, so an untouched kiosk keeps the feedback it always had.
+        for command in KioskPushCommand.allCases {
+            XCTAssertNotNil(
+                command.confirmationToast(id: "notification-1", settings: KioskSettings()),
+                "\(command) has no confirmation toast"
+            )
+        }
+    }
+
+    @available(iOS 18, *)
+    func testNoConfirmationToastWhenConfirmationsAreDisabled() {
+        // The command still runs; it just does so without anything appearing on screen.
+        let settings = KioskSettings(showRemoteCommandConfirmations: false)
+        for command in KioskPushCommand.allCases {
+            XCTAssertNil(command.confirmationToast(id: "notification-1", settings: settings))
         }
     }
 

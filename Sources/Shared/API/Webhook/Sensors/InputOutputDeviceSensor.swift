@@ -16,7 +16,9 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         case invalid
 
         #if targetEnvironment(macCatalyst)
-        case coreAudio(AudioObjectID)
+        // Carries the property selector as well as the object, because the system object is observed
+        // for more than one property and the two registrations must not collapse into one.
+        case coreAudio(AudioObjectID, AudioObjectPropertySelector)
         #if canImport(CoreMediaIO)
         case coreMedia(CMIOObjectID)
         #endif
@@ -26,7 +28,7 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
             switch self {
             case .invalid: return .max
             #if targetEnvironment(macCatalyst)
-            case let .coreAudio(id): return id
+            case let .coreAudio(id, _): return id
             #if canImport(CoreMediaIO)
             case let .coreMedia(id): return id
             #endif
@@ -72,13 +74,14 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         for id: AudioObjectID,
         property: HACoreAudioProperty<some Any>
     ) {
-        addObserver(object: .coreAudio(id), property: property)
+        addObserver(object: .coreAudio(id, property.address.mSelector), property: property)
     }
 
     func removeCoreAudioObserver(
-        for id: AudioObjectID
+        for id: AudioObjectID,
+        property: HACoreAudioProperty<some Any>
     ) {
-        removeObserver(object: .coreAudio(id))
+        removeObserver(object: .coreAudio(id, property.address.mSelector))
     }
 
     func addCoreMediaObserver(
@@ -105,6 +108,11 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         #endif
 
         addCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .allDevices)
+        // A device already running in one direction stays running as the other direction starts and
+        // stops, so the device flag alone misses that transition. The process object list changes
+        // whenever a process starts or stops doing IO, which covers one app recording while another
+        // plays back through the same device.
+        addCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .processObjectList)
         #endif
         isObserving = true
     }
@@ -117,7 +125,8 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         removeCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject))
         #endif
 
-        removeCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject))
+        removeCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .allDevices)
+        removeCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .processObjectList)
         #endif
         isObserving = false
     }
@@ -160,14 +169,19 @@ public class InputOutputDeviceSensor: SensorProvider {
             (cameraSystemObject.allCameras, audioSystemObject.allInputDevices, audioSystemObject.allOutputDevices)
         }.get(on: queue) { cameras, audioInputs, audioOutputs in
             cameras.forEach { updateSignaler.addCoreMediaObserver(for: $0.id, property: .isRunningSomewhere) }
-            for audioInput in audioInputs {
-                updateSignaler.addCoreAudioObserver(for: audioInput.id, property: .isInputRunningSomewhere)
+            // kAudioDevicePropertyDeviceIsRunningSomewhere is only ever published in the global scope, so a
+            // listener scoped to input or output registers happily and then never fires. A device that both
+            // records and plays back needs a single listener here, and the direction sorted out on read.
+            for device in audioInputs + audioOutputs {
+                updateSignaler.addCoreAudioObserver(for: device.id, property: .isRunningSomewhere)
             }
-            for audioOutput in audioOutputs {
-                updateSignaler.addCoreAudioObserver(for: audioOutput.id, property: .isOutputRunningSomewhere)
-            }
-        }.map(on: queue) { cameras, audioInputs, audioOutputs -> [WebhookSensor] in
-            Self.sensors(cameras: cameras, audioInputs: audioInputs, audioOutputs: audioOutputs)
+        }.map(on: queue) { [audioSystemObject] cameras, audioInputs, audioOutputs -> [WebhookSensor] in
+            Self.sensors(
+                cameras: cameras,
+                audioInputs: audioInputs,
+                audioOutputs: audioOutputs,
+                runningDevices: audioSystemObject.runningDevices
+            )
         }
         #else
         sensors = .init(error: InputOutputDeviceError.noInputsOrOutputs)
@@ -180,11 +194,15 @@ public class InputOutputDeviceSensor: SensorProvider {
     private static func sensors(
         cameras: [HACoreMediaObjectCamera],
         audioInputs: [HACoreAudioObjectDevice],
-        audioOutputs: [HACoreAudioObjectDevice]
+        audioOutputs: [HACoreAudioObjectDevice],
+        runningDevices: HACoreAudioRunningDevices?
     ) -> [WebhookSensor] {
         let cameraFallback = "Unknown Camera"
         let audioInputFallback = "Unknown Audio Input"
         let audioOutputFallback = "Unknown Audio Output"
+
+        let activeAudioInputs = audioInputs.filter { $0.isInputOn(runningDevices: runningDevices) }
+        let activeAudioOutputs = audioOutputs.filter { $0.isOutputOn(runningDevices: runningDevices) }
 
         return Self.sensors(
             name: "Camera",
@@ -199,14 +217,14 @@ public class InputOutputDeviceSensor: SensorProvider {
             iconOn: "mdi:microphone",
             iconOff: "mdi:microphone-off",
             all: audioInputs.map { $0.name ?? audioInputFallback },
-            active: audioInputs.filter(\.isInputOn).map { $0.name ?? audioInputFallback }
+            active: activeAudioInputs.map { $0.name ?? audioInputFallback }
         ) + Self.sensors(
             name: "Audio Output",
             uniqueID: WebhookSensorId.audioOutput.rawValue,
             iconOn: "mdi:volume-high",
             iconOff: "mdi:volume-low",
             all: audioOutputs.map { $0.name ?? audioOutputFallback },
-            active: audioOutputs.filter(\.isOutputOn).map { $0.name ?? audioOutputFallback }
+            active: activeAudioOutputs.map { $0.name ?? audioOutputFallback }
         )
     }
 

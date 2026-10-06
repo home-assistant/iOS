@@ -17,12 +17,13 @@ protocol WebViewExternalMessageHandlerProtocol {
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
     func stopImprovScanIfNeeded()
-    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool, focusInputOnAppear: Bool)
+    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool)
 }
 
 final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
+    private let entityControlDonation: EntityControlDonation
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
@@ -31,9 +32,11 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private var pendingCommands: [Int: PendingExternalBusCommand] = [:]
 
     init(
-        improvManager: any ImprovManagerProtocol
+        improvManager: any ImprovManagerProtocol,
+        entityControlDonation: EntityControlDonation = .init()
     ) {
         self.improvManager = improvManager
+        self.entityControlDonation = entityControlDonation
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -151,9 +154,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 showAssist(
                     server: webViewController.server,
                     pipeline: pipelineId ?? "",
-                    autoStartRecording: startMode.resolveAutoStartRecording(frontendRequested: startListening ?? false),
-                    // Asking for text explicitly means the user wants to type, so save them a tap.
-                    focusInputOnAppear: startMode == .text
+                    autoStartRecording: startMode.resolveAutoStartRecording(frontendRequested: startListening ?? false)
                 )
             case .assistSettings:
                 showAssistSettingsViewController()
@@ -206,6 +207,28 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 reloadAndClearFrontendCache()
             case .sidebarShow:
                 MacNativeSidebarState.shared.show()
+                NativeTabBarState.shared.requestMore()
+            case .moreInfoOpened:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/opened but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.setOnscreenEntity(entityId: entityId)
+            case .moreInfoClosed:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/closed but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.clearOnscreenEntity(entityId: entityId)
+            case .entityControlled:
+                guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")
+                    return
+                }
+                let serverId = webViewController.server.identifier.rawValue
+                Task { [entityControlDonation] in
+                    await entityControlDonation.donate(control, serverId: serverId)
+                }
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -219,7 +242,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     // swiftlint:enable cyclomatic_complexity
 
     func showSettingsViewController() {
-        Current.sceneManager.appCoordinator.done { $0.showSettings(pushOntoNavigationStack: true) }
+        // Through the web view the message came from, so Settings opens in that window and no other.
+        webViewController?.showSettingsViewController(pushOntoNavigationStack: true)
     }
 
     @MainActor
@@ -249,19 +273,40 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
+    /// How long the frontend gets to render the element it asked to focus, in attempts and the pause between them.
+    static let elementFocusAttempts = 20
+    static let elementFocusRetryInterval: TimeInterval = 0.15
+
     func handleElementFocus(elementId: String) {
         Current.Log.verbose("Handle element focus for element ID: \(elementId)")
+        focusElement(elementId: elementId, attemptsLeft: Self.elementFocusAttempts)
+    }
 
-        // JavaScript to find and focus element in both regular DOM and Shadow DOM
-        let script = """
+    /// Keyboard focus only follows a scripted `focus()` while the web view is first responder, and the
+    /// frontend asks before the element is always on the page, so this keeps trying until it is.
+    private func focusElement(elementId: String, attemptsLeft: Int) {
+        webViewController?.makeWebViewFirstResponder()
+        webViewController?
+            .evaluateJavaScript(Self.focusElementScript(elementId: elementId)) { [weak self] result, error in
+                if let error {
+                    Current.Log.error("Error focusing element \(elementId): \(error)")
+                    return
+                }
+                guard result as? Bool == false, attemptsLeft > 1 else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.elementFocusRetryInterval) {
+                    self?.focusElement(elementId: elementId, attemptsLeft: attemptsLeft - 1)
+                }
+            }
+    }
+
+    /// Finds the element through shadow roots and focuses it; a focus that is already on it is redone so the
+    /// keyboard follows. Evaluates to whether the element was found.
+    static func focusElementScript(elementId: String) -> String {
+        """
         (function() {
-            // Helper function to search through shadow DOM recursively
             function findElementInShadowDOM(elementId, root = document) {
-                // Try to find by ID in current root
                 let element = root.getElementById(elementId);
                 if (element) return element;
-
-                // Search through all elements with shadow roots
                 const allElements = root.querySelectorAll('*');
                 for (const el of allElements) {
                     if (el.shadowRoot) {
@@ -271,22 +316,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 return null;
             }
-
-            // Search for the element
-            const elementId = '\(elementId)';
-            const element = findElementInShadowDOM(elementId);
-
-            if (element) {
-                element.focus();
+            function activeElement() {
+                let active = document.activeElement;
+                while (active && active.shadowRoot && active.shadowRoot.activeElement) {
+                    active = active.shadowRoot.activeElement;
+                }
+                return active;
             }
+            function contains(ancestor, node) {
+                while (node) {
+                    if (node === ancestor) return true;
+                    node = node.parentNode || (node.host ? node.host : null);
+                }
+                return false;
+            }
+            const element = findElementInShadowDOM('\(elementId)');
+            if (!element) return false;
+            const active = activeElement();
+            if (active && contains(element, active)) {
+                active.blur();
+            }
+            element.focus();
+            return true;
         })();
         """
-
-        webViewController?.evaluateJavaScript(script) { _, error in
-            if let error {
-                Current.Log.error("Error focusing element \(elementId): \(error)")
-            }
-        }
     }
 
     @discardableResult
@@ -501,15 +554,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     func showAssist(
         server: Server,
         pipeline: String = "",
-        autoStartRecording: Bool = false,
-        focusInputOnAppear: Bool = false
+        autoStartRecording: Bool = false
     ) {
+        let presentsAsSheet = webViewController?.presentsNextAssistAsSheet ?? false
+        webViewController?.presentsNextAssistAsSheet = false
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
                 pipelineId: pipeline,
-                autoStartRecording: autoStartRecording,
-                focusInputOnAppear: focusInputOnAppear
+                autoStartRecording: autoStartRecording
             ))
             return
         }
@@ -520,8 +573,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             AssistWindowModel.shared.configure(
                 server: server,
                 preferredPipelineId: pipeline,
-                autoStartRecording: autoStartRecording,
-                focusInputOnAppear: focusInputOnAppear
+                autoStartRecording: autoStartRecording
             )
             Current.sceneManager.activateAnyScene(for: .assist)
         } else {
@@ -529,18 +581,20 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             let assistView = UIHostingController(rootView: AssistView.build(
                 server: server,
                 preferredPipelineId: pipeline,
-                autoStartRecording: autoStartRecording,
-                focusInputOnAppear: focusInputOnAppear
+                autoStartRecording: autoStartRecording
             ))
-            assistView.modalPresentationStyle = .fullScreen
-            if #available(iOS 18.0, *), webViewController?.assistZoomAnchorView != nil {
-                // The request comes over the external bus, so there is no touched view to zoom out of: the
-                // anchor standing in for the frontend's Assist button plays that part. Resolved on every call
-                // because the transition asks again while presenting, dismissing and interactively dragging.
+            let tappedSource = webViewController?.pendingAssistZoomSourceView
+            webViewController?.pendingAssistZoomSourceView = nil
+            if presentsAsSheet {
+                assistView.modalPresentationStyle = .automatic
+            } else if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+                assistView.modalPresentationStyle = .fullScreen
+                // Zoom out of the tapped tab bar spot when there is one, else the frontend's Assist anchor.
                 assistView.preferredTransition = .zoom { [weak self] _ in
-                    self?.webViewController?.assistZoomAnchorView
+                    tappedSource ?? self?.webViewController?.assistZoomAnchorView
                 }
             } else {
+                assistView.modalPresentationStyle = .fullScreen
                 assistView.modalTransitionStyle = .crossDissolve
             }
             webViewController?.presentOverlayController(controller: assistView, animated: true)

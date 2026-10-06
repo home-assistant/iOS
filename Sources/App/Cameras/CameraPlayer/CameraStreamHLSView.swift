@@ -13,6 +13,9 @@ struct CameraStreamHLSView: View {
     private let controlsVisible: Binding<Bool>?
 
     @State private var player: AVPlayer?
+    /// The asset does not retain its resource loader delegate, so hold it for as long as the player
+    /// lives or the stream stops mid-load on a server that needs a client certificate.
+    @State private var assetLoader: CameraHLSAssetLoader?
     @State private var isLoading = true
     @State private var errorMessage: String?
     @State private var hasCalledFallback = false
@@ -72,6 +75,7 @@ struct CameraStreamHLSView: View {
         .onDisappear {
             player?.pause()
             player = nil
+            assetLoader = nil
         }
     }
 
@@ -84,7 +88,7 @@ struct CameraStreamHLSView: View {
         Task {
             do {
                 let streamURL = try await fetchStreamURL(api: api)
-                setupPlayer(with: streamURL)
+                setupPlayer(with: streamURL, api: api)
             } catch {
                 await MainActor.run {
                     Current.Log.error("Failed to load HLS stream: \(error.localizedDescription)")
@@ -104,26 +108,44 @@ struct CameraStreamHLSView: View {
         }
     }
 
+    /// Asks the server to start an HLS stream and resolves the playlist URL for it.
+    ///
+    /// `stream_camera` runs the same `camera.async_request_stream(..., "hls")` the frontend reaches
+    /// through `camera/stream`, so a camera the frontend can play over HLS answers here too — but
+    /// only once the request has actually completed, which is why this awaits the promise instead
+    /// of reading whatever value it happens to hold.
     private func fetchStreamURL(api: HomeAssistantAPI) async throws -> URL {
-        let response = api.StreamCamera(entityId: cameraEntityId).value
+        let response = try await api.StreamCamera(entityId: cameraEntityId).asyncValue()
 
-        if let hlsPath = response?.hlsPath,
-           let baseURL = await api.server.activeURL() {
-            return baseURL.appendingPathComponent(hlsPath)
-        } else {
+        guard let hlsPath = response.hlsPath else {
             throw StreamError.noHLSAvailable
         }
+        guard let baseURL = await api.server.activeURL() else {
+            throw StreamError.noActiveURL
+        }
+        return Self.playlistURL(baseURL: baseURL, hlsPath: hlsPath)
+    }
+
+    /// Resolves the playlist against the server's URL. `hls_path` comes back server-absolute, so
+    /// appending it with its leading slash intact leaves a double slash in the URL and swallows the
+    /// base path of a server installed under a subpath.
+    static func playlistURL(baseURL: URL, hlsPath: String) -> URL {
+        let relativePath = hlsPath.hasPrefix("/") ? String(hlsPath.dropFirst()) : hlsPath
+        return baseURL.appendingPathComponent(relativePath)
     }
 
     @MainActor
-    private func setupPlayer(with url: URL) {
+    private func setupPlayer(with url: URL, api: HomeAssistantAPI) {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
         } catch {
             Current.Log.error("Failed to set audio session category: \(error.localizedDescription)")
         }
 
-        let asset = AVURLAsset(url: url)
+        // A server behind a client certificate, or reached with a security exception, needs its
+        // requests to go through the app's own session; AVFoundation cannot present either itself.
+        let (asset, loader) = CameraHLSAssetLoader.asset(for: url, api: api)
+        assetLoader = loader
         let playerItem = AVPlayerItem(asset: asset)
         let avPlayer = AVPlayer(playerItem: playerItem)
 

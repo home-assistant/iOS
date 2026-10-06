@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import HAKit
 import Shared
+import SwiftUI
 
 @MainActor
 final class MacSidebarViewModel: ObservableObject {
@@ -12,6 +13,7 @@ final class MacSidebarViewModel: ObservableObject {
     @Published var isEditing = false
     @Published private(set) var selectedItemId: String?
     @Published private(set) var user: HAResponseCurrentUser?
+    @Published private(set) var accentColor: Color = .haPrimary
 
     /// Legacy per-browser sidebar preferences the frontend still honours when the server-side user data
     /// has none; see the `localStorage` fallbacks in `ha-sidebar.ts` and `data/panel.ts`.
@@ -71,8 +73,16 @@ final class MacSidebarViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
+        NotificationCenter.default.publisher(for: FrontendThemeProvider.didChangeNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateAccentColor()
+            }
+            .store(in: &cancellables)
+
         restoreSnapshot()
         rebuild()
+        updateAccentColor()
     }
 
     deinit {
@@ -184,6 +194,14 @@ final class MacSidebarViewModel: ObservableObject {
 
     func commitReorder() {
         save(effectiveUserData.reordered(to: mainItems.map(\.id)))
+    }
+
+    func reorderItems(to order: [String]) {
+        let reordered = order.compactMap { id in mainItems.first(where: { $0.id == id }) }
+            + mainItems.filter { !order.contains($0.id) }
+        guard reordered != mainItems else { return }
+        mainItems = reordered
+        commitReorder()
     }
 
     func hide(itemId: String) {
@@ -376,6 +394,11 @@ final class MacSidebarViewModel: ObservableObject {
         }
         updateSelection()
         storeSnapshot()
+    }
+
+    private func updateAccentColor() {
+        accentColor = Current.frontendTheme()
+            .color(of: FrontendColors.primaryColor.rawValue, for: server.identifier.rawValue) ?? .haPrimary
     }
 
     private func updateSelection() {

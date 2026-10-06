@@ -6,6 +6,9 @@ import UIKit
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
     @StateObject private var viewModel = ContainerViewModel()
+    /// This scene's Settings presenter, owned by `ConditionalContainerView`.
+    @ObservedObject var appSettings: AppSettingsPresenter
+    @ObservedObject private var nativeTabBar = NativeTabBarState.shared
     @State private var coordinator = AppContainerCoordinator()
 
     var body: some View {
@@ -15,11 +18,7 @@ struct ContainerView: View {
                 OnboardingNavigationView(onboardingStyle: style)
                     .id(style)
             case let .webView(server, initialPath):
-                HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
-                    coordinator.setFrontend(webViewController)
-                    Current.sceneManager.setWebViewController(webViewController)
-                }
-                .id(server.identifier.rawValue)
+                frontend(server: server, initialPath: initialPath)
             case .recoveredServerImport:
                 RecoveredServersImportView(onImport: { state.completeRecoveredServerImport() })
             case let .recoveredServerReauth(server):
@@ -30,13 +29,15 @@ struct ContainerView: View {
         .onAppear {
             coordinator.onOpenServer = { state.showWebView(for: $0) }
             coordinator.onSetup = { state.reevaluate() }
+            coordinator.settingsPresenter = appSettings
+            appSettings.appCoordinator = coordinator
             coordinator.onShowSettings = { [weak coordinator] pushOntoNavigationStack in
                 // Push only in compact width, read from the window at presentation time.
                 let sizeClass = coordinator?.window?.traitCollection.horizontalSizeClass
-                if pushOntoNavigationStack, sizeClass == .compact {
-                    AppSettingsPresenter.shared.isPushPresented = true
+                if pushOntoNavigationStack, sizeClass == .compact, !NativeTabBarState.shared.isEnabled {
+                    appSettings.isPushPresented = true
                 } else {
-                    AppSettingsPresenter.shared.presentSettings()
+                    appSettings.presentSettings()
                 }
             }
             coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
@@ -82,6 +83,35 @@ struct ContainerView: View {
                 }
                 .navigationViewStyle(.stack)
                 .injectingViewControllerProvider()
+            }
+        }
+    }
+
+    /// The frontend, in the stack Settings is pushed onto; with the App Labs tab bar on it stands alone.
+    @ViewBuilder
+    private func frontend(server: Server, initialPath: String?) -> some View {
+        let homeAssistant = HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
+            coordinator.setFrontend(webViewController)
+            Current.sceneManager.setWebViewController(webViewController)
+        }
+        .id(server.identifier.rawValue)
+
+        if #available(iOS 26, *), nativeTabBar.isEnabled {
+            homeAssistant
+        } else {
+            NavigationStack(path: $appSettings.pushPath) {
+                homeAssistant
+                    .toolbar(.hidden, for: .navigationBar)
+                    .navigationDestination(for: AppSettingsPushRoute.self) { route in
+                        switch route {
+                        case .settings:
+                            SettingsView(embedInOwnNavigation: false)
+                                .injectingViewControllerProvider()
+                        case let .item(item):
+                            item.destinationView
+                                .injectingViewControllerProvider()
+                        }
+                    }
             }
         }
     }

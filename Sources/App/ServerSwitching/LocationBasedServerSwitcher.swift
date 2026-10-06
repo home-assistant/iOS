@@ -192,32 +192,35 @@ final class LocationBasedServerSwitcher {
         return matches.min { byProximity($0.zone, $1.zone) }?.server
     }
 
-    /// The server considered closest, shown in the Server Switching settings screen. Being on a
-    /// server's home network wins outright (no distance), preferring the current server when
-    /// several share the SSID so the row agrees with `matchedServer`. Otherwise the server whose
-    /// `zone.home` center is nearest to `location` wins, with that distance, no need to be inside
-    /// it. Returns `nil` when neither signal resolves a server. Non-private for tests.
+    /// The server considered closest, shown in the Server Switching settings screen, along with
+    /// the signal that picked it so the screen can say where the answer came from. Being on a
+    /// server's home network wins outright (`.homeNetwork`, no distance), preferring the current
+    /// server when several share the SSID so the row agrees with `matchedServer`. Otherwise the
+    /// server whose `zone.home` center is nearest to `location` wins (`.location`, carrying that
+    /// distance), no need to be inside it. Returns `nil` when neither signal resolves a server.
+    /// Non-private for tests.
     nonisolated static func closestServer(
         to location: CLLocation?,
         currentSSID: String?,
         preferring currentServerIdentifier: Identifier<Server>?
-    ) -> (server: Server, distance: CLLocationDistance?)? {
+    ) -> (server: Server, source: ServerProximitySource)? {
         let onHomeNetwork = serversOnHomeNetwork(currentSSID)
         if let server = onHomeNetwork.first(where: { $0.identifier == currentServerIdentifier })
             ?? onHomeNetwork.first {
-            return (server, nil)
+            return (server, .homeNetwork)
         }
         guard let location else { return nil }
 
         let homeZonesByServer = trackedHomeZonesByServer()
-        let candidates: [(server: Server, distance: CLLocationDistance?)] = Current.servers.all
+        let candidates: [(server: Server, distance: CLLocationDistance)] = Current.servers.all
             .compactMap { server in
                 homeZonesByServer[server.identifier.rawValue]?
                     .map { location.distance(from: $0.location) }
                     .min()
                     .map { (server, $0) }
             }
-        return candidates.min { ($0.distance ?? .infinity) < ($1.distance ?? .infinity) }
+        guard let closest = candidates.min(by: { $0.distance < $1.distance }) else { return nil }
+        return (closest.server, .location(distance: closest.distance))
     }
 
     /// Servers whose internal-URL SSIDs contain the current Wi-Fi network — the same signal

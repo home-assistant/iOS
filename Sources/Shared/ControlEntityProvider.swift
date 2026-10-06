@@ -348,3 +348,18 @@ public final class ControlEntityProvider {
         )
     }
 }
+
+public extension ControlEntityProvider {
+    /// The same entities, minus the servers the user has opted out of exposing to Siri.
+    ///
+    /// Siri, Spotlight and the Shortcuts app read through this. Widgets, controls and the reminders
+    /// sync keep using `getEntities`: the setting is about what is offered to Siri, not about
+    /// hiding a server from the rest of the app.
+    func getEntitiesExposedToSiri(matching string: String? = nil) -> [(Server, [HAAppEntity])] {
+        let hidden = SiriServerExposure.hiddenServerIds()
+        guard !hidden.isEmpty else {
+            return getEntities(matching: string)
+        }
+        return getEntities(matching: string).filter { !hidden.contains($0.0.identifier.rawValue) }
+    }
+}

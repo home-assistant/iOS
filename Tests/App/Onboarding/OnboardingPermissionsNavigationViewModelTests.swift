@@ -78,9 +78,6 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Initialization clears internal URL override when local network configuration is skipped")
     func initializationClearsInternalURLOverrideWhenLocalNetworkConfigurationIsSkipped() async throws {
-        // Discovery pins the internal URL when internal+external URLs exist but the SSID
-        // is unknown; skipping the home network step means internalSSIDs will never be set
-        // to clear that override, so the view model has to clear it
         let server = Self.makeServer(
             identifier: "override-cleared",
             externalURL: URL(string: "https://external.example.com")!,
@@ -320,6 +317,26 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
     }
 
+    @Test("Set less secure local connection clears the internal URL override")
+    func setLessSecureLocalConnectionClearsInternalURLOverride() async throws {
+        let server = Self.makeServer(
+            identifier: "less-secure-clears-override",
+            externalURL: URL(string: "http://external.example.com")!,
+            internalURL: URL(string: "http://internal.example.com")!
+        )
+        server.update { info in
+            info.connection.overrideActiveURLType = .internal
+        }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+        #expect(viewModel.steps.contains(.homeNetwork))
+
+        viewModel.setLessSecureLocalConnection()
+
+        #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
+        #expect(server.info.connection.overrideActiveURLType == nil)
+    }
+
     @Test("Request location permission for less secure local connection")
     func requestLocationPermissionForLessSecureLocalConnection() async throws {
         let server = ServerFixture.standard
@@ -354,6 +371,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
         let allCases = OnboardingPermissionsNavigationViewModel.StepID.allCases
         #expect(allCases.contains(.disclaimer))
         #expect(allCases.contains(.location))
+        #expect(allCases.contains(.privacy))
         #expect(allCases.contains(.localAccess))
         #expect(allCases.contains(.homeNetwork))
         #expect(allCases.contains(.completion))
@@ -488,6 +506,153 @@ struct OnboardingPermissionsNavigationViewModelLocationDelegateTests {
 
         // Should not advance step
         #expect(viewModel.currentStepIndex == initialStepIndex)
+    }
+}
+
+// MARK: - Privacy Step Tests
+
+@Suite("OnboardingPermissionsNavigationViewModel Privacy Step Tests", .serialized)
+struct OnboardingPermissionsNavigationViewModelPrivacyTests {
+    init() {
+        ServerFixture.reset()
+    }
+
+    @Test("A server added next to an existing one asks for the privacy choices")
+    func additionalServerReplacesLocationStepWithPrivacyStep() async throws {
+        let server = ServerFixture.standard
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = Self.serverManager(containing: server, alongsideOtherServers: 1)
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps == [.disclaimer, .privacy, .localAccess, .homeNetwork, .completion])
+        #expect(viewModel.steps.contains(.location) == false)
+    }
+
+    @Test("The app's first server keeps the location permission step")
+    func firstServerKeepsLocationStep() async throws {
+        let server = ServerFixture.standard
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = Self.serverManager(containing: server, alongsideOtherServers: 0)
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
+
+        #expect(viewModel.steps == OnboardingPermissionsNavigationViewModel.StepID.default)
+        #expect(viewModel.steps.contains(.privacy) == false)
+    }
+
+    @Test("Custom steps are used as given for an additional server")
+    func customStepsAreNotRewrittenForAdditionalServer() async throws {
+        let server = ServerFixture.standard
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = Self.serverManager(containing: server, alongsideOtherServers: 1)
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission
+        )
+
+        #expect(viewModel.steps == OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
+    }
+
+    @Test("Choosing to send nothing stores both settings and moves on without asking for a permission")
+    func savingPrivacyChoicesWithoutLocationStoresSettings() async throws {
+        let server = ServerFixture.standard
+        let previousStatus = Current.location.permissionStatus
+        defer { Current.location.permissionStatus = previousStatus }
+        Current.location.permissionStatus = { .notDetermined }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: [.privacy, .completion]
+        )
+
+        viewModel.savePrivacyChoices(locationPrivacy: .never, sensorPrivacy: .none)
+
+        #expect(server.info.setting(for: .locationPrivacy) == .never)
+        #expect(server.info.setting(for: .sensorPrivacy) == ServerSensorPrivacy.none)
+        #expect(viewModel.currentStep == .completion)
+        #expect(viewModel.locationPermissionContext == .notRequested)
+    }
+
+    @Test("A location choice is kept and applied once the permission is already granted")
+    func savingPrivacyChoicesAppliesChosenLevelWhenPermissionIsGranted() async throws {
+        let server = ServerFixture.standard
+        let previousStatus = Current.location.permissionStatus
+        defer { Current.location.permissionStatus = previousStatus }
+        Current.location.permissionStatus = { .authorizedAlways }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: [.privacy, .completion]
+        )
+
+        viewModel.savePrivacyChoices(locationPrivacy: .zoneOnly, sensorPrivacy: .all)
+
+        #expect(server.info.setting(for: .locationPrivacy) == .zoneOnly)
+        #expect(server.info.setting(for: .sensorPrivacy) == .all)
+        #expect(viewModel.locationPermissionContext == .shareWithHomeAssistant)
+        #expect(viewModel.currentStep == .completion)
+    }
+
+    @Test("A location choice made while the permission is denied is stored and does not strand the flow")
+    func savingPrivacyChoicesMovesOnWhenPermissionIsDenied() async throws {
+        let server = ServerFixture.standard
+        let previousStatus = Current.location.permissionStatus
+        defer { Current.location.permissionStatus = previousStatus }
+        Current.location.permissionStatus = { .denied }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: [.privacy, .completion]
+        )
+
+        viewModel.savePrivacyChoices(locationPrivacy: .exact, sensorPrivacy: .all)
+
+        #expect(server.info.setting(for: .locationPrivacy) == .exact)
+        #expect(server.info.setting(for: .sensorPrivacy) == .all)
+        #expect(viewModel.currentStep == .completion)
+        // The Settings app is not opened and no permission is requested for a stored choice.
+        #expect(viewModel.locationPermissionContext == .notRequested)
+    }
+
+    @Test("Denying the location permission on the privacy step stores never and moves on")
+    func denyingTheLocationPermissionOnThePrivacyStepAdvances() async throws {
+        let server = ServerFixture.standard
+        let previousStatus = Current.location.permissionStatus
+        defer { Current.location.permissionStatus = previousStatus }
+        Current.location.permissionStatus = { .notDetermined }
+
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: [.privacy, .completion]
+        )
+
+        viewModel.savePrivacyChoices(locationPrivacy: .exact, sensorPrivacy: .all)
+        #expect(viewModel.currentStep == .privacy)
+
+        let locationManager = MockCLLocationManager()
+        locationManager.authorizationStatus = .denied
+        viewModel.locationManagerDidChangeAuthorization(locationManager)
+
+        #expect(server.info.setting(for: .locationPrivacy) == .never)
+        #expect(viewModel.currentStep == .completion)
+    }
+
+    /// A registry holding the server being onboarded, plus `alongsideOtherServers` already onboarded ones.
+    private static func serverManager(
+        containing server: Server,
+        alongsideOtherServers count: Int
+    ) -> FakeServerManager {
+        let manager = FakeServerManager()
+        for _ in 0 ..< count {
+            manager.addFake()
+        }
+        manager.add(identifier: server.identifier, serverInfo: server.info)
+        return manager
     }
 }
 

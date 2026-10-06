@@ -29,6 +29,20 @@ extension WebViewController {
 
         NotificationCenter.default.addObserver(
             self,
+            selector: #selector(sceneDidEnterBackground(_:)),
+            name: UIScene.didEnterBackgroundNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(sceneDidActivate(_:)),
+            name: UIScene.didActivateNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
             selector: #selector(serverVersionDidChange(_:)),
             name: HomeAssistantAPI.serverVersionDidChangeNotification,
             object: nil
@@ -67,6 +81,11 @@ extension WebViewController {
     static let loadActiveURLStaleInterval: TimeInterval = 10
 
     @objc func loadActiveURLIfNeeded() {
+        guard webView != nil else {
+            Current.Log.info("not loading, web view not built yet")
+            return
+        }
+
         // After a log out the web view deliberately sits on a blank page behind the logged-out empty
         // state, which every caller here would read as "wrong URL loaded" and correct by navigating
         // back into the server -- taking the empty state down and re-authenticating the frontend with
@@ -270,10 +289,16 @@ extension WebViewController {
     /// the server again recovers a web view stuck on a broken page.
     func navigateToRoot() {
         Task { @MainActor [weak self] in
-            guard let self, let webviewURL = await server.webviewURL() else { return }
+            guard let self else { return }
+            guard let webviewURL = await server.webviewURL() else {
+                Current.Log.error("Cannot navigate to root, \(server.identifier.rawValue) has no active URL")
+                showNoActiveURLError()
+                return
+            }
             let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
             Current.Log.info("navigating web view to root: \(target.path)")
             loadViewIfNeeded()
+            overlayState?.externalNavigationRequests.send()
             load(request: URLRequest(url: target))
         }
     }

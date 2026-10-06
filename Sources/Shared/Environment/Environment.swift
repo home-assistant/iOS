@@ -265,6 +265,11 @@ public class AppEnvironment {
         EntityComponentIconsService.shared
     }
 
+    /// The frontend theme captured from the web view, for drawing native screens in the user's colors.
+    public var frontendTheme: () -> FrontendThemeProviderProtocol = {
+        FrontendThemeProvider.shared
+    }
+
     public var calendarsModel: () -> HACalendarsModelProtocol = {
         HACalendarsModel.shared
     }
@@ -438,6 +443,8 @@ public class AppEnvironment {
 
     /// Dispatchque local notifications (From the App to the App, not from Home Assistant)
     public var notificationDispatcher: LocalNotificationDispatcherProtocol = LocalNotificationDispatcher()
+
+    public var forceCloseWarningManager = ForceCloseWarningManager()
 
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()

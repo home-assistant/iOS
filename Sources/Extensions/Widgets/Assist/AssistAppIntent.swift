@@ -25,6 +25,26 @@ struct AssistAppIntent: AppIntent {
     )
     var withVoice: Bool
 
+    #if !os(watchOS) && !WIDGET_EXTENSION
+    /// Split out of `perform()` so the frontend hand-off can be exercised on its own: a foreground
+    /// intent traps when its `perform()` runs outside the App Intents runtime.
+    static func openAssist(serverId: String, pipelineId: String, withVoice: Bool) {
+        DispatchQueue.main.async {
+            guard let server = Current.servers.all
+                .first(where: { $0.identifier.rawValue == serverId }) ?? Current
+                .servers.all.first else { return }
+            Current.sceneManager.webViewControllerPromise
+                .done { webViewController in
+                    webViewController.webViewExternalMessageHandler.showAssist(
+                        server: server,
+                        pipeline: pipelineId,
+                        autoStartRecording: withVoice
+                    )
+                }
+        }
+    }
+    #endif
+
     func perform() async throws -> some IntentResult {
         #if os(watchOS)
         // The watch has no web frontend: Assist is its own full-screen cover, owned by the home
@@ -39,20 +59,7 @@ struct AssistAppIntent: AppIntent {
             pipelineId: pipeline.pipelineId ?? ""
         )
         #elseif !WIDGET_EXTENSION
-        DispatchQueue.main.async {
-            guard let server = Current.servers.all
-                .first(where: { $0.identifier.rawValue == pipeline.serverId }) ?? Current
-                .servers.all.first else { return }
-            Current.sceneManager.webViewControllerPromise
-                .done { webViewController in
-                    webViewController.webViewExternalMessageHandler.showAssist(
-                        server: server,
-                        pipeline: pipeline.pipelineId ?? "",
-                        autoStartRecording: withVoice,
-                        focusInputOnAppear: false
-                    )
-                }
-        }
+        Self.openAssist(serverId: pipeline.serverId, pipelineId: pipeline.pipelineId ?? "", withVoice: withVoice)
         #endif
         return .result()
     }

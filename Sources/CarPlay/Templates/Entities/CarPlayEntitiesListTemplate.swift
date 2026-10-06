@@ -12,6 +12,9 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
+    /// Set only by tests, which cannot construct a `CPInterfaceController`.
+    var alertPresenterOverride: CarPlayAlertPresenting?
+    var alertPresenter: CarPlayAlertPresenting? { alertPresenterOverride ?? interfaceController }
     /// Control screen pushed for domains that have one (climate); forwarded lifecycle and state
     /// events like the domains/areas tabs forward to this list.
     private var childTemplateProvider: (any CarPlayTemplateProvider)?
@@ -75,7 +78,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         CarPlayLockConfirmation.show(
             entityName: entity.attributes.friendlyName ?? entity.entityId,
             currentState: entity.state,
-            interfaceController: interfaceController,
+            interfaceController: alertPresenter,
             completion: completion
         )
     }
@@ -83,6 +86,11 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private func listItems(entityProviders: [CarPlayEntityListItem]) -> [CPListItem] {
         entityProviders.map { entityProvider in
             entityProvider.template.handler = { [weak self] _, completion in
+                // A repeat tap while the first call is still in flight would run the action twice.
+                guard !entityProvider.isOperationInFlight else {
+                    completion()
+                    return
+                }
                 self?.viewModel.handleEntityTap(
                     entity: entityProvider.entity,
                     executionStarted: { [weak self] in
@@ -124,6 +132,11 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
                     return
                 }
                 let selectedProvider = rowProviders[index]
+                // A repeat tap while the first call is still in flight would run the action twice.
+                guard !selectedProvider.isOperationInFlight else {
+                    completion()
+                    return
+                }
                 self?.viewModel.handleEntityTap(
                     entity: selectedProvider.entity,
                     executionStarted: { [weak self] in

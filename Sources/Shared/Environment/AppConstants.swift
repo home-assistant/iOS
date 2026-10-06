@@ -153,6 +153,28 @@ public enum AppConstants {
             .withWidgetAuthenticity()
     }
 
+    /// Where tapping an area lands: the area's own view on the dashboard that has one, which is
+    /// what the frontend opens when an area is tapped.
+    ///
+    /// `dashboardPath` is the dashboard that owns those views — see
+    /// `AppPanel.areasDashboardPath(serverId:)`; the view under it is `areas-<area_id>`, the path
+    /// `computeAreaPath` builds in home-assistant/frontend. A server that has no such dashboard
+    /// passes `nil`, and the area opens on its Settings page instead of nowhere.
+    public static func openAreaDeeplinkURL(areaId: String, serverId: String, dashboardPath: String?) -> URL? {
+        guard !areaId.isEmpty else { return nil }
+        let path: String = {
+            guard let dashboardPath, !dashboardPath.isEmpty else {
+                return "config/areas/area/\(areaId)"
+            }
+            return "\(dashboardPath)/areas-\(areaId)"
+        }()
+        return AppConstants.navigateDeeplinkURL(
+            path: path,
+            serverId: serverId,
+            avoidUnnecessaryReload: true
+        )?.withWidgetAuthenticity()
+    }
+
     public static func openEntityDeeplinkURL(entityId: String, serverId: String) -> URL? {
         AppConstants.navigateDeeplinkURL(
             path: "",
@@ -179,22 +201,37 @@ public enum AppConstants {
         return components.url
     }
 
-    /// Where tapping an entity lands: the native camera player for cameras, the frontend's more-info
-    /// dialog for everything else.
-    public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {
-        if Domain(entityId: entityId) == .camera {
-            return openCameraDeeplinkURL(entityId: entityId, serverId: serverId)
-        }
-        return openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
+    public static func pageDeeplinkURL(path: String) -> URL? {
+        URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)")
     }
 
-    /// The deep link host that opens the native camera player.
-    public static let cameraDeeplinkHost = "camera"
+    public static func pageDeeplinkURL(path: String, serverName: String) -> URL? {
+        pageDeeplinkURL(path: path)?.appending(queryItems: [URLQueryItem(name: "server", value: serverName)])
+    }
 
-    public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
-        URL(
-            string: "\(AppConstants.deeplinkURL.absoluteString)\(cameraDeeplinkHost)/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
-        )
+    /// Everything that survives unescaped in the `url` value of an NFC tag link: the unreserved set
+    /// from RFC 3986, so the deep link's own separators cannot be mistaken for the outer URL's.
+    private static let nfcTagURLAllowed = CharacterSet(
+        charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+    )
+
+    /// The URL an NFC tag carries so that scanning it opens `deeplink` in the app.
+    ///
+    /// iPhone background tag reading only routes the `https` universal links the app has claimed, so a
+    /// bare `homeassistant://` URL written to a tag is ignored on a scan. A deep link travels on a tag
+    /// wrapped in the app's documented NFC universal link instead, which `TagManager.handle(userActivity:)`
+    /// unwraps back into the deep link when the scan reaches the app.
+    public static func nfcTagURL(deeplink: URL) -> URL? {
+        guard let encoded = deeplink.absoluteString
+            .addingPercentEncoding(withAllowedCharacters: nfcTagURLAllowed) else {
+            return nil
+        }
+        return URL(string: "https://www.home-assistant.io/ios/nfc/?url=\(encoded)")
+    }
+
+    /// Where tapping an entity lands: the frontend's more-info dialog, cameras included.
+    public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {
+        openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
     }
 
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
@@ -467,6 +504,8 @@ public extension Version {
     static let frontendLoadedExternalBus: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
     /// Frontend handles safe-area insets itself from 2026.8.0, so the app can display edge-to-edge by default.
     static let canDisplayEdgeToEdge: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
+    /// Core's `usage_prediction/common_control` accepts a `limit` from 2026.10.0, and rejects it before.
+    static let usagePredictionCommonControlLimit: Version = .init(major: 2026, minor: 10, patch: 0, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

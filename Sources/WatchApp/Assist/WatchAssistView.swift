@@ -54,7 +54,17 @@ struct WatchAssistView: View {
                     }
                 })
             })
-            .buttonStyle(.plain)
+            // Touch either taps or holds: a tap starts a recording and the next tap sends it, while a
+            // hold records until the finger lifts. A press that turns into a scroll of the chat is
+            // dropped. The button's action is left to the Double Tap hand gesture below, which has
+            // no finger to lift and so keeps the tap-to-send flow.
+            .buttonStyle(WatchPushToTalkButtonStyle(onPhaseChange: { phase in
+                switch phase {
+                case let .began(time): viewModel.beginPushToTalk(at: time)
+                case let .released(time): viewModel.endPushToTalk(at: time)
+                case .cancelled: viewModel.cancelPushToTalk()
+                }
+            }))
             .modify { view in
                 if #available(watchOS 11, *) {
                     view.handGestureShortcut(.primaryAction)
@@ -64,6 +74,7 @@ struct WatchAssistView: View {
             }
         }
         .animation(.easeInOut, value: viewModel.state)
+        .animation(.easeInOut, value: viewModel.recordingSubmission)
         .onAppear {
             // Always re-subscribe: `endRoutine()` (onDisappear — e.g. pushing the volume screen)
             // unsubscribes the view model from responses, and without this the screen comes back
@@ -143,9 +154,9 @@ struct WatchAssistView: View {
     @ViewBuilder
     private var micButton: some View {
         if ![.loading, .recording].contains(viewModel.state), !viewModel.showChatLoader {
-            HStack(spacing: DesignSystem.Spaces.one) {
+            HStack(spacing: DesignSystem.Spaces.micro) {
                 if viewModel.assistService.deviceReachable {
-                    Text(verbatim: L10n.Assist.Watch.MicButton.title)
+                    Text(verbatim: L10n.Assist.Watch.MicButton.TapOrHold.title)
                     Image(systemSymbol: .micFill)
                 } else {
                     Image(systemSymbol: .iphoneSlash)
@@ -186,17 +197,21 @@ struct WatchAssistView: View {
             .clipShape(Circle())
     }
 
-    @ViewBuilder
+    // Not a button of its own: the tap that sends the recording belongs to the push-to-talk screen
+    // around it, which would otherwise compete with it for the touch.
     private var micRecording: some View {
-        Button(action: {
-            viewModel.assist()
-        }, label: {
-            VStack(spacing: DesignSystem.Spaces.one) {
-                AssistVoiceOrbView(
-                    level: viewModel.audioLevel,
-                    size: .watch,
-                    accessibilityLabel: L10n.Assist.Button.Listening.title
-                )
+        VStack(spacing: DesignSystem.Spaces.one) {
+            if viewModel.recordingSubmission == .release {
+                releaseToSendPill
+                    .transition(.opacity)
+                    .padding(.bottom, DesignSystem.Spaces.two)
+            }
+            AssistVoiceOrbView(
+                level: viewModel.audioLevel,
+                size: .watch,
+                accessibilityLabel: L10n.Assist.Button.Listening.title
+            )
+            if viewModel.recordingSubmission == .tap {
                 VStack(spacing: .zero) {
                     Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
                         .font(.system(size: Constants.micRecordingTextFontSize))
@@ -205,8 +220,7 @@ struct WatchAssistView: View {
                         .font(.footnote.bold())
                 }
             }
-        })
-        .buttonStyle(.plain)
+        }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .modify {
@@ -216,6 +230,23 @@ struct WatchAssistView: View {
                 $0.background(.black.opacity(0.5))
             }
         }
+    }
+
+    private var releaseToSendPill: some View {
+        Text(verbatim: L10n.Watch.Assist.Button.ReleaseToSend.title)
+            .font(.footnote.bold())
+            .foregroundStyle(.white)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .padding(.vertical, DesignSystem.Spaces.half)
+            .modify { view in
+                if #available(watchOS 26.0, *) {
+                    view.glassEffect(.regular, in: .capsule)
+                } else {
+                    view
+                        .background(Color.gray.opacity(0.3))
+                        .clipShape(Capsule())
+                }
+            }
     }
 
     private var chatList: some View {
@@ -246,17 +277,22 @@ struct WatchAssistView: View {
     WatchAssistView(viewModel: .preview)
 }
 
-#Preview("Recording") {
-    WatchAssistView(viewModel: .previewRecording)
+#Preview("Recording, tap to send") {
+    WatchAssistView(viewModel: .previewRecording(submission: .tap))
+}
+
+#Preview("Recording, release to send") {
+    WatchAssistView(viewModel: .previewRecording(submission: .release))
 }
 
 private extension WatchAssistViewModel {
-    static var previewRecording: WatchAssistViewModel {
+    static func previewRecording(submission: RecordingSubmission) -> WatchAssistViewModel {
         let viewModel = WatchAssistViewModel.preview
         // The preview recorder does nothing, so an unreachable phone would be the only thing to move
         // the session out of the state this preview is here to show.
         viewModel.assistService.deviceReachable = true
         viewModel.state = .recording
+        viewModel.recordingSubmission = submission
         viewModel.audioLevel = 0.6
         return viewModel
     }
@@ -283,6 +319,8 @@ private final class PreviewWatchAudioRecorder: ObservableObject, WatchAudioRecor
     func startRecording() {}
 
     func stopRecording() {}
+
+    func cancelRecording() {}
 }
 
 private final class PreviewAudioPlayer: AudioPlayerProtocol {

@@ -99,6 +99,6 @@ CLANG_ANALYZER_NONNULL = YES
 CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES
 GCC_NO_COMMON_BLOCKS = YES
 
-// Add ThreadNetwork weak reference for iOS and macOS
-OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) -weak_framework ThreadNetwork
-OTHER_LDFLAGS[sdk=macosx*] = $(inherited) -weak_framework ThreadNetwork
+// Add ThreadNetwork and MatterSupport weak references for iOS and macOS (MatterSupport is macOS 14+ on Catalyst)
+OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) -weak_framework ThreadNetwork -weak_framework MatterSupport
+OTHER_LDFLAGS[sdk=macosx*] = $(inherited) -weak_framework ThreadNetwork -weak_framework MatterSupport

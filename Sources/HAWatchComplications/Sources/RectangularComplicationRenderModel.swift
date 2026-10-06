@@ -28,6 +28,11 @@ public struct RectangularComplicationRenderModel {
     public var textColor: Color?
     /// Per-slot color override for the bottom text; nil falls back to `textColor`.
     public var bottomTextColor: Color?
+    /// Per-slot color overrides for the title and value; nil falls back to `textColor`.
+    public var titleColor: Color?
+    public var valueColor: Color?
+    /// Whether the value rides the gauge as its thumb, or sits as its own text line above a plain bar.
+    public var valueRidesGauge: Bool
 
     public init(
         iconImage: Image? = nil,
@@ -45,7 +50,10 @@ public struct RectangularComplicationRenderModel {
         showsBottomText: Bool = false,
         tint: Color = .complicationDefaultTint,
         textColor: Color? = nil,
-        bottomTextColor: Color? = nil
+        bottomTextColor: Color? = nil,
+        titleColor: Color? = nil,
+        valueColor: Color? = nil,
+        valueRidesGauge: Bool = true
     ) {
         self.iconImage = iconImage
         self.showsIcon = showsIcon
@@ -63,5 +71,8 @@ public struct RectangularComplicationRenderModel {
         self.tint = tint
         self.textColor = textColor
         self.bottomTextColor = bottomTextColor
+        self.titleColor = titleColor
+        self.valueColor = valueColor
+        self.valueRidesGauge = valueRidesGauge
     }
 }

@@ -15,7 +15,17 @@ struct ManageStorageView: View {
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
-                image: .harddiskIcon,
+                image: nil,
+                headerImageAlternativeView: AnyView(
+                    Image(systemSymbol: .internaldrive)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .foregroundStyle(Color.haPrimary)
+                        // Decorative: the title and subtitle underneath already say what the
+                        // screen is, so VoiceOver reading out the symbol's name only repeats it.
+                        .accessibilityHidden(true)
+                ),
                 title: L10n.Settings.Debugging.ManageStorage.title,
                 subtitle: L10n.Settings.Debugging.ManageStorage.subtitle
             )
@@ -63,9 +73,6 @@ struct ManageStorageView: View {
                 Section {
                     ForEach(section.items) { item in
                         HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
-                            Image(systemSymbol: item.id.icon)
-                                .frame(width: 22, alignment: .center)
-                                .foregroundStyle(item.isDeletable ? Color.haPrimary : Color.secondary)
                             VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                                 Text(item.title)
                                 Text(item.explanation)

@@ -1,4 +1,3 @@
-import SFSafeSymbols
 import Shared
 import StoreKit
 import SwiftUI
@@ -13,6 +12,7 @@ struct WatchConfigurationView: View {
     @State private var addItemDestination: WatchAddItemDestination?
     @State private var showAddFolderSheet = false
     @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
+    @State private var isEditingItems = false
 
     /// Whether the screen brings its own `NavigationStack`. Off by default because the screen is
     /// normally pushed (from Settings), and nesting a navigation container inside a pushed destination
@@ -157,7 +157,7 @@ struct WatchConfigurationView: View {
     }
 
     private var itemsSection: some View {
-        Section(L10n.Watch.Configuration.Items.title) {
+        Section {
             ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 makeListItem(item: item)
             }
@@ -168,6 +168,11 @@ struct WatchConfigurationView: View {
                 viewModel.deleteItem(at: indexSet)
             }
             addItemMenu
+        } header: {
+            ReorderableSectionHeader(
+                title: L10n.Watch.Configuration.Items.title,
+                isEditing: $isEditingItems
+            )
         }
     }
 
@@ -241,18 +246,8 @@ struct WatchConfigurationView: View {
         }
     }
 
-    private func makeListItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-        return makeListItemRow(item: item, info: itemInfo)
-    }
-
     @ViewBuilder
-    private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
+    private func makeListItem(item: MagicItem) -> some View {
         if item.type == .folder {
             NavigationLink {
                 FolderDetailView(
@@ -261,13 +256,13 @@ struct WatchConfigurationView: View {
                 )
                 .environment(\.colorScheme, .dark)
             } label: {
-                itemRow(item: item, info: info)
+                itemRow(item: item)
             }
         } else if item.type == .complication {
             // Nothing to customize: the row on the watch renders from the complication's own
             // configuration, so a name or color set here would be silently ignored. Edit the
             // complication itself under Complications instead.
-            itemRow(item: item, info: info)
+            itemRow(item: item)
         } else if item.type == .assistPrompt {
             NavigationLink {
                 AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
@@ -275,7 +270,7 @@ struct WatchConfigurationView: View {
                 }
                 .environment(\.colorScheme, .dark)
             } label: {
-                itemRow(item: item, info: info)
+                itemRow(item: item)
             }
         } else {
             NavigationLink {
@@ -284,58 +279,17 @@ struct WatchConfigurationView: View {
                 }
                 .environment(\.colorScheme, .dark)
             } label: {
-                itemRow(item: item, info: info)
+                itemRow(item: item)
             }
         }
     }
 
-    private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: image(for: item, itemInfo: info, color: .haPrimary))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name(info: info))
-                // Assist-prompt items show the prompt that will be sent; everything else shows the
-                // Server • Area • Device context line.
-                if let contextSubtitle = promptSubtitle(for: item) ?? info.contextSubtitle {
-                    Text(contextSubtitle)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemSymbol: .line3Horizontal)
-                .foregroundStyle(.gray)
-        }
-    }
-
-    private func promptSubtitle(for item: MagicItem) -> String? {
-        guard item.type == .assistPrompt,
-              let assistPrompt = item.assistPrompt?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !assistPrompt.isEmpty else {
-            return nil
-        }
-
-        return assistPrompt
-    }
-
-    private func image(
-        for item: MagicItem,
-        itemInfo: MagicItem.Info,
-        color: UIColor? = nil
-    ) -> UIImage {
-        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-        let resolvedColor: UIColor = if let color {
-            color
-        } else if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
-            .init(hex: iconColor)
-        } else {
-            .haPrimary
-        }
-
-        return icon.image(
-            ofSize: .init(width: 18, height: 18),
-            color: resolvedColor
+    private func itemRow(item: MagicItem) -> some View {
+        MagicItemConfigurationRow(
+            item: item,
+            info: viewModel.magicItemInfo(for: item),
+            iconColor: .haPrimary,
+            isReorderIndicatorVisible: isEditingItems
         )
     }
 }

@@ -8,17 +8,25 @@ import XCTest
 class OnboardingAuthTests: XCTestCase {
     private var auth: OnboardingAuth!
     private var instance: DiscoveredHomeAssistant!
+    private var previousCurrentNetworkState: (() async -> NetworkState)!
 
     override func setUp() {
         super.setUp()
 
         auth = OnboardingAuth()
+        previousCurrentNetworkState = Current.connectivity.currentNetworkState
 
         Current.servers = FakeServerManager()
 
         var instance = DiscoveredHomeAssistant(manualURL: URL(string: "https://external.homeassistant:8123")!)
         instance.internalURL = URL(string: "https://internal.homeassistant:8123")!
         self.instance = instance
+    }
+
+    override func tearDown() {
+        Current.connectivity.currentNetworkState = previousCurrentNetworkState
+
+        super.tearDown()
     }
 
     func testPlainSetup() {
@@ -107,6 +115,115 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertTrue(Current.servers.all.isEmpty)
     }
 
+    func testServerIdentifierUsesReportedInstanceID() {
+        let info = with(ServerInfo.fake()) { $0.instanceID = "instance-1" }
+
+        let identifier = OnboardingAuth.serverIdentifier(
+            for: info,
+            fallback: "fallback-identifier",
+            existingServers: []
+        )
+
+        XCTAssertEqual(identifier, "instance-1")
+    }
+
+    func testServerIdentifierFallsBackWhenNoInstanceIDIsReported() {
+        let unreported = ServerInfo.fake()
+        let empty = with(ServerInfo.fake()) { $0.instanceID = "" }
+
+        XCTAssertEqual(
+            OnboardingAuth.serverIdentifier(for: unreported, fallback: "fallback-identifier", existingServers: []),
+            "fallback-identifier"
+        )
+        XCTAssertEqual(
+            OnboardingAuth.serverIdentifier(for: empty, fallback: "fallback-identifier", existingServers: []),
+            "fallback-identifier"
+        )
+    }
+
+    /// Re-onboarding a server the app already has must not rename it: widgets, shortcuts and Siri
+    /// configurations hold the existing identifier in stores this app cannot rewrite.
+    func testServerIdentifierKeepsTheIdentifierOfAServerWithTheSameInstanceID() {
+        let existing = Server.fake(identifier: "server-from-an-older-install") {
+            $0.instanceID = "instance-1"
+        }
+        let info = with(ServerInfo.fake()) { $0.instanceID = "instance-1" }
+
+        let identifier = OnboardingAuth.serverIdentifier(
+            for: info,
+            fallback: "fallback-identifier",
+            existingServers: [existing]
+        )
+
+        XCTAssertEqual(identifier, "server-from-an-older-install")
+    }
+
+    func testFailureAfterOverwritingAnExistingServerRestoresIt() throws {
+        let uuid = try XCTUnwrap(instance.uuid)
+        let identifier = Identifier<Server>(rawValue: uuid)
+        let existingInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Server from before onboarding"
+            $0.instanceID = "instance-1"
+        }
+        Current.servers.add(identifier: identifier, serverInfo: existingInfo)
+
+        let result = auth(postComplete: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result)) { error in
+            XCTAssertEqual(error as? TestError, .specific)
+        }
+
+        XCTAssertEqual(Current.servers.all.count, 1)
+        XCTAssertEqual(Current.servers.server(for: identifier)?.info, existingInfo)
+    }
+
+    /// A server added next to an existing one is asked what it should receive at the end of
+    /// onboarding, so it must not be handed this device's location or the sensors the user switched
+    /// on for another one on its way through registration.
+    func testAdditionalServerIsOnboardedSendingNothing() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        Current.servers.add(
+            identifier: "a-server-from-before",
+            serverInfo: with(ServerInfo.fake()) { $0.instanceID = "another-instance" }
+        )
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.info.setting(for: .sensorPrivacy), ServerSensorPrivacy.none)
+        XCTAssertEqual(server.info.setting(for: .locationPrivacy), ServerLocationPrivacy.never)
+    }
+
+    /// The app's first server answers the same questions through the location permission screen and
+    /// starts with nothing switched on, so it keeps the defaults.
+    func testFirstServerIsOnboardedWithTheDefaultPrivacySettings() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.info.setting(for: .sensorPrivacy), ServerSensorPrivacy.all)
+        XCTAssertEqual(server.info.setting(for: .locationPrivacy), ServerLocationPrivacy.exact)
+    }
+
+    /// Re-authenticating is not a new server and shows no privacy step, so the choices the server
+    /// already carries survive it rather than being reset to the holdback above.
+    func testReauthenticatingAServerKeepsItsPrivacySettings() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let uuid = try XCTUnwrap(instance.uuid)
+        let identifier = Identifier<Server>(rawValue: uuid)
+        Current.servers.add(
+            identifier: identifier,
+            serverInfo: with(ServerInfo.fake()) {
+                $0.setSetting(value: ServerSensorPrivacy.all, for: .sensorPrivacy)
+                $0.setSetting(value: ServerLocationPrivacy.zoneOnly, for: .locationPrivacy)
+            }
+        )
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.identifier, identifier)
+        XCTAssertEqual(server.info.setting(for: .sensorPrivacy), ServerSensorPrivacy.all)
+        XCTAssertEqual(server.info.setting(for: .locationPrivacy), ServerLocationPrivacy.zoneOnly)
+    }
+
     func testCancelledLogin() throws {
         let result = auth(
             includeExternal: false, // cancelled should not attempt external
@@ -148,7 +265,7 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
 
-    func testSuccessfulWithInternalAndExternalAndInternalSucceedsWithSSID() throws {
+    func testSuccessfulWithInternalAndExternalAndInternalSucceedsDoesNotRecordCurrentSSID() throws {
         Current.connectivity.currentNetworkState = {
             NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
         }
@@ -165,8 +282,9 @@ class OnboardingAuthTests: XCTestCase {
         let connectionInfo = server.info.connection
         XCTAssertEqual(connectionInfo.address(for: .internal), instance.internalURL)
         XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
-        XCTAssertEqual(connectionInfo.internalSSIDs, ["unit_test"])
-        XCTAssertEqual(connectionInfo.internalHardwareAddresses, nil)
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertEqual(connectionInfo.overrideActiveURLType, .internal)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
@@ -209,6 +327,34 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertTrue(connectionInfo.useCloud)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
+    }
+
+    func testSuccessfulWithOnlyExternalDoesNotRecordCurrentSSID() throws {
+        instance.internalURL = nil
+        Current.connectivity.currentNetworkState = {
+            NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
+        }
+
+        let server = try hang(auth())
+
+        let connectionInfo = server.info.connection
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertNil(connectionInfo.overrideActiveURLType)
+    }
+
+    func testSuccessfulWithInternalAndExternalAndInternalFailsDoesNotRecordCurrentSSID() throws {
+        Current.connectivity.currentNetworkState = {
+            NetworkState(ssid: "unit_test", hardwareAddress: "unit_test_addr")
+        }
+
+        let server = try hang(auth(internalLoginResult: .init(error: TestError.specific)))
+
+        let connectionInfo = server.info.connection
+        XCTAssertNil(connectionInfo.address(for: .internal))
+        XCTAssertNil(connectionInfo.internalSSIDs)
+        XCTAssertNil(connectionInfo.internalHardwareAddresses)
+        XCTAssertNil(connectionInfo.overrideActiveURLType)
     }
 
     func testInternalPortRedirectIsAdopted() throws {

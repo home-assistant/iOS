@@ -1,3 +1,5 @@
+import AppIntents
+import GRDB
 @testable import HomeAssistant
 import Improv_iOS
 import PromiseKit
@@ -26,12 +28,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         mockWebViewController = nil
     }
 
+    /// Settings goes through the web view the message came from, so it opens in that window alone.
     @MainActor func testHandleExternalMessageConfigScreenShowShowSettings() {
-        let coordinator = MockAppCoordinator()
-        let settingsShown = expectation(description: "showSettings called")
-        coordinator.onShowSettings = { settingsShown.fulfill() }
-        Current.sceneManager.registerAppCoordinator(coordinator)
-
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -40,9 +38,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ]
         sut.handleExternalMessage(dictionary)
 
-        wait(for: [settingsShown], timeout: 1)
-        XCTAssertTrue(coordinator.showSettingsCalled)
-        XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
+        XCTAssertTrue(mockWebViewController.showSettingsCalled)
+        XCTAssertTrue(mockWebViewController.showSettingsPushedOntoNavigationStack)
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
@@ -55,6 +52,83 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         sut.handleExternalMessage(dictionary)
 
         XCTAssertEqual(mockWebViewController.lastEvaluatedJavaScriptScript, "notifyThemeColors()")
+    }
+
+    /// Scripted focus only raises the keyboard when the web view holds keyboard focus, which a tap on the
+    /// frontend gives it but a tap on the native tab bar does not.
+    @MainActor func testHandleExternalMessageFocusElementMakesTheWebViewFirstResponderBeforeFocusing() {
+        sut.handleExternalMessage(focusElementMessage)
+
+        XCTAssertTrue(mockWebViewController.makeWebViewFirstResponderCalled)
+        XCTAssertEqual(mockWebViewController.scriptsRunBeforeMakingWebViewFirstResponder, 0)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+        XCTAssertTrue(mockWebViewController.lastEvaluatedJavaScriptScript?.contains("'combo-box'") == true)
+    }
+
+    /// The frontend asks for focus while it is still rendering the element, so a miss is retried until it is there.
+    @MainActor func testHandleExternalMessageFocusElementRetriesUntilTheElementExists() {
+        sut.handleExternalMessage(focusElementMessage)
+        let retry = expectation(description: "retry")
+        mockWebViewController.evaluateJavaScriptExpectation = retry
+
+        mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
+
+        wait(for: [retry], timeout: 2)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 2)
+    }
+
+    @MainActor func testHandleExternalMessageFocusElementStopsOnceTheElementIsFocused() {
+        sut.handleExternalMessage(focusElementMessage)
+        let noRetry = expectation(description: "no retry")
+        noRetry.isInverted = true
+        mockWebViewController.evaluateJavaScriptExpectation = noRetry
+
+        mockWebViewController.lastEvaluatedJavaScriptCompletion?(true, nil)
+
+        wait(for: [noRetry], timeout: WebViewExternalMessageHandler.elementFocusRetryInterval * 2)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+    }
+
+    @MainActor func testHandleExternalMessageFocusElementGivesUpAfterTheLastAttempt() {
+        sut.handleExternalMessage(focusElementMessage)
+        let noRetry = expectation(description: "no retry")
+        noRetry.isInverted = true
+        for _ in 1 ..< WebViewExternalMessageHandler.elementFocusAttempts {
+            let retry = expectation(description: "retry")
+            mockWebViewController.evaluateJavaScriptExpectation = retry
+            mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
+            wait(for: [retry], timeout: 2)
+        }
+        mockWebViewController.evaluateJavaScriptExpectation = noRetry
+
+        mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
+
+        wait(for: [noRetry], timeout: WebViewExternalMessageHandler.elementFocusRetryInterval * 2)
+        XCTAssertEqual(
+            mockWebViewController.evaluateJavaScriptCallCount,
+            WebViewExternalMessageHandler.elementFocusAttempts
+        )
+    }
+
+    /// A focus the frontend already placed on the element is redone, since only the app's own focus brings the
+    /// keyboard.
+    func testFocusElementScriptRefocusesAnElementThatAlreadyHasFocus() {
+        let script = WebViewExternalMessageHandler.focusElementScript(elementId: "combo-box")
+
+        XCTAssertTrue(script.contains("findElementInShadowDOM('combo-box')"))
+        XCTAssertTrue(script.contains("active.blur();"))
+        XCTAssertTrue(script.contains("element.focus();"))
+        XCTAssertTrue(script.contains("if (!element) return false;"))
+    }
+
+    private var focusElementMessage: [String: Any] {
+        [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "focus_element",
+            "payload": ["element_id": "combo-box"],
+        ]
     }
 
     @MainActor func testHandleExternalMessageFrontendLoadedMarksFrontendLoaded() {
@@ -246,6 +320,49 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(controller.modalPresentationStyle, .fullScreen)
     }
 
+    @MainActor func testHandleExternalMessageShowAssistZoomsOutOfTheTappedSourceOnce() throws {
+        guard #available(iOS 18.0, *) else {
+            throw XCTSkip("Zoom transitions require iOS 18")
+        }
+        mockWebViewController.assistZoomAnchorView = nil
+        mockWebViewController.pendingAssistZoomSourceView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "assist/show",
+        ]
+
+        sut.handleExternalMessage(dictionary)
+
+        let controller = try XCTUnwrap(mockWebViewController.overlayedController)
+        XCTAssertNotNil(controller.preferredTransition)
+        XCTAssertNil(mockWebViewController.pendingAssistZoomSourceView)
+    }
+
+    @MainActor func testHandleExternalMessageShowAssistPresentsAPlainSheetWhenThereIsNoSpotToZoomFrom() throws {
+        mockWebViewController.assistZoomAnchorView = AssistZoomAnchorView(frame: .zero)
+        mockWebViewController.presentsNextAssistAsSheet = true
+
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "assist/show",
+        ]
+
+        sut.handleExternalMessage(dictionary)
+
+        let controller = try XCTUnwrap(mockWebViewController.overlayedController)
+        XCTAssertNotEqual(controller.modalPresentationStyle, .fullScreen)
+        XCTAssertEqual(controller.modalTransitionStyle, .coverVertical)
+        XCTAssertFalse(mockWebViewController.presentsNextAssistAsSheet)
+        if #available(iOS 18.0, *) {
+            XCTAssertNil(controller.preferredTransition)
+        }
+    }
+
     @MainActor func testHandleExternalMessageShowAssistCrossDissolvesWithoutAnchor() throws {
         mockWebViewController.assistZoomAnchorView = nil
 
@@ -419,5 +536,151 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         wait(for: [noFurtherSend], timeout: 0.5)
         XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+    }
+
+    /// What the more-info dialog is showing is what a spoken "this" has to mean, so the handler hands
+    /// it straight to the web view that will publish it.
+    @MainActor func testHandleExternalMessageMoreInfoOpenedRecordsTheEntity() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/opened",
+            "payload": ["entity_id": "light.kitchen"],
+        ])
+
+        XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
+    }
+
+    @MainActor func testHandleExternalMessageMoreInfoClosedForgetsTheEntity() {
+        mockWebViewController.setOnscreenEntity(entityId: "light.kitchen")
+
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/closed",
+            "payload": ["entity_id": "light.kitchen"],
+        ])
+
+        XCTAssertNil(mockWebViewController.onscreenEntityId)
+    }
+
+    @MainActor func testHandleExternalMessageMoreInfoOpenedWithoutAnEntityIsIgnored() {
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/opened",
+            "payload": [:],
+        ])
+
+        XCTAssertNil(mockWebViewController.onscreenEntityId)
+    }
+
+    /// A close that names nothing cannot say which entity it closed, so the one on screen stands
+    /// rather than being dropped on a guess.
+    @MainActor func testHandleExternalMessageMoreInfoClosedWithoutAnEntityIsIgnored() {
+        mockWebViewController.setOnscreenEntity(entityId: "light.kitchen")
+
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "more_info/closed",
+            "payload": [:],
+        ])
+
+        XCTAssertEqual(mockWebViewController.onscreenEntityId, "light.kitchen")
+    }
+
+    /// A control the frontend reports is donated as the intent that would repeat it, against the
+    /// server of the web view it came from.
+    @MainActor func testHandleExternalMessageEntityControlledDonatesTheMatchingIntent() async throws {
+        try await withSeededDatabase(entityId: "light.kitchen") { server in
+            let donated = expectation(description: "donated")
+            var intents: [any AppIntent] = []
+            sut = WebViewExternalMessageHandler(
+                improvManager: ImprovManager.shared,
+                entityControlDonation: .init { intent in
+                    intents.append(intent)
+                    donated.fulfill()
+                }
+            )
+            mockWebViewController.server = server
+            sut.webViewController = mockWebViewController
+
+            sut.handleExternalMessage([
+                "id": 1,
+                "message": "",
+                "command": "",
+                "type": "entity/controlled",
+                "payload": [
+                    "entity_ids": ["light.kitchen"],
+                    "domain": "light",
+                    "service": "turn_on",
+                ],
+            ])
+
+            await fulfillment(of: [donated], timeout: 5)
+            let intent = try XCTUnwrap(intents.first as? TurnOnOffEntityAppIntent)
+            XCTAssertEqual(intent.action, .on)
+            XCTAssertEqual(intent.entity.entityId, "light.kitchen")
+            XCTAssertEqual(intent.entity.serverId, server.identifier.rawValue)
+        }
+    }
+
+    @MainActor func testHandleExternalMessageEntityControlledWithoutAServiceDonatesNothing() async throws {
+        let donated = expectation(description: "donated")
+        donated.isInverted = true
+        sut = WebViewExternalMessageHandler(
+            improvManager: ImprovManager.shared,
+            entityControlDonation: .init { _ in donated.fulfill() }
+        )
+        sut.webViewController = mockWebViewController
+
+        sut.handleExternalMessage([
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "entity/controlled",
+            "payload": ["entity_ids": ["light.kitchen"], "domain": "light"],
+        ])
+
+        await fulfillment(of: [donated], timeout: 0.5)
+    }
+
+    /// Points `Current` at an in-memory database holding one entity of a fake server, and restores it.
+    private func withSeededDatabase(
+        entityId: String,
+        perform work: @MainActor (Server) async throws -> Void
+    ) async throws {
+        let previousDatabase = Current.database
+        let previousServers = Current.servers
+        let database = try DatabaseQueue(path: ":memory:")
+        try SiriServerExposureTable().createIfNeeded(database: database)
+        try HAppEntityTable().createIfNeeded(database: database)
+        try AppAreaTable().createIfNeeded(database: database)
+        Current.database = { database }
+        let manager = FakeServerManager(initial: 0)
+        let server = manager.addFake()
+        Current.servers = manager
+        defer {
+            Current.database = previousDatabase
+            Current.servers = previousServers
+        }
+
+        try await database.write { db in
+            try HAAppEntity(
+                id: ServerEntity.uniqueId(serverId: server.identifier.rawValue, entityId: entityId),
+                entityId: entityId,
+                serverId: server.identifier.rawValue,
+                domain: entityId.components(separatedBy: ".").first ?? "",
+                name: "Something",
+                icon: nil,
+                rawDeviceClass: nil
+            ).insert(db)
+        }
+        try await work(server)
     }
 }

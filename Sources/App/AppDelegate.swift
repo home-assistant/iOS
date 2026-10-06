@@ -117,12 +117,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let launchingForLocation = launchOptions?[.location] != nil
 
-        // Warm the stand-by loading logo's WKWebView so it renders without cold-start delay.
-        // Skip on background location launches: the stand-by view is not shown then, and
-        // spinning up WebKit off-screen risks the app being terminated for doing too much work.
-        if !launchingForLocation {
-            AnimatedSVGWebViewCache.shared.preload(HomeAssistantStandByView.loadingLogoResourceName)
-        }
+        AnimatedSVGWebViewCache.shared
+            .preloadOnFirstActivation(HomeAssistantStandByView.loadingLogoResourceName)
 
         let event = ClientEvent(
             text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
@@ -256,6 +252,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
         notificationManager.didReceiveRemoteNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        Current.forceCloseWarningManager.postImmediateWarning()
+        // This prevents users from getting stuck on a page without a way to recover
+        if !Current.isCatalyst {
+            Current.settingsStore.lastActiveURLPath = nil
+        }
     }
 
     func application(
@@ -494,7 +498,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupUIApplicationShortcutItems() {
-        AppIconShortcutItemsUpdater.update()
+        AppIconShortcutItemsUpdater.start()
     }
 
     private func migrateIfNeeded() {

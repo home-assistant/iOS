@@ -21,15 +21,29 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     var overlayedController: UIViewController? {
-        presentedViewController
+        presentedViewController ?? detachedOverlayController
     }
 
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.dismissOverlayController(animated: false, completion: { [weak self] in
-                self?.present(controller, animated: animated, completion: nil)
+                guard let self else { return }
+                if view.window == nil, NativeTabBarState.shared.isEnabled, let presenter = Self.topMostPresenter() {
+                    detachedOverlayController = controller
+                    presenter.present(controller, animated: animated, completion: nil)
+                } else {
+                    present(controller, animated: animated, completion: nil)
+                }
             })
         }
+    }
+
+    private static func topMostPresenter() -> UIViewController? {
+        var presenter = NativeTabBarButtonLocator.keyWindow?.rootViewController
+        while let presented = presenter?.presentedViewController {
+            presenter = presented
+        }
+        return presenter
     }
 
     func presentAlertController(controller: UIViewController, animated: Bool) {
@@ -47,7 +61,18 @@ extension WebViewController: WebViewControllerProtocol {
         webView.evaluateJavaScript(script, completionHandler: completion)
     }
 
+    func makeWebViewFirstResponder() {
+        webView.becomeFirstResponder()
+    }
+
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
+        if let detachedOverlayController, detachedOverlayController.presentingViewController != nil {
+            self.detachedOverlayController = nil
+            detachedOverlayController.presentingViewController?.dismiss(animated: animated) { [weak self] in
+                self?.dismissAllViewControllersAbove(completion: completion)
+            }
+            return
+        }
         dismissAllViewControllersAbove(completion: completion)
     }
 
@@ -73,6 +98,7 @@ extension WebViewController: WebViewControllerProtocol {
         // Possible values: connected, loaded, disconnected, auth-invalid
         switch resolvedState {
         case .connected, .loaded:
+            resetBlankFrontendRecoveryIfRendered(for: resolvedState)
             hideEmptyState()
             updateFrontendKioskMode()
         case .authInvalid:

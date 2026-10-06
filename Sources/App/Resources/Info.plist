@@ -94,6 +94,7 @@
 		<string>_hass-mobile-app._tcp</string>
 		<string>_home-assistant._tcp</string>
 		<string>_matter._tcp</string>
+		<string>_wyoming._tcp</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Take photos and send them to your Home Assistant server.</string>

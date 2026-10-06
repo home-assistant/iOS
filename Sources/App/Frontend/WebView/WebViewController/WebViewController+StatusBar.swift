@@ -17,11 +17,15 @@ extension WebViewController {
         view.addSubview(statusBarView)
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
 
+        // Re-pinned to the top of the web view on iOS, once there is one; see `setupWebViewConstraints`.
+        let bottomConstraint = statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+        statusBarBottomConstraint = bottomConstraint
+
         NSLayoutConstraint.activate([
             statusBarView.topAnchor.constraint(equalTo: view.topAnchor),
             statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor),
             statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            bottomConstraint,
         ])
 
         return statusBarView
@@ -46,25 +50,24 @@ extension WebViewController {
     }
 
     @objc func openServerInSafari() {
-        guard let url = externalURLForCurrentPage() else { return }
+        guard let url = currentPageURL else { return }
         URLOpener.shared.open(url, options: [:], completionHandler: nil)
     }
 
     /// Gesture counterpart of the macOS toolbar's "Open in Safari" action. Unlike the toolbar item, it
     /// honors the browser picked in General settings, which is only offered outside of macOS.
     func openInBrowser() {
-        guard let url = externalURLForCurrentPage() else { return }
+        guard let url = currentPageURL else { return }
         openURLInBrowser(url, self)
     }
 
-    /// The URL currently displayed, without the `external_auth` query item that only makes sense to the
-    /// frontend running inside our webview.
-    private func externalURLForCurrentPage() -> URL? {
+    var currentPageURL: URL? {
         guard let url = webView.url,
               var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return nil
         }
         urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
+        if urlComponents.queryItems?.isEmpty == true { urlComponents.queryItems = nil }
         return urlComponents.url
     }
 

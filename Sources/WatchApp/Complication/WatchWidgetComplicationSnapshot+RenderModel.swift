@@ -34,14 +34,17 @@ extension WatchWidgetComplicationSnapshot {
             showsBottomText: options.showBottomText ?? false,
             tint: Self.color(hex: options.tint ?? tint) ?? .complicationDefaultTint,
             textColor: Self.color(hex: options.textColor),
-            bottomTextColor: Self.color(hex: options.bottomTextColor)
+            bottomTextColor: Self.color(hex: options.bottomTextColor),
+            titleColor: Self.color(hex: options.titleColor),
+            valueColor: Self.color(hex: options.valueColor),
+            valueRidesGauge: options.valueRidesGauge ?? true
         )
     }
 
-    /// The rasterized icon the snapshot carries, as a template image so it tints with the row.
+    /// The rasterized icon the snapshot carries.
     private var iconImage: Image? {
         guard let iconData, let image = UIImage(data: iconData) else { return nil }
-        return Image(uiImage: image).renderingMode(.template)
+        return ComplicationIconRendering.image(image, usesCustomColor: iconUsesCustomColor == true)
     }
 
     /// Both edges or neither: a gauge with only one end labelled reads as a mislabelled scale, which

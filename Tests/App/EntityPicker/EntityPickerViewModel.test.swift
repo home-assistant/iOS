@@ -49,7 +49,7 @@ private extension AppArea {
     }
 }
 
-@Suite("EntityPickerViewModel")
+@Suite("EntityPickerViewModel", .serialized)
 struct EntityPickerViewModelTests {
     private func makeVM(
         domainFilter: [Domain]? = nil,

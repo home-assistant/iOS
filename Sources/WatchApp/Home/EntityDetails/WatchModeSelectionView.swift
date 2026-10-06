@@ -33,6 +33,7 @@ struct WatchModeSelectionView: View {
             }
         }
         .navigationTitle(Text(verbatim: title))
+        .watchNativeNavigationBar()
     }
 }
 

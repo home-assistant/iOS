@@ -11,7 +11,7 @@ on:
       - main
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 80
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
@@ -27,9 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8  # v1.327.0
         with:
-          ruby-version: "3.1"
+          ruby-version: .ruby-version
           bundler-cache: true
       - name: YamlLint
         run: yamllint --strict --format github .
@@ -85,7 +85,7 @@ jobs:
           fetch-depth: 0  # Fetch all history for comparison with main branch
 
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v5.3.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: '3.x'
 
@@ -146,11 +146,11 @@ jobs:
             ```
 
   test:
-    runs-on: macos-26
-    timeout-minutes: 60
+    runs-on: xcode-27
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b  # v1.321.0
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8  # v1.327.0
         with:
           ruby-version: .ruby-version
 
@@ -184,6 +184,15 @@ jobs:
             runner.os,
             env.DEVELOPER_DIR) }}
 
+      # A fallback restore carries precompiled Clang modules for whatever binary dependency
+      # versions `main` had. When a PR moves one of those pins, the freshly checked out
+      # headers are newer than the module built from the old ones and the build fails with
+      # "has been modified since the module file was built" instead of rebuilding it. Drop
+      # the modules so they are rebuilt against the headers actually present.
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
       - name: Install Brews
         # right now, we don't need anything from brew for tests, so save some time
         if: ${{ false }}
@@ -192,6 +201,15 @@ jobs:
       - name: Install Gems
         if: steps.cache_gems.outputs.cache-hit != 'true'
         run: bundle install --jobs 4 --retry 3
+
+      # The test lane runs with package resolution disabled, so the test action does not
+      # re-resolve once per scheme. That relies on the packages already being checked out, which
+      # a cold DerivedData cache is not, so resolve them from the pinned versions up front.
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
 
       - name: Run tests
         run: bundle exec fastlane test
@@ -225,7 +243,7 @@ jobs:
           --lcov fastlane/test_output/coverage.lcov
           --summary "$GITHUB_STEP_SUMMARY"
 
-      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
         name: "Upload Code Coverage"
         continue-on-error: true
         with:
@@ -252,6 +270,7 @@ jobs:
             ~/Library/Logs/DiagnosticReports
             ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
             ~/Library/Logs/scan
+            fastlane/test_output/Tests-Unit.xcresult
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload Simulator App"

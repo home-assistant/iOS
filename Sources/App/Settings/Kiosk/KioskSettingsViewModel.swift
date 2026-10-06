@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import LocalAuthentication
 import Shared
+import SwiftUI
 
 @MainActor
 final class KioskSettingsViewModel: ObservableObject {
@@ -9,6 +10,7 @@ final class KioskSettingsViewModel: ObservableObject {
     @Published var servers: [Server] = []
     @Published var panels: [AppPanel] = []
     @Published var showError = false
+    @Published var isShowingHideSettingsEntryConfirmation = false
     @Published private(set) var errorMessage: String?
     @Published private(set) var isUnlocked = true
 
@@ -74,6 +76,28 @@ final class KioskSettingsViewModel: ObservableObject {
                 self?.isUnlocked = success
             }
         }
+    }
+
+    /// The switch reads what is stored but never writes it directly: hiding the entry is the one
+    /// setting that can lock a user out of their own kiosk, so turning it on raises the confirmation
+    /// below instead, and only accepting that stores it.
+    var settingsEntryHidden: Binding<Bool> {
+        Binding(
+            get: { self.settings.settingsEntryHidden },
+            set: { self.settingsEntryHiddenDidChange($0) }
+        )
+    }
+
+    func settingsEntryHiddenDidChange(_ isHidden: Bool) {
+        if isHidden {
+            isShowingHideSettingsEntryConfirmation = true
+        } else {
+            settings.settingsEntryHidden = false
+        }
+    }
+
+    func confirmHidingSettingsEntry() {
+        settings.settingsEntryHidden = true
     }
 
     func reloadPanels() {

@@ -4,7 +4,16 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(macOS 13.0, *)
+/// Any Home Assistant entity, unfiltered: what the Spotlight index publishes, what a widget or a
+/// control is configured with, and what "show entity details" opens.
+///
+/// No command may take this type as a parameter. The system decides what a tapped Spotlight result
+/// does from the intents that accept the indexed entity, so while the on/off and get-state commands
+/// shared it, tapping a search result switched the entity off instead of opening it, with nothing in
+/// the row to say so. Each spoken command carries its own narrower type — `ControllableEntityAppEntity`,
+/// `ReadableEntityAppEntity`, `OpenableEntityAppEntity` — which is also what filters what Siri offers
+/// for it. This one stays wide, because search has nothing to filter by.
+@available(macOS 13.0, watchOS 9.4, *)
 struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Entity")
 
@@ -32,16 +41,32 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     /// groups entities under a per-server section.
     var includesServerContext: Bool
 
-    /// The icon is the entity's own Material Design glyph rather than an SF Symbol: Home Assistant
-    /// lets people choose an icon per entity, and mapping those onto SF Symbols would throw that
-    /// choice away. `EntityIconRenderer` memoizes by icon name, so a long picker redraws cheaply.
+    /// The domain this belongs to, which is what a picker draws its symbol from.
+    ///
+    /// Nothing here calls a service: this is what Spotlight publishes, what a widget is configured
+    /// with and what "show entity details" opens. The spoken commands each carry their own entity
+    /// type — `ControllableEntityAppEntity` and its siblings — which is what keeps a tapped search
+    /// result opening the entity rather than switching it.
+    var domain: Domain? {
+        Domain(entityId: entityId)
+    }
+
+    /// The icon is the domain's SF Symbol, not the entity's own Material Design glyph.
+    ///
+    /// Drawing the glyph here meant rendering an image per row as the list scrolled, which made the
+    /// Shortcuts app stutter. A symbol name costs nothing to pass and the system draws it. Spotlight
+    /// results still carry the real glyph, where it is rendered once per index pass.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
             subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
-            image: EntityIconRenderer.thumbnailData(iconName: iconName).map { .init(data: $0) }
+            image: .init(systemName: domain?.sfSymbolName ?? Self.fallbackSymbolName)
         )
     }
+
+    /// A domain the app does not model still gets a row, and an on/off glyph is the least wrong
+    /// thing to show for one.
+    static let fallbackSymbolName = SFSymbol.powerCircle.rawValue
 
     /// The `Server • Floor • Area • Device` line shown under the entity name.
     var subtitle: String? {
@@ -55,7 +80,7 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
             deviceName: deviceName,
             entityName: displayString,
             entityId: entityId,
-            domain: Domain(entityId: entityId)
+            domain: domain
         )
     }
 
@@ -86,8 +111,10 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     }
 }
 
-@available(macOS 13.0, *)
+@available(macOS 13.0, watchOS 9.4, *)
 struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
+    /// Only ever single entities: an area is something to switch, which `ControllableEntityAppEntity`
+    /// offers and reads back, not something to index, put in a widget or open the details of.
     func entities(for identifiers: [String]) async throws -> [HAAppEntityAppIntentEntity] {
         getEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
@@ -109,7 +136,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
 
     private func getEntities(matching string: String? = nil) -> [(Server, [HAAppEntityAppIntentEntity])] {
         var allEntities: [(Server, [HAAppEntityAppIntentEntity])] = []
-        let entities = ControlEntityProvider(domains: []).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: []).getEntitiesExposedToSiri(matching: string)
 
         for (server, values) in entities {
             let deviceMap = values.devicesMap(for: server.identifier.rawValue)
@@ -135,7 +162,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
     }
 }
 
-@available(macOS 13.0, *)
+@available(macOS 13.0, watchOS 9.4, *)
 func makeHAEntityIntentItemCollection(
     entities: [(Server, [HAAppEntity])],
     defaultIconName: String

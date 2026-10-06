@@ -14,6 +14,14 @@ enum ControlEntityIntentRunner {
     /// Performs `action` and returns the sentence Siri should speak.
     @available(macOS 13.0, watchOS 9.4, *)
     static func perform(_ action: Action, on entity: ControllableEntityAppEntity) async throws -> String {
+        let service = try await callService(action, on: entity)
+        return dialog(for: service, entityName: entity.displayString)
+    }
+
+    /// Performs `action` and returns the service it called, which is what says both how to word the
+    /// confirmation and which state the entity should settle on.
+    @available(macOS 13.0, watchOS 9.4, *)
+    static func callService(_ action: Action, on entity: ControllableEntityAppEntity) async throws -> Service {
         await Current.connectivity.refreshNetworkInformation()
         guard let server = Current.servers.server(for: .init(rawValue: entity.serverId)) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
@@ -27,10 +35,10 @@ enum ControlEntityIntentRunner {
             server: server,
             domain: domain.serviceDomain,
             service: service.rawValue,
-            data: ["entity_id": entity.entityId],
+            data: entity.serviceTarget,
             returnResponse: false
         )
-        return dialog(for: service, entityName: entity.displayString)
+        return service
     }
 
     @available(macOS 13.0, watchOS 9.4, *)
@@ -52,6 +60,11 @@ enum ControlEntityIntentRunner {
         case .turnOff:
             return services.off
         case .toggle:
+            // An area has no single state to read, so it toggles through the service that flips each
+            // entity on its own terms — which is what someone asking for a room expects anyway.
+            if entity.areaTarget != nil {
+                return domain.toggleServices.map { _ in Service.toggle } ?? services.off
+            }
             // A toggle needs to know which way to go, and the state is the only thing that says so.
             let state = try await AppIntentServerAPI.entityState(server: server, entityId: entity.entityId).state
             return domain.toggleService(state: state) ?? services.off

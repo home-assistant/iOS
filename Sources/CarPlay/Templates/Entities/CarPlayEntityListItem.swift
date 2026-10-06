@@ -73,7 +73,13 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         refreshTemplate()
     }
 
+    /// Whether an action started from this row is still in flight, so a repeat tap doesn't run it
+    /// a second time. Deliberately not the "Executing…" subtitle, which lingers a moment past the
+    /// call so it doesn't flash by — a tap in that window is a legitimate second action.
+    private(set) var isOperationInFlight = false
+
     func setExecutingState(_ isExecuting: Bool) {
+        isOperationInFlight = isExecuting
         if isExecuting {
             pendingExecutingClearWorkItem?.cancel()
             pendingExecutingClearWorkItem = nil
@@ -151,9 +157,6 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
         let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
 
-        // The color always comes from the entity's live state — the same palette the frontend, the
-        // widgets and the watch use. Only the *icon* is subject to the saved/customized choice: a
-        // user who picked a custom icon still wants to see whether the thing is on.
         let customIconColor = (magicItem?.customization?.customIconColor).map { UIColor(hex: $0) }
         let iconColor = entity.stateIconColor(customColor: customIconColor)
 

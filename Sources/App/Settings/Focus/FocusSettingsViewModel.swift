@@ -14,7 +14,7 @@ final class FocusSettingsViewModel: ObservableObject {
     func load() {
         focusNames = FocusName.all()
         activeFocusName = Current.focusFilter.activeFocusName()
-        isFocusSensorEnabled = Current.sensors.isEnabled(uniqueID: WebhookSensorId.focusName.rawValue)
+        isFocusSensorEnabled = Current.sensors.isEnabledForAnyServer(uniqueID: WebhookSensorId.focusName.rawValue)
         isFocusPermissionGranted = Current.focusStatus.authorizationStatus() == .authorized
     }
 
