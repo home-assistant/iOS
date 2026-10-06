@@ -17,21 +17,23 @@ final class MockAssistService: AssistServiceProtocol {
     var shouldStartListeningAgainAfterPlaybackEnd: Bool = false
     var resetShouldStartListeningAgainAfterPlaybackEndCalled: Bool = false
     var holdsPipelinesCompletion = false
-    private var pendingPipelinesCompletion: ((PipelineResponse?) -> Void)?
+    /// Whether the last `assist(source:)` arrived on the main thread.
+    var assistCalledOnMainThread: Bool?
+    private var pendingPipelinesCompletions: [(PipelineResponse?) -> Void] = []
 
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
         fetchPipelinesCalled = true
         if holdsPipelinesCompletion {
-            pendingPipelinesCompletion = completion
+            pendingPipelinesCompletions.append(completion)
         } else {
             completion(pipelineResponse)
         }
     }
 
+    /// Completes the oldest fetch still pending.
     func completePendingPipelinesFetch() {
-        let completion = pendingPipelinesCompletion
-        pendingPipelinesCompletion = nil
-        completion?(pipelineResponse)
+        guard !pendingPipelinesCompletions.isEmpty else { return }
+        pendingPipelinesCompletions.removeFirst()(pipelineResponse)
     }
 
     func replaceServer(server: Shared.Server) {
@@ -40,6 +42,7 @@ final class MockAssistService: AssistServiceProtocol {
 
     func assist(source: AssistSource) {
         assistSource = source
+        assistCalledOnMainThread = Thread.isMainThread
     }
 
     func sendAudioData(_ data: Data) {

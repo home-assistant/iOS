@@ -30,6 +30,8 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var audioLevel: Double = 0
     @Published var showError = false
     @Published var focusOnInput = false
+    /// Bumped to move the keyboard focus back to the input, even when `focusOnInput` is already true.
+    @Published private(set) var inputFocusRequests = 0
     @Published var errorMessage = ""
     @Published var configuration: AssistConfiguration
 
@@ -43,6 +45,8 @@ final class AssistViewModel: NSObject, ObservableObject {
     /// Whether `pipelines` came from the server this session rather than only from the cache, which
     /// can predate an engine added to a pipeline since.
     private var hasFreshPipelines = false
+    /// Bumped by every pipeline fetch, so only the latest session's fetch updates the pipelines.
+    private var pipelinesFetchGeneration = 0
     private var configObservationCancellable: AnyDatabaseCancellable?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
@@ -208,8 +212,8 @@ final class AssistViewModel: NSObject, ObservableObject {
             // the user would be left talking to nothing.
             guard voiceRunStages != nil else {
                 Current.Log.error("Assist pipeline \(preferredPipelineId) has no speech-to-text engine")
-                appendToChat(.init(content: L10n.Assist.Error.speechToTextUnsupported, itemType: .error))
-                focusOnInput = true
+                appendToChat(.init(content: AssistService.speechToTextUnsupportedMessage, itemType: .error))
+                inputFocusRequests += 1
                 return
             }
 
@@ -313,11 +317,15 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func fetchPipelines(completion: (() -> Void)? = nil) {
+        pipelinesFetchGeneration += 1
+        let generation = pipelinesFetchGeneration
         assistService.fetchPipelines { [weak self] response in
             guard let self else {
                 self?.showError(message: L10n.Assist.Error.pipelinesResponse)
                 return
             }
+            // A newer session, possibly on another server, has its own fetch in flight.
+            guard generation == pipelinesFetchGeneration else { return }
             hasFreshPipelines = response != nil
 
             // Fetch pipelines method already saves new values in database
@@ -515,8 +523,10 @@ extension AssistViewModel: AudioRecorderDelegate {
             #if DEBUG
             self?.appendToChat(.init(content: "didStartRecording(with sampleRate: \(sampleRate)", itemType: .info))
             #endif
+            // The recorder calls back on its own queue; the pipelines and settings the run is decided
+            // from are main-queue state.
+            self?.startAssistAudioPipeline(audioSampleRate: sampleRate)
         }
-        startAssistAudioPipeline(audioSampleRate: sampleRate)
     }
 
     func didStopRecording() {

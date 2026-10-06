@@ -79,10 +79,14 @@ final class CarPlayAssistSession: NSObject {
     /// (LLM streaming) are not cut off. Both properties are protected by `stateQueue`.
     private var responseWatchdog: DispatchWorkItem?
     private var ttsWasRequested = false
+    /// The reply from intent-end while its server audio is still to come. A pipeline without a TTS
+    /// engine runs without it, and CarPlay has no screen for the text, so it is spoken on device when
+    /// the run ends. Protected by `stateQueue`.
+    private var unspokenResponse: String?
     private static let responseTimeout: TimeInterval = 30
 
     /// Serial queue protecting all mutable session state (`canSendAudioData`, `state`, `isStopped`,
-    /// `ttsWasRequested`, `responseWatchdog`).
+    /// `ttsWasRequested`, `unspokenResponse`, `responseWatchdog`).
     /// Callbacks from AVCaptureSession, HAKit, and NotificationCenter may arrive on arbitrary threads.
     private let stateQueue = DispatchQueue(label: "io.home-assistant.carplay-assist-session", qos: .userInteractive)
     private var canSendAudioData = false
@@ -337,6 +341,7 @@ final class CarPlayAssistSession: NSObject {
             canSendAudioData = false
             state = .recording
             ttsWasRequested = false
+            unspokenResponse = nil
         }
         cancelResponseWatchdog()
         configureAudioSessionForAssist()
@@ -357,6 +362,7 @@ final class CarPlayAssistSession: NSObject {
             canSendAudioData = false
             state = .processing
             ttsWasRequested = false
+            unspokenResponse = nil
         }
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
@@ -862,6 +868,7 @@ final class CarPlayAssistSession: NSObject {
             canSendAudioData = false
             state = .processing
             ttsWasRequested = false
+            unspokenResponse = nil
             return true
         }
         guard shouldHandle else { return }
@@ -1098,7 +1105,9 @@ extension CarPlayAssistSession: AssistServiceDelegate {
     }
 
     func didReceiveEvent(_ event: AssistEvent) {
-        if event == .sttEnd {
+        if event == .runEnd, let response = takeUnspokenResponse() {
+            speakOnDevice(response)
+        } else if event == .sttEnd {
             let shouldHandleSttEnd = stateQueue.sync { () -> Bool in
                 guard !isStopped else { return false }
                 canSendAudioData = false
@@ -1122,6 +1131,15 @@ extension CarPlayAssistSession: AssistServiceDelegate {
         }
     }
 
+    /// The reply to speak on device because the run ended without the server's audio for it.
+    private func takeUnspokenResponse() -> String? {
+        stateQueue.sync { () -> String? in
+            guard !isStopped, state == .responding, !ttsWasRequested else { return nil }
+            defer { unspokenResponse = nil }
+            return unspokenResponse
+        }
+    }
+
     func didReceiveSttContent(_ content: String) {
         // No text display in CarPlay
     }
@@ -1133,7 +1151,10 @@ extension CarPlayAssistSession: AssistServiceDelegate {
     func didReceiveIntentEndContent(_ content: String) {
         let stopped = stateQueue.sync { isStopped }
         guard !stopped else { return }
-        stateQueue.sync { state = .responding }
+        stateQueue.sync {
+            state = .responding
+            unspokenResponse = content
+        }
         activateVoiceControlState(for: .responding)
         if assistConfiguration.enableOnDeviceTTS {
             speakOnDevice(content)

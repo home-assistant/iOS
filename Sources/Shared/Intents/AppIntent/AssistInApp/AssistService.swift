@@ -94,25 +94,27 @@ public final class AssistService: AssistServiceProtocol {
     public func assist(source: AssistSource) {
         runGeneration += 1
         let generation = runGeneration
+        // A refresh can outlive a `replaceServer`, so the run stays on the server it was asked for.
+        let runServer = server
         let pipelineId = source.pipelineId
-        let cached = cachedPipeline(id: pipelineId)
+        let cached = AssistPipelines.cachedPipeline(id: pipelineId, serverId: runServer.identifier.rawValue)
 
         // The cache can predate an engine added on the server since, and the watch and CarPlay start
         // runs without refreshing it, so a missing stage is confirmed with the server before acting on it.
         guard let cached, Self.stages(for: source, pipeline: cached) != Self.stages(for: source, pipeline: nil) else {
-            start(source, pipeline: cached)
+            start(source, pipeline: cached, on: runServer)
             return
         }
-        fetchPipelines { [weak self] response in
+        fetchPipelines(on: runServer) { [weak self] response in
             guard let self, generation == runGeneration else { return }
             let pipeline: Pipeline?
             if let response {
-                pipeline = AssistPipelines(serverId: server.identifier.rawValue, pipelineResponse: response)
+                pipeline = AssistPipelines(serverId: runServer.identifier.rawValue, pipelineResponse: response)
                     .pipeline(id: pipelineId)
             } else {
                 pipeline = cached
             }
-            start(source, pipeline: pipeline)
+            start(source, pipeline: pipeline, on: runServer)
         }
     }
 
@@ -125,28 +127,38 @@ public final class AssistService: AssistServiceProtocol {
         }
     }
 
-    private func start(_ source: AssistSource, pipeline: Pipeline?) {
+    private func start(_ source: AssistSource, pipeline: Pipeline?, on server: Server) {
         guard let stages = Self.stages(for: source, pipeline: pipeline) else {
             reportSpeechToTextUnsupported()
             return
         }
         switch source {
         case let .text(input, pipelineId, _):
-            assistWithText(input: input, pipelineId: pipelineId, expectTTS: stages.endsWithTextToSpeech)
+            assistWithText(
+                input: input,
+                pipelineId: pipelineId,
+                expectTTS: stages.endsWithTextToSpeech,
+                on: server
+            )
         case let .audio(pipelineId, audioSampleRate, _):
             assistWithAudio(
                 pipelineId: pipelineId,
                 audioSampleRate: audioSampleRate,
-                tts: stages.endsWithTextToSpeech
+                tts: stages.endsWithTextToSpeech,
+                on: server
             )
         }
     }
 
     public func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
+        fetchPipelines(on: server, completion: completion)
+    }
+
+    private func fetchPipelines(on server: Server, completion: @escaping (PipelineResponse?) -> Void) {
         Current.api(for: server)?.connection.send(AssistRequests.fetchPipelinesTypedRequest) { [weak self] result in
             switch result {
             case let .success(response):
-                self?.saveInDatabase(response)
+                self?.saveInDatabase(response, serverId: server.identifier.rawValue)
                 completion(response)
             case let .failure(error):
                 Current.Log.error("Failed to fetch Assist pipelines: \(error.localizedDescription)")
@@ -177,10 +189,6 @@ public final class AssistService: AssistServiceProtocol {
         cancellable = nil
     }
 
-    private func cachedPipeline(id pipelineId: String?) -> Pipeline? {
-        AssistPipelines.cachedPipeline(id: pipelineId, serverId: server.identifier.rawValue)
-    }
-
     /// Delivered on the main queue like a rejection from the backend would be, so callers that start
     /// a run from their recorder's callback have finished setting up before they hear it failed.
     private func reportSpeechToTextUnsupported() {
@@ -188,17 +196,34 @@ public final class AssistService: AssistServiceProtocol {
         DispatchQueue.main.async { [weak self] in
             self?.delegate?.didReceiveError(
                 code: Self.speechToTextUnsupportedErrorCode,
-                message: L10n.Assist.Error.speechToTextUnsupported
+                message: Self.speechToTextUnsupportedMessage
             )
         }
     }
 
-    private func saveInDatabase(_ response: PipelineResponse) {
+    /// Only points at on-device speech-to-text where Assist settings offer it.
+    public static var speechToTextUnsupportedMessage: String {
+        speechToTextUnsupportedMessage(offeringOnDeviceSpeechToText: isOnDeviceSpeechToTextOffered)
+    }
+
+    static func speechToTextUnsupportedMessage(offeringOnDeviceSpeechToText: Bool) -> String {
+        offeringOnDeviceSpeechToText
+            ? L10n.Assist.Error.speechToTextUnsupported
+            : L10n.Assist.Error.speechToTextUnsupportedWithoutOnDevice
+    }
+
+    /// Assist settings show the on-device speech-to-text toggle from iOS 17.
+    private static var isOnDeviceSpeechToTextOffered: Bool {
+        guard #available(iOS 17.0, *) else { return false }
+        return true
+    }
+
+    private func saveInDatabase(_ response: PipelineResponse, serverId: String) {
         do {
-            let assistPipeline = AssistPipelines(serverId: server.identifier.rawValue, pipelineResponse: response)
+            let assistPipeline = AssistPipelines(serverId: serverId, pipelineResponse: response)
             _ = try Current.database().write { db in
                 try AssistPipelines.filter(
-                    Column(DatabaseTables.AssistPipelines.serverId.rawValue) == server.identifier.rawValue
+                    Column(DatabaseTables.AssistPipelines.serverId.rawValue) == serverId
                 ).deleteAll(db)
                 try assistPipeline.save(db)
             }
@@ -207,7 +232,7 @@ public final class AssistService: AssistServiceProtocol {
         }
     }
 
-    private func assistWithAudio(pipelineId: String?, audioSampleRate: Double, tts: Bool) {
+    private func assistWithAudio(pipelineId: String?, audioSampleRate: Double, tts: Bool, on server: Server) {
         lastPipelineIdUsed = pipelineId
         cancellable = Current.api(for: server)?.connection.subscribe(
             to: AssistRequests.assistByVoiceTypedSubscription(
@@ -228,7 +253,7 @@ public final class AssistService: AssistServiceProtocol {
         )
     }
 
-    private func assistWithText(input: String, pipelineId: String?, expectTTS: Bool) {
+    private func assistWithText(input: String, pipelineId: String?, expectTTS: Bool, on server: Server) {
         lastPipelineIdUsed = pipelineId
         cancellable = Current.api(for: server)?.connection.subscribe(
             to: AssistRequests.assistByTextTypedSubscription(

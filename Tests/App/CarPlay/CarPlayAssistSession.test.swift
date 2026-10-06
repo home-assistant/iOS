@@ -340,6 +340,65 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertEqual(sut.currentState, .recording)
     }
 
+    // MARK: - Pipeline without TTS
+
+    /// A pipeline without a TTS engine runs without server audio, and CarPlay has no screen for the
+    /// text, so the reply is spoken on device once the run ends instead of the session timing out.
+    func testRunEndWithoutServerAudioSpeaksTheReplyOnDevice() {
+        let synthesizer = MockSpeechSynthesizer()
+        let sut = makeSut(speechSynthesizer: synthesizer)
+        sut.start()
+        sut.didStartRecording(with: 16000)
+        sut.didReceiveEvent(.sttEnd)
+        sut.didReceiveIntentEndContent("The garage is open")
+        XCTAssertFalse(synthesizer.speakCalled, "server audio may still come")
+
+        sut.didReceiveEvent(.runEnd)
+
+        XCTAssertEqual(synthesizer.lastSpokenText, "The garage is open")
+        XCTAssertFalse(synthesizer.managesAudioSession)
+        synthesizer.simulateFinished()
+        XCTAssertEqual(sut.currentState, .idle)
+    }
+
+    func testPromptRunEndWithoutServerAudioSpeaksTheReplyOnDevice() {
+        let synthesizer = MockSpeechSynthesizer()
+        let sut = makeSut(prompt: "Open the garage", speechSynthesizer: synthesizer)
+        sut.start()
+        sut.didReceiveIntentEndContent("The garage is open")
+
+        sut.didReceiveEvent(.runEnd)
+
+        XCTAssertEqual(synthesizer.lastSpokenText, "The garage is open")
+    }
+
+    func testRunEndDoesNotRepeatAReplyAlreadySpokenOnDevice() {
+        let synthesizer = MockSpeechSynthesizer()
+        let sut = makeSut(
+            configuration: AssistConfiguration(enableOnDeviceTTS: true),
+            speechSynthesizer: synthesizer
+        )
+        sut.start()
+        sut.didReceiveIntentEndContent("The lights are on")
+        synthesizer.speakCalled = false
+
+        sut.didReceiveEvent(.runEnd)
+
+        XCTAssertFalse(synthesizer.speakCalled)
+    }
+
+    func testRunEndWithoutAReplyDoesNotSpeak() {
+        let synthesizer = MockSpeechSynthesizer()
+        let sut = makeSut(speechSynthesizer: synthesizer)
+        sut.start()
+        sut.didReceiveEvent(.sttEnd)
+
+        sut.didReceiveEvent(.runEnd)
+
+        XCTAssertFalse(synthesizer.speakCalled)
+        XCTAssertEqual(sut.currentState, .processing)
+    }
+
     // MARK: - Muted TTS (does not apply to CarPlay)
 
     func testMuteTTSDoesNotSuppressServerTTSRequest() {

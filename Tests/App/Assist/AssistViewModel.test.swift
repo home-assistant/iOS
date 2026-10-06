@@ -141,6 +141,7 @@ final class AssistViewModelTests: XCTestCase {
     func testDidStartRecording() {
         sut.preferredPipelineId = "2"
         sut.didStartRecording(with: 16000)
+        drainMainQueue()
         XCTAssertEqual(mockAssistService.assistSource, .audio(pipelineId: "2", audioSampleRate: 16000.0, tts: true))
     }
 
@@ -571,15 +572,53 @@ final class AssistViewModelTests: XCTestCase {
     @MainActor
     func testVoiceRequestOnPipelineWithoutSpeechToTextDoesNotRecord() {
         selectFetchedPipeline(textOnlyPipeline)
-        sut.focusOnInput = false
 
         sut.assistWithAudio()
 
         XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
         XCTAssertNil(mockAssistService.assistSource)
         XCTAssertEqual(sut.chatItems.last?.itemType, .error)
-        XCTAssertEqual(sut.chatItems.last?.content, L10n.Assist.Error.speechToTextUnsupported)
-        XCTAssertTrue(sut.focusOnInput, "the keyboard is the way left to ask")
+        XCTAssertEqual(sut.chatItems.last?.content, AssistService.speechToTextUnsupportedMessage)
+        // `focusOnInput` is usually true already, so only a new request moves the keyboard back.
+        XCTAssertEqual(sut.inputFocusRequests, 1, "the keyboard is the way left to ask")
+    }
+
+    /// A session replaced before its fetch lands — another server, say — must not have the old fetch
+    /// vouch for the pipelines it is now showing.
+    @MainActor
+    func testFetchFromAReplacedSessionDoesNotMarkPipelinesCurrent() {
+        mockAssistService.holdsPipelinesCompletion = true
+        mockAssistService.pipelineResponse = .init(
+            preferredPipeline: textOnlyPipeline.id,
+            pipelines: [textOnlyPipeline]
+        )
+        sut.initialRoutine()
+        sut.initialRoutine()
+        sut.pipelines = [textOnlyPipeline]
+        sut.preferredPipelineId = textOnlyPipeline.id
+
+        mockAssistService.completePendingPipelinesFetch()
+        sut.assistWithAudio()
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled, "only the cache vouches for the pipeline so far")
+
+        mockAudioRecorder.startRecordingCalled = false
+        mockAssistService.completePendingPipelinesFetch()
+        sut.pipelines = [textOnlyPipeline]
+        sut.assistWithAudio()
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled, "the current session's fetch confirmed it")
+    }
+
+    /// The recorder reports from its own queue; the run is decided from main-queue state.
+    func testRecorderCallbackStartsTheRunOnTheMainQueue() {
+        let reported = expectation(description: "recorder callback")
+        DispatchQueue.global().async { [sut] in
+            sut?.didStartRecording(with: 16000)
+            reported.fulfill()
+        }
+        wait(for: [reported], timeout: 2)
+        drainMainQueue()
+
+        XCTAssertEqual(mockAssistService.assistCalledOnMainThread, true)
     }
 
     /// Only the cache says the engine is missing, and it can predate one added on the server, so the
@@ -591,6 +630,7 @@ final class AssistViewModelTests: XCTestCase {
 
         sut.assistWithAudio()
         sut.didStartRecording(with: 16000)
+        drainMainQueue()
 
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
         XCTAssertEqual(
@@ -650,6 +690,7 @@ final class AssistViewModelTests: XCTestCase {
         selectFetchedPipeline(pipeline)
 
         sut.didStartRecording(with: 16000)
+        drainMainQueue()
 
         XCTAssertEqual(
             mockAssistService.assistSource,
@@ -662,6 +703,7 @@ final class AssistViewModelTests: XCTestCase {
         selectFetchedPipeline(voicePipeline)
 
         sut.didStartRecording(with: 16000)
+        drainMainQueue()
 
         XCTAssertEqual(
             mockAssistService.assistSource,
@@ -676,6 +718,7 @@ final class AssistViewModelTests: XCTestCase {
         selectFetchedPipeline(voicePipeline)
 
         sut.didStartRecording(with: 16000)
+        drainMainQueue()
 
         XCTAssertEqual(
             mockAssistService.assistSource,
@@ -726,6 +769,13 @@ final class AssistViewModelTests: XCTestCase {
 
         XCTAssertFalse(mockAudioRecorder.stopRecordingCalled)
         XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// Lets the work already queued on the main queue run, such as a run the recorder callback started.
+    private func drainMainQueue() {
+        let drained = expectation(description: "main queue drained")
+        DispatchQueue.main.async { drained.fulfill() }
+        wait(for: [drained], timeout: 2)
     }
 
     /// The stop is scheduled onto the main actor, so it lands a turn after the error arrives.

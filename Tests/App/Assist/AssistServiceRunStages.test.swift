@@ -11,6 +11,7 @@ final class AssistServiceRunStagesTests: XCTestCase {
     private var previousServers: ServerManager!
     private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var previousDatabase: (() -> DatabaseQueue)!
+    private var servers: FakeServerManager!
     private var database: DatabaseQueue!
     private var server: Server!
     private var connection: HAMockConnection!
@@ -35,7 +36,7 @@ final class AssistServiceRunStagesTests: XCTestCase {
         self.database = database
         Current.database = { database }
 
-        let servers = FakeServerManager()
+        servers = FakeServerManager()
         Current.servers = servers
         server = servers.addFake()
 
@@ -57,6 +58,7 @@ final class AssistServiceRunStagesTests: XCTestCase {
         delegate = nil
         connection = nil
         server = nil
+        servers = nil
         database = nil
         super.tearDown()
     }
@@ -145,7 +147,19 @@ final class AssistServiceRunStagesTests: XCTestCase {
         XCTAssertTrue(connection.pendingSubscriptions.isEmpty)
         wait(for: [reported], timeout: 2)
         XCTAssertEqual(delegate.errors.first?.code, AssistService.speechToTextUnsupportedErrorCode)
-        XCTAssertEqual(delegate.errors.first?.message, L10n.Assist.Error.speechToTextUnsupported)
+        XCTAssertEqual(delegate.errors.first?.message, AssistService.speechToTextUnsupportedMessage)
+    }
+
+    /// The fallback the error suggests only exists where Assist settings show the on-device toggle.
+    func testUnsupportedSpeechToTextMessageOnlySuggestsOnDeviceWhereOffered() {
+        XCTAssertEqual(
+            AssistService.speechToTextUnsupportedMessage(offeringOnDeviceSpeechToText: true),
+            L10n.Assist.Error.speechToTextUnsupported
+        )
+        XCTAssertEqual(
+            AssistService.speechToTextUnsupportedMessage(offeringOnDeviceSpeechToText: false),
+            L10n.Assist.Error.speechToTextUnsupportedWithoutOnDevice
+        )
     }
 
     /// When the refresh fails the cache is the best information left.
@@ -170,6 +184,47 @@ final class AssistServiceRunStagesTests: XCTestCase {
         XCTAssertTrue(connection.pendingSubscriptions.isEmpty)
     }
 
+    /// The watch sends one prompt after another without cancelling in between: only the latest may run.
+    func testNewerRunReplacesARunWaitingOnItsRefresh() throws {
+        try cachePipelines(preferred: textOnlyPipeline.id)
+
+        sut.assist(source: .text(input: "first", pipelineId: textOnlyPipeline.id, expectTTS: true))
+        sut.assist(source: .text(input: "second", pipelineId: textOnlyPipeline.id, expectTTS: true))
+        XCTAssertEqual(connection.pendingRequests.count, 2)
+        for request in connection.pendingRequests {
+            request.completion(.success(pipelinesData([voicePipeline, textOnlyPipeline])))
+        }
+
+        XCTAssertEqual(connection.pendingSubscriptions.count, 1)
+        let input = try XCTUnwrap(lastRunData()["input"] as? [String: Any])
+        XCTAssertEqual(input["text"] as? String, "second")
+    }
+
+    /// The watch points the shared service at whichever server its next message is for; a run already
+    /// waiting on its refresh still belongs to the server it was asked on.
+    func testRunWaitingOnItsRefreshStaysOnItsServer() throws {
+        try cachePipelines(preferred: textOnlyPipeline.id)
+        let otherServer = servers.addFake()
+        let otherApi = HomeAssistantAPI(server: otherServer)
+        let otherConnection = HAMockConnection()
+        otherApi.connection = otherConnection
+        Current.cachedApis[otherServer.identifier] = otherApi
+
+        sut.assist(source: .text(input: "Zeg alleen TEST", pipelineId: textOnlyPipeline.id, expectTTS: true))
+        sut.replaceServer(server: otherServer)
+        try completePipelinesRefresh(with: [voicePipeline, textOnlyPipeline])
+
+        XCTAssertEqual(connection.pendingSubscriptions.count, 1)
+        XCTAssertTrue(otherConnection.pendingSubscriptions.isEmpty)
+        XCTAssertEqual(try lastRunData()["end_stage"] as? String, "intent")
+        let cachedForRunServer = AssistPipelines.cachedPipeline(
+            id: textOnlyPipeline.id,
+            serverId: server.identifier.rawValue
+        )
+        XCTAssertNotNil(cachedForRunServer, "the refreshed pipelines are cached for the server they came from")
+        XCTAssertNil(AssistPipelines.cachedPipeline(id: textOnlyPipeline.id, serverId: otherServer.identifier.rawValue))
+    }
+
     func testSourceExposesItsPipelineId() {
         XCTAssertEqual(AssistSource.text(input: "", pipelineId: "a", expectTTS: false).pipelineId, "a")
         XCTAssertEqual(AssistSource.audio(pipelineId: "b", audioSampleRate: 16000, tts: false).pipelineId, "b")
@@ -190,7 +245,11 @@ final class AssistServiceRunStagesTests: XCTestCase {
     }
 
     private func completePipelinesRefresh(with pipelines: [Pipeline]) throws {
-        try XCTUnwrap(connection.pendingRequests.last).completion(.success(.init(value: [
+        try XCTUnwrap(connection.pendingRequests.last).completion(.success(pipelinesData(pipelines)))
+    }
+
+    private func pipelinesData(_ pipelines: [Pipeline]) -> HAData {
+        .init(value: [
             "preferred_pipeline": textOnlyPipeline.id,
             "pipelines": pipelines.map { pipeline -> [String: Any] in
                 var data: [String: Any] = ["id": pipeline.id, "name": pipeline.name]
@@ -198,7 +257,7 @@ final class AssistServiceRunStagesTests: XCTestCase {
                 data["tts_engine"] = pipeline.ttsEngine
                 return data
             },
-        ])))
+        ])
     }
 
     private final class SpyAssistServiceDelegate: AssistServiceDelegate {
