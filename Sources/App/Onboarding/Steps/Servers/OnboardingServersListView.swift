@@ -142,15 +142,7 @@ struct OnboardingServersListView: View {
             ManualURLEntryView { connectURL in
                 viewModel.pendingManualURL = connectURL
             }
-            .modify { view in
-                if #available(iOS 18.0, *) {
-                    view.navigationTransition(
-                        .zoom(sourceID: Constants.manualEntryTransitionID, in: manualEntryGeometry)
-                    )
-                } else {
-                    view
-                }
-            }
+            .zoomNavigationTransition(sourceID: Constants.manualEntryTransitionID, in: manualEntryGeometry)
         }
         // On Mac Catalyst manual entry is a pushed page instead of a sheet: sheet content doesn't
         // receive mouse events reliably there, and pages avoid the sheet-over-sheet ordering issues
@@ -461,13 +453,7 @@ struct OnboardingServersListView: View {
         }
         .buttonStyle(.glassButton)
         .accessibilityIdentifier(AccessibilityIdentifier.onboardingServersManualEntry.rawValue)
-        .modify { view in
-            if #available(iOS 18.0, *) {
-                view.matchedTransitionSource(id: Constants.manualEntryTransitionID, in: manualEntryGeometry)
-            } else {
-                view
-            }
-        }
+        .zoomTransitionSource(id: Constants.manualEntryTransitionID, in: manualEntryGeometry)
         .padding()
     }
 
