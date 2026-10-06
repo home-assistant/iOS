@@ -85,4 +85,28 @@ struct WebhookUpdateLocationPrivacyTests {
         #expect(json["in_zones"] == nil)
         #expect(json["battery"] as? Int == 44)
     }
+
+    @Test func zoneOnlyNamesTheBeaconZoneEnteredWithoutAFix() {
+        let json = payload(.zoneOnly, trigger: .BeaconRegionEnter, location: nil, zone: home)
+
+        #expect(json["location_name"] as? String == "home")
+        #expect(json["in_zones"] as? [String] == ["zone.home"])
+    }
+
+    @Test func zoneOnlyNamesTheBeaconZoneForAnOlderServer() {
+        let json = payload(.zoneOnly, trigger: .BeaconRegionEnter, location: nil, zone: home, supportsInZones: false)
+
+        #expect(json["location_name"] as? String == "home")
+        #expect(json["in_zones"] == nil)
+    }
+
+    @Test func zoneOnlyIgnoresABeaconZoneThatIsNotTracked() {
+        var untracked = home
+        untracked.trackingEnabled = false
+
+        let json = payload(.zoneOnly, trigger: .BeaconRegionEnter, location: nil, zone: untracked)
+
+        #expect(json["location_name"] as? String == LocationNames.NotHome.rawValue)
+        #expect(json["in_zones"] as? [String] == [])
+    }
 }

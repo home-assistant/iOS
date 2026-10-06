@@ -192,4 +192,15 @@ struct WatchDeviceReporterLocationTests {
         #expect(reports.first?.outcome == .skipped(reason: "no location to send"))
         #expect(settings.lastSensorReportAt == nil)
     }
+
+    @Test func eachTriggerNamesWhatCausedTheReport() {
+        #expect(WatchDeviceReporter.locationTrigger(for: .foreground, zoneEvent: nil) == .Launch)
+        #expect(WatchDeviceReporter.locationTrigger(for: .backgroundRefresh, zoneEvent: nil) == .BackgroundFetch)
+        #expect(WatchDeviceReporter.locationTrigger(for: .settingsChange, zoneEvent: nil) == .Manual)
+        #expect(WatchDeviceReporter.locationTrigger(for: .zoneChange, zoneEvent: nil) == .Unknown)
+        #expect(
+            WatchDeviceReporter.locationTrigger(for: .zoneChange, zoneEvent: WatchZoneEvent(zone: home, entered: false))
+                == .GPSRegionExit
+        )
+    }
 }
