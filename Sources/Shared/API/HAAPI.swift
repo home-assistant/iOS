@@ -714,34 +714,17 @@ public class HomeAssistantAPI {
                 await seal(Current.connectivity.currentWiFiSSID())
             }
         }.then { [self] currentSSID -> Promise<Void> in
-            let update: WebhookUpdateLocation
-            let location: CLLocation?
-
-            switch server.info.setting(for: .locationPrivacy) {
-            case .exact:
-                update = .init(trigger: updateType, location: rawLocation, zone: zone, currentSSID: currentSSID)
-                location = rawLocation
-            case .zoneOnly:
-                let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
-                if updateType == .BeaconRegionEnter || rawLocation != nil {
-                    update = .init(
-                        trigger: updateType,
-                        usingNameOf: locationNameZone(
-                            for: updateType,
-                            from: inZones,
-                            fallbackZone: zone,
-                            supportsInZones: supportsInZones
-                        ),
-                        inZones: supportsInZones ? inZones : nil
-                    )
-                } else {
-                    update = .init(trigger: updateType)
-                }
-                location = nil
-            case .never:
-                update = .init(trigger: updateType)
-                location = nil
-            }
+            let privacy = server.info.setting(for: .locationPrivacy)
+            let update = WebhookUpdateLocation(
+                privacy: privacy,
+                trigger: updateType,
+                location: rawLocation,
+                zone: zone,
+                supportsInZones: supportsInZones,
+                currentSSID: currentSSID,
+                zonesContaining: { [server] in AppZone.zones(of: $0, in: server) }
+            )
+            let location = privacy == .exact ? rawLocation : nil
 
             return firstly { () -> Promise<Void> in
                 let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
@@ -774,35 +757,6 @@ public class HomeAssistantAPI {
                     )
                 )
             }.asVoid()
-        }
-    }
-
-    private func zones(
-        for updateType: LocationUpdateTrigger,
-        location rawLocation: CLLocation?,
-        fallbackZone zone: AppZone?
-    ) -> [AppZone] {
-        if updateType == .BeaconRegionEnter {
-            return zone.flatMap { $0.trackingEnabled ? [$0] : nil } ?? []
-        } else if let rawLocation {
-            return AppZone.zones(of: rawLocation, in: server)
-        } else {
-            return []
-        }
-    }
-
-    private func locationNameZone(
-        for updateType: LocationUpdateTrigger,
-        from zones: [AppZone],
-        fallbackZone zone: AppZone?,
-        supportsInZones: Bool
-    ) -> AppZone? {
-        if supportsInZones {
-            return zones.first { !$0.isPassive }
-        } else if updateType == .BeaconRegionEnter {
-            return zone
-        } else {
-            return zones.first
         }
     }
 
