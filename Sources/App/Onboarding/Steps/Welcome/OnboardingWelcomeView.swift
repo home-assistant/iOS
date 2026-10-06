@@ -11,6 +11,7 @@ struct OnboardingWelcomeView: View {
     }
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.layoutDirection) private var layoutDirection
     @State private var showLearnMore = false
     /// Advances to the servers list; the onboarding container swaps content in place (no navigation
     /// push — tearing the container down with a pushed page leaks its hosting view).
@@ -23,23 +24,31 @@ struct OnboardingWelcomeView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Spaces.three) {
-                Spacer()
-                logoBlock
-                textBlock
-                Spacer()
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: DesignSystem.Spaces.three) {
+                    Spacer()
+                    logoBlock
+                    textBlock
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+                .padding(.top, Constants.distanceToTop)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-            .padding(.top, Constants.distanceToTop)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .safeAreaInset(edge: .bottom, content: {
+                if !showsActionsInToolbar {
+                    continueButtonBlock
+                }
+            })
+            // Laid out inside the safe area, then shifted by half the horizontal inset asymmetry
+            // (iPhone Duo camera or vertical bar) so it reads as centered on the whole display.
+            .offset(x: SafeAreaCenteringOffset.horizontal(
+                safeAreaInsets: proxy.safeAreaInsets,
+                layoutDirection: layoutDirection
+            ))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .safeAreaInset(edge: .bottom, content: {
-            if !showsActionsInToolbar {
-                continueButtonBlock
-            }
-        })
         .toolbar {
             if showsActionsInToolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -55,9 +64,6 @@ struct OnboardingWelcomeView: View {
                 }
             }
         }
-        // Centers the content on the full display width when a horizontal safe area inset is
-        // present (e.g. iPhone Duo camera or vertical bar) instead of on the inset region.
-        .ignoresSafeArea(.container, edges: .horizontal)
         .sheet(isPresented: $showLearnMore) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantCompanionGetStarted)
         }
