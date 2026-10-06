@@ -13,8 +13,6 @@ struct MacSidebarItem: Identifiable, Hashable {
     let title: String
     let icon: FrontendIcon
     var badge: Int = 0
-    /// Lovelace dashboards are the only panels the frontend lets a user pick as their default.
-    var isDashboard = false
 
     var navigationPath: String? {
         switch kind {

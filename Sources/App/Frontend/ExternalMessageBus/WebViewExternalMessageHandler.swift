@@ -206,7 +206,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .frontendReloadAndClearCache:
                 reloadAndClearFrontendCache()
             case .sidebarShow:
-                MacNativeSidebarState.shared.show()
                 NativeTabBarState.shared.requestMore()
             case .moreInfoOpened:
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
