@@ -53,12 +53,10 @@ struct OnboardingServersListView: View {
         isCompactHeight ? 0 : headerHeight
     }
 
-    /// Shrinks the loader whenever the space left below the title can't fit it at full size.
-    private var loaderScale: CGFloat {
-        let availableHeight = contentHeight - titleHeight
-        guard availableHeight > 0 else { return 1 }
-        let requiredHeight = SearchingServersAnimationView.Constants.dotsSize + DesignSystem.Spaces.six
-        return min(1, availableHeight / requiredHeight)
+    /// Space left for the loader below the title, with a margin; the loader shrinks to fit it.
+    private var loaderAvailableHeight: CGFloat? {
+        guard contentHeight > 0 else { return nil }
+        return contentHeight - titleHeight - DesignSystem.Spaces.six
     }
 
     init(
@@ -343,7 +341,10 @@ struct OnboardingServersListView: View {
     }
 
     private var centerLoader: some View {
-        SearchingServersAnimationView(text: L10n.Onboarding.Servers.Search.Loader.text, scale: loaderScale)
+        SearchingServersAnimationView(
+            text: L10n.Onboarding.Servers.Search.Loader.text,
+            availableHeight: loaderAvailableHeight
+        )
             .padding(.horizontal)
             // Centers the loader in the space below the title rather than over it.
             .padding(.top, titleHeight)

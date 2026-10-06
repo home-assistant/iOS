@@ -3,6 +3,9 @@ import SwiftUI
 
 /// A pill button on Liquid Glass, so it can sit over scrolling content without hiding it. Falls
 /// back to the regular material where Liquid Glass isn't available.
+///
+/// Frontend counterpart: none. The web frontend has no floating action over scrolling content;
+/// this is the companion app's own.
 public struct HAGlassButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
 

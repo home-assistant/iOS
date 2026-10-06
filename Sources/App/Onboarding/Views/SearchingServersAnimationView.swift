@@ -10,6 +10,7 @@ struct SearchingServersAnimationView: View {
         static let logoPulseScale: CGFloat = 1.15
         static let logoPulseDuration: Double = 0.8
         static let secondsUntilShowText: CGFloat = 8
+        static let minimumScale: CGFloat = 0.4
     }
 
     @State private var rotation: Double = 0
@@ -18,12 +19,21 @@ struct SearchingServersAnimationView: View {
     @State private var showText: Bool = false
 
     let text: String?
-    /// Shrinks the dots and logo (not the text) when the screen can't fit them at full size.
-    let scale: CGFloat
+    /// Height the whole animation may take. The dots and logo shrink to what is left beside the
+    /// text once it shows; the text keeps its size so it stays legible.
+    let availableHeight: CGFloat?
+    @State private var textHeight: CGFloat = 0
 
-    init(text: String? = nil, scale: CGFloat = 1) {
+    init(text: String? = nil, availableHeight: CGFloat? = nil) {
         self.text = text
-        self.scale = scale
+        self.availableHeight = availableHeight
+    }
+
+    /// Ratio the dots and logo are drawn at so the measured text and the spacing still fit.
+    private var scale: CGFloat {
+        guard let availableHeight, availableHeight > 0 else { return 1 }
+        let heightForDots = availableHeight - textHeight - DesignSystem.Spaces.three
+        return min(1, max(Constants.minimumScale, heightForDots / Constants.dotsSize))
     }
 
     var body: some View {
@@ -40,6 +50,11 @@ struct SearchingServersAnimationView: View {
                 .frame(width: showText ? nil : 0)
                 .opacity(showText ? 1 : 0)
                 .animation(.easeInOut, value: showText)
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    proxy.size.height
+                } action: { height in
+                    textHeight = height
+                }
         }
         .onAppear {
             animateLogoPulse()
