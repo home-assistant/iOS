@@ -86,6 +86,8 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @MainActor func initialRoutine() {
         AssistSession.shared.delegate = self
+        // Each session refetches the pipelines, possibly for another server; until then they are only cached.
+        hasFreshPipelines = false
 
         loadCachedPipelines()
 
@@ -285,7 +287,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func replaceAssistService(server: Server) {
-        hasFreshPipelines = false
         assistService = AssistService(server: server)
         assistService.delegate = self
     }

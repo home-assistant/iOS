@@ -83,6 +83,17 @@ final class AssistServiceRunStagesTests: XCTestCase {
         XCTAssertEqual(data["end_stage"] as? String, "tts")
     }
 
+    /// A cache that cannot be read counts as no cache at all: the run goes out as asked.
+    func testUnreadableCacheIsSentAsAsked() throws {
+        let emptyDatabase = try DatabaseQueue(path: ":memory:")
+        Current.database = { emptyDatabase }
+
+        sut.assist(source: .audio(pipelineId: voicePipeline.id, audioSampleRate: 16000, tts: true))
+
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+        XCTAssertEqual(try lastRunData()["end_stage"] as? String, "tts")
+    }
+
     /// The reported hang: a text-only pipeline asked for TTS. Once the server confirms it has no TTS
     /// engine, the run ends at `intent`.
     func testTextRunOnPipelineWithoutTextToSpeechEndsAtIntent() throws {
