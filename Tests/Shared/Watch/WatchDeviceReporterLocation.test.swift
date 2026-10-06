@@ -290,4 +290,36 @@ struct WatchDeviceReporterLocationTests {
         #expect(WatchDeviceReporter.locationTrigger(for: .backgroundRefresh) == .BackgroundFetch)
         #expect(WatchDeviceReporter.locationTrigger(for: .settingsChange) == .Manual)
     }
+
+    @Test func withoutLocationDependenciesNothingIsShared() async {
+        let dependencies = WatchDeviceReporter.Dependencies(
+            settings: settings,
+            registrations: store,
+            servers: { [] },
+            hasActiveURL: { _ in true },
+            currentSensors: { [] },
+            identity: { _ in
+                WatchDeviceIdentity(
+                    appID: "io.robbie.HomeAssistant.watchkitapp",
+                    appName: "Home Assistant Watch",
+                    appVersion: "2026.1 (1)",
+                    deviceName: "My iPhone Apple Watch",
+                    deviceID: "watch-device-id",
+                    model: "Watch7,1",
+                    osName: "watchOS",
+                    osVersion: "26.0"
+                )
+            },
+            register: { _, _ in throw CancellationError() },
+            send: { _, _, _, _, _ in throw CancellationError() },
+            now: { [now] in now }
+        )
+
+        #expect(dependencies.locationPrivacy(server) == .never)
+        #expect(await dependencies.currentLocation(1) == nil)
+        #expect(await dependencies.refreshZones(server, 1))
+        #expect(dependencies.zonesContaining(fix, server).isEmpty)
+        #expect(!dependencies.isLocationClearPending(server))
+        dependencies.locationCleared(server)
+    }
 }

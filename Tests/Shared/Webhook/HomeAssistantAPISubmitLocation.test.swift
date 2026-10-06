@@ -8,6 +8,7 @@ final class HomeAssistantAPISubmitLocationTests: XCTestCase {
     private var webhookManager: FakeWebhookManager!
     private var previousWebhookManager: WebhookManager!
     private var previousDatabase: (() -> DatabaseQueue)!
+    private var previousGeocode: ((CLLocation) -> Promise<[CLPlacemark]>)!
 
     private let fix = CLLocation(
         coordinate: .init(latitude: 52.37, longitude: 4.89),
@@ -29,11 +30,15 @@ final class HomeAssistantAPISubmitLocationTests: XCTestCase {
         try LocationHistoryTable().createIfNeeded(database: database)
         Current.database = { database }
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
+        // The sensors sent alongside an exact location include a reverse geocode, kept off the network.
+        previousGeocode = Current.geocoder.geocode
+        Current.geocoder.geocode = { _ in .value([]) }
     }
 
     override func tearDown() {
         Current.webhooks = previousWebhookManager
         Current.database = previousDatabase
+        Current.geocoder.geocode = previousGeocode
         super.tearDown()
     }
 

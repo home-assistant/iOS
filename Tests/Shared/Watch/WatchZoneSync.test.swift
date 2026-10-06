@@ -204,4 +204,23 @@ final class WatchZoneSyncTests {
         #expect(storedZones(of: server).map(\.entityId) == ["zone.home"])
         #expect(storedZones(of: other).isEmpty)
     }
+
+    @Test func theRealTransportNeedsAURLTheWatchCanReach() async {
+        let unreachable = Server.fake { info in
+            info.connection.set(address: nil, for: .external)
+        }
+
+        await #expect(throws: ServerConnectionError.self) {
+            try await WatchZoneSync.refreshIfNeeded(server: unreachable, defaults: defaults)
+        }
+        #expect(storedZones(of: unreachable).isEmpty)
+    }
+
+    @Test func removingZonesSurvivesADatabaseThatCannotBeWritten() throws {
+        // A database without the zone table makes the write fail; that's logged, not thrown.
+        let withoutZoneTable = try DatabaseQueue()
+        Current.database = { withoutZoneTable }
+
+        WatchZoneSync.removeZones(for: server.identifier, defaults: defaults)
+    }
 }

@@ -58,11 +58,8 @@ public extension WebhookUpdateLocation {
     ) -> [AppZone] {
         if trigger == .BeaconRegionEnter {
             return zone.flatMap { $0.trackingEnabled ? [$0] : nil } ?? []
-        } else if let location {
-            return zonesContaining(location)
-        } else {
-            return []
         }
+        return location.map(zonesContaining) ?? []
     }
 
     private static func locationNameZone(
