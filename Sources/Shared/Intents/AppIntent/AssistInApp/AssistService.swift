@@ -43,6 +43,9 @@ public enum AssistSource: Equatable {
 }
 
 public final class AssistService: AssistServiceProtocol {
+    /// Reported when a voice run targets a pipeline the server cannot transcribe audio for.
+    public static let speechToTextUnsupportedErrorCode = "stt-not-supported"
+
     public weak var delegate: AssistServiceDelegate?
     public var shouldStartListeningAgainAfterPlaybackEnd = false
     private var server: Server
@@ -75,12 +78,37 @@ public final class AssistService: AssistServiceProtocol {
         self.server = server
     }
 
+    /// Callers have already settled where the user wants speech handled — a request transcribed on
+    /// device arrives as text, and one spoken on device does not ask for TTS. What is left here is
+    /// to not ask the pipeline for a stage it does not have, which the backend would reject before
+    /// the run produced a single event.
     public func assist(source: AssistSource) {
         switch source {
         case let .text(input, pipelineId, expectTTS):
-            assistWithText(input: input, pipelineId: pipelineId, expectTTS: expectTTS)
+            let stages = AssistRunStages(
+                pipeline: cachedPipeline(id: pipelineId),
+                listening: nil,
+                speaking: expectTTS ? .server : nil
+            )
+            assistWithText(
+                input: input,
+                pipelineId: pipelineId,
+                expectTTS: stages?.endsWithTextToSpeech ?? expectTTS
+            )
         case let .audio(pipelineId, audioSampleRate, tts):
-            assistWithAudio(pipelineId: pipelineId, audioSampleRate: audioSampleRate, tts: tts)
+            guard let stages = AssistRunStages(
+                pipeline: cachedPipeline(id: pipelineId),
+                listening: .server,
+                speaking: tts ? .server : nil
+            ) else {
+                reportSpeechToTextUnsupported()
+                return
+            }
+            assistWithAudio(
+                pipelineId: pipelineId,
+                audioSampleRate: audioSampleRate,
+                tts: stages.endsWithTextToSpeech
+            )
         }
     }
 
@@ -115,6 +143,22 @@ public final class AssistService: AssistServiceProtocol {
         sttBinaryHandlerId = nil
         cancellable?.cancel()
         cancellable = nil
+    }
+
+    private func cachedPipeline(id pipelineId: String?) -> Pipeline? {
+        AssistPipelines.cachedPipeline(id: pipelineId, serverId: server.identifier.rawValue)
+    }
+
+    /// Delivered on the main queue like a rejection from the backend would be, so callers that start
+    /// a run from their recorder's callback have finished setting up before they hear it failed.
+    private func reportSpeechToTextUnsupported() {
+        Current.Log.error("Assist pipeline has no speech-to-text engine, not starting a voice run")
+        DispatchQueue.main.async { [weak self] in
+            self?.delegate?.didReceiveError(
+                code: Self.speechToTextUnsupportedErrorCode,
+                message: L10n.Assist.Error.speechToTextUnsupported
+            )
+        }
     }
 
     private func saveInDatabase(_ response: PipelineResponse) {
