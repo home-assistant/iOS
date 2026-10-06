@@ -49,48 +49,6 @@ struct OnboardingWelcomeViewTests {
         )
     }
 
-    /// Attaches every render to the result bundle so the images a CI machine draws can be read back
-    /// from its artifacts and used as references.
-    @MainActor @Test func attachesRendersForReference() async throws {
-        guard #available(iOS 18.0, *) else { return }
-
-        let portrait = SwiftUISnapshotLayout.device(config: .iPhone13(.portrait))
-        let landscape = SwiftUISnapshotLayout.device(config: .iPhone13(.landscape))
-        let renders: [(String, AnyView, SwiftUISnapshotLayout)] = [
-            (
-                "regularHeightShowsBottomActions.welcome-regular-height",
-                AnyView(OnboardingWelcomeView(continueAction: {})),
-                portrait
-            ),
-            (
-                "compactHeightDropsBottomActions.welcome-compact-height",
-                AnyView(OnboardingWelcomeView(continueAction: {}).environment(\.verticalSizeClass, .compact)),
-                landscape
-            ),
-            (
-                "asymmetricHorizontalInsetKeepsContentCentered.welcome-trailing-inset",
-                AnyView(OnboardingWelcomeView(continueAction: {}).safeAreaPadding(.trailing, 80)),
-                portrait
-            ),
-        ]
-        for (name, view, layout) in renders {
-            for style in [UIUserInterfaceStyle.light, .dark] {
-                let strategy = Snapshotting<AnyView, UIImage>.image(
-                    layout: layout,
-                    traits: UITraitCollection(userInterfaceStyle: style)
-                )
-                var image: UIImage?
-                strategy.snapshot(view).run { image = $0 }
-                let deadline = Date(timeIntervalSinceNow: 5)
-                while image == nil, Date() < deadline {
-                    RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.05))
-                }
-                let rendered = try #require(image)
-                Attachment.record(rendered, named: "\(name)-\(style == .light ? "light" : "dark").png")
-            }
-        }
-    }
-
     /// In compact height the actions move into the navigation bar. Hosting the stack in a window
     /// of its own is what makes SwiftUI build that toolbar, so this lays the real configuration out.
     /// The window never becomes key: the snapshot helpers draw into whatever window is key, so
