@@ -18,9 +18,12 @@ struct SearchingServersAnimationView: View {
     @State private var showText: Bool = false
 
     let text: String?
+    /// Shrinks the dots and logo (not the text) when the screen can't fit them at full size.
+    let scale: CGFloat
 
-    init(text: String? = nil) {
+    init(text: String? = nil, scale: CGFloat = 1) {
         self.text = text
+        self.scale = scale
     }
 
     var body: some View {
@@ -65,13 +68,13 @@ struct SearchingServersAnimationView: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .scaleEffect(logoScale, anchor: .center)
-            .frame(width: Constants.logoSize, height: Constants.logoSize)
+            .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
     }
 
     private var dots: some View {
         Image(.searchingServersDots)
             .resizable()
-            .frame(width: Constants.dotsSize, height: Constants.dotsSize)
+            .frame(width: Constants.dotsSize * scale, height: Constants.dotsSize * scale)
             .rotationEffect(.degrees(rotation))
     }
 

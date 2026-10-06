@@ -7,10 +7,13 @@ struct OnboardingServersListView: View {
         static let initialDelayUntilDismissCenterLoader: TimeInterval = 3
         static let minimumDelayUntilDismissCenterLoader: TimeInterval = 1.5
         static let delayUntilAutoconnect: TimeInterval = 2
+        static let manualEntryTransitionID = "manual-entry"
     }
 
+    @Namespace private var manualEntryGeometry
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     @StateObject private var viewModel: OnboardingServersListViewModel
     /// Owned by `OnboardingNavigationView`; the auth flow pushes its pages onto its navigation path.
@@ -25,6 +28,8 @@ struct OnboardingServersListView: View {
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
     @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
     @State private var rejectedInvitation = false
+    @State private var headerHeight: CGFloat = 0
+    @State private var contentHeight: CGFloat = 0
 
     private let prefillURL: URL?
     private let onboardingStyle: OnboardingStyle
@@ -35,6 +40,25 @@ struct OnboardingServersListView: View {
 
     private var shouldShowInvitation: Bool {
         invitationURL != nil && !rejectedInvitation
+    }
+
+    /// A short window (closed iPhone Duo or any iPhone in landscape) moves the title into the
+    /// navigation bar so the loader has the whole height to itself.
+    private var isCompactHeight: Bool {
+        verticalSizeClass == .compact
+    }
+
+    /// Height the in-content title takes away from the loader; nothing when it is in the bar.
+    private var titleHeight: CGFloat {
+        isCompactHeight ? 0 : headerHeight
+    }
+
+    /// Shrinks the loader whenever the space left below the title can't fit it at full size.
+    private var loaderScale: CGFloat {
+        let availableHeight = contentHeight - titleHeight
+        guard availableHeight > 0 else { return 1 }
+        let requiredHeight = SearchingServersAnimationView.Constants.dotsSize + DesignSystem.Spaces.six
+        return min(1, availableHeight / requiredHeight)
     }
 
     init(
@@ -54,11 +78,17 @@ struct OnboardingServersListView: View {
     var body: some View {
         ZStack {
             content
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    proxy.size.height
+                } action: { height in
+                    contentHeight = height
+                }
             if !shouldShowInvitation {
                 centerLoader
                 autoConnectView
             }
         }
+        .navigationTitle(isCompactHeight ? L10n.Onboarding.Servers.title : "")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom, content: {
             if autoConnectInstance == nil, !shouldShowInvitation {
@@ -113,6 +143,15 @@ struct OnboardingServersListView: View {
         }) {
             ManualURLEntryView { connectURL in
                 viewModel.pendingManualURL = connectURL
+            }
+            .modify { view in
+                if #available(iOS 18.0, *) {
+                    view.navigationTransition(
+                        .zoom(sourceID: Constants.manualEntryTransitionID, in: manualEntryGeometry)
+                    )
+                } else {
+                    view
+                }
             }
         }
         // On Mac Catalyst manual entry is a pushed page instead of a sheet: sheet content doesn't
@@ -274,7 +313,9 @@ struct OnboardingServersListView: View {
             } else {
                 ScrollView {
                     VStack(spacing: DesignSystem.Spaces.two) {
-                        headerView
+                        if !isCompactHeight {
+                            headerView
+                        }
                         list
                             .opacity(viewModel.showCenterLoader ? 0 : 1)
                             .animation(.easeInOut, value: viewModel.showCenterLoader)
@@ -302,8 +343,13 @@ struct OnboardingServersListView: View {
     }
 
     private var centerLoader: some View {
-        SearchingServersAnimationView(text: L10n.Onboarding.Servers.Search.Loader.text)
+        SearchingServersAnimationView(text: L10n.Onboarding.Servers.Search.Loader.text, scale: loaderScale)
             .padding(.horizontal)
+            // Centers the loader in the space below the title rather than over it.
+            .padding(.top, titleHeight)
+            // Pinned to the measured content height so the overlay never grows the stack and
+            // feeds back into its own measurement.
+            .frame(height: contentHeight > 0 ? contentHeight : nil)
             .offset(y: autoConnectInstance == nil ? 0 : -100)
             .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
             .animation(.easeInOut, value: viewModel.showCenterLoader)
@@ -373,6 +419,11 @@ struct OnboardingServersListView: View {
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(.vertical, DesignSystem.Spaces.four)
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                proxy.size.height
+            } action: { height in
+                headerHeight = height
+            }
     }
 
     private func serverRow(instance: DiscoveredHomeAssistant) -> some View {
@@ -407,11 +458,16 @@ struct OnboardingServersListView: View {
         }) {
             Text(L10n.Onboarding.Scanning.Manual.Button.title)
         }
-        .buttonStyle(.secondaryButton)
+        .buttonStyle(.glassButton)
         .accessibilityIdentifier(AccessibilityIdentifier.onboardingServersManualEntry.rawValue)
+        .modify { view in
+            if #available(iOS 18.0, *) {
+                view.matchedTransitionSource(id: Constants.manualEntryTransitionID, in: manualEntryGeometry)
+            } else {
+                view
+            }
+        }
         .padding()
-        // A little bit of opacity to indicate items behind it
-        .background(Color(uiColor: .systemBackground).opacity(0.9))
     }
 
     // Divider between the list and manual input button providing alternative

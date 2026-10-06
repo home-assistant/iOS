@@ -348,7 +348,8 @@ private struct HAFlexStylingModifier: ViewModifier {
     }
 }
 
-private extension View {
+// Shared with the other button styles in this folder (e.g. `HAGlassButtonStyle`).
+extension View {
     func haButtonBasicSizing() -> some View {
         modifier(HABasicStylingModifier())
     }
