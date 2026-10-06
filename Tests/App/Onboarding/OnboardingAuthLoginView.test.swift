@@ -11,15 +11,18 @@ struct OnboardingAuthLoginViewTests {
         let viewModel = try OnboardingAuthLoginViewModel(authDetails: OnboardingAuthDetails(baseURL: baseURL))
         let controller = UIHostingController(rootView: OnboardingAuthLoginView(viewModel: viewModel))
         controller.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 80)
-        // The representable only reaches the hierarchy inside a window.
+        // The representable only reaches the hierarchy inside a window. The window never becomes
+        // key: the snapshot helpers draw into whatever window is key, so taking it would reach into
+        // unrelated tests.
         let window = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 390, height: 844)))
         window.rootViewController = controller
-        window.makeKeyAndVisible()
+        window.isHidden = false
 
         window.layoutIfNeeded()
 
         let webViewWidth = viewModel.webView.frame.width
         #expect(webViewWidth == 390, "web view width \(webViewWidth) should fill the window, ignoring the 80pt inset")
         window.isHidden = true
+        window.rootViewController = nil
     }
 }
