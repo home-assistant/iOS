@@ -84,7 +84,7 @@ actor WatchZoneMonitor {
             await monitor.remove(identifier)
         }
 
-        let existing = Set(await monitor.identifiers)
+        let existing = await Set(monitor.identifiers)
         for (identifier, zone) in desired {
             let condition = CLMonitor.CircularGeographicCondition(
                 center: zone.center,
