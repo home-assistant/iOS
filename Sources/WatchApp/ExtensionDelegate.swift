@@ -79,14 +79,6 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // happens to hit refresh.
         WatchServerSync.requestCertificatesIfMissing()
 
-        // `CLMonitor` relaunches the app in the background to deliver a zone event, and only
-        // delivers it to a monitor opened again under the same name, so it opens on every launch.
-        if #available(watchOS 10, *) {
-            Task {
-                await WatchZoneMonitor.shared.start()
-            }
-        }
-
         // schedule the next background refresh
         Current.backgroundRefreshScheduler.schedule().cauterize()
 

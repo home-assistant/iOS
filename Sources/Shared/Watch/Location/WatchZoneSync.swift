@@ -2,8 +2,8 @@ import Foundation
 import GRDB
 import HAKit
 
-/// Keeps the watch's copy of each server's zones, which zone-only location reports and zone
-/// enter/exit monitoring are worked out against.
+/// Keeps the watch's copy of each server's zones, which zone-only location reports are worked out
+/// against.
 ///
 /// The iPhone learns its zones over the WebSocket; the watch has no reliable WebSocket, and the
 /// phone doesn't mirror zones to it, so the watch fetches them itself over REST into its own
@@ -15,9 +15,6 @@ public enum WatchZoneSync {
     /// How long a server's zones are trusted before they're fetched again.
     public static let maximumAge: TimeInterval = 6 * 60 * 60
 
-    /// Posted when a server's stored zones changed, so zone monitoring can follow.
-    public static let zonesDidChangeNotification = Notification.Name("WatchZoneSyncZonesDidChange")
-
     /// Fetches a server's `GET /api/states` body.
     public typealias Fetch = (Server, TimeInterval) async throws -> Any
 
@@ -27,7 +24,7 @@ public enum WatchZoneSync {
     }
 
     /// Refreshes `server`'s zones when they're older than `maximumAge`, or always with `force`.
-    /// Returns whether the stored zones changed, so a caller can re-arm zone monitoring.
+    /// Returns whether the stored zones changed.
     @discardableResult
     public static func refreshIfNeeded(
         server: Server,
@@ -63,7 +60,7 @@ public enum WatchZoneSync {
     /// Returns whether anything changed.
     @discardableResult
     public static func replaceZones(_ zones: [AppZone], for serverID: Identifier<Server>) throws -> Bool {
-        let changed = try Current.database().write { db -> Bool in
+        try Current.database().write { db -> Bool in
             let serverColumn = Column(DatabaseTables.AppZone.serverIdentifier.rawValue)
             let existing = try AppZone.filter(serverColumn == serverID.rawValue).fetchAll(db)
             guard Set(existing) != Set(zones) else { return false }
@@ -74,14 +71,9 @@ public enum WatchZoneSync {
             }
             return true
         }
-        if changed {
-            NotificationCenter.default.post(name: zonesDidChangeNotification, object: nil)
-        }
-        return changed
     }
 
-    /// Forgets a server's zones, for a server whose location the user stopped sharing or that a
-    /// sync from the iPhone removed.
+    /// Forgets a server's zones, for a server whose location the user stopped sharing.
     public static func removeZones(for serverID: Identifier<Server>, defaults: UserDefaults = .standard) {
         defaults.removeObject(forKey: lastRefreshKey(for: serverID))
         do {

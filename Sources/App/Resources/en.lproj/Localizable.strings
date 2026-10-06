@@ -2952,7 +2952,6 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
 "watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
 "watch.settings.location.title" = "Location";
-"watch.settings.location.zone_monitoring_unavailable" = "Entering and leaving zones is detected on watchOS 10 or later. On this watch, location is sent when the app refreshes.";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "watch.settings.no_servers" = "No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.";
 "watch.settings.perform_action.footer" = "Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.";

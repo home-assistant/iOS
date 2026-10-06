@@ -171,23 +171,6 @@ final class WatchZoneSyncTests {
         #expect(storedZones(of: other).map(\.entityId) == ["zone.work"])
     }
 
-    @Test func aChangeIsAnnounced() throws {
-        let zones = [AppZone(entityId: "zone.home", serverIdentifier: server.identifier.rawValue)]
-        var announcements = 0
-        let token = NotificationCenter.default.addObserver(
-            forName: WatchZoneSync.zonesDidChangeNotification,
-            object: nil,
-            queue: nil
-        ) { _ in announcements += 1 }
-        defer { NotificationCenter.default.removeObserver(token) }
-
-        try WatchZoneSync.replaceZones(zones, for: server.identifier)
-        try WatchZoneSync.replaceZones(zones, for: server.identifier)
-
-        // The second write changed nothing, so it isn't announced.
-        #expect(announcements == 1)
-    }
-
     @Test func removingAServersZonesForgetsThemAndWhenTheyWereFetched() async throws {
         let counter = FetchCounter()
         let home = homeState

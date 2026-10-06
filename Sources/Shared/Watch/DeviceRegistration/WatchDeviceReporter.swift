@@ -386,9 +386,10 @@ public actor WatchDeviceReporter {
             event.zone.serverIdentifier == server.identifier.rawValue ? event : nil
         }
 
-        // Zone-only reports are worked out against the zones, and zone monitoring needs them for
-        // either choice.
-        await dependencies.refreshZones(server, timeout)
+        // Zone-only reports are worked out against the server's zones.
+        if privacy == .zoneOnly {
+            await dependencies.refreshZones(server, timeout)
+        }
 
         var fix = location.fix
         // Without a fix, entering a zone still says where the watch is: inside that zone. An exact

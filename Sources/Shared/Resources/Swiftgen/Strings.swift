@@ -9552,8 +9552,6 @@ public enum L10n {
         public static var serversFooter: String { return L10n.tr("Localizable", "watch.settings.location.servers_footer") }
         /// Location
         public static var title: String { return L10n.tr("Localizable", "watch.settings.location.title") }
-        /// Entering and leaving zones is detected on watchOS 10 or later. On this watch, location is sent when the app refreshes.
-        public static var zoneMonitoringUnavailable: String { return L10n.tr("Localizable", "watch.settings.location.zone_monitoring_unavailable") }
       }
       public enum NoItems {
         public enum Phone {

@@ -3,7 +3,7 @@ import SwiftUI
 
 /// The choice of what one server receives of the watch's location: the exact fix, only the zone
 /// the watch is in, or nothing. Nothing is sent until the user picks exact or zone-only. Picking
-/// either asks for location access, re-arms zone monitoring and sends the location straight away.
+/// either asks for location access and sends the location straight away.
 struct WatchLocationPrivacySection: View {
     let server: Server
 
@@ -25,10 +25,11 @@ struct WatchLocationPrivacySection: View {
                     if newValue != .never {
                         Current.locationManager.requestLocationPermission()
                     }
+                    // Only zone-only reports use the server's zones.
+                    if newValue != .zoneOnly {
+                        WatchZoneSync.removeZones(for: server.identifier)
+                    }
                     Task {
-                        if #available(watchOS 10, *) {
-                            await WatchZoneMonitor.shared.rearm()
-                        }
                         await WatchDeviceReporter.shared.report(trigger: .settingsChange)
                     }
                 }

@@ -51,16 +51,6 @@ struct WatchLocationSettingsView: View {
                     .foregroundStyle(.yellow)
                 }
             }
-
-            if #available(watchOS 10, *) {
-                EmptyView()
-            } else {
-                Section {
-                    Text(verbatim: L10n.Watch.Settings.Location.zoneMonitoringUnavailable)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-            }
         }
         .navigationTitle(Text(verbatim: L10n.Watch.Settings.Location.title))
         .onAppear {
@@ -77,9 +67,6 @@ struct WatchLocationSettingsView: View {
             // A choice made while the permission prompt was up had no fix to send; send it now.
             if state == .authorizedWhenInUse || state == .authorizedAlways {
                 Task {
-                    if #available(watchOS 10, *) {
-                        await WatchZoneMonitor.shared.rearm()
-                    }
                     await WatchDeviceReporter.shared.report(trigger: .settingsChange)
                 }
             }

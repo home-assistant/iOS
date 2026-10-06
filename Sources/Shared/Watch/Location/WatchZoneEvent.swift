@@ -1,6 +1,6 @@
 import Foundation
 
-/// The watch crossing the edge of one of a server's zones, as its zone monitoring saw it.
+/// The watch crossing the edge of one of a server's zones.
 public struct WatchZoneEvent: Equatable {
     public let zone: AppZone
     public let entered: Bool
