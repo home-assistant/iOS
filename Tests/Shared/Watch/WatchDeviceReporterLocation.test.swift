@@ -8,6 +8,32 @@ private final class LocationSendLog {
     private let lock = NSLock()
     private var sent = [(type: String, server: Identifier<Server>, data: Any)]()
     private var zoneRefreshes = [Identifier<Server>]()
+    private var fixRequests = 0
+    private var clearPending = false
+
+    var locationFixRequests: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return fixRequests
+    }
+
+    var isClearPending: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return clearPending
+    }
+
+    func recordFixRequest() {
+        lock.lock()
+        defer { lock.unlock() }
+        fixRequests += 1
+    }
+
+    func setClearPending(_ pending: Bool) {
+        lock.lock()
+        defer { lock.unlock() }
+        clearPending = pending
+    }
 
     var sends: [(type: String, server: Identifier<Server>, data: Any)] {
         lock.lock()
@@ -82,14 +108,16 @@ struct WatchDeviceReporterLocationTests {
     private func reporter(
         privacy: ServerLocationPrivacy,
         location: CLLocation?,
-        zonesContaining: [AppZone] = []
+        zonesContaining: [AppZone] = [],
+        hasActiveURL: Bool = true,
+        hasZones: Bool = true
     ) throws -> WatchDeviceReporter {
         try store.set(registration, for: server.identifier)
         return WatchDeviceReporter(dependencies: .init(
             settings: settings,
             registrations: store,
             servers: { [server] in [server] },
-            hasActiveURL: { _ in true },
+            hasActiveURL: { _ in hasActiveURL },
             // No sensors, so every request a run makes is about the location.
             currentSensors: { [] },
             identity: { _ in
@@ -111,9 +139,17 @@ struct WatchDeviceReporterLocationTests {
             },
             now: { [now] in now },
             locationPrivacy: { _ in privacy },
-            currentLocation: { _ in location },
-            refreshZones: { [log] server, _ in log.recordZoneRefresh(server.identifier) },
-            zonesContaining: { _, _ in zonesContaining }
+            currentLocation: { [log] _ in
+                log.recordFixRequest()
+                return location
+            },
+            refreshZones: { [log] server, _ in
+                log.recordZoneRefresh(server.identifier)
+                return hasZones
+            },
+            zonesContaining: { _, _ in zonesContaining },
+            isLocationClearPending: { [log] _ in log.isClearPending },
+            locationCleared: { [log] _ in log.setClearPending(false) }
         ))
     }
 
@@ -151,38 +187,6 @@ struct WatchDeviceReporterLocationTests {
         #expect(log.refreshedZones == [server.identifier])
     }
 
-    @Test func enteringAZoneWithoutAFixPlacesTheWatchInIt() async throws {
-        // The zone the watch is in is worked out from the zone's own centre, standing in for a fix.
-        let reporter = try reporter(privacy: .zoneOnly, location: nil, zonesContaining: [home])
-
-        await reporter.report(trigger: .zoneChange, zoneEvent: WatchZoneEvent(zone: home, entered: true))
-
-        let update = try #require(log.locationUpdates(to: server.identifier).first)
-        #expect(update["location_name"] as? String == "home")
-    }
-
-    @Test func leavingHomeWithoutAFixIsReportedForExact() async throws {
-        let reporter = try reporter(privacy: .exact, location: nil)
-
-        await reporter.report(trigger: .zoneChange, zoneEvent: WatchZoneEvent(zone: home, entered: false))
-
-        let update = try #require(log.locationUpdates(to: server.identifier).first)
-        #expect(update["location_name"] as? String == LocationNames.NotHome.rawValue)
-    }
-
-    @Test func aZoneOfAnotherServerIsNotUsedForThisOne() async throws {
-        let otherZone = AppZone(entityId: "zone.home", serverIdentifier: "another-server", radius: 100)
-        let reporter = try reporter(privacy: .exact, location: nil)
-
-        let reports = await reporter.report(
-            trigger: .zoneChange,
-            zoneEvent: WatchZoneEvent(zone: otherZone, entered: false)
-        )
-
-        #expect(log.locationUpdates(to: server.identifier).isEmpty)
-        #expect(reports.first?.outcome == .skipped(reason: "no location to send"))
-    }
-
     @Test func noFixMeansNothingIsSent() async throws {
         let reporter = try reporter(privacy: .exact, location: nil)
 
@@ -193,14 +197,97 @@ struct WatchDeviceReporterLocationTests {
         #expect(settings.lastSensorReportAt == nil)
     }
 
+    @Test func exactLeavesOutTheZones() async throws {
+        let reporter = try reporter(privacy: .exact, location: fix, zonesContaining: [home])
+
+        await reporter.report(trigger: .foreground)
+
+        let update = try #require(log.locationUpdates(to: server.identifier).first)
+        #expect(update["location_name"] == nil)
+        #expect(update["in_zones"] == nil)
+        // Exact reports don't use the zones, so they aren't fetched.
+        #expect(log.refreshedZones.isEmpty)
+    }
+
+    @Test func zoneOnlySendsNothingBeforeTheZonesArrive() async throws {
+        // Without the zones every report would say the watch is away, home or not.
+        let reporter = try reporter(privacy: .zoneOnly, location: fix, hasZones: false)
+
+        let reports = await reporter.report(trigger: .foreground)
+
+        #expect(log.locationUpdates(to: server.identifier).isEmpty)
+        #expect(reports.first?.outcome == .skipped(reason: "no location to send"))
+    }
+
+    @Test func noFixIsTakenWhenNoServerCanBeReached() async throws {
+        let reporter = try reporter(privacy: .exact, location: fix, hasActiveURL: false)
+
+        let reports = await reporter.report(trigger: .foreground)
+
+        #expect(log.locationFixRequests == 0)
+        #expect(reports.first?.outcome == .skipped(reason: "no active URL"))
+    }
+
+    @Test func switchingToNeverReplacesTheLastLocationOnce() async throws {
+        log.setClearPending(true)
+        let reporter = try reporter(privacy: .never, location: fix)
+
+        let first = await reporter.report(trigger: .settingsChange)
+        let second = await reporter.report(trigger: .settingsChange)
+
+        let updates = log.locationUpdates(to: server.identifier)
+        #expect(updates.count == 1)
+        let update = try #require(updates.first)
+        #expect(update["gps"] == nil)
+        #expect(update["location_name"] == nil)
+        #expect(update["battery"] as? Int == 80)
+        #expect(!log.isClearPending)
+        #expect(first.first?.outcome == .reported(sensorCount: 0, locationSent: true))
+        #expect(second.first?.outcome == .nothingEnabled)
+        // Nothing about where the watch is was asked for.
+        #expect(log.locationFixRequests == 0)
+    }
+
+    @Test func aFailedClearIsTriedAgain() async throws {
+        log.setClearPending(true)
+        try store.set(registration, for: server.identifier)
+        let reporter = WatchDeviceReporter(dependencies: .init(
+            settings: settings,
+            registrations: store,
+            servers: { [server] in [server] },
+            hasActiveURL: { _ in true },
+            currentSensors: { [] },
+            identity: { _ in
+                WatchDeviceIdentity(
+                    appID: "io.robbie.HomeAssistant.watchkitapp",
+                    appName: "Home Assistant Watch",
+                    appVersion: "2026.1 (1)",
+                    deviceName: "My iPhone Apple Watch",
+                    deviceID: "watch-device-id",
+                    model: "Watch7,1",
+                    osName: "watchOS",
+                    osVersion: "26.0"
+                )
+            },
+            register: { _, _ in Issue.record("already registered"); throw CancellationError() },
+            send: { _, _, _, _, _ in throw URLError(.notConnectedToInternet) },
+            now: { [now] in now },
+            locationPrivacy: { _ in .never },
+            isLocationClearPending: { [log] _ in log.isClearPending },
+            locationCleared: { [log] _ in log.setClearPending(false) }
+        ))
+
+        let reports = await reporter.report(trigger: .backgroundRefresh)
+
+        #expect(log.isClearPending)
+        if case .failed = reports.first?.outcome {} else {
+            Issue.record("expected a failure, got \(String(describing: reports.first?.outcome))")
+        }
+    }
+
     @Test func eachTriggerNamesWhatCausedTheReport() {
-        #expect(WatchDeviceReporter.locationTrigger(for: .foreground, zoneEvent: nil) == .Launch)
-        #expect(WatchDeviceReporter.locationTrigger(for: .backgroundRefresh, zoneEvent: nil) == .BackgroundFetch)
-        #expect(WatchDeviceReporter.locationTrigger(for: .settingsChange, zoneEvent: nil) == .Manual)
-        #expect(WatchDeviceReporter.locationTrigger(for: .zoneChange, zoneEvent: nil) == .Unknown)
-        #expect(
-            WatchDeviceReporter.locationTrigger(for: .zoneChange, zoneEvent: WatchZoneEvent(zone: home, entered: false))
-                == .GPSRegionExit
-        )
+        #expect(WatchDeviceReporter.locationTrigger(for: .foreground) == .Launch)
+        #expect(WatchDeviceReporter.locationTrigger(for: .backgroundRefresh) == .BackgroundFetch)
+        #expect(WatchDeviceReporter.locationTrigger(for: .settingsChange) == .Manual)
     }
 }

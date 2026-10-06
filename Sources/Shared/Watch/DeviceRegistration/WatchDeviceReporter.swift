@@ -31,10 +31,16 @@ public actor WatchDeviceReporter {
         public var locationPrivacy: (Server) -> ServerLocationPrivacy
         /// A fresh fix, or `nil` when one can't be had within the timeout (or isn't permitted).
         public var currentLocation: (TimeInterval) async -> CLLocation?
-        /// Brings the watch's copy of a server's zones up to date, for zone-only reports.
-        public var refreshZones: (Server, TimeInterval) async -> Void
+        /// Brings the watch's copy of a server's zones up to date, for zone-only reports, and says
+        /// whether the watch has any. A server always has a home zone, so having none means they
+        /// were never fetched.
+        public var refreshZones: (Server, TimeInterval) async -> Bool
         /// The server's tracked zones a location falls in, smallest first.
         public var zonesContaining: (CLLocation, Server) -> [AppZone]
+        /// Whether the server still holds a location the user has since stopped sharing with it.
+        public var isLocationClearPending: (Server) -> Bool
+        /// Records that the server no longer holds a location.
+        public var locationCleared: (Server) -> Void
 
         public init(
             settings: WatchSensorSettings,
@@ -48,8 +54,10 @@ public actor WatchDeviceReporter {
             now: @escaping () -> Date,
             locationPrivacy: @escaping (Server) -> ServerLocationPrivacy = { _ in .never },
             currentLocation: @escaping (TimeInterval) async -> CLLocation? = { _ in nil },
-            refreshZones: @escaping (Server, TimeInterval) async -> Void = { _, _ in },
-            zonesContaining: @escaping (CLLocation, Server) -> [AppZone] = { _, _ in [] }
+            refreshZones: @escaping (Server, TimeInterval) async -> Bool = { _, _ in true },
+            zonesContaining: @escaping (CLLocation, Server) -> [AppZone] = { _, _ in [] },
+            isLocationClearPending: @escaping (Server) -> Bool = { _ in false },
+            locationCleared: @escaping (Server) -> Void = { _ in }
         ) {
             self.settings = settings
             self.registrations = registrations
@@ -64,6 +72,8 @@ public actor WatchDeviceReporter {
             self.currentLocation = currentLocation
             self.refreshZones = refreshZones
             self.zonesContaining = zonesContaining
+            self.isLocationClearPending = isLocationClearPending
+            self.locationCleared = locationCleared
         }
     }
 
@@ -78,8 +88,6 @@ public actor WatchDeviceReporter {
         case foreground
         case backgroundRefresh
         case settingsChange
-        /// The watch entered or left one of a server's zones.
-        case zoneChange
     }
 
     public enum Outcome: Equatable {
@@ -106,30 +114,26 @@ public actor WatchDeviceReporter {
     static func timeout(for trigger: Trigger) -> TimeInterval {
         switch trigger {
         case .backgroundRefresh: return 8
-        case .foreground, .settingsChange, .zoneChange: return 20
+        case .foreground, .settingsChange: return 20
         }
     }
 
     /// How long a run waits for a location fix. Kept short in the background refresh, whose budget
-    /// also has to cover the requests; a zone change has the most to gain from a real fix.
+    /// also has to cover the requests.
     static func locationTimeout(for trigger: Trigger) -> TimeInterval {
         switch trigger {
         case .backgroundRefresh: return 5
         case .foreground: return 10
-        case .settingsChange, .zoneChange: return 15
+        case .settingsChange: return 15
         }
     }
 
     /// What the location report says caused it, as Home Assistant and the iPhone's history name it.
-    static func locationTrigger(for trigger: Trigger, zoneEvent: WatchZoneEvent?) -> LocationUpdateTrigger {
-        if let zoneEvent {
-            return zoneEvent.locationTrigger
-        }
+    static func locationTrigger(for trigger: Trigger) -> LocationUpdateTrigger {
         switch trigger {
         case .foreground: return .Launch
         case .backgroundRefresh: return .BackgroundFetch
         case .settingsChange: return .Manual
-        case .zoneChange: return .Unknown
         }
     }
 
@@ -139,7 +143,6 @@ public actor WatchDeviceReporter {
     private struct LocationContext {
         let fix: CLLocation?
         let trigger: LocationUpdateTrigger
-        let zoneEvent: WatchZoneEvent?
     }
 
     /// The run in progress, if any. Actor isolation alone doesn't serialize runs — every network
@@ -153,11 +156,8 @@ public actor WatchDeviceReporter {
     /// Reports to every configured server and returns what happened for each. A trigger that
     /// arrives during a run waits for that run and then runs itself, so a settings change made
     /// mid-run still gets sent.
-    ///
-    /// - Parameter zoneEvent: the zone crossing that caused a `.zoneChange` run, which the zone's
-    ///   own server is told about.
     @discardableResult
-    public func report(trigger: Trigger, zoneEvent: WatchZoneEvent? = nil) async -> [Report] {
+    public func report(trigger: Trigger) async -> [Report] {
         if let inFlight {
             Current.Log.verbose("watch sensor report (\(trigger.rawValue)) waiting for the run in flight")
             _ = await inFlight.value
@@ -170,7 +170,7 @@ public actor WatchDeviceReporter {
             return []
         }
 
-        let run = Task { await self.run(trigger: trigger, zoneEvent: zoneEvent) }
+        let run = Task { await self.run(trigger: trigger) }
         inFlight = run
         let reports = await run.value
         if inFlight == run {
@@ -179,19 +179,17 @@ public actor WatchDeviceReporter {
         return reports
     }
 
-    private func run(trigger: Trigger, zoneEvent: WatchZoneEvent?) async -> [Report] {
+    private func run(trigger: Trigger) async -> [Report] {
         Current.Log.info("reporting watch sensors (\(trigger.rawValue))")
 
         let servers = dependencies.servers()
 
-        // One fix serves every server, and is only taken when one of them receives the location.
-        let sharesLocation = servers.contains { dependencies.locationPrivacy($0) != .never }
+        // One fix serves every server, and is only taken when one the watch can reach receives it.
+        let sharesLocation = servers.contains { server in
+            dependencies.locationPrivacy(server) != .never && dependencies.hasActiveURL(server)
+        }
         let fix = sharesLocation ? await dependencies.currentLocation(Self.locationTimeout(for: trigger)) : nil
-        let location = LocationContext(
-            fix: fix,
-            trigger: Self.locationTrigger(for: trigger, zoneEvent: zoneEvent),
-            zoneEvent: zoneEvent
-        )
+        let location = LocationContext(fix: fix, trigger: Self.locationTrigger(for: trigger))
 
         // Servers are independent, and the background budget is too short to take them in turn.
         let reports = await withTaskGroup(of: (Int, Report).self) { group -> [Report] in
@@ -376,44 +374,54 @@ public actor WatchDeviceReporter {
 
     /// Sends `update_location` with what the server's privacy choice allows, which is what feeds
     /// the watch's own device tracker. Returns whether anything was sent: nothing is when the
-    /// server receives no location, or when the run has nothing the tracker could be set from.
+    /// server receives no location, or when the run has no fix (or, for zone-only, no zones).
     private func sendLocation(server: Server, location: LocationContext, timeout: TimeInterval) async throws -> Bool {
         let privacy = dependencies.locationPrivacy(server)
-        guard privacy != .never else { return false }
-
-        // The zone crossing belongs to one server; the others just get the fresh fix.
-        let zoneEvent = location.zoneEvent.flatMap { event in
-            event.zone.serverIdentifier == server.identifier.rawValue ? event : nil
+        guard privacy != .never else {
+            return try await clearLocationIfPending(server: server, trigger: location.trigger, timeout: timeout)
         }
 
-        // Zone-only reports are worked out against the server's zones.
+        guard let fix = location.fix else {
+            Current.Log.info("no location fix to send to \(server.info.name) from the watch")
+            return false
+        }
+
+        // Zone-only reports are worked out against the server's zones. Without them every report
+        // would say the watch is away, so none is sent until they arrive.
         if privacy == .zoneOnly {
-            await dependencies.refreshZones(server, timeout)
-        }
-
-        var fix = location.fix
-        // Without a fix, entering a zone still says where the watch is: inside that zone. An exact
-        // report doesn't need this; it already sends the zone's centre for a zone crossing.
-        if privacy == .zoneOnly, fix == nil, let zoneEvent, zoneEvent.entered {
-            fix = zoneEvent.zone.location
+            let hasZones = await dependencies.refreshZones(server, timeout)
+            guard hasZones else {
+                Current.Log.info("no zones for \(server.info.name) on the watch yet; not sending its zone")
+                return false
+            }
         }
 
         let update = WebhookUpdateLocation(
             privacy: privacy,
-            trigger: zoneEvent?.locationTrigger ?? location.trigger,
+            trigger: location.trigger,
             location: fix,
-            zone: zoneEvent?.zone,
+            zone: nil,
             supportsInZones: server.info.version >= .inZonesOnLocationUpdate,
             currentSSID: nil,
             zonesContaining: { [dependencies] in dependencies.zonesContaining($0, server) }
         )
-        let payload = update.toJSON()
-        guard payload["gps"] != nil || payload["location_name"] != nil else {
-            Current.Log.info("no location to send to \(server.info.name) from the watch")
-            return false
-        }
+        _ = try await send(type: "update_location", data: update.toJSON(), server: server, timeout: timeout)
+        return true
+    }
 
+    /// Home Assistant keeps the last location it was sent until it gets another one, so a server
+    /// the user stopped sharing with would go on showing where the watch was. One update with no
+    /// location in it replaces that, as the iPhone's own updates do once it is set to never.
+    private func clearLocationIfPending(
+        server: Server,
+        trigger: LocationUpdateTrigger,
+        timeout: TimeInterval
+    ) async throws -> Bool {
+        guard dependencies.isLocationClearPending(server) else { return false }
+
+        let payload = WebhookUpdateLocation(trigger: trigger).toJSON()
         _ = try await send(type: "update_location", data: payload, server: server, timeout: timeout)
+        dependencies.locationCleared(server)
         return true
     }
 
@@ -507,8 +515,15 @@ public extension WatchDeviceReporter.Dependencies {
                     // Zones already stored are still used; the next run tries again.
                     Current.Log.error("failed refreshing zones for \(server.info.name) on the watch: \(error)")
                 }
+                return AppZone.all().contains { $0.serverIdentifier == server.identifier.rawValue }
             },
-            zonesContaining: { location, server in AppZone.zones(of: location, in: server) }
+            zonesContaining: { location, server in AppZone.zones(of: location, in: server) },
+            isLocationClearPending: { server in
+                WatchUserDefaults.shared.isLocationClearPending(forServer: server.identifier)
+            },
+            locationCleared: { server in
+                WatchUserDefaults.shared.setLocationClearPending(false, forServer: server.identifier)
+            }
         )
     }
 }

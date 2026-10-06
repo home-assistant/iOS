@@ -12,6 +12,9 @@ public final class WatchLocationPrivacyStore {
     enum Key {
         /// Server identifier to `ServerLocationPrivacy` raw value. Absent means `.never`.
         static let privacyByServer = "locationPrivacyByServer"
+        /// Servers that were sent a location before the user switched them to `.never`, and still
+        /// hold it until an update without one replaces it.
+        static let clearPending = "locationClearPendingServers"
     }
 
     private let defaults: UserDefaults
@@ -36,12 +39,38 @@ public final class WatchLocationPrivacyStore {
         defer { lock.unlock() }
 
         var byServer = privacyByServer
+        var pending = clearPending
         if privacy == .never {
-            byServer.removeValue(forKey: serverID.rawValue)
+            if byServer.removeValue(forKey: serverID.rawValue) != nil {
+                pending.insert(serverID.rawValue)
+            }
         } else {
             byServer[serverID.rawValue] = privacy.rawValue
+            pending.remove(serverID.rawValue)
         }
         privacyByServer = byServer
+        clearPending = pending
+    }
+
+    /// Whether the server may still show a location the user has since stopped sharing with it.
+    public func isLocationClearPending(forServer serverID: Identifier<Server>) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+
+        return clearPending.contains(serverID.rawValue)
+    }
+
+    public func setLocationClearPending(_ pending: Bool, forServer serverID: Identifier<Server>) {
+        lock.lock()
+        defer { lock.unlock() }
+
+        var servers = clearPending
+        if pending {
+            servers.insert(serverID.rawValue)
+        } else {
+            servers.remove(serverID.rawValue)
+        }
+        clearPending = servers
     }
 
     /// Drops the choices of every server a sync from the iPhone left out, so a server that comes
@@ -53,12 +82,22 @@ public final class WatchLocationPrivacyStore {
         let keep = Set(serverIDs.map(\.rawValue))
         let byServer = privacyByServer
         let remaining = byServer.filter { keep.contains($0.key) }
-        guard remaining.count != byServer.count else { return }
-        privacyByServer = remaining
+        if remaining.count != byServer.count {
+            privacyByServer = remaining
+        }
+        let pending = clearPending
+        if !pending.isSubset(of: keep) {
+            clearPending = pending.intersection(keep)
+        }
     }
 
     private var privacyByServer: [String: String] {
         get { defaults.dictionary(forKey: Key.privacyByServer) as? [String: String] ?? [:] }
         set { defaults.set(newValue, forKey: Key.privacyByServer) }
+    }
+
+    private var clearPending: Set<String> {
+        get { Set(defaults.stringArray(forKey: Key.clearPending) ?? []) }
+        set { defaults.set(newValue.sorted(), forKey: Key.clearPending) }
     }
 }

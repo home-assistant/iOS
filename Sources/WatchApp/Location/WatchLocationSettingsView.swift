@@ -1,4 +1,5 @@
 import Combine
+import CoreLocation
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -9,6 +10,9 @@ import SwiftUI
 struct WatchLocationSettingsView: View {
     @StateObject private var viewModel = WatchSensorsSettingsViewModel()
     @State private var permissionDenied = false
+    /// Whether location access was granted when last seen, so only a grant that just happened
+    /// triggers a report.
+    @State private var permissionGranted = false
 
     var body: some View {
         List {
@@ -57,29 +61,31 @@ struct WatchLocationSettingsView: View {
             viewModel.reload()
         }
         .task {
-            permissionDenied = await Self.isPermissionDenied()
+            let status = await Self.permissionStatus()
+            permissionDenied = status == .denied || status == .restricted
+            permissionGranted = status == .authorizedAlways || status == .authorizedWhenInUse
         }
         .onReceive(
             NotificationCenter.default.publisher(for: .locationPermissionDidChange).receive(on: DispatchQueue.main)
         ) { notification in
             let state = notification.userInfo?["permissionState"] as? LocationPermissionState
             permissionDenied = state == .denied || state == .restricted
+            let granted = state == .authorizedWhenInUse || state == .authorizedAlways
             // A choice made while the permission prompt was up had no fix to send; send it now.
-            if state == .authorizedWhenInUse || state == .authorizedAlways {
+            // Asking again once access is granted posts the same state, which needs no new report.
+            if granted, !permissionGranted {
                 Task {
                     await WatchDeviceReporter.shared.report(trigger: .settingsChange)
                 }
             }
+            permissionGranted = granted
         }
     }
 
     /// `authorizationStatus` performs synchronous XPC to locationd, so it's read off the main thread.
-    private static func isPermissionDenied() async -> Bool {
+    private static func permissionStatus() async -> CLAuthorizationStatus {
         await Task.detached {
-            switch Current.location.permissionStatus() {
-            case .denied, .restricted: return true
-            default: return false
-            }
+            Current.location.permissionStatus()
         }.value
     }
 }

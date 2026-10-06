@@ -54,4 +54,44 @@ struct WatchLocationPrivacyStoreTests {
         #expect(store.locationPrivacy(forServer: serverA.identifier) == .never)
         #expect(store.locationPrivacy(forServer: serverB.identifier) == .zoneOnly)
     }
+
+    @Test func stoppingSharingLeavesALocationToClear() {
+        let store = WatchLocationPrivacyStore(defaults: defaults)
+        store.setLocationPrivacy(.exact, forServer: serverA.identifier)
+
+        store.setLocationPrivacy(.never, forServer: serverA.identifier)
+
+        #expect(store.isLocationClearPending(forServer: serverA.identifier))
+        store.setLocationClearPending(false, forServer: serverA.identifier)
+        #expect(!store.isLocationClearPending(forServer: serverA.identifier))
+    }
+
+    @Test func aServerThatNeverSharedHasNothingToClear() {
+        let store = WatchLocationPrivacyStore(defaults: defaults)
+
+        store.setLocationPrivacy(.never, forServer: serverA.identifier)
+
+        #expect(!store.isLocationClearPending(forServer: serverA.identifier))
+    }
+
+    @Test func sharingAgainCancelsTheClear() {
+        let store = WatchLocationPrivacyStore(defaults: defaults)
+        store.setLocationPrivacy(.zoneOnly, forServer: serverA.identifier)
+        store.setLocationPrivacy(.never, forServer: serverA.identifier)
+
+        store.setLocationPrivacy(.exact, forServer: serverA.identifier)
+
+        #expect(!store.isLocationClearPending(forServer: serverA.identifier))
+    }
+
+    @Test func aServerTheSyncLeftOutHasNothingToClear() {
+        let store = WatchLocationPrivacyStore(defaults: defaults)
+        store.setLocationClearPending(true, forServer: serverA.identifier)
+        store.setLocationClearPending(true, forServer: serverB.identifier)
+
+        store.applySyncedServers([serverB.identifier])
+
+        #expect(!store.isLocationClearPending(forServer: serverA.identifier))
+        #expect(store.isLocationClearPending(forServer: serverB.identifier))
+    }
 }

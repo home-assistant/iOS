@@ -204,6 +204,14 @@ public final class WatchUserDefaults: WatchSensorSettings {
         locationPrivacyStore.setLocationPrivacy(privacy, forServer: serverID)
     }
 
+    public func isLocationClearPending(forServer serverID: Identifier<Server>) -> Bool {
+        locationPrivacyStore.isLocationClearPending(forServer: serverID)
+    }
+
+    public func setLocationClearPending(_ pending: Bool, forServer serverID: Identifier<Server>) {
+        locationPrivacyStore.setLocationClearPending(pending, forServer: serverID)
+    }
+
     /// Drops the location choices of every server a sync from the iPhone left out.
     public func applySyncedServersToLocationPrivacy(_ serverIDs: [Identifier<Server>]) {
         locationPrivacyStore.applySyncedServers(serverIDs)

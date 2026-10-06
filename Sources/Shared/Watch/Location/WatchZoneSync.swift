@@ -83,6 +83,15 @@ public enum WatchZoneSync {
         }
     }
 
+    /// Forgets the zones of every server not in `serverIDs`: those a sync from the iPhone removed,
+    /// and those no longer sending zone-only reports.
+    public static func removeZones(exceptFor serverIDs: Set<Identifier<Server>>, defaults: UserDefaults = .standard) {
+        let stored = Set(AppZone.all().map { Identifier<Server>(rawValue: $0.serverIdentifier) })
+        for serverID in stored.subtracting(serverIDs) {
+            removeZones(for: serverID, defaults: defaults)
+        }
+    }
+
     private static func lastRefreshKey(for serverID: Identifier<Server>) -> String {
         "watchZonesRefreshedAt.\(serverID.rawValue)"
     }

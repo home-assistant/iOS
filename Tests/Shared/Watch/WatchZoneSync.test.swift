@@ -187,4 +187,21 @@ final class WatchZoneSyncTests {
         try await WatchZoneSync.refreshIfNeeded(server: server, defaults: defaults, fetch: fetch)
         #expect(counter.count == 2)
     }
+
+    @Test func onlyTheZonesOfTheServersKeptRemain() throws {
+        let other = Server.fake()
+        try WatchZoneSync.replaceZones(
+            [AppZone(entityId: "zone.home", serverIdentifier: server.identifier.rawValue)],
+            for: server.identifier
+        )
+        try WatchZoneSync.replaceZones(
+            [AppZone(entityId: "zone.work", serverIdentifier: other.identifier.rawValue)],
+            for: other.identifier
+        )
+
+        WatchZoneSync.removeZones(exceptFor: [server.identifier], defaults: defaults)
+
+        #expect(storedZones(of: server).map(\.entityId) == ["zone.home"])
+        #expect(storedZones(of: other).isEmpty)
+    }
 }
