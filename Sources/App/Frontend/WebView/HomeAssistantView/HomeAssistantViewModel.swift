@@ -30,7 +30,7 @@ final class HomeAssistantViewModel: ObservableObject {
     let overlayState: WebFrontendOverlayState
     let chrome: WebViewChromeState
     let reconnectManager: WebViewReconnectManager
-    /// Feeds the App Labs native macOS sidebar and native iOS tab bar; only started once one of them is on screen.
+    /// Feeds the App Labs native iOS tab bar; only started once it is on screen.
     let sidebar: MacSidebarViewModel
     /// Lays `sidebar` out as tabs for the App Labs native iOS tab bar.
     let tabBar: NativeTabBarViewModel
