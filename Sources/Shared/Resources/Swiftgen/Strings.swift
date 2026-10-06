@@ -1390,6 +1390,8 @@ public enum L10n {
     public enum Error {
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
+      /// This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.
+      public static var speechToTextUnsupported: String { return L10n.tr("Localizable", "assist.error.speech_to_text_unsupported") }
     }
     public enum ModernUi {
       public enum Header {

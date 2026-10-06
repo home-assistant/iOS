@@ -111,11 +111,16 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer.pause()
         stopStreaming()
         voiceInitiatedRequest = expectingTTS
-        let requestServerTTS = expectingTTS && !configuration.muteTTS && !configuration.enableOnDeviceTTS
+        // Already text, wherever it was transcribed: only the reply side of the run is left to decide.
+        let stages = AssistRunStages(
+            pipeline: selectedPipeline,
+            listening: nil,
+            speaking: expectingTTS ? speakingEngine : nil
+        )
         assistService.assist(source: .text(
             input: inputText,
             pipelineId: preferredPipelineId,
-            expectTTS: requestServerTTS
+            expectTTS: stages?.endsWithTextToSpeech == true
         ))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
@@ -194,6 +199,15 @@ final class AssistViewModel: NSObject, ObservableObject {
                 return
             }
 
+            // Checked before the microphone goes live: the backend would refuse the run anyway, and
+            // the user would be left talking to nothing.
+            guard voiceRunStages != nil else {
+                Current.Log.error("Assist pipeline \(preferredPipelineId) has no speech-to-text engine")
+                appendToChat(.init(content: L10n.Assist.Error.speechToTextUnsupported, itemType: .error))
+                focusOnInput = true
+                return
+            }
+
             // Remove text from input to make animation look better
             inputText = ""
 
@@ -231,11 +245,38 @@ final class AssistViewModel: NSObject, ObservableObject {
     private func startAssistAudioPipeline(audioSampleRate: Double) {
         assistService.assist(
             source: .audio(
-                pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
+                pipelineId: voicePipelineId,
                 audioSampleRate: audioSampleRate,
-                tts: !configuration.muteTTS && !configuration.enableOnDeviceTTS
+                tts: voiceRunStages?.endsWithTextToSpeech == true
             )
         )
+    }
+
+    /// Voice runs fall back to the first pipeline while "Preferred" has not been resolved.
+    private var voicePipelineId: String? {
+        preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId
+    }
+
+    /// The cached pipeline runs go to, or nil while the pipelines have not been loaded.
+    private var selectedPipeline: Pipeline? {
+        pipelines.first { $0.id == voicePipelineId }
+    }
+
+    /// Who transcribes what the user says into the microphone.
+    private var listeningEngine: AssistSpeechEngine {
+        configuration.enableOnDeviceSTT ? .onDevice : .server
+    }
+
+    /// Who speaks the reply to a spoken request, or nil when replies are muted.
+    private var speakingEngine: AssistSpeechEngine? {
+        guard !configuration.muteTTS else { return nil }
+        return configuration.enableOnDeviceTTS ? .onDevice : .server
+    }
+
+    /// The stages a request spoken into the microphone runs, or nil when the selected pipeline
+    /// cannot transcribe it and the user does not transcribe on device either.
+    private var voiceRunStages: AssistRunStages? {
+        AssistRunStages(pipeline: selectedPipeline, listening: listeningEngine, speaking: speakingEngine)
     }
 
     private func replaceAssistService(server: Server) {

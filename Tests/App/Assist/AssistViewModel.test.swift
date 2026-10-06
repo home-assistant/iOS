@@ -564,6 +564,119 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
     }
 
+    // MARK: - Pipeline capabilities
+
+    /// The backend rejects a run that starts at `stt` on a pipeline without a speech-to-text engine,
+    /// so the microphone must not go live for one: the user would be talking to nothing.
+    @MainActor
+    func testVoiceRequestOnPipelineWithoutSpeechToTextDoesNotRecord() {
+        sut.pipelines = [textOnlyPipeline]
+        sut.preferredPipelineId = textOnlyPipeline.id
+
+        sut.assistWithAudio()
+
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
+        XCTAssertNil(mockAssistService.assistSource)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+        XCTAssertEqual(sut.chatItems.last?.content, L10n.Assist.Error.speechToTextUnsupported)
+        XCTAssertTrue(sut.focusOnInput, "the keyboard is the way left to ask")
+    }
+
+    /// Transcribing on device needs nothing from the pipeline's speech-to-text engine.
+    @MainActor
+    func testOnDeviceSTT_pipelineWithoutSpeechToText_stillListens() async {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+        sut.pipelines = [textOnlyPipeline]
+        sut.preferredPipelineId = textOnlyPipeline.id
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        XCTAssertTrue(mockTranscriber.startListeningCalled)
+        XCTAssertNotEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// The reported hang: a transcript from on-device STT went to a text-only pipeline asking for
+    /// TTS, which the backend refused before the run started. It now ends at `intent`.
+    @MainActor
+    func testOnDeviceSTT_transcriptOnPipelineWithoutTextToSpeech_doesNotRequestServerTTS() {
+        sut.configuration.enableOnDeviceSTT = true
+        sut.pipelines = [textOnlyPipeline]
+        sut.preferredPipelineId = textOnlyPipeline.id
+        sut.inputText = "Zeg alleen TEST"
+
+        sut.assistWithTextExpectingTTS()
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "Zeg alleen TEST", pipelineId: textOnlyPipeline.id, expectTTS: false)
+        )
+    }
+
+    @MainActor
+    func testOnDeviceSTT_transcriptOnPipelineWithTextToSpeech_requestsServerTTS() {
+        sut.configuration.enableOnDeviceSTT = true
+        sut.pipelines = [voicePipeline]
+        sut.preferredPipelineId = voicePipeline.id
+        sut.inputText = "Turn on the lights"
+
+        sut.assistWithTextExpectingTTS()
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "Turn on the lights", pipelineId: voicePipeline.id, expectTTS: true)
+        )
+    }
+
+    func testVoiceRunOnPipelineWithoutTextToSpeech_endsAtIntent() {
+        let pipeline = Pipeline(id: "stt-only", name: "STT only", sttEngine: "stt.cloud")
+        sut.pipelines = [pipeline]
+        sut.preferredPipelineId = pipeline.id
+
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: pipeline.id, audioSampleRate: 16000, tts: false)
+        )
+    }
+
+    func testVoiceRunOnPipelineWithTextToSpeech_requestsServerTTS() {
+        sut.pipelines = [voicePipeline]
+        sut.preferredPipelineId = voicePipeline.id
+
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: voicePipeline.id, audioSampleRate: 16000, tts: true)
+        )
+    }
+
+    /// Speaking the reply on device keeps the run at `intent` even when the pipeline could speak it.
+    func testOnDeviceTTS_voiceRunOnPipelineWithTextToSpeech_endsAtIntent() {
+        sut.configuration.enableOnDeviceTTS = true
+        sut.pipelines = [voicePipeline]
+        sut.preferredPipelineId = voicePipeline.id
+
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: voicePipeline.id, audioSampleRate: 16000, tts: false)
+        )
+    }
+
+    private var textOnlyPipeline: Pipeline {
+        .init(conversationEngine: "conversation.google_ai", id: "text-only", name: "Text only")
+    }
+
+    private var voicePipeline: Pipeline {
+        .init(id: "voice", name: "Voice", sttEngine: "stt.cloud", ttsEngine: "tts.cloud")
+    }
+
     /// Recording starts before the pipeline is subscribed, so a run the server refuses arrives with
     /// the microphone still live. The error has to take the view out of its listening state too,
     /// otherwise it keeps recording into a pipeline that will never accept the audio.
