@@ -241,7 +241,7 @@ struct EntityPickerViewModelTests {
         #expect(vm.filteredGroups.first?.entities.map(\.entityId) == ["switch.strip_main"])
         // The rows' context lines and glyphs are resolved for the whole server, off the main thread.
         await vm._test_awaitRowContent()
-        #expect(vm.subtitles["switch.outlet_power"] == "Outlet 2")
+        #expect(vm.subtitles["switch.outlet_power"] == "Power strip ▸ Outlet 2")
         #expect(vm.subtitles["switch.strip_main"] == "Power strip")
         // The entity's own icon override wins over the domain fallback.
         #expect(vm.icons["switch.strip_main"] == MaterialDesignIcons(named: "power_socket_eu"))
@@ -252,5 +252,12 @@ struct EntityPickerViewModelTests {
             vm.filteredGroups.last?.entities.map(\.entityId).sorted() ==
                 ["device_tracker.unnamed", "light.yaml_lamp"]
         )
+
+        vm.searchTerm = "strip"
+        await vm._test_awaitFiltering()
+        #expect(vm.filteredGroups.flatMap(\.entities).map(\.entityId).sorted() == [
+            "switch.outlet_power",
+            "switch.strip_main",
+        ])
     }
 }

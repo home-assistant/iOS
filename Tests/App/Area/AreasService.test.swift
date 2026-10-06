@@ -12,6 +12,8 @@ extension AppDeviceRegistry {
         configEntries: [String]? = [],
         identifiers: [[String]]? = [],
         name: String? = nil,
+        nameByUser: String? = nil,
+        nextNamePart: String? = nil,
         parentDeviceId: String? = nil
     ) -> AppDeviceRegistry {
         let entry = DeviceRegistryEntry(
@@ -31,8 +33,9 @@ extension AppDeviceRegistry {
             model: nil,
             modelID: nil,
             modifiedAt: 0.0,
-            nameByUser: nil,
+            nameByUser: nameByUser,
             name: name,
+            nextNamePart: nextNamePart,
             parentDeviceId: parentDeviceId,
             primaryConfigEntry: nil,
             serialNumber: nil,

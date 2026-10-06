@@ -44,7 +44,7 @@ struct ReadableEntityOptionsProvider: DynamicOptionsProvider {
         let namesTheServer = Current.servers.all.count > 1
         return Self.voiceReadableEntities()
             .map { server, values in
-                let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+                let deviceContexts = values.deviceContexts(for: server.identifier.rawValue)
                 let areasMap = values.areasMap(for: server.identifier.rawValue)
                 let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
                 return (server, values.map { entity in
@@ -54,7 +54,9 @@ struct ReadableEntityOptionsProvider: DynamicOptionsProvider {
                         serverId: entity.serverId,
                         serverName: server.info.name,
                         areaName: areasMap[entity.entityId]?.name,
-                        deviceName: deviceMap[entity.entityId]?.name,
+                        deviceName: deviceContexts[entity.entityId]?.deviceName,
+                        parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                        contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                         floorName: floorMap[entity.entityId],
                         displayString: entity.name,
                         iconName: entity.icon ?? SFSymbol.powerCircleFill.rawValue,

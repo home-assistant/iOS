@@ -24,6 +24,7 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
     public let modifiedAt: Double?
     public let nameByUser: String?
     public let name: String?
+    public let nextNamePart: String?
     /// Identifier of the device this one is a logical part of, `nil` for regular top-level devices.
     public let parentDeviceId: String?
     public let primaryConfigEntry: String?
@@ -52,6 +53,7 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         self.modifiedAt = try? data.decode("modified_at")
         self.nameByUser = try? data.decode("name_by_user")
         self.name = try? data.decode("name")
+        self.nextNamePart = try? data.decode("next_name_part")
         self.parentDeviceId = try? data.decode("parent_device_id")
         self.primaryConfigEntry = try? data.decode("primary_config_entry")
         self.serialNumber = try? data.decode("serial_number")
@@ -102,6 +104,7 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         modifiedAt: Double?,
         nameByUser: String?,
         name: String?,
+        nextNamePart: String? = nil,
         parentDeviceId: String? = nil,
         primaryConfigEntry: String?,
         serialNumber: String?,
@@ -128,6 +131,7 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         self.modifiedAt = modifiedAt
         self.nameByUser = nameByUser
         self.name = name
+        self.nextNamePart = nextNamePart
         self.parentDeviceId = parentDeviceId
         self.primaryConfigEntry = primaryConfigEntry
         self.serialNumber = serialNumber
@@ -184,6 +188,7 @@ public extension AppDeviceRegistry {
             modifiedAt: registry.modifiedAt,
             nameByUser: registry.nameByUser,
             name: registry.name,
+            nextNamePart: registry.nextNamePart,
             parentDeviceId: registry.parentDeviceId,
             primaryConfigEntry: registry.primaryConfigEntry ?? registry.configEntryId,
             serialNumber: registry.serialNumber ?? parent?.serialNumber,

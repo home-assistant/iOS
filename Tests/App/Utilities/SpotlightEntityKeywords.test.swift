@@ -19,6 +19,17 @@ struct SpotlightEntityKeywordsTests {
         #expect(alternateNames.contains("Power strip Power"))
     }
 
+    @Test("A parent the context line leaves out is still searchable")
+    func keywordsKeepAParentTheContextLeavesOut() throws {
+        guard #available(iOS 18.0, *) else { return }
+        let attributes = entity(deviceName: "Outlet 2", parentDeviceName: "Power strip", contextReach: .device)
+            .attributeSet
+        let keywords = try #require(attributes.keywords)
+
+        #expect(attributes.contentDescription == "Kitchen ▸ Outlet 2")
+        #expect(keywords.contains("Power strip"))
+    }
+
     @Test("An entity with no parent device indexes no empty term")
     func keywordsOmitAnAbsentParent() throws {
         guard #available(iOS 18.0, *) else { return }
@@ -38,7 +49,11 @@ struct SpotlightEntityKeywordsTests {
         #expect(keywords.filter { $0.lowercased() == "power strip" }.count == 1)
     }
 
-    private func entity(deviceName: String, parentDeviceName: String?) -> HAAppEntityAppIntentEntity {
+    private func entity(
+        deviceName: String,
+        parentDeviceName: String?,
+        contextReach: EntityContextReach = .parentDevice
+    ) -> HAAppEntityAppIntentEntity {
         .init(
             id: "1-switch.outlet_power",
             entityId: "switch.outlet_power",
@@ -47,6 +62,7 @@ struct SpotlightEntityKeywordsTests {
             areaName: "Kitchen",
             deviceName: deviceName,
             parentDeviceName: parentDeviceName,
+            contextReach: contextReach,
             floorName: nil,
             displayString: "Power",
             iconName: "mdi:power-socket-eu"

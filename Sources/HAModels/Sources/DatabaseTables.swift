@@ -173,6 +173,7 @@ public enum DatabaseTables {
         case areaId
         case hidden
         case icon
+        case nextNamePart
     }
 
     // Device Registry (full device registry data)
@@ -197,6 +198,7 @@ public enum DatabaseTables {
         case modifiedAt
         case nameByUser
         case name
+        case nextNamePart
         case parentDeviceId
         case primaryConfigEntry
         case serialNumber

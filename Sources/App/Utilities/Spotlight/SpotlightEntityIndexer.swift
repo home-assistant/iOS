@@ -309,7 +309,7 @@ final class SpotlightEntityIndexer: ServerObserver {
                 .filter { $0.serverId == serverId && $0.entityCategory == nil }
                 .sorted { $0.id < $1.id }
             let areasMap = serverEntities.areasMap(for: serverId)
-            let (devicesMap, devicesById) = serverEntities.deviceMaps(for: serverId)
+            let deviceContexts = serverEntities.deviceContexts(for: serverId)
             let floorNamesMap = serverEntities.floorNamesMap(for: serverId)
 
             for entity in serverEntities {
@@ -319,9 +319,9 @@ final class SpotlightEntityIndexer: ServerObserver {
                     serverId: serverId,
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name,
-                    deviceName: devicesMap[entity.entityId]?.name,
-                    parentDeviceName: devicesMap[entity.entityId]?.parentDeviceId
-                        .flatMap { devicesById[$0]?.displayName },
+                    deviceName: deviceContexts[entity.entityId]?.deviceName,
+                    parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                    contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                     floorName: floorNamesMap[entity.entityId],
                     displayString: entity.name,
                     iconName: iconName(for: entity),
@@ -334,6 +334,7 @@ final class SpotlightEntityIndexer: ServerObserver {
                     indexed.areaName ?? "",
                     indexed.deviceName ?? "",
                     indexed.parentDeviceName ?? "",
+                    "\(indexed.contextReach)",
                     indexed.floorName ?? "",
                     indexed.serverName,
                     indexed.iconName,

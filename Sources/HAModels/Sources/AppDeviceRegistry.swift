@@ -26,6 +26,9 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
     public let modifiedAt: Double?
     public let nameByUser: String?
     public let name: String?
+    /// Core's `next_name_part`: `area` when the device has an area of its own, `parent_device` for a
+    /// child without one. Older servers don't send it.
+    public let nextNamePart: String?
     /// Identifier of the device this one is a logical part of (e.g. one outlet of a power strip),
     /// `nil` for regular top-level devices.
     public let parentDeviceId: String?
@@ -54,6 +57,7 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
         modifiedAt: Double?,
         nameByUser: String?,
         name: String?,
+        nextNamePart: String? = nil,
         parentDeviceId: String?,
         primaryConfigEntry: String?,
         serialNumber: String?,
@@ -79,6 +83,7 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
         self.modifiedAt = modifiedAt
         self.nameByUser = nameByUser
         self.name = name
+        self.nextNamePart = nextNamePart
         self.parentDeviceId = parentDeviceId
         self.primaryConfigEntry = primaryConfigEntry
         self.serialNumber = serialNumber
@@ -120,5 +125,27 @@ public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Eq
         }
         guard let parentDeviceId else { return nil }
         return devicesById[parentDeviceId]?.areaId
+    }
+
+    public func parentDeviceName(in devicesById: [String: AppDeviceRegistry]) -> String? {
+        parentDeviceId.flatMap { devicesById[$0]?.resolvedName }
+    }
+
+    /// The parent each of an area's devices nests under in a device tree, keyed by child id. As in
+    /// the frontend's trees, a parent that is in the same area joins the tree for its children even
+    /// when it has no entities of its own there.
+    public static func treeParentIds(
+        of deviceIds: Set<String>,
+        inArea areaId: String,
+        devicesById: [String: AppDeviceRegistry]
+    ) -> [String: String] {
+        deviceIds.reduce(into: [:]) { parentIds, deviceId in
+            guard let parentDeviceId = devicesById[deviceId]?.parentDeviceId,
+                  let parent = devicesById[parentDeviceId],
+                  deviceIds.contains(parentDeviceId) || parent.effectiveAreaId(in: devicesById) == areaId else {
+                return
+            }
+            parentIds[deviceId] = parentDeviceId
+        }
     }
 }

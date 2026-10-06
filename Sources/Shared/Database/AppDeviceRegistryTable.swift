@@ -46,6 +46,7 @@ final class AppDeviceRegistryTable: DatabaseTableProtocol {
                     // Display fields
                     t.column(DatabaseTables.DeviceRegistry.name.rawValue, .text)
                     t.column(DatabaseTables.DeviceRegistry.nameByUser.rawValue, .text)
+                    t.column(DatabaseTables.DeviceRegistry.nextNamePart.rawValue, .text)
                     t.column(DatabaseTables.DeviceRegistry.labels.rawValue, .jsonText)
 
                     // Relationships
