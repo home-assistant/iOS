@@ -56,10 +56,11 @@ struct OnboardingWelcomeViewTests {
     @MainActor @Test func compactHeightLaysOutWithTheActionsInTheNavigationBar() async throws {
         guard #available(iOS 18.0, *) else { return }
 
-        let controller = UIHostingController(rootView: NavigationStack {
+        let screen = NavigationStack {
             OnboardingWelcomeView(continueAction: {})
         }
-        .environment(\.verticalSizeClass, .compact))
+        .environment(\.verticalSizeClass, .compact)
+        let controller = UIHostingController(rootView: screen)
         let size = CGSize(width: 844, height: 390)
         let window = UIWindow(frame: CGRect(origin: .zero, size: size))
         window.rootViewController = controller
