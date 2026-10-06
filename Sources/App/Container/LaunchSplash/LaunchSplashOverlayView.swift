@@ -25,6 +25,7 @@ struct LaunchSplashOverlayView: View {
     }
 
     @ObservedObject var state: LaunchSplashOverlayState
+    @Environment(\.layoutDirection) private var layoutDirection
 
     var body: some View {
         if state.phase != .finished {
@@ -42,8 +43,15 @@ struct LaunchSplashOverlayView: View {
                     .animation(Constants.heroAnimation, value: state.phase)
                 }
                 .ignoresSafeArea()
-                OHFBrandingFooter()
-                    .padding(.bottom, OHFBrandingFooter.bottomPadding)
+                GeometryReader { proxy in
+                    OHFBrandingFooter()
+                        .padding(.bottom, OHFBrandingFooter.bottomPadding)
+                        .offset(x: SafeAreaCenteringOffset.horizontal(
+                            safeAreaInsets: proxy.safeAreaInsets,
+                            layoutDirection: layoutDirection
+                        ))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                }
             }
             .opacity(isFadingOut ? 0 : 1)
             .animation(Constants.fadeAnimation, value: isFadingOut)

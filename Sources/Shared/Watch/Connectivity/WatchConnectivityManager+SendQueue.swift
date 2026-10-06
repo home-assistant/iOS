@@ -13,12 +13,14 @@ extension WatchConnectivityManager {
     /// priority then FIFO. A *queued* send with the same non-nil `coalescingKey` is replaced by the
     /// newer one — its handlers are dropped silently, so keys belong only on idempotent refresh
     /// requests where the newer request's reply supersedes the older one.
+    @discardableResult
     func enqueueInteractiveSend(
         priority: HAWatchConnectivity.SendPriority,
         coalescingKey: String?,
         perform: @escaping () -> Void
-    ) {
+    ) -> InteractiveSendTicket {
         var runNow = false
+        var queuedSequence: Int?
         sendQueueLock.lock()
         if inFlightInteractiveSends < Self.maxConcurrentInteractiveSends {
             inFlightInteractiveSends += 1
@@ -29,6 +31,7 @@ extension WatchConnectivityManager {
                 pendingInteractiveSends.removeAll { $0.coalescingKey == coalescingKey }
             }
             interactiveSendSequence += 1
+            queuedSequence = interactiveSendSequence
             let pending = PendingInteractiveSend(
                 priority: priority,
                 coalescingKey: coalescingKey,
@@ -44,6 +47,19 @@ extension WatchConnectivityManager {
         if runNow {
             perform()
         }
+        return InteractiveSendTicket(queuedSequence: queuedSequence)
+    }
+
+    /// Withdraw a send still waiting for a slot; `false` when it had already gone out.
+    func cancelQueuedInteractiveSend(_ ticket: InteractiveSendTicket) -> Bool {
+        guard let sequence = ticket.queuedSequence else { return false }
+        sendQueueLock.lock()
+        defer { sendQueueLock.unlock() }
+        guard let index = pendingInteractiveSends.firstIndex(where: { $0.sequence == sequence }) else {
+            return false
+        }
+        pendingInteractiveSends.remove(at: index)
+        return true
     }
 
     /// Release the slot held by a finished send; the slot transfers to the next queued send, if any.

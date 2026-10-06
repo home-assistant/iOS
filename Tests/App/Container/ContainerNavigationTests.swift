@@ -12,18 +12,20 @@ import XCTest
 final class ContainerNavigationTests: XCTestCase {
     private var previousServers: ServerManager!
     private var window: UIWindow?
+    /// The presenter the hosted container is given, standing in for the one it would own per scene.
+    private var presenter: AppSettingsPresenter!
 
     override func setUp() {
         super.setUp()
         previousServers = Current.servers
-        AppSettingsPresenter.shared.pushPath = NavigationPath()
+        presenter = AppSettingsPresenter()
     }
 
     override func tearDown() {
         window?.isHidden = true
         window?.rootViewController = nil
         window = nil
-        AppSettingsPresenter.shared.pushPath = NavigationPath()
+        presenter = nil
         Current.servers = previousServers
         super.tearDown()
     }
@@ -52,28 +54,28 @@ final class ContainerNavigationTests: XCTestCase {
         )
 
         // What the frontend's external bus asks for, and what used to crash on the way in.
-        AppSettingsPresenter.shared.isPushPresented = true
+        presenter.isPushPresented = true
         settle(window)
 
-        XCTAssertEqual(AppSettingsPresenter.shared.pushPath.count, 1)
+        XCTAssertEqual(presenter.pushPath.count, 1)
 
         // Settings pushes its own screens onto the same path, as `AppSettingsPushRoute.item`.
-        AppSettingsPresenter.shared.pushPath.append(AppSettingsPushRoute.item(.help))
+        presenter.pushPath.append(AppSettingsPushRoute.item(.help))
         settle(window)
 
-        XCTAssertEqual(AppSettingsPresenter.shared.pushPath.count, 2)
+        XCTAssertEqual(presenter.pushPath.count, 2)
 
-        AppSettingsPresenter.shared.isPushPresented = false
+        presenter.isPushPresented = false
         settle(window)
 
-        XCTAssertTrue(AppSettingsPresenter.shared.pushPath.isEmpty)
+        XCTAssertTrue(presenter.pushPath.isEmpty)
     }
 
     // MARK: - Helpers
 
     /// Puts the real app root on screen, so the screens below it lay out exactly as they do at launch.
     private func hostContainer() -> UIWindow {
-        let controller = UIHostingController(rootView: ConditionalContainerView())
+        let controller = UIHostingController(rootView: ConditionalContainerView(appSettings: presenter))
         // On the host app's scene, so the window is a real one that reports appearance; a window
         // without a scene never appears, and the screens are only built once they do.
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first

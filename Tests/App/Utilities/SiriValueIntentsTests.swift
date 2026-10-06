@@ -3,10 +3,10 @@
 import Testing
 
 struct SiriValueIntentsTests {
-    /// Locking is safe to say out loud; unlocking is not offered at all.
-    @Test func locksAreNotReachableByTheOnOffCommands() {
+    /// Locking is safe to say out loud; unlocking is not offered at all, and neither is asking.
+    @Test func locksAreOnlyReachableThroughTheirOwnCommand() {
         #expect(!Domain.voiceControllable.contains(.lock))
-        #expect(Domain.voiceReadable.contains(.lock))
+        #expect(!Domain.voiceReadable.contains(.lock))
         #expect(Domain.lock.toggleServices?.on == .unlock)
         #expect(Domain.lock.toggleServices?.off == .lock)
     }

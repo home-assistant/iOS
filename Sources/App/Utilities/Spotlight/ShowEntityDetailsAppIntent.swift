@@ -6,7 +6,11 @@ import Shared
 ///
 /// Spotlight runs this intent when someone taps one of the indexed entities, which is why it exists
 /// separately from the widget control's `OpenEntityAppIntent`: only an `OpenIntent` with a `target`
-/// parameter is picked up for that.
+/// parameter is picked up for that. `HomeAssistantAppShortcuts` offers it by voice too, so asking for
+/// an entity lands on the same dialog as tapping its search result.
+///
+/// What is offered out loud is the same list a question about a state gets; what a Spotlight tap
+/// hands over resolves through the entity's own query, which stays as wide as the index.
 @available(macOS 13.0, *)
 struct ShowEntityDetailsAppIntent: OpenIntent {
     static var title: LocalizedStringResource = .init(
@@ -15,7 +19,8 @@ struct ShowEntityDetailsAppIntent: OpenIntent {
     )
 
     @Parameter(
-        title: .init("app_intents.show_entity_details.parameter.entity", defaultValue: "Entity")
+        title: .init("app_intents.show_entity_details.parameter.entity", defaultValue: "Entity"),
+        optionsProvider: ReadableEntityOptionsProvider()
     )
     var target: HAAppEntityAppIntentEntity
 

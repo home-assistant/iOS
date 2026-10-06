@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 struct ConnectionSettingsView: View {
     @StateObject private var viewModel: ConnectionSettingsViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
     @State private var showShareSheet = false
     @State private var showSecurityLevelPicker = false
     @State private var activityViewController: UIActivityViewController?
@@ -499,8 +500,8 @@ struct ConnectionSettingsView: View {
     }
 
     private func dismissAppSettings() {
-        AppSettingsPresenter.shared.isSheetPresented = false
-        AppSettingsPresenter.shared.isPushPresented = false
+        appSettingsPresenter?.isSheetPresented = false
+        appSettingsPresenter?.isPushPresented = false
     }
 
     // MARK: - Delete Section

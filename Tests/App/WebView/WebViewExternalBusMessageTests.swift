@@ -42,8 +42,11 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
 
         XCTAssertEqual(WebViewExternalBusMessage.sidebarShow.rawValue, "sidebar/show")
+        XCTAssertEqual(WebViewExternalBusMessage.moreInfoOpened.rawValue, "more_info/opened")
+        XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
+        XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 26)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 29)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -95,10 +98,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasEntityAddTo",
             "hasSplashscreen",
             "appVersion",
-            "toastComponentVersion",
         ]
 
         let actualKeys = Set(result.keys)
-        XCTAssertTrue(expectedKeys.isSubset(of: actualKeys), "Missing keys: \(expectedKeys.subtracting(actualKeys))")
+        XCTAssertEqual(actualKeys, expectedKeys)
     }
 }

@@ -17,6 +17,10 @@ final class AppContainerCoordinator: AppCoordinator {
         self.themeModeApplier = themeModeApplier
     }
 
+    /// This scene's Settings presenter, set by `ContainerView`. Each window has its own, so a request
+    /// presented through here only reaches the window it came from.
+    weak var settingsPresenter: AppSettingsPresenter?
+
     /// Set by `ContainerView` to drive `OnboardingStateObservable` (the screen/server source of truth).
     var onOpenServer: ((Server) -> Void)?
     var onSetup: (() -> Void)?
@@ -127,9 +131,9 @@ final class AppContainerCoordinator: AppCoordinator {
         // The picker is the Settings sheet at its medium detent, so anything already presented (Settings
         // itself, What's New, …) would swallow it — clear the screen first. Presenting is deferred by a
         // runloop hop so a sheet that was just torn down can't swallow the one replacing it.
-        dismissPresentedContent {
+        dismissPresentedContent { [weak self] in
             DispatchQueue.main.async {
-                AppSettingsPresenter.shared.presentServerSelection(
+                self?.settingsPresenter?.presentServerSelection(
                     .init(prompt: prompt, zoomsFromStandBy: zoomsFromStandBy, onSelect: completion)
                 )
             }

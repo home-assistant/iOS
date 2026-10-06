@@ -6,7 +6,7 @@
 "common::state::enabled" = "Aktiviert";
 "common::state::home" = "Zuhause";
 "common::state::idle" = "Leerlauf";
-"common::state::locked" = "Abgeschlossen";
+"common::state::locked" = "Verriegelt";
 "common::state::no" = "Nein";
 "common::state::not_home" = "Abwesend";
 "common::state::off" = "Aus";
@@ -14,7 +14,7 @@
 "common::state::open" = "Geöffnet";
 "common::state::paused" = "Pausiert";
 "common::state::standby" = "Standby";
-"common::state::unlocked" = "Aufgeschlossen";
+"common::state::unlocked" = "Entriegelt";
 "common::state::yes" = "Ja";
 "component::ai_task::title" = "KI-Task";
 "component::airzone::entity::select::sleep_times::state::off" = "Aus";
@@ -34,8 +34,8 @@
 "component::binary_sensor::entity_component::door::state::on" = "Geöffnet";
 "component::binary_sensor::entity_component::garage_door::state::off" = "Geschlossen";
 "component::binary_sensor::entity_component::garage_door::state::on" = "Geöffnet";
-"component::binary_sensor::entity_component::lock::state::off" = "Abgeschlossen";
-"component::binary_sensor::entity_component::lock::state::on" = "Aufgeschlossen";
+"component::binary_sensor::entity_component::lock::state::off" = "Verriegelt";
+"component::binary_sensor::entity_component::lock::state::on" = "Entriegelt";
 "component::binary_sensor::entity_component::opening::state::off" = "Geschlossen";
 "component::binary_sensor::entity_component::opening::state::on" = "Geöffnet";
 "component::binary_sensor::entity_component::presence::state::off" = "Abwesend";
@@ -92,12 +92,12 @@
 "component::google_mail::services::set_vacation::fields::enabled::name" = "Aktiviert";
 "component::group::entity_component::_::state::closed" = "Geschlossen";
 "component::group::entity_component::_::state::home" = "Zuhause";
-"component::group::entity_component::_::state::locked" = "Abgeschlossen";
+"component::group::entity_component::_::state::locked" = "Verriegelt";
 "component::group::entity_component::_::state::not_home" = "Abwesend";
 "component::group::entity_component::_::state::off" = "Aus";
 "component::group::entity_component::_::state::on" = "Ein";
 "component::group::entity_component::_::state::open" = "Geöffnet";
-"component::group::entity_component::_::state::unlocked" = "Aufgeschlossen";
+"component::group::entity_component::_::state::unlocked" = "Entriegelt";
 "component::group::title" = "Gruppe";
 "component::hdmi_cec::services::standby::name" = "Standby";
 "component::homekit_controller::entity::select::ecobee_mode::state::away" = "Abwesend";
@@ -167,8 +167,8 @@ Bitte schließe die Einrichtung ab, indem du den [Einrichtungsanweisungen]({url}
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "Aus";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::p" = "Pausiert";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Aktiviert";
-"component::lock::entity_component::_::state::locked" = "Abgeschlossen";
-"component::lock::entity_component::_::state::unlocked" = "Aufgeschlossen";
+"component::lock::entity_component::_::state::locked" = "Verriegelt";
+"component::lock::entity_component::_::state::unlocked" = "Entriegelt";
 "component::lock::title" = "Schloss";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "Aus";
 "component::lutron_caseta::device_automation::trigger_subtype::on" = "Ein";

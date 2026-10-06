@@ -41,10 +41,13 @@ public enum GRDBDatabaseTable: String {
     // Focus names the user pairs with an iOS Focus Filter
     case focusName
     case siriServerExposure
+    case siriEntityExposure
     // Calendar entities mirrored from Home Assistant
     case HACalendar = "hACalendar"
     // Events cached from the calendars above, so a fetch failure can fall back to them
     case HACalendarEvent = "hACalendarEvent"
+    // Every CSS custom property the frontend theme resolves to, per server and per light/dark mode
+    case frontendThemeVariable
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -400,6 +403,16 @@ public enum DatabaseTables {
         case isExposed
     }
 
+    /// Whether a calendar or to-do list may be offered to Siri, and which one is the default.
+    public enum SiriEntityExposure: String, CaseIterable {
+        case id
+        case serverId
+        case entityId
+        case domain
+        case isExposed
+        case isDefault
+    }
+
     public enum FocusName: String, CaseIterable {
         case id
         case name
@@ -431,5 +444,18 @@ public enum DatabaseTables {
         case backgroundColor
         case supportedFeatures
         case sortOrder
+    }
+
+    // One row per CSS custom property the frontend resolves. Column names must match
+    // `FrontendThemeVariable`'s stored properties.
+    public enum FrontendThemeVariable: String, CaseIterable {
+        case id
+        case serverId
+        case appearance
+        case name
+        case value
+        case colorValue
+        case themeName
+        case updatedAt
     }
 }

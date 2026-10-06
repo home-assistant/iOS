@@ -100,10 +100,31 @@ struct MagicItemWidgetInteractionTests {
         #expect(!moreInfo.controlsEntityFromWidget)
     }
 
-    /// "Nothing" was retired: an item saved with it still decodes and opens the entity instead —
-    /// never its toggle, which an icon told to do nothing must not start running — and the picker
-    /// neither offers nor shows it.
-    @Test func retiredNothingOpensMoreInfo() throws {
+    /// "Nothing" reloads the widget and nothing more — never the entity's toggle, which an icon told
+    /// to do nothing must not start running — so a tile that does nothing is how its state is
+    /// refreshed by hand. The picker offers it, last, the way the frontend lists "no action".
+    @Test func nothingRefreshesTheWidget() {
+        var item = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        item.action = .nothing
+        item.tapAction = .nothing
+
+        #expect(item.widgetInteractionType == .appIntent(.refresh))
+        #expect(item.widgetTapInteractionType == .appIntent(.refresh))
+        #expect(!item.controlsEntityFromWidget)
+        #expect(ItemAction.allCases.last == .nothing)
+        #expect(ItemAction.offered(for: item, selected: .default).last == .nothing)
+        #expect(ItemAction.nothing.name == L10n.Widgets.Action.Name.nothing)
+
+        // Either half alone leaves the other on its default.
+        var iconOnly = MagicItem(id: "light.kitchen", serverId: "1", type: .entity)
+        iconOnly.action = .nothing
+        #expect(iconOnly.widgetInteractionType == .appIntent(.refresh))
+        #expect(Self.opensMoreInfo(iconOnly.widgetTapInteractionType, entityId: "light.kitchen"))
+    }
+
+    /// An item saved while "nothing" was offered before still decodes to it, and so keeps reloading
+    /// the widget when tapped.
+    @Test func storedNothingStillDecodes() throws {
         let stored = Data("""
         {"id":"light.kitchen","serverId":"1","type":"entity","action":{"nothing":{}},"tapAction":{"nothing":{}}}
         """.utf8)
@@ -111,12 +132,9 @@ struct MagicItemWidgetInteractionTests {
         let item = try JSONDecoder().decode(MagicItem.self, from: stored)
 
         #expect(item.action == .nothing)
-        #expect(item.action?.isRetired == true)
-        #expect(Self.opensMoreInfo(item.widgetInteractionType, entityId: "light.kitchen"))
-        #expect(!item.controlsEntityFromWidget)
-        #expect(Self.opensMoreInfo(item.widgetTapInteractionType, entityId: "light.kitchen"))
-        #expect(!ItemAction.allCases.map(\.id).contains(ItemAction.nothing.id))
-        #expect(!ItemAction.offered(for: item, selected: .default).map(\.id).contains(ItemAction.nothing.id))
+        #expect(item.tapAction == .nothing)
+        #expect(item.widgetInteractionType == .appIntent(.refresh))
+        #expect(item.widgetTapInteractionType == .appIntent(.refresh))
     }
 
     /// An Assist pipeline has no entity behind it, so there is no dialog for the rest of the tile to

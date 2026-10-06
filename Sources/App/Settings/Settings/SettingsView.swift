@@ -78,7 +78,7 @@ struct SettingsView: View {
                 }
 
                 // Settings items grouped by user objective
-                settingsSections(matching: nil)
+                settingsSections(SettingsSection.allCases, matching: nil)
             }
             Color.clear
                 .frame(height: Constants.macSidebarBottomPadding)
@@ -147,7 +147,7 @@ struct SettingsView: View {
                 }
 
                 // Settings items grouped by user objective
-                settingsSections(matching: nil)
+                settingsSections(SettingsSection.groupsAboveTrailingRows, matching: nil)
 
                 if AppMigrationAnnouncement.isRelevant {
                     Section {
@@ -197,6 +197,9 @@ struct SettingsView: View {
                         }
                     }
                 }
+
+                // App Labs sits below every other row, experiments last.
+                settingsSections([.appLabs], matching: nil)
             }
         }
         .accessibilityIdentifier(AccessibilityIdentifier.settingsList.rawValue)
@@ -333,7 +336,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            settingsSections(matching: trimmedSearchQuery)
+            settingsSections(SettingsSection.allCases, matching: trimmedSearchQuery)
         } else {
             noSearchResultsSection
         }
@@ -350,8 +353,8 @@ struct SettingsView: View {
         }
     }
 
-    private func settingsSections(matching searchQuery: String?) -> some View {
-        ForEach(SettingsSection.allCases, id: \.self) { section in
+    private func settingsSections(_ sections: [SettingsSection], matching searchQuery: String?) -> some View {
+        ForEach(sections, id: \.self) { section in
             let items = searchQuery.map { section.items(matching: $0) } ?? section.items
             if !items.isEmpty {
                 settingsSection(header: section.header) {
@@ -363,8 +366,24 @@ struct SettingsView: View {
         }
     }
 
+    /// A group whose header is nil renders as a plain section: its single entry already names
+    /// itself, so a header would only repeat it.
     @ViewBuilder
     private func settingsSection(
+        header: String?,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        if let header {
+            headedSettingsSection(header: header, content: content)
+        } else {
+            Section {
+                content()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func headedSettingsSection(
         header: String,
         @ViewBuilder content: () -> some View
     ) -> some View {
@@ -395,7 +414,7 @@ struct SettingsView: View {
 
     @ViewBuilder
     private func settingsItemRow(_ item: SettingsItem, searchQuery: String? = nil) -> some View {
-        let subtitle = searchQuery.flatMap { item.contentMatchesSubtitle(searchQuery: $0) }
+        let subtitle = searchQuery.flatMap { item.contentMatchesSubtitle(searchQuery: $0) } ?? item.subtitle
         if item == .help {
             Button {
                 if let url = URL(string: "https://companion.home-assistant.io") {

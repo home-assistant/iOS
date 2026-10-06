@@ -78,6 +78,7 @@ extension MacWebViewTitleBar {
 
         private weak var webViewController: WebViewController?
         private weak var titlebar: UITitlebar?
+        private weak var windowScene: UIWindowScene?
         private weak var serverPickerItem: NSMenuToolbarItem?
         private var toolbar: NSToolbar?
         private var server: Server?
@@ -104,6 +105,7 @@ extension MacWebViewTitleBar {
         func attach(to windowScene: UIWindowScene?) {
             guard let titlebar = windowScene?.titlebar else { return }
             self.titlebar = titlebar
+            self.windowScene = windowScene
 
             if toolbar == nil || titlebar.toolbar !== toolbar {
                 let toolbar = NSToolbar(identifier: Constants.toolbarIdentifier)
@@ -126,26 +128,8 @@ extension MacWebViewTitleBar {
 
         private func refreshToolbarState() {
             guard let toolbar, titlebar?.toolbar === toolbar else { return }
-            syncToggleSidebarItem(in: toolbar)
             updateEnabledItems()
             updateServerPicker()
-        }
-
-        /// The toolbar autosaves its configuration, so the Labs sidebar toggle is inserted and removed
-        /// programmatically as the feature is turned on and off instead of relying on the defaults.
-        private func syncToggleSidebarItem(in toolbar: NSToolbar) {
-            let isPresent = toolbar.items.contains { $0.itemIdentifier == .homeAssistantToggleSidebar }
-            if Self.isNativeSidebarEnabled, !isPresent {
-                toolbar.insertItem(withItemIdentifier: .homeAssistantToggleSidebar, at: 0)
-            } else if !Self.isNativeSidebarEnabled, isPresent,
-                      let index = toolbar.items
-                      .firstIndex(where: { $0.itemIdentifier == .homeAssistantToggleSidebar }) {
-                toolbar.removeItem(at: index)
-            }
-        }
-
-        private static var isNativeSidebarEnabled: Bool {
-            AppLabsFeature.macNativeSidebar.isEnabled
         }
 
         func removeToolbar() {
@@ -220,13 +204,6 @@ extension MacWebViewTitleBar {
             willBeInsertedIntoToolbar flag: Bool
         ) -> NSToolbarItem? {
             switch itemIdentifier {
-            case .homeAssistantToggleSidebar:
-                toolbarItem(
-                    identifier: itemIdentifier,
-                    label: L10n.Mac.ToggleSidebar.accessibilityLabel,
-                    symbol: .sidebarLeft,
-                    action: #selector(toggleNativeSidebar)
-                )
             case .homeAssistantBack:
                 toolbarItem(
                     identifier: itemIdentifier,
@@ -283,7 +260,7 @@ extension MacWebViewTitleBar {
 
         private func updateEnabledItems() {
             toolbar?.items.forEach { item in
-                guard ![.homeAssistantServerPicker, .homeAssistantToggleSidebar].contains(item.itemIdentifier) else {
+                guard item.itemIdentifier != .homeAssistantServerPicker else {
                     item.isEnabled = true
                     return
                 }
@@ -292,11 +269,7 @@ extension MacWebViewTitleBar {
         }
 
         private var defaultItemIdentifiers: [NSToolbarItem.Identifier] {
-            var identifiers: [NSToolbarItem.Identifier] = []
-            if Self.isNativeSidebarEnabled {
-                identifiers.append(.homeAssistantToggleSidebar)
-            }
-            identifiers += [
+            var identifiers: [NSToolbarItem.Identifier] = [
                 .homeAssistantBack,
                 .homeAssistantForward,
                 .homeAssistantRefresh,
@@ -312,11 +285,7 @@ extension MacWebViewTitleBar {
         }
 
         private var allowedItemIdentifiers: [NSToolbarItem.Identifier] {
-            var identifiers: [NSToolbarItem.Identifier] = []
-            if Self.isNativeSidebarEnabled {
-                identifiers.append(.homeAssistantToggleSidebar)
-            }
-            identifiers += [
+            var identifiers: [NSToolbarItem.Identifier] = [
                 .homeAssistantBack,
                 .homeAssistantForward,
                 .homeAssistantRefresh,
@@ -415,10 +384,10 @@ extension MacWebViewTitleBar {
                 UIAction(
                     title: server.info.name,
                     state: server.identifier == selectedIdentifier ? .on : .off
-                ) { _ in
+                ) { [weak self] _ in
                     // Not `activate(server:)`: like the server-cycling gestures, the toolbar menu
                     // switches in place without sending the user back to the Home Assistant root.
-                    Current.sceneManager.appCoordinator.done { coordinator in
+                    Current.sceneManager.appCoordinator(for: self?.windowScene).done { coordinator in
                         coordinator.open(server: server)
                     }
                 }
@@ -544,10 +513,6 @@ extension MacWebViewTitleBar {
             .withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         }
 
-        @objc private func toggleNativeSidebar() {
-            MacNativeSidebarState.shared.toggle()
-        }
-
         @objc private func goBack() {
             webViewController?.goBack()
         }
@@ -583,7 +548,7 @@ extension MacWebViewTitleBar {
                       entityId: magicItem.id,
                       serverId: magicItem.serverId
                   ) else { return }
-            Current.sceneManager.appCoordinator.done { coordinator in
+            Current.sceneManager.appCoordinator(for: windowScene).done { coordinator in
                 IncomingURLHandler(coordinator: coordinator).handle(url: url)
             }
         }
@@ -591,7 +556,6 @@ extension MacWebViewTitleBar {
 }
 
 private extension NSToolbarItem.Identifier {
-    static let homeAssistantToggleSidebar = NSToolbarItem.Identifier("io.home-assistant.webview.toggle-sidebar")
     static let homeAssistantBack = NSToolbarItem.Identifier("io.home-assistant.webview.back")
     static let homeAssistantForward = NSToolbarItem.Identifier("io.home-assistant.webview.forward")
     static let homeAssistantRefresh = NSToolbarItem.Identifier("io.home-assistant.webview.refresh")

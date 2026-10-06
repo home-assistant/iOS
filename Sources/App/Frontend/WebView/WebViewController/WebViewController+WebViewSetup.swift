@@ -12,6 +12,7 @@ extension WebViewController {
         userContentController.add(safeScriptMessageHandler, name: "revokeExternalAuth")
         userContentController.add(safeScriptMessageHandler, name: "externalBus")
         userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
+        userContentController.add(safeScriptMessageHandler, name: "updateThemeVariables")
         userContentController.add(safeScriptMessageHandler, name: "logError")
         userContentController.add(safeScriptMessageHandler, name: "frontendRestored")
 
@@ -71,6 +72,9 @@ extension WebViewController {
                 RestorableStateKey.server.rawValue: server.identifier.rawValue,
             ]
             userActivity?.becomeCurrent()
+
+            // The page moved, so what the system reads off this activity has to follow it.
+            updateOnscreenContent()
 
             // Persist the server and a host-agnostic path so cold launch reopens here; the base URL is
             // re-resolved from current connectivity at load time (see `resolvedLoadURL`).

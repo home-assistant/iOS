@@ -12,8 +12,7 @@ final class AppVersionSensor: SensorProvider {
             name: "App Version",
             uniqueID: WebhookSensorId.appVersion.rawValue,
             icon: nil,
-            state: AppConstants.version,
-            entityCategory: "diagnostic"
+            state: AppConstants.version
         )
 
         return .value([sensor])

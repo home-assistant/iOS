@@ -7,6 +7,38 @@ enum WebViewJavascriptCommands {
     static var searchCommandsKeyEvent = keyDownEvent(key: "c", code: "KeyC", keyCode: 67)
     static var assistKeyEvent = keyDownEvent(key: "a", code: "KeyA", keyCode: 65)
 
+    static let frontendRenderedProbe = """
+    (function() {
+        var frontend = document.querySelector('home-assistant');
+        if (frontend && frontend.shadowRoot && frontend.shadowRoot.firstElementChild) {
+            return true;
+        }
+        var body = document.body;
+        if (!body) {
+            return false;
+        }
+        if ((body.innerText || '').trim().length > 0) {
+            return true;
+        }
+        return body.querySelector('img, svg, canvas, video, input, button, a, iframe, embed, object') !== null;
+    })();
+    """
+
+    static let closeNotificationDrawerIfOpen = """
+    (function() {
+        var frontend = document.querySelector('home-assistant');
+        var drawer = frontend && frontend.shadowRoot ? frontend.shadowRoot.querySelector('notification-drawer') : null;
+        if (!drawer || !drawer.shadowRoot || !drawer.shadowRoot.querySelector('ha-drawer[open]')) {
+            return false;
+        }
+        if (typeof drawer.closeDialog !== 'function') {
+            return false;
+        }
+        drawer.closeDialog();
+        return true;
+    })();
+    """
+
     private static func keyDownEvent(key: String, code: String, keyCode: Int, metaKey: Bool = false) -> String {
         """
         var event = new KeyboardEvent('keydown', {

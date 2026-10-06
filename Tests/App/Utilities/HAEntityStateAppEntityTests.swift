@@ -20,8 +20,8 @@ struct HAEntityStateAppEntityTests {
         )
     }
 
-    private func makeEntity(entityId: String, area: String? = nil, floor: String? = nil) -> HAAppEntityAppIntentEntity {
-        HAAppEntityAppIntentEntity(
+    private func makeEntity(entityId: String, area: String? = nil, floor: String? = nil) -> ReadableEntityAppEntity {
+        ReadableEntityAppEntity(
             id: "server-\(entityId)",
             entityId: entityId,
             serverId: "server",

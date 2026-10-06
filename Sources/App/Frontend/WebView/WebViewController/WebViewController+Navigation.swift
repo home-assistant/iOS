@@ -64,7 +64,7 @@ extension WebViewController {
         }
     }
 
-    /// Used by the native macOS sidebar
+    /// Used by the native iOS tab bar
     func openSidebarPath(_ path: String) {
         loadViewIfNeeded()
         navigateThroughFrontend(path: path) { [weak self] success in
@@ -106,9 +106,13 @@ extension WebViewController {
         webView.reload()
     }
 
-    func showSettingsViewController() {
+    func showSettingsViewController(pushOntoNavigationStack: Bool) {
         getLatestConfig()
-        Current.sceneManager.appCoordinator.done { $0.showSettings() }
+        // Settings opens in the window the request came from: with multiple windows on screen, the app-wide
+        // coordinator is whichever scene registered last rather than this one.
+        Current.sceneManager.appCoordinator(for: view.window?.windowScene).done {
+            $0.showSettings(pushOntoNavigationStack: pushOntoNavigationStack)
+        }
     }
 
     func getLatestConfig() {
