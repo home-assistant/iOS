@@ -28,7 +28,7 @@ enum AuthenticationRoute {
 
     // MARK: - Private helpers
 
-    private var clientID: String {
+    static var clientID: String {
         var clientID = "https://home-assistant.io/iOS"
 
         // swiftlint:disable prohibit_environment_assignment
@@ -39,6 +39,14 @@ enum AuthenticationRoute {
 
         return clientID
     }
+
+    /// The redirect URI registered for `clientID`, which the login flow validates even when no browser
+    /// follows it.
+    static var redirectURI: String {
+        HANetworkingEnvironment.current.isDebug ? "homeassistant-dev://auth-callback" : "homeassistant://auth-callback"
+    }
+
+    private var clientID: String { Self.clientID }
 
     private var method: HTTPMethod {
         .post

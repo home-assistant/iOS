@@ -15,6 +15,8 @@ struct WatchServerDetailView: View {
     @State private var showRemoveFromWatchConfirmation = false
     /// `nil` = automatic; otherwise the URL the Watch is forced to use for this server.
     @State private var urlOverride: ConnectionInfo.URLType?
+    /// Re-read when the screen reappears, since logging in happens on a pushed screen.
+    @State private var isLoggedInOnWatch = false
 
     init(server: Server) {
         self.server = server
@@ -27,10 +29,14 @@ struct WatchServerDetailView: View {
             connectionSection
             urlOverrideSection
             statusSection
+            loginSection
             clientCertificateSection
         }
         .navigationTitle(Text(verbatim: server.info.name))
         .id(certRefreshToken)
+        .onAppear {
+            isLoggedInOnWatch = server.info.token.isIssuedToWatch
+        }
         .onReceive(NotificationCenter.default.publisher(for: .clientCertificatesImported)) { _ in
             certRefreshToken = UUID()
         }
@@ -111,6 +117,25 @@ struct WatchServerDetailView: View {
     private var statusSection: some View {
         Section(header: Text(verbatim: L10n.Settings.StatusSection.header)) {
             infoRow(L10n.Settings.StatusSection.VersionRow.title, server.info.version.description)
+        }
+    }
+
+    private var loginSection: some View {
+        Section {
+            Text(verbatim: isLoggedInOnWatch
+                ? L10n.Watch.Settings.Login.Status.watch
+                : L10n.Watch.Settings.Login.Status.iphone)
+            NavigationLink {
+                WatchServerLoginView(server: server)
+            } label: {
+                Text(verbatim: isLoggedInOnWatch
+                    ? L10n.Watch.Settings.Login.logInAgain
+                    : L10n.Watch.Settings.Login.logInOnWatch)
+            }
+        } header: {
+            Text(verbatim: L10n.Watch.Settings.Login.header)
+        } footer: {
+            Text(verbatim: L10n.Watch.Settings.Login.footer)
         }
     }
 

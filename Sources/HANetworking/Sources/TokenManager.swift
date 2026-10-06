@@ -202,9 +202,16 @@ public final class TokenManager: @unchecked Sendable {
 
             let promise: Promise<TokenInfo> = firstly {
                 authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
-            }.get { [server] tokenInfo in
+            }.map { [server] refreshedTokenInfo -> TokenInfo in
+                // The stored token can be replaced while the refresh is in flight (a re-login, or an
+                // Apple Watch signing in on its own); storing this result would overwrite that session.
+                guard server.info.token.refreshToken == tokenInfo.refreshToken else {
+                    HANetworkingEnvironment.current.log.info("refresh token changed during refresh, not storing")
+                    return server.info.token
+                }
                 HANetworkingEnvironment.current.log.info("storing refresh token")
-                server.info.token = tokenInfo
+                server.info.token = refreshedTokenInfo
+                return refreshedTokenInfo
             }.ensure(on: refreshPromiseCache.queue) { [self] in
                 HANetworkingEnvironment.current.log.info("reset cached refreshToken promise")
                 refreshPromiseCache.promise = nil

@@ -645,8 +645,9 @@ public final class ServerManagerImpl: ServerManager {
                     // Don't let a restored snapshot downgrade a token this instance already refreshed to a
                     // later expiry — e.g. the watch refreshing independently of the phone that produced this
                     // snapshot. Keeping the fresher token avoids sending a stale one the server rejects.
+                    // A token the watch got by signing in itself is never replaced by the phone's copy.
                     let current = existing.info.token
-                    if current.expiration > incoming.token.expiration {
+                    if current.isIssuedToWatch || current.expiration > incoming.token.expiration {
                         incoming.token = current
                     }
                     existing.info = incoming

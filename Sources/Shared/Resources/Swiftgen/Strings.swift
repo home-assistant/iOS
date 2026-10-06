@@ -9543,6 +9543,56 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.warning.title") }
         }
       }
+      public enum Login {
+        /// Logging in gives this Apple Watch its own session with the server. You can remove it from your Home Assistant profile without logging out your iPhone or other watches.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.login.footer") }
+        /// Login
+        public static var header: String { return L10n.tr("Localizable", "watch.settings.login.header") }
+        /// Log in
+        public static var logIn: String { return L10n.tr("Localizable", "watch.settings.login.log_in") }
+        /// Log in again
+        public static var logInAgain: String { return L10n.tr("Localizable", "watch.settings.login.log_in_again") }
+        /// Log in on this Apple Watch
+        public static var logInOnWatch: String { return L10n.tr("Localizable", "watch.settings.login.log_in_on_watch") }
+        /// Log in with
+        public static var providerHeader: String { return L10n.tr("Localizable", "watch.settings.login.provider_header") }
+        /// Try again
+        public static var retry: String { return L10n.tr("Localizable", "watch.settings.login.retry") }
+        /// Start over
+        public static var startOver: String { return L10n.tr("Localizable", "watch.settings.login.start_over") }
+        public enum Error {
+          /// Something went wrong: %@
+          public static func generic(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "watch.settings.login.error.generic", String(describing: p1))
+          }
+          /// Invalid username or password
+          public static var invalidAuth: String { return L10n.tr("Localizable", "watch.settings.login.error.invalid_auth") }
+          /// Invalid authentication code
+          public static var invalidCode: String { return L10n.tr("Localizable", "watch.settings.login.error.invalid_code") }
+          /// Session expired, please log in again.
+          public static var loginExpired: String { return L10n.tr("Localizable", "watch.settings.login.error.login_expired") }
+          /// This server doesn't offer a way to log in from this Apple Watch.
+          public static var noProviders: String { return L10n.tr("Localizable", "watch.settings.login.error.no_providers") }
+          /// This Apple Watch can't reach the server. Check the URL it uses, then try again.
+          public static var noUrl: String { return L10n.tr("Localizable", "watch.settings.login.error.no_url") }
+        }
+        public enum Field {
+          /// Two-factor authentication code
+          public static var code: String { return L10n.tr("Localizable", "watch.settings.login.field.code") }
+          /// Password
+          public static var password: String { return L10n.tr("Localizable", "watch.settings.login.field.password") }
+          /// User
+          public static var user: String { return L10n.tr("Localizable", "watch.settings.login.field.user") }
+          /// Username
+          public static var username: String { return L10n.tr("Localizable", "watch.settings.login.field.username") }
+        }
+        public enum Status {
+          /// Using your iPhone's session
+          public static var iphone: String { return L10n.tr("Localizable", "watch.settings.login.status.iphone") }
+          /// Logged in on this Apple Watch
+          public static var watch: String { return L10n.tr("Localizable", "watch.settings.login.status.watch") }
+        }
+      }
       public enum NoItems {
         public enum Phone {
           /// No items configured, please choose items below.
