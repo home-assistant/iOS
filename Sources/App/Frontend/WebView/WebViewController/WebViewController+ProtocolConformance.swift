@@ -61,6 +61,10 @@ extension WebViewController: WebViewControllerProtocol {
         webView.evaluateJavaScript(script, completionHandler: completion)
     }
 
+    func makeWebViewFirstResponder() {
+        webView.becomeFirstResponder()
+    }
+
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
         if let detachedOverlayController, detachedOverlayController.presentingViewController != nil {
             self.detachedOverlayController = nil
@@ -94,6 +98,7 @@ extension WebViewController: WebViewControllerProtocol {
         // Possible values: connected, loaded, disconnected, auth-invalid
         switch resolvedState {
         case .connected, .loaded:
+            resetBlankFrontendRecoveryIfRendered(for: resolvedState)
             hideEmptyState()
             updateFrontendKioskMode()
         case .authInvalid:

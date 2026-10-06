@@ -275,18 +275,6 @@ class MenuManager {
         ))
 
         #if targetEnvironment(macCatalyst)
-        if AppLabsFeature.macNativeSidebar.isEnabled {
-            commands.append(UIKeyCommand(
-                title: Current.settingsStore.macNativeSidebarVisible
-                    ? L10n.Menu.View.hideSidebar
-                    : L10n.Menu.View.showSidebar,
-                image: nil,
-                action: #selector(toggleNativeSidebar),
-                input: "s",
-                modifierFlags: [.command, .control]
-            ))
-        }
-
         commands.append(UICommand(
             title: L10n.Menu.View.customizeToolbar,
             image: nil,
@@ -384,7 +372,6 @@ class MenuManager {
     @objc private func updateSensors() {}
     @objc private func showFindInteraction() {}
     @objc private func customizeToolbar() {}
-    @objc private func toggleNativeSidebar() {}
 }
 
 #if targetEnvironment(macCatalyst)

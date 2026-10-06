@@ -49,13 +49,15 @@ struct WyomingConnectionTests {
     private final class Client {
         /// Generous: synthesising a sentence on a busy runner is not instant, but an unanswered
         /// request still has to fail long before the job's own timeout.
-        private static let readTimeout: TimeInterval = 60
+        private static let defaultReadTimeout: TimeInterval = 60
 
         private let connection: NWConnection
+        private let readTimeout: TimeInterval
         private var buffer = Data()
 
-        init(port: NWEndpoint.Port) {
+        init(port: NWEndpoint.Port, readTimeout: TimeInterval = Client.defaultReadTimeout) {
             self.connection = NWConnection(host: .ipv4(.loopback), port: port, using: .tcp)
+            self.readTimeout = readTimeout
             connection.start(queue: .global())
         }
 
@@ -68,7 +70,7 @@ struct WyomingConnectionTests {
             _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, Error>) in
                 let pending = Pending(continuation)
                 let deadline = DispatchWorkItem { pending.resume(with: .failure(TestError.timedOut)) }
-                DispatchQueue.global().asyncAfter(deadline: .now() + Self.readTimeout, execute: deadline)
+                DispatchQueue.global().asyncAfter(deadline: .now() + readTimeout, execute: deadline)
 
                 connection.send(content: data, completion: .contentProcessed { error in
                     deadline.cancel()
@@ -114,7 +116,7 @@ struct WyomingConnectionTests {
             try await withCheckedThrowingContinuation { continuation in
                 let pending = Pending(continuation)
                 let deadline = DispatchWorkItem { pending.resume(with: .failure(TestError.timedOut)) }
-                DispatchQueue.global().asyncAfter(deadline: .now() + Self.readTimeout, execute: deadline)
+                DispatchQueue.global().asyncAfter(deadline: .now() + readTimeout, execute: deadline)
 
                 connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, _, isComplete, error in
                     deadline.cancel()
@@ -134,7 +136,7 @@ struct WyomingConnectionTests {
 
     /// Opens a listener on a system-assigned port with a client attached, and tears both down.
     private func withClient(
-        makeRecognizer: @escaping WyomingRecognizerFactory = { _ in StubRecognizer() },
+        makeRecognizer: @escaping OnDeviceRecognizerFactory = { _ in StubRecognizer() },
         _ work: (Client) async throws -> Void
     ) async throws {
         let recorder = StateRecorder()
@@ -166,7 +168,7 @@ struct WyomingConnectionTests {
     /// Answers the moment the audio ends, so a whole transcription exchange runs without speech
     /// authorisation and without waiting on a real recogniser.
     @MainActor
-    private final class StubRecognizer: WyomingSpeechRecognizing {
+    private final class StubRecognizer: OnDeviceSpeechRecognizing {
         static let transcript = "turn on the kitchen light"
 
         private var onTranscript: ((String, Bool) -> Void)?
@@ -333,8 +335,14 @@ struct WyomingConnectionTests {
     }
 
     /// The listener is open to anything on the local network, so a peer opening sockets without
-    /// ever closing them must not be able to exhaust the process.
-    @Test func refusesConnectionsPastItsLimit() async throws {
+    /// ever closing them must not be able to exhaust the process. The cap bounds what the table
+    /// can hold — it does not decide which peer wins. Past it the oldest connection goes, because
+    /// the newest is the one with a live request behind it.
+    ///
+    /// Turning the newcomer away instead is what used to strand this server: sockets left behind
+    /// by hosts that went away without closing filled the table, and from then on Home Assistant
+    /// could not get a connection at all until the app was relaunched.
+    @Test func dropsTheOldestConnectionPastItsLimit() async throws {
         let recorder = StateRecorder()
         let server = WyomingServer(
             port: .any,
@@ -342,25 +350,43 @@ struct WyomingConnectionTests {
             fallbackLocale: Locale(identifier: "en-US"),
             advertisesOverBonjour: false,
             makeRecognizer: { _ in StubRecognizer() },
+            // Long enough that the idle watchdog cannot be what closes anything here: the only
+            // thing that can close a socket within this test is the cap making room.
+            idleReadTimeout: 600,
             onStateChange: { recorder.record($0) }
         )
         await server.start()
         let boundPort = try await recorder.boundPort()
         let port = try #require(NWEndpoint.Port(rawValue: boundPort))
 
-        // One more than the cap, all held open at once. Only the first is written to: accepting the
-        // socket is what the cap acts on, and a send to a refused connection has nobody to complete
-        // it.
+        // One more than the cap, all held open at once and none of them saying anything — which is
+        // what a host that went away without closing leaves behind. Spaced out so the server
+        // accepts them in the order they were made and "the oldest" means the first of them. The
+        // oldest reads with a short deadline so a connection that was *not* dropped is told apart
+        // from one that was, rather than both ending in an error.
         var clients: [Client] = []
-        for _ in 0 ... 8 {
-            clients.append(Client(port: port))
+        for index in 0 ... 8 {
+            clients.append(Client(port: port, readTimeout: index == 0 ? 2 : 60))
+            try await Task.sleep(for: .milliseconds(50))
         }
 
-        // The connection within the cap still answers, which is what proves the refusal was
-        // selective rather than the listener falling over.
-        try await clients[0].send(WyomingEvent(kind: .ping))
-        let firstReply = try await clients[0].receive()
-        #expect(firstReply.kind == .pong)
+        // The newest answers: a table full of sockets that went quiet does not turn it away.
+        let newest = try #require(clients.last)
+        try await newest.send(WyomingEvent(kind: .ping))
+        let reply = try await newest.receive()
+        #expect(reply.kind == .pong)
+
+        // And the table is still bounded: room for it was made by closing the oldest.
+        var oldestWasDropped = false
+        do {
+            _ = try await clients[0].receive()
+        } catch TestError.timedOut {
+            // Still open: the deadline passed with the socket neither closed nor answering.
+            oldestWasDropped = false
+        } catch {
+            oldestWasDropped = true
+        }
+        #expect(oldestWasDropped)
 
         for client in clients {
             client.cancel()

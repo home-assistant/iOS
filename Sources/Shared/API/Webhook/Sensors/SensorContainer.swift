@@ -14,10 +14,13 @@ public struct SensorObserverUpdate {
 }
 
 public enum SensorContainerUpdateReason {
-    /// - Parameter changedUniqueIDs: the sensors whose enablement changed, which need re-registering
-    ///   so Home Assistant enables or disables the matching entities. Empty when the change didn't
-    ///   come from a specific set of sensors.
-    case settingsChange(changedUniqueIDs: [String])
+    /// - Parameters:
+    ///   - changedUniqueIDs: the sensors whose enablement changed, which need re-registering so
+    ///     Home Assistant enables or disables the matching entities. Empty when the change didn't
+    ///     come from a specific set of sensors.
+    ///   - serverIDs: the servers the change applies to, so only their registrations are rewritten.
+    ///     Empty means every server, for a change that isn't about one in particular.
+    case settingsChange(changedUniqueIDs: [String], serverIDs: [Identifier<Server>])
     case signal
 }
 
@@ -71,17 +74,33 @@ public class SensorContainer {
         observers.mutate { $0.remove(observer) }
     }
 
-    public func isEnabled(sensor: WebhookSensor) -> Bool {
+    public func isEnabled(sensor: WebhookSensor, for server: Server) -> Bool {
         guard let id = sensor.UniqueID else { return false }
-        return isEnabled(uniqueID: id)
+        return isEnabled(uniqueID: id, for: server)
     }
 
-    public func isEnabled(uniqueID: String) -> Bool {
-        enablement.isEnabled(uniqueID: uniqueID)
+    public func isEnabled(uniqueID: String, for server: Server) -> Bool {
+        enablement.isEnabled(uniqueID: uniqueID, forServer: server.identifier)
+    }
+
+    public func enabledUniqueIDs(for server: Server) -> Set<String> {
+        enablement.enabledUniqueIDs(forServer: server.identifier)
+    }
+
+    /// Whether any server is set to receive the sensor, which is what device-level work asks:
+    /// observing the camera, reading Apple Health or keeping a signaler running happens once for
+    /// the device, however many servers the values go to.
+    public func isEnabledForAnyServer(sensor: WebhookSensor) -> Bool {
+        guard let id = sensor.UniqueID else { return false }
+        return isEnabledForAnyServer(uniqueID: id)
+    }
+
+    public func isEnabledForAnyServer(uniqueID: String) -> Bool {
+        enablement.isEnabledForAnyServer(uniqueID: uniqueID)
     }
 
     public func isAllowedToSend(sensor: WebhookSensor, for server: Server) -> Bool {
-        guard isEnabled(sensor: sensor) else { return false }
+        guard isEnabled(sensor: sensor, for: server) else { return false }
 
         switch server.info.setting(for: .sensorPrivacy) {
         case .all: return true
@@ -89,29 +108,64 @@ public class SensorContainer {
         }
     }
 
-    public func setEnabled(_ value: Bool, for sensor: WebhookSensor) {
+    public func setEnabled(_ value: Bool, for sensor: WebhookSensor, on server: Server) {
         guard let id = sensor.UniqueID else { return }
-        setEnabled(value, forUniqueID: id)
+        setEnabled(value, forUniqueID: id, on: server)
     }
 
-    public func setEnabled(_ value: Bool, forUniqueID id: String) {
-        setEnabled(value, forUniqueIDs: [id])
+    public func setEnabled(_ value: Bool, forUniqueID id: String, on server: Server) {
+        setEnabled(value, forUniqueIDs: [id], on: server)
     }
 
-    /// Bulk variant of `setEnabled(_:forUniqueID:)`, so changing many sensors at once signals
+    /// Bulk variant of `setEnabled(_:forUniqueID:on:)`, so changing many sensors at once signals
     /// observers a single time instead of once per sensor.
-    public func setEnabled(_ value: Bool, forUniqueIDs ids: [String]) {
-        // `filter` rather than a short-circuiting reduce, so every ID is actually written.
-        let changed = ids.filter { enablement.setEnabled(value, forUniqueID: $0) }
-        guard !changed.isEmpty else { return }
-        notifySignal(reason: .settingsChange(changedUniqueIDs: changed))
+    public func setEnabled(_ value: Bool, forUniqueIDs ids: [String], on server: Server) {
+        setEnabled(value, forUniqueIDs: ids, on: [server])
+    }
+
+    /// Applies one choice to every server, for the device-level switches that aren't about a
+    /// particular one — kiosk mode turning its own sensors on, say.
+    public func setEnabledForAllServers(_ value: Bool, forUniqueIDs ids: [String]) {
+        setEnabled(value, forUniqueIDs: ids, on: Current.servers.all)
+    }
+
+    public func setEnabledForAllServers(_ value: Bool, forUniqueID id: String) {
+        setEnabledForAllServers(value, forUniqueIDs: [id])
+    }
+
+    private func setEnabled(_ value: Bool, forUniqueIDs ids: [String], on servers: [Server]) {
+        var changedIDs = Set<String>()
+        var changedServerIDs = [Identifier<Server>]()
+
+        for server in servers {
+            // `filter` rather than a short-circuiting reduce, so every ID is actually written.
+            let changed = ids.filter { enablement.setEnabled(value, forUniqueID: $0, forServer: server.identifier) }
+            guard !changed.isEmpty else { continue }
+            changedIDs.formUnion(changed)
+            changedServerIDs.append(server.identifier)
+        }
+
+        guard !changedIDs.isEmpty else { return }
+        notifySignal(reason: .settingsChange(changedUniqueIDs: Array(changedIDs), serverIDs: changedServerIDs))
+    }
+
+    /// Drops a removed server's selection, so the app stops carrying choices for a server the user
+    /// no longer has. Adding that server again registers it under a new identifier, so it starts
+    /// opt-in like any other new server rather than picking the old choices back up.
+    public func forgetSensorSelection(forServerWithIdentifier identifier: Identifier<Server>) {
+        let forgotten = enablement.forgetServers(withIdentifiers: [identifier])
+        guard !forgotten.isEmpty else { return }
+        // Device-level work asks whether any server still wants a sensor, and removing the last one
+        // that did changes that answer. Without telling the observers, a camera or Health signaler
+        // the gone server was the only reason for keeps running.
+        notifySignal(reason: .settingsChange(changedUniqueIDs: Array(forgotten), serverIDs: []))
     }
 
     /// Starts a first-time install with nothing enabled. Every sensor is opt-in, so an install that
     /// has just been set up reports only what the user switches on.
     public func resetSensorsForFirstRun() {
         guard enablement.resetForFirstRun() else { return }
-        notifySignal(reason: .settingsChange(changedUniqueIDs: []))
+        notifySignal(reason: .settingsChange(changedUniqueIDs: [], serverIDs: []))
     }
 
     private let lastUpdate = HAProtected<SensorObserverUpdate?>(value: nil)
@@ -279,7 +333,7 @@ public class SensorContainer {
                         if request.reason == .registration {
                             // Registering is the only chance to tell Home Assistant to disable the entity, rather
                             // than leave it enabled and reporting `unavailable` forever.
-                            outgoing.Disabled = !self.isEnabled(sensor: sensor)
+                            outgoing.Disabled = !self.isEnabled(sensor: sensor, for: server)
                         }
 
                         return outgoing

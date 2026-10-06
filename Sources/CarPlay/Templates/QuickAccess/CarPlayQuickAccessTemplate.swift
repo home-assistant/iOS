@@ -499,7 +499,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let info = info(for: magicItem)
         item.setText(magicItem.name(info: info))
         item.setDetailText(renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)))
-        item.setImage(magicItem.icon(info: info).carPlayIcon(color: UIColor(hex: info.customization?.iconColor)))
+        item.setImage(magicItem.icon(info: info).carPlayIcon(color: iconColor(for: info)))
         item.handler = { [weak self] _, completion in
             guard let self else {
                 completion()
@@ -968,8 +968,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         return pipelineTitle == assistLabel ? nil : assistLabel
     }
 
+    /// A color the user picked, or the app's tint for an item with no state to color it from.
     private func iconColor(for info: MagicItem.Info) -> UIColor {
-        guard let iconColorHex = info.customization?.iconColor else { return .haPrimary }
+        guard let iconColorHex = info.customization?.customIconColor else { return .haPrimary }
         return UIColor(hex: iconColorHex)
     }
 

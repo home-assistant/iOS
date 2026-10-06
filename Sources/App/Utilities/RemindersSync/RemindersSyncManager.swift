@@ -671,7 +671,7 @@ final class RemindersSyncManager: ObservableObject {
                 newDue?.minute = existing.minute
                 newDue?.second = existing.second
             }
-            reminder.dueDateComponents = newDue
+            RemindersSyncDueWriter.write(newDue, to: reminder)
         }
     }
 

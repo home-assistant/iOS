@@ -6,8 +6,12 @@ import SwiftUI
 /// Metrics are opt-in: turning one on here is what makes it eligible for the permission request and
 /// for being sent to Home Assistant.
 struct HealthSensorListView: View {
-    @StateObject private var viewModel = HealthSensorListViewModel()
+    @StateObject private var viewModel: HealthSensorListViewModel
     @State private var showEnableAllConfirmation = false
+
+    init(server: Server) {
+        self._viewModel = .init(wrappedValue: HealthSensorListViewModel(server: server))
+    }
 
     var body: some View {
         List {
@@ -108,7 +112,7 @@ struct HealthSensorListView: View {
 
 #Preview {
     NavigationView {
-        HealthSensorListView()
+        HealthSensorListView(server: ServerFixture.standard)
     }
 }
 #endif

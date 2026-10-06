@@ -87,6 +87,10 @@ public struct MagicItem: Codable, Equatable, Hashable {
         type == .assistPipeline || type == .assistPrompt
     }
 
+    public func isSameStoredItem(as other: MagicItem) -> Bool {
+        id == other.id && (serverId == other.serverId || (type == .assistPrompt && other.type == .assistPrompt))
+    }
+
     /// Domain retrieved from id when item is entity else nil
     public var domain: Domain? {
         if let domainString = id.split(separator: ".").first, let domain = Domain(rawValue: String(domainString)) {
@@ -158,7 +162,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public var icon: String?
         /// True only when the user explicitly picked a custom icon via the icon picker
         public var iconIsCustomized: Bool?
-        /// True only when the user explicitly picked a custom icon color via the color picker
+        /// True when the user chose "Custom" for the icon color — see ``customIconColor``
         public var iconColorIsCustomized: Bool?
 
         public var useCustomColors: Bool {
@@ -168,26 +172,28 @@ public struct MagicItem: Codable, Equatable, Hashable {
         /// The icon color the user deliberately chose, or `nil` to let the entity keep the color
         /// home-assistant/frontend gives it.
         ///
-        /// The customization screen seeds its color picker with the app's tint the first time it
-        /// opens, so a stored color on its own never meant the user picked one. Items saved before
-        /// ``iconColorIsCustomized`` existed are therefore only treated as customized when their
-        /// color differs from that seed.
+        /// The customization screen sets ``iconColorIsCustomized`` when the user switches the icon
+        /// color to "Custom", and clears the color itself on "Default". Older versions of that screen
+        /// seeded the color with the app's tint just by opening, so a color saved without the flag
+        /// only counts as picked when it isn't one of the tints the app has ever had.
         public var customIconColor: String? {
             guard let iconColor else { return nil }
             if iconColorIsCustomized == true { return iconColor }
-            return normalizedHex(iconColor) == normalizedHex(MagicItem.defaultIconColorHex)
+            return MagicItem.seededIconColorHexes.contains(MagicItem.normalizedHex(iconColor))
                 ? nil
                 : iconColor
         }
 
-        /// Uppercased six-digit hex, so the seed comparison isn't thrown off by a `#` prefix or an
-        /// opaque alpha channel — the app writes the same color in both shapes.
-        private func normalizedHex(_ hex: String) -> String {
-            var normalized = hex.uppercased().replacingOccurrences(of: "#", with: "")
-            if normalized.count == 8, normalized.hasSuffix("FF") {
-                normalized = String(normalized.dropLast(2))
-            }
-            return normalized
+        /// Lets the entity keep the color home-assistant/frontend gives it.
+        public mutating func useDefaultIconColor() {
+            iconColor = nil
+            iconColorIsCustomized = false
+        }
+
+        /// Fixes the icon to `hex`, whatever the entity's state.
+        public mutating func useCustomIconColor(_ hex: String) {
+            iconColor = hex
+            iconColorIsCustomized = true
         }
 
         public init(
@@ -233,6 +239,18 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.iconName = iconName
             self.customization = customization
             self.contextSubtitle = contextSubtitle
+        }
+
+        /// The same info carrying `customization`, for an item edited before whatever built the info
+        /// has seen the edit.
+        public func replacingCustomization(_ customization: Customization?) -> Info {
+            .init(
+                id: id,
+                name: name,
+                iconName: iconName,
+                customization: customization,
+                contextSubtitle: contextSubtitle
+            )
         }
     }
 
@@ -376,13 +394,16 @@ public struct MagicItem: Codable, Equatable, Hashable {
     /// The interaction an explicitly chosen action performs. `nil` for `.default`, for a
     /// `.toggle` or an on/off behavior the item's domain can't perform, and for a more-info dialog
     /// an item without an entity can't open — all of which leave the choice to whatever the caller
-    /// falls back on. The retired `.nothing` opens the more-info dialog: an icon that was told to
-    /// do nothing must not start controlling the entity after an update.
+    /// falls back on. `.nothing` reloads the widget and nothing more: the tap never controls the
+    /// entity or leaves the widget, so tapping a tile that does nothing is how its state is
+    /// refreshed on demand.
     private func interactionType(for action: ItemAction) -> WidgetInteractionType? {
         switch action {
         case .default:
             return nil
-        case .moreInfoDialog, .nothing:
+        case .nothing:
+            return .appIntent(.refresh)
+        case .moreInfoDialog:
             return hasMoreInfoDialog ? openEntityIntent() : nil
         case .toggle:
             return toggleIntent()
@@ -511,8 +532,7 @@ public enum MagicItemError: Error {
 public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     /// Listed in the frontend's own order, with the app's own additions next to the action they
     /// resemble most: the domain's main action and on/off behaviors after "toggle", `runScript`
-    /// after "perform action". The frontend's "no action" is left out: an item with nothing else
-    /// to do opens its more-info dialog, so `.nothing` is storage only.
+    /// after "perform action", and the frontend's "no action" last.
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,
@@ -525,6 +545,7 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
         .performAction("", "", ""),
         .runScript("", ""),
         .assist("", "", false),
+        .nothing,
     ]
 
     case `default`
@@ -554,10 +575,9 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     case performAction(_ serverId: String, _ actionId: String, _ payload: String)
     case runScript(_ serverId: String, _ scriptId: String)
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
-    /// Retired: the picker no longer offers it, and an item stored with it opens the more-info
-    /// dialog — the one behavior that, like doing nothing, never controls the entity. The case
-    /// stays only so configurations saved while it was offered still decode — dropping it would
-    /// fail every item in such a configuration, not just this one's choice.
+    /// The frontend's "no action": the tap neither controls the entity nor leaves the widget. On a
+    /// widget it reloads the tile instead, so a tile that does nothing is the one whose state can be
+    /// refreshed by hand — which is what the behavior has been used for since it was first offered.
     case nothing
 
     /// The behaviors a picker offers one item: every case, minus the ones the item's domain can't
@@ -565,8 +585,7 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     /// with a single service — the way the frontend's action editor filters "toggle" out of its
     /// own list. `supportedFeatures`, when known, narrows "toggle" the way the frontend's
     /// `canToggleState` does. A stored choice stays listed even then, so it never vanishes from
-    /// under the user; it falls back at tap time the way it always has. The retired `.nothing` is
-    /// the exception: it reads as "more info", so it is never listed.
+    /// under the user; it falls back at tap time the way it always has.
     public static func offered(
         for item: MagicItem,
         supportedFeatures: Int? = nil,
@@ -587,12 +606,6 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
                 return true
             }
         }
-    }
-
-    /// Whether this is a stored choice the picker should show as "more info": the retired
-    /// `.nothing`, which now behaves that way.
-    public var isRetired: Bool {
-        self == .nothing
     }
 
     public var id: String {
@@ -686,6 +699,24 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return url
         }
         return URL(string: "https://\(trimmed)")
+    }
+}
+
+extension MagicItem {
+    /// Every tint the icon color picker has seeded itself with: today's, and `#00AEF8`, the app's
+    /// tint until September 2025. Normalized by ``normalizedHex(_:)``.
+    static var seededIconColorHexes: Set<String> {
+        [normalizedHex(defaultIconColorHex), "00AEF8"]
+    }
+
+    /// Uppercased six-digit hex, so the seed comparison isn't thrown off by a `#` prefix or an
+    /// opaque alpha channel — the app writes the same color in both shapes.
+    static func normalizedHex(_ hex: String) -> String {
+        var normalized = hex.uppercased().replacingOccurrences(of: "#", with: "")
+        if normalized.count == 8, normalized.hasSuffix("FF") {
+            normalized = String(normalized.dropLast(2))
+        }
+        return normalized
     }
 }
 
@@ -859,7 +890,9 @@ public extension MagicItem {
 
     /// watchOS executes via the REST API — see `execute(on:source:currentItemState:completion:)`.
     /// The request reuses the server's mTLS-aware `URLSession` and bearer token (token refresh already
-    /// works over `URLSession` on the watch), so no WebSocket is involved.
+    /// works over `URLSession` on the watch), so no WebSocket is involved. `ServerRequestPerformer`
+    /// decides how it actually leaves the watch, including handing it to the iPhone when that one is
+    /// reachable.
     private func executeViaREST(
         on server: Server,
         currentItemState: String,
@@ -1091,66 +1124,80 @@ public extension MagicItem {
                 "(\(Int(Self.requestTimeout))s timeout)…"
         )
 
-        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server, onStep: onStep)
-        let task = session.dataTask(with: request) { [session] data, response, error in
-            // The session strongly retains its delegate until invalidated; do it once the task ends.
-            defer { session.finishTasksAndInvalidate() }
+        let requestTask = Task {
+            // Qualified: PromiseKit's single-parameter `Result` shadows the standard library's
+            // in this file.
+            let result: Swift.Result<(Data, HTTPURLResponse), Error>
+            do {
+                let response = try await ServerRequestPerformer.perform(
+                    request,
+                    server: server,
+                    priority: .userAction,
+                    onStep: onStep
+                )
+                result = .success(response)
+            } catch {
+                result = .failure(error)
+            }
+
             let elapsed = String(format: "%.2fs", Current.date().timeIntervalSince(started))
-            finishOnce {
-                if let error {
-                    Current.Log
-                        .error("REST execution of magic item \(self.id) failed: \(error.localizedDescription)")
-                    onStep?("Request failed after \(elapsed): \(error.localizedDescription)")
-                    completion(false, error)
-                    return
-                }
-
-                guard let http = response as? HTTPURLResponse else {
-                    onStep?("Non-HTTP response after \(elapsed)")
-                    completion(false, WatchRESTExecutionError.invalidResponse)
-                    return
-                }
-
-                onStep?("Response \(http.statusCode) after \(elapsed)")
-                if (200 ..< 300).contains(http.statusCode) {
-                    Current.Log.verbose("Success executing magic item \(self.id) via REST")
-                    completion(true, nil)
-                } else {
-                    let body = data.flatMap { String(data: $0, encoding: .utf8) }
-                    Current.Log.error(
-                        "REST execution of magic item \(self.id) returned \(http.statusCode): \(body ?? "<no body>")"
-                    )
-                    // The server rejected a token the client still considered valid; invalidate it
-                    // so the next run refreshes instead of re-sending it — repeats get logged as
-                    // invalid auth server-side and eventually IP-ban the watch.
-                    if http.statusCode == 401 {
-                        let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
-                        tokenManager.handleAccessTokenRejected(token)
+            // Report from the main queue: the URLSession transport this replaced delivered its
+            // callback there (the watch session's delegate queue is main) and the row publishes its
+            // state and trace from it.
+            DispatchQueue.main.async {
+                finishOnce {
+                    switch result {
+                    case let .failure(error):
+                        Current.Log
+                            .error("REST execution of magic item \(self.id) failed: \(error.localizedDescription)")
+                        onStep?("Request failed after \(elapsed): \(error.localizedDescription)")
+                        completion(false, error)
+                    case let .success((data, http)):
+                        onStep?("Response \(http.statusCode) after \(elapsed)")
+                        guard (200 ..< 300).contains(http.statusCode) else {
+                            let body = String(data: data, encoding: .utf8)
+                            Current.Log.error(
+                                "REST execution of magic item \(self.id) returned \(http.statusCode): " +
+                                    "\(body ?? "<no body>")"
+                            )
+                            // The server rejected a token the client still considered valid;
+                            // invalidate it so the next run refreshes instead of re-sending it —
+                            // repeats get logged as invalid auth server-side and eventually IP-ban
+                            // the watch.
+                            if http.statusCode == 401 {
+                                let tokenManager = Current.api(for: server)?.tokenManager
+                                    ?? TokenManager(server: server)
+                                tokenManager.handleAccessTokenRejected(token)
+                            }
+                            completion(false, WatchRESTExecutionError.httpStatus(http.statusCode, body: body))
+                            return
+                        }
+                        Current.Log.verbose("Success executing magic item \(self.id) via REST")
+                        completion(true, nil)
                     }
-                    completion(false, WatchRESTExecutionError.httpStatus(http.statusCode, body: body))
                 }
             }
         }
-        task.resume()
-        // Fallback for a URLSession that never calls back — not even with its timeout error. Main
+        // Fallback for a transport that never calls back — not even with its own timeout error. Main
         // queue on purpose: it is the one queue proven to stay serviced on watch hardware (the GCD
         // global and Swift-concurrency pools have both been observed starved there).
         DispatchQueue.main.asyncAfter(deadline: .now() + Self.sessionCallbackFallback) {
             finishOnce {
-                Current.Log.error("REST execution of magic item \(self.id) got no URLSession callback")
+                Current.Log.error("REST execution of magic item \(self.id) got no response callback")
                 onStep?(
-                    "No answer from URLSession after \(Int(Self.sessionCallbackFallback))s — treating as " +
+                    "No answer after \(Int(Self.sessionCallbackFallback))s — treating as " +
                         "failed. Either the network went silent past its own timeout, or the callback " +
                         "queue is starved and couldn't deliver the result."
                 )
-                session.invalidateAndCancel()
+                // Tears the request down with it, so the session and its connection don't outlive
+                // the run that gave up on them.
+                requestTask.cancel()
                 completion(false, WatchRESTExecutionError.noURLSessionCallback)
             }
         }
     }
 
     private enum WatchRESTExecutionError: LocalizedError {
-        case invalidResponse
         case httpStatus(_ statusCode: Int, body: String?)
         /// No bearer token within `tokenDeadline` — a token refresh is most likely stuck.
         case tokenTimeout
@@ -1161,8 +1208,6 @@ public extension MagicItem {
 
         var errorDescription: String? {
             switch self {
-            case .invalidResponse:
-                return L10n.Watch.Home.Run.Error.message
             case let .httpStatus(_, body):
                 // Home Assistant returns a human-readable message on failure; surface it when present.
                 if let body, !body.isEmpty {

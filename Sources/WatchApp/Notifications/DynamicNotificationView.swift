@@ -59,6 +59,14 @@ struct DynamicNotificationView: View {
                     Text(viewModel.message)
                 }
             }
+
+            ForEach(viewModel.textInputActions) { action in
+                NotificationTextInputActionButton(
+                    action: action,
+                    state: viewModel.textInputActionStates[action.id],
+                    perform: { viewModel.perform(textInputAction: action) }
+                )
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, -DesignSystem.Spaces.one) // Hack to remove extra padding in the custom notifications view
@@ -96,6 +104,16 @@ struct DynamicNotificationView: View {
     DynamicNotificationView(viewModel: .preview(
         title: "Garage door",
         message: "The garage door has been open for 10 minutes"
+    ))
+}
+
+#Preview("Text input action") {
+    DynamicNotificationView(viewModel: .preview(
+        title: "Garage door",
+        message: "The garage door has been open for 10 minutes",
+        textInputActions: [
+            NotificationAction(identifier: "REPLY", title: "Reply", textInput: true),
+        ]
     ))
 }
 

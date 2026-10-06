@@ -528,6 +528,13 @@ extension AssistViewModel: AssistServiceDelegate {
     func didReceiveError(code: String, message: String) {
         Current.Log.error("Assist error: \(code)")
         appendToChat(.init(content: message, itemType: .error))
+        // Recording starts before the pipeline is subscribed, so a run that fails on the way up —
+        // a rejected `assist_pipeline/run`, for instance — arrives with the microphone still live.
+        // Leaving it there keeps the view in its listening state with nothing left to send to.
+        Task { @MainActor [weak self] in
+            guard let self, isRecording else { return }
+            stopStreaming()
+        }
     }
 }
 

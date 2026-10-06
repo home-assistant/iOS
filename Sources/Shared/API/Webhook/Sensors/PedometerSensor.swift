@@ -155,17 +155,24 @@ public class PedometerSensor: SensorProvider {
 
         func asSensor(from data: CMPedometerData, request: SensorProviderRequest) -> Promise<WebhookSensor> {
             guard let intVal = keyPath.intValue(on: data) else {
-                return .init(error: PedometerError.noData)
+                guard request.reason == .registration else {
+                    return .init(error: PedometerError.noData)
+                }
+                return .value(sensor(state: "unavailable", request: request))
             }
 
-            return .value(WebhookSensor(
+            return .value(sensor(state: intVal, request: request))
+        }
+
+        private func sensor(state: Any, request: SensorProviderRequest) -> WebhookSensor {
+            WebhookSensor(
                 name: name,
                 uniqueID: rawValue,
                 icon: icon(serverVersion: request.serverVersion),
-                state: intVal,
+                state: state,
                 unit: unit,
                 stateClass: stateClass
-            ))
+            )
         }
     }
 }

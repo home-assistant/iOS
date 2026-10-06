@@ -49,7 +49,7 @@ struct MagicItemConfigurationRow: View {
     private var resolvedIconColor: UIColor {
         if let iconColor {
             return iconColor
-        } else if let customIconColor = item.customization?.iconColor ?? info.customization?.iconColor {
+        } else if let customIconColor = item.customization?.customIconColor ?? info.customization?.customIconColor {
             return .init(hex: customIconColor)
         } else {
             return .haPrimary

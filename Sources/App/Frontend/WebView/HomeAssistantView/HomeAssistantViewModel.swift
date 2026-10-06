@@ -26,11 +26,11 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     let server: Server
-    let initialPath: String?
+    private(set) var initialPath: String?
     let overlayState: WebFrontendOverlayState
     let chrome: WebViewChromeState
     let reconnectManager: WebViewReconnectManager
-    /// Feeds the App Labs native macOS sidebar and native iOS tab bar; only started once one of them is on screen.
+    /// Feeds the App Labs native iOS tab bar; only started once it is on screen.
     let sidebar: MacSidebarViewModel
     /// Lays `sidebar` out as tabs for the App Labs native iOS tab bar.
     let tabBar: NativeTabBarViewModel
@@ -93,6 +93,8 @@ final class HomeAssistantViewModel: ObservableObject {
             guard let self, let webViewController else { return }
             if let sourceFrame {
                 webViewController.setAssistZoomOrigin(sourceFrame)
+            } else {
+                webViewController.presentsNextAssistAsSheet = true
             }
             webViewController.webViewExternalMessageHandler.showAssist(
                 server: server,
@@ -101,10 +103,16 @@ final class HomeAssistantViewModel: ObservableObject {
             )
         }
         sidebar.onShowNotifications = { [weak self] in
-            self?.webViewController?.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
-                command: .showNotifications,
-                payload: nil
-            )
+            guard let webViewController = self?.webViewController else { return }
+            NotificationDrawerToggle(
+                evaluateJavaScript: { webViewController.evaluateJavaScript($0, completion: $1) },
+                showDrawer: {
+                    webViewController.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+                        command: .showNotifications,
+                        payload: nil
+                    )
+                }
+            ).toggle()
         }
         sidebar.readLocalStorage = { [weak self] key, completion in
             guard let webViewController = self?.webViewController else {
@@ -132,6 +140,12 @@ final class HomeAssistantViewModel: ObservableObject {
 
     var shouldShowStandByView: Bool {
         isFullScreenLoaderMounted || overlayState.emptyState != nil
+    }
+
+    /// Whether the stand-by overlay is actually on screen: the no-active-URL block takes over the whole
+    /// frontend and replaces it.
+    var isStandByViewVisible: Bool {
+        shouldShowStandByView && !overlayState.showsNoActiveURL
     }
 
     var webViewContentOpacity: Double {
@@ -254,6 +268,10 @@ final class HomeAssistantViewModel: ObservableObject {
         chrome.objectWillChange
             .sink { [weak self] _ in self?.objectWillChange.send() }
             .store(in: &cancellables)
+
+        tabBar.objectWillChange
+            .sink { [weak self] _ in self?.objectWillChange.send() }
+            .store(in: &cancellables)
     }
 
     private func bindOverlayState() {
@@ -342,6 +360,7 @@ final class HomeAssistantViewModel: ObservableObject {
             try? await Task.sleep(for: Constants.loaderFadeOutDuration)
             guard loaderCycleID == finishingCycleID, !isFullScreenLoaderVisible else { return }
             isFullScreenLoaderMounted = false
+            ensureWebViewVisible()
         }
     }
 
@@ -359,9 +378,33 @@ final class HomeAssistantViewModel: ObservableObject {
         loaderWatchdogTask = Task { @MainActor in
             try? await Task.sleep(for: loaderWatchdogTimeout)
             guard !Task.isCancelled, loaderCycleID == cycleID, isFullScreenLoaderMounted,
-                  !overlayState.isLoading, overlayState.emptyState == nil else { return }
-            Current.Log.error("Standby loader stuck with no frontend report after loading, dismissing it")
+                  !overlayState.isLoading, overlayState.emptyState == nil,
+                  !overlayState.showsNoActiveURL else { return }
+            Current.Log.error("Standby loader stuck with no frontend report after loading, checking the page")
+            await uncoverFrontendOrRecover(cycleID: cycleID)
+        }
+    }
+
+    private func uncoverFrontendOrRecover(cycleID: UUID) async {
+        guard let webViewController else {
             dismissStandByView()
+            return
+        }
+
+        let hasRendered = await webViewController.hasRenderedFrontend()
+
+        guard loaderCycleID == cycleID, isFullScreenLoaderMounted, isFullScreenLoaderVisible,
+              overlayState.emptyState == nil, !overlayState.showsNoActiveURL else { return }
+        guard !hasRendered else {
+            webViewController.resetBlankFrontendRecovery()
+            dismissStandByView()
+            return
+        }
+
+        Current.Log.error("Frontend neither reported nor rendered anything, recovering it")
+        initialPath = nil
+        if !webViewController.recoverFromBlankFrontend() {
+            webViewController.showBlankFrontendEmptyState()
         }
     }
 
@@ -382,12 +425,20 @@ final class HomeAssistantViewModel: ObservableObject {
             isFullScreenLoaderVisible = false
         }
         isFullScreenLoaderMounted = false
+        ensureWebViewVisible()
+    }
+
+    private func ensureWebViewVisible() {
+        guard contentOpacity == 0 else { return }
+        fade(to: 1, reduceMotion: reduceMotion)
     }
 
     /// Opens the Settings sheet on its compact server picker, activating whatever the user picks. Zooms out of
     /// the stand-by view's server pill, which is the only thing that triggers it.
     func presentServerSelection() {
-        Current.sceneManager.appCoordinator.done { coordinator in
+        // The pill belongs to one window's frontend, so the picker opens on that window's coordinator.
+        let scene = webViewController?.presentationWindow?.windowScene
+        Current.sceneManager.appCoordinator(for: scene).done { coordinator in
             coordinator.selectServer(prompt: nil, zoomsFromStandBy: true) { server in
                 coordinator.activate(server: server)
             }

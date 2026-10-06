@@ -13,9 +13,18 @@ public extension URL {
 
     /// Return true if receiver's URL  is equal to `otherURL` ignoring query params
     func isEqualIgnoringQueryParams(to otherURL: URL) -> Bool {
-        baseIsEqual(to: otherURL) &&
-            (path == otherURL.path || path == "\(otherURL.path)/0")
+        guard baseIsEqual(to: otherURL) else { return false }
+        let lhs = rootNormalizedPath
+        let rhs = otherURL.rootNormalizedPath
         // Workaround for Home Assistant behavior where /0 is added to the end
+        return lhs == rhs || lhs == "\(rhs)/0"
+    }
+
+    /// Treats the two spellings of the root path (`""`, as a configured `https://host` address stores it,
+    /// and `"/"`, which a canonical navigation produces) as the same, so a redirect to the root still
+    /// compares equal to the address it came from instead of looking like a different page.
+    private var rootNormalizedPath: String {
+        path == "/" ? "" : path
     }
 
     // WKWebView may strip default ports from navigated URLs, so normalize them for equality checks.
@@ -29,6 +38,19 @@ public extension URL {
         case "https": return 443
         default: return nil
         }
+    }
+
+    /// The lowercased `host:port` pair this URL addresses, with the scheme's default port filled in.
+    /// `nil` when the URL has no host, or has neither a port nor a scheme to derive one from.
+    ///
+    /// Two URLs that share it reach the same server socket whatever path or scheme each one carries,
+    /// which is what makes it usable to tell whether two descriptions of a server are the same one.
+    var hostAndPortIdentity: String? {
+        guard let host = host?.lowercased(), !host.isEmpty, let port = portForComparison else {
+            return nil
+        }
+
+        return "\(host):\(port)"
     }
 
     func sanitized() -> URL {

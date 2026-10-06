@@ -221,9 +221,12 @@ public extension HATypedRequest {
         ))
     }
 
-    static func usagePredictionCommonControl() -> HATypedRequest<HAUsagePredictionCommonControl> {
+    /// Without a `limit` core returns its default of 8 entities. Only send one to servers at
+    /// `Version.usagePredictionCommonControlLimit` or later; older ones reject the key.
+    static func usagePredictionCommonControl(limit: Int? = nil) -> HATypedRequest<HAUsagePredictionCommonControl> {
         HATypedRequest<HAUsagePredictionCommonControl>(request: .init(
-            type: .webSocket("usage_prediction/common_control")
+            type: .webSocket("usage_prediction/common_control"),
+            data: limit.map { ["limit": $0] } ?? [:]
         ))
     }
 

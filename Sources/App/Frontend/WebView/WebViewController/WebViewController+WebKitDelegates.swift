@@ -14,6 +14,7 @@ extension WebViewController {
         didHandleServerErrorResponse = false
         didReceiveClientCertificateChallenge = false
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
+        forgetOnscreenEntity()
     }
 
     func webView(
@@ -57,6 +58,10 @@ extension WebViewController {
             }
 
             if !error.isCancelled {
+                if Self.shouldRedirectToRootForNavigationError(error) {
+                    redirectToActiveURLRoot(failedURL: (error as? URLError)?.failingURL ?? webView.url)
+                    return
+                }
                 latestLoadError = error
                 recordClientCertificateIssueIfNeeded(for: error)
                 showEmptyState()
@@ -94,10 +99,18 @@ extension WebViewController {
         }
 
         if shouldShowError {
+            if Self.shouldRedirectToRootForNavigationError(error) {
+                redirectToActiveURLRoot(failedURL: (error as? URLError)?.failingURL ?? webView.url)
+                return
+            }
             latestLoadError = error
             recordClientCertificateIssueIfNeeded(for: error)
             showEmptyState()
         }
+    }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        handleContentProcessTermination()
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -167,6 +180,10 @@ extension WebViewController {
         ) {
         case .allow:
             decisionHandler(.allow)
+        case .redirectToRoot:
+            // Don't render the server's 404/403; send the user home to the frontend root instead.
+            decisionHandler(.cancel)
+            redirectToActiveURLRoot(failedURL: navigationResponse.response.url)
         case .reloadDefaultURL:
             // first: clear that saved url, it's bad
             initialURL = nil
@@ -308,8 +325,16 @@ extension WebViewController {
     enum MainFrameErrorResponseDecision: Equatable {
         case allow
         case reloadDefaultURL
+        case redirectToRoot
         case showEmptyState
     }
+
+    /// Client-error codes that mean "the page you asked for isn't there or isn't allowed" — a stale or
+    /// hand-crafted deeplink, a dashboard that was removed, a forbidden path. These are dead ends, so the
+    /// user is sent back to the frontend root instead of being left on the server's bare error page.
+    /// Authentication (401) and rate-limit (429) responses are deliberately excluded: they keep rendering
+    /// so an expired session still re-authenticates and a throttled server is not hammered with reloads.
+    static let redirectToRootStatusCodes: Set<Int> = [403, 404, 410]
 
     static func decisionForMainFrameErrorResponse(
         statusCode: Int,
@@ -323,10 +348,49 @@ extension WebViewController {
         if cfMitigated?.lowercased() == "challenge" {
             return .allow
         }
-        guard statusCode >= 500 else {
-            return .allow
+        if statusCode >= 500 {
+            return .showEmptyState
         }
-        return .showEmptyState
+        if redirectToRootStatusCodes.contains(statusCode) {
+            return .redirectToRoot
+        }
+        return .allow
+    }
+
+    /// Whether a failed navigation should bounce the web view back to the frontend root rather than show
+    /// the disconnected empty state. True only when the URL itself was the problem — a malformed or
+    /// unsupported deeplink target — never for connectivity failures: the root lives on the same host, so
+    /// redirecting on a lost or refused connection would just loop into the same failure.
+    static func shouldRedirectToRootForNavigationError(_ error: Error) -> Bool {
+        if error.isCancelled {
+            return false
+        }
+        let nsError = error as NSError
+        switch nsError.domain {
+        case NSURLErrorDomain:
+            return nsError.code == NSURLErrorBadURL || nsError.code == NSURLErrorUnsupportedURL
+        case "WebKitErrorDomain":
+            // 101 = WebKitErrorCannotShowURL: the URL is unsupported or malformed, not a reachability
+            // problem, so the root (a well-formed URL) is a safe place to land.
+            return nsError.code == 101
+        default:
+            return false
+        }
+    }
+
+    enum RootRedirectOutcome: Equatable {
+        case loadRoot(URL)
+        case showEmptyState(failedURL: URL)
+    }
+
+    /// Given the resolved frontend root and the URL that failed, decides whether to load the root or — when
+    /// the root itself is the page that failed — fall back to the empty state instead of looping into the
+    /// same failure. A `nil` failed URL (we could not tell what failed) always loads the root.
+    static func rootRedirectOutcome(target: URL, failedURL: URL?) -> RootRedirectOutcome {
+        if let failedURL, failedURL.isEqualIgnoringQueryParams(to: target) {
+            return .showEmptyState(failedURL: failedURL)
+        }
+        return .loadRoot(target)
     }
 
     static func connectionStateForInterceptedServerError(

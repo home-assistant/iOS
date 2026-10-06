@@ -13,6 +13,8 @@ struct CameraPlayerView: View {
     @Environment(\.dismiss) private var dismiss
     private let server: Server
     private let cameraName: String?
+    /// Called when the picker switches to another camera, with the new entity id.
+    private let onCameraChange: ((String) -> Void)?
 
     @State private var cameraEntityId: String
     /// The streaming methods to try for the current camera and which one is showing.
@@ -33,10 +35,16 @@ struct CameraPlayerView: View {
     private let maxTitleTextWidth: CGFloat = 100
     private let topScrimHeight: CGFloat = 140
 
-    init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
+    init(
+        server: Server,
+        cameraEntityId: String,
+        cameraName: String? = nil,
+        onCameraChange: ((String) -> Void)? = nil
+    ) {
         self.server = server
         self._cameraEntityId = State(initialValue: cameraEntityId)
         self.cameraName = cameraName
+        self.onCameraChange = onCameraChange
     }
 
     var body: some View {
@@ -326,7 +334,8 @@ struct CameraPlayerView: View {
         }
     }
 
-    private func switchCamera(to entityId: String) {
+    /// Non-private for tests.
+    func switchCamera(to entityId: String) {
         guard entityId != cameraEntityId else { return }
         // Show the loader while the new camera's capabilities are fetched and its stream connects.
         // Changing `cameraEntityId` re-identifies `content`, tearing down the current player first.
@@ -334,6 +343,7 @@ struct CameraPlayerView: View {
         playback.clear()
         cameraEntityId = entityId
         loadMetadata()
+        onCameraChange?(entityId)
     }
 }
 
