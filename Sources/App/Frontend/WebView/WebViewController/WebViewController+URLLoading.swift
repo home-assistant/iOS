@@ -303,6 +303,35 @@ extension WebViewController {
         }
     }
 
+    /// Sends the web view home after a navigation the frontend can't honor — a 404, a forbidden page, or a
+    /// malformed deeplink URL. Loads the frontend root (the kiosk dashboard when kiosk mode targets this
+    /// server, otherwise the server default) instead of leaving the user on a server error page or the
+    /// disconnected empty state.
+    ///
+    /// `failedURL` is the destination that failed. When it already is the root, the root itself is broken,
+    /// so we fall back to the normal empty state rather than bouncing into the same failure again.
+    func redirectToActiveURLRoot(failedURL: URL?) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let webviewURL = await server.webviewURL() else {
+                Current.Log.error("Cannot redirect to root, \(server.identifier.rawValue) has no active URL")
+                showNoActiveURLError()
+                return
+            }
+            let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
+            if let failedURL, failedURL.isEqualIgnoringQueryParams(to: target) {
+                Current.Log.error("Root \(target.path) itself failed to load; showing empty state instead of looping")
+                latestLoadError = Self.serverErrorLoadError(for: failedURL)
+                showEmptyState()
+                return
+            }
+            Current.Log.info("redirecting web view to root after a disallowed navigation: \(target.path)")
+            loadViewIfNeeded()
+            overlayState?.externalNavigationRequests.send()
+            load(request: URLRequest(url: target))
+        }
+    }
+
     func showNoActiveURLError() {
         // Load about:blank in webview to prevent any current connections
         load(request: URLRequest(url: URL(string: "about:blank")!))
