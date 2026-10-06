@@ -345,16 +345,16 @@ struct OnboardingServersListView: View {
             text: L10n.Onboarding.Servers.Search.Loader.text,
             availableHeight: loaderAvailableHeight
         )
-            .padding(.horizontal)
-            // Centers the loader in the space below the title rather than over it.
-            .padding(.top, titleHeight)
-            // Pinned to the measured content height so the overlay never grows the stack and
-            // feeds back into its own measurement.
-            .frame(height: contentHeight > 0 ? contentHeight : nil)
-            .offset(y: autoConnectInstance == nil ? 0 : -100)
-            .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
-            .animation(.easeInOut, value: viewModel.showCenterLoader)
-            .animation(.easeInOut, value: autoConnectInstance)
+        .padding(.horizontal)
+        // Centers the loader in the space below the title rather than over it.
+        .padding(.top, titleHeight)
+        // Pinned to the measured content height so the overlay never grows the stack and
+        // feeds back into its own measurement.
+        .frame(height: contentHeight > 0 ? contentHeight : nil)
+        .offset(y: autoConnectInstance == nil ? 0 : -100)
+        .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
+        .animation(.easeInOut, value: viewModel.showCenterLoader)
+        .animation(.easeInOut, value: autoConnectInstance)
     }
 
     private func startDiscoveryIfNeeded() {
