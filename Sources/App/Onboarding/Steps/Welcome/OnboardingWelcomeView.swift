@@ -10,10 +10,17 @@ struct OnboardingWelcomeView: View {
         static let distanceBetweenLogoAndTitle: CGFloat = 46
     }
 
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var showLearnMore = false
     /// Advances to the servers list; the onboarding container swaps content in place (no navigation
     /// push — tearing the container down with a pushed page leaks its hosting view).
     let continueAction: () -> Void
+
+    /// In a short window (closed iPhone Duo or any iPhone in landscape) the bottom buttons would
+    /// cover most of the content, so the actions move into the navigation bar instead.
+    private var showsActionsInToolbar: Bool {
+        verticalSizeClass == .compact
+    }
 
     var body: some View {
         ScrollView {
@@ -29,8 +36,28 @@ struct OnboardingWelcomeView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .safeAreaInset(edge: .bottom, content: {
-            continueButtonBlock
+            if !showsActionsInToolbar {
+                continueButtonBlock
+            }
         })
+        .toolbar {
+            if showsActionsInToolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(L10n.Onboarding.Welcome.Updated.secondaryButton) {
+                        showLearnMore = true
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(L10n.Onboarding.Welcome.primaryButtonCompact, action: continueAction)
+                        .fontWeight(.semibold)
+                        .tint(Color.haPrimary)
+                        .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeContinue.rawValue)
+                }
+            }
+        }
+        // Centers the content on the full display width when a horizontal safe area inset is
+        // present (e.g. iPhone Duo camera or vertical bar) instead of on the inset region.
+        .ignoresSafeArea(.container, edges: .horizontal)
         .sheet(isPresented: $showLearnMore) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantCompanionGetStarted)
         }
@@ -84,12 +111,7 @@ struct OnboardingWelcomeView: View {
 }
 
 #Preview {
-    NavigationView {
-        if #available(iOS 18.0, *) {
-            OnboardingWelcomeView(continueAction: {})
-                .toolbarVisibility(.hidden, for: .navigationBar)
-        } else {
-            OnboardingWelcomeView(continueAction: {})
-        }
+    NavigationStack {
+        OnboardingWelcomeView(continueAction: {})
     }
 }

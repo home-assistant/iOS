@@ -1427,6 +1427,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
 "onboarding.welcome.primary_button" = "Connect to my Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
