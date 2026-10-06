@@ -570,8 +570,8 @@ final class AssistViewModelTests: XCTestCase {
     /// so the microphone must not go live for one: the user would be talking to nothing.
     @MainActor
     func testVoiceRequestOnPipelineWithoutSpeechToTextDoesNotRecord() {
-        sut.pipelines = [textOnlyPipeline]
-        sut.preferredPipelineId = textOnlyPipeline.id
+        selectFetchedPipeline(textOnlyPipeline)
+        sut.focusOnInput = false
 
         sut.assistWithAudio()
 
@@ -582,14 +582,30 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertTrue(sut.focusOnInput, "the keyboard is the way left to ask")
     }
 
+    /// Only the cache says the engine is missing, and it can predate one added on the server, so the
+    /// request goes out and `AssistService` confirms with the server.
+    @MainActor
+    func testVoiceRequestOnCachedPipelineWithoutSpeechToTextStillRecords() {
+        sut.pipelines = [textOnlyPipeline]
+        sut.preferredPipelineId = textOnlyPipeline.id
+
+        sut.assistWithAudio()
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: textOnlyPipeline.id, audioSampleRate: 16000, tts: true)
+        )
+    }
+
     /// Transcribing on device needs nothing from the pipeline's speech-to-text engine.
     @MainActor
     func testOnDeviceSTT_pipelineWithoutSpeechToText_stillListens() async {
         let mockTranscriber = MockSpeechTranscriber()
         sut = makeSut(speechTranscriber: mockTranscriber)
         sut.configuration.enableOnDeviceSTT = true
-        sut.pipelines = [textOnlyPipeline]
-        sut.preferredPipelineId = textOnlyPipeline.id
+        selectFetchedPipeline(textOnlyPipeline)
 
         sut.assistWithAudio()
         await Task.yield()
@@ -603,8 +619,7 @@ final class AssistViewModelTests: XCTestCase {
     @MainActor
     func testOnDeviceSTT_transcriptOnPipelineWithoutTextToSpeech_doesNotRequestServerTTS() {
         sut.configuration.enableOnDeviceSTT = true
-        sut.pipelines = [textOnlyPipeline]
-        sut.preferredPipelineId = textOnlyPipeline.id
+        selectFetchedPipeline(textOnlyPipeline)
         sut.inputText = "Zeg alleen TEST"
 
         sut.assistWithTextExpectingTTS()
@@ -618,8 +633,7 @@ final class AssistViewModelTests: XCTestCase {
     @MainActor
     func testOnDeviceSTT_transcriptOnPipelineWithTextToSpeech_requestsServerTTS() {
         sut.configuration.enableOnDeviceSTT = true
-        sut.pipelines = [voicePipeline]
-        sut.preferredPipelineId = voicePipeline.id
+        selectFetchedPipeline(voicePipeline)
         sut.inputText = "Turn on the lights"
 
         sut.assistWithTextExpectingTTS()
@@ -630,10 +644,10 @@ final class AssistViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testVoiceRunOnPipelineWithoutTextToSpeech_endsAtIntent() {
         let pipeline = Pipeline(id: "stt-only", name: "STT only", sttEngine: "stt.cloud")
-        sut.pipelines = [pipeline]
-        sut.preferredPipelineId = pipeline.id
+        selectFetchedPipeline(pipeline)
 
         sut.didStartRecording(with: 16000)
 
@@ -643,9 +657,9 @@ final class AssistViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testVoiceRunOnPipelineWithTextToSpeech_requestsServerTTS() {
-        sut.pipelines = [voicePipeline]
-        sut.preferredPipelineId = voicePipeline.id
+        selectFetchedPipeline(voicePipeline)
 
         sut.didStartRecording(with: 16000)
 
@@ -656,10 +670,10 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     /// Speaking the reply on device keeps the run at `intent` even when the pipeline could speak it.
+    @MainActor
     func testOnDeviceTTS_voiceRunOnPipelineWithTextToSpeech_endsAtIntent() {
         sut.configuration.enableOnDeviceTTS = true
-        sut.pipelines = [voicePipeline]
-        sut.preferredPipelineId = voicePipeline.id
+        selectFetchedPipeline(voicePipeline)
 
         sut.didStartRecording(with: 16000)
 
@@ -667,6 +681,15 @@ final class AssistViewModelTests: XCTestCase {
             mockAssistService.assistSource,
             .audio(pipelineId: voicePipeline.id, audioSampleRate: 16000, tts: false)
         )
+    }
+
+    /// Loads `pipeline` the way the view does on appear, so its capabilities count as current.
+    @MainActor
+    private func selectFetchedPipeline(_ pipeline: Pipeline) {
+        mockAssistService.pipelineResponse = .init(preferredPipeline: pipeline.id, pipelines: [pipeline])
+        sut.initialRoutine()
+        sut.pipelines = [pipeline]
+        sut.preferredPipelineId = pipeline.id
     }
 
     private var textOnlyPipeline: Pipeline {

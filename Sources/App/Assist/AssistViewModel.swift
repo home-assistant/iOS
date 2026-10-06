@@ -40,6 +40,9 @@ final class AssistViewModel: NSObject, ObservableObject {
     private(set) var autoStartRecording: Bool
 
     private(set) var canSendAudioData = false
+    /// Whether `pipelines` came from the server this session rather than only from the cache, which
+    /// can predate an engine added to a pipeline since.
+    private var hasFreshPipelines = false
     private var configObservationCancellable: AnyDatabaseCancellable?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
@@ -257,9 +260,11 @@ final class AssistViewModel: NSObject, ObservableObject {
         preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId
     }
 
-    /// The cached pipeline runs go to, or nil while the pipelines have not been loaded.
+    /// The pipeline runs go to, once its capabilities are known to be current. Until then nil, so
+    /// requests go out as the user's settings ask and `AssistService` checks them against the server.
     private var selectedPipeline: Pipeline? {
-        pipelines.first { $0.id == voicePipelineId }
+        guard hasFreshPipelines else { return nil }
+        return pipelines.first { $0.id == voicePipelineId }
     }
 
     /// Who transcribes what the user says into the microphone.
@@ -280,6 +285,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func replaceAssistService(server: Server) {
+        hasFreshPipelines = false
         assistService = AssistService(server: server)
         assistService.delegate = self
     }
@@ -306,11 +312,12 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func fetchPipelines(completion: (() -> Void)? = nil) {
-        assistService.fetchPipelines { [weak self] _ in
+        assistService.fetchPipelines { [weak self] response in
             guard let self else {
                 self?.showError(message: L10n.Assist.Error.pipelinesResponse)
                 return
             }
+            hasFreshPipelines = response != nil
 
             // Fetch pipelines method already saves new values in database
             // loading cache now

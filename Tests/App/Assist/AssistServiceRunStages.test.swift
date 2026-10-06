@@ -61,12 +61,38 @@ final class AssistServiceRunStagesTests: XCTestCase {
         super.tearDown()
     }
 
+    /// A cache whose pipeline has every stage asked for needs no confirming: the run starts at once.
+    func testRunOnPipelineWithEveryStageStartsWithoutRefreshing() throws {
+        try cachePipelines(preferred: voicePipeline.id)
+
+        sut.assist(source: .audio(pipelineId: voicePipeline.id, audioSampleRate: 16000, tts: true))
+
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+        let data = try lastRunData()
+        XCTAssertEqual(data["start_stage"] as? String, "stt")
+        XCTAssertEqual(data["end_stage"] as? String, "tts")
+    }
+
+    /// Without a cache there is nothing to check against, so the run goes out as asked.
+    func testRunWithoutCachedPipelinesIsSentAsAsked() throws {
+        sut.assist(source: .audio(pipelineId: "unknown", audioSampleRate: 16000, tts: true))
+
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+        let data = try lastRunData()
+        XCTAssertEqual(data["start_stage"] as? String, "stt")
+        XCTAssertEqual(data["end_stage"] as? String, "tts")
+    }
+
+    /// The reported hang: a text-only pipeline asked for TTS. Once the server confirms it has no TTS
+    /// engine, the run ends at `intent`.
     func testTextRunOnPipelineWithoutTextToSpeechEndsAtIntent() throws {
         try cachePipelines(preferred: textOnlyPipeline.id)
 
         sut.assist(source: .text(input: "Zeg alleen TEST", pipelineId: textOnlyPipeline.id, expectTTS: true))
+        XCTAssertTrue(connection.pendingSubscriptions.isEmpty, "the run waits for the refreshed pipelines")
+        try completePipelinesRefresh(with: [voicePipeline, textOnlyPipeline])
 
-        XCTAssertEqual(try lastRequestData()["end_stage"] as? String, "intent")
+        XCTAssertEqual(try lastRunData()["end_stage"] as? String, "intent")
     }
 
     /// "Preferred" sends no pipeline id, so the capabilities checked are the preferred pipeline's.
@@ -74,27 +100,25 @@ final class AssistServiceRunStagesTests: XCTestCase {
         try cachePipelines(preferred: textOnlyPipeline.id)
 
         sut.assist(source: .text(input: "Zeg alleen TEST", pipelineId: nil, expectTTS: true))
+        try completePipelinesRefresh(with: [voicePipeline, textOnlyPipeline])
 
-        XCTAssertEqual(try lastRequestData()["end_stage"] as? String, "intent")
+        XCTAssertEqual(try lastRunData()["end_stage"] as? String, "intent")
     }
 
-    func testTextRunOnPipelineWithTextToSpeechEndsAtTTS() throws {
+    /// The cache predates a TTS engine added on the server: the refreshed pipeline wins.
+    func testTextRunOnStaleCacheUsesTheRefreshedPipeline() throws {
         try cachePipelines(preferred: textOnlyPipeline.id)
+        let upgraded = Pipeline(
+            id: textOnlyPipeline.id,
+            name: "Upgraded",
+            sttEngine: "stt.cloud",
+            ttsEngine: "tts.cloud"
+        )
 
-        sut.assist(source: .text(input: "Turn on the lights", pipelineId: voicePipeline.id, expectTTS: true))
+        sut.assist(source: .text(input: "Turn on the lights", pipelineId: textOnlyPipeline.id, expectTTS: true))
+        try completePipelinesRefresh(with: [upgraded])
 
-        XCTAssertEqual(try lastRequestData()["end_stage"] as? String, "tts")
-    }
-
-    func testVoiceRunOnPipelineWithSpeechToTextStarts() throws {
-        try cachePipelines(preferred: voicePipeline.id)
-
-        sut.assist(source: .audio(pipelineId: voicePipeline.id, audioSampleRate: 16000, tts: true))
-
-        let data = try lastRequestData()
-        XCTAssertEqual(data["start_stage"] as? String, "stt")
-        XCTAssertEqual(data["end_stage"] as? String, "tts")
-        XCTAssertTrue(delegate.errors.isEmpty)
+        XCTAssertEqual(try lastRunData()["end_stage"] as? String, "tts")
     }
 
     /// The backend would refuse this run before it emitted anything, so it is not sent at all and the
@@ -105,6 +129,7 @@ final class AssistServiceRunStagesTests: XCTestCase {
         delegate.onError = { reported.fulfill() }
 
         sut.assist(source: .audio(pipelineId: textOnlyPipeline.id, audioSampleRate: 16000, tts: true))
+        try completePipelinesRefresh(with: [voicePipeline, textOnlyPipeline])
 
         XCTAssertTrue(connection.pendingSubscriptions.isEmpty)
         wait(for: [reported], timeout: 2)
@@ -112,13 +137,31 @@ final class AssistServiceRunStagesTests: XCTestCase {
         XCTAssertEqual(delegate.errors.first?.message, L10n.Assist.Error.speechToTextUnsupported)
     }
 
-    /// Without a cache there is nothing to check against, so the run goes out as asked.
-    func testRunWithoutCachedPipelinesIsSentAsAsked() throws {
-        sut.assist(source: .audio(pipelineId: "unknown", audioSampleRate: 16000, tts: true))
+    /// When the refresh fails the cache is the best information left.
+    func testFailedRefreshFallsBackToTheCache() throws {
+        try cachePipelines(preferred: textOnlyPipeline.id)
 
-        let data = try lastRequestData()
-        XCTAssertEqual(data["start_stage"] as? String, "stt")
-        XCTAssertEqual(data["end_stage"] as? String, "tts")
+        sut.assist(source: .text(input: "Zeg alleen TEST", pipelineId: textOnlyPipeline.id, expectTTS: true))
+        try XCTUnwrap(connection.pendingRequests.last).completion(.failure(.internal(debugDescription: "offline")))
+
+        XCTAssertEqual(try lastRunData()["end_stage"] as? String, "intent")
+    }
+
+    /// A run cancelled — or replaced by a newer one — while its pipelines were refreshing must not
+    /// start once the refresh lands.
+    func testRunCancelledDuringRefreshDoesNotStart() throws {
+        try cachePipelines(preferred: textOnlyPipeline.id)
+
+        sut.assist(source: .text(input: "Zeg alleen TEST", pipelineId: textOnlyPipeline.id, expectTTS: true))
+        sut.cancelRun()
+        try completePipelinesRefresh(with: [voicePipeline, textOnlyPipeline])
+
+        XCTAssertTrue(connection.pendingSubscriptions.isEmpty)
+    }
+
+    func testSourceExposesItsPipelineId() {
+        XCTAssertEqual(AssistSource.text(input: "", pipelineId: "a", expectTTS: false).pipelineId, "a")
+        XCTAssertEqual(AssistSource.audio(pipelineId: "b", audioSampleRate: 16000, tts: false).pipelineId, "b")
     }
 
     private func cachePipelines(preferred: String) throws {
@@ -131,8 +174,20 @@ final class AssistServiceRunStagesTests: XCTestCase {
         }
     }
 
-    private func lastRequestData() throws -> [String: Any] {
+    private func lastRunData() throws -> [String: Any] {
         try XCTUnwrap(connection.pendingSubscriptions.last).request.data
+    }
+
+    private func completePipelinesRefresh(with pipelines: [Pipeline]) throws {
+        try XCTUnwrap(connection.pendingRequests.last).completion(.success(.init(value: [
+            "preferred_pipeline": textOnlyPipeline.id,
+            "pipelines": pipelines.map { pipeline -> [String: Any] in
+                var data: [String: Any] = ["id": pipeline.id, "name": pipeline.name]
+                data["stt_engine"] = pipeline.sttEngine
+                data["tts_engine"] = pipeline.ttsEngine
+                return data
+            },
+        ])))
     }
 
     private final class SpyAssistServiceDelegate: AssistServiceDelegate {
