@@ -378,6 +378,21 @@ extension WebViewController {
         }
     }
 
+    enum RootRedirectOutcome: Equatable {
+        case loadRoot(URL)
+        case showEmptyState(failedURL: URL)
+    }
+
+    /// Given the resolved frontend root and the URL that failed, decides whether to load the root or — when
+    /// the root itself is the page that failed — fall back to the empty state instead of looping into the
+    /// same failure. A `nil` failed URL (we could not tell what failed) always loads the root.
+    static func rootRedirectOutcome(target: URL, failedURL: URL?) -> RootRedirectOutcome {
+        if let failedURL, failedURL.isEqualIgnoringQueryParams(to: target) {
+            return .showEmptyState(failedURL: failedURL)
+        }
+        return .loadRoot(target)
+    }
+
     static func connectionStateForInterceptedServerError(
         current: FrontEndConnectionState
     ) -> FrontEndConnectionState {
