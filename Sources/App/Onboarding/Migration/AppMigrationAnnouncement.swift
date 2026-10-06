@@ -6,8 +6,11 @@ import Shared
 enum AppMigrationAnnouncement {
     static let releaseID = "app-migration-announcement-2026.9"
 
-    /// Where the new app lives on the App Store.
-    static let newAppStoreURL = URL(string: "https://apps.apple.com/app/id6805469843")!
+    /// The new app's App Store identifier, for the in-app store overlay.
+    static let newAppStoreID = "6805469843"
+
+    /// Where the new app lives on the App Store, for platforms without the overlay.
+    static let newAppStoreURL = URL(string: "https://apps.apple.com/app/id\(newAppStoreID)")!
 
     static var isRelevant: Bool {
         AppMigrationRole.current == .previousApp && !AppMigrationHandoffStore.isActive

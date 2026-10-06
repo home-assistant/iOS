@@ -1,13 +1,16 @@
 import SFSafeSymbols
 import Shared
+import StoreKit
 import SwiftUI
 
-/// Shown when the transfer is asked for but the new app is not installed: send the user to the App
-/// Store, then pick the transfer up as soon as the new app is found on the device.
+/// Shown when the transfer is asked for but the new app is not installed: offer the App Store page
+/// in an overlay so the install happens without leaving this app, then pick the transfer up as soon
+/// as the new app is found on the device.
 struct AppMigrationGetNewAppView: View {
     @ObservedObject private var coordinator = AppMigrationCoordinator.shared
     @Environment(\.scenePhase) private var scenePhase
     @State private var notFoundYet = false
+    @State private var isStoreOverlayPresented = false
     let backAction: () -> Void
     let transferStartedAction: () -> Void
 
@@ -33,7 +36,11 @@ struct AppMigrationGetNewAppView: View {
             primaryActionTitle: L10n.AppMigration.GetNewApp.storeButton,
             primaryAction: {
                 AppMigrationHaptics.tap()
+                #if targetEnvironment(macCatalyst)
                 URLOpener.shared.open(AppMigrationAnnouncement.newAppStoreURL, options: [:], completionHandler: nil)
+                #else
+                isStoreOverlayPresented = true
+                #endif
             },
             primaryActionIdentifier: AccessibilityIdentifier.migrationGetNewAppStore.rawValue,
             secondaryActionTitle: L10n.AppMigration.GetNewApp.installedButton,
@@ -57,6 +64,9 @@ struct AppMigrationGetNewAppView: View {
             if phase == .active {
                 startTransferIfInstalled(reportMissing: false)
             }
+        }
+        .appStoreOverlay(isPresented: $isStoreOverlayPresented) {
+            SKOverlay.AppConfiguration(appIdentifier: AppMigrationAnnouncement.newAppStoreID, position: .bottom)
         }
     }
 
