@@ -315,9 +315,12 @@ struct WatchDeviceReporterLocationTests {
             now: { [now] in now }
         )
 
+        let location = await dependencies.currentLocation(1)
+        let hasZones = await dependencies.refreshZones(server, 1)
+
         #expect(dependencies.locationPrivacy(server) == .never)
-        #expect(await dependencies.currentLocation(1) == nil)
-        #expect(await dependencies.refreshZones(server, 1))
+        #expect(location == nil)
+        #expect(hasZones)
         #expect(dependencies.zonesContaining(fix, server).isEmpty)
         #expect(!dependencies.isLocationClearPending(server))
         dependencies.locationCleared(server)
