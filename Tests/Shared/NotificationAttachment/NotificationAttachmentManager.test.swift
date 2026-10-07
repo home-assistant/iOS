@@ -207,10 +207,10 @@ class NotificationAttachmentManagerTests: XCTestCase {
         XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
-    func testImageAttachmentKeepsEmptyCategory() throws {
+    func testImageAttachmentKeepsDefaultedCategory() throws {
         parser1.result = image1.successParserResult(needsAuth: false)
 
-        XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "")), "")
+        XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "")), "DYNAMIC")
     }
 
     func testImageAttachmentKeepsDynamicCategory() throws {
