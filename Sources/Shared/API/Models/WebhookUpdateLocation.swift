@@ -19,6 +19,8 @@ public struct WebhookUpdateLocation: ImmutableMappable {
     public var altitude: CLLocationDistance?
     public var course: CLLocationDirection?
     public var verticalAccuracy: CLLocationAccuracy?
+    /// When the fix was obtained, which can be well before the update is sent (deferred or cached locations).
+    public var locationTime: Date?
 
     // Not sent
     public var trigger: LocationUpdateTrigger
@@ -41,7 +43,8 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         location: CLLocation?,
         zone: AppZone?,
         inZones: [AppZone]? = nil,
-        currentSSID: String? = nil
+        currentSSID: String? = nil,
+        includeLocationTime: Bool = false
     ) {
         self.init(trigger: trigger)
         self.inZones = inZones?.map(\.entityId)
@@ -73,6 +76,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
             if location.horizontalAccuracy > -1 {
                 self.horizontalAccuracy = location.horizontalAccuracy
             }
+            self.locationTime = includeLocationTime ? location.timestamp : nil
         } else if let zone {
             if trigger != .BeaconRegionExit {
                 self.location = zone.center
@@ -125,5 +129,6 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         altitude >>> map["altitude"]
         course >>> map["course"]
         verticalAccuracy >>> map["vertical_accuracy"]
+        locationTime >>> (map["location_time"], HomeAssistantTimestampTransform())
     }
 }
