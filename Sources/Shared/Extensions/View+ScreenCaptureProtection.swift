@@ -20,6 +20,19 @@ public struct ScreenCaptureProtectionModifier: ViewModifier {
     }
 
     #if !os(watchOS)
+    /// The blur itself, shared by both sources of the capture state. Internal so the tests can
+    /// render the captured look without a capture in progress.
+    struct CaptureBlur: ViewModifier {
+        let isCaptured: Bool
+        let blurRadius: CGFloat
+
+        func body(content: Content) -> some View {
+            content
+                .blur(radius: isCaptured ? blurRadius : 0)
+                .animation(.easeInOut(duration: 0.2), value: isCaptured)
+        }
+    }
+
     /// Follows the capture state of the scene this view is in rather than of one global screen.
     @available(iOS 17, macCatalyst 17, *)
     private struct SceneCaptureBlur: ViewModifier {
@@ -27,9 +40,7 @@ public struct ScreenCaptureProtectionModifier: ViewModifier {
         @Environment(\.isSceneCaptured) private var isSceneCaptured
 
         func body(content: Content) -> some View {
-            content
-                .blur(radius: isSceneCaptured ? blurRadius : 0)
-                .animation(.easeInOut(duration: 0.2), value: isSceneCaptured)
+            content.modifier(CaptureBlur(isCaptured: isSceneCaptured, blurRadius: blurRadius))
         }
     }
 
@@ -41,8 +52,7 @@ public struct ScreenCaptureProtectionModifier: ViewModifier {
 
         func body(content: Content) -> some View {
             content
-                .blur(radius: isScreenCaptured ? blurRadius : 0)
-                .animation(.easeInOut(duration: 0.2), value: isScreenCaptured)
+                .modifier(CaptureBlur(isCaptured: isScreenCaptured, blurRadius: blurRadius))
                 .onAppear { isScreenCaptured = UIScreen.main.isCaptured }
                 .onReceive(NotificationCenter.default.publisher(for: UIScreen.capturedDidChangeNotification)) {
                     isScreenCaptured = ($0.object as? UIScreen)?.isCaptured ?? isScreenCaptured

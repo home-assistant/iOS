@@ -6,43 +6,41 @@ struct NotificationPermissionRequestView: View {
 
     var body: some View {
         VStack(spacing: DesignSystem.Spaces.three) {
-            VStack(spacing: DesignSystem.Spaces.three) {
-                Text(L10n.Permission.Notification.title)
-                    .font(DesignSystem.Font.title2.bold())
-                    .multilineTextAlignment(.center)
-                Text(L10n.Permission.Notification.body)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+            // The sheet is fixed to the medium detent, so the text scrolls rather than pushing the
+            // buttons out of reach at large type sizes or in a longer language.
+            ScrollView {
+                VStack(spacing: DesignSystem.Spaces.three) {
+                    Text(L10n.Permission.Notification.title)
+                        .font(DesignSystem.Font.title2.bold())
+                        .multilineTextAlignment(.center)
+                    Text(L10n.Permission.Notification.body)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity)
             }
-            Spacer()
-            buttons
+            VStack(spacing: DesignSystem.Spaces.one) {
+                Button {
+                    triggerNativePopup()
+                } label: {
+                    Text(L10n.Permission.Notification.primaryButton)
+                }
+                .buttonStyle(.primaryButton)
+                .accessibilityIdentifier(AccessibilityIdentifier.notificationPermissionRequestPrimary.rawValue)
+                Button {
+                    triggerNativePopup()
+                } label: {
+                    Text(L10n.Permission.Notification.secondaryButton)
+                }
+                .buttonStyle(.secondaryButton)
+                .accessibilityIdentifier(
+                    AccessibilityIdentifier.notificationPermissionRequestSecondary.rawValue
+                )
+            }
         }
         .padding(.horizontal, DesignSystem.Spaces.three)
         .padding(.top, DesignSystem.Spaces.four)
         .padding(.bottom, DesignSystem.Spaces.one)
-        .frame(maxWidth: .infinity)
-        .ignoresSafeArea(.container, edges: .horizontal)
-    }
-
-    private var buttons: some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
-            Button {
-                triggerNativePopup()
-            } label: {
-                Text(L10n.Permission.Notification.primaryButton)
-            }
-            .buttonStyle(.primaryButton)
-            .accessibilityIdentifier(AccessibilityIdentifier.notificationPermissionRequestPrimary.rawValue)
-            Button {
-                triggerNativePopup()
-            } label: {
-                Text(L10n.Permission.Notification.secondaryButton)
-            }
-            .buttonStyle(.secondaryButton)
-            .accessibilityIdentifier(
-                AccessibilityIdentifier.notificationPermissionRequestSecondary.rawValue
-            )
-        }
     }
 
     private func triggerNativePopup() {

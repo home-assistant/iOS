@@ -1161,7 +1161,24 @@ final class WebViewControllerTests: XCTestCase {
         sut.presentedViewController?.dismiss(animated: false)
     }
 
-    /// The debug screen reads the idiom from the controller's own traits rather than the device.
+    /// The debug screen offers the shake toggle from the controller's own traits rather than the
+    /// device: a pad-sized window hides it even on a phone, and a phone-sized one shows it.
+    func testShakeDisclaimerToggleFollowsTheControllersIdiom() {
+        let sut = makeSUT()
+        // Trait changes are forwarded to the web view, so it needs a real one.
+        sut.webView = WKWebView(frame: .zero)
+        let parent = UIViewController()
+        parent.addChild(sut)
+        parent.view.addSubview(sut.view)
+        sut.didMove(toParent: parent)
+
+        parent.setOverrideTraitCollection(UITraitCollection(userInterfaceIdiom: .pad), forChild: sut)
+        XCTAssertFalse(sut.showsShakeDisclaimerToggle)
+
+        parent.setOverrideTraitCollection(UITraitCollection(userInterfaceIdiom: .phone), forChild: sut)
+        XCTAssertTrue(sut.showsShakeDisclaimerToggle)
+    }
+
     func testOpenDebugPresentsTheDebugScreen() async throws {
         let sut = makeSUT()
         sut.webView = WKWebView(frame: .zero)
