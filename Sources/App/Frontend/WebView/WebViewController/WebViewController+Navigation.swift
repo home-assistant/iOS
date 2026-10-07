@@ -63,7 +63,7 @@ extension WebViewController {
         }
     }
 
-    /// Used by the native macOS sidebar
+    /// Used by the native iOS tab bar
     func openSidebarPath(_ path: String) {
         loadViewIfNeeded()
         navigateThroughFrontend(path: path) { [weak self] success in

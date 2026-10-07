@@ -104,6 +104,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// a hung attempt must never block URL loading until the app is killed.
     var loadActiveURLTask: Task<Void, Never>?
     var loadActiveURLTaskStartDate: Date?
+    /// The in-flight "send the web view home" redirect, if any. Tracked so a newer redirect replaces it and
+    /// so a navigation that starts while it is resolving the root cancels it before it can navigate.
+    var redirectToRootTask: Task<Void, Never>?
 
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }

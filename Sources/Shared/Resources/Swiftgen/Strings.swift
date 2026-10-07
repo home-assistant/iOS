@@ -1390,6 +1390,8 @@ public enum L10n {
     public enum Error {
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
+      /// This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.
+      public static var speechToTextUnsupported: String { return L10n.tr("Localizable", "assist.error.speech_to_text_unsupported") }
     }
     public enum ModernUi {
       public enum Header {
@@ -1488,6 +1490,14 @@ public enum L10n {
       public static var placeholder: String { return L10n.tr("Localizable", "assist.text_field.placeholder") }
     }
     public enum Watch {
+      public enum AudioStream {
+        /// Home Assistant never received the recording.
+        public static var notReceived: String { return L10n.tr("Localizable", "assist.watch.audio_stream.not_received") }
+        /// Server not found on iPhone.
+        public static var serverNotFound: String { return L10n.tr("Localizable", "assist.watch.audio_stream.server_not_found") }
+        /// The iPhone could not read the recording.
+        public static var unreadable: String { return L10n.tr("Localizable", "assist.watch.audio_stream.unreadable") }
+      }
       public enum MicButton {
         /// Tap to
         public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.title") }
@@ -3830,30 +3840,10 @@ public enum L10n {
       public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.paste.accessibility_label") }
     }
     public enum Sidebar {
-      /// Done
-      public static var done: String { return L10n.tr("Localizable", "mac.sidebar.done") }
-      /// Edit Sidebar
-      public static var edit: String { return L10n.tr("Localizable", "mac.sidebar.edit") }
-      /// Hide
-      public static var hide: String { return L10n.tr("Localizable", "mac.sidebar.hide") }
       /// Notifications
       public static var notifications: String { return L10n.tr("Localizable", "mac.sidebar.notifications") }
-      /// Reset to Defaults
-      public static var resetToDefaults: String { return L10n.tr("Localizable", "mac.sidebar.reset_to_defaults") }
-      /// Set as Default Dashboard
-      public static var setDefaultDashboard: String { return L10n.tr("Localizable", "mac.sidebar.set_default_dashboard") }
       /// Settings
       public static var settings: String { return L10n.tr("Localizable", "mac.sidebar.settings") }
-      /// Show
-      public static var show: String { return L10n.tr("Localizable", "mac.sidebar.show") }
-      public enum HiddenSection {
-        /// Hidden
-        public static var header: String { return L10n.tr("Localizable", "mac.sidebar.hidden_section.header") }
-      }
-    }
-    public enum ToggleSidebar {
-      /// Toggle Sidebar
-      public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.toggle_sidebar.accessibility_label") }
     }
   }
 
@@ -4119,12 +4109,8 @@ public enum L10n {
       public static var customizeToolbar: String { return L10n.tr("Localizable", "menu.view.customize_toolbar") }
       /// Find
       public static var find: String { return L10n.tr("Localizable", "menu.view.find") }
-      /// Hide Sidebar
-      public static var hideSidebar: String { return L10n.tr("Localizable", "menu.view.hide_sidebar") }
       /// Reload Page
       public static var reloadPage: String { return L10n.tr("Localizable", "menu.view.reload_page") }
-      /// Show Sidebar
-      public static var showSidebar: String { return L10n.tr("Localizable", "menu.view.show_sidebar") }
     }
   }
 
@@ -4831,6 +4817,8 @@ public enum L10n {
       public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
       /// Connect to my Home Assistant
       public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button") }
+      /// Connect
+      public static var primaryButtonCompact: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button_compact") }
       /// Getting started
       public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.secondary_button") }
       /// Welcome to Home Assistant %@!
@@ -5141,12 +5129,6 @@ public enum L10n {
         public static var summary: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.summary") }
         /// Native tab bar
         public static var title: String { return L10n.tr("Localizable", "settings.app_labs.ios_native_tab_bar.title") }
-      }
-      public enum MacNativeSidebar {
-        /// Replaces the Home Assistant sidebar with a native macOS sidebar. The page reloads when you change this setting.
-        public static var footer: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.footer") }
-        /// Native sidebar
-        public static var title: String { return L10n.tr("Localizable", "settings.app_labs.mac_native_sidebar.title") }
       }
       public enum SettingsRow {
         /// TestFlight-only experiments. They have no planned release and can be removed at any time.

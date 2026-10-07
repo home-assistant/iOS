@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "Pokud je tato povoleno, Assist nepřehrává zvukové odpovědi, a to ani v případě, že je v kanálu nastaven převod textu na řeč. Textové odpovědi se však budou zobrazovat i nadále.";
 "assist.settings.tts_mute.toggle" = "Ztlumit hlasové odpovědi";
 "assist.text_field.placeholder" = "Zadejte požadavek…";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";

@@ -534,8 +534,21 @@ final class WebViewControllerTests: XCTestCase {
         }
     }
 
-    func testServerErrorResponseDecisionAllowsClientErrorsToRender() {
-        for statusCode in [400, 401, 403, 404, 429] {
+    func testServerErrorResponseDecisionRedirectsNotFoundAndForbiddenToRoot() {
+        for statusCode in [403, 404, 410] {
+            let decision = WebViewController.decisionForMainFrameErrorResponse(
+                statusCode: statusCode,
+                responseURL: URL(string: "https://example.com/lovelace/removed"),
+                initialURL: nil,
+                cfMitigated: nil
+            )
+
+            XCTAssertEqual(decision, .redirectToRoot, "expected redirect to root for HTTP \(statusCode)")
+        }
+    }
+
+    func testServerErrorResponseDecisionAllowsAuthAndRateLimitClientErrorsToRender() {
+        for statusCode in [400, 401, 429] {
             let decision = WebViewController.decisionForMainFrameErrorResponse(
                 statusCode: statusCode,
                 responseURL: URL(string: "https://example.com/lovelace"),
@@ -545,6 +558,127 @@ final class WebViewControllerTests: XCTestCase {
 
             XCTAssertEqual(decision, .allow, "expected allow for HTTP \(statusCode)")
         }
+    }
+
+    func testNavigationErrorRedirectsToRootOnlyForMalformedURLs() {
+        let redirecting: [Error] = [
+            URLError(.badURL),
+            URLError(.unsupportedURL),
+            NSError(domain: "WebKitErrorDomain", code: 101),
+        ]
+        for error in redirecting {
+            XCTAssertTrue(
+                WebViewController.shouldRedirectToRootForNavigationError(error),
+                "expected redirect for \(error)"
+            )
+        }
+
+        let notRedirecting: [Error] = [
+            URLError(.cannotConnectToHost),
+            URLError(.notConnectedToInternet),
+            URLError(.timedOut),
+            URLError(.cancelled),
+            NSError(domain: "WebKitErrorDomain", code: 102),
+        ]
+        for error in notRedirecting {
+            XCTAssertFalse(
+                WebViewController.shouldRedirectToRootForNavigationError(error),
+                "expected no redirect for \(error)"
+            )
+        }
+    }
+
+    func testRootRedirectOutcomeLoadsRootWhenADifferentPageFailed() throws {
+        let target = try XCTUnwrap(URL(string: "https://example.com/lovelace?external_auth=1"))
+        let failed = try XCTUnwrap(URL(string: "https://example.com/lovelace/removed"))
+
+        XCTAssertEqual(WebViewController.rootRedirectOutcome(target: target, failedURL: failed), .loadRoot(target))
+        XCTAssertEqual(WebViewController.rootRedirectOutcome(target: target, failedURL: nil), .loadRoot(target))
+    }
+
+    func testRootRedirectOutcomeShowsEmptyStateWhenRootItselfFailed() throws {
+        let target = try XCTUnwrap(URL(string: "https://example.com/lovelace?external_auth=1"))
+        // Same page, different query - the root itself is the page that failed.
+        let failed = try XCTUnwrap(URL(string: "https://example.com/lovelace"))
+
+        XCTAssertEqual(
+            WebViewController.rootRedirectOutcome(target: target, failedURL: failed),
+            .showEmptyState(failedURL: failed)
+        )
+    }
+
+    /// A configured `https://host` root (path "") and the canonical `https://host/` the redirect produces
+    /// are the same page, so a failure at the root must stop rather than reload it forever.
+    func testRootRedirectOutcomeShowsEmptyStateWhenCanonicalRootSpellingFailed() throws {
+        let target = try XCTUnwrap(URL(string: "https://example.com?external_auth=1"))
+        let failed = try XCTUnwrap(URL(string: "https://example.com/"))
+
+        XCTAssertEqual(
+            WebViewController.rootRedirectOutcome(target: target, failedURL: failed),
+            .showEmptyState(failedURL: failed)
+        )
+    }
+
+    func testMainFrameNotFoundResponseRedirectsToRootWithoutEmptyState() throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+        var decision: WKNavigationResponsePolicy?
+
+        try sut.webView(WKWebView(), decidePolicyFor: FakeNavigationResponse(statusCode: 404)) { decision = $0 }
+
+        // The response is cancelled and no error screen is shown - the redirect takes over instead.
+        XCTAssertEqual(decision, .cancel)
+        XCTAssertNil(sut.overlayState?.emptyState)
+    }
+
+    func testProvisionalNavigationFailureForMalformedURLRedirectsInsteadOfShowingError() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+
+        sut.webView(WKWebView(), didFailProvisionalNavigation: nil, withError: URLError(.unsupportedURL))
+
+        // The malformed-URL branch redirects to root rather than recording the error for the empty state.
+        XCTAssertNil(sut.latestLoadError)
+    }
+
+    func testCommittedNavigationFailureForMalformedURLRedirectsInsteadOfShowingError() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+
+        sut.webView(WKWebView(), didFail: nil, withError: URLError(.badURL))
+
+        XCTAssertNil(sut.latestLoadError)
+    }
+
+    func testRedirectToActiveURLRootLoadsTheFrontendRoot() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+        let resolvedRoot = await sut.server.webviewURL()
+        let root = try XCTUnwrap(resolvedRoot)
+
+        sut.redirectToActiveURLRoot(failedURL: root.appendingPathComponent("lovelace/removed"))
+
+        await waitUntil { sut.webView.url != nil }
+        XCTAssertEqual(sut.webView.url?.host, root.host)
+    }
+
+    func testRedirectToActiveURLRootShowsEmptyStateWhenRootItselfFailed() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        let resolvedRoot = await sut.server.webviewURL()
+        let root = try XCTUnwrap(resolvedRoot)
+
+        sut.redirectToActiveURLRoot(failedURL: root)
+
+        await waitUntil { overlayState.emptyState != nil }
+        // The loop guard stopped us from navigating back into the page that just failed.
+        XCTAssertNil(sut.webView.url)
     }
 
     func testServerErrorResponseDecisionAllowsCloudflareChallengeToRender() {

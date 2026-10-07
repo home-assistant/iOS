@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "Po włączeniu tej opcji Asystent nie będzie odtwarzał odpowiedzi audio, nawet jeśli w kanale jest skonfigurowana funkcja zamiany tekstu na mowę. Nadal będą wyświetlane odpowiedzi tekstowe.";
 "assist.settings.tts_mute.toggle" = "Wycisz odpowiedzi głosowe";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";

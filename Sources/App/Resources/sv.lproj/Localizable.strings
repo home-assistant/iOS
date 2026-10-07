@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "När funktionen är aktiverad kommer Assist inte att spela upp ljudsvar, även om text-till-tal-funktionen är konfigurerad i pipelinen. Du kommer fortfarande att se textsvaren.";
 "assist.settings.tts_mute.toggle" = "Stäng av röstsvar";
 "assist.text_field.placeholder" = "Ange en begäran...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Tryck för att";
 "assist.watch.not_reachable.title" = "Assistenten kräver iPhone-anslutning. Din iPhone är för närvarande inte nåbar.";

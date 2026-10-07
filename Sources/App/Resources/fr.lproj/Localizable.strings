@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "Lorsque cette option est activée, Assist ne lira pas les réponses audio, même si le pipeline dispose d'une synthèse vocale configurée. Vous verrez toujours les réponses textuelles.";
 "assist.settings.tts_mute.toggle" = "Couper les réponses vocales";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Appuyer pour";
 "assist.watch.not_reachable.title" = "Assist nécessite la connectivité de l'iPhone. Votre iPhone est actuellement injoignable.";

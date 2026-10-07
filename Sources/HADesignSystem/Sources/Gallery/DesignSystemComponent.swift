@@ -21,6 +21,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     case criticalButton
     case linkButton
     case textButton
+    case glassButton
     case closeButton
     case sheetCloseButton
     case textField
@@ -142,6 +143,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .criticalButton: HAButtonStyle.frontendComponentName
         case .linkButton: HAButtonStyle.frontendComponentName
         case .textButton: TextButton.frontendComponentName
+        case .glassButton: nil
         case .closeButton: CloseButton.frontendComponentName
         case .sheetCloseButton: SheetCloseButton.frontendComponentName
         case .textField: HATextField.frontendComponentName
@@ -261,6 +263,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .criticalButton: HAButtonStyle.frontendComponentVersion
         case .linkButton: HAButtonStyle.frontendComponentVersion
         case .textButton: TextButton.frontendComponentVersion
+        case .glassButton: nil
         case .closeButton: CloseButton.frontendComponentVersion
         case .sheetCloseButton: SheetCloseButton.frontendComponentVersion
         case .textField: HATextField.frontendComponentVersion
@@ -379,6 +382,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .criticalButton: "Critical Button"
         case .linkButton: "Link Button"
         case .textButton: "Text Button"
+        case .glassButton: "Glass Button"
         case .closeButton: "Close Button"
         case .sheetCloseButton: "Sheet Close Button"
         case .textField: "Text Field"
@@ -487,7 +491,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     public var category: ComponentCategory {
         switch self {
         case .primaryButton, .secondaryButton, .outlinedButton, .neutralButton, .negativeButton,
-             .secondaryNegativeButton, .criticalButton, .linkButton, .textButton:
+             .secondaryNegativeButton, .criticalButton, .linkButton, .textButton, .glassButton:
             .buttons
         case .closeButton, .sheetCloseButton, .controlSlider, .controlSwitch, .controlButton,
              .controlButtonGroup, .gauge, .controlSelect, .controlNumberButtons,
@@ -541,6 +545,8 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
             buttonVariants { $0.buttonStyle(.linkButton) }
         case .textButton:
             buttonVariants { $0.buttonStyle(.textButton) }
+        case .glassButton:
+            buttonVariants { $0.buttonStyle(.glassButton) }
         case .closeButton:
             [
                 .init("Small") { CloseButton(size: .small) {} },

@@ -388,6 +388,9 @@
 "assist.settings.tts_mute.footer" = "Οταν είναι ενεργοποιημένο, το Assist δεν θα αναπαράγει απαντήσεις ήχου, ακόμη και αν το pipeline έχει διαμορφωμένη τη μετατροπή κειμένου σε ομιλία. Θα εξακολουθείτε να βλέπετε απαντήσεις κειμένου.";
 "assist.settings.tts_mute.toggle" = "Σίγαση φωνητικών απαντήσεων";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Πατήστε για να";
 "assist.watch.not_reachable.title" = "Το Assist απαιτεί συνδεσιμότητα iPhone. Το iPhone σας δεν είναι προσβάσιμο αυτή τη στιγμή.";
