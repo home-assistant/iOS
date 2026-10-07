@@ -287,6 +287,9 @@ public class MotionDetectionManager: NSObject {
     ///
     /// Must be called on the main thread: it reads UIKit state.
     private static func currentVideoOrientation() -> AVCaptureVideoOrientation {
+        // TODO: Modernization - `UIScreen.main` is deprecated. Rotate frames with
+        // `AVCaptureDevice.RotationCoordinator` (iOS 17+), or read the screen of the window this capture
+        // serves (`view.window?.windowScene?.screen`) instead of the main screen.
         AVCaptureVideoOrientation(deviceOrientation: UIDevice.current.orientation)
             ?? AVCaptureVideoOrientation(deviceOrientation: UIScreen.main.orientation)
             ?? .portrait

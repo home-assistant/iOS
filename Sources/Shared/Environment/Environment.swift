@@ -310,6 +310,9 @@ public class AppEnvironment {
     /// Wrapper around UIApplication for use in shared framework
     public var application: (() -> UIApplication)?
 
+    // TODO: Modernization - `UIScreen.main` is deprecated. Brightness belongs to the screen of the window
+    // asking for it (`view.window?.windowScene?.screen`); thread that screen in from callers that have a
+    // window instead of resolving it here.
     /// Wrapper around UIScreen.main.brightness for testability
     public var screenBrightness: () -> CGFloat = { UIScreen.main.brightness }
     public var setScreenBrightness: (CGFloat) -> Void = { UIScreen.main.brightness = $0 }

@@ -148,7 +148,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     private func setScreenBrightness(_ level: Float) {
         let clamped = CGFloat(min(max(level, 0), 1))
         DispatchQueue.main.async {
-            UIScreen.main.brightness = clamped
+            Current.setScreenBrightness(clamped)
             Current.Log.info("Kiosk set screen brightness to \(clamped)")
         }
     }

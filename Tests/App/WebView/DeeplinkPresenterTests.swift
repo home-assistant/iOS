@@ -49,7 +49,8 @@ final class DeeplinkPresenterTests: XCTestCase {
         DeeplinkPresenter.present(target: .page(path: "lovelace/0"), from: webView)
         let controller = try XCTUnwrap(webView.overlayedController)
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
         let root = UIViewController()
         window.rootViewController = root
         window.makeKeyAndVisible()

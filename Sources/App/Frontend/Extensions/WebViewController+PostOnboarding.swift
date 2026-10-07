@@ -18,11 +18,17 @@ extension WebViewController {
         }
     }
 
-    private func showNotificationPermissionRequest() {
-        let view = NotificationPermissionRequestView().embeddedInHostingController()
-        view.modalPresentationStyle = .overFullScreen
-        view.view.backgroundColor = .clear
-        view.modalTransitionStyle = .crossDissolve
-        present(view, animated: true)
+    /// A system sheet, so it stays clear of the vertical bar and the safe area the way any other
+    /// sheet does.
+    func showNotificationPermissionRequest() {
+        let controller = NotificationPermissionRequestView().embeddedInHostingController()
+
+        if Current.isCatalyst {
+            controller.modalPresentationStyle = .formSheet
+        } else if let sheet = controller.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(controller, animated: true)
     }
 }

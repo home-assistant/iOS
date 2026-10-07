@@ -486,10 +486,11 @@ extension WebViewController {
     }
 
     func openDebug() {
+        let isPhone = traitCollection.userInterfaceIdiom == .phone
         let controller = UIHostingController(rootView: AnyView(
             NavigationView {
                 VStack {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
+                    if isPhone {
                         HStack(spacing: DesignSystem.Spaces.half) {
                             Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
                             Toggle(isOn: .init(get: {
