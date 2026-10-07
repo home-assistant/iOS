@@ -37,8 +37,13 @@ class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
         }
     }
 
-    // Sensor updates can overlap on the global queue, so every access to this set must take the lock.
-    private var observedObjects = Set<ObservedObjectType>()
+    private enum RegistrationState {
+        case installing
+        case installed
+    }
+
+    // Sensor updates can overlap on the global queue, so every access must take the lock.
+    private var observedObjects: [ObservedObjectType: RegistrationState] = [:]
     private let observedObjectsLock = NSLock()
 
     required init(signal: @escaping () -> Void) {
@@ -53,7 +58,12 @@ class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
 
     func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
         // Claim the object before installing its listener so concurrent updates cannot register it twice.
-        guard observedObjectsLock.withLock({ observedObjects.insert(object).inserted }) else { return }
+        let shouldInstall = observedObjectsLock.withLock {
+            guard observedObjects[object] == nil else { return false }
+            observedObjects[object] = .installing
+            return true
+        }
+        guard shouldInstall else { return }
 
         let observedStatus = property.addListener(objectID: object.id) { [weak self] in
             Current.Log.info("info updated for \(object)")
@@ -61,11 +71,17 @@ class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
         }
 
         Current.Log.info("added observer for \(object): \(observedStatus)")
+        observedObjectsLock.withLock {
+            observedObjects[object] = .installed
+        }
     }
 
     func removeObserver(object: ObservedObjectType) {
         observedObjectsLock.withLock {
-            _ = observedObjects.remove(object)
+            // Match the previous lifecycle: removal during installation must not erase the claim
+            // that registration will leave behind when the framework call returns.
+            guard observedObjects[object] == .installed else { return }
+            observedObjects.removeValue(forKey: object)
         }
     }
 
