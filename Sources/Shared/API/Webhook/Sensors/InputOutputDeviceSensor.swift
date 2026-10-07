@@ -37,7 +37,9 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         }
     }
 
+    // Sensor updates can overlap on the global queue, so every access to this set must take the lock.
     private var observedObjects = Set<ObservedObjectType>()
+    private let observedObjectsLock = NSLock()
 
     required init(signal: @escaping () -> Void) {
         self.signal = signal
@@ -50,7 +52,8 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
     }
 
     private func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
-        guard !observedObjects.contains(object) else { return }
+        // Claim the object before installing its listener so concurrent updates cannot register it twice.
+        guard observedObjectsLock.withLock({ observedObjects.insert(object).inserted }) else { return }
 
         let observedStatus = property.addListener(objectID: object.id) { [weak self] in
             Current.Log.info("info updated for \(object)")
@@ -58,12 +61,12 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         }
 
         Current.Log.info("added observer for \(object): \(observedStatus)")
-        observedObjects.insert(object)
     }
 
     private func removeObserver(object: ObservedObjectType) {
-        guard observedObjects.contains(object) else { return }
-        observedObjects.remove(object)
+        observedObjectsLock.withLock {
+            _ = observedObjects.remove(object)
+        }
     }
 
     // object IDs both alias to UInt32 so we can't rely on the type system to know which method to call
