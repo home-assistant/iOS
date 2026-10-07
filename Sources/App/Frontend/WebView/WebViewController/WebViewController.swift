@@ -16,6 +16,23 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let server: Server
 
     var urlObserver: NSKeyValueObservation?
+    var windowTitleObserver: NSKeyValueObservation?
+    /// Watches `.siriEntityExposureDidChange` so what is published on `userActivity` follows the
+    /// user's Siri exposure setting; see `WebViewController+OnscreenContent`.
+    var siriExposureObserver: NSObjectProtocol?
+    /// The entity the frontend's more-info dialog is showing, reported over the external bus. Mirrored
+    /// onto `overlayState` so the App Labs tab bar can hide while the dialog is up.
+    var onscreenEntityId: String? {
+        didSet {
+            overlayState?.isMoreInfoDialogOpen = onscreenEntityId != nil
+        }
+    }
+
+    /// The path the dialog opened over, so a route change is recognised as having closed it.
+    var onscreenEntityPath: String?
+    /// The in-flight publish of what is on screen, cancelled when a newer one replaces it.
+    var onscreenContentTask: Task<Void, Never>?
+    var emptyStateTitleObserver: AnyCancellable?
     var tokens = [HACancellable]()
 
     let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
@@ -25,6 +42,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
     var pendingAssistZoomSourceView: UIView?
+    var presentsNextAssistAsSheet = false
     /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
     weak var detachedOverlayController: UIViewController?
     var tabBarAssistZoomAnchor: AssistZoomAnchorView?
@@ -64,7 +82,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Set by `FrontendView`; lets connection/URL state drive SwiftUI overlays in `HomeAssistantView`
     /// instead of UIKit modals presented from here.
-    var overlayState: WebFrontendOverlayState?
+    var overlayState: WebFrontendOverlayState? {
+        didSet {
+            observeEmptyStateForWindowTitle()
+            overlayState?.isMoreInfoDialogOpen = onscreenEntityId != nil
+        }
+    }
 
     /// Set by `FrontendView` so retry can rebuild the SwiftUI-hosted web view when WebKit is stuck.
     var resetFrontendAction: (() -> Void)?
@@ -81,14 +104,50 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// a hung attempt must never block URL loading until the app is killed.
     var loadActiveURLTask: Task<Void, Never>?
     var loadActiveURLTaskStartDate: Date?
+    /// The in-flight "send the web view home" redirect, if any. Tracked so a newer redirect replaces it and
+    /// so a navigation that starts while it is resolving the root cancels it before it can navigate.
+    var redirectToRootTask: Task<Void, Never>?
 
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+
+    /// Whether the scene showing this frontend is active, i.e. on screen and receiving events; replaceable
+    /// in tests. The scene's state rather than the application's: with several windows open, one frontend
+    /// can be in the background while the app as a whole stays active. Without a scene to ask (the view is
+    /// not in a window) the application's state is the best answer available.
+    var isSceneActive: @MainActor (UIWindowScene?) -> Bool = { scene in
+        guard let scene else { return UIApplication.shared.applicationState == .active }
+        return scene.activationState == .foregroundActive
+    }
+
+    /// Set when the disconnected empty state was asked for while the scene was not active. Nobody could
+    /// see it, and the frontend gets its grace period again once the scene is; see `showEmptyState()`.
+    var isEmptyStateDeferredUntilActive = false
+
+    /// Set when the scene enters the background and consumed by its next activation, which is how an
+    /// activation that follows a backgrounding is told apart from one that follows a system alert.
+    var didEnterBackgroundSinceLastActivation = false
+
+    var blankFrontendRecoveryAttempts = 0
+    var contentProcessTerminations = 0
+
+    /// Answers the blank-frontend probe instead of the live page; replaceable in tests.
+    var hasRenderedFrontendCheck: (@MainActor ((Bool) -> Void) -> Void)?
+
+    /// Where the window's title lands; replaceable in tests, which all share the host process's one scene.
+    var applyWindowSceneTitle: @MainActor (UIWindowScene, String) -> Void = { windowScene, title in
+        windowScene.title = title
+    }
 
     /// How far down a view must start to clear the window controls; replaceable in tests, which have none.
     var cornerAdaptedSafeAreaTop: @MainActor (UIView) -> CGFloat = { view in
         guard #available(iOS 26, *) else { return view.safeAreaInsets.top }
         return view.directionalEdgeInsets(for: .safeArea(cornerAdaptation: .vertical)).top
+    }
+
+    /// Which idiom the frontend is being shown in; only iPad windows get controls drawn over them.
+    var userInterfaceIdiom: @MainActor (UIView) -> UIUserInterfaceIdiom = { view in
+        view.traitCollection.userInterfaceIdiom
     }
 
     /// Handler for messages sent from the webview to the app
@@ -229,12 +288,20 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     deinit {
         tabBarAssistZoomAnchor?.removeFromSuperview()
         self.urlObserver = nil
+        self.windowTitleObserver = nil
+        if let siriExposureObserver {
+            NotificationCenter.default.removeObserver(siriExposureObserver)
+        }
+        onscreenContentTask?.cancel()
         self.tokens.forEach { $0.cancel() }
         autoReloadTimer?.invalidate()
         loadActiveURLTask?.cancel()
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {
+        // WebKit reads this when the web view is built, so it has to be settled first.
+        WebKitEnhancedSecurity.prepareForConfiguredServers()
+
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         // Avoid interrupting background audio when the frontend loads media-capable elements.
@@ -252,6 +319,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         observeConnectionNotifications()
         setupKioskModeObservation()
+        observeSiriExposureForOnscreenContent()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
 
@@ -299,6 +367,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupGestures(numberOfTouchesRequired: 3)
         setupEdgeGestures()
         setupURLObserver()
+        setupWindowTitleObserver()
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -355,6 +424,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
+        updateWindowSceneTitle()
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        updateWindowSceneTitle()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -454,11 +529,8 @@ extension WebViewController {
         }
     }
 
-    /// Kiosk mode is also what hides the frontend's hamburger for the App Labs native tab bar: the tabs
-    /// and the More tab already expose every sidebar page, so the button would only open More.
     func updateFrontendKioskMode() {
-        let enable = (Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar)
-            || AppLabsFeature.iosNativeTabBar.isEnabled
+        let enable = Current.kioskSettings.enabled && Current.kioskSettings.removeHeaderAndSidebar
         webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": enable]

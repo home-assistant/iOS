@@ -25,11 +25,14 @@ final class KioskSensorsViewModel: ObservableObject {
     }
 
     func isEnabled(_ sensor: WebhookSensor) -> Bool {
-        Current.sensors.isEnabled(sensor: sensor)
+        Current.sensors.isEnabledForAnyServer(sensor: sensor)
     }
 
+    /// Kiosk mode belongs to the device rather than to one server, so its sensors are switched on
+    /// everywhere at once here — the per-server choice lives in Settings → Sensors.
     func setEnabled(_ enabled: Bool, for sensor: WebhookSensor) {
-        Current.sensors.setEnabled(enabled, for: sensor)
+        guard let uniqueID = sensor.UniqueID else { return }
+        Current.sensors.setEnabledForAllServers(enabled, forUniqueID: uniqueID)
         // Reflect the change immediately; the sensor refresh triggered by the settings change
         // will follow up with fresh state values.
         objectWillChange.send()

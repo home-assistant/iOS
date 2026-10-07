@@ -13,6 +13,7 @@ public struct WatchDeviceRegistration: Codable, Equatable {
     public var registeredSensorEnablement: [String: Bool]
     /// The `device_name` last sent; `nil` for a registration made before it was tracked.
     public var deviceName: String?
+    public var registeredAppVersion: String?
 
     public init(
         webhookID: String,
@@ -20,7 +21,8 @@ public struct WatchDeviceRegistration: Codable, Equatable {
         cloudhookURL: URL?,
         registeredAt: Date,
         registeredSensorEnablement: [String: Bool] = [:],
-        deviceName: String? = nil
+        deviceName: String? = nil,
+        registeredAppVersion: String? = nil
     ) {
         self.webhookID = webhookID
         self.webhookSecret = webhookSecret
@@ -28,6 +30,7 @@ public struct WatchDeviceRegistration: Codable, Equatable {
         self.registeredAt = registeredAt
         self.registeredSensorEnablement = registeredSensorEnablement
         self.deviceName = deviceName
+        self.registeredAppVersion = registeredAppVersion
     }
 
     public var webhookPath: String {

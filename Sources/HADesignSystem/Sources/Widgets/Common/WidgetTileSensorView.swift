@@ -11,6 +11,8 @@ public struct WidgetTileSensorView: View {
     public let sizeStyle: WidgetTileSizeStyle
     public let family: WidgetFamily
     public let tinted: Bool
+    /// How tall the row this tile is drawn in turns out to be, which is what its icon is sized from.
+    @Environment(\.widgetTileRowHeight) private var rowHeight
 
     public init(
         model: WidgetTileModel,
@@ -67,7 +69,7 @@ public struct WidgetTileSensorView: View {
             Text(verbatim: model.icon.unicode)
                 // A reading's icon never sits in a circle, so it follows the same rule as a bare
                 // icon on an action tile and is drawn half as large again.
-                .font(sizeStyle.iconFont(withBackground: false))
+                .font(sizeStyle.iconFont(withBackground: false, inRowOfHeight: iconRowHeight))
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
                 // The glyph is a private-use character in the icon font, so VoiceOver has nothing
@@ -76,12 +78,21 @@ public struct WidgetTileSensorView: View {
         }
     }
 
+    /// The height the icon is sized from: the row's, but only where the icon sits beside the reading.
+    /// The sizes that stack it above have the whole tile to fill and are drawn as they are.
+    private var iconRowHeight: CGFloat? {
+        switch sizeStyle {
+        case .regular, .compact, .dense, .compressed: rowHeight
+        case .single, .expanded: nil
+        }
+    }
+
     private var tileView: some View {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
-                case .regular, .compact, .compressed:
-                    HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
+                case .regular, .compact, .dense, .compressed:
+                    HStack(alignment: .center, spacing: sizeStyle.horizontalPadding) {
                         VStack(alignment: .leading, spacing: .zero) {
                             subtext
                             text
@@ -90,7 +101,7 @@ public struct WidgetTileSensorView: View {
                         icon
                             .offset(y: -10)
                     }
-                    .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
+                    .padding([.leading, .trailing], sizeStyle.horizontalPadding)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
                         icon

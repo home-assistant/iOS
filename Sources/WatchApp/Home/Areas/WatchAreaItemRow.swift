@@ -71,7 +71,7 @@ struct WatchAreaItemRow: View {
     }
 
     private var iconColor: UIColor {
-        if let hex = item.customization?.iconColor {
+        if let hex = item.customization?.customIconColor {
             .init(hex: hex)
         } else {
             .white

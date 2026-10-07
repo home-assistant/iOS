@@ -7,7 +7,20 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case magicItemPressed
     case pushAction = "PushAction"
     case assistPipelinesFetch
+    /// Watch → phone: one slice of a finished recording, uploaded after the user submitted it. Only
+    /// sent to a phone that predates `assistAudioStreamStart`, which streams the recording instead.
     case assistAudioDataChunked
+    /// Watch → phone: a recording is starting, `AssistAudioStreamStartPayload`. The phone starts the
+    /// pipeline (or its on-device recognizer) straight away and replies with `assistAudioStreamAck`;
+    /// the audio follows in `assistAudioStreamChunk` while the user is still speaking.
+    case assistAudioStreamStart
+    /// Watch → phone: the audio recorded since the previous chunk, `AssistAudioStreamChunkPayload`.
+    /// The watch sends the next chunk only once the phone replied with `assistAudioStreamAck`.
+    case assistAudioStreamChunk
+    /// Watch → phone: drop the stream, `AssistAudioStreamEndPayload` — the user was not asking
+    /// anything, so the phone abandons the run instead of finishing it. Replied with
+    /// `assistAudioStreamAck`.
+    case assistAudioStreamCancel
     /// Watch → phone: run an Assist pipeline with a written prompt instead of a recording,
     /// `{text, pipelineId, serverId}`. The phone runs the pipeline and streams the result back
     /// through the same `assistIntentEndResponse`/`assistTTSResponse`/`assistError` messages the
@@ -49,4 +62,16 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     /// `vacuumCleanableAreasResponse`. Only sent while the phone is immediately reachable; the
     /// watch hides the option otherwise.
     case vacuumCleanableAreas
+    /// Watch → phone: perform one HTTP request on the watch's behalf, `WatchHTTPRequestPayload`.
+    /// The phone re-bases the URL against its own active URL for that server and dials it with the
+    /// same certificate-aware session the watch would have used, replying with
+    /// `httpRequestResponse`.
+    ///
+    /// This carries transport only — the watch still builds the request, owns its credentials and
+    /// parses the answer. What it borrows is the phone's position on the network: when the watch
+    /// routes through the phone, Apple's proxying hides the Wi-Fi it is really on, so the watch
+    /// can't tell that the internal URL would work and falls back to a remote one that may not be
+    /// reachable from inside the LAN at all (a router without NAT loopback). Letting the phone
+    /// dial makes the URL choice and the network vantage point the same device.
+    case httpRequest
 }

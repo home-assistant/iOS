@@ -10,6 +10,7 @@ protocol WebViewControllerProtocol: AnyObject {
     var assistZoomAnchorView: UIView? { get }
     /// A one-off zoom source for the next Assist presentation, set by the App Labs tab bar.
     var pendingAssistZoomSourceView: UIView? { get set }
+    var presentsNextAssistAsSheet: Bool { get set }
     var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }
@@ -23,6 +24,8 @@ protocol WebViewControllerProtocol: AnyObject {
     func presentOverlayController(controller: UIViewController, animated: Bool)
     func presentAlertController(controller: UIViewController, animated: Bool)
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
+    /// Gives the web view keyboard focus, so a scripted `focus()` raises the keyboard like a tap would.
+    func makeWebViewFirstResponder()
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
     func updateFrontendConnectionState(state: String)
@@ -42,6 +45,10 @@ protocol WebViewControllerProtocol: AnyObject {
     func openInBrowser()
     func styleUI()
     func styleUI(publishesThemedStatusBar: Bool)
+    /// Records which entity the frontend's more-info dialog is showing, so Siri can resolve a command
+    /// that says "this" against it; see `WebViewController+OnscreenContent`.
+    func setOnscreenEntity(entityId: String)
+    func clearOnscreenEntity(entityId: String)
 }
 
 extension WebViewControllerProtocol {

@@ -6,6 +6,7 @@ import WebKit
 enum WKUserContentControllerMessage: String, CaseIterable {
     case externalBus
     case updateThemeColors
+    case updateThemeVariables
     case getExternalAuth
     case revokeExternalAuth
     case logError
@@ -52,6 +53,8 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             handleExternalBus(messageBody)
         case .updateThemeColors:
             handleUpdateThemeColors(messageBody)
+        case .updateThemeVariables:
+            handleUpdateThemeVariables(messageBody)
         case .getExternalAuth:
             handleGetExternalAuth(messageBody)
         case .revokeExternalAuth:
@@ -86,6 +89,32 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     /// Updates the theme colors based on the message body.
     private func handleUpdateThemeColors(_ messageBody: [String: Any]) {
         handleThemeUpdate(messageBody)
+    }
+
+    /// Persists the whole set of CSS custom properties the frontend resolved, so native screens can be
+    /// drawn in the user's configured colors. Separate from `updateThemeColors`, which carries only the
+    /// handful the status bar needs and is what keeps that path working if this one ever fails.
+    private func handleUpdateThemeVariables(_ messageBody: [String: Any]) {
+        guard let server = webView?.server, let traitCollection = webView?.traitCollection else {
+            Current.Log.error("Received theme variables with no web view to attribute them to")
+            return
+        }
+        let serverId = server.identifier.rawValue
+        guard let capture = FrontendThemeCaptureMessage(
+            messageBody: messageBody,
+            serverId: serverId,
+            fallbackAppearance: traitCollection.userInterfaceStyle == .dark ? .dark : .light,
+            capturedAt: Current.date()
+        ) else {
+            Current.Log.error("Received a theme variables message with nothing worth storing")
+            return
+        }
+
+        // Several hundred rows in one transaction is too much to put on the main thread, and it can
+        // straddle a backgrounding, so it goes through the protected-work path like the other bulk writes.
+        AppDatabaseSuspension.performProtectedWork(named: .frontendThemeSave) {
+            Current.frontendTheme().store(capture.variables, for: serverId, appearance: capture.appearance)
+        }
     }
 
     /// Retrieves an authentication token for the web view and invokes a JavaScript callback with the result.

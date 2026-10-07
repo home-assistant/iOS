@@ -197,7 +197,9 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         ))
 
         XCTAssertEqual(closest.server.identifier, server2.identifier)
-        let distance = try XCTUnwrap(closest.distance)
+        guard case let .location(distance) = closest.source else {
+            return XCTFail("Expected the location source, got \(closest.source)")
+        }
         XCTAssertEqual(distance, nearHome2.distance(from: location(at: home2)), accuracy: 1)
     }
 
@@ -232,7 +234,7 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         ))
 
         XCTAssertEqual(closest.server.identifier, server2.identifier)
-        XCTAssertNil(closest.distance)
+        XCTAssertEqual(closest.source, .homeNetwork)
     }
 
     func testClosestServerMatchesHomeNetworkWithoutLocation() throws {
@@ -246,7 +248,7 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         ))
 
         XCTAssertEqual(closest.server.identifier, server1.identifier)
-        XCTAssertNil(closest.distance)
+        XCTAssertEqual(closest.source, .homeNetwork)
     }
 
     func testClosestServerPrefersCurrentServerOnSharedNetwork() throws {
@@ -259,7 +261,7 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         ))
 
         XCTAssertEqual(closest.server.identifier, server2.identifier)
-        XCTAssertNil(closest.distance)
+        XCTAssertEqual(closest.source, .homeNetwork)
     }
 
     func testClosestServerFallsBackToDistanceForUnknownNetwork() throws {
@@ -275,6 +277,12 @@ final class LocationBasedServerSwitcherTests: XCTestCase {
         ))
 
         XCTAssertEqual(closest.server.identifier, server1.identifier)
+        // The unknown network resolves nothing, so the answer — and the badge beside it — comes
+        // from the distance to server1's home zone, which the device is standing in.
+        guard case let .location(distance) = closest.source else {
+            return XCTFail("Expected the location source, got \(closest.source)")
+        }
+        XCTAssertEqual(distance, 0, accuracy: 1)
     }
 
     @MainActor
