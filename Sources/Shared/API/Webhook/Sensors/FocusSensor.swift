@@ -71,35 +71,30 @@ final class FocusSensor: SensorProvider {
         // says it ended. This is what flips the sensor when iOS wakes us for a Focus change.
         let report = FocusReport.current()
 
-        if report.isFocused == nil {
+        guard let isFocused = report.isFocused else {
             // Only when nothing can answer does why it can't matter: a device without Focus has no
-            // sensor to offer, while a missing permission is one switching the sensor on will ask
-            // for, so that one stays listed.
+            // sensor to offer. Anything else stays listed — reporting `unavailable` rather than
+            // dropping out, since the list row is the only switch there is — whether the permission
+            // is missing, which switching the sensor on asks for, or iOS simply gave no answer.
             guard Current.focusStatus.isAvailable() else {
                 return .init(error: FocusError.unavailable)
             }
 
-            guard Current.focusStatus.authorizationStatus() == .authorized else {
-                return .value([WebhookSensor(
-                    awaitingPermissionNamed: "Focus",
-                    uniqueID: WebhookSensorId.focus.rawValue,
-                    type: "binary_sensor"
-                )])
-            }
-        }
-
-        var sensors = [WebhookSensor]()
-
-        if let isFocused = report.isFocused {
-            sensors.append(with(WebhookSensor(
-                name: "Focus",
+            return .value([WebhookSensor(
+                awaitingPermissionNamed: "Focus",
                 uniqueID: WebhookSensorId.focus.rawValue,
-                icon: "mdi:moon-waning-crescent",
-                state: isFocused
-            )) {
-                $0.Type = "binary_sensor"
-            })
+                type: "binary_sensor"
+            )])
         }
+
+        let sensors = [with(WebhookSensor(
+            name: "Focus",
+            uniqueID: WebhookSensorId.focus.rawValue,
+            icon: "mdi:moon-waning-crescent",
+            state: isFocused
+        )) {
+            $0.Type = "binary_sensor"
+        }]
 
         // Set up our observer
         let _: FocusSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
