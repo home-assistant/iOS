@@ -92,6 +92,8 @@ struct AssistPipelinePicker: View {
                         }, label: {
                             Image(systemSymbol: .arrowClockwise)
                         })
+                        .accessibilityLabel(L10n.AssistPipelinePicker.reload)
+                        .disabled(isLoading)
                     }
                 }
             }
