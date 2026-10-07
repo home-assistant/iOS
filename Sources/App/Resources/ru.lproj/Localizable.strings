@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Изменить";
 "assist.chat.menu.replay" = "Повторить";
 "assist.error.pipelines_response" = "Не удалось получить пайплайны Assist, пожалуйста, проверьте ваши настройки пайплайнов.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Обработчик";
 "assist.modern_ui.text_field.placeholder" = "Спросите меня о чём угодно...";
@@ -388,9 +389,9 @@
 "assist.settings.tts_mute.footer" = "Если эта функция включена, Assist не будет воспроизводить аудио ответы, даже если в конвейере настроена функция преобразования текста в речь. Вы по-прежнему будете видеть текстовые ответы.";
 "assist.settings.tts_mute.toggle" = "Отключение голосовых ответов";
 "assist.text_field.placeholder" = "Введите запрос...";
-"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
-"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
-"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
+"assist.watch.audio_stream.not_received" = "Home Assistant так и не получил запись.";
+"assist.watch.audio_stream.server_not_found" = "Сервер не найден на iPhone.";
+"assist.watch.audio_stream.unreadable" = "iPhone не смог прочитать запись.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Нажмите, чтобы";
 "assist.watch.not_reachable.title" = "Assist требует подключения к iPhone. В данный момент ваш iPhone недоступен.";
@@ -1162,7 +1163,7 @@
 "magic_item.edit" = "Сохранить";
 "magic_item.icon_color.color" = "Цвет";
 "magic_item.icon_color.custom" = "Custom";
-"magic_item.icon_color.default" = "Default";
+"magic_item.icon_color.default" = "По умолчанию";
 "magic_item.icon_color.title" = "Цвет значка";
 "magic_item.icon_name.title" = "Название значка";
 "magic_item.item_type.action.list.title" = "IOS Действия";
@@ -1311,7 +1312,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "Возможно, в разрешении на \"Локальная сеть\" было отказано. Вы можете изменить это в приложении Настройки.";
 "onboarding.device_name_check.error.prompt" = "Какое имя устройства следует использовать вместо этого?";
 "onboarding.device_name_check.error.title" = "Устройство с именем '%1$@' уже существует";
-"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
+"onboarding.device_name_check.error.unreachable" = "Не удалось подключиться к Home Assistant для проверки названия устройства. Проверьте подключение и попробуйте снова.";
 "onboarding.invitation.accept_button" = "Принять";
 "onboarding.invitation.address_title" = "Адрес Home Assistant";
 "onboarding.invitation.description" = "Home Assistant — это домашняя автоматизация с открытым исходным кодом, которая ставит на первое место локальный контроль и конфиденциальность.";
@@ -1987,7 +1988,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.server_select.title" = "Сервер";
 "settings.server_switching.by_location.footer" = "Когда вы открываете приложение, оно проверяет, находитесь ли вы в одном из своих домов, подключены ли вы к его сети Wi-Fi или находитесь в его домашней зоне. Если этот дом принадлежит другому серверу, этот сервер открывается автоматически. Проверка выполняется только на этом устройстве во время использования приложения, и ваше местоположение никогда не сохраняется.";
 "settings.server_switching.by_location.title" = "Переключение сервера по местоположению";
-"settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
+"settings.server_switching.closest_server.source.location.accessibility_label" = "Исходя из вашего текущего местоположения";
 "settings.server_switching.closest_server.source.location.title" = "Местоположение";
 "settings.server_switching.closest_server.source.network.accessibility_label" = "Based on the Wi-Fi network you are connected to";
 "settings.server_switching.closest_server.source.network.title" = "Wi-Fi сеть";
@@ -2374,7 +2375,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings_sensors.permissions.status.while_in_use" = "При использовании приложения";
 "settings_sensors.sensors.configure" = "Конфигурация";
 "settings_sensors.sensors.enable_all" = "Включить все датчики";
-"settings_sensors.sensors.foreground_only.accessibility_label" = "Only updates while the app is open";
+"settings_sensors.sensors.foreground_only.accessibility_label" = "Обновляется только при открытом приложении";
 "settings_sensors.sensors.foreground_only.badge" = "Когда приложение открыто";
 "settings_sensors.sensors.header" = "Датчики";
 "settings_sensors.sensors.no_results" = "Нет датчиков, соответствующих вашему запросу";

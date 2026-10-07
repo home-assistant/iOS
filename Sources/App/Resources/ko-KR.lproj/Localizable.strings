@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "편집";
 "assist.chat.menu.replay" = "다시 재생";
 "assist.error.pipelines_response" = "Assist 파이프라인을 얻지 못했습니다. 파이프라인 구성을 확인하세요.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "파이프라인";
 "assist.modern_ui.text_field.placeholder" = "무엇이든 물어보세요...";

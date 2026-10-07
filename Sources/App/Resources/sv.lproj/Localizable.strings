@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Redigera";
 "assist.chat.menu.replay" = "Spela upp igen";
 "assist.error.pipelines_response" = "Misslyckades med att inhämta Assist Pipelines, kontrollera din pipelinekonfiguration.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Fråga mig vad som helst...";

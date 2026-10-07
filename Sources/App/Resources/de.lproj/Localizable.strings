@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Bearbeiten";
 "assist.chat.menu.replay" = "Wiederholung";
 "assist.error.pipelines_response" = "Assist-Pipelines konnten nicht abgerufen werden. Bitte überprüfe deine Pipeline-Konfiguration.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Frag mich irgendwas …";
@@ -388,9 +389,9 @@
 "assist.settings.tts_mute.footer" = "Wenn diese Option aktiviert ist, werden keine Audioantworten wiedergegeben, selbst wenn die Pipeline über eine Text-zu-Sprache-Funktion verfügt. Textantworten werden weiterhin angezeigt.";
 "assist.settings.tts_mute.toggle" = "Sprachantworten stummschalten";
 "assist.text_field.placeholder" = "Gib eine Anfrage ein …";
-"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
-"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
-"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
+"assist.watch.audio_stream.not_received" = "Home Assistant hat die Aufnahme nie erhalten.";
+"assist.watch.audio_stream.server_not_found" = "Server auf dem iPhone nicht gefunden.";
+"assist.watch.audio_stream.unreadable" = "Das iPhone konnte die Aufnahme nicht lesen.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tippe oder halte für";
 "assist.watch.mic_button.title" = "Tippe für";
 "assist.watch.not_reachable.title" = "Assist erfordert eine iPhone-Verbindung. Dein iPhone ist derzeit nicht erreichbar.";
