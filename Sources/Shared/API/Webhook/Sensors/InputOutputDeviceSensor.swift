@@ -8,7 +8,7 @@ import CoreMediaIO
 import CoreAudio
 #endif
 
-private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
+class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     let signal: () -> Void
 
     enum ObservedObjectType: Hashable {
@@ -37,7 +37,14 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         }
     }
 
-    private var observedObjects = Set<ObservedObjectType>()
+    private enum RegistrationState {
+        case installing
+        case installed
+    }
+
+    // Sensor updates can overlap on the global queue, so every access must take the lock.
+    private var observedObjects: [ObservedObjectType: RegistrationState] = [:]
+    private let observedObjectsLock = NSLock()
 
     required init(signal: @escaping () -> Void) {
         self.signal = signal
@@ -49,8 +56,14 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         ])
     }
 
-    private func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
-        guard !observedObjects.contains(object) else { return }
+    func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
+        // Claim the object before installing its listener so concurrent updates cannot register it twice.
+        let shouldInstall = observedObjectsLock.withLock {
+            guard observedObjects[object] == nil else { return false }
+            observedObjects[object] = .installing
+            return true
+        }
+        guard shouldInstall else { return }
 
         let observedStatus = property.addListener(objectID: object.id) { [weak self] in
             Current.Log.info("info updated for \(object)")
@@ -58,12 +71,18 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         }
 
         Current.Log.info("added observer for \(object): \(observedStatus)")
-        observedObjects.insert(object)
+        observedObjectsLock.withLock {
+            observedObjects[object] = .installed
+        }
     }
 
-    private func removeObserver(object: ObservedObjectType) {
-        guard observedObjects.contains(object) else { return }
-        observedObjects.remove(object)
+    func removeObserver(object: ObservedObjectType) {
+        observedObjectsLock.withLock {
+            // Match the previous lifecycle: removal during installation must not erase the claim
+            // that registration will leave behind when the framework call returns.
+            guard observedObjects[object] == .installed else { return }
+            observedObjects.removeValue(forKey: object)
+        }
     }
 
     // object IDs both alias to UInt32 so we can't rely on the type system to know which method to call
