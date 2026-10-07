@@ -95,6 +95,11 @@ struct WatchSettingsView: View {
             } label: {
                 Label(L10n.Watch.Settings.Sensors.title, systemSymbol: .battery100)
             }
+            NavigationLink {
+                WatchLocationSettingsView()
+            } label: {
+                Label(L10n.Watch.Settings.Location.title, systemSymbol: .locationFill)
+            }
         }
     }
 

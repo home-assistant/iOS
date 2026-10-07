@@ -9589,6 +9589,16 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.warning.title") }
         }
       }
+      public enum Location {
+        /// Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.location.footer") }
+        /// Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.
+        public static var permissionDenied: String { return L10n.tr("Localizable", "watch.settings.location.permission_denied") }
+        /// Each server receives the location you choose for it.
+        public static var serversFooter: String { return L10n.tr("Localizable", "watch.settings.location.servers_footer") }
+        /// Location
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.location.title") }
+      }
       public enum NoItems {
         public enum Phone {
           /// No items configured, please choose items below.
