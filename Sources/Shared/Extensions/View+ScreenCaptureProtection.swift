@@ -42,13 +42,9 @@ public struct ScreenCaptureProtectionModifier: ViewModifier {
             content
                 .blur(radius: isScreenCaptured ? blurRadius : 0)
                 .animation(.easeInOut(duration: 0.2), value: isScreenCaptured)
-                .onAppear {
-                    isScreenCaptured = UIScreen.main.isCaptured
-                }
+                .onAppear { isScreenCaptured = UIScreen.main.isCaptured }
                 .onReceive(NotificationCenter.default.publisher(for: UIScreen.capturedDidChangeNotification)) {
-                    if let screen = $0.object as? UIScreen {
-                        isScreenCaptured = screen.isCaptured
-                    }
+                    isScreenCaptured = ($0.object as? UIScreen)?.isCaptured ?? isScreenCaptured
                 }
         }
     }

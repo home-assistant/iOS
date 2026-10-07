@@ -1141,6 +1141,43 @@ final class WebViewControllerTests: XCTestCase {
         sut.presentedViewController?.dismiss(animated: false)
     }
 
+    /// Mac Catalyst has no sheet detents, so the prompt is a form sheet there.
+    func testShowNotificationPermissionRequestIsAFormSheetOnCatalyst() async throws {
+        let wasCatalyst = Current.isCatalyst
+        Current.isCatalyst = true
+        defer { Current.isCatalyst = wasCatalyst }
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.showNotificationPermissionRequest()
+
+        await waitUntil { sut.presentedViewController != nil }
+        XCTAssertEqual(sut.presentedViewController?.modalPresentationStyle, .formSheet)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
+    /// The debug screen reads the idiom from the controller's own traits rather than the device.
+    func testOpenDebugPresentsTheDebugScreen() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.openDebug()
+
+        await waitUntil { sut.presentedViewController != nil }
+        XCTAssertNotNil(sut.presentedViewController)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
     func testImportedClientCertificateIsStoredAndTheFrontendReloads() {
         let server = Server.fake()
         let sut = makeSUT(server: server)
