@@ -34,7 +34,8 @@ public struct ScreenCaptureProtectionModifier: ViewModifier {
     }
 
     /// iOS 16 has no per-scene capture state, so the main screen is the only source there.
-    private struct LegacyScreenCaptureBlur: ViewModifier {
+    /// Internal rather than private so the tests can apply it on a newer OS.
+    struct LegacyScreenCaptureBlur: ViewModifier {
         let blurRadius: CGFloat
         @State private var isScreenCaptured = false
 
