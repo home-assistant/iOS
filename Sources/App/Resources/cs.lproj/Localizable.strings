@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Upravit";
 "assist.chat.menu.replay" = "Přehrát znovu";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Zeptej se mě na cokoli...";
@@ -388,10 +389,10 @@
 "assist.settings.tts_mute.footer" = "Pokud je tato povoleno, Assist nepřehrává zvukové odpovědi, a to ani v případě, že je v kanálu nastaven převod textu na řeč. Textové odpovědi se však budou zobrazovat i nadále.";
 "assist.settings.tts_mute.toggle" = "Ztlumit hlasové odpovědi";
 "assist.text_field.placeholder" = "Zadejte požadavek…";
-"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
-"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
-"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
-"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
+"assist.watch.audio_stream.not_received" = "Home Assistant tento záznam nikdy neobdržel.";
+"assist.watch.audio_stream.server_not_found" = "Server na iPhonu nebyl nalezen.";
+"assist.watch.audio_stream.unreadable" = "iPhone nemohl nahrávku přečíst.";
+"assist.watch.mic_button.tap_or_hold.title" = "Klepněte nebo podržte";
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
 "assist.watch.on_device_stt.no_speech_recognized" = "Nebyla rozpoznána žádná řeč.";
@@ -1160,9 +1161,9 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "magic_item.background_color.title" = "Barva pozadí";
 "magic_item.display_text.title" = "Zobrazit text";
 "magic_item.edit" = "Uložit";
-"magic_item.icon_color.color" = "Color";
-"magic_item.icon_color.custom" = "Custom";
-"magic_item.icon_color.default" = "Default";
+"magic_item.icon_color.color" = "Barva";
+"magic_item.icon_color.custom" = "Vlastní";
+"magic_item.icon_color.default" = "Výchozí";
 "magic_item.icon_color.title" = "Barva ikony";
 "magic_item.icon_name.title" = "Název ikony";
 "magic_item.item_type.action.list.title" = "Akce iOS";
@@ -2484,7 +2485,7 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "vacuum.control.start" = "Spustit";
 "vacuum.control.stop" = "Zastavit";
 "watch.assist.button.recording.title" = "Nahrávání...";
-"watch.assist.button.release_to_send.title" = "Release to send";
+"watch.assist.button.release_to_send.title" = "Uvolnit pro odeslání";
 "watch.assist.button.send_request.title" = "Klepnutím odešlete požadavek";
 "watch.assist.lack_config.error.title" = "Nastavte Assist pomocí doprovodné aplikace pro iOS";
 "watch.complications.builder.color" = "Barva ukazatele";

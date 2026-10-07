@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Edit";
 "assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assistent";
 "assist.modern_ui.pipeline.label" = "Procés";
 "assist.modern_ui.text_field.placeholder" = "Pregunta'm el que vulguis...";

@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Edit";
 "assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Αποτυχία λήψης των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Ρώτα με οτιδήποτε...";

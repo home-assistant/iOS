@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Bewerk";
 "assist.chat.menu.replay" = "Opnieuw afspelen";
 "assist.error.pipelines_response" = "Assist-pijplijnen konden niet worden verkregen. Controleer je pijplijnconfiguratie.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pijplijn";
 "assist.modern_ui.text_field.placeholder" = "Vraag me vanalles...";

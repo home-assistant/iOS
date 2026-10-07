@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Redigér";
 "assist.chat.menu.replay" = "Afspil igen";
 "assist.error.pipelines_response" = "Kunne ikke hente Assist-pipelines. Tjek venligst din pipelines-konfiguration.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Spørg mig om hvad som helst...";
@@ -391,7 +392,7 @@
 "assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
 "assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
 "assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
-"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
+"assist.watch.mic_button.tap_or_hold.title" = "Tryk eller hold nede for at";
 "assist.watch.mic_button.title" = "Tryk for";
 "assist.watch.not_reachable.title" = "Assist kræver iPhone-forbindelse. Din iPhone er i øjeblikket ikke tilgængelig.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
