@@ -65,6 +65,15 @@ struct AssistPipelineAddList: View {
         .onAppear {
             fetchPipelines()
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: requestPipelines) {
+                    Image(systemSymbol: .arrowClockwise)
+                }
+                .accessibilityLabel(L10n.AssistPipelinePicker.reload)
+                .disabled(isLoading)
+            }
+        }
     }
 
     private func pipelines(for config: AssistPipelines) -> [Pipeline] {
@@ -117,5 +126,11 @@ struct AssistPipelineAddList: View {
                 Current.Log.error("Failed to fetch assist pipelines after server fetch: \(error)")
             }
         }
+    }
+}
+
+#Preview {
+    NavigationView {
+        AssistPipelineAddList { _ in }
     }
 }
