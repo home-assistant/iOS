@@ -16,6 +16,7 @@
 "common::state::standby" = "Очікування";
 "common::state::unlocked" = "Розблоковано";
 "common::state::yes" = "Так";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Вимкнено";
 "component::alarm_control_panel::title" = "Панель керування сигналізацією";
 "component::alert::entity_component::_::state::idle" = "Очікування";

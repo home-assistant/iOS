@@ -4,12 +4,18 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private var lastConfiguration: MacBridgeStatusItemConfiguration?
 
-    /// Holding any of these while clicking the status item opens the menu instead of toggling the app.
+    /// Holding any of these while clicking the status item opens the menu instead of running the primary action.
     private let menuModifiers: NSEvent.ModifierFlags = [.control, .option, .command]
 
     override init() {
         super.init()
         statusItem.button?.imagePosition = .imageLeading
+
+        if let button = statusItem.button {
+            button.target = self
+            button.action = #selector(statusItemButtonClicked(_:))
+            button.sendAction(on: [.leftMouseUp, .rightMouseDown])
+        }
     }
 
     func configure(title: String) {
@@ -25,30 +31,45 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
         let image = NSImage(cgImage: configuration.image, size: configuration.imageSize)
         image.isTemplate = true
         statusItem.button?.image = image
-
-        // A status item only routes a click to us once it has a menu assigned, and on modern macOS
-        // the mouse button can't be read back in `menuWillOpen`. We therefore discriminate on the
-        // modifier keys (which do read reliably there): a control/option/command + click opens the
-        // menu, while a plain click runs the primary action (toggle the app).
-        let menu = menu(for: configuration.items)
-        menu.delegate = self
-        statusItem.menu = menu
     }
 
-    func menuWillOpen(_ menu: NSMenu) {
-        guard NSEvent.modifierFlags.isDisjoint(with: menuModifiers) else {
-            // control / option / command + click: let the menu open.
+    @objc private func statusItemButtonClicked(_ sender: NSStatusBarButton) {
+        guard let event = NSApp.currentEvent else {
+            runPrimaryAction()
             return
         }
 
-        // Plain click: suppress the menu and run the primary action (toggle the app) instead.
-        menu.cancelTrackingWithoutAnimation()
+        let hasMenuModifier = !event.modifierFlags
+            .intersection(.deviceIndependentFlagsMask)
+            .isDisjoint(with: menuModifiers)
 
+        if event.isRightClickEquivalentEvent || hasMenuModifier {
+            openMenu(from: sender)
+        } else {
+            runPrimaryAction()
+        }
+    }
+
+    private func openMenu(from button: NSStatusBarButton) {
+        guard let configuration = lastConfiguration else {
+            runPrimaryAction()
+            return
+        }
+
+        let menu = menu(for: configuration.items)
+        menu.delegate = self
+        statusItem.menu = menu
+        button.performClick(button)
+    }
+
+    func menuDidClose(_ menu: NSMenu) {
+        statusItem.menu = nil
+    }
+
+    private func runPrimaryAction() {
         guard let configuration = lastConfiguration else { return }
         let button = statusItem.button
-        DispatchQueue.main.async {
-            configuration.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: button))
-        }
+        configuration.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: button))
     }
 
     private func modifierKeys(for uglyMask: Int) -> NSEvent.ModifierFlags {

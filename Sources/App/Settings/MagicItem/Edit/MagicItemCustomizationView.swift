@@ -12,9 +12,6 @@ struct MagicItemCustomizationView: View {
 
     @State private var useCustomColors = false
 
-    // Toggle to wait until actions are prefilled in case of editing magic item, then it can show the action items
-    @State private var actionsLoaded = false
-
     /// Context in which the screen will be presented, editing existent Magic Item or adding new
     let mode: Mode
     let context: MagicItemAddView.Context
@@ -68,52 +65,19 @@ struct MagicItemCustomizationView: View {
         .onAppear {
             // Avoid nil customization object to prevent state values from crash
             preventNilCustomization()
-            loadActionData()
             viewModel.loadMagicInfo()
+        }
+        .task {
+            await viewModel.loadSupportedFeatures()
         }
     }
 
     private func save() {
-        if context == .carPlay, viewModel.item.type == .assistPipeline {
+        if Self.skipsConfirmation(context: context, item: viewModel.item) {
             viewModel.item.customization?.requiresConfirmation = false
         }
 
-        if let action = viewModel.item.action {
-            switch action {
-            case .default, .nothing, .runScript, .assist, .moreInfoDialog:
-                // No update needed
-                break
-            case .navigate:
-                viewModel.item.action = .navigate(viewModel.navigationPathAction)
-            }
-        }
-
         addItem(viewModel.item)
-    }
-
-    private func loadActionData() {
-        guard let existentAction = viewModel.item.action else { return }
-        switch existentAction {
-        case let .navigate(path):
-            viewModel.navigationPathAction = path
-        case let .runScript(serverId, scriptId):
-            do {
-                let entity = try HAAppEntity.config().first(where: { entity in
-                    entity.serverId == serverId && entity.entityId == scriptId
-                })
-                viewModel.selectedEntity = entity
-            } catch {
-                Current.Log
-                    .error("Failed to prefill script entity in magic item customization: \(error.localizedDescription)")
-            }
-        case let .assist(serverId, pipelineId, startListening):
-            viewModel.startListeningAssistAction = startListening
-            viewModel.selectedPipelineId = pipelineId
-            viewModel.selectedServerIdForPipeline = serverId
-        case .default, .nothing, .moreInfoDialog:
-            break
-        }
-        actionsLoaded = true
     }
 
     private func mainInformationView(info: MagicItem.Info) -> some View {
@@ -138,7 +102,7 @@ struct MagicItemCustomizationView: View {
                             viewModel.item.customization?.iconIsCustomized = true
                         }),
                         selectedColor: .init(get: {
-                            if let iconColorHex = viewModel.item.customization?.iconColor {
+                            if let iconColorHex = viewModel.item.customization?.customIconColor {
                                 return Color(hex: iconColorHex)
                             } else {
                                 return Color.haPrimary
@@ -167,17 +131,18 @@ struct MagicItemCustomizationView: View {
     @ViewBuilder
     private func customizationView(info: MagicItem.Info) -> some View {
         Section {
-            ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                var color = Color.haPrimary
-                if let configIconColor = viewModel.item.customization?.iconColor {
-                    color = Color(hex: configIconColor)
-                } else {
-                    viewModel.item.customization?.iconColor = color.hex()
-                }
-                return color
-            }, set: { newColor in
-                viewModel.item.customization?.iconColor = newColor.hex()
-            }), supportsOpacity: false)
+            Picker(L10n.MagicItem.IconColor.title, selection: $viewModel.usesCustomIconColor) {
+                Text(verbatim: L10n.MagicItem.IconColor.default).tag(false)
+                Text(verbatim: L10n.MagicItem.IconColor.custom).tag(true)
+            }
+            .pickerStyle(.menu)
+            if viewModel.usesCustomIconColor {
+                ColorPicker(
+                    L10n.MagicItem.IconColor.color,
+                    selection: $viewModel.customIconColor,
+                    supportsOpacity: false
+                )
+            }
             if context != .carPlay {
                 Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
                 if useCustomColors {
@@ -198,42 +163,42 @@ struct MagicItemCustomizationView: View {
 
     @ViewBuilder
     private var actionView: some View {
-        if [.widget, .appIconShortcut].contains(context), actionsLoaded {
-            Section(L10n.MagicItem.action) {
-                HStack {
-                    Text(verbatim: L10n.MagicItem.Action.onTap)
-                    Spacer()
-                    Menu {
-                        ForEach(ItemAction.allCases, id: \.id) { itemAction in
-                            Button {
-                                viewModel.item.action = itemAction
-                            } label: {
-                                let selectedAction = viewModel.item.action ?? ItemAction.default
-                                if selectedAction.id == itemAction.id {
-                                    Label(itemAction.name, systemSymbol: .checkmark)
-                                } else {
-                                    Text(itemAction.name)
-                                }
-                            }
-                        }
-
-                    } label: {
-                        Text(viewModel.item.action?.name ?? ItemAction.default.name)
-                    }
+        if [.widget, .appIconShortcut].contains(context) {
+            Section {
+                // A widget tile has two halves to tap, the way the frontend's tile card does: the
+                // icon and everything around it. An app icon shortcut is a single action, so it
+                // only offers the one behavior.
+                if context == .widget {
+                    MagicItemActionSelectionView(
+                        title: L10n.MagicItem.Action.tapBehavior,
+                        item: viewModel.item,
+                        supportedFeatures: viewModel.supportedFeatures,
+                        defaultAction: viewModel.item.defaultTapAction,
+                        action: $viewModel.item.tapAction
+                    )
+                }
+                // An app icon shortcut runs what the widget icon would, so both name the same default.
+                MagicItemActionSelectionView(
+                    title: context == .widget ? L10n.MagicItem.Action.iconTapBehavior : L10n.MagicItem.Action.onTap,
+                    item: viewModel.item,
+                    supportedFeatures: viewModel.supportedFeatures,
+                    defaultAction: viewModel.item.defaultIconAction,
+                    action: $viewModel.item.action
+                )
+            } header: {
+                Text(verbatim: L10n.MagicItem.action)
+            } footer: {
+                if context == .widget {
+                    Text(verbatim: L10n.MagicItem.Action.footer)
                 }
             }
-
-            if viewModel.item.action?.id == ItemAction.navigate("").id {
-                navigateActionTextfield
-            }
-            if viewModel.item.action?.id == ItemAction.assist("", "", false).id {
-                assistActionDetails
-            }
-            if viewModel.item.action?.id == ItemAction.runScript("", "").id {
-                scriptActionDetails
-            }
         }
-        if !(context == .carPlay && viewModel.item.type == .assistPipeline) {
+        // A watch sensor is only displayed — tapping it opens its details screen and runs nothing,
+        // so there is no action to confirm. Neither does an area entry, which opens the area's
+        // entities.
+        if !Self.skipsConfirmation(context: context, item: viewModel.item),
+           viewModel.item.type != .area,
+           !(context == .watch && viewModel.item.isWatchDisplayOnly) {
             Section {
                 Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
                     viewModel.item.customization?.requiresConfirmation ?? false
@@ -248,63 +213,11 @@ struct MagicItemCustomizationView: View {
         }
     }
 
-    private var navigateActionTextfield: some View {
-        Section(L10n.MagicItem.Action.NavigationPath.title) {
-            TextField(L10n.MagicItem.Action.NavigationPath.placeholder, text: $viewModel.navigationPathAction)
-        }
-    }
-
-    @ViewBuilder
-    private var assistActionDetails: some View {
-        Section(L10n.MagicItem.Action.Assist.title) {
-            HStack {
-                Text(verbatim: L10n.MagicItem.Action.Assist.Pipeline.title)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                AssistPipelinePicker(
-                    selectedServerId: $viewModel.selectedServerIdForPipeline,
-                    selectedPipelineId: $viewModel.selectedPipelineId
-                )
-                .onChange(of: viewModel.selectedServerIdForPipeline) { newValue in
-                    guard let newValue, let selectedPipelineId = viewModel.selectedPipelineId else { return }
-                    viewModel.item.action = .assist(
-                        newValue,
-                        selectedPipelineId,
-                        viewModel.startListeningAssistAction
-                    )
-                }
-                .onChange(of: viewModel.selectedPipelineId) { newValue in
-                    guard let newValue,
-                          let selectedServerIdForPipeline = viewModel.selectedServerIdForPipeline else { return }
-                    viewModel.item.action = .assist(
-                        selectedServerIdForPipeline,
-                        newValue,
-                        viewModel.startListeningAssistAction
-                    )
-                }
-            }
-        }
-        HStack {
-            Text(verbatim: L10n.MagicItem.Action.Assist.StartListening.title)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Toggle(isOn: $viewModel.startListeningAssistAction, label: {})
-                .onChange(of: viewModel.startListeningAssistAction) { newValue in
-                    if case let .assist(serverId, pipelineId, _) = viewModel.item.action {
-                        viewModel.item.action = .assist(serverId, pipelineId, newValue)
-                    }
-                }
-        }
-    }
-
-    private var scriptActionDetails: some View {
-        HStack {
-            Text(verbatim: L10n.MagicItem.Action.Script.title)
-            EntityPicker(selectedEntity: $viewModel.selectedEntity, domainFilter: [.script])
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .onChange(of: viewModel.selectedEntity) { newValue in
-                    guard let newValue else { return }
-                    viewModel.item.action = .runScript(newValue.serverId, newValue.entityId)
-                }
-        }
+    /// An Assist item in CarPlay or on the watch starts an Assist session instead of running a
+    /// service, so asking for confirmation first has nothing to confirm — and `MagicItemProvider`
+    /// clears the flag on both Assist types anyway.
+    private static func skipsConfirmation(context: MagicItemAddView.Context, item: MagicItem) -> Bool {
+        [.carPlay, .watch].contains(context) && item.isAssist
     }
 
     private func preventNilCustomization() {

@@ -1,4 +1,5 @@
 import Foundation
+import WatchConnectivity
 
 public extension HAWatchConnectivity {
     enum ConnectivityError: LocalizedError {
@@ -8,6 +9,7 @@ public extension HAWatchConnectivity {
         case payloadTooLarge
         case payloadUnsupportedTypes
         case replyTimedOut
+        case notSentInTime
         case deliveryFailed(underlying: Error)
 
         public var errorDescription: String? {
@@ -24,10 +26,36 @@ public extension HAWatchConnectivity {
                 return "The message payload contains non-property-list values"
             case .replyTimedOut:
                 return "The counterpart did not reply in time"
+            case .notSentInTime:
+                return "The message waited for a free send slot past its timeout and was not sent"
             case let .deliveryFailed(underlying):
                 return underlying.localizedDescription
             }
         }
+    }
+}
+
+public extension HAWatchConnectivity.ConnectivityError {
+    /// Whether `error` means "the counterpart wasn't reachable at that instant" rather than a real
+    /// failure — either our own pre-send check (`.notReachable`) or WatchConnectivity's own
+    /// `WCError.notReachable` (7007), which arrives wrapped in `.deliveryFailed` or raw depending on
+    /// the call site.
+    ///
+    /// Reachability flaps constantly on watchOS: it can flip between a caller's pre-send check and the
+    /// send itself, and the counterpart is usually back within a second. Callers use this to retry in
+    /// the background instead of reporting a failure the user can't act on.
+    static func isCounterpartUnreachable(_ error: Error) -> Bool {
+        if let connectivityError = error as? Self {
+            if case .notReachable = connectivityError {
+                return true
+            }
+            if case let .deliveryFailed(underlying) = connectivityError {
+                return isCounterpartUnreachable(underlying)
+            }
+            return false
+        }
+        let nsError = error as NSError
+        return nsError.domain == WCErrorDomain && nsError.code == WCError.Code.notReachable.rawValue
     }
 }
 
@@ -39,7 +67,8 @@ extension HAWatchConnectivity.ConnectivityError: Equatable {
              (.notReachable, .notReachable),
              (.payloadTooLarge, .payloadTooLarge),
              (.payloadUnsupportedTypes, .payloadUnsupportedTypes),
-             (.replyTimedOut, .replyTimedOut):
+             (.replyTimedOut, .replyTimedOut),
+             (.notSentInTime, .notSentInTime):
             return true
         case let (.deliveryFailed(lhsError), .deliveryFailed(rhsError)):
             return (lhsError as NSError) == (rhsError as NSError)
@@ -61,6 +90,7 @@ extension HAWatchConnectivity.ConnectivityError: CustomNSError {
         case .payloadUnsupportedTypes: return 5
         case .replyTimedOut: return 6
         case .deliveryFailed: return 7
+        case .notSentInTime: return 8
         }
     }
 

@@ -1,13 +1,14 @@
 import Contacts
 import CoreLocation
 import Foundation
+import GRDB
 import PromiseKit
-import RealmSwift
 @testable import Shared
 import XCTest
 
 class GeocoderSensorTests: XCTestCase {
-    private var realm: Realm!
+    private var database: DatabaseQueue!
+    private var previousDatabase: (() -> DatabaseQueue)!
     private var server: Server!
 
     enum TestError: Error {
@@ -19,10 +20,10 @@ class GeocoderSensorTests: XCTestCase {
 
         server = .fake()
 
-        let executionIdentifier = UUID().uuidString
-        let realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
-        Current.realm = { realm }
-        self.realm = realm
+        database = try DatabaseQueue()
+        try AppZoneTable().createIfNeeded(database: database)
+        previousDatabase = Current.database
+        Current.database = { self.database }
     }
 
     private func setUp(placemarks: [CLPlacemark]) {
@@ -32,7 +33,7 @@ class GeocoderSensorTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
-        Current.realm = Realm.live
+        Current.database = previousDatabase
     }
 
     func testLocationForRegistration() throws {
@@ -139,14 +140,13 @@ class GeocoderSensorTests: XCTestCase {
             forKey: GeocoderSensor.UserDefaultsKeys.geocodeUseZone.rawValue
         )
 
-        try realm.write {
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.outside"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 12.34
-                $0.Longitude = 1.337
-                realm.add($0, update: .all)
-            }
+        try database.write { db in
+            try AppZone(
+                entityId: "zone.outside",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 12.34,
+                longitude: 1.337
+            ).save(db)
         }
 
         let promise = GeocoderSensor(
@@ -172,32 +172,29 @@ class GeocoderSensorTests: XCTestCase {
             forKey: GeocoderSensor.UserDefaultsKeys.geocodeUseZone.rawValue
         )
 
-        try realm.write {
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.inside_big"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 37
-                $0.Longitude = -122
-                $0.Radius = 1000
-                realm.add($0, update: .all)
-            }
+        try database.write { db in
+            try AppZone(
+                entityId: "zone.inside_big",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 37,
+                longitude: -122,
+                radius: 1000
+            ).save(db)
 
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.inside_small"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 37
-                $0.Longitude = -122
-                $0.Radius = 100
-                realm.add($0, update: .all)
-            }
+            try AppZone(
+                entityId: "zone.inside_small",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 37,
+                longitude: -122,
+                radius: 100
+            ).save(db)
 
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.outside"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 12.34
-                $0.Longitude = 1.337
-                realm.add($0, update: .all)
-            }
+            try AppZone(
+                entityId: "zone.outside",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 12.34,
+                longitude: 1.337
+            ).save(db)
         }
 
         let promise = GeocoderSensor(
@@ -224,34 +221,31 @@ class GeocoderSensorTests: XCTestCase {
             forKey: GeocoderSensor.UserDefaultsKeys.geocodeUseZone.rawValue
         )
 
-        try realm.write {
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.inside_tracking_disabled"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 37
-                $0.Longitude = -122
-                $0.Radius = 1000
-                $0.TrackingEnabled = false
-                realm.add($0, update: .all)
-            }
+        try database.write { db in
+            try AppZone(
+                entityId: "zone.inside_tracking_disabled",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 37,
+                longitude: -122,
+                radius: 1000,
+                trackingEnabled: false
+            ).save(db)
 
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.inside_passive"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 37
-                $0.Longitude = -122
-                $0.Radius = 100
-                $0.isPassive = true
-                realm.add($0, update: .all)
-            }
+            try AppZone(
+                entityId: "zone.inside_passive",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 37,
+                longitude: -122,
+                radius: 100,
+                isPassive: true
+            ).save(db)
 
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.outside"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 12.34
-                $0.Longitude = 1.337
-                realm.add($0, update: .all)
-            }
+            try AppZone(
+                entityId: "zone.outside",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 12.34,
+                longitude: 1.337
+            ).save(db)
         }
 
         let promise = GeocoderSensor(
@@ -278,32 +272,29 @@ class GeocoderSensorTests: XCTestCase {
             forKey: GeocoderSensor.UserDefaultsKeys.geocodeUseZone.rawValue
         )
 
-        try realm.write {
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.inside_big"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 37
-                $0.Longitude = -122
-                $0.Radius = 1000
-                realm.add($0, update: .all)
-            }
+        try database.write { db in
+            try AppZone(
+                entityId: "zone.inside_big",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 37,
+                longitude: -122,
+                radius: 1000
+            ).save(db)
 
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.inside_small"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 37
-                $0.Longitude = -122
-                $0.Radius = 100
-                realm.add($0, update: .all)
-            }
+            try AppZone(
+                entityId: "zone.inside_small",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 37,
+                longitude: -122,
+                radius: 100
+            ).save(db)
 
-            _ = with(RLMZone()) {
-                $0.entityId = "zone.outside"
-                $0.serverIdentifier = server.identifier.rawValue
-                $0.Latitude = 12.34
-                $0.Longitude = 1.337
-                realm.add($0, update: .all)
-            }
+            try AppZone(
+                entityId: "zone.outside",
+                serverIdentifier: server.identifier.rawValue,
+                latitude: 12.34,
+                longitude: 1.337
+            ).save(db)
         }
 
         let promise = GeocoderSensor(

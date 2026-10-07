@@ -59,6 +59,83 @@ struct WatchConfigurationViewModel_test {
         #expect(folder.items?.isEmpty == true)
     }
 
+    @Test func updateItemReplacesAssistPromptMovedToAnotherServer() {
+        let viewModel = WatchConfigurationViewModel()
+        let prompt = MagicItem(
+            id: "prompt-id",
+            serverId: "server1",
+            type: .assistPrompt,
+            displayText: "Lights",
+            assistPrompt: "Turn on the lights",
+            assistPipelineId: ""
+        )
+        viewModel.addItem(prompt)
+
+        var moved = prompt
+        moved.serverId = "server2"
+        viewModel.updateItem(moved)
+
+        #expect(viewModel.watchConfig.items.count == 1)
+        #expect(viewModel.watchConfig.items[0].serverId == "server2")
+    }
+
+    @Test func updateItemInFolderReplacesAssistPromptMovedToAnotherServer() {
+        let viewModel = WatchConfigurationViewModel()
+        viewModel.addFolder(named: "My Folder")
+        let folderId = viewModel.watchConfig.items[0].id
+        let prompt = MagicItem(
+            id: "prompt-id",
+            serverId: "server1",
+            type: .assistPrompt,
+            displayText: "Lights",
+            assistPrompt: "Turn on the lights",
+            assistPipelineId: ""
+        )
+        viewModel.addItemToFolder(folderId: folderId, item: prompt)
+
+        var moved = prompt
+        moved.serverId = "server2"
+        viewModel.updateItemInFolder(folderId: folderId, item: moved)
+
+        #expect(viewModel.watchConfig.items[0].items?.count == 1)
+        #expect(viewModel.watchConfig.items[0].items?.first?.serverId == "server2")
+    }
+
+    @Test func updateItemFindsAssistPromptInsideFolderMovedToAnotherServer() {
+        let viewModel = WatchConfigurationViewModel()
+        viewModel.addFolder(named: "My Folder")
+        let folderId = viewModel.watchConfig.items[0].id
+        let prompt = MagicItem(
+            id: "prompt-id",
+            serverId: "server1",
+            type: .assistPrompt,
+            displayText: "Lights",
+            assistPrompt: "Turn on the lights",
+            assistPipelineId: ""
+        )
+        viewModel.addItemToFolder(folderId: folderId, item: prompt)
+
+        var moved = prompt
+        moved.serverId = "server2"
+        viewModel.updateItem(moved)
+
+        #expect(viewModel.watchConfig.items.count == 1)
+        #expect(viewModel.watchConfig.items[0].items?.first?.serverId == "server2")
+    }
+
+    @Test func updateItemKeepsScriptsApartByServer() {
+        let viewModel = WatchConfigurationViewModel()
+        viewModel.addItem(MagicItem(id: "script.test", serverId: "server1", type: .script))
+        viewModel.addItem(MagicItem(id: "script.test", serverId: "server2", type: .script))
+
+        var edited = MagicItem(id: "script.test", serverId: "server2", type: .script)
+        edited.displayText = "Edited"
+        viewModel.updateItem(edited)
+
+        #expect(viewModel.watchConfig.items[0].displayText == nil)
+        #expect(viewModel.watchConfig.items[1].displayText == "Edited")
+    }
+
     @Test func addItemToFolderAddsItemInsideFolder() async throws {
         let viewModel = WatchConfigurationViewModel()
 
@@ -275,7 +352,7 @@ struct WatchConfigAvailableItems_test {
             .init(serverId: "server2", serverName: "Cabin", candidates: []),
         ])
 
-        let data = original.encodeForWatch()
+        let data = try original.encodeForWatch()
         let decoded = try #require(WatchConfigAvailableItems.decodeForWatch(data))
 
         #expect(decoded.servers.count == 2)
@@ -327,18 +404,129 @@ struct WatchDatabaseMirror_test {
         )
         let original = WatchDatabaseMirror(entities: [entity], areas: [area], pipelines: [pipelines])
 
-        let data = original.encodeForWatch()
+        let data = try original.encodeForWatch()
         let decoded = try #require(WatchDatabaseMirror.decodeForWatch(data))
 
         #expect(decoded.entities == [entity])
         #expect(decoded.areas == [area])
-        #expect(decoded.pipelines.count == 1)
-        #expect(decoded.pipelines.first?.serverId == "server1")
-        #expect(decoded.pipelines.first?.pipelines.first?.id == "pref")
+        #expect(decoded.pipelines?.count == 1)
+        #expect(decoded.pipelines?.first?.serverId == "server1")
+        #expect(decoded.pipelines?.first?.pipelines.first?.id == "pref")
     }
 
     @Test func decodeInvalidDataReturnsNil() {
         #expect(WatchDatabaseMirror.decodeForWatch(Data([0x00, 0x01, 0x02])) == nil)
+    }
+
+    @Test func entityCategoryRoundTripsThroughMirror() throws {
+        let diagnostic = HAAppEntity(
+            id: "server1-sensor.uptime",
+            entityId: "sensor.uptime",
+            serverId: "server1",
+            domain: "sensor",
+            name: "Uptime",
+            icon: nil,
+            rawDeviceClass: nil,
+            entityCategory: 1
+        )
+        let ordinary = HAAppEntity(
+            id: "server1-light.kitchen",
+            entityId: "light.kitchen",
+            serverId: "server1",
+            domain: "light",
+            name: "Kitchen",
+            icon: nil,
+            rawDeviceClass: nil
+        )
+        let original = WatchDatabaseMirror(entities: [diagnostic, ordinary], areas: [], pipelines: [])
+
+        let data = try original.encodeForWatch()
+        let decoded = try #require(WatchDatabaseMirror.decodeForWatch(data))
+
+        #expect(decoded.entities == [diagnostic, ordinary])
+        #expect(decoded.entities?.first { $0.entityId == "sensor.uptime" }?.entityCategory == 1)
+        #expect(decoded.entities?.first { $0.entityId == "light.kitchen" }?.entityCategory == nil)
+    }
+
+    @Test func partialMirrorRoundTripsNilTablesAsRetain() throws {
+        // A delta payload: only areas carried, everything else omitted (nil = retain on the watch).
+        let area = AppArea(
+            id: "server1-kitchen",
+            serverId: "server1",
+            areaId: "kitchen",
+            name: "Kitchen",
+            aliases: [],
+            picture: nil,
+            icon: nil,
+            sortOrder: 0,
+            entities: []
+        )
+        let original = WatchDatabaseMirror(entities: nil, areas: [area], pipelines: nil)
+
+        let decoded = try WatchDatabaseMirror.decodeForWatchThrowing(original.encodeForWatch())
+        #expect(decoded.entities == nil)
+        #expect(decoded.areas == [area])
+        #expect(decoded.pipelines == nil)
+    }
+
+    @Test func digestsMatchForEqualContentAndDifferOtherwise() {
+        let entity = HAAppEntity(
+            id: "server1-script.a",
+            entityId: "script.a",
+            serverId: "server1",
+            domain: "script",
+            name: "A",
+            icon: nil,
+            rawDeviceClass: nil
+        )
+        let mirror = WatchDatabaseMirror(entities: [entity], areas: [], pipelines: [])
+        let same = WatchDatabaseMirror(entities: [entity], areas: [], pipelines: [])
+        var changed = mirror
+        changed.entities = []
+
+        #expect(mirror.tableDigests()["entities"] == same.tableDigests()["entities"])
+        #expect(mirror.tableDigests()["entities"] != changed.tableDigests()["entities"])
+        // nil groups produce no digest, so they can never match and are always carried.
+        #expect(WatchDatabaseMirror(entities: nil, areas: [], pipelines: []).tableDigests()["entities"] == nil)
+    }
+
+    @Test func omittingTablesDropsOnlyPositiveDigestMatches() {
+        let mirror = WatchDatabaseMirror(entities: [], areas: [], pipelines: [])
+        let digests = mirror.tableDigests()
+
+        // Watch echoes matching digests for entities+areas but a stale one for pipelines.
+        var stored = digests
+        stored["pipelines"] = "stale"
+        let delta = mirror.omittingTables(matching: stored, currentDigests: digests)
+        #expect(delta.entities == nil)
+        #expect(delta.areas == nil)
+        #expect(delta.pipelines?.isEmpty == true)
+
+        // No stored digests at all → nothing is omitted.
+        let full = mirror.omittingTables(matching: [:], currentDigests: digests)
+        #expect(full.entities == [])
+        #expect(full.areas == [])
+        #expect(full.pipelines?.isEmpty == true)
+    }
+}
+
+struct WatchConfigLayout_test {
+    @Test func resolvedLayoutDefaultsToListWhenUnset() {
+        let config = WatchConfig()
+        #expect(config.layout == nil)
+        #expect(config.resolvedLayout == .list)
+    }
+
+    @Test func resolvedLayoutReturnsStoredValue() {
+        #expect(WatchConfig(layout: .grid).resolvedLayout == .grid)
+        #expect(WatchConfig(layout: .list).resolvedLayout == .list)
+    }
+
+    @Test func encodeForWatchRoundTripPreservesLayout() throws {
+        let original = WatchConfig(items: [], layout: .grid)
+        let data = try original.encodeForWatch()
+        let decoded = try #require(WatchConfig.decodeForWatch(data))
+        #expect(decoded.resolvedLayout == .grid)
     }
 }
 

@@ -18,6 +18,10 @@ class TagActivityManager: TagManager {
         .init(error: TagManagerError.nfcUnavailable)
     }
 
+    func writeNFC(deeplink: URL, alertMessage: String) -> Promise<Void> {
+        .init(error: TagManagerError.nfcUnavailable)
+    }
+
     func handle(userActivity: NSUserActivity) -> TagManagerHandleResult {
         guard let url = userActivity.webpageURL else {
             return .unhandled
@@ -111,7 +115,11 @@ class iOSTagManager: TagActivityManager {
             return .init(error: TagManagerError.notHomeAssistantTag)
         }
 
-        let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [aarPayload])
+        let writer = NFCWriter(
+            requiredPayload: [uriPayload],
+            optionalPayload: [aarPayload],
+            alertMessage: L10n.Nfc.Write.startMessage(Current.device.inspecificModel())
+        )
         var writerRetain: NFCWriter? = writer
 
         return firstly {
@@ -124,6 +132,35 @@ class iOSTagManager: TagActivityManager {
             // we use the same logic as reading, so we can be sure the identifier is right
             Self.identifier(from: message)
         }
+    }
+
+    /// The record a deep link is written to a tag as.
+    ///
+    /// A tag holds the app's NFC universal link rather than the deep link itself: background tag reading
+    /// only routes the `https` links the app has claimed, so a bare `homeassistant://` record is ignored
+    /// on a scan.
+    static func deeplinkPayload(for deeplink: URL) -> NFCNDEFPayload? {
+        guard let tagURL = AppConstants.nfcTagURL(deeplink: deeplink) else {
+            return nil
+        }
+        return NFCNDEFPayload.wellKnownTypeURIPayload(url: tagURL)
+    }
+
+    override func writeNFC(deeplink: URL, alertMessage: String) -> Promise<Void> {
+        guard let uriPayload = Self.deeplinkPayload(for: deeplink) else {
+            return .init(error: TagManagerError.invalidURL)
+        }
+
+        let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [], alertMessage: alertMessage)
+        var writerRetain: NFCWriter? = writer
+
+        return firstly {
+            writer.promise
+        }.ensure {
+            withExtendedLifetime(writerRetain) {
+                writerRetain = nil
+            }
+        }.asVoid()
     }
 
     override func handledType(from userActivity: NSUserActivity) -> TagManagerHandleResult.HandledType {

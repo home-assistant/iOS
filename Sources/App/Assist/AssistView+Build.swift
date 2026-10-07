@@ -6,7 +6,8 @@ extension AssistView {
         server: Server,
         preferredPipelineId: String = "",
         autoStartRecording: Bool = false,
-        showCloseButton: Bool = true
+        showCloseButton: Bool = true,
+        forcesLegacyAppearance: Bool = false
     ) -> AssistView {
         let viewModel = AssistViewModel(
             server: server,
@@ -16,6 +17,10 @@ extension AssistView {
             assistService: AssistService(server: server),
             autoStartRecording: autoStartRecording
         )
-        return .init(viewModel: viewModel, showCloseButton: showCloseButton)
+        return .init(
+            viewModel: viewModel,
+            showCloseButton: showCloseButton,
+            forcesLegacyAppearance: forcesLegacyAppearance
+        )
     }
 }

@@ -34,7 +34,7 @@ struct ConnectionURLView: View {
         .alert(L10n.Settings.ConnectionSection.ValidateError.title, isPresented: $viewModel.showError) {
             if viewModel.canCommitAnyway {
                 Button(L10n.Settings.ConnectionSection.ValidateError.useAnyway) {
-                    viewModel.save(onSuccess: {
+                    viewModel.commitAnyway(onSuccess: {
                         dismiss()
                     })
                 }
@@ -218,28 +218,22 @@ struct ConnectionURLView: View {
                 })
             }
             .tint(.haPrimary)
-            .modify { view in
-                if #available(iOS 26.0, *) {
-                    view.buttonStyle(.glassProminent)
-                } else {
-                    view
-                }
-            }
         }
     }
 
     // MARK: - Location Permission Section
 
-    @ViewBuilder
     private var locationPermissionSection: some View {
-        if shouldShowLocationPermission {
-            Section {
+        Section {
+            if shouldShowLocationPermission {
                 Button(action: handleLocationPermission) {
-                    Text(L10n.Settings.ConnectionSection.ssidPermissionAndAccuracyMessage)
+                    Text(L10n.Settings.ConnectionSection.NetworkDetectionPermission.message)
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.leading)
                 }
             }
+
+            ConnectionURLsHowItWorksLink(server: viewModel.server)
         }
     }
 
@@ -262,9 +256,10 @@ struct ConnectionURLView: View {
     /// The prompt is shown when location permissions are insufficient for SSID detection:
     /// - Requires both "Always Allow" authorization AND full accuracy
     ///
-    /// SSID information requires "Always Allow" because the app needs to detect
-    /// network changes in the background. Full accuracy is needed on iOS 14+ to
-    /// access detailed network information including SSID names.
+    /// Full accuracy is what makes the SSID readable at all — with approximate location iOS never
+    /// hands the network name out, not even while the app is in the foreground. "Always Allow" is
+    /// needed on top of that for the SSID to stay readable while the app is in the background,
+    /// which is when sensor updates, notification actions and local push run.
     private var shouldShowLocationPermission: Bool {
         Current.locationManager.currentPermissionState != .authorizedAlways ||
             Current.locationManager.accuracyAuthorization != .fullAccuracy

@@ -1,4 +1,5 @@
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
 import XCTest
@@ -268,7 +269,6 @@ private extension AvailableUpdate {
             htmlUrl: URL(string: "https://example.com/htmlUrl")!,
             tagName: "release/\(version)/\(build)",
             name: "\(version) (\(build))",
-            body: "example body",
             prerelease: prerelease,
             assets: assets
         )

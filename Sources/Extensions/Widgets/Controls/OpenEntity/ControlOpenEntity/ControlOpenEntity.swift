@@ -16,7 +16,8 @@ struct ControlOpenEntity: ControlWidget {
                 intent.entity = template.entity
                 return intent
             }()) {
-                // ControlWidget can only display SF Symbol
+                // ControlWidget can only display SF Symbol, user-picked at runtime
+                // swiftlint:disable:next sf_safe_symbol
                 Label(template.displayText ?? template.entity.displayString, systemImage: template.icon.id)
             }
         }

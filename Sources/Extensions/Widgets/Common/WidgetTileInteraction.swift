@@ -1,0 +1,274 @@
+import AppIntents
+import Shared
+import SwiftUI
+import WidgetKit
+
+/// What a widget tile does when it is tapped.
+///
+/// The design system draws the tiles and knows nothing about App Intents or deep links, so this is
+/// where a rendered tile is wrapped in the control that runs it — and where a tile waiting on a
+/// confirmation is swapped for the confirmation form instead.
+///
+/// A tile whose icon controls its entity is split in two, the way the frontend's tile card is: the
+/// icon runs the entity's action and the rest of the tile opens it in the app. ``regions`` wraps
+/// each half; ``content`` then leaves such a tile alone, because it already carries its controls.
+struct WidgetTileInteraction {
+    let type: WidgetType
+    let family: WidgetFamily
+
+    func content(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle, tile: AnyView) -> AnyView {
+        if #available(iOS 17, *) {
+            if model.showConfirmation {
+                return AnyView(confirmationContent(model: model, sizeStyle: sizeStyle))
+            } else if isSplit(model) {
+                // Already interactive: `regions` wrapped each half on the way in.
+                return tile
+            } else if case .widgetURL = model.interactionType {
+                if model.requiresConfirmation, !model.interactionType.opensEntityInApp {
+                    return AnyView(linkThatRequiresConfirmation(model: model, sizeStyle: sizeStyle, tile: tile))
+                } else {
+                    return AnyView(legacyLinkContent(model: model, sizeStyle: sizeStyle, tile: tile))
+                }
+            } else if let intent = intent(for: model, isConfirmationDone: false) {
+                return AnyView(
+                    Button(intent: intent) {
+                        tile
+                    }
+                    .buttonStyle(.plain)
+                )
+            } else {
+                return AnyView(Text(verbatim: "Unknown widget configuration (2)"))
+            }
+        } else {
+            return AnyView(legacyLinkContent(model: model, sizeStyle: sizeStyle, tile: tile))
+        }
+    }
+
+    /// The two halves of a split tile: the icon runs the item's own action, and the rest of the tile
+    /// opens the item. `nil` for every tile that is a single control, which is all of them before
+    /// iOS 17 and all of them while a confirmation is pending.
+    func regions(model: WidgetBasicViewModel) -> WidgetTileRegions? {
+        guard #available(iOS 17, *), !model.showConfirmation, let iconInteractionType = model.iconInteractionType else {
+            return nil
+        }
+        return WidgetTileRegions(
+            icon: { icon in
+                AnyView(control(model: model, interactionType: iconInteractionType, isIcon: true, content: icon))
+            },
+            body: { body in
+                AnyView(control(model: model, interactionType: model.interactionType, isIcon: false, content: body))
+            }
+        )
+    }
+
+    private func isSplit(_ model: WidgetBasicViewModel) -> Bool {
+        model.iconInteractionType != nil
+    }
+
+    /// The action a tap runs when the whole tile — or the confirmation standing in for it — is what
+    /// was tapped. On a split tile that is the icon's action, unless the confirmation on screen was
+    /// asked for by the rest of the tile, whose own behavior it then runs.
+    private func actionInteractionType(for model: WidgetBasicViewModel) -> WidgetInteractionType {
+        if model.confirmsTapAction {
+            return model.interactionType
+        }
+        return model.iconInteractionType ?? model.interactionType
+    }
+
+    /// One half of a split tile, wrapped in whatever runs it. Either half asks for confirmation when
+    /// the item requires it, except a tap that only opens the entity's more-info dialog: that
+    /// changes nothing, so there is nothing to confirm first.
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    private func control(
+        model: WidgetBasicViewModel,
+        interactionType: WidgetInteractionType,
+        isIcon: Bool,
+        content: AnyView
+    ) -> some View {
+        if model.requiresConfirmation, !interactionType.opensEntityInApp {
+            Button(intent: confirmationStateIntent(for: model, confirmsTapAction: !isIcon)) {
+                content
+            }
+            .buttonStyle(.plain)
+        } else if case let .widgetURL(url) = interactionType {
+            // Without the token `IncomingURLHandler` drops the `server` parameter and opens server
+            // selection instead of the widget's server.
+            Link(destination: url.withWidgetAuthenticity()) {
+                content
+            }
+        } else if let intent = intent(for: interactionType, model: model) {
+            Button(intent: intent) {
+                content
+            }
+            .buttonStyle(.plain)
+        } else {
+            content
+        }
+    }
+
+    /// The tile a link shows: as drawn, except on the versions of iOS that only tinted buttons and
+    /// left links in full colour, where it is redrawn without the widget's accent tint.
+    ///
+    /// A lock screen accessory is never redrawn. It is not tinted in the first place, and what the
+    /// container hands over for the circular family is the glyph alone — the system background is
+    /// drawn around the link, not inside it — so redrawing it as a tile would paint a second one.
+    @ViewBuilder
+    private func linkTile(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle, tile: AnyView) -> some View {
+        if #available(iOS 18.0, *) {
+            tile
+        } else if family.isLockScreenAccessory {
+            tile
+        } else {
+            WidgetTileView(
+                model: model.tileModel,
+                sizeStyle: sizeStyle,
+                family: family,
+                kind: type.tileKind,
+                tinted: false
+            )
+        }
+    }
+
+    /// The intent that flips the tile into its confirmation state. `confirmsTapAction` records which
+    /// half asked, so confirming runs that half's behavior.
+    @available(iOS 17.0, *)
+    private func confirmationStateIntent(
+        for model: WidgetBasicViewModel,
+        confirmsTapAction: Bool = false
+    ) -> UpdateWidgetItemConfirmationStateAppIntent {
+        let intent = UpdateWidgetItemConfirmationStateAppIntent()
+        intent.widgetId = model.widgetId
+        intent.serverUniqueId = model.id
+        intent.confirmsTapAction = confirmsTapAction
+        return intent
+    }
+
+    @available(iOS 17.0, *)
+    private func intent(for model: WidgetBasicViewModel, isConfirmationDone: Bool = true) -> (any AppIntent)? {
+        intent(
+            for: actionInteractionType(for: model),
+            model: model,
+            isConfirmationDone: isConfirmationDone
+        )
+    }
+
+    @available(iOS 17.0, *)
+    private func intent(
+        for interactionType: WidgetInteractionType,
+        model: WidgetBasicViewModel,
+        isConfirmationDone: Bool = true
+    ) -> (any AppIntent)? {
+        switch interactionType {
+        case .widgetURL:
+            return nil
+        case let .appIntent(widgetIntentType):
+            // When confirmation is required and this method wasn't called from confirmation button
+            if model.requiresConfirmation, !isConfirmationDone {
+                return confirmationStateIntent(for: model)
+            }
+            switch widgetIntentType {
+            case let .script(id, entityId, serverId, name, showConfirmationNotification):
+                let intent = ScriptAppIntent()
+                intent.script = .init(
+                    id: id,
+                    entityId: entityId,
+                    serverId: serverId,
+                    serverName: "", // not used in this context
+                    displayString: name,
+                    iconName: "" // not used in this context
+                )
+                intent.hapticConfirmation = true
+                intent.showConfirmationNotification = showConfirmationNotification
+                return intent
+            case .refresh:
+                return ReloadWidgetsAppIntent()
+            case let .toggle(entityId, domain, serverId):
+                let intent = CustomWidgetToggleAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                intent.widgetShowingStates = model.subtitle != nil
+                return intent
+            case let .activate(entityId, domain, serverId):
+                let intent = CustomWidgetActivateAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                return intent
+            case let .performAction(serverId, actionId, payload):
+                let intent = CustomWidgetPerformActionAppIntent()
+                intent.serverId = serverId
+                intent.actionId = actionId
+                intent.payload = payload
+                return intent
+            }
+        }
+    }
+
+    /// The confirmation a tile turns into once it has been asked to run something that requires one.
+    @available(iOS 17.0, *)
+    private func confirmationContent(
+        model: WidgetBasicViewModel,
+        sizeStyle: WidgetTileSizeStyle
+    ) -> some View {
+        let confirmationIntent = intent(for: model, isConfirmationDone: true)
+        let confirmationURL: URL? = {
+            if case let .widgetURL(url) = actionInteractionType(for: model) {
+                return url
+            } else {
+                return nil
+            }
+        }()
+        let cancellationIntent = ResetAllCustomWidgetConfirmationAppIntent()
+        return WidgetTileConfirmationView(
+            title: L10n.Alert.Confirmation.Generic.title,
+            sizeStyle: sizeStyle,
+            confirmIsButton: confirmationIntent != nil,
+            cancel: { label in
+                AnyView(Button(intent: cancellationIntent) { label })
+            },
+            confirm: { label in
+                if let confirmationURL {
+                    // Same as the unconfirmed path: without the token `IncomingURLHandler` drops the
+                    // `server` parameter and opens server selection instead of the widget's server.
+                    return AnyView(Link(destination: confirmationURL.withWidgetAuthenticity()) { label })
+                } else if let confirmationIntent {
+                    return AnyView(Button(intent: confirmationIntent) { label })
+                } else {
+                    return AnyView(EmptyView())
+                }
+            }
+        )
+    }
+
+    /// A deep link that has to be confirmed first: tapping it only flips the widget into its
+    /// confirmation state, and the form is what actually follows the link.
+    @available(iOS 17.0, *)
+    private func linkThatRequiresConfirmation(
+        model: WidgetBasicViewModel,
+        sizeStyle: WidgetTileSizeStyle,
+        tile: AnyView
+    ) -> some View {
+        Button(intent: confirmationStateIntent(for: model)) {
+            linkTile(model: model, sizeStyle: sizeStyle, tile: tile)
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    // This is the only widget we can present prior to iOS 17, because it doesn't support AppIntents
+    private func legacyLinkContent(
+        model: WidgetBasicViewModel,
+        sizeStyle: WidgetTileSizeStyle,
+        tile: AnyView
+    ) -> some View {
+        if case let .widgetURL(url) = model.interactionType {
+            Link(destination: url.withWidgetAuthenticity()) {
+                linkTile(model: model, sizeStyle: sizeStyle, tile: tile)
+            }
+        } else {
+            Text(verbatim: "Unknown widget configuration")
+        }
+    }
+}

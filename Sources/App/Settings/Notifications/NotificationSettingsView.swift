@@ -1,4 +1,3 @@
-import PromiseKit
 import Shared
 import SwiftUI
 import UserNotifications
@@ -11,18 +10,6 @@ struct NotificationSettingsView: View {
 
     @StateObject private var viewModel = NotificationSettingsViewModel()
 
-    @State private var showShareSheet = false
-    @State private var shareItems: [Any] = []
-    @State private var resetAlert: ResetAlertInfo?
-    @State private var ratePromise: Promise<RateLimitResponse>?
-    @State private var rateLimitRemaining: Int?
-
-    private struct ResetAlertInfo: Identifiable {
-        let id = UUID()
-        let title: String
-        let message: String
-    }
-
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
@@ -32,8 +19,11 @@ struct NotificationSettingsView: View {
             )
             overviewSection
             historySnoozeSoundsSection
+            tapActionsSection
             badgeSection
-            debugSection
+            if !Current.isCatalyst {
+                forceCloseWarningSection
+            }
         }
         .toolbar {
             // `if` directly inside `.toolbar` requires iOS 16+ ToolbarContentBuilder.
@@ -48,13 +38,6 @@ struct NotificationSettingsView: View {
         }
         .onAppear {
             viewModel.refreshPermissionStatus()
-            if ratePromise == nil {
-                let promise = NotificationRateLimitViewModel.newPromise()
-                promise.done { response in
-                    rateLimitRemaining = response.rateLimits.remaining
-                }.cauterize()
-                ratePromise = promise
-            }
         }
         .onReceive(
             NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
@@ -62,16 +45,7 @@ struct NotificationSettingsView: View {
             viewModel.refreshPermissionStatus()
             viewModel.refreshBadgeCount()
         }
-        .sheet(isPresented: $showShareSheet) {
-            NotificationsShareSheet(activityItems: shareItems)
-        }
-        .alert(item: $resetAlert) { info in
-            Alert(
-                title: Text(info.title),
-                message: Text(info.message),
-                dismissButton: .default(Text(L10n.okLabel))
-            )
-        }
+        .listTopContentMargin()
     }
 
     // MARK: - Sections
@@ -126,6 +100,17 @@ struct NotificationSettingsView: View {
         }
     }
 
+    private var tapActionsSection: some View {
+        Section {
+            Toggle(
+                L10n.SettingsDetails.Notifications.TapActions.title,
+                isOn: $viewModel.tapActionsEnabled
+            )
+        } footer: {
+            Text(L10n.SettingsDetails.Notifications.TapActions.footer)
+        }
+    }
+
     private var badgeSection: some View {
         Section {
             Button {
@@ -141,7 +126,7 @@ struct NotificationSettingsView: View {
                 }
             }
 
-            SwiftUI.Toggle(
+            Toggle(
                 L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title,
                 isOn: $viewModel.clearBadgeAutomatically
             )
@@ -150,63 +135,14 @@ struct NotificationSettingsView: View {
         }
     }
 
-    private var debugSection: some View {
+    private var forceCloseWarningSection: some View {
         Section {
-            NavigationLink {
-                NotificationRateLimitView(initialPromise: ratePromise) { response in
-                    rateLimitRemaining = response.rateLimits.remaining
-                }
-            } label: {
-                HStack {
-                    Text(L10n.SettingsDetails.Notifications.RateLimits.header)
-                    Spacer()
-                    if let remaining = rateLimitRemaining {
-                        Text(NumberFormatter.localizedString(from: NSNumber(value: remaining), number: .decimal))
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-
-            NavigationLink {
-                NotificationDebugNotificationsView()
-            } label: {
-                Text(L10n.SettingsDetails.Location.Notifications.header)
-            }
-
-            Button {
-                guard let id = viewModel.pushID else { return }
-                shareItems = [id]
-                showShareSheet = true
-            } label: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(L10n.SettingsDetails.Notifications.PushIdSection.header)
-                        .foregroundColor(.primary)
-                    Text(viewModel.pushIDDisplay)
-                        .foregroundColor(.secondary)
-                        .font(.footnote)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                }
-            }
-
-            Button {
-                viewModel.resetPushID { result in
-                    switch result {
-                    case .success:
-                        break
-                    case let .failure(error):
-                        resetAlert = ResetAlertInfo(
-                            title: L10n.errorLabel,
-                            message: error.localizedDescription
-                        )
-                    }
-                }
-            } label: {
-                Text(L10n.Settings.ResetSection.ResetRow.title)
-                    .foregroundColor(.red)
-            }
-        } header: {
-            Text(L10n.debugSectionLabel)
+            Toggle(
+                L10n.SettingsDetails.Notifications.ForceCloseWarning.title,
+                isOn: $viewModel.forceCloseWarningEnabled
+            )
+        } footer: {
+            Text(L10n.SettingsDetails.Notifications.ForceCloseWarning.footer)
         }
     }
 
@@ -225,18 +161,6 @@ struct NotificationSettingsView: View {
     }
 }
 
-// MARK: - Share Sheet
-
-struct NotificationsShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
-}
-
 // MARK: - View Model
 
 @MainActor
@@ -244,20 +168,29 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var permissionText: String = ""
     @Published var lastPermissionSeen: UNAuthorizationStatus?
     @Published var badgeCountText: String = ""
-    // `Self` can't be referenced from a stored-property initializer in a class; use the
-    // type name explicitly.
-    @Published var pushIDDisplay: String = NotificationSettingsViewModel
-        .displayForPushID(Current.settingsStore.pushID)
     @Published var clearBadgeAutomatically: Bool = Current.settingsStore.clearBadgeAutomatically {
         didSet {
             Current.settingsStore.clearBadgeAutomatically = clearBadgeAutomatically
         }
     }
 
-    var pushID: String? { Current.settingsStore.pushID }
+    @Published var tapActionsEnabled: Bool = Current.settingsStore.notificationTapActionsEnabled {
+        didSet {
+            Current.settingsStore.notificationTapActionsEnabled = tapActionsEnabled
+        }
+    }
 
-    private static func displayForPushID(_ id: String?) -> String {
-        id ?? L10n.SettingsDetails.Notifications.PushIdSection.notRegistered
+    @Published var forceCloseWarningEnabled: Bool = Current.settingsStore.forceCloseWarningEnabled {
+        didSet {
+            Current.settingsStore.forceCloseWarningEnabled = forceCloseWarningEnabled
+            if forceCloseWarningEnabled {
+                PermissionType.notification.request { [weak self] _, _ in
+                    Task { @MainActor [weak self] in
+                        self?.refreshPermissionStatus()
+                    }
+                }
+            }
+        }
     }
 
     init() {
@@ -290,21 +223,23 @@ final class NotificationSettingsViewModel: ObservableObject {
             return L10n.SettingsDetails.Notifications.Permission.disabled
         }
     }
+}
 
-    // PromiseKit also exports a single-parameter `Result`, so qualify with `Swift.Result`.
-    func resetPushID(completion: @escaping (Swift.Result<Void, Error>) -> Void) {
-        Current.Log.verbose("Resetting push token!")
-        firstly {
-            Current.notificationManager.resetPushID()
-        }.done { [weak self] newToken in
-            self?.pushIDDisplay = Self.displayForPushID(newToken)
-        }.then { _ in
-            when(fulfilled: Current.apis.map { $0.updateRegistration() })
-        }.done { _ in
-            completion(.success(()))
-        }.catch { error in
-            Current.Log.error("Error resetting push token: \(error)")
-            completion(.failure(error))
+extension NotificationSettingsView: SettingsScreenSearchable {
+    /// Only index rows the screen can actually present: the force-close toggle is absent on Catalyst.
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        var entries = [
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.Permission.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.History.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.SnoozeActions.header),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.Sounds.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.TapActions.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.Button.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title),
+        ]
+        if !Current.isCatalyst {
+            entries.append(SettingsSearchEntry(L10n.SettingsDetails.Notifications.ForceCloseWarning.title))
         }
+        return entries
     }
 }

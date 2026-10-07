@@ -1,0 +1,34 @@
+import Foundation
+import Shared
+
+/// Every screen the watch home hierarchy can push, registered once at the stack root
+/// (`WatchHomeView`) via `navigationDestination(for:)`. Rows navigate by appending one of these
+/// to the stack's path through the `watchNavigate` environment action, so pushes work (and
+/// animate) identically from the home list, the grid, and inside folders.
+enum WatchHomeNavigation: Hashable {
+    /// A folder's contents.
+    case folder(String)
+    /// The controls screen (power/brightness/color/temperature) of a capable light.
+    case lightControls(MagicItem)
+    /// The controls screen (position/open/stop/close) of a capable cover.
+    case coverControls(MagicItem)
+    /// The controls screen (power/speed) of a capable fan.
+    case fanControls(MagicItem)
+    /// The lock screen (lock/unlock/open). Every lock gets one — locks never toggle directly.
+    case lockControls(MagicItem)
+    /// The controls screen (target temperature, HVAC/fan/swing/preset modes, humidity) of a
+    /// climate entity.
+    case climateControls(MagicItem)
+    /// The controls screen (start/pause/stop/return to dock, fan speed) of a vacuum.
+    case vacuumControls(MagicItem)
+    /// The server chooser of the grouped areas row, limited to the servers whose areas contain
+    /// watch-compatible entities.
+    case areasServerPicker(serverIds: [String])
+    /// One server's areas, pushed by the grouped areas row.
+    case areasList(serverId: String)
+    /// The watch-compatible entities of one area.
+    case areaEntities(areaId: String, serverId: String)
+    /// The watch-compatible entities of one device, pushed by tapping a device section header on
+    /// the area screen. The name travels along so the screen can title itself without a lookup.
+    case deviceEntities(deviceId: String, serverId: String, name: String)
+}

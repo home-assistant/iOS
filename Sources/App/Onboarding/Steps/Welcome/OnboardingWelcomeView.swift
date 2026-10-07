@@ -10,25 +10,60 @@ struct OnboardingWelcomeView: View {
         static let distanceBetweenLogoAndTitle: CGFloat = 46
     }
 
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.layoutDirection) private var layoutDirection
     @State private var showLearnMore = false
-    @Binding var shouldDismissOnboarding: Bool
+    /// Advances to the servers list; the onboarding container swaps content in place (no navigation
+    /// push — tearing the container down with a pushed page leaks its hosting view).
+    let continueAction: () -> Void
+
+    /// In a short window (closed iPhone Duo or any iPhone in landscape) the bottom buttons would
+    /// cover most of the content, so the actions move into the navigation bar instead.
+    private var showsActionsInToolbar: Bool {
+        verticalSizeClass == .compact
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Spaces.three) {
-                Spacer()
-                logoBlock
-                textBlock
-                Spacer()
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: DesignSystem.Spaces.three) {
+                    Spacer()
+                    logoBlock
+                    textBlock
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+                .padding(.top, Constants.distanceToTop)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-            .padding(.top, Constants.distanceToTop)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .safeAreaInset(edge: .bottom, content: {
+                if !showsActionsInToolbar {
+                    continueButtonBlock
+                }
+            })
+            // Laid out inside the safe area, then shifted by half the horizontal inset asymmetry
+            // (iPhone Duo camera or vertical bar) so it reads as centered on the whole display.
+            .offset(x: SafeAreaCenteringOffset.horizontal(
+                safeAreaInsets: proxy.safeAreaInsets,
+                layoutDirection: layoutDirection
+            ))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .safeAreaInset(edge: .bottom, content: {
-            continueButtonBlock
-        })
+        .toolbar {
+            if showsActionsInToolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(L10n.Onboarding.Welcome.Updated.secondaryButton) {
+                        showLearnMore = true
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(L10n.Onboarding.Welcome.primaryButtonCompact, action: continueAction)
+                        .fontWeight(.semibold)
+                        .tint(Color.haPrimary)
+                        .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeContinue.rawValue)
+                }
+            }
+        }
         .sheet(isPresented: $showLearnMore) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantCompanionGetStarted)
         }
@@ -45,6 +80,7 @@ struct OnboardingWelcomeView: View {
                     height: Constants.logoHeight,
                     alignment: .center
                 )
+                .launchSplashLogoAnchor()
             Text(verbatim: L10n.Onboarding.Welcome.header)
                 .font(DesignSystem.Font.largeTitle.bold())
                 .padding(.horizontal, DesignSystem.Spaces.two)
@@ -64,10 +100,11 @@ struct OnboardingWelcomeView: View {
 
     private var continueButtonBlock: some View {
         VStack {
-            NavigationLink(destination: OnboardingServersListView(onboardingStyle: .initial)) {
+            Button(action: continueAction) {
                 Text(verbatim: L10n.Onboarding.Welcome.primaryButton)
             }
             .buttonStyle(.primaryButton)
+            .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeContinue.rawValue)
             Button(L10n.Onboarding.Welcome.Updated.secondaryButton) {
                 showLearnMore = true
             }
@@ -80,12 +117,7 @@ struct OnboardingWelcomeView: View {
 }
 
 #Preview {
-    NavigationView {
-        if #available(iOS 18.0, *) {
-            OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
-                .toolbarVisibility(.hidden, for: .navigationBar)
-        } else {
-            OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
-        }
+    NavigationStack {
+        OnboardingWelcomeView(continueAction: {})
     }
 }

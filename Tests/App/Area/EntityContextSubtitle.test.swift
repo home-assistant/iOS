@@ -67,6 +67,52 @@ struct EntityContextSubtitleTests {
         )
         #expect(subtitle == "Living Room")
     }
+
+    @Test func deviceRepeatingTheAreaIsCollapsedToOneSegment() {
+        // A camera device named after its area (common in Home Assistant) would otherwise render the
+        // same label twice, e.g. "Sala • Sala".
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Sala",
+            deviceName: "Sala",
+            entityName: "Camera",
+            entityId: "camera.sala",
+            domain: .camera
+        )
+        #expect(subtitle == "Sala")
+    }
+
+    @Test func duplicateSegmentsAreCollapsedIgnoringCaseDiacriticsAndWhitespace() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Escritório do Bruno",
+            deviceName: "escritorio do bruno ",
+            entityName: "Camera",
+            entityId: "camera.office",
+            domain: .camera
+        )
+        #expect(subtitle == "Escritório do Bruno")
+    }
+
+    @Test func distinctAreaAndDeviceAreBothKept() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Meter cupboard",
+            deviceName: "C100",
+            entityName: "C100 mainStream",
+            entityId: "camera.c100",
+            domain: .camera
+        )
+        #expect(subtitle == "Meter cupboard • C100")
+    }
+
+    @Test func whitespaceOnlyAreaIsDroppedRatherThanShownBlank() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "   ",
+            deviceName: nil,
+            entityName: "Backyard",
+            entityId: "camera.backyard",
+            domain: .camera
+        )
+        #expect(subtitle == "camera.backyard")
+    }
 }
 
 struct AppAreaFloorDisambiguationTests {

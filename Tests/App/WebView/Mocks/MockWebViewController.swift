@@ -8,10 +8,14 @@ final class MockWebViewController: WebViewControllerProtocol {
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol
     var canGoBack: Bool = false
     var canGoForward: Bool = false
+    var currentPageURL: URL?
     var traitCollection: UITraitCollection = .init()
     var server: Server = ServerFixture.standard
     var connectionState: FrontEndConnectionState = .connected
     var overlayedController: UIViewController?
+    var assistZoomAnchorView: UIView?
+    var pendingAssistZoomSourceView: UIView?
+    var presentsNextAssistAsSheet = false
 
     var presentOverlayControllerCalled = false
     var presentControllerCalled = false
@@ -34,17 +38,30 @@ final class MockWebViewController: WebViewControllerProtocol {
     var presentAlertControllerCalled = false
     var shownBannerRequests = [BannerRequest]()
     var hiddenBannerIDs = [String]()
+    var onscreenEntityId: String?
+    var handleExternalAuthFailureCalled = false
+    var lastExternalAuthFailure: Error?
+    var handleExternalAuthFailureExpectation: XCTestExpectation?
+    var handleFrontendRestoredFromPageCacheCalled = false
+    var showLoggedOutStateCalled = false
+    var showLoggedOutStateExpectation: XCTestExpectation?
+    var openInBrowserCalled = false
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
     }
 
+    var presentationWindow: UIWindow?
+    private(set) var showSettingsCalled = false
+    private(set) var showSettingsPushedOntoNavigationStack = false
+
     func load(request: URLRequest) {
         // Simulate loading a request
     }
 
-    func showSettingsViewController() {
-        // Simulate showing settings
+    func showSettingsViewController(pushOntoNavigationStack: Bool) {
+        showSettingsCalled = true
+        showSettingsPushedOntoNavigationStack = pushOntoNavigationStack
     }
 
     func openDebug() {
@@ -59,6 +76,10 @@ final class MockWebViewController: WebViewControllerProtocol {
         // Simulate going forward
     }
 
+    func openInBrowser() {
+        openInBrowserCalled = true
+    }
+
     func styleUI() {
         // Simulate styling UI
     }
@@ -66,6 +87,15 @@ final class MockWebViewController: WebViewControllerProtocol {
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         presentOverlayControllerCalled = true
         overlayedController = controller
+    }
+
+    private(set) var makeWebViewFirstResponderCalled = false
+    /// How many scripts had already run when the web view was made first responder.
+    private(set) var scriptsRunBeforeMakingWebViewFirstResponder: Int?
+
+    func makeWebViewFirstResponder() {
+        makeWebViewFirstResponderCalled = true
+        scriptsRunBeforeMakingWebViewFirstResponder = evaluateJavaScriptCallCount
     }
 
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {
@@ -89,6 +119,21 @@ final class MockWebViewController: WebViewControllerProtocol {
     func updateFrontendConnectionState(state: String) {
         updateSettingsButtonCalled = true
         lastSettingButtonState = state
+    }
+
+    func handleFrontendRestoredFromPageCache() {
+        handleFrontendRestoredFromPageCacheCalled = true
+    }
+
+    func handleExternalAuthFailure(error: Error) {
+        handleExternalAuthFailureCalled = true
+        lastExternalAuthFailure = error
+        handleExternalAuthFailureExpectation?.fulfill()
+    }
+
+    func showLoggedOutState() {
+        showLoggedOutStateCalled = true
+        showLoggedOutStateExpectation?.fulfill()
     }
 
     func updateImprovEntryView(show: Bool) {
@@ -119,5 +164,14 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func presentAlertController(controller: UIViewController, animated: Bool) {
         presentAlertControllerCalled = true
+    }
+
+    func setOnscreenEntity(entityId: String) {
+        onscreenEntityId = entityId
+    }
+
+    func clearOnscreenEntity(entityId: String) {
+        guard onscreenEntityId == entityId else { return }
+        onscreenEntityId = nil
     }
 }

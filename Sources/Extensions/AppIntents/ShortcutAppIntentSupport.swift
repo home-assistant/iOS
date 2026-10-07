@@ -2,14 +2,6 @@ import Foundation
 import PromiseKit
 import Shared
 
-struct ShortcutAppIntentError: LocalizedError {
-    let errorDescription: String?
-
-    init(_ errorDescription: String) {
-        self.errorDescription = errorDescription
-    }
-}
-
 extension Promise {
     func async() async throws -> T {
         try await withCheckedThrowingContinuation { continuation in

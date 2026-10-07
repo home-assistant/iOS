@@ -1,4 +1,5 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
+import Shared
 import SwiftUI
 
 /// Ticking chronometer text for a Live Activity, mirroring Android's chronometer semantics:
@@ -38,6 +39,9 @@ struct HAActivityTimerProgressBar: View {
     let start: Date?
     let end: Date
     let tint: Color
+    /// Explicit `progress_bar_direction` override; nil keeps the per-timer default
+    /// (countdown drains, bounded count-up fills).
+    let direction: HALiveActivityAttributes.ContentState.ProgressBarDirection?
 
     var body: some View {
         if let interval {
@@ -53,16 +57,17 @@ struct HAActivityTimerProgressBar: View {
         }
     }
 
-    /// Bounded count-up fills from `start` to `end` (and stays full once reached); a countdown
-    /// drains and only renders while still running. An unbounded count-up has no interval — no
-    /// bar. `now` is captured once so the range can't invalidate between check and use.
+    /// By default a bounded count-up fills from `start` to `end` (and stays full once reached)
+    /// while a countdown drains; `direction` overrides that fill direction. A countdown only
+    /// renders while still running, and an unbounded count-up has no interval — no bar.
+    /// `now` is captured once so the range can't invalidate between check and use.
     private var interval: (range: ClosedRange<Date>, countsDown: Bool)? {
         if let start, start < end {
-            return (start ... end, false)
+            return (start ... end, direction == .decreasing)
         }
         let now = Date.now
         if end > now {
-            return (now ... end, true)
+            return (now ... end, direction != .increasing)
         }
         return nil
     }

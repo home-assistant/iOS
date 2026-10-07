@@ -22,6 +22,13 @@ public enum BackgroundTask: String {
     case connectApi = "connect-api"
     case realmWrite = "realm-write"
     case pushLocationRequest = "push-location-request"
+    case remindersSync = "reminders-sync"
+    case legacyModelCleanup = "legacy-model-cleanup"
+    case focusFilterSensorUpdate = "focus-filter-sensor-update"
+    case watchMirrorPush = "watch-mirror-push"
+    case panelsSave = "panels-save"
+    case appIconShortcutItems = "app-icon-shortcut-items"
+    case frontendThemeSave = "frontend-theme-save"
 }
 
 public enum BackgroundTaskError: Error {

@@ -7,6 +7,9 @@ on:
         description: Release tag to publish, for example release/2026.5.0/2026.1985
         required: true
         type: string
+  push:
+    tags:
+      - 'release/*/*'
 
 permissions:
   actions: read
@@ -21,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           fetch-depth: 0
 
@@ -103,7 +106,7 @@ jobs:
                   owner,
                   repo,
                   workflow_id: workflowId,
-                  branch: 'main',
+                  head_sha: headSha,
                   per_page: 100,
                 },
                 (response, done) => {
@@ -121,19 +124,19 @@ jobs:
               );
 
               core.info(
-                `Checked ${runs.length} Distribute runs on main. ` +
+                `Checked ${runs.length} Distribute runs for ${headSha}. ` +
                 `Newest run numbers: ${runs.slice(0, 5).map((run) => run.run_number).join(', ')}`
               );
 
               const runWithExpectedNumber = [...runs]
                 .sort((lhs, rhs) => new Date(rhs.created_at) - new Date(lhs.created_at))
                 .find((run) => run.run_number === expectedRunNumber);
-              const matchingRun = runWithExpectedNumber?.head_sha === headSha ? runWithExpectedNumber : undefined;
+              const matchingRun = runWithExpectedNumber?.head_branch === 'main' ? runWithExpectedNumber : undefined;
 
               if (runWithExpectedNumber && !matchingRun) {
                 core.setFailed(
-                  `Distribute run #${expectedRunNumber} points to ` +
-                  `${runWithExpectedNumber.head_sha}, expected ${headSha}.`
+                  `Distribute run #${expectedRunNumber} ran on ` +
+                  `${runWithExpectedNumber.head_branch}, expected main.`
                 );
                 return;
               }

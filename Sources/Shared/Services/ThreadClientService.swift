@@ -3,7 +3,6 @@ import Foundation
 #if canImport(ThreadNetwork)
 import ThreadNetwork
 
-@available(iOS 15, *)
 public final class ThreadClientService: ThreadClientProtocol {
     public init() {}
 
@@ -92,7 +91,6 @@ public final class ThreadClientService: ThreadClientProtocol {
 }
 #else
 /// For SwiftUI Preview
-@available(iOS 15, *)
 public final class ThreadClientService: ThreadClientProtocol {
     public init() {}
     public func retrieveAllCredentials() async throws -> [ThreadCredential] {

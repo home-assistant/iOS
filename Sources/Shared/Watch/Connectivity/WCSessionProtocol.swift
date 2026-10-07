@@ -17,6 +17,8 @@ public protocol WCSessionProtocol: AnyObject {
     var hasContentPendingProxy: Bool { get }
     var applicationContextProxy: [String: Any] { get }
     var receivedApplicationContextProxy: [String: Any] { get }
+    /// Payloads of `transferUserInfo` calls not yet delivered to the counterpart.
+    var outstandingUserInfoTransfersProxy: [[String: Any]] { get }
 
     func activateProxy()
     func sendMessageProxy(
@@ -49,6 +51,9 @@ extension WCSession: WCSessionProtocol {
     public var hasContentPendingProxy: Bool { hasContentPending }
     public var applicationContextProxy: [String: Any] { applicationContext }
     public var receivedApplicationContextProxy: [String: Any] { receivedApplicationContext }
+    public var outstandingUserInfoTransfersProxy: [[String: Any]] {
+        outstandingUserInfoTransfers.map(\.userInfo)
+    }
 
     public func activateProxy() { activate() }
 

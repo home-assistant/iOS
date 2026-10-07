@@ -7,7 +7,6 @@ enum ThreadCredentialsAlertType {
     case error(title: String, message: String)
 }
 
-@available(iOS 16.4, *)
 struct ThreadCredentialsSharingView<Model>: View where Model: ThreadCredentialsSharingViewModelProtocol {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: Model

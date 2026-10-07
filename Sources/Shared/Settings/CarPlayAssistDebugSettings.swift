@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-public enum CarPlayAssistAudioCategory: String, CaseIterable {
+public enum CarPlayAssistAudioCategory: String, CaseIterable, Codable {
     case playAndRecord
     case playback
     case record
@@ -29,7 +29,7 @@ public enum CarPlayAssistAudioCategory: String, CaseIterable {
     }
 }
 
-public enum CarPlayAssistAudioMode: String, CaseIterable {
+public enum CarPlayAssistAudioMode: String, CaseIterable, Codable {
     case `default`
     case voiceChat
     case voicePrompt
@@ -67,7 +67,7 @@ public enum CarPlayAssistAudioMode: String, CaseIterable {
     }
 }
 
-public enum CarPlayAssistPreferredSampleRate: Int, CaseIterable {
+public enum CarPlayAssistPreferredSampleRate: Int, CaseIterable, Codable {
     case rate16000 = 16000
     case rate24000 = 24000
     case rate44100 = 44100
@@ -82,7 +82,7 @@ public enum CarPlayAssistPreferredSampleRate: Int, CaseIterable {
     }
 }
 
-public enum CarPlayAssistTTSPlaybackStrategy: String, CaseIterable {
+public enum CarPlayAssistTTSPlaybackStrategy: String, CaseIterable, Codable {
     case avPlayer
     case downloadedAVAudioPlayer
 
@@ -96,7 +96,7 @@ public enum CarPlayAssistTTSPlaybackStrategy: String, CaseIterable {
     }
 }
 
-public enum CarPlayAssistPlaybackDelay: Int, CaseIterable {
+public enum CarPlayAssistPlaybackDelay: Int, CaseIterable, Codable {
     case none = 0
     case ms100 = 100
     case ms250 = 250
@@ -117,7 +117,7 @@ public enum CarPlayAssistPlaybackDelay: Int, CaseIterable {
     }
 }
 
-public struct CarPlayAssistDebugSettings: Equatable {
+public struct CarPlayAssistDebugSettings: Equatable, Codable {
     public var audioCategory: CarPlayAssistAudioCategory
     public var audioMode: CarPlayAssistAudioMode
     public var preferredSampleRate: CarPlayAssistPreferredSampleRate

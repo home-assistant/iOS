@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Scatta foto e inviale al tuo server Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "Abilitare opzionalmente il  cross-website tracking se la vostra configurazione lo richiede.";
 "NSFocusStatusUsageDescription" = "Segnala il tuo stato di focus come sensore.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Individua e comunica con la tua istanza di Home Assistant.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Ti consigliamo di selezionare \"Consenti sempre\" per la migliore esperienza di localizzazione. Selezionando \"Solo durante l'utilizzo dell'App\" saranno disabilitati iBeacons, i geofences, gli aggiornamenti di posizione in background e la segnalazione esatta.";
 "NSLocationAlwaysUsageDescription" = "Abbiamo sempre bisogno di accedere alla tua posizione per caratteristiche come iBeacons, Geofence, gli aggiornamenti in background e la segnalazione esatta.";

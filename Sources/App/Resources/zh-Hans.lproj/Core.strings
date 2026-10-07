@@ -16,6 +16,7 @@
 "common::state::standby" = "待机";
 "common::state::unlocked" = "已解锁";
 "common::state::yes" = "是";
+"component::ai_task::title" = "人工智能任务";
 "component::airzone::entity::select::sleep_times::state::off" = "关闭";
 "component::alarm_control_panel::title" = "警报控制面板";
 "component::alert::entity_component::_::state::idle" = "空闲";
@@ -252,7 +253,7 @@
 "component::sensor::title" = "传感器";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "空闲";
 "component::shelly::entity::sensor::valve_status::state::closed" = "已关闭";
-"component::shelly::selector::ble_scanner_mode::options::active" = "激活";
+"component::shelly::selector::ble_scanner_mode::options::active" = "主动（消耗更多设备电量，更新速度最快）";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "已禁用";
 "component::siren::entity_component::_::state::off" = "关闭";
 "component::siren::entity_component::_::state::on" = "开启";

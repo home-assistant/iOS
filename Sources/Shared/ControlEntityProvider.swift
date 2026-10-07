@@ -17,13 +17,33 @@ public final class ControlEntityProvider {
         public let value: String
         public let unitOfMeasurement: String?
         public let domainState: Domain.State?
-        public let color: Color?
+        /// The raw, lowercased entity state. `value` is formatted for display (precision, unit,
+        /// device-class wording), so anything that keys off the state itself — the frontend's icon
+        /// color palette — needs the original.
+        public let rawState: String
+        /// The raw `device_class` attribute, which that palette also keys off.
+        public let deviceClass: String?
+        /// The light's own color, already contrast-adjusted, when it reports one.
+        public let liveColor: Color?
+        /// For a `group`, the domain all of its members share, whose palette the group borrows.
+        public let groupMemberDomain: String?
 
-        public init(value: String, unitOfMeasurement: String?, domainState: Domain.State?, color: Color? = nil) {
+        public init(
+            value: String,
+            unitOfMeasurement: String?,
+            domainState: Domain.State?,
+            rawState: String = "",
+            deviceClass: String? = nil,
+            liveColor: Color? = nil,
+            groupMemberDomain: String? = nil
+        ) {
             self.value = value
             self.unitOfMeasurement = unitOfMeasurement
             self.domainState = domainState
-            self.color = color
+            self.rawState = rawState
+            self.deviceClass = deviceClass
+            self.liveColor = liveColor
+            self.groupMemberDomain = groupMemberDomain
         }
     }
 
@@ -72,38 +92,9 @@ public final class ControlEntityProvider {
                             .fetchAll(db)
                     }
                 }
-                if let string {
-                    let deviceMap = entities.devicesMap(for: server.identifier.rawValue)
-                    let areasMap = entities.areasMap(for: server.identifier.rawValue)
-                    entities = entities.filter({ entity in
-                        // `entity.name` is the resolved display name (registry name, falling back to the
-                        // state name), baked in at write time by `AppEntitiesModel`.
-                        let matchName = entity.name.range(
-                            of: string,
-                            options: [.caseInsensitive, .diacriticInsensitive]
-                        ) != nil
-                        let matchEntityId = entity.entityId.range(
-                            of: string,
-                            options: [.caseInsensitive, .diacriticInsensitive]
-                        ) != nil
-                        let matchDeviceName = {
-                            if let deviceName = deviceMap[entity.entityId]?.name {
-                                return deviceName
-                                    .range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-                            } else {
-                                return false
-                            }
-                        }()
-                        let matchAreaName = {
-                            if let areaName = areasMap[entity.entityId]?.name {
-                                return areaName
-                                    .range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-                            } else {
-                                return false
-                            }
-                        }()
-                        return matchName || matchEntityId || matchDeviceName || matchAreaName
-                    })
+                if let string, !string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    let index = EntityFuzzySearchIndex(entities: entities, serverId: server.identifier.rawValue)
+                    entities = index.search(string)
                 }
                 entitiesPerServer.append((server, entities))
             } catch {
@@ -114,9 +105,11 @@ public final class ControlEntityProvider {
         return entitiesPerServer
     }
 
-    public func state(server: Server, entityId: String) async -> State? {
+    /// Fetches the raw `attributes` dictionary for an entity over the REST `/states` endpoint. Used by
+    /// the widgets' entity source to list an entity's attributes and read the chosen one's value.
+    public func attributes(server: Server, entityId: String) async -> [String: Any]? {
         guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available to fetch state data")
+            Current.Log.error("No API available to fetch attributes data")
             return nil
         }
 
@@ -131,8 +124,59 @@ public final class ControlEntityProvider {
 
         guard let data = try? result.get() else {
             if case let .failure(error) = result {
-                Current.Log.error("Failed to get state: \(error)")
+                Current.Log.error("Failed to get attributes: \(error)")
             }
+            return nil
+        }
+
+        guard case let .dictionary(state) = data else {
+            Current.Log.error("Failed to get attributes: bad response data")
+            return nil
+        }
+
+        return state["attributes"] as? [String: Any]
+    }
+
+    /// Fetches an entity's raw state string and attributes in one REST `/states` call, with no
+    /// precision or capitalization applied. Callers that do their own formatting (the complication
+    /// render pipeline, which owns precision + unit) need the untouched value.
+    public func rawState(server: Server, entityId: String) async -> (state: String, attributes: [String: Any])? {
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch raw state data")
+            return nil
+        }
+
+        let result = await withCheckedContinuation { continuation in
+            connection.send(.init(
+                type: .rest(.get, "states/\(entityId)"),
+                shouldRetry: true
+            )) { result in
+                continuation.resume(returning: result)
+            }
+        }
+
+        guard let data = try? result.get() else {
+            if case let .failure(error) = result {
+                Current.Log.error("Failed to get raw state: \(error)")
+            }
+            return nil
+        }
+
+        guard case let .dictionary(json) = data, let state = json["state"] as? String else {
+            Current.Log.error("Failed to get raw state: bad response data")
+            return nil
+        }
+
+        return (state, json["attributes"] as? [String: Any] ?? [:])
+    }
+
+    public func state(server: Server, entityId: String) async -> State? {
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch state data")
+            return nil
+        }
+
+        guard let data = await sendStateRequest(connection: connection, entityId: entityId) else {
             return nil
         }
 
@@ -141,93 +185,181 @@ public final class ControlEntityProvider {
             return nil
         }
 
-        var stateValue = (state["state"] as? String) ?? "N/A"
-        stateValue = StatePrecision.adjustPrecision(
+        let rawStateValue = (state["state"] as? String) ?? "N/A"
+        var stateValue = StatePrecision.adjustPrecision(
             serverId: server.identifier.rawValue,
             entityId: entityId,
-            stateValue: stateValue
+            stateValue: rawStateValue
         )
         stateValue = stateValue.capitalizedFirst
 
         let attributes = state["attributes"] as? [String: Any]
-        let colorAttributes = parseColorAttributes(from: attributes)
         let unitOfMeasurement = attributes?["unit_of_measurement"] as? String
 
         return buildState(
             entityId: entityId,
+            rawStateValue: rawStateValue.lowercased(),
             stateValue: stateValue,
             attributes: attributes,
-            colorAttributes: colorAttributes,
             unitOfMeasurement: unitOfMeasurement
         )
     }
 
-    private func parseColorAttributes(from attributes: [String: Any]?) -> (
-        colorMode: String?,
-        rgbColor: [Int]?,
-        hsColor: [Double]?
-    ) {
-        EntityColorAttributesParser.parse(from: attributes)
+    /// Sends the `/states/<entity>` request in a way that honors task cancellation.
+    ///
+    /// HAKit drops a cancelled request's completion handler without calling it, and logs-and-discards
+    /// a response whose invocation is no longer active, so a bare `withCheckedContinuation` around
+    /// `send` can be left unresumed forever. Callers that bound how long they are willing to wait —
+    /// the widgets fetch every tile's state against a deadline — would hang on that instead of giving
+    /// up, which is worse than the slow request they were guarding against.
+    private func sendStateRequest(connection: HAConnection, entityId: String) async -> HAData? {
+        let request = PendingStateRequest()
+
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { (continuation: CheckedContinuation<HAData?, Never>) in
+                let token = connection.send(.init(
+                    type: .rest(.get, "states/\(entityId)"),
+                    shouldRetry: true
+                )) { result in
+                    switch result {
+                    case let .success(data):
+                        request.finish(with: data)
+                    case let .failure(error):
+                        Current.Log.error("Failed to get state: \(error)")
+                        request.finish(with: nil)
+                    }
+                }
+
+                request.adopt(continuation: continuation, token: token)
+            }
+        } onCancel: {
+            request.cancel()
+        }
+    }
+
+    /// Shared one-shot ownership of a state request's continuation, so exactly one of HAKit's
+    /// completion handler and the cancellation handler resumes it — whichever gets there first.
+    private final class PendingStateRequest: @unchecked Sendable {
+        private let lock = NSLock()
+        private var continuation: CheckedContinuation<HAData?, Never>?
+        private var token: HACancellable?
+        /// Whether the request has already been settled, by completing or by being cancelled.
+        /// `earlyResult` is only meaningful once this is true, which is what lets it stay a single
+        /// optional: a settled request with no result is a cancelled or failed one.
+        private var isSettled = false
+        /// A result that landed before `adopt` ran, which `send` is free to do by calling back
+        /// synchronously.
+        private var earlyResult: HAData?
+
+        /// Takes ownership of the continuation and the in-flight request, resuming straight away if
+        /// the request already settled while it was being handed over.
+        func adopt(continuation: CheckedContinuation<HAData?, Never>, token: HACancellable) {
+            lock.lock()
+            guard !isSettled else {
+                let result = earlyResult
+                lock.unlock()
+                token.cancel()
+                continuation.resume(returning: result)
+                return
+            }
+            self.continuation = continuation
+            self.token = token
+            lock.unlock()
+        }
+
+        func finish(with data: HAData?) {
+            lock.lock()
+            guard !isSettled else {
+                lock.unlock()
+                return
+            }
+            isSettled = true
+            guard let continuation else {
+                earlyResult = data
+                lock.unlock()
+                return
+            }
+            self.continuation = nil
+            token = nil
+            lock.unlock()
+            continuation.resume(returning: data)
+        }
+
+        func cancel() {
+            lock.lock()
+            guard !isSettled else {
+                lock.unlock()
+                return
+            }
+            isSettled = true
+            let continuation = continuation
+            let token = token
+            self.continuation = nil
+            self.token = nil
+            lock.unlock()
+            token?.cancel()
+            continuation?.resume(returning: nil)
+        }
     }
 
     private func buildState(
         entityId: String,
+        rawStateValue: String,
         stateValue: String,
         attributes: [String: Any]?,
-        colorAttributes: (colorMode: String?, rgbColor: [Int]?, hsColor: [Double]?),
         unitOfMeasurement: String?
     ) -> State {
         let domain = Domain(entityId: entityId)
         let domainState = Domain.State(rawValue: stateValue.lowercased())
+        let rawDomain = entityId.components(separatedBy: ".").first ?? ""
+        let colorAttributes = EntityColorAttributesParser.parse(from: attributes)
 
-        if let deviceClass = extractDeviceClass(from: attributes),
-           let domainState,
-           unitOfMeasurement == nil,
-           let stateForDeviceClass = domain?.stateForDeviceClass(deviceClass, state: domainState) {
-            let computedColor = computeIconColor(
-                entityId: entityId,
-                stateValue: stateValue,
-                colorAttributes: colorAttributes
-            )
-            return .init(
-                value: stateForDeviceClass,
-                unitOfMeasurement: nil,
-                domainState: domainState,
-                color: computedColor
-            )
-        } else {
-            let computedColor = computeIconColor(
-                entityId: entityId,
-                stateValue: stateValue,
-                colorAttributes: colorAttributes
-            )
-            return .init(
-                value: stateValue,
-                unitOfMeasurement: unitOfMeasurement,
-                domainState: domainState,
-                color: computedColor
-            )
-        }
-    }
-
-    private func extractDeviceClass(from attributes: [String: Any]?) -> DeviceClass? {
-        guard let rawDeviceClass = attributes?["device_class"] as? String else {
-            return nil
-        }
-        return DeviceClass(rawValue: rawDeviceClass)
-    }
-
-    private func computeIconColor(
-        entityId: String,
-        stateValue: String,
-        colorAttributes: (colorMode: String?, rgbColor: [Int]?, hsColor: [Double]?)
-    ) -> Color? {
-        EntityIconColorProvider.iconColor(
-            domain: Domain(entityId: entityId) ?? .switch,
-            state: stateValue.lowercased(),
-            colorMode: colorAttributes.colorMode,
+        // The color is left to the view layer to resolve from these ingredients rather than baked
+        // in here: the widgets cache this state, and a resolved color would be flattened to a
+        // single appearance instead of following the current color scheme.
+        let liveColor = EntityIconColorProvider.liveColor(
+            domain: rawDomain,
             rgbColor: colorAttributes.rgbColor,
             hsColor: colorAttributes.hsColor
         )
+        let deviceClass = attributes?["device_class"] as? String
+        let groupMemberDomain = rawDomain == Domain.group.rawValue
+            ? EntityIconColorProvider.groupMemberDomain(attributes: attributes)
+            : nil
+
+        var value = stateValue
+        var unit = unitOfMeasurement
+        if let deviceClass = deviceClass.flatMap(DeviceClass.init(rawValue:)),
+           let domainState,
+           unitOfMeasurement == nil,
+           let stateForDeviceClass = domain?.stateForDeviceClass(deviceClass, state: domainState) {
+            value = stateForDeviceClass
+            unit = nil
+        }
+
+        return .init(
+            value: value,
+            unitOfMeasurement: unit,
+            domainState: domainState,
+            rawState: rawStateValue,
+            deviceClass: deviceClass,
+            liveColor: liveColor,
+            groupMemberDomain: groupMemberDomain
+        )
+    }
+}
+
+public extension ControlEntityProvider {
+    /// The same entities, minus the servers the user has opted out of exposing to Siri.
+    ///
+    /// Siri, Spotlight and the Shortcuts app read through this. Widgets, controls and the reminders
+    /// sync keep using `getEntities`: the setting is about what is offered to Siri, not about
+    /// hiding a server from the rest of the app.
+    func getEntitiesExposedToSiri(matching string: String? = nil) -> [(Server, [HAAppEntity])] {
+        let hidden = SiriServerExposure.hiddenServerIds()
+        guard !hidden.isEmpty else {
+            return getEntities(matching: string)
+        }
+        return getEntities(matching: string).filter { !hidden.contains($0.0.identifier.rawValue) }
     }
 }

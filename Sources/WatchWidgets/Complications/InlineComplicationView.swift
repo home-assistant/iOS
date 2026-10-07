@@ -1,0 +1,47 @@
+import HAWatchComplications
+import SwiftUI
+import WidgetKit
+
+/// Inline complication: a single line of name / value. Inline has no icon or custom colors (watchOS
+/// renders it in the face's tint); the name and value are joined with " - ".
+///
+/// The line is rendered by the shared `InlineComplicationContentView` (in the HAWatchComplications
+/// package) so the in-app editor preview renders from the exact same code.
+@available(watchOS 10.0, *)
+struct InlineComplicationView: View {
+    let complication: WatchWidgetComplicationSnapshot?
+    let family: WidgetFamily
+
+    var body: some View {
+        InlineComplicationContentView(model: InlineComplicationRenderModel(text: resolvedText))
+    }
+
+    private var resolvedText: String {
+        guard let complication else { return WatchWidgetConstants.appName }
+        let text = inlineText(for: complication)
+        return text.isEmpty ? WatchWidgetConstants.appName : text
+    }
+
+    private func inlineText(for complication: WatchWidgetComplicationSnapshot) -> String {
+        guard complication.perFamily != nil else { return complication.inlineText }
+        // Slot payloads resolve the whole line from the title slot's formula ("{name} - {value}" by
+        // default); older modern payloads fall back to the legacy name/value join.
+        if let slotTitle = complication.options(for: family)?.title {
+            return complication.showsName(for: family) ? slotTitle : ""
+        }
+        return [
+            complication.showsName(for: family) ? complication.subtitle : "",
+            complication.showsValue(for: family) ? complication.title : "",
+        ].filter { !$0.isEmpty }.joined(separator: " - ")
+    }
+}
+
+// A widget extension can only host widget previews, so preview through the inline-family widget.
+#if DEBUG
+@available(watchOS 10.0, *)
+#Preview(as: .accessoryInline) {
+    WatchWidgets()
+} timeline: {
+    WatchWidgetEntry(date: .now, family: .accessoryInline, complication: .previewSample())
+}
+#endif

@@ -11,7 +11,7 @@ on:
       - main
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.4.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 80
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
@@ -26,10 +26,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9  # v1.316.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8  # v1.327.0
         with:
-          ruby-version: "3.1"
+          ruby-version: .ruby-version
           bundler-cache: true
       - name: YamlLint
         run: yamllint --strict --format github .
@@ -51,7 +51,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           fetch-depth: 0  # Fetch all history for proper git diff
 
@@ -80,12 +80,12 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           fetch-depth: 0  # Fetch all history for comparison with main branch
 
       - name: Set up Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v5.3.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: '3.x'
 
@@ -146,26 +146,13 @@ jobs:
             ```
 
   test:
-    needs: check-swiftlint-disables
-    runs-on: macos-26
-    timeout-minutes: 45
+    runs-on: xcode-27
+    timeout-minutes: 90
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9  # v1.316.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8  # v1.327.0
         with:
           ruby-version: .ruby-version
-
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        name: "Cache: Pods"
-        id: cache_pods
-        with:
-          path: |
-            Pods
-            Tools/MaterialDesignIcons.ttf
-            Tools/MaterialDesignIcons.json
-          key: >-
-            ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
-            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         name: "Cache: Gems"
@@ -178,6 +165,33 @@ jobs:
             env.ImageVersion,
             env.DEVELOPER_DIR,
             hashFiles('.ruby-version', '**/Gemfile.lock')) }}
+
+      # DerivedData is warmed on `main` (the save step below) and only restored
+      # on PRs, so pinned SPM dependencies are compiled once per Package.resolved
+      # and reused instead of recompiled from scratch on every run.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        id: derived_data
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      # A fallback restore carries precompiled Clang modules for whatever binary dependency
+      # versions `main` had. When a PR moves one of those pins, the freshly checked out
+      # headers are newer than the module built from the old ones and the build fails with
+      # "has been modified since the module file was built" instead of rebuilding it. Drop
+      # the modules so they are rebuilt against the headers actually present.
+      - name: "Drop precompiled modules from a fallback DerivedData restore"
+        if: steps.derived_data.outputs.cache-hit != 'true'
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
 
       - name: Install Brews
         # right now, we don't need anything from brew for tests, so save some time
@@ -188,18 +202,64 @@ jobs:
         if: steps.cache_gems.outputs.cache-hit != 'true'
         run: bundle install --jobs 4 --retry 3
 
-      - name: Install Pods Release
-        if: steps.cache_pods.outputs.cache-hit != 'true'
-        run: bundle exec pod install --repo-update
+      # The test lane runs with package resolution disabled, so the test action does not
+      # re-resolve once per scheme. That relies on the packages already being checked out, which
+      # a cold DerivedData cache is not, so resolve them from the pinned versions up front.
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
 
       - name: Run tests
         run: bundle exec fastlane test
 
-      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0
-        name: "Upload Code Coverage"
+      # Save the warmed DerivedData only from `main`, and only on a fresh key,
+      # so PR runs never evict the shared base cache other PRs restore from.
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Save: DerivedData"
+        if: github.ref == 'refs/heads/main' && steps.derived_data.outputs.cache-hit != 'true'
         with:
-          xcode: true
-          xcode_archive_path: fastlane/test_output/Tests-Unit.xcresult
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+
+      # `xcrun xccov` is the only source of truth for Xcode coverage: the uploader's
+      # own Swift plugin globs DerivedData and pairs profdata with the wrong binaries,
+      # which reported ~0% for the whole project. Convert the result bundle ourselves
+      # and hand Codecov a plain LCOV tracefile instead.
+      #
+      # Both steps below are `continue-on-error`: tests gate merges, coverage reporting
+      # must not. `fail_ci_if_error` covers only the upload result, not the uploader's
+      # own setup steps (dependency checks, CLI download, signature verification), which
+      # exit nonzero on their own, so the action needs the same treatment.
+      - name: Build coverage report
+        continue-on-error: true
+        run: >-
+          python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult
+          --lcov fastlane/test_output/coverage.lcov
+          --summary "$GITHUB_STEP_SUMMARY"
+
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
+        name: "Upload Code Coverage"
+        continue-on-error: true
+        with:
+          files: fastlane/test_output/coverage.lcov
+          disable_search: true
+          plugins: noop
+
+      # Handed to the `patch-coverage` job below, which runs on Linux so the mac
+      # runner is free the moment the tests are done.
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        name: "Upload Code Coverage Tracefile"
+        continue-on-error: true
+        with:
+          name: coverage-lcov
+          path: fastlane/test_output/coverage.lcov
+          if-no-files-found: ignore
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload Test Logs"
@@ -210,6 +270,7 @@ jobs:
             ~/Library/Logs/DiagnosticReports
             ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
             ~/Library/Logs/scan
+            fastlane/test_output/Tests-Unit.xcresult
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         name: "Upload Simulator App"
@@ -217,69 +278,164 @@ jobs:
           name: ios-simulator
           path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
 
-  size:
-    needs: check-swiftlint-disables
-    if: |
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == 'home-assistant/iOS'
-    runs-on: macos-26
-    timeout-minutes: 45
+  # A pull request has to test the code it brings: at least 90% of the lines it adds
+  # or changes, and that the unit tests are able to run at all, must actually be run
+  # by them. Falling short is a changes-requested review rather than only a red check,
+  # so the reason lands where the discussion is. The review is dismissed automatically
+  # as soon as a push clears the bar, and a maintainer can dismiss it to land a change
+  # whose new code genuinely cannot be unit tested.
+  patch-coverage:
+    name: Patch coverage
+    needs: test
+    # Runs even when the tests failed, which leaves no tracefile behind: the job has
+    # nothing to measure then, and its own cleanup below is what keeps a request from
+    # an earlier run from outliving the coverage it was about.
+    if: >-
+      !cancelled() &&
+      github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    env:
+      COVERAGE_THRESHOLD: "90"
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9  # v1.316.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
-          ruby-version: .ruby-version
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v4.6.2
-        name: "Cache: Pods"
-        id: cache_pods
+          fetch-depth: 0  # Fetch all history to diff against the merge base
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        name: "Download Code Coverage Tracefile"
+        id: tracefile
+        continue-on-error: true
         with:
-          path: |
-            Pods
-            Tools/MaterialDesignIcons.ttf
-            Tools/MaterialDesignIcons.json
-          key: >-
-            ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
-            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
+          name: coverage-lcov
+          path: fastlane/test_output
 
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        name: "Cache: Gems"
-        id: cache_gems
-        with:
-          path: vendor/bundle
-          key: >-
-            ${{ format('{0}-gems-{1}-{2}-{3}',
-            runner.os,
-            env.ImageVersion,
-            env.DEVELOPER_DIR,
-            hashFiles('.ruby-version', '**/Gemfile.lock')) }}
-
-      - name: Install Brews
-        # right now, we don't need anything from brew for sizing, so save some time
-        if: ${{ false }}
-        run: brew bundle
-
-      - name: Install Gems
-        if: steps.cache_gems.outputs.cache-hit != 'true'
-        run: bundle install --jobs 4 --retry 3
-
-      - name: Install Pods Release
-        if: steps.cache_pods.outputs.cache-hit != 'true'
-        run: bundle exec pod install --repo-update
-
-      - name: Build app
-        run: bundle exec fastlane ios size
+      # Coverage that could not be measured must not block: when the conversion or the
+      # artifact is missing, this step is skipped and sets no output, which leaves the
+      # gate reporting nothing and dismisses any request an earlier run left behind,
+      # rather than blocking on a number nobody can act on. The step itself is
+      # `continue-on-error` because the script exits nonzero to report the shortfall.
+      - name: Measure patch coverage
+        id: coverage
+        if: steps.tracefile.outcome == 'success'
+        continue-on-error: true
         env:
-          P12_KEY_DISTRIBUTION: ${{ secrets.P12_KEY_DISTRIBUTION }}
-          P12_VALUE_DISTRIBUTION: ${{ secrets.P12_VALUE_DISTRIBUTION }}
-          P12_KEY_MAC_DEVELOPER_ID: ${{ secrets.P12_KEY_MAC_DEVELOPER_ID }}
-          P12_KEY_MAC_DEVELOPER_INSTALLER: ${{ secrets.P12_KEY_MAC_DEVELOPER_INSTALLER }}
-          P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
-          P12_VALUE_MAC_DEVELOPER_INSTALLER: ${{ secrets.P12_VALUE_MAC_DEVELOPER_INSTALLER }}
-          EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
-          EMERGE_REPO_NAME: ${{ github.repository }}
-          EMERGE_PR_NUMBER: ${{ github.event.number }}
-          EMERGE_SHA: ${{ github.event.pull_request.head.sha }}
-          EMERGE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
-          HOMEASSISTANT_APPLE_ID: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
-          HOMEASSISTANT_FASTLANE_SESSION: ${{ secrets.HOMEASSISTANT_FASTLANE_SESSION }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch origin "+$BASE_REF:refs/remotes/origin/$BASE_REF"
+          python3 Tools/diff_coverage.py fastlane/test_output/coverage.lcov \
+            --base "origin/$BASE_REF" \
+            --threshold "$COVERAGE_THRESHOLD" \
+            --summary "$GITHUB_STEP_SUMMARY" \
+            --github-output "$GITHUB_OUTPUT"
+
+      # Only same-repository pull requests: a fork's token cannot review, and the run
+      # would fail on the API call instead of on the coverage it is reporting.
+      - name: Request changes below the threshold
+        if: >-
+          steps.coverage.outputs.passed == 'false' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          COVERAGE: ${{ steps.coverage.outputs.coverage }}
+          COVERED: ${{ steps.coverage.outputs.covered }}
+          CHANGED: ${{ steps.coverage.outputs.changed }}
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const pull_number = context.payload.pull_request.number
+            const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`
+            const threshold = process.env.COVERAGE_THRESHOLD
+
+            // Marks the review as this job's, so the dismissal below leaves other bots alone.
+            const marker = '<!-- patch-coverage -->'
+
+            const body = [
+              marker,
+              `### Test coverage of this pull request is below ${threshold}%`,
+              '',
+              `The unit tests run **${process.env.COVERAGE}%** of the lines this pull request`,
+              `adds or changes (${process.env.COVERED} of ${process.env.CHANGED} coverable lines).`,
+              '',
+              'The per-file breakdown, and the changed lines no test runs, are in the',
+              `[job summary](${run}). Adding tests for those lines and pushing dismisses this`,
+              'review automatically.',
+              '',
+              'Lines that carry no executable code, and files the unit test targets do not',
+              'build, are not counted. If the new code genuinely cannot be unit tested, a',
+              'maintainer can dismiss this review.',
+            ].join('\n')
+
+            // A push that leaves coverage exactly where it was would otherwise stack an
+            // identical review on every run, so repeat the request only when it changed.
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner,
+              repo,
+              pull_number,
+              per_page: 100,
+            })
+            const outstanding = reviews.findLast(
+              (review) => review.state === 'CHANGES_REQUESTED' && (review.body || '').includes(marker),
+            )
+
+            if (outstanding && outstanding.body === body) {
+              core.info('The outstanding coverage review already says this, leaving it alone')
+              return
+            }
+
+            await github.rest.pulls.createReview({ owner, repo, pull_number, event: 'REQUEST_CHANGES', body })
+            core.info(`Requested changes: patch coverage ${process.env.COVERAGE}% is below ${threshold}%`)
+
+      # Runs whether coverage met the bar or could not be measured at all, so a
+      # request from an earlier run is never left blocking a pull request whose
+      # coverage this run has no number for.
+      - name: Dismiss an outstanding coverage review
+        if: >-
+          steps.coverage.outputs.passed != 'false' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          COVERAGE: ${{ steps.coverage.outputs.coverage }}
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const pull_number = context.payload.pull_request.number
+
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner,
+              repo,
+              pull_number,
+              per_page: 100,
+            })
+            const marker = '<!-- patch-coverage -->'
+            const outstanding = reviews.filter(
+              (review) => review.state === 'CHANGES_REQUESTED' && (review.body || '').includes(marker),
+            )
+
+            const coverage = process.env.COVERAGE
+            const message = coverage
+              ? `Patch coverage is now ${coverage}%, at or above the ` +
+                `${process.env.COVERAGE_THRESHOLD}% threshold.`
+              : 'Patch coverage could not be measured on this run, so the gate no longer applies.'
+
+            for (const review of outstanding) {
+              try {
+                await github.rest.pulls.dismissReview({ owner, repo, pull_number, review_id: review.id, message })
+                core.info(`Dismissed review ${review.id}`)
+              } catch (error) {
+                // A request nobody can dismiss blocks the pull request for good, so say
+                // so loudly enough that a maintainer can dismiss it by hand.
+                core.warning(`Could not dismiss review ${review.id}, dismiss it by hand: ${error.message}`)
+              }
+            }
+
+      - name: Fail below the threshold
+        if: steps.coverage.outputs.passed == 'false'
+        env:
+          COVERAGE: ${{ steps.coverage.outputs.coverage }}
+        run: |
+          echo "::error::Patch coverage $COVERAGE% is below the required $COVERAGE_THRESHOLD%"
+          exit 1

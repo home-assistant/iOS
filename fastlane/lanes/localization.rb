@@ -373,16 +373,9 @@ lane :update_strings do
 
   resources_dir_full = File.expand_path('../Sources/App/Resources')
 
-  # Intents.strings holds the deprecated SiriKit intent definitions that were
-  # migrated to App Intents and removed from the Lokalise upload (see push_strings).
-  # The keys still live on Lokalise, so snapshot the existing files and restore them
-  # after the download to keep the deprecated strings frozen exactly as committed.
-  deprecated_intents_files = Dir.glob("#{resources_dir_full}/*.lproj/Intents.strings").to_h do |path|
-    [path, File.binread(path)]
-  end
-
-  # The iOS app export is the only download that can regenerate Intents.strings, so
-  # wrap it in begin/ensure and restore the snapshot even if the export fails midway.
+  # The deprecated SiriKit intents were removed from the app entirely, but their keys
+  # still live on Lokalise, so the iOS app export can regenerate Intents.strings.
+  # Delete any that the download writes back.
   begin
     lokalise_download_files_async!(
       token: token,
@@ -399,8 +392,15 @@ lane :update_strings do
       }
     )
   ensure
-    deprecated_intents_files.each do |path, contents|
-      File.binwrite(path, contents)
+    Dir.glob("#{resources_dir_full}/*.lproj/Intents.strings").each do |path|
+      File.delete(path)
+    end
+
+    # The phrases were uploaded once before they became hand-maintained, so the export can still
+    # write them back. Restore the committed files rather than delete them: unlike Intents.strings
+    # these are live, and Lokalise's copy is the stale one.
+    sh("cd .. && git checkout -- 'Sources/App/Resources/*.lproj/AppShortcuts.strings'", log: false) do |status|
+      UI.important('Could not restore AppShortcuts.strings; check it before committing.') unless status.success?
     end
   end
 
@@ -516,7 +516,7 @@ lane :update_strings do
     )
   end
 
-  sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
+  sh('cd ../ && ./Tools/build_tool swiftgen')
 end
 
 desc 'Upload localized strings to Lokalise'
@@ -542,7 +542,9 @@ lane :push_strings do
   source_directories.each do |directory|
     puts "Enumerating #{directory}..."
     Dir.each_child(directory) do |file|
-      next if ['Frontend.strings', 'Core.strings', 'Intents.strings'].include?(file)
+      # AppShortcuts.strings is kept by hand: Siri phrases have to stay natural commands in each
+      # language rather than literal translations, and the token names must survive untouched.
+      next if ['Frontend.strings', 'Core.strings', 'Intents.strings', 'AppShortcuts.strings'].include?(file)
 
       lokalise_upload_file!(
         token: token,
@@ -669,7 +671,7 @@ lane :delete_local_strings do
   missing = key_names - removed
   UI.important("Not found in any Localizable.strings: #{missing.join(', ')}") unless missing.empty?
 
-  sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
+  sh('cd ../ && ./Tools/build_tool swiftgen')
 end
 
 desc 'Find unused localized strings'

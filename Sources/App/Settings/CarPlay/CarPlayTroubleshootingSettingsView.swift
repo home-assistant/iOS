@@ -39,13 +39,7 @@ struct CarPlayTroubleshootingSettingsView: View {
 }
 
 #Preview {
-    if #available(iOS 16.0, *) {
-        NavigationStack {
-            CarPlayTroubleshootingSettingsView()
-        }
-    } else {
-        NavigationView {
-            CarPlayTroubleshootingSettingsView()
-        }
+    NavigationStack {
+        CarPlayTroubleshootingSettingsView()
     }
 }

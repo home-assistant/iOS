@@ -11,6 +11,8 @@ class BarometerSensorTests: XCTestCase {
 
     private var request: SensorProviderRequest!
     private var originalSensors: SensorContainer!
+    private var originalBarometer: AppEnvironment.Barometer!
+    private var originalObserver: BarometerObserver!
 
     override func setUp() {
         super.setUp()
@@ -29,24 +31,41 @@ class BarometerSensorTests: XCTestCase {
             serverVersion: Version()
         )
 
+        // `Current` is global, so the stubs below have to be undone in tearDown or they leak into
+        // every test that runs after this class and make failures depend on ordering.
+        originalBarometer = Current.barometer
+        originalObserver = Current.barometerObserver
+
         // start by assuming nothing is enabled/available
         Current.barometer.isAuthorized = { false }
         Current.barometer.isAvailable = { false }
         Current.barometer.startUpdatesOnQueueHandler = { _, handler in handler(nil, nil) }
         Current.barometer.stopUpdates = {}
+
+        // The observer owns the one altimeter session process-wide, so a fresh one per test keeps
+        // subscribers (and therefore the started/stopped state) from leaking between them.
+        Current.barometerObserver = BarometerObserver()
     }
 
     override func tearDown() {
         Current.sensors = originalSensors
+        Current.barometer = originalBarometer
+        Current.barometerObserver = originalObserver
         originalSensors = nil
+        originalBarometer = nil
+        originalObserver = nil
         super.tearDown()
     }
 
-    func testUnauthorizedReturnsError() {
-        let promise = BarometerSensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? BarometerSensor.BarometerError, .unauthorized)
-        }
+    /// Listed rather than dropped: switching it on is what asks for motion access, so a sensor
+    /// that vanished until it was granted would have no row left to switch on.
+    func testUnauthorizedReportsUnavailable() throws {
+        Current.barometer.isAvailable = { true }
+
+        let sensors = try hang(BarometerSensor(request: request).sensors())
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].UniqueID, WebhookSensorId.pressure.rawValue)
+        XCTAssertEqual(sensors[0].State as? String, "unavailable")
     }
 
     func testUnavailableReturnsError() {
@@ -158,6 +177,34 @@ class BarometerSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].State as? Double, 1010.0) // 101.0 kPa * 10
         // Should NOT have started another altimeter session
         XCTAssertEqual(handlers.count, startCountAfterSetup)
+    }
+
+    func testConcurrentSensorsShareASingleAltimeterRead() throws {
+        // Two servers' sensor sweeps run concurrently; each instantiates a BarometerSensor that
+        // shares one signaler (via the same dependencies). Without coalescing, the second sweep's
+        // startRelativeAltitudeUpdates orphaned the first sweep's handler, so the first sweep's
+        // promise never resolved and that server never got an update_sensor_states webhook — the
+        // multi-server "only the last server updates" bug (issue #5100).
+        Current.barometer.isAuthorized = { true }
+        Current.barometer.isAvailable = { true }
+
+        var handlers = [CMAltitudeHandler]()
+        Current.barometer.startUpdatesOnQueueHandler = { _, handler in handlers.append(handler) }
+        Current.barometer.stopUpdates = {}
+
+        let promiseA = BarometerSensor(request: request).sensors()
+        let promiseB = BarometerSensor(request: request).sensors()
+
+        // Only one altimeter session is started; the second sweep reuses the first's in-flight read.
+        XCTAssertEqual(handlers.count, 1)
+
+        // Delivering data to the single handler resolves both sweeps with the same reading.
+        handlers.first?(FakeAltitudeData(pressureValue: 101.0), nil)
+
+        let sensorsA = try hang(promiseA)
+        let sensorsB = try hang(promiseB)
+        XCTAssertEqual(sensorsA[0].State as? Double, 1010.0) // 101.0 kPa * 10
+        XCTAssertEqual(sensorsB[0].State as? Double, 1010.0)
     }
 
     func testSignalerStartsAndStopsUpdates() {

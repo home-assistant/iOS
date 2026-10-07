@@ -2,10 +2,8 @@ import CarPlay
 import Foundation
 import HAKit
 import PromiseKit
-import RealmSwift
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private static let minimumExecutingDuration: TimeInterval = 1.5
 
@@ -24,77 +22,139 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let iconColor: UIColor?
         let title: String
         let subtitle: String?
+        /// SF Symbol shown as trailing accessory; folders use a chevron to signal navigation.
+        let accessorySymbolName: String?
         let handler: (@escaping () -> Void) -> Void
     }
 
     private let viewModel: CarPlayQuickAccessViewModel
 
-    private let paginatedList = CarPlayPaginatedListTemplate(
-        title: L10n.CarPlay.Navigation.Tab.quickAccess,
-        items: [],
-        paginationStyle: .inline
-    )
+    private let paginatedList: CarPlayPaginatedListTemplate
     var template: CPListTemplate
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
-    private var entityProviders: [CarPlayEntityListItem] = []
+    /// Set only by tests, which cannot construct a `CPInterfaceController`.
+    var alertPresenterOverride: CarPlayAlertPresenting?
+    var alertPresenter: CarPlayAlertPresenting? { alertPresenterOverride ?? interfaceController }
+    private var listItemsByKey: [String: CPListItem] = [:]
+    /// Row caches for folder content lists pushed from the Quick Access list, keyed by folder id.
+    /// Rows are reused in place — same reasoning as `listItemsByKey`.
+    private var folderListItemsByKey: [String: [String: CPListItem]] = [:]
+    /// Add/Edit footer rows of pushed folder lists, keyed by folder id. Cached so refreshes keep
+    /// the same row instances and skip `updateSections` (which resets rotary focus).
+    private var folderFooterRows: [String: [CPListItem]] = [:]
+    /// Folder content lists currently pushed from the Quick Access list, refreshed on state changes.
+    private var openFolderTemplates: [(folderId: String, template: CPListTemplate)] = []
     private var currentItems: [MagicItem] = []
     private var currentLayout: CarPlayQuickAccessLayout = .grid
+    private var currentShowAddEditButtons = true
     private var entitiesPerServer: [String: HACachedStates] = [:]
     private var lastKnownEntities: [String: HAEntity] = [:]
     private var executingItemIds: Set<String> = []
+    /// Items whose action hasn't reported back yet. Deliberately not `executingItemIds`, which
+    /// lingers a moment past the call so the "Executing…" subtitle doesn't flash by — a tap in that
+    /// window is a legitimate second action.
+    private var inFlightItemIds: Set<String> = []
     private var executingStartedAt: [String: Date] = [:]
     private var pendingExecutingClearWorkItems: [String: DispatchWorkItem] = [:]
     private var activeAssistSession: AnyObject?
     private var addItemFlow: CarPlayAddItemFlow?
     private var editItemFlow: CarPlayEditItemFlow?
+    /// Control screen pushed for domains that have one (climate, vacuum); fed with the per-server
+    /// state events this template receives and cleared when the list reappears (i.e. it was popped).
+    private var controlScreenTemplate: (any CarPlayTemplateProvider)?
 
-    init(viewModel: CarPlayQuickAccessViewModel) {
+    /// `folder` is provided when this template renders a folder promoted to its own tab
+    /// (`CarPlayQuickAccessViewModel.Source.folder`); it supplies the tab's title and icon.
+    init(viewModel: CarPlayQuickAccessViewModel, folder: MagicItem? = nil) {
         self.viewModel = viewModel
+
+        let title: String
+        let tabImage: UIImage
+        if let folder {
+            title = folder.displayText ?? L10n.Watch.Configuration.Folder.defaultName
+            tabImage = MaterialDesignIcons(
+                named: folder.customization?.icon ?? MaterialDesignIcons.folderIcon.name,
+                fallback: .folderIcon
+            ).carPlayIcon()
+        } else {
+            title = L10n.CarPlay.Navigation.Tab.quickAccess
+            tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
+        }
+
+        self.paginatedList = CarPlayPaginatedListTemplate(
+            title: title,
+            items: [],
+            paginationStyle: .inline
+        )
 
         guard let template = paginatedList.listTemplate else {
             fatalError("Expected CarPlayPaginatedListTemplate to create a CPListTemplate")
         }
         self.template = template
-        template.tabTitle = L10n.CarPlay.Navigation.Tab.quickAccess
-        template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
+        template.tabTitle = title
+        template.tabImage = tabImage
         template.tabSystemItem = .more
 
         self.viewModel.templateProvider = self
         presentEmptyState()
     }
 
+    private var isFolderSource: Bool {
+        if case .folder = viewModel.source {
+            return true
+        }
+        return false
+    }
+
+    private lazy var addItemFooterRow: CPListItem = makeAddItemRow(destination: mainDestination)
+    private lazy var editItemFooterRow: CPListItem = makeEditItemRow(destination: mainDestination)
+
     // A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
     // is a list row appended to the end of the Quick Access list instead.
-    private func makeAddItemRow() -> CPListItem {
+    private func makeAddItemRow(destination: CarPlayAddItemViewModel.Destination) -> CPListItem {
         let item = CPListItem(
             text: L10n.CarPlay.QuickAccess.AddItem.button,
             detailText: nil,
             image: MaterialDesignIcons.plusCircleOutlineIcon.carPlayIcon()
         )
         item.handler = { [weak self] _, completion in
-            self?.presentAddItemFlow()
+            self?.presentAddItemFlow(destination: destination)
             completion()
         }
         return item
     }
 
-    private func makeEditItemRow() -> CPListItem {
+    private func makeEditItemRow(destination: CarPlayAddItemViewModel.Destination) -> CPListItem {
         let item = CPListItem(
             text: L10n.CarPlay.QuickAccess.EditItem.button,
             detailText: L10n.CarPlay.QuickAccess.EditItem.subtitle,
             image: MaterialDesignIcons.pencilCircleOutlineIcon.carPlayIcon()
         )
         item.handler = { [weak self] _, completion in
-            self?.presentEditItemFlow()
+            self?.presentEditItemFlow(destination: destination)
             completion()
         }
         return item
     }
 
-    private func presentAddItemFlow() {
-        let flow = CarPlayAddItemFlow(interfaceController: interfaceController) { [weak self] in
+    /// Where this template's own add/edit affordances write: the Quick Access list, or — when the
+    /// template renders a folder tab — that folder.
+    private var mainDestination: CarPlayAddItemViewModel.Destination {
+        switch viewModel.source {
+        case .quickAccess:
+            return .quickAccess
+        case let .folder(folderId):
+            return .folder(folderId: folderId)
+        }
+    }
+
+    private func presentAddItemFlow(destination: CarPlayAddItemViewModel.Destination) {
+        let flow = CarPlayAddItemFlow(
+            interfaceController: interfaceController,
+            viewModel: CarPlayAddItemViewModel(destination: destination)
+        ) { [weak self] in
             // Defer release so the flow isn't deallocated mid-callback.
             DispatchQueue.main.async { self?.addItemFlow = nil }
         }
@@ -102,10 +162,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         flow.start()
     }
 
-    private func presentEditItemFlow() {
+    private func presentEditItemFlow(destination: CarPlayAddItemViewModel.Destination) {
         let entityToAreaMap = entityToAreaMap()
         let flow = CarPlayEditItemFlow(
             interfaceController: interfaceController,
+            viewModel: CarPlayAddItemViewModel(destination: destination),
             itemDisplay: { [weak self] item in
                 guard let self,
                       let displayItem = rowDisplayItem(for: item, entityToAreaMap: entityToAreaMap) else {
@@ -145,22 +206,63 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         if template == self.template {
             /* no-op */
         }
+        controlScreenTemplate?.templateWillDisappear(template: template)
     }
 
     func templateWillAppear(template: CPTemplate) {
         if template == self.template {
+            // Returning to this template means any folder list or control screen pushed from it
+            // has been popped.
+            openFolderTemplates.removeAll()
+            folderListItemsByKey.removeAll()
+            folderFooterRows.removeAll()
+            controlScreenTemplate = nil
             update()
         }
+        controlScreenTemplate?.templateWillAppear(template: template)
     }
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
+        let previousEntities = entitiesPerServer[serverId]
         entitiesPerServer[serverId] = entities
+        controlScreenTemplate?.entitiesStateChange(serverId: serverId, entities: entities)
         guard !currentItems.isEmpty else { return }
+        guard hasRelevantEntityChange(serverId: serverId, previous: previousEntities, current: entities) else {
+            return
+        }
         refreshCurrentPresentation()
+    }
+
+    private func hasRelevantEntityChange(
+        serverId: String,
+        previous: HACachedStates?,
+        current: HACachedStates
+    ) -> Bool {
+        guard let previous else { return true }
+        // Folder children live one level deep and render in pushed folder lists.
+        var entityItems: [MagicItem] = []
+        for item in currentItems {
+            if item.type == .entity, item.serverId == serverId {
+                entityItems.append(item)
+            }
+            for child in item.items ?? [] where child.type == .entity && child.serverId == serverId {
+                entityItems.append(child)
+            }
+        }
+        guard !entityItems.isEmpty else { return false }
+        return entityItems.contains { magicItem in
+            let old = previous[magicItem.id]
+            let new = current[magicItem.id]
+            return old?.state != new?.state || old?.lastUpdated != new?.lastUpdated
+        }
     }
 
     private func executionKey(for magicItem: MagicItem) -> String {
         magicItem.serverUniqueId
+    }
+
+    private func rowCacheKey(for magicItem: MagicItem) -> String {
+        "\(magicItem.serverUniqueId)-\(magicItem.type.rawValue)"
     }
 
     private func isExecuting(_ magicItem: MagicItem) -> Bool {
@@ -169,6 +271,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func beginExecuting(_ magicItem: MagicItem) {
         let key = executionKey(for: magicItem)
+        inFlightItemIds.insert(key)
         pendingExecutingClearWorkItems[key]?.cancel()
         pendingExecutingClearWorkItems[key] = nil
         executingItemIds.insert(key)
@@ -178,6 +281,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func endExecuting(_ magicItem: MagicItem) {
         let key = executionKey(for: magicItem)
+        inFlightItemIds.remove(key)
         guard executingItemIds.contains(key) else { return }
 
         pendingExecutingClearWorkItems[key]?.cancel()
@@ -207,9 +311,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
     }
 
-    func updateList(for items: [MagicItem], layout: CarPlayQuickAccessLayout) {
+    func updateList(for items: [MagicItem], layout: CarPlayQuickAccessLayout, showAddEditButtons: Bool) {
         currentItems = items
         currentLayout = layout
+        currentShowAddEditButtons = showAddEditButtons
         pruneLastKnownEntities(for: items)
         guard !items.isEmpty else {
             presentEmptyState()
@@ -219,95 +324,286 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func presentEmptyState() {
+        guard !isFolderSource else {
+            presentEmptyFolderState()
+            return
+        }
+
+        guard currentShowAddEditButtons else {
+            presentAddEditHiddenEmptyState()
+            return
+        }
+
         if #available(iOS 26.0, *), currentLayout == .grid {
             paginatedList.updateItems(items: rowItems(displayItems: actionDisplayItems(includeEdit: false)))
         } else {
             template.trailingNavigationBarButtons = []
-            template.updateSections([.init(items: [makeAddItemRow()])])
+            template.updateSections([.init(items: [makeAddItemRow(destination: mainDestination)])])
+        }
+    }
+
+    private func presentAddEditHiddenEmptyState() {
+        let item = CPListItem(
+            text: L10n.CarPlay.QuickAccess.Empty.title,
+            detailText: L10n.CarPlay.QuickAccess.Empty.body
+        )
+        template.trailingNavigationBarButtons = []
+        template.updateSections([.init(items: [item])])
+    }
+
+    /// Empty state of a folder tab: offer to add items into the folder from the car, matching the
+    /// Quick Access tab's empty state; an info row when the add/edit affordances are hidden.
+    private func presentEmptyFolderState() {
+        template.trailingNavigationBarButtons = []
+        if currentShowAddEditButtons {
+            template.updateSections([.init(items: [makeAddItemRow(destination: mainDestination)])])
+        } else {
+            let item = CPListItem(
+                text: L10n.CarPlay.Folder.Empty.title,
+                detailText: L10n.CarPlay.QuickAccess.Empty.body
+            )
+            template.updateSections([.init(items: [item])])
         }
     }
 
     private func refreshCurrentPresentation() {
+        defer { refreshOpenFolderTemplates() }
+
         guard !currentItems.isEmpty else {
             presentEmptyState()
             return
         }
 
         if #available(iOS 26.0, *), currentLayout == .grid {
-            let displayItems = gridItems(items: currentItems) + actionDisplayItems(includeEdit: true)
-            paginatedList.updateItems(items: rowItems(displayItems: displayItems))
+            paginatedList.updateItems(
+                items: rowItems(displayItems: gridItems(items: currentItems)),
+                footerItems: gridActionFooterItems()
+            )
         } else {
-            paginatedList.updateItems(items: listItems(items: currentItems) + [makeAddItemRow(), makeEditItemRow()])
+            paginatedList.updateItems(
+                items: listItems(items: currentItems),
+                footerItems: currentShowAddEditButtons ? [addItemFooterRow, editItemFooterRow] : []
+            )
         }
     }
 
-    private func listItems(items: [MagicItem]) -> [CPListItem] {
-        entityProviders = []
-        let entityToAreaMap = entityToAreaMap()
+    @available(iOS 26.0, *)
+    private func gridActionFooterItems() -> [any CPListTemplateItem] {
+        guard currentShowAddEditButtons else { return [] }
+        return rowItems(displayItems: actionDisplayItems(includeEdit: true))
+    }
 
-        let items: [CPListItem?] = items.compactMap { magicItem in
-            let info = info(for: magicItem)
+    private func listItems(items: [MagicItem]) -> [CPListItem] {
+        var cache = listItemsByKey
+        let rows = buildRows(items: items, cache: &cache)
+        listItemsByKey = cache
+        return rows
+    }
+
+    /// Builds list rows for the given items, reusing rows from `cache` and updating them in place —
+    /// recreating rows resets the focused row on rotary-controlled (non-touch) displays. The cache
+    /// is replaced with the rows that are still in use.
+    private func buildRows(items: [MagicItem], cache: inout [String: CPListItem]) -> [CPListItem] {
+        let entityToAreaMap = entityToAreaMap()
+        var updatedItemsByKey: [String: CPListItem] = [:]
+        var rows: [CPListItem] = []
+        rows.reserveCapacity(items.count)
+
+        for magicItem in items {
+            let key = rowCacheKey(for: magicItem)
+            let item = cache[key] ?? CPListItem(text: nil, detailText: nil)
+
             switch magicItem.type {
             case .entity:
-                guard let entity = resolvedEntity(for: magicItem),
-                      let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) else {
-                    return .init(text: "", detailText: "")
-                }
-                let entityProvider = CarPlayEntityListItem(
-                    serverId: magicItem.serverId,
-                    entity: entity,
-                    magicItem: magicItem,
-                    magicItemInfo: info,
-                    area: area(for: magicItem, entityToAreaMap: entityToAreaMap)
-                )
-                let listItem = entityProvider.template
-                if isExecuting(magicItem) {
-                    listItem.setDetailText(CarPlayEntityListItem.executingSubtitle)
-                } else {
-                    listItem.setDetailText(rowDisplayItem.subtitle)
-                }
-                listItem.handler = { [weak self] _, _ in
-                    self?.itemTap(
-                        magicItem: magicItem,
-                        info: info,
-                        currentItemState: rowDisplayItem.currentState,
-                        executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
-                        executionFinished: { [weak self] in self?.endExecuting(magicItem) }
-                    )
-                }
-                entityProviders.append(entityProvider)
-                return listItem
+                configureEntityRow(item, for: magicItem, entityToAreaMap: entityToAreaMap)
+            case .folder:
+                configureFolderRow(item, for: magicItem)
             case .assistPipeline, .assistPrompt:
-                let item = CPListItem(
-                    text: assistTitle(for: magicItem, info: info),
-                    detailText: assistSubtitle(for: magicItem, info: info),
-                    image: magicItem.icon(info: info)
-                        .carPlayIcon(color: iconColor(for: info))
-                )
-                item.handler = { [weak self] _, completion in
-                    self?.presentAssistSession(magicItem: magicItem, info: info)
-                    completion()
-                }
-                return item
+                configureAssistRow(item, for: magicItem)
             default:
-                let item = CPListItem(
-                    text: magicItem.name(info: info),
-                    detailText: renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)),
-                    image: magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
-                )
-                item.handler = { [weak self] _, _ in
-                    self?.itemTap(
-                        magicItem: magicItem,
-                        info: info,
-                        executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
-                        executionFinished: { [weak self] in self?.endExecuting(magicItem) }
-                    )
-                }
-                return item
+                configureDefaultRow(item, for: magicItem)
             }
+
+            updatedItemsByKey[key] = item
+            rows.append(item)
         }
 
-        return items.compactMap({ $0 })
+        cache = updatedItemsByKey
+        return rows
+    }
+
+    private func configureEntityRow(_ item: CPListItem, for magicItem: MagicItem, entityToAreaMap: [String: String]) {
+        let info = info(for: magicItem)
+        // Control-screen domains (climate) navigate to another screen when tapped — signal it with
+        // a chevron, like folders do.
+        item.accessoryType = hasControlScreen(magicItem) ? .disclosureIndicator : .none
+        if let rowDisplayItem = rowDisplayItem(for: magicItem, entityToAreaMap: entityToAreaMap) {
+            item.setText(rowDisplayItem.title)
+            item.setImage(rowDisplayItem.image)
+            if isExecuting(magicItem) {
+                item.setDetailText(CarPlayEntityListItem.executingSubtitle)
+            } else {
+                item.setDetailText(rowDisplayItem.subtitle)
+            }
+        } else {
+            item.setText("")
+            item.setDetailText("")
+            item.setImage(nil)
+        }
+        item.handler = { [weak self] _, completion in
+            guard let self else {
+                completion()
+                return
+            }
+            itemTap(
+                magicItem: magicItem,
+                info: info,
+                currentItemState: resolvedEntity(for: magicItem)?.state ?? "",
+                executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
+                executionFinished: { [weak self] in self?.endExecuting(magicItem) }
+            )
+            // CarPlay keeps the row busy until this runs; the row's own "Executing…" subtitle
+            // carries the action's progress from here.
+            completion()
+        }
+    }
+
+    private func configureFolderRow(_ item: CPListItem, for magicItem: MagicItem) {
+        let info = info(for: magicItem)
+        item.setText(magicItem.name(info: info))
+        item.setDetailText(nil)
+        item.setImage(magicItem.icon(info: info).carPlayIcon(color: UIColor(hex: info.customization?.iconColor)))
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.presentFolderContents(folder: magicItem)
+            completion()
+        }
+    }
+
+    private func configureAssistRow(_ item: CPListItem, for magicItem: MagicItem) {
+        let info = info(for: magicItem)
+        item.setText(assistTitle(for: magicItem, info: info))
+        item.setDetailText(assistSubtitle(for: magicItem, info: info))
+        item.setImage(magicItem.icon(info: info).carPlayIcon(color: iconColor(for: info)))
+        item.handler = { [weak self] _, completion in
+            guard let self else {
+                completion()
+                return
+            }
+            presentAssistSession(magicItem: magicItem, info: info)
+            completion()
+        }
+    }
+
+    private func configureDefaultRow(_ item: CPListItem, for magicItem: MagicItem) {
+        let info = info(for: magicItem)
+        item.setText(magicItem.name(info: info))
+        item.setDetailText(renderedSubtitle(for: magicItem, defaultSubtitle: subtitle(for: magicItem)))
+        item.setImage(magicItem.icon(info: info).carPlayIcon(color: iconColor(for: info)))
+        item.handler = { [weak self] _, completion in
+            guard let self else {
+                completion()
+                return
+            }
+            itemTap(
+                magicItem: magicItem,
+                info: info,
+                executionStarted: { [weak self] in self?.beginExecuting(magicItem) },
+                executionFinished: { [weak self] in self?.endExecuting(magicItem) }
+            )
+            // CarPlay keeps the row busy until this runs; the row's own "Executing…" subtitle
+            // carries the action's progress from here.
+            completion()
+        }
+    }
+
+    private func presentFolderContents(folder: MagicItem) {
+        let folderInfo = info(for: folder)
+        let listTemplate = CPListTemplate(title: folder.name(info: folderInfo), sections: [])
+        openFolderTemplates.append((folderId: folder.id, template: listTemplate))
+        updateFolderContents(folder: folder, in: listTemplate)
+        interfaceController?.pushTemplate(listTemplate, animated: true, completion: nil)
+    }
+
+    private func updateFolderContents(folder: MagicItem, in template: CPListTemplate) {
+        let footerRows = folderFooterRows(for: folder)
+
+        // Folders can't nest in CarPlay; drop any stray nested folders defensively.
+        let items = (folder.items ?? []).filter { $0.type != .folder }
+        guard !items.isEmpty else {
+            folderListItemsByKey[folder.id] = nil
+            if let addRow = footerRows.first {
+                applyFolderSections(rows: [addRow], to: template)
+            } else {
+                template.updateSections([.init(items: [CPListItem(
+                    text: L10n.CarPlay.Folder.Empty.title,
+                    detailText: L10n.CarPlay.QuickAccess.Empty.body
+                )])])
+            }
+            return
+        }
+
+        var cache = folderListItemsByKey[folder.id] ?? [:]
+        let rows = buildRows(items: items, cache: &cache)
+        folderListItemsByKey[folder.id] = cache
+
+        let maxItems = max(1, Int(CPListTemplate.maximumItemCount) - footerRows.count)
+        if rows.count > maxItems {
+            Current.Log.error("CarPlay folder list of \(rows.count) exceeds \(maxItems); truncating")
+        }
+        applyFolderSections(rows: Array(rows.prefix(maxItems)) + footerRows, to: template)
+    }
+
+    /// Add/Edit rows targeting the given folder, cached per folder so refreshed lists keep the
+    /// same row instances. Empty when the add/edit affordances are hidden.
+    private func folderFooterRows(for folder: MagicItem) -> [CPListItem] {
+        guard currentShowAddEditButtons else {
+            folderFooterRows[folder.id] = nil
+            return []
+        }
+        if let rows = folderFooterRows[folder.id] {
+            return rows
+        }
+        let destination = CarPlayAddItemViewModel.Destination.folder(folderId: folder.id)
+        let rows = [makeAddItemRow(destination: destination), makeEditItemRow(destination: destination)]
+        folderFooterRows[folder.id] = rows
+        return rows
+    }
+
+    /// Skips `updateSections` when the rows are the same instances — reloading resets the focused
+    /// row on rotary-controlled (non-touch) displays.
+    private func applyFolderSections(rows: [CPListItem], to template: CPListTemplate) {
+        let existingItems = template.sections.flatMap(\.items)
+        let isIdentical = existingItems.count == rows.count && zip(existingItems, rows)
+            .allSatisfy { ($0.0 as AnyObject) === ($0.1 as AnyObject) }
+        if isIdentical {
+            return
+        }
+        template.updateSections([CPListSection(items: rows)])
+    }
+
+    /// Whether tapping this item opens another screen rather than executing (control-screen
+    /// domains, e.g. climate).
+    private func hasControlScreen(_ magicItem: MagicItem) -> Bool {
+        magicItem.type == .entity && Domain(entityId: magicItem.id)?.hasControlScreen == true
+    }
+
+    /// Trailing accessory: folders and control-screen entities navigate to another screen, so they
+    /// carry a chevron.
+    private func accessorySymbol(for magicItem: MagicItem) -> String? {
+        if magicItem.type == .folder || hasControlScreen(magicItem) {
+            return "chevron.forward"
+        }
+        return nil
+    }
+
+    private func refreshOpenFolderTemplates() {
+        for entry in openFolderTemplates {
+            guard let folder = currentItems.first(where: { $0.type == .folder && $0.id == entry.folderId }) else {
+                continue
+            }
+            updateFolderContents(folder: folder, in: entry.template)
+        }
     }
 
     @available(iOS 26.0, *)
@@ -323,13 +619,16 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 iconColor: displayItem.iconColor,
                 title: displayItem.title,
                 subtitle: displayItem.subtitle,
+                accessorySymbolName: accessorySymbol(for: magicItem),
                 handler: { [weak self] completion in
                     guard let self else {
                         completion()
                         return
                     }
 
-                    if isAssistItem(displayItem.magicItem) {
+                    if displayItem.magicItem.type == .folder {
+                        presentFolderContents(folder: displayItem.magicItem)
+                    } else if isAssistItem(displayItem.magicItem) {
                         presentAssistSession(magicItem: displayItem.magicItem, info: displayItem.info)
                     } else {
                         itemTap(
@@ -353,8 +652,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             iconColor: nil,
             title: L10n.CarPlay.QuickAccess.AddItem.button,
             subtitle: nil,
+            accessorySymbolName: nil,
             handler: { [weak self] completion in
-                self?.presentAddItemFlow()
+                guard let self else {
+                    completion()
+                    return
+                }
+                presentAddItemFlow(destination: mainDestination)
                 completion()
             }
         )]
@@ -365,8 +669,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 iconColor: nil,
                 title: L10n.CarPlay.QuickAccess.EditItem.button,
                 subtitle: L10n.CarPlay.QuickAccess.EditItem.subtitle,
+                accessorySymbolName: nil,
                 handler: { [weak self] completion in
-                    self?.presentEditItemFlow()
+                    guard let self else {
+                        completion()
+                        return
+                    }
+                    presentEditItemFlow(destination: mainDestination)
                     completion()
                 }
             ))
@@ -388,7 +697,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                     imageShape: .circular,
                     title: item.title,
                     subtitle: item.subtitle,
-                    accessorySymbolName: nil
+                    accessorySymbolName: item.accessorySymbolName
                 )
             }
 
@@ -427,6 +736,16 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         executionStarted: @escaping () -> Void,
         executionFinished: @escaping () -> Void
     ) {
+        // Domains without a single tap action (climate) push their own control screen.
+        if magicItem.type == .entity, Domain(entityId: magicItem.id)?.hasControlScreen == true {
+            presentControlScreen(magicItem: magicItem)
+            return
+        }
+
+        // A second tap while the first call is still in flight would run the action twice, and on a
+        // slow connection the row sits on "Executing…" long enough to invite one.
+        guard !inFlightItemIds.contains(executionKey(for: magicItem)) else { return }
+
         // Check if this is a lock entity - locks always require confirmation
         let isLockEntity = magicItem
             .type == .entity && Domain(entityId: magicItem.id) == .lock
@@ -449,6 +768,23 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
     }
 
+    private func presentControlScreen(magicItem: MagicItem) {
+        guard let server = Current.servers.all.first(where: { server in
+            server.identifier.rawValue == magicItem.serverId
+        }) else {
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
+            return
+        }
+        guard let entity = resolvedEntity(for: magicItem) else {
+            presentOperationFailure(.unresolvedEntity(id: magicItem.id))
+            return
+        }
+        guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
+        provider.interfaceController = interfaceController
+        controlScreenTemplate = provider
+        interfaceController?.pushTemplate(provider.template, animated: true, completion: nil)
+    }
+
     private func executeMagicItem(
         _ magicItem: MagicItem,
         completion: @escaping () -> Void
@@ -456,15 +792,17 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
             completion()
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
             return
         }
-        magicItem.execute(on: server, source: .CarPlay) { success, _ in
-            if !success {
-                Current.Log.error("Failed executing quick access magic item id: \(magicItem.id)")
+        let deadline = makeDeadline(server: server, executionFinished: completion)
+        magicItem.execute(on: server, source: .CarPlay) { success, error in
+            if success {
+                deadline.succeed()
+            } else {
+                deadline.fail(error)
             }
-            completion()
         }
     }
 
@@ -477,27 +815,38 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }) else {
-            Current.Log.error("Failed to get server for lock magic item id: \(magicItem.id)")
             completion()
+            presentOperationFailure(.missingServer(id: magicItem.serverId))
             return
         }
 
         guard let api = Current.api(for: server) else {
-            Current.Log.error("No API available to execute lock entity")
             completion()
+            presentOperationFailure(.noConnection)
             return
         }
 
+        let deadline = makeDeadline(server: server, executionFinished: completion)
         // Use shared execution method for consistency across all CarPlay templates
         CarPlayLockConfirmation.execute(
             entityId: magicItem.id,
             currentState: currentState,
             api: api
-        ) { success in
-            if !success {
-                Current.Log.error("Failed executing quick access lock entity id: \(magicItem.id)")
+        ) { error in
+            if let error {
+                deadline.fail(error)
+            } else {
+                deadline.succeed()
             }
-            completion()
+        }
+    }
+
+    /// A deadline that settles the row and, on failure, tells the driver why.
+    private func makeDeadline(server: Server, executionFinished: @escaping () -> Void) -> CarPlayOperationDeadline {
+        CarPlayOperationDeadline(server: server) { [weak self] error in
+            executionFinished()
+            guard let error else { return }
+            self?.presentOperationFailure(error)
         }
     }
 
@@ -510,15 +859,15 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             L10n.Watch.Home.Run.Confirmation.title(item.name(info: info)),
         ], actions: [
             .init(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { [weak self] _ in
-                self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+                self?.alertPresenter?.dismissTemplate(animated: true, completion: nil)
             }),
             .init(title: L10n.Alerts.Confirm.confirm, style: .default, handler: { [weak self] _ in
                 completion()
-                self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+                self?.alertPresenter?.dismissTemplate(animated: true, completion: nil)
             }),
         ])
 
-        interfaceController?.presentTemplate(alert, animated: true, completion: nil)
+        alertPresenter?.presentTemplate(alert, animated: true, completion: nil)
     }
 
     private func showLockConfirmation(
@@ -530,7 +879,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         CarPlayLockConfirmation.show(
             entityName: info.name,
             currentState: currentState,
-            interfaceController: interfaceController,
+            interfaceController: alertPresenter,
             completion: completion
         )
     }
@@ -596,7 +945,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func isAssistItem(_ magicItem: MagicItem) -> Bool {
-        magicItem.type == .assistPipeline || magicItem.type == .assistPrompt
+        magicItem.isAssist
     }
 
     private func assistTitle(for magicItem: MagicItem, info: MagicItem.Info) -> String {
@@ -619,8 +968,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         return pipelineTitle == assistLabel ? nil : assistLabel
     }
 
+    /// A color the user picked, or the app's tint for an item with no state to color it from.
     private func iconColor(for info: MagicItem.Info) -> UIColor {
-        guard let iconColorHex = info.customization?.iconColor else { return .haPrimary }
+        guard let iconColorHex = info.customization?.customIconColor else { return .haPrimary }
         return UIColor(hex: iconColorHex)
     }
 

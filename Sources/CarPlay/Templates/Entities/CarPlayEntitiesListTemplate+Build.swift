@@ -2,7 +2,6 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
 extension CarPlayEntitiesListTemplate {
     static func build(
         title: String,

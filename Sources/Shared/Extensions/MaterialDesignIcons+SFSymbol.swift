@@ -10,7 +10,7 @@ public extension MaterialDesignIcons {
         if #available(iOS 17, watchOS 10, macOS 14, *), let symbol = sfSymbols5Match {
             return symbol
         }
-        if #available(iOS 16.1, watchOS 9.1, macOS 13, *), let symbol = sfSymbols4Match {
+        if #available(watchOS 9.1, macOS 13, *), let symbol = sfSymbols4Match {
             return symbol
         }
         return sfSymbols3Match ?? .questionmarkCircle
@@ -52,7 +52,7 @@ private extension MaterialDesignIcons {
     }
 
     /// Matches that require SF Symbols 4/4.1 (iOS 16.1, watchOS 9.1, macOS 13).
-    @available(iOS 16.1, watchOS 9.1, macOS 13, *)
+    @available(watchOS 9.1, macOS 13, *)
     var sfSymbols4Match: SFSymbol? {
         switch self {
         // MARK: Lighting

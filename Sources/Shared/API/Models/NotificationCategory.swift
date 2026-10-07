@@ -1,51 +1,65 @@
 import Foundation
-import RealmSwift
+import GRDB
 import UserNotifications
 
-public final class NotificationCategory: Object, UpdatableModel {
+/// An actionable notification category persisted in GRDB. Replaces the legacy
+/// Realm-backed model; actions are embedded in the row as JSON.
+public struct NotificationCategory: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
+    public static let databaseTableName = GRDBDatabaseTable.notificationCategory.rawValue
+
     public static let FallbackActionIdentifier = "_"
 
-    @objc public dynamic var isServerControlled: Bool = false
-    @objc public dynamic var serverIdentifier: String = ""
-
-    @objc public dynamic var Name: String = ""
-
-    @objc public dynamic var Identifier: String = ""
-    @objc public dynamic var HiddenPreviewsBodyPlaceholder: String?
-    // iOS 12+ only
-    @objc public dynamic var CategorySummaryFormat: String?
+    public var identifier: String
+    public var serverIdentifier: String
+    public var name: String
+    public var isServerControlled: Bool
+    public var hiddenPreviewsBodyPlaceholder: String?
+    public var categorySummaryFormat: String?
 
     // Options
-    @objc public dynamic var SendDismissActions: Bool = true
-    @objc public dynamic var HiddenPreviewsShowTitle: Bool = false
-    @objc public dynamic var HiddenPreviewsShowSubtitle: Bool = false
+    public var sendDismissActions: Bool
+    public var hiddenPreviewsShowTitle: Bool
+    public var hiddenPreviewsShowSubtitle: Bool
 
     // Maybe someday, HA will be on CarPlay (hey that rhymes!)...
-    // @objc dynamic var AllowInCarPlay: Bool = false
+    // public var allowInCarPlay: Bool = false
 
-    public var Actions = List<NotificationAction>()
+    public var actions: [NotificationAction]
 
-    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
-        #warning("multiserver - primary key duplication")
-        return sourceIdentifier
-    }
+    public var id: String { identifier }
 
-    override public static func primaryKey() -> String? {
-        #keyPath(Identifier)
-    }
-
-    static func serverIdentifierKey() -> String {
-        #keyPath(serverIdentifier)
+    public init(
+        identifier: String = "",
+        serverIdentifier: String = "",
+        name: String = "",
+        isServerControlled: Bool = false,
+        hiddenPreviewsBodyPlaceholder: String? = nil,
+        categorySummaryFormat: String? = nil,
+        sendDismissActions: Bool = true,
+        hiddenPreviewsShowTitle: Bool = false,
+        hiddenPreviewsShowSubtitle: Bool = false,
+        actions: [NotificationAction] = []
+    ) {
+        self.identifier = identifier
+        self.serverIdentifier = serverIdentifier
+        self.name = name
+        self.isServerControlled = isServerControlled
+        self.hiddenPreviewsBodyPlaceholder = hiddenPreviewsBodyPlaceholder
+        self.categorySummaryFormat = categorySummaryFormat
+        self.sendDismissActions = sendDismissActions
+        self.hiddenPreviewsShowTitle = hiddenPreviewsShowTitle
+        self.hiddenPreviewsShowSubtitle = hiddenPreviewsShowSubtitle
+        self.actions = actions
     }
 
     public var options: UNNotificationCategoryOptions {
         var categoryOptions = UNNotificationCategoryOptions([])
 
-        if SendDismissActions { categoryOptions.insert(.customDismissAction) }
+        if sendDismissActions { categoryOptions.insert(.customDismissAction) }
 
         #if os(iOS)
-        if HiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
-        if HiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
+        if hiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
+        if hiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
         #endif
 
         return categoryOptions
@@ -55,11 +69,11 @@ public final class NotificationCategory: Object, UpdatableModel {
     public var categories: [UNNotificationCategory] {
         [
             UNNotificationCategory(
-                identifier: Identifier.uppercased(),
-                actions: Array(Actions.map(\.action)),
+                identifier: identifier.uppercased(),
+                actions: actions.map(\.action),
                 intentIdentifiers: [],
-                hiddenPreviewsBodyPlaceholder: HiddenPreviewsBodyPlaceholder,
-                categorySummaryFormat: CategorySummaryFormat,
+                hiddenPreviewsBodyPlaceholder: hiddenPreviewsBodyPlaceholder,
+                categorySummaryFormat: categorySummaryFormat,
                 options: options
             ),
         ]
@@ -67,7 +81,7 @@ public final class NotificationCategory: Object, UpdatableModel {
     #endif
 
     public var exampleServiceCall: String {
-        let urlStrings = Actions.map { "\"\($0.Identifier)\": \"http://example.com/url\"" }
+        let urlStrings = actions.map { "\"\($0.identifier)\": \"http://example.com/url\"" }
 
         let indentation = "\n    "
 
@@ -75,7 +89,7 @@ public final class NotificationCategory: Object, UpdatableModel {
         service: notify.mobile_app_#name_here
         data:
           push:
-            category: \(Identifier.uppercased())
+            category: \(identifier.uppercased())
           action_data:
             # see example trigger in action
             # value will be in fired event
@@ -97,34 +111,121 @@ public final class NotificationCategory: Object, UpdatableModel {
             \(urlStrings.joined(separator: indentation))
         """
     }
+}
 
-    static func didUpdate(objects: [NotificationCategory], server: Server, realm: Realm) {}
+// MARK: - Queries
 
-    static func willDelete(objects: [NotificationCategory], server: Server?, realm: Realm) {}
-
-    static var updateEligiblePredicate: NSPredicate {
-        .init(format: "isServerControlled == YES")
+public extension NotificationCategory {
+    /// All persisted categories, across all servers.
+    static func all() -> [NotificationCategory] {
+        do {
+            return try Current.database().read { db in
+                try NotificationCategory.fetchAll(db)
+            }
+        } catch {
+            Current.Log.error("Failed to fetch notification categories: \(error.localizedDescription)")
+            return []
+        }
     }
 
-    public func update(with object: MobileAppConfigPushCategory, server: Server, using realm: Realm) -> Bool {
-        if self.realm == nil {
-            Identifier = object.identifier.uppercased()
-        } else {
-            precondition(Identifier == object.identifier.uppercased())
+    static func fetch(identifier: String) -> NotificationCategory? {
+        do {
+            return try Current.database().read { db in
+                try NotificationCategory
+                    .filter(Column(DatabaseTables.NotificationCategory.identifier.rawValue) == identifier)
+                    .fetchOne(db)
+            }
+        } catch {
+            Current.Log.error("Failed to fetch notification category: \(error.localizedDescription)")
+            return nil
         }
+    }
+
+    func save() {
+        do {
+            try Current.database().write { db in
+                try self.save(db)
+            }
+        } catch {
+            Current.Log.error("Failed to save notification category \(identifier): \(error.localizedDescription)")
+        }
+    }
+
+    static func delete(identifiers: [String]) {
+        guard !identifiers.isEmpty else { return }
+        do {
+            try Current.database().write { db in
+                try NotificationCategory
+                    .filter(identifiers.contains(Column(DatabaseTables.NotificationCategory.identifier.rawValue)))
+                    .deleteAll(db)
+            }
+        } catch {
+            Current.Log.error("Failed to delete notification categories: \(error.localizedDescription)")
+        }
+    }
+}
+
+// MARK: - UpdatableModel
+
+extension NotificationCategory: UpdatableModel {
+    static var serverIdentifierColumnName: String { DatabaseTables.NotificationCategory.serverIdentifier.rawValue }
+    static var primaryKeyColumnName: String { DatabaseTables.NotificationCategory.identifier.rawValue }
+    static var updateEligibleCondition: SQLExpression? {
+        (Column(DatabaseTables.NotificationCategory.isServerControlled.rawValue) == true).sqlExpression
+    }
+
+    var primaryKeyValue: String { identifier }
+
+    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
+        #warning("multiserver - primary key duplication")
+        return sourceIdentifier.uppercased()
+    }
+
+    init(primaryKey: String, serverIdentifier: String) {
+        self.init(identifier: primaryKey, serverIdentifier: serverIdentifier)
+    }
+
+    mutating func update(with object: MobileAppConfigPushCategory, server: Server) -> Bool {
+        precondition(identifier == object.identifier.uppercased())
 
         isServerControlled = true
         serverIdentifier = server.identifier.rawValue
-        Name = object.name
-
-        // TODO: update
-        realm.delete(Actions)
-        Actions.removeAll()
-
-        Actions.append(objectsIn: object.actions.map { action in
-            NotificationAction(action: action)
-        })
+        name = object.name
+        actions = object.actions.map(NotificationAction.init(action:))
 
         return true
+    }
+}
+
+// MARK: - Table
+
+final class NotificationCategoryTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.notificationCategory.rawValue }
+
+    var definedColumns: [String] { DatabaseTables.NotificationCategory.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.NotificationCategory.identifier.rawValue, .text).notNull()
+                    t.column(DatabaseTables.NotificationCategory.serverIdentifier.rawValue, .text).notNull()
+                    t.column(DatabaseTables.NotificationCategory.name.rawValue, .text).notNull()
+                    t.column(DatabaseTables.NotificationCategory.isServerControlled.rawValue, .boolean).notNull()
+                    t.column(DatabaseTables.NotificationCategory.hiddenPreviewsBodyPlaceholder.rawValue, .text)
+                    t.column(DatabaseTables.NotificationCategory.categorySummaryFormat.rawValue, .text)
+                    t.column(DatabaseTables.NotificationCategory.sendDismissActions.rawValue, .boolean).notNull()
+                    t.column(DatabaseTables.NotificationCategory.hiddenPreviewsShowTitle.rawValue, .boolean).notNull()
+                    t.column(DatabaseTables.NotificationCategory.hiddenPreviewsShowSubtitle.rawValue, .boolean)
+                        .notNull()
+                    t.column(DatabaseTables.NotificationCategory.actions.rawValue, .jsonText).notNull()
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
+        }
     }
 }

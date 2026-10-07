@@ -140,18 +140,18 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
             return nil
         }
 
-        let pinView = MKPinAnnotationView()
+        let pinView = MKMarkerAnnotationView()
         pinView.annotation = annotation
         if let title = annotation.title {
             if title == L10n.Extensions.Map.Location.original {
-                pinView.pinTintColor = .red
+                pinView.markerTintColor = .red
             } else if title == L10n.Extensions.Map.Location.new {
-                pinView.pinTintColor = .green
+                pinView.markerTintColor = .green
             }
         } else {
-            pinView.pinTintColor = .red
+            pinView.markerTintColor = .red
         }
-        pinView.animatesDrop = true
+        pinView.animatesWhenAdded = true
         pinView.canShowCallout = true
 
         return pinView

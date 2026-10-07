@@ -6,6 +6,7 @@ extension WatchConnectivityManager {
 
     func receiveMessage(_ content: [String: Any]) {
         guard let immediate = HAWatchConnectivity.ImmediateMessage(content: content) else { return }
+        recordCounterpartProtocolVersion(immediate.senderVersion)
         immediateMessage.notify(immediate)
     }
 
@@ -18,6 +19,7 @@ extension WatchConnectivityManager {
             replyHandler([:])
             return
         }
+        recordCounterpartProtocolVersion(interactive.senderVersion)
         interactiveImmediateMessage.notify(interactive)
     }
 
@@ -25,11 +27,13 @@ extension WatchConnectivityManager {
         if let complication = HAWatchConnectivity.ComplicationInfo(jsonDictionary: userInfo) {
             complicationInfo.notify(complication)
         } else if let guaranteed = HAWatchConnectivity.GuaranteedMessage(content: userInfo) {
+            recordCounterpartProtocolVersion(guaranteed.senderVersion)
             guaranteedMessage.notify(guaranteed)
         }
     }
 
     func receiveApplicationContext(_ applicationContext: [String: Any]) {
+        cacheReceivedContext(applicationContext)
         context.notify(HAWatchConnectivity.Context(content: applicationContext))
     }
 
@@ -100,10 +104,27 @@ extension WatchConnectivityManager: WCSessionDelegate {
     }
 
     public func session(_ session: WCSession, didFinish fileTransfer: WCSessionFileTransfer, error: Error?) {
+        if let error {
+            // Terminal failure: WCSession has given up retrying. Without this log a lost file
+            // transfer (e.g. a database mirror push) is invisible on both platforms.
+            Current.Log.error(
+                "WatchConnectivity file transfer failed permanently: \(error.localizedDescription)"
+            )
+        }
         resolveFileTransfer(fileTransfer, error: error)
     }
 
     public func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
+        if let error {
+            // Terminal failure of a guaranteed message (transferUserInfo). Log the identifier so a
+            // dead queued message (e.g. a config pull) is diagnosable — previously watchOS dropped
+            // these silently, and iOS only resolved complication transfers.
+            let identifier = HAWatchConnectivity.GuaranteedMessage(content: userInfoTransfer.userInfo)?
+                .identifier ?? "unknown"
+            Current.Log.error(
+                "WatchConnectivity guaranteed message \(identifier) failed permanently: \(error.localizedDescription)"
+            )
+        }
         #if os(iOS)
         resolveComplicationTransfer(userInfoTransfer, error: error)
         #endif

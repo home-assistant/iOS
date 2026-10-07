@@ -1,0 +1,155 @@
+import Foundation
+import SwiftUI
+
+/// The raw colour ramps, before any of them means anything.
+///
+/// Frontend counterpart: the palette in `common/color/color.globals.ts`. Semantic names built on
+/// top of these — what is a warning, what is a divider — live in `Color+Semantic.swift`, mirroring
+/// the frontend's own split between palette and role.
+public extension Color {
+    // Blue
+    static var blue05 = Color(hex: "#000F35")
+    static var blue10 = Color(hex: "#001A4E")
+    static var blue20 = Color(hex: "#002D77")
+    static var blue30 = Color(hex: "#003F9C")
+    static var blue40 = Color(hex: "#0053C0")
+    static var blue50 = Color(hex: "#0071EC")
+    static var blue60 = Color(hex: "#3E96FF")
+    static var blue70 = Color(hex: "#6EB3FF")
+    static var blue80 = Color(hex: "#9FCEFF")
+    static var blue90 = Color(hex: "#D1E8FF")
+    static var blue95 = Color(hex: "#E8F3FF")
+
+    // Brand
+    static var brand05 = Color(hex: "#00222F")
+    static var brand10 = Color(hex: "#003D51")
+    static var brand20 = Color(hex: "#004E67")
+    static var brand30 = Color(hex: "#007093")
+    static var brand40 = Color(hex: "#00A4D4")
+    static var brand50 = Color(hex: "#1FBCF1")
+    static var brand60 = Color(hex: "#37C8FD")
+    static var brand70 = Color(hex: "#7BD4FB")
+    static var brand80 = Color(hex: "#B9E6FC")
+    static var brand90 = Color(hex: "#DFF3FC")
+    static var brand95 = Color(hex: "#EFF9FE")
+
+    // Cyan
+    static var cyan05 = Color(hex: "#00151B")
+    static var cyan10 = Color(hex: "#002129")
+    static var cyan20 = Color(hex: "#003844")
+    static var cyan30 = Color(hex: "#014C5B")
+    static var cyan40 = Color(hex: "#026274")
+    static var cyan50 = Color(hex: "#078098")
+    static var cyan60 = Color(hex: "#00A3C0")
+    static var cyan70 = Color(hex: "#2FBEDC")
+    static var cyan80 = Color(hex: "#7FD6EC")
+    static var cyan90 = Color(hex: "#C5ECF7")
+    static var cyan95 = Color(hex: "#E3F6FB")
+
+    // Green
+    static var green05 = Color(hex: "#031608")
+    static var green10 = Color(hex: "#052310")
+    static var green20 = Color(hex: "#0A3A1D")
+    static var green30 = Color(hex: "#0A5027")
+    static var green40 = Color(hex: "#036730")
+    static var green50 = Color(hex: "#00883C")
+    static var green60 = Color(hex: "#00AC49")
+    static var green70 = Color(hex: "#5DC36F")
+    static var green80 = Color(hex: "#93DA98")
+    static var green90 = Color(hex: "#C2F2C1")
+    static var green95 = Color(hex: "#E3F9E3")
+
+    // Indigo
+    static var indigo05 = Color(hex: "#0D0A3A")
+    static var indigo10 = Color(hex: "#181255")
+    static var indigo20 = Color(hex: "#292381")
+    static var indigo30 = Color(hex: "#3933A7")
+    static var indigo40 = Color(hex: "#4945CB")
+    static var indigo50 = Color(hex: "#6163F2")
+    static var indigo60 = Color(hex: "#808AFF")
+    static var indigo70 = Color(hex: "#9DA9FF")
+    static var indigo80 = Color(hex: "#BCC7FF")
+    static var indigo90 = Color(hex: "#DFE5FF")
+    static var indigo95 = Color(hex: "#F0F2FF")
+
+    // Neutral
+    static var neutral05 = Color(hex: "#101219")
+    static var neutral10 = Color(hex: "#1B1D26")
+    static var neutral20 = Color(hex: "#2F323F")
+    static var neutral30 = Color(hex: "#424554")
+    static var neutral40 = Color(hex: "#545868")
+    static var neutral50 = Color(hex: "#717584")
+    static var neutral60 = Color(hex: "#9194A2")
+    static var neutral70 = Color(hex: "#ABAEB9")
+    static var neutral80 = Color(hex: "#C7C9D0")
+    static var neutral90 = Color(hex: "#E4E5E9")
+    static var neutral95 = Color(hex: "#F1F2F3")
+
+    // Orange
+    static var orange05 = Color(hex: "#280700")
+    static var orange10 = Color(hex: "#3B0F00")
+    static var orange20 = Color(hex: "#5E1C00")
+    static var orange30 = Color(hex: "#7E2900")
+    static var orange40 = Color(hex: "#9D3800")
+    static var orange50 = Color(hex: "#C94E00")
+    static var orange60 = Color(hex: "#F36D00")
+    static var orange70 = Color(hex: "#FF9342")
+    static var orange80 = Color(hex: "#FFBB89")
+    static var orange90 = Color(hex: "#FFE0C8")
+    static var orange95 = Color(hex: "#FFF0E4")
+
+    // Pink
+    static var pink05 = Color(hex: "#28041A")
+    static var pink10 = Color(hex: "#3C0828")
+    static var pink20 = Color(hex: "#5E1342")
+    static var pink30 = Color(hex: "#7D1E58")
+    static var pink40 = Color(hex: "#9E2A6C")
+    static var pink50 = Color(hex: "#C84382")
+    static var pink60 = Color(hex: "#E66BA3")
+    static var pink70 = Color(hex: "#F78DBF")
+    static var pink80 = Color(hex: "#FCB5D8")
+    static var pink90 = Color(hex: "#FEDDF0")
+    static var pink95 = Color(hex: "#FEFFF9")
+
+    // Purple
+    static var purple05 = Color(hex: "#1E0532")
+    static var purple10 = Color(hex: "#2D0B48")
+    static var purple20 = Color(hex: "#491870")
+    static var purple30 = Color(hex: "#612692")
+    static var purple40 = Color(hex: "#7936B3")
+    static var purple50 = Color(hex: "#9951DB")
+    static var purple60 = Color(hex: "#B678F5")
+    static var purple70 = Color(hex: "#CA99FF")
+    static var purple80 = Color(hex: "#DDBDFF")
+    static var purple90 = Color(hex: "#EEDFFF")
+    static var purple95 = Color(hex: "#F7F0FF")
+
+    // Red
+    static var red05 = Color(hex: "#2A040B")
+    static var red10 = Color(hex: "#3E0913")
+    static var red20 = Color(hex: "#631323")
+    static var red30 = Color(hex: "#8A132C")
+    static var red40 = Color(hex: "#B30532")
+    static var red50 = Color(hex: "#DC3146")
+    static var red60 = Color(hex: "#F3676C")
+    static var red70 = Color(hex: "#FD8F90")
+    static var red80 = Color(hex: "#FFB8B6")
+    static var red90 = Color(hex: "#FFDEDC")
+    static var red95 = Color(hex: "#FFF0EF")
+
+    // Yellow
+    static var yellow05 = Color(hex: "#220C00")
+    static var yellow10 = Color(hex: "#331600")
+    static var yellow20 = Color(hex: "#532600")
+    static var yellow30 = Color(hex: "#6F3601")
+    static var yellow40 = Color(hex: "#8C4602")
+    static var yellow50 = Color(hex: "#B45F04")
+    static var yellow60 = Color(hex: "#DA7E00")
+    static var yellow70 = Color(hex: "#EF9D00")
+    static var yellow80 = Color(hex: "#FAC22B")
+    static var yellow90 = Color(hex: "#FFE495")
+    static var yellow95 = Color(hex: "#FEF3CD")
+
+    static var brandBlue = Color(hex: "#18BCF2")
+    static var brandBackground = Color(hex: "#F2F4F9")
+}

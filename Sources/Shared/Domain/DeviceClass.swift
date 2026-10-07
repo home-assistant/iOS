@@ -1,6 +1,6 @@
 import Foundation
 
-public enum DeviceClass: String, CaseIterable {
+public enum DeviceClass: String, CaseIterable, Sendable {
     case battery
     case cold
     case connectivity

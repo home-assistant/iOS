@@ -10,12 +10,38 @@ public protocol MagicItemProviderProtocol {
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
-    var entitiesPerServer: [String: [HAAppEntity]] = [:]
+    var entitiesPerServer: [String: [HAAppEntity]] = [:] {
+        didSet { rebuildEntityIndex() }
+    }
+
+    /// Per-server `entityId → entity` lookup, kept in sync with `entitiesPerServer`. Callers resolve
+    /// info one item at a time — and the watch add flow resolves *every* addable entity in a single
+    /// pass — so a linear search per lookup made that pass quadratic in the number of entities.
+    private var entityIndexPerServer: [String: [String: HAAppEntity]] = [:]
     /// Per-server entity→area and entity→device lookups, built once when entities are loaded so
     /// `getInfo` can attach the "Server • Area • Device" context line without a DB read per item.
     private var areasPerServer: [String: [String: AppArea]] = [:]
+    /// Per-server `areaId → AppArea` lookup, used to resolve `.area` items (which reference an area,
+    /// not an entity). Built on demand and cached, so a config full of area entries costs one areas
+    /// fetch per server rather than one per item.
+    private var areasByIdPerServer: [String: [String: AppArea]] = [:]
     private var devicesPerServer: [String: [String: AppDeviceRegistry]] = [:]
     private var floorNamesPerServer: [String: [String: String]] = [:]
+    /// Watch complication configs keyed by `"serverId-configId"` (a `MagicItem.serverUniqueId`).
+    /// `nil` until loaded; refreshed by `loadAppEntities` so an edited or deleted complication is
+    /// picked up on the next `loadInformation`.
+    private var complicationConfigIndex: [String: WatchComplicationConfig]?
+
+    private func rebuildEntityIndex() {
+        entityIndexPerServer = entitiesPerServer.mapValues { entities in
+            // First wins, matching the `first(where:)` lookups this index replaced.
+            Dictionary(entities.map { ($0.entityId, $0) }, uniquingKeysWith: { first, _ in first })
+        }
+    }
+
+    private func entity(serverId: String, entityId: String) -> HAAppEntity? {
+        entityIndexPerServer[serverId]?[entityId]
+    }
 
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
         loadAppEntities { [weak self] in
@@ -60,12 +86,19 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateCarPlayConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var carPlayConfig = try? Current.carPlayConfig() else {
             completion()
             return
         }
         carPlayConfig.quickAccessItems = migrateItemsIfNeeded(items: carPlayConfig.quickAccessItems)
-        carPlayConfig.quickAccessItems = normalizeCarPlayItems(carPlayConfig.quickAccessItems)
+        carPlayConfig.quickAccessItems = normalizeAssistItems(carPlayConfig.quickAccessItems)
+        if let tabFolders = carPlayConfig.tabFolders {
+            carPlayConfig.tabFolders = normalizeAssistItems(migrateItemsIfNeeded(items: tabFolders))
+        }
 
         do {
             try Current.database().write { db in
@@ -79,11 +112,15 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateWatchConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var watchConfig = try? Current.watchConfig() else {
             completion()
             return
         }
-        watchConfig.items = migrateItemsIfNeeded(items: watchConfig.items)
+        watchConfig.items = normalizeAssistItems(migrateItemsIfNeeded(items: watchConfig.items))
 
         do {
             try Current.database().write { db in
@@ -97,6 +134,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     }
 
     func migrateAppIconShortcutConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard var appIconShortcutConfig = try? Current.appIconShortcutConfig() else {
             completion()
             return
@@ -125,6 +166,10 @@ final class MagicItemProvider: MagicItemProviderProtocol {
      The completion handler is always called at the end of the process.
      */
     func migrateWidgetsConfig(completion: @escaping () -> Void) {
+        guard !Current.isAppExtension else {
+            completion()
+            return
+        }
         guard let customWidgets = try? Current.customWidgets() else {
             completion()
             return
@@ -147,6 +192,19 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     private func loadAppEntities(completion: @escaping () -> Void) {
         var serversCompletedFetchCount = 0
         let servers = Current.servers.all
+        // Dropped (not refreshed) here: it's only needed when an `.area` item is actually resolved,
+        // and a reload means whatever it holds may be stale after a sync.
+        areasByIdPerServer = [:]
+        // Rebuilt on every load so complication renames and deletions surface without a relaunch.
+        complicationConfigIndex = Self.loadComplicationConfigIndex()
+        // Drop servers that are no longer configured: a long-lived provider (the CarPlay template
+        // keeps one) would otherwise keep resolving their entities, which makes an item pointing at
+        // a removed server look resolved and stops the migration from re-pointing it.
+        let configuredServerIds = Set(servers.map(\.identifier.rawValue))
+        entitiesPerServer = entitiesPerServer.filter { configuredServerIds.contains($0.key) }
+        areasPerServer = areasPerServer.filter { configuredServerIds.contains($0.key) }
+        devicesPerServer = devicesPerServer.filter { configuredServerIds.contains($0.key) }
+        floorNamesPerServer = floorNamesPerServer.filter { configuredServerIds.contains($0.key) }
         guard !servers.isEmpty else {
             completion()
             return
@@ -159,13 +217,14 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                         .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
                         .fetchAll(db)
                 }
-                self?.entitiesPerServer[serverId] = entities
                 // Build the entity→area / entity→device lookups once per server (each is a small,
                 // fixed number of DB reads) so `getInfo` can attach the context line per item without
                 // a per-item database read.
                 self?.areasPerServer[serverId] = entities.areasMap(for: serverId)
                 self?.devicesPerServer[serverId] = entities.devicesMap(for: serverId)
                 self?.floorNamesPerServer[serverId] = entities.floorNamesMap(for: serverId)
+                // Assigned last: it rebuilds the entity index, which the lookups above don't need.
+                self?.entitiesPerServer[serverId] = entities
             } catch {
                 Current.Log.error("Failed to load covers from database: \(error.localizedDescription)")
             }
@@ -180,9 +239,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     func getInfo(for item: MagicItem) -> MagicItem.Info? {
         switch item.type {
         case .script:
-            guard let scriptsForServer = entitiesPerServer[item.serverId]?
-                .filter({ $0.domain == Domain.script.rawValue }),
-                let scriptItem = scriptsForServer.first(where: { $0.entityId == item.id }) else {
+            guard let scriptItem = entity(serverId: item.serverId, entityId: item.id),
+                  scriptItem.domain == Domain.script.rawValue else {
                 Current.Log
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id)"
@@ -198,12 +256,11 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 contextSubtitle: entityContextSubtitle(for: scriptItem)
             )
         case .scene:
-            guard let scenesForServer = entitiesPerServer[item.serverId]?
-                .filter({ $0.domain == Domain.scene.rawValue }),
-                let sceneItem = scenesForServer.first(where: { $0.entityId == item.id }) else {
+            guard let sceneItem = entity(serverId: item.serverId, entityId: item.id),
+                  sceneItem.domain == Domain.scene.rawValue else {
                 Current.Log
                     .error(
-                        "Failed to get magic item Script info for item id: \(item.id)"
+                        "Failed to get magic item Scene info for item id: \(item.id)"
                     )
                 return nil
             }
@@ -216,8 +273,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 contextSubtitle: entityContextSubtitle(for: sceneItem)
             )
         case .entity:
-            guard let entitiesForServer = entitiesPerServer[item.serverId],
-                  let entityItem = entitiesForServer.first(where: { $0.entityId == item.id }) else {
+            guard let entityItem = entity(serverId: item.serverId, entityId: item.id) else {
                 Current.Log
                     .error(
                         "Failed to get magic item entity info for item id: \(item.id)"
@@ -240,6 +296,37 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 name: item.displayText ?? L10n.Watch.Configuration.Folder.defaultName,
                 iconName: MaterialDesignIcons.folderIcon.name,
                 customization: item.customization
+            )
+        case .area:
+            guard let area = area(serverId: item.serverId, areaId: item.id) else {
+                Current.Log
+                    .error(
+                        "Failed to get magic item area info for item id: \(item.id)"
+                    )
+                return nil
+            }
+
+            return .init(
+                id: item.serverUniqueId,
+                name: area.name,
+                iconName: area.icon ?? MaterialDesignIcons.textureBoxIcon.name,
+                customization: item.customization,
+                contextSubtitle: areaContextSubtitle(for: item)
+            )
+        case .complication:
+            // The complication renders itself from its own config, so the only thing resolved here is
+            // the label the configuration screens show. A deleted complication yields nil, which drops
+            // the item from the list the same way a deleted entity does.
+            guard let config = complicationConfig(id: item.id, serverId: item.serverId) else {
+                Current.Log.error("Failed to get magic item complication info for item id: \(item.id)")
+                return nil
+            }
+            return .init(
+                id: item.serverUniqueId,
+                name: config.displayName,
+                iconName: config.iconName ?? MaterialDesignIcons.watchIcon.name,
+                customization: item.customization,
+                contextSubtitle: config.entityDisplayName ?? config.entityId
             )
         case .assistPipeline, .assistPrompt:
             let pipelineId = item.assistPipelineId ?? item.id
@@ -268,17 +355,67 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
     }
 
-    func getAreaName(for item: MagicItem) -> String? {
-        guard let entitiesForServer = entitiesPerServer[item.serverId] else {
-            return nil
+    /// The complication config behind a `.complication` item, from the index built when entities were
+    /// loaded. Built on demand for callers that resolve info without going through `loadInformation`.
+    private func complicationConfig(id: String, serverId: String) -> WatchComplicationConfig? {
+        if complicationConfigIndex == nil {
+            complicationConfigIndex = Self.loadComplicationConfigIndex()
         }
+        return complicationConfigIndex?["\(serverId)-\(id)"]
+    }
 
-        let areaName = entitiesForServer.areasMap(for: item.serverId)[item.id]?.name
+    private static func loadComplicationConfigIndex() -> [String: WatchComplicationConfig] {
+        let configs = (try? WatchComplicationConfig.all()) ?? []
+        return Dictionary(
+            configs.map { ("\($0.serverId)-\($0.id)", $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+    }
+
+    func getAreaName(for item: MagicItem) -> String? {
+        let areaName = areaMap(for: item.serverId)[item.id]?.name
         if let areaName, !areaName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return areaName
         }
 
         return nil
+    }
+
+    /// The area an `.area` item points at, from the per-server `areaId → AppArea` cache. Built on
+    /// the first lookup for that server and reset whenever entities are (re)loaded, so it follows
+    /// database syncs without a fetch per item.
+    private func area(serverId: String, areaId: String) -> AppArea? {
+        if let areas = areasByIdPerServer[serverId] {
+            return areas[areaId]
+        }
+        let areas = (try? AppArea.fetchAreas(for: serverId)) ?? []
+        // First wins, matching the `first(where:)` semantics of the other lookups.
+        let areasById = Dictionary(areas.map { ($0.areaId, $0) }, uniquingKeysWith: { first, _ in first })
+        areasByIdPerServer[serverId] = areasById
+        return areasById[areaId]
+    }
+
+    /// The context line for an `.area` item: only the server it belongs to, and only when more than
+    /// one server is configured — an area has no floor/device context of its own.
+    private func areaContextSubtitle(for item: MagicItem) -> String? {
+        guard Current.servers.all.count > 1 else { return nil }
+        return Current.servers.server(for: .init(rawValue: item.serverId))?.info.name
+    }
+
+    /// The entity→area map for a server, reusing the one built by `loadAppEntities`. Built (and
+    /// cached) on demand when entities were assigned without going through that path, so it's still
+    /// resolved — but never once per item: rebuilding it meant a full areas fetch from the database
+    /// for every single item, which is what made the watch add flow's area resolution so slow.
+    private func areaMap(for serverId: String) -> [String: AppArea] {
+        if let areas = areasPerServer[serverId] {
+            return areas
+        }
+        guard let entitiesForServer = entitiesPerServer[serverId] else {
+            return [:]
+        }
+        let areas = entitiesForServer.areasMap(for: serverId)
+        areasPerServer[serverId] = areas
+        return areas
     }
 
     /// Builds the "Server • Area • Device" context line for an entity-backed item, reusing the
@@ -299,9 +436,17 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         )
     }
 
-    private func normalizeCarPlayItems(_ items: [MagicItem]) -> [MagicItem] {
+    /// Assist items always render with the Assist icon color and never ask for confirmation —
+    /// running one opens a voice session rather than calling a service.
+    private func normalizeAssistItems(_ items: [MagicItem]) -> [MagicItem] {
         items.map { item in
-            guard item.type == .assistPipeline || item.type == .assistPrompt else { return item }
+            if item.type == .folder {
+                var item = item
+                item.items = normalizeAssistItems(item.items ?? [])
+                return item
+            }
+
+            guard item.isAssist else { return item }
 
             var item = item
             var customization = item.customization ?? .init()

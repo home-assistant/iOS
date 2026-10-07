@@ -14,11 +14,15 @@ public struct WatchConfigAvailableItems: WatchCodable {
         /// the server in the add flow). Shown under the name in the picker, mirroring the iOS entity
         /// picker.
         public let contextSubtitle: String?
+        /// The entity's area, used to group candidates in the watch add flow's area picker.
+        /// Optional so payloads from older phone builds still decode.
+        public let areaName: String?
 
-        public init(item: MagicItem, info: MagicItem.Info, contextSubtitle: String?) {
+        public init(item: MagicItem, info: MagicItem.Info, contextSubtitle: String?, areaName: String? = nil) {
             self.item = item
             self.info = info
             self.contextSubtitle = contextSubtitle
+            self.areaName = areaName
         }
     }
 

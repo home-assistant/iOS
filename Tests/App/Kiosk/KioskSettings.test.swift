@@ -12,6 +12,7 @@ struct KioskSettingsTests {
             enabled: true,
             requireAuthentication: true,
             acceptRemoteCommands: false,
+            showRemoteCommandConfirmations: false,
             serverId: "server-1",
             dashboard: "lovelace/home",
             keepScreenOn: true,
@@ -19,6 +20,7 @@ struct KioskSettingsTests {
             hideStatusBar: true,
             autoReload: .minutes10,
             settingsEntryPosition: .topLeading,
+            settingsEntryHidden: true,
             screensaver: KioskScreensaverSettings(
                 enabled: true,
                 mode: .clock,
@@ -64,8 +66,12 @@ struct KioskSettingsTests {
         #expect(loaded?.enabled == false)
         #expect(loaded?.requireAuthentication == false)
         #expect(loaded?.acceptRemoteCommands == true)
+        // Command confirmations were added after kiosk mode shipped: an install that predates the
+        // column must keep showing them, since that is what it did before the toggle existed.
+        #expect(loaded?.showRemoteCommandConfirmations == true)
         #expect(loaded?.autoReload == .never)
         #expect(loaded?.settingsEntryPosition == .bottomTrailing)
+        #expect(loaded?.settingsEntryHidden == false)
         #expect(loaded?.screensaver == KioskScreensaverSettings())
     }
 

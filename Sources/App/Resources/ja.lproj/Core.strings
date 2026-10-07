@@ -16,6 +16,7 @@
 "common::state::standby" = "スタンバイ";
 "common::state::unlocked" = "解錠済み";
 "common::state::yes" = "はい";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "オフ";
 "component::alarm_control_panel::title" = "アラームコントロールパネル";
 "component::alert::entity_component::_::state::idle" = "待機中";

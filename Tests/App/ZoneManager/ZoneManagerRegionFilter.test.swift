@@ -2,7 +2,6 @@ import CoreLocation
 import Foundation
 @testable import HomeAssistant
 import PromiseKit
-import RealmSwift
 @testable import Shared
 import XCTest
 
@@ -10,9 +9,9 @@ class ZoneManagerRegionFilterTests: XCTestCase {
     private var filter: ZoneManagerRegionFilterImpl!
     private var locationInStart: CLLocation!
     private var locationNearStart: CLLocation!
-    private var beaconZones: [RLMZone]!
+    private var beaconZones: [AppZone]!
     private var beaconRegions: [CLRegion]!
-    private var circularZones: [RLMZone]!
+    private var circularZones: [AppZone]!
     private var circularRegions: [CLRegion]!
 
     override func setUp() {
@@ -28,74 +27,74 @@ class ZoneManagerRegionFilterTests: XCTestCase {
 
         // sorted by distance
         beaconZones = [
-            with(RLMZone()) {
-                $0.entityId = "zone.b_little_skillet"
-                $0.serverIdentifier = "server1"
-                $0.BeaconUUID = UUID().uuidString
-                $0.Latitude = 37.7796508
-                $0.Longitude = -122.3933569
-                $0.Radius = 1
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone.b_castro_theater"
-                $0.serverIdentifier = "server1"
-                $0.BeaconUUID = UUID().uuidString
-                $0.Latitude = 37.7622557
-                $0.Longitude = -122.4330972
-                $0.Radius = 2
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone.b_nopa"
-                $0.serverIdentifier = "server1"
-                $0.BeaconUUID = UUID().uuidString
-                $0.Latitude = 37.7727871
-                $0.Longitude = -122.4410906
-                $0.Radius = 3
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone.b_dmv"
-                $0.serverIdentifier = "server1"
-                $0.BeaconUUID = UUID().uuidString
-                $0.Latitude = 37.7739364
-                $0.Longitude = -122.4435184
-                $0.Radius = 4
-            },
+            AppZone(
+                entityId: "zone.b_little_skillet",
+                serverIdentifier: "server1",
+                latitude: 37.7796508,
+                longitude: -122.3933569,
+                radius: 1,
+                beaconUUID: UUID().uuidString
+            ),
+            AppZone(
+                entityId: "zone.b_castro_theater",
+                serverIdentifier: "server1",
+                latitude: 37.7622557,
+                longitude: -122.4330972,
+                radius: 2,
+                beaconUUID: UUID().uuidString
+            ),
+            AppZone(
+                entityId: "zone.b_nopa",
+                serverIdentifier: "server1",
+                latitude: 37.7727871,
+                longitude: -122.4410906,
+                radius: 3,
+                beaconUUID: UUID().uuidString
+            ),
+            AppZone(
+                entityId: "zone.b_dmv",
+                serverIdentifier: "server1",
+                latitude: 37.7739364,
+                longitude: -122.4435184,
+                radius: 4,
+                beaconUUID: UUID().uuidString
+            ),
         ]
 
         // sorted by distance
         circularZones = [
-            with(RLMZone()) {
-                $0.entityId = "zone.home" // dropbox
-                $0.serverIdentifier = "server1"
-                $0.Latitude = 37.7660435
-                $0.Longitude = -122.3952834
-                $0.Radius = 100
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone.oracle_park"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = 37.7806336
-                $0.Longitude = -122.3946727
-                $0.Radius = 140
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone.philz_coffee"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = 37.7909037
-                $0.Longitude = -122.3973968
-                $0.Radius = 101
-            },
-            with(RLMZone()) {
-                $0.entityId = "zone.ferrybuilding"
-                $0.serverIdentifier = "server1"
-                $0.Latitude = 37.795571
-                $0.Longitude = -122.393572
-                $0.Radius = 120
-            },
+            AppZone(
+                entityId: "zone.home", // dropbox
+                serverIdentifier: "server1",
+                latitude: 37.7660435,
+                longitude: -122.3952834,
+                radius: 100
+            ),
+            AppZone(
+                entityId: "zone.oracle_park",
+                serverIdentifier: "server1",
+                latitude: 37.7806336,
+                longitude: -122.3946727,
+                radius: 140
+            ),
+            AppZone(
+                entityId: "zone.philz_coffee",
+                serverIdentifier: "server1",
+                latitude: 37.7909037,
+                longitude: -122.3973968,
+                radius: 101
+            ),
+            AppZone(
+                entityId: "zone.ferrybuilding",
+                serverIdentifier: "server1",
+                latitude: 37.795571,
+                longitude: -122.393572,
+                radius: 120
+            ),
         ]
     }
 
-    private func monitoredRegions(for zones: AnyCollection<RLMZone>) -> Set<CLRegion> {
+    private func monitoredRegions(for zones: AnyCollection<AppZone>) -> Set<CLRegion> {
         Set(zones.flatMap(\.regionsForMonitoring))
     }
 

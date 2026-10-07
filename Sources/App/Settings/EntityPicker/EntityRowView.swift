@@ -60,8 +60,11 @@ struct EntityRowView: View {
             subtitle = (entity?.contextualSubtitle).orEmpty
             let fallbackIcon = Domain(entityId: (entity?.entityId).orEmpty)?.icon(deviceClass: entity?.rawDeviceClass)
             if let entity {
+                // Prefer the entity's own icon override, then the frontend-matching default resolved
+                // from the backend `entity_component` map at sync time, then the domain fallback.
+                let iconName = entity.icon?.isEmpty == false ? entity.icon : entity.resolvedIcon
                 icon = MaterialDesignIcons(
-                    serversideValueNamed: entity.icon.orEmpty,
+                    serversideValueNamed: iconName.orEmpty,
                     fallback: fallbackIcon ?? .dotsGridIcon
                 ).image(
                     ofSize: .init(width: iconSize.width, height: iconSize.height),

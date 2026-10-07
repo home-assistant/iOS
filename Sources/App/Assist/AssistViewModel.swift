@@ -5,6 +5,15 @@ import HAKit
 import Shared
 
 final class AssistViewModel: NSObject, ObservableObject {
+    private enum Constants {
+        /// The orb level rises fast so every syllable registers, and falls slower so it settles
+        /// instead of flickering between words.
+        static let audioLevelAttack: Double = 0.8
+        static let audioLevelRelease: Double = 0.25
+        /// Below 1: lifts quiet speech up the scale, so normal talking moves the orb noticeably.
+        static let audioLevelCurve: Double = 0.65
+    }
+
     @Published var chatItems: [AssistChatItem] = []
     @Published var pipelines: [Pipeline] = []
     @Published var preferredPipelineId: String = "" {
@@ -17,6 +26,8 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @Published var inputText = ""
     @Published var isRecording = false
+    /// Normalized microphone input level (0...1) driving the voice orb while recording
+    @Published var audioLevel: Double = 0
     @Published var showError = false
     @Published var focusOnInput = false
     @Published var errorMessage = ""
@@ -29,10 +40,17 @@ final class AssistViewModel: NSObject, ObservableObject {
     private(set) var autoStartRecording: Bool
 
     private(set) var canSendAudioData = false
+    /// Whether `pipelines` came from the server this session rather than only from the cache, which
+    /// can predate an engine added to a pipeline since.
+    private var hasFreshPipelines = false
     private var configObservationCancellable: AnyDatabaseCancellable?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
     private var voiceInitiatedRequest = false
+    /// How far back through the sent requests the user has walked, newest first; nil while they are
+    /// still on their own draft.
+    private var requestHistoryOffset: Int?
+    private var draftBeforeRequestHistory: String?
 
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -68,15 +86,19 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @MainActor func initialRoutine() {
         AssistSession.shared.delegate = self
+        // Each session refetches the pipelines, possibly for another server; until then they are only cached.
+        hasFreshPipelines = false
 
         loadCachedPipelines()
 
+        focusOnInput = !autoStartRecording
+
         if pipelines.isEmpty {
             fetchPipelines { [weak self] in
-                Task { @MainActor in self?.checkForAutoRecordingAndStart() }
+                Task { @MainActor in self?.startRecordingIfNeeded() }
             }
         } else {
-            checkForAutoRecordingAndStart()
+            startRecordingIfNeeded()
             fetchPipelines()
         }
     }
@@ -94,14 +116,67 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer.pause()
         stopStreaming()
         voiceInitiatedRequest = expectingTTS
-        let requestServerTTS = expectingTTS && !configuration.muteTTS && !configuration.enableOnDeviceTTS
+        // Already text, wherever it was transcribed: only the reply side of the run is left to decide.
+        let stages = AssistRunStages(
+            pipeline: selectedPipeline,
+            listening: nil,
+            speaking: expectingTTS ? speakingEngine : nil
+        )
         assistService.assist(source: .text(
             input: inputText,
             pipelineId: preferredPipelineId,
-            expectTTS: requestServerTTS
+            expectTTS: stages?.endsWithTextToSpeech == true
         ))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
+        resetRequestHistoryWalk()
+    }
+
+    /// The requests already sent, newest first, for walking back through them like a terminal's
+    /// command history.
+    private var sentRequests: [String] {
+        chatItems.filter { $0.itemType == .input }.map(\.content).reversed()
+    }
+
+    /// Puts the previous sent request in the input, keeping the user's own draft to come back to.
+    /// - Returns: whether there was an earlier request to show.
+    @MainActor @discardableResult func recallPreviousRequest() -> Bool {
+        let requests = sentRequests
+        guard !requests.isEmpty else { return false }
+
+        let offset: Int
+        if let requestHistoryOffset {
+            guard requestHistoryOffset + 1 < requests.count else { return false }
+            offset = requestHistoryOffset + 1
+        } else {
+            draftBeforeRequestHistory = inputText
+            offset = 0
+        }
+        requestHistoryOffset = offset
+        inputText = requests[offset]
+        return true
+    }
+
+    /// Walks back towards the newest request, and past it to the draft the user was writing.
+    /// - Returns: whether there was anything later to show.
+    @MainActor @discardableResult func recallNextRequest() -> Bool {
+        guard let requestHistoryOffset else { return false }
+
+        guard requestHistoryOffset > 0 else {
+            inputText = draftBeforeRequestHistory ?? ""
+            resetRequestHistoryWalk()
+            return true
+        }
+
+        let offset = requestHistoryOffset - 1
+        self.requestHistoryOffset = offset
+        inputText = sentRequests[offset]
+        return true
+    }
+
+    private func resetRequestHistoryWalk() {
+        requestHistoryOffset = nil
+        draftBeforeRequestHistory = nil
     }
 
     @MainActor func assistWithTextExpectingTTS() {
@@ -126,6 +201,15 @@ final class AssistViewModel: NSObject, ObservableObject {
 
             if isRecording {
                 stopStreaming()
+                return
+            }
+
+            // Checked before the microphone goes live: the backend would refuse the run anyway, and
+            // the user would be left talking to nothing.
+            guard voiceRunStages != nil else {
+                Current.Log.error("Assist pipeline \(preferredPipelineId) has no speech-to-text engine")
+                appendToChat(.init(content: L10n.Assist.Error.speechToTextUnsupported, itemType: .error))
+                focusOnInput = true
                 return
             }
 
@@ -166,11 +250,40 @@ final class AssistViewModel: NSObject, ObservableObject {
     private func startAssistAudioPipeline(audioSampleRate: Double) {
         assistService.assist(
             source: .audio(
-                pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
+                pipelineId: voicePipelineId,
                 audioSampleRate: audioSampleRate,
-                tts: !configuration.muteTTS && !configuration.enableOnDeviceTTS
+                tts: voiceRunStages?.endsWithTextToSpeech == true
             )
         )
+    }
+
+    /// Voice runs fall back to the first pipeline while "Preferred" has not been resolved.
+    private var voicePipelineId: String? {
+        preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId
+    }
+
+    /// The pipeline runs go to, once its capabilities are known to be current. Until then nil, so
+    /// requests go out as the user's settings ask and `AssistService` checks them against the server.
+    private var selectedPipeline: Pipeline? {
+        guard hasFreshPipelines else { return nil }
+        return pipelines.first { $0.id == voicePipelineId }
+    }
+
+    /// Who transcribes what the user says into the microphone.
+    private var listeningEngine: AssistSpeechEngine {
+        configuration.enableOnDeviceSTT ? .onDevice : .server
+    }
+
+    /// Who speaks the reply to a spoken request, or nil when replies are muted.
+    private var speakingEngine: AssistSpeechEngine? {
+        guard !configuration.muteTTS else { return nil }
+        return configuration.enableOnDeviceTTS ? .onDevice : .server
+    }
+
+    /// The stages a request spoken into the microphone runs, or nil when the selected pipeline
+    /// cannot transcribe it and the user does not transcribe on device either.
+    private var voiceRunStages: AssistRunStages? {
+        AssistRunStages(pipeline: selectedPipeline, listening: listeningEngine, speaking: speakingEngine)
     }
 
     private func replaceAssistService(server: Server) {
@@ -200,11 +313,12 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func fetchPipelines(completion: (() -> Void)? = nil) {
-        assistService.fetchPipelines { [weak self] _ in
+        assistService.fetchPipelines { [weak self] response in
             guard let self else {
                 self?.showError(message: L10n.Assist.Error.pipelinesResponse)
                 return
             }
+            hasFreshPipelines = response != nil
 
             // Fetch pipelines method already saves new values in database
             // loading cache now
@@ -253,6 +367,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor func stopStreaming() {
         isRecording = false
         canSendAudioData = false
+        audioLevel = 0
 
         // Stop traditional audio recording
         audioRecorder.stopRecording()
@@ -282,13 +397,19 @@ final class AssistViewModel: NSObject, ObservableObject {
         speechSynthesizer?.speak(text)
     }
 
-    @MainActor private func checkForAutoRecordingAndStart() {
-        if autoStartRecording {
-            Current.Log.info("Auto start recording triggered in Assist")
-            autoStartRecording = false
-            assistWithAudio()
-        } else if Current.isCatalyst {
-            focusOnInput = true
+    @MainActor private func startRecordingIfNeeded() {
+        guard autoStartRecording else { return }
+        Current.Log.info("Auto start recording triggered in Assist")
+        autoStartRecording = false
+        assistWithAudio()
+    }
+
+    private func updateAudioLevel(_ level: Float) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, isRecording else { return }
+            let shaped = pow(Double(level), Constants.audioLevelCurve)
+            let smoothing = shaped > audioLevel ? Constants.audioLevelAttack : Constants.audioLevelRelease
+            audioLevel = audioLevel * (1 - smoothing) + shaped * smoothing
         }
     }
 
@@ -352,6 +473,10 @@ final class AssistViewModel: NSObject, ObservableObject {
             }
         }
 
+        transcriber.onAudioLevelUpdate = { [weak self] level in
+            self?.updateAudioLevel(level)
+        }
+
         transcriber.onListeningStateChange = { [weak self] listening in
             Task { @MainActor [weak self] in
                 guard let self, !listening else { return }
@@ -397,7 +522,12 @@ extension AssistViewModel: AudioRecorderDelegate {
     func didStopRecording() {
         DispatchQueue.main.async { [weak self] in
             self?.isRecording = false
+            self?.audioLevel = 0
         }
+    }
+
+    func didUpdateAudioLevel(_ level: Float) {
+        updateAudioLevel(level)
     }
 }
 
@@ -441,12 +571,19 @@ extension AssistViewModel: AssistServiceDelegate {
         }
 
         audioPlayer.delegate = self
-        audioPlayer.play(url: mediaUrl)
+        audioPlayer.play(url: mediaUrl, server: server)
     }
 
     func didReceiveError(code: String, message: String) {
         Current.Log.error("Assist error: \(code)")
         appendToChat(.init(content: message, itemType: .error))
+        // Recording starts before the pipeline is subscribed, so a run that fails on the way up —
+        // a rejected `assist_pipeline/run`, for instance — arrives with the microphone still live.
+        // Leaving it there keeps the view in its listening state with nothing left to send to.
+        Task { @MainActor [weak self] in
+            guard let self, isRecording else { return }
+            stopStreaming()
+        }
     }
 }
 

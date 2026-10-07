@@ -17,6 +17,7 @@ protocol WebFrontend: AnyObject {
     func show(alert: ServerAlert)
     func open(inline url: URL, avoidUnnecessaryReload: Bool)
     func openPanel(_ url: URL)
+    func navigateToRoot()
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func presentOverlayController(controller: UIViewController, animated: Bool)
 }

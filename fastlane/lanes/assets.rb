@@ -19,7 +19,6 @@ end
 
 desc 'Update switftgen input/output files'
 lane :update_swiftgen_config do
-  # rubocop:disable Layout/LineLength
-  sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen config generate-xcfilelists --inputs swiftgen.yml.file-list.in --outputs swiftgen.yml.file-list.out')
-  # rubocop:enable Layout/LineLength
+  # rubocop:disable-next Layout/LineLength
+  sh('cd ../ && ./Tools/build_tool swiftgen config generate-xcfilelists --inputs swiftgen.yml.file-list.in --outputs swiftgen.yml.file-list.out')
 end

@@ -6,6 +6,11 @@ import Intents
 import PromiseKit
 
 final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
+    /// Activating or deactivating an audio session (Assist recording, TTS playback, a camera stream)
+    /// fires several route changes in a row, and each signal costs a full sensor update, so wait for
+    /// the route to settle and send one.
+    private static let routeChangeDebounce: DispatchQueue.SchedulerTimeType.Stride = .milliseconds(500)
+
     private var cancellables: Set<AnyCancellable> = []
     private let signal: () -> Void
 
@@ -20,6 +25,7 @@ final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, Sensor
         super.observe()
         guard !isObserving else { return }
         NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)
+            .debounce(for: Self.routeChangeDebounce, scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.signal()
             }

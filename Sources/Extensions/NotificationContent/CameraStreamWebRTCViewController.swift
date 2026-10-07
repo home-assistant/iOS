@@ -6,7 +6,6 @@ import WebRTC
 
 /// Hosts the in-app WebRTC player as a `CameraStreamHandler` so live camera notifications prefer
 /// WebRTC, falling back to HLS/MJPEG. Resolves `promise` on first frame; rejects on failure/timeout.
-@available(iOS 16.0, *)
 final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHandler {
     enum WebRTCError: LocalizedError {
         /// WebRTC needs the entity id, which isn't in `StreamCameraResponse`; use `init(api:cameraEntityId:)`.
@@ -47,7 +46,7 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         }
     }
 
-    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse) throws {
+    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse, baseURL: URL) throws {
         throw WebRTCError.requiresEntityID
     }
 
@@ -70,7 +69,7 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
 
     deinit {
         timeoutWorkItem?.cancel()
-        viewModel.webRTCClient?.closeConnection()
+        viewModel.stop()
     }
 
     override func viewDidLoad() {
@@ -130,7 +129,7 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
     private func detachPlayer() {
         timeoutWorkItem?.cancel()
         timeoutWorkItem = nil
-        viewModel.webRTCClient?.closeConnection()
+        viewModel.stop()
         playerViewController?.willMove(toParent: nil)
         playerViewController?.view.removeFromSuperview()
         playerViewController?.removeFromParent()
@@ -164,7 +163,7 @@ final class CameraStreamWebRTCViewController: UIViewController, CameraStreamHand
         hasResolved = true
         // Tear down the peer connection now rather than waiting for deinit, so we don't keep a
         // failed/timed-out connection alive while the cascade falls back to HLS/MJPEG.
-        viewModel.webRTCClient?.closeConnection()
+        viewModel.stop()
         seal.reject(WebRTCError.unavailable)
     }
 }

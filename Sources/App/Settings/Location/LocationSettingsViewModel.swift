@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
-import RealmSwift
+import GRDB
+import MapKit
 import Shared
 import UIKit
 
@@ -36,8 +37,15 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
 
     @Published private(set) var zones: [LocationZoneItem] = []
 
+    /// Latest one-shot fix used to show each zone's distance from the user.
+    @Published private(set) var currentLocation: CLLocation?
+
+    private let distanceFormatter = with(MKDistanceFormatter()) {
+        $0.unitStyle = .abbreviated
+    }
+
     private let locationManager = CLLocationManager()
-    private var zonesToken: NotificationToken?
+    private var zonesToken: AnyDatabaseCancellable?
     private var backgroundRefreshObserver: NSObjectProtocol?
 
     override init() {
@@ -72,7 +80,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
     }
 
     deinit {
-        zonesToken?.invalidate()
+        zonesToken?.cancel()
         if let backgroundRefreshObserver {
             NotificationCenter.default.removeObserver(backgroundRefreshObserver)
         }
@@ -83,6 +91,7 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         locationAuthorizationStatus = locationManager.authorizationStatus
         locationAccuracyAuthorization = locationManager.accuracyAuthorization
         backgroundRefreshStatus = UIApplication.shared.backgroundRefreshStatus
+        requestCurrentLocationIfAuthorized()
     }
 
     // MARK: - Permission descriptions
@@ -175,21 +184,69 @@ final class LocationSettingsViewModel: NSObject, ObservableObject {
         Current.settingsStore.locationSources = sources
     }
 
+    // MARK: - Current location & distances
+
+    /// One-shot location request so zone cards can show how far away each zone is.
+    /// A rough fix is enough for a human-readable distance, and it arrives faster.
+    private func requestCurrentLocationIfAuthorized() {
+        guard [.authorizedAlways, .authorizedWhenInUse].contains(locationManager.authorizationStatus) else {
+            return
+        }
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.requestLocation()
+    }
+
+    func formattedDistance(to zone: LocationZoneItem) -> String? {
+        guard let distance = distance(to: zone) else { return nil }
+        return distanceFormatter.string(fromDistance: distance)
+    }
+
+    /// Whether zone rows should identify the server they belong to.
+    var hasMultipleServers: Bool {
+        Current.servers.all.count > 1
+    }
+
+    /// Zones ordered by proximity to the user when a location fix is available,
+    /// alphabetically otherwise.
+    var sortedZones: [LocationZoneItem] {
+        if currentLocation != nil {
+            return zones.sorted {
+                (distance(to: $0) ?? .greatestFiniteMagnitude) < (distance(to: $1) ?? .greatestFiniteMagnitude)
+            }
+        }
+        return zones.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+    }
+
+    private func distance(to zone: LocationZoneItem) -> CLLocationDistance? {
+        guard let currentLocation else { return nil }
+        let zoneLocation = CLLocation(
+            latitude: zone.coordinate.latitude,
+            longitude: zone.coordinate.longitude
+        )
+        return currentLocation.distance(from: zoneLocation)
+    }
+
     // MARK: - Zones
 
     private func observeZones() {
-        let results = Current.realm().objects(RLMZone.self)
-        // Realm calls this back on the thread the observation was set up on (main).
-        // Map to value-type snapshots synchronously (eagerly into an Array — Realm's
-        // `.map` returns a `LazyMapSequence`, not `[T]`), then hop to MainActor to
-        // publish.
-        zonesToken = results.observe { [weak self] _ in
-            let snapshot = Array(results).map(LocationZoneItem.init)
-            Task { @MainActor [weak self] in
-                self?.zones = snapshot
-            }
+        let observation = ValueObservation.tracking { db in
+            try AppZone.fetchAll(db)
         }
-        zones = Array(results).map(LocationZoneItem.init)
+        // .immediate delivers the initial value synchronously (we are created on
+        // the main queue), matching the previous Realm behavior of populating
+        // the zones before first render; changes also arrive on the main queue.
+        zonesToken = observation.start(
+            in: Current.database(),
+            scheduling: .immediate,
+            onError: { error in
+                Current.Log.error("couldn't observe zones: \(error)")
+            },
+            onChange: { [weak self] zones in
+                self?.zones = zones.map(LocationZoneItem.init)
+            }
+        )
     }
 }
 
@@ -202,7 +259,19 @@ extension LocationSettingsViewModel: CLLocationManagerDelegate {
         Task { @MainActor [weak self] in
             self?.locationAuthorizationStatus = status
             self?.locationAccuracyAuthorization = accuracy
+            self?.requestCurrentLocationIfAuthorized()
         }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        Task { @MainActor [weak self] in
+            self?.currentLocation = location
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Current.Log.error("Location settings one-shot location failed: \(error.localizedDescription)")
     }
 }
 
@@ -214,23 +283,27 @@ struct LocationZoneItem: Identifiable {
     let trackingEnabled: Bool
     let coordinate: CLLocationCoordinate2D
     let radius: Double
+    let serverIdentifier: String
+    let serverName: String?
     let beaconUUID: String?
     let beaconMajor: String?
     let beaconMinor: String?
 
-    init(zone: RLMZone) {
+    init(zone: AppZone) {
         self.id = zone.identifier
-        self.name = zone.Name
-        self.trackingEnabled = zone.TrackingEnabled
+        self.name = zone.name
+        self.trackingEnabled = zone.trackingEnabled
         self.coordinate = zone.center
-        self.radius = zone.Radius
-        self.beaconUUID = zone.BeaconUUID
-        if let major = zone.BeaconMajor.value {
+        self.radius = zone.radius
+        self.serverIdentifier = zone.serverIdentifier
+        self.serverName = Current.servers.server(forServerIdentifier: zone.serverIdentifier)?.info.name
+        self.beaconUUID = zone.beaconUUID
+        if let major = zone.beaconMajor {
             self.beaconMajor = String(describing: major)
         } else {
             self.beaconMajor = nil
         }
-        if let minor = zone.BeaconMinor.value {
+        if let minor = zone.beaconMinor {
             self.beaconMinor = String(describing: minor)
         } else {
             self.beaconMinor = nil

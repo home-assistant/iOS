@@ -2,68 +2,18 @@ import Foundation
 import GRDB
 import HAKit
 
-/// The entity "universe" cache, sourced from the REST `/states` endpoint (see `AppEntitiesModel`).
-///
-/// This is distinct from, and complementary to, `EntityRegistryListForDisplay.Entity` (the registry,
-/// from `config/entity_registry/list_for_display`):
-/// - `HAAppEntity` is every entity that currently has a state — including ones with no registry entry
-///   (YAML/template/command-line entities, etc.) — and carries `domain` + `rawDeviceClass`, which the
-///   registry does not. It's what pickers/widgets enumerate as "all selectable entities".
-/// - The registry is config metadata (area, hidden, decimal precision, the user's name) for the
-///   registered, non-disabled subset, and is only consulted to filter/enrich those entities.
-///
-/// `name` holds the **resolved display name**: the registry name (`list_for_display` `en`) when the
-/// entity has a registry row, otherwise the live `friendly_name`, otherwise the `entityId`. It is
-/// resolved once, at write time, by `AppEntitiesModel` (see `handle(appRelatedEntities:server:)`), so
-/// readers can use `name` directly — there is no per-read registry lookup.
-public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRecord, Equatable {
-    public let id: String
-    public let entityId: String
-    public let serverId: String
-    public let domain: String
-    /// The entity's resolved **display name**, persisted in the database. `AppEntitiesModel` populates
-    /// this at write time with the registry name (`list_for_display` `en`) when one exists, falling back
-    /// to the live `friendly_name`, then the `entityId`. Readers should use this directly — it is already
-    /// the name to show, so no per-read registry lookup is needed.
-    public let name: String
-    public let icon: String?
-    public let rawDeviceClass: String?
-
-    public init(
-        id: String,
-        entityId: String,
-        serverId: String,
-        domain: String,
-        name: String,
-        icon: String?,
-        rawDeviceClass: String?,
-    ) {
-        self.id = id
-        self.entityId = entityId
-        self.serverId = serverId
-        self.domain = domain
-        self.name = name
-        self.icon = icon
-        self.rawDeviceClass = rawDeviceClass
-    }
-
-    public var deviceClass: DeviceClass {
+// `HAAppEntity` itself lives in the `HAModels` package; these are its `DeviceClass` helper and
+// database-backed queries.
+public extension HAAppEntity {
+    var deviceClass: DeviceClass {
         DeviceClass(rawValue: rawDeviceClass ?? "") ?? .unknown
-    }
-
-    public enum ConfigInclude {
-        case all
-        case hidden
-        /// Kept for source compatibility. Disabled entities are no longer stored (the entity
-        /// registry is sourced from `list_for_display`, which omits them), so this has no effect.
-        case disabled
     }
 
     /// Fetches app entities based on configuration filters.
     /// - Parameter include: Filter options - use `.all` to include everything, or combine `.hidden` and `.disabled` to
     /// include specific types
     /// - Returns: Array of filtered entities
-    public static func config(include: [ConfigInclude] = []) throws -> [HAAppEntity] {
+    static func config(include: [ConfigInclude] = []) throws -> [HAAppEntity] {
         try Current.database().read({ db in
             // If .all is specified, return everything
             if include.contains(.all) {
@@ -102,7 +52,74 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         })
     }
 
-    public static func entity(id: String, serverId: String) -> HAAppEntity? {
+    /// Whether the watch may offer this entity in a list it generates itself, given the precomputed
+    /// set of watch-addable domain raw values and the server's `watchExcludedEntityIds`.
+    ///
+    /// Excludes entities the user hid and config/diagnostic ones. This governs only the automatic
+    /// lists — area browsing, the home-screen areas mode, the empty-area checks and the add flows —
+    /// which is what "hidden" means in Home Assistant: it removes an entity from auto-generated
+    /// views. An entity the user deliberately added to the watch home screen still renders; those
+    /// items resolve through `MagicItemProvider` and never pass through this predicate.
+    ///
+    /// The row's own `isHidden`/`entityCategory` are checked too, but they are only refreshed when
+    /// the phone rewrites its entity table, so `excludedEntityIds` — read live from the mirrored
+    /// registry — is what makes the result correct on a server whose rows predate that write.
+    func isWatchCompatible(allowedDomains: Set<String>, excludedEntityIds: Set<String> = []) -> Bool {
+        allowedDomains.contains(domain)
+            && entityCategory == nil
+            && isHidden != true
+            && !excludedEntityIds.contains(entityId)
+    }
+
+    /// Entity ids a server's registry marks as hidden or as config/diagnostic.
+    ///
+    /// `HAAppEntity` carries both facts as columns baked in at write time, but a server whose
+    /// entities have not been rewritten since those columns shipped still stores `nil` for them,
+    /// and the watch would then offer entities the user hid. The full registry is mirrored to the
+    /// watch, so reading it directly makes the filter correct immediately rather than after the
+    /// phone's next entity write.
+    static func watchExcludedEntityIds(serverId: String) -> Set<String> {
+        let ids = try? Current.database().read { db in
+            try EntityRegistryListForDisplay.Entity
+                .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
+                .filter(
+                    Column(DatabaseTables.DisplayEntityRegistry.hidden.rawValue) == true
+                        || Column(DatabaseTables.DisplayEntityRegistry.entityCategory.rawValue) != nil
+                )
+                .fetchAll(db)
+                .map(\.entityId)
+        }
+        return Set(ids ?? [])
+    }
+
+    /// Entity ids the watch area screens can render for a server: watch-addable domains, without
+    /// config/diagnostic or hidden entities. Used to drop areas that would show an empty screen.
+    static func watchAreaEntityIds(serverId: String) throws -> Set<String> {
+        let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
+        let excluded = watchExcludedEntityIds(serverId: serverId)
+        let entities = try Current.database().read { db in
+            try HAAppEntity
+                .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        let compatible = entities
+            .filter { $0.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded) }
+        return Set(compatible.map(\.entityId))
+    }
+
+    /// The entity a `ServerEntity.uniqueId` names, without needing to know which server it belongs to.
+    static func entity(uniqueId: String) -> HAAppEntity? {
+        do {
+            return try Current.database().read { db in
+                try HAAppEntity.fetchOne(db, id: uniqueId)
+            }
+        } catch {
+            Current.Log.error("Error fetching entity \(uniqueId): \(error)")
+        }
+        return nil
+    }
+
+    static func entity(id: String, serverId: String) -> HAAppEntity? {
         do {
             return try Current.database().read { db in
                 try HAAppEntity
@@ -114,11 +131,5 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
             Current.Log.error("Error fetching entity \(id) for server \(serverId): \(error)")
         }
         return nil
-    }
-}
-
-public enum ServerEntity {
-    public static func uniqueId(serverId: String, entityId: String) -> String {
-        "\(serverId)-\(entityId)"
     }
 }

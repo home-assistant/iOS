@@ -44,7 +44,7 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         guard let scripts else { return .result(value: false) }
         for script in scripts {
             let intent = ScriptAppIntent()

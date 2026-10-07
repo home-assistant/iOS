@@ -31,7 +31,11 @@ final class AssistWindowModel: ObservableObject {
     /// Bumped on each `configure` so the Assist window builds a fresh session when reused for a new request.
     @Published private(set) var revision = 0
 
-    func configure(server: Server, preferredPipelineId: String, autoStartRecording: Bool) {
+    func configure(
+        server: Server,
+        preferredPipelineId: String,
+        autoStartRecording: Bool
+    ) {
         self.server = server
         self.preferredPipelineId = preferredPipelineId
         self.autoStartRecording = autoStartRecording

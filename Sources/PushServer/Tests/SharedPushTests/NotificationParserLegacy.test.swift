@@ -1,5 +1,5 @@
 import Foundation
-import SharedPush
+@testable import SharedPush
 import XCTest
 
 class NotificationParserLegacyTests: XCTestCase {
@@ -64,5 +64,12 @@ class NotificationParserLegacyTests: XCTestCase {
 
             XCTAssertEqual(resultString, expectedString, data.name)
         }
+    }
+
+    func testNotificationDecorationKeyRawValues() {
+        XCTAssertEqual(NotificationPayloadKey.iconURL.rawValue, "icon_url")
+        XCTAssertEqual(NotificationPayloadKey.notificationIcon.rawValue, "notification_icon")
+        XCTAssertEqual(NotificationPayloadKey.notificationIconColor.rawValue, "notification_icon_color")
+        XCTAssertEqual(NotificationPayloadKey.color.rawValue, "color")
     }
 }

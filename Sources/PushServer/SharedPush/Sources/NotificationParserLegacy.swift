@@ -179,6 +179,16 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         addAttachment(key: "image", contentType: "jpeg")
         addAttachment(key: "audio", contentType: "waveformaudio")
 
+        for key in NotificationPayloadKey.notificationDecorationKeys {
+            if let value = data[key.rawValue] {
+                payload[key.rawValue] = value
+            }
+        }
+        if payload[NotificationPayloadKey.iconURL.rawValue] != nil ||
+            payload[NotificationPayloadKey.notificationIcon.rawValue] != nil {
+            needsMutableContent = true
+        }
+
         payload["url"] = data["url"]
         payload["shortcut"] = data["shortcut"]
         payload["presentation_options"] = data["presentation_options"]
@@ -276,6 +286,20 @@ enum LegacyNotificationCommandType: String {
     case updateWidgets = "update_widgets"
     case showCamera = "show_camera"
     case hideCamera = "hide_camera"
+}
+
+public enum NotificationPayloadKey: String, CaseIterable {
+    case iconURL = "icon_url"
+    case notificationIcon = "notification_icon"
+    case notificationIconColor = "notification_icon_color"
+    case color
+
+    public static let notificationDecorationKeys: [Self] = [
+        .iconURL,
+        .notificationIcon,
+        .notificationIconColor,
+        .color,
+    ]
 }
 
 private extension Dictionary where Value == Any {

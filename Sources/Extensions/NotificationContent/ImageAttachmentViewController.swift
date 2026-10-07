@@ -1,7 +1,7 @@
-import MobileCoreServices
 import PromiseKit
 import Shared
 import UIKit
+import UniformTypeIdentifiers
 import UserNotifications
 import UserNotificationsUI
 import WebKit
@@ -11,7 +11,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
     let needsEndSecurityScoped: Bool
     let image: UIImage
     let imageData: Data
-    let imageUTI: CFString
+    let imageUTI: UTType
 
     enum ImageViewType {
         case imageView(UIImageView)
@@ -48,14 +48,15 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
             self.imageData = data
 
             if let imageSource = CGImageSourceCreateWithData(data as CFData, nil),
-               let uti = CGImageSourceGetType(imageSource) {
-                self.imageUTI = uti
+               let uti = CGImageSourceGetType(imageSource),
+               let type = UTType(uti as String) {
+                self.imageUTI = type
             } else {
                 // can't figure out, just assume JPEG
-                self.imageUTI = kUTTypeJPEG
+                self.imageUTI = .jpeg
             }
 
-            if UTTypeConformsTo(imageUTI, kUTTypeGIF) {
+            if imageUTI.conforms(to: .gif) {
                 // use a WebView for gif so we can animate without pulling in a third party library
                 let config = with(WKWebViewConfiguration()) {
                     $0.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
@@ -130,7 +131,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
 
         switch visibleView {
         case let .webView(webView):
-            let mime = UTTypeCopyPreferredTagWithClass(imageUTI, kUTTagClassMIMEType)?.takeRetainedValue() as String?
+            let mime = imageUTI.preferredMIMEType
             webView.load(
                 imageData,
                 mimeType: mime ?? "image/gif",

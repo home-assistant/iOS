@@ -1,11 +1,31 @@
 import Foundation
+import HADesignSystem
 import SwiftUI
 
 public extension View {
     func embeddedInHostingController() -> UIHostingController<some View> {
         let provider = ViewControllerProvider()
+        // Every UIKit-hosted SwiftUI screen flows through here, so the brand toggle style applies
+        // app-wide from this single seam (the SwiftUI scene roots in HAApp apply it themselves).
         let hostingAccessingView = environmentObject(provider)
+            .toggleStyle(.haStyle)
         let hostingController = UIHostingController(rootView: hostingAccessingView)
+        provider.viewController = hostingController
+        return hostingController
+    }
+
+    /// `embeddedInHostingController()` with a caller-supplied hosting controller, for screens that need a
+    /// subclass (e.g. to observe their own presentation lifecycle). The view is type-erased so the subclass
+    /// needs no generic parameter of its own.
+    func embeddedInHostingController<Controller: UIHostingController<AnyView>>(
+        _ makeController: (AnyView) -> Controller
+    ) -> Controller {
+        let provider = ViewControllerProvider()
+        let hostingAccessingView = AnyView(
+            environmentObject(provider)
+                .toggleStyle(.haStyle)
+        )
+        let hostingController = makeController(hostingAccessingView)
         provider.viewController = hostingController
         return hostingController
     }
@@ -61,6 +81,7 @@ private struct InjectViewControllerProvider: ViewModifier {
     func body(content: Content) -> some View {
         content
             .environmentObject(provider)
+            .toggleStyle(.haStyle)
             .background(ViewControllerResolver { provider.viewController = $0 })
     }
 }

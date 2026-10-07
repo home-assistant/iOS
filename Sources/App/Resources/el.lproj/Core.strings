@@ -16,6 +16,7 @@
 "common::state::standby" = "Αναμονή";
 "common::state::unlocked" = "Ξεκλείδωτη";
 "common::state::yes" = "Ναι";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Ανενεργό";
 "component::alarm_control_panel::title" = "Πίνακας ελέγχου συναγερμού";
 "component::alert::entity_component::_::state::idle" = "Σε αδράνεια";

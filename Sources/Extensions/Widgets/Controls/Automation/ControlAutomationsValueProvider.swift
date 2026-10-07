@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOSApplicationExtension 18, *)
+@available(iOS 18, *)
 struct ControlAutomationItem {
     let intentAutomationEntity: IntentAutomationEntity
     let icon: SFSymbolEntity
@@ -12,7 +12,7 @@ struct ControlAutomationItem {
     let displayText: String?
 }
 
-@available(iOSApplicationExtension 18, *)
+@available(iOS 18, *)
 struct ControlAutomationsValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlAutomationConfiguration) async throws -> ControlAutomationItem {
         .init(
@@ -57,7 +57,7 @@ struct ControlAutomationsValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOSApplicationExtension 18.0, *)
+@available(iOS 18.0, *)
 struct ControlAutomationConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init("widgets.automations.description", defaultValue: "Run Automation")
 

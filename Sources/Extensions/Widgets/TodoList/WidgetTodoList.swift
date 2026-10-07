@@ -26,8 +26,8 @@ struct WidgetTodoList: Widget {
         .haWidgetPushHandlerIfAvailable()
     }
 
-    private var supportedFamilies: [WidgetFamily] {
-        [.systemSmall, .systemMedium, .systemLarge]
+    var supportedFamilies: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
     }
 }
 

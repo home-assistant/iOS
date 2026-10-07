@@ -3,13 +3,8 @@ import Foundation
 import HAKit
 import PromiseKit
 import Shared
-import SwiftUI
 
 class OnboardingAuth {
-    func failureController(error: Error) -> UIViewController {
-        UIHostingController(rootView: OnboardingErrorView(error: error))
-    }
-
     var login: OnboardingAuthLogin = OnboardingAuthLoginImpl()
     var tokenExchange: OnboardingAuthTokenExchange = OnboardingAuthTokenExchangeImpl()
     var preSteps: [OnboardingAuthPreStep.Type] = [
@@ -27,37 +22,78 @@ class OnboardingAuth {
 
     func authenticate(
         to startInstance: DiscoveredHomeAssistant,
-        sender: UIViewController
+        presenter: OnboardingAuthPresenter
     ) -> Promise<Server> {
         firstly {
-            connect(to: startInstance, sender: sender)
+            connect(to: startInstance, presenter: presenter)
         }.then { [self] api -> Promise<Server> in
             func steps(_ steps: OnboardingAuthStepPoint...) -> Promise<Void> {
                 var promise: Promise<Void> = .value(())
 
                 for step in steps {
                     promise = promise.then { [self] in
-                        performPostSteps(checkPoint: step, api: api, sender: sender)
+                        performPostSteps(checkPoint: step, api: api, presenter: presenter)
                     }
                 }
 
                 return promise
             }
 
+            // A server added next to an existing one is asked what it should receive at the end of
+            // onboarding (`OnboardingPrivacyView`), so it starts out sending nothing: the steps
+            // below would otherwise hand a system nobody has been asked about this device's exact
+            // location and every sensor the user switched on for another one. Abandoning the flow
+            // before the question is answered leaves it on these values rather than the defaults.
+            if !Current.servers.all.isEmpty {
+                api.server.info.setSetting(value: ServerSensorPrivacy.none, for: .sensorPrivacy)
+                api.server.info.setSetting(value: ServerLocationPrivacy.never, for: .locationPrivacy)
+            }
+
+            // Set once the server is persisted, so a later failure undoes exactly what was written.
+            var persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+
             return firstly {
                 steps(.beforeRegister, .register, .afterRegister)
-            }.map {
+            }.map { () -> Server in
+                // `get_config` ran in `.afterRegister`, so by now the server reports its own
+                // instance ID and the identifier can be the one every onboarding route agrees on.
+                let identifier = Self.serverIdentifier(
+                    for: api.server.info,
+                    fallback: api.server.identifier,
+                    existingServers: Current.servers.all
+                )
+                let existingInfo = Current.servers.server(for: identifier)?.info
+                persisted = (identifier, existingInfo)
+
+                // Re-authenticating a server the app already has is not a new server, and the
+                // privacy step is not shown for it, so it keeps the choices it already carries
+                // instead of the holdback above (or a default) overwriting them.
+                var serverInfo = api.server.info
+                if let existingInfo {
+                    serverInfo.setSetting(value: existingInfo.setting(for: .sensorPrivacy), for: .sensorPrivacy)
+                    serverInfo.setSetting(value: existingInfo.setting(for: .locationPrivacy), for: .locationPrivacy)
+                }
+
                 // actually persists to outside-onboarding
-                Current.servers.add(identifier: api.server.identifier, serverInfo: api.server.info)
+                return Current.servers.add(identifier: identifier, serverInfo: serverInfo)
             }.get { server in
-                // somewhat necessary so it points to the keychain-persisted version
-                api.server = server
-                // not super necessary but prevents making a duplicate connection during this session
-                Current.setCachedApi(api, for: api.server.identifier)
+                // Nothing was persisted yet when `configuredAPI` ran, so the API it returned is built
+                // around a detached, in-memory `Server` — and everything that API created at init
+                // captured that instance: the token manager, the websocket's connection-info and
+                // token closures, the request adapters. Handing `api.server` the keychain-persisted
+                // server cannot reach any of them, so they keep reading the onboarding-time snapshot
+                // for the rest of the session. A later re-authentication then writes its new token to
+                // the persisted server while this API keeps presenting the superseded one, which Home
+                // Assistant answers with `auth: invalid` / 401 until the app is relaunched. Replace it
+                // with an API built on the persisted server, and drop the onboarding connection so the
+                // session doesn't keep two.
+                api.connection.disconnect()
+                Current.setCachedApi(HomeAssistantAPI(server: server), for: server.identifier)
             }.then { server in
                 steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
-                when(resolved: undoConfigure(api: api)).then { _ in Promise<Server>(error: error) }
+                when(resolved: undoConfigure(api: api, persisted: persisted))
+                    .then { _ in Promise<Server>(error: error) }
             }
         }
     }
@@ -76,12 +112,12 @@ class OnboardingAuth {
     private func performPreSteps(
         checkPoint: OnboardingAuthStepPoint,
         authDetails: OnboardingAuthDetails,
-        sender: UIViewController
+        presenter: OnboardingAuthPresenter
     ) -> Promise<Void> {
         Current.Log.info(checkPoint)
         return perform(checkPoint: checkPoint, checks: preSteps.compactMap { checkType in
             if checkType.supportedPoints.contains(checkPoint) {
-                return checkType.init(authDetails: authDetails, sender: sender)
+                return checkType.init(authDetails: authDetails, presenter: presenter)
             } else {
                 return nil
             }
@@ -91,12 +127,12 @@ class OnboardingAuth {
     private func performPostSteps(
         checkPoint: OnboardingAuthStepPoint,
         api: HomeAssistantAPI,
-        sender: UIViewController
+        presenter: OnboardingAuthPresenter
     ) -> Promise<Void> {
         Current.Log.info(checkPoint)
         return perform(checkPoint: checkPoint, checks: postSteps.compactMap { checkType in
             if checkType.supportedPoints.contains(checkPoint) {
-                return checkType.init(api: api, sender: sender)
+                return checkType.init(api: api, presenter: presenter)
             } else {
                 return nil
             }
@@ -105,7 +141,7 @@ class OnboardingAuth {
 
     private func connect(
         to baseInstance: DiscoveredHomeAssistant,
-        sender: UIViewController
+        presenter: OnboardingAuthPresenter
     ) -> Promise<HomeAssistantAPI> {
         // we prefer internal URL first, if it's available
         var instances = [(URL, DiscoveredHomeAssistant)]()
@@ -127,9 +163,9 @@ class OnboardingAuth {
                 let authDetails = try OnboardingAuthDetails(baseURL: url)
 
                 return firstly {
-                    performPreSteps(checkPoint: .beforeAuth, authDetails: authDetails, sender: sender)
+                    performPreSteps(checkPoint: .beforeAuth, authDetails: authDetails, presenter: presenter)
                 }.then { [self] in
-                    login.open(authDetails: authDetails, sender: sender)
+                    login.open(authDetails: authDetails, presenter: presenter)
                 }.then { [self] result -> Promise<HomeAssistantAPI> in
                     // The login web view may have been redirected to a different port/scheme; adopt that
                     // address so the stored server URL (and the token exchange) target the real server.
@@ -192,39 +228,84 @@ class OnboardingAuth {
     ) -> Promise<HomeAssistantAPI> {
         Current.Log.info()
 
-        var connectionInfo = ConnectionInfo(discovered: instance, authDetails: authDetails)
+        return Promise { seal in
+            Task { [self] in
+                do {
+                    var connectionInfo = ConnectionInfo(
+                        discovered: instance,
+                        authDetails: authDetails
+                    )
 
-        return tokenExchange.tokenInfo(
-            code: code,
-            connectionInfo: &connectionInfo
-        ).then { tokenInfo -> Promise<HomeAssistantAPI> in
-            Current.Log.verbose()
+                    let tokenInfo = try await tokenExchange.tokenInfo(
+                        code: code,
+                        connectionInfo: &connectionInfo
+                    )
 
-            var serverInfo = ServerInfo(
-                name: ServerInfo.defaultName,
-                connection: connectionInfo,
-                token: tokenInfo,
-                version: instance.version ?? DiscoveredHomeAssistant.defaultVersion
-            )
+                    Current.Log.verbose()
 
-            let identifier = Identifier<Server>(rawValue: instance.uuid ?? UUID().uuidString)
-            let server = Server(
-                identifier: identifier,
-                getter: { serverInfo },
-                setter: { serverInfo = $0; return true }
-            )
+                    var serverInfo = ServerInfo(
+                        name: ServerInfo.defaultName,
+                        connection: connectionInfo,
+                        token: tokenInfo,
+                        version: instance.version ?? DiscoveredHomeAssistant.defaultVersion
+                    )
 
-            return .value(HomeAssistantAPI(server: server))
+                    let identifier = Identifier<Server>(rawValue: instance.uuid ?? UUID().uuidString)
+                    let server = Server(
+                        identifier: identifier,
+                        getter: { serverInfo },
+                        setter: { serverInfo = $0; return true }
+                    )
+
+                    seal.fulfill(HomeAssistantAPI(server: server))
+                } catch {
+                    seal.reject(error)
+                }
+            }
         }
     }
 
-    private func undoConfigure(api: HomeAssistantAPI) -> Promise<Void> {
+    /// The identifier an onboarded server is stored under: the identifier of a server already
+    /// reporting this instance ID, else the instance ID itself, else the fallback onboarding
+    /// started with. Keeping an existing server's identifier matters because widgets, shortcuts
+    /// and Siri configurations hold that string in stores this app cannot rewrite, so re-onboarding
+    /// a server the app already has updates it in place rather than renaming it.
+    static func serverIdentifier(
+        for serverInfo: ServerInfo,
+        fallback: Identifier<Server>,
+        existingServers: [Server]
+    ) -> Identifier<Server> {
+        guard let instanceID = serverInfo.instanceID, !instanceID.isEmpty else {
+            return fallback
+        }
+
+        if let existing = existingServers.first(where: { $0.info.instanceID == instanceID }) {
+            return existing.identifier
+        }
+
+        return Identifier<Server>(rawValue: instanceID)
+    }
+
+    private func undoConfigure(
+        api: HomeAssistantAPI,
+        persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+    ) -> Promise<Void> {
         Current.Log.info()
+        let identifier = persisted?.identifier ?? api.server.identifier
         return firstly {
             when(resolved: api.tokenManager.revokeToken()).asVoid()
         }.done {
             api.connection.disconnect()
-            Current.servers.remove(identifier: api.server.identifier)
+
+            if let previousInfo = persisted?.previousInfo {
+                // This onboarding overwrote a server the user already had, so put it back instead
+                // of deleting it along with everything keyed to its identifier.
+                Current.servers.add(identifier: identifier, serverInfo: previousInfo)
+            } else {
+                Current.servers.remove(identifier: identifier)
+            }
+
+            Current.resetAPICache(for: [identifier])
         }
     }
 }
@@ -238,7 +319,7 @@ private extension ConnectionInfo {
             remoteUIURL: nil,
             webhookID: "",
             webhookSecret: nil,
-            internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
+            internalSSIDs: nil,
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
@@ -249,10 +330,7 @@ private extension ConnectionInfo {
         // default cloud to on
         useCloud = true
 
-        // if we have internal+external, we're on the internal network doing discovery
-        // but we don't yet have location permission to know we're on an internal ssid
-        if internalSSIDs == [] || internalSSIDs == nil,
-           discovered.internalURL != nil, discovered.externalURL != nil {
+        if discovered.internalURL != nil, discovered.externalURL != nil {
             overrideActiveURLType = .internal
         }
     }

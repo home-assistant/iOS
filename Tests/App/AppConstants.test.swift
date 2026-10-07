@@ -76,6 +76,69 @@ struct AppConstantsTests {
         )
     }
 
+    @Test func testOpenEntityDestinationURLOpensMoreInfoDialogForEveryDomain() async throws {
+        let serverId = "server123"
+        for entityId in ["camera.porch", "light.living_room", "sensor.temperature"] {
+            let result = AppConstants.openEntityDestinationURL(entityId: entityId, serverId: serverId)
+            #expect(result != nil, "\(entityId) should have a destination")
+            #expect(result == AppConstants.openEntityDeeplinkURL(entityId: entityId, serverId: serverId))
+            #expect(result?.host == "navigate")
+            #expect(result?.absoluteString.contains("more-info-entity-id=\(entityId)") == true)
+        }
+    }
+
+    @Test func testOpenEntityMoreInfoDeeplinkURL() async throws {
+        let entityId = "light.living_room"
+        let result = AppConstants.openEntityMoreInfoDeeplinkURL(entityId: entityId)?.absoluteString
+
+        assert(result?.contains("navigate/?") == true, "URL should contain navigate/? with empty path")
+        assert(
+            result?.contains("more-info-entity-id=\(entityId)") == true,
+            "URL should contain more-info-entity-id query parameter"
+        )
+        assert(
+            result?.contains("isComingFromAppIntent") == false,
+            "Minimal URL should not contain isComingFromAppIntent"
+        )
+        assert(result?.contains("server=") == false, "Minimal URL should not contain a server query parameter")
+        assert(
+            result?.contains("avoidUnnecessaryReload") == false,
+            "Minimal URL should not contain avoidUnnecessaryReload"
+        )
+        assert(
+            result?.contains("widgetAuthenticity") == false,
+            "Minimal URL should not contain widgetAuthenticity"
+        )
+    }
+
+    @Test func testPageDeeplinkURL() {
+        let result = AppConstants.pageDeeplinkURL(path: "lovelace/0?edit=1")?.absoluteString
+
+        #expect(result == "\(AppConstants.deeplinkURL.absoluteString)navigate/lovelace/0?edit=1")
+    }
+
+    @Test func testPageDeeplinkURLWithServer() {
+        let result = AppConstants.pageDeeplinkURL(path: "lovelace/0", serverName: "My Home")?.absoluteString
+
+        #expect(result == "\(AppConstants.deeplinkURL.absoluteString)navigate/lovelace/0?server=My%20Home")
+    }
+
+    @Test func testOpenEntityMoreInfoDeeplinkURLWithServer() async throws {
+        let entityId = "light.living_room"
+        let result = AppConstants.openEntityMoreInfoDeeplinkURL(entityId: entityId, serverName: "My Home")?
+            .absoluteString
+
+        assert(
+            result?.contains("more-info-entity-id=\(entityId)") == true,
+            "URL should contain more-info-entity-id query parameter"
+        )
+        assert(
+            result?.contains("isComingFromAppIntent") == false,
+            "URL should not contain isComingFromAppIntent"
+        )
+        assert(result?.contains("server=My%20Home") == true, "URL should contain the URL-encoded server name")
+    }
+
     @available(iOS 16.0, *)
     @Test func testTodoListAddItemURL() async throws {
         let listId = "todo.shopping_list"

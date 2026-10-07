@@ -40,6 +40,7 @@ struct MacToolbarSettingsView: View {
         .onAppear {
             viewModel.load()
         }
+        .listTopContentMargin()
     }
 }
 
@@ -128,5 +129,14 @@ final class MacToolbarSettingsViewModel: ObservableObject {
         } catch {
             Current.Log.error("Failed to update Mac toolbar config: \(error.localizedDescription)")
         }
+    }
+}
+
+extension MacToolbarSettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.MacToolbar.EntitiesSection.header),
+            SettingsSearchEntry(L10n.Settings.MacToolbar.HowToAdd.header),
+        ]
     }
 }

@@ -1,0 +1,173 @@
+import Foundation
+import Network
+
+public extension URL {
+    /// Return true if receiver's host and scheme is equal to `otherURL`
+    func baseIsEqual(to otherURL: URL) -> Bool {
+        host?.lowercased() == otherURL.host?.lowercased()
+            && portForComparison == otherURL.portForComparison
+            && scheme?.lowercased() == otherURL.scheme?.lowercased()
+            && user == otherURL.user
+            && password == otherURL.password
+    }
+
+    /// Return true if receiver's URL  is equal to `otherURL` ignoring query params
+    func isEqualIgnoringQueryParams(to otherURL: URL) -> Bool {
+        guard baseIsEqual(to: otherURL) else { return false }
+        let lhs = rootNormalizedPath
+        let rhs = otherURL.rootNormalizedPath
+        // Workaround for Home Assistant behavior where /0 is added to the end
+        return lhs == rhs || lhs == "\(rhs)/0"
+    }
+
+    /// Treats the two spellings of the root path (`""`, as a configured `https://host` address stores it,
+    /// and `"/"`, which a canonical navigation produces) as the same, so a redirect to the root still
+    /// compares equal to the address it came from instead of looking like a different page.
+    private var rootNormalizedPath: String {
+        path == "/" ? "" : path
+    }
+
+    // WKWebView may strip default ports from navigated URLs, so normalize them for equality checks.
+    private var portForComparison: Int? {
+        if let port {
+            return port
+        }
+
+        switch scheme?.lowercased() {
+        case "http": return 80
+        case "https": return 443
+        default: return nil
+        }
+    }
+
+    /// The lowercased `host:port` pair this URL addresses, with the scheme's default port filled in.
+    /// `nil` when the URL has no host, or has neither a port nor a scheme to derive one from.
+    ///
+    /// Two URLs that share it reach the same server socket whatever path or scheme each one carries,
+    /// which is what makes it usable to tell whether two descriptions of a server are the same one.
+    var hostAndPortIdentity: String? {
+        guard let host = host?.lowercased(), !host.isEmpty, let port = portForComparison else {
+            return nil
+        }
+
+        return "\(host):\(port)"
+    }
+
+    func sanitized() -> URL {
+        guard path.hasSuffix("/"),
+              var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
+            return self
+        }
+
+        while components.path.hasSuffix("/") {
+            components.path.removeLast()
+        }
+
+        return components.url ?? self
+    }
+
+    func serverBaseURL() -> URL {
+        guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
+            return self
+        }
+
+        components.path = ""
+        components.query = nil
+        components.fragment = nil
+
+        return components.url ?? self
+    }
+
+    /// When an auth web view (`self`) was redirected away from `attemptedURL`, returns the server base
+    /// URL to adopt — but only for a *same-host* redirect that changed the port and/or scheme. Returns
+    /// `nil` when nothing relevant changed, when the host differs (we never follow a different host
+    /// during authentication), or when the redirect would downgrade `https` to plaintext `http`.
+    func sameHostRedirectBaseURL(from attemptedURL: URL) -> URL? {
+        let resolvedBase = serverBaseURL()
+        let attemptedBase = attemptedURL.serverBaseURL()
+
+        guard !resolvedBase.baseIsEqual(to: attemptedBase),
+              resolvedBase.host?.lowercased() == attemptedBase.host?.lowercased() else {
+            return nil
+        }
+
+        // Never downgrade the transport: an https URL must not be replaced by a plaintext http one.
+        if attemptedBase.scheme?.lowercased() == "https", resolvedBase.scheme?.lowercased() != "https" {
+            return nil
+        }
+
+        return resolvedBase
+    }
+
+    internal func adapting(url: URL) -> URL {
+        guard
+            let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
+            var futureComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return url
+        }
+
+        futureComponents.host = components.host
+        futureComponents.port = components.port
+        futureComponents.scheme = components.scheme
+        futureComponents.user = components.user
+        futureComponents.password = components.password
+
+        return futureComponents.url ?? url
+    }
+
+    /// Best effort to return true if the URL points to a local resource (file or local network)
+    var isLocal: Bool {
+        guard let host = host?.lowercased() else {
+            // No host → likely a file:// or relative URL
+            return scheme == "file"
+        }
+
+        // Common local hostnames
+        if ["localhost", "127.0.0.1", "::1"].contains(host) {
+            return true
+        }
+
+        // Local TLDs
+        let localTLDs = [".local", ".lan", ".home", ".internal", ".localdomain", ".home.arpa"]
+        if localTLDs.contains(where: { host.hasSuffix($0) }) {
+            return true
+        }
+
+        // Check for private IPv4 ranges
+        if let ip = IPv4Address(host) {
+            let data = ip.rawValue
+            guard data.count == 4 else { return false }
+
+            let octets = (data[0], data[1], data[2], data[3])
+
+            switch octets {
+            case (10, _, _, _),
+                 (192, 168, _, _),
+                 (169, 254, _, _):
+                return true
+            case let (172, b, _, _) where (16 ... 31).contains(b):
+                return true
+            default:
+                break
+            }
+        }
+
+        // Check for private IPv6 ranges
+        if let ipv6 = IPv6Address(host) {
+            let data = ipv6.rawValue
+            // fe80::/10 link-local: first byte 0xFE, top two bits of second byte are 10
+            if data.count >= 2, data[0] == 0xFE, (data[1] & 0xC0) == 0x80 {
+                return true
+            }
+            // fc00::/7 Unique Local Address (ULA): first byte & 0xFE == 0xFC
+            if data.count >= 1, (data[0] & 0xFE) == 0xFC {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    /// Best effort to return true if the URL uses a public, remote FQDN or IP
+    var isRemote: Bool { !isLocal }
+}

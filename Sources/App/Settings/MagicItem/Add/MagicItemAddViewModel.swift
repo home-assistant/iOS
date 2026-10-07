@@ -2,9 +2,10 @@ import Combine
 import Foundation
 
 enum MagicItemAddType {
-    case scriptsScenesAutomations
     case entities
+    case areas
     case assistPipelines
+    case complications
 }
 
 final class MagicItemAddViewModel: ObservableObject {

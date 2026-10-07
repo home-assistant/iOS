@@ -1,0 +1,461 @@
+import Foundation
+
+public enum GRDBDatabaseTable: String {
+    case HAAppEntity = "hAAppEntity"
+    case watchConfig
+    case assistPipelines
+    case carPlayConfig
+    case macToolbarConfig
+    case appIconShortcutConfig
+    case serverInfoMirror
+    // Obsolete: replaced by `displayEntityRegistry`. Kept only so `deleteOldTables` can drop it.
+    case appEntityRegistryListForDisplay
+    // Entity registry sourced from `config/entity_registry/list_for_display` (the full
+    // `config/entity_registry/list` endpoint is no longer requested). Rows are
+    // `EntityRegistryListForDisplay.Entity`. Named for its source so it isn't mistaken for the
+    // dropped full-registry table (which was named `entityRegistry`).
+    case displayEntityRegistry
+    case deviceRegistry
+    case appPanel
+    case customWidget
+    case appArea
+    case homeViewConfiguration
+    case assistConfiguration
+    case voiceToolsServerConfiguration
+    case allowedTags
+    case kioskSettings
+    case appLabsFeatureState
+    case notificationSnoozeAction
+    // Legacy (ClockKit-era) watch complications, migrated off Realm.
+    case watchComplication
+    // Modern watch complications built from an entity or a custom template; rendered by the watch.
+    case watchComplicationConfig
+    case appZone
+    case notificationCategory
+    case locationHistory
+    case locationError
+    // Apple Reminders ↔ Home Assistant todo list sync
+    case remindersSyncConfig
+    case remindersSyncItemLink
+    case remindersSyncHistoryEntry
+    // Focus names the user pairs with an iOS Focus Filter
+    case focusName
+    case siriServerExposure
+    case siriEntityExposure
+    // Calendar entities mirrored from Home Assistant
+    case HACalendar = "hACalendar"
+    // Events cached from the calendars above, so a fetch failure can fall back to them
+    case HACalendarEvent = "hACalendarEvent"
+    // Every CSS custom property the frontend theme resolves to, per server and per light/dark mode
+    case frontendThemeVariable
+
+    // Dropped since 2025.2, now saved as json file
+    // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
+    case clientEvent
+}
+
+public enum DatabaseTables {
+    public enum AppEntity: String, CaseIterable {
+        case id
+        case entityId
+        case serverId
+        case domain
+        case name
+        case icon
+        case rawDeviceClass
+        case entityCategory
+        case isHidden
+        case resolvedIcon
+    }
+
+    public enum WatchConfig: String, CaseIterable {
+        case id
+        case assist
+        case items
+        case layout
+        case hideAreas
+        case lastModified
+    }
+
+    // Assist pipelines
+    public enum AssistPipelines: String, CaseIterable {
+        case serverId
+        case preferredPipeline
+        case pipelines
+    }
+
+    // CarPlay configuration
+    public enum CarPlayConfig: String, CaseIterable {
+        case id
+        case tabs
+        case quickAccessItems
+        case quickAccessLayout
+        case showAddEditButtons
+        case tabFolders
+    }
+
+    // Mac titlebar/toolbar configuration
+    public enum MacToolbarConfig: String, CaseIterable {
+        case id
+        case items
+    }
+
+    public enum AppIconShortcutConfig: String, CaseIterable {
+        case id
+        case items
+    }
+
+    public enum ServerInfoMirror: String, CaseIterable {
+        case id
+        case serverInfoJSON
+    }
+
+    // Sidebar dashboard panels
+    public enum AppPanel: String, CaseIterable {
+        case id
+        case serverId
+        case icon
+        case title
+        case path
+        case component
+        case showInSidebar
+    }
+
+    public enum CustomWidget: String, CaseIterable {
+        case id
+        case name
+        case items
+        case itemsStates
+    }
+
+    // Areas from Home Assistant
+    public enum AppArea: String, CaseIterable {
+        case id
+        case serverId
+        case areaId
+        case name
+        case aliases
+        case picture
+        case icon
+        case sortOrder
+        case entities
+        case floorId
+        case floorName
+    }
+
+    // Home View Configuration (per server)
+    public enum HomeViewConfiguration: String, CaseIterable {
+        case id
+        case sectionOrder
+        case visibleSectionIds
+        case allowMultipleSelection
+        case entityOrderByRoom
+        case hiddenEntityIds
+        case showUsagePredictionSection
+        case areasLayout
+        case showSummaries
+    }
+
+    // Columns for the `displayEntityRegistry` table (sourced from
+    // config/entity_registry/list_for_display). Names must match
+    // EntityRegistryListForDisplay.Entity's stored properties.
+    public enum DisplayEntityRegistry: String, CaseIterable {
+        case serverId
+        case entityId
+        case platform
+        case labels
+        case deviceId
+        case name
+        case hasEntityName
+        case entityCategory
+        case translationKey
+        case decimalPlaces
+        case areaId
+        case hidden
+        case icon
+    }
+
+    // Device Registry (full device registry data)
+    public enum DeviceRegistry: String, CaseIterable {
+        case id // Auto generated by GRDB (serverId-deviceId)
+        case serverId
+        case deviceId
+        case areaId
+        case configurationURL
+        case configEntries
+        case configEntriesSubentries
+        case connections
+        case createdAt
+        case disabledBy
+        case entryType
+        case hwVersion
+        case identifiers
+        case labels
+        case manufacturer
+        case model
+        case modelID
+        case modifiedAt
+        case nameByUser
+        case name
+        case primaryConfigEntry
+        case serialNumber
+        case swVersion
+        case viaDeviceID
+    }
+
+    public enum AssistConfiguration: String, CaseIterable {
+        case id
+        case enableOnDeviceSTT
+        case onDeviceSTTLocaleIdentifier
+        case muteTTS
+        case enableOnDeviceTTS
+        case onDeviceTTSVoiceIdentifier
+        case startMode
+    }
+
+    /// The voice tools server's own settings. Deliberately not part of `AssistConfiguration`:
+    /// what this device offers Home Assistant has nothing to do with how Assist behaves in the app,
+    /// and the two are configured independently.
+    public enum VoiceToolsServerConfiguration: String, CaseIterable {
+        case id
+        case isEnabled
+        case port
+    }
+
+    public enum AllowedTag: String, CaseIterable {
+        case tag
+    }
+
+    // Legacy (ClockKit-era) watch complication. Column names match `WatchComplication`'s CodingKeys.
+    public enum WatchComplication: String, CaseIterable {
+        case identifier
+        case serverIdentifier
+        case rawFamily
+        case rawTemplate
+        case complicationData
+        case createdAt
+        case name
+        case isPublic
+    }
+
+    // Modern watch complication config. Column names match `WatchComplicationConfig`'s CodingKeys.
+    public enum WatchComplicationConfig: String, CaseIterable {
+        case id
+        case serverId
+        case widgetFamily
+        case kind
+        case name
+        case entityId
+        case entityDisplayName
+        case iconName
+        case iconColor
+        case textColor
+        case gaugeAttribute
+        case valueAttribute
+        case valuePrecision
+        case unitOverride
+        case gaugeMin
+        case gaugeMax
+        case showValue
+        case showUnit
+        case showWhenInactive
+        case showMin
+        case showMax
+        case customTextTemplate
+        case customGaugeTemplate
+        case customGaugeColorTemplate
+        case customIconColorTemplate
+        case customTextColorTemplate
+        case sortOrder
+        case families
+        case isCustomized
+    }
+
+    // Default notification quick actions (e.g. snooze presets)
+    public enum NotificationSnoozeAction: String, CaseIterable {
+        case id
+        case minutes
+        case isEnabled
+        case sortOrder
+    }
+
+    // Kiosk mode configuration (single row). Column names must match
+    // `KioskSettings`'s stored properties so GRDB's Codable mapping lines up.
+    public enum KioskSettings: String, CaseIterable {
+        case id
+        case enabled
+        case requireAuthentication
+        case acceptRemoteCommands
+        case showRemoteCommandConfirmations
+        case serverId
+        case dashboard
+        case keepScreenOn
+        case removeHeaderAndSidebar
+        case hideStatusBar
+        case autoReload
+        case settingsEntryPosition
+        case settingsEntryHidden
+        case settingsEntryBackgroundColor
+        case settingsEntryIconColor
+        case screensaver
+    }
+
+    // App Labs feature flags. Column names must match `AppLabsFeatureState`'s stored properties.
+    public enum AppLabsFeatureState: String, CaseIterable {
+        case id
+        case isEnabled
+    }
+
+    public enum AppZone: String, CaseIterable {
+        case identifier
+        case entityId
+        case serverIdentifier
+        case friendlyName
+        case latitude
+        case longitude
+        case radius
+        case trackingEnabled
+        case enterNotification
+        case exitNotification
+        case inRegion
+        case isPassive
+        case beaconUUID
+        case beaconMajor
+        case beaconMinor
+        case ssidTrigger
+        case ssidFilter
+    }
+
+    public enum NotificationCategory: String, CaseIterable {
+        case identifier
+        case serverIdentifier
+        case name
+        case isServerControlled
+        case hiddenPreviewsBodyPlaceholder
+        case categorySummaryFormat
+        case sendDismissActions
+        case hiddenPreviewsShowTitle
+        case hiddenPreviewsShowSubtitle
+        case actions
+    }
+
+    public enum LocationHistory: String, CaseIterable {
+        case id
+        case trigger
+        case zoneIdentifier
+        case latitude
+        case longitude
+        case accuracy
+        case payload
+        case createdAt
+        case accuracyAuthorization
+    }
+
+    public enum LocationError: String, CaseIterable {
+        case id
+        case code
+        case message
+        case createdAt
+    }
+
+    // Apple Reminders ↔ Home Assistant todo list sync pairs. Column names must match
+    // `RemindersSyncConfig`'s stored properties.
+    public enum RemindersSyncConfig: String, CaseIterable {
+        case id
+        case serverId
+        case todoEntityId
+        case todoEntityName
+        case reminderListId
+        case reminderListName
+        case direction
+        case lastSyncDate
+    }
+
+    // Per-item links between a synced HA todo item and its reminder counterpart. Column names
+    // must match `RemindersSyncItemLink`'s stored properties.
+    public enum RemindersSyncItemLink: String, CaseIterable {
+        case id
+        case configId
+        case todoItemUid
+        case reminderId
+        case lastKnownTitle
+        case lastKnownCompleted
+        case lastKnownNotes
+        case lastKnownDue
+    }
+
+    // Recorded sync runs. Column names must match `RemindersSyncHistoryEntry`'s stored properties.
+    public enum RemindersSyncHistoryEntry: String, CaseIterable {
+        case id
+        case configId
+        case listLabel
+        case date
+        case success
+        case error
+        case details
+    }
+
+    // Focus names paired with an iOS Focus Filter. Column names must match `FocusName`'s stored
+    // properties.
+    /// Whether a server's entities may be offered to Siri, Spotlight and the Shortcuts app.
+    public enum SiriServerExposure: String, CaseIterable {
+        case serverId
+        case isExposed
+    }
+
+    /// Whether a calendar or to-do list may be offered to Siri, and which one is the default.
+    public enum SiriEntityExposure: String, CaseIterable {
+        case id
+        case serverId
+        case entityId
+        case domain
+        case isExposed
+        case isDefault
+    }
+
+    public enum FocusName: String, CaseIterable {
+        case id
+        case name
+    }
+
+    // Cached calendar events. Column names must match `HACalendarEventRecord`'s stored properties.
+    public enum HACalendarEvent: String, CaseIterable {
+        case id
+        case serverId
+        case calendarEntityId
+        case uid
+        case recurrenceId
+        case summary
+        case start
+        case end
+        case isAllDay
+        case eventDescription
+        case location
+        case rrule
+    }
+
+    // Calendar entities mirrored from Home Assistant. Column names must match `HACalendar`'s stored
+    // properties.
+    public enum HACalendar: String, CaseIterable {
+        case id
+        case serverId
+        case entityId
+        case name
+        case backgroundColor
+        case supportedFeatures
+        case sortOrder
+    }
+
+    // One row per CSS custom property the frontend resolves. Column names must match
+    // `FrontendThemeVariable`'s stored properties.
+    public enum FrontendThemeVariable: String, CaseIterable {
+        case id
+        case serverId
+        case appearance
+        case name
+        case value
+        case colorValue
+        case themeName
+        case updatedAt
+    }
+}

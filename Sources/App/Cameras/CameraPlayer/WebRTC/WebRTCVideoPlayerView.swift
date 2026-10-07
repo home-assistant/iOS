@@ -1,16 +1,15 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import WebRTC
 
 protocol AppCameraView {
     var controlsVisible: Binding<Bool> { get set }
     var showLoader: Binding<Bool> { get set }
 }
 
-@available(iOS 16.0, *)
 struct WebRTCVideoPlayerView: View, AppCameraView {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     @StateObject private var viewModel: WebRTCViewPlayerViewModel
 
@@ -24,7 +23,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
     @State private var isVideoPlaying: Bool = false
     var controlsVisible: Binding<Bool>
     var showLoader: Binding<Bool>
-    @State var hideControlsWorkItem: DispatchWorkItem?
 
     private let server: Server
     private let cameraEntityId: String
@@ -45,60 +43,78 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         self.onWebRTCUnsupported = onWebRTCUnsupported
         self.controlsVisible = controlsVisible
         self.showLoader = showLoader
-        self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(server: server, cameraEntityId: cameraEntityId))
+        self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(
+            server: server,
+            cameraEntityId: cameraEntityId,
+            supportsTalkback: true
+        ))
     }
 
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
-                player
-                errorView
-                CameraZoomGestureOverlay(
-                    onPinchBegan: { _ in
-                        previousFrameScale = lastScale
-                    },
-                    onPinchChanged: { factor, midpoint in
-                        handlePinchChanged(factor: factor, midpoint: midpoint, in: geometry.size)
-                    },
-                    onPinchEnded: {
-                        handlePinchEnded(in: geometry.size)
-                    },
-                    onDoubleTap: { location in
-                        handleDoubleTap(at: location, in: geometry.size)
-                    }
-                )
-            }
-            .background(.black)
-            .onAppear {
-                showControlsTemporarily()
-            }
-            .onDisappear {
-                hideControlsWorkItem?.cancel()
-                hideControlsWorkItem = nil
+            WebRTCVideoPlayerControlsView(
+                controlsVisible: controlsVisible,
+                isTalkbackSupported: viewModel.isTalkbackSupported,
+                isTalking: viewModel.isTalking,
+                isMuted: viewModel.isMuted,
+                onToggleTalkback: viewModel.toggleTalkback,
+                onToggleMute: viewModel.toggleMute
+            ) {
+                ZStack {
+                    player
+                    errorView
+                    CameraZoomGestureOverlay(
+                        onPinchBegan: { _ in
+                            previousFrameScale = lastScale
+                        },
+                        onPinchChanged: { factor, midpoint in
+                            handlePinchChanged(factor: factor, midpoint: midpoint, in: geometry.size)
+                        },
+                        onPinchEnded: {
+                            handlePinchEnded(in: geometry.size)
+                        },
+                        onDoubleTap: { location in
+                            handleDoubleTap(at: location, in: geometry.size)
+                        }
+                    )
+                }
+                .background(.black)
             }
             .simultaneousGesture(
                 dragGesture(geometry: geometry)
             )
             .onTapGesture {
-                showControlsTemporarily()
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    controlsVisible.wrappedValue.toggle()
+                }
             }
             .onChange(of: viewModel.isWebRTCUnsupported) { isUnsupported in
                 if isUnsupported {
                     onWebRTCUnsupported?()
                 }
             }
+            .onChange(of: viewModel.didFail) { didFail in
+                // Any WebRTC failure (ICE failure, signaling error, timeout) cascades to the next
+                // streaming method — HLS works remotely where a TURN-less WebRTC path can't.
+                // Unsupported-camera failures already cascade via `isWebRTCUnsupported` above.
+                if didFail, !viewModel.isWebRTCUnsupported {
+                    onWebRTCUnsupported?()
+                }
+            }
             .onChange(of: viewModel.showLoader) { showLoader in
                 self.showLoader.wrappedValue = showLoader
             }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                if controlsVisible.wrappedValue {
-                    Button(action: {
-                        viewModel.toggleMute()
-                    }) {
-                        Image(systemSymbol: viewModel.isMuted ? .speakerSlashFill : .speakerWave3)
-                    }
+            // The frontend player keeps a hidden stream alive briefly and starts a new one when the
+            // page comes back; the peer connection here does not survive iOS suspending the app, so
+            // returning to a dead stream restarts it rather than leaving a frozen frame on screen.
+            .onChange(of: scenePhase) { phase in
+                switch phase {
+                case .active:
+                    viewModel.handleAppForegrounded()
+                case .background, .inactive:
+                    viewModel.handleAppBackgrounded()
+                @unknown default:
+                    break
                 }
             }
         }
@@ -135,13 +151,11 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         scale = proposedScale
         offset = clampedOffset(for: newOffset, in: containerSize)
         previousFrameScale = proposedScale
-        showControlsTemporarily()
     }
 
     private func handlePinchEnded(in containerSize: CGSize) {
         lastScale = scale
         previousFrameScale = scale
-        showControlsTemporarily()
         if scale <= 1.0 {
             withAnimation {
                 offset = .zero
@@ -174,7 +188,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                 offset = clampedOffset(for: newOffset, in: containerSize)
                 lastOffset = offset
             }
-            showControlsTemporarily()
         }
     }
 
@@ -187,7 +200,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                     height: lastOffset.height + value.translation.height
                 )
                 offset = clampedOffset(for: newOffset, in: geometry.size)
-                showControlsTemporarily()
             }
             .onEnded { value in
                 // If user is not zoomed in, allow dismissing the view with a swipe down
@@ -201,7 +213,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                     offset = clampedOffset(for: offset, in: geometry.size)
                     lastOffset = offset
                 }
-                showControlsTemporarily()
             }
     }
 
@@ -213,16 +224,6 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         .edgesIgnoringSafeArea(.all)
         .scaleEffect(.init(floatLiteral: scale >= 1.0 ? scale : 1.0))
         .offset(offset)
-    }
-
-    private func showControlsTemporarily() {
-        controlsVisible.wrappedValue = true
-        hideControlsWorkItem?.cancel()
-        let workItem = DispatchWorkItem {
-            controlsVisible.wrappedValue = false
-        }
-        hideControlsWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: workItem)
     }
 
     /// Clamps the dragging offset to prevent the zoomed content from being moved
@@ -249,40 +250,16 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
     }
 }
 
-struct WebRTCVideoPlayerViewControllerWrapper: UIViewControllerRepresentable {
-    private let viewModel: WebRTCViewPlayerViewModel
-    @Binding var isVideoPlaying: Bool
-
-    init(viewModel: WebRTCViewPlayerViewModel, isVideoPlaying: Binding<Bool>) {
-        self.viewModel = viewModel
-        self._isVideoPlaying = isVideoPlaying
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self)
-    }
-
-    func makeUIViewController(context: Context) -> WebRTCVideoPlayerViewController {
-        let vc = WebRTCVideoPlayerViewController(viewModel: viewModel)
-        vc.onVideoStarted = { [weak coordinator = context.coordinator] in
-            coordinator?.videoDidStart()
-        }
-        return vc
-    }
-
-    func updateUIViewController(_ uiViewController: WebRTCVideoPlayerViewController, context: Context) {
-        /* no-op */
-    }
-
-    class Coordinator {
-        var parent: WebRTCVideoPlayerViewControllerWrapper
-
-        init(parent: WebRTCVideoPlayerViewControllerWrapper) {
-            self.parent = parent
-        }
-
-        func videoDidStart() {
-            parent.isVideoPlaying = true
-        }
+#if DEBUG
+#Preview {
+    NavigationStack {
+        WebRTCVideoPlayerView(
+            server: ServerFixture.standard,
+            cameraEntityId: "camera.front_door",
+            cameraName: "Front Door",
+            controlsVisible: .constant(true),
+            showLoader: .constant(false)
+        )
     }
 }
+#endif

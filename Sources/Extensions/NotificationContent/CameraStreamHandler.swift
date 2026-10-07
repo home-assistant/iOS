@@ -8,7 +8,7 @@ enum CameraStreamHandlerState {
 }
 
 protocol CameraStreamHandler: AnyObject {
-    init(api: HomeAssistantAPI, response: StreamCameraResponse) throws
+    init(api: HomeAssistantAPI, response: StreamCameraResponse, baseURL: URL) throws
     var didUpdateState: (CameraStreamHandlerState) -> Void { get set }
     var promise: Promise<Void> { get }
     func pause()

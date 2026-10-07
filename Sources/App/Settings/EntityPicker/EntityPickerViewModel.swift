@@ -10,8 +10,8 @@ enum EntityGrouping: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .domain: return L10n.EntityPicker.Filter.Domain.title
-        case .area: return L10n.EntityPicker.Filter.Area.title
+        case .domain: return L10n.EntityPicker.Filter.GroupBy.domain
+        case .area: return L10n.EntityPicker.Filter.GroupBy.area
         }
     }
 }
@@ -27,23 +27,40 @@ final class EntityPickerViewModel: ObservableObject {
     @Published var selectedAreaFilter: String? = nil
     @Published var selectedGrouping: EntityGrouping = .area
     @Published var entitiesByDomain: [String: [HAAppEntity]] = [:]
-    @Published var filteredEntitiesByGroup: [String: [HAAppEntity]] = [:]
+    @Published var filteredGroups: [EntityPickerGroup] = []
+    @Published var isRefreshing = false
+    @Published var refreshStatusText: String?
 
     // Cached lookups to avoid recomputation on every filter
     private var cachedEntityToArea: [String: String] = [:]
     private var cachedAreaIdToEntityIds: [String: Set<String>] = [:]
     private var cachedEntitiesByServer: [String: [HAAppEntity]] = [:]
+    private var entitiesIncludingHidden: [HAAppEntity] = []
+    private var fuzzyIndex: EntityFuzzySearchIndex?
 
     let domainFilter: [Domain]?
     private var filterTask: Task<Void, Never>?
+    private var filterGeneration = 0
+    private var refreshTimeoutTask: Task<Void, Never>?
+    private var minimumDisplayTask: Task<Void, Never>?
+    private var refreshStartedAt: Date?
+    private let minimumRefreshDisplaySeconds: TimeInterval = 1.5
     private var cancellables = Set<AnyCancellable>()
 
     /// Returns true if any filter (excluding server) has a non-default value
     var hasActiveFilters: Bool {
-        let isDomainFilterActive = domainFilter == nil && selectedDomainFilter != nil
+        let isDomainFilterActive = selectedDomainFilter != nil
         let isAreaFilterActive = selectedAreaFilter != nil
         let isGroupingFilterActive = selectedGrouping != .area
         return isDomainFilterActive || isAreaFilterActive || isGroupingFilterActive
+    }
+
+    /// The domains the user can narrow the list down to: the domains present in the current server's
+    /// entities, already restricted to the caller's preset `domainFilter` when one was given.
+    /// Contexts that allow a single domain (e.g. scripts) have nothing to pick, so the picker hides
+    /// itself when this holds fewer than two domains.
+    var selectableDomains: [String] {
+        Array(entitiesByDomain.keys)
     }
 
     /// Resets all filters (except server) to their default values
@@ -53,10 +70,11 @@ final class EntityPickerViewModel: ObservableObject {
         selectedGrouping = .area
     }
 
-    init(domainFilter: [Domain]?, selectedServerId: String?) {
+    init(domainFilter: [Domain]?, selectedServerId: String?, initialSearchTerm: String? = nil) {
         self.domainFilter = domainFilter
         self.selectedServerId = selectedServerId
         self.selectedDomainFilter = nil
+        self.searchTerm = initialSearchTerm ?? ""
         setupFiltering()
     }
 
@@ -67,6 +85,12 @@ final class EntityPickerViewModel: ObservableObject {
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .sink { [weak self] _, _ in
                 self?.updateFilteredEntities()
+            }
+            .store(in: &cancellables)
+
+        $entities
+            .sink { [weak self] _ in
+                self?.cachedEntitiesByServer.removeAll()
             }
             .store(in: &cancellables)
 
@@ -84,7 +108,31 @@ final class EntityPickerViewModel: ObservableObject {
                 guard let self else { return }
                 // Clear server-specific cache when server changes
                 cachedEntitiesByServer.removeAll()
+                // A refresh belongs to the previously selected server, so stop showing its progress here.
+                clearRefreshing()
                 fetchServerData(for: serverId)
+            }
+            .store(in: &cancellables)
+
+        // Reload the list once our in-progress refresh of the selected server finishes. Guarded by
+        // `isRefreshing` so unrelated background updates never mutate state mid-presentation.
+        NotificationCenter.default.publisher(for: .appDatabaseUpdaterDidFinishRoutine)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let self, isRefreshing, matchesSelectedServer(notification) else { return }
+                finishRefreshing()
+                fetchEntities()
+            }
+            .store(in: &cancellables)
+
+        // Surface the updater's current phase (entities/devices/areas) while a refresh is in progress.
+        NotificationCenter.default.publisher(for: .appDatabaseUpdaterDidChangePhase)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let self, isRefreshing, matchesSelectedServer(notification) else { return }
+                if let text = notification.userInfo?[AppDatabaseUpdaterUserInfo.phaseDescriptionKey] as? String {
+                    refreshStatusText = text
+                }
             }
             .store(in: &cancellables)
     }
@@ -121,22 +169,35 @@ final class EntityPickerViewModel: ObservableObject {
             rebuildAreaCaches()
             // Prime server cache for this server
             cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
+            rebuildFuzzyIndex(for: serverId)
+            // The available domains belong to the server that is now selected, so a domain the
+            // previous server had but this one doesn't is dropped instead of emptying the list.
+            groupByDomain()
+            if let pickedDomain = selectedDomainFilter, !entitiesByDomain.keys.contains(pickedDomain) {
+                selectedDomainFilter = nil
+            }
             updateFilteredEntities()
         } catch {
             Current.Log.error("Failed to fetch server data for entity picker, error: \(error)")
         }
     }
 
+    private func rebuildFuzzyIndex(for serverId: String) {
+        let serverEntities = entitiesIncludingHidden.filter { $0.serverId == serverId }
+        fuzzyIndex = EntityFuzzySearchIndex(entities: serverEntities, serverId: serverId)
+    }
+
     func fetchEntities() {
         do {
             entities = try HAAppEntity.config()
-            groupByDomain()
+            entitiesIncludingHidden = try HAAppEntity.config(include: [.hidden])
 
-            // Rebuild caches with current data
+            // Rebuild caches with current data before grouping, which reads the server cache.
             rebuildAreaCaches()
             if let serverId = selectedServerId {
                 cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
             }
+            groupByDomain()
 
             // Fetch server-specific data if a server is already selected
             if let serverId = selectedServerId {
@@ -149,8 +210,71 @@ final class EntityPickerViewModel: ObservableObject {
         }
     }
 
+    @MainActor
+    func refresh() async {
+        guard !isRefreshing,
+              let serverId = selectedServerId,
+              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
+            return
+        }
+
+        isRefreshing = true
+        refreshStartedAt = Current.date()
+
+        guard await server.activeURL() != nil else {
+            finishRefreshing()
+            return
+        }
+
+        refreshStatusText = L10n.EntityPicker.Refresh.updating
+        Current.appDatabaseUpdater.update(server: server, forceUpdate: true, showProgress: false)
+        scheduleRefreshTimeout(30)
+    }
+
+    private func scheduleRefreshTimeout(_ timeout: TimeInterval) {
+        refreshTimeoutTask?.cancel()
+        refreshTimeoutTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+            guard let self, !Task.isCancelled else { return }
+            finishRefreshing()
+        }
+    }
+
+    private func finishRefreshing() {
+        let elapsed = refreshStartedAt.map { Current.date().timeIntervalSince($0) } ?? minimumRefreshDisplaySeconds
+        let remaining = minimumRefreshDisplaySeconds - elapsed
+        guard isRefreshing, remaining > 0 else {
+            clearRefreshing()
+            return
+        }
+        minimumDisplayTask?.cancel()
+        minimumDisplayTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(remaining * 1_000_000_000))
+            guard let self, !Task.isCancelled else { return }
+            clearRefreshing()
+        }
+    }
+
+    private func clearRefreshing() {
+        refreshTimeoutTask?.cancel()
+        refreshTimeoutTask = nil
+        minimumDisplayTask?.cancel()
+        minimumDisplayTask = nil
+        refreshStartedAt = nil
+        isRefreshing = false
+        refreshStatusText = nil
+    }
+
+    private func matchesSelectedServer(_ notification: Notification) -> Bool {
+        guard let server = notification.object as? Server else { return false }
+        return server.identifier.rawValue == selectedServerId
+    }
+
     private func groupByDomain() {
-        var groups = Dictionary(grouping: entities) { entity in
+        // Scoped to the selected server so the domain filter never offers a domain that only exists
+        // on another server (which would show an empty list).
+        let scopedEntities = selectedServerId == nil ? entities : entitiesForCurrentServer()
+        var groups = Dictionary(grouping: scopedEntities) { entity in
             entity.domain
         }
 
@@ -164,14 +288,17 @@ final class EntityPickerViewModel: ObservableObject {
 
     private func updateFilteredEntities() {
         filterTask?.cancel()
+        filterGeneration &+= 1
+        let generation = filterGeneration
         filterTask = Task {
-            await performFiltering()
+            await performFiltering(generation: generation)
         }
     }
 
-    private func performFiltering() async {
+    @MainActor
+    private func performFiltering(generation: Int) async {
         // Snapshot state needed for filtering
-        let searchTerm = searchTerm
+        let searchTerm = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
         let presetDomains = domainFilter.map { Set($0.map(\.rawValue)) }
         let selectedDomainFilter = selectedDomainFilter
         let areaFilter = selectedAreaFilter
@@ -184,55 +311,65 @@ final class EntityPickerViewModel: ObservableObject {
 
         // Get entities already filtered by server
         let serverScopedEntities = entitiesForCurrentServer()
+        let fuzzyIndex = fuzzyIndex
 
-        let filtered = await Task.detached(priority: .userInitiated) { () -> [String: [HAAppEntity]] in
-            // Resolve area entity id set if filtering by area
+        let groups = await Task.detached(priority: .userInitiated) { () -> [EntityPickerGroup] in
             let areaEntityIds: Set<String>? = areaFilter.flatMap { areaIdToEntityIds[$0] }
 
-            // First, filter entities by domain, area, and search
-            let filteredEntities = serverScopedEntities.filter { entity in
-                // Filter by the preset domain(s), if any were provided by the caller
+            func passesStructuredFilters(_ entity: HAAppEntity) -> Bool {
                 if let presetDomains, !presetDomains.contains(entity.domain) { return false }
-
-                // Filter by the user-selected domain (only offered when there's no preset)
                 if let selectedDomainFilter, entity.domain != selectedDomainFilter { return false }
-
-                // Filter by area if set
                 if let areaEntityIds, !areaEntityIds.contains(entity.entityId) { return false }
-
-                // Filter by search term (only when 3+ chars). `entity.name` is the resolved display
-                // name (registry name, falling back to the state name), baked in at write time.
-                if searchTerm.count > 2 {
-                    let lower = searchTerm.lowercased()
-                    if !entity.name.lowercased().contains(lower),
-                       !entity.entityId.lowercased().contains(lower) {
-                        return false
-                    }
-                }
                 return true
             }
 
-            // Group by selected grouping
+            let isSearching = !searchTerm.isEmpty
+            let baseEntities: [HAAppEntity] = isSearching
+                ? (fuzzyIndex?.search(searchTerm) ?? [])
+                : serverScopedEntities
+            let filteredEntities = baseEntities.filter(passesStructuredFilters)
+
             switch grouping {
             case .domain:
-                return Dictionary(grouping: filteredEntities) { $0.domain }
+                return Self.groupPreservingOrder(filteredEntities, sortAlphabetically: !isSearching) { $0.domain }
             case .area:
-                var result: [String: [HAAppEntity]] = [:]
-                for entity in filteredEntities {
-                    let areaName = entityToArea[entity.entityId] ?? noAreaTitle
-                    result[areaName, default: []].append(entity)
-                }
-                // Ensure the "No Area" group appears last by moving it to the end
-                if let noAreaGroup = result.removeValue(forKey: noAreaTitle) {
-                    result[noAreaTitle] = noAreaGroup
-                }
-                return result
+                return Self.groupPreservingOrder(
+                    filteredEntities,
+                    sortAlphabetically: !isSearching,
+                    lastGroupTitle: noAreaTitle
+                ) { entityToArea[$0.entityId] ?? noAreaTitle }
             }
         }.value
 
-        await MainActor.run {
-            self.filteredEntitiesByGroup = filtered
+        // Back on the main actor: drop results from a superseded run so a slow older search can't
+        // clobber a newer one.
+        guard generation == filterGeneration else { return }
+        filteredGroups = groups
+    }
+
+    private static func groupPreservingOrder(
+        _ entities: [HAAppEntity],
+        sortAlphabetically: Bool,
+        lastGroupTitle: String? = nil,
+        keyFor: (HAAppEntity) -> String
+    ) -> [EntityPickerGroup] {
+        var order: [String] = []
+        var grouped: [String: [HAAppEntity]] = [:]
+        for entity in entities {
+            let key = keyFor(entity)
+            if grouped[key] == nil { order.append(key) }
+            grouped[key, default: []].append(entity)
         }
+
+        if sortAlphabetically {
+            order.sort(by: <)
+            if let lastGroupTitle, let index = order.firstIndex(of: lastGroupTitle) {
+                order.remove(at: index)
+                order.append(lastGroupTitle)
+            }
+        }
+
+        return order.map { EntityPickerGroup(title: $0, entities: grouped[$0] ?? []) }
     }
 
     // MARK: - Test helpers (DEBUG only)
@@ -246,6 +383,15 @@ final class EntityPickerViewModel: ObservableObject {
     /// Exposes private updateFilteredEntities for unit tests
     func _test_updateFilteredEntities() {
         updateFilteredEntities()
+    }
+
+    /// Runs the filtering pipeline to completion so tests can assert on `filteredGroups` without racing
+    /// the debounce/Task hop that `updateFilteredEntities` introduces. The generation guard in
+    /// `performFiltering` ensures any still-running earlier task cannot clobber this result.
+    @MainActor
+    func _test_awaitFiltering() async {
+        updateFilteredEntities()
+        await filterTask?.value
     }
     #endif
 }

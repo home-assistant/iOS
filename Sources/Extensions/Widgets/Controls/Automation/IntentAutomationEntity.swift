@@ -4,19 +4,25 @@ import PromiseKit
 import SFSafeSymbols
 import Shared
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct IntentAutomationEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Automation")
 
     static let defaultQuery = IntentAutomationAppEntityQuery()
 
     var id: String
+    @Property(title: .init("app_intents.entity.property.entity_id", defaultValue: "Entity ID"))
     var entityId: String
     var serverId: String
+    @Property(title: .init("app_intents.entity.property.server", defaultValue: "Server"))
     var serverName: String
+    @Property(title: .init("app_intents.entity.property.area", defaultValue: "Area"))
     var areaName: String?
+    @Property(title: .init("app_intents.entity.property.device", defaultValue: "Device"))
     var deviceName: String?
+    @Property(title: .init("app_intents.entity.property.floor", defaultValue: "Floor"))
     var floorName: String?
+    @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
@@ -38,18 +44,18 @@ struct IntentAutomationEntity: AppEntity, EntityContextRepresentable {
         iconName: String
     ) {
         self.id = id
-        self.entityId = entityId
         self.serverId = serverId
+        self.iconName = iconName
+        self.entityId = entityId
         self.serverName = serverName
         self.areaName = areaName
         self.deviceName = deviceName
         self.floorName = floorName
         self.displayString = displayString
-        self.iconName = iconName
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentAutomationEntity] {
         getAutomationEntities().flatMap(\.1).filter { identifiers.contains($0.id) }

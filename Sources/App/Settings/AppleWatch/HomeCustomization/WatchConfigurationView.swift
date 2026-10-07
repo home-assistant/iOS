@@ -1,34 +1,33 @@
-import SFSafeSymbols
 import Shared
 import StoreKit
 import SwiftUI
 
 struct WatchConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) private var requestReview
     @StateObject private var viewModel: WatchConfigurationViewModel
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
+    @State private var addItemDestination: WatchAddItemDestination?
     @State private var showAddFolderSheet = false
     @State private var newFolderName: String = L10n.Watch.Configuration.Folder.defaultName
+    @State private var isEditingItems = false
 
-    private let needsNavigationController: Bool
+    /// Whether the screen brings its own `NavigationStack`. Off by default because the screen is
+    /// normally pushed (from Settings), and nesting a navigation container inside a pushed destination
+    /// leaves it blank and pops it straight back out. Only a modal presentation opts in.
+    private let needsNavigationStack: Bool
 
-    init(needsNavigationController: Bool = false, viewModel: WatchConfigurationViewModel? = nil) {
-        self.needsNavigationController = needsNavigationController
+    init(needsNavigationStack: Bool = false, viewModel: WatchConfigurationViewModel? = nil) {
+        self.needsNavigationStack = needsNavigationStack
         self._viewModel = .init(wrappedValue: viewModel ?? WatchConfigurationViewModel())
     }
 
     var body: some View {
-        if needsNavigationController {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    content
-                }
-            } else {
-                NavigationView {
-                    content
-                }
+        if needsNavigationStack {
+            NavigationStack {
+                content
             }
         } else {
             content
@@ -37,17 +36,25 @@ struct WatchConfigurationView: View {
 
     private var content: some View {
         List {
-            watchPreview
-                .listRowBackground(Color.clear)
-                .onAppear {
-                    // Prevent trigger when popping nav controller
-                    guard !isLoaded else { return }
-                    viewModel.loadWatchConfig()
-                    isLoaded = true
-                }
+            AppleLikeListTopRowHeader(
+                image: .watchVariantIcon,
+                title: L10n.Watch.Configuration.Header.title,
+                subtitle: L10n.Watch.Configuration.Header.subtitle
+            )
+            .onAppear {
+                // Prevent trigger when popping nav controller
+                guard !isLoaded else { return }
+                viewModel.loadWatchConfig()
+                isLoaded = true
+            }
+            layoutSection
+            areasSection
             itemsSection
             assistSection
             resetView
+            DebugDatabaseTransferSection(part: .watchConfiguration) {
+                viewModel.loadWatchConfig()
+            }
         }
         .preferredColorScheme(.dark)
         .navigationTitle("Apple Watch")
@@ -57,9 +64,7 @@ struct WatchConfigurationView: View {
                 Button(action: {
                     let success = viewModel.save()
                     if success {
-                        // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
-                        // private var requestReview`
-                        SKStoreReviewController.requestReview()
+                        requestReview()
                         dismiss()
                     }
                 }, label: {
@@ -67,12 +72,30 @@ struct WatchConfigurationView: View {
                 })
             }
         })
-        .sheet(isPresented: $viewModel.showAddItem, content: {
-            MagicItemAddView(context: .watch) { itemToAdd in
-                guard let itemToAdd else { return }
-                viewModel.addItem(itemToAdd)
+        .sheet(item: $addItemDestination, content: { destination in
+            switch destination {
+            case .entity, .area, .complication, .assist:
+                if let magicItemType = destination.magicItemType, let pickerOption = destination.pickerOption {
+                    MagicItemAddView(
+                        context: .watch,
+                        initialItemType: magicItemType,
+                        visiblePickerOptions: [pickerOption],
+                        allowMultipleSelection: true
+                    ) { itemToAdd in
+                        guard let itemToAdd else { return }
+                        viewModel.addItem(itemToAdd)
+                    }
+                    .preferredColorScheme(.dark)
+                }
+            case .assistPrompt:
+                NavigationView {
+                    AssistPromptMagicItemView(mode: .add) { itemToAdd in
+                        viewModel.addItem(itemToAdd)
+                    }
+                }
+                .navigationViewStyle(.stack)
+                .preferredColorScheme(.dark)
             }
-            .preferredColorScheme(.dark)
         })
         .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
             Button(action: {}, label: {
@@ -82,6 +105,7 @@ struct WatchConfigurationView: View {
         .sheet(isPresented: $showAddFolderSheet) {
             addFolderSheet
         }
+        .listTopContentMargin()
     }
 
     private var resetView: some View {
@@ -104,8 +128,36 @@ struct WatchConfigurationView: View {
         }
     }
 
+    private var layoutSection: some View {
+        Section {
+            Picker(L10n.Watch.Configuration.Layout.title, selection: Binding(
+                get: { viewModel.watchConfig.resolvedLayout },
+                set: { viewModel.watchConfig.layout = $0 }
+            )) {
+                ForEach(WatchLayout.allCases, id: \.rawValue) { layout in
+                    Text(layout.name).tag(layout)
+                }
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.Layout.footer)
+        }
+    }
+
+    private var areasSection: some View {
+        Section {
+            Toggle(isOn: Binding(
+                get: { viewModel.watchConfig.resolvedHideAreas },
+                set: { viewModel.watchConfig.hideAreas = $0 }
+            )) {
+                Text(verbatim: L10n.Watch.Configuration.HideAreas.title)
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.HideAreas.footer)
+        }
+    }
+
     private var itemsSection: some View {
-        Section(L10n.Watch.Configuration.Items.title) {
+        Section {
             ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 makeListItem(item: item)
             }
@@ -115,35 +167,33 @@ struct WatchConfigurationView: View {
             .onDelete { indexSet in
                 viewModel.deleteItem(at: indexSet)
             }
-            Button {
-                viewModel.showAddItem = true
-            } label: {
-                Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
-            }
-            Button {
+            addItemMenu
+        } header: {
+            ReorderableSectionHeader(
+                title: L10n.Watch.Configuration.Items.title,
+                isEditing: $isEditingItems
+            )
+        }
+    }
+
+    private var addItemMenu: some View {
+        WatchAddItemMenu(
+            showAddFolder: true,
+            onSelectDestination: { addItemDestination = $0 },
+            onAddFolder: {
                 newFolderName = ""
                 showAddFolderSheet = true
-            } label: {
-                Label(L10n.Watch.Configuration.AddFolder.title, systemSymbol: .folder)
             }
-        }
+        )
     }
 
     @ViewBuilder
     private var addFolderSheet: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                addFolderForm
-            }
-            .presentationDetents([.medium])
-            .preferredColorScheme(.dark)
-        } else {
-            NavigationView {
-                addFolderForm
-            }
-            .navigationViewStyle(.stack)
-            .preferredColorScheme(.dark)
+        NavigationStack {
+            addFolderForm
         }
+        .presentationDetents([.medium])
+        .preferredColorScheme(.dark)
     }
 
     private var addFolderForm: some View {
@@ -175,7 +225,7 @@ struct WatchConfigurationView: View {
     }
 
     private var assistSection: some View {
-        Section("Assist") {
+        Section {
             Toggle(isOn: $viewModel.watchConfig.assist.showAssist, label: {
                 Text(verbatim: L10n.Watch.Configuration.ShowAssist.title)
             })
@@ -189,59 +239,15 @@ struct WatchConfigurationView: View {
                     )
                 }
             }
+        } header: {
+            Text(verbatim: L10n.Widgets.Action.Name.assist)
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.ShowAssist.footer)
         }
-    }
-
-    private var watchPreview: some View {
-        ZStack {
-            watchItemsList
-                .offset(x: -10)
-            Image(.watchFrame)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 260)
-                .foregroundStyle(.clear, Color(hue: 0, saturation: 0, brightness: 0.2))
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private var watchItemsList: some View {
-        ZStack(alignment: .top) {
-            List {
-                VStack {}.padding(.top, 40)
-                Group {
-                    ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
-                        makeWatchItem(item: item)
-                    }
-                    if viewModel.watchConfig.items.isEmpty {
-                        noItemsWatchView
-                    }
-                }
-                .listRowSeparator(.hidden)
-                .listRowSpacing(DesignSystem.Spaces.half)
-            }
-            .animation(.default, value: viewModel.watchConfig.items.map(\.contentHash))
-            .listStyle(.plain)
-            .frame(width: 200, height: 265)
-            .offset(x: 5, y: 10)
-            watchStatusBar
-                .offset(y: 10)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 62))
-    }
-
-    private func makeListItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-        return makeListItemRow(item: item, info: itemInfo)
     }
 
     @ViewBuilder
-    private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
+    private func makeListItem(item: MagicItem) -> some View {
         if item.type == .folder {
             NavigationLink {
                 FolderDetailView(
@@ -250,7 +256,21 @@ struct WatchConfigurationView: View {
                 )
                 .environment(\.colorScheme, .dark)
             } label: {
-                itemRow(item: item, info: info)
+                itemRow(item: item)
+            }
+        } else if item.type == .complication {
+            // Nothing to customize: the row on the watch renders from the complication's own
+            // configuration, so a name or color set here would be silently ignored. Edit the
+            // complication itself under Complications instead.
+            itemRow(item: item)
+        } else if item.type == .assistPrompt {
+            NavigationLink {
+                AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
+                    viewModel.updateItem(updatedMagicItem)
+                }
+                .environment(\.colorScheme, .dark)
+            } label: {
+                itemRow(item: item)
             }
         } else {
             NavigationLink {
@@ -259,140 +279,18 @@ struct WatchConfigurationView: View {
                 }
                 .environment(\.colorScheme, .dark)
             } label: {
-                itemRow(item: item, info: info)
+                itemRow(item: item)
             }
         }
     }
 
-    private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .haPrimary))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name(info: info))
-                if let contextSubtitle = info.contextSubtitle {
-                    Text(contextSubtitle)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemSymbol: .line3Horizontal)
-                .foregroundStyle(.gray)
-        }
-    }
-
-    private func makeWatchItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
+    private func itemRow(item: MagicItem) -> some View {
+        MagicItemConfigurationRow(
+            item: item,
+            info: viewModel.magicItemInfo(for: item),
+            iconColor: .haPrimary,
+            isReorderIndicatorVisible: isEditingItems
         )
-        let iconColor = iconColorForItem(item: item, itemInfo: itemInfo)
-
-        return HStack(spacing: DesignSystem.Spaces.one) {
-            VStack {
-                Image(uiImage: image(for: item, itemInfo: itemInfo, watchPreview: true))
-                    .foregroundColor(iconColor)
-                    .padding(DesignSystem.Spaces.one)
-            }
-            .background(iconColor.opacity(0.3))
-            .clipShape(Circle())
-            Text(item.name(info: itemInfo))
-                .font(.system(size: 16))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .foregroundStyle(textColorForWatchItem(itemInfo: itemInfo))
-            if item.type == .folder {
-                Image(systemSymbol: .chevronRight)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(.trailing, DesignSystem.Spaces.half)
-            }
-        }
-        .padding(DesignSystem.Spaces.one)
-        .frame(width: 190, height: 55)
-        .background(backgroundForWatchItem(itemInfo: itemInfo))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .padding(.vertical, -DesignSystem.Spaces.one)
-        .listRowSeparator(.hidden)
-    }
-
-    private func backgroundForWatchItem(itemInfo: MagicItem.Info) -> Color {
-        if let backgroundColor = itemInfo.customization?.backgroundColor {
-            Color(uiColor: .init(hex: backgroundColor))
-        } else {
-            Color.gray.opacity(0.3)
-        }
-    }
-
-    private func textColorForWatchItem(itemInfo: MagicItem.Info) -> Color {
-        if let textColor = itemInfo.customization?.textColor {
-            Color(uiColor: .init(hex: textColor))
-        } else {
-            Color.white
-        }
-    }
-
-    private func iconColorForItem(item: MagicItem, itemInfo: MagicItem.Info) -> Color {
-        if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
-            Color(uiColor: .init(hex: iconColor))
-        } else {
-            Color.haPrimary
-        }
-    }
-
-    private func image(
-        for item: MagicItem,
-        itemInfo: MagicItem.Info,
-        watchPreview: Bool,
-        color: UIColor? = nil
-    ) -> UIImage {
-        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-        let resolvedColor: UIColor = if let color {
-            color
-        } else if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
-            .init(hex: iconColor)
-        } else {
-            .haPrimary
-        }
-
-        return icon.image(
-            ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
-            color: resolvedColor
-        )
-    }
-
-    private var watchStatusBar: some View {
-        ZStack(alignment: .trailing) {
-            Text("9:41")
-                .font(.system(size: 14).bold())
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top)
-            if viewModel.watchConfig.assist.showAssist {
-                Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
-                    ofSize: .init(width: 18, height: 18),
-                    color: .haPrimary
-                ))
-                .padding(DesignSystem.Spaces.one)
-                .background(.regularMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 25.0))
-                .offset(x: -22)
-                .padding(.top)
-            }
-        }
-        .animation(.bouncy, value: viewModel.watchConfig.assist.showAssist)
-        .frame(width: 210, height: 50)
-        .background(LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom))
-    }
-
-    private var noItemsWatchView: some View {
-        Text(verbatim: L10n.Watch.Settings.NoItems.Phone.title)
-            .frame(maxWidth: .infinity, alignment: .center)
-            .font(.footnote)
-            .padding(DesignSystem.Spaces.one)
-            .background(.gray.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one))
     }
 }
 
@@ -402,5 +300,20 @@ struct WatchConfigurationView: View {
             .sheet(isPresented: .constant(true), content: {
                 WatchConfigurationView()
             })
+    }
+}
+
+extension WatchConfigurationView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Watch.Configuration.Layout.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.Items.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.AddItem.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.AddFolder.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.ShowAssist.title),
+            SettingsSearchEntry(L10n.MagicItem.ItemType.AssistPrompt.title),
+            SettingsSearchEntry(L10n.Watch.Configuration.HideAreas.title),
+            SettingsSearchEntry(L10n.Watch.Labels.SelectedPipeline.title),
+        ]
     }
 }

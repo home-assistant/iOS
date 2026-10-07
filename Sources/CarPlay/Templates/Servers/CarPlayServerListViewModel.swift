@@ -3,7 +3,6 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayServerListViewModel {
     weak var templateProvider: CarPlayServersListTemplate?
     weak var interfaceController: CPInterfaceController?
@@ -99,6 +98,10 @@ final class CarPlayServerListViewModel {
         do {
             var config = try CarPlayConfig.config() ?? CarPlayConfig()
             config.tabs = tabs
+            // Tab-only folders exist solely to back a tab; deactivating their tab deletes them.
+            config.tabFolders = config.tabFolders?.filter { folder in
+                tabs.contains(.folder(folderId: folder.id))
+            }
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
             }
@@ -109,7 +112,24 @@ final class CarPlayServerListViewModel {
     }
 
     var tabsSummary: String {
-        tabs.map(\.name).joined(separator: ", ")
+        let folders = tabFolderItems
+        return tabs.map { $0.name(folders: folders) }.joined(separator: ", ")
+    }
+
+    /// All tabs selectable from the car: the built-in ones plus one per existing folder.
+    var selectableTabs: [CarPlayTab] {
+        CarPlayTab.allCases + tabFolderItems.map { .folder(folderId: $0.id) }
+    }
+
+    /// Every folder a tab can reference, fetched once so callers can resolve names in-memory
+    /// instead of hitting the database per tab.
+    var tabFolderItems: [MagicItem] {
+        do {
+            return try CarPlayConfig.config()?.allFolders ?? []
+        } catch {
+            Current.Log.error("Failed to fetch CarPlay folders: \(error.localizedDescription)")
+            return []
+        }
     }
 
     var quickAccessLayout: CarPlayQuickAccessLayout {
@@ -159,6 +179,30 @@ final class CarPlayServerListViewModel {
         tabs.filter { $0 != .settings } + [.settings]
     }
 
+    var showAddEditButtons: Bool {
+        do {
+            return try CarPlayConfig.config()?.resolvedShowAddEditButtons ?? CarPlayConfig()
+                .resolvedShowAddEditButtons
+        } catch {
+            Current.Log.error("Failed to fetch CarPlay show add/edit setting: \(error.localizedDescription)")
+            return CarPlayConfig().resolvedShowAddEditButtons
+        }
+    }
+
+    func toggleShowAddEditButtons() {
+        let newValue = !showAddEditButtons
+        do {
+            var config = try CarPlayConfig.config() ?? CarPlayConfig()
+            config.showAddEditButtons = newValue
+            try Current.database().write { db in
+                try config.insert(db, onConflict: .replace)
+            }
+            templateProvider?.update()
+        } catch {
+            Current.Log.error("Failed to update CarPlay show add/edit setting: \(error.localizedDescription)")
+        }
+    }
+
     var ttsPlaybackStrategy: CarPlayAssistTTSPlaybackStrategy {
         Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackStrategy
     }
@@ -171,7 +215,6 @@ final class CarPlayServerListViewModel {
     }
 }
 
-@available(iOS 16.0, *)
 extension CarPlayServerListViewModel: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         guard let server = serverManager.serverOrFirstIfAvailable(

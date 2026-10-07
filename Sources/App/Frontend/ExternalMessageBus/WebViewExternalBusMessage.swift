@@ -10,6 +10,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case configScreenShow = "config_screen/show"
     case haptic
     case connectionStatus = "connection-status"
+    case frontendLoaded = "frontend/loaded"
     case tagRead = "tag/read"
     case tagWrite = "tag/write"
     case themeUpdate = "theme-update"
@@ -29,10 +30,16 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityAddToGetActions = "entity/add_to/get_actions"
     case entityAddTo = "entity/add_to"
     case cameraPlayerShow = "camera/show"
+    case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
+    case sidebarShow = "sidebar/show"
+    case moreInfoOpened = "more_info/opened"
+    case moreInfoClosed = "more_info/closed"
+    case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
+            "hasSidebar": AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
             "hasMatterStatusReport": Current.matter.isAvailable,
@@ -42,24 +49,12 @@ enum WebViewExternalBusMessage: String, CaseIterable {
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
             "hasAssistSettings": true,
-            "hasCameraPlayer": {
-                if #available(iOS 16.0, *), !Current.isCatalyst {
-                    return true
-                } else {
-                    return false
-                }
-            }(),
+            "hasCameraPlayer": !Current.isCatalyst,
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
+            "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
-            "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
-                if #available(iOS 18, *), !Current.isCatalyst, Current.settingsStore.toastsHandledByApp {
-                    return ToastPresenter.toastComponentVersion
-                } else {
-                    return -1
-                }
-            }(),
         ]
     }
 }
@@ -74,4 +69,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case navigate = "navigate"
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
+    case showNotifications = "notifications/show"
 }

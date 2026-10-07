@@ -1,21 +1,22 @@
-import Intents
+import AppIntents
 import Shared
 import SwiftUI
 import WidgetKit
 
+@available(iOS 17.0, *)
 struct WidgetAssist: Widget {
     var body: some WidgetConfiguration {
-        IntentConfiguration(
+        AppIntentConfiguration(
             kind: WidgetsKind.assist.rawValue,
-            intent: AssistInAppIntent.self,
+            intent: WidgetAssistAppIntent.self,
             provider: WidgetAssistProvider(),
             content: { entry in
+                // Widget background and tap destinations are family dependent,
+                // so `WidgetAssistView` applies them per branch.
                 if #available(iOS 18.0, *) {
                     WidgetAssistViewTintedWrapper(entry: entry)
-                        .widgetBackground(Color.clear)
                 } else {
                     WidgetAssistView(entry: entry, tinted: false)
-                        .widgetBackground(Color.clear)
                 }
             }
         )
@@ -27,12 +28,6 @@ struct WidgetAssist: Widget {
     }
 
     private var supportedFamilies: [WidgetFamily] {
-        var supportedFamilies: [WidgetFamily] = [.systemSmall]
-
-        if #available(iOSApplicationExtension 16.0, *) {
-            supportedFamilies.append(.accessoryCircular)
-        }
-
-        return supportedFamilies
+        [.systemSmall, .systemMedium, .accessoryCircular]
     }
 }

@@ -8,13 +8,30 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.details.title", defaultValue: "Details")
     static let description = IntentDescription(
         .init(
-            "widgets.details.description_with_warning",
-            defaultValue: "Display states using from Home Assistant in text. ATTENTION: User needs to be admin to use this feature"
+            "widgets.details.gallery_description",
+            defaultValue: "Display an entity, a watch complication, or a template from Home Assistant as text"
         )
     )
 
+    @Parameter(title: .init("widgets.content_source.title", defaultValue: "Source"), default: .entity)
+    var source: WidgetContentSourceAppEnum
+
     @Parameter(title: .init("widgets.details.parameters.server", defaultValue: "Server"), default: nil)
     var server: IntentServerAppEntity
+
+    /// Entity whose live state drives the widget when `source` is `.entity`. The upper/lower/detail lines
+    /// are generated automatically from the entity's name, state and area, no templates required.
+    @Parameter(title: .init("widgets.parameters.entity", defaultValue: "Entity"))
+    var entity: HAAppEntityAppIntentEntity?
+
+    /// Optional attribute of `entity` to read instead of its state (nil = state), like the watch builder.
+    @Parameter(title: .init("widgets.parameters.attribute", defaultValue: "Attribute"))
+    var attribute: WidgetDetailsAttributeAppEntity?
+
+    /// Rectangular watch complication mirrored when `source` is `.complication`, rendered through the
+    /// very same content view the watch and the complication editor use.
+    @Parameter(title: .init("widgets.parameters.complication", defaultValue: "Complication"))
+    var complication: WidgetRectangularComplicationAppEntity?
 
     @Parameter(
         title: .init("widgets.details.parameters.upper_template", defaultValue: "Upper Text Template"),
@@ -84,25 +101,71 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     var showConfirmationNotification: Bool
 
     static var parameterSummary: some ParameterSummary {
-        When(\WidgetDetailsAppIntent.$runScript, .equalTo, true) {
-            Summary {
-                \.$server
-                \.$upperTemplate
-                \.$lowerTemplate
-                \.$detailsTemplate
+        Switch(\.$source) {
+            Case(.entity) {
+                When(\WidgetDetailsAppIntent.$runScript, .equalTo, true) {
+                    Summary {
+                        \.$source
+                        \.$entity
+                        \.$attribute
 
-                \.$runScript
-                \.$script
-                \.$showConfirmationNotification
+                        \.$runScript
+                        \.$script
+                        \.$showConfirmationNotification
+                    }
+                } otherwise: {
+                    Summary {
+                        \.$source
+                        \.$entity
+                        \.$attribute
+
+                        \.$runScript
+                    }
+                }
             }
-        } otherwise: {
-            Summary {
-                \.$server
-                \.$upperTemplate
-                \.$lowerTemplate
-                \.$detailsTemplate
+            Case(.complication) {
+                When(\WidgetDetailsAppIntent.$runScript, .equalTo, true) {
+                    Summary {
+                        \.$source
+                        \.$complication
 
-                \.$runScript
+                        \.$runScript
+                        \.$script
+                        \.$showConfirmationNotification
+                    }
+                } otherwise: {
+                    Summary {
+                        \.$source
+                        \.$complication
+
+                        \.$runScript
+                    }
+                }
+            }
+            DefaultCase {
+                When(\WidgetDetailsAppIntent.$runScript, .equalTo, true) {
+                    Summary {
+                        \.$source
+                        \.$server
+                        \.$upperTemplate
+                        \.$lowerTemplate
+                        \.$detailsTemplate
+
+                        \.$runScript
+                        \.$script
+                        \.$showConfirmationNotification
+                    }
+                } otherwise: {
+                    Summary {
+                        \.$source
+                        \.$server
+                        \.$upperTemplate
+                        \.$lowerTemplate
+                        \.$detailsTemplate
+
+                        \.$runScript
+                    }
+                }
             }
         }
     }

@@ -1,0 +1,407 @@
+import HAKit
+import Shared
+import SwiftUI
+import UIKit
+@preconcurrency import WebKit
+
+// MARK: - URL Loading & Connection Lifecycle
+
+extension WebViewController {
+    func observeConnectionNotifications() {
+        for name: Notification.Name in [
+            HomeAssistantAPI.didConnectNotification,
+            UIApplication.didBecomeActiveNotification,
+        ] {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(connectionInfoDidChange),
+                name: name,
+                object: nil
+            )
+        }
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(scheduleReconnectBackgroundTimer),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(sceneDidEnterBackground(_:)),
+            name: UIScene.didEnterBackgroundNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(sceneDidActivate(_:)),
+            name: UIScene.didActivateNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(serverVersionDidChange(_:)),
+            name: HomeAssistantAPI.serverVersionDidChangeNotification,
+            object: nil
+        )
+
+        tokens.append(server.observe { [weak self] _ in
+            self?.connectionInfoDidChange()
+        })
+    }
+
+    @objc func serverVersionDidChange(_ notification: Notification) {
+        guard let changedServer = notification.object as? Server,
+              changedServer.identifier == server.identifier else { return }
+
+        // Edge-to-edge is assumed until the version proves otherwise; re-evaluate now that it changed.
+        updateThemedStatusBar()
+
+        Current.Log.info("Resetting frontend cache for \(server.identifier) after server version change")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
+                self?.reload()
+            }
+    }
+
+    @objc func connectionInfoDidChange() {
+        DispatchQueue.main.async { [self] in
+            loadActiveURLIfNeeded()
+        }
+    }
+
+    /// How long an in-flight `loadActiveURLIfNeeded()` attempt may run before a new call treats it
+    /// as hung and replaces it. Attempts normally finish in well under a second; the worst healthy
+    /// case is two sequential network-info fetches (`webviewURL()` plus the kiosk dashboard URL),
+    /// each bounded by `ConnectivityWrapper.networkFetchTimeout` (3s), so 10s means only a truly
+    /// stuck attempt gets replaced.
+    static let loadActiveURLStaleInterval: TimeInterval = 10
+
+    @objc func loadActiveURLIfNeeded() {
+        guard webView != nil else {
+            Current.Log.info("not loading, web view not built yet")
+            return
+        }
+
+        // After a log out the web view deliberately sits on a blank page behind the logged-out empty
+        // state, which every caller here would read as "wrong URL loaded" and correct by navigating
+        // back into the server -- taking the empty state down and re-authenticating the frontend with
+        // the token the user just revoked. Re-authenticating clears the flag and loads the URL again.
+        guard !didLogOut else {
+            Current.Log.info("not loading, logged out of \(server.identifier.rawValue)")
+            return
+        }
+
+        // Checked before the stale handling below so a hung attempt is only ever replaced while
+        // active, when the fallback load and the fresh attempt can both actually run.
+        guard !isAppInBackground() else {
+            // Loading would bail anyway, and starting async work while backgrounded risks hanging
+            // mid-flight on suspension; didBecomeActive triggers another call once loading can work.
+            Current.Log.info("not loading, in background")
+            return
+        }
+
+        Current.websiteDataStoreHandler.cleanFrontendAssetCacheIfNeeded { [weak self] _ in
+            self?.continueLoadingActiveURLIfNeeded()
+        }
+    }
+
+    /// Stops an active-URL attempt that is already running. `performLoadActiveURL()` re-checks
+    /// cancellation after every await, so a cancelled attempt cannot navigate once it wakes up.
+    func cancelActiveURLLoading() {
+        loadActiveURLTask?.cancel()
+        loadActiveURLTask = nil
+        loadActiveURLTaskStartDate = nil
+    }
+
+    private func continueLoadingActiveURLIfNeeded() {
+        // Re-checked because the cache-clean check above is asynchronous: a log out landing while it
+        // was in flight would otherwise navigate back into the server from this completion.
+        guard !didLogOut else {
+            Current.Log.info("not loading, logged out of \(server.identifier.rawValue)")
+            return
+        }
+
+        guard !isAppInBackground() else {
+            Current.Log.info("not loading, in background")
+            return
+        }
+
+        var previousAttemptHung = false
+        if let inFlightTask = loadActiveURLTask {
+            let startDate = loadActiveURLTaskStartDate ?? .distantPast
+            guard Current.date().timeIntervalSince(startDate) >= Self.loadActiveURLStaleInterval else {
+                Current.Log.info("loadActiveURLIfNeeded already in progress, skipping")
+                return
+            }
+
+            // The attempt hung mid-flight (e.g. the app was suspended while it refreshed network
+            // information during a background launch). Cancel it so it can't apply a stale result
+            // later, and start over -- otherwise the web view stays blank until the app is killed.
+            Current.Log.error("loadActiveURLIfNeeded in progress since \(startDate), assuming hung and restarting")
+            inFlightTask.cancel()
+            loadActiveURLTask = nil
+            loadActiveURLTaskStartDate = nil
+            previousAttemptHung = true
+        }
+
+        // The async path hung once already, so don't depend on it recovering: if the web view is
+        // still empty, load the last-known URL synchronously right away -- a possibly stale URL
+        // beats a blank screen -- and let the fresh attempt below correct it if the network changed.
+        if previousAttemptHung, webView.url == nil,
+           let fallbackURL = server.webviewURLUsingLastKnownNetworkState() {
+            Current.Log.info("loading fallback URL after hung attempt")
+            load(request: URLRequest(url: fallbackURL))
+        }
+
+        Current.Log.info("loadActiveURLIfNeeded called")
+        loadActiveURLTaskStartDate = Current.date()
+        loadActiveURLTask = Task { [weak self] in
+            defer {
+                // A cancelled attempt has already been replaced; it must not clear its replacement.
+                if !Task.isCancelled {
+                    self?.loadActiveURLTask = nil
+                    self?.loadActiveURLTaskStartDate = nil
+                }
+            }
+
+            await self?.performLoadActiveURL()
+        }
+    }
+
+    /// The async body of `loadActiveURLIfNeeded()`; only ever runs as `loadActiveURLTask`, and
+    /// re-checks cancellation after every await so a replaced attempt cannot apply stale results.
+    private func performLoadActiveURL() async {
+        // `webviewURL()` refreshes the network information (e.g. current SSID) before
+        // evaluating which URL is active.
+        guard let webviewURL = await server.webviewURL() else {
+            guard !Task.isCancelled else { return }
+            Current.Log.info("not loading, no url")
+            showNoActiveURLError()
+            return
+        }
+
+        guard !Task.isCancelled else { return }
+
+        hideNoActiveURLError()
+
+        guard webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false else {
+            // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
+            webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
+            return
+        }
+
+        // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
+        let request = await URLRequest(url: resolvedLoadURL(for: webviewURL))
+        // Re-check the background state too: backgrounding mid-flight could otherwise start a
+        // navigation that stalls on suspension, leaving webView.url pointing at a page that
+        // never loaded (which would defeat the empty-web-view checks above and the fallback).
+        guard !Task.isCancelled, !isAppInBackground() else { return }
+        load(request: request)
+    }
+
+    /// Determines which URL to load for the active server: the kiosk dashboard (when applicable), the
+    /// restored last URL, the preserved current path on a base-URL change, or the server default.
+    private func resolvedLoadURL(for webviewURL: URL) async -> URL {
+        if let kioskURL = await kioskDashboardURL(for: webviewURL) {
+            // In kiosk mode the configured dashboard takes precedence over restore/last-path behavior.
+            Current.Log.info("loading kiosk dashboard path: \(kioskURL.path)")
+            return kioskURL
+        }
+        if Current.settingsStore.restoreLastURL, webView.url == nil, let initialURLPath,
+           let restored = Self.restoredURL(base: webviewURL, relativePath: initialURLPath) {
+            // Keep the resolved full URL so the WebKit delegates can detect it finishing (or 404ing).
+            initialURL = restored
+            Current.Log.info("restoring last path: \(restored.path)")
+            return restored
+        }
+        if let currentURL = webView.url, currentURL.path.count > 1 {
+            // Preserve the current path when the base URL changes (e.g., switching between internal/external)
+            var components = URLComponents(url: webviewURL, resolvingAgainstBaseURL: true)
+            components?.path = currentURL.path
+            if currentURL.query != nil {
+                // Preserve external_auth if present, add other query items
+                var queryItems = components?.queryItems ?? []
+                let currentQueryItems = URLComponents(url: currentURL, resolvingAgainstBaseURL: false)?
+                    .queryItems ?? []
+                for item in currentQueryItems where item.name != "external_auth" {
+                    queryItems.append(item)
+                }
+                components?.queryItems = queryItems
+            }
+            components?.fragment = currentURL.fragment
+            let newURL = components?.url ?? webviewURL
+            Current.Log.info("preserving current path on base URL change: \(newURL.path)")
+            return newURL
+        }
+        Current.Log.info("loading default url path: \(webviewURL.path)")
+        return webviewURL
+    }
+
+    /// Rebuilds a stored relative reference (`path?query#fragment`) onto the currently active base URL, so
+    /// a page saved on one network/location reopens correctly on another. Non-private for tests.
+    static func restoredURL(base: URL, relativePath: String) -> URL? {
+        guard var components = URLComponents(url: base, resolvingAgainstBaseURL: true),
+              let relative = URLComponents(string: relativePath) else {
+            return nil
+        }
+        components.path = relative.path
+        components.query = relative.query
+        components.fragment = relative.fragment
+        return components.url
+    }
+
+    /// The URL of the kiosk-configured dashboard for this server, or `nil` when kiosk mode is off, this
+    /// isn't the kiosk server, or no specific dashboard was chosen (in which case the server default loads).
+    private func kioskDashboardURL(for webviewURL: URL) async -> URL? {
+        let kiosk = Current.kioskSettings
+        guard kiosk.enabled,
+              kiosk.serverId == nil || kiosk.serverId == server.identifier.rawValue,
+              let dashboard = kiosk.dashboard, !dashboard.isEmpty else {
+            return nil
+        }
+        let path = dashboard.hasPrefix("/") ? dashboard : "/" + dashboard
+        guard let url = await server.webviewURL(from: path), url.baseIsEqual(to: webviewURL) else {
+            return nil
+        }
+        return url
+    }
+
+    /// Navigates the web view to the kiosk-configured dashboard for the current server (or the server
+    /// default when no specific dashboard is set), so picking a dashboard in kiosk settings updates the
+    /// web view live. Server changes are handled by rebuilding the web view, not here.
+    func applyKioskDashboard() {
+        Task { [weak self] in
+            guard let self, Current.kioskSettings.enabled,
+                  let webviewURL = await server.webviewURL() else { return }
+            let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
+            guard webView.url?.absoluteString != target.absoluteString else { return }
+            Current.Log.info("applying kiosk dashboard to web view: \(target.path)")
+            load(request: URLRequest(url: target))
+        }
+    }
+
+    /// Sends the web view back to the frontend root — the kiosk dashboard when kiosk mode targets this
+    /// server, the server default otherwise. Always loads, even when already at the root, so activating
+    /// the server again recovers a web view stuck on a broken page.
+    func navigateToRoot() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let webviewURL = await server.webviewURL() else {
+                Current.Log.error("Cannot navigate to root, \(server.identifier.rawValue) has no active URL")
+                showNoActiveURLError()
+                return
+            }
+            let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
+            Current.Log.info("navigating web view to root: \(target.path)")
+            loadViewIfNeeded()
+            overlayState?.externalNavigationRequests.send()
+            load(request: URLRequest(url: target))
+        }
+    }
+
+    /// Sends the web view home after a navigation the frontend can't honor — a 404, a forbidden page, or a
+    /// malformed deeplink URL. Loads the frontend root (the kiosk dashboard when kiosk mode targets this
+    /// server, otherwise the server default) instead of leaving the user on a server error page or the
+    /// disconnected empty state.
+    ///
+    /// `failedURL` is the destination that failed. When it already is the root, the root itself is broken,
+    /// so we fall back to the normal empty state rather than bouncing into the same failure again.
+    func redirectToActiveURLRoot(failedURL: URL?) {
+        // Resolving the root can suspend for two network-state lookups. A newer redirect replaces this one,
+        // and the page the web view is on when the redirect is requested is captured so a navigation the
+        // user triggers meanwhile (a tap, a deep link) is not overwritten by this now-stale redirect.
+        redirectToRootTask?.cancel()
+        let urlWhenRequested = webView.url
+        redirectToRootTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let webviewURL = await server.webviewURL() else {
+                guard !Task.isCancelled else { return }
+                Current.Log.error("Cannot redirect to root, \(server.identifier.rawValue) has no active URL")
+                showNoActiveURLError()
+                return
+            }
+            let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
+            guard !Task.isCancelled, webView.url == urlWhenRequested else {
+                Current.Log.info("Skipping stale root redirect: a newer navigation took over")
+                return
+            }
+            switch Self.rootRedirectOutcome(target: target, failedURL: failedURL) {
+            case let .loadRoot(url):
+                Current.Log.info("redirecting web view to root after a disallowed navigation: \(url.path)")
+                loadViewIfNeeded()
+                overlayState?.externalNavigationRequests.send()
+                load(request: URLRequest(url: url))
+            case let .showEmptyState(failed):
+                Current.Log.error("Root \(target.path) itself failed to load; showing empty state instead of looping")
+                latestLoadError = Self.serverErrorLoadError(for: failed)
+                showEmptyState()
+            }
+        }
+    }
+
+    func showNoActiveURLError() {
+        // Load about:blank in webview to prevent any current connections
+        load(request: URLRequest(url: URL(string: "about:blank")!))
+        Current.Log.info("Loading about:blank in webview due to no activeURL")
+
+        // Cancel any disconnected empty-state the about:blank load may have scheduled — the no-active-URL
+        // overlay is the correct screen here, and the two are mutually exclusive.
+        emptyStateTimer?.invalidate()
+        emptyStateTimer = nil
+        hideEmptyState()
+
+        // Drive the SwiftUI no-active-URL overlay in `HomeAssistantView` instead of presenting a UIKit modal,
+        // so an app-level Settings sheet can float over it without tearing it down.
+        withAnimation(DesignSystem.Animation.easeInOutFaster) {
+            overlayState?.showsNoActiveURL = true
+        }
+    }
+
+    func hideNoActiveURLError() {
+        withAnimation(DesignSystem.Animation.easeInOutFaster) {
+            overlayState?.showsNoActiveURL = false
+        }
+    }
+
+    @objc func scheduleReconnectBackgroundTimer() {
+        precondition(Thread.isMainThread)
+
+        guard isViewLoaded, server.info.version >= .externalBusCommandRestart else { return }
+
+        // On iOS 15, Apple switched to using NSURLSession's WebSocket implementation, which is pretty bad at detecting
+        // any kind of networking failure. Even more troubling, it doesn't realize there's a failure due to background
+        // so it spends dozens of seconds waiting for a connection reset externally.
+        //
+        // We work around this by detecting being in the background for long enough that it's likely the connection will
+        // need to reconnect, anyway (similar to how we do it in HAKit). When this happens, we ask the frontend to
+        // reset its WebSocket connection, thus eliminating the wait.
+        //
+        // It's likely this doesn't apply before iOS 15, but it may improve the reconnect timing there anyhow.
+
+        reconnectBackgroundTimer = Timer.scheduledTimer(
+            withTimeInterval: 5.0,
+            repeats: true,
+            block: { [weak self] timer in
+                if let self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
+                    _ = webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
+                }
+
+                if UIApplication.shared.applicationState == .active {
+                    timer.invalidate()
+                }
+            }
+        )
+    }
+
+    /// Updates the app database and panels for the current server
+    /// Called after view appears and on pull to refresh to avoid blocking app launch
+    func updateDatabaseAndPanels() {
+        // Update runs in background automatically, returns immediately
+        Current.appDatabaseUpdater.update(server: server, forceUpdate: false, showProgress: false)
+        Current.panelsUpdater.update()
+    }
+}

@@ -10,21 +10,29 @@ import UIKit
 final class AppContainerCoordinator: AppCoordinator {
     weak var frontend: (any WebFrontend)?
 
+    /// One coordinator per frontend scene, so this is where a scene learns which server it is showing.
+    private let themeModeApplier: FrontendThemeModeApplier
+
+    init(themeModeApplier: FrontendThemeModeApplier = .shared) {
+        self.themeModeApplier = themeModeApplier
+    }
+
+    /// This scene's Settings presenter, set by `ContainerView`. Each window has its own, so a request
+    /// presented through here only reaches the window it came from.
+    weak var settingsPresenter: AppSettingsPresenter?
+
     /// Set by `ContainerView` to drive `OnboardingStateObservable` (the screen/server source of truth).
     var onOpenServer: ((Server) -> Void)?
     var onSetup: (() -> Void)?
-    /// Set by `ContainerView` to present Settings as a sheet over the web view (non-Catalyst).
-    var onShowSettings: (() -> Void)?
+    /// Set by `ContainerView` to present Settings over the web view (non-Catalyst). The flag requests a
+    /// navigation-stack push (used by the frontend external bus) rather than the default sheet.
+    var onShowSettings: ((Bool) -> Void)?
     /// Set by `ContainerView` to present Assist settings as a sheet over the web view.
     var onShowAssistSettings: (() -> Void)?
     /// Set by `ContainerView` to present the download manager (iOS 17+) as a sheet over the web view.
     var onShowDownloadManager: ((DownloadManagerViewModel) -> Void)?
     /// Set by `ContainerView` to present the forced onboarding-permissions decision as a full-screen cover.
     var onShowOnboardingPermissions: ((Server, [OnboardingPermissionsNavigationViewModel.StepID]) -> Void)?
-    /// Set by `ContainerView` to present the server picker as a sheet. The picked server is delivered back
-    /// via `completeServerSelection(_:)` (the completion can't be forwarded through this non-escaping hook).
-    var onSelectServer: ((String?, Bool) -> Void)?
-    private var pendingServerSelection: ((Server) -> Void)?
 
     /// Seals for in-flight `open(server:)` requests, keyed by server. Keyed + arrayed so concurrent opens
     /// (same or different servers) don't overwrite each other and leave callers hanging.
@@ -34,14 +42,33 @@ final class AppContainerCoordinator: AppCoordinator {
     /// Resolves every pending `open(server:)` for the server whose frontend just appeared.
     func setFrontend(_ frontend: any WebFrontend) {
         self.frontend = frontend
+        // The coordinator is not isolated, but every presentation duty it has already runs on the main queue.
+        MainActor.assumeIsolated {
+            themeModeApplier.frontend(for: frontend.server.identifier, showingIn: { [weak self] in
+                self?.window?.windowScene
+            })
+        }
         let seals = pendingOpens.removeValue(forKey: frontend.server.identifier) ?? []
         seals.forEach { $0(frontend) }
     }
 
     var window: UIWindow? { frontend?.presentationWindow }
 
+    /// The controller every presentation of this scene hangs off. Falls back to the active scene's key
+    /// window because a full-screen presentation detaches the frontend's own view, which would otherwise
+    /// leave us with no way to reach — or clear — what is on screen.
+    private var presentationRoot: UIViewController? {
+        if let root = window?.rootViewController {
+            return root
+        }
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let scene = scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
+        let keyWindow = scene?.windows.first { $0.isKeyWindow } ?? scene?.windows.first
+        return keyWindow?.rootViewController
+    }
+
     var presentedViewController: UIViewController? {
-        var current = frontend?.presentationWindow?.rootViewController
+        var current = presentationRoot
         while let next = current?.presentedViewController {
             current = next
         }
@@ -56,13 +83,13 @@ final class AppContainerCoordinator: AppCoordinator {
         frontend?.show(alert: alert)
     }
 
-    func showSettings() {
-        // On Catalyst with multiple scenes, Settings is its own window; otherwise present it as a sheet
-        // over the web view via `ContainerView`.
+    func showSettings(pushOntoNavigationStack: Bool) {
+        // On Catalyst with multiple scenes, Settings is its own window; otherwise present it over the web
+        // view via `ContainerView` (pushed when requested by the frontend bus, sheet otherwise).
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
         } else {
-            onShowSettings?()
+            onShowSettings?(pushOntoNavigationStack)
         }
     }
 
@@ -89,16 +116,28 @@ final class AppContainerCoordinator: AppCoordinator {
         return promise
     }
 
-    func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void) {
-        pendingServerSelection = completion
-        onSelectServer?(prompt, includeSettings)
+    func activate(server: Server) {
+        if let current = frontend, current.server.identifier == server.identifier {
+            // Already showing this server, so `open(server:)` would be a no-op: send the frontend back to
+            // the root instead, so activating the server again recovers a user stuck on a broken screen.
+            current.navigateToRoot()
+        } else {
+            // Switching servers rebuilds the web view, which lands on the server root on its own.
+            open(server: server)
+        }
     }
 
-    /// Called by `ContainerView`'s server-picker sheet when the user picks a server.
-    func completeServerSelection(_ server: Server) {
-        let completion = pendingServerSelection
-        pendingServerSelection = nil
-        completion?(server)
+    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {
+        // The picker is the Settings sheet at its medium detent, so anything already presented (Settings
+        // itself, What's New, …) would swallow it — clear the screen first. Presenting is deferred by a
+        // runloop hop so a sheet that was just torn down can't swallow the one replacing it.
+        dismissPresentedContent { [weak self] in
+            DispatchQueue.main.async {
+                self?.settingsPresenter?.presentServerSelection(
+                    .init(prompt: prompt, zoomsFromStandBy: zoomsFromStandBy, onSelect: completion)
+                )
+            }
+        }
     }
 
     func presentInvitation(url inviteURL: URL?) {
@@ -107,17 +146,34 @@ final class AppContainerCoordinator: AppCoordinator {
             Current.appSessionValues.inviteURL = inviteURL
             return
         }
-        let navigationView = NavigationView {
-            OnboardingServersListView(
-                prefillURL: inviteURL,
-                shouldDismissOnSuccess: true,
-                onboardingStyle: .secondary
-            )
-        }.navigationViewStyle(.stack)
-        frontend.presentOverlayController(
-            controller: navigationView.embeddedInHostingController(),
-            animated: true
+        let onboardingView = OnboardingNavigationView(
+            onboardingStyle: .secondary,
+            prefillURL: inviteURL,
+            shouldDismissOnSuccess: true
         )
+        // An invite link opens the app to launch something, so it takes over from whatever is on screen.
+        dismissPresentedContent {
+            frontend.presentOverlayController(
+                controller: onboardingView.embeddedInHostingController(),
+                animated: true
+            )
+        }
+    }
+
+    func dismissPresentedContent(completion: (() -> Void)?) {
+        // Clear the SwiftUI bindings before dismissing their controllers: left at `true` they strand the
+        // presentation state and block whatever wants to be presented next.
+        AppPresentationDismisser.shared.dismissAll()
+
+        // Dismissing from the root tears down the whole presentation chain, SwiftUI sheets included. The
+        // frontend's own overlays are the fallback for a link handled before there is a scene root.
+        if let root = presentationRoot, root.presentedViewController != nil {
+            root.dismiss(animated: true, completion: completion)
+        } else if let frontend {
+            frontend.dismissOverlayController(animated: true, completion: completion)
+        } else {
+            completion?()
+        }
     }
 
     func setup() {
@@ -136,16 +192,19 @@ final class AppContainerCoordinator: AppCoordinator {
         // Live Activities, …): slash-less HA paths and the app's own navigate deep link resolve to
         // an internal path; external URLs pass through untouched.
         let openUrl = AppConstants.normalizedNavigationDestination(openUrlRaw)
-        open(
-            from: from,
-            server: server,
-            urlString: openUrl,
-            webviewURL: server.info.connection.webviewURL(from: openUrl),
-            externalURL: URL(string: openUrl),
-            skipConfirm: skipConfirm,
-            avoidUnnecessaryReload: avoidUnnecessaryReload,
-            isComingFromAppIntent: isComingFromAppIntent
-        )
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            await open(
+                from: from,
+                server: server,
+                urlString: openUrl,
+                webviewURL: server.webviewURL(from: openUrl),
+                externalURL: URL(string: openUrl),
+                skipConfirm: skipConfirm,
+                avoidUnnecessaryReload: avoidUnnecessaryReload,
+                isComingFromAppIntent: isComingFromAppIntent
+            )
+        }
     }
 
     func openSelectingServer(
@@ -176,7 +235,7 @@ final class AppContainerCoordinator: AppCoordinator {
                 isComingFromAppIntent: isComingFromAppIntent
             )
         } else if servers.count > 1 {
-            selectServer(prompt: skipConfirm ? nil : from.message(with: openUrlRaw), includeSettings: false) {
+            selectServer(prompt: skipConfirm ? nil : from.serverSelectPrompt(with: openUrlRaw)) {
                 [weak self] server in
                 self?.open(
                     from: from,
@@ -191,13 +250,23 @@ final class AppContainerCoordinator: AppCoordinator {
     }
 
     private func navigate(to url: URL, on server: Server, avoidUnnecessaryReload: Bool, isComingFromAppIntent: Bool) {
-        open(server: server).done { frontend in
-            frontend.dismissOverlayController(animated: true, completion: nil)
-            if isComingFromAppIntent {
-                frontend.openPanel(url)
-            } else {
-                frontend.open(inline: url, avoidUnnecessaryReload: avoidUnnecessaryReload)
+        open(server: server).done { [weak self] frontend in
+            let performNavigation = {
+                if isComingFromAppIntent {
+                    frontend.openPanel(url)
+                } else {
+                    frontend.open(inline: url, avoidUnnecessaryReload: avoidUnnecessaryReload)
+                }
             }
+            guard let self else {
+                performNavigation()
+                return
+            }
+            // Everything on screen has to go first, not just the frontend's own overlays: a SwiftUI sheet
+            // left up would hide the navigation entirely and make the link look ignored. Navigating only
+            // once it's gone also keeps the sheet's teardown (which can refresh a stale web view) from
+            // landing on top of the destination.
+            dismissPresentedContent(completion: performNavigation)
         }
     }
 

@@ -64,15 +64,11 @@ struct ComplicationFamilySelectView: View {
     }
 
     private func makeNewComplication(for family: ComplicationGroupMember) -> WatchComplication {
-        let complication = WatchComplication()
-        complication.Family = family
-
-        if !allowMultiple {
-            // Preserve migration behaviour: watchOS 6 complications used a
-            // predictable, family-derived identifier.
-            complication.identifier = family.rawValue
-        }
-
-        return complication
+        // Preserve migration behaviour: watchOS 6 (single-complication) used a predictable,
+        // family-derived identifier.
+        WatchComplication(
+            identifier: allowMultiple ? UUID().uuidString : family.rawValue,
+            family: family
+        )
     }
 }

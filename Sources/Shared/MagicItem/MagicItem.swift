@@ -1,6 +1,8 @@
 import Foundation
 import GRDB
+import HADesignSystem
 import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import SwiftUI
 
@@ -29,6 +31,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             && type == other.type
             && customization == other.customization
             && action == other.action
+            && tapAction == other.tapAction
             && displayText == other.displayText
             && assistPrompt == other.assistPrompt
             && assistPipelineId == other.assistPipelineId
@@ -40,7 +43,12 @@ public struct MagicItem: Codable, Equatable, Hashable {
     public var serverId: String
     public let type: ItemType
     public var customization: Customization?
+    /// What the item's icon runs when tapped. On a widget tile the icon is the entity's own
+    /// control, so this is the action the tile performs in place.
     public var action: ItemAction?
+    /// What a tap anywhere on the tile other than its icon runs, mirroring the frontend tile card's
+    /// `tap_action`: by default the entity's more-info dialog, while the icon keeps the control.
+    public var tapAction: ItemAction?
     public var displayText: String?
     public var assistPrompt: String?
     public var assistPipelineId: String?
@@ -59,11 +67,28 @@ public struct MagicItem: Codable, Equatable, Hashable {
         hasher.combine(type)
         hasher.combine(customization)
         hasher.combine(action)
+        hasher.combine(tapAction)
         hasher.combine(displayText)
         hasher.combine(assistPrompt)
         hasher.combine(assistPipelineId)
         hasher.combine(items?.map(\.contentHash))
         return hasher.finalize()
+    }
+
+    /// True for items the watch only displays — a sensor entity, whose row opens a details screen
+    /// instead of running anything. Nothing else about the item (colors, name, icon) differs.
+    public var isWatchDisplayOnly: Bool {
+        type == .entity && domain?.isWatchDisplayOnly == true
+    }
+
+    /// True for the item types that start an Assist session (a pipeline, or a written prompt) rather
+    /// than calling a service.
+    public var isAssist: Bool {
+        type == .assistPipeline || type == .assistPrompt
+    }
+
+    public func isSameStoredItem(as other: MagicItem) -> Bool {
+        id == other.id && (serverId == other.serverId || (type == .assistPrompt && other.type == .assistPrompt))
     }
 
     /// Domain retrieved from id when item is entity else nil
@@ -81,6 +106,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         type: ItemType,
         customization: Customization? = .init(),
         action: ItemAction? = .default,
+        tapAction: ItemAction? = .default,
         displayText: String? = nil,
         assistPrompt: String? = nil,
         assistPipelineId: String? = nil,
@@ -91,6 +117,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         self.type = type
         self.customization = customization
         self.action = action
+        self.tapAction = tapAction
         self.displayText = displayText
         self.assistPrompt = assistPrompt
         self.assistPipelineId = assistPipelineId
@@ -102,8 +129,15 @@ public struct MagicItem: Codable, Equatable, Hashable {
         case scene
         case entity
         case folder
+        /// An entry that opens one area's entities. `id` is the area id and `serverId` the server it
+        /// belongs to, so `serverUniqueId` matches `AppArea.id`. It holds no children — the area's
+        /// entities are resolved live when the screen opens.
+        case area
         case assistPipeline
         case assistPrompt
+        /// An existing watch complication, rendered inline in the watch's item list. `id` is the
+        /// `WatchComplicationConfig` id (a UUID), not an entity id.
+        case complication
         case unsupported
 
         public init(from decoder: Decoder) throws {
@@ -128,9 +162,38 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public var icon: String?
         /// True only when the user explicitly picked a custom icon via the icon picker
         public var iconIsCustomized: Bool?
+        /// True when the user chose "Custom" for the icon color — see ``customIconColor``
+        public var iconColorIsCustomized: Bool?
 
         public var useCustomColors: Bool {
             textColor != nil || backgroundColor != nil
+        }
+
+        /// The icon color the user deliberately chose, or `nil` to let the entity keep the color
+        /// home-assistant/frontend gives it.
+        ///
+        /// The customization screen sets ``iconColorIsCustomized`` when the user switches the icon
+        /// color to "Custom", and clears the color itself on "Default". Older versions of that screen
+        /// seeded the color with the app's tint just by opening, so a color saved without the flag
+        /// only counts as picked when it isn't one of the tints the app has ever had.
+        public var customIconColor: String? {
+            guard let iconColor else { return nil }
+            if iconColorIsCustomized == true { return iconColor }
+            return MagicItem.seededIconColorHexes.contains(MagicItem.normalizedHex(iconColor))
+                ? nil
+                : iconColor
+        }
+
+        /// Lets the entity keep the color home-assistant/frontend gives it.
+        public mutating func useDefaultIconColor() {
+            iconColor = nil
+            iconColorIsCustomized = false
+        }
+
+        /// Fixes the icon to `hex`, whatever the entity's state.
+        public mutating func useCustomIconColor(_ hex: String) {
+            iconColor = hex
+            iconColorIsCustomized = true
         }
 
         public init(
@@ -139,7 +202,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
             backgroundColor: String? = nil,
             requiresConfirmation: Bool = false,
             icon: String? = nil,
-            iconIsCustomized: Bool = false
+            iconIsCustomized: Bool = false,
+            iconColorIsCustomized: Bool = false
         ) {
             self.iconColor = iconColor
             self.textColor = textColor
@@ -147,6 +211,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.requiresConfirmation = requiresConfirmation
             self.icon = icon
             self.iconIsCustomized = iconIsCustomized
+            self.iconColorIsCustomized = iconColorIsCustomized
         }
     }
 
@@ -175,6 +240,18 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.customization = customization
             self.contextSubtitle = contextSubtitle
         }
+
+        /// The same info carrying `customization`, for an item edited before whatever built the info
+        /// has seen the edit.
+        public func replacingCustomization(_ customization: Customization?) -> Info {
+            .init(
+                id: id,
+                name: name,
+                iconName: iconName,
+                customization: customization,
+                contextSubtitle: contextSubtitle
+            )
+        }
     }
 
     /// Icon for given magic item type
@@ -193,6 +270,13 @@ public struct MagicItem: Codable, Equatable, Hashable {
                 )
             case .folder:
                 icon = .folderIcon
+            case .area:
+                icon = MaterialDesignIcons(
+                    serversideValueNamed: info.iconName,
+                    fallback: .textureBoxIcon
+                )
+            case .complication:
+                icon = MaterialDesignIcons(serversideValueNamed: info.iconName, fallback: .watchIcon)
             case .assistPipeline:
                 icon = .microphoneIcon
             case .assistPrompt:
@@ -210,83 +294,193 @@ public struct MagicItem: Codable, Equatable, Hashable {
         displayText ?? info.name
     }
 
-    public var widgetInteractionType: WidgetInteractionType {
-        let magicItem = self
+    /// Whether "toggle" can do anything for this item: it stands for an entity whose domain has
+    /// the on/off service pair the frontend's `canToggleDomain` looks for. The frontend's action
+    /// editor drops "toggle" from its list otherwise, and so does the customization screen.
+    ///
+    /// Without the entity's `supported_features` this is the domain-level answer; pass them to
+    /// get the frontend's `canToggleState`, which also asks a climate, cover, camera, media
+    /// player, or siren whether it supports turning on and off at all.
+    public var canToggle: Bool {
+        canToggle(supportedFeatures: nil)
+    }
 
-        if magicItem.type == .assistPipeline {
+    public func canToggle(supportedFeatures: Int?) -> Bool {
+        hasMoreInfoDialog && domain?.canToggle(supportedFeatures: supportedFeatures) == true
+    }
+
+    /// Whether the explicit on/off behaviors — "Lock" and "Unlock", "Open" and "Close", "Turn on"
+    /// and "Turn off" — mean anything for this item: it toggles, and between two different
+    /// services. A button or a scene has only the one, and "toggle" already runs it.
+    public var hasOnOffActions: Bool {
+        hasOnOffActions(supportedFeatures: nil)
+    }
+
+    public func hasOnOffActions(supportedFeatures: Int?) -> Bool {
+        canToggle(supportedFeatures: supportedFeatures) && domain?.toggleIsStateAware == true
+    }
+
+    /// Whether the item's domain has a main action worth its own entry — "Press" for a button,
+    /// "Activate" for a scene, "Run" for a script, "Trigger" for an automation — rather than one
+    /// "Toggle" already names. See `Domain.explicitMainAction`.
+    public var hasExplicitMainAction: Bool {
+        hasMoreInfoDialog && domain?.explicitMainAction != nil
+    }
+
+    /// What `.default` stands for on a widget tile's icon, and on an app icon shortcut: for every
+    /// `Domain.isActionable` domain the domain's own action — its main action where it names one
+    /// ("Press", "Activate", "Run", "Trigger"), its toggle otherwise, which covers the
+    /// state-aware pairs so a locked lock unlocks and a closed cover opens. Every other entity
+    /// only opens its more-info dialog. An Assist pipeline starts Assist.
+    public var defaultIconAction: ItemAction {
+        if type == .assistPipeline {
+            return .assist(serverId, assistPipelineId ?? id, true)
+        }
+        guard hasMoreInfoDialog, let domain, domain.isActionable else {
+            return .moreInfoDialog
+        }
+        return domain.explicitMainAction != nil ? .mainAction : .toggle
+    }
+
+    /// What `.default` stands for on the rest of a widget tile: the entity's more-info dialog, the
+    /// frontend tile card's `tap_action`. Items with no entity behind them — an Assist pipeline, a
+    /// folder — have no dialog to open, so the whole tile keeps what the icon does.
+    public var defaultTapAction: ItemAction {
+        hasMoreInfoDialog ? .moreInfoDialog : defaultIconAction
+    }
+
+    /// What tapping a widget tile's icon — or the item's app icon shortcut — does.
+    ///
+    /// An explicit action override wins over whatever the item would do by default; a pipeline is
+    /// the one item with nothing to override, since starting it is all it can do. The default is
+    /// resolved through the same action the customization screen names as "Default", so what the
+    /// picker says and what a tap does can't drift apart.
+    public var widgetInteractionType: WidgetInteractionType {
+        if type != .assistPipeline, let action, let interaction = interactionType(for: action) {
+            return interaction
+        }
+        return interactionType(for: defaultIconAction) ?? .appIntent(.refresh)
+    }
+
+    /// What tapping a widget tile outside its icon does.
+    ///
+    /// Mirrors the frontend's tile card: the icon carries the entity's control and the rest of the
+    /// card opens the entity. Items with no entity behind them — an Assist pipeline or prompt, a
+    /// folder — have no more-info dialog to open, so the whole tile keeps the icon's action.
+    public var widgetTapInteractionType: WidgetInteractionType {
+        if let tapAction, let interaction = interactionType(for: tapAction) {
+            return interaction
+        }
+        return hasMoreInfoDialog ? openEntityIntent() : widgetInteractionType
+    }
+
+    /// Whether tapping the item's icon on a widget controls the entity where it stands, rather than
+    /// opening the app. Tiles that only open the app draw their icon without a background, the way
+    /// the frontend leaves an uncontrollable entity's icon plain.
+    public var controlsEntityFromWidget: Bool {
+        switch widgetInteractionType {
+        case .widgetURL:
+            return false
+        case let .appIntent(intentType):
+            return intentType != .refresh
+        }
+    }
+
+    /// Whether the item stands for an entity, and so has a more-info dialog to open.
+    public var hasMoreInfoDialog: Bool {
+        [.entity, .script, .scene].contains(type)
+    }
+
+    /// The interaction an explicitly chosen action performs. `nil` for `.default`, for a
+    /// `.toggle` or an on/off behavior the item's domain can't perform, and for a more-info dialog
+    /// an item without an entity can't open — all of which leave the choice to whatever the caller
+    /// falls back on. `.nothing` reloads the widget and nothing more: the tap never controls the
+    /// entity or leaves the widget, so tapping a tile that does nothing is how its state is
+    /// refreshed on demand.
+    private func interactionType(for action: ItemAction) -> WidgetInteractionType? {
+        switch action {
+        case .default:
+            return nil
+        case .nothing:
+            return .appIntent(.refresh)
+        case .moreInfoDialog:
+            return hasMoreInfoDialog ? openEntityIntent() : nil
+        case .toggle:
+            return toggleIntent()
+        case .mainAction:
+            return mainActionIntent()
+        case .turnOn:
+            return onOffIntent(turnOn: true)
+        case .turnOff:
+            return onOffIntent(turnOn: false)
+        case let .navigate(path):
+            return navigateIntent(path: path)
+        case let .url(urlString):
+            return urlIntent(urlString)
+        case let .performAction(serverId, actionId, payload):
+            return .appIntent(.performAction(
+                serverId: serverId,
+                actionId: actionId,
+                payload: payload
+            ))
+        case let .runScript(serverId, scriptId):
+            return .appIntent(.activate(
+                entityId: scriptId,
+                domain: Domain.script.rawValue,
+                serverId: serverId
+            ))
+        case let .assist(serverId, pipelineId, startListening):
             return assistIntent(
-                serverId: magicItem.serverId,
-                pipelineId: magicItem.assistPipelineId ?? magicItem.id,
-                startListening: true
+                serverId: serverId,
+                pipelineId: pipelineId,
+                startListening: startListening
             )
         }
+    }
 
-        guard let domain = magicItem.domain else { return .appIntent(.refresh) }
+    /// The intent that toggles the entity the way the frontend does — turning a light on or off by
+    /// its state, pressing a button, activating a scene, locking or unlocking a lock. `nil` for a
+    /// domain with nothing to toggle between (a sensor).
+    private func toggleIntent() -> WidgetInteractionType? {
+        guard canToggle, let domain else { return nil }
+        return .appIntent(.toggle(entityId: id, domain: domain.rawValue, serverId: serverId))
+    }
 
-        var interactionType: WidgetInteractionType = .appIntent(.refresh)
+    /// The intent that runs the domain's main action outright — pressing a button, activating a
+    /// scene, running a script, triggering an automation. `nil` for a domain whose main action
+    /// "Toggle" already covers, or that has none.
+    private func mainActionIntent() -> WidgetInteractionType? {
+        guard hasExplicitMainAction, let domain else { return nil }
+        return .appIntent(.activate(entityId: id, domain: domain.rawValue, serverId: serverId))
+    }
 
-        if let magicItemAction = magicItem.action, magicItemAction != .default {
-            switch magicItemAction {
-            case .default:
-                // This block of code should not be reached, default should not be handled here
-                // Returning something to avoid compiler error
-                interactionType = .appIntent(.refresh)
-            case .moreInfoDialog:
-                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                    entityId: magicItem.id,
-                    serverId: magicItem.serverId
-                ))
-            case .nothing:
-                interactionType = .appIntent(.refresh)
-            case let .navigate(path):
-                interactionType = navigateIntent(path: path)
-            case let .runScript(serverId, scriptId):
-                interactionType = .appIntent(.activate(
-                    entityId: scriptId,
-                    domain: Domain.script.rawValue,
-                    serverId: serverId
-                ))
-            case let .assist(serverId, pipelineId, startListening):
-                interactionType = assistIntent(
-                    serverId: serverId,
-                    pipelineId: pipelineId,
-                    startListening: startListening
-                )
-            }
-        } else if let mainAction = domain.mainAction {
-            switch mainAction {
-            case .press:
-                interactionType = .appIntent(.press(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            case .toggle, .trigger:
-                interactionType = .appIntent(.toggle(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            case .turnOn where domain == .scene || domain == .script:
-                interactionType = .appIntent(.activate(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            default:
-                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                    entityId: magicItem.id,
-                    serverId: magicItem.serverId
-                ))
-            }
-        } else {
-            interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
-                entityId: magicItem.id,
-                serverId: magicItem.serverId
-            ))
+    /// The intent that calls one side of the entity's on/off pair outright — `lock.lock`,
+    /// `cover.open_cover` — which is a "perform action" on the entity and nothing more.
+    private func onOffIntent(turnOn: Bool) -> WidgetInteractionType? {
+        guard hasOnOffActions, let domain, let services = domain.toggleServices else { return nil }
+        let service = turnOn ? services.on : services.off
+        return .appIntent(.performAction(
+            serverId: serverId,
+            actionId: "\(domain.serviceDomain).\(service.rawValue)",
+            payload: "{\"entity_id\": \"\(id)\"}"
+        ))
+    }
+
+    /// Opens whatever the user typed. Nothing to open — an empty or unusable address — leaves the
+    /// tile refreshing rather than pointing nowhere.
+    private func urlIntent(_ urlString: String) -> WidgetInteractionType {
+        guard let url = ItemAction.resolvedURL(from: urlString) else {
+            return .appIntent(.refresh)
         }
+        return .widgetURL(url)
+    }
 
-        return interactionType
+    /// Opens this item's entity where tapping it lands: its more-info dialog in the app's web view.
+    private func openEntityIntent() -> WidgetInteractionType {
+        navigateIntent(url: AppConstants.openEntityDestinationURL(
+            entityId: id,
+            serverId: serverId
+        ))
     }
 
     private func navigateIntent(path: String) -> WidgetInteractionType {
@@ -330,11 +524,25 @@ public enum MagicItemError: Error {
     case unknownDomain
 }
 
+/// What tapping a magic item runs, mirroring the tap actions the frontend's tile card offers.
+///
+/// Every case is persisted through `MagicItem`'s `Codable` conformance, so the case names and the
+/// order of their associated values are storage format — renaming either drops existing
+/// configurations back to `.default`.
 public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
+    /// Listed in the frontend's own order, with the app's own additions next to the action they
+    /// resemble most: the domain's main action and on/off behaviors after "toggle", `runScript`
+    /// after "perform action", and the frontend's "no action" last.
     public static var allCases: [ItemAction] = [
         .default,
         .moreInfoDialog,
+        .toggle,
+        .mainAction,
+        .turnOn,
+        .turnOff,
         .navigate(""),
+        .url(""),
+        .performAction("", "", ""),
         .runScript("", ""),
         .assist("", "", false),
         .nothing,
@@ -342,10 +550,63 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
 
     case `default`
     case moreInfoDialog
+    /// The frontend's "toggle": the domain's on or off service, picked from the entity's state —
+    /// `light.turn_on` for a light that is off, `lock.unlock` for a locked lock, `button.press`
+    /// for a button. Only domains with such a pair can do this — see `Domain.toggleServices` — so
+    /// for anything else the item falls back to the behavior it would have had without an override.
+    case toggle
+    /// Runs the domain's main action outright — press a button, activate a scene, run a script,
+    /// trigger an automation — named that way on the customization screen, and only offered where
+    /// "Toggle" doesn't already spell the same thing out. See `Domain.explicitMainAction`.
+    case mainAction
+    /// Calls the domain's "on" service outright, whatever the entity's state: `lock.unlock`,
+    /// `cover.open_cover`, `light.turn_on`. Named after that service on the customization screen
+    /// ("Unlock", "Open", "Turn on"), and only offered where it differs from the "off" one.
+    case turnOn
+    /// Calls the domain's "off" service outright: `lock.lock`, `cover.close_cover`,
+    /// `light.turn_off`. The counterpart of `turnOn`.
+    case turnOff
     case navigate(_ navigationPath: String)
+    /// Opens an arbitrary URL, the frontend's `url` action (`url_path`). An `https://` link opens in
+    /// the browser; the app's own `homeassistant://` deep links are handled in-app.
+    case url(_ url: String)
+    /// Calls `domain.service` with a JSON payload — the frontend's `perform-action`. `actionId` is
+    /// the `domain.service` pair, `payload` the JSON object sent as the action's data.
+    case performAction(_ serverId: String, _ actionId: String, _ payload: String)
     case runScript(_ serverId: String, _ scriptId: String)
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
+    /// The frontend's "no action": the tap neither controls the entity nor leaves the widget. On a
+    /// widget it reloads the tile instead, so a tile that does nothing is the one whose state can be
+    /// refreshed by hand — which is what the behavior has been used for since it was first offered.
     case nothing
+
+    /// The behaviors a picker offers one item: every case, minus the ones the item's domain can't
+    /// perform — "toggle" for an entity with nothing to toggle, the explicit on/off pair for one
+    /// with a single service — the way the frontend's action editor filters "toggle" out of its
+    /// own list. `supportedFeatures`, when known, narrows "toggle" the way the frontend's
+    /// `canToggleState` does. A stored choice stays listed even then, so it never vanishes from
+    /// under the user; it falls back at tap time the way it always has.
+    public static func offered(
+        for item: MagicItem,
+        supportedFeatures: Int? = nil,
+        selected: ItemAction
+    ) -> [ItemAction] {
+        allCases.filter { itemAction in
+            if itemAction.id == selected.id {
+                return true
+            }
+            switch itemAction {
+            case .toggle:
+                return item.canToggle(supportedFeatures: supportedFeatures)
+            case .mainAction:
+                return item.hasExplicitMainAction
+            case .turnOn, .turnOff:
+                return item.hasOnOffActions(supportedFeatures: supportedFeatures)
+            default:
+                return true
+            }
+        }
+    }
 
     public var id: String {
         switch self {
@@ -353,8 +614,20 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return "default"
         case .moreInfoDialog:
             return "moreInfoDialog"
+        case .toggle:
+            return "toggle"
+        case .mainAction:
+            return "mainAction"
+        case .turnOn:
+            return "turnOn"
+        case .turnOff:
+            return "turnOff"
         case .navigate:
             return "navigate"
+        case .url:
+            return "url"
+        case .performAction:
+            return "performAction"
         case .runScript:
             return "runScript"
         case .assist:
@@ -364,14 +637,48 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
         }
     }
 
+    /// The picker's label for `.default`, naming what it stands in for — "Default (More info)",
+    /// "Default (Toggle)" — the way the frontend's action editor labels its default entry.
+    public static func defaultName(resolvingTo actionName: String) -> String {
+        L10n.Widgets.Action.Name.defaultAction(actionName)
+    }
+
+    /// The name shown for this behavior on one item. The domain's own behaviors take its words —
+    /// "Press" for a button, "Run" for a script, "Lock" and "Unlock" for a lock, "Open" and
+    /// "Close" for a cover — and everything else reads the same on every item.
+    public func name(for domain: Domain?) -> String {
+        switch self {
+        case .mainAction:
+            return domain?.mainActionName ?? name
+        case .turnOn:
+            return domain?.toggleServices?.on.toggleActionName ?? name
+        case .turnOff:
+            return domain?.toggleServices?.off.toggleActionName ?? name
+        default:
+            return name
+        }
+    }
+
     public var name: String {
         switch self {
         case .default:
             return L10n.Widgets.Action.Name.default
         case .moreInfoDialog:
             return L10n.Widgets.Action.Name.moreInfoDialog
+        case .toggle:
+            return L10n.Widgets.Action.Name.toggle
+        case .mainAction:
+            return L10n.Widgets.Action.Name.mainAction
+        case .turnOn:
+            return L10n.Widgets.Action.Name.turnOn
+        case .turnOff:
+            return L10n.Widgets.Action.Name.turnOff
         case .navigate:
             return L10n.Widgets.Action.Name.navigate
+        case .url:
+            return L10n.Widgets.Action.Name.url
+        case .performAction:
+            return L10n.Widgets.Action.Name.performAction
         case .runScript:
             return L10n.Widgets.Action.Name.runScript
         case .assist:
@@ -380,11 +687,47 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
             return L10n.Widgets.Action.Name.nothing
         }
     }
+
+    /// The URL a `.url` action opens, `nil` when there is nothing to open.
+    ///
+    /// A typed address usually omits its scheme ("example.com/page") and nothing can open it
+    /// without one, so the web's default is assumed rather than leaving the action dead.
+    public static func resolvedURL(from urlString: String) -> URL? {
+        let trimmed = urlString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if let url = URL(string: trimmed), url.scheme != nil {
+            return url
+        }
+        return URL(string: "https://\(trimmed)")
+    }
+}
+
+extension MagicItem {
+    /// Every tint the icon color picker has seeded itself with: today's, and `#00AEF8`, the app's
+    /// tint until September 2025. Normalized by ``normalizedHex(_:)``.
+    static var seededIconColorHexes: Set<String> {
+        [normalizedHex(defaultIconColorHex), "00AEF8"]
+    }
+
+    /// Uppercased six-digit hex, so the seed comparison isn't thrown off by a `#` prefix or an
+    /// opaque alpha channel — the app writes the same color in both shapes.
+    static func normalizedHex(_ hex: String) -> String {
+        var normalized = hex.uppercased().replacingOccurrences(of: "#", with: "")
+        if normalized.count == 8, normalized.hasSuffix("FF") {
+            normalized = String(normalized.dropLast(2))
+        }
+        return normalized
+    }
 }
 
 public extension MagicItem {
-    static var defaultAssistIconColorHex: String {
+    /// The color the icon color picker seeds itself with when an item has none yet: the app's tint.
+    static var defaultIconColorHex: String {
         Color.haPrimary.hex() ?? Color.brand50.hex() ?? ""
+    }
+
+    static var defaultAssistIconColorHex: String {
+        defaultIconColorHex
     }
 
     /// Single entry point for executing a magic item.
@@ -397,14 +740,18 @@ public extension MagicItem {
     /// via the webhook API (`CallService`) and entity/lock actions over the WebSocket connection.
     ///
     /// `currentItemState` is used only for the lock domain, since it can't be toggled.
+    ///
+    /// `onStep` narrates the run's progress (resolved service call, URL, token stage, request,
+    /// TLS challenges) for the watch's verbose execution trace. Ignored on non-watch platforms.
     func execute(
         on server: Server,
         source: AppTriggerSource,
         currentItemState: String = "",
+        onStep: ((String) -> Void)? = nil,
         completion: @escaping (Bool, Error?) -> Void
     ) {
         #if os(watchOS)
-        executeViaREST(on: server, currentItemState: currentItemState, completion: completion)
+        executeViaREST(on: server, currentItemState: currentItemState, onStep: onStep, completion: completion)
         #else
         executeViaWebSocket(
             on: server,
@@ -466,8 +813,8 @@ public extension MagicItem {
                         entityId: id,
                         state: currentItemState
                     )
-                case .folder, .assistPipeline, .assistPrompt, .unsupported:
-                    // Folders and assist items don't execute direct actions
+                case .folder, .area, .complication, .assistPipeline, .assistPrompt, .unsupported:
+                    // Folders, areas, complications and assist items don't execute direct actions
                     return nil
                 }
             }()
@@ -535,12 +882,21 @@ public extension MagicItem {
         let data: [String: Any]
     }
 
+    /// How long the run waits for a bearer token before failing. The refresh request has no
+    /// watchdog of its own, and `TokenManager` caches the in-flight refresh promise — a refresh
+    /// that never resolves (started by any earlier request) would otherwise hang every run
+    /// silently, with `completion` never called.
+    private static var tokenDeadline: TimeInterval { 10 }
+
     /// watchOS executes via the REST API — see `execute(on:source:currentItemState:completion:)`.
     /// The request reuses the server's mTLS-aware `URLSession` and bearer token (token refresh already
-    /// works over `URLSession` on the watch), so no WebSocket is involved.
+    /// works over `URLSession` on the watch), so no WebSocket is involved. `ServerRequestPerformer`
+    /// decides how it actually leaves the watch, including handing it to the iPhone when that one is
+    /// reachable.
     private func executeViaREST(
         on server: Server,
         currentItemState: String,
+        onStep: ((String) -> Void)?,
         completion: @escaping (Bool, Error?) -> Void
     ) {
         let serviceCall: WatchServiceCall?
@@ -557,26 +913,106 @@ public extension MagicItem {
             completion(true, nil)
             return
         }
+        onStep?("Service call: \(serviceCall.domain).\(serviceCall.service)")
+        if let onStep {
+            probeDispatchPools(onStep: onStep)
+        }
 
-        var connectionInfo = server.info.connection
-        guard let baseURL = connectionInfo.activeURL() else {
+        // No Swift concurrency on this path: watchOS gives the cooperative pool a single thread,
+        // and a starved pool left taps hanging before the request ever started. The synchronous
+        // URL evaluation is equivalent — on watchOS the last-known network state is always current.
+        guard let baseURL = server.activeURLUsingLastKnownNetworkState() else {
             Current.Log.error("No active URL while executing magic item \(id) on watch")
             completion(false, ServerConnectionError.noActiveURL(server.info.name))
             return
         }
+        onStep?("URL: \(baseURL.absoluteString)")
+
+        // Narrate the token stage: an expired token forces a refresh over REST, the least protected
+        // leg of the run — so the trace should say up front whether that leg is in play.
+        let expiration = server.info.token.expiration
+        let now = Current.date()
+        if expiration.addingTimeInterval(-60) > now {
+            onStep?("Access token valid for another \(Int(expiration.timeIntervalSince(now)))s")
+        } else {
+            onStep?("Access token expired — refreshing over REST (reuses any refresh already in flight)…")
+        }
 
         let tokenManager = Current.api(for: server)?.tokenManager ?? TokenManager(server: server)
+        let tokenStarted = Current.date()
+        onStep?("Requesting bearer token (\(Int(Self.tokenDeadline))s deadline)…")
+
+        let lock = NSLock()
+        var settled = false
+        // First caller wins; the loser is discarded so `completion` runs exactly once. A late token
+        // still lands in the shared cache for the next run.
+        func settleOnce(_ body: () -> Void) {
+            lock.lock()
+            let shouldRun = !settled
+            settled = true
+            lock.unlock()
+            if shouldRun { body() }
+        }
+
+        // Deadline so a stuck refresh fails the run instead of silencing it. Main queue on purpose,
+        // not PromiseKit's `after` — that fires on the GCD global pool, which is exactly what these
+        // hangs starve, so a pool-based deadline never fired and the run hung with no trace. Main is
+        // the one queue proven to stay serviced on watch hardware (same reasoning as the URLSession
+        // callback fallback in `sendRESTServiceCall`).
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.tokenDeadline) {
+            settleOnce {
+                onStep?(
+                    "No token after \(Int(Self.tokenDeadline))s — giving up. The refresh appears " +
+                        "stuck; it stays cached, so later runs will fail fast too until the app restarts."
+                )
+                Current.Log.error("Token deadline elapsed executing magic item \(self.id)")
+                completion(false, WatchRESTExecutionError.tokenTimeout)
+            }
+        }
+
         tokenManager.bearerToken.done { token, _ in
-            self.sendRESTServiceCall(
-                baseURL: baseURL,
-                server: server,
-                token: token,
-                serviceCall: serviceCall,
-                completion: completion
-            )
+            settleOnce {
+                onStep?(String(
+                    format: "Token ready in %.2fs",
+                    Current.date().timeIntervalSince(tokenStarted)
+                ))
+                self.sendRESTServiceCall(
+                    baseURL: baseURL,
+                    server: server,
+                    token: token,
+                    serviceCall: serviceCall,
+                    onStep: onStep,
+                    completion: completion
+                )
+            }
         }.catch { error in
-            Current.Log.error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
-            completion(false, error)
+            settleOnce {
+                onStep?("Token failed: \(error.localizedDescription)")
+                Current.Log
+                    .error("Token unavailable executing magic item \(self.id): \(error.localizedDescription)")
+                completion(false, error)
+            }
+        }
+    }
+
+    /// Fires a no-op on each global-QoS queue and narrates when it ran. During past hangs the GCD
+    /// worker pool was starved while the main queue stayed serviced, so these lines show — per QoS
+    /// level — whether background dispatch is alive during this run. A probe line that never
+    /// appears in the trace is itself the finding: that QoS level never got a worker thread.
+    private func probeDispatchPools(onStep: @escaping (String) -> Void) {
+        let started = Current.date()
+        let levels: [(label: String, qos: DispatchQoS.QoSClass)] = [
+            ("user-interactive", .userInteractive),
+            ("user-initiated", .userInitiated),
+            ("default", .default),
+            ("utility", .utility),
+            ("background", .background),
+        ]
+        for level in levels {
+            DispatchQueue.global(qos: level.qos).async {
+                let elapsed = Current.date().timeIntervalSince(started)
+                onStep(String(format: "Probe: global %@ queue ran after %.2fs", level.label, elapsed))
+            }
         }
     }
 
@@ -599,7 +1035,11 @@ public extension MagicItem {
                 throw MagicItemError.unknownDomain
             }
             if domain == .lock {
-                guard let state = Domain.State(rawValue: currentItemState) else { return nil }
+                // Lock is state-aware; without a known state the call would guess wrong, so fail
+                // loudly instead of silently doing nothing (a nil here reads as a no-op success).
+                guard let state = Domain.State(rawValue: currentItemState) else {
+                    throw WatchRESTExecutionError.lockStateUnknown
+                }
                 switch state {
                 case .unlocking, .unlocked, .opening:
                     return WatchServiceCall(
@@ -614,22 +1054,33 @@ public extension MagicItem {
                         data: ["entity_id": id]
                     )
                 default:
-                    return nil
+                    throw WatchRESTExecutionError.lockStateUnknown
                 }
             } else {
                 guard let action = domain.mainAction else { return nil }
-                return WatchServiceCall(domain: domain.rawValue, service: action.rawValue, data: ["entity_id": id])
+                return WatchServiceCall(
+                    domain: domain.serviceDomain,
+                    service: action.rawValue,
+                    data: ["entity_id": id]
+                )
             }
-        case .folder, .assistPipeline, .assistPrompt, .unsupported:
+        case .folder, .area, .complication, .assistPipeline, .assistPrompt, .unsupported:
             return nil
         }
     }
+
+    /// Request timeout, and how long past it the run waits before declaring the session dead:
+    /// URLSession has been observed never calling the data task back on watch hardware, even past
+    /// `timeoutInterval` — its delivery queue itself can be starved.
+    private static var requestTimeout: TimeInterval { 15 }
+    private static var sessionCallbackFallback: TimeInterval { requestTimeout + 2 }
 
     private func sendRESTServiceCall(
         baseURL: URL,
         server: Server,
         token: String,
         serviceCall: WatchServiceCall,
+        onStep: ((String) -> Void)?,
         completion: @escaping (Bool, Error?) -> Void
     ) {
         let url = baseURL
@@ -640,6 +1091,9 @@ public extension MagicItem {
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        // Bound the wait so a dead route fails visibly instead of hanging the row for the default 60s
+        // (the UI resets after ~4s, but the task would otherwise keep a session + tokens alive).
+        request.timeoutInterval = Self.requestTimeout
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
@@ -653,50 +1107,119 @@ public extension MagicItem {
 
         Current.Log.info("Executing magic item \(id) via REST: POST \(url.absoluteString)")
 
-        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
-        let task = session.dataTask(with: request) { [session] data, response, error in
-            // The session strongly retains its delegate until invalidated; do it once the task ends.
-            defer { session.finishTasksAndInvalidate() }
+        let lock = NSLock()
+        var finished = false
+        // First caller wins; the loser's work is discarded so `completion` runs exactly once.
+        func finishOnce(_ body: () -> Void) {
+            lock.lock()
+            let shouldRun = !finished
+            finished = true
+            lock.unlock()
+            if shouldRun { body() }
+        }
 
-            if let error {
-                Current.Log.error("REST execution of magic item \(self.id) failed: \(error.localizedDescription)")
-                completion(false, error)
-                return
-            }
+        let started = Current.date()
+        onStep?(
+            "POST /api/services/\(serviceCall.domain)/\(serviceCall.service) " +
+                "(\(Int(Self.requestTimeout))s timeout)…"
+        )
 
-            guard let http = response as? HTTPURLResponse else {
-                completion(false, WatchRESTExecutionError.invalidResponse)
-                return
-            }
-
-            if (200 ..< 300).contains(http.statusCode) {
-                Current.Log.verbose("Success executing magic item \(self.id) via REST")
-                completion(true, nil)
-            } else {
-                let body = data.flatMap { String(data: $0, encoding: .utf8) }
-                Current.Log.error(
-                    "REST execution of magic item \(self.id) returned \(http.statusCode): \(body ?? "<no body>")"
+        let requestTask = Task {
+            // Qualified: PromiseKit's single-parameter `Result` shadows the standard library's
+            // in this file.
+            let result: Swift.Result<(Data, HTTPURLResponse), Error>
+            do {
+                let response = try await ServerRequestPerformer.perform(
+                    request,
+                    server: server,
+                    priority: .userAction,
+                    onStep: onStep
                 )
-                completion(false, WatchRESTExecutionError.httpStatus(http.statusCode, body: body))
+                result = .success(response)
+            } catch {
+                result = .failure(error)
+            }
+
+            let elapsed = String(format: "%.2fs", Current.date().timeIntervalSince(started))
+            // Report from the main queue: the URLSession transport this replaced delivered its
+            // callback there (the watch session's delegate queue is main) and the row publishes its
+            // state and trace from it.
+            DispatchQueue.main.async {
+                finishOnce {
+                    switch result {
+                    case let .failure(error):
+                        Current.Log
+                            .error("REST execution of magic item \(self.id) failed: \(error.localizedDescription)")
+                        onStep?("Request failed after \(elapsed): \(error.localizedDescription)")
+                        completion(false, error)
+                    case let .success((data, http)):
+                        onStep?("Response \(http.statusCode) after \(elapsed)")
+                        guard (200 ..< 300).contains(http.statusCode) else {
+                            let body = String(data: data, encoding: .utf8)
+                            Current.Log.error(
+                                "REST execution of magic item \(self.id) returned \(http.statusCode): " +
+                                    "\(body ?? "<no body>")"
+                            )
+                            // The server rejected a token the client still considered valid;
+                            // invalidate it so the next run refreshes instead of re-sending it —
+                            // repeats get logged as invalid auth server-side and eventually IP-ban
+                            // the watch.
+                            if http.statusCode == 401 {
+                                let tokenManager = Current.api(for: server)?.tokenManager
+                                    ?? TokenManager(server: server)
+                                tokenManager.handleAccessTokenRejected(token)
+                            }
+                            completion(false, WatchRESTExecutionError.httpStatus(http.statusCode, body: body))
+                            return
+                        }
+                        Current.Log.verbose("Success executing magic item \(self.id) via REST")
+                        completion(true, nil)
+                    }
+                }
             }
         }
-        task.resume()
+        // Fallback for a transport that never calls back — not even with its own timeout error. Main
+        // queue on purpose: it is the one queue proven to stay serviced on watch hardware (the GCD
+        // global and Swift-concurrency pools have both been observed starved there).
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.sessionCallbackFallback) {
+            finishOnce {
+                Current.Log.error("REST execution of magic item \(self.id) got no response callback")
+                onStep?(
+                    "No answer after \(Int(Self.sessionCallbackFallback))s — treating as " +
+                        "failed. Either the network went silent past its own timeout, or the callback " +
+                        "queue is starved and couldn't deliver the result."
+                )
+                // Tears the request down with it, so the session and its connection don't outlive
+                // the run that gave up on them.
+                requestTask.cancel()
+                completion(false, WatchRESTExecutionError.noURLSessionCallback)
+            }
+        }
     }
 
     private enum WatchRESTExecutionError: LocalizedError {
-        case invalidResponse
         case httpStatus(_ statusCode: Int, body: String?)
+        /// No bearer token within `tokenDeadline` — a token refresh is most likely stuck.
+        case tokenTimeout
+        /// URLSession never called the data task back, not even past `timeoutInterval`.
+        case noURLSessionCallback
+        /// The lock's current state hasn't been fetched (or isn't actionable, e.g. jammed).
+        case lockStateUnknown
 
         var errorDescription: String? {
             switch self {
-            case .invalidResponse:
-                return L10n.Watch.Home.Run.Error.message
             case let .httpStatus(_, body):
                 // Home Assistant returns a human-readable message on failure; surface it when present.
                 if let body, !body.isEmpty {
                     return body
                 }
                 return L10n.Watch.Home.Run.Error.message
+            case .tokenTimeout:
+                return L10n.Watch.Home.Run.Error.tokenTimeout
+            case .noURLSessionCallback:
+                return L10n.Watch.Home.Run.Error.noResponse
+            case .lockStateUnknown:
+                return L10n.Watch.Home.Run.Error.lockStateUnknown
             }
         }
     }

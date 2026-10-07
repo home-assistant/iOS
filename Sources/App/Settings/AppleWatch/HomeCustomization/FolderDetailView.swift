@@ -6,8 +6,9 @@ struct FolderDetailView: View {
     let folderId: String
     @ObservedObject var viewModel: WatchConfigurationViewModel
 
-    @State private var showAddItem = false
+    @State private var addItemDestination: WatchAddItemDestination?
     @State private var showEditFolder = false
+    @State private var isEditingItems = false
 
     private var folder: MagicItem? {
         viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == folderId })
@@ -25,11 +26,14 @@ struct FolderDetailView: View {
                 .onDelete { indexSet in
                     viewModel.deleteItemInFolder(folderId: folderId, at: indexSet)
                 }
-                Button {
-                    showAddItem = true
-                } label: {
-                    Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
-                }
+                // Folders don't nest, so adding one is only offered at the root.
+                WatchAddItemMenu(
+                    showAddFolder: false,
+                    onSelectDestination: { addItemDestination = $0 },
+                    onAddFolder: {}
+                )
+            } header: {
+                ReorderableSectionHeader(isEditing: $isEditingItems)
             }
         }
         .preferredColorScheme(.dark)
@@ -44,12 +48,30 @@ struct FolderDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $showAddItem) {
-            MagicItemAddView(context: .watch) { itemToAdd in
-                guard let itemToAdd else { return }
-                viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
+        .sheet(item: $addItemDestination) { destination in
+            switch destination {
+            case .entity, .area, .complication, .assist:
+                if let magicItemType = destination.magicItemType, let pickerOption = destination.pickerOption {
+                    MagicItemAddView(
+                        context: .watch,
+                        initialItemType: magicItemType,
+                        visiblePickerOptions: [pickerOption],
+                        allowMultipleSelection: true
+                    ) { itemToAdd in
+                        guard let itemToAdd else { return }
+                        viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
+                    }
+                    .preferredColorScheme(.dark)
+                }
+            case .assistPrompt:
+                NavigationView {
+                    AssistPromptMagicItemView(mode: .add) { itemToAdd in
+                        viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
+                    }
+                }
+                .navigationViewStyle(.stack)
+                .preferredColorScheme(.dark)
             }
-            .preferredColorScheme(.dark)
         }
         .sheet(isPresented: $showEditFolder) {
             if let folder {
@@ -69,38 +91,37 @@ struct FolderDetailView: View {
 
     @ViewBuilder
     private func row(for item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-
-        NavigationLink {
-            MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
-                viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
+        if item.type == .complication {
+            // Nothing to customize: a complication renders from its own configuration, so a name or
+            // color set here would be silently ignored. Swipe removes it, as for any other row.
+            itemLabel(item: item)
+        } else if item.type == .assistPrompt {
+            NavigationLink {
+                AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
+                    viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
+                }
+                .environment(\.colorScheme, .dark)
+            } label: {
+                itemLabel(item: item)
             }
-            .environment(\.colorScheme, .dark)
-        } label: {
-            HStack {
-                Image(uiImage: image(for: item, itemInfo: itemInfo))
-                    .renderingMode(.original)
-                Text(item.name(info: itemInfo))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Image(systemSymbol: .line3Horizontal)
-                    .foregroundStyle(.gray)
+        } else {
+            NavigationLink {
+                MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
+                    viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
+                }
+                .environment(\.colorScheme, .dark)
+            } label: {
+                itemLabel(item: item)
             }
         }
     }
 
-    private func image(for item: MagicItem, itemInfo: MagicItem.Info) -> UIImage {
-        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-        let color: UIColor = if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
-            .init(hex: iconColor)
-        } else {
-            .haPrimary
-        }
-        return icon.image(ofSize: .init(width: 18, height: 18), color: color)
+    private func itemLabel(item: MagicItem) -> some View {
+        MagicItemConfigurationRow(
+            item: item,
+            info: viewModel.magicItemInfo(for: item),
+            isReorderIndicatorVisible: isEditingItems
+        )
     }
 }
 

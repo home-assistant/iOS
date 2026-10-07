@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import HAKit
 import PromiseKit
 import UIKit
 
@@ -25,6 +26,7 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
     }
 
     public func update() {
+        guard !Current.isAppExtension else { return }
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
             Current.Log.verbose("Skipping panels update, last update was \(lastUpdate)")
             return
@@ -41,6 +43,7 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
 
             request?.promise.done({ [weak self] panels in
                 self?.saveInDatabase(panels, server: server)
+                self?.updateAreasDashboard(panels, server: server)
             }).cauterize()
         }
     }
@@ -50,7 +53,22 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
         tokens = []
     }
 
-    private func saveInDatabase(_ panels: HAPanels, server: Server) {
+    /// Keeps the dashboard an area's view lives on for this server in the app group, so a widget
+    /// can deep link into it without a connection of its own. See
+    /// `AppPanel.updateAreasDashboard(panels:serverId:on:)`.
+    private func updateAreasDashboard(_ panels: HAPanels, server: Server) {
+        guard let connection = Current.api(for: server)?.connection else { return }
+        Task {
+            await AppPanel.updateAreasDashboard(
+                panels: panels,
+                serverId: server.identifier.rawValue,
+                on: connection
+            )
+        }
+    }
+
+    /// Not private so tests can drive the write without standing up a websocket connection.
+    func saveInDatabase(_ panels: HAPanels, server: Server) {
         let appPanels = panels.allPanels.map { panel in
             AppPanel(
                 serverId: server.identifier.rawValue,
@@ -62,16 +80,22 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
             )
         }
 
-        do {
-            try Current.database().write { db in
-                try AppPanel.filter(Column(DatabaseTables.AppPanel.serverId.rawValue) == server.identifier.rawValue)
-                    .deleteAll(db)
-                for panel in appPanels {
-                    try panel.save(db)
+        // The write used to run wherever the `.panels()` promise resolved — the main thread — with no
+        // background task held, so backgrounding mid-commit froze the process while it still held the
+        // app-group SQLite file lock (0xdead10cc, the app's second-largest crash).
+        let serverId = server.identifier.rawValue
+        AppDatabaseSuspension.performProtectedWork(named: .panelsSave) {
+            do {
+                try Current.database().write { db in
+                    try AppPanel.filter(Column(DatabaseTables.AppPanel.serverId.rawValue) == serverId)
+                        .deleteAll(db)
+                    for panel in appPanels {
+                        try panel.save(db)
+                    }
                 }
+            } catch {
+                Current.Log.error("Error saving panels in database: \(error)")
             }
-        } catch {
-            Current.Log.error("Error saving panels in database: \(error)")
         }
     }
 }

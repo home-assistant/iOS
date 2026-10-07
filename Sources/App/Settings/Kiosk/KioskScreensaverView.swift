@@ -142,17 +142,33 @@ private struct PixelShiftContainer<Content: View>: View {
 /// Drives the screensaver: starts an inactivity timer (per `timeToStart`) and toggles `isActive`. Activity
 /// reported via `recordActivity()` resets the timer; `wake()` dismisses an active screensaver.
 final class KioskScreensaverController: ObservableObject {
-    @Published private(set) var isActive = false
+    @Published private(set) var isActive = false {
+        didSet {
+            guard oldValue != isActive else { return }
+            // Mirror visibility into the shared kiosk manager so the kiosk screensaver sensor can report it.
+            kiosk.setScreensaverVisible(isActive)
+        }
+    }
+
     @Published private(set) var screensaver = KioskScreensaverSettings()
 
+    var isIdleTimerArmed: Bool {
+        idleTimer != nil
+    }
+
+    private let kiosk: KioskModeManager
     private var isEnabled = false
     private var isCameraOverlayVisible = false
     private var brightnessBeforeDimming: CGFloat?
     private var idleTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
+    private var isMotionObserving = false
+    private var isMotionDetected = false
 
-    init() {
-        Current.kiosk.settingsPublisher
+    init(kiosk: KioskModeManager = Current.kiosk) {
+        self.kiosk = kiosk
+
+        kiosk.settingsPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.apply($0) }
             .store(in: &cancellables)
@@ -170,15 +186,15 @@ final class KioskScreensaverController: ObservableObject {
             }
             .store(in: &cancellables)
 
-        Current.kiosk.cameraOverlayVisiblePublisher
+        kiosk.cameraOverlayVisiblePublisher
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] visible in
-                self?.isCameraOverlayVisible = visible
-                self?.updateBrightness()
+                self?.cameraOverlayVisibilityChanged(visible)
             }
             .store(in: &cancellables)
 
-        Current.kiosk.screensaverCommandPublisher
+        kiosk.screensaverCommandPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] command in
                 switch command {
@@ -192,6 +208,9 @@ final class KioskScreensaverController: ObservableObject {
     deinit {
         idleTimer?.invalidate()
         restoreBrightness()
+        Current.motionDetection.unregister(observer: self)
+        // The screensaver is no longer on screen once this controller goes away (e.g. kiosk mode disabled).
+        kiosk.setScreensaverVisible(false)
     }
 
     func recordActivity() {
@@ -201,6 +220,10 @@ final class KioskScreensaverController: ObservableObject {
 
     func show() {
         guard isEnabled else { return }
+        guard !isCameraOverlayVisible else {
+            Current.Log.info("Kiosk: ignoring screensaver show request while a camera is on display")
+            return
+        }
         idleTimer?.invalidate()
         idleTimer = nil
         isActive = true
@@ -213,20 +236,58 @@ final class KioskScreensaverController: ObservableObject {
         restartIdleTimer()
     }
 
+    private func cameraOverlayVisibilityChanged(_ visible: Bool) {
+        isCameraOverlayVisible = visible
+        if visible {
+            idleTimer?.invalidate()
+            idleTimer = nil
+            if isActive {
+                Current.Log.info("Kiosk: camera on display, hiding screensaver")
+                isActive = false
+            }
+        } else {
+            restartIdleTimer()
+        }
+        updateBrightness()
+    }
+
     private func apply(_ settings: KioskSettings) {
         screensaver = settings.screensaver
         isEnabled = settings.enabled && settings.screensaver.enabled
         if !isEnabled {
             isActive = false
         }
+        updateMotionObservation()
         restartIdleTimer()
         updateBrightness()
+    }
+
+    /// While enabled with "Wake on camera motion", the controller observes the motion
+    /// detector for the whole kiosk session (registering keeps the camera capture
+    /// session running) so motion counts as activity, like touches: it prevents the
+    /// screensaver from starting, and dismisses it when it is on screen.
+    private func updateMotionObservation() {
+        let shouldObserve = isEnabled
+            && screensaver.wakeOnCameraMotion
+            && Current.motionDetection.canDetectMotion
+        guard shouldObserve != isMotionObserving else { return }
+        isMotionObserving = shouldObserve
+        if shouldObserve {
+            isMotionDetected = Current.motionDetection.isMotionDetected
+            Current.motionDetection.register(observer: self)
+        } else {
+            Current.motionDetection.unregister(observer: self)
+            isMotionDetected = false
+        }
     }
 
     private func restartIdleTimer() {
         idleTimer?.invalidate()
         idleTimer = nil
-        guard isEnabled, !isActive, let interval = screensaver.timeToStart.timeInterval else { return }
+        // Never arm the idle timer while motion is ongoing: it restarts (with the full
+        // interval) once the motion detector reports clear.
+        guard isEnabled, !isActive, !isMotionDetected, !isCameraOverlayVisible,
+              let interval = screensaver.timeToStart.timeInterval else { return }
         idleTimer = Timer.scheduledTimer(
             withTimeInterval: interval,
             repeats: false
@@ -270,6 +331,28 @@ final class KioskScreensaverController: ObservableObject {
         UIScreen.main.brightness = brightnessBeforeDimming
         self.brightnessBeforeDimming = nil
         #endif
+    }
+}
+
+// MARK: - MotionDetectionObserver
+
+extension KioskScreensaverController: MotionDetectionObserver {
+    /// Motion is treated as activity, like touches: while motion is ongoing the idle
+    /// timer is held (and an active screensaver is dismissed); when motion clears, the
+    /// idle timer restarts with the full interval.
+    func motionStateDidChange(for manager: MotionDetectionManager) {
+        isMotionDetected = manager.isMotionDetected
+        if isMotionDetected {
+            if isActive {
+                Current.Log.info("Kiosk: motion detected, hiding screensaver")
+                wake()
+            } else {
+                idleTimer?.invalidate()
+                idleTimer = nil
+            }
+        } else {
+            restartIdleTimer()
+        }
     }
 }
 

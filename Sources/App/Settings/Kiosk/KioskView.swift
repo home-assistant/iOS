@@ -1,63 +1,16 @@
-import SFSafeSymbols
 import Shared
 import SwiftUI
 import UIKit
 
-struct ConditionalContainerView: View {
-    @StateObject private var kiosk = Current.kiosk
-    @ObservedObject private var appSettings = AppSettingsPresenter.shared
-    @Environment(\.scenePhase) private var scenePhase
-    @State private var showKioskSettings = false
-
-    var body: some View {
-        content
-            .sheet(isPresented: $appSettings.isPresented) {
-                SettingsView()
-                    .injectingViewControllerProvider()
-                    .onDisappear {
-                        Current.sceneManager.webViewControllerPromise.done { $0.refreshIfDisconnected() }
-                    }
-            }
-    }
-
-    private var content: some View {
-        Group {
-            if kiosk.settings.enabled {
-                KioskView(showSettings: $showKioskSettings)
-            } else {
-                ContainerView()
-            }
-        }
-        .onAppear { applyKeepScreenOn() }
-        .onChange(of: kiosk.shouldKeepScreenOn) { _ in applyKeepScreenOn() }
-        .onChange(of: scenePhase) { phase in
-            if phase == .active { applyKeepScreenOn() }
-        }
-        .sheet(isPresented: $showKioskSettings) {
-            NavigationView {
-                KioskSettingsView()
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            CloseButton { showKioskSettings = false }
-                        }
-                    }
-            }
-            .navigationViewStyle(.stack)
-        }
-    }
-
-    private func applyKeepScreenOn() {
-        UIApplication.shared.isIdleTimerDisabled = kiosk.shouldKeepScreenOn
-    }
-}
-
 struct KioskView: View {
     @StateObject private var screensaver = KioskScreensaverController()
     @StateObject private var kiosk = Current.kiosk
+    /// This scene's Settings presenter, passed through to the container it wraps.
+    let appSettings: AppSettingsPresenter
     @Binding var showSettings: Bool
 
     var body: some View {
-        ContainerView()
+        ContainerView(appSettings: appSettings)
             .background(KioskActivityDetector { screensaver.recordActivity() })
             .overlay(alignment: .bottomLeading) {
                 if Current.isDebug {
@@ -105,7 +58,8 @@ struct KioskView: View {
                 iconColor: Color(
                     hex: kiosk.settings.settingsEntryIconColor ?? KioskSettingsEntryIcon
                         .defaultIconColorHex
-                )
+                ),
+                isHidden: kiosk.settings.settingsEntryHidden
             )
         }
         .buttonStyle(.plain)
@@ -122,22 +76,5 @@ struct KioskView: View {
             .clipShape(Capsule())
             .padding(DesignSystem.Spaces.two)
             .allowsHitTesting(false)
-    }
-}
-
-struct KioskSettingsEntryIcon: View {
-    static let defaultBackgroundColorHex = "000000"
-    static let defaultIconColorHex = "FFFFFF"
-
-    var backgroundColor: Color
-    var iconColor: Color
-
-    var body: some View {
-        Image(systemSymbol: .gearshapeFill)
-            .font(.body)
-            .foregroundStyle(iconColor)
-            .padding(DesignSystem.Spaces.one)
-            .background(backgroundColor)
-            .clipShape(.circle)
     }
 }

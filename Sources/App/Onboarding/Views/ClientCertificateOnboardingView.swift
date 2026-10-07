@@ -26,7 +26,6 @@ struct ClientCertificateOnboardingView: View {
         VStack(spacing: DesignSystem.Spaces.two) {
             Spacer()
             headerView
-            MTLSLabsLabel()
             Spacer()
         }
         .interactiveDismissDisabled()
@@ -155,7 +154,6 @@ struct ClientCertificateOnboardingView: View {
     }
 }
 
-@available(iOS 16.0, *)
 #Preview {
     VStack {}
         .sheet(isPresented: .constant(true)) {

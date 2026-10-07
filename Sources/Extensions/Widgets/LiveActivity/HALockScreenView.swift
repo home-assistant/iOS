@@ -16,6 +16,10 @@ struct HALockScreenView: View {
     /// Icon size for the MDI icon in the header row.
     private static let iconSize: CGFloat = 28
 
+    /// Lets the trailing value (e.g. "100%") shrink to fit on one line instead of
+    /// wrapping the "%" onto a second line when horizontal space is tight.
+    private static let trailingValueMinimumScaleFactor: CGFloat = 0.7
+
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.oneAndHalf) {
             HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
@@ -44,7 +48,7 @@ struct HALockScreenView: View {
                 trailingValue
             }
 
-            if let fraction = state.progressFraction {
+            if let fraction = state.progressBarFillFraction {
                 HAActivityProgressBar(
                     fraction: fraction,
                     fillColor: barColor,
@@ -52,7 +56,12 @@ struct HALockScreenView: View {
                     height: 10
                 )
             } else if state.chronometer == true, let end = state.countdownEnd {
-                HAActivityTimerProgressBar(start: state.chronometerStart, end: end, tint: barColor)
+                HAActivityTimerProgressBar(
+                    start: state.chronometerStart,
+                    end: end,
+                    tint: barColor,
+                    direction: state.resolvedProgressBarDirection
+                )
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.two)
@@ -95,15 +104,18 @@ struct HALockScreenView: View {
 
     @ViewBuilder
     private var trailingValue: some View {
-        if let fraction = state.progressFraction {
-            Text(HAActivityVisualStyle.percentString(for: fraction))
-                .font(.headline.monospacedDigit())
-                .foregroundStyle(primaryTextColor)
-        } else if let critical = state.criticalText {
+        if let critical = state.criticalText {
             Text(critical)
                 .font(.headline)
                 .foregroundStyle(primaryTextColor)
                 .lineLimit(1)
+                .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
+        } else if let fraction = state.progressFraction {
+            Text(HAActivityVisualStyle.percentString(for: fraction))
+                .font(.headline.monospacedDigit())
+                .foregroundStyle(primaryTextColor)
+                .lineLimit(1)
+                .minimumScaleFactor(Self.trailingValueMinimumScaleFactor)
         }
     }
 
@@ -142,6 +154,9 @@ struct HALockScreenView: View {
 enum HAActivityVisualStyle {
     /// Hex string for Home Assistant brand blue — used for UIColor(hex:) fallback.
     private static let haBlueHex = "#03A9F4"
+    private static let supplementalBackgroundHex = "#1C1C1E"
+
+    static let defaultSupplementalForegroundColor = Color.white
 
     /// Treats nil, empty, or whitespace-only as "unset" so the caller's default applies — an empty
     /// `background_color`/`text_color` would otherwise parse to transparent via UIColor(hex:).
@@ -160,6 +175,10 @@ enum HAActivityVisualStyle {
     static func backgroundColor(from hex: String?) -> Color {
         guard let hex = normalized(hex) else { return .clear }
         return Color(uiColor: UIColor(hex: hex))
+    }
+
+    static func supplementalBackgroundColor(from hex: String?) -> Color {
+        Color(uiColor: UIColor(hex: normalized(hex) ?? supplementalBackgroundHex))
     }
 
     /// Whether light text reads best on the given opaque background hex, by Rec. 601 luma.

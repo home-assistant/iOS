@@ -97,9 +97,15 @@ public enum NetworkType: Int, CaseIterable {
 
 #if os(iOS)
 public final class NetworkReachability {
+    /// Posted when connectivity actually changed, which `ConnectivityWrapper` decides after refreshing
+    /// network information: the network type changed, or the device moved to a different Wi-Fi network.
     public static let didChangeNotification = Notification.Name("NetworkReachabilityChanged")
 
-    private enum Connection: Equatable {
+    /// Posted for every path update, including the Wi-Fi to Wi-Fi transitions that leave the network
+    /// type unchanged but make the cached SSID stale.
+    public static let pathDidUpdateNotification = Notification.Name("NetworkReachabilityPathDidUpdate")
+
+    private enum Connection {
         case unavailable
         case wifi
         case cellular
@@ -107,16 +113,11 @@ public final class NetworkReachability {
 
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "io.home-assistant.reachability")
-    private var lastConnection: Connection?
 
     public init() {
-        monitor.pathUpdateHandler = { [weak self] path in
-            guard let self else { return }
-            let connection = Self.connection(for: path)
-            guard connection != lastConnection else { return }
-            self.lastConnection = connection
+        monitor.pathUpdateHandler = { _ in
             DispatchQueue.main.async {
-                NotificationCenter.default.post(name: NetworkReachability.didChangeNotification, object: nil)
+                NotificationCenter.default.post(name: NetworkReachability.pathDidUpdateNotification, object: nil)
             }
         }
         monitor.start(queue: queue)

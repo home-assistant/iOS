@@ -1,0 +1,308 @@
+import AVFoundation
+import Foundation
+@testable import HomeAssistant
+import Testing
+
+@MainActor
+struct OnDeviceSpeechRecognitionSessionTests {
+    /// Stands in for the Speech framework, which cannot be driven without speech authorisation.
+    private final class FakeRecognizer: OnDeviceSpeechRecognizing {
+        private(set) var appendedBuffers = 0
+        private(set) var didEndAudio = false
+        private(set) var didCancel = false
+
+        private var onTranscript: ((String, Bool) -> Void)?
+        private var onFailure: ((Error) -> Void)?
+
+        func start(
+            onTranscript: @escaping (String, Bool) -> Void,
+            onFailure: @escaping (Error) -> Void
+        ) {
+            self.onTranscript = onTranscript
+            self.onFailure = onFailure
+        }
+
+        func append(_ buffer: AVAudioPCMBuffer) {
+            appendedBuffers += 1
+        }
+
+        func endAudio() {
+            didEndAudio = true
+        }
+
+        func cancel() {
+            didCancel = true
+        }
+
+        func report(_ transcript: String, isFinal: Bool = false) {
+            onTranscript?(transcript, isFinal)
+        }
+
+        func fail(_ error: Error) {
+            onFailure?(error)
+        }
+    }
+
+    private struct RecognizerFailure: Error {}
+
+    /// Long by default so the fallback never races the recogniser: only the test that is about the
+    /// grace period shortens it.
+    private func makeSession(
+        recognizer: FakeRecognizer,
+        gracePeriod: TimeInterval = 30,
+        silenceTimeout: TimeInterval = OnDeviceSpeechRecognitionSession.defaultSilenceTimeout
+    ) throws -> OnDeviceSpeechRecognitionSession {
+        try OnDeviceSpeechRecognitionSession(
+            format: .init(rate: 16000, width: 2, channels: 1),
+            gracePeriod: gracePeriod,
+            silenceTimeout: silenceTimeout
+        ) { recognizer }
+    }
+
+    /// Long enough for a pause shorter than it to never end the listening.
+    private let pastTheSilence: UInt64 = 200_000_000
+
+    /// 0.1 s of 16 kHz audio: more than the 0.05 s pause the silence tests wait for.
+    private var pause: Data {
+        pcm(Array(repeating: 0, count: 1600))
+    }
+
+    private func pcm(_ samples: [Int16]) -> Data {
+        samples.withUnsafeBufferPointer { Data(buffer: $0) }
+    }
+
+    @Test func answersWithTheFinalTranscript() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer)
+        session.append(pcm([1, 2, 3, 4]))
+
+        let pending = Task { try await session.finish() }
+        // Let `finish()` register its continuation before the recogniser answers.
+        try await Task.sleep(nanoseconds: 50_000_000)
+        recognizer.report("turn on the")
+        recognizer.report("Turn on the kitchen light.", isFinal: true)
+
+        let recognised = try await pending.value
+        #expect(recognised == "Turn on the kitchen light.")
+        #expect(recognizer.didEndAudio)
+    }
+
+    /// The recogniser routinely cancels its task once the audio ends, so a failure that arrives
+    /// after words were already recognised is not a failed transcription.
+    @Test func keepsWhatWasRecognisedWhenTheRecognizerFailsLate() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer)
+        session.append(pcm([1, 2]))
+
+        let pending = Task { try await session.finish() }
+        try await Task.sleep(nanoseconds: 50_000_000)
+        recognizer.report("kitchen light")
+        recognizer.fail(RecognizerFailure())
+
+        let recognised = try await pending.value
+        #expect(recognised == "kitchen light")
+    }
+
+    /// With nothing recognised there is no transcript to salvage, so the failure is the answer.
+    @Test func reportsAFailureThatArrivesBeforeAnyWords() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer)
+        session.append(pcm([1, 2]))
+
+        recognizer.fail(RecognizerFailure())
+
+        await #expect(throws: RecognizerFailure.self) {
+            _ = try await session.finish()
+        }
+    }
+
+    /// The recogniser can go quiet after `endAudio()` without ever delivering a final result, which
+    /// would otherwise hang the client until its own timeout.
+    @Test func fallsBackToThePartialTranscriptWhenNoFinalArrives() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, gracePeriod: 0.05)
+        session.append(pcm([1, 2]))
+        recognizer.report("half a sentence")
+        // No final result and no failure ever arrives: only the grace period can answer.
+
+        let transcript = try await session.finish()
+
+        #expect(transcript == "half a sentence")
+    }
+
+    /// A stream that carried no audio has nothing to transcribe, and saying so beats an empty
+    /// transcript the pipeline would read as a successful silent turn.
+    @Test func refusesToFinishWhenNoAudioArrived() async {
+        let recognizer = FakeRecognizer()
+        let session = try? makeSession(recognizer: recognizer)
+
+        await #expect(throws: WyomingProtocolError.noAudioReceived) {
+            _ = try await session?.finish()
+        }
+    }
+
+    /// Audio that does not fill a whole frame is held back, so it never reaches the recogniser as a
+    /// buffer of the wrong length.
+    @Test func onlyForwardsWholeFrames() throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer)
+
+        session.append(Data([0x01]))
+        #expect(recognizer.appendedBuffers == 0)
+
+        session.append(Data([0x02]))
+        #expect(recognizer.appendedBuffers == 1)
+    }
+
+    /// The client is answered exactly once: a late final result after a failure must not resume the
+    /// continuation a second time.
+    @Test func answersOnlyOnce() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer)
+        session.append(pcm([1, 2]))
+
+        recognizer.report("first", isFinal: true)
+        recognizer.report("second", isFinal: true)
+        recognizer.fail(RecognizerFailure())
+
+        let recognised = try await session.finish()
+        #expect(recognised == "first")
+    }
+
+    /// A client streaming live audio stops recording once the speaker pauses, without waiting for
+    /// the user to say they are done.
+    @Test func endsListeningOnceTheSpeakerPauses() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("turn on the")
+        session.append(pause)
+        try await Task.sleep(nanoseconds: pastTheSilence)
+
+        #expect(listeningEnded == 1)
+    }
+
+    /// Audio streamed over a link can stall: time passing without audio arriving is not the speaker
+    /// pausing, so the listening ends only once the audio of a pause has arrived.
+    @Test func waitsForTheAudioOfThePauseToArrive() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("turn on the")
+        try await Task.sleep(nanoseconds: pastTheSilence)
+        #expect(listeningEnded == 0)
+
+        session.append(pause)
+        try await Task.sleep(nanoseconds: pastTheSilence)
+        #expect(listeningEnded == 1)
+    }
+
+    /// New words restart the wait, however much audio came before them.
+    @Test func newWordsRestartTheWaitForAPause() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("turn on")
+        session.append(pause)
+        recognizer.report("turn on the kitchen")
+        try await Task.sleep(nanoseconds: pastTheSilence)
+
+        #expect(listeningEnded == 0)
+    }
+
+    /// Silence before the first word is the user getting ready to speak, not the end of a request.
+    @Test func keepsListeningUntilWordsAreHeard() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("")
+        session.append(pause)
+        try await Task.sleep(nanoseconds: pastTheSilence)
+
+        #expect(listeningEnded == 0)
+    }
+
+    @Test func endsListeningWhenTheRecognizerAlreadyHasItsAnswer() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+
+        recognizer.report("Turn on the kitchen light.", isFinal: true)
+
+        #expect(listeningEnded == 1)
+        let transcript = try await session.finish()
+        #expect(transcript == "Turn on the kitchen light.")
+        #expect(listeningEnded == 1)
+    }
+
+    /// Once the audio has ended there is no recording left to stop.
+    @Test func finishingEndsTheWaitForAPause() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+        recognizer.report("turn on the")
+        session.append(pause)
+
+        let pending = Task { try await session.finish() }
+        try await Task.sleep(nanoseconds: pastTheSilence)
+        recognizer.report("Turn on the kitchen light.", isFinal: true)
+
+        let transcript = try await pending.value
+        #expect(transcript == "Turn on the kitchen light.")
+        #expect(listeningEnded == 0)
+    }
+
+    @Test func cancellingEndsTheWaitForAPause() async throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer, silenceTimeout: 0.05)
+        var listeningEnded = 0
+        session.onListeningEnded = { listeningEnded += 1 }
+        session.append(pcm([1, 2]))
+        recognizer.report("turn on the")
+        session.append(pause)
+
+        session.cancel()
+        try await Task.sleep(nanoseconds: pastTheSilence)
+
+        #expect(listeningEnded == 0)
+    }
+
+    @Test func cancellingStopsTheRecognizer() throws {
+        let recognizer = FakeRecognizer()
+        let session = try makeSession(recognizer: recognizer)
+
+        session.cancel()
+
+        #expect(recognizer.didCancel)
+    }
+
+    /// The format is checked before the recogniser is built, so a client sending the wrong audio is
+    /// told exactly that rather than whatever the recogniser objects to first.
+    @Test func rejectsAnUnsupportedFormatBeforeBuildingTheRecognizer() {
+        var built = false
+
+        #expect(throws: WyomingProtocolError.self) {
+            _ = try OnDeviceSpeechRecognitionSession(format: .init(rate: 16000, width: 4, channels: 1)) {
+                built = true
+                return FakeRecognizer()
+            }
+        }
+        #expect(!built)
+    }
+}

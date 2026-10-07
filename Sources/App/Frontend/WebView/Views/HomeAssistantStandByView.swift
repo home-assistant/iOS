@@ -1,0 +1,836 @@
+import SFSafeSymbols
+import Shared
+import SwiftUI
+import UIKit
+
+struct HomeAssistantStandByView: View {
+    static let logoDismissTapThreshold = 10
+
+    private static let connectionTypeIndicatorSize = CGSize(width: 44, height: 44)
+    static let loadingLogoResourceName = "home-assistant-logo-loading"
+    private static let serverPillHeight: CGFloat = 44
+    private static let connectionTypeToastID = "home-assistant-stand-by-connection-type"
+    static let serverSelectionTransitionID = "home-assistant-stand-by-server-selection"
+    fileprivate static let launchScreenLogoPreviewOpacity = 0.55
+
+    let server: Server
+    let emptyState: WebFrontendOverlayState.EmptyStateContent?
+    let isLoading: Bool
+    let serverSelectionNamespace: Namespace.ID?
+    let onSelectServerTapped: (() -> Void)?
+    let onGestureAction: ((HAGestureAction) -> Void)?
+    let onLogoDismiss: (() -> Void)?
+    let onCleanCacheAndReload: (() -> Void)?
+
+    private let delayedSettingsButtonDelay: Duration
+    private let cleanCacheButtonDelay: Duration
+    /// Animates the content fading in on appear (and the move between loading and empty state). `nil`
+    /// renders the settled state straight away, which is what a snapshot needs: the fade is driven
+    /// frame by frame, and a test window gets no frames.
+    private let contentFadeAnimation: Animation?
+
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
+
+    @Environment(\.layoutDirection) private var layoutDirection
+
+    @State private var logoDismissTapCount = 0
+    @State private var showsEmptyStateContent = false
+    @State private var showsDelayedSettingsButton = false
+    @State private var showsCleanCacheButton = false
+    @State private var loaderCountdownRestartToken = 0
+    @State private var hasAppeared = false
+    @State private var showsServerPill = false
+    @State private var showsAnimatedLogo: Bool
+    @State private var networkType: NetworkType = Current.connectivity.simpleNetworkType()
+    // Shared across every stand-by instance: the OHF footer continues the launch splash's copy on the
+    // first stand-by of a cold launch only, and the flag flips for good when that stand-by disappears.
+    @ObservedObject private var ohfBranding = StandByOHFBrandingState.shared
+
+    private var showsEmptyState: Bool { emptyState != nil }
+    private var standByContentOpacity: Double { hasAppeared ? 1.0 : 0.0 }
+    private var contentOpacity: Double { showsEmptyStateContent ? 1.0 : 0.0 }
+    private var configuredURLTypes: [ConnectionInfo.URLType] {
+        [.internal, .external, .remoteUI].filter { urlType in
+            switch urlType {
+            case .remoteUI:
+                server.info.connection.useCloud && server.info.connection.address(for: urlType) != nil
+            case .internal, .external:
+                server.info.connection.address(for: urlType) != nil
+            case .none:
+                false
+            }
+        }
+    }
+
+    private var showsConnectionTypeIndicator: Bool { configuredURLTypes.count > 1 }
+
+    /// Without another registered server there is nothing to identify or switch to (a zero count — as in
+    /// previews or a transiently empty registry — behaves the same), so the pill row is hidden. The pill
+    /// hangs below the logo as an overlay so it never shifts the logo away from the splash position.
+    private var hasMultipleServers: Bool { Current.servers.all.count > 1 }
+
+    private var logoSize: CGSize {
+        // While loading, the logo mirrors the splash logo exactly (size and full-screen-centered
+        // position) so the launch-screen → splash → stand-by hand-off is a pure crossfade with no
+        // movement; the logo only moves (to the top, smaller) for the empty/error state.
+        showsEmptyState ? WebViewEmptyStateIcon.logoSize : LaunchSplashOverlayView.Constants.splashLogoSize
+    }
+
+    static func contentOffset(
+        safeAreaInsets: EdgeInsets,
+        layoutDirection: LayoutDirection,
+        showsEmptyState: Bool
+    ) -> CGSize {
+        guard !showsEmptyState else { return .zero }
+        // The splash logo sits at an offset from the full-screen center while this content is laid
+        // out inside the safe area; shift by the safe-area asymmetry plus the splash offset so the
+        // two logos coincide.
+        return CGSize(
+            width: SafeAreaCenteringOffset.horizontal(safeAreaInsets: safeAreaInsets, layoutDirection: layoutDirection),
+            height: SafeAreaCenteringOffset.vertical(safeAreaInsets: safeAreaInsets)
+                + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+        )
+    }
+
+    init(
+        server: Server,
+        emptyState: WebFrontendOverlayState.EmptyStateContent?,
+        isLoading: Bool = false,
+        serverSelectionNamespace: Namespace.ID? = nil,
+        onSelectServerTapped: (() -> Void)? = nil,
+        onGestureAction: ((HAGestureAction) -> Void)? = nil,
+        onLogoDismiss: (() -> Void)? = nil,
+        onCleanCacheAndReload: (() -> Void)? = nil,
+        delayedSettingsButtonDelay: Duration = .seconds(5),
+        cleanCacheButtonDelay: Duration = .seconds(15),
+        contentFadeAnimation: Animation? = DesignSystem.Animation.default
+    ) {
+        self.server = server
+        self.emptyState = emptyState
+        self.isLoading = isLoading
+        self.serverSelectionNamespace = serverSelectionNamespace
+        self.onSelectServerTapped = onSelectServerTapped
+        self.onGestureAction = onGestureAction
+        self.onLogoDismiss = onLogoDismiss
+        self.onCleanCacheAndReload = onCleanCacheAndReload
+        self.delayedSettingsButtonDelay = delayedSettingsButtonDelay
+        self.cleanCacheButtonDelay = cleanCacheButtonDelay
+        self.contentFadeAnimation = contentFadeAnimation
+        self._showsAnimatedLogo = State(initialValue: emptyState == nil)
+    }
+
+    var body: some View {
+        GeometryReader { proxy in
+            content(safeAreaInsets: proxy.safeAreaInsets)
+        }
+        .overlay(alignment: .bottom) {
+            GeometryReader { proxy in
+                ohfBrandingFooter
+                    .offset(x: Self.contentOffset(
+                        safeAreaInsets: proxy.safeAreaInsets,
+                        layoutDirection: layoutDirection,
+                        showsEmptyState: showsEmptyState
+                    ).width)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            }
+        }
+        .onDisappear(perform: ohfBranding.markStandByDismissed)
+    }
+
+    /// Kept at full opacity from the first frame (not tied to the content fade-in) so the launch
+    /// splash's identical footer crossfades into this one with no dip; hidden via opacity whenever
+    /// bottom-anchored content (empty-state buttons, clean-cache button) needs the space.
+    @ViewBuilder
+    private var ohfBrandingFooter: some View {
+        if ohfBranding.showsBranding {
+            OHFBrandingFooter()
+                .padding(.bottom, OHFBrandingFooter.bottomPadding)
+                .opacity(showsOHFBrandingFooter ? 1 : 0)
+                .animation(DesignSystem.Animation.default, value: showsOHFBrandingFooter)
+                .allowsHitTesting(false)
+                // Decorative, matching the launch splash's copy.
+                .accessibilityHidden(true)
+        }
+    }
+
+    private var showsOHFBrandingFooter: Bool {
+        // Mirrors the clean-cache button's render condition, so the footer only yields the bottom
+        // space when that button actually appears.
+        !showsEmptyState && !showsCleanCacheAndReloadButton
+    }
+
+    private var showsCleanCacheAndReloadButton: Bool {
+        showsCleanCacheButton && onCleanCacheAndReload != nil && !Current.isCatalyst
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
+        VStack(spacing: DesignSystem.Spaces.three) {
+            iconView
+            if let emptyState {
+                WebViewEmptyStateMessage(
+                    style: emptyState.style,
+                    server: server,
+                    complementaryMessageAction: openSettings
+                )
+                .opacity(contentOpacity)
+                .transition(.opacity)
+                Spacer()
+            }
+        }
+        .padding(.horizontal, DesignSystem.Spaces.three)
+        .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity,
+            alignment: showsEmptyState ? .top : .center
+        )
+        .overlay {
+            // Overlaid (not a stack sibling) so the pill takes no layout space and the loading logo
+            // stays exactly at the splash position; it hangs below the screen-centered logo.
+            if !showsEmptyState, hasMultipleServers {
+                currentServerPill
+                    .padding(.horizontal, DesignSystem.Spaces.three)
+                    .offset(y: logoSize.height / 2 + DesignSystem.Spaces.three + Self.serverPillHeight / 2)
+                    // Held invisible until the launch splash overlay is gone, then faded in, so it
+                    // never pops in fully formed behind the splash fade. Opacity alone keeps the
+                    // view tappable and visible to VoiceOver, so disable both while hidden.
+                    .opacity(showsServerPill ? 1 : 0)
+                    .allowsHitTesting(showsServerPill)
+                    .accessibilityHidden(!showsServerPill)
+                    .transition(.opacity)
+            }
+        }
+        .offset(Self.contentOffset(
+            safeAreaInsets: safeAreaInsets,
+            layoutDirection: layoutDirection,
+            showsEmptyState: showsEmptyState
+        ))
+        .opacity(standByContentOpacity)
+        // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
+        // while buttons keep priority.
+        .background {
+            if let onGestureAction {
+                WebFrontendGesturesOverlay(onGestureAction: onGestureAction)
+            }
+        }
+        .background(Color(uiColor: .systemBackground))
+        .overlay(alignment: .topLeading) {
+            delayedSettingsButton
+        }
+        .safeAreaInset(edge: .top) {
+            if let emptyState {
+                WebViewEmptyStateHeader(
+                    style: emptyState.style,
+                    server: server,
+                    isLoading: isLoading,
+                    showsServerSelection: emptyState.style.showsServerPicker
+                        && Current.servers.all.count > 1
+                        && !Current.isCatalyst,
+                    showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
+                    settingsAction: emptyState.settingsAction,
+                    serverSelectionAction: selectServer,
+                    dismissAction: emptyState.dismissAction
+                )
+                .opacity(contentOpacity)
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            if let emptyState {
+                WebViewEmptyStateActionButtons(
+                    style: emptyState.style,
+                    availableReauthURLTypes: emptyState.availableReauthURLTypes,
+                    showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
+                    retryAction: emptyState.retryAction,
+                    settingsAction: emptyState.settingsAction,
+                    errorDetailsAction: emptyState.errorDetailsAction,
+                    reauthAction: emptyState.reauthAction,
+                    clientCertificateAction: emptyState.clientCertificateAction
+                )
+                .opacity(contentOpacity)
+            } else if showsCleanCacheAndReloadButton {
+                cleanCacheButton
+                    .transition(.opacity)
+            }
+        }
+        .animation(contentFadeAnimation, value: standByContentOpacity)
+        .animation(contentFadeAnimation, value: showsEmptyState)
+        .onAppear {
+            withAnimation(contentFadeAnimation) {
+                hasAppeared = true
+                showsEmptyStateContent = emptyState != nil
+            }
+        }
+        .onChange(of: emptyState != nil, perform: handleEmptyStateChange)
+        .task(id: showsEmptyState, restoreAnimatedLogoIfNeeded)
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: Current.connectivity.connectivityDidChangeNotification())
+        ) { _ in
+            networkType = Current.connectivity.simpleNetworkType()
+        }
+        // `$phase` replays its current value on subscription, so when the splash already finished
+        // (server switches, reloads) the pill fades in immediately on appear.
+        .onReceive(LaunchSplashOverlayState.shared.$phase, perform: fadeInServerPillIfNeeded)
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            guard !showsEmptyState else { return }
+            showsDelayedSettingsButton = false
+            showsCleanCacheButton = false
+            loaderCountdownRestartToken += 1
+        }
+        .task(
+            id: [AnyHashable(showsEmptyState), AnyHashable(loaderCountdownRestartToken)],
+            runDelayedButtonsCountdown
+        )
+    }
+
+    private func handleEmptyStateChange(_ showsEmptyState: Bool) {
+        if showsEmptyState {
+            // Un-animated, so the WKWebView-backed loading logo is gone before the move-to-top
+            // starts and only the pixel-identical static logo underneath runs the transition —
+            // the webview can't track animated frame changes and would show a second logo.
+            showsAnimatedLogo = false
+        }
+        withAnimation(contentFadeAnimation) {
+            showsEmptyStateContent = showsEmptyState
+        }
+    }
+
+    @Sendable
+    private func restoreAnimatedLogoIfNeeded() async {
+        guard !showsEmptyState, !showsAnimatedLogo else { return }
+        // Restore the animated logo only after the move back to center settled; re-inserting
+        // the webview mid-animation would desync it from the static logo again.
+        try? await Task.sleep(for: .milliseconds(400))
+        guard !Task.isCancelled else { return }
+        showsAnimatedLogo = true
+    }
+
+    private func fadeInServerPillIfNeeded(for phase: LaunchSplashOverlayState.Phase) {
+        guard phase == .finished, !showsServerPill else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsServerPill = true
+        }
+    }
+
+    @Sendable
+    private func runDelayedButtonsCountdown() async {
+        showsDelayedSettingsButton = false
+        showsCleanCacheButton = false
+        guard !showsEmptyState else { return }
+        try? await Task.sleep(for: delayedSettingsButtonDelay)
+        guard !Task.isCancelled, !showsEmptyState else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsDelayedSettingsButton = true
+        }
+        try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
+        guard !Task.isCancelled, !showsEmptyState else { return }
+        withAnimation(DesignSystem.Animation.default) {
+            showsCleanCacheButton = true
+        }
+    }
+
+    private var cleanCacheButton: some View {
+        Button(action: cleanCacheAndReload) {
+            Text(L10n.WebView.EmptyState.cleanCacheAndReloadButton)
+        }
+        .buttonStyle(.primaryButton)
+        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .padding(.top)
+    }
+
+    private func cleanCacheAndReload() {
+        withAnimation(DesignSystem.Animation.default) {
+            showsCleanCacheButton = false
+        }
+        loaderCountdownRestartToken += 1
+        onCleanCacheAndReload?()
+    }
+
+    @ViewBuilder
+    private var delayedSettingsButton: some View {
+        if !showsEmptyState, showsDelayedSettingsButton, !Current.isCatalyst {
+            ModalReusableButton(
+                icon: .sfSymbol(.gearshape),
+                action: openSettings
+            )
+            .accessibilityLabel(L10n.WebView.EmptyState.openSettingsButton)
+            .padding()
+            .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    private var currentServerPill: some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer {
+                currentServerPillContent
+            }
+        } else {
+            currentServerPillContent
+        }
+    }
+
+    private var currentServerPillContent: some View {
+        HStack(spacing: DesignSystem.Spaces.one) {
+            serverNamePill
+            if showsConnectionTypeIndicator {
+                connectionTypeIndicator
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var serverNamePill: some View {
+        if hasMultipleServers {
+            Button {
+                onSelectServerTapped?()
+            } label: {
+                serverNameLabel
+            }
+            .buttonStyle(.plain)
+            .modify { view in
+                if #available(iOS 18.0, *), let serverSelectionNamespace {
+                    view.matchedTransitionSource(id: Self.serverSelectionTransitionID, in: serverSelectionNamespace)
+                } else {
+                    view
+                }
+            }
+        } else {
+            serverNameLabel
+        }
+    }
+
+    private var serverNameLabel: some View {
+        Text(server.info.name)
+            .font(.headline)
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .frame(height: Self.serverPillHeight)
+            .modify { view in
+                if #available(iOS 26.0, *) {
+                    view
+                        .glassEffect(.regular.interactive(), in: .capsule)
+                        .contentShape(Capsule())
+                } else {
+                    view
+                        .background(Color(uiColor: .secondarySystemBackground))
+                        .clipShape(.capsule)
+                }
+            }
+    }
+
+    private var connectionTypeIndicator: some View {
+        Button(action: showConnectionTypeToast) {
+            Image(systemSymbol: connectionTypeIndicatorIcon)
+                .font(.headline)
+                .foregroundStyle(Color.haPrimary)
+                .frame(width: Self.serverPillHeight, height: Self.serverPillHeight)
+                .modify { view in
+                    if #available(iOS 26.0, *) {
+                        view
+                            .frame(
+                                width: Self.connectionTypeIndicatorSize.width,
+                                height: Self.connectionTypeIndicatorSize.height
+                            )
+                            .glassEffect(.regular.interactive(), in: .circle)
+                            .contentShape(Circle())
+                    } else {
+                        view
+                            .background(Color(uiColor: .secondarySystemBackground))
+                            .clipShape(.circle)
+                    }
+                }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(L10n.Connection.ActiveUrlType.Toast.title)
+    }
+
+    private var connectionTypeIndicatorIcon: SFSymbol {
+        switch server.info.connection.activeURLType {
+        case .internal:
+            internalConnectionIcon
+        case .remoteUI:
+            .cloudFill
+        case .external:
+            .network
+        case .none:
+            .wifiExclamationmark
+        }
+    }
+
+    private var internalConnectionIcon: SFSymbol {
+        switch networkType {
+        case .ethernet:
+            .cableConnector
+        case .wifi:
+            .wifi
+        default:
+            .houseFill
+        }
+    }
+
+    private var connectionTypeToastMessage: String {
+        switch server.info.connection.activeURLType {
+        case .internal:
+            L10n.Connection.ActiveUrlType.Toast.internal
+        case .remoteUI:
+            L10n.Connection.ActiveUrlType.Toast.remoteUi
+        case .external:
+            L10n.Connection.ActiveUrlType.Toast.external
+        case .none:
+            L10n.Connection.ActiveUrlType.Toast.none
+        }
+    }
+
+    private func showConnectionTypeToast() {
+        if #available(iOS 18, *) {
+            ToastPresenter.shared.show(
+                id: Self.connectionTypeToastID,
+                symbol: connectionTypeIndicatorIcon,
+                symbolForegroundStyle: (.white, .haPrimary),
+                title: L10n.Connection.ActiveUrlType.Toast.title,
+                message: connectionTypeToastMessage,
+                duration: 4
+            )
+        } else {
+            Current.Log.verbose("Not showing connection type toast, Toast not available on this OS version.")
+        }
+    }
+
+    private var iconView: some View {
+        ZStack(alignment: .bottomTrailing) {
+            // Keep the static logo behind the animated SVG while loading: the launch-splash
+            // hero morphs into a pixel-identical `Image(.logo)` (matched geometry), and it
+            // also fills any frame before the WKWebView paints. The animated SVG sits on top
+            // once loaded, and is swapped out for the static logo around the empty-state
+            // move since the webview can't track animated frame changes.
+            WebViewEmptyStateIcon(style: emptyState?.style, size: logoSize)
+            // Hidden via opacity (never removed) with animation explicitly disabled, so the
+            // swap to the static logo is always instantaneous — a conditional removal would
+            // inherit the surrounding empty-state animation and fade out mid-move.
+            AnimatedSVGView(resourceName: Self.loadingLogoResourceName)
+                .opacity(showsAnimatedLogo ? 1 : 0)
+                .animation(nil, value: showsAnimatedLogo)
+                // Decorative duplicate of the static logo; its webview is already
+                // non-interactive, this also keeps it out of VoiceOver.
+                .accessibilityHidden(true)
+            if case .inFlight = emptyState?.style {
+                inFlightIcon
+                    .offset(x: 15, y: 15)
+            }
+        }
+        .frame(width: logoSize.width, height: logoSize.height)
+        .launchSplashLogoAnchor()
+        .contentShape(Rectangle())
+        .onTapGesture(perform: registerLogoDismissTap)
+    }
+
+    private var inFlightIcon: some View {
+        Image(systemSymbol: .airplane)
+            .foregroundStyle(.haPrimary)
+            .rotationEffect(.degrees(-45))
+            .padding(DesignSystem.Spaces.one)
+            .modify { view in
+                if #available(iOS 26.0, *) {
+                    view
+                        .glassEffect(.regular.interactive(), in: .circle)
+                        .contentShape(.circle)
+                } else {
+                    view
+                        .backgroundStyle(.regularMaterial)
+                        .clipShape(.circle)
+                }
+            }
+    }
+
+    // Debug escape hatch while the loader is stuck; empty-state mode already has its own hidden dismiss accessory.
+    private func registerLogoDismissTap() {
+        guard emptyState == nil, let onLogoDismiss else { return }
+        logoDismissTapCount += 1
+        guard logoDismissTapCount >= Self.logoDismissTapThreshold else { return }
+        logoDismissTapCount = 0
+        onLogoDismiss()
+    }
+
+    private func selectServer(_ server: Server) {
+        Current.sceneManager.appCoordinator.done { coordinator in
+            coordinator.activate(server: server)
+        }
+    }
+
+    private func openSettings() {
+        appSettingsPresenter?.presentSettings()
+    }
+
+    private func canShowErrorDetailsButton(for emptyState: WebFrontendOverlayState.EmptyStateContent) -> Bool {
+        emptyState.style == .disconnected && emptyState.showsErrorDetailsButton
+    }
+}
+
+/// Preview fixtures, shared with the snapshot tests so they render the same configurations.
+extension HomeAssistantStandByView {
+    static func previewServer(
+        name: String,
+        configuredURLTypes: [ConnectionInfo.URLType],
+        activeURLType: ConnectionInfo.URLType
+    ) -> Server {
+        var info = ServerFixture.withRemoteConnection.info
+        info.remoteName = name
+        for urlType in [ConnectionInfo.URLType.internal, .external, .remoteUI] {
+            info.connection.set(
+                address: configuredURLTypes.contains(urlType) ? previewURL(for: urlType) : nil,
+                for: urlType
+            )
+        }
+        info.connection.useCloud = configuredURLTypes.contains(.remoteUI)
+        info.connection.overrideActiveURLType = activeURLType
+        _ = info.connection.evaluateActiveURL()
+
+        return Server(identifier: .init(rawValue: "preview-\(name)"), getter: {
+            info
+        }, setter: { newInfo in
+            info = newInfo
+            return true
+        })
+    }
+
+    static func previewURL(for urlType: ConnectionInfo.URLType) -> URL? {
+        switch urlType {
+        case .internal:
+            URL(string: "http://homeassistant.local:8123")
+        case .external:
+            URL(string: "https://example.duckdns.org")
+        case .remoteUI:
+            URL(string: "https://ui.nabu.casa")
+        case .none:
+            nil
+        }
+    }
+
+    static func previewEmptyState(
+        style: WebViewEmptyStateStyle,
+        server: Server,
+        showsErrorDetailsButton: Bool = false,
+        availableReauthURLTypes: [ConnectionInfo.URLType] = []
+    ) -> WebFrontendOverlayState.EmptyStateContent {
+        WebFrontendOverlayState.EmptyStateContent(
+            style: style,
+            server: server,
+            showsErrorDetailsButton: showsErrorDetailsButton,
+            availableReauthURLTypes: availableReauthURLTypes,
+            retryAction: {},
+            settingsAction: {},
+            errorDetailsAction: {},
+            reauthAction: { _ in },
+            clientCertificateAction: {},
+            dismissAction: {}
+        )
+    }
+}
+
+#Preview("Loading Single URL") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "Single URL",
+            configuredURLTypes: [.external],
+            activeURLType: .external
+        ),
+        emptyState: nil
+    )
+}
+
+#Preview("Loading Stuck — Clean Cache Button") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "Reserva Aruanã",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .remoteUI
+        ),
+        emptyState: nil,
+        onCleanCacheAndReload: {},
+        delayedSettingsButtonDelay: .seconds(0.2),
+        cleanCacheButtonDelay: .seconds(0.6)
+    )
+}
+
+#Preview("Loading Internal URL") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "Internal URL",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .internal
+        ),
+        emptyState: nil
+    )
+}
+
+#Preview("Loading External URL") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "External URL",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .external
+        ),
+        emptyState: nil
+    )
+}
+
+#Preview("Loading Remote UI") {
+    HomeAssistantStandByView(
+        server: HomeAssistantStandByView.previewServer(
+            name: "Remote UI",
+            configuredURLTypes: [.internal, .external, .remoteUI],
+            activeURLType: .remoteUI
+        ),
+        emptyState: nil
+    )
+}
+
+#Preview("Loading Multiple Servers") {
+    // swiftlint:disable prohibit_environment_assignment
+    Current.servers = FakeServerManager(initial: 2)
+    // swiftlint:enable prohibit_environment_assignment
+    let server = Current.servers.all.first ?? ServerFixture.standard
+    // No launch splash overlay in this preview; finish its state so the server pill fades in.
+    LaunchSplashOverlayState.shared.fadeOut()
+    LaunchSplashOverlayState.shared.finish()
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: nil
+    )
+}
+
+#Preview("Splash Alignment") {
+    HomeAssistantStandByView(
+        server: ServerFixture.standard,
+        emptyState: nil
+    )
+    .overlay {
+        // Positioned with the same math as `LaunchSplashOverlayView`: centered against the full
+        // screen, not the safe area.
+        GeometryReader { proxy in
+            Image("launchScreen-logo")
+                .resizable()
+                .scaledToFit()
+                .frame(
+                    width: LaunchSplashOverlayView.Constants.splashLogoSize.width,
+                    height: LaunchSplashOverlayView.Constants.splashLogoSize.height
+                )
+                .position(
+                    x: proxy.size.width / 2,
+                    y: proxy.size.height / 2 + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+                )
+        }
+        .ignoresSafeArea()
+        .opacity(HomeAssistantStandByView.launchScreenLogoPreviewOpacity)
+        .allowsHitTesting(false)
+    }
+}
+
+#Preview("Disconnected") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "Disconnected",
+        configuredURLTypes: [.external],
+        activeURLType: .external
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(style: .disconnected, server: server)
+    )
+}
+
+#Preview("Disconnected Error Details") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "Error Details",
+        configuredURLTypes: [.internal, .external],
+        activeURLType: .external
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .disconnected,
+            server: server,
+            showsErrorDetailsButton: true
+        )
+    )
+}
+
+#Preview("Unauthenticated") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "Needs Login",
+        configuredURLTypes: [.internal, .external, .remoteUI],
+        activeURLType: .remoteUI
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .unauthenticated,
+            server: server,
+            availableReauthURLTypes: [.remoteUI, .external, .internal]
+        )
+    )
+}
+
+#Preview("Recovered Reauthentication") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "Recovered Server",
+        configuredURLTypes: [.internal, .external],
+        activeURLType: .internal
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .recoveredServerNeedingReauthentication,
+            server: server,
+            availableReauthURLTypes: [.external, .internal]
+        )
+    )
+}
+
+#Preview("Client Certificate Required") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "mTLS Server",
+        configuredURLTypes: [.external],
+        activeURLType: .external
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .clientCertificateRequired,
+            server: server
+        )
+    )
+}
+
+#Preview("Client Certificate Rejected") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "mTLS Server",
+        configuredURLTypes: [.external],
+        activeURLType: .external
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .clientCertificateRejected,
+            server: server
+        )
+    )
+}
+
+#Preview("In-flight") {
+    let server = HomeAssistantStandByView.previewServer(
+        name: "In-flight",
+        configuredURLTypes: [.internal, .external],
+        activeURLType: .internal
+    )
+    return HomeAssistantStandByView(
+        server: server,
+        emptyState: HomeAssistantStandByView.previewEmptyState(
+            style: .inFlight,
+            server: server,
+            availableReauthURLTypes: [.external, .internal]
+        )
+    )
+}

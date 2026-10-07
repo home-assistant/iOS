@@ -2,10 +2,9 @@ import Alamofire
 import CoreLocation
 import Foundation
 import HAKit
-import Intents
+import HAKit_PromiseKit
 import ObjectMapper
 import PromiseKit
-import RealmSwift
 import UIKit
 
 public class HomeAssistantAPI {
@@ -42,12 +41,17 @@ public class HomeAssistantAPI {
     }
 
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
+    public static let serverVersionDidChangeNotification =
+        Notification.Name(rawValue: "HomeAssistantServerVersionDidChange")
 
     public private(set) var manager: Alamofire.Session!
     public static let unauthenticatedManager: Alamofire.Session = configureSessionManager()
 
     public let tokenManager: TokenManager
-    public var server: Server
+    /// Fixed for the lifetime of the API: the token manager, the websocket's connection-info and
+    /// token closures and the request adapters all capture this instance at init, so swapping it
+    /// afterwards would only change what this property reports. Build a new API instead.
+    public let server: Server
     public internal(set) var connection: HAConnection
 
     private var rejectedReconnectAttempts = 0
@@ -101,10 +105,15 @@ public class HomeAssistantAPI {
             configuration: .init(
                 connectionInfo: {
                     do {
-                        if let activeURL = server.info.connection.activeURL() {
-                            // Prepare client identity (SecIdentity) for mTLS if configured
+                        // HAKit calls this closure synchronously whenever it (re)connects, so this
+                        // is one of the few places that evaluates against cached network
+                        // information. The cache is refreshed on connectivity changes and app
+                        // lifecycle events, and HAKit re-invokes this closure on reconnect.
+                        if let activeURL = server.info.connection.evaluateActiveURL() {
+                            // Prepare client identity (SecIdentity) for mTLS if configured and the active URL is HTTPS
                             let clientIdentityProvider: HAConnectionInfo.ClientIdentityProvider?
-                            if let clientCert = server.info.connection.clientCertificate {
+                            if let clientCert = server.info.connection.clientCertificate,
+                               activeURL.scheme?.lowercased() == "https" {
                                 clientIdentityProvider = {
                                     try? ClientCertificateManager.shared.retrieveIdentity(for: clientCert)
                                 }
@@ -155,10 +164,9 @@ public class HomeAssistantAPI {
         self.connection = RetryAwareHAConnection(underlying: underlyingConnection)
         connection.delegate = self
 
-        // Use custom delegate that supports client certificates (mTLS)
-        let sessionDelegate: SessionDelegate = server.info.connection.clientCertificate != nil
-            ? ClientCertificateSessionDelegate(server: server)
-            : SessionDelegate()
+        // Attached unconditionally (see makeCertificateAwareURLSession): the delegate resolves the
+        // client certificate fresh at challenge time rather than gating on an init-time snapshot.
+        let sessionDelegate: SessionDelegate = ClientCertificateSessionDelegate(server: server)
 
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
@@ -174,18 +182,39 @@ public class HomeAssistantAPI {
     }
 
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
-    /// exceptions (mTLS), or a plain ephemeral session when neither is configured. Reused by HAKit's
-    /// REST calls and, on watchOS, by direct REST execution (where WebSocket transport is unavailable).
-    static func makeCertificateAwareURLSession(server: Server) -> URLSession {
-        if server.info.connection.clientCertificate != nil || server.info.connection.securityExceptions.hasExceptions {
-            Current.Log.info("[mTLS] Using HAKit certificate provider")
-            let certificateProvider = HomeAssistantCertificateProvider(server: server)
-            let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
-            return URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
-        } else {
-            Current.Log.info("[mTLS] Using default URLSession for HAKit")
-            return URLSession(configuration: .ephemeral)
-        }
+    /// exceptions (mTLS). Reused by HAKit's REST calls and, on watchOS, by direct REST execution.
+    ///
+    /// The provider is attached unconditionally and resolves the certificate fresh at challenge
+    /// time. The certificate is not always present in the server-config snapshot when the session
+    /// is built (e.g. the config was just restored from a source that did not carry it, or a
+    /// Keychain read fell back to the sanitized GRDB mirror), yet is usable moments later. Gating
+    /// session construction on that snapshot would leave the session permanently without the
+    /// certificate, so every external, mTLS-protected request 403s for the process's lifetime.
+    /// `onStep` narrates TLS challenge handling (client certificate / server trust) for callers with
+    /// a live diagnostic trace — a challenge handler blocking on a Keychain read stalls the request
+    /// before any timeout applies, and these lines are the only way to see that stage.
+    ///
+    /// On watchOS the session's delegate/completion callbacks are delivered on the main queue. The
+    /// delegate queue is where URLSession schedules both the auth-challenge callbacks and the task
+    /// completion handlers; a `nil` queue makes it use a private serial queue backed by the shared
+    /// thread pool. That pool has been observed starved on watch hardware while a tap is handled and
+    /// SwiftUI presents, so the private queue never runs — neither the TLS challenge, the task
+    /// completion, nor even the request's own timeout is ever delivered and the request hangs
+    /// silently. The main queue is the one proven to stay serviced there. iOS/macOS keep the default
+    /// private queue (no reason to serialize this work onto the main thread there).
+    public static func makeCertificateAwareURLSession(
+        server: Server,
+        configuration: URLSessionConfiguration = .ephemeral,
+        onStep: ((String) -> Void)? = nil
+    ) -> URLSession {
+        let certificateProvider = HomeAssistantCertificateProvider(server: server, onStep: onStep)
+        let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
+        #if os(watchOS)
+        let delegateQueue: OperationQueue? = .main
+        #else
+        let delegateQueue: OperationQueue? = nil
+        #endif
+        return URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
     }
 
     convenience init?() {
@@ -207,6 +236,9 @@ public class HomeAssistantAPI {
         var headers = configuration.httpAdditionalHeaders ?? [:]
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
+
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
 
         return Alamofire.Session(
             configuration: configuration,
@@ -233,13 +265,12 @@ public class HomeAssistantAPI {
     }
 
     public func VideoStreamer() -> MJPEGStreamer {
-        #if !os(watchOS)
-        let delegate: SessionDelegate = server.info.connection.clientCertificate != nil
-            ? MJPEGCertificateSessionDelegate(server: server)
-            : MJPEGStreamerSessionDelegate()
-        #else
-        let delegate = MJPEGStreamerSessionDelegate()
-        #endif
+        // Attached unconditionally, on every platform, for the same reason the REST session's
+        // delegate is (see `makeCertificateAwareURLSession`): the delegate resolves the certificate
+        // fresh at challenge time, so a streamer built before the server config carries the
+        // certificate still presents it. Gating on the init-time snapshot left the watch's camera
+        // notification stream permanently without a certificate, and an mTLS server refuses it.
+        let delegate = MJPEGStreamerSessionDelegate(server: server)
         return MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: delegate,
             interceptor: newInterceptor(),
@@ -330,6 +361,7 @@ public class HomeAssistantAPI {
                 promises.append(getConfig())
                 promises.append(Current.modelManager.fetch(apis: [self]))
                 promises.append(updateComplications(passively: false).asVoid())
+                promises.append(registerSensorsIfAppVersionChanged())
             }
 
             promises.append(UpdateSensors(trigger: reason.updateSensorTrigger).asVoid())
@@ -345,10 +377,7 @@ public class HomeAssistantAPI {
     }
 
     public func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
-        let intent = FireEventIntent(eventName: eventType, payload: eventData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return Current.webhooks.sendEphemeral(
+        Current.webhooks.sendEphemeral(
             server: server,
             request: .init(type: "fire_event", data: [
                 "event_type": eventType,
@@ -381,40 +410,43 @@ public class HomeAssistantAPI {
 
     public func DownloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
         Promise { seal in
-            var finalURL = url
+            Task { [self] in
+                var finalURL = url
 
-            let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
+                let dataManager: Alamofire.Session = needsAuth ? manager : Self.unauthenticatedManager
 
-            if needsAuth {
-                guard let activeURL = server.info.connection.activeURL() else {
-                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                if needsAuth {
+                    guard let activeURL = await server.activeURL() else {
+                        seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                        return
+                    }
+
+                    if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
+                        Current.Log
+                            .verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
+                        finalURL = activeURL.appendingPathComponent(url.absoluteString)
+                    }
+
+                    Current.Log.verbose("Data download needs auth!")
+                }
+
+                guard let downloadPath = temporaryDownloadFileURL(appropriateFor: finalURL) else {
+                    Current.Log.error("Unable to get download path!")
+                    seal.reject(APIError.cantBuildURL)
                     return
                 }
 
-                if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
-                    Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
-                    finalURL = activeURL.appendingPathComponent(url.absoluteString)
+                let destination: DownloadRequest.Destination = { _, _ in
+                    (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
                 }
 
-                Current.Log.verbose("Data download needs auth!")
-            }
-
-            guard let downloadPath = temporaryDownloadFileURL(appropriateFor: finalURL) else {
-                Current.Log.error("Unable to get download path!")
-                seal.reject(APIError.cantBuildURL)
-                return
-            }
-
-            let destination: DownloadRequest.Destination = { _, _ in
-                (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
-            }
-
-            dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
-                switch downloadResponse.result {
-                case .success:
-                    seal.fulfill(downloadResponse.fileURL!)
-                case let .failure(error):
-                    seal.reject(error)
+                dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
+                    switch downloadResponse.result {
+                    case .success:
+                        seal.fulfill(downloadResponse.fileURL!)
+                    case let .failure(error):
+                        seal.reject(error)
+                    }
                 }
             }
         }
@@ -427,14 +459,27 @@ public class HomeAssistantAPI {
         )
 
         return promise.done { [self] config in
-            server.update { serverInfo in
-                serverInfo.connection.cloudhookURL = config.CloudhookURL
-                serverInfo.connection.set(address: config.RemoteUIURL, for: .remoteUI)
-                serverInfo.remoteName = config.LocationName ?? ServerInfo.defaultName
-                serverInfo.hassDeviceId = config.hassDeviceId
+            let previousVersion = server.info.version
 
-                if let version = try? Version(hassVersion: config.Version) {
-                    serverInfo.version = version
+            server.update { serverInfo in
+                serverInfo.apply(config)
+            }
+
+            if LegacyWatchSensors.needsRetiring(reportedBy: config, on: server) {
+                Task { [server] in await LegacyWatchSensors.retire(reportedBy: config, on: server) }
+            }
+
+            let fetchedVersion = server.info.version
+
+            if fetchedVersion != previousVersion {
+                Current.Log
+                    .info("Server \(server.identifier) version changed from \(previousVersion) to \(fetchedVersion)")
+                let changedServer = server
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: Self.serverVersionDidChangeNotification,
+                        object: changedServer
+                    )
                 }
             }
 
@@ -453,10 +498,7 @@ public class HomeAssistantAPI {
         triggerSource: AppTriggerSource,
         shouldLog: Bool = true
     ) -> Promise<Void> {
-        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return Current.webhooks.send(
+        Current.webhooks.send(
             identifier: .serviceCall,
             server: server,
             request: .init(type: "call_service", data: [
@@ -478,10 +520,7 @@ public class HomeAssistantAPI {
         serviceData: [String: Any],
         returnResponse: Bool
     ) -> Promise<CallServiceResponse> {
-        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
-        INInteraction(intent: intent, response: nil).donate(completion: nil)
-
-        return connection.send(.callService(
+        connection.send(.callService(
             domain: domain,
             service: service,
             serviceData: serviceData,
@@ -497,24 +536,28 @@ public class HomeAssistantAPI {
 
     public func getCameraSnapshot(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
-            guard let queryUrl = server.info.connection.activeAPIURL()?
-                .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {
-                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
-                return
-            }
-            _ = manager.request(queryUrl)
-                .validate()
-                .responseData { response in
-                    switch response.result {
-                    case let .success(data):
-                        if let image = UIImage(data: data) {
-                            seal.fulfill(image)
-                        }
-                    case let .failure(error):
-                        Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
-                        seal.reject(error)
-                    }
+            Task { [self] in
+                guard let queryUrl = await server.activeAPIURL()?
+                    .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {
+                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                    return
                 }
+                _ = manager.request(queryUrl)
+                    .validate()
+                    .responseData { response in
+                        switch response.result {
+                        case let .success(data):
+                            if let image = UIImage(data: data) {
+                                seal.fulfill(image)
+                            } else {
+                                seal.reject(APIError.invalidResponse)
+                            }
+                        case let .failure(error):
+                            Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
+                            seal.reject(error)
+                        }
+                    }
+            }
         }
     }
 
@@ -539,6 +582,7 @@ public class HomeAssistantAPI {
                 server.connection.cloudhookURL = resp.CloudhookURL
                 server.connection.webhookID = resp.WebhookID
                 server.connection.webhookSecret = resp.WebhookSecret
+                server.setSetting(value: server.mobileAppDeviceName, for: .registeredDeviceName)
             }
         }
     }
@@ -550,7 +594,16 @@ public class HomeAssistantAPI {
                 type: "update_registration",
                 data: buildMobileAppUpdateRegistration()
             )
-        )
+        ).get { [self] _ in
+            rememberRegisteredDeviceName()
+        }
+    }
+
+    /// Keeps the device name the registration carries on the server, for the watch to name itself after.
+    private func rememberRegisteredDeviceName() {
+        let name = server.info.mobileAppDeviceName
+        guard server.info.setting(for: .registeredDeviceName) != name else { return }
+        server.update { $0.setSetting(value: name, for: .registeredDeviceName) }
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
@@ -608,7 +661,7 @@ public class HomeAssistantAPI {
                 if #available(iOS 17.2, *) {
                     // Push-to-start token (stored in Keychain at launch, updated via stream).
                     // The relay server uses this token to start a Live Activity entirely via APNs.
-                    if Current.isTestFlight, let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
+                    if let pushToStartToken = LiveActivityRegistry.storedPushToStartToken {
                         appData[LiveActivityRegistry.pushToStartRegistrationKey] = pushToStartToken
                     }
                 }
@@ -621,7 +674,7 @@ public class HomeAssistantAPI {
             $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
             $0.AppVersion = HomeAssistantAPI.clientVersionDescription
             $0.DeviceID = Current.settingsStore.integrationDeviceID
-            $0.DeviceName = server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName()
+            $0.DeviceName = server.info.mobileAppDeviceName
             $0.Manufacturer = "Apple"
             $0.Model = Current.device.systemModel()
             $0.OSName = Current.device.systemName()
@@ -648,85 +701,91 @@ public class HomeAssistantAPI {
     public func SubmitLocation(
         updateType: LocationUpdateTrigger,
         location rawLocation: CLLocation?,
-        zone: RLMZone?
+        zone: AppZone?
     ) -> Promise<Void> {
-        let update: WebhookUpdateLocation
-        let location: CLLocation?
         let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
         let localMetadata = WebhookResponseLocation.localMetdata(
             trigger: updateType,
             zone: zone
         )
 
-        switch server.info.setting(for: .locationPrivacy) {
-        case .exact:
-            update = .init(trigger: updateType, location: rawLocation, zone: zone)
-            location = rawLocation
-        case .zoneOnly:
-            let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
-            if updateType == .BeaconRegionEnter || rawLocation != nil {
-                update = .init(
-                    trigger: updateType,
-                    usingNameOf: locationNameZone(
-                        for: updateType,
-                        from: inZones,
-                        fallbackZone: zone,
-                        supportsInZones: supportsInZones
-                    ),
-                    inZones: supportsInZones ? inZones : nil
-                )
-            } else {
-                update = .init(trigger: updateType)
+        return Guarantee<String?> { seal in
+            Task {
+                await seal(Current.connectivity.currentWiFiSSID())
             }
-            location = nil
-        case .never:
-            update = .init(trigger: updateType)
-            location = nil
-        }
+        }.then { [self] currentSSID -> Promise<Void> in
+            let update: WebhookUpdateLocation
+            let location: CLLocation?
 
-        return firstly {
-            let realm = Current.realm()
-            return when(resolved: realm.reentrantWrite {
+            switch server.info.setting(for: .locationPrivacy) {
+            case .exact:
+                update = .init(trigger: updateType, location: rawLocation, zone: zone, currentSSID: currentSSID)
+                location = rawLocation
+            case .zoneOnly:
+                let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
+                if updateType == .BeaconRegionEnter || rawLocation != nil {
+                    update = .init(
+                        trigger: updateType,
+                        usingNameOf: locationNameZone(
+                            for: updateType,
+                            from: inZones,
+                            fallbackZone: zone,
+                            supportsInZones: supportsInZones
+                        ),
+                        inZones: supportsInZones ? inZones : nil
+                    )
+                } else {
+                    update = .init(trigger: updateType)
+                }
+                location = nil
+            case .never:
+                update = .init(trigger: updateType)
+                location = nil
+            }
+
+            return firstly { () -> Promise<Void> in
                 let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
 
-                realm.add(LocationHistoryEntry(
+                LocationHistoryEntry(
                     updateType: updateType,
                     location: location,
                     zone: zone,
                     accuracyAuthorization: accuracyAuthorization,
                     payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
-                ))
-            }).asVoid()
-        }.map { () -> [String: Any] in
-            let payloadDict = Mapper<WebhookUpdateLocation>().toJSON(update)
-            Current.Log.info("Location update payload: \(payloadDict)")
-            return payloadDict
-        }.then { [self] payload in
-            when(
-                resolved:
-                UpdateSensors(trigger: updateType, location: location).asVoid(),
-                Current.webhooks.send(
-                    identifier: .location,
-                    server: server,
-                    request: .init(
-                        type: "update_location",
-                        data: payload,
-                        localMetadata: localMetadata
+                ).save()
+
+                return .value(())
+            }.map { () -> [String: Any] in
+                let payloadDict = Mapper<WebhookUpdateLocation>().toJSON(update)
+                Current.Log.info("Location update payload: \(payloadDict)")
+                return payloadDict
+            }.then { [self] payload in
+                when(
+                    resolved:
+                    UpdateSensors(trigger: updateType, location: location).asVoid(),
+                    Current.webhooks.send(
+                        identifier: .location,
+                        server: server,
+                        request: .init(
+                            type: "update_location",
+                            data: payload,
+                            localMetadata: localMetadata
+                        )
                     )
                 )
-            )
-        }.asVoid()
+            }.asVoid()
+        }
     }
 
     private func zones(
         for updateType: LocationUpdateTrigger,
         location rawLocation: CLLocation?,
-        fallbackZone zone: RLMZone?
-    ) -> [RLMZone] {
+        fallbackZone zone: AppZone?
+    ) -> [AppZone] {
         if updateType == .BeaconRegionEnter {
-            return zone.flatMap { $0.TrackingEnabled ? [$0] : nil } ?? []
+            return zone.flatMap { $0.trackingEnabled ? [$0] : nil } ?? []
         } else if let rawLocation {
-            return RLMZone.zones(of: rawLocation, in: server)
+            return AppZone.zones(of: rawLocation, in: server)
         } else {
             return []
         }
@@ -734,10 +793,10 @@ public class HomeAssistantAPI {
 
     private func locationNameZone(
         for updateType: LocationUpdateTrigger,
-        from zones: [RLMZone],
-        fallbackZone zone: RLMZone?,
+        from zones: [AppZone],
+        fallbackZone zone: AppZone?,
         supportsInZones: Bool
-    ) -> RLMZone? {
+    ) -> AppZone? {
         if supportsInZones {
             return zones.first { !$0.isPassive }
         } else if updateType == .BeaconRegionEnter {
@@ -750,7 +809,7 @@ public class HomeAssistantAPI {
     public var sharedEventDeviceInfo: [String: String] {
         [
             "sourceDevicePermanentID": AppConstants.PermanentID,
-            "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
+            "sourceDeviceName": server.info.mobileAppDeviceName,
             "sourceDeviceID": Current.settingsStore.deviceID,
         ]
     }
@@ -812,7 +871,7 @@ public class HomeAssistantAPI {
     public func zoneStateEvent(
         region: CLRegion,
         state: CLRegionState,
-        zone: RLMZone
+        zone: AppZone
     ) -> (eventType: String, eventData: [String: Any]) {
         var eventData: [String: Any] = sharedEventDeviceInfo
         eventData["zone"] = zone.entityId
@@ -857,6 +916,17 @@ public class HomeAssistantAPI {
             self.category = response.notification.request.content.categoryIdentifier
             self.actionData = response.notification.request.content.userInfo["homeassistant"]
             self.textInput = (response as? UNTextInputNotificationResponse)?.userText
+        }
+
+        /// Builds the same info for an action the app ran itself, without a `UNNotificationResponse`.
+        /// The watch needs this: watchOS never hands a text-input response back to the app for a
+        /// forwarded notification, so the watch collects the reply and fires the event on its own
+        /// (see `DynamicNotificationViewModel.perform(textInputAction:)`).
+        public init(content: UNNotificationContent, actionIdentifier: String, textInput: String?) {
+            self.identifier = UNNotificationContent.uncombinedAction(from: actionIdentifier)
+            self.category = content.categoryIdentifier
+            self.actionData = content.userInfo["homeassistant"]
+            self.textInput = textInput
         }
 
         public init(map: ObjectMapper.Map) throws {
@@ -923,16 +993,40 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func registerSensors() -> Promise<Void> {
+    /// - Parameter limitedToUniqueIDs: when given, only these sensors are registered. Used to push a
+    ///   single enablement change without re-registering everything.
+    public func registerSensors(limitedToUniqueIDs uniqueIDs: Set<String>? = nil) -> Promise<Void> {
         firstly {
             Current.sensors.sensors(reason: .registration, server: server).map(\.sensors)
+        }.map { (sensors: [WebhookSensor]) -> [WebhookSensor] in
+            guard let uniqueIDs else { return sensors }
+            return sensors.filter { sensor in
+                guard let uniqueID = sensor.UniqueID else { return false }
+                return uniqueIDs.contains(uniqueID)
+            }
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map(\.UniqueID))")
         }.thenMap { [server] sensor in
             Current.webhooks.send(server: server, request: .init(type: "register_sensor", data: sensor.toJSON()))
         }.tap { result in
             Current.Log.info("finished registering sensors: \(result)")
-        }.asVoid()
+        }.asVoid().get { [server] _ in
+            guard uniqueIDs == nil else { return }
+            SensorRegistrationVersionStore.recordRegistration(for: server.identifier)
+        }
+    }
+
+    func registerSensorsIfAppVersionChanged() -> Promise<Void> {
+        guard SensorRegistrationVersionStore.needsRegistration(for: server.identifier) else {
+            return .value(())
+        }
+
+        Current.Log.info("registering all sensors with \(server.identifier) for this version of the app")
+
+        return registerSensors().recover { error -> Promise<Void> in
+            Current.Log.error("failed to register sensors for this version of the app: \(error)")
+            return .value(())
+        }
     }
 
     public func UpdateSensors(
@@ -981,10 +1075,19 @@ public class HomeAssistantAPI {
         case appOpened
         case programmatic
 
+        /// Only explicitly user-initiated updates may show the temporary full-accuracy prompt;
+        /// app-open updates run on every foreground, where a recurring system prompt would be intrusive.
         var allowsTemporaryAccess: Bool {
             switch self {
-            case .userRequested, .appOpened: return true
-            case .programmatic: return false
+            case .userRequested: return true
+            case .appOpened, .programmatic: return false
+            }
+        }
+
+        var locationUpdateTrigger: LocationUpdateTrigger {
+            switch self {
+            case .appOpened: return .Launch
+            case .userRequested, .programmatic: return .Manual
             }
         }
     }
@@ -996,39 +1099,39 @@ public class HomeAssistantAPI {
         Current.backgroundTask(withName: BackgroundTask.manualLocationUpdate.rawValue) { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
-                    let locationManager = CLLocationManager()
+                    // Reading `accuracyAuthorization` is a synchronous XPC round-trip to locationd,
+                    // and on a cold launch it also waits for the daemon connection to come up. On
+                    // the main thread — where `manuallyUpdate` is called from — that was half of
+                    // the app's reported hangs, all of them inside this closure.
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        guard Current.locationManager.accuracyAuthorization != .fullAccuracy,
+                              type.allowsTemporaryAccess else {
+                            // Already precise, or this trigger may not ask: nothing to request.
+                            return seal(())
+                        }
 
-                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
-                        // already have full accuracy, don't need to request
-                        return seal(())
-                    }
-
-                    guard type.allowsTemporaryAccess else {
-                        return seal(())
-                    }
-
-                    Current.Log.info("requesting full accuracy for manual update")
-                    locationManager.requestTemporaryFullAccuracyAuthorization(
-                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
-                    ) { error in
-                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
-
-                        withExtendedLifetime(locationManager) {
+                        Current.Log.info("requesting full accuracy for manual update")
+                        Current.locationManager.requestTemporaryFullAccuracyAuthorization(
+                            purposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                        ) { error in
+                            Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
                             seal(())
                         }
                     }
                 }
             }.then { () -> Promise<Void> in
+                let trigger = type.locationUpdateTrigger
+
                 func updateWithoutLocation() -> Promise<Void> {
-                    when(fulfilled: Current.apis.map { $0.UpdateSensors(trigger: .Manual) })
+                    when(fulfilled: Current.apis.map { $0.UpdateSensors(trigger: trigger) })
                 }
 
                 if Current.settingsStore.isLocationEnabled(for: applicationState) {
                     return firstly {
-                        Current.location.oneShotLocation(.Manual, nil)
+                        Current.location.oneShotLocation(trigger, nil)
                     }.then { location in
                         when(fulfilled: Current.apis.map { api in
-                            api.SubmitLocation(updateType: .Manual, location: location, zone: nil)
+                            api.SubmitLocation(updateType: trigger, location: location, zone: nil)
                         }).asVoid()
                     }.recover { error -> Promise<Void> in
                         if error is CLError || error is OneShotError {
@@ -1091,36 +1194,63 @@ public class HomeAssistantAPI {
         }
     }
 
+    private enum ProfilePictureURLResult {
+        /// A picture is configured and its URL resolved successfully.
+        case url(URL)
+        /// The server responded and the user has no picture configured.
+        case missing
+        /// The picture's existence could not be determined (e.g. no connectivity).
+        case failure
+    }
+
     @discardableResult
     public func profilePictureURL(
         for user: HAResponseCurrentUser,
         completion: @escaping (URL?) -> Void
     ) -> HACancellable {
+        resolveProfilePictureURL(for: user) { result in
+            if case let .url(url) = result {
+                completion(url)
+            } else {
+                completion(nil)
+            }
+        }
+    }
+
+    private func resolveProfilePictureURL(
+        for user: HAResponseCurrentUser,
+        completion: @escaping (ProfilePictureURLResult) -> Void
+    ) -> HACancellable {
         connection.send(HATypedRequest<[HAEntity]>.fetchStates()) { [weak self] result in
             switch result {
             case let .success(states):
                 guard let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) else {
+                    // Not conclusive that no picture is configured, so not `.missing`.
                     Current.Log.error("Profile picture: No person found for user \(user.id)")
-                    completion(nil)
+                    completion(.failure)
                     return
                 }
 
                 guard let path = person.attributes["entity_picture"] as? String else {
                     Current.Log.error("Profile picture: Missing URL for user entity picture, user id \(user.id)")
-                    completion(nil)
+                    completion(.missing)
                     return
                 }
 
-                guard let url = self?.resolvedProfilePictureURL(from: path) else {
-                    Current.Log.error("Profile picture: Invalid URL for user entity picture, user id \(user.id)")
-                    completion(nil)
-                    return
-                }
+                // @MainActor so the completion fires on the main queue like every other branch
+                // (HAKit's callback queue), which UI callers rely on.
+                Task { @MainActor in
+                    guard let url = await self?.resolvedProfilePictureURL(from: path) else {
+                        Current.Log.error("Profile picture: Invalid URL for user entity picture, user id \(user.id)")
+                        completion(.failure)
+                        return
+                    }
 
-                completion(url)
+                    completion(.url(url))
+                }
             case let .failure(error):
                 Current.Log.error("Failed to retrieve states for profile picture: \(error)")
-                completion(nil)
+                completion(.failure)
             }
         }
     }
@@ -1145,6 +1275,9 @@ public class HomeAssistantAPI {
         return cancellable
     }
 
+    /// The completion may be called twice: first with a previously cached picture (if one exists),
+    /// then with the freshly fetched picture. When the fetch fails and a cached picture was already
+    /// delivered, the cached delivery stands and no `nil` follows.
     @discardableResult
     public func profilePicture(
         for user: HAResponseCurrentUser,
@@ -1152,52 +1285,145 @@ public class HomeAssistantAPI {
     ) -> HACancellable {
         let cancellable = ProfilePictureCancellable()
 
-        cancellable.add(profilePictureURL(for: user) { [weak self] url in
+        cachedProfilePicture { [weak self] cached in
             guard !cancellable.isCancelled else { return }
-            guard let self, let url else {
-                completion(nil)
+
+            if let cached {
+                completion(cached)
+            }
+
+            guard let self else {
+                if cached == nil { completion(nil) }
                 return
             }
 
-            let request = manager.download(url).validate()
-            cancellable.setDownloadRequest(request)
-            request.responseData { response in
-                guard !cancellable.isCancelled else { return }
-                switch response.result {
-                case let .success(data):
-                    completion(UIImage(data: data))
-                case let .failure(error):
-                    Current.Log.error("Failed to download profile picture: \(error)")
-                    completion(nil)
-                }
-            }
-        })
+            fetchRemoteProfilePicture(
+                for: user,
+                cancellable: cancellable,
+                hasCachedFallback: cached != nil,
+                completion: completion
+            )
+        }
 
         return cancellable
     }
 
+    /// The completion may be called twice: first with a previously cached picture (if one exists),
+    /// then with the freshly fetched picture. When the fetch fails and a cached picture was already
+    /// delivered, the cached delivery stands and no `nil` follows.
     @discardableResult
     public func profilePicture(completion: @escaping (UIImage?) -> Void) -> HACancellable {
         let cancellable = ProfilePictureCancellable()
 
-        cancellable.add(currentUser { [weak self] user in
+        cachedProfilePicture { [weak self] cached in
             guard !cancellable.isCancelled else { return }
-            guard let self, let user else {
-                completion(nil)
+
+            if let cached {
+                completion(cached)
+            }
+
+            let hasCachedFallback = cached != nil
+
+            guard let self else {
+                if !hasCachedFallback { completion(nil) }
                 return
             }
 
-            cancellable.add(profilePicture(for: user) { image in
+            cancellable.add(currentUser { [weak self] user in
                 guard !cancellable.isCancelled else { return }
-                completion(image)
+                guard let self, let user else {
+                    if !hasCachedFallback { completion(nil) }
+                    return
+                }
+
+                fetchRemoteProfilePicture(
+                    for: user,
+                    cancellable: cancellable,
+                    hasCachedFallback: hasCachedFallback,
+                    completion: completion
+                )
             })
-        })
+        }
 
         return cancellable
     }
 
-    private func resolvedProfilePictureURL(from path: String) -> URL? {
-        guard let activeURL = server.info.connection.activeURL() else {
+    private func fetchRemoteProfilePicture(
+        for user: HAResponseCurrentUser,
+        cancellable: ProfilePictureCancellable,
+        hasCachedFallback: Bool,
+        completion: @escaping (UIImage?) -> Void
+    ) {
+        cancellable.add(resolveProfilePictureURL(for: user) { [weak self] result in
+            guard !cancellable.isCancelled else { return }
+            guard let self else {
+                if !hasCachedFallback { completion(nil) }
+                return
+            }
+
+            switch result {
+            case let .url(url):
+                let request = manager.download(url).validate()
+                cancellable.setDownloadRequest(request)
+                request.responseData { response in
+                    guard !cancellable.isCancelled else { return }
+                    switch response.result {
+                    case let .success(data):
+                        if let image = UIImage(data: data) {
+                            self.storeProfilePictureInCache(data)
+                            completion(image)
+                        } else if !hasCachedFallback {
+                            completion(nil)
+                        }
+                    case let .failure(error):
+                        Current.Log.error("Failed to download profile picture: \(error)")
+                        if !hasCachedFallback {
+                            completion(nil)
+                        }
+                    }
+                }
+            case .missing:
+                // The server affirmatively has no picture; a stale cached one must not resurface.
+                removeProfilePictureFromCache()
+                completion(nil)
+            case .failure:
+                if !hasCachedFallback {
+                    completion(nil)
+                }
+            }
+        })
+    }
+
+    var profilePictureCacheKey: String {
+        "profile-picture-\(server.identifier.rawValue)"
+    }
+
+    /// Completes with the last successfully fetched profile picture, without any network access.
+    /// Useful to show something immediately, or when the server is unreachable.
+    public func cachedProfilePicture(completion: @escaping (UIImage?) -> Void) {
+        Current.diskCache.value(for: profilePictureCacheKey)
+            .done { (data: Data) in
+                completion(UIImage(data: data))
+            }
+            .catch { _ in
+                completion(nil)
+            }
+    }
+
+    private func storeProfilePictureInCache(_ data: Data) {
+        Current.diskCache.set(data, for: profilePictureCacheKey).catch { error in
+            Current.Log.error("Failed to cache profile picture: \(error)")
+        }
+    }
+
+    private func removeProfilePictureFromCache() {
+        Current.diskCache.delete(for: profilePictureCacheKey).catch { error in
+            Current.Log.error("Failed to remove cached profile picture: \(error)")
+        }
+    }
+
+    private func resolvedProfilePictureURL(from path: String) async -> URL? {
+        guard let activeURL = await server.activeURL() else {
             return nil
         }
 
@@ -1246,9 +1472,13 @@ private extension URL {
 /// Certificate provider implementation for Home Assistant servers
 private class HomeAssistantCertificateProvider: HACertificateProvider {
     private let server: Server
+    /// Optional live narration of challenge handling; announced BEFORE the potentially blocking
+    /// work (Keychain read, trust evaluation) so a hang names the step it never returned from.
+    private let onStep: ((String) -> Void)?
 
-    init(server: Server) {
+    init(server: Server, onStep: ((String) -> Void)? = nil) {
         self.server = server
+        self.onStep = onStep
     }
 
     func provideClientCertificate(
@@ -1263,12 +1493,15 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
             return
         }
 
+        onStep?("TLS: client certificate requested — reading it from the Keychain…")
         do {
             let credential = try ClientCertificateManager.shared.urlCredential(for: clientCertificate)
             Current.Log.info("[mTLS HAKit] Using client certificate: \(clientCertificate.displayName)")
+            onStep?("TLS: using client certificate \(clientCertificate.displayName)")
             completionHandler(.useCredential, credential)
         } catch {
             Current.Log.error("[mTLS HAKit] Failed to get credential: \(error)")
+            onStep?("TLS: client certificate unavailable (\(error.localizedDescription))")
             completionHandler(.cancelAuthenticationChallenge, nil)
         }
     }
@@ -1280,13 +1513,16 @@ private class HomeAssistantCertificateProvider: HACertificateProvider {
     ) {
         Current.Log.info("[mTLS HAKit] Evaluating server trust for: \(host)")
 
+        onStep?("TLS: evaluating server trust for \(host)…")
         do {
             try server.info.connection.securityExceptions.evaluate(serverTrust)
             Current.Log.info("[mTLS HAKit] Server trust validation successful")
+            onStep?("TLS: server trust accepted")
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
         } catch {
             Current.Log.error("[mTLS HAKit] Server trust validation failed: \(error)")
+            onStep?("TLS: server trust rejected (\(error.localizedDescription))")
             completionHandler(.rejectProtectionSpace, nil)
         }
     }
@@ -1446,7 +1682,23 @@ extension HomeAssistantAPI: SensorObserver {
         lastUpdate: SensorObserverUpdate?
     ) {
         Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
-            UpdateSensors(trigger: .Signaled)
+            firstly { () -> Promise<Void> in
+                guard case let .settingsChange(changedUniqueIDs, serverIDs) = reason,
+                      !changedUniqueIDs.isEmpty,
+                      // An empty list is a change that isn't about one server, so every one of them
+                      // re-registers; otherwise only the servers whose selection actually moved do.
+                      serverIDs.isEmpty || serverIDs.contains(server.identifier) else {
+                    return .value(())
+                }
+                // Carries the new enablement to Home Assistant, which only `register_sensor` can do.
+                return registerSensors(limitedToUniqueIDs: Set(changedUniqueIDs))
+            }.recover { error -> Promise<Void> in
+                // A failed registration must not stop the state update that follows it.
+                Current.Log.error("failed to register sensors after enablement change: \(error)")
+                return .value(())
+            }.then {
+                self.UpdateSensors(trigger: .Signaled)
+            }
         }.cauterize()
     }
 
@@ -1461,6 +1713,7 @@ extension HomeAssistantAPI: HAConnectionDelegate {
         case .ready:
             resetRejectedReconnectRecovery()
         case .disconnected(reason: .rejected):
+            invalidateRejectedAccessToken()
             scheduleRejectedReconnectRecoveryIfNeeded()
         case let .disconnected(reason: .waitingToReconnect(lastError: error, atLatest: _, retryCount: _)):
             guard let tokenFetchFailure = error as? TokenFetchFailure,
@@ -1472,6 +1725,17 @@ extension HomeAssistantAPI: HAConnectionDelegate {
         case .connecting, .authenticating, .disconnected(reason: .disconnected):
             break
         }
+    }
+
+    /// A rejected websocket means the server refused the access token we just authenticated with, even
+    /// though its client-side expiration still said it was valid — typically because the server was
+    /// rebuilt or the refresh token was revoked. The stored token is the one the socket authenticated
+    /// with (HAKit fetches it for every connect), so marking it rejected sends the next reconnect
+    /// through a real token refresh instead of re-sending the same rejected token until we give up.
+    /// The refresh either mints a working token or fails with 400...403, which is what surfaces the
+    /// re-authentication screen.
+    private func invalidateRejectedAccessToken() {
+        tokenManager.handleAccessTokenRejected(server.info.token.accessToken)
     }
 
     /// Recovers from a rejected websocket (`auth: invalid`): HAKit won't auto-reconnect a rejected

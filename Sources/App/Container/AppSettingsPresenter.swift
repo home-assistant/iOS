@@ -1,0 +1,163 @@
+import Combine
+import Shared
+import SwiftUI
+
+/// Drives app Settings presentation from above the kiosk/container swap (hosted by `ConditionalContainerView`)
+/// so that toggling kiosk mode — reachable via Settings → Kiosk — doesn't tear Settings down with the
+/// container it would otherwise be presented from. Settings requested by the frontend external bus is pushed
+/// onto the container's navigation stack; every other entry point (gestures, empty state, …) uses a sheet.
+/// On Catalyst it opens in its own scene.
+///
+/// One instance per scene, owned by that scene's `ConditionalContainerView` and handed to everything below it
+/// through `EnvironmentValues.appSettingsPresenter`: a shared presenter would open Settings in every window
+/// the iPad has on screen rather than in the one the request came from.
+///
+/// The same sheet is also the server picker: at the medium detent the servers cover Settings as buttons that
+/// activate them, and expanding uncovers Settings as usual. The two swap freely in both directions — Settings
+/// stays mounted underneath, so collapsing and expanding again lands back on whatever screen it had pushed.
+final class AppSettingsPresenter: ObservableObject {
+    /// What the settings sheet shows. `serverSelection` is the compact, medium-detent content; `full` is the
+    /// regular Settings screen.
+    enum Mode {
+        case serverSelection
+        case full
+    }
+
+    /// A pending "pick a server" request (deep link, notification, gesture, empty state). `onSelect` runs when
+    /// the user activates a server from the compact sheet, and is dropped when the sheet goes away instead.
+    struct ServerSelectionRequest {
+        let prompt: ServerSelectPrompt?
+        /// Only the stand-by view has something for the sheet to zoom out of; every other entry point gets the
+        /// regular slide-up.
+        let zoomsFromStandBy: Bool
+        let onSelect: (Server) -> Void
+    }
+
+    @Published var isSheetPresented = false
+    /// The container's navigation stack on iPhone: `AppSettingsPushRoute.settings` while Settings is pushed
+    /// over the frontend, followed by whatever `SettingsView` pushed on top of it. The path is the single
+    /// source of truth for that stack so its own push and Settings' pushes can't disagree on its depth.
+    @Published var pushPath = NavigationPath()
+
+    /// Whether Settings is pushed over the frontend, expressed through `pushPath`. Setting it to `false`
+    /// takes the screens Settings pushed with it, which is what every caller means by closing Settings.
+    var isPushPresented: Bool {
+        get { !pushPath.isEmpty }
+        set {
+            if newValue {
+                guard pushPath.isEmpty else { return }
+                pushPath.append(AppSettingsPushRoute.settings)
+            } else if !pushPath.isEmpty {
+                pushPath = NavigationPath()
+            }
+        }
+    }
+
+    @Published private(set) var mode: Mode = .full
+    /// Whether Settings is mounted behind the picker. It stays mounted once shown so that its navigation
+    /// survives a collapse back to the picker; a sheet opened straight on the picker doesn't pay for it until
+    /// the user asks for Settings.
+    @Published private(set) var isFullSettingsMounted = true
+    @Published var detent: PresentationDetent = .large
+    private(set) var selectionRequest: ServerSelectionRequest?
+    /// The `matchedTransitionSource` the sheet zooms out of, when the entry point has one.
+    @Published private(set) var zoomSourceID: String?
+
+    /// The coordinator of the scene this presenter belongs to, set by `ContainerView`. The picker activates
+    /// the server the user chose through it, so picking in one window can't act on another.
+    weak var appCoordinator: AppCoordinator?
+
+    private var dismissAllCancellable: AnyCancellable?
+
+    init() {
+        // Settings isn't view state, so it can't clear itself through `dismissesOnAppNavigation`; it listens
+        // for the same request instead.
+        self.dismissAllCancellable = AppPresentationDismisser.shared.dismissAllPublisher
+            .sink { [weak self] in
+                self?.isSheetPresented = false
+                self?.isPushPresented = false
+            }
+    }
+
+    /// Opens the sheet on Settings itself.
+    func presentSettings(zoomingFrom sourceID: String? = nil) {
+        guard !openSettingsSceneIfCatalyst() else { return }
+        selectionRequest = nil
+        zoomSourceID = sourceID
+        mode = .full
+        isFullSettingsMounted = true
+        detent = .large
+        isSheetPresented = true
+    }
+
+    /// Opens the sheet on the compact server picker. Always presents it, however many servers there are: the
+    /// request is the caller's only way of hearing back, so it is never dropped on their behalf.
+    func presentServerSelection(_ request: ServerSelectionRequest) {
+        selectionRequest = request
+        zoomSourceID = nil
+        mode = .serverSelection
+        isFullSettingsMounted = false
+        detent = .medium
+        isSheetPresented = true
+    }
+
+    /// Shows Settings, either because the sheet was expanded or because the picker's settings button was
+    /// tapped. A pending request survives it, so collapsing back to the picker can still complete it — except
+    /// on Catalyst, where the sheet has no detents to drag and Settings is its own scene: closing the sheet
+    /// there drops the request like any other dismissal.
+    func showFullSettings() {
+        guard !openSettingsSceneIfCatalyst() else { return }
+        mode = .full
+        isFullSettingsMounted = true
+        detent = .large
+    }
+
+    /// On Catalyst with multiple scenes Settings is a window of its own, so it is activated instead of being
+    /// presented here. Reports whether it took over the request.
+    private func openSettingsSceneIfCatalyst() -> Bool {
+        guard Current.isCatalyst, Current.sceneManager.supportsMultipleScenes else { return false }
+        isSheetPresented = false
+        Current.sceneManager.activateAnyScene(for: .settings)
+        return true
+    }
+
+    /// Covers Settings with the picker again, following the sheet back down to the medium detent.
+    func showServerSelection() {
+        mode = .serverSelection
+        detent = .medium
+    }
+
+    /// Hands the picked server to whoever asked for the selection, defaulting to activating it (the sheet can
+    /// also be dragged down onto the picker without a request behind it).
+    func completeServerSelection(_ server: Server) {
+        // The request stays put until the sheet has actually gone: it carries the transition the dismissal
+        // animates back into, and clearing it here would drop that mid-animation. `sheetDismissed()` picks
+        // it up afterwards.
+        let request = selectionRequest
+        isSheetPresented = false
+
+        if let request {
+            request.onSelect(server)
+        } else if let appCoordinator {
+            appCoordinator.activate(server: server)
+        } else {
+            Current.sceneManager.appCoordinator.done { coordinator in
+                coordinator.activate(server: server)
+            }
+        }
+    }
+
+    /// Resets the sheet so the next presentation starts from a known state. A request still pending here means
+    /// the user dismissed the sheet instead of picking, so it is dropped rather than left to fire later.
+    func sheetDismissed() {
+        // SwiftUI reports the dismissal once the animation ends, which can land after the sheet has already
+        // been asked to come back (a deep link clearing the screen before presenting the picker). Anything
+        // set up in the meantime is left alone.
+        guard !isSheetPresented else { return }
+        selectionRequest = nil
+        zoomSourceID = nil
+        mode = .full
+        isFullSettingsMounted = true
+        detent = .large
+    }
+}

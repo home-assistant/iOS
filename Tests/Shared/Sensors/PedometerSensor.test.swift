@@ -27,10 +27,15 @@ class PedometerSensorTests: XCTestCase {
         Current.pedometer.queryStartEndHandler = { _, _, handler in handler(nil, nil) }
     }
 
-    func testUnauthorizedReturnsError() {
-        let promise = PedometerSensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? PedometerSensor.PedometerError, .unauthorized)
+    /// Listed rather than dropped: switching one on is what asks for motion access, so sensors
+    /// that vanished until it was granted would have no row left to switch on.
+    func testUnauthorizedReportsUnavailable() throws {
+        Current.pedometer.isStepCountingAvailable = { true }
+
+        let sensors = try hang(PedometerSensor(request: request).sensors())
+        XCTAssertEqual(Set(sensors.compactMap(\.UniqueID)), Set(PedometerSensor.allSensorIDs))
+        for sensor in sensors {
+            XCTAssertEqual(sensor.State as? String, "unavailable", sensor.UniqueID ?? "")
         }
     }
 
@@ -62,6 +67,21 @@ class PedometerSensorTests: XCTestCase {
         }
     }
 
+    func testRegistrationListsEverySensorEvenWithoutAValue() throws {
+        request.reason = .registration
+        Current.pedometer.isAuthorized = { true }
+        Current.pedometer.isStepCountingAvailable = { true }
+        Current.pedometer.queryStartEndHandler = { _, _, hand in hand(FakePedometerData(), nil) }
+
+        let sensors = try hang(PedometerSensor(request: request).sensors())
+
+        XCTAssertEqual(Set(sensors.compactMap(\.UniqueID)), Set(PedometerSensor.allSensorIDs))
+        let pace = sensors.first(where: { $0.UniqueID == "pedometer_avg_active_pace" })
+        XCTAssertEqual(pace?.State as? String, "unavailable")
+        XCTAssertEqual(pace?.UnitOfMeasurement, "m/s")
+        XCTAssertEqual(sensors.first(where: { $0.UniqueID == "pedometer_steps" })?.State as? Int, 0)
+    }
+
     func testWithOnlyRequiredSteps() throws {
         Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
@@ -76,6 +96,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].Icon, "mdi:walk")
         XCTAssertEqual(sensors[0].UnitOfMeasurement, "steps")
         XCTAssertEqual(sensors[0].State as? Int, 0)
+        XCTAssertEqual(sensors[0].StateClass, .totalIncreasing)
     }
 
     func testWithDistance() throws {
@@ -97,6 +118,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensor?.Icon, "mdi:hiking")
         XCTAssertEqual(sensor?.UnitOfMeasurement, "m")
         XCTAssertEqual(sensor?.State as? Int, 123)
+        XCTAssertEqual(sensor?.StateClass, .totalIncreasing)
     }
 
     func testWithFloorsAscendedBefore105() throws {
@@ -119,6 +141,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensor?.Icon, "mdi:slope-uphill")
         XCTAssertEqual(sensor?.UnitOfMeasurement, "floors")
         XCTAssertEqual(sensor?.State as? Int, 234)
+        XCTAssertEqual(sensor?.StateClass, .totalIncreasing)
     }
 
     func testWithFloorsAscendedAfter105() throws {
@@ -206,6 +229,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensor?.Icon, "mdi:speedometer")
         XCTAssertEqual(sensor?.UnitOfMeasurement, "m/s")
         XCTAssertEqual(sensor?.State as? Int, 456)
+        XCTAssertEqual(sensor?.StateClass, .measurement)
     }
 
     func testWithCurrentPace() throws {
@@ -248,6 +272,7 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertEqual(sensor?.Icon, nil)
         XCTAssertEqual(sensor?.UnitOfMeasurement, "steps/s")
         XCTAssertEqual(sensor?.State as? Int, 678)
+        XCTAssertEqual(sensor?.StateClass, .measurement)
     }
 }
 

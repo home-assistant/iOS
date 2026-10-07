@@ -1,0 +1,121 @@
+import PromiseKit
+import Shared
+import SwiftUI
+import UIKit
+@preconcurrency import WebKit
+
+// MARK: - Public Navigation API
+
+extension WebViewController {
+    /// avoidUnnecessaryReload Avoids reloading when the URL is the same as the current one
+    func open(inline url: URL, avoidUnnecessaryReload: Bool = false) {
+        loadViewIfNeeded()
+        overlayState?.externalNavigationRequests.send()
+
+        // these paths do not show frontend pages, and so we don't want to display them in our webview
+        // otherwise the user will get stuck. e.g. /api is loaded by frigate to show video clips and images
+        let ignoredPaths = [
+            "/api",
+            "/static",
+            "/hacsfiles",
+            "/local",
+        ]
+
+        if ignoredPaths.allSatisfy({ !url.path.hasPrefix($0) }) {
+            if avoidUnnecessaryReload, webView.url?.isEqualIgnoringQueryParams(to: url) == true {
+                Current.Log
+                    .info(
+                        "Not reloading WebView when open(inline) was requested, URL is the same as current and avoidUnnecessaryReload is true"
+                    )
+                return
+            }
+            load(request: URLRequest(url: url))
+        } else {
+            openURLInBrowser(url, self)
+        }
+    }
+
+    /// Used for OpenPage intent
+    func openPanel(_ url: URL) {
+        loadViewIfNeeded()
+        overlayState?.externalNavigationRequests.send()
+
+        guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil || server.info
+            .version >= .canNavigateMoreInfoDialogThroughFrontend else {
+            load(request: URLRequest(url: url))
+            Current.Log.verbose("Opening more-info dialog for URL: \(url)")
+            return
+        }
+
+        let urlPathIncludingQueryParams = {
+            // If the URL has query parameters, we need to include them in the path to ensure proper navigation
+            if let query = url.query, !query.isEmpty {
+                return "\(url.path)?\(query)"
+            }
+            return url.path
+        }()
+
+        navigateThroughFrontend(path: urlPathIncludingQueryParams) { [weak self] success in
+            if !success {
+                Current.Log.warning("Failed to navigate through frontend for URL: \(url)")
+                // Fallback to loading the URL directly if navigation fails
+                self?.load(request: URLRequest(url: url))
+            }
+        }
+    }
+
+    /// Used by the native iOS tab bar
+    func openSidebarPath(_ path: String) {
+        loadViewIfNeeded()
+        navigateThroughFrontend(path: path) { [weak self] success in
+            if !success {
+                Current.Log.warning("Failed to navigate through frontend for sidebar path: \(path)")
+                self?.navigateToPath(path: path)
+            }
+        }
+    }
+
+    /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view
+    /// Returns true if the navigation was successful
+    private func navigateThroughFrontend(path: String, completion: @escaping (Bool) -> Void) {
+        guard server.info.version >= .canNavigateThroughFrontend else {
+            Current.Log.warning("Cannot navigate through frontend, core version is too low")
+            completion(false)
+            return
+        }
+        Current.Log.verbose("Requesting navigation using external bus to path: \(path)")
+        webViewExternalMessageHandler.sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.navigate.rawValue,
+            payload: [
+                "path": path,
+            ]
+        )).pipe { result in
+            switch result {
+            case .fulfilled:
+                completion(true)
+            case .rejected:
+                completion(false)
+            }
+        }
+    }
+
+    /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`
+    func reload() {
+        Current.Log.verbose("Reload webView requested")
+        markDisconnectedForHardReload()
+        webView.reload()
+    }
+
+    func showSettingsViewController(pushOntoNavigationStack: Bool) {
+        getLatestConfig()
+        // Settings opens in the window the request came from: with multiple windows on screen, the app-wide
+        // coordinator is whichever scene registered last rather than this one.
+        Current.sceneManager.appCoordinator(for: view.window?.windowScene).done {
+            $0.showSettings(pushOntoNavigationStack: pushOntoNavigationStack)
+        }
+    }
+
+    func getLatestConfig() {
+        _ = Current.api(for: server)?.getConfig()
+    }
+}

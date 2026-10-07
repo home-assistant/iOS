@@ -56,7 +56,7 @@ final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
             })
 
             let activeSensors = activeRelatedSensors.filter({ sensor in
-                Current.sensors.isEnabled(sensor: sensor)
+                Current.sensors.isEnabledForAnyServer(sensor: sensor)
             })
 
             if activeSensors.isEmpty {
@@ -81,6 +81,8 @@ public class ConnectivitySensor: SensorProvider {
         case unsupportedPlatform
         case noCarriers
     }
+
+    public static let simIDPrefix = "connectivity_sim_"
 
     public let request: SensorProviderRequest
     public required init(request: SensorProviderRequest) {
@@ -125,26 +127,32 @@ public class ConnectivitySensor: SensorProvider {
             return .init(error: ConnectivityError.unsupportedPlatform)
         }
 
-        return .value([
-            with(WebhookSensor(name: "SSID", uniqueID: WebhookSensorId.connectivitySSID.rawValue)) { sensor in
-                if let ssid = Current.connectivity.currentWiFiSSID() {
-                    sensor.State = ssid
-                    sensor.Icon = "mdi:wifi"
-                } else {
-                    sensor.State = "Not Connected"
-                    sensor.Icon = "mdi:wifi-off"
-                }
-            },
-            with(WebhookSensor(name: "BSSID", uniqueID: WebhookSensorId.connectivityBSID.rawValue)) { sensor in
-                if let bssid = Current.connectivity.currentWiFiBSSID() {
-                    sensor.State = bssid.formattedBSSID
-                    sensor.Icon = "mdi:wifi-star"
-                } else {
-                    sensor.State = "Not Connected"
-                    sensor.Icon = "mdi:wifi-off"
-                }
-            },
-        ])
+        return Guarantee<NetworkState> { seal in
+            Task {
+                await seal(Current.connectivity.currentNetworkState())
+            }
+        }.map { networkState in
+            [
+                with(WebhookSensor(name: "SSID", uniqueID: WebhookSensorId.connectivitySSID.rawValue)) { sensor in
+                    if let ssid = networkState.ssid {
+                        sensor.State = ssid
+                        sensor.Icon = "mdi:wifi"
+                    } else {
+                        sensor.State = "Not Connected"
+                        sensor.Icon = "mdi:wifi-off"
+                    }
+                },
+                with(WebhookSensor(name: "BSSID", uniqueID: WebhookSensorId.connectivityBSID.rawValue)) { sensor in
+                    if let bssid = networkState.bssid {
+                        sensor.State = bssid.formattedBSSID
+                        sensor.Icon = "mdi:wifi-star"
+                    } else {
+                        sensor.State = "Not Connected"
+                        sensor.Icon = "mdi:wifi-off"
+                    }
+                },
+            ]
+        }
     }
 
     #endif
@@ -202,7 +210,7 @@ public class ConnectivitySensor: SensorProvider {
         let id = key.last ?? "?"
         sensor = WebhookSensor(
             name: "SIM \(id)",
-            uniqueID: "connectivity_sim_\(id)",
+            uniqueID: "\(Self.simIDPrefix)\(id)",
             icon: "mdi:sim",
             state: "Unknown"
         )

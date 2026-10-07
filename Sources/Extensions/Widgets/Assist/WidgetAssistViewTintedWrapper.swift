@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
+import WidgetKit
 
-@available(iOS 16.0, *)
 struct WidgetAssistViewTintedWrapper: View {
     @Environment(\.widgetRenderingMode) var widgetRenderingMode
 

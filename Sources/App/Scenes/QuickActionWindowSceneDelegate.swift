@@ -27,6 +27,11 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = scene as? UIWindowScene else { return }
 
+        // Record this connection and remember whether it was the process's first (cold-launch) one. macOS
+        // reconnects this scene in the background throughout the app's lifetime, so only the first connection
+        // represents a user-initiated launch (see `MacBrowserSceneLauncher`).
+        let isInitialSceneConnection = MacBrowserSceneLauncher.markSceneConnected()
+
         // Cold launch via a quick action: the app was launched by tapping an app-icon shortcut.
         // This getter does not exist on macOS 10.15, so check that it responds before accessing it.
         if connectionOptions.responds(to: #selector(getter: UIScene.ConnectionOptions.shortcutItem)),
@@ -35,11 +40,15 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
-        // "Open Home Assistant UI in browser" (Mac): when the app is opened by tapping its icon, open
-        // Home Assistant in the default browser and destroy the empty webview window so none is left behind.
-        if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly,
-           let url = Current.servers.all.first?.info.connection.activeURL() {
-            URLOpener.shared.open(url, options: [:], completionHandler: nil)
+        // "Open Home Assistant UI in browser" (Mac): the last-known network information is read live from
+        // macBridge, so the synchronous evaluation is current. See `MacBrowserSceneLauncher` for why the empty
+        // window is destroyed on every connection but the browser opens only on cold launch (#4985).
+        let browserActions = MacBrowserSceneLauncher.actions(isInitialConnection: isInitialSceneConnection)
+        if browserActions.destroysEmptyWindow,
+           let url = Current.servers.all.first?.activeURLUsingLastKnownNetworkState() {
+            if browserActions.opensBrowser {
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
+            }
             UIApplication.shared.requestSceneSessionDestruction(session, options: nil, errorHandler: nil)
         }
     }
@@ -63,7 +72,7 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         guard let windowScene = scene as? UIWindowScene else { return }
-        WindowScenesManager.shared.sceneDidBecomeActive(windowScene)
+        WindowScenesManager.shared.sceneDidBecomeActive(windowScene, activity: .webView)
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

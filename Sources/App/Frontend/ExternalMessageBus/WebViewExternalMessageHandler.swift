@@ -23,6 +23,7 @@ protocol WebViewExternalMessageHandlerProtocol {
 final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
+    private let entityControlDonation: EntityControlDonation
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
@@ -31,9 +32,11 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     private var pendingCommands: [Int: PendingExternalBusCommand] = [:]
 
     init(
-        improvManager: any ImprovManagerProtocol
+        improvManager: any ImprovManagerProtocol,
+        entityControlDonation: EntityControlDonation = .init()
     ) {
         self.improvManager = improvManager
+        self.entityControlDonation = entityControlDonation
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -58,12 +61,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
+                let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
                         seal(WebSocketMessage(
                             id: incomingMessage.ID!,
                             type: "result",
-                            result: WebViewExternalBusMessage.configResult
+                            result: configResult
                         ))
                     }
                 }
@@ -81,6 +85,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.updateFrontendConnectionState(state: connEvt)
+            case .frontendLoaded:
+                webViewController.updateFrontendConnectionState(state: FrontEndConnectionState.loaded.rawValue)
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
@@ -142,10 +148,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .assistShow:
                 let startListening = incomingMessage.Payload?["start_listening"] as? Bool
                 let pipelineId = incomingMessage.Payload?["pipeline_id"] as? String
+                // The user can override what the frontend asks for, this only applies to Assist
+                // opened from the dashboard.
+                let startMode = AssistConfiguration.config.startMode
                 showAssist(
                     server: webViewController.server,
                     pipeline: pipelineId ?? "",
-                    autoStartRecording: startListening ?? false
+                    autoStartRecording: startMode.resolveAutoStartRecording(frontendRequested: startListening ?? false)
                 )
             case .assistSettings:
                 showAssistSettingsViewController()
@@ -189,12 +198,36 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 handleEntityAddTo(entityId: entityId, appPayload: appPayload)
             case .cameraPlayerShow:
-                guard #available(iOS 16.0, *) else { return }
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
                     Current.Log.error("Received camera/show but entity_id was not string! \(incomingMessage)")
                     return
                 }
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
+            case .frontendReloadAndClearCache:
+                reloadAndClearFrontendCache()
+            case .sidebarShow:
+                NativeTabBarState.shared.requestMore()
+            case .moreInfoOpened:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/opened but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.setOnscreenEntity(entityId: entityId)
+            case .moreInfoClosed:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/closed but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.clearOnscreenEntity(entityId: entityId)
+            case .entityControlled:
+                guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")
+                    return
+                }
+                let serverId = webViewController.server.identifier.rawValue
+                Task { [entityControlDonation] in
+                    await entityControlDonation.donate(control, serverId: serverId)
+                }
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -208,7 +241,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     // swiftlint:enable cyclomatic_complexity
 
     func showSettingsViewController() {
-        Current.sceneManager.appCoordinator.done { $0.showSettings() }
+        // Through the web view the message came from, so Settings opens in that window and no other.
+        webViewController?.showSettingsViewController(pushOntoNavigationStack: true)
     }
 
     @MainActor
@@ -238,19 +272,40 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
+    /// How long the frontend gets to render the element it asked to focus, in attempts and the pause between them.
+    static let elementFocusAttempts = 20
+    static let elementFocusRetryInterval: TimeInterval = 0.15
+
     func handleElementFocus(elementId: String) {
         Current.Log.verbose("Handle element focus for element ID: \(elementId)")
+        focusElement(elementId: elementId, attemptsLeft: Self.elementFocusAttempts)
+    }
 
-        // JavaScript to find and focus element in both regular DOM and Shadow DOM
-        let script = """
+    /// Keyboard focus only follows a scripted `focus()` while the web view is first responder, and the
+    /// frontend asks before the element is always on the page, so this keeps trying until it is.
+    private func focusElement(elementId: String, attemptsLeft: Int) {
+        webViewController?.makeWebViewFirstResponder()
+        webViewController?
+            .evaluateJavaScript(Self.focusElementScript(elementId: elementId)) { [weak self] result, error in
+                if let error {
+                    Current.Log.error("Error focusing element \(elementId): \(error)")
+                    return
+                }
+                guard result as? Bool == false, attemptsLeft > 1 else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.elementFocusRetryInterval) {
+                    self?.focusElement(elementId: elementId, attemptsLeft: attemptsLeft - 1)
+                }
+            }
+    }
+
+    /// Finds the element through shadow roots and focuses it; a focus that is already on it is redone so the
+    /// keyboard follows. Evaluates to whether the element was found.
+    static func focusElementScript(elementId: String) -> String {
+        """
         (function() {
-            // Helper function to search through shadow DOM recursively
             function findElementInShadowDOM(elementId, root = document) {
-                // Try to find by ID in current root
                 let element = root.getElementById(elementId);
                 if (element) return element;
-
-                // Search through all elements with shadow roots
                 const allElements = root.querySelectorAll('*');
                 for (const el of allElements) {
                     if (el.shadowRoot) {
@@ -260,22 +315,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 return null;
             }
-
-            // Search for the element
-            const elementId = '\(elementId)';
-            const element = findElementInShadowDOM(elementId);
-
-            if (element) {
-                element.focus();
+            function activeElement() {
+                let active = document.activeElement;
+                while (active && active.shadowRoot && active.shadowRoot.activeElement) {
+                    active = active.shadowRoot.activeElement;
+                }
+                return active;
             }
+            function contains(ancestor, node) {
+                while (node) {
+                    if (node === ancestor) return true;
+                    node = node.parentNode || (node.host ? node.host : null);
+                }
+                return false;
+            }
+            const element = findElementInShadowDOM('\(elementId)');
+            if (!element) return false;
+            const active = activeElement();
+            if (active && contains(element, active)) {
+                active.blur();
+            }
+            element.focus();
+            return true;
         })();
         """
-
-        webViewController?.evaluateJavaScript(script) { _, error in
-            if let error {
-                Current.Log.error("Error focusing element \(elementId): \(error)")
-            }
-        }
     }
 
     @discardableResult
@@ -309,34 +372,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             return
         }
 
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
-                        .buildTransferToHomeAssistant(server: webViewController.server)
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController.presentOverlayController(controller: threadManagementView, animated: true)
-        }
+        let threadManagementView =
+            UIHostingController(
+                rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
+                    .buildTransferToHomeAssistant(server: webViewController.server)
+            )
+        threadManagementView.view.backgroundColor = .clear
+        threadManagementView.modalPresentationStyle = .overFullScreen
+        threadManagementView.modalTransitionStyle = .crossDissolve
+        webViewController.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func transferHAThreadCredentialsToKeychain(macExtendedAddress: String, activeOperationalDataset: String) {
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
-                        .buildTransferToAppleKeychain(
-                            macExtendedAddress: macExtendedAddress,
-                            activeOperationalDataset: activeOperationalDataset
-                        )
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
-        }
+        let threadManagementView =
+            UIHostingController(
+                rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
+                    .buildTransferToAppleKeychain(
+                        macExtendedAddress: macExtendedAddress,
+                        activeOperationalDataset: activeOperationalDataset
+                    )
+            )
+        threadManagementView.view.backgroundColor = .clear
+        threadManagementView.modalPresentationStyle = .overFullScreen
+        threadManagementView.modalTransitionStyle = .crossDissolve
+        webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func barcodeScannerRequested(
@@ -441,7 +500,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if #available(iOS 18, *) {
             ToastPresenter.shared.show(
                 id: payload.id,
-                symbol: SFSymbol.infoCircleFill.rawValue,
+                symbol: .infoCircleFill,
                 symbolForegroundStyle: (.white, .haPrimary),
                 title: payload.message,
                 message: "",
@@ -485,13 +544,19 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue,
             payload: [
-                "name": deviceName,
+                "name": deviceName as Any,
                 "success": success,
             ]
         ))
     }
 
-    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
+    func showAssist(
+        server: Server,
+        pipeline: String = "",
+        autoStartRecording: Bool = false
+    ) {
+        let presentsAsSheet = webViewController?.presentsNextAssistAsSheet ?? false
+        webViewController?.presentsNextAssistAsSheet = false
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
@@ -517,8 +582,20 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 preferredPipelineId: pipeline,
                 autoStartRecording: autoStartRecording
             ))
-            assistView.modalPresentationStyle = .fullScreen
-            assistView.modalTransitionStyle = .crossDissolve
+            let tappedSource = webViewController?.pendingAssistZoomSourceView
+            webViewController?.pendingAssistZoomSourceView = nil
+            if presentsAsSheet {
+                assistView.modalPresentationStyle = .automatic
+            } else if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+                assistView.modalPresentationStyle = .fullScreen
+                // Zoom out of the tapped tab bar spot when there is one, else the frontend's Assist anchor.
+                assistView.preferredTransition = .zoom { [weak self] _ in
+                    tappedSource ?? self?.webViewController?.assistZoomAnchorView
+                }
+            } else {
+                assistView.modalPresentationStyle = .fullScreen
+                assistView.modalTransitionStyle = .crossDissolve
+            }
             webViewController?.presentOverlayController(controller: assistView, animated: true)
         }
     }
@@ -615,20 +692,27 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
-    @available(iOS 16.0, *)
+    @MainActor
+    private func reloadAndClearFrontendCache() {
+        Current.Log.info("Resetting frontend cache requested via external bus")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
+                self?.webViewController?.refresh()
+            }
+    }
+
     private func showCameraPlayer(entityId: String, cameraName: String?) {
         guard let webViewController else {
             Current.Log.error("WebViewController not available while opening camera player")
             return
         }
 
-        let view = CameraPlayerView(
+        CameraOverlayPresenter.shared.show(
+            entityId: entityId,
             server: webViewController.server,
-            cameraEntityId: entityId,
-            cameraName: cameraName
-        ).embeddedInHostingController()
-        view.modalPresentationStyle = .overFullScreen
-        webViewController.presentOverlayController(controller: view, animated: true)
+            cameraName: cameraName,
+            on: webViewController
+        )
     }
 }
 

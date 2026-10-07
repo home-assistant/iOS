@@ -1,6 +1,6 @@
 import AppIntents
 import HAKit
-import RealmSwift
+import HAWatchComplications
 import Shared
 import WidgetKit
 
@@ -11,9 +11,9 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func snapshot(for configuration: WidgetGaugeAppIntent, in context: Context) async -> WidgetGaugeEntry {
         // `context.isPreview` is WidgetKit's hook for the widget gallery, which renders with a
-        // default (unconfigured) configuration. Unlike the other widgets (whose templates default
-        // to "?"), the gauge's value template defaults to 0.0 — a numeric fill that renders as an
-        // empty arc. Return a representative sample for the gallery; live widgets are unaffected.
+        // default (unconfigured) configuration. Return a representative sample there so the picker
+        // never renders an empty arc, and never renders a template or fetches a state to do it;
+        // live widgets are unaffected. See `WidgetPreviewSample` for the wider rationale.
         if context.isPreview {
             return Self.previewSample(for: configuration)
         }
@@ -26,8 +26,18 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     static func previewSample(for configuration: WidgetGaugeAppIntent) -> WidgetGaugeEntry {
-        .init(
+        previewSample(
             gaugeType: configuration.gaugeType,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
+    static func previewSample(
+        gaugeType: GaugeTypeAppEnum = .normal,
+        showConfirmationNotification: Bool = true
+    ) -> WidgetGaugeEntry {
+        .init(
+            gaugeType: gaugeType,
             value: 0.67,
             valueLabel: "67%",
             label: nil,
@@ -35,11 +45,14 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             max: "100",
             runScript: false,
             script: nil,
-            showConfirmationNotification: configuration.showConfirmationNotification
+            showConfirmationNotification: showConfirmationNotification
         )
     }
 
     func timeline(for configuration: WidgetGaugeAppIntent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [Self.previewSample(for: configuration)], policy: .never)
+        }
         do {
             let snapshot = try await entry(for: configuration, in: context)
             return .init(
@@ -61,16 +74,97 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    /// The gallery renders this, redacted, until the snapshot arrives — so it is the same sample,
+    /// and the arc never flips from a row of "?" to a reading as it loads.
     func placeholder(in context: Context) -> WidgetGaugeEntry {
-        .init(
-            gaugeType: .normal,
-            value: 0.5,
-            valueLabel: "?", min: "?", max: "?",
-            runScript: false, script: nil, showConfirmationNotification: true
-        )
+        Self.previewSample()
     }
 
     private func entry(for configuration: WidgetGaugeAppIntent, in context: Context) async throws -> Entry {
+        switch configuration.source {
+        case .entity:
+            return try await entityEntry(for: configuration)
+        case .complication:
+            return try await complicationEntry(for: configuration)
+        case .template:
+            return try await templateEntry(for: configuration)
+        }
+    }
+
+    /// Mirrors one of the user's circular watch complications: the entry carries the resolved render
+    /// model and the view draws it through the shared complication content view, so the complication's
+    /// own gauge style, colors and slots decide how it looks — not the widget's `gaugeType`.
+    private func complicationEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
+        guard let complication = configuration.complication else {
+            Current.Log.error("Failed to fetch data for gauge widget: No complication selected")
+            throw WidgetGaugeDataError.noComplication
+        }
+        let context = try await WidgetComplicationResolver.context(id: complication.id, family: .circular)
+
+        return .init(
+            gaugeType: configuration.gaugeType,
+
+            value: context.showsGauge ? (context.fraction ?? 0) : 0,
+
+            valueLabel: context.valueText,
+            complicationModel: context.circularRenderModel,
+
+            runScript: configuration.runScript,
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
+    /// Builds the gauge from a single picked entity's live state, fetched over the REST `/states`
+    /// endpoint (no admin required). The 0…1 fill maps the numeric state across the configured
+    /// `minValue`…`maxValue` range; labels are generated from the state, unit and range.
+    func entityEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
+        guard let entity = configuration.entity else {
+            Current.Log.error("Failed to fetch data for gauge widget: No entity selected")
+            throw WidgetGaugeDataError.noEntity
+        }
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId })
+            ?? configuration.server.getServer() ?? Current.servers.all.first else {
+            Current.Log.error("Failed to fetch data for gauge widget: No servers exist")
+            throw WidgetGaugeDataError.noServers
+        }
+        guard let resolved = await WidgetEntityAttributes.resolvedValue(
+            entityId: entity.entityId,
+            attribute: configuration.attribute?.id,
+            server: server
+        ) else {
+            Current.Log.error("Failed to fetch value for gauge widget entity \(entity.entityId)")
+            throw WidgetGaugeDataError.apiError
+        }
+
+        let numericValue = resolved.number ?? 0
+        let range = configuration.maxValue - configuration.minValue
+        let fraction = range != 0 ? Swift.min(Swift.max((numericValue - configuration.minValue) / range, 0), 1) : 0
+
+        let valueLabel = resolved.unit.map { "\(resolved.value) \($0)" } ?? resolved.value
+
+        return .init(
+            gaugeType: configuration.gaugeType,
+
+            value: fraction,
+
+            valueLabel: valueLabel,
+            label: configuration.gaugeType == .singleLabel ? entity.displayString : nil,
+            min: configuration.gaugeType == .normal ? Self.formatBound(configuration.minValue) : nil,
+            max: configuration.gaugeType == .normal ? Self.formatBound(configuration.maxValue) : nil,
+
+            runScript: configuration.runScript,
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
+    /// Trims a trailing `.0` so whole-number bounds read as "100" rather than "100.0".
+    private static func formatBound(_ value: Double) -> String {
+        value == value.rounded() && abs(value) < 1e15 ? String(Int(value)) : String(value)
+    }
+
+    private func templateEntry(for configuration: WidgetGaugeAppIntent) async throws -> Entry {
         guard let server = configuration.server.getServer() ?? Current.servers.all.first,
               let connection = Current.api(for: server)?.connection else {
             Current.Log.error("Failed to fetch data for gauge widget: No servers exist")
@@ -164,6 +258,9 @@ struct WidgetGaugeEntry: TimelineEntry {
     var label: String?
     var min: String?
     var max: String?
+    /// Set only by the complication source: every family renders this through the shared circular
+    /// watch complication content view instead of the widget's own gauge.
+    var complicationModel: CircularComplicationRenderModel?
 
     var runScript: Bool
     var script: IntentScriptEntity?
@@ -172,6 +269,8 @@ struct WidgetGaugeEntry: TimelineEntry {
 
 enum WidgetGaugeDataError: Error {
     case noServers
+    case noEntity
+    case noComplication
     case apiError
     case badResponse
 }

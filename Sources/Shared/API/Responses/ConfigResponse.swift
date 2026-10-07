@@ -5,6 +5,7 @@ public class ConfigResponse: Mappable {
     public var Components: [String] = []
     public var Version: String = ""
     public var hassDeviceId: String?
+    public var instanceID: String?
 
     public var TemperatureUnit: String?
     public var LengthUnit: String?
@@ -23,12 +24,15 @@ public class ConfigResponse: Mappable {
     public var CloudhookURL: URL?
     public var RemoteUIURL: URL?
 
+    public var entities: [String: ConfigResponseEntity]?
+
     public required init?(map: Map) {}
 
     public func mapping(map: Map) {
         Components <- map["components"]
         Version <- map["version"]
         hassDeviceId <- map["hass_device_id"]
+        instanceID <- map["instance_id"]
 
         TemperatureUnit <- map["unit_system.temperature"]
         LengthUnit <- map["unit_system.length"]
@@ -46,5 +50,7 @@ public class ConfigResponse: Mappable {
 
         CloudhookURL <- (map["cloudhook_url"], URLTransform())
         RemoteUIURL <- (map["remote_ui_url"], URLTransform())
+
+        entities <- map["entities"]
     }
 }

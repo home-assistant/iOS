@@ -12,7 +12,7 @@ public extension HATypedRequest {
         return HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": domain.rawValue,
+                "domain": domain.serviceDomain,
                 "service": action.rawValue,
                 "target": [
                     "entity_id": entityId,
@@ -42,6 +42,26 @@ public extension HATypedRequest {
         ))
     }
 
+    /// Calls a service on `domain` targeting one entity (e.g. `climate.set_temperature`,
+    /// `vacuum.start`) with the given service data.
+    static func callEntityService(
+        domain: Domain,
+        _ service: Service,
+        entityId: String,
+        data: [String: Any] = [:]
+    ) -> HATypedRequest<HAResponseVoid> {
+        var serviceData = data
+        serviceData["entity_id"] = entityId
+        return HATypedRequest<HAResponseVoid>(request: .init(
+            type: "call_service",
+            data: [
+                "domain": domain.rawValue,
+                "service": service.rawValue,
+                "service_data": serviceData,
+            ]
+        ))
+    }
+
     static func toggleDomain(
         domain: Domain,
         entityId: String
@@ -56,6 +76,15 @@ public extension HATypedRequest {
                 ],
             ]
         ))
+    }
+
+    /// Runs the domain's main action outright — press a button, activate a scene, run a script,
+    /// trigger an automation — the way a magic item's main-action behavior does from a widget tile
+    /// or an app icon shortcut. `nil` for a domain whose main action is its toggle, or that has
+    /// none; see `Domain.explicitMainAction`.
+    static func mainAction(domain: Domain, entityId: String) -> HATypedRequest<HAResponseVoid>? {
+        guard domain.explicitMainAction != nil else { return nil }
+        return executeMainAction(domain: domain, entityId: entityId)
     }
 
     static func runScript(
@@ -183,9 +212,28 @@ public extension HATypedRequest {
         ))
     }
 
-    static func usagePredictionCommonControl() -> HATypedRequest<HAUsagePredictionCommonControl> {
+    /// The areas a vacuum has segments mapped to, read from its entity registry entry — the
+    /// display listing omits the per-domain `options` this lives in. WebSocket only.
+    static func vacuumAreaMapping(entityId: String) -> HATypedRequest<VacuumAreaMapping> {
+        HATypedRequest<VacuumAreaMapping>(request: .init(
+            type: .webSocket("config/entity_registry/get"),
+            data: ["entity_id": entityId]
+        ))
+    }
+
+    /// Without a `limit` core returns its default of 8 entities. Only send one to servers at
+    /// `Version.usagePredictionCommonControlLimit` or later; older ones reject the key.
+    static func usagePredictionCommonControl(limit: Int? = nil) -> HATypedRequest<HAUsagePredictionCommonControl> {
         HATypedRequest<HAUsagePredictionCommonControl>(request: .init(
-            type: .webSocket("usage_prediction/common_control")
+            type: .webSocket("usage_prediction/common_control"),
+            data: limit.map { ["limit": $0] } ?? [:]
+        ))
+    }
+
+    static func frontendGetIcons(category: String) -> HATypedRequest<EntityComponentIconsResponse> {
+        HATypedRequest<EntityComponentIconsResponse>(request: .init(
+            type: .webSocket("frontend/get_icons"),
+            data: ["category": category]
         ))
     }
 
@@ -202,6 +250,80 @@ public extension HATypedRequest {
                     .init(name: "return_response", value: "true"),
                 ],
                 shouldRetry: true
+            )
+        )
+    }
+
+    /// Adds an item to a todo list. `dueDate` is `yyyy-MM-dd`, `dueDateTime` is an ISO8601
+    /// datetime; pass at most one of them.
+    static func addTodoItem(
+        listId: String,
+        summary: String,
+        description: String? = nil,
+        dueDate: String? = nil,
+        dueDateTime: String? = nil
+    ) -> HATypedRequest<HAResponseVoid> {
+        var data: [String: Any] = [
+            "entity_id": listId,
+            "item": summary,
+        ]
+        if let description {
+            data["description"] = description
+        }
+        if let dueDate {
+            data["due_date"] = dueDate
+        } else if let dueDateTime {
+            data["due_datetime"] = dueDateTime
+        }
+        return HATypedRequest<HAResponseVoid>(
+            request: .init(
+                type: .rest(.post, "services/todo/add_item"),
+                data: data
+            )
+        )
+    }
+
+    /// Updates a todo item identified by its `uid`. Only the provided fields are sent; a nil due
+    /// date is left untouched (the todo services offer no way to clear it).
+    static func updateTodoItem(
+        listId: String,
+        itemId: String,
+        rename: String,
+        status: String,
+        description: String? = nil,
+        dueDate: String? = nil,
+        dueDateTime: String? = nil
+    ) -> HATypedRequest<HAResponseVoid> {
+        var data: [String: Any] = [
+            "entity_id": listId,
+            "item": itemId,
+            "rename": rename,
+            "status": status,
+        ]
+        if let description {
+            data["description"] = description
+        }
+        if let dueDate {
+            data["due_date"] = dueDate
+        } else if let dueDateTime {
+            data["due_datetime"] = dueDateTime
+        }
+        return HATypedRequest<HAResponseVoid>(
+            request: .init(
+                type: .rest(.post, "services/todo/update_item"),
+                data: data
+            )
+        )
+    }
+
+    static func removeTodoItem(listId: String, itemId: String) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(
+            request: .init(
+                type: .rest(.post, "services/todo/remove_item"),
+                data: [
+                    "entity_id": listId,
+                    "item": itemId,
+                ]
             )
         )
     }

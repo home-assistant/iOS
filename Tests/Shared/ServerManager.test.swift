@@ -92,11 +92,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(servers.server(forWebhookID: "webhook1") === server1)
         XCTAssertTrue(servers.server(forServerIdentifier: "fake1") === server1)
         XCTAssertTrue(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")) === server1)
-        XCTAssertTrue(
-            servers
-                .server(for: FakeServerIntentProviding(server: .init(identifier: "fake1", display: "fake1"))) ===
-                server1
-        )
         XCTAssertEqual(server1.info, with(info1) {
             $0.sortOrder = 0
         })
@@ -110,13 +105,10 @@ class ServerManagerTests: XCTestCase {
         XCTAssertTrue(servers.server(forWebhookID: "webhook2") === server2)
         XCTAssertTrue(servers.server(forServerIdentifier: "fake2") === server2)
         XCTAssertTrue(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")) === server2)
-        XCTAssertTrue(
-            servers
-                .server(for: FakeServerIntentProviding(server: .init(identifier: "fake2", display: "fake1"))) ===
-                server2
-        )
         XCTAssertEqual(server2.info, with(info2) {
             $0.sortOrder = 1000
+            // both fakes share a name, so adding the second one dedupes it locally
+            $0.setSetting(value: "Fake Server 2", for: .localName)
         })
 
         XCTAssertEqual(servers.all, [server1, server2])
@@ -190,6 +182,7 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertEqual(servers.server(for: "fake2")?.info, with(info2) {
             $0.sortOrder = 1000
+            $0.setSetting(value: "Fake Server 2", for: .localName)
         })
         XCTAssertEqual(servers.server(for: "fake3")?.info, with(info3) {
             $0.sortOrder = 2000
@@ -231,6 +224,7 @@ class ServerManagerTests: XCTestCase {
         })
         XCTAssertEqual(servers.server(for: "fake2")?.info, with(info2) {
             $0.sortOrder = 1000
+            $0.setSetting(value: "Fake Server 2", for: .localName)
         })
         XCTAssertNil(servers.server(for: "fake3"))
 
@@ -238,6 +232,61 @@ class ServerManagerTests: XCTestCase {
         servers.removeAll()
         XCTAssertTrue(servers.all.isEmpty)
         XCTAssertTrue(keychain.data.isEmpty)
+    }
+
+    func testRestoreStateKeepsFresherExistingTokenButUpdatesOtherFields() throws {
+        // Existing server holds a freshly-refreshed token (later expiration).
+        let existing = with(ServerInfo.fake()) {
+            $0.connection.webhookID = "webhook1"
+            $0.token = .init(
+                accessToken: "fresh",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(3600)
+            )
+        }
+        try setupRegular(["fake1": existing])
+
+        // Incoming snapshot carries an older token (earlier expiration) but a changed non-token field.
+        let older = with(existing) {
+            $0.connection.webhookID = "webhook1-updated"
+            $0.token = .init(
+                accessToken: "stale",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(60)
+            )
+        }
+        try servers.restoreState(encoder.encode(["fake1": older]))
+
+        let server = try XCTUnwrap(servers.server(for: "fake1"))
+        // Token is not downgraded (compared by value since TokenInfo.== ignores expiration)...
+        XCTAssertEqual(server.info.token.accessToken, "fresh")
+        XCTAssertEqual(server.info.token.expiration, existing.token.expiration)
+        // ...but the rest of the snapshot still applies.
+        XCTAssertEqual(server.info.connection.webhookID, "webhook1-updated")
+    }
+
+    func testRestoreStateAcceptsNewerIncomingToken() throws {
+        let existing = with(ServerInfo.fake()) {
+            $0.token = .init(
+                accessToken: "old",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(60)
+            )
+        }
+        try setupRegular(["fake1": existing])
+
+        let newer = with(existing) {
+            $0.token = .init(
+                accessToken: "new",
+                refreshToken: "refresh",
+                expiration: Current.date().addingTimeInterval(3600)
+            )
+        }
+        try servers.restoreState(encoder.encode(["fake1": newer]))
+
+        let server = try XCTUnwrap(servers.server(for: "fake1"))
+        XCTAssertEqual(server.info.token.accessToken, "new")
+        XCTAssertEqual(server.info.token.expiration, newer.token.expiration)
     }
 
     func testWithInitialServers() throws {
@@ -294,6 +343,74 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(servers.all.map(\.identifier), ["fake3", "fake1", "fake2"])
     }
 
+    func testAddingServersWithDuplicateNamesAppendsNumberSuffix() throws {
+        try setupRegular()
+
+        let server1 = servers.add(identifier: "fake1", serverInfo: .fake())
+        let server2 = servers.add(identifier: "fake2", serverInfo: .fake())
+        let server3 = servers.add(identifier: "fake3", serverInfo: .fake())
+
+        XCTAssertEqual(server1.info.name, "Fake Server")
+        XCTAssertEqual(server2.info.name, "Fake Server 2")
+        XCTAssertEqual(server3.info.name, "Fake Server 3")
+
+        // the remote name stays untouched; the deduplicated name lives in the local override
+        XCTAssertEqual(server2.info.remoteName, "Fake Server")
+        XCTAssertEqual(server2.info.setting(for: .localName), "Fake Server 2")
+        XCTAssertEqual(server3.info.remoteName, "Fake Server")
+        XCTAssertEqual(server3.info.setting(for: .localName), "Fake Server 3")
+    }
+
+    func testAddingDuplicateNameSkipsAlreadyTakenNumberSuffix() throws {
+        try setupRegular()
+
+        servers.add(identifier: "fake1", serverInfo: .fake())
+        servers.add(identifier: "fake2", serverInfo: with(.fake()) {
+            $0.remoteName = "Fake Server 2"
+        })
+
+        let added = servers.add(identifier: "fake3", serverInfo: .fake())
+        XCTAssertEqual(added.info.name, "Fake Server 3")
+    }
+
+    func testAddingDuplicateOfLocallyRenamedServerDedupesAgainstEffectiveName() throws {
+        try setupRegular()
+
+        servers.add(identifier: "fake1", serverInfo: with(.fake()) {
+            $0.remoteName = "Original"
+            $0.setSetting(value: "Home", for: .localName)
+        })
+
+        let added = servers.add(identifier: "fake2", serverInfo: with(.fake()) {
+            $0.remoteName = "Home"
+        })
+        XCTAssertEqual(added.info.name, "Home 2")
+    }
+
+    func testReAddingSameServerDoesNotRenameAgainstItself() throws {
+        try setupRegular()
+
+        let first = servers.add(identifier: "fake1", serverInfo: .fake())
+        XCTAssertEqual(first.info.name, "Fake Server")
+        XCTAssertNil(first.info.setting(for: .localName))
+
+        let readded = servers.add(identifier: "fake1", serverInfo: .fake())
+        XCTAssertEqual(readded.info.name, "Fake Server")
+        XCTAssertNil(readded.info.setting(for: .localName))
+    }
+
+    func testAddingServerWithUniqueNameIsNotRenamed() throws {
+        try setupRegular()
+
+        servers.add(identifier: "fake1", serverInfo: .fake())
+
+        let other = servers.add(identifier: "fake2", serverInfo: with(.fake()) {
+            $0.remoteName = "Other"
+        })
+        XCTAssertEqual(other.info.name, "Other")
+        XCTAssertNil(other.info.setting(for: .localName))
+    }
+
     private func notificationContent(webhookID: String?) -> UNNotificationContent {
         let content = UNMutableNotificationContent()
         if let webhookID {
@@ -311,8 +428,6 @@ class ServerManagerTests: XCTestCase {
         ])
 
         let server1 = servers.server(for: "fake1")
-        let intentServer1 = IntentServer(identifier: "fake1", display: "fake1")
-        let intentServer2 = IntentServer(identifier: "fake2", display: "fake2")
 
         XCTAssertEqual(servers.server(forServerIdentifier: nil), nil)
         XCTAssertEqual(servers.server(forServerIdentifier: "fake1"), server1)
@@ -324,10 +439,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook1")), server1)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook2")), nil)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: nil)), server1)
-
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer1)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2), fallback: false), nil)
 
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")), server1)
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")), server1)
@@ -351,9 +462,6 @@ class ServerManagerTests: XCTestCase {
 
         let server1 = servers.server(for: "fake1")
         let server2 = servers.server(for: "fake2")
-        let intentServer1 = IntentServer(identifier: "fake1", display: "fake1")
-        let intentServer2 = IntentServer(identifier: "fake2", display: "fake2")
-        let intentServer3 = IntentServer(identifier: "fake3", display: "fake3")
 
         XCTAssertEqual(servers.server(forServerIdentifier: nil), nil)
         XCTAssertEqual(servers.server(forServerIdentifier: "fake1"), server1)
@@ -368,11 +476,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook2")), server2)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: nil)), server1)
         XCTAssertEqual(servers.server(for: notificationContent(webhookID: "webhook3")), nil)
-
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer1)), server1)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer2)), server2)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer3)), nil)
-        XCTAssertEqual(servers.server(for: FakeServerIntentProviding(server: intentServer3), fallback: false), nil)
 
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")), server1)
         XCTAssertEqual(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake2")), server2)
@@ -458,6 +561,19 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(keychain.data[server1.identifier.rawValue]?.count, try encoder.encode(newInfo).count)
     }
 
+    func testRemoveWritesTombstoneUnderStablePrefsKey() throws {
+        try setupRegular()
+
+        let server1 = servers.add(identifier: "fake1", serverInfo: .fake())
+        servers.remove(identifier: server1.identifier)
+
+        // resetStores() preserves this key across the app-data wipe so late writers can't
+        // resurrect deleted servers; the raw value must stay stable for stored tombstones.
+        XCTAssertEqual(ServerManagerImpl.deletedServersPrefsKey, "deletedServers")
+        let tombstones = Current.settingsStore.prefs.array(forKey: "deletedServers") as? [String]
+        XCTAssertEqual(tombstones, ["fake1"])
+    }
+
     func testSetupBackfillsMirrorForExistingKeychainServers() throws {
         let securityExceptionTrust = try SecTrust.unitTestDotExampleDotCom1
         let info = with(ServerInfo.fake()) {
@@ -514,6 +630,7 @@ class ServerManagerTests: XCTestCase {
             )
             $0.connection.webhookSecret = "webhook_secret"
             $0.hassDeviceId = "device-1"
+            $0.instanceID = "instance-1"
         }
 
         mirrorStore.set(info, key: "fake1")
@@ -526,6 +643,7 @@ class ServerManagerTests: XCTestCase {
         let restoredFromKeychain = try XCTUnwrap(keychain.getServerInfo(key: "fake1", decoder: JSONDecoder()))
         XCTAssertEqual(restoredFromKeychain.remoteName, info.remoteName)
         XCTAssertEqual(restoredFromKeychain.hassDeviceId, info.hassDeviceId)
+        XCTAssertEqual(restoredFromKeychain.instanceID, info.instanceID)
         XCTAssertEqual(restoredFromKeychain.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
         XCTAssertEqual(restoredFromKeychain.connection.isLocalPushEnabled, info.connection.isLocalPushEnabled)
         XCTAssertNil(restoredFromKeychain.connection.cloudhookURL)
@@ -536,6 +654,7 @@ class ServerManagerTests: XCTestCase {
         let restored = try XCTUnwrap(servers.server(for: "fake1"))
         XCTAssertEqual(restored.info.remoteName, info.remoteName)
         XCTAssertEqual(restored.info.hassDeviceId, info.hassDeviceId)
+        XCTAssertEqual(restored.info.instanceID, info.instanceID)
         XCTAssertEqual(restored.info.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
         XCTAssertEqual(restored.info.connection.isLocalPushEnabled, info.connection.isLocalPushEnabled)
         XCTAssertNil(restored.info.connection.cloudhookURL)
@@ -903,10 +1022,6 @@ class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
 
 private struct FakeServerIdentifierProviding: ServerIdentifierProviding {
     var serverIdentifier: String
-}
-
-private struct FakeServerIntentProviding: ServerIntentProviding {
-    var server: IntentServer?
 }
 
 private class FakeObserver: ServerObserver {

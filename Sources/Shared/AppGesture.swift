@@ -1,4 +1,5 @@
 import Foundation
+import SFSafeSymbols
 import UIKit
 
 public enum HAGestureActionCategory: String, CaseIterable {
@@ -35,6 +36,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     // Page
     case backPage
     case nextPage
+    case openInBrowser
+    case createDeeplink
     // Servers
     case showServersList
     case nextServer
@@ -45,11 +48,23 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     // Other
     case none
 
+    public init(from decoder: Decoder) throws {
+        let decodedRawValue = try decoder.singleValueContainer().decode(String.self)
+        // Actions removed in newer versions decode as no-op instead of throwing, otherwise a single
+        // stale entry would make the whole persisted gesture configuration fall back to defaults.
+        if let action = HAGestureAction(rawValue: decodedRawValue) {
+            self = action
+        } else {
+            Current.Log.info("Unknown gesture action '\(decodedRawValue)' decoded as none")
+            self = .none
+        }
+    }
+
     public var category: HAGestureActionCategory {
         switch self {
         case .showSidebar, .quickSearch, .searchEntities, .searchDevices, .searchCommands, .assist:
             .homeAssistant
-        case .backPage, .nextPage:
+        case .backPage, .nextPage, .openInBrowser, .createDeeplink:
             .page
         case .showServersList, .nextServer, .previousServer:
             .servers
@@ -68,6 +83,10 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.backPage
         case .nextPage:
             L10n.Gestures.Value.Option.nextPage
+        case .openInBrowser:
+            L10n.Gestures.Value.Option.openInBrowser
+        case .createDeeplink:
+            L10n.Gestures.Value.Option.createDeeplink
         case .quickSearch:
             L10n.Gestures.Value.Option.quickSearch
         case .searchEntities:
@@ -93,6 +112,43 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         }
     }
 
+    public var icon: SFSymbol {
+        switch self {
+        case .showSidebar:
+            .sidebarLeft
+        case .quickSearch:
+            .magnifyingglass
+        case .searchEntities:
+            .lightbulb
+        case .searchDevices:
+            .cpu
+        case .searchCommands:
+            .command
+        case .assist:
+            .sparkles
+        case .backPage:
+            .chevronBackward
+        case .nextPage:
+            .chevronForward
+        case .openInBrowser:
+            .safari
+        case .createDeeplink:
+            .link
+        case .showServersList:
+            .serverRack
+        case .nextServer:
+            .arrowRightCircle
+        case .previousServer:
+            .arrowLeftCircle
+        case .showSettings:
+            .gearshape
+        case .openDebug:
+            .ladybug
+        case .none:
+            .nosign
+        }
+    }
+
     public var moreInfo: String? {
         switch self {
         case .showSidebar:
@@ -101,6 +157,10 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             nil
         case .nextPage:
             nil
+        case .openInBrowser:
+            L10n.Gestures.Value.Option.MoreInfo.openInBrowser
+        case .createDeeplink:
+            L10n.Gestures.Value.Option.MoreInfo.createDeeplink
         case .quickSearch:
             L10n.Gestures.Value.Option.MoreInfo.quickSearch
         case .searchEntities:
@@ -205,7 +265,7 @@ public extension [AppGesture: HAGestureAction] {
             ._3FingersSwipeUp: .showServersList,
             ._3FingersSwipeRight: .nextServer,
             ._3FingersSwipeLeft: .previousServer,
-            .shake: .openDebug,
+            .shake: .none,
         ]
     }
 

@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [ "$#" -lt 1 ]; then
+  echo "usage: Tools/build_tool <swiftformat|swiftgen|swiftlint> [arguments...]" >&2
+  exit 64
+fi
+
+tool="$1"
+shift
+
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+package_path="$root_dir/BuildTools"
+cache_path="$root_dir/.build/swiftpm-cache"
+scratch_path="$package_path/.build"
+
+export CLANG_MODULE_CACHE_PATH="${CLANG_MODULE_CACHE_PATH:-$root_dir/.build/module-cache}"
+
+swift_package_resolve() {
+  swift package \
+    --disable-sandbox \
+    --package-path "$package_path" \
+    --cache-path "$cache_path" \
+    --scratch-path "$scratch_path" \
+    resolve
+}
+
+swift_package_run() {
+  swift run \
+    --disable-sandbox \
+    --package-path "$package_path" \
+    --cache-path "$cache_path" \
+    --scratch-path "$scratch_path" \
+    "$@"
+}
+
+case "$tool" in
+  swiftformat)
+    swift_package_run swiftformat "$@"
+    ;;
+  swiftgen)
+    swift_package_run swiftgen "$@"
+    ;;
+  swiftlint)
+    swiftlint_path="$scratch_path/artifacts/buildtools/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-0.54.0-macos/bin/swiftlint"
+    if [ ! -x "$swiftlint_path" ]; then
+      swift_package_resolve
+    fi
+    "$swiftlint_path" "$@"
+    ;;
+  *)
+    echo "error: unknown build tool '$tool'" >&2
+    exit 64
+    ;;
+esac

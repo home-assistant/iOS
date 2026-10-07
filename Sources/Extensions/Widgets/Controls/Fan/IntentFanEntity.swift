@@ -12,11 +12,16 @@ struct IntentFanEntity: AppEntity, EntityContextRepresentable {
 
     // UniqueID: serverId-entityId
     var id: String
+    @Property(title: .init("app_intents.entity.property.entity_id", defaultValue: "Entity ID"))
     var entityId: String
     var serverId: String
+    @Property(title: .init("app_intents.entity.property.area", defaultValue: "Area"))
     var areaName: String?
+    @Property(title: .init("app_intents.entity.property.device", defaultValue: "Device"))
     var deviceName: String?
+    @Property(title: .init("app_intents.entity.property.floor", defaultValue: "Floor"))
     var floorName: String?
+    @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
@@ -37,13 +42,13 @@ struct IntentFanEntity: AppEntity, EntityContextRepresentable {
         iconName: String
     ) {
         self.id = id
-        self.entityId = entityId
         self.serverId = serverId
+        self.iconName = iconName
+        self.entityId = entityId
         self.areaName = areaName
         self.deviceName = deviceName
         self.floorName = floorName
         self.displayString = displayString
-        self.iconName = iconName
     }
 }
 

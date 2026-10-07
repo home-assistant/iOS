@@ -16,6 +16,7 @@
 "common::state::standby" = "Gorffwys";
 "common::state::unlocked" = "Datgloi";
 "common::state::yes" = "Yes";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "I ffwrdd";
 "component::alarm_control_panel::title" = "Panel rheoli larwm";
 "component::alert::entity_component::_::state::idle" = "Segur";

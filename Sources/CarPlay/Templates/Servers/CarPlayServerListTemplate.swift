@@ -3,9 +3,9 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayServerListViewModel
+    private let assistSettingsTemplate = CarPlayAssistSettingsTemplate()
     private weak var tabsSelectionTemplate: CPListTemplate?
     private weak var layoutSelectionTemplate: CPListTemplate?
     private weak var serverSelectionTemplate: CPListTemplate?
@@ -65,6 +65,8 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
                 mainServerItem,
                 layoutItem,
                 tabsItem,
+                showAddEditButtonsItem,
+                assistSettingsItem,
                 troubleshootingItem,
             ]),
         ])
@@ -119,6 +121,33 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         return item
     }
 
+    private var showAddEditButtonsItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title,
+            detailText: nil,
+            image: viewModel.showAddEditButtons ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+        )
+        item.accessoryType = .none
+        item.handler = { [weak self] _, completion in
+            self?.viewModel.toggleShowAddEditButtons()
+            completion()
+        }
+        return item
+    }
+
+    private var assistSettingsItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.Assist.Settings.title,
+            detailText: nil
+        )
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.assistSettingsTemplate.present(using: self?.interfaceController)
+            completion()
+        }
+        return item
+    }
+
     private var troubleshootingItem: CPListItem {
         let item = CPListItem(
             text: L10n.CarPlay.Labels.Settings.Troubleshooting.title,
@@ -145,8 +174,14 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             }
 
             viewModel.setServer(server)
-            template.updateSections([serverSelectionSection(template: template)])
-            completion()
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    completion()
+                    return
+                }
+                await template.updateSections([serverSelectionSection(template: template)])
+                completion()
+            }
         }
         serverItem.accessoryType = .none
         return serverItem
@@ -156,14 +191,19 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         viewModel.beginServerSelection()
         let selectionTemplate = CPListTemplate(title: L10n.CarPlay.Labels.Settings.MainServer.title, sections: [])
         serverSelectionTemplate = selectionTemplate
-        selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            await selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
+        }
         interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
     }
 
-    private func serverSelectionSection(template: CPListTemplate) -> CPListSection {
-        let servers = Current.servers.all
-            .filter { $0.info.connection.activeURL() != nil }
-            .map { serverItem(server: $0, template: template) }
+    private func serverSelectionSection(template: CPListTemplate) async -> CPListSection {
+        var servers = [CPListItem]()
+        for server in Current.servers.all {
+            guard await server.activeURL() != nil else { continue }
+            servers.append(serverItem(server: server, template: template))
+        }
 
         guard !servers.isEmpty else {
             return CPListSection(items: [
@@ -215,12 +255,16 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func tabsSelectionSection(template: CPListTemplate) -> CPListSection {
-        CPListSection(items: CarPlayTab.allCases.map { tabItem(tab: $0, template: template) })
+        // Fetch the folders once and resolve tab names in-memory instead of per row.
+        let folders = viewModel.tabFolderItems
+        return CPListSection(items: viewModel.selectableTabs.map { tab in
+            tabItem(tab: tab, name: tab.name(folders: folders), template: template)
+        })
     }
 
-    private func tabItem(tab: CarPlayTab, template: CPListTemplate) -> CPListItem {
+    private func tabItem(tab: CarPlayTab, name: String, template: CPListTemplate) -> CPListItem {
         let item = CPListItem(
-            text: tab.name,
+            text: name,
             detailText: nil,
             image: viewModel.isTabActive(tab) ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
         )

@@ -1,0 +1,629 @@
+import SFSafeSymbols
+import Shared
+import SwiftUI
+
+/// Watch settings. Lists servers synchronized from the paired iPhone and shows connectivity details
+/// (including mTLS client-certificate status). It also provides watch-local preferences like
+/// per-server URL overrides; server configuration itself remains managed on the iPhone.
+struct WatchSettingsView: View {
+    @StateObject private var viewModel = WatchSettingsViewModel()
+    @State private var showDeleteLocalDataConfirmation = false
+    @State private var showDeleteLocalDataResult = false
+    @State private var deleteLocalDataSucceeded = false
+
+    var body: some View {
+        NavigationView {
+            List {
+                serversSection
+                networkSection
+                configurationSection
+                sensorsSection
+                layoutSection
+                troubleshootingSection
+                deleteLocalDataSection
+                restartAppSection
+            }
+            .onAppear {
+                viewModel.reload()
+            }
+            .navigationTitle(Text(verbatim: L10n.Watch.Settings.title))
+            .alert(
+                Text(
+                    verbatim: deleteLocalDataSucceeded
+                        ? L10n.Watch.Settings.DeleteLocalData.success
+                        : L10n.Watch.Settings.DeleteLocalData.error
+                ),
+                isPresented: $showDeleteLocalDataResult
+            ) {
+                Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+            }
+        }
+    }
+
+    private var deleteLocalDataSection: some View {
+        Section {
+            Button(role: .destructive) {
+                showDeleteLocalDataConfirmation = true
+            } label: {
+                Label(L10n.Watch.Settings.DeleteLocalData.title, systemSymbol: .trash)
+            }
+            .alert(
+                Text(verbatim: L10n.Watch.Settings.DeleteLocalData.Confirm.title),
+                isPresented: $showDeleteLocalDataConfirmation
+            ) {
+                Button(role: .cancel) {} label: { Text(verbatim: L10n.cancelLabel) }
+                Button(role: .destructive) {
+                    deleteLocalDataSucceeded = viewModel.deleteLocalData()
+                    showDeleteLocalDataResult = true
+                } label: {
+                    Text(verbatim: L10n.Watch.Settings.DeleteLocalData.Confirm.delete)
+                }
+            } message: {
+                Text(verbatim: L10n.Watch.Settings.DeleteLocalData.Confirm.message)
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Settings.DeleteLocalData.footer)
+        }
+    }
+
+    private var configurationSection: some View {
+        Section {
+            NavigationLink {
+                WatchConfigAssistView()
+            } label: {
+                Label {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                        Text(verbatim: L10n.Watch.Config.Assist.title)
+                        Text(verbatim: viewModel.assistPipelineTitle)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                } icon: {
+                    Image(systemSymbol: .waveformCircleFill)
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
+                viewModel.reload()
+            }
+        }
+    }
+
+    private var sensorsSection: some View {
+        Section {
+            NavigationLink {
+                WatchSensorsSettingsView()
+            } label: {
+                Label(L10n.Watch.Settings.Sensors.title, systemSymbol: .battery100)
+            }
+        }
+    }
+
+    private var layoutSection: some View {
+        Section {
+            Picker(L10n.Watch.Configuration.Layout.title, selection: Binding(
+                get: { viewModel.layout },
+                set: { viewModel.updateLayout($0) }
+            )) {
+                ForEach(WatchLayout.allCases, id: \.rawValue) { layout in
+                    Text(verbatim: layout.name).tag(layout)
+                }
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Configuration.Layout.footer)
+        }
+    }
+
+    private var troubleshootingSection: some View {
+        Section {
+            NavigationLink {
+                WatchTroubleshootingView()
+            } label: {
+                Label(L10n.Watch.Settings.Troubleshooting.title, systemSymbol: .stethoscope)
+            }
+        }
+    }
+
+    private var restartAppSection: some View {
+        Section {
+            Button(role: .destructive) {
+                // Terminate cleanly (watchOS relaunches on next tap). A `fatalError` here would file a
+                // crash report for every use — it was one of the app's top "crashes" in the field.
+                exit(0)
+            } label: {
+                Label(L10n.Watch.Settings.RestartApp.title, systemSymbol: .arrowClockwise)
+            }
+        } footer: {
+            Text(verbatim: L10n.Watch.Settings.RestartApp.footer)
+        }
+    }
+
+    /// The Wi-Fi network the watch is currently on. Hidden when there's no SSID (e.g. on LTE).
+    @ViewBuilder
+    private var networkSection: some View {
+        if !viewModel.currentSSID.isEmpty {
+            Section {
+                Label {
+                    Text(verbatim: viewModel.currentSSID)
+                        .minimumScaleFactor(0.5)
+                } icon: {
+                    Image(systemSymbol: .wifi)
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var serversSection: some View {
+        Section {
+            if viewModel.servers.isEmpty {
+                Text(verbatim: L10n.Watch.Settings.noServers)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } else {
+                // Small screen: group servers behind one link; the full list is one tap away.
+                NavigationLink {
+                    WatchServersListView(viewModel: viewModel)
+                } label: {
+                    Label {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            Text(verbatim: L10n.Watch.Settings.Servers.header)
+                            if !viewModel.serversNeedingAttention.isEmpty {
+                                Text(verbatim: L10n.Watch.Settings.Server.needsAttention)
+                                    .font(.footnote)
+                                    .foregroundStyle(.yellow)
+                            }
+                        }
+                    } icon: {
+                        Image(
+                            systemSymbol: viewModel.serversNeedingAttention
+                                .isEmpty ? .network : .exclamationmarkTriangleFill
+                        )
+                    }
+                }
+            }
+        } footer: {
+            // When the synchronized data is from — refreshed via the Home screen's reload button.
+            if let lastUpdated = viewModel.lastUpdated {
+                Text(verbatim: L10n.Watch.Settings.lastUpdated(
+                    lastUpdated.formatted(date: .abbreviated, time: .shortened)
+                ))
+            }
+        }
+    }
+}
+
+/// The list of synchronized servers, pushed from the settings "Servers" row so the small settings
+/// screen stays compact. Each server opens its read-only detail. A server the watch can't
+/// currently resolve a URL for gets a "Needs attention" warning row that explains the situation
+/// (no sync, no complication updates) and offers the internal-URL opt-in.
+private struct WatchServersListView: View {
+    @ObservedObject var viewModel: WatchSettingsViewModel
+    @State private var attentionContext: WatchInternalURLPromptContext?
+
+    var body: some View {
+        List {
+            ForEach(viewModel.servers, id: \.identifier.rawValue) { server in
+                NavigationLink {
+                    WatchServerDetailView(server: server)
+                } label: {
+                    Label {
+                        Text(verbatim: server.info.name)
+                    } icon: {
+                        Image(systemSymbol: .network)
+                    }
+                }
+                if viewModel.serversNeedingAttention.contains(server.identifier.rawValue) {
+                    Button {
+                        attentionContext = WatchInternalURLPromptContext(
+                            serverId: server.identifier.rawValue,
+                            serverName: server.info.name,
+                            internalURL: server.info.connection.internalURL
+                        )
+                    } label: {
+                        Label {
+                            Text(verbatim: L10n.Watch.Settings.Server.needsAttention)
+                                .font(.footnote)
+                        } icon: {
+                            Image(systemSymbol: .exclamationmarkTriangleFill)
+                        }
+                        .foregroundStyle(.yellow)
+                    }
+                }
+            }
+        }
+        .navigationTitle(Text(verbatim: L10n.Watch.Settings.Servers.header))
+        .sheet(item: $attentionContext) { context in
+            WatchInternalURLInfoView(
+                prompt: context,
+                onUse: {
+                    attentionContext = nil
+                    WatchUserDefaults.shared.setURLOverrideRawValue(
+                        ConnectionInfo.URLType.internal.rawValue,
+                        forServerId: context.serverId
+                    )
+                    WatchServerSync.applyURLOverrides()
+                    viewModel.reload()
+                },
+                onNotNow: {
+                    attentionContext = nil
+                }
+            )
+        }
+    }
+}
+
+/// Explains that the iPhone/Watch link can get stuck and that rebooting both devices usually helps.
+private struct WatchTroubleshootingView: View {
+    var body: some View {
+        List {
+            Section {
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                    Label(
+                        L10n.Watch.Settings.Troubleshooting.Connection.title,
+                        systemSymbol: .antennaRadiowavesLeftAndRight
+                    )
+                    .font(.headline)
+                    Text(verbatim: L10n.Watch.Settings.Troubleshooting.Connection.message)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, DesignSystem.Spaces.half)
+            }
+
+            Section {
+                NavigationLink {
+                    WatchComplicationsDiagnosticsView()
+                } label: {
+                    Label(L10n.Watch.Settings.Complications.title, systemSymbol: .clockArrowCirclepath)
+                }
+                NavigationLink {
+                    WatchClientEventsView()
+                } label: {
+                    Label(L10n.Watch.Settings.ClientEvents.title, systemSymbol: .listBulletRectangle)
+                }
+            }
+
+            Section {
+                NavigationLink {
+                    WatchDeveloperSettingsView()
+                } label: {
+                    Label(L10n.Watch.Settings.Developer.title, systemSymbol: .hammer)
+                }
+            }
+        }
+        .navigationTitle(Text(verbatim: L10n.Watch.Settings.Troubleshooting.title))
+    }
+}
+
+/// Shared status → icon/color/text mapping for complication refresh diagnostics.
+enum ComplicationDiagnosticStyle {
+    static func icon(for status: ComplicationRefreshOutcome.Status?) -> SFSymbol {
+        switch status {
+        case .live: return .checkmarkCircleFill
+        case .cached: return .clockArrowCirclepath
+        case .failed: return .exclamationmarkTriangleFill
+        case .none: return .questionmarkCircle
+        }
+    }
+
+    static func color(for status: ComplicationRefreshOutcome.Status?) -> Color {
+        switch status {
+        case .live: return .green
+        case .cached: return .orange
+        case .failed: return .red
+        case .none: return .secondary
+        }
+    }
+
+    static func text(for status: ComplicationRefreshOutcome.Status?) -> String {
+        switch status {
+        case .live: return L10n.Watch.Settings.Complications.Status.live
+        case .cached: return L10n.Watch.Settings.Complications.Status.cached
+        case .failed: return L10n.Watch.Settings.Complications.Status.failed
+        case .none: return L10n.Watch.Settings.Complications.never
+        }
+    }
+}
+
+/// On-device complication diagnostics: lists each configured complication with its last refresh
+/// status, and lets you refresh them all. Each row opens a detail with the last-attempt time, reason,
+/// and a per-complication retry — so connectivity issues are visible and fixable without the iPhone.
+private struct WatchComplicationsDiagnosticsView: View {
+    @State private var configs: [WatchComplicationConfig] = []
+    @State private var records: [String: ComplicationRefreshRecord] = [:]
+    @State private var isRefreshingAll = false
+
+    var body: some View {
+        List {
+            Section {
+                Button {
+                    Task { await refreshAll() }
+                } label: {
+                    if isRefreshingAll {
+                        // A live spinner so a slow REST refresh doesn't look stuck (feedback: "seems frozen").
+                        HStack(spacing: DesignSystem.Spaces.one) {
+                            ProgressView()
+                            Text(verbatim: L10n.Watch.Settings.Complications.refreshing)
+                        }
+                    } else {
+                        Label(L10n.Watch.Settings.Complications.refreshAll, systemSymbol: .arrowClockwise)
+                    }
+                }
+                .disabled(isRefreshingAll || configs.isEmpty)
+            } footer: {
+                Text(verbatim: L10n.Watch.Settings.Complications.footer)
+            }
+
+            if configs.isEmpty {
+                Text(verbatim: L10n.Watch.Settings.Complications.empty)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } else {
+                Section {
+                    ForEach(configs) { config in
+                        NavigationLink {
+                            ComplicationDiagnosticDetailView(config: config)
+                        } label: {
+                            row(for: config)
+                        }
+                    }
+                } footer: {
+                    Text(verbatim: L10n.Watch.Settings.Complications.listFooter)
+                }
+            }
+        }
+        .navigationTitle(Text(verbatim: L10n.Watch.Settings.Complications.title))
+        .onAppear(perform: load)
+    }
+
+    private func row(for config: WatchComplicationConfig) -> some View {
+        let record = records[config.id]
+        return VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+            Label {
+                Text(verbatim: config.displayName)
+            } icon: {
+                Image(systemSymbol: ComplicationDiagnosticStyle.icon(for: record?.status))
+                    .foregroundStyle(ComplicationDiagnosticStyle.color(for: record?.status))
+            }
+            Text(verbatim: subtitle(for: record))
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, DesignSystem.Spaces.half)
+    }
+
+    private func subtitle(for record: ComplicationRefreshRecord?) -> String {
+        guard let record else { return L10n.Watch.Settings.Complications.never }
+        return ComplicationDiagnosticStyle.text(for: record.status)
+    }
+
+    private func load() {
+        configs = (try? WatchComplicationConfig.all()) ?? []
+        records = WatchWidgetComplicationSnapshotStore.records()
+    }
+
+    @MainActor
+    private func refreshAll() async {
+        isRefreshingAll = true
+        _ = await WatchWidgetComplicationSnapshotStore.refresh()
+        records = WatchWidgetComplicationSnapshotStore.records()
+        isRefreshingAll = false
+    }
+}
+
+/// Per-complication diagnostics detail: when it last tried to update, whether it worked, why not, and
+/// a Retry button that re-fetches just this complication and updates the screen with the new result.
+private struct ComplicationDiagnosticDetailView: View {
+    let config: WatchComplicationConfig
+    @State private var record: ComplicationRefreshRecord?
+    @State private var isRetrying = false
+
+    var body: some View {
+        List {
+            Section {
+                Label {
+                    Text(verbatim: ComplicationDiagnosticStyle.text(for: record?.status))
+                } icon: {
+                    Image(systemSymbol: ComplicationDiagnosticStyle.icon(for: record?.status))
+                        .foregroundStyle(ComplicationDiagnosticStyle.color(for: record?.status))
+                }
+                Text(verbatim: lastAttemptText)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text(verbatim: L10n.Watch.Settings.Complications.statusHeader)
+            }
+
+            if let reason = record?.reason, !reason.isEmpty {
+                Section {
+                    Text(verbatim: reason)
+                        .font(.footnote)
+                } header: {
+                    Text(verbatim: L10n.Watch.Settings.Complications.reasonHeader)
+                }
+            }
+
+            Section {
+                Button {
+                    Task { await retry() }
+                } label: {
+                    if isRetrying {
+                        HStack(spacing: DesignSystem.Spaces.one) {
+                            ProgressView()
+                            Text(verbatim: L10n.Watch.Settings.Complications.retrying)
+                        }
+                    } else {
+                        Label(L10n.Watch.Settings.Complications.retry, systemSymbol: .arrowClockwise)
+                    }
+                }
+                .disabled(isRetrying)
+            }
+        }
+        .navigationTitle(Text(verbatim: config.displayName))
+        .onAppear {
+            record = WatchWidgetComplicationSnapshotStore.records()[config.id]
+        }
+    }
+
+    private var lastAttemptText: String {
+        guard let record else { return L10n.Watch.Settings.Complications.never }
+        return L10n.Watch.Settings.Complications.lastAttempt(
+            record.date.formatted(date: .abbreviated, time: .shortened)
+        )
+    }
+
+    @MainActor
+    private func retry() async {
+        isRetrying = true
+        _ = await WatchWidgetComplicationSnapshotStore.refresh(configId: config.id)
+        record = WatchWidgetComplicationSnapshotStore.records()[config.id]
+        isRetrying = false
+    }
+}
+
+/// Lists the client events recorded on this Watch (sync, database, lifecycle) for on-device debugging.
+private struct WatchClientEventsView: View {
+    @State private var events: [ClientEvent] = []
+    @State private var showClearConfirmation = false
+    /// Set once the diagnostics zip has been built; the share button stays a spinner until then.
+    @State private var diagnosticsArchiveURL: URL?
+    /// True from tapping "Send to iPhone" until the transfer reaches the iPhone (or fails). The
+    /// transfer itself is queued by the system and survives leaving this screen.
+    @State private var isSendingToPhone = false
+    @State private var sendToPhoneMessage: String?
+    @State private var showSendToPhoneResult = false
+
+    var body: some View {
+        List {
+            if events.isEmpty {
+                Text(verbatim: L10n.Watch.Settings.ClientEvents.empty)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } else {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Button(role: .destructive) {
+                        showClearConfirmation = true
+                    } label: {
+                        Image(systemSymbol: .trash)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.clear))
+                    .confirmationDialog(
+                        Text(verbatim: L10n.ClientEvents.View.ClearConfirm.title),
+                        isPresented: $showClearConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .cancel) {} label: { Text(verbatim: L10n.cancelLabel) }
+                        Button(role: .destructive) {
+                            Current.clientEventStore.clearAllEvents()
+                            events = []
+                        } label: {
+                            Text(verbatim: L10n.yesLabel)
+                        }
+                    } message: {
+                        Text(verbatim: L10n.ClientEvents.View.ClearConfirm.message)
+                    }
+
+                    // Shares a zip of the client events plus the on-watch `Current.Log` files, which
+                    // are otherwise unreachable — the watch has no other way to hand them over. The
+                    // zip is prepared on appear so the ShareLink only hands over a finished file:
+                    // building it lazily during the share ran on the Swift-concurrency pool, which
+                    // is starved on watch hardware, leaving the share sheet stuck.
+                    if let diagnosticsArchiveURL {
+                        ShareLink(
+                            item: diagnosticsArchiveURL,
+                            preview: SharePreview(L10n.Watch.Settings.ClientEvents.title)
+                        ) {
+                            Image(systemSymbol: .squareAndArrowUp)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.share))
+
+                        // The watchOS share sheet can't reliably deliver an arbitrary file, so the
+                        // dependable path hands the archive to the paired iPhone over Watch
+                        // Connectivity; it then ships with the iPhone's "Export Log Files".
+                        Button {
+                            sendToPhone(archiveURL: diagnosticsArchiveURL)
+                        } label: {
+                            if isSendingToPhone {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity)
+                            } else {
+                                Image(systemSymbol: .iphoneAndArrowForward)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .disabled(isSendingToPhone)
+                        .accessibilityLabel(Text(verbatim: L10n.Watch.Settings.ClientEvents.sendToPhone))
+                        .alert(
+                            Text(verbatim: sendToPhoneMessage ?? ""),
+                            isPresented: $showSendToPhoneResult
+                        ) {
+                            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+                        }
+                    } else {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .buttonStyle(.borderless)
+
+                ForEach(events, id: \.id) { event in
+                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                        Text(verbatim: event.text)
+                            .font(.footnote)
+                        Text(
+                            verbatim: "\(event.type.rawValue) • "
+                                + event.date.formatted(date: .abbreviated, time: .shortened)
+                        )
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, DesignSystem.Spaces.half)
+                }
+            }
+        }
+        .navigationTitle(Text(verbatim: L10n.Watch.Settings.ClientEvents.title))
+        .onAppear {
+            events = Current.clientEventStore.getEvents().reversed()
+            prepareDiagnosticsArchive()
+        }
+    }
+
+    private func sendToPhone(archiveURL: URL) {
+        isSendingToPhone = true
+        WatchDiagnosticsTransfer.send(archiveURL: archiveURL) { result in
+            DispatchQueue.main.async {
+                isSendingToPhone = false
+                switch result {
+                case .success:
+                    sendToPhoneMessage = L10n.Watch.Settings.ClientEvents.SendToPhone.success
+                case let .failure(error):
+                    sendToPhoneMessage = L10n.Watch.Settings.ClientEvents.SendToPhone
+                        .failure(error.localizedDescription)
+                }
+                showSendToPhoneResult = true
+            }
+        }
+    }
+
+    private func prepareDiagnosticsArchive() {
+        guard diagnosticsArchiveURL == nil, !events.isEmpty else { return }
+        // Dedicated thread for the same reason as magic item execution: on watch hardware the GCD
+        // global queues and the Swift-concurrency pool can be starved, so work queued on them may
+        // never start. A raw `Thread` always does.
+        let thread = Thread {
+            do {
+                let url = try WatchDiagnosticsArchive.makeArchive()
+                DispatchQueue.main.async { diagnosticsArchiveURL = url }
+            } catch {
+                Current.Log.error("Failed to build watch diagnostics archive: \(error.localizedDescription)")
+            }
+        }
+        thread.name = "watch-diagnostics-archive"
+        thread.qualityOfService = .userInitiated
+        thread.start()
+    }
+}

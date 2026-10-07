@@ -1,8 +1,10 @@
 import AppIntents
 import Shared
 
-@available(iOS 16.4, *)
-struct UpdateSensorsAppIntent: AppIntent {
+struct UpdateSensorsAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit UpdateSensorsIntent
+    static let intentClassName = "UpdateSensorsIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.update_sensors.title",
         defaultValue: "Update sensors"
@@ -14,7 +16,7 @@ struct UpdateSensorsAppIntent: AppIntent {
     ))
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         let failedServers = try await Current.apis.asyncCompactMap { api -> String? in
             do {
                 try await api.UpdateSensors(trigger: .AppShortcut).async(timeout: 10)

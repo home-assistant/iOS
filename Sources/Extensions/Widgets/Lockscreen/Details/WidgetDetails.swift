@@ -1,3 +1,4 @@
+import HAWatchComplications
 import Intents
 import Shared
 import SwiftUI
@@ -24,7 +25,7 @@ struct WidgetDetails: Widget {
         }
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Details.title)
-        .description(L10n.Widgets.Details.descriptionWithWarning)
+        .description(L10n.Widgets.Details.galleryDescription)
         .supportedFamilies(WidgetDetailsSupportedFamilies.families)
         .disfavoredInCarPlayIfAvailable(for: WidgetDetailsSupportedFamilies.families)
     }
@@ -46,3 +47,29 @@ enum WidgetDetailsSupportedFamilies {
         .accessoryRectangular,
     ]
 }
+
+// A mirrored watch complication: the entry carries the render model and the widget draws it through
+// the shared rectangular complication content view.
+@available(iOS 17, *)
+#Preview(as: .accessoryRectangular, widget: {
+    WidgetDetails()
+}, timeline: {
+    WidgetDetailsEntry(
+        upperText: "Battery 68%",
+        complicationModel: RectangularComplicationRenderModel(
+            title: "Battery",
+            showsName: true,
+            subtitle: "Kitchen",
+            showsSubtitle: true,
+            fraction: 0.68,
+            minLabel: "0",
+            maxLabel: "100",
+            valueText: "68%",
+            showsValue: true,
+            tint: .green
+        ),
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})

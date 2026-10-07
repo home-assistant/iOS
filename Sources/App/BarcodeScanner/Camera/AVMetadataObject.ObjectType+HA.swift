@@ -3,7 +3,7 @@ import Foundation
 
 extension AVMetadataObject.ObjectType {
     var haString: String {
-        if #available(iOS 15.4, *), self == .codabar {
+        if self == .codabar {
             return "codabar"
         }
 

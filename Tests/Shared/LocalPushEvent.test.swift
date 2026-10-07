@@ -57,6 +57,26 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertEqual(content.interruptionLevel, .active)
     }
 
+    func testNotificationIconFromDataIsPreservedForDecoration() throws {
+        let data = HAData.dictionary([
+            "message": "some_message",
+            "title": "Phone",
+            "data": [
+                "notification_icon": "mdi:cellphone",
+                "notification_icon_color": "#FFFFFF",
+                "color": "#03A9F4",
+            ],
+        ])
+
+        let content = try LocalPushEvent(data: data).content(server: server)
+
+        XCTAssertEqual(content.title, "Phone")
+        XCTAssertEqual(content.userInfo["notification_icon"] as? String, "mdi:cellphone")
+        XCTAssertEqual(content.userInfo["notification_icon_color"] as? String, "#FFFFFF")
+        XCTAssertEqual(content.userInfo["color"] as? String, "#03A9F4")
+        XCTAssertNotNil(NotificationSenderParser.parse(from: content))
+    }
+
     func testFullWithoutSound() {
         let event = LocalPushEvent(
             headers: [:],

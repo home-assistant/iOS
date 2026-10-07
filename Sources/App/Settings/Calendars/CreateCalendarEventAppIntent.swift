@@ -1,0 +1,150 @@
+import AppIntents
+import Foundation
+import Shared
+
+/// Adds an event to a Home Assistant calendar, offering the fields from the frontend's event editor
+/// (`dialog-calendar-event-editor.ts`): summary, description, location, all-day, start/end and a
+/// repeat preset. Start and end are optional and default the way the editor opens a new event.
+@available(iOS 17.0, *)
+struct CreateCalendarEventAppIntent: AppIntent {
+    static var title: LocalizedStringResource = .init(
+        "app_intents.calendar.create_event.title",
+        defaultValue: "Add calendar event"
+    )
+
+    static var description = IntentDescription(.init(
+        "app_intents.calendar.create_event.description",
+        defaultValue: "Add an event to a Home Assistant calendar"
+    ))
+
+    // An all-day event has no times to pick, so the summary drops start and end there. They stay
+    // settable in the expanded parameter list for an all-day event on a specific day; left empty,
+    // they fall back to the defaults below.
+    static var parameterSummary: some ParameterSummary {
+        When(\.$isAllDay, .equalTo, true) {
+            Summary {
+                \.$calendar
+                \.$summary
+                \.$isAllDay
+                \.$repeatFrequency
+                \.$eventDescription
+                \.$location
+            }
+        } otherwise: {
+            Summary {
+                \.$calendar
+                \.$summary
+                \.$isAllDay
+                \.$startDate
+                \.$endDate
+                \.$repeatFrequency
+                \.$eventDescription
+                \.$location
+            }
+        }
+    }
+
+    @Parameter(title: .init("app_intents.calendar.entity.name", defaultValue: "Calendar"))
+    var calendar: HACalendarAppEntity
+
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.summary.title", defaultValue: "Title"),
+        inputOptions: .init(capitalizationType: .sentences)
+    )
+    var summary: String
+
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.all_day.title", defaultValue: "All-day"),
+        default: false
+    )
+    var isAllDay: Bool
+
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.start.title", defaultValue: "Starts"),
+        kind: .dateTime
+    )
+    var startDate: Date?
+
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.end.title", defaultValue: "Ends"),
+        kind: .dateTime
+    )
+    var endDate: Date?
+
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.repeat.title", defaultValue: "Repeat"),
+        default: CalendarEventRepeatAppEnum.none
+    )
+    var repeatFrequency: CalendarEventRepeatAppEnum
+
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.event_description.title", defaultValue: "Description"),
+        inputOptions: .init(capitalizationType: .sentences, multiline: true)
+    )
+    var eventDescription: String?
+
+    @Parameter(
+        title: .init("app_intents.calendar.create_event.location.title", defaultValue: "Location"),
+        inputOptions: .init(capitalizationType: .sentences)
+    )
+    var location: String?
+
+    func perform() async throws -> some IntentResult & ReturnsValue<String> {
+        await Current.connectivity.refreshNetworkInformation()
+
+        guard let stored = HACalendar.get(id: calendar.id) else {
+            throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.unknownCalendar)
+        }
+        // Home Assistant advertises per-entity capabilities; a calendar that can't create events
+        // rejects the command server-side, so fail with something the user can act on instead.
+        guard stored.supports(.createEvent) else {
+            throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.createUnsupported(stored.name))
+        }
+        let (start, end) = resolvedBounds()
+        // Home Assistant requires at least a second of duration, so a timed event needs a strictly
+        // later end. All-day events may start and end on the same day: the stored end is exclusive,
+        // so that still persists as a full day. Same rule as the frontend's `_isValidStartEnd`.
+        if isAllDay {
+            guard start <= end else {
+                throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.invalidDuration)
+            }
+        } else {
+            guard start < end else {
+                throw ShortcutAppIntentError(L10n.AppIntents.Calendar.Error.zeroDuration)
+            }
+        }
+        guard let server = Current.servers.server(forServerIdentifier: stored.serverId),
+              let api = Current.api(for: server) else {
+            throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
+        }
+
+        try await api.createCalendarEvent(
+            entityId: stored.entityId,
+            summary: summary,
+            description: eventDescription,
+            location: location,
+            rrule: repeatFrequency.rrule(startingOn: start),
+            start: start,
+            end: end,
+            isAllDay: isAllDay
+        )
+
+        return .result(value: L10n.AppIntents.Calendar.CreateEvent.responseSuccess(summary, stored.name))
+    }
+
+    /// Fills in the boundaries the user left empty, using the same defaults the frontend's editor
+    /// opens a new event with: the next hour for an hour, or today for an all-day event.
+    private func resolvedBounds() -> (start: Date, end: Date) {
+        let systemCalendar = Calendar.current
+        if isAllDay {
+            let start = startDate ?? systemCalendar.startOfDay(for: Current.date())
+            return (start, endDate ?? start)
+        }
+        let now = Current.date()
+        let startOfHour = systemCalendar.date(
+            from: systemCalendar.dateComponents([.year, .month, .day, .hour], from: now)
+        ) ?? now
+        let start = startDate ?? startOfHour
+        return (start, endDate ?? start.addingTimeInterval(60 * 60))
+    }
+}

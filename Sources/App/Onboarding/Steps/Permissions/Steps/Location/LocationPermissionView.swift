@@ -17,10 +17,12 @@ struct LocationPermissionView: View {
             primaryAction: {
                 primaryAction()
             },
+            primaryActionIdentifier: AccessibilityIdentifier.onboardingLocationShare.rawValue,
             secondaryActionTitle: L10n.Onboarding.LocationAccess.SecondaryAction.title,
             secondaryAction: {
                 secondaryAction()
-            }
+            },
+            secondaryActionIdentifier: AccessibilityIdentifier.onboardingLocationSkip.rawValue
         )
     }
 }

@@ -16,7 +16,11 @@ final class MockWebViewExternalMessageHandler: WebViewExternalMessageHandlerProt
     var scanImprovCalled = false
     var stopImprovScanIfNeededCalled = false
     var showAssistCalled = false
-    var showAssistParams: (server: Shared.Server, pipeline: String, autoStartRecording: Bool)?
+    var showAssistParams: (
+        server: Shared.Server,
+        pipeline: String,
+        autoStartRecording: Bool
+    )?
 
     var sendExternalBusReturnValue: PromiseKit.Promise<Void> = PromiseKit.Promise.value(())
 

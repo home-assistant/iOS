@@ -112,12 +112,40 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// `notification_icon_color` when omitted. Maps to `progress_bar_color`.
         public var progressBarColor: String?
 
+        /// Direction the progress bar visually fills: `"increasing"` or `"decreasing"`.
+        /// Stored as the raw wire string so an unrecognised value degrades to the default
+        /// rendering instead of failing the strict OS-side content-state decode (which would
+        /// silently drop the whole update). Maps to `progress_bar_direction`.
+        public var progressBarDirection: String?
+
+        /// Recognised `progress_bar_direction` values.
+        public enum ProgressBarDirection: String {
+            case increasing
+            case decreasing
+        }
+
         // MARK: - Computed helpers (not sent over wire)
 
         /// Progress as a fraction in [0, 1] for use in SwiftUI ProgressView.
         public var progressFraction: Double? {
             guard let p = progress, let m = progressMax, m > 0 else { return nil }
             return Double(p) / Double(m)
+        }
+
+        /// Parsed `progressBarDirection` (case-insensitive). Nil when unset or unrecognised,
+        /// so each bar keeps its own default: a static bar fills as progress increases, a
+        /// countdown timer bar drains, and a bounded count-up timer bar fills.
+        public var resolvedProgressBarDirection: ProgressBarDirection? {
+            progressBarDirection.flatMap { ProgressBarDirection(rawValue: $0.lowercased()) }
+        }
+
+        /// Fraction of the static progress bar to fill, honoring `progress_bar_direction`:
+        /// `decreasing` fills with what remains (`1 - progressFraction`) so the bar drains as
+        /// progress advances. Percent labels intentionally keep showing `progressFraction` —
+        /// the direction only flips the visual fill.
+        public var progressBarFillFraction: Double? {
+            guard let fraction = progressFraction else { return nil }
+            return resolvedProgressBarDirection == .decreasing ? 1 - fraction : fraction
         }
 
         // MARK: - CodingKeys
@@ -138,6 +166,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case backgroundColor = "background_color"
             case textColor = "text_color"
             case progressBarColor = "progress_bar_color"
+            case progressBarDirection = "progress_bar_direction"
         }
 
         // MARK: - Init
@@ -156,7 +185,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             url: String? = nil,
             backgroundColor: String? = nil,
             textColor: String? = nil,
-            progressBarColor: String? = nil
+            progressBarColor: String? = nil,
+            progressBarDirection: String? = nil
         ) {
             self.title = title
             self.message = message
@@ -172,6 +202,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.backgroundColor = backgroundColor
             self.textColor = textColor
             self.progressBarColor = progressBarColor
+            self.progressBarDirection = progressBarDirection
         }
 
         // MARK: - Codable
@@ -208,6 +239,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.backgroundColor = try container.decodeIfPresent(String.self, forKey: .backgroundColor)
             self.textColor = try container.decodeIfPresent(String.self, forKey: .textColor)
             self.progressBarColor = try container.decodeIfPresent(String.self, forKey: .progressBarColor)
+            self.progressBarDirection = try container.decodeIfPresent(String.self, forKey: .progressBarDirection)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -230,6 +262,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             try container.encodeIfPresent(backgroundColor, forKey: .backgroundColor)
             try container.encodeIfPresent(textColor, forKey: .textColor)
             try container.encodeIfPresent(progressBarColor, forKey: .progressBarColor)
+            try container.encodeIfPresent(progressBarDirection, forKey: .progressBarDirection)
         }
 
         // HA may send progress/progress_max as a JSON float (e.g. 20.1234). ActivityKit decodes

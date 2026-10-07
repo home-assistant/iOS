@@ -37,6 +37,14 @@ Setup Continous Integration
 
 
 
+### install_git_hooks
+
+```sh
+[bundle exec] fastlane install_git_hooks
+```
+
+Install the git pre-commit hook that runs autocorrect before each commit
+
 ### download_provisioning_profiles
 
 ```sh
@@ -156,6 +164,14 @@ Update the test cases from the fcm repo
 ```
 
 Run tests
+
+### e2e
+
+```sh
+[bundle exec] fastlane e2e
+```
+
+Run the end-to-end onboarding test against a running Home Assistant
 
 ----
 

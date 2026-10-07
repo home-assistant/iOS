@@ -43,10 +43,15 @@ struct CustomWidgetsListView: View {
             Section {
                 WidgetDocumentationLink()
             }
+
+            DebugDatabaseTransferSection(part: .customWidgets) {
+                viewModel.loadWidgets()
+            }
         }
         .onAppear {
             viewModel.loadWidgets()
         }
+        .listTopContentMargin()
     }
 
     private var header: some View {
@@ -89,7 +94,7 @@ struct CustomWidgetsListView: View {
         ForEach(viewModel.widgets, id: \.id) { widget in
             HStack {
                 NavigationLink {
-                    WidgetCreationView(needsNavigationController: false, widget: widget) {
+                    WidgetCreationView(widget: widget) {
                         viewModel.loadWidgets()
                     }
                 } label: {
@@ -133,5 +138,16 @@ struct CustomWidgetsListView: View {
 #Preview {
     NavigationView {
         CustomWidgetsListView()
+    }
+}
+
+extension CustomWidgetsListView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.Widgets.YourWidgets.title),
+            SettingsSearchEntry(L10n.Settings.Widgets.Create.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Widgets.ReloadAll.title),
+            SettingsSearchEntry(L10n.Settings.Widgets.Custom.DeleteAll.title),
+        ]
     }
 }

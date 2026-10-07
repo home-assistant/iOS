@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 @testable import HomeAssistant
 @testable import Shared
 import Testing
@@ -42,7 +43,7 @@ private extension AppArea {
     }
 }
 
-@Suite("EntityPickerViewModel")
+@Suite("EntityPickerViewModel", .serialized)
 struct EntityPickerViewModelTests {
     private func makeVM(
         domainFilter: [Domain]? = nil,
@@ -71,5 +72,94 @@ struct EntityPickerViewModelTests {
 
         #expect(vm.entitiesByDomain["light"]?.count == 2)
         #expect(vm.entitiesByDomain["switch"]?.count == 1)
+    }
+
+    @Test("Selectable domains keep only the preset domains that have entities")
+    func selectableDomainsRespectPresetFilter() async throws {
+        let entities: [HAAppEntity] = [
+            .make("light.kitchen", name: "Kitchen Light", domain: "light", serverId: "A"),
+            .make("switch.pump", name: "Pump", domain: "switch", serverId: "A"),
+            // Not supported by the watch, so it must not be offered as a filter.
+            .make("sensor.temperature", name: "Temperature", domain: "sensor", serverId: "A"),
+        ]
+        let vm = EntityPickerViewModel(domainFilter: Domain.watchSupported, selectedServerId: nil)
+        vm.entities = entities
+        vm._test_groupByDomain()
+
+        #expect(Set(vm.selectableDomains) == ["light", "switch"])
+    }
+
+    @Test("Selectable domains are scoped to the selected server")
+    func selectableDomainsScopedToSelectedServer() async throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let entities: [HAAppEntity] = [
+            .make("light.kitchen", name: "Kitchen Light", domain: "light", serverId: "A"),
+            .make("switch.pump", name: "Pump", domain: "switch", serverId: "B"),
+        ]
+        let vm = EntityPickerViewModel(domainFilter: Domain.watchSupported, selectedServerId: "A")
+        vm.entities = entities
+        vm._test_groupByDomain()
+
+        #expect(vm.selectableDomains == ["light"])
+    }
+
+    @Test("A preset domain filter still reports a user picked domain as an active filter")
+    func hasActiveFiltersWithPresetDomainFilter() async throws {
+        let vm = EntityPickerViewModel(domainFilter: Domain.watchSupported, selectedServerId: nil)
+
+        #expect(vm.hasActiveFilters == false)
+        vm.selectedDomainFilter = Domain.light.rawValue
+        #expect(vm.hasActiveFilters)
+        vm.resetFilters()
+        #expect(vm.hasActiveFilters == false)
+    }
+
+    @Test("Hidden entities stay out of the browse list but surface when the user searches")
+    func hiddenEntitiesOnlyAppearWhileSearching() async throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        try HAppEntityTable().createIfNeeded(database: database)
+        try DisplayEntityRegistryTable().createIfNeeded(database: database)
+        try AppDeviceRegistryTable().createIfNeeded(database: database)
+        try AppAreaTable().createIfNeeded(database: database)
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let serverId = "A"
+        let visible = HAAppEntity.make("light.kitchen", name: "Kitchen Light", domain: "light", serverId: serverId)
+        let hidden = HAAppEntity.make("light.hidden_lamp", name: "Hidden Lamp", domain: "light", serverId: serverId)
+
+        try await database.write { db in
+            try visible.insert(db)
+            try hidden.insert(db)
+            let registry = EntityRegistryListForDisplay.Entity(
+                serverId: serverId,
+                entityId: hidden.entityId,
+                hidden: true
+            )
+            try registry.insert(db)
+        }
+
+        let vm = EntityPickerViewModel(domainFilter: nil, selectedServerId: serverId)
+        vm.fetchEntities()
+
+        func entityIds() -> Set<String> {
+            Set(vm.filteredGroups.flatMap(\.entities).map(\.entityId))
+        }
+
+        // Browsing (no search term) keeps the hidden entity out.
+        vm.searchTerm = ""
+        await vm._test_awaitFiltering()
+        #expect(entityIds().contains("light.kitchen"))
+        #expect(!entityIds().contains("light.hidden_lamp"))
+
+        // Searching surfaces the hidden entity.
+        vm.searchTerm = "Hidden"
+        await vm._test_awaitFiltering()
+        #expect(entityIds().contains("light.hidden_lamp"))
     }
 }

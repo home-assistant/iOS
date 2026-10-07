@@ -6,6 +6,10 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
     public var id = WatchConfig.watchConfigId
     public var assist: Assist = .init(showAssist: true)
     public var items: [MagicItem] = []
+    public var layout: WatchLayout?
+    /// Whether the watch home screen hides the automatic area rows. Optional so rows/payloads created
+    /// before this column existed decode as `nil` (areas shown).
+    public var hideAreas: Bool?
     /// Epoch (seconds) of the last edit, on either the iPhone or the watch. Used for last-writer /
     /// conflict resolution when the watch is configured offline. Optional so rows created before this
     /// column existed decode as `nil`.
@@ -15,12 +19,24 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
         id: String = UUID().uuidString,
         assist: Assist = Assist(showAssist: true),
         items: [MagicItem] = [],
+        layout: WatchLayout? = nil,
+        hideAreas: Bool? = nil,
         lastModified: Double? = nil
     ) {
         self.id = id
         self.assist = assist
         self.items = items
+        self.layout = layout
+        self.hideAreas = hideAreas
         self.lastModified = lastModified
+    }
+
+    public var resolvedLayout: WatchLayout {
+        layout ?? .list
+    }
+
+    public var resolvedHideAreas: Bool {
+        hideAreas ?? false
     }
 
     /// Stamp `lastModified` with the current time. Call whenever the config is edited before saving.
@@ -47,18 +63,31 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
     }
 }
 
+public enum WatchLayout: String, Codable, CaseIterable, DatabaseValueConvertible, Equatable {
+    case list
+    case grid
+
+    public var name: String {
+        switch self {
+        case .list:
+            return L10n.HomeView.Customization.AreasLayout.List.title
+        case .grid:
+            return L10n.HomeView.Customization.AreasLayout.Grid.title
+        }
+    }
+}
+
 public protocol WatchCodable: Codable {
-    func encodeForWatch() -> Data
+    func encodeForWatch() throws -> Data
     static func decodeForWatch(_ data: Data) -> Self?
 }
 
 public extension WatchCodable {
-    func encodeForWatch() -> Data {
-        do {
-            return try PropertyListEncoder().encode(self)
-        } catch {
-            fatalError("Faield to encode watch config for watch transfer, error: \(error.localizedDescription)")
-        }
+    /// Encode for a WatchConnectivity transfer. A failure throws so the sender can skip the
+    /// transfer (and log why) instead of crashing — a codec problem in a communication path must
+    /// never take the app down.
+    func encodeForWatch() throws -> Data {
+        try PropertyListEncoder().encode(self)
     }
 
     static func decodeForWatch(_ data: Data) -> Self? {
@@ -68,5 +97,11 @@ public extension WatchCodable {
             Current.Log.error("Failed to decode watch config for watch, error: \(error.localizedDescription)")
             return nil
         }
+    }
+
+    /// Throwing variant so callers can surface *why* a decode failed (e.g. to the watch client-event
+    /// log) instead of only seeing a `nil`.
+    static func decodeForWatchThrowing(_ data: Data) throws -> Self {
+        try PropertyListDecoder().decode(Self.self, from: data)
     }
 }

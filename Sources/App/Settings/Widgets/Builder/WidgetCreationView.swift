@@ -7,32 +7,29 @@ import WidgetKit
 struct WidgetCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: WidgetCreationViewModel
+    @State private var isEditingItems = false
     private let dismissAction: () -> Void
 
-    private let needsNavigationController: Bool
+    /// Whether the screen brings its own `NavigationStack`. Off by default because the screen is
+    /// normally pushed (from the custom widgets list), and nesting a navigation container inside a
+    /// pushed destination leaves it blank and pops it straight back out. Only a modal presentation,
+    /// which has no surrounding stack to inherit, opts in.
+    private let needsNavigationStack: Bool
 
     init(
-        needsNavigationController: Bool = true,
+        needsNavigationStack: Bool = false,
         widget: CustomWidget = CustomWidget(id: UUID().uuidString, name: "", items: []),
         dismissAction: @escaping () -> Void
     ) {
-        self.needsNavigationController = needsNavigationController
+        self.needsNavigationStack = needsNavigationStack
         self._viewModel = .init(wrappedValue: .init(widget: widget))
         self.dismissAction = dismissAction
     }
 
     var body: some View {
-        if needsNavigationController {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    content
-                }
-                .navigationViewStyle(.stack)
-            } else {
-                NavigationView {
-                    content
-                }
-                .navigationViewStyle(.stack)
+        if needsNavigationStack {
+            NavigationStack {
+                content
             }
         } else {
             content
@@ -66,7 +63,7 @@ struct WidgetCreationView: View {
             }
         }
         .sheet(isPresented: $viewModel.showAddItem) {
-            MagicItemAddView(context: .widget) { magicItem in
+            MagicItemAddView(context: .widget, allowMultipleSelection: true) { magicItem in
                 guard let magicItem else { return }
                 viewModel.addItem(magicItem)
             }
@@ -137,31 +134,28 @@ struct WidgetCreationView: View {
                 Label(L10n.Settings.Widgets.Create.AddItem.title, systemSymbol: .plus)
             }
         } header: {
-            Text(verbatim: L10n.Watch.Configuration.Items.title)
+            ReorderableSectionHeader(
+                title: L10n.Watch.Configuration.Items.title,
+                isEditing: $isEditingItems
+            )
         } footer: {
             Text(verbatim: L10n.Settings.Widgets.Create.Footer.title)
         }
     }
 
     private func makeListItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-        return makeListItemRow(item: item, info: itemInfo)
-    }
-
-    @ViewBuilder
-    private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .widget, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
             } label: {
-                itemRow(item: item, info: info)
+                MagicItemConfigurationRow(
+                    item: item,
+                    info: viewModel.magicItemInfo(for: item),
+                    iconColor: .haPrimary,
+                    isReorderIndicatorVisible: isEditingItems
+                )
             }
             Spacer()
             #if targetEnvironment(macCatalyst)
@@ -176,53 +170,12 @@ struct WidgetCreationView: View {
         }
     }
 
-    private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: image(for: item, itemInfo: info, color: .haPrimary))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name(info: info))
-                if let contextSubtitle = info.contextSubtitle {
-                    Text(contextSubtitle)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemSymbol: .line3Horizontal)
-                .foregroundStyle(.gray)
-        }
-    }
-
-    private func image(
-        for item: MagicItem,
-        itemInfo: MagicItem.Info,
-        color: UIColor? = nil
-    ) -> UIImage {
-        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-
-        return icon.image(
-            ofSize: .init(width: 18, height: 18),
-            color: color ?? .init(hex: itemInfo.customization?.iconColor)
-        )
-    }
-
     private var widgetPreviewItems: some View {
         let models = viewModel.widget.items.map { magicItem in
             let info = viewModel.magicItemInfo(for: magicItem)
             let textColor = Color(hex: magicItem.customization?.textColor)
-            let iconColor = Color(hex: magicItem.customization?.iconColor)
+            let iconColor = Color(hex: magicItem.customization?.customIconColor)
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
-            let interactionType = magicItem.widgetInteractionType
-            let showIconBackground = {
-                switch interactionType {
-                case .widgetURL:
-                    return true
-                case let .appIntent(widgetIntentType):
-                    return widgetIntentType != .refresh
-                }
-            }()
-
             let icon: MaterialDesignIcons = {
                 if let info {
                     return magicItem.icon(info: info)
@@ -245,7 +198,7 @@ struct WidgetCreationView: View {
                 subtitle: nil,
                 interactionType: .appIntent(.refresh),
                 icon: icon,
-                showIconBackground: showIconBackground,
+                showIconBackground: magicItem.controlsEntityFromWidget,
                 textColor: textColor,
                 iconColor: iconColor,
                 backgroundColor: backgroundColor,
@@ -262,7 +215,8 @@ struct WidgetCreationView: View {
                 family: widgetFamilyPreview(),
                 modelsCount: modelsCount,
                 rowsCount: rows.count
-            )
+            ),
+            family: widgetFamilyPreview()
         )
         .environment(\.widgetFamily, widgetFamilyPreview())
     }
@@ -287,10 +241,7 @@ struct WidgetCreationView: View {
 }
 
 #Preview {
-    NavigationView {
-        VStack {}
-            .sheet(isPresented: .constant(true)) {
-                WidgetCreationView {}
-            }
+    NavigationStack {
+        WidgetCreationView {}
     }
 }

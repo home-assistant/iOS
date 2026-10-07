@@ -1,0 +1,217 @@
+import Shared
+import SwiftUI
+import UIKit
+
+struct HomeAssistantView: View, WebFrontendView {
+    private enum Constants {
+        static let launchMessagesFallbackDelay: TimeInterval = 2
+    }
+
+    @StateObject private var viewModel: HomeAssistantViewModel
+    /// What's-New / TestFlight sheets are owned here so they can only ever present over the web
+    /// frontend, never over onboarding.
+    @StateObject private var launchMessages = LaunchMessagesState()
+    @ObservedObject private var nativeTabBar = NativeTabBarState.shared
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Owned by `ConditionalContainerView`, which presents the picker the stand-by view zooms into.
+    @Environment(\.serverSelectionNamespace) private var serverSelectionNamespace
+
+    init(server: Server, onWebViewController: @escaping (WebViewController) -> Void) {
+        self.init(server: server, initialPath: nil, onWebViewController: onWebViewController)
+    }
+
+    init(server: Server, initialPath: String?, onWebViewController: @escaping (WebViewController) -> Void) {
+        _viewModel = StateObject(
+            wrappedValue: HomeAssistantViewModel(
+                server: server,
+                initialPath: initialPath,
+                onWebViewController: onWebViewController
+            )
+        )
+    }
+
+    /// The themed status-bar strip keeps the last frontend-provided colour until WebKit sends a new update.
+    private var themedStatusBar: some View {
+        GeometryReader { proxy in
+            if let color = viewModel.overlayState.statusBarColor, showsThemedStatusBar {
+                Color(uiColor: color)
+                    .frame(height: proxy.safeAreaInsets.top)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .ignoresSafeArea(edges: .top)
+            }
+        }
+        .allowsHitTesting(false)
+    }
+
+    var body: some View {
+        ZStack {
+            if #available(iOS 26, *), isNativeTabBarActive {
+                NativeTabBarContainerView(
+                    viewModel: viewModel.tabBar,
+                    webViewController: viewModel.webViewController,
+                    frontendOpacity: viewModel.webViewContentOpacity,
+                    frontendIgnoredSafeAreaEdges: viewModel.webViewIgnoredSafeAreaEdges,
+                    onNeedsWebViewController: viewModel.ensureWebViewController
+                )
+            }
+            // The frontend chrome keeps one structural identity whichever App Labs layout is on, so its
+            // appear/disappear fades never race each other when a layout is toggled.
+            frontendContent
+        }
+        .onChange(of: nativeTabBar.isEnabled) { _ in
+            // The frontend reads the `hasSidebar` external config once per page load, so a fresh web
+            // view is what applies the new value. Reloading in place keeps the fade/loader state
+            // consistent, unlike swapping the frontend's structural identity.
+            viewModel.resetWebFrontend()
+        }
+    }
+
+    /// With the tab bar on, the web view is hosted by the selected tab instead of `frontendContent`.
+    private var isNativeTabBarActive: Bool {
+        nativeTabBar.isEnabled
+    }
+
+    /// The strip belongs to the frontend: over a native tab it would cover the bar items that share the
+    /// status bar's row on wide screens.
+    private var showsThemedStatusBar: Bool {
+        !isNativeTabBarActive || viewModel.tabBar.showsFrontend
+    }
+
+    private var frontendContent: some View {
+        ZStack {
+            // The frontend content group is separate from the standby overlay so it can fade with pull-to-refresh and
+            // reloads.
+            ZStack(alignment: .topLeading) {
+                themedStatusBar
+                    .opacity(viewModel.webViewContentOpacity)
+                if !isNativeTabBarActive {
+                    homeAssistant
+                        .opacity(viewModel.webViewContentOpacity)
+                }
+                pullToRefreshIndicator
+                macTitleBar
+            }
+            // Covering fades, uncovering does not: the overlay is opaque, so a second full-screen opacity
+            // animation over a web view buys nothing and is what makes the hand-off stutter on Mac.
+            .animation(
+                viewModel.isWebViewCoveredByStandBy ? DesignSystem.Animation.default : nil,
+                value: viewModel.isWebViewCoveredByStandBy
+            )
+            noActiveURLState
+            // Layered above the native tab bar, not inside a tab: the bar belongs to the `TabView`, so
+            // covering it is what takes it off screen while stand-by is up.
+            standByView
+        }
+        .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.emptyState != nil)
+        .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.overlayState.showsNoActiveURL)
+        .statusBarHidden(viewModel.chrome.statusBarHidden)
+        .persistentSystemOverlays(viewModel.chrome.homeIndicatorHidden ? .hidden : .automatic)
+        .onAppear {
+            viewModel.fade(to: 1, reduceMotion: reduceMotion)
+            // Fallback for frontends that never finish loading (e.g. connection errors): still show
+            // the launch messages, but well after any screen-swap transition (post-onboarding) has
+            // finished — presenting a sheet mid-swap corrupts the presenting hierarchy and leaves a
+            // blank screen behind on dismissal.
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.launchMessagesFallbackDelay) {
+                launchMessages.evaluateIfNeeded()
+            }
+        }
+        .onChange(of: viewModel.shouldShowStandByView) { showsStandBy in
+            // The frontend is loaded and on screen — the settled moment to present launch messages.
+            if !showsStandBy {
+                launchMessages.evaluateIfNeeded()
+            }
+        }
+        .onChange(of: reduceMotion) { reduceMotion in
+            viewModel.updateReduceMotion(reduceMotion)
+        }
+        .onDisappear { viewModel.disappear(reduceMotion: reduceMotion) }
+        .dismissesOnAppNavigation {
+            launchMessages.dismissAll()
+        }
+        .sheet(item: $launchMessages.presented, onDismiss: { launchMessages.showNext() }) { message in
+            switch message {
+            case let .whatsNew(release):
+                WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }
+            case let .testFlight(message):
+                TestFlightCommunicationView(message: message) {
+                    TestFlightCommunicationEngine().markSeen(message)
+                }
+            }
+        }
+    }
+
+    private var homeAssistant: some View {
+        FrontendView(
+            server: viewModel.server,
+            initialPath: viewModel.initialPath,
+            onWebViewController: viewModel.handleWebViewController,
+            onWebViewLoaded: viewModel.handleWebViewLoaded,
+            resetFrontendAction: viewModel.resetWebFrontend,
+            reconnectManager: viewModel.reconnectManager,
+            overlayState: viewModel.overlayState
+        )
+        .id(viewModel.webViewResetID)
+        .ignoresSafeArea(edges: viewModel.webViewIgnoredSafeAreaEdges)
+    }
+
+    @ViewBuilder
+    private var pullToRefreshIndicator: some View {
+        if viewModel.showsPullToRefresh {
+            HomeAssistantPullToRefreshView(
+                progress: viewModel.pullToRefreshProgress,
+                isRefreshing: viewModel.isPullToRefreshActive
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding(.top, DesignSystem.Spaces.two)
+            .allowsHitTesting(false)
+            .transition(.opacity)
+        }
+    }
+
+    // MARK: - macOS
+
+    @ViewBuilder
+    private var macTitleBar: some View {
+        if Current.isCatalyst {
+            MacWebViewTitleBar(
+                server: viewModel.server,
+                webViewController: viewModel.webViewController
+            )
+            .frame(width: .zero, height: .zero)
+            .allowsHitTesting(false)
+        }
+    }
+
+    // MARK: - Empty states
+
+    @ViewBuilder
+    private var noActiveURLState: some View {
+        if viewModel.overlayState.showsNoActiveURL {
+            ConnectionSecurityLevelBlockView(server: viewModel.server)
+                .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    private var standByView: some View {
+        if viewModel.isStandByViewVisible {
+            HomeAssistantStandByView(
+                server: viewModel.server,
+                emptyState: viewModel.displayedEmptyState,
+                isLoading: viewModel.overlayState.isLoading,
+                serverSelectionNamespace: serverSelectionNamespace,
+                onSelectServerTapped: viewModel.presentServerSelection,
+                onGestureAction: { action in
+                    viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
+                },
+                onLogoDismiss: viewModel.forceDismissStandByView,
+                onCleanCacheAndReload: viewModel.cleanCacheAndReload
+            )
+            .transition(.opacity)
+            .opacity(viewModel.standByOpacity)
+            .allowsHitTesting(viewModel.standByOpacity > 0)
+        }
+    }
+}

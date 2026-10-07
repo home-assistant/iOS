@@ -1,13 +1,19 @@
 import Foundation
 import GRDB
+import PromiseKit
 
 public extension DatabaseQueue {
     // Following GRDB cocnurrency rules, we have just one database instance
     // https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/concurrency#Concurrency-Rules
     static var appDatabase: DatabaseQueue = {
+        var configuration = Configuration()
+        configuration.busyMode = .timeout(3)
+        configuration.observesSuspensionNotifications = true
+
         let database: DatabaseQueue
+        var isInMemoryFallback = false
         do {
-            database = try DatabaseQueue(path: databasePath())
+            database = try DatabaseQueue(path: databasePath(), configuration: configuration)
             #if targetEnvironment(simulator)
             print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
@@ -16,13 +22,16 @@ public extension DatabaseQueue {
             // Fallback to in-memory database so extensions don't crash
             do {
                 database = try DatabaseQueue()
+                isInMemoryFallback = true
                 Current.Log.error("Using in-memory GRDB database as fallback")
             } catch {
                 fatalError("Failed to create even an in-memory GRDB database: \(error.localizedDescription)")
             }
         }
 
-        setupSchema(database: database)
+        if !Current.isAppExtension || isInMemoryFallback {
+            setupSchema(database: database)
+        }
         return database
     }()
 
@@ -66,9 +75,26 @@ public extension DatabaseQueue {
             AppAreaTable(),
             HomeViewConfigurationTable(),
             AssistConfigurationTable(),
+            VoiceToolsServerConfigurationTable(),
             AllowedTagTable(),
             KioskSettingsTable(),
+            AppLabsFeatureStateTable(),
             NotificationSnoozeActionTable(),
+            WatchComplicationTable(),
+            WatchComplicationConfigTable(),
+            AppZoneTable(),
+            NotificationCategoryTable(),
+            LocationHistoryTable(),
+            LocationErrorTable(),
+            RemindersSyncConfigTable(),
+            RemindersSyncItemLinkTable(),
+            RemindersSyncHistoryEntryTable(),
+            FocusNameTable(),
+            SiriServerExposureTable(),
+            SiriEntityExposureTable(),
+            HACalendarTable(),
+            HACalendarEventTable(),
+            FrontendThemeVariableTable(),
         ]
     }
 
@@ -87,16 +113,336 @@ public extension DatabaseQueue {
             GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue,
             "entityRegistry",
         ]
-        for tableName in obsoleteTables {
+        // Check existence in a single read first: on a steady-state launch none of these tables
+        // exist anymore, and this runs on the main thread as part of the first database access, so
+        // it must not open write transactions it doesn't need.
+        let existingObsoleteTables: [String]
+        do {
+            existingObsoleteTables = try database.read { db in
+                try obsoleteTables.filter { try db.tableExists($0) }
+            }
+        } catch {
+            Current.Log.verbose(
+                "Failed to check for obsolete GRDB tables, error: \(error.localizedDescription)"
+            )
+            return
+        }
+        for tableName in existingObsoleteTables {
             do {
                 try database.write { db in
                     try db.drop(table: tableName)
                 }
             } catch {
                 Current.Log.verbose(
-                    "Failed or not needed to drop obsolete GRDB table \(tableName), error: \(error.localizedDescription)"
+                    "Failed to drop obsolete GRDB table \(tableName), error: \(error.localizedDescription)"
                 )
             }
+        }
+    }
+
+    /// Delete every row from all app tables, leaving the schema intact. Used by the watch's
+    /// "Delete local data" action to wipe the locally-mirrored config/entities without dropping the DB
+    /// (so the app keeps working and re-syncs on the next refresh). The table list is the same one used
+    /// to create the schema, so new tables are covered automatically. Exposed as an instance method so
+    /// callers can invoke it on `Current.database()` without importing GRDB directly.
+    func eraseAllData() throws {
+        try write { db in
+            for table in DatabaseQueue.tables() {
+                try db.execute(sql: "DELETE FROM \(table.tableName)")
+            }
+        }
+    }
+}
+
+/// Coordinates GRDB's database suspension notifications without requiring callers to import GRDB
+/// (app targets don't all link it directly). Suspending while backgrounded prevents the system from
+/// killing the process with 0xdead10cc for holding the app-group SQLite file lock during suspension —
+/// see https://github.com/groue/GRDB.swift/issues/1626.
+public final class AppDatabaseSuspension {
+    static let shared = AppDatabaseSuspension()
+
+    private let lock = NSLock()
+    /// Whether the lifecycle currently wants the database suspended (set on background, cleared on
+    /// foreground). Accesses that arrive while this is set resume GRDB only under an expiring
+    /// activity that re-suspends it before the process is frozen (see `resumeForAccess`).
+    private var wantsSuspension = false
+    /// Parks the thread of the currently-armed expiring activity; nil when none is armed.
+    private var activitySemaphore: DispatchSemaphore?
+    /// How many background accesses are currently running under `beginProtectedAccess()`. Suspension
+    /// is only re-applied once this reaches zero: suspending is process-wide, so letting the first
+    /// access to finish suspend would abort a sibling's in-flight statement ("SQLite error 4:
+    /// Database is suspended") and roll back its transaction.
+    private var protectedAccessCount = 0
+
+    private let performExpiringActivity: (String, @escaping (Bool) -> Void) -> Void
+    private let postNotification: (Notification.Name) -> Void
+
+    /// The defaults are the real system behaviors; tests inject recorders into a dedicated instance
+    /// so parallel suites can't interfere through shared state.
+    init(
+        performExpiringActivity: @escaping (String, @escaping (Bool) -> Void) -> Void = { reason, block in
+            ProcessInfo.processInfo.performExpiringActivity(withReason: reason, using: block)
+        },
+        postNotification: @escaping (Notification.Name) -> Void = { name in
+            NotificationCenter.default.post(name: name, object: nil)
+        }
+    ) {
+        self.performExpiringActivity = performExpiringActivity
+        self.postNotification = postNotification
+    }
+
+    public static func suspend() {
+        shared.suspend()
+    }
+
+    public static func resume() {
+        shared.resume()
+    }
+
+    public static func beginProtectedAccess() {
+        shared.beginProtectedAccess()
+    }
+
+    public static func endProtectedAccess(suspend shouldSuspend: Bool) {
+        shared.endProtectedAccess(suspend: shouldSuspend)
+    }
+
+    public static func suspendIfIdle() {
+        shared.suspendIfIdle()
+    }
+
+    public static func performProtectedWork(
+        named name: BackgroundTask,
+        _ work: @escaping @Sendable () -> Void
+    ) {
+        shared.performProtectedWork(named: name, work)
+    }
+
+    /// Runs synchronous database `work` off the main thread while holding a background task, then
+    /// hands the database back to whatever state the lifecycle wants.
+    ///
+    /// Work that can straddle the foreground→background transition is what the app's two biggest
+    /// 0xdead10cc terminations were: with no background task held, the process gets frozen while a
+    /// statement is mid-flight and still holding the app-group SQLite file lock. Holding one keeps
+    /// the process alive until the statement finishes; if the system expires it first, GRDB is
+    /// suspended instead, which aborts the statement and releases the lock before the freeze.
+    func performProtectedWork(named name: BackgroundTask, _ work: @escaping @Sendable () -> Void) {
+        let (untilWorkEnds, workEndSeal) = Promise<Void>.pending()
+        beginProtectedAccess()
+        // Started before the background task is armed, so the task's window always covers work that
+        // is already under way rather than work still waiting for a thread.
+        Self.workQueue.async { [self] in
+            work()
+            // `suspend()` sets `wantsSuspension` again, so a still-set flag is how we learn the app
+            // backgrounded while the work ran and the database has to go back to suspended.
+            endProtectedAccess(suspend: lifecycleWantsSuspension)
+            workEndSeal.fulfill(())
+        }
+        Current.backgroundTask(withName: name.rawValue) { _ in untilWorkEnds }
+            .catch { [self] _ in
+                // Out of background time: the process is about to be frozen, so suspend even though
+                // this aborts whatever statement is in flight — releasing the app-group file lock is
+                // what avoids the 0xdead10cc kill. The caller retries on its next update.
+                suspend()
+            }
+    }
+
+    private var lifecycleWantsSuspension: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return wantsSuspension
+    }
+
+    /// Concurrent: GRDB's `DatabaseQueue` already serializes the statements themselves, so queueing
+    /// callers behind each other here would only make a caller's background task tick down while its
+    /// work waits — and let one caller's expiry abort another's in-flight transaction.
+    private static let workQueue = DispatchQueue(
+        label: "io.robbie.HomeAssistant.database-protected-work",
+        qos: .utility,
+        attributes: .concurrent
+    )
+
+    /// Resume the database for one background access and register it as in flight. Every call must be
+    /// balanced with `endProtectedAccess(suspend:)`, which re-suspends only once the last access ends.
+    func beginProtectedAccess() {
+        lock.lock()
+        protectedAccessCount += 1
+        lock.unlock()
+        resume()
+    }
+
+    /// End one access started by `beginProtectedAccess()`. `shouldSuspend` says whether this caller
+    /// still wants the database suspended (i.e. the app is backgrounded); it only takes effect when no
+    /// other access is left running.
+    func endProtectedAccess(suspend shouldSuspend: Bool) {
+        lock.lock()
+        if protectedAccessCount > 0 {
+            protectedAccessCount -= 1
+        }
+        let isIdle = protectedAccessCount == 0
+        lock.unlock()
+        guard isIdle, shouldSuspend else { return }
+        suspend()
+    }
+
+    /// Suspend unless a protected access is still running. Used when an expiring activity is denied or
+    /// expires without having claimed an access of its own, and on backgrounding.
+    ///
+    /// This is what `LifecycleManager.didEnterBackground` calls rather than `suspend()`: work under
+    /// `performProtectedWork` holds a background task, so the process is not about to be frozen, and
+    /// suspending outright would abort the very write the transition used to kill the app for.
+    /// A background launch arms suspension the same way: the app icon shortcuts' entity read is
+    /// already under way as protected work by then, and suspending outright interrupted it
+    /// mid-statement, which published bare entity ids as the shortcut titles.
+    ///
+    /// The intent is recorded either way, so deferring is not forgetting: whichever access finishes
+    /// last reads it back through `endProtectedAccess(suspend:)` and suspends then. Dropping it
+    /// would leave the database resumed across a backgrounding, which is what 0xdead10cc needs.
+    func suspendIfIdle() {
+        lock.lock()
+        wantsSuspension = true
+        let isIdle = protectedAccessCount == 0
+        lock.unlock()
+        guard isIdle else { return }
+        postNotification(Database.suspendNotification)
+    }
+
+    func suspend() {
+        lock.lock()
+        wantsSuspension = true
+        lock.unlock()
+        postNotification(Database.suspendNotification)
+    }
+
+    func resume() {
+        lock.lock()
+        wantsSuspension = false
+        let parked = activitySemaphore
+        activitySemaphore = nil
+        lock.unlock()
+        postNotification(Database.resumeNotification)
+        // The app is interactive again; release the protection activity, if one was armed.
+        parked?.signal()
+    }
+
+    /// Resumes the database for an access that may happen while the app is backgrounded (App Intents,
+    /// background refresh, pushes, …). A plain resume there would defeat the suspension entirely and
+    /// leave the access exposed to 0xdead10cc, so when the lifecycle has asked for suspension the
+    /// resume is paired with a system expiring activity: the process is kept alive while the access
+    /// runs, and when the activity expires — right before the process would be frozen — GRDB is
+    /// re-suspended so no statement is caught holding the app-group SQLite file lock.
+    func resumeForAccess() {
+        lock.lock()
+        let needsProtection = wantsSuspension && activitySemaphore == nil
+        var parked: DispatchSemaphore?
+        if needsProtection {
+            parked = DispatchSemaphore(value: 0)
+            activitySemaphore = parked
+        }
+        lock.unlock()
+
+        // Resume synchronously so the caller's access can proceed immediately (keeping
+        // background-woken accesses like App Intents from aborting mid-shortcut).
+        postNotification(Database.resumeNotification)
+
+        guard let parked else { return }
+        performExpiringActivity("database-background-access") { [self] expired in
+            if expired {
+                lock.lock()
+                let isCurrent = activitySemaphore === parked
+                if isCurrent { activitySemaphore = nil }
+                lock.unlock()
+                // A stale expiration (the app foregrounded, or a newer activity took over) must not
+                // re-suspend the now-active database.
+                guard isCurrent else { return }
+                postNotification(Database.suspendNotification)
+                parked.signal()
+            } else {
+                // Hold the activity (keeping the process alive and the database usable) until the
+                // app foregrounds or the system expires it.
+                parked.wait()
+            }
+        }
+    }
+}
+
+/// Legacy watch complications table. Defined here (rather than a new file) so it joins the Shared
+/// target without a project-file change. Mirrors the `WatchConfigTable` pattern.
+final class WatchComplicationTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.watchComplication.rawValue }
+    var definedColumns: [String] { DatabaseTables.WatchComplication.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.WatchComplication.identifier.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.serverIdentifier.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplication.rawFamily.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.rawTemplate.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplication.complicationData.rawValue, .jsonText)
+                    t.column(DatabaseTables.WatchComplication.createdAt.rawValue, .datetime).notNull()
+                    t.column(DatabaseTables.WatchComplication.name.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplication.isPublic.rawValue, .boolean).notNull()
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
+        }
+    }
+}
+
+/// Modern watch complication configs table. Defined here to avoid a project-file change.
+final class WatchComplicationConfigTable: DatabaseTableProtocol {
+    var tableName: String { GRDBDatabaseTable.watchComplicationConfig.rawValue }
+    var definedColumns: [String] { DatabaseTables.WatchComplicationConfig.allCases.map(\.rawValue) }
+
+    func createIfNeeded(database: DatabaseQueue) throws {
+        let shouldCreateTable = try database.read { db in
+            try !db.tableExists(tableName)
+        }
+        if shouldCreateTable {
+            try database.write { db in
+                try db.create(table: tableName) { t in
+                    t.primaryKey(DatabaseTables.WatchComplicationConfig.id.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.serverId.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.widgetFamily.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.kind.rawValue, .text).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.name.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.entityId.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.entityDisplayName.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.iconName.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.iconColor.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.textColor.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeAttribute.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.valueAttribute.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.valuePrecision.rawValue, .integer)
+                    t.column(DatabaseTables.WatchComplicationConfig.unitOverride.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeMin.rawValue, .double)
+                    t.column(DatabaseTables.WatchComplicationConfig.gaugeMax.rawValue, .double)
+                    t.column(DatabaseTables.WatchComplicationConfig.showValue.rawValue, .boolean).notNull()
+                    // Nullable: absent means "show the unit" (see WatchComplicationConfig.showsUnit()).
+                    t.column(DatabaseTables.WatchComplicationConfig.showUnit.rawValue, .boolean)
+                    // Nullable: absent means "show when inactive" (see showsWhenInactive()).
+                    t.column(DatabaseTables.WatchComplicationConfig.showWhenInactive.rawValue, .boolean)
+                    // Nullable: absent means the min/max labels are visible (see showsMin()/showsMax()).
+                    t.column(DatabaseTables.WatchComplicationConfig.showMin.rawValue, .boolean)
+                    t.column(DatabaseTables.WatchComplicationConfig.showMax.rawValue, .boolean)
+                    t.column(DatabaseTables.WatchComplicationConfig.customTextTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customGaugeTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customGaugeColorTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customIconColorTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.customTextColorTemplate.rawValue, .text)
+                    t.column(DatabaseTables.WatchComplicationConfig.sortOrder.rawValue, .integer).notNull()
+                    t.column(DatabaseTables.WatchComplicationConfig.families.rawValue, .jsonText)
+                    t.column(DatabaseTables.WatchComplicationConfig.isCustomized.rawValue, .boolean)
+                }
+            }
+        } else {
+            try migrateColumns(database: database)
         }
     }
 }
@@ -115,24 +461,31 @@ protocol DatabaseTableProtocol {
 extension DatabaseTableProtocol {
     /// Migrates the table by adding new columns and removing obsolete columns
     func migrateColumns(database: DatabaseQueue) throws {
-        try database.write { db in
-            let existingColumns = try db.columns(in: tableName)
-            let definedColumnSet = Set(definedColumns)
+        // Inspect the schema in a read first and only open a write transaction when something
+        // actually changed: this runs for every table on the first database access of a launch
+        // (on the main thread), and on a steady-state launch nothing needs migrating.
+        let existingColumnNames = try database.read { db in
+            try db.columns(in: tableName).map(\.name)
+        }
+        let existingColumnSet = Set(existingColumnNames)
+        let definedColumnSet = Set(definedColumns)
 
+        let columnsToAdd = definedColumns.filter { !existingColumnSet.contains($0) }
+        let columnsToDrop = existingColumnNames.filter { !definedColumnSet.contains($0) }
+        guard !columnsToAdd.isEmpty || !columnsToDrop.isEmpty else { return }
+
+        try database.write { db in
             // Add new columns that don't exist yet
-            for columnName in definedColumns {
-                let shouldCreateColumn = !existingColumns.contains { $0.name == columnName }
-                if shouldCreateColumn {
-                    try db.alter(table: tableName) { tableAlteration in
-                        tableAlteration.add(column: columnName)
-                    }
+            for columnName in columnsToAdd {
+                try db.alter(table: tableName) { tableAlteration in
+                    tableAlteration.add(column: columnName)
                 }
             }
 
             // Remove columns that are no longer defined
-            for existingColumn in existingColumns where !definedColumnSet.contains(existingColumn.name) {
+            for columnName in columnsToDrop {
                 try db.alter(table: tableName) { tableAlteration in
-                    tableAlteration.drop(column: existingColumn.name)
+                    tableAlteration.drop(column: columnName)
                 }
             }
         }

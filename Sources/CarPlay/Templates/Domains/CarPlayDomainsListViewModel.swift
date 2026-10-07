@@ -4,7 +4,6 @@ import HAKit
 import SFSafeSymbols
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayDomainsListViewModel {
     private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
     private var entities: HACachedStates?

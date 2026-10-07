@@ -89,6 +89,7 @@ struct LiveActivitySettingsView: View {
             }
         }
         .task { await loadActivities() }
+        .listTopContentMargin()
     }
 
     private func syncActivities() {
@@ -145,8 +146,15 @@ struct LiveActivitySettingsView: View {
         }
     }
 
-    private var isLiveActivitySupportedOnDevice: Bool {
-        UIDevice.current.userInterfaceIdiom != .pad
+    var isLiveActivitySupportedOnDevice: Bool {
+        Self.isLiveActivitySupported(
+            idiom: UIDevice.current.userInterfaceIdiom,
+            majorSystemVersion: ProcessInfo.processInfo.operatingSystemVersion.majorVersion
+        )
+    }
+
+    static func isLiveActivitySupported(idiom: UIUserInterfaceIdiom, majorSystemVersion: Int) -> Bool {
+        idiom != .pad || majorSystemVersion >= 26
     }
 
     private var samplesSection: some View {
@@ -275,6 +283,24 @@ struct LiveActivitySettingsView: View {
                     icon: "mdi:stove",
                     color: "#F44336",
                     progressBarColor: "#F44336"
+                )]
+            ),
+            LiveActivitySample(
+                id: "progress-direction",
+                name: L10n.LiveActivity.Sample.ProgressDirection.title,
+                summary: L10n.LiveActivity.Sample.ProgressDirection.summary,
+                note: L10n.LiveActivity.Sample.ProgressDirection.note,
+                tag: "debug-progress-direction",
+                title: "Backup Battery",
+                stages: [.init(
+                    message: "On battery · 35% remaining",
+                    criticalText: "35%",
+                    progress: 65,
+                    progressMax: 100,
+                    icon: "mdi:battery-40",
+                    color: "#FF9800",
+                    progressBarColor: "#FF9800",
+                    progressBarDirection: "decreasing"
                 )]
             ),
             LiveActivitySample(
@@ -736,6 +762,7 @@ private struct LiveActivitySample: Identifiable {
         var backgroundColor: String?
         var textColor: String?
         var progressBarColor: String?
+        var progressBarDirection: String?
 
         func contentState() -> HALiveActivityAttributes.ContentState {
             // countdownEnd is relative to now so the local demo matches `when_relative: true`,
@@ -754,7 +781,8 @@ private struct LiveActivitySample: Identifiable {
                 color: color,
                 backgroundColor: backgroundColor,
                 textColor: textColor,
-                progressBarColor: progressBarColor
+                progressBarColor: progressBarColor,
+                progressBarDirection: progressBarDirection
             )
         }
     }
@@ -804,6 +832,9 @@ private struct LiveActivitySample: Identifiable {
             if let textColor = stage.textColor { lines.append("\(sub)text_color: \"\(textColor)\"") }
             if let progressBarColor = stage.progressBarColor {
                 lines.append("\(sub)progress_bar_color: \"\(progressBarColor)\"")
+            }
+            if let progressBarDirection = stage.progressBarDirection {
+                lines.append("\(sub)progress_bar_direction: \"\(progressBarDirection)\"")
             }
             return lines
         }
@@ -962,6 +993,21 @@ private struct ActivitySnapshot: Identifiable {
         self.tag = activity.attributes.tag
         self.title = activity.attributes.title
         self.message = activity.content.state.message
+    }
+}
+#endif
+
+#if os(iOS) && !targetEnvironment(macCatalyst)
+@available(iOS 17.2, *)
+extension LiveActivitySettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.LiveActivity.FrequentUpdates.title),
+            SettingsSearchEntry(L10n.LiveActivity.Section.active),
+            SettingsSearchEntry(L10n.LiveActivity.EndAll.button),
+            SettingsSearchEntry(L10n.LiveActivity.Sync.button),
+            SettingsSearchEntry(L10n.LiveActivity.Samples.title),
+        ]
     }
 }
 #endif

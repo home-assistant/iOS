@@ -4,10 +4,20 @@ import PromiseKit
 
 public extension CLLocationManager {
     static func oneShotLocation(timeout: TimeInterval) -> Promise<CLLocation> {
-        OneShotLocationProxy(
-            locationManager: CLLocationManager(),
-            timeout: after(seconds: timeout)
-        ).promise
+        // The proxy asserts main-thread invariants (CLLocationManager delegate callbacks need the main
+        // run loop), but callers reach this from promise chains and Swift concurrency tasks on
+        // arbitrary queues — which crashed in the field. Hop to main instead of trapping; stay
+        // synchronous when already there.
+        let makeProxy = {
+            OneShotLocationProxy(
+                locationManager: CLLocationManager(),
+                timeout: after(seconds: timeout)
+            ).promise
+        }
+        if Thread.isMainThread {
+            return makeProxy()
+        }
+        return DispatchQueue.main.async(.promise, execute: makeProxy).then { $0 }
     }
 }
 
@@ -178,7 +188,8 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
     init(
         locationManager: CLLocationManager,
-        timeout: Guarantee<Void>
+        timeout: Guarantee<Void>,
+        cachedLocationExecutor: ((@escaping () -> Void) -> Void)? = nil
     ) {
         precondition(Thread.isMainThread)
 
@@ -210,11 +221,33 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
             self?.checkPotentialLocations(outOfTime: true)
         }
 
-        if let cachedLocation = locationManager.location {
-            let authorization: CLAccuracyAuthorization = locationManager.accuracyAuthorization
-            let potentialLocation = PotentialLocation(location: cachedLocation, accuracyAuthorization: authorization)
-            potentialLocations.append(potentialLocation)
+        // Reading `location`/`accuracyAuthorization` performs synchronous XPC to locationd and
+        // hangs the main thread when the daemon is slow (field hang), so seed the cached
+        // location from a background queue and hop back to the main thread to record it.
+        let executor = cachedLocationExecutor ?? { work in
+            DispatchQueue.global(qos: .userInitiated).async(execute: work)
         }
+        executor { [weak self] in
+            guard let cachedLocation = locationManager.location else { return }
+            let authorization: CLAccuracyAuthorization = locationManager.accuracyAuthorization
+            if Thread.isMainThread {
+                self?.seed(cachedLocation: cachedLocation, accuracyAuthorization: authorization)
+            } else {
+                DispatchQueue.main.async {
+                    self?.seed(cachedLocation: cachedLocation, accuracyAuthorization: authorization)
+                }
+            }
+        }
+    }
+
+    private func seed(cachedLocation: CLLocation, accuracyAuthorization: CLAccuracyAuthorization) {
+        precondition(Thread.isMainThread)
+
+        guard !promise.isResolved else { return }
+        potentialLocations.append(PotentialLocation(
+            location: cachedLocation,
+            accuracyAuthorization: accuracyAuthorization
+        ))
     }
 
     private func checkPotentialLocations(outOfTime: Bool) {
@@ -266,11 +299,7 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         let failError: Error
 
         if let clErr = error as? CLError {
-            let realm = Current.realm()
-            realm.reentrantWrite {
-                let locErr = LocationError(err: clErr)
-                realm.add(locErr)
-            }
+            LocationError(err: clErr).save()
 
             Current.Log.error("Received CLError: \(clErr)")
             failError = OneShotError.clError(clErr)

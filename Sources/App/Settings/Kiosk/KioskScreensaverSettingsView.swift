@@ -54,6 +54,16 @@ struct KioskScreensaverSettingsView: View {
                 } label: {
                     KioskRow.label(L10n.Kiosk.Screensaver.Dimming.title, icon: .brightness6Icon)
                 }
+
+                if Current.motionDetection.canDetectMotion {
+                    Toggle(isOn: screensaver.wakeOnCameraMotion) {
+                        KioskRow.label(
+                            L10n.Kiosk.Screensaver.wakeOnCameraMotion,
+                            subtitle: L10n.Kiosk.Screensaver.wakeOnCameraMotionFooter,
+                            icon: .motionSensorIcon
+                        )
+                    }
+                }
             }
 
             Section {

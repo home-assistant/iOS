@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "צלם תמונות ושלח אותן לשרת הום אסיסטנט שלך.";
 "NSCrossWebsiteTrackingUsageDescription" = "לחלופין, הפעל מעקב חוצה אתרי אינטרנט אם התצורה שלך דורשת זאת.";
 "NSFocusStatusUsageDescription" = "דווח על מצב הפוקוס שלך כחיישן.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  We also need permission to access location 'Always' so the App can perform background operations. \n\n ⚠️  Without that, the App is unable to decide which connection (local or remote) to use in background and will use remote always.";
 "NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";

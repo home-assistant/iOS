@@ -4,7 +4,6 @@ import PromiseKit
 
 public class ActivitySensor: SensorProvider {
     public enum ActivityError: Error {
-        case unauthorized
         case unavailable
         case noData
     }
@@ -15,7 +14,19 @@ public class ActivitySensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        firstly {
+        guard Current.motion.isActivityAvailable() else {
+            Current.Log.warning("Activity is not available")
+            return .init(error: ActivityError.unavailable)
+        }
+
+        guard Current.motion.isAuthorized() else {
+            return .value([WebhookSensor(
+                awaitingPermissionNamed: "Activity",
+                uniqueID: WebhookSensorId.activity.rawValue
+            )])
+        }
+
+        return firstly {
             Self.latestMotionActivity()
         }.map { activity in
             with(WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue)) {
@@ -32,15 +43,6 @@ public class ActivitySensor: SensorProvider {
     }
 
     private static func latestMotionActivity() -> Promise<CMMotionActivity> {
-        guard Current.motion.isAuthorized() else {
-            return .init(error: ActivityError.unauthorized)
-        }
-
-        guard Current.motion.isActivityAvailable() else {
-            Current.Log.warning("Activity is not available")
-            return .init(error: ActivityError.unavailable)
-        }
-
         let (promise, seal) = Promise<CMMotionActivity>.pending()
         let end = Current.date()
         let start = Current.calendar().date(byAdding: .minute, value: -10, to: end)!

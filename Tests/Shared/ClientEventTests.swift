@@ -1,5 +1,4 @@
 import PromiseKit
-import RealmSwift
 @testable import Shared
 import UserNotifications
 import XCTest
@@ -65,6 +64,22 @@ class ClientEventTests: XCTestCase {
         XCTAssertEqual(retrieved?.text, "Yo")
         XCTAssertEqual(retrieved?.type, .notification)
         XCTAssertEqual(retrieved?.date.ISO8601Format(), date.ISO8601Format())
+    }
+
+    func testReadsFileWrittenAsSingleJSONArray() throws {
+        let event = ClientEvent(text: "Legacy", type: .notification)
+        try JSONEncoder().encode([event]).write(to: AppConstants.clientEventsFile, options: .atomic)
+
+        let retrieved = store.getEvents()
+        XCTAssertEqual(1, retrieved.count)
+        XCTAssertEqual("Legacy", retrieved.first?.text)
+    }
+
+    func testKeepsEventsAcrossAppends() throws {
+        store.addEvent(ClientEvent(text: "First", type: .notification))
+        store.addEvent(ClientEvent(text: "Second", type: .notification))
+
+        XCTAssertEqual(["First", "Second"], store.getEvents().map(\.text))
     }
 
     func testCanClearEvents() throws {

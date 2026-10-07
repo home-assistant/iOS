@@ -7,6 +7,7 @@ import PromiseKit
 /// Stale date offset for all Live Activity content updates.
 /// Activities are marked stale after 30 minutes if no further updates arrive.
 private let kLiveActivityStaleInterval: TimeInterval = 30 * 60
+private let kLiveActivityDefaultRelevanceScore: Double = 0.5
 
 public protocol LiveActivityRegistryProtocol: AnyObject {
     @available(iOS 17.2, *)
@@ -16,6 +17,7 @@ public protocol LiveActivityRegistryProtocol: AnyObject {
         title: String,
         serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState,
+        relevanceScore: Double?,
         alert: Bool
     ) async throws -> Bool
     @available(iOS 17.2, *)
@@ -49,6 +51,30 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let observationTask: Task<Void, Never>
     }
 
+    struct Update {
+        let state: HALiveActivityAttributes.ContentState
+        let relevanceScore: Double?
+
+        func inheriting(_ previous: Update?) -> Update {
+            guard relevanceScore == nil, let inherited = previous?.relevanceScore else { return self }
+            return Update(state: state, relevanceScore: inherited)
+        }
+
+        func content(
+            after previous: ActivityContent<HALiveActivityAttributes.ContentState>?
+        ) -> ActivityContent<HALiveActivityAttributes.ContentState> {
+            var carried = state
+            if let previous {
+                carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous.state, new: carried)
+            }
+            return ActivityContent(
+                state: carried,
+                staleDate: LiveActivityRegistry.staleDate(for: carried),
+                relevanceScore: relevanceScore ?? previous?.relevanceScore ?? kLiveActivityDefaultRelevanceScore
+            )
+        }
+    }
+
     // MARK: - Webhook Constants (wire-format frozen — tested in LiveActivityContractTests)
 
     /// Webhook type for reporting a new per-activity push token to HA.
@@ -74,10 +100,14 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     /// Latest state received for a tag while it was still reserved (in-flight start).
     /// Applied to the activity immediately after `confirmReservation` completes.
-    private var pendingState: [String: HALiveActivityAttributes.ContentState] = [:]
+    private var pendingState: [String: Update] = [:]
 
     /// Confirmed, running Live Activities keyed by tag.
     private var entries: [String: Entry] = [:]
+
+    /// Tags we already warned the user about being unable to report a push token for. Keeps a
+    /// retried token report (ActivityKit re-issues tokens) from re-alerting for the same activity.
+    private var unreachableWarnedTags: Set<String> = []
 
     // MARK: - Init
 
@@ -105,12 +135,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         entries[id] = entry
         if let latestState = pending {
             // A second push arrived while Activity.request() was in-flight — apply the newer state now.
-            let state = Self.carryForwardChronometerAnchor(previous: entry.activity.content.state, new: latestState)
-            let content = ActivityContent(
-                state: state,
-                staleDate: computeStaleDate(for: state)
-            )
-            await entry.activity.update(content)
+            await entry.activity.update(latestState.content(after: entry.activity.content))
         }
     }
 
@@ -123,6 +148,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     private func remove(id: String) -> Entry? {
         let entry = entries.removeValue(forKey: id)
         entry?.observationTask.cancel()
+        unreachableWarnedTags.remove(id)
         return entry
     }
 
@@ -135,15 +161,12 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         title: String,
         serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState,
+        relevanceScore: Double?,
         alert: Bool
     ) async throws -> Bool {
         // UPDATE path — activity already running with this tag
         if let existing = entries[tag] {
-            let state = Self.carryForwardChronometerAnchor(previous: existing.activity.content.state, new: state)
-            let content = ActivityContent(
-                state: state,
-                staleDate: computeStaleDate(for: state)
-            )
+            let content = Update(state: state, relevanceScore: relevanceScore).content(after: existing.activity.content)
             await existing.activity.update(
                 content,
                 alertConfiguration: Self.alertConfiguration(alert, title: title, message: state.message)
@@ -154,11 +177,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         // Also check system list in case we lost track after crash/relaunch
         if let live = Activity<HALiveActivityAttributes>.activities
             .first(where: { $0.attributes.tag == tag }) {
-            let state = Self.carryForwardChronometerAnchor(previous: live.content.state, new: state)
-            let content = ActivityContent(
-                state: state,
-                staleDate: computeStaleDate(for: state)
-            )
+            let content = Update(state: state, relevanceScore: relevanceScore).content(after: live.content)
             await live.update(
                 content,
                 alertConfiguration: Self.alertConfiguration(alert, title: title, message: state.message)
@@ -168,16 +187,11 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             return true
         }
 
-        guard Current.isTestFlight else {
-            Current.Log.info("LiveActivityRegistry: start gated to TestFlight, skipping tag \(tag)")
-            return false
-        }
-
         // START path — guard against duplicates with reservation
         guard reserve(id: tag) else {
             if reserved.contains(tag) {
                 // Activity.request() is in-flight — save this state so confirmReservation applies it.
-                pendingState[tag] = state
+                pendingState[tag] = Update(state: state, relevanceScore: relevanceScore).inheriting(pendingState[tag])
                 Current.Log.info(
                     "LiveActivityRegistry: duplicate start for tag \(tag), will apply latest state on confirm"
                 )
@@ -200,11 +214,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let activity: Activity<HALiveActivityAttributes>
 
         do {
-            let content = ActivityContent(
-                state: state,
-                staleDate: computeStaleDate(for: state),
-                relevanceScore: 0.5
-            )
+            let content = Update(state: state, relevanceScore: relevanceScore).content(after: nil)
             activity = try Activity<HALiveActivityAttributes>.request(
                 attributes: attributes,
                 content: content,
@@ -409,7 +419,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     ///      to show a spinner overlay on the lock screen presentation.
     ///
     /// For non-timer activities, fall back to the standard 30-minute freshness window.
-    private func computeStaleDate(for state: HALiveActivityAttributes.ContentState) -> Date {
+    static func staleDate(for state: HALiveActivityAttributes.ContentState) -> Date {
         if state.chronometer == true, let end = state.countdownEnd {
             // +2 s offset avoids staleDate == countdownEnd (system spinner bug).
             // max(..., now + 2) guards against a countdownEnd that is already in the past.
@@ -515,6 +525,16 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             Current.Log.warning("LiveActivityRegistry: no servers configured, skipping token report for tag \(tag)")
             return
         }
+        let reachableServers = await Self.serversWithResolvableWebhookURL(targetServers)
+        guard !reachableServers.isEmpty else {
+            // Without a token Core can never push an update, so the activity would sit on the Lock
+            // Screen frozen on its opening state with nothing explaining why. Tell the user instead.
+            Current.Log.error(
+                "LiveActivityRegistry: no active URL for any target server, cannot report token for tag \(tag)"
+            )
+            notifyTokenReportUnreachable(tag: tag)
+            return
+        }
         let expiresAt = Current.date()
             .addingTimeInterval(Self.pushTokenTimeToLive)
             .timeIntervalSince1970.rounded(.down)
@@ -526,7 +546,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
                 "expires_at": expiresAt,
             ]
         )
-        for server in targetServers {
+        for server in reachableServers {
             // Background session: the OS owns this upload and keeps retrying it (up to its 2 h
             // resource timeout) across connectivity changes even if the app is suspended or
             // terminated — so a momentary drop, or losing foreground time, doesn't lose the token.
@@ -534,6 +554,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             // starts, so it should not be best-effort like sendEphemeral.
             Current.webhooks.sendPassive(server: server, request: request).cauterize()
         }
+        unreachableWarnedTags.remove(tag)
         rememberReportedTokenTag(tag)
     }
 
@@ -553,6 +574,30 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             Current.Log.warning("LiveActivityRegistry: no server matches the activity origin; reporting token to all")
         }
         return allServers
+    }
+
+    /// The subset of `servers` whose webhook URL resolves right now. A server with no usable URL
+    /// (connection security level rules it out, or the internal URL can't be picked because
+    /// location permission isn't "Always") makes the webhook fail with `noActiveURL`, so the token
+    /// never reaches Core.
+    static func serversWithResolvableWebhookURL(_ servers: [Server]) async -> [Server] {
+        // Refresh once for the whole set: `Server.webhookURL()` refreshes on every call, so asking it
+        // per server would repeat the same SSID lookup for each configured server.
+        await Current.connectivity.refreshNetworkInformation()
+        return servers.filter { $0.webhookURLUsingLastKnownNetworkState() != nil }
+    }
+
+    /// Tell the user, through an ordinary local notification, that this Live Activity won't receive
+    /// updates. Sent at most once per tag while the process lives; a later successful token report
+    /// clears the tag so a recurrence warns again.
+    private func notifyTokenReportUnreachable(tag: String) {
+        guard unreachableWarnedTags.insert(tag).inserted else { return }
+        Current.notificationDispatcher.send(.init(
+            id: .liveActivityTokenUnreachable,
+            title: L10n.LiveActivity.TokenUnreachable.title,
+            body: L10n.LiveActivity.TokenUnreachable.body,
+            sound: .default
+        ))
     }
 
     /// Notify HA servers that the Live Activity was dismissed or ended externally.

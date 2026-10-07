@@ -1,6 +1,6 @@
 import AppIntents
 import HAKit
-import RealmSwift
+import HAWatchComplications
 import Shared
 import WidgetKit
 
@@ -10,6 +10,12 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Intent = WidgetDetailsAppIntent
 
     func snapshot(for configuration: WidgetDetailsAppIntent, in context: Context) async -> WidgetDetailsEntry {
+        // `context.isPreview` is WidgetKit's hook for the widget gallery, which renders with a
+        // default (unconfigured) configuration. Serve a representative sample there so browsing the
+        // picker costs no template render or state fetch; live widgets are unaffected.
+        if context.isPreview {
+            return Self.previewSample(for: configuration)
+        }
         do {
             return try await entry(for: configuration, in: context)
         } catch {
@@ -18,7 +24,25 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    static func previewSample(for configuration: WidgetDetailsAppIntent) -> WidgetDetailsEntry {
+        previewSample(showConfirmationNotification: configuration.showConfirmationNotification)
+    }
+
+    static func previewSample(showConfirmationNotification: Bool = true) -> WidgetDetailsEntry {
+        .init(
+            upperText: L10n.Climate.Control.Temperature.title,
+            lowerText: WidgetPreviewSample.temperatureValue,
+            detailsText: nil,
+            runScript: false,
+            script: nil,
+            showConfirmationNotification: showConfirmationNotification
+        )
+    }
+
     func timeline(for configuration: WidgetDetailsAppIntent, in context: Context) async -> Timeline<Entry> {
+        if context.isPreview {
+            return .init(entries: [Self.previewSample(for: configuration)], policy: .never)
+        }
         do {
             let snapshot = try await entry(for: configuration, in: context)
             return .init(
@@ -40,14 +64,85 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    /// The gallery renders this, redacted, until the snapshot arrives — so it is the same sample,
+    /// and the card never flips from empty to a reading as it loads.
     func placeholder(in context: Context) -> WidgetDetailsEntry {
-        .init(
-            upperText: nil, lowerText: nil, detailsText: nil,
-            runScript: false, script: nil, showConfirmationNotification: true
-        )
+        Self.previewSample()
     }
 
     private func entry(for configuration: WidgetDetailsAppIntent, in context: Context) async throws -> Entry {
+        switch configuration.source {
+        case .entity:
+            return try await entityEntry(for: configuration)
+        case .complication:
+            return try await complicationEntry(for: configuration)
+        case .template:
+            return try await templateEntry(for: configuration)
+        }
+    }
+
+    /// Mirrors one of the user's rectangular watch complications. The rectangular family draws the
+    /// resolved render model through the shared complication content view; the inline family, which has
+    /// no complication layout of its own, falls back to the resolved title and value on one line.
+    private func complicationEntry(for configuration: WidgetDetailsAppIntent) async throws -> Entry {
+        guard let complication = configuration.complication else {
+            Current.Log.error("Failed to fetch data for details widget: No complication selected")
+            throw WidgetDetailsDataError.noComplication
+        }
+        let context = try await WidgetComplicationResolver.context(id: complication.id, family: .rectangular)
+        let inlineText = [context.titleText, context.valueText]
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+
+        return .init(
+            upperText: inlineText.isEmpty ? nil : inlineText,
+            lowerText: nil,
+            detailsText: nil,
+            complicationModel: context.rectangularRenderModel,
+
+            runScript: configuration.runScript,
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
+    /// Builds the widget from a single picked entity's live state, fetched over the REST `/states`
+    /// endpoint (no admin required). Upper line is the entity name, lower line is the formatted
+    /// state with its unit, and the rectangular detail line shows the entity's area when known.
+    private func entityEntry(for configuration: WidgetDetailsAppIntent) async throws -> Entry {
+        guard let entity = configuration.entity else {
+            Current.Log.error("Failed to fetch data for details widget: No entity selected")
+            throw WidgetDetailsDataError.noEntity
+        }
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId })
+            ?? configuration.server.getServer() ?? Current.servers.all.first else {
+            Current.Log.error("Failed to fetch data for details widget: No servers exist")
+            throw WidgetDetailsDataError.noServers
+        }
+        guard let resolved = await WidgetEntityAttributes.resolvedValue(
+            entityId: entity.entityId,
+            attribute: configuration.attribute?.id,
+            server: server
+        ) else {
+            Current.Log.error("Failed to fetch value for details widget entity \(entity.entityId)")
+            throw WidgetDetailsDataError.apiError
+        }
+
+        let lowerText = resolved.unit.map { "\(resolved.value) \($0)" } ?? resolved.value
+        let areaName = entity.areaName?.isEmpty == false ? entity.areaName : nil
+
+        return .init(
+            upperText: entity.displayString,
+            lowerText: lowerText,
+            detailsText: areaName,
+
+            runScript: configuration.runScript,
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
+        )
+    }
+
+    private func templateEntry(for configuration: WidgetDetailsAppIntent) async throws -> Entry {
         guard let server = configuration.server.getServer() ?? Current.servers.all.first,
               let connection = Current.api(for: server)?.connection else {
             Current.Log.error("Failed to fetch data for details widget: No servers exist")
@@ -124,6 +219,9 @@ struct WidgetDetailsEntry: TimelineEntry {
     var upperText: String?
     var lowerText: String?
     var detailsText: String?
+    /// Set only by the complication source: the rectangular family renders this through the shared
+    /// watch complication content view instead of the three text lines.
+    var complicationModel: RectangularComplicationRenderModel?
 
     var runScript: Bool
     var script: IntentScriptEntity?
@@ -132,6 +230,8 @@ struct WidgetDetailsEntry: TimelineEntry {
 
 enum WidgetDetailsDataError: Error {
     case noServers
+    case noEntity
+    case noComplication
     case apiError
     case badResponse
 }

@@ -109,6 +109,10 @@ public enum AppConstants {
         }
     }
 
+    /// Every scheme the app answers to — the release one and the debug build's. A URL carrying one
+    /// of these is handled inside the app; anything else lives somewhere on the web.
+    public static let deeplinkSchemes: Set<String> = ["homeassistant", "homeassistant-dev"]
+
     /// Roots a scheme-less, slash-less navigation path (`map/0` → `/map/0`) so an HA path that is
     /// missing its leading slash still resolves in the frontend. Anything already rooted, or that
     /// carries a scheme — `https://`, `mailto:`, or the app's own `homeassistant://` deep links —
@@ -149,6 +153,28 @@ public enum AppConstants {
             .withWidgetAuthenticity()
     }
 
+    /// Where tapping an area lands: the area's own view on the dashboard that has one, which is
+    /// what the frontend opens when an area is tapped.
+    ///
+    /// `dashboardPath` is the dashboard that owns those views — see
+    /// `AppPanel.areasDashboardPath(serverId:)`; the view under it is `areas-<area_id>`, the path
+    /// `computeAreaPath` builds in home-assistant/frontend. A server that has no such dashboard
+    /// passes `nil`, and the area opens on its Settings page instead of nowhere.
+    public static func openAreaDeeplinkURL(areaId: String, serverId: String, dashboardPath: String?) -> URL? {
+        guard !areaId.isEmpty else { return nil }
+        let path: String = {
+            guard let dashboardPath, !dashboardPath.isEmpty else {
+                return "config/areas/area/\(areaId)"
+            }
+            return "\(dashboardPath)/areas-\(areaId)"
+        }()
+        return AppConstants.navigateDeeplinkURL(
+            path: path,
+            serverId: serverId,
+            avoidUnnecessaryReload: true
+        )?.withWidgetAuthenticity()
+    }
+
     public static func openEntityDeeplinkURL(entityId: String, serverId: String) -> URL? {
         AppConstants.navigateDeeplinkURL(
             path: "",
@@ -158,13 +184,56 @@ public enum AppConstants {
         )?.withWidgetAuthenticity()
     }
 
-    public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
-        URL(
-            string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
-        )
+    public static func openEntityMoreInfoDeeplinkURL(entityId: String) -> URL? {
+        var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/")
+        components?.queryItems = [
+            URLQueryItem(name: AppConstants.QueryItems.openMoreInfoDialog.rawValue, value: entityId),
+        ]
+        return components?.url
     }
 
-    @available(iOS 16.0, watchOS 9.0, *)
+    public static func openEntityMoreInfoDeeplinkURL(entityId: String, serverName: String) -> URL? {
+        guard let base = openEntityMoreInfoDeeplinkURL(entityId: entityId),
+              var components = URLComponents(url: base, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.queryItems = (components.queryItems ?? []) + [URLQueryItem(name: "server", value: serverName)]
+        return components.url
+    }
+
+    public static func pageDeeplinkURL(path: String) -> URL? {
+        URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)")
+    }
+
+    public static func pageDeeplinkURL(path: String, serverName: String) -> URL? {
+        pageDeeplinkURL(path: path)?.appending(queryItems: [URLQueryItem(name: "server", value: serverName)])
+    }
+
+    /// Everything that survives unescaped in the `url` value of an NFC tag link: the unreserved set
+    /// from RFC 3986, so the deep link's own separators cannot be mistaken for the outer URL's.
+    private static let nfcTagURLAllowed = CharacterSet(
+        charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+    )
+
+    /// The URL an NFC tag carries so that scanning it opens `deeplink` in the app.
+    ///
+    /// iPhone background tag reading only routes the `https` universal links the app has claimed, so a
+    /// bare `homeassistant://` URL written to a tag is ignored on a scan. A deep link travels on a tag
+    /// wrapped in the app's documented NFC universal link instead, which `TagManager.handle(userActivity:)`
+    /// unwraps back into the deep link when the scan reaches the app.
+    public static func nfcTagURL(deeplink: URL) -> URL? {
+        guard let encoded = deeplink.absoluteString
+            .addingPercentEncoding(withAllowedCharacters: nfcTagURLAllowed) else {
+            return nil
+        }
+        return URL(string: "https://www.home-assistant.io/ios/nfc/?url=\(encoded)")
+    }
+
+    /// Where tapping an entity lands: the frontend's more-info dialog, cameras included.
+    public static func openEntityDestinationURL(entityId: String, serverId: String) -> URL? {
+        openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
+    }
+
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil
@@ -176,7 +245,6 @@ public enum AppConstants {
         ])
     }
 
-    @available(iOS 16.0, watchOS 9.0, *)
     public static func todoListOpenURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil
@@ -185,6 +253,24 @@ public enum AppConstants {
             URLQueryItem(name: "entity_id", value: listId),
             URLQueryItem(name: "serverId", value: serverId),
         ])
+    }
+
+    /// Opens the frontend's calendar panel, which is where a tap on the calendar widget lands.
+    ///
+    /// `entityId` names the calendar the tapped event belongs to, the same way the to-do deep link
+    /// names a list; leaving it out opens the panel on everything, which is what a tap anywhere
+    /// other than an event should do. The server is always carried, because the widget can merge
+    /// calendars from several servers.
+    public static func calendarOpenURL(serverId: String, entityId: String? = nil) -> URL? {
+        guard !serverId.isEmpty else {
+            return nil
+        }
+        var queryItems = [URLQueryItem(name: "serverId", value: serverId)]
+        if let entityId, !entityId.isEmpty {
+            queryItems.insert(URLQueryItem(name: "entity_id", value: entityId), at: 0)
+        }
+        return URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/calendar")?
+            .appending(queryItems: queryItems)
     }
 
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
@@ -208,7 +294,8 @@ public enum AppConstants {
         let groupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID)
 
         guard let groupDir else {
-            fatalError("Unable to get groupDir.")
+            Current.Log.error("Unable to get app group container URL; falling back to temporary directory")
+            return URL(fileURLWithPath: NSTemporaryDirectory())
         }
 
         return groupDir
@@ -392,9 +479,11 @@ public extension Version {
     static let localPushConfirm: Version = .init(major: 2021, minor: 10, prerelease: "any0")
     static let externalBusCommandRestart: Version = .init(major: 2021, minor: 12, prerelease: "b6")
     static let updateLocationGPSOptional: Version = .init(major: 2022, minor: 2, prerelease: "any0")
-    static let fullWebhookSecretKey: Version = .init(major: 2022, minor: 3)
     static let conversationWebhook: Version = .init(major: 2023, minor: 2, prerelease: "any0")
     static let externalBusCommandSidebar: Version = .init(major: 2023, minor: 4, prerelease: "b3")
+    /// render_template accepts `report_errors`, so template errors arrive as subscription events
+    /// instead of being logged only server-side.
+    static let canReportTemplateErrors: Version = .init(major: 2023, minor: 9)
     static let externalBusCommandAutomationEditor: Version = .init(major: 2024, minor: 2, prerelease: "any0")
     static let canUseAppThemeForStatusBar: Version = .init(major: 2024, minor: 7)
     /// The version where the app can subscribe to entities changes with a filter (e.g. only state changes from sensor
@@ -406,8 +495,17 @@ public extension Version {
     static let canNavigateMoreInfoDialogThroughFrontend: Version = .init(major: 2026, minor: 1, prerelease: "any0")
     /// Frontend introduces the quickbar with Ctrl+K keyboard shortcut in 2026.2
     static let quickSearchKeyboardShortcut: Version = .init(major: 2026, minor: 2, prerelease: "any0")
+    /// `frontend/get_icons` supports the `entity_component` category, letting the app resolve entity
+    /// icons from the same backend data the frontend uses, from 2024.2.
+    static let frontendGetIconsEntityComponent: Version = .init(major: 2024, minor: 2, prerelease: "any0")
     /// Core accepts `in_zones` in update_location payloads from 2026.6.0.
     static let inZonesOnLocationUpdate: Version = .init(major: 2026, minor: 6, patch: 0, prerelease: "any0")
+    /// Frontend sends `frontend/loaded` when its launch screen is removed from 2026.8.0.
+    static let frontendLoadedExternalBus: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
+    /// Frontend handles safe-area insets itself from 2026.8.0, so the app can display edge-to-edge by default.
+    static let canDisplayEdgeToEdge: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
+    /// Core's `usage_prediction/common_control` accepts a `limit` from 2026.10.0, and rejects it before.
+    static let usagePredictionCommonControlLimit: Version = .init(major: 2026, minor: 10, patch: 0, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

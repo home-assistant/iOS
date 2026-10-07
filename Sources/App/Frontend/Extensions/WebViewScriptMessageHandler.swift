@@ -6,13 +6,16 @@ import WebKit
 enum WKUserContentControllerMessage: String, CaseIterable {
     case externalBus
     case updateThemeColors
+    case updateThemeVariables
     case getExternalAuth
     case revokeExternalAuth
     case logError
+    case frontendRestored
 }
 
 final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     weak var webView: WebViewControllerProtocol?
+    var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
     @MainActor func userContentController(
         _ userContentController: WKUserContentController,
@@ -23,26 +26,45 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             return
         }
 
-        Current.Log.verbose("message \(message.body)".replacingOccurrences(of: "\n", with: " "))
+        let messageType = messageBody["type"] as? String ?? "unknown"
+        Current.Log.verbose("message \(message.name) type \(messageType) keys \(messageBody.count)")
 
-        guard UIApplication.shared.applicationState != .background else {
-            Current.Log.verbose("Ignoring WKUserContentController message \(message.name) because app is in background")
+        handle(messageName: message.name, messageBody: messageBody)
+    }
+
+    @MainActor func handle(messageName: String, messageBody: [String: Any]) {
+        guard !isAppInBackground() else {
+            Current.Log.verbose("Ignoring WKUserContentController message \(messageName) because app is in background")
+            // The frontend caches the pending getExternalAuth promise and never asks again while it
+            // stays unsettled, so the callback must be rejected instead of dropped - otherwise the
+            // frontend can never reconnect until the web view is reloaded.
+            if WKUserContentControllerMessage(rawValue: messageName) == .getExternalAuth {
+                if let callbackName = messageBody["callback"] as? String {
+                    sendGetExternalAuthFailure(callbackName: callbackName)
+                } else {
+                    Current.Log.error("getExternalAuth message without a string callback name")
+                }
+            }
             return
         }
 
-        switch WKUserContentControllerMessage(rawValue: message.name) {
+        switch WKUserContentControllerMessage(rawValue: messageName) {
         case .externalBus:
             handleExternalBus(messageBody)
         case .updateThemeColors:
             handleUpdateThemeColors(messageBody)
+        case .updateThemeVariables:
+            handleUpdateThemeVariables(messageBody)
         case .getExternalAuth:
             handleGetExternalAuth(messageBody)
         case .revokeExternalAuth:
             handleRevokeExternalAuth(messageBody)
         case .logError:
             handleLogError(messageBody)
+        case .frontendRestored:
+            webView?.handleFrontendRestoredFromPageCache()
         default:
-            Current.Log.error("unknown message: \(message.name)")
+            Current.Log.error("unknown message: \(messageName)")
         }
     }
 
@@ -56,7 +78,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
         }
 
         ThemeColors.updateCache(with: messageBody, for: traitCollection)
-        webView?.styleUI()
+        webView?.styleUI(publishesThemedStatusBar: true)
     }
 
     /// Handles externalBus messages by passing them to the webViewExternalMessageHandler.
@@ -69,9 +91,35 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
         handleThemeUpdate(messageBody)
     }
 
+    /// Persists the whole set of CSS custom properties the frontend resolved, so native screens can be
+    /// drawn in the user's configured colors. Separate from `updateThemeColors`, which carries only the
+    /// handful the status bar needs and is what keeps that path working if this one ever fails.
+    private func handleUpdateThemeVariables(_ messageBody: [String: Any]) {
+        guard let server = webView?.server, let traitCollection = webView?.traitCollection else {
+            Current.Log.error("Received theme variables with no web view to attribute them to")
+            return
+        }
+        let serverId = server.identifier.rawValue
+        guard let capture = FrontendThemeCaptureMessage(
+            messageBody: messageBody,
+            serverId: serverId,
+            fallbackAppearance: traitCollection.userInterfaceStyle == .dark ? .dark : .light,
+            capturedAt: Current.date()
+        ) else {
+            Current.Log.error("Received a theme variables message with nothing worth storing")
+            return
+        }
+
+        // Several hundred rows in one transaction is too much to put on the main thread, and it can
+        // straddle a backgrounding, so it goes through the protected-work path like the other bulk writes.
+        AppDatabaseSuspension.performProtectedWork(named: .frontendThemeSave) {
+            Current.frontendTheme().store(capture.variables, for: serverId, appearance: capture.appearance)
+        }
+    }
+
     /// Retrieves an authentication token for the web view and invokes a JavaScript callback with the result.
     private func handleGetExternalAuth(_ messageBody: [String: Any]) {
-        guard let callbackName = messageBody["callback"], let server = webView?.server else { return }
+        guard let callbackName = messageBody["callback"] as? String, let server = webView?.server else { return }
         let force = messageBody["force"] as? Bool ?? false
 
         Current.Log.verbose("getExternalAuth called, forced: \(force)")
@@ -92,17 +140,28 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
                 })
             }
         }.catch { [weak self] error in
-            self?.webView?.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')") {
-                _, error in
-                if let error {
-                    Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
-                }
-            }
+            self?.sendGetExternalAuthFailure(callbackName: callbackName)
+            // The frontend swallows the rejection and retries, so without this the failure would stay
+            // invisible and the stand-by loader would spin forever.
+            self?.webView?.handleExternalAuthFailure(error: error)
             Current.Log.error("Failed to authenticate webview: \(error)")
         }
     }
 
+    /// Rejects a getExternalAuth request so the frontend can clear its pending token promise and retry.
+    private func sendGetExternalAuthFailure(callbackName: String) {
+        webView?.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')") { _, error in
+            if let error {
+                Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
+            }
+        }
+    }
+
     /// Revokes the current authentication token and informs the web view via a JavaScript callback.
+    ///
+    /// The server itself stays registered: logging out only invalidates the credentials, so the user is
+    /// asked to log in again instead of losing the server and everything configured against it
+    /// (widgets, watch and CarPlay items, sensors, notification registration).
     private func handleRevokeExternalAuth(_ messageBody: [String: Any]) {
         guard let callbackName = messageBody["callback"], let server = webView?.server else { return }
 
@@ -112,23 +171,42 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             Current.api(for: server)?.tokenManager
                 .revokeToken() ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.done { [weak self, server] _ in
-            Current.servers.remove(identifier: server.identifier)
             let script = "\(callbackName)(true)"
 
             Current.Log.verbose("Running revoke external auth callback \(script)")
 
             self?.webView?.evaluateJavaScript(script) { _, error in
-                Current.onboardingObservation.needed(.logout)
-
                 if let error {
                     Current.Log.error("Failed calling sign out callback: \(error)")
                 }
 
                 Current.Log.verbose("Successfully informed web client of log out.")
+                self?.requireLogin(for: server)
             }
         }.catch { error in
             Current.Log.error("Failed to revoke token: \(error)")
         }
+    }
+
+    /// Drops the connection the revoked token was driving and surfaces the logged-out state. The
+    /// tokens are dead from the revocation on, so they are marked as such: without that, the app and
+    /// the frontend keep re-sending them, which Home Assistant logs as invalid auth and eventually
+    /// answers with an IP ban.
+    ///
+    /// The model manager is deliberately left subscribed. Its subscriptions are established once at
+    /// launch and never re-established, and they cover every server, so unsubscribing here would kill
+    /// model syncing app-wide until the next launch — for the other servers immediately, and for this
+    /// one even after a successful log in. Disconnecting is enough: HAKit restores the subscriptions
+    /// when re-authentication reconnects.
+    private func requireLogin(for server: Server) {
+        // The web view is put into the logged-out state first: invalidating the token writes to the
+        // server, and the observers watching it re-evaluate which URL should be loaded. They have to
+        // find the log out already recorded, or they navigate straight back into the server.
+        webView?.showLoggedOutState()
+
+        let api = Current.api(for: server)
+        api?.tokenManager.handleTokenRevoked()
+        api?.connection.disconnect()
     }
 
     private func handleLogError(_ messageBody: [String: Any]) {

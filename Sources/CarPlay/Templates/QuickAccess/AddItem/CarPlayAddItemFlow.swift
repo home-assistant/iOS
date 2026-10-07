@@ -2,7 +2,6 @@ import CarPlay
 import Foundation
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayAddItemFlow {
     private enum Step {
         case servers
@@ -106,6 +105,15 @@ final class CarPlayAddItemFlow {
         ) { [weak self] in self?.go(to: .domains(server)) }
         var rows = [areas, control]
 
+        // Folders can't contain other folders, so the folder option only shows when adding to
+        // the Quick Access list itself.
+        if case .quickAccess = viewModel.destination {
+            rows.append(navigationRow(
+                title: L10n.Watch.Configuration.Folder.defaultName,
+                image: MaterialDesignIcons.folderIcon.carPlayIcon()
+            ) { [weak self] in self?.presentFolderInfo() })
+        }
+
         if #available(iOS 26.4, *) {
             let assist = navigationRow(
                 title: L10n.Widgets.Action.Name.assist,
@@ -188,6 +196,18 @@ final class CarPlayAddItemFlow {
         )
     }
 
+    private func presentFolderInfo() {
+        let okAction = CPAlertAction(title: L10n.okLabel, style: .default) { [weak self] _ in
+            self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+        }
+        let actionSheet = CPActionSheetTemplate(
+            title: L10n.Watch.Configuration.Folder.defaultName,
+            message: L10n.CarPlay.QuickAccess.AddItem.Folder.message,
+            actions: [okAction]
+        )
+        interfaceController?.presentTemplate(actionSheet, animated: true, completion: nil)
+    }
+
     private func presentAssistPromptInfo() {
         let okAction = CPAlertAction(title: L10n.okLabel, style: .default) { [weak self] _ in
             self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
@@ -201,6 +221,14 @@ final class CarPlayAddItemFlow {
     }
 
     private func presentConfirmation(server: Server, entity: HAAppEntity) {
+        // Control-screen domains (climate) never execute on tap — they open their own screen — and
+        // built-in-confirmation domains (lock) always confirm regardless of the setting, so asking
+        // whether running should require confirmation doesn't apply. Add the item directly.
+        if let domain = Domain(rawValue: entity.domain), domain.hasControlScreen || domain.hasBuiltInConfirmation {
+            commit(server: server, entity: entity, requiresConfirmation: false, dismissPresented: false)
+            return
+        }
+
         let requireAction = CPAlertAction(
             title: L10n.CarPlay.QuickAccess.AddItem.Confirmation.require,
             style: .default
@@ -228,24 +256,46 @@ final class CarPlayAddItemFlow {
         interfaceController?.presentTemplate(actionSheet, animated: true, completion: nil)
     }
 
-    private func commit(server: Server, entity: HAAppEntity, requiresConfirmation: Bool) {
-        viewModel.addEntityToQuickAccess(
-            entityId: entity.entityId,
-            serverId: server.identifier.rawValue,
-            requiresConfirmation: requiresConfirmation
-        )
-        interfaceController?.dismissTemplate(animated: true, completion: nil)
-        interfaceController?.popToRootTemplate(animated: true, completion: nil)
-        onFinish()
+    /// `dismissPresented` is false when no action sheet is on screen (the confirmation question
+    /// was skipped), so only the pop transition needs to settle before saving.
+    private func commit(
+        server: Server,
+        entity: HAAppEntity,
+        requiresConfirmation: Bool,
+        dismissPresented: Bool = true
+    ) {
+        // Save only after the dismiss/pop transitions settle: the scene observes the config table and may
+        // replace the root template on change, which blanks the CarPlay screen if a transition is in flight.
+        let save: () -> Void = { [weak self] in
+            guard let self else { return }
+            interfaceController?.popToRootTemplate(animated: true) { _, _ in
+                self.viewModel.addEntityToQuickAccess(
+                    entityId: entity.entityId,
+                    serverId: server.identifier.rawValue,
+                    requiresConfirmation: requiresConfirmation
+                )
+                self.onFinish()
+            }
+        }
+        if dismissPresented {
+            interfaceController?.dismissTemplate(animated: true) { _, _ in
+                save()
+            }
+        } else {
+            save()
+        }
     }
 
     private func commitAssistPipeline(server: Server, pipeline: Pipeline) {
-        viewModel.addAssistPipelineToQuickAccess(
-            pipeline: pipeline,
-            serverId: server.identifier.rawValue
-        )
-        interfaceController?.popToRootTemplate(animated: true, completion: nil)
-        onFinish()
+        // Same transition-then-save ordering as `commit`; see the comment there.
+        interfaceController?.popToRootTemplate(animated: true) { [weak self] _, _ in
+            guard let self else { return }
+            viewModel.addAssistPipelineToQuickAccess(
+                pipeline: pipeline,
+                serverId: server.identifier.rawValue
+            )
+            onFinish()
+        }
     }
 
     private func section(header: String, rows: [CPListItem], emptyMessage: String? = nil) -> CPListSection {

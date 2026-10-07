@@ -7,43 +7,29 @@ struct OnboardingServersListView: View {
         static let initialDelayUntilDismissCenterLoader: TimeInterval = 3
         static let minimumDelayUntilDismissCenterLoader: TimeInterval = 1.5
         static let delayUntilAutoconnect: TimeInterval = 2
-
-        enum MacSheetSize {
-            static let errorDetailsMinWidth: CGFloat = 760
-            static let errorDetailsMinHeight: CGFloat = 680
-            static let manualInputMinWidth: CGFloat = 720
-            static let manualInputMinHeight: CGFloat = 600
-        }
+        static let manualEntryTransitionID = "manual-entry"
     }
 
+    @Namespace private var manualEntryGeometry
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @EnvironmentObject var hostingProvider: ViewControllerProvider
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     @StateObject private var viewModel: OnboardingServersListViewModel
+    /// Owned by `OnboardingNavigationView`; the auth flow pushes its pages onto its navigation path.
+    @ObservedObject private var presenter: OnboardingAuthPresenter
 
     @State private var showDocumentation = false
     @State private var showManualInput = false
+    /// Mac Catalyst pushes manual entry as a page instead of presenting the sheet above.
+    @State private var showManualInputPage = false
     @State private var screenLoaded = false
     @State private var autoConnectWorkItem: DispatchWorkItem?
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
     @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
     @State private var rejectedInvitation = false
-
-    private var presentingViewController: UIViewController {
-        if let providedController = hostingProvider.viewController, Current.isCatalyst {
-            return providedController
-        } else if let hostingViewController = hostingProvider.viewController {
-            switch onboardingStyle {
-            case .initial, .required:
-                return hostingViewController
-            case .secondary:
-                return hostingViewController.presentedViewController ?? hostingViewController
-            }
-        } else {
-            fatalError("No controller provided for onboarding")
-        }
-    }
+    @State private var headerHeight: CGFloat = 0
+    @State private var contentHeight: CGFloat = 0
 
     private let prefillURL: URL?
     private let onboardingStyle: OnboardingStyle
@@ -56,22 +42,51 @@ struct OnboardingServersListView: View {
         invitationURL != nil && !rejectedInvitation
     }
 
-    init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false, onboardingStyle: OnboardingStyle) {
+    /// A short window (closed iPhone Duo or any iPhone in landscape) moves the title into the
+    /// navigation bar so the loader has the whole height to itself.
+    private var isCompactHeight: Bool {
+        verticalSizeClass == .compact
+    }
+
+    /// Height the in-content title takes away from the loader; nothing when it is in the bar.
+    private var titleHeight: CGFloat {
+        isCompactHeight ? 0 : headerHeight
+    }
+
+    /// Space left for the loader below the title, with a margin; the loader shrinks to fit it.
+    private var loaderAvailableHeight: CGFloat? {
+        guard contentHeight > 0 else { return nil }
+        return contentHeight - titleHeight - DesignSystem.Spaces.six
+    }
+
+    init(
+        prefillURL: URL? = nil,
+        shouldDismissOnSuccess: Bool = false,
+        onboardingStyle: OnboardingStyle,
+        presenter: OnboardingAuthPresenter
+    ) {
         self.prefillURL = prefillURL
         self
             ._viewModel =
             .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
         self.onboardingStyle = onboardingStyle
+        self.presenter = presenter
     }
 
     var body: some View {
         ZStack {
             content
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    proxy.size.height
+                } action: { height in
+                    contentHeight = height
+                }
             if !shouldShowInvitation {
                 centerLoader
                 autoConnectView
             }
         }
+        .navigationTitle(isCompactHeight ? L10n.Onboarding.Servers.title : "")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom, content: {
             if autoConnectInstance == nil, !shouldShowInvitation {
@@ -106,32 +121,49 @@ struct OnboardingServersListView: View {
                 )
             }
         }
+        // iOS only — on Mac Catalyst the view model pushes `.connectionError` instead, because
+        // sheet content doesn't receive mouse events reliably there.
         .sheet(isPresented: $viewModel.showError) {
             errorView
-                .macOnboardingSheetFrame(
-                    minWidth: Constants.MacSheetSize.errorDetailsMinWidth,
-                    minHeight: Constants.MacSheetSize.errorDetailsMinHeight
-                )
         }
-        .sheet(isPresented: $showManualInput) {
-            ManualURLEntryView { connectURL in
-                viewModel.manualInputLoading = true
-                viewModel.selectInstance(.init(manualURL: connectURL), presentingController: presentingViewController)
+        // If the mTLS prompt arrives while manual URL entry is still up, dismiss the entry sheet
+        // first; the container holds the prompt back until `onDismiss` below releases it.
+        .onChange(of: presenter.clientCertificateRequest?.id) { newValue in
+            if newValue != nil, showManualInput {
+                showManualInput = false
             }
-            .macOnboardingSheetFrame(
-                minWidth: Constants.MacSheetSize.manualInputMinWidth,
-                minHeight: Constants.MacSheetSize.manualInputMinHeight
-            )
         }
-        .fullScreenCover(isPresented: .init(get: {
-            viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
-        }, set: { newValue in
-            viewModel.showPermissionsFlow = newValue
-        })) {
-            // isPresented guarantees onboardingServer
-            // swiftlint:disable:next force_unwrapping
-            OnboardingPermissionsNavigationView(onboardingServer: viewModel.onboardingServer!)
+        // Start the flow only in `onDismiss`; mutating observed state while the sheet animates out left
+        // it stuck on Mac Catalyst with the mTLS prompt (presented by the container above) stranded behind.
+        .sheet(isPresented: $showManualInput, onDismiss: {
+            presenter.releaseClientCertificateHold()
+            startPendingManualConnection()
+        }) {
+            ManualURLEntryView { connectURL in
+                viewModel.pendingManualURL = connectURL
+            }
+            .zoomNavigationTransition(sourceID: Constants.manualEntryTransitionID, in: manualEntryGeometry)
         }
+        // On Mac Catalyst manual entry is a pushed page instead of a sheet: sheet content doesn't
+        // receive mouse events reliably there, and pages avoid the sheet-over-sheet ordering issues
+        // with the mTLS prompt entirely.
+        .navigationDestination(isPresented: $showManualInputPage) {
+            ManualURLEntryView { connectURL in
+                viewModel.pendingManualURL = connectURL
+            }
+            .onDisappear {
+                startPendingManualConnection()
+            }
+        }
+    }
+
+    /// Runs after manual URL entry goes away (sheet dismissed / page popped) so the flow never
+    /// starts while that UI is still on screen.
+    private func startPendingManualConnection() {
+        guard let connectURL = viewModel.pendingManualURL else { return }
+        viewModel.pendingManualURL = nil
+        viewModel.manualInputLoading = true
+        viewModel.selectInstance(.init(manualURL: connectURL), presenter: presenter)
     }
 
     @ViewBuilder
@@ -176,7 +208,7 @@ struct OnboardingServersListView: View {
             Button {
                 autoConnectInstance = nil
                 guard let instance else { return }
-                viewModel.selectInstance(instance, presentingController: presentingViewController)
+                viewModel.selectInstance(instance, presenter: presenter)
             } label: {
                 Text(L10n.Onboarding.Servers.AutoConnect.button)
             }
@@ -209,7 +241,17 @@ struct OnboardingServersListView: View {
         }
     }
 
+    @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
+        // Cancel for the add-server sheet lives here (not on the onboarding container) so it isn't
+        // shown on top of the auth flow's pages, which bring their own chrome.
+        if onboardingStyle.insertsCancelButton, !Current.isCatalyst {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(L10n.cancelLabel) {
+                    dismiss()
+                }
+            }
+        }
         ToolbarItem(placement: .topBarTrailing) {
             if prefillURL != nil {
                 CloseButton {
@@ -261,7 +303,9 @@ struct OnboardingServersListView: View {
             } else {
                 ScrollView {
                     VStack(spacing: DesignSystem.Spaces.two) {
-                        headerView
+                        if !isCompactHeight {
+                            headerView
+                        }
                         list
                             .opacity(viewModel.showCenterLoader ? 0 : 1)
                             .animation(.easeInOut, value: viewModel.showCenterLoader)
@@ -276,6 +320,10 @@ struct OnboardingServersListView: View {
         if !screenLoaded {
             screenLoaded = true
             startDiscoveryIfNeeded()
+        } else if !shouldShowInvitation {
+            // Reappearing after an auth flow page above was popped — being covered stopped
+            // discovery, so resume it without clearing what was already found.
+            viewModel.resumeDiscovery()
         }
     }
 
@@ -285,22 +333,29 @@ struct OnboardingServersListView: View {
     }
 
     private var centerLoader: some View {
-        SearchingServersAnimationView(text: L10n.Onboarding.Servers.Search.Loader.text)
-            .padding(.horizontal)
-            .offset(y: autoConnectInstance == nil ? 0 : -100)
-            .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
-            .animation(.easeInOut, value: viewModel.showCenterLoader)
-            .animation(.easeInOut, value: autoConnectInstance)
+        SearchingServersAnimationView(
+            text: L10n.Onboarding.Servers.Search.Loader.text,
+            availableHeight: loaderAvailableHeight
+        )
+        .padding(.horizontal)
+        // Centers the loader in the space below the title rather than over it.
+        .padding(.top, titleHeight)
+        // Pinned to the measured content height so the overlay never grows the stack and
+        // feeds back into its own measurement.
+        .frame(height: contentHeight > 0 ? contentHeight : nil)
+        .offset(y: autoConnectInstance == nil ? 0 : -100)
+        .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
+        .animation(.easeInOut, value: viewModel.showCenterLoader)
+        .animation(.easeInOut, value: autoConnectInstance)
     }
 
     private func startDiscoveryIfNeeded() {
-        guard !shouldShowInvitation else { return }
         viewModel.startDiscovery()
     }
 
     private func acceptInvitation(url: URL) {
         viewModel.invitationLoading = true
-        viewModel.selectInstance(.init(manualURL: url), presentingController: presentingViewController)
+        viewModel.selectInstance(.init(manualURL: url), presenter: presenter)
     }
 
     private func rejectInvitation() {
@@ -357,11 +412,16 @@ struct OnboardingServersListView: View {
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(.vertical, DesignSystem.Spaces.four)
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                proxy.size.height
+            } action: { height in
+                headerHeight = height
+            }
     }
 
     private func serverRow(instance: DiscoveredHomeAssistant) -> some View {
         Button(action: {
-            viewModel.selectInstance(instance, presentingController: presentingViewController)
+            viewModel.selectInstance(instance, presenter: presenter)
         }, label: {
             OnboardingScanningInstanceRow(
                 name: instance.bonjourName ?? instance.locationName,
@@ -380,14 +440,21 @@ struct OnboardingServersListView: View {
 
     private var manualInputButton: some View {
         Button(action: {
-            showManualInput = true
+            if Current.isCatalyst {
+                showManualInputPage = true
+            } else {
+                // Hold back the container's mTLS sheet while ours is up; released in the sheet's
+                // `onDismiss` so the prompt is never presented behind it.
+                presenter.holdClientCertificateSheet = true
+                showManualInput = true
+            }
         }) {
             Text(L10n.Onboarding.Scanning.Manual.Button.title)
         }
-        .buttonStyle(.secondaryButton)
+        .buttonStyle(.glassButton)
+        .accessibilityIdentifier(AccessibilityIdentifier.onboardingServersManualEntry.rawValue)
+        .zoomTransitionSource(id: Constants.manualEntryTransitionID, in: manualEntryGeometry)
         .padding()
-        // A little bit of opacity to indicate items behind it
-        .background(Color(uiColor: .systemBackground).opacity(0.9))
     }
 
     // Divider between the list and manual input button providing alternative
@@ -411,7 +478,11 @@ struct OnboardingServersListView: View {
 }
 
 #Preview {
-    NavigationView {
-        OnboardingServersListView(prefillURL: nil, onboardingStyle: .secondary)
+    NavigationStack {
+        OnboardingServersListView(
+            prefillURL: nil,
+            onboardingStyle: .secondary,
+            presenter: OnboardingAuthPresenter()
+        )
     }
 }

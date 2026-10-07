@@ -23,7 +23,8 @@ struct ControlScene: ControlWidget {
                 intent.showConfirmationNotification = template.showConfirmationNotification
                 return intent
             }()) {
-                // ControlWidget can only display SF Symbol
+                // ControlWidget can only display SF Symbol, user-picked at runtime
+                // swiftlint:disable:next sf_safe_symbol
                 Label(template.displayText ?? template.intentSceneEntity.displayString, systemImage: template.icon.id)
             }
             .tint(.haPrimary)

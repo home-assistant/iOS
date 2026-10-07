@@ -22,13 +22,21 @@ struct WidgetCustomTimelineProvider: WidgetSingleEntryTimelineProvider {
         WidgetCustomConstants.expiration
     }
 
-    func makePlaceholder(in context: Context) -> WidgetCustomEntry {
-        .init(
+    func makePreviewEntry(in context: Context) -> WidgetCustomEntry {
+        let items = WidgetPreviewSample.entities
+            .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
+            .map(\.magicItem)
+        return .init(
             date: .now,
-            magicItemInfoProvider: Current.magicItemProvider(),
-            entitiesState: [:],
+            widget: .init(
+                id: WidgetPreviewSample.serverId,
+                name: L10n.Widgets.Preview.Custom.title,
+                items: items
+            ),
+            magicItemInfoProvider: WidgetPreviewMagicItemProvider(),
+            entitiesState: WidgetPreviewSample.entitiesState(for: items),
             showLastUpdateTime: false,
-            showStates: false
+            showStates: true
         )
     }
 
@@ -146,12 +154,12 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
     var showLastUpdateTime: Bool
 
     @Parameter(
-        title: .init("widgets.custom.show_states.param.title", defaultValue: "Show states (BETA)"),
+        title: .init("widgets.custom.show_states.param.title_no_beta", defaultValue: "Show states"),
         description: .init(
             "widgets.custom.show_states.description",
             defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
         ),
-        default: false
+        default: true
     )
     var showStates: Bool
 
@@ -164,7 +172,7 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct CustomWidgetEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Custom Widget")
 
@@ -185,7 +193,7 @@ struct CustomWidgetEntity: AppEntity {
     }
 }
 
-@available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
+@available(macOS 13.0, *)
 struct CustomWidgetAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [CustomWidgetEntity] {
         widgets().filter { identifiers.contains($0.id) }.map { .init(id: $0.id, name: $0.name) }

@@ -8,16 +8,42 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.gauge.title", defaultValue: "Actions")
     static let description = IntentDescription(
         .init(
-            "widgets.gauge.description_with_warning",
-            defaultValue: "Display numeric states from Home Assistant in a gauge, ATTENTION: User needs to be admin to use this feature"
+            "widgets.gauge.gallery_description",
+            defaultValue: "Display an entity, a watch complication, or a template from Home Assistant in a gauge"
         )
     )
+
+    @Parameter(title: .init("widgets.content_source.title", defaultValue: "Source"), default: .entity)
+    var source: WidgetContentSourceAppEnum
 
     @Parameter(title: .init("widgets.gauge.parameters.gauge_type", defaultValue: "Gauge Type"), default: .normal)
     var gaugeType: GaugeTypeAppEnum
 
     @Parameter(title: .init("widgets.gauge.parameters.server", defaultValue: "Server"), default: nil)
     var server: IntentServerAppEntity
+
+    /// Entity whose live state drives the gauge when `source` is `.entity`. The value, labels and range
+    /// are generated automatically, no templates required.
+    @Parameter(title: .init("widgets.parameters.entity", defaultValue: "Entity"))
+    var entity: HAAppEntityAppIntentEntity?
+
+    /// Optional attribute of `entity` to read instead of its state (nil = state), like the watch builder.
+    @Parameter(title: .init("widgets.parameters.attribute", defaultValue: "Attribute"))
+    var attribute: WidgetGaugeAttributeAppEntity?
+
+    /// Circular watch complication mirrored when `source` is `.complication`, rendered through the very
+    /// same content view the watch and the complication editor use. The complication carries its own
+    /// gauge style, so `gaugeType` does not apply to it.
+    @Parameter(title: .init("widgets.parameters.complication", defaultValue: "Complication"))
+    var complication: WidgetCircularComplicationAppEntity?
+
+    /// Numeric value mapped to an empty gauge (fill 0) when using the entity source.
+    @Parameter(title: .init("widgets.gauge.parameters.min_value", defaultValue: "Minimum Value"), default: 0)
+    var minValue: Double
+
+    /// Numeric value mapped to a full gauge (fill 1) when using the entity source.
+    @Parameter(title: .init("widgets.gauge.parameters.max_value", defaultValue: "Maximum Value"), default: 100)
+    var maxValue: Double
 
     @Parameter(
         title: .init("widgets.gauge.parameters.value_template", defaultValue: "Value Template (0-1)"),
@@ -115,93 +141,151 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     var showConfirmationNotification: Bool
 
     static var parameterSummary: some ParameterSummary {
-        When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
-            Switch(\.$gaugeType) {
-                Case(.normal) {
+        Switch(\.$source) {
+            Case(.entity) {
+                When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
                     Summary {
+                        \.$source
                         \.$gaugeType
+                        \.$entity
+                        \.$attribute
 
-                        \.$server
-                        \.$valueTemplate
-
-                        \.$valueLabelTemplate
-                        \.$minTemplate
-                        \.$maxTemplate
+                        \.$minValue
+                        \.$maxValue
 
                         \.$runScript
                         \.$script
                         \.$showConfirmationNotification
                     }
-                }
-                Case(.singleLabel) {
+                } otherwise: {
                     Summary {
+                        \.$source
                         \.$gaugeType
+                        \.$entity
+                        \.$attribute
 
-                        \.$server
-                        \.$valueTemplate
-
-                        \.$valueLabelTemplate
-                        \.$labelTemplate
+                        \.$minValue
+                        \.$maxValue
 
                         \.$runScript
-                        \.$script
-                        \.$showConfirmationNotification
-                    }
-                }
-                DefaultCase {
-                    Summary {
-                        \.$gaugeType
-
-                        \.$server
-                        \.$valueTemplate
-
-                        \.$valueLabelTemplate
-
-                        \.$runScript
-                        \.$script
-                        \.$showConfirmationNotification
                     }
                 }
             }
-        } otherwise: {
-            Switch(\.$gaugeType) {
-                Case(.normal) {
+            Case(.complication) {
+                When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
                     Summary {
-                        \.$gaugeType
+                        \.$source
+                        \.$complication
 
-                        \.$server
-                        \.$valueTemplate
-
-                        \.$valueLabelTemplate
-                        \.$minTemplate
-                        \.$maxTemplate
+                        \.$runScript
+                        \.$script
+                        \.$showConfirmationNotification
+                    }
+                } otherwise: {
+                    Summary {
+                        \.$source
+                        \.$complication
 
                         \.$runScript
                     }
                 }
-                Case(.singleLabel) {
-                    Summary {
-                        \.$gaugeType
+            }
+            DefaultCase {
+                When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
+                    Switch(\.$gaugeType) {
+                        Case(.normal) {
+                            Summary {
+                                \.$source
+                                \.$gaugeType
 
-                        \.$server
-                        \.$valueTemplate
+                                \.$server
+                                \.$valueTemplate
 
-                        \.$valueLabelTemplate
-                        \.$labelTemplate
+                                \.$valueLabelTemplate
+                                \.$minTemplate
+                                \.$maxTemplate
 
-                        \.$runScript
+                                \.$runScript
+                                \.$script
+                                \.$showConfirmationNotification
+                            }
+                        }
+                        Case(.singleLabel) {
+                            Summary {
+                                \.$source
+                                \.$gaugeType
+
+                                \.$server
+                                \.$valueTemplate
+
+                                \.$valueLabelTemplate
+                                \.$labelTemplate
+
+                                \.$runScript
+                                \.$script
+                                \.$showConfirmationNotification
+                            }
+                        }
+                        DefaultCase {
+                            Summary {
+                                \.$source
+                                \.$gaugeType
+
+                                \.$server
+                                \.$valueTemplate
+
+                                \.$valueLabelTemplate
+
+                                \.$runScript
+                                \.$script
+                                \.$showConfirmationNotification
+                            }
+                        }
                     }
-                }
-                DefaultCase {
-                    Summary {
-                        \.$gaugeType
+                } otherwise: {
+                    Switch(\.$gaugeType) {
+                        Case(.normal) {
+                            Summary {
+                                \.$source
+                                \.$gaugeType
 
-                        \.$server
-                        \.$valueTemplate
+                                \.$server
+                                \.$valueTemplate
 
-                        \.$valueLabelTemplate
+                                \.$valueLabelTemplate
+                                \.$minTemplate
+                                \.$maxTemplate
 
-                        \.$runScript
+                                \.$runScript
+                            }
+                        }
+                        Case(.singleLabel) {
+                            Summary {
+                                \.$source
+                                \.$gaugeType
+
+                                \.$server
+                                \.$valueTemplate
+
+                                \.$valueLabelTemplate
+                                \.$labelTemplate
+
+                                \.$runScript
+                            }
+                        }
+                        DefaultCase {
+                            Summary {
+                                \.$source
+                                \.$gaugeType
+
+                                \.$server
+                                \.$valueTemplate
+
+                                \.$valueLabelTemplate
+
+                                \.$runScript
+                            }
+                        }
                     }
                 }
             }

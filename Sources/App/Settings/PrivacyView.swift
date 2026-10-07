@@ -45,9 +45,21 @@ struct PrivacyView: View {
                 }
             }
         }
+        .listTopContentMargin()
     }
 }
 
 #Preview {
     PrivacyView()
+}
+
+extension PrivacyView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.SettingsDetails.Privacy.Messaging.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Privacy.Alerts.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Privacy.CrashReporting.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Privacy.Analytics.genericTitle),
+        ]
+    }
 }

@@ -31,16 +31,29 @@ final class TemplateRenderer: ObservableObject {
     private var server: Server
     private var subscriptionToken: HACancellable?
     private var debounceTimer: Timer?
+    /// Fails the render when the server accepts the subscription but never sends a result event —
+    /// e.g. an invalid template on a server too old to report errors (see `canReportTemplateErrors`).
+    private var resultTimeoutTimer: Timer?
     private var template: String = ""
+    /// How long after the last edit the template is (re-)evaluated.
+    private let debounceInterval: TimeInterval
+    /// How long to wait for the first result event before giving up.
+    private static let resultTimeout: TimeInterval = 10
 
-    init(server: Server, displayResult: @escaping (Any) throws -> String = { String(describing: $0) }) {
+    init(
+        server: Server,
+        debounceInterval: TimeInterval = Current.isCatalyst ? 0.5 : 1.0,
+        displayResult: @escaping (Any) throws -> String = { String(describing: $0) }
+    ) {
         self.server = server
+        self.debounceInterval = debounceInterval
         self.displayResult = displayResult
     }
 
     deinit {
         subscriptionToken?.cancel()
         debounceTimer?.invalidate()
+        resultTimeoutTimer?.invalidate()
     }
 
     func updateServer(_ server: Server) {
@@ -48,10 +61,12 @@ final class TemplateRenderer: ObservableObject {
         refresh(skipDelay: true)
     }
 
-    func updateTemplate(_ template: String) {
+    /// Updates the template and (re-)evaluates it. `skipDelay` bypasses the debounce — used for the
+    /// initial evaluation of an already-saved template, where nothing is being typed.
+    func updateTemplate(_ template: String, skipDelay: Bool = false) {
         guard template != self.template else { return }
         self.template = template
-        refresh()
+        refresh(skipDelay: skipDelay)
     }
 
     /// Force a re-render without changing the template text. Useful when the
@@ -63,6 +78,7 @@ final class TemplateRenderer: ObservableObject {
     private func refresh(skipDelay: Bool = false) {
         subscriptionToken?.cancel()
         debounceTimer?.invalidate()
+        resultTimeoutTimer?.invalidate()
 
         let trimmed = template
 
@@ -78,7 +94,7 @@ final class TemplateRenderer: ObservableObject {
 
         output = .loading
 
-        let delay: TimeInterval = skipDelay ? 0 : (Current.isCatalyst ? 0.5 : 1.0)
+        let delay: TimeInterval = skipDelay ? 0 : debounceInterval
         debounceTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
             self?.startSubscription()
         }
@@ -91,8 +107,18 @@ final class TemplateRenderer: ObservableObject {
             handle(failure: HomeAssistantAPI.APIError.noAPIAvailable)
             return
         }
+        // Raw request (not the typed `.renderTemplate` convenience) so `report_errors` can be sent:
+        // without it the server logs render errors only server-side and never sends an event,
+        // leaving the preview loading forever.
+        var data: [String: Any] = [
+            "template": template,
+            "variables": [String: Any](),
+        ]
+        if server.info.version >= .canReportTemplateErrors {
+            data["report_errors"] = true
+        }
         subscriptionToken = api.connection.subscribe(
-            to: .renderTemplate(template),
+            to: HARequest(type: .renderTemplate, data: data),
             initiated: { [weak self] result in
                 if case let .failure(error) = result {
                     DispatchQueue.main.async {
@@ -100,15 +126,40 @@ final class TemplateRenderer: ObservableObject {
                     }
                 }
             },
-            handler: { [weak self] _, result in
+            handler: { [weak self] _, event in
                 DispatchQueue.main.async {
-                    self?.handle(any: result.result)
+                    self?.handle(event: event)
                 }
             }
         )
+        // Older servers can accept the subscription and then go silent on a render error; fail
+        // instead of spinning forever.
+        resultTimeoutTimer = Timer.scheduledTimer(
+            withTimeInterval: Self.resultTimeout,
+            repeats: false
+        ) { [weak self] _ in
+            guard let self, output == .loading else { return }
+            subscriptionToken?.cancel()
+            output = .failure(L10n.Watch.Complications.Builder.templateNoResult)
+        }
+    }
+
+    private func handle(event: HAData) {
+        // With `report_errors`, template errors arrive as events carrying an "error" message.
+        if let message: String = try? event.decode("error") {
+            handle(failure: message)
+            return
+        }
+        do {
+            let result: Any = try event.decode("result")
+            handle(any: result)
+        } catch {
+            handle(failure: error.localizedDescription)
+        }
     }
 
     private func handle(any value: Any) {
+        resultTimeoutTimer?.invalidate()
         do {
             output = try .success(displayResult(value))
         } catch {
@@ -121,7 +172,12 @@ final class TemplateRenderer: ObservableObject {
     }
 
     private func handle(failure error: Error) {
-        output = .failure(error.localizedDescription)
+        handle(failure: error.localizedDescription)
+    }
+
+    private func handle(failure message: String) {
+        resultTimeoutTimer?.invalidate()
+        output = .failure(message)
     }
 }
 

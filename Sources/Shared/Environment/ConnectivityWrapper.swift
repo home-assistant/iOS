@@ -4,27 +4,190 @@ import CoreTelephony
 #endif
 import NetworkExtension
 
+// `NetworkState` moved to the HANetworking package (ConnectionInfo evaluates it); re-exported via the
+// Shared umbrella so references here and across the app resolve unchanged.
+
 /// Wrapper around CoreTelephony, Reachability
+///
+/// Network information (SSID, BSSID, hardware address) is only available asynchronously, so all
+/// accessors for it are async and fetch fresh values. `lastKnownNetworkState()` is the single
+/// escape hatch for consumers that cannot be async (e.g. HAKit's `connectionInfo` closure).
 public class ConnectivityWrapper {
     public var connectivityDidChangeNotification: () -> Notification.Name
     public var hasWiFi: () -> Bool
-    public var currentWiFiSSID: () -> String?
-    public var currentWiFiBSSID: () -> String?
-    public var currentNetworkHardwareAddress: () -> String?
     public var simpleNetworkType: () -> NetworkType
     public var cellularNetworkType: () -> NetworkType
     public var networkAttributes: () -> [String: Any]
-    /// Refreshes the cached network information (e.g. current SSID/BSSID), returning once the
-    /// values are up to date. Defaults to `syncNetworkInformation()`; replaceable in tests.
+
+    /// Fetches up-to-date network information (SSID, BSSID, hardware address); replaceable in tests.
+    ///
+    /// The default implementation always performs a fresh fetch — coalescing onto an in-flight
+    /// fetch could return state older than the event that triggered the call — and records the
+    /// result as the last-known network state.
+    public lazy var currentNetworkState: () async -> NetworkState = { [weak self] in
+        await self?.fetchNetworkState() ?? NetworkState()
+    }
+
+    /// Refreshes the cached network information, returning once `lastKnownNetworkState()` is up to
+    /// date; replaceable in tests.
     public lazy var refreshNetworkInformation: () async -> Void = { [weak self] in
-        await self?.syncNetworkInformation()
+        guard let self else { return }
+        let state = await currentNetworkState()
+        updateLastKnownNetworkState(state)
+    }
+
+    /// The most recently fetched network information, without refreshing it.
+    ///
+    /// Only meant for consumers that cannot be async — currently the synchronous
+    /// `ConnectionInfo.evaluateActiveURL()` core used by HAKit's `connectionInfo` closure and the
+    /// Alamofire request adapter. Everything else should use `currentNetworkState()` or
+    /// `refreshNetworkInformation()` followed by the relevant async API.
+    public lazy var lastKnownNetworkState: () -> NetworkState = { [weak self] in
+        self?.readLastKnownNetworkState() ?? NetworkState()
+    }
+
+    /// The SSID of the Wi-Fi network the device is currently connected to, freshly fetched.
+    public func currentWiFiSSID() async -> String? {
+        await currentNetworkState().ssid
+    }
+
+    /// The BSSID of the Wi-Fi network the device is currently connected to, freshly fetched.
+    public func currentWiFiBSSID() async -> String? {
+        await currentNetworkState().bssid
+    }
+
+    /// The hardware (MAC) address of the active network interface, freshly fetched (macOS only).
+    public func currentNetworkHardwareAddress() async -> String? {
+        await currentNetworkState().hardwareAddress
+    }
+
+    private let stateLock = NSLock()
+    private var cachedNetworkState = NetworkState()
+    private var lastPopulatedNetworkStateDate: Date?
+
+    private let notificationLock = NSLock()
+    private var lastNotifiedNetworkType: NetworkType?
+    private var lastNotifiedNetworkState: NetworkState?
+
+    private var pathUpdateTask: Task<Void, Never>?
+
+    public func updateLastKnownNetworkState(_ state: NetworkState) {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        cachedNetworkState = state
+        if state == NetworkState() {
+            // Deliberately resetting to no network leaves nothing for `emptyNetworkStateGrace` to hold on to.
+            lastPopulatedNetworkStateDate = nil
+        }
+    }
+
+    /// Applies a state a fetch actually returned, deciding whether to believe an empty result under the
+    /// same lock as the write: `currentNetworkState()` has many concurrent callers, and deciding against
+    /// one snapshot and writing against another lets an empty result overwrite a populated one that
+    /// landed in between. Returns what the caller should see, and whether the fetched state was dropped
+    /// in favour of the last-known one.
+    private func applyFetchedNetworkState(_ state: NetworkState) -> (state: NetworkState, keptLastKnown: Bool) {
+        guard state == NetworkState() else {
+            stateLock.lock()
+            defer { stateLock.unlock() }
+            cachedNetworkState = state
+            lastPopulatedNetworkStateDate = Current.date()
+            return (state, false)
+        }
+
+        // On cellular there is genuinely no Wi-Fi to report, and switching to the external URL right
+        // away is the correct response to leaving the network. Read before taking the lock: it does not
+        // touch the cache, and the path monitor should not be called with `stateLock` held.
+        let isOnCellular = simpleNetworkType() == .cellular
+
+        stateLock.lock()
+        defer { stateLock.unlock() }
+
+        if !isOnCellular, let lastPopulated = lastPopulatedNetworkStateDate,
+           Current.date().timeIntervalSince(lastPopulated) < emptyNetworkStateGrace {
+            return (cachedNetworkState, true)
+        }
+
+        cachedNetworkState = state
+        // Believing an empty state leaves nothing for the grace to measure from, so the next empty read
+        // is believed straight away rather than preserving a cache that is already empty.
+        lastPopulatedNetworkStateDate = nil
+        return (state, false)
+    }
+
+    private func readLastKnownNetworkState() -> NetworkState {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return cachedNetworkState
+    }
+
+    /// When the last fetch that reported a network landed, which `emptyNetworkStateGrace` measures from.
+    /// Internal so tests can assert it never disagrees with the cache.
+    func lastPopulatedNetworkStateDateForTests() -> Date? {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return lastPopulatedNetworkStateDate
+    }
+
+    /// Maximum time to await a network-info fetch before falling back to the last-known state.
+    /// Overridable in tests.
+    var networkFetchTimeout: TimeInterval = 3
+
+    /// How long a fetch that reports no network at all keeps deferring to the last-known state while
+    /// the device is not on cellular. `NEHotspotNetwork.fetchCurrent` reports nothing for reasons other
+    /// than being off Wi-Fi, most commonly a roam between access points on the same SSID, which leaves
+    /// the device with no readable network while it re-associates. Believing that flips the active URL
+    /// to the external one and reloads the whole frontend, then reloads it again once the read recovers.
+    /// Bounded rather than indefinite so a read that never recovers (location access denied, say) is
+    /// eventually believed. Overridable in tests.
+    var emptyNetworkStateGrace: TimeInterval = 60
+
+    /// The underlying network-info fetch, before the timeout guard in `fetchNetworkState()`.
+    /// Overridable in tests to simulate a fetch that never completes.
+    lazy var performNetworkStateFetch: () async -> NetworkState = { [weak self] in
+        await self?.systemNetworkStateFetch() ?? NetworkState()
+    }
+
+    func fetchNetworkState() async -> NetworkState {
+        let fetch = performNetworkStateFetch
+        let timeout = networkFetchTimeout
+        let fetched: NetworkState? = await withCheckedContinuation { continuation in
+            let lock = NSLock()
+            var didResume = false
+            let resume: (NetworkState?) -> Void = { value in
+                lock.lock()
+                defer { lock.unlock() }
+                guard !didResume else { return }
+                didResume = true
+                continuation.resume(returning: value)
+            }
+
+            Task { await resume(fetch()) }
+            // The timeout must run on GCD, not on a `Task`: the scenario it guards against is the
+            // fetch hanging because Swift concurrency's shared thread pool is starved (seen during
+            // background launches), and a `Task.sleep`-based timeout would be starved with it.
+            DispatchQueue.global().asyncAfter(deadline: .now() + timeout) {
+                resume(nil)
+            }
+        }
+
+        guard let state = fetched else {
+            Current.Log.error(
+                "network information fetch timed out after \(timeout)s; keeping last-known network state"
+            )
+            return readLastKnownNetworkState()
+        }
+
+        let applied = applyFetchedNetworkState(state)
+        if applied.keptLastKnown {
+            Current.Log.info("network information came back unreadable; keeping last-known network state")
+        }
+        return applied.state
     }
 
     #if targetEnvironment(macCatalyst)
     init() {
         self.hasWiFi = { Current.macBridge.networkConnectivity.hasWiFi }
-        self.currentWiFiSSID = { Current.macBridge.networkConnectivity.wifi?.ssid }
-        self.currentWiFiBSSID = { Current.macBridge.networkConnectivity.wifi?.bssid }
         self.connectivityDidChangeNotification = { Current.macBridge.networkConnectivityDidChangeNotification }
         self.simpleNetworkType = {
             switch Current.macBridge.networkConnectivity.networkType {
@@ -34,7 +197,6 @@ public class ConnectivityWrapper {
             case .noNetwork: return .noConnection
             }
         }
-        self.currentNetworkHardwareAddress = { Current.macBridge.networkConnectivity.interface?.hardwareAddress }
         self.cellularNetworkType = { .unknown }
         self.networkAttributes = {
             if let interface = Current.macBridge.networkConnectivity.interface {
@@ -46,6 +208,29 @@ public class ConnectivityWrapper {
                 return [:]
             }
         }
+
+        // macBridge network information is always current, so synchronous consumers read it live
+        // instead of going through the cached state.
+        self.lastKnownNetworkState = {
+            let connectivity = Current.macBridge.networkConnectivity
+            return NetworkState(
+                ssid: connectivity.wifi?.ssid,
+                bssid: connectivity.wifi?.bssid,
+                hardwareAddress: connectivity.interface?.hardwareAddress
+            )
+        }
+
+        observeConnectivityChanges()
+    }
+
+    private func systemNetworkStateFetch() async -> NetworkState {
+        // macOS uses macBridge to retrieve network information, which is always current.
+        let connectivity = Current.macBridge.networkConnectivity
+        return NetworkState(
+            ssid: connectivity.wifi?.ssid,
+            bssid: connectivity.wifi?.bssid,
+            hardwareAddress: connectivity.interface?.hardwareAddress
+        )
     }
 
     #elseif os(iOS)
@@ -53,44 +238,49 @@ public class ConnectivityWrapper {
         let reachability = NetworkReachability()
 
         self.hasWiFi = { true }
-        self.currentWiFiSSID = {
-            nil
-        }
-        self.currentWiFiBSSID = {
-            nil
-        }
         self.connectivityDidChangeNotification = { NetworkReachability.didChangeNotification }
         self.simpleNetworkType = { reachability.getSimpleNetworkType() }
         self.cellularNetworkType = { reachability.getNetworkType() }
-        self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
 
-        syncNetworkInformation()
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(connectivityDidChange(_:)),
-            name: NetworkReachability.didChangeNotification,
-            object: nil
-        )
+        observeConnectivityChanges()
     }
+
+    private func systemNetworkStateFetch() async -> NetworkState {
+        let hotspotNetwork = await withCheckedContinuation { (continuation: CheckedContinuation<
+            NEHotspotNetwork?,
+            Never
+        >) in
+            NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+                continuation.resume(returning: hotspotNetwork)
+            }
+        }
+        Current.Log.verbose(
+            "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
+        )
+        #if targetEnvironment(simulator)
+        let ssid: String? = "Simulator"
+        #else
+        let ssid = hotspotNetwork?.ssid
+        #endif
+        return NetworkState(ssid: ssid, bssid: hotspotNetwork?.bssid)
+    }
+
     #else
     init() {
         self.hasWiFi = { true }
-        self.currentWiFiSSID = {
-            let ssid = WatchUserDefaults.shared.string(for: .watchSSID)
-            Current.Log.verbose("Watch current WiFi SSID: \(String(describing: ssid))")
-            return ssid
-        }
-        self.currentWiFiBSSID = { nil }
         self.connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
         self.simpleNetworkType = { .unknown }
         self.cellularNetworkType = { .unknown }
-        self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
 
-        syncNetworkInformation()
+        observeConnectivityChanges()
         // Reachability observer is not available for watchOS
+    }
+
+    private func systemNetworkStateFetch() async -> NetworkState {
+        // The watch has no network information of its own (the phone-synced SSID was removed).
+        NetworkState()
     }
     #endif
 
@@ -104,40 +294,68 @@ public class ConnectivityWrapper {
     }
     #endif
 
-    @objc private func connectivityDidChange(_ note: Notification) {
-        syncNetworkInformation()
-    }
+    private func observeConnectivityChanges() {
+        // Touch the lazy closures while init is still single-threaded: `lazy var` initialization
+        // is not thread-safe, and at app launch these are first hit concurrently from many tasks.
+        _ = currentNetworkState
+        _ = refreshNetworkInformation
+        _ = lastKnownNetworkState
+        _ = performNetworkStateFetch
 
-    // TODO: Refactor SSID retrieval to be async instead of hacking around with completion handlers
-    public func syncNetworkInformation(completion: (() -> Void)? = nil) {
-        #if targetEnvironment(macCatalyst)
-        // macOS uses macBridge to retrieve network information
-        completion?()
-        #else
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            Current.Log
-                .verbose(
-                    "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
-                )
-            let ssid = hotspotNetwork?.ssid
-            self.currentWiFiSSID = {
-                #if targetEnvironment(simulator)
-                return "Simulator"
-                #endif
-                return ssid
-            }
-            let bssid = hotspotNetwork?.bssid
-            self.currentWiFiBSSID = { bssid }
-            completion?()
+        // Prime the last-known network state so synchronous consumers have a value early.
+        Task { [weak self] in
+            await self?.refreshNetworkInformation()
         }
+
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(networkPathDidUpdate(_:)),
+            name: NetworkReachability.pathDidUpdateNotification,
+            object: nil
+        )
         #endif
     }
 
-    public func syncNetworkInformation() async {
-        await withCheckedContinuation { continuation in
-            syncNetworkInformation {
-                continuation.resume()
-            }
+    @objc private func networkPathDidUpdate(_ note: Notification) {
+        // Path updates are posted on the main thread, so chaining onto the previous one here needs no
+        // further synchronization. Chaining keeps a burst of updates during a transition in order: a
+        // fetch can stay suspended for the length of the fetch timeout, and a newer one finishing first
+        // would otherwise be overwritten by an older, staler result.
+        let previousTask = pathUpdateTask
+        pathUpdateTask = Task { [weak self] in
+            await previousTask?.value
+            await self?.handleNetworkPathUpdate()
+        }
+    }
+
+    /// Refreshes network information for a path update and posts the connectivity-changed notification
+    /// when the network type or the Wi-Fi network the device is on actually changed.
+    ///
+    /// Moving straight from one Wi-Fi network to another keeps the network type at `.wifi`, so the path
+    /// update is the only signal that the cached SSID (and with it the internal/external URL decision)
+    /// no longer describes the network the device is on.
+    func handleNetworkPathUpdate() async {
+        await refreshNetworkInformation()
+        let networkState = lastKnownNetworkState()
+        let networkType = simpleNetworkType()
+
+        // Compared against what was last notified rather than against the cache as it was before the
+        // refresh: any other caller refreshing in the meantime would otherwise make the two equal and
+        // swallow the notification for a network that did change.
+        notificationLock.lock()
+        let didChange = networkState != lastNotifiedNetworkState || networkType != lastNotifiedNetworkType
+        lastNotifiedNetworkState = networkState
+        lastNotifiedNetworkType = networkType
+        notificationLock.unlock()
+
+        guard didChange else { return }
+
+        // Observers update SwiftUI state directly in `onReceive`, so the notification has to arrive on
+        // the main thread rather than on whichever thread the refresh finished on.
+        let notificationName = connectivityDidChangeNotification()
+        await MainActor.run {
+            NotificationCenter.default.post(name: notificationName, object: nil)
         }
     }
 }

@@ -16,6 +16,7 @@
 "common::state::standby" = "Modo de espera";
 "common::state::unlocked" = "Abierto";
 "common::state::yes" = "Sí";
+"component::ai_task::title" = "AI task";
 "component::airzone::entity::select::sleep_times::state::off" = "Desactivado";
 "component::alarm_control_panel::title" = "Panel de control de alarma";
 "component::alert::entity_component::_::state::idle" = "Inactivo";

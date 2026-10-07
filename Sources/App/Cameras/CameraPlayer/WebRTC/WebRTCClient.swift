@@ -7,11 +7,11 @@ import WebRTC
 /// Delegate protocol for WebRTCClient events.
 protocol WebRTCClientDelegate: AnyObject {
     /// Called when a new ICE candidate is discovered.
-    func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)
+    func webRTCClient(_ client: WebRTCStreamClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)
     /// Called when the ICE connection state changes.
-    func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState)
+    func webRTCClient(_ client: WebRTCStreamClient, didChangeConnectionState state: RTCIceConnectionState)
     /// Called when data is received over the data channel.
-    func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data)
+    func webRTCClient(_ client: WebRTCStreamClient, didReceiveData data: Data)
 }
 
 /// Custom WebRTC audio device that supports playout only and never opens input.
@@ -267,12 +267,13 @@ final class PlaybackOnlyRTCAudioDevice: NSObject, RTCAudioDevice {
 /// It abstracts the setup and control of a WebRTC session for use in the Home Assistant iOS app.
 ///
 /// - Note: Based on example project from WebRTC iOS SDK https://github.com/stasel/WebRTC
-final class WebRTCClient: NSObject {
+final class WebRTCClient: NSObject, WebRTCStreamClient {
     private static let playbackOnlyAudioDevice = PlaybackOnlyRTCAudioDevice()
 
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
     // A new RTCPeerConnection should be created every new call, but the factory is shared.
     private static let factory: RTCPeerConnectionFactory = {
+        WebRTCFieldTrials.registerBeforeCreatingFactory()
         RTCInitializeSSL()
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
         let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
@@ -285,29 +286,65 @@ final class WebRTCClient: NSObject {
 
     weak var delegate: WebRTCClientDelegate?
     private let peerConnection: RTCPeerConnection
-    private let mediaConstrains = [
-        kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
-        kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueTrue,
-    ]
     private var remoteVideoTrack: RTCVideoTrack?
     private var remoteAudioTrack: RTCAudioTrack?
+    private var localDataChannel: RTCDataChannel?
     private var remoteDataChannel: RTCDataChannel?
+    /// The view remote video renders into. Held here because the track that ends up carrying the
+    /// video is only known once the remote description has been applied.
+    private weak var renderer: RTCVideoRenderer?
+    /// Remote audio starts muted, matching the player's default. `unmuteAudio()` flips this so a
+    /// track adopted later comes up in the state the user last chose rather than blaring.
+    private var isRemoteAudioEnabled = false
 
     @available(*, unavailable)
     override init() {
         fatalError("WebRTCClient:init is unavailable")
     }
 
-    required init(iceServers: [String]) {
+    init(configuration: WebRTCClientConfiguration) {
         let config = RTCConfiguration()
-        config.iceServers = [RTCIceServer(urlStrings: iceServers)]
+        config.iceServers = configuration.iceServers
 
         // Unified plan is more superior than planB
         config.sdpSemantics = .unifiedPlan
 
-        // gatherContinually will let WebRTC to listen to any network changes and send any new candidates to the other
-        // client
+        // One transport for audio and video from the start, instead of gathering and checking a
+        // full candidate set per m-line until the answer bundles them. Every WebRTC answerer
+        // bundles, so the only effect is half the candidates and half the connectivity checks.
+        config.bundlePolicy = .maxBundle
+
+        // gatherContinually lets WebRTC listen for network changes and trickle any new candidates
+        // to the other side, which is what the frontend's peer connection does by default.
         config.continualGatheringPolicy = .gatherContinually
+
+        // Left to itself this gathers on every interface the phone has, and on cellular that is a
+        // lot of them: several private pdp_ip addresses, the 464XLAT address, link-local and
+        // unique-local IPv6, each in a UDP and a TCP flavour. Device logs showed close to fifty
+        // candidates offered for a camera reachable over exactly one of them, and the checks then
+        // worked through the useless pairs first — nine seconds of them before the relay pair won.
+        // A browser never offers that set, which is why the frontend connects on the same network
+        // while this took ten seconds or gave up.
+        //
+        // The interfaces themselves are trimmed by `WebRTCFieldTrials`: with the path monitor on,
+        // libwebrtc ignores every interface that is not part of the current network path, which
+        // on cellular leaves the one pdp_ip that can actually reach anything — the same set the
+        // frontend's player gets, since WKWebView only gathers on the default route. What is left
+        // to drop here is the flavour of candidate that could never carry the stream even there: a
+        // TCP host candidate on a private cellular address is unreachable from the server (TURN
+        // over TCP is unaffected, it comes from the ICE server list), and so is a link-local one.
+        //
+        // Relay candidates are deliberately left alone. Behind carrier-grade NAT the relay is the
+        // only kind that can carry the stream at all — host addresses are private and the reflexive
+        // one is not reachable inbound — so every relay candidate is a separate chance for the
+        // stream to come up, not redundancy worth pruning.
+        config.tcpCandidatePolicy = .disabled
+        config.disableLinkLocalNetworks = true
+
+        // Gather a candidate up front rather than starting from cold when the offer is created, so
+        // the offer carries one instead of the backend waiting on the first trickled candidate —
+        // which it cannot even be sent before it answers with a session id.
+        config.iceCandidatePoolSize = 1
 
         // Define media constraints. DtlsSrtpKeyAgreement is required to be true to be able to connect with web
         // browsers.
@@ -327,6 +364,9 @@ final class WebRTCClient: NSObject {
         self.peerConnection = peerConnection
         super.init()
         createMediaTracks()
+        if let dataChannelLabel = configuration.dataChannelLabel {
+            createDataChannel(label: dataChannelLabel)
+        }
 
         self.peerConnection.delegate = self
     }
@@ -337,34 +377,30 @@ final class WebRTCClient: NSObject {
 
     // MARK: Signaling
 
-    func offer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void) {
+    /// Creates an offer and returns its SDP.
+    ///
+    /// The SDP comes back from `localDescription` rather than from the description that was just
+    /// created, so it already carries whatever ICE candidates have been gathered by then. That is
+    /// the same thing the frontend does by appending its pending candidates to the offer before
+    /// sending it, and it is what lets a backend that never trickles candidates back still find a
+    /// path to us. The rest keep arriving over the signaling channel as usual.
+    func offer(completion: @escaping (_ sdp: String) -> Void) {
         let constrains = RTCMediaConstraints(
-            mandatoryConstraints: mediaConstrains,
+            mandatoryConstraints: nil,
             optionalConstraints: nil
         )
-        peerConnection.offer(for: constrains) { sdp, _ in
-            guard let sdp else {
+        peerConnection.offer(for: constrains) { [weak self] sdp, error in
+            guard let self, let sdp else {
+                Current.Log.error("Failed to create WebRTC offer: \(error?.localizedDescription ?? "unknown error")")
                 return
             }
 
-            self.peerConnection.setLocalDescription(sdp, completionHandler: { _ in
-                completion(sdp)
-            })
-        }
-    }
-
-    func answer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void) {
-        let constrains = RTCMediaConstraints(
-            mandatoryConstraints: mediaConstrains,
-            optionalConstraints: nil
-        )
-        peerConnection.answer(for: constrains) { sdp, _ in
-            guard let sdp else {
-                return
-            }
-
-            self.peerConnection.setLocalDescription(sdp, completionHandler: { _ in
-                completion(sdp)
+            peerConnection.setLocalDescription(sdp, completionHandler: { [weak self] error in
+                guard let self else { return }
+                if let error {
+                    Current.Log.error("Failed to set local description: \(error.localizedDescription)")
+                }
+                completion(peerConnection.localDescription?.sdp ?? sdp.sdp)
             })
         }
     }
@@ -374,7 +410,7 @@ final class WebRTCClient: NSObject {
             if let error {
                 Current.Log.error("Failed to set remote description: \(error.localizedDescription)")
             } else {
-                self?.setRemoteAudioTrack()
+                self?.adoptRemoteTracks()
             }
             completion(error)
         }
@@ -385,14 +421,17 @@ final class WebRTCClient: NSObject {
     }
 
     func renderRemoteVideo(to renderer: RTCVideoRenderer) {
+        self.renderer = renderer
         remoteVideoTrack?.add(renderer)
     }
 
     func muteAudio() {
+        isRemoteAudioEnabled = false
         remoteAudioTrack?.isEnabled = false
     }
 
     func unmuteAudio() {
+        isRemoteAudioEnabled = true
         remoteAudioTrack?.isEnabled = true
     }
 
@@ -401,35 +440,75 @@ final class WebRTCClient: NSObject {
         return !remoteAudioTrack.isEnabled
     }
 
+    /// Whether the peer connection can still carry media. iOS suspends the app after a short spell
+    /// in the background and the connection does not survive that, so the player asks rather than
+    /// assumes when it comes back to the foreground.
+    var isConnectionAlive: Bool {
+        let deadStates: [RTCPeerConnectionState] = [.disconnected, .failed, .closed]
+        return !deadStates.contains(peerConnection.connectionState)
+    }
+
     private func createMediaTracks() {
-        let streamId = "stream"
-        let videoTrack = createVideoTrack()
-        peerConnection.add(videoTrack, streamIds: [streamId])
-        remoteVideoTrack = peerConnection.transceivers.first { $0.mediaType == .video }?.receiver
-            .track as? RTCVideoTrack
+        // Receive-only transceivers, matching the frontend player: we never send media, so no
+        // local track or capturer is needed (RTCCameraVideoCapturer is unavailable in app
+        // extensions anyway), and the offer negotiates recvonly m-lines.
+        let audioTransceiverInit = RTCRtpTransceiverInit()
+        audioTransceiverInit.direction = .recvOnly
+        peerConnection.addTransceiver(of: .audio, init: audioTransceiverInit)
+
+        let videoTransceiverInit = RTCRtpTransceiverInit()
+        videoTransceiverInit.direction = .recvOnly
+        let videoTransceiver = peerConnection.addTransceiver(of: .video, init: videoTransceiverInit)
+        // The receiver carries a track before negotiation even starts, so adopt it now to give an
+        // early renderer something to attach to. Whatever the answer actually negotiates takes its
+        // place once the remote description lands.
+        adopt(track: videoTransceiver?.receiver.track)
     }
 
-    private func createVideoTrack() -> RTCVideoTrack {
-        // The local track only exists to establish the transceiver we read the remote track from;
-        // we never send video, so there's no capturer. RTCCameraVideoCapturer is also unavailable in
-        // app extensions, which is why a capturer here broke the device build of the notification ext.
-        let videoSource = WebRTCClient.factory.videoSource()
-        let videoTrack = WebRTCClient.factory.videoTrack(with: videoSource, trackId: "video0")
-        return videoTrack
+    /// The counterpart of the frontend player's `ontrack`: wires up whichever track the peer
+    /// connection hands over, instead of assuming the media arrives on the transceiver the offer
+    /// created. Backends are free to answer with the m-lines arranged differently, and a video
+    /// track picked up front would then render nothing at all.
+    ///
+    /// Peer connection callbacks arrive on WebRTC's signaling thread while the renderer is
+    /// registered from the main one, so the track state is only ever touched on the main queue.
+    private func adopt(track: RTCMediaStreamTrack?) {
+        guard let track else { return }
+        DispatchQueue.main.async { [weak self] in
+            self?.attach(track: track)
+        }
     }
 
-    private func setRemoteAudioTrack() {
-        guard let audioTransceiver = peerConnection.transceivers.first(where: { $0.mediaType == .audio }) else {
-            Current.Log.warning("No audio transceiver found")
+    private func attach(track: RTCMediaStreamTrack) {
+        if let videoTrack = track as? RTCVideoTrack {
+            guard videoTrack !== remoteVideoTrack else { return }
+            if let renderer {
+                remoteVideoTrack?.remove(renderer)
+                videoTrack.add(renderer)
+            }
+            remoteVideoTrack = videoTrack
+        } else if let audioTrack = track as? RTCAudioTrack {
+            remoteAudioTrack = audioTrack
+            audioTrack.isEnabled = isRemoteAudioEnabled
+        }
+    }
+
+    /// Sweeps the negotiated transceivers once the answer is applied, for backends whose tracks are
+    /// already live by the time `didStartReceivingOn` would have fired.
+    private func adoptRemoteTracks() {
+        for transceiver in peerConnection.transceivers {
+            adopt(track: transceiver.receiver.track)
+        }
+    }
+
+    private func createDataChannel(label: String) {
+        let configuration = RTCDataChannelConfiguration()
+        guard let dataChannel = peerConnection.dataChannel(forLabel: label, configuration: configuration) else {
+            Current.Log.warning("Could not create WebRTC data channel \(label)")
             return
         }
-        guard let audioTrack = audioTransceiver.receiver.track as? RTCAudioTrack else {
-            Current.Log.warning("Remote track is not an RTCAudioTrack")
-            return
-        }
-        remoteAudioTrack = audioTrack
-        remoteAudioTrack?.isEnabled = false
-        Current.Log.info("Remote audio track set successfully")
+        dataChannel.delegate = self
+        localDataChannel = dataChannel
     }
 }
 
@@ -462,6 +541,11 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
         Current.Log.info("peerConnection new gathering state: \(newState)")
     }
 
+    func peerConnection(_ peerConnection: RTCPeerConnection, didStartReceivingOn transceiver: RTCRtpTransceiver) {
+        Current.Log.info("peerConnection did start receiving on transceiver \(transceiver.mediaType)")
+        adopt(track: transceiver.receiver.track)
+    }
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
         Current.Log.info("peerConnection did generate candidate: \(candidate)")
         delegate?.webRTCClient(self, didDiscoverLocalCandidate: candidate)
@@ -473,15 +557,8 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         Current.Log.info("peerConnection did open data channel")
+        dataChannel.delegate = self
         remoteDataChannel = dataChannel
-    }
-}
-
-extension WebRTCClient {
-    private func setTrackEnabled<T: RTCMediaStreamTrack>(_ type: T.Type, isEnabled: Bool) {
-        peerConnection.transceivers
-            .compactMap { $0.sender.track as? T }
-            .forEach { $0.isEnabled = isEnabled }
     }
 }
 

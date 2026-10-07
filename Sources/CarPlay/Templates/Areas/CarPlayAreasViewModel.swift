@@ -4,7 +4,6 @@ import HAKit
 import SFSafeSymbols
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayAreasViewModel {
     weak var templateProvider: CarPlayAreasZonesTemplate?
 

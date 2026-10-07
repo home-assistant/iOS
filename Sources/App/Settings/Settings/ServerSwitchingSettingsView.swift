@@ -1,0 +1,108 @@
+import Shared
+import SwiftUI
+
+struct ServerSwitchingSettingsView: View {
+    @StateObject private var viewModel: ServerSwitchingSettingsViewModel
+
+    /// Helper variable to force redraw view
+    @State private var redrawHelper: UUID = .init()
+
+    @MainActor
+    init(viewModel: ServerSwitchingSettingsViewModel? = nil) {
+        self._viewModel = StateObject(wrappedValue: viewModel ?? ServerSwitchingSettingsViewModel())
+    }
+
+    var body: some View {
+        List {
+            Section {
+                if Current.servers.all.count > 1 {
+                    Toggle(isOn: .init(get: {
+                        Current.settingsStore.locationBasedServerSwitching
+                    }, set: { newValue in
+                        Current.settingsStore.locationBasedServerSwitching = newValue
+                        if newValue {
+                            // Prompts when undetermined, or routes to system settings when denied.
+                            PermissionType.location.request { _, _ in }
+                        }
+                        redrawView()
+                    })) {
+                        Text(L10n.Settings.ServerSwitching.ByLocation.title)
+                    }
+                    if let closestServer = viewModel.closestServerDescription {
+                        // The badge takes its own line under the value: inline, it and the server
+                        // name plus distance do not fit the row on narrower screens. It has to sit
+                        // outside the title/value `HStack` too — in there it competes with that
+                        // row's `Spacer` for width and gets squeezed to nothing.
+                        VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
+                            HStack {
+                                Text(L10n.Settings.ServerSwitching.ClosestServer.title)
+                                Spacer()
+                                Text(closestServer)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.trailing)
+                            }
+                            if let closestServerSource = viewModel.closestServerSource {
+                                ClosestServerSourceBadge(source: closestServerSource)
+                            }
+                        }
+                    }
+                }
+                // Mac has a system-level setting for state restoration
+                if !Current.isCatalyst {
+                    Toggle(isOn: .init(get: {
+                        Current.settingsStore.restoreLastURL
+                    }, set: { newValue in
+                        Current.settingsStore.restoreLastURL = newValue
+                        redrawView()
+                    })) {
+                        Text(L10n.SettingsDetails.General.Restoration.title)
+                    }
+                }
+            } footer: {
+                if Current.servers.all.count > 1 {
+                    Text(L10n.Settings.ServerSwitching.ByLocation.footer)
+                }
+            }
+
+            Section {
+                NavigationLink(destination: ServerSwitchingHowItWorksView()) {
+                    Label(L10n.Settings.ServerSwitching.HowItWorks.title, systemSymbol: .questionmarkCircle)
+                }
+            }
+        }
+        .id(redrawHelper)
+        .navigationTitle(L10n.Settings.ServerSwitching.title)
+        .onAppear {
+            viewModel.onAppear()
+        }
+    }
+
+    private func redrawView() {
+        redrawHelper = UUID()
+    }
+}
+
+#Preview {
+    NavigationView {
+        ServerSwitchingSettingsView()
+    }
+    .navigationViewStyle(.stack)
+}
+
+extension ServerSwitchingSettingsView: SettingsScreenSearchable {
+    /// Only index rows the screen can actually present: the restoration toggle is absent on Catalyst,
+    /// and the by-location toggle only shows with more than one server.
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        var entries = [
+            SettingsSearchEntry(L10n.Settings.ServerSwitching.title),
+            SettingsSearchEntry(L10n.Settings.ServerSwitching.HowItWorks.title),
+        ]
+        if !Current.isCatalyst {
+            entries.append(SettingsSearchEntry(L10n.SettingsDetails.General.Restoration.title))
+        }
+        if Current.servers.all.count > 1 {
+            entries.append(SettingsSearchEntry(L10n.Settings.ServerSwitching.ByLocation.title))
+        }
+        return entries
+    }
+}

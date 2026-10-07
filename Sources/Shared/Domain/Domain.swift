@@ -60,6 +60,13 @@ public enum Domain: String, CaseIterable {
     case weather
     case counter
     case timer
+    case aiTask = "ai_task"
+    case configurator
+    case imageProcessing = "image_processing"
+    case infrared
+    case plant
+    case radioFrequency = "radio_frequency"
+    case tag
 
     public init?(entityId: String) {
         let domainString = entityId.components(separatedBy: ".").first ?? ""
@@ -83,30 +90,7 @@ public enum Domain: String, CaseIterable {
 
         case unknown
         case unavailable
-
-        /// States that represent an "active" condition
-        public var isActive: Bool {
-            Domain.activeStates.contains(self)
-        }
     }
-
-    /// States that represent an "active" condition
-    /// such as for displaying accent color for entity tile icon
-    public static var activeStates: [State] = [
-        .on,
-        .open,
-        .unlocked,
-        .unlocking,
-        .locking,
-        .opening,
-        .closing,
-    ]
-
-    /// States that represent a "problem" condition
-    public static var problemStates: [State] = [
-        .jammed,
-        .unavailable,
-    ]
 
     public var states: [State] {
         var states: [State] = []
@@ -129,19 +113,59 @@ public enum Domain: String, CaseIterable {
         return states
     }
 
-    public func contextualStateDescription(for entity: HAEntity) -> String {
+    /// - Parameter serverId: when provided, numeric states are formatted with the entity's display
+    ///   precision from the local registry (same as widgets); non-numeric states and entities
+    ///   without a registry row pass through unchanged.
+    public func contextualStateDescription(for entity: HAEntity, serverId: String? = nil) -> String {
+        // Climate reports its HVAC mode as state and its temperatures as attributes; combine them
+        // the way the frontend does ("Heat · 21.5°").
+        if self == .climate {
+            return ClimateControlState(entity: entity).stateSummary
+        }
+
+        // Datetime-backed entities report a raw UTC ISO 8601 string as their state; render it the
+        // way the frontend's automatic time format does rather than showing the machine format.
+        if let timestampDescription = timestampStateDescription(for: entity) {
+            return timestampDescription
+        }
+
         let baseState = entity.localizedState.leadingCapitalized
+        // The registry lookup is only worth its synchronous database read on the paths that render
+        // the state value itself — enum states (on/off, locked, …) never need it.
+        func adjustedBaseState() -> String {
+            guard let serverId else { return baseState }
+            return StatePrecision.adjustPrecision(
+                serverId: serverId,
+                entityId: entity.entityId,
+                stateValue: baseState
+            )
+        }
 
         // Add unit of measurement if available
         if let unitOfMeasurement = entity.attributes.dictionary["unit_of_measurement"] {
-            return "\(baseState) \(unitOfMeasurement)"
+            return "\(adjustedBaseState()) \(unitOfMeasurement)"
         }
 
         guard let state = Domain.State(rawValue: entity.state) else {
-            return baseState
+            return adjustedBaseState()
         }
 
         return stateForDeviceClass(entity.deviceClass, state: state)
+    }
+
+    /// Renders the datetime device classes the way the frontend's automatic format does: timestamps
+    /// relative ("In 56 minutes"), dates absolute and localized. Nil for every other entity, and for
+    /// a datetime entity whose state isn't currently a date (`unavailable`, `unknown`) so those keep
+    /// their usual localized wording.
+    private func timestampStateDescription(for entity: HAEntity) -> String? {
+        switch entity.deviceClass {
+        case .timestamp:
+            return EntityTimestampFormatter.relativeDescription(for: entity.state)?.leadingCapitalized
+        case .date:
+            return EntityTimestampFormatter.dateDescription(for: entity.state)
+        default:
+            return nil
+        }
     }
 
     public func stateForDeviceClass(_ deviceClass: DeviceClass, state: Domain.State) -> String {
@@ -256,11 +280,11 @@ public enum Domain: String, CaseIterable {
         case .script:
             image = .scriptTextOutlineIcon
         case .switch:
-            image = .lightSwitchIcon
+            image = .toggleSwitchVariantIcon
         case .sensor:
             image = .eyeIcon
         case .binarySensor:
-            image = .eyeIcon
+            image = .radioboxBlankIcon
         case .zone:
             image = .mapIcon
         case .person:
@@ -336,7 +360,7 @@ public enum Domain: String, CaseIterable {
         case .vacuum:
             image = .robotVacuumIcon
         case .valve:
-            image = .pipeValveIcon
+            image = .valveOpenIcon
         case .wakeWord:
             image = .microphoneIcon
         case .waterHeater:
@@ -347,10 +371,27 @@ public enum Domain: String, CaseIterable {
             image = .counterIcon
         case .timer:
             image = .timerOutlineIcon
+        case .aiTask:
+            image = .starFourPointsIcon
+        case .configurator:
+            image = .cogIcon
+        case .imageProcessing:
+            image = .imageFilterFramesIcon
+        case .infrared:
+            image = .ledOnIcon
+        case .plant:
+            image = .flowerIcon
+        case .radioFrequency:
+            image = .radioTowerIcon
+        case .tag:
+            image = .tagOutlineIcon
         }
         return image
     }
 
+    /// Cover fallback icons, mirroring the frontend's `cover/icons.json` `entity_component` map
+    /// (device class → open/closed default). The `_` (no/unknown device class) default is a window,
+    /// matching the frontend, not curtains.
     private func imageForCover(deviceClass: DeviceClass, state: State) -> MaterialDesignIcons {
         if state == .closed {
             switch deviceClass {
@@ -361,11 +402,19 @@ public enum Domain: String, CaseIterable {
             case .shutter:
                 return MaterialDesignIcons.windowShutterIcon
             case .blind:
-                return MaterialDesignIcons.blindsVerticalClosedIcon
+                return MaterialDesignIcons.blindsHorizontalClosedIcon
             case .shade:
                 return MaterialDesignIcons.rollerShadeClosedIcon
-            default:
+            case .curtain:
                 return MaterialDesignIcons.curtainsClosedIcon
+            case .door:
+                return MaterialDesignIcons.doorClosedIcon
+            case .damper:
+                return MaterialDesignIcons.circleSlice8Icon
+            case .window:
+                return MaterialDesignIcons.windowClosedIcon
+            default:
+                return MaterialDesignIcons.windowClosedIcon
             }
         } else {
             switch deviceClass {
@@ -376,11 +425,17 @@ public enum Domain: String, CaseIterable {
             case .shutter:
                 return MaterialDesignIcons.windowShutterOpenIcon
             case .blind:
-                return MaterialDesignIcons.blindsOpenIcon
+                return MaterialDesignIcons.blindsHorizontalIcon
             case .shade:
                 return MaterialDesignIcons.rollerShadeIcon
-            default:
+            case .curtain:
                 return MaterialDesignIcons.curtainsIcon
+            case .door:
+                return MaterialDesignIcons.doorOpenIcon
+            case .damper:
+                return MaterialDesignIcons.circleIcon
+            default:
+                return MaterialDesignIcons.windowOpenIcon
             }
         }
     }
@@ -488,7 +543,17 @@ public enum Domain: String, CaseIterable {
             return CoreStrings.componentWeatherTitle
         case .timer:
             return CoreStrings.componentTimerTitle
-        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter:
+        case .aiTask:
+            return CoreStrings.componentAiTaskTitle
+        case .configurator:
+            return CoreStrings.componentConfiguratorTitle
+        case .imageProcessing:
+            return CoreStrings.componentImageProcessingTitle
+        case .plant:
+            return CoreStrings.componentPlantTitle
+        case .tag:
+            return CoreStrings.componentTagTitle
+        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter, .infrared, .radioFrequency:
             return rawValue
         }
     }
@@ -501,10 +566,52 @@ public enum Domain: String, CaseIterable {
         Domain.carPlaySupported.contains(self)
     }
 
+    public var isWatchSupported: Bool {
+        Domain.watchSupported.contains(self)
+    }
+
+    /// Whether the watch shows this domain as a read-only item: tapping it runs nothing and opens
+    /// the entity's details screen instead.
+    public var isWatchDisplayOnly: Bool {
+        Domain.watchDisplayOnly.contains(self)
+    }
+
+    /// Whether tapping an entity of this domain performs an action: its main action, or the
+    /// state-aware lock handling (lock has no single main action).
+    public var isActionable: Bool {
+        mainAction != nil || self == .lock
+    }
+
+    /// Whether tapping this domain's entities opens a dedicated control screen (e.g. climate)
+    /// rather than executing a single action.
+    public var hasControlScreen: Bool {
+        Domain.controlScreenDomains.contains(self)
+    }
+
+    /// Whether tapping this domain's entities always presents the domain's own confirmation
+    /// (e.g. lock), so the per-item "require confirmation" setting has no effect.
+    public var hasBuiltInConfirmation: Bool {
+        Domain.builtInConfirmationDomains.contains(self)
+    }
+
+    /// Whether the entity icon changes with state/device class (e.g. cover open vs closed),
+    /// so list UIs (CarPlay, watch) should render the live entity icon over a saved one.
+    public var hasStateDependentIcon: Bool {
+        [.cover, .inputBoolean, .light, .lock, .switch].contains(self)
+    }
+
+    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report their
+    /// last-triggered time, and an automation reports whether it is *enabled*, never the state of
+    /// the light or fan it actually drives. Rows for these domains show where the item lives
+    /// (server, area) instead of a state the user can't read anything into.
+    public var hasIrrelevantState: Bool {
+        [.automation, .scene, .script].contains(self)
+    }
+
     public func localizedState(for state: String) -> String {
         switch self {
         case .button, .inputButton, .scene:
-            if let relativeDate = isoDateToRelativeTimeString(state) {
+            if let relativeDate = EntityTimestampFormatter.relativeDescription(for: state) {
                 return relativeDate
             }
         default:
@@ -513,23 +620,30 @@ public enum Domain: String, CaseIterable {
         return CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
             .getDefaultStateLocalizedTitle(state: state) ?? state
     }
-
-    private func isoDateToRelativeTimeString(_ isoDateString: String) -> String? {
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        guard let date = dateFormatter.date(from: isoDateString) else {
-            return nil
-        }
-
-        let relativeFormatter = RelativeDateTimeFormatter()
-        return relativeFormatter.localizedString(for: date, relativeTo: Date())
-    }
 }
 
 // MARK: - Feature supported domains
 
 public extension Domain {
     static let carPlaySupported: [Domain] = [
+        .automation,
+        .button,
+        .climate,
+        .cover,
+        .fan,
+        .humidifier,
+        .inputBoolean,
+        .inputButton,
+        .light,
+        .lock,
+        .scene,
+        .script,
+        .switch,
+        .vacuum,
+        .valve,
+    ]
+
+    static let watchSupported: [Domain] = [
         .automation,
         .button,
         .cover,
@@ -545,21 +659,104 @@ public extension Domain {
         .valve,
     ]
 
-    static let watchSupported: [Domain] = [
-        .script,
+    /// Sensor domains the watch can display but never run: tapping one opens its details screen
+    /// (state, last update, attributes) instead of performing an action.
+    static let watchDisplayOnly: [Domain] = [
+        .sensor,
+        .binarySensor,
+    ]
+
+    /// Domains whose entities are controlled through a dedicated control screen (pushed on CarPlay,
+    /// presented as a sheet on the watch) instead of a single tap action — the same options the
+    /// frontend's more-info dialog offers.
+    static let controlScreenDomains: [Domain] = [
+        .climate,
+        .vacuum,
+    ]
+
+    /// Domains a spoken command can reach, kept to what people actually name out loud.
+    ///
+    /// Deliberately absent: locks and sirens, where a misheard phrase has real consequences;
+    /// thermostats, which have their own set-temperature command; scenes, which only ever activate;
+    /// scripts, automations and buttons, which have their own actions and read oddly as "off"; and
+    /// media players, cameras, remotes and water heaters, which stay out to keep the list short.
+    static let voiceControllable: [Domain] = [
+        .light,
+        .switch,
+        .inputBoolean,
+        .cover,
+        .fan,
+        .humidifier,
+        .group,
+    ]
+
+    /// Domains whose on/off services read as open and close, so a spoken command should say
+    /// "open the curtain" rather than "turn on the curtain".
+    ///
+    /// `valve` belongs here by the same reasoning, but it isn't voice-controllable yet, and adding
+    /// it to this list alone would not expose it.
+    static let voiceOpenable: [Domain] = [
+        .cover,
+    ]
+
+    /// Domains a spoken on/off command should offer. Covers are handled by the open and close
+    /// command instead, where the wording matches what the service actually does.
+    static let voiceSwitchOffered: [Domain] = voiceControllable.filter { !voiceOpenable.contains($0) }
+
+    /// Domains a spoken question can report on, and the ones "show" opens the details of. The
+    /// controllable domains plus the sensors, which are what people most often ask about, and water
+    /// heaters, which read back a state worth hearing even though nobody switches one by voice.
+    static let voiceReadable: [Domain] = voiceControllable + [
+        .waterHeater,
+        .sensor,
+        .binarySensor,
+    ]
+
+    /// Whether a spoken command can turn an entity of this domain *off*. A scene has one service for
+    /// both directions, so "turn off the movie scene" would activate it — those are on-only.
+    var isVoiceSwitchable: Bool {
+        Domain.voiceControllable.contains(self) && toggleIsStateAware
+    }
+
+    /// Domains that always show their own confirmation when tapped (state-aware lock handling),
+    /// making the per-item "require confirmation" customization irrelevant.
+    static let builtInConfirmationDomains: [Domain] = [
+        .lock,
+    ]
+
+    /// Everything the user can put on the watch home screen: the runnable domains, the display-only
+    /// sensor ones, and the domains that open a control screen. This is the filter every watch
+    /// picker and the watch database mirror use; `watchSupported` alone stays the list of domains
+    /// the watch can execute with a single tap.
+    static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains
+
+    /// Display order of the watch area screens' controllable entities, most commonly used domains
+    /// first, covering every watch-runnable domain. Domains not listed sort last.
+    static let watchAreaControlsOrder: [Domain] = [
+        .light,
+        .switch,
+        .lock,
+        .cover,
+        .climate,
+        .fan,
+        .vacuum,
         .scene,
+        .script,
+        .humidifier,
+        .valve,
+        .inputBoolean,
+        .button,
+        .inputButton,
         .automation,
     ]
 
-    static let commonlyUsedWidgetSupported: [Domain] = [
-        .light,
-        .switch,
-        .cover,
-        .fan,
-        .inputBoolean,
-        .humidifier,
-        .valve,
-    ]
+    /// Sort index into `watchAreaControlsOrder`; unknown or unlisted domains go last.
+    static func watchAreaControlsSortIndex(for domain: Domain?) -> Int {
+        guard let domain, let index = watchAreaControlsOrder.firstIndex(of: domain) else {
+            return watchAreaControlsOrder.count
+        }
+        return index
+    }
 
     static let sensorWidgetSupported: [Domain] = [
         .sensor,
@@ -578,17 +775,6 @@ public extension Domain {
         .deviceTracker,
         .update,
     ]
-
-    static let appDatabaseExcluded: [Domain] = [
-        .geoLocation,
-        .conversation,
-        .stt,
-        .tts,
-        .wakeWord,
-        .assistSatellite,
-        .notify,
-        .image,
-    ]
 }
 
 // MARK: - Main Action
@@ -596,6 +782,7 @@ public extension Domain {
 public extension Domain {
     /// The primary service to call when activating this domain.
     /// Returns nil for domains that don't have a single main action (e.g., sensors).
+    /// A group has no services of its own, so its toggle is addressed to `serviceDomain`.
     var mainAction: Service? {
         switch self {
         case .automation:
@@ -604,16 +791,17 @@ public extension Domain {
             return .press
         case .scene, .script:
             return .turnOn
-        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve:
+        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve, .group:
             return .toggle
         case .lock:
             return nil // Lock requires state-aware action (lock/unlock)
         case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate,
              .airQuality, .alarmControlPanel, .alert, .assistSatellite, .calendar, .conversation, .date,
-             .dateTime, .deviceTracker, .event, .geoLocation, .group, .image, .inputDatetime, .inputNumber,
+             .dateTime, .deviceTracker, .event, .geoLocation, .image, .inputDatetime, .inputNumber,
              .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote, .schedule,
              .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .wakeWord, .waterHeater,
-             .weather, .counter, .timer:
+             .weather, .counter, .timer, .aiTask, .configurator, .imageProcessing, .infrared, .plant,
+             .radioFrequency, .tag:
             return nil // Read-only or complex domains
         }
     }

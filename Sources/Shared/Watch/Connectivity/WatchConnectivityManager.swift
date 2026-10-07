@@ -14,8 +14,47 @@ public final class WatchConnectivityManager: NSObject {
 
     let completionLock = NSLock()
     var fileCompletions: [ObjectIdentifier: (Result<Void, Error>) -> Void] = [:]
+
+    /// One interactive send waiting for a free in-flight slot. Kept sorted by priority (then FIFO)
+    /// in `pendingInteractiveSends`.
+    struct PendingInteractiveSend {
+        let priority: HAWatchConnectivity.SendPriority
+        let coalescingKey: String?
+        let sequence: Int
+        let perform: () -> Void
+    }
+
+    public struct InteractiveSendTicket {
+        let queuedSequence: Int?
+    }
+
+    /// State of the outbound interactive-send queue (see `WatchConnectivityManager+SendQueue`).
+    let sendQueueLock = NSLock()
+    var pendingInteractiveSends: [PendingInteractiveSend] = []
+    var inFlightInteractiveSends = 0
+    var interactiveSendSequence = 0
+    static let maxConcurrentInteractiveSends = 2
+
+    /// In-memory copy of the most recently received application context.
+    ///
+    /// `WCSession.receivedApplicationContext` is a *blocking* getter: it synchronously waits on
+    /// WCSession's internal operation queue, which can stall for tens of seconds while the session is
+    /// busy processing incoming transfers (observed in the field as background-refresh watchdog kills
+    /// and a generally "hanging" watch app when several syncs ran at once). The cache is primed once
+    /// off-main after activation and kept fresh by the `didReceiveApplicationContext` delegate
+    /// callback, so `mostRecentlyReceivedContext` never blocks the caller.
+    private let receivedContextLock = NSLock()
+    private var cachedReceivedContext: [String: Any]?
+
+    /// Highest `WatchProtocolVersion` seen on anything the counterpart has sent this session.
+    private let counterpartVersionLock = NSLock()
+    private var cachedCounterpartProtocolVersion: Int?
     #if os(iOS)
     var complicationCompletions: [ObjectIdentifier: (Result<Int, Error>) -> Void] = [:]
+
+    /// In-memory copy of the most recently observed watch state; see `lastKnownWatchState`.
+    private let watchStateCacheLock = NSLock()
+    private var cachedWatchState: HAWatchConnectivity.WatchState?
     #endif
 
     public let state = HAWatchConnectivity.Observable<HAWatchConnectivity.SessionState>()
@@ -46,6 +85,31 @@ public final class WatchConnectivityManager: NSObject {
 
     public var isSupported: Bool { session != nil }
 
+    /// The counterpart's message-protocol version, as stamped on the last thing it sent, or `nil`
+    /// while nothing has arrived yet.
+    ///
+    /// Lets a sender skip a message identifier the counterpart's build predates. That matters
+    /// because an unrecognized identifier is never replied to at all (see
+    /// `WatchConnectivityManager.receiveMessage`, which replies empty, and the counterpart services,
+    /// which drop it): the sender only learns by waiting out the full reply timeout. Treat `nil` as
+    /// "too old" — the version arrives with the first message of any kind, and both sides exchange
+    /// several within seconds of becoming reachable.
+    public var counterpartProtocolVersion: Int? {
+        counterpartVersionLock.lock()
+        defer { counterpartVersionLock.unlock() }
+        return cachedCounterpartProtocolVersion
+    }
+
+    /// Records the version stamped on an inbound envelope. Monotonic: messages from a build that
+    /// predates versioning carry no version, and one of those arriving after a versioned message
+    /// (a queued `transferUserInfo`, say) must not walk the capability back.
+    func recordCounterpartProtocolVersion(_ version: Int?) {
+        guard let version else { return }
+        counterpartVersionLock.lock()
+        defer { counterpartVersionLock.unlock() }
+        cachedCounterpartProtocolVersion = max(cachedCounterpartProtocolVersion ?? 0, version)
+    }
+
     public var currentReachability: HAWatchConnectivity.Reachability {
         guard let session else { return .notReachable }
         return session.isReachableProxy ? .immediatelyReachable : .notReachable
@@ -65,8 +129,31 @@ public final class WatchConnectivityManager: NSObject {
         session?.hasContentPendingProxy ?? false
     }
 
+    /// Whether a guaranteed message with this identifier is still queued for delivery
+    /// (`transferUserInfo` not yet handed to the counterpart). Lets callers skip enqueueing a
+    /// duplicate — WCSession queues every transfer verbatim and would deliver them all.
+    public func hasOutstandingGuaranteedMessage(identifier: String) -> Bool {
+        guard let session else { return false }
+        return session.outstandingUserInfoTransfersProxy.contains {
+            HAWatchConnectivity.GuaranteedMessage(content: $0)?.identifier == identifier
+        }
+    }
+
     public var mostRecentlyReceivedContext: HAWatchConnectivity.Context {
-        HAWatchConnectivity.Context(content: session?.receivedApplicationContextProxy ?? [:])
+        receivedContextLock.lock()
+        let cached = cachedReceivedContext
+        receivedContextLock.unlock()
+        return HAWatchConnectivity.Context(content: cached ?? [:])
+    }
+
+    /// Store the latest received application context; the delegate calls this on receipt and
+    /// `activate()` primes it once from the (blocking) session getter off the caller's thread.
+    func cacheReceivedContext(_ content: [String: Any], overwrite: Bool = true) {
+        receivedContextLock.lock()
+        defer { receivedContextLock.unlock() }
+        if overwrite || cachedReceivedContext == nil {
+            cachedReceivedContext = content
+        }
     }
 
     public var mostRecentlySentContext: HAWatchConnectivity.Context {
@@ -83,6 +170,20 @@ public final class WatchConnectivityManager: NSObject {
                 : .notEnabled
         return .paired(.installed(complicationState, session.watchDirectoryURLProxy))
     }
+
+    /// The watch state most recently broadcast by `notifyWatchState()` — i.e. read at activation and
+    /// on every `sessionWatchStateDidChange`, both away from the main thread.
+    ///
+    /// `currentWatchState` reads several `WCSession` properties that synchronously wait on the
+    /// session's internal operation queue (see `mostRecentlyReceivedContext` for the same problem),
+    /// so main-thread callers that only need the latest known state — e.g. deciding whether to show
+    /// watch-related UI — should read this instead of blocking on the live getters. `.notPaired`
+    /// until the session has activated.
+    public var lastKnownWatchState: HAWatchConnectivity.WatchState {
+        watchStateCacheLock.lock()
+        defer { watchStateCacheLock.unlock() }
+        return cachedWatchState ?? .notPaired
+    }
     #endif
 
     /// Claim `WCSession.default.delegate` and activate. Called once at startup by
@@ -91,12 +192,37 @@ public final class WatchConnectivityManager: NSObject {
         guard let session else { return }
         session.delegateProxy = self
         session.activateProxy()
+        // Prime the received-context cache once, away from the caller's thread: the underlying getter
+        // blocks on WCSession's operation queue (see `cachedReceivedContext`). A context received via
+        // the delegate in the meantime wins over this initial snapshot.
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self, let session = self.session else { return }
+            cacheReceivedContext(session.receivedApplicationContextProxy, overwrite: false)
+        }
     }
 
     func notifyState() { state.notify(sessionState) }
     func notifyReachability() { reachability.notify(currentReachability) }
+
+    /// Re-read and re-broadcast the current session + reachability state to all observers.
+    ///
+    /// watchOS does not reliably emit `sessionReachabilityDidChange` across a suspend→resume, so a
+    /// watch app returning to the foreground can be left observing a stale `isReachable` (typically a
+    /// false "unreachable") until the app is restarted. Calling this on foreground re-reads the live
+    /// value from `WCSession` and pushes it out, so the UI recovers without a restart.
+    public func refreshConnectivityState() {
+        notifyState()
+        notifyReachability()
+    }
+
     #if os(iOS)
-    func notifyWatchState() { watchState.notify(currentWatchState) }
+    func notifyWatchState() {
+        let state = currentWatchState
+        watchStateCacheLock.lock()
+        cachedWatchState = state
+        watchStateCacheLock.unlock()
+        watchState.notify(state)
+    }
     #endif
 
     /// Resolve a file (blob) transfer completion by handle identity. Called by the delegate with the

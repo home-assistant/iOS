@@ -34,6 +34,17 @@ enum OpenSource {
         case .deeplink: return L10n.Alerts.OpenUrlFromDeepLink.message(urlString)
         }
     }
+
+    /// The copy shown above the server picker when the URL arrived without a server to open it on. The URL
+    /// stays out of the sentence so the picker can show it as a pill.
+    func serverSelectPrompt(with urlString: String) -> ServerSelectPrompt {
+        switch self {
+        case .notification:
+            return ServerSelectPrompt(message: L10n.Alerts.OpenUrlFromNotification.selectServer, link: urlString)
+        case .deeplink:
+            return ServerSelectPrompt(message: L10n.Alerts.OpenUrlFromDeepLink.selectServer, link: urlString)
+        }
+    }
 }
 
 protocol AppCoordinator: AnyObject {
@@ -41,12 +52,19 @@ protocol AppCoordinator: AnyObject {
     var window: UIWindow? { get }
     func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?)
     func show(alert: ServerAlert)
-    func showSettings()
+    func showSettings(pushOntoNavigationStack: Bool)
     func showAssistSettings()
     func showDownloadManager(_ viewModel: DownloadManagerViewModel)
     func showOnboardingPermissions(server: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID])
     @discardableResult func open(server: Server) -> Guarantee<any WebFrontend>
-    func selectServer(prompt: String?, includeSettings: Bool, completion: @escaping (Server) -> Void)
+    /// Activates `server` in response to an explicit user action (server picker, server settings).
+    /// Unlike `open(server:)`, activating the already-active server is not a no-op: the frontend is sent
+    /// back to the Home Assistant root, so re-activating a server always recovers from a stuck screen.
+    func activate(server: Server)
+    /// Asks the user which server an action applies to, using the Settings sheet's compact server picker.
+    /// `zoomsFromStandBy` is only set by the stand-by view's server pill, the one entry point the sheet has
+    /// something to zoom out of; everywhere else the sheet slides up as usual.
+    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void)
     func presentInvitation(url: URL?)
     func setup()
     func open(
@@ -64,11 +82,24 @@ protocol AppCoordinator: AnyObject {
         queryParameters: [URLQueryItem]?,
         isComingFromAppIntent: Bool
     )
+    /// Clears everything presented over the frontend — SwiftUI sheets and covers as well as UIKit overlays —
+    /// and runs `completion` once the screen is free. Anything that opens the app to launch something goes
+    /// through this, so it is never swallowed by content the user already had open.
+    func dismissPresentedContent(completion: (() -> Void)?)
 }
 
 extension AppCoordinator {
     func present(_ viewController: UIViewController) {
         present(viewController, animated: true, completion: nil)
+    }
+
+    func showSettings() {
+        showSettings(pushOntoNavigationStack: false)
+    }
+
+    /// The picker as every entry point but the stand-by pill wants it: sliding up, not zooming.
+    func selectServer(prompt: ServerSelectPrompt?, completion: @escaping (Server) -> Void) {
+        selectServer(prompt: prompt, zoomsFromStandBy: false, completion: completion)
     }
 
     /// Convenience matching the old default arguments (`skipConfirm`/`avoidUnnecessaryReload` = false).
@@ -146,11 +177,25 @@ final class SceneManager {
     private var appCoordinatorPromise: Guarantee<AppCoordinator>
     private var appCoordinatorSeal: (AppCoordinator) -> Void
 
-    /// The primary web-view coordinator (`HomeAssistantView`), replacing `webViewWindowControllerPromise`.
+    private struct WeakAppCoordinator {
+        weak var value: AppCoordinator?
+    }
+
+    /// Every coordinator currently registered, weakly held in registration order. Multi-window (iPad,
+    /// Catalyst) runs one per scene, so this is how a request that started in a particular window finds
+    /// that window's coordinator instead of whichever one happened to register last.
+    private var registeredAppCoordinators: [WeakAppCoordinator] = []
+
+    /// The app-wide coordinator, for requests that arrive without a window behind them (deep links,
+    /// notifications, App Intents). Anything triggered from a window should go through
+    /// `appCoordinator(for:)` so it stays in that window.
     var appCoordinator: Guarantee<AppCoordinator> { appCoordinatorPromise }
 
     /// Called by `HomeAssistantView` once its coordinator exists.
     func registerAppCoordinator(_ coordinator: AppCoordinator) {
+        registeredAppCoordinators.removeAll { $0.value == nil || $0.value === coordinator }
+        registeredAppCoordinators.append(WeakAppCoordinator(value: coordinator))
+
         if appCoordinatorPromise.isFulfilled {
             appCoordinatorPromise = .value(coordinator)
         } else {
@@ -158,25 +203,23 @@ final class SceneManager {
         }
     }
 
+    /// The coordinator showing `scene`, for requests that started in one window and belong there —
+    /// a tap in that web view, a gesture on it. Falls back to the app-wide coordinator when the scene has
+    /// none of its own (kiosk mode, a window still coming up). Call on the main thread.
+    func appCoordinator(for scene: UIWindowScene?) -> Guarantee<AppCoordinator> {
+        guard let scene else { return appCoordinatorPromise }
+        // Newest registration first, so a scene that came back gets its current coordinator rather than one
+        // left over from the container it replaced.
+        let coordinators = registeredAppCoordinators.reversed().compactMap(\.value)
+        guard let coordinator = coordinators.first(where: { $0.window?.windowScene === scene }) else {
+            return appCoordinatorPromise
+        }
+        return .value(coordinator)
+    }
+
     init() {
         (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
         (self.appCoordinatorPromise, self.appCoordinatorSeal) = Guarantee<AppCoordinator>.pending()
-
-        // swiftlint:disable prohibit_environment_assignment
-        Current.realmFatalPresentation = { [weak self] viewController in
-            guard let self else { return }
-
-            let under = UIViewController()
-            under.view.backgroundColor = .black
-            under.modalPresentationStyle = .fullScreen
-
-            appCoordinator.done { parent in
-                parent.present(under, animated: false, completion: {
-                    under.present(viewController, animated: true, completion: nil)
-                })
-            }
-        }
-        // swiftlint:enable prohibit_environment_assignment
     }
 
     fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {

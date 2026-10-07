@@ -23,6 +23,7 @@ struct ControlSwitch: ControlWidget {
                 intent.value = !template.value
                 return intent
             }()) {
+                // swiftlint:disable:next sf_safe_symbol
                 Label(template.name, systemImage: template.icon.id)
             }
             .tint(.yellow)

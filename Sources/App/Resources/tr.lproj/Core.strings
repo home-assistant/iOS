@@ -16,6 +16,7 @@
 "common::state::standby" = "Bekleme modu";
 "common::state::unlocked" = "Kilitli değil";
 "common::state::yes" = "Evet";
+"component::ai_task::title" = "Yapay zeka görevi";
 "component::airzone::entity::select::sleep_times::state::off" = "Kapalı";
 "component::alarm_control_panel::title" = "Alarm Kontrol Paneli";
 "component::alert::entity_component::_::state::idle" = "Boşta";
@@ -252,7 +253,7 @@
 "component::sensor::title" = "Sensör";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Boşta";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Kapalı";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Etkin";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Aktif (daha fazla pil tüketir, en hızlı güncellemeleri sağlar)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Devre dışı";
 "component::siren::entity_component::_::state::off" = "Kapalı";
 "component::siren::entity_component::_::state::on" = "Açık";

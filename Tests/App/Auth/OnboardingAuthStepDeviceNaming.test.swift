@@ -1,4 +1,6 @@
+import Combine
 import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
@@ -14,8 +16,9 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
     private var step: OnboardingAuthStepDeviceNaming!
     private var api: HomeAssistantAPI!
     private var connection: HAMockConnection!
-    private var sender: FakeUIViewController!
+    private var presenter: OnboardingAuthPresenter!
     private var deviceName: String!
+    private var cancellables = Set<AnyCancellable>()
 
     override func setUp() {
         super.setUp()
@@ -24,7 +27,8 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         api = HomeAssistantAPI(server: .fake())
         api.connection = connection
 
-        sender = FakeUIViewController()
+        presenter = OnboardingAuthPresenter()
+        cancellables.removeAll()
 
         connection.automaticallyTransitionToConnecting = false
 
@@ -32,7 +36,7 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         deviceName = name
         Current.device.deviceName = { name }
 
-        step = OnboardingAuthStepDeviceNaming(api: api, sender: sender)
+        step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
         OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = false
     }
 
@@ -41,7 +45,7 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         step = nil
         api = nil
         connection = nil
-        sender = nil
+        presenter = nil
         deviceName = nil
     }
 
@@ -109,7 +113,7 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
     }
 
     func testDuplicateCancelled() throws {
-        let expectation = setupSender(actions: (.cancel, nil))
+        let expectation = setupPresenter(actions: (.cancel, nil))
 
         let result = step.perform(point: .beforeRegister)
         try respond(result: .success([
@@ -127,7 +131,7 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
     }
 
     func testDuplicateLowercasedDeviceNameCancelled() throws {
-        let expectation = setupSender(actions: (.cancel, nil))
+        let expectation = setupPresenter(actions: (.cancel, nil))
 
         let result = step.perform(point: .beforeRegister)
         try respond(result: .success([
@@ -144,37 +148,110 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    private func setupSender(
+    func testSaveShowsUnreachableErrorWhenDeviceListFails() throws {
+        let requestExpectation = expectation(description: "device name request")
+        var nameRequest: OnboardingDeviceNameRequest?
+        presenter.$path
+            .compactMap { path -> OnboardingDeviceNameRequest? in
+                guard case let .deviceName(request) = path.last else { return nil }
+                return request
+            }
+            .sink { request in
+                nameRequest = request
+                requestExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        _ = step.perform(point: .beforeRegister)
+        try respond(result: .success([
+            .init(name: deviceName, identifier: "any_other"),
+        ]))
+        wait(for: [requestExpectation], timeout: 10.0)
+
+        let request = try XCTUnwrap(nameRequest)
+        let errorExpectation = expectErrorMessage(on: request)
+        request.save("Another Name")
+
+        let command = try XCTUnwrap(connection.pendingRequests.last)
+        command.completion(.failure(.internal(debugDescription: "unit-test")))
+        wait(for: [errorExpectation], timeout: 10.0)
+
+        XCTAssertEqual(request.errorMessage, L10n.Onboarding.DeviceNameCheck.Error.unreachable)
+        XCTAssertFalse(request.isSaving)
+    }
+
+    func testSaveShowsUnreachableErrorWhenDeviceListNeverAnswers() throws {
+        step.timeout = 0.5
+
+        let requestExpectation = expectation(description: "device name request")
+        var nameRequest: OnboardingDeviceNameRequest?
+        presenter.$path
+            .compactMap { path -> OnboardingDeviceNameRequest? in
+                guard case let .deviceName(request) = path.last else { return nil }
+                return request
+            }
+            .sink { request in
+                nameRequest = request
+                requestExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        _ = step.perform(point: .beforeRegister)
+        try respond(result: .success([
+            .init(name: deviceName, identifier: "any_other"),
+        ]))
+        wait(for: [requestExpectation], timeout: 10.0)
+
+        let request = try XCTUnwrap(nameRequest)
+        let errorExpectation = expectErrorMessage(on: request)
+        // the device list request is left unanswered
+        request.save("Another Name")
+        wait(for: [errorExpectation], timeout: 10.0)
+
+        XCTAssertEqual(request.errorMessage, L10n.Onboarding.DeviceNameCheck.Error.unreachable)
+        XCTAssertFalse(request.isSaving)
+    }
+
+    private func expectErrorMessage(on request: OnboardingDeviceNameRequest) -> XCTestExpectation {
+        let expectation = expectation(description: "error message")
+        request.$errorMessage
+            .compactMap { $0 }
+            .first()
+            .sink { _ in expectation.fulfill() }
+            .store(in: &cancellables)
+        return expectation
+    }
+
+    private func setupPresenter(
         delay: DispatchTimeInterval = .seconds(0),
         actions: (Operation, String?)...
     ) -> XCTestExpectation {
         var pendingActions = actions.makeIterator()
 
-        let expectation = expectation(description: "alert action")
+        let expectation = expectation(description: "device name action")
         expectation.expectedFulfillmentCount = actions.count
-        sender.didPresent = { vc in
-            guard let vc = vc as? UIHostingController<DeviceNameView> else {
-                XCTFail("invalid presented controller")
-                return
+        presenter.$path
+            .compactMap { path -> OnboardingDeviceNameRequest? in
+                guard case let .deviceName(request) = path.last else { return nil }
+                return request
             }
-
-            guard let nextAction = pendingActions.next() else {
-                XCTFail("exceeded setup actions count")
-                return
-            }
-
-            vc.rootView.setDeviceName(nextAction.1 ?? "")
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                switch nextAction.0 {
-                case .default:
-                    vc.rootView.saveAction(nextAction.1 ?? "")
-                case .cancel:
-                    vc.rootView.cancelAction()
+            .sink { request in
+                guard let nextAction = pendingActions.next() else {
+                    XCTFail("exceeded setup actions count")
+                    return
                 }
-                expectation.fulfill()
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    switch nextAction.0 {
+                    case .default:
+                        request.save(nextAction.1 ?? "")
+                    case .cancel:
+                        request.cancelAfterDismissal()
+                    }
+                    expectation.fulfill()
+                }
             }
-        }
+            .store(in: &cancellables)
         return expectation
     }
 
@@ -216,17 +293,4 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
 
 private enum TestError: Error {
     case any
-}
-
-private class FakeUIViewController: UIViewController {
-    var didPresent: ((UIViewController) -> Void)?
-
-    override func present(
-        _ viewControllerToPresent: UIViewController,
-        animated flag: Bool,
-        completion: (() -> Void)? = nil
-    ) {
-        didPresent?(viewControllerToPresent)
-        completion?()
-    }
 }

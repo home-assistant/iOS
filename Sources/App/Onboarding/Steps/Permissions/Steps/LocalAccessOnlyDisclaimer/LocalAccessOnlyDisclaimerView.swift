@@ -14,7 +14,8 @@ struct LocalAccessOnlyDisclaimerView: View {
             primaryActionTitle: L10n.Onboarding.LocalOnlyDisclaimer.PrimaryButton.title,
             primaryAction: {
                 onContinue()
-            }
+            },
+            primaryActionIdentifier: AccessibilityIdentifier.onboardingLocalOnlyDisclaimerContinue.rawValue
         )
     }
 }

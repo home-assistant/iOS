@@ -12,6 +12,9 @@ struct OpenEntityAppIntent: AppIntent {
     )
 
     static var openAppWhenRun: Bool = true
+    // `openAppWhenRun` is deprecated from iOS 26; both stay until the deployment target passes 26.
+    @available(iOS 26.0, watchOS 26.0, *)
+    static var supportedModes: IntentModes { .foreground }
 
     @Parameter(
         title: .init("widgets.controls.open_entity.configuration.parameter.entity", defaultValue: "Entity")
@@ -21,15 +24,10 @@ struct OpenEntityAppIntent: AppIntent {
     func perform() async throws -> some IntentResult {
         guard let entity else { return .result() }
         #if !WIDGET_EXTENSION
-        if Domain(entityId: entity.entityId) == .camera, let url = AppConstants.openCameraDeeplinkURL(
+        if let url = AppConstants.openEntityDestinationURL(
             entityId: entity.entityId,
             serverId: entity.serverId
         ) {
-            DispatchQueue.main.async {
-                URLOpener.shared.open(url, options: [:], completionHandler: nil)
-            }
-        } else if let url =
-            AppConstants.openEntityDeeplinkURL(entityId: entity.entityId, serverId: entity.serverId) {
             DispatchQueue.main.async {
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }

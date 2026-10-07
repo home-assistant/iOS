@@ -1,6 +1,6 @@
 import Foundation
+import GRDB
 import KeychainAccess
-import RealmSwift
 import SafariServices
 import Security
 import Shared
@@ -23,11 +23,50 @@ func resetStores() {
         Current.Log.error("Error when trying to delete everything from Keychain!")
     }
 
+    // Wiping the app-group domain would also wipe the deleted-server tombstones, and
+    // without them a late writer holding a Server reference — e.g. the local-push
+    // extension refreshing a token in its own process — re-creates the entry in the
+    // shared Keychain and the "deleted" servers come back on next launch.
+    let deletedServerTombstones = prefs.array(forKey: ServerManagerImpl.deletedServersPrefsKey)
+
     let bundleId = Bundle.main.bundleIdentifier!
     UserDefaults.standard.removePersistentDomain(forName: bundleId)
     UserDefaults.standard.removePersistentDomain(forName: AppConstants.AppGroupID)
+    prefs.removePersistentDomain(forName: AppConstants.AppGroupID)
 
-    Realm.reset()
+    if let deletedServerTombstones {
+        prefs.set(deletedServerTombstones, forKey: ServerManagerImpl.deletedServersPrefsKey)
+    }
+
+    do {
+        try Current.database().eraseAllData()
+    } catch {
+        Current.Log.error("Error when trying to delete everything from the app database: \(error)")
+    }
+
+    Current.notificationHistoryStore.clearAllEntries()
+    removeAppCache(at: AppConstants.widgetsCacheURL)
+    removeAppCache(at: AppConstants.watchMagicItemsInfo)
+
+    // Clearing the app group defaults above also clears the Realm→GRDB
+    // migration flag, so drop the legacy store too or the importer would
+    // repopulate GRDB from it on the next launch.
+    RealmToGRDBMigration.deleteLegacyStore()
+
+    Current.clientEventStore.addEvent(ClientEvent(
+        text: L10n.Settings.Debugging.ResetApp.clientEvent,
+        type: .settings
+    ))
+}
+
+private func removeAppCache(at url: URL) {
+    guard FileManager.default.fileExists(atPath: url.path) else { return }
+
+    do {
+        try FileManager.default.removeItem(at: url)
+    } catch {
+        Current.Log.error("Error when trying to delete app cache at \(url.path): \(error)")
+    }
 }
 
 func deleteKeychainCompletely() throws {

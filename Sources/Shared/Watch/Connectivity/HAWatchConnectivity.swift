@@ -9,6 +9,7 @@ public enum HAWatchConnectivity {
     enum PayloadKey {
         static let identifier = "identifier"
         static let content = "content"
+        static let version = "version"
         static let complicationInfo = "__complication_info__"
     }
 }

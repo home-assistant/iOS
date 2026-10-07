@@ -17,62 +17,23 @@ public struct PipelineResponse: HADataDecodable {
     }
 }
 
-public struct Pipeline: HADataDecodable, Codable {
-    public let conversationEngine: String?
-    public let conversationLanguage: String?
-    public let id: String
-    public let language: String?
-    public let name: String
-    public let sttEngine: String?
-    public let sttLanguage: String?
-    public let ttsEngine: String?
-    public let ttsLanguage: String?
-    public let ttsVoice: String?
-    public let wakeWordEntity: String?
-    public let wakeWordId: String?
-
+// `Pipeline` itself lives in the `HAModels` package; this maps the websocket payload.
+extension Pipeline: @retroactive HADataDecodable {
     public init(data: HAData) throws {
-        self.conversationEngine = try? data.decode("conversation_engine")
-        self.conversationLanguage = try? data.decode("conversation_language")
-        self.id = try data.decode("id")
-        self.language = try? data.decode("language")
-        self.name = try data.decode("name")
-        self.sttEngine = try? data.decode("stt_engine")
-        self.sttLanguage = try? data.decode("stt_language")
-        self.ttsEngine = try? data.decode("tts_engine")
-        self.ttsLanguage = try? data.decode("tts_language")
-        self.ttsVoice = try? data.decode("tts_voice")
-        self.wakeWordEntity = try? data.decode("wake_word_entity")
-        self.wakeWordId = try? data.decode("wake_word_id")
-    }
-
-    /// Mainly for test purposes
-    public init(
-        conversationEngine: String? = nil,
-        conversationLanguage: String? = nil,
-        id: String,
-        language: String? = nil,
-        name: String,
-        sttEngine: String? = nil,
-        sttLanguage: String? = nil,
-        ttsEngine: String? = nil,
-        ttsLanguage: String? = nil,
-        ttsVoice: String? = nil,
-        wakeWordEntity: String? = nil,
-        wakeWordId: String? = nil
-    ) {
-        self.conversationEngine = conversationEngine
-        self.conversationLanguage = conversationLanguage
-        self.id = id
-        self.language = language
-        self.name = name
-        self.sttEngine = sttEngine
-        self.sttLanguage = sttLanguage
-        self.ttsEngine = ttsEngine
-        self.ttsLanguage = ttsLanguage
-        self.ttsVoice = ttsVoice
-        self.wakeWordEntity = wakeWordEntity
-        self.wakeWordId = wakeWordId
+        try self.init(
+            conversationEngine: try? data.decode("conversation_engine"),
+            conversationLanguage: try? data.decode("conversation_language"),
+            id: data.decode("id"),
+            language: try? data.decode("language"),
+            name: data.decode("name"),
+            sttEngine: try? data.decode("stt_engine"),
+            sttLanguage: try? data.decode("stt_language"),
+            ttsEngine: try? data.decode("tts_engine"),
+            ttsLanguage: try? data.decode("tts_language"),
+            ttsVoice: try? data.decode("tts_voice"),
+            wakeWordEntity: try? data.decode("wake_word_entity"),
+            wakeWordId: try? data.decode("wake_word_id")
+        )
     }
 }
 
@@ -210,27 +171,51 @@ public enum AssistEvent: String, Codable {
     }
 }
 
-/// Saved in database
-public struct AssistPipelines: Codable, FetchableRecord, PersistableRecord {
-    public let serverId: String
-    public let preferredPipeline: String
-    public let pipelines: [Pipeline]
-
-    public init(serverId: String, preferredPipeline: String, pipelines: [Pipeline]) {
-        self.serverId = serverId
-        self.preferredPipeline = preferredPipeline
-        self.pipelines = pipelines
+// `AssistPipelines` itself lives in the `HAModels` package; these map the websocket payload and
+// provide its database-backed queries.
+public extension AssistPipelines {
+    init(serverId: String, pipelineResponse: PipelineResponse) {
+        self.init(
+            serverId: serverId,
+            preferredPipeline: pipelineResponse.preferredPipeline,
+            pipelines: pipelineResponse.pipelines
+        )
     }
 
-    public init(serverId: String, pipelineResponse: PipelineResponse) {
-        self.serverId = serverId
-        self.preferredPipeline = pipelineResponse.preferredPipeline
-        self.pipelines = pipelineResponse.pipelines
+    /// The pipeline a run asking for `pipelineId` targets: that one, or the server's preferred
+    /// pipeline when no id is given.
+    func pipeline(id pipelineId: String?) -> Pipeline? {
+        let id = pipelineId.flatMap { $0.isEmpty ? nil : $0 } ?? preferredPipeline
+        return pipelines.first { $0.id == id }
     }
 
-    public static func config() throws -> [AssistPipelines]? {
+    /// The cached pipeline a run on `serverId` targets, or nil when it is not in the cache — the
+    /// server's pipelines were never fetched, or the pipeline was added since.
+    static func cachedPipeline(id pipelineId: String?, serverId: String) -> Pipeline? {
+        do {
+            return try Current.database().read { db in
+                try AssistPipelines
+                    .filter(Column(DatabaseTables.AssistPipelines.serverId.rawValue) == serverId)
+                    .fetchOne(db)
+            }?.pipeline(id: pipelineId)
+        } catch {
+            Current.Log.error("Failed to read cached Assist pipelines: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    static func config() throws -> [AssistPipelines]? {
         try Current.database().read({ db in
             try AssistPipelines.fetchAll(db)
         })
+    }
+
+    /// Delete pipelines whose server no longer exists (orphan pipelines).
+    static func deleteOrphans(keepingServerIds serverIds: [String]) throws {
+        _ = try Current.database().write { db in
+            try AssistPipelines
+                .filter(!serverIds.contains(Column(DatabaseTables.AssistPipelines.serverId.rawValue)))
+                .deleteAll(db)
+        }
     }
 }

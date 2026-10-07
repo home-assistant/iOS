@@ -316,7 +316,7 @@ final class NotificationSoundsViewModel: ObservableObject {
         defer { isBusy = false }
 
         let sharingURL = try fileSharingPath()
-        let sounds = soundsInDirectory(sharingURL) ?? []
+        let sounds = await Self.enumerateSounds(path: sharingURL) ?? []
         let copied = try await copySounds(sounds, category: .imported)
         return copied.count
     }
@@ -327,7 +327,7 @@ final class NotificationSoundsViewModel: ObservableObject {
 
         let soundsPath = URL(fileURLWithPath: "/System/Library/Audio/UISounds", isDirectory: true)
         let systemSounds = await Task.detached(priority: .userInitiated) { () -> [URL] in
-            Self.enumerateSounds(path: soundsPath) ?? []
+            await Self.enumerateSounds(path: soundsPath) ?? []
         }.value
         let copied = try await copySounds(systemSounds, category: .system)
         return copied.count
@@ -335,7 +335,7 @@ final class NotificationSoundsViewModel: ObservableObject {
 
     // Pure file-system work — opt out of the surrounding `@MainActor` isolation so
     // it can be called from `Task.detached` for off-main enumeration.
-    private nonisolated static func enumerateSounds(path: URL) -> [URL]? {
+    private nonisolated static func enumerateSounds(path: URL) async -> [URL]? {
         guard let enu = FileManager.default.enumerator(at: path, includingPropertiesForKeys: [.isDirectoryKey]) else {
             Current.Log.error("Unable to get enumerator!")
             return nil
@@ -344,7 +344,7 @@ final class NotificationSoundsViewModel: ObservableObject {
         var foundURLs: [URL] = []
 
         while let fileURL = enu.nextObject() as? URL {
-            if FileManager.default.isDirectory(fileURL) == false, ensureDurationStatic(fileURL) {
+            if FileManager.default.isDirectory(fileURL) == false, await ensureDurationStatic(fileURL) {
                 foundURLs.append(fileURL)
             }
         }
@@ -352,8 +352,9 @@ final class NotificationSoundsViewModel: ObservableObject {
         return foundURLs
     }
 
-    private nonisolated static func ensureDurationStatic(_ soundURL: URL) -> Bool {
-        let duration = Double(CMTimeGetSeconds(AVURLAsset(url: soundURL).duration))
+    private nonisolated static func ensureDurationStatic(_ soundURL: URL) async -> Bool {
+        let time = await (try? AVURLAsset(url: soundURL).load(.duration)) ?? .zero
+        let duration = Double(CMTimeGetSeconds(time))
         return duration > 0.0 && duration <= 30.0
     }
 
@@ -457,28 +458,6 @@ final class NotificationSoundsViewModel: ObservableObject {
         } catch {
             throw SoundError(soundURL: nil, kind: .cantGetFileSharingPath, underlying: error)
         }
-    }
-
-    private func soundsInDirectory(_ path: URL) -> [URL]? {
-        guard let enu = FileManager.default.enumerator(at: path, includingPropertiesForKeys: [.isDirectoryKey]) else {
-            Current.Log.error("Unable to get enumerator!")
-            return nil
-        }
-
-        var foundURLs: [URL] = []
-
-        while let fileURL = enu.nextObject() as? URL {
-            if FileManager.default.isDirectory(fileURL) == false, ensureDuration(fileURL) {
-                foundURLs.append(fileURL)
-            }
-        }
-
-        return foundURLs
-    }
-
-    private func ensureDuration(_ soundURL: URL) -> Bool {
-        let duration = Double(CMTimeGetSeconds(AVURLAsset(url: soundURL).duration))
-        return duration > 0.0 && duration <= 30.0
     }
 
     private func copySounds(_ soundURLs: [URL], category: NotificationSoundsView.SoundCategory) async throws -> [URL] {

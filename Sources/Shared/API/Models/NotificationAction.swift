@@ -1,61 +1,73 @@
 import Foundation
-import RealmSwift
 import UserNotifications
 
-public class NotificationAction: Object {
-    @objc public dynamic var uuid: String = UUID().uuidString
-    @objc public dynamic var Identifier: String = ""
-    @objc public dynamic var Title: String = ""
-    @objc public dynamic var TextInput: Bool = false
-    @objc public dynamic var isServerControlled: Bool = false
-    @objc public dynamic var icon: String?
+/// An action belonging to a `NotificationCategory`. Persisted as JSON inside
+/// the owning category's GRDB row.
+public struct NotificationAction: Codable, Equatable, Identifiable {
+    public var id: String
+    public var identifier: String
+    public var title: String
+    public var textInput: Bool
+    public var isServerControlled: Bool
+    public var icon: String?
 
     // Options
-    @objc public dynamic var Foreground: Bool = false
-    @objc public dynamic var Destructive: Bool = false
-    @objc public dynamic var AuthenticationRequired: Bool = false
+    public var foreground: Bool
+    public var destructive: Bool
+    public var authenticationRequired: Bool
 
     // Text Input Options
-    @objc public dynamic var TextInputButtonTitle: String = L10n.NotificationsConfigurator.Action.Rows
-        .TextInputButtonTitle.title
-    @objc public dynamic var TextInputPlaceholder: String = L10n.NotificationsConfigurator.Action.Rows
-        .TextInputPlaceholder.title
-    // swiftlint:enable line_length
+    public var textInputButtonTitle: String
+    public var textInputPlaceholder: String
 
-    public convenience init(action: MobileAppConfigPushCategory.Action) {
-        self.init()
-
-        self.isServerControlled = true
-        self.Title = action.title
-        self.Identifier = action.identifier
-        self.AuthenticationRequired = action.authenticationRequired
-        self.Foreground = (action.activationMode.lowercased() == "foreground")
-        self.Destructive = action.destructive
-        self.TextInput = (action.behavior.lowercased() == "textinput")
-        self.icon = action.icon
-        if let title = action.textInputButtonTitle {
-            self.TextInputButtonTitle = title
-        } else {
-            self.TextInputButtonTitle = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
-        }
-        if let placeholder = action.textInputPlaceholder {
-            self.TextInputPlaceholder = placeholder
-        } else {
-            self.TextInputPlaceholder = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
-        }
+    public init(
+        id: String = UUID().uuidString,
+        identifier: String = "",
+        title: String = "",
+        textInput: Bool = false,
+        isServerControlled: Bool = false,
+        icon: String? = nil,
+        foreground: Bool = false,
+        destructive: Bool = false,
+        authenticationRequired: Bool = false,
+        textInputButtonTitle: String? = nil,
+        textInputPlaceholder: String? = nil
+    ) {
+        self.id = id
+        self.identifier = identifier
+        self.title = title
+        self.textInput = textInput
+        self.isServerControlled = isServerControlled
+        self.icon = icon
+        self.foreground = foreground
+        self.destructive = destructive
+        self.authenticationRequired = authenticationRequired
+        self.textInputButtonTitle = textInputButtonTitle
+            ?? L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
+        self.textInputPlaceholder = textInputPlaceholder
+            ?? L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
     }
 
-    override public static func primaryKey() -> String? {
-        "uuid"
+    public init(action: MobileAppConfigPushCategory.Action) {
+        self.init(
+            identifier: action.identifier,
+            title: action.title,
+            textInput: action.behavior.lowercased() == "textinput",
+            isServerControlled: true,
+            icon: action.icon,
+            foreground: action.activationMode.lowercased() == "foreground",
+            destructive: action.destructive,
+            authenticationRequired: action.authenticationRequired,
+            textInputButtonTitle: action.textInputButtonTitle,
+            textInputPlaceholder: action.textInputPlaceholder
+        )
     }
-
-    public let categories = LinkingObjects(fromType: NotificationCategory.self, property: "Actions")
 
     public var options: UNNotificationActionOptions {
         var actionOptions = UNNotificationActionOptions([])
-        if AuthenticationRequired { actionOptions.insert(.authenticationRequired) }
-        if Destructive { actionOptions.insert(.destructive) }
-        if Foreground { actionOptions.insert(.foreground) }
+        if authenticationRequired { actionOptions.insert(.authenticationRequired) }
+        if destructive { actionOptions.insert(.destructive) }
+        if foreground { actionOptions.insert(.foreground) }
 
         return actionOptions
     }
@@ -70,19 +82,19 @@ public class NotificationAction: Object {
             actionIcon = nil
         }
 
-        if TextInput {
+        if textInput {
             action = UNTextInputNotificationAction(
-                identifier: Identifier,
-                title: Title,
+                identifier: identifier,
+                title: title,
                 options: options,
                 icon: actionIcon,
-                textInputButtonTitle: TextInputButtonTitle,
-                textInputPlaceholder: TextInputPlaceholder
+                textInputButtonTitle: textInputButtonTitle,
+                textInputPlaceholder: textInputPlaceholder
             )
         } else {
             action = UNNotificationAction(
-                identifier: Identifier,
-                title: Title,
+                identifier: identifier,
+                title: title,
                 options: options,
                 icon: actionIcon
             )
@@ -91,7 +103,7 @@ public class NotificationAction: Object {
         return action
     }
 
-    public class func exampleTrigger(
+    public static func exampleTrigger(
         api: HomeAssistantAPI,
         identifier: String,
         category: String?,

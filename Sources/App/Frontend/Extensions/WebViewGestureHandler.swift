@@ -7,6 +7,9 @@ final class WebViewGestureHandler {
     weak var webView: WebViewControllerProtocol?
 
     func handleGestureAction(_ action: HAGestureAction) {
+        if action != .none {
+            Current.impactFeedback.impactOccurred(style: .light)
+        }
         switch action {
         case .assist:
             showAssistThroughKeyEvent()
@@ -16,6 +19,10 @@ final class WebViewGestureHandler {
             webViewNavigateBack()
         case .nextPage:
             webViewNavigateForward()
+        case .openInBrowser:
+            webView?.openInBrowser()
+        case .createDeeplink:
+            createDeeplink()
         case .showServersList:
             showServersList()
         case .nextServer:
@@ -43,12 +50,12 @@ final class WebViewGestureHandler {
     private func showSidebar() {
         webView?.webViewExternalMessageHandler
             .sendExternalBus(message: .init(command: WebViewExternalBusOutgoingMessage.showSidebar.rawValue))
+            .cauterize()
     }
 
     private func webViewNavigateBack() {
-        if webView?.canGoBack ?? false {
-            webView?.goBack()
-        }
+        guard webView?.canGoBack ?? false else { return }
+        webView?.goBack()
     }
 
     private func webViewNavigateForward() {
@@ -57,10 +64,17 @@ final class WebViewGestureHandler {
         }
     }
 
+    private func createDeeplink() {
+        guard let webView,
+              let url = webView.currentPageURL,
+              let target = DeeplinkTarget.page(from: url) else { return }
+        DeeplinkPresenter.present(target: target, from: webView)
+    }
+
     private func showServersList() {
-        Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.selectServer(prompt: nil, includeSettings: true) { server in
-                coordinator.open(server: server)
+        Current.sceneManager.appCoordinator(for: sceneOfGesture).done { coordinator in
+            coordinator.selectServer(prompt: nil) { server in
+                coordinator.activate(server: server)
             }
         }
     }
@@ -140,15 +154,16 @@ final class WebViewGestureHandler {
 
         let nextServer = servers[nextIndex]
 
-        Current.sceneManager.appCoordinator.done { coordinator in
-            coordinator.open(server: nextServer).done { frontend in
-                guard let window = frontend.presentationWindow else { return }
-                let hud = ProgressHUD.showAdded(to: window, animated: true)
-                hud.isUserInteractionEnabled = false
-                hud.mode = .text
-                hud.label.text = nextServer.info.name
-                hud.hide(animated: true, afterDelay: 1.0)
-            }
+        // Not `activate(server:)`: cycling servers with a gesture bypasses the server picker, so it
+        // switches in place without sending the user back to the Home Assistant root.
+        Current.sceneManager.appCoordinator(for: sceneOfGesture).done { coordinator in
+            coordinator.open(server: nextServer)
         }
+    }
+
+    /// The scene the gesture was made in, so what it asks for happens in that window rather than in
+    /// whichever one the app last registered.
+    private var sceneOfGesture: UIWindowScene? {
+        webView?.presentationWindow?.windowScene
     }
 }

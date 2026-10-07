@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "拍照并将其发送到您的Home Assistant服务器。";
 "NSCrossWebsiteTrackingUsageDescription" = "如果您的配置需要，可以选择启用跨网站跟踪。";
 "NSFocusStatusUsageDescription" = "以传感器形式报告您的专注模式状态。";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "定位并与您的 Home Assistant 实例通信。";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  我们还需要”始终“访问位置信息的权限，以便应用可以执行后台操作。\n\n ⚠️ 没有此权限，应用将无法决定在后台时使用哪种连接（本地或远程），并将一直使用远程连接。";
 "NSLocationAlwaysUsageDescription" = "我们需要持续获取您的位置用于 iBeacons、地理围栏、后台位置更新和准确性报告等功能。";

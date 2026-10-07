@@ -171,9 +171,9 @@ public class WebhookManager: NSObject {
             }
 
             if self.currentBackgroundSessionInfo != sessionInfo {
-                sessionInfo.eventGroup.notify(queue: dataQueue) { [weak self] in
+                sessionInfo.eventGroup.notify(queue: dataQueue) {
                     Current.Log.info("removing session info \(sessionInfo)")
-                    self?.sessionInfos.remove(sessionInfo)
+                    self.sessionInfos.remove(sessionInfo)
                 }
             }
         }
@@ -272,26 +272,29 @@ public class WebhookManager: NSObject {
 
                 /* If user's cloud subscription expired or account was signed out, retry with activeURL
                  instad of cloud hook */
-                if let self,
-                   let error = error as? WebhookError,
-                   error == WebhookError.unacceptableStatusCode(503),
-                   overrideURL == nil,
-                   let activeURL = server.info.connection.activeURL() {
-                    let event = ClientEvent(
-                        text: "Retrying with active URL - \(activeURL.absoluteString)",
-                        type: .networkRequest
-                    )
-                    Current.clientEventStore.addEvent(event)
-                    let promise: Promise<Any> = sendEphemeral(
-                        server: server,
-                        request: request,
-                        overrideURL: activeURL
-                    )
-                    promise.cauterize()
-                } else {
-                    Current.Log.error(
-                        "Not retrying with active URL, error: \(error), overrideURL: \(overrideURL?.absoluteString ?? "--"), activeURL: \(server.info.connection.activeURL()?.absoluteString ?? "Unknown")"
-                    )
+                Task { [weak self] in
+                    if let self,
+                       let error = error as? WebhookError,
+                       error == WebhookError.unacceptableStatusCode(503),
+                       overrideURL == nil,
+                       let activeURL = await server.activeURL() {
+                        let event = ClientEvent(
+                            text: "Retrying with active URL - \(activeURL.absoluteString)",
+                            type: .networkRequest
+                        )
+                        Current.clientEventStore.addEvent(event)
+                        let promise: Promise<Any> = sendEphemeral(
+                            server: server,
+                            request: request,
+                            overrideURL: activeURL
+                        )
+                        promise.cauterize()
+                    } else {
+                        let activeURLString = await server.activeURL()?.absoluteString ?? "Unknown"
+                        Current.Log.error(
+                            "Not retrying with active URL, error: \(error), overrideURL: \(overrideURL?.absoluteString ?? "--"), activeURL: \(activeURLString)"
+                        )
+                    }
                 }
             }
         }
@@ -470,8 +473,25 @@ public class WebhookManager: NSObject {
                 server: server,
                 baseURL: baseURL
             )
-        }.then(on: dataQueue) { urlRequest, data in
-            self.currentRegularSessionInfo.session.uploadTask(.promise, with: urlRequest, from: data)
+        }.then(on: dataQueue) { [self] urlRequest, data -> Promise<(Data, URLResponse)> in
+            let (promise, seal) = Promise<(Data, URLResponse)>.pending()
+            let task = currentRegularSessionInfo.session.uploadTask(
+                with: urlRequest,
+                from: data,
+                completionHandler: { data, response, error in
+                    if let data, let response {
+                        seal.fulfill((data, response))
+                    } else {
+                        seal.resolve(nil, error)
+                    }
+                }
+            )
+            let taskKey = TaskKey(sessionInfo: currentRegularSessionInfo, task: task)
+            serverForEphemeralTask[taskKey] = server
+            task.resume()
+            return promise.ensure(on: dataQueue) { [self] in
+                serverForEphemeralTask[taskKey] = nil
+            }
         }.then { data, response in
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
@@ -536,29 +556,37 @@ public class WebhookManager: NSObject {
         baseURL: URL? = nil
     ) -> Promise<(URLRequest, Data)> {
         Promise { seal in
-            let webhookURL: URL
+            Task {
+                do {
+                    let webhookURL: URL
 
-            if let baseURL {
-                webhookURL = baseURL.appendingPathComponent(server.info.connection.webhookPath, isDirectory: false)
-            } else {
-                if let url = server.info.connection.webhookURL() {
-                    webhookURL = url
-                } else {
-                    seal.resolve(.rejected(ServerConnectionError.noActiveURL(server.info.name)))
-                    return
+                    if let baseURL {
+                        webhookURL = baseURL.appendingPathComponent(
+                            server.info.connection.webhookPath,
+                            isDirectory: false
+                        )
+                    } else if let url = await server.webhookURL() {
+                        webhookURL = url
+                    } else {
+                        seal.resolve(.rejected(ServerConnectionError.noActiveURL(server.info.name)))
+                        return
+                    }
+
+                    var urlRequest = try URLRequest(url: webhookURL, method: .post)
+                    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+                    let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
+                        .toJSON(request)
+                    let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
+
+                    // httpBody is ignored by URLSession but is made available in tests
+                    urlRequest.httpBody = data
+
+                    seal.fulfill((urlRequest, data))
+                } catch {
+                    seal.reject(error)
                 }
             }
-
-            var urlRequest = try URLRequest(url: webhookURL, method: .post)
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-            let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server)).toJSON(request)
-            let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
-
-            // httpBody is ignored by URLSession but is made available in tests
-            urlRequest.httpBody = data
-
-            seal.fulfill((urlRequest, data))
         }
     }
 

@@ -47,6 +47,16 @@ public enum EntityContextSubtitle {
            deviceName.range(of: entityName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
             parts.append(deviceName)
         }
+        // Collapse segments that resolve to the same label so the line doesn't repeat one twice — a
+        // device named after its area is common (e.g. a "Sala" camera in the "Sala" area) and would
+        // otherwise render as "Sala • Sala". Compared in the trimmed, case-/diacritic-insensitive form,
+        // which also drops whitespace-only segments that would show as a blank piece.
+        var seenNormalizedParts = Set<String>()
+        parts = parts.filter { part in
+            let normalized = part.normalizedForAreaComparison
+            guard !normalized.isEmpty else { return false }
+            return seenNormalizedParts.insert(normalized).inserted
+        }
         guard parts.isEmpty else {
             return parts.joined(separator: " • ")
         }
@@ -89,6 +99,25 @@ public extension EntityContextRepresentable {
     /// The shared `Floor • Area • Device` context line for this entity. See `EntityContextSubtitle.make`.
     var contextSubtitle: String? {
         EntityContextSubtitle.make(
+            floorName: floorName,
+            areaName: areaName,
+            deviceName: deviceName,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
+    }
+}
+
+public extension EntityContextRepresentable {
+    /// The context line, led by the server when more than one is configured: a picker groups by
+    /// server, but a row stands alone in Siri's disambiguation, where two homes can share a name.
+    func contextSubtitle(serverName: String) -> String? {
+        guard Current.servers.all.count > 1 else {
+            return contextSubtitle
+        }
+        return EntityContextSubtitle.make(
+            serverName: serverName,
             floorName: floorName,
             areaName: areaName,
             deviceName: deviceName,
@@ -189,6 +218,16 @@ public extension [HAAppEntity] {
     /// Creates a mapping from entity IDs to their associated areas for a given server.
     /// - Parameter serverId: The server identifier to filter areas by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppArea` objects.
+    /// The entities worth offering to a spoken command: user-facing rather than configuration or
+    /// diagnostic, not hidden, and in an area. An entity with no room is one nobody asks for by name,
+    /// whatever its domain, and an entity inherits its device's area, which `areasMap` already resolves.
+    func userFacingInAreas(serverId: String) -> [HAAppEntity] {
+        let areas = areasMap(for: serverId)
+        return filter { entity in
+            entity.entityCategory == nil && entity.isHidden != true && areas[entity.entityId] != nil
+        }
+    }
+
     func areasMap(for serverId: String) -> [String: AppArea] {
         do {
             let areas = try AppArea.fetchAreas(for: serverId)

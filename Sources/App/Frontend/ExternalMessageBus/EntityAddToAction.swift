@@ -46,6 +46,8 @@ enum EntityAddToActionType: String, Codable {
     case watchItem
     case customWidget
     case macToolbarItem
+    case deeplink
+    case nfcTag
 }
 
 // MARK: - Action Implementations
@@ -87,6 +89,16 @@ struct MacToolbarItemAction: EntityAddToAction {
 
     func text() -> String {
         L10n.WebView.AddTo.Option.MacToolbar.title
+    }
+}
+
+/// Action to build a deep link that opens the entity's more info dialog
+struct DeeplinkAction: EntityAddToAction {
+    var mdiIcon: String { "mdi:link-variant" }
+    var actionType: String { EntityAddToActionType.deeplink.rawValue }
+
+    func text() -> String {
+        L10n.WebView.AddTo.Option.Deeplink.title
     }
 }
 
@@ -177,6 +189,10 @@ private struct AnyEntityAddToAction: Codable {
             self.action = try container.decode(CustomWidgetAction.self, forKey: .data)
         case .macToolbarItem:
             self.action = try container.decode(MacToolbarItemAction.self, forKey: .data)
+        case .deeplink:
+            self.action = try container.decode(DeeplinkAction.self, forKey: .data)
+        case .nfcTag:
+            self.action = try container.decode(NFCTagAction.self, forKey: .data)
         }
     }
 
@@ -208,6 +224,18 @@ private struct AnyEntityAddToAction: Codable {
             }
         case .macToolbarItem:
             if let typed = action as? MacToolbarItemAction {
+                try container.encode(typed, forKey: .data)
+            } else {
+                throw EntityAddToError.encodingFailed
+            }
+        case .deeplink:
+            if let typed = action as? DeeplinkAction {
+                try container.encode(typed, forKey: .data)
+            } else {
+                throw EntityAddToError.encodingFailed
+            }
+        case .nfcTag:
+            if let typed = action as? NFCTagAction {
                 try container.encode(typed, forKey: .data)
             } else {
                 throw EntityAddToError.encodingFailed

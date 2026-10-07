@@ -1,4 +1,5 @@
 import Foundation
+import ObjectMapper
 import PromiseKit
 @testable import Shared
 import XCTest
@@ -21,8 +22,15 @@ class SensorContainerTests: XCTestCase {
         server2 = servers.addFake()
         Current.servers = servers
 
+        SensorEnablementStore.resetForTesting()
         observer = MockSensorObserver()
         container = SensorContainer()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        SensorEnablementStore.resetForTesting()
     }
 
     func testNoProvidersNoCachedDoesntNotify() {
@@ -74,6 +82,27 @@ class SensorContainerTests: XCTestCase {
             )
             XCTAssertEqual(update.on, date)
         }
+    }
+
+    /// The list the user sees comes from this update, and a row that jumped as it was switched on
+    /// would move the next one under their finger.
+    func testUpdateIsAlphabeticalWhicheverSensorsAreEnabled() throws {
+        container.register(observer: observer)
+        container.register(provider: MockSensorProvider.self)
+        MockSensorProvider.returnedPromises = [
+            .value([
+                WebhookSensor(name: "Charlie", uniqueID: "charlie"),
+                WebhookSensor(name: "alpha", uniqueID: "alpha"),
+                WebhookSensor(name: "Bravo", uniqueID: "bravo"),
+            ]),
+        ]
+        container.setEnabledForAllServers(true, forUniqueID: "charlie")
+
+        _ = try hang(Promise(container.sensors(reason: .trigger("unit-test"), server: server1)))
+
+        let update = try XCTUnwrap(observer.updates.first)
+        let names = try hang(Promise(update.sensors)).map { $0.Name ?? "" }
+        XCTAssertEqual(names, ["alpha", "Bravo", "Charlie"])
     }
 
     func testMultipleButContainingErrorsReturnsSuccessful() throws {
@@ -313,8 +342,8 @@ class SensorContainerTests: XCTestCase {
             $0.State = "state"
             $0.Attributes = ["test": true]
         }
-        container.setEnabled(false, for: underlying)
-        XCTAssertFalse(container.isEnabled(sensor: underlying))
+        container.setEnabled(false, for: underlying, on: server1)
+        XCTAssertFalse(container.isEnabled(sensor: underlying, for: server1))
 
         let promises: [Promise<[WebhookSensor]>] = [.value([underlying])]
 
@@ -329,8 +358,8 @@ class SensorContainerTests: XCTestCase {
         XCTAssertEqual(result1sensor.Name, underlying.Name)
         XCTAssertEqual(result1sensor.Icon, "mdi:dots-square")
 
-        container.setEnabled(true, for: underlying)
-        XCTAssertTrue(container.isEnabled(sensor: underlying))
+        container.setEnabled(true, for: underlying, on: server1)
+        XCTAssertTrue(container.isEnabled(sensor: underlying, for: server1))
 
         MockSensorProvider.returnedPromises = promises
         let promise2 = container.sensors(reason: .trigger("unit-test"), server: server1)
@@ -369,6 +398,136 @@ class SensorContainerTests: XCTestCase {
         XCTAssertEqual(sensorS2.State as? String, "state")
         XCTAssertEqual(sensorS2.Attributes?["test"] as? Bool, true)
         XCTAssertEqual(sensorS2.Name, underlying.Name)
+    }
+
+    func testRegistrationCarriesEnablement() throws {
+        container.register(provider: MockSensorProvider.self)
+
+        let underlying = WebhookSensor(name: "test1a", uniqueID: "testEnablement")
+        container.setEnabled(false, for: underlying, on: server1)
+
+        MockSensorProvider.returnedPromises = [.value([underlying])]
+        let disabled = try hang(Promise(container.sensors(reason: .registration, server: server1)))
+        let disabledSensor = try XCTUnwrap(disabled.sensors.first)
+        XCTAssertEqual(disabledSensor.Disabled, true)
+        XCTAssertEqual(disabledSensor.toJSON()["disabled"] as? Bool, true)
+
+        container.setEnabled(true, for: underlying, on: server1)
+
+        MockSensorProvider.returnedPromises = [.value([underlying])]
+        let enabled = try hang(Promise(container.sensors(reason: .registration, server: server1)))
+        XCTAssertEqual(try XCTUnwrap(enabled.sensors.first).Disabled, false)
+    }
+
+    func testStateUpdateOmitsEnablement() throws {
+        container.register(provider: MockSensorProvider.self)
+
+        let underlying = WebhookSensor(name: "test1a", uniqueID: "testEnablementOmitted")
+        container.setEnabled(false, for: underlying, on: server1)
+
+        MockSensorProvider.returnedPromises = [.value([underlying])]
+        let result = try hang(Promise(container.sensors(reason: .trigger("unit-test"), server: server1)))
+        let sensor = try XCTUnwrap(result.sensors.first)
+        XCTAssertNil(sensor.Disabled)
+
+        let updateJSON = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true)).toJSON(sensor)
+        XCTAssertNil(updateJSON["disabled"])
+    }
+
+    /// A slow run must not overwrite a value that a later run read — and reported — while it was
+    /// still waiting on its other providers, which is how switching Focus got logged in Home
+    /// Assistant as `Work → (blank) → Work`.
+    func testValueReadBeforeOneAlreadySentIsReplaced() throws {
+        container.register(provider: MockSensorProvider.self)
+        container.register(provider: MockSensorProvider.self)
+        // Opt-in like every sensor, and this test is about the value that reaches the server.
+        container.setEnabledForAllServers(true, forUniqueID: "focus_name")
+
+        let (slowProvider, slowSeal) = Promise<[WebhookSensor]>.pending()
+
+        // The slow run reads the focus name before the switch, then stalls on its other provider.
+        // `returnedPromises` is popped from the end, so the stalling one is listed first.
+        MockSensorProvider.returnedPromises = [
+            slowProvider,
+            .value([WebhookSensor(name: "Focus name", uniqueID: "focus_name", state: "")]),
+        ]
+        let slowRun = container.sensors(reason: .trigger("battery"), server: server1)
+
+        // The switch happens, and a run limited to the focus sensors overtakes it.
+        MockSensorProvider.returnedPromises = [
+            .value([]),
+            .value([WebhookSensor(name: "Focus name", uniqueID: "focus_name", state: "Work")]),
+        ]
+        let fastRun = container.sensors(reason: .trigger("focus-filter"), server: server1)
+
+        let fastResult = try hang(Promise(fastRun))
+        XCTAssertEqual(fastResult.sensors.map(\.UniqueID), ["focus_name"])
+        XCTAssertEqual(fastResult.sensors.first?.State as? String, "Work")
+
+        // Only now does the slow run finish, still carrying the name it read before the switch.
+        slowSeal.fulfill([WebhookSensor(name: "slow", uniqueID: "slow")])
+        let slowResult = try hang(Promise(slowRun))
+        XCTAssertEqual(Set(slowResult.sensors.map(\.UniqueID)), Set(["focus_name", "slow"]))
+        XCTAssertEqual(
+            slowResult.sensors.first(where: { $0.UniqueID == "focus_name" })?.State as? String,
+            "Work",
+            "the pre-switch focus name must not be sent after the post-switch one"
+        )
+    }
+
+    /// The same run, but the server that got the newer value isn't the one now being sent to.
+    func testValueSentToOneServerDoesntStopAnother() throws {
+        container.register(provider: MockSensorProvider.self)
+        container.register(provider: MockSensorProvider.self)
+        container.setEnabledForAllServers(true, forUniqueID: "focus_name")
+
+        let (slowProvider, slowSeal) = Promise<[WebhookSensor]>.pending()
+
+        MockSensorProvider.returnedPromises = [
+            slowProvider,
+            .value([WebhookSensor(name: "Focus name", uniqueID: "focus_name", state: "")]),
+        ]
+        let slowRun = container.sensors(reason: .trigger("battery"), server: server2)
+
+        MockSensorProvider.returnedPromises = [
+            .value([]),
+            .value([WebhookSensor(name: "Focus name", uniqueID: "focus_name", state: "Work")]),
+        ]
+        _ = try hang(Promise(container.sensors(reason: .trigger("focus-filter"), server: server1)))
+
+        slowSeal.fulfill([WebhookSensor(name: "slow", uniqueID: "slow")])
+        let slowResult = try hang(Promise(slowRun))
+        XCTAssertEqual(Set(slowResult.sensors.map(\.UniqueID)), Set(["focus_name", "slow"]))
+        XCTAssertEqual(
+            slowResult.sensors.first(where: { $0.UniqueID == "focus_name" })?.State as? String,
+            "",
+            "server2 never got the newer value, so it still gets what this run read"
+        )
+    }
+
+    /// Registration describes the whole sensor set, so an entity whose value another run has since
+    /// sent must still appear in the payload that creates it.
+    func testRegistrationKeepsSensorsAlreadySent() throws {
+        container.register(provider: MockSensorProvider.self)
+        container.register(provider: MockSensorProvider.self)
+
+        let (slowProvider, slowSeal) = Promise<[WebhookSensor]>.pending()
+
+        MockSensorProvider.returnedPromises = [
+            slowProvider,
+            .value([WebhookSensor(name: "Focus name", uniqueID: "focus_name", state: "")]),
+        ]
+        let registrationRun = container.sensors(reason: .registration, server: server1)
+
+        MockSensorProvider.returnedPromises = [
+            .value([]),
+            .value([WebhookSensor(name: "Focus name", uniqueID: "focus_name", state: "Work")]),
+        ]
+        _ = try hang(Promise(container.sensors(reason: .trigger("focus-filter"), server: server1)))
+
+        slowSeal.fulfill([WebhookSensor(name: "slow", uniqueID: "slow")])
+        let registration = try hang(Promise(registrationRun))
+        XCTAssertEqual(Set(registration.sensors.map(\.UniqueID)), Set(["focus_name", "slow"]))
     }
 
     func testSensorsLimitedTo() throws {

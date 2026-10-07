@@ -69,7 +69,7 @@ final class AreasService: AreasServiceProtocol {
             // Read entity and device registries from database instead of making API calls
             let entitiesForAreas = fetchEntitiesFromDatabase(serverId: server.identifier.rawValue)
             let deviceForAreas = fetchDevicesFromDatabase(serverId: server.identifier.rawValue)
-            let allEntitiesPerArea = getAllEntitiesFromArea(
+            let allEntitiesPerArea = Self.getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
                 entitiesAndAreas: entitiesForAreas
             )
@@ -115,7 +115,9 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func getAllEntitiesFromArea(
+    /// Maps each area to the set of entities it contains, resolving both directly-assigned
+    /// entities and those inherited from their device's area.
+    static func getAllEntitiesFromArea(
         devicesAndAreas: [AppDeviceRegistry],
         entitiesAndAreas: [EntityRegistryListForDisplay.Entity]
     ) -> [String: Set<String>] {
@@ -168,7 +170,7 @@ final class AreasService: AreasServiceProtocol {
         devicesAndAreas: [AppDeviceRegistry],
         entitiesAndAreas: [EntityRegistryListForDisplay.Entity]
     ) -> [String: Set<String>] {
-        getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
+        Self.getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
     }
     #endif
 }

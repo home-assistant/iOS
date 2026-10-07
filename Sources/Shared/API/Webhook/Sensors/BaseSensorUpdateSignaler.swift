@@ -40,7 +40,7 @@ class BaseSensorUpdateSignaler: SensorObserver {
         didSignalForUpdateBecause reason: SensorContainerUpdateReason,
         lastUpdate: SensorObserverUpdate?
     ) {
-        guard reason == .settingsChange else { return }
+        guard case .settingsChange = reason else { return }
         updateObservation(sensorUpdates: lastUpdate)
     }
 
@@ -52,7 +52,7 @@ class BaseSensorUpdateSignaler: SensorObserver {
             })
 
             let activeSensors = activeRelatedSensors.filter({ sensor in
-                Current.sensors.isEnabled(sensor: sensor)
+                Current.sensors.isEnabledForAnyServer(sensor: sensor)
             })
 
             if activeSensors.isEmpty {

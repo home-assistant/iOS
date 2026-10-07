@@ -1,12 +1,13 @@
 import CoreLocation
 import Foundation
+import GRDB
 @testable import HomeAssistant
-import RealmSwift
 @testable import Shared
 import XCTest
 
 class ZoneManagerCollectorTests: XCTestCase {
-    private var realm: Realm!
+    private var database: DatabaseQueue!
+    private var previousDatabase: (() -> DatabaseQueue)!
     private var delegate: FakeZoneManagerCollectorDelegate!
     private var locationManager: FakeCLLocationManager!
     private var collector: ZoneManagerCollectorImpl!
@@ -18,15 +19,21 @@ class ZoneManagerCollectorTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        let executionIdentifier = UUID().uuidString
-
-        realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
-        Current.realm = { self.realm }
+        database = try DatabaseQueue()
+        try AppZoneTable().createIfNeeded(database: database)
+        previousDatabase = Current.database
+        Current.database = { self.database }
 
         locationManager = FakeCLLocationManager()
         delegate = FakeZoneManagerCollectorDelegate()
         collector = ZoneManagerCollectorImpl()
         collector.delegate = delegate
+    }
+
+    override func tearDown() {
+        Current.database = previousDatabase
+
+        super.tearDown()
     }
 
     func testDidFailDoesLog() {
@@ -84,7 +91,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertEqual(locationManager.requestedRegions, [])
     }
 
-    func testDidDetermineStateWithNoZoneInRealm() {
+    func testDidDetermineStateWithNoZoneInDatabase() {
         let region = CLCircularRegion()
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
         XCTAssertEqual(delegate.events.count, 1)
@@ -97,24 +104,24 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertNil(event.associatedZone)
     }
 
-    func testDidDetermineStateWithZoneInRealm() throws {
+    func testDidDetermineStateWithZoneInDatabase() throws {
         let server = Server.fake()
 
         let region = CLCircularRegion(
             center: .init(latitude: 1.23, longitude: 4.56),
             radius: 20,
-            identifier: RLMZone.primaryKey(
+            identifier: AppZone.primaryKey(
                 sourceIdentifier: "zone_identifier",
                 serverIdentifier: server.identifier.rawValue
             )
         )
-        let realmZone = with(RLMZone()) {
-            $0.entityId = "zone_identifier"
-            $0.serverIdentifier = server.identifier.rawValue
-        }
+        let zone = AppZone(
+            entityId: "zone_identifier",
+            serverIdentifier: server.identifier.rawValue
+        )
 
-        try realm.write {
-            realm.add(realmZone)
+        try database.write { db in
+            try zone.save(db)
         }
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
@@ -125,26 +132,26 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
 
         XCTAssertEqual(event.eventType, .region(region, .inside))
-        XCTAssertEqual(event.associatedZone, realmZone)
+        XCTAssertEqual(event.associatedZone, zone)
     }
 
-    func testDidDetermineStateWithZoneInRealmForSmallRegionSplitIntoMultiple() throws {
+    func testDidDetermineStateWithZoneInDatabaseForSmallRegionSplitIntoMultiple() throws {
         let server = Server.fake()
         let region = CLCircularRegion(
             center: .init(latitude: 1.23, longitude: 4.56),
             radius: 20,
-            identifier: RLMZone.primaryKey(
+            identifier: AppZone.primaryKey(
                 sourceIdentifier: "zone_identifier",
                 serverIdentifier: server.identifier.rawValue
             ) + "@100"
         )
-        let realmZone = with(RLMZone()) {
-            $0.entityId = "zone_identifier"
-            $0.serverIdentifier = server.identifier.rawValue
-        }
+        let zone = AppZone(
+            entityId: "zone_identifier",
+            serverIdentifier: server.identifier.rawValue
+        )
 
-        try realm.write {
-            realm.add(realmZone)
+        try database.write { db in
+            try zone.save(db)
         }
 
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
@@ -155,7 +162,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
 
         XCTAssertEqual(event.eventType, .region(region, .inside))
-        XCTAssertEqual(event.associatedZone, realmZone)
+        XCTAssertEqual(event.associatedZone, zone)
     }
 
     func testDidUpdateLocations() {

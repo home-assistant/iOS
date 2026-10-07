@@ -1,6 +1,5 @@
 #if os(iOS)
 import GRDB
-import RealmSwift
 import UIKit
 import XCGLogger
 import ZIPFoundation
@@ -62,19 +61,12 @@ public extension XCGLogger {
         Current.Log.debug("Exporting logs as filename \(fileName)")
 
         let archiveURL = fileManager.temporaryDirectory.appendingPathComponent(fileName, isDirectory: false)
-        guard let archive = Archive(url: archiveURL, accessMode: .create) else {
+        guard let archive = try? Archive(url: archiveURL, accessMode: .create, pathEncoding: nil) else {
             Current.Log.error("Failed to create archive at \(archiveURL.path)")
             return nil
         }
 
         do {
-            if let backupURL = Realm.backup() {
-                try archive.addEntry(
-                    with: backupURL.lastPathComponent,
-                    relativeTo: backupURL.deletingLastPathComponent()
-                )
-            }
-
             // In case App config does not exist it can safely fail
             do {
                 try archive.addEntry(

@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "A6E2E000-0000-4000-A000-00000000E2E0",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "preferredScreenCaptureFormat" : "screenRecording",
+    "uiTestingScreenshotsLifetime" : "keepAlways"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:HomeAssistant.xcodeproj",
+        "identifier" : "B657A9061CA646EB00121384",
+        "name" : "Tests-UI"
+      }
+    }
+  ],
+  "version" : 1
+}

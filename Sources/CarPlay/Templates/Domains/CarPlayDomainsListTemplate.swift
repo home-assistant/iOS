@@ -3,7 +3,6 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
 class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     private var childTemplateProvider: (any CarPlayTemplateProvider)?
 

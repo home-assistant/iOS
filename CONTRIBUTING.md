@@ -17,3 +17,10 @@ This project is a good opportunity to learn Swift programming and contribute bac
   * [objc.io](https://www.objc.io)
   * [Point-Free](https://www.pointfree.co)
   * [raywenderlich.com](https://www.raywenderlich.com/)
+
+## AI policy
+
+This project follows the [Open Home Foundation AI Policy](AI_POLICY.md). In
+short: AI tools are welcome as an aid, but you must fully understand and be
+able to explain every change you submit. Contributions made by autonomous
+agents are not accepted.

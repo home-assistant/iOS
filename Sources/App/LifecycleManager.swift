@@ -61,6 +61,14 @@ class LifecycleManager {
     }
 
     func didFinishLaunching() {
+        // A background launch (location event, WatchConnectivity wake, background URLSession, …)
+        // never passes through didEnterBackground, so suspension would stay unarmed and any
+        // database access could be caught holding the app-group SQLite file lock when the process
+        // freezes (0xdead10cc). Catalyst is excluded like the rest of its lifecycle handling: it can
+        // report .background at launch without a foreground transition ever following to resume.
+        if !Current.isCatalyst, UIApplication.shared.applicationState == .background {
+            AppDatabaseSuspension.suspendIfIdle()
+        }
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
@@ -70,16 +78,31 @@ class LifecycleManager {
             })
         }.cauterize()
 
+        // The voice tools listener is bound here rather than lazily on first use: Home Assistant
+        // connects to it whenever it likes, so it has to be up before anything asks for it. A
+        // background launch is skipped — the settings it reads live in the database that was just
+        // suspended above, and the first foreground starts it anyway.
+        if Current.isCatalyst || UIApplication.shared.applicationState != .background {
+            Task { @MainActor in
+                WyomingServerController.shared.applyConfiguration()
+            }
+        }
+
         // Resolve the network info (SSID) before the first connect so we don't pick the remote URL while on
-        // the home network and get rejected. On Catalyst the completion is invoked synchronously.
-        Current.connectivity.syncNetworkInformation { [periodicUpdateManager] in
+        // the home network and get rejected.
+        Task { @MainActor [periodicUpdateManager] in
+            await Current.connectivity.refreshNetworkInformation()
             periodicUpdateManager.connectAPI(reason: .cold)
         }
     }
 
     @objc private func willEnterForeground() {
         isActive = true
-        syncNetworkInformation()
+        Task { @MainActor in
+            WyomingServerController.shared.applicationWillEnterForeground()
+        }
+        AppDatabaseSuspension.resume()
+        refreshNetworkInformation()
         syncLiveActivities()
     }
 
@@ -95,6 +118,11 @@ class LifecycleManager {
 
     @objc private func didEnterBackground() {
         isActive = false
+        Task { @MainActor in
+            WyomingServerController.shared.applicationDidEnterBackground()
+        }
+        needsAppOpenLocationUpdate = true
+        AppDatabaseSuspension.suspendIfIdle()
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidEnterBackground.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
@@ -106,6 +134,7 @@ class LifecycleManager {
 
         periodicUpdateManager.invalidatePeriodicUpdateTimer(forBackground: true)
         DataWidgetsUpdater.update()
+        BackgroundRefreshManager.scheduleAppRefresh()
     }
 
     private var hasTriggeredWarm = false
@@ -127,12 +156,30 @@ class LifecycleManager {
                 )
             })
         }.cauterize()
-        syncNetworkInformation()
+        refreshNetworkInformation()
+        sendLocationUpdateForAppOpenIfNeeded()
     }
 
-    private func syncNetworkInformation() {
+    /// Tracks whether the next `didBecomeActive` counts as opening the app (cold launch or return from
+    /// the background). Reactivations inside a foreground session — dismissing a system alert or the
+    /// app switcher — don't pass through `didEnterBackground`, so they don't re-arm this.
+    private var needsAppOpenLocationUpdate = true
+
+    private func sendLocationUpdateForAppOpenIfNeeded() {
+        guard needsAppOpenLocationUpdate else { return }
+        needsAppOpenLocationUpdate = false
+
+        HomeAssistantAPI.manuallyUpdate(
+            applicationState: UIApplication.shared.applicationState,
+            type: .appOpened
+        ).catch { error in
+            Current.Log.error("failed to update location on app open: \(error)")
+        }
+    }
+
+    private func refreshNetworkInformation() {
         Task {
-            await Current.connectivity.syncNetworkInformation()
+            await Current.connectivity.refreshNetworkInformation()
         }
     }
 }

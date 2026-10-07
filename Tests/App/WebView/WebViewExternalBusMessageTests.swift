@@ -7,6 +7,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.configScreenShow.rawValue, "config_screen/show")
         XCTAssertEqual(WebViewExternalBusMessage.haptic.rawValue, "haptic")
         XCTAssertEqual(WebViewExternalBusMessage.connectionStatus.rawValue, "connection-status")
+        XCTAssertEqual(WebViewExternalBusMessage.frontendLoaded.rawValue, "frontend/loaded")
         XCTAssertEqual(WebViewExternalBusMessage.tagRead.rawValue, "tag/read")
         XCTAssertEqual(WebViewExternalBusMessage.tagWrite.rawValue, "tag/write")
         XCTAssertEqual(WebViewExternalBusMessage.themeUpdate.rawValue, "theme-update")
@@ -35,8 +36,17 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.entityAddToGetActions.rawValue, "entity/add_to/get_actions")
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
         XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
+        XCTAssertEqual(
+            WebViewExternalBusMessage.frontendReloadAndClearCache.rawValue,
+            "frontend/reload_and_clear_cache"
+        )
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 23)
+        XCTAssertEqual(WebViewExternalBusMessage.sidebarShow.rawValue, "sidebar/show")
+        XCTAssertEqual(WebViewExternalBusMessage.moreInfoOpened.rawValue, "more_info/opened")
+        XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
+        XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
+
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 29)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -62,7 +72,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "kiosk_mode/set"
         )
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 9)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
+
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 10)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {
@@ -71,6 +83,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         // Expected keys currently defined in WebViewExternalBusMessage.configResult
         let expectedKeys: Set<String> = [
             "hasSettingsScreen",
+            "hasSidebar",
             "canWriteTag",
             "canCommissionMatter",
             "hasMatterStatusReport",
@@ -83,11 +96,11 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",
+            "hasSplashscreen",
             "appVersion",
-            "toastComponentVersion",
         ]
 
         let actualKeys = Set(result.keys)
-        XCTAssertTrue(expectedKeys.isSubset(of: actualKeys), "Missing keys: \(expectedKeys.subtracting(actualKeys))")
+        XCTAssertEqual(actualKeys, expectedKeys)
     }
 }

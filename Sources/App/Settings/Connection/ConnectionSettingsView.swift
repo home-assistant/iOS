@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 struct ConnectionSettingsView: View {
     @StateObject private var viewModel: ConnectionSettingsViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
     @State private var showShareSheet = false
     @State private var showSecurityLevelPicker = false
     @State private var activityViewController: UIActivityViewController?
@@ -57,13 +58,6 @@ struct ConnectionSettingsView: View {
                         Image(systemSymbol: .squareAndArrowUp)
                     }
                     .tint(.haPrimary)
-                    .modify { view in
-                        if #available(iOS 26.0, *), !Current.isCatalyst {
-                            view.buttonStyle(.glassProminent)
-                        } else {
-                            view
-                        }
-                    }
                 }
             }
         }
@@ -248,9 +242,9 @@ struct ConnectionSettingsView: View {
             )
 
             NavigationLink {
-                CloudhookDetailView(server: viewModel.server)
+                WebhookDetailView(server: viewModel.server)
             } label: {
-                Text(L10n.Settings.ConnectionSection.Cloudhook.title)
+                Text(L10n.Settings.ConnectionSection.Webhook.title)
             }
 
             LabelRow(
@@ -329,6 +323,8 @@ struct ConnectionSettingsView: View {
                 }
                 .buttonStyle(.plain)
             }
+
+            ConnectionURLsHowItWorksLink(server: viewModel.server)
 
             if viewModel.shouldShowSecurityLevelPicker {
                 Button {
@@ -414,10 +410,7 @@ struct ConnectionSettingsView: View {
                 .disabled(viewModel.isImportingCertificate)
             }
         } header: {
-            HStack {
-                Text(L10n.Settings.ConnectionSection.ClientCertificate.header)
-                MTLSLabsLabel()
-            }
+            Text(L10n.Settings.ConnectionSection.ClientCertificate.header)
         } footer: {
             Text(L10n.Settings.ConnectionSection.ClientCertificate.footer)
         }
@@ -500,9 +493,15 @@ struct ConnectionSettingsView: View {
     private var activateSection: some View {
         Button {
             viewModel.activateServer()
+            dismissAppSettings()
         } label: {
             Text(L10n.Settings.ConnectionSection.activateServer)
         }
+    }
+
+    private func dismissAppSettings() {
+        appSettingsPresenter?.isSheetPresented = false
+        appSettingsPresenter?.isPushPresented = false
     }
 
     // MARK: - Delete Section
@@ -545,6 +544,30 @@ struct ConnectionSettingsView: View {
                 Text(L10n.Settings.ConnectionSection.DeleteServer.message)
             }
         }
+    }
+}
+
+extension ConnectionSettingsView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.StatusSection.LocationNameRow.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.DeviceName.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.InternalBaseUrl.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.ExternalBaseUrl.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.UrlsHowItWorks.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.refreshServer),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.ClientCertificate.header),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.LocationSendType.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.SensorSendType.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.connectingVia),
+            SettingsSearchEntry(L10n.Settings.StatusSection.VersionRow.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.Websocket.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.LocalPush.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.Webhook.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.loggedInAs),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.DeleteServer.title),
+        ]
     }
 }
 
@@ -620,127 +643,6 @@ private struct TextFieldRow: View {
             TextField(placeholder, text: $text)
                 .multilineTextAlignment(.trailing)
                 .foregroundColor(.secondary)
-        }
-    }
-}
-
-private struct CloudhookDetailView: View {
-    @StateObject private var viewModel: CloudhookDetailViewModel
-
-    init(server: Server) {
-        _viewModel = StateObject(wrappedValue: CloudhookDetailViewModel(server: server))
-    }
-
-    var body: some View {
-        Form {
-            Section {
-                Text(viewModel.displayURL)
-                    .font(.footnote.monospaced())
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .textSelection(.enabled)
-                    .privacySensitive()
-                    .screenCaptureProtected()
-
-                Button {
-                    viewModel.copyURL()
-                } label: {
-                    Label(L10n.copyLabel, systemSymbol: .docOnDoc)
-                }
-                .disabled(!viewModel.canUseCloudhook)
-            } header: {
-                Text(L10n.urlLabel)
-            } footer: {
-                Text(L10n.Settings.ConnectionSection.Cloudhook.footer)
-            }
-
-            Section {
-                Button {
-                    Task {
-                        await viewModel.checkReachability()
-                    }
-                } label: {
-                    if viewModel.isCheckingReachability {
-                        ProgressView()
-                    } else {
-                        Label(
-                            L10n.Settings.ConnectionSection.Cloudhook.CheckReachability.title,
-                            systemSymbol: .arrowClockwise
-                        )
-                    }
-                }
-                .disabled(!viewModel.canUseCloudhook || viewModel.isCheckingReachability)
-
-                if let reachabilityStatus = viewModel.reachabilityStatus {
-                    LabelRow(
-                        title: L10n.Settings.ConnectionSection.Cloudhook.CheckReachability.result,
-                        value: reachabilityStatus
-                    )
-                }
-            }
-        }
-        .navigationTitle(L10n.Settings.ConnectionSection.Cloudhook.title)
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-@MainActor
-private final class CloudhookDetailViewModel: ObservableObject {
-    @Published var isCheckingReachability = false
-    @Published var reachabilityStatus: String?
-
-    private let server: Server
-
-    init(server: Server) {
-        self.server = server
-    }
-
-    var cloudhookURL: URL? {
-        server.info.connection.cloudhookURL
-    }
-
-    var canUseCloudhook: Bool {
-        cloudhookURL != nil
-    }
-
-    var displayURL: String {
-        cloudhookURL?.absoluteString ?? L10n.Settings.ConnectionSection.Cloudhook.Status.notConfigured
-    }
-
-    func copyURL() {
-        UIPasteboard.general.string = cloudhookURL?.absoluteString
-    }
-
-    func checkReachability() async {
-        guard let cloudhookURL else { return }
-
-        isCheckingReachability = true
-        defer { isCheckingReachability = false }
-
-        do {
-            let configuration = URLSessionConfiguration.ephemeral
-            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-            configuration.urlCache = nil
-
-            let session = URLSession(configuration: configuration)
-
-            var request = URLRequest(url: cloudhookURL)
-            request.httpMethod = "HEAD"
-            request.timeoutInterval = 10
-            request.cachePolicy = .reloadIgnoringLocalCacheData
-
-            let (_, response) = try await session.data(for: request)
-
-            if let httpResponse = response as? HTTPURLResponse {
-                reachabilityStatus = L10n.Settings.ConnectionSection.Cloudhook.CheckReachability
-                    .reachableStatusCode(httpResponse.statusCode)
-            } else {
-                reachabilityStatus = L10n.Settings.ConnectionSection.Cloudhook.CheckReachability.reachable
-            }
-        } catch {
-            reachabilityStatus = L10n.Settings.ConnectionSection.Cloudhook.CheckReachability
-                .unreachable(error.localizedDescription)
         }
     }
 }

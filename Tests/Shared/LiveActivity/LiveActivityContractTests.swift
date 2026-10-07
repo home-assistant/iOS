@@ -108,7 +108,8 @@ final class LiveActivityContractTests: XCTestCase {
             url: "/lovelace/0",
             backgroundColor: "#000000",
             textColor: "#FFFFFF",
-            progressBarColor: "#FF9800"
+            progressBarColor: "#FF9800",
+            progressBarDirection: "decreasing"
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970
@@ -131,6 +132,7 @@ final class LiveActivityContractTests: XCTestCase {
             "background_color",
             "text_color",
             "progress_bar_color",
+            "progress_bar_direction",
         ]
         XCTAssertEqual(Set(dict.keys), expectedKeys)
     }
@@ -151,7 +153,8 @@ final class LiveActivityContractTests: XCTestCase {
             url: "/lovelace/laundry",
             backgroundColor: "#101820",
             textColor: "#FFFFFF",
-            progressBarColor: "#FF9800"
+            progressBarColor: "#FF9800",
+            progressBarDirection: "decreasing"
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .secondsSince1970
@@ -181,6 +184,63 @@ final class LiveActivityContractTests: XCTestCase {
             from: Data(#"{"message":"m","progress":20.6}"#.utf8)
         )
         XCTAssertEqual(rounding.progress, 21)
+    }
+
+    /// `progress_bar_direction` is stored as the raw wire string; an unrecognised value must
+    /// decode without throwing (a throw would drop the whole OS-side update) and resolve to nil
+    /// so rendering falls back to the default direction.
+    func testContentState_progressBarDirection_decodesLeniently() throws {
+        let decreasing = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m","progress_bar_direction":"decreasing"}"#.utf8)
+        )
+        XCTAssertEqual(decreasing.resolvedProgressBarDirection, .decreasing)
+
+        // Case-insensitive: Android-style automations may send capitalised values.
+        let uppercase = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m","progress_bar_direction":"Increasing"}"#.utf8)
+        )
+        XCTAssertEqual(uppercase.resolvedProgressBarDirection, .increasing)
+
+        let unknown = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m","progress_bar_direction":"sideways"}"#.utf8)
+        )
+        XCTAssertEqual(unknown.progressBarDirection, "sideways")
+        XCTAssertNil(unknown.resolvedProgressBarDirection)
+
+        let missing = try JSONDecoder().decode(
+            HALiveActivityAttributes.ContentState.self,
+            from: Data(#"{"message":"m"}"#.utf8)
+        )
+        XCTAssertNil(missing.progressBarDirection)
+        XCTAssertNil(missing.resolvedProgressBarDirection)
+    }
+
+    /// `decreasing` flips only the visual fill: the bar shows what remains while
+    /// `progressFraction` (used by percent labels) keeps reporting the raw progress.
+    func testContentState_progressBarFillFraction_honorsDirection() {
+        let base = HALiveActivityAttributes.ContentState(
+            message: "m",
+            progress: 30,
+            progressMax: 100
+        )
+        XCTAssertEqual(base.progressBarFillFraction ?? -1, 0.3, accuracy: 0.0001)
+
+        var decreasing = base
+        decreasing.progressBarDirection = "decreasing"
+        XCTAssertEqual(decreasing.progressBarFillFraction ?? -1, 0.7, accuracy: 0.0001)
+        XCTAssertEqual(decreasing.progressFraction ?? -1, 0.3, accuracy: 0.0001)
+
+        var unknown = base
+        unknown.progressBarDirection = "sideways"
+        XCTAssertEqual(unknown.progressBarFillFraction ?? -1, 0.3, accuracy: 0.0001)
+
+        var noProgress = base
+        noProgress.progress = nil
+        noProgress.progressBarDirection = "decreasing"
+        XCTAssertNil(noProgress.progressBarFillFraction)
     }
 
     /// A content-state payload without progress keys still decodes, with nil progress.

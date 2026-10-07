@@ -1,18 +1,11 @@
-import RealmSwift
+import GRDB
 import Shared
 import SwiftUI
 
-extension LocationHistoryEntry: @retroactive Identifiable {
-    public var id: String {
-        ObjectIdentifier(self).hashValue.description
-    }
-}
-
 private class LocationHistoryListViewModel: ObservableObject {
-    @ObservedResults(LocationHistoryEntry.self) var locationHistoryEntryResults
     @Published var locationHistoryEntries: [LocationHistoryEntry] = []
 
-    private var token: NotificationToken?
+    private var token: AnyDatabaseCancellable?
 
     let dateFormatter = with(DateFormatter()) {
         $0.dateStyle = .short
@@ -30,29 +23,32 @@ private class LocationHistoryListViewModel: ObservableObject {
     }
 
     deinit {
-        token?.invalidate()
+        token?.cancel()
     }
 
     func clear() {
-        let realm = Current.realm()
-        realm.reentrantWrite {
-            realm.delete(realm.objects(LocationHistoryEntry.self))
-        }
+        LocationHistoryEntry.deleteAll()
     }
 
     private func setupObserver() {
-        let results = Current.realm()
-            .objects(LocationHistoryEntry.self)
-            .sorted(byKeyPath: "CreatedAt", ascending: false)
-
-        token = results.observe { [weak self] _ in
-            self?.updateEntries(with: results)
+        let observation = ValueObservation.tracking { db in
+            try LocationHistoryEntry
+                .order(Column(DatabaseTables.LocationHistory.createdAt.rawValue).desc)
+                .fetchAll(db)
         }
-        updateEntries(with: results)
-    }
-
-    private func updateEntries(with results: Results<LocationHistoryEntry>) {
-        locationHistoryEntries = results.map(LocationHistoryEntry.init)
+        // .immediate delivers the initial value synchronously (we are created on
+        // the main queue), matching the previous Realm behavior of populating
+        // the list before first render (the snapshot tests rely on this).
+        token = observation.start(
+            in: Current.database(),
+            scheduling: .immediate,
+            onError: { error in
+                Current.Log.error("couldn't observe location history: \(error)")
+            },
+            onChange: { [weak self] entries in
+                self?.locationHistoryEntries = entries
+            }
+        )
     }
 }
 
@@ -94,14 +90,10 @@ final class LocationHistoryListViewHostingController: UIHostingController<Locati
 private struct PreviewLocationHistoryListView: View {
     private var locationHistory: [LocationHistoryEntry]
 
-    private func writeToRealm(_ locationHistory: [LocationHistoryEntry]) {
-        let realm = Current.realm()
-        realm.reentrantWrite {
-            realm.deleteAll()
-            for entry in locationHistory {
-                let newEntry = LocationHistoryEntry(value: entry)
-                realm.add(newEntry)
-            }
+    private func writeToDatabase(_ locationHistory: [LocationHistoryEntry]) {
+        LocationHistoryEntry.deleteAll()
+        for entry in locationHistory {
+            entry.save()
         }
     }
 
@@ -109,13 +101,13 @@ private struct PreviewLocationHistoryListView: View {
         locationHistory: [LocationHistoryEntry]
     ) {
         self.locationHistory = locationHistory
-        writeToRealm(locationHistory)
+        writeToDatabase(locationHistory)
     }
 
     var body: some View {
         LocationHistoryListView()
             .onAppear {
-                writeToRealm(locationHistory)
+                writeToDatabase(locationHistory)
             }
     }
 }

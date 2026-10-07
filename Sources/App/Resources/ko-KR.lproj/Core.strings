@@ -16,6 +16,7 @@
 "common::state::standby" = "대기 중";
 "common::state::unlocked" = "해제";
 "common::state::yes" = "네";
+"component::ai_task::title" = "AI 작업";
 "component::airzone::entity::select::sleep_times::state::off" = "꺼짐";
 "component::alarm_control_panel::title" = "알람제어판";
 "component::alert::entity_component::_::state::idle" = "유휴 중";

@@ -1,4 +1,6 @@
+import SFSafeSymbols
 import SwiftUI
+import UIKit
 
 public extension View {
     /// Renders the currently presented `ToastPresenter.shared` toast as a top overlay. Attach once at
@@ -19,10 +21,122 @@ private struct ToastOverlayModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .overlay {
-                ToastView(toast: presenter.toast, isExpanded: presenter.toast != nil)
-                    .allowsHitTesting(false)
+            .background(ToastWindowInstaller(isPresenting: presenter.toast != nil))
+    }
+}
+
+@available(iOS 18, *)
+private struct ToastWindowInstaller: UIViewRepresentable {
+    let isPresenting: Bool
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
+        view.isUserInteractionEnabled = false
+        context.coordinator.setPresenting(isPresenting)
+        DispatchQueue.main.async {
+            context.coordinator.attach(to: view.window?.windowScene)
+        }
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+        context.coordinator.setPresenting(isPresenting)
+        DispatchQueue.main.async {
+            context.coordinator.attach(to: uiView.window?.windowScene)
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    final class Coordinator {
+        /// Long enough for `ToastView`'s dismissal animation to play out before the window goes away.
+        private static let hideDelay: TimeInterval = 0.6
+
+        private weak var windowScene: UIWindowScene?
+        private var toastWindow: ToastWindow?
+        private var hostingController: ToastHostingController?
+        private var isPresenting = false
+        private var hideWorkItem: DispatchWorkItem?
+
+        func attach(to windowScene: UIWindowScene?) {
+            guard let windowScene else { return }
+            guard self.windowScene !== windowScene else { return }
+
+            self.windowScene = windowScene
+
+            let hostingController = ToastHostingController(rootView: ToastWindowContent())
+            hostingController.view.backgroundColor = .clear
+            hostingController.statusBarHiddenWhenIdle = statusBarHidden(in: windowScene)
+
+            let toastWindow = ToastWindow(windowScene: windowScene)
+            toastWindow.rootViewController = hostingController
+            toastWindow.windowLevel = .alert + 1
+            toastWindow.backgroundColor = .clear
+            toastWindow.isHidden = !isPresenting
+
+            self.hostingController = hostingController
+            self.toastWindow = toastWindow
+        }
+
+        /// The topmost visible window owns status-bar appearance for the whole scene, so this one exists
+        /// only while a toast does: left visible it would override kiosk mode's "hide status bar" and the
+        /// full-screen setting with its own status-bar preference.
+        func setPresenting(_ presenting: Bool) {
+            hideWorkItem?.cancel()
+            hideWorkItem = nil
+
+            guard !presenting else {
+                isPresenting = true
+                hostingController?.statusBarHiddenWhenIdle = statusBarHidden(in: windowScene)
+                toastWindow?.isHidden = false
+                hostingController?.setNeedsStatusBarAppearanceUpdate()
+                return
             }
+
+            guard isPresenting else { return }
+
+            let hideWorkItem = DispatchWorkItem { [weak self] in
+                self?.isPresenting = false
+                self?.toastWindow?.isHidden = true
+            }
+            self.hideWorkItem = hideWorkItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.hideDelay, execute: hideWorkItem)
+        }
+
+        /// Read while the toast window is off screen, so it reflects what the app itself wants.
+        private func statusBarHidden(in windowScene: UIWindowScene?) -> Bool {
+            windowScene?.statusBarManager?.isStatusBarHidden ?? false
+        }
+    }
+
+    /// In compact-width layouts the toast is drawn over the status bar / Dynamic Island, so it hides the
+    /// status bar while it shows. In regular-width layouts it sits below the status bar and leaves it
+    /// exactly as the app had it.
+    private final class ToastHostingController: UIHostingController<ToastWindowContent> {
+        var statusBarHiddenWhenIdle = false
+
+        override var prefersStatusBarHidden: Bool {
+            traitCollection.horizontalSizeClass == .compact ? true : statusBarHiddenWhenIdle
+        }
+    }
+}
+
+@available(iOS 18, *)
+private final class ToastWindow: UIWindow {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        nil
+    }
+}
+
+@available(iOS 18, *)
+private struct ToastWindowContent: View {
+    @ObservedObject private var presenter = ToastPresenter.shared
+
+    var body: some View {
+        ToastView(toast: presenter.toast, isExpanded: presenter.toast != nil)
+            .allowsHitTesting(false)
     }
 }
 
@@ -102,7 +216,7 @@ public struct ToastView: View {
     func ToastContent(_ haveDynamicIsland: Bool) -> some View {
         if let toast {
             HStack(spacing: 10) {
-                Image(systemName: toast.symbol)
+                Image(systemSymbol: toast.symbol)
                     .font(toast.symbolFont)
                     .foregroundStyle(toast.symbolForegroundStyle.0, toast.symbolForegroundStyle.1)
                     /// Optional: .symbolEffect(.wiggle, value: isExpanded)

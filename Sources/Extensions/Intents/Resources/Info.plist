@@ -35,18 +35,8 @@
 			<array/>
 			<key>IntentsSupported</key>
 			<array>
-				<string>AssistInAppIntent</string>
-				<string>AssistIntent</string>
-				<string>CallServiceIntent</string>
-				<string>FireEventIntent</string>
-				<string>GetCameraImageIntent</string>
 				<string>INShareFocusStatusIntent</string>
-				<string>OpenPageIntent</string>
-				<string>RenderTemplateIntent</string>
 				<string>ScriptAppIntent</string>
-				<string>SendLocationIntent</string>
-				<string>UpdateSensorsIntent</string>
-				<string>WidgetOpenPageIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>

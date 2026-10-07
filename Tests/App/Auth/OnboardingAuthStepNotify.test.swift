@@ -1,4 +1,5 @@
 import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
@@ -8,7 +9,7 @@ class OnboardingAuthStepNotifyTests: XCTestCase {
     private var step: OnboardingAuthStepNotify!
     private var api: HomeAssistantAPI!
     private var connection: HAMockConnection!
-    private var sender: UIViewController!
+    private var presenter: OnboardingAuthPresenter!
 
     override func setUp() {
         super.setUp()
@@ -19,9 +20,9 @@ class OnboardingAuthStepNotifyTests: XCTestCase {
         connection = HAMockConnection()
         api = HomeAssistantAPI(server: .fake())
         api.connection = connection
-        sender = UIViewController()
+        presenter = OnboardingAuthPresenter()
 
-        step = OnboardingAuthStepNotify(api: api, sender: sender)
+        step = OnboardingAuthStepNotify(api: api, presenter: presenter)
     }
 
     func testSupportedPoints() {

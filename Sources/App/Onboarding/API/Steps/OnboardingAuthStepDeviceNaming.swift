@@ -1,7 +1,7 @@
 import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import Shared
-import SwiftUI
 
 private struct RegisteredDevice {
     var name: String
@@ -27,14 +27,14 @@ private struct RegisteredDevice {
 struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     init(
         api: HomeAssistantAPI,
-        sender: UIViewController
+        presenter: OnboardingAuthPresenter
     ) {
         self.api = api
-        self.sender = sender
+        self.presenter = presenter
     }
 
     var api: HomeAssistantAPI
-    var sender: UIViewController
+    var presenter: OnboardingAuthPresenter
 
     static var supportedPoints: Set<OnboardingAuthStepPoint> {
         Set([.beforeRegister])
@@ -46,8 +46,72 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     static var firstUserDeviceNameInput = true
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        let devices = fetchDeviceList()
+        fetchDeviceListWithTimeout().then { [self] registeredDevices -> Promise<Void> in
+            guard !registeredDevices.contains(where: { $0.id == Current.settingsStore.integrationDeviceID }) else {
+                // if the integration is registered already, we will take over that one, so we don't need to look
+                return .value(())
+            }
 
+            // this can be removed once the mobile_app notify service stops being device name specific
+            return promptForDeviceName(
+                deviceName: Current.device.deviceName(),
+                registeredDevices: registeredDevices
+            )
+        }
+    }
+
+    private func promptForDeviceName(
+        deviceName: String,
+        registeredDevices: [RegisteredDevice]
+    ) -> Promise<Void> {
+        guard registeredDevices.contains(where: { $0.matches(name: deviceName) }) ||
+            OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput else {
+            // if the device name is not already taken, we can safely use it and don't need to prompt
+            return .value(())
+        }
+        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = false
+
+        return Promise<Void> { seal in
+            let request = OnboardingDeviceNameRequest(onSave: { name, request in
+                guard name.isEmpty == false else {
+                    request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName))
+                    return
+                }
+
+                // Fetch updated device list to ensure we have current data
+                fetchDeviceListWithTimeout().done { updatedDevices in
+                    if updatedDevices.contains(where: { $0.matches(name: name) }) {
+                        // Name conflicts with a registered device; keep the screen up with an inline error
+                        request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.title(name))
+                    } else {
+                        // No conflict, proceed with the name. The screen stays pushed (showing its
+                        // saving indicator) until the flow replaces it with the next step.
+                        api.server.info.setSetting(value: name, for: .overrideDeviceName)
+                        resetFirstUserDeviceNameInput()
+                        request.finish()
+                        seal.fulfill(())
+                    }
+                }.catch { _ in
+                    // If we can't verify the name is free, keep the screen up with an inline error
+                    request.fail(with: L10n.Onboarding.DeviceNameCheck.Error.unreachable)
+                }
+            }, onCancel: {
+                resetFirstUserDeviceNameInput()
+                seal.reject(PMKError.cancelled)
+            })
+
+            presenter.push(.deviceName(request))
+        }
+    }
+
+    // In case the flow is completed or cancelled, we reset the first user device name input flag.
+    private func resetFirstUserDeviceNameInput() {
+        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = true
+    }
+
+    /// Fetches the device list, failing after `timeout` instead of waiting indefinitely for a
+    /// websocket that may never answer.
+    private func fetchDeviceListWithTimeout() -> Promise<[RegisteredDevice]> {
         let timeout: Promise<[RegisteredDevice]> = after(seconds: timeout).then { () -> Promise<[RegisteredDevice]> in
             switch api.connection.state {
             case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
@@ -58,85 +122,8 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
 
         // racing the request, not the whole flow, importantly.
-        // otherwise we'd fail out before the user finished typing.
-
-        return race(timeout, devices).then { [self] registeredDevices -> Promise<Void> in
-            guard !registeredDevices.contains(where: { $0.id == Current.settingsStore.integrationDeviceID }) else {
-                // if the integration is registered already, we will take over that one, so we don't need to look
-                return .value(())
-            }
-
-            // this can be removed once the mobile_app notify service stops being device name specific
-            return promptForDeviceName(
-                deviceName: Current.device.deviceName(),
-                registeredDevices: registeredDevices,
-                sender: sender
-            )
-        }
-    }
-
-    private func promptForDeviceName(
-        deviceName: String,
-        errorMessage: String? = nil,
-        registeredDevices: [RegisteredDevice],
-        sender: UIViewController
-    ) -> Promise<Void> {
-        guard registeredDevices.contains(where: { $0.matches(name: deviceName) }) ||
-            OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput else {
-            // if the device name is not already taken, we can safely use it and don't need to prompt
-            return .value(())
-        }
-        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = false
-
-        return Promise<Void> { seal in
-            let view = UIHostingController(rootView: DeviceNameView(errorMessage: errorMessage, saveAction: { name in
-                guard name.isEmpty == false else {
-                    promptForDeviceName(
-                        deviceName: deviceName,
-                        errorMessage: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
-                        registeredDevices: registeredDevices,
-                        sender: sender
-                    ).pipe(to: seal.resolve)
-                    return
-                }
-
-                // Fetch updated device list to ensure we have current data
-                fetchDeviceList().done { updatedDevices in
-                    if updatedDevices.contains(where: { $0.matches(name: name) }) {
-                        // Name conflicts with a registered device
-                        promptForDeviceName(
-                            deviceName: deviceName,
-                            errorMessage: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
-                            registeredDevices: updatedDevices,
-                            sender: sender
-                        ).pipe(to: seal.resolve)
-                    } else {
-                        // No conflict, proceed with the name
-                        api.server.info.setSetting(value: name, for: .overrideDeviceName)
-                        resetFirstUserDeviceNameInput()
-                        seal.fulfill(())
-                    }
-                }.catch { _ in
-                    // If we can't fetch updated list, fall back to showing error with original list
-                    promptForDeviceName(
-                        deviceName: deviceName,
-                        errorMessage: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
-                        registeredDevices: registeredDevices,
-                        sender: sender
-                    ).pipe(to: seal.resolve)
-                }
-            }, cancelAction: {
-                resetFirstUserDeviceNameInput()
-                seal.reject(PMKError.cancelled)
-            }))
-
-            sender.present(view, animated: true, completion: nil)
-        }
-    }
-
-    // In case the flow is completed or cancelled, we reset the first user device name input flag.
-    private func resetFirstUserDeviceNameInput() {
-        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = true
+        // otherwise we'd fail out before the user finished typing.
+        return race(timeout, fetchDeviceList())
     }
 
     private func fetchDeviceList() -> Promise<[RegisteredDevice]> {
