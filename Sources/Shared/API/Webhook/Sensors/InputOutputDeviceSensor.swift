@@ -8,7 +8,7 @@ import CoreMediaIO
 import CoreAudio
 #endif
 
-private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
+class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     let signal: () -> Void
 
     enum ObservedObjectType: Hashable {
@@ -51,7 +51,7 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         ])
     }
 
-    private func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
+    func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
         // Claim the object before installing its listener so concurrent updates cannot register it twice.
         guard observedObjectsLock.withLock({ observedObjects.insert(object).inserted }) else { return }
 
@@ -63,7 +63,7 @@ private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorP
         Current.Log.info("added observer for \(object): \(observedStatus)")
     }
 
-    private func removeObserver(object: ObservedObjectType) {
+    func removeObserver(object: ObservedObjectType) {
         observedObjectsLock.withLock {
             _ = observedObjects.remove(object)
         }
