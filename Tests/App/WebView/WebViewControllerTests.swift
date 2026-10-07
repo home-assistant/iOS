@@ -1088,12 +1088,13 @@ final class WebViewControllerTests: XCTestCase {
     }
 
     /// A scripted `focus()` raises the keyboard only while the web view holds keyboard focus.
-    func testMakeWebViewFirstResponderGivesTheWebViewKeyboardFocus() {
+    func testMakeWebViewFirstResponderGivesTheWebViewKeyboardFocus() throws {
         let sut = makeSUT()
         let webView = WKWebView(frame: sut.view.bounds)
         sut.webView = webView
         sut.view.addSubview(webView)
-        let window = UIWindow(frame: UIScreen.main.bounds)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
         window.rootViewController = sut
         window.makeKeyAndVisible()
         defer { window.isHidden = true }
@@ -1103,11 +1104,12 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertTrue(webView.containsFirstResponder)
     }
 
-    func testPresentClientCertificateImportPresentsTheImportSheet() async {
+    func testPresentClientCertificateImportPresentsTheImportSheet() async throws {
         let sut = makeSUT()
         // Attaching to a window changes traits, which the controller forwards to its web view.
         sut.webView = WKWebView(frame: .zero)
-        let window = UIWindow(frame: UIScreen.main.bounds)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
         window.rootViewController = sut
         window.makeKeyAndVisible()
         defer { window.isHidden = true }
@@ -1116,6 +1118,80 @@ final class WebViewControllerTests: XCTestCase {
 
         await waitUntil { sut.presentedViewController != nil }
         XCTAssertEqual(sut.presentedViewController?.modalPresentationStyle, .formSheet)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
+    /// The post-onboarding notification prompt is a system sheet at the medium detent, which keeps it
+    /// clear of the safe area and any vertical bar like every other sheet.
+    func testShowNotificationPermissionRequestPresentsAMediumSheet() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.showNotificationPermissionRequest()
+
+        await waitUntil { sut.presentedViewController != nil }
+        let sheet = try XCTUnwrap(sut.presentedViewController?.sheetPresentationController)
+        XCTAssertEqual(sheet.detents, [.medium()])
+        XCTAssertTrue(sheet.prefersGrabberVisible)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
+    /// Mac Catalyst has no sheet detents, so the prompt is a form sheet there.
+    func testShowNotificationPermissionRequestIsAFormSheetOnCatalyst() async throws {
+        let wasCatalyst = Current.isCatalyst
+        Current.isCatalyst = true
+        defer { Current.isCatalyst = wasCatalyst }
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.showNotificationPermissionRequest()
+
+        await waitUntil { sut.presentedViewController != nil }
+        XCTAssertEqual(sut.presentedViewController?.modalPresentationStyle, .formSheet)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
+    /// The debug screen offers the shake toggle from the controller's own traits rather than the
+    /// device: a pad-sized window hides it even on a phone, and a phone-sized one shows it.
+    func testShakeDisclaimerToggleFollowsTheControllersIdiom() {
+        let sut = makeSUT()
+        // Trait changes are forwarded to the web view, so it needs a real one.
+        sut.webView = WKWebView(frame: .zero)
+        let parent = UIViewController()
+        parent.addChild(sut)
+        parent.view.addSubview(sut.view)
+        sut.didMove(toParent: parent)
+
+        parent.setOverrideTraitCollection(UITraitCollection(userInterfaceIdiom: .pad), forChild: sut)
+        XCTAssertFalse(sut.showsShakeDisclaimerToggle)
+
+        parent.setOverrideTraitCollection(UITraitCollection(userInterfaceIdiom: .phone), forChild: sut)
+        XCTAssertTrue(sut.showsShakeDisclaimerToggle)
+    }
+
+    func testOpenDebugPresentsTheDebugScreen() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.openDebug()
+
+        await waitUntil { sut.presentedViewController != nil }
+        XCTAssertNotNil(sut.presentedViewController)
         sut.presentedViewController?.dismiss(animated: false)
     }
 
