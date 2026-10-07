@@ -39,6 +39,56 @@ final class InputOutputDeviceUpdateSignalerTests: XCTestCase {
         XCTAssertEqual(property.registrationCount, 1)
     }
 
+    func testRemovalDuringRegistrationPreservesClaimAfterCompletion() {
+        let signaler = InputOutputDeviceUpdateSignaler(signal: {})
+        let registrationStarted = DispatchSemaphore(value: 0)
+        let finishRegistration = DispatchSemaphore(value: 0)
+        let overlappingUpdateFinished = DispatchSemaphore(value: 0)
+        let updates = DispatchGroup()
+        let property = MockProperty { registration, _ in
+            if registration == 1 {
+                registrationStarted.signal()
+                XCTAssertEqual(finishRegistration.wait(timeout: .now() + 15), .success)
+            }
+        }
+
+        DispatchQueue.global().async(group: updates) {
+            signaler.addObserver(object: .invalid, property: property)
+        }
+        defer {
+            finishRegistration.signal()
+            XCTAssertEqual(updates.wait(timeout: .now() + 5), .success)
+        }
+        guard registrationStarted.wait(timeout: .now() + 5) == .success else {
+            return XCTFail("The listener registration never started")
+        }
+
+        // Removal must return without clearing the claim or waiting for the framework call.
+        DispatchQueue.global().async(group: updates) {
+            signaler.removeObserver(object: .invalid)
+            signaler.addObserver(object: .invalid, property: property)
+            overlappingUpdateFinished.signal()
+        }
+        guard overlappingUpdateFinished.wait(timeout: .now() + 5) == .success else {
+            return XCTFail("Removal and registration blocked on the in-flight listener")
+        }
+        XCTAssertEqual(property.registrationCount, 1)
+
+        finishRegistration.signal()
+        guard updates.wait(timeout: .now() + 5) == .success else {
+            return XCTFail("The listener registration never finished")
+        }
+
+        // Completing the installation must retain the claim even after the overlapping removal.
+        signaler.addObserver(object: .invalid, property: property)
+        XCTAssertEqual(property.registrationCount, 1)
+
+        // Once installed, an explicit removal still permits re-registration.
+        signaler.removeObserver(object: .invalid)
+        signaler.addObserver(object: .invalid, property: property)
+        XCTAssertEqual(property.registrationCount, 2)
+    }
+
     func testRemovedObjectCanBeRegisteredAgain() {
         let signaler = InputOutputDeviceUpdateSignaler(signal: {})
         let property = MockProperty()
