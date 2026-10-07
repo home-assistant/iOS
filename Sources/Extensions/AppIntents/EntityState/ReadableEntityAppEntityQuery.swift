@@ -37,7 +37,7 @@ struct ReadableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
     /// A server's worth of entities, resolving each one's area, device and floor a single time.
     private static func make(_ entities: [HAAppEntity], server: Server) -> [ReadableEntityAppEntity] {
         let serverId = server.identifier.rawValue
-        let deviceMap = entities.devicesMap(for: serverId)
+        let deviceContexts = entities.deviceContexts(for: serverId)
         let areasMap = entities.areasMap(for: serverId)
         let floorMap = entities.floorNamesMap(for: serverId)
         return entities.map { entity in
@@ -47,7 +47,9 @@ struct ReadableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
                 serverId: entity.serverId,
                 serverName: server.info.name,
                 areaName: areasMap[entity.entityId]?.name,
-                deviceName: deviceMap[entity.entityId]?.name,
+                deviceName: deviceContexts[entity.entityId]?.deviceName,
+                parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                 floorName: floorMap[entity.entityId],
                 displayString: entity.name,
                 iconName: entity.icon ?? SFSymbol.powerCircleFill.rawValue

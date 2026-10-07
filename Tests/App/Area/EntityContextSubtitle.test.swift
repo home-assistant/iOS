@@ -41,7 +41,7 @@ struct EntityContextSubtitleTests {
             entityId: "sensor.temperature",
             domain: .sensor
         )
-        #expect(subtitle == "Home • Ground Floor • Living Room • Thermostat")
+        #expect(subtitle == "Home ▸ Ground Floor ▸ Living Room ▸ Thermostat")
     }
 
     @Test func floorIsOmittedWhenNil() {
@@ -70,7 +70,7 @@ struct EntityContextSubtitleTests {
 
     @Test func deviceRepeatingTheAreaIsCollapsedToOneSegment() {
         // A camera device named after its area (common in Home Assistant) would otherwise render the
-        // same label twice, e.g. "Sala • Sala".
+        // same label twice, e.g. "Sala ▸ Sala".
         let subtitle = EntityContextSubtitle.make(
             areaName: "Sala",
             deviceName: "Sala",
@@ -100,7 +100,76 @@ struct EntityContextSubtitleTests {
             entityId: "camera.c100",
             domain: .camera
         )
-        #expect(subtitle == "Meter cupboard • C100")
+        #expect(subtitle == "Meter cupboard ▸ C100")
+    }
+
+    @Test func parentDeviceIsPlacedBetweenAreaAndDevice() {
+        let subtitle = EntityContextSubtitle.make(
+            floorName: "Ground Floor",
+            areaName: "Kitchen",
+            parentDeviceName: "Power strip",
+            deviceName: "Outlet 2",
+            entityName: "Outlet 2 Power",
+            entityId: "switch.outlet_2",
+            domain: .switch
+        )
+        #expect(subtitle == "Ground Floor ▸ Kitchen ▸ Power strip ▸ Outlet 2")
+    }
+
+    @Test func parentDeviceSharingTheDeviceNameIsCollapsedToOneSegment() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Kitchen",
+            parentDeviceName: "Smart plug",
+            deviceName: "smart plug",
+            entityName: "Power",
+            entityId: "switch.smart_plug",
+            domain: .switch
+        )
+        #expect(subtitle == "Kitchen ▸ Smart plug")
+    }
+
+    @Test func parentDeviceIsKeptWhenTheEntityIsNamedAfterItsDevice() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Kitchen",
+            parentDeviceName: "Power strip",
+            deviceName: "Outlet 2",
+            entityName: "Outlet 2",
+            entityId: "switch.outlet_2",
+            domain: .switch
+        )
+        #expect(subtitle == "Kitchen ▸ Power strip")
+    }
+
+    @Test func entityWithAnAreaOfItsOwnNamesNoneOfItsDevices() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Garage",
+            parentDeviceName: "Power strip",
+            deviceName: "Freezer",
+            contextReach: .area,
+            entityName: "Power",
+            entityId: "switch.freezer",
+            domain: .switch
+        )
+        #expect(subtitle == "Garage")
+    }
+
+    @Test func deviceWithAnAreaOfItsOwnLeavesItsParentOut() {
+        let subtitle = EntityContextSubtitle.make(
+            areaName: "Garage",
+            parentDeviceName: "Power strip",
+            deviceName: "Freezer",
+            contextReach: .device,
+            entityName: "Power",
+            entityId: "switch.freezer",
+            domain: .switch
+        )
+        #expect(subtitle == "Garage ▸ Freezer")
+    }
+
+    @Test func separatorPointsTheOtherWayInRightToLeftLanguages() {
+        #expect(EntityContextSubtitle.separator(for: Locale(identifier: "en")) == " ▸ ")
+        #expect(EntityContextSubtitle.separator(for: Locale(identifier: "he")) == " ◂ ")
+        #expect(EntityContextSubtitle.separator(for: Locale(identifier: "ar")) == " ◂ ")
     }
 
     @Test func whitespaceOnlyAreaIsDroppedRatherThanShownBlank() {

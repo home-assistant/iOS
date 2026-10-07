@@ -20,6 +20,8 @@ struct IntentSceneEntity: AppEntity, EntityContextRepresentable {
     var areaName: String?
     @Property(title: .init("app_intents.entity.property.device", defaultValue: "Device"))
     var deviceName: String?
+    var parentDeviceName: String?
+    var contextReach: EntityContextReach = .device
     @Property(title: .init("app_intents.entity.property.floor", defaultValue: "Floor"))
     var floorName: String?
     @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
@@ -39,6 +41,8 @@ struct IntentSceneEntity: AppEntity, EntityContextRepresentable {
         serverName: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        parentDeviceName: String? = nil,
+        contextReach: EntityContextReach = .device,
         floorName: String? = nil,
         displayString: String,
         iconName: String
@@ -50,6 +54,8 @@ struct IntentSceneEntity: AppEntity, EntityContextRepresentable {
         self.serverName = serverName
         self.areaName = areaName
         self.deviceName = deviceName
+        self.parentDeviceName = parentDeviceName
+        self.contextReach = contextReach
         self.floorName = floorName
         self.displayString = displayString
     }
@@ -81,7 +87,7 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: [.scene]).getEntities(matching: string)
 
         for (server, values) in entities {
-            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let deviceContexts = values.deviceContexts(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
             let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
             sceneEntities.append((server, values.map({ entity in
@@ -91,7 +97,9 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
                     serverId: entity.serverId,
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name,
-                    deviceName: deviceMap[entity.entityId]?.name,
+                    deviceName: deviceContexts[entity.entityId]?.deviceName,
+                    parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                    contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                     floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.moonStarsCircleFill.rawValue

@@ -46,6 +46,7 @@ final class DisplayEntityRegistryTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.DisplayEntityRegistry.areaId.rawValue, .text).indexed()
                     t.column(DatabaseTables.DisplayEntityRegistry.hidden.rawValue, .boolean)
                     t.column(DatabaseTables.DisplayEntityRegistry.icon.rawValue, .text)
+                    t.column(DatabaseTables.DisplayEntityRegistry.nextNamePart.rawValue, .text)
 
                     t.uniqueKey([
                         DatabaseTables.DisplayEntityRegistry.serverId.rawValue,

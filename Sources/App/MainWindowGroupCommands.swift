@@ -102,6 +102,15 @@ struct MainWindowGroupCommands: Commands {
             ForEach(area.devices) { device in
                 Menu(device.name) {
                     domainSections(for: device, server: server)
+                    if !device.children.isEmpty {
+                        Section {
+                            ForEach(device.children) { child in
+                                Menu(child.name) {
+                                    domainSections(for: child, server: server)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -139,13 +148,13 @@ struct MainWindowGroupCommands: Commands {
 
     // MARK: - Menu model
 
-    private struct AreasCommandServer: Identifiable {
+    struct AreasCommandServer: Identifiable {
         let id: String
         let name: String
         let floors: [AreasCommandFloor]
     }
 
-    private struct AreasCommandFloor: Identifiable {
+    struct AreasCommandFloor: Identifiable {
         let id: String
         let name: String
         let areas: [AreasCommandArea]
@@ -156,7 +165,7 @@ struct MainWindowGroupCommands: Commands {
         let name: String
     }
 
-    private struct AreasCommandArea: Identifiable {
+    struct AreasCommandArea: Identifiable {
         let id: String
         let name: String
         let floorId: String?
@@ -164,19 +173,20 @@ struct MainWindowGroupCommands: Commands {
         let devices: [AreasCommandDevice]
     }
 
-    private struct AreasCommandDevice: Identifiable {
+    struct AreasCommandDevice: Identifiable {
         let id: String
         let name: String
         let domains: [AreasCommandDomain]
+        let children: [AreasCommandDevice]
     }
 
-    private struct AreasCommandDomain: Identifiable {
+    struct AreasCommandDomain: Identifiable {
         let id: String
         let name: String
         let entities: [AreasCommandEntity]
     }
 
-    private struct AreasCommandEntity: Identifiable {
+    struct AreasCommandEntity: Identifiable {
         var id: String { entityId }
         let entityId: String
         let name: String
@@ -186,7 +196,7 @@ struct MainWindowGroupCommands: Commands {
 
     /// Loads the Entities menu tree off the main thread and caches it, so evaluating the commands
     /// body never touches the database.
-    private final class DataSource: ObservableObject {
+    final class DataSource: ObservableObject {
         @Published private(set) var servers: [AreasCommandServer] = []
 
         private let notificationCenter: NotificationCenter
@@ -252,7 +262,7 @@ struct MainWindowGroupCommands: Commands {
                         name: area.name,
                         floorId: area.floorId,
                         floorName: area.floorName,
-                        devices: Self.devices(from: areaEntities, devicesById: devicesById)
+                        devices: Self.devices(from: areaEntities, areaId: area.areaId, devicesById: devicesById)
                     )
                 }
 
@@ -280,8 +290,9 @@ struct MainWindowGroupCommands: Commands {
             }
         }
 
-        private static func devices(
+        static func devices(
             from entities: [EntityRegistryListForDisplay.Entity],
+            areaId: String,
             devicesById: [String: AppDeviceRegistry]
         ) -> [AreasCommandDevice] {
             let otherEntitiesName = L10n.MainWindowGroupCommands.OtherEntities.title
@@ -299,14 +310,32 @@ struct MainWindowGroupCommands: Commands {
                 }
             }
 
-            return groups.map { deviceId, group in
+            let parentIds = AppDeviceRegistry.treeParentIds(
+                of: Set(groups.keys),
+                inArea: areaId,
+                devicesById: devicesById
+            )
+            for parentId in Set(parentIds.values) where groups[parentId] == nil {
+                groups[parentId] = (devicesById[parentId]?.displayName ?? parentId, [])
+            }
+            let childIds = Dictionary(grouping: parentIds.keys) { parentIds[$0] ?? $0 }
+
+            func device(_ deviceId: String, children: [AreasCommandDevice] = []) -> AreasCommandDevice {
                 AreasCommandDevice(
                     id: deviceId,
-                    name: group.name,
-                    domains: Self.domains(from: group.entities)
+                    name: groups[deviceId]?.name ?? deviceId,
+                    domains: Self.domains(from: groups[deviceId]?.entities ?? []),
+                    children: sortedDevices(children)
                 )
             }
-            .sorted { lhs, rhs in
+
+            return sortedDevices(groups.keys.filter { parentIds[$0] == nil }.map { deviceId in
+                device(deviceId, children: (childIds[deviceId] ?? []).map { device($0) })
+            })
+        }
+
+        private static func sortedDevices(_ devices: [AreasCommandDevice]) -> [AreasCommandDevice] {
+            devices.sorted { lhs, rhs in
                 if lhs.id == "other-entities" { return false }
                 if rhs.id == "other-entities" { return true }
                 return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
