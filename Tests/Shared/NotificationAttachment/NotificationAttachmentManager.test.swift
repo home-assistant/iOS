@@ -207,39 +207,24 @@ class NotificationAttachmentManagerTests: XCTestCase {
         XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
-    func testAttachmentRemovesDefaultedCategory() throws {
+    func testImageAttachmentKeepsEmptyCategory() throws {
         parser1.result = image1.successParserResult(needsAuth: false)
 
         XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "")), "")
     }
 
-    func testAttachmentRemovesDynamicCategory() throws {
+    func testImageAttachmentKeepsDynamicCategory() throws {
         parser1.result = image1.successParserResult(needsAuth: false)
 
-        XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "DYNAMIC")), "")
+        let content = try deliveredContent(for: makeContent(categoryIdentifier: "DYNAMIC"))
+        XCTAssertEqual(content.attachments.first?.type, kUTTypePNG as String)
+        XCTAssertEqual(content.categoryIdentifier, "DYNAMIC")
     }
 
     func testAttachmentKeepsOtherCategory() throws {
         parser1.result = image1.successParserResult(needsAuth: false)
 
         XCTAssertEqual(try deliveredCategory(for: makeContent(categoryIdentifier: "MAP")), "MAP")
-    }
-
-    func testAttachmentKeepsDynamicCategoryWithPayloadActions() throws {
-        parser1.result = image1.successParserResult(needsAuth: false)
-
-        let content = makeContent(
-            categoryIdentifier: "DYNAMIC",
-            userInfo: ["actions": [["action": "CONFIRM", "title": "Confirm"]]]
-        )
-        XCTAssertEqual(try deliveredCategory(for: content), "DYNAMIC")
-    }
-
-    func testAttachmentKeepsDynamicCategoryWithEntityId() throws {
-        parser1.result = image1.successParserResult(needsAuth: false)
-
-        let content = makeContent(categoryIdentifier: "DYNAMIC", userInfo: ["entity_id": "camera.front_door"])
-        XCTAssertEqual(try deliveredCategory(for: content), "DYNAMIC")
     }
 
     func testAudioAttachmentKeepsDynamicCategory() throws {
