@@ -10,6 +10,8 @@ struct AppMigrationSuccessView: View {
     static let revealAnimation = Animation.spring(response: 0.6, dampingFraction: 0.85)
 
     let summary: AppMigrationSummary
+    var previousAppErased = false
+    var eraseAction: (() -> Void)?
     let continueAction: () -> Void
 
     @Namespace private var namespace
@@ -23,6 +25,8 @@ struct AppMigrationSuccessView: View {
                     summary: summary,
                     checkmarkNamespace: namespace,
                     checkmarkSettled: isSettled,
+                    previousAppErased: previousAppErased,
+                    eraseAction: eraseAction,
                     continueAction: continueAction
                 )
                 .transition(.opacity)

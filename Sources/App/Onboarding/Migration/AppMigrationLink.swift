@@ -14,13 +14,26 @@ enum AppMigrationLink: Equatable {
     case declined(sessionID: UUID)
     /// Previous app → new app: drop everything you received and ask for the setup again.
     case restart
+    /// New app → previous app: the setup has landed, wipe everything you still hold.
+    case erase
+    /// Previous app → new app: wiped; nothing is left over here.
+    case erased
 
     init?(url: URL) {
         guard url.host?.lowercased() == Self.host,
               let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
-        if components.path == "/restart" {
+        switch components.path {
+        case "/restart":
             self = .restart
             return
+        case "/erase":
+            self = .erase
+            return
+        case "/erased":
+            self = .erased
+            return
+        default:
+            break
         }
         let query = Dictionary(uniqueKeysWithValues: (components.queryItems ?? []).compactMap { item in
             item.value.map { (item.name, $0) }
@@ -62,6 +75,10 @@ enum AppMigrationLink: Equatable {
             components.queryItems = [URLQueryItem(name: "session", value: sessionID.uuidString)]
         case .restart:
             components.path = "/restart"
+        case .erase:
+            components.path = "/erase"
+        case .erased:
+            components.path = "/erased"
         }
         return components.url!
     }

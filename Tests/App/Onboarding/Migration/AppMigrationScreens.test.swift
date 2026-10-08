@@ -25,8 +25,8 @@ struct AppMigrationScreensTests {
         assertLightDarkSnapshots(of: AppMigrationOverviewView(startAction: {}), named: "new-03-overview")
     }
 
-    @MainActor @Test func waitingForPreviousApp() {
-        assertLightDarkSnapshots(of: importView(.waitingForPreviousApp), named: "new-04-waiting")
+    @MainActor @Test func openingPreviousApp() {
+        assertLightDarkSnapshots(of: importView(.openingPreviousApp), named: "new-04-open-check")
     }
 
     @MainActor @Test func importProgress() {
@@ -39,8 +39,20 @@ struct AppMigrationScreensTests {
 
     @MainActor @Test func complete() {
         assertLightDarkSnapshots(
-            of: AppMigrationCompleteView(summary: .preview, continueAction: {}),
+            of: AppMigrationCompleteView(summary: .preview, eraseAction: {}, continueAction: {}),
             named: "new-07-complete"
+        )
+    }
+
+    @MainActor @Test func completeWithPreviousAppErased() {
+        assertLightDarkSnapshots(
+            of: AppMigrationCompleteView(
+                summary: .preview,
+                previousAppErased: true,
+                eraseAction: {},
+                continueAction: {}
+            ),
+            named: "new-07c-complete-erased"
         )
     }
 
@@ -84,6 +96,10 @@ struct AppMigrationScreensTests {
 
     @MainActor @Test func exportHandedOff() {
         assertLightDarkSnapshots(of: exportView(.handedOff), named: "old-03-handed-off")
+    }
+
+    @MainActor @Test func exportErased() {
+        assertLightDarkSnapshots(of: exportView(.erased), named: "old-05-erased")
     }
 
     @MainActor @Test func exportFailed() {

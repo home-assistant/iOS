@@ -15,175 +15,76 @@ struct AppMigrationExportView: View {
     @State private var showsTransferAgainConfirmation = false
 
     var body: some View {
-        if state == .preparing {
+        switch state {
+        case .preparing:
             AppMigrationProgressView(script: .export)
-        } else {
-            content
+        case .idle, .failed:
+            AppMigrationOverviewView(
+                subtitle: L10n.AppMigration.Export.body,
+                serversCaption: summary.serversDescription,
+                failure: failureMessage,
+                actions: .transfer(state: progressButtonState, transfer: transferAction, later: cancelAction)
+            )
+            .onAppear {
+                if state == .idle {
+                    AppMigrationHaptics.warning()
+                } else {
+                    AppMigrationHaptics.error()
+                }
+            }
+        case .handedOff, .erased:
+            afterHandoff
         }
     }
 
-    private var content: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Spaces.three) {
-                MaterialDesignIconsImage(icon: headerIcon, size: 96)
-                    .foregroundStyle(headerTint)
+    private var afterHandoff: some View {
+        BaseOnboardingView(
+            illustration: {
+                MaterialDesignIconsImage(icon: .checkCircleOutlineIcon, size: 96)
+                    .foregroundStyle(.haSuccessColor)
                     .padding(.top, DesignSystem.Spaces.two)
-                Text(title)
-                    .font(DesignSystem.Font.largeTitle.bold())
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DesignSystem.Spaces.two)
-                VStack(spacing: DesignSystem.Spaces.two) {
-                    Text(message)
-                        .font(DesignSystem.Font.body)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                    if case let .failed(failure) = state {
-                        HAAlertView(title: L10n.AppMigration.Export.Failed.title, alertType: .error) {
-                            Text(failure)
-                        } action: {
-                            EmptyView()
-                        }
-                    }
-                    if showsInventory {
-                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                            HASectionPill(
-                                L10n.AppMigration.Export.Section.includes,
-                                icon: .checkmarkCircleFill,
-                                tint: .haSuccessColor
-                            )
-                            CardView(cornerRadius: DesignSystem.CornerRadius.two) {
-                                VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                                    ForEach(AppMigrationTransferredItem.allCases) { item in
-                                        AppMigrationItemRow(
-                                            icon: item.icon,
-                                            tint: .haSuccessColor,
-                                            title: item.title,
-                                            caption: item == .servers ? summary.serversDescription : item.explanation
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        .padding(.top, DesignSystem.Spaces.two)
-                    }
-                }
-                .padding(.horizontal, DesignSystem.Spaces.two)
-                Spacer(minLength: DesignSystem.Spaces.four)
-            }
-            .frame(maxWidth: .infinity, alignment: .top)
-            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: DesignSystem.Spaces.one) {
-                switch state {
-                case .handedOff:
-                    Button(action: openNewAppAction) {
-                        Text(L10n.AppMigration.Export.HandedOff.openButton)
-                    }
-                    .buttonStyle(.primaryButton)
-                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportOpenNewApp.rawValue)
-                    Button(L10n.AppMigration.Export.HandedOff.transferAgainButton) {
-                        AppMigrationHaptics.tap()
-                        showsTransferAgainConfirmation = true
-                    }
-                    .buttonStyle(.secondaryButton)
-                    .tint(Color.haPrimary)
-                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportTransferAgain.rawValue)
-                    .confirmationDialog(
-                        L10n.AppMigration.Export.TransferAgainConfirmation.title,
-                        isPresented: $showsTransferAgainConfirmation,
-                        titleVisibility: .visible
-                    ) {
-                        Button(L10n.AppMigration.Export.TransferAgainConfirmation.confirmButton) {
-                            AppMigrationHaptics.warning()
-                            transferAgainAction()
-                        }
-                    } message: {
-                        Text(L10n.AppMigration.Export.TransferAgainConfirmation.resetBody)
-                    }
-                case .idle, .preparing, .failed:
-                    HAProgressButton(
-                        L10n.AppMigration.Export.transferButton,
-                        icon: .transferIcon,
-                        state: progressButtonState,
-                        action: {
-                            AppMigrationHaptics.tap()
-                            transferAction()
-                        }
-                    )
-                    .accessibilityIdentifier(AccessibilityIdentifier.migrationExportTransfer.rawValue)
-                    Button {
-                        AppMigrationHaptics.tap()
-                        cancelAction()
-                    } label: {
-                        Text(L10n.AppMigration.Export.laterButton)
-                    }
-                    .buttonStyle(.secondaryButton)
-                    .tint(Color.haPrimary)
-                }
-            }
-            .padding(.bottom, Current.isCatalyst ? DesignSystem.Spaces.two : DesignSystem.Spaces.one)
-            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-            .padding([.horizontal, .top], DesignSystem.Spaces.two)
-            .background(Color(uiColor: .systemBackground).opacity(0.95))
-        }
-        .background(Color(uiColor: .systemBackground))
-        .onAppear {
-            if state == .idle {
+            },
+            title: state == .erased ? L10n.AppMigration.Export.Erased.title : L10n.AppMigration.Export.HandedOff.title,
+            primaryDescription: state == .erased
+                ? L10n.AppMigration.Export.Erased.body
+                : L10n.AppMigration.Export.HandedOff.verifyBody,
+            primaryActionTitle: L10n.AppMigration.Export.HandedOff.openButton,
+            primaryAction: openNewAppAction,
+            primaryActionIdentifier: AccessibilityIdentifier.migrationExportOpenNewApp.rawValue,
+            secondaryActionTitle: state == .erased ? nil : L10n.AppMigration.Export.HandedOff.transferAgainButton,
+            secondaryAction: {
+                AppMigrationHaptics.tap()
+                showsTransferAgainConfirmation = true
+            },
+            secondaryActionIdentifier: AccessibilityIdentifier.migrationExportTransferAgain.rawValue
+        )
+        .confirmationDialog(
+            L10n.AppMigration.Export.TransferAgainConfirmation.title,
+            isPresented: $showsTransferAgainConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(L10n.AppMigration.Export.TransferAgainConfirmation.confirmButton) {
                 AppMigrationHaptics.warning()
+                transferAgainAction()
             }
+        } message: {
+            Text(L10n.AppMigration.Export.TransferAgainConfirmation.resetBody)
         }
-        .onChange(of: state) { state in
-            switch state {
-            case .handedOff:
-                AppMigrationHaptics.success()
-            case .failed:
-                AppMigrationHaptics.error()
-            case .idle, .preparing:
-                break
-            }
+        .onAppear {
+            AppMigrationHaptics.success()
         }
     }
 
-    private var showsInventory: Bool {
-        switch state {
-        case .idle, .preparing, .failed: true
-        case .handedOff: false
+    private var failureMessage: String? {
+        if case let .failed(message) = state {
+            return message
         }
-    }
-
-    private var headerIcon: MaterialDesignIcons {
-        switch state {
-        case .idle, .preparing, .failed: .transferIcon
-        case .handedOff: .checkCircleOutlineIcon
-        }
-    }
-
-    private var headerTint: Color {
-        switch state {
-        case .idle, .preparing, .failed: .haPrimary
-        case .handedOff: .haSuccessColor
-        }
-    }
-
-    private var title: String {
-        switch state {
-        case .idle, .preparing, .failed: L10n.AppMigration.Export.title
-        case .handedOff: L10n.AppMigration.Export.HandedOff.title
-        }
-    }
-
-    private var message: String {
-        switch state {
-        case .idle, .preparing, .failed: L10n.AppMigration.Export.body
-        case .handedOff: L10n.AppMigration.Export.HandedOff.verifyBody
-        }
+        return nil
     }
 
     private var progressButtonState: HAProgressButtonState {
         switch state {
-        case .idle, .handedOff: .idle
+        case .idle, .handedOff, .erased: .idle
         case .preparing: .inProgress
         case .failed: .failure
         }
@@ -215,6 +116,17 @@ struct AppMigrationExportView: View {
 #Preview("Handed off") {
     AppMigrationExportView(
         state: .handedOff,
+        summary: .preview,
+        transferAction: {},
+        openNewAppAction: {},
+        transferAgainAction: {},
+        cancelAction: {}
+    )
+}
+
+#Preview("Erased") {
+    AppMigrationExportView(
+        state: .erased,
         summary: .preview,
         transferAction: {},
         openNewAppAction: {},

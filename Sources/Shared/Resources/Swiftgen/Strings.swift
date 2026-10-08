@@ -1309,6 +1309,8 @@ public enum L10n {
       public static var bodyNoServers: String { return L10n.tr("Localizable", "app_migration.complete.body_no_servers") }
       /// Continue
       public static var continueButton: String { return L10n.tr("Localizable", "app_migration.complete.continue_button") }
+      /// Erase the previous app
+      public static var eraseButton: String { return L10n.tr("Localizable", "app_migration.complete.erase_button") }
       /// 1 server transferred
       public static var serverSingle: String { return L10n.tr("Localizable", "app_migration.complete.server_single") }
       /// %d servers transferred
@@ -1317,6 +1319,12 @@ public enum L10n {
       }
       /// Transfer complete
       public static var title: String { return L10n.tr("Localizable", "app_migration.complete.title") }
+      public enum Erased {
+        /// It holds nothing any more. Delete it from your Home Screen when you like.
+        public static var body: String { return L10n.tr("Localizable", "app_migration.complete.erased.body") }
+        /// Previous app erased
+        public static var title: String { return L10n.tr("Localizable", "app_migration.complete.erased.title") }
+      }
       public enum Section {
         /// Next steps
         public static var nextSteps: String { return L10n.tr("Localizable", "app_migration.complete.section.next_steps") }
@@ -1347,6 +1355,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "app_migration.export.title") }
       /// Transfer
       public static var transferButton: String { return L10n.tr("Localizable", "app_migration.export.transfer_button") }
+      public enum Erased {
+        /// Your setup lives in the new app now. You can delete this app from your Home Screen.
+        public static var body: String { return L10n.tr("Localizable", "app_migration.export.erased.body") }
+        /// This app is now empty
+        public static var title: String { return L10n.tr("Localizable", "app_migration.export.erased.title") }
+      }
       public enum Failed {
         /// Try again
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.export.failed.retry_button") }
@@ -1436,6 +1450,14 @@ public enum L10n {
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.import.failed.retry_button") }
         /// The transfer did not complete
         public static var title: String { return L10n.tr("Localizable", "app_migration.import.failed.title") }
+      }
+      public enum OpenCheck {
+        /// This app asked iOS to open the previous Home Assistant app so it can send your setup. If it did not open, ask again.
+        public static var body: String { return L10n.tr("Localizable", "app_migration.import.open_check.body") }
+        /// Open the previous app
+        public static var retryButton: String { return L10n.tr("Localizable", "app_migration.import.open_check.retry_button") }
+        /// Did the previous app open?
+        public static var title: String { return L10n.tr("Localizable", "app_migration.import.open_check.title") }
       }
       public enum Waiting {
         /// Confirm the transfer in the previous Home Assistant app. You will be brought back here automatically.
@@ -5099,6 +5121,12 @@ public enum L10n {
       public enum Logo {
         /// Home Assistant logo
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "onboarding.welcome.logo.accessibility_label") }
+      }
+      public enum TransferNotice {
+        /// Already using the previous Home Assistant app on this device? Bring your setup over instead of setting up again.
+        public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.transfer_notice.body") }
+        /// Transfer your setup
+        public static var link: String { return L10n.tr("Localizable", "onboarding.welcome.transfer_notice.link") }
       }
       public enum Updated {
         /// Access your Home Assistant server on the go. 

@@ -15,6 +15,8 @@ final class AppMigrationCoordinator: ObservableObject {
 
     @Published private(set) var importState: AppMigrationImportState?
     @Published private(set) var completedSummary: AppMigrationSummary?
+    /// The previous app confirmed it wiped itself after this app asked it to.
+    @Published private(set) var previousAppErased = false
     @Published private(set) var exportRequest: AppMigrationSession?
     private var exportStartedHere = false
     @Published private(set) var exportState: AppMigrationExportState = .idle
@@ -30,6 +32,8 @@ final class AppMigrationCoordinator: ObservableObject {
             self.exportStartedHere = startedHere
         case .handedOff:
             self.exportState = .handedOff
+        case .erased:
+            self.exportState = .erased
         case nil:
             break
         }
@@ -51,8 +55,11 @@ final class AppMigrationCoordinator: ObservableObject {
     func restoreHandoffIfNeeded() {
         guard role == .previousApp, handoffPhase != nil else { return }
         HomeAssistantAPI.connectionsSuspended = true
-        if case .handedOff = handoffPhase {
+        switch handoffPhase {
+        case .handedOff, .erased:
             releasePushRegistration()
+        case .requested, nil:
+            break
         }
     }
 
@@ -71,8 +78,12 @@ final class AppMigrationCoordinator: ObservableObject {
             importState = .failed(message: AppMigrationError.declined.localizedDescription)
         case (.newApp, .restart):
             restartImport()
+        case (.newApp, .erased):
+            previousAppErased = true
         case let (.previousApp, .request(requested)):
             enterTakeover(with: requested, startedHere: false)
+        case (.previousApp, .erase):
+            eraseAfterHandoff()
         default:
             return false
         }
@@ -86,7 +97,8 @@ final class AppMigrationCoordinator: ObservableObject {
         self.session = session
         AppMigrationSessionStore.save(session)
         completedSummary = nil
-        importState = .waitingForPreviousApp
+        previousAppErased = false
+        importState = .openingPreviousApp
         openPreviousApp()
     }
 
@@ -107,7 +119,13 @@ final class AppMigrationCoordinator: ObservableObject {
 
     func finishImport() {
         completedSummary = nil
+        previousAppErased = false
         cancelImport()
+    }
+
+    /// Sends the user over to the previous app so it wipes what it still holds; it comes straight back.
+    func erasePreviousApp() {
+        Task { _ = await open(AppMigrationLink.erase.url(to: .previousApp)) }
     }
 
     private func currentSession() -> AppMigrationSession? {
@@ -249,6 +267,16 @@ final class AppMigrationCoordinator: ObservableObject {
 
     func openNewApp() {
         Task { _ = await open(AppMigrationRole.newApp.baseURL) }
+    }
+
+    /// The new app has the setup and asked for this one to be emptied: wipe everything, remember that
+    /// across relaunches, and hand the user back.
+    private func eraseAfterHandoff() {
+        guard case .handedOff = handoffPhase else { return }
+        wipeLocalData()
+        exportState = .erased
+        setHandoffPhase(.erased)
+        Task { _ = await open(AppMigrationLink.erased.url(to: .newApp)) }
     }
 
     func transferAgain() {
