@@ -76,15 +76,16 @@ struct OnboardingServersListView: View {
     var body: some View {
         ZStack {
             content
-                .onGeometryChange(for: CGFloat.self) { proxy in
-                    proxy.size.height
-                } action: { height in
-                    contentHeight = height
-                }
             if !shouldShowInvitation {
                 centerLoader
                 autoConnectView
             }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.height
+        } action: { height in
+            contentHeight = height
         }
         .navigationTitle(isCompactHeight ? L10n.Onboarding.Servers.title : "")
         .navigationBarTitleDisplayMode(.inline)
@@ -454,6 +455,7 @@ struct OnboardingServersListView: View {
         .buttonStyle(.glassButton)
         .accessibilityIdentifier(AccessibilityIdentifier.onboardingServersManualEntry.rawValue)
         .zoomTransitionSource(id: Constants.manualEntryTransitionID, in: manualEntryGeometry)
+        .frame(minHeight: DesignSystem.Button.minHeight)
         .padding()
     }
 
