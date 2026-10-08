@@ -37,49 +37,47 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
     /// twenty-two seconds, because the websocket reconnect, the web view's `getExternalAuth` and the
     /// bearer-token path each drove their own refresh while the re-authentication prompt waited for the
     /// user. Only the first one can be known to be worth sending.
-    func testServerIsAskedOnlyOnceWhateverDrivesTheRefresh() {
+    func testServerIsAskedOnlyOnceWhateverDrivesTheRefresh() async {
         stubRefreshToken(.rejection)
         let server = Self.serverWithExpiredToken()
         let tokenManager = TokenManager(server: server)
 
-        XCTAssertThrowsError(try settle(tokenManager.authDictionaryForWebView(forceRefresh: true)).get())
+        await assertRefused(tokenManager.authDictionaryForWebView(forceRefresh: true))
         XCTAssertEqual(recorder.requestCount, 1)
 
         // Every other way into a refresh, after the server has already had its say.
-        XCTAssertThrowsError(try settle(tokenManager.bearerToken).get())
-        XCTAssertThrowsError(try settle(tokenManager.authDictionaryForWebView(forceRefresh: false)).get())
-        XCTAssertThrowsError(try settle(tokenManager.authDictionaryForWebView(forceRefresh: true)).get())
-        XCTAssertThrowsError(try settle(tokenManager.bearerToken).get())
+        await assertRefused(tokenManager.bearerToken)
+        await assertRefused(tokenManager.authDictionaryForWebView(forceRefresh: false))
+        await assertRefused(tokenManager.authDictionaryForWebView(forceRefresh: true))
+        await assertRefused(tokenManager.bearerToken)
 
         XCTAssertEqual(recorder.requestCount, 1)
     }
 
     /// The refusal has to read as "log in again" rather than as a transport failure, or a caller
     /// retries it as if the network had hiccuped.
-    func testRefusedRefreshReportsThatReauthenticationIsRequired() {
+    func testRefusedRefreshReportsThatReauthenticationIsRequired() async {
         stubRefreshToken(.rejection)
         let server = Self.serverWithExpiredToken()
         let tokenManager = TokenManager(server: server)
 
-        _ = settle(tokenManager.bearerToken)
+        _ = await settle(tokenManager.bearerToken)
 
-        let result = settle(tokenManager.bearerToken)
-        XCTAssertThrowsError(try result.get()) { error in
-            XCTAssertEqual(error as? TokenManager.TokenError, .reauthenticationRequired)
-            // Whatever surfaces the error tells the user to log in, rather than naming a token.
-            XCTAssertEqual(error.localizedDescription, L10n.TokenError.reauthenticationRequired)
-        }
+        let error = await assertRefused(tokenManager.bearerToken)
+        XCTAssertEqual(error as? TokenManager.TokenError, .reauthenticationRequired)
+        // Whatever surfaces the error tells the user to log in, rather than naming a token.
+        XCTAssertEqual(error?.localizedDescription, L10n.TokenError.reauthenticationRequired)
     }
 
     /// The prompt is what the user acts on, so it must be raised by the server's answer and not by each
     /// caller that happens to ask afterwards.
-    func testReauthenticationIsRequestedOncePerRejection() {
+    func testReauthenticationIsRequestedOncePerRejection() async {
         stubRefreshToken(.rejection)
         let server = Self.serverWithExpiredToken()
         let tokenManager = TokenManager(server: server)
 
         for _ in 0 ..< 5 {
-            _ = settle(tokenManager.bearerToken)
+            _ = await settle(tokenManager.bearerToken)
         }
 
         XCTAssertEqual(recorder.reauthenticationCount, 1)
@@ -87,13 +85,13 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
 
     /// A refresh that fails because the server was unreachable or broke recovers on its own, so it must
     /// stay retriable: latching it would strand a working installation behind a login prompt.
-    func testTransientFailureIsRetried() {
+    func testTransientFailureIsRetried() async {
         stubRefreshToken(.serverError)
         let server = Self.serverWithExpiredToken()
         let tokenManager = TokenManager(server: server)
 
-        _ = settle(tokenManager.bearerToken)
-        _ = settle(tokenManager.bearerToken)
+        _ = await settle(tokenManager.bearerToken)
+        _ = await settle(tokenManager.bearerToken)
 
         XCTAssertEqual(recorder.requestCount, 2)
         XCTAssertEqual(recorder.reauthenticationCount, 0)
@@ -101,12 +99,12 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
 
     /// Logging back in stores a token minted from a fresh authorization code, which is what lifts the
     /// refusal — the manager outlives re-authentication, so nothing else would.
-    func testLoggingInAgainLetsTheNewTokenThrough() throws {
+    func testLoggingInAgainLetsTheNewTokenThrough() async throws {
         stubRefreshToken(.rejection)
         let server = Self.serverWithExpiredToken()
         let tokenManager = TokenManager(server: server)
 
-        _ = settle(tokenManager.bearerToken)
+        _ = await settle(tokenManager.bearerToken)
         XCTAssertEqual(recorder.requestCount, 1)
 
         // What `WebViewController.applyNewToken` writes once the user finishes logging in.
@@ -119,7 +117,7 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
             )
         }
 
-        let token = try settle(tokenManager.bearerToken).get()
+        let token = try await settle(tokenManager.bearerToken).get()
         XCTAssertEqual(token.0, "RefreshedAccessToken")
         XCTAssertEqual(recorder.requestCount, 2)
         XCTAssertEqual(recorder.lastSentRefreshToken, "ReauthenticatedRefreshToken")
@@ -127,14 +125,14 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
 
     /// Logging out revokes the refresh token along with the access token, so refreshing is as dead as
     /// re-sending the access token — and the app keeps running until the user signs back in.
-    func testRevokedRefreshTokenIsNeverSent() {
+    func testRevokedRefreshTokenIsNeverSent() async {
         stubRefreshToken(.rejection)
         let server = Server.fake()
         let tokenManager = TokenManager(server: server)
 
         tokenManager.handleTokenRevoked()
-        _ = settle(tokenManager.bearerToken)
-        _ = settle(tokenManager.authDictionaryForWebView(forceRefresh: true))
+        _ = await settle(tokenManager.bearerToken)
+        _ = await settle(tokenManager.authDictionaryForWebView(forceRefresh: true))
 
         XCTAssertEqual(recorder.requestCount, 0)
     }
@@ -142,15 +140,15 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
     /// A server recovered from the GRDB mirror carries `ServerInfo.mirrorPlaceholderToken`: empty
     /// strings, deliberately, because the mirror holds no credentials. Sending those is asking the
     /// server to log an invalid authentication for a token that was never real.
-    func testPlaceholderCredentialsFromAMirrorRestoreAreNeverSent() {
+    func testPlaceholderCredentialsFromAMirrorRestoreAreNeverSent() async {
         stubRefreshToken(.rejection)
         let server = Server.fake(update: { $0.token = ServerInfo.mirrorPlaceholderToken })
         let tokenManager = TokenManager(server: server)
 
         XCTAssertTrue(server.info.requiresReauthenticationAfterMirrorRestore)
 
-        _ = settle(tokenManager.bearerToken)
-        _ = settle(tokenManager.authDictionaryForWebView(forceRefresh: true))
+        _ = await settle(tokenManager.bearerToken)
+        _ = await settle(tokenManager.authDictionaryForWebView(forceRefresh: true))
 
         XCTAssertEqual(recorder.requestCount, 0)
     }
@@ -232,20 +230,30 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         })
     }
 
-    private func settle<T>(_ promise: Promise<T>) -> Swift.Result<T, Error> {
-        var result: Swift.Result<T, Error>?
-        let settled = expectation(description: "promise settled")
-
-        promise.done { value in
-            result = .success(value)
-            settled.fulfill()
-        }.catch { error in
-            result = .failure(error)
-            settled.fulfill()
+    /// The outcome of a promise, so a test can assert on a refusal rather than only on a success.
+    private func settle<T>(_ promise: Promise<T>) async -> Swift.Result<T, Error> {
+        do {
+            let value = try await promise.asyncValue(timeout: 10)
+            return .success(value)
+        } catch {
+            return .failure(error)
         }
+    }
 
-        wait(for: [settled], timeout: 10)
-        return result ?? .failure(TokenManager.TokenError.tokenUnavailable)
+    /// Fails unless the promise refuses, and hands the error back for a test that cares which one.
+    @discardableResult
+    private func assertRefused(
+        _ promise: Promise<some Any>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async -> Error? {
+        switch await settle(promise) {
+        case let .success(value):
+            XCTFail("expected a refusal, got \(value)", file: file, line: line)
+            return nil
+        case let .failure(error):
+            return error
+        }
     }
 
     /// Stub responses are delivered off the main queue, so the counts they feed are guarded.
