@@ -1129,8 +1129,6 @@
 "mac.sidebar.hidden_section.header" = "Dold";
 "mac.sidebar.hide" = "Dölj";
 "mac.sidebar.notifications" = "Notiser";
-"mac.sidebar.reset_to_defaults" = "Återställ till standardinställningar";
-"mac.sidebar.set_default_dashboard" = "Ange som standard kontrollpanel";
 "mac.sidebar.settings" = "Inställningar";
 "mac.sidebar.show" = "Visa";
 "mac.toggle_sidebar.accessibility_label" = "Växla sidofält";
@@ -1203,7 +1201,6 @@
 "menu.status_item.toggle" = "Växla %1$@";
 "menu.view.customize_toolbar" = "Anpassa verktygsfältet…";
 "menu.view.find" = "Hitta";
-"menu.view.hide_sidebar" = "Dölj sidofältet";
 "menu.view.reload_page" = "Ladda om sida";
 "menu.view.show_sidebar" = "Visa sidofält";
 "mtls.beta.info" = "Detta är en beta-funktion, om du upplever några problem, vänligen rapportera dem med knappen nedan. För närvarande stöds mTLS endast på iOS 17+, det kan uppstå problem relaterade till visning av bilagor till meddelanden, Assist TTS-ljud och det kommer inte att fungera fullt ut på Apple Watch.";

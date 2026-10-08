@@ -1131,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "Hidden";
 "mac.sidebar.hide" = "Hide";
 "mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
 "mac.sidebar.settings" = "Settings";
 "mac.sidebar.show" = "Show";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
@@ -1205,7 +1203,6 @@
 "menu.status_item.toggle" = "Muuda %1$@ olekut";
 "menu.view.customize_toolbar" = "Tööriistariba kohandamine…";
 "menu.view.find" = "Otsi";
-"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Taaslae vaade";
 "menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "See on beetafunktsioon, kui tekib probleeme, teata neist alloleva nupu abil. \

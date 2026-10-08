@@ -1131,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "已隱藏";
 "mac.sidebar.hide" = "隱藏";
 "mac.sidebar.notifications" = "通知";
-"mac.sidebar.reset_to_defaults" = "重置為預設值";
-"mac.sidebar.set_default_dashboard" = "設定為預設儀表板";
 "mac.sidebar.settings" = "設定";
 "mac.sidebar.show" = "顯示";
 "mac.toggle_sidebar.accessibility_label" = "切換側邊欄";
@@ -1205,7 +1203,6 @@
 "menu.status_item.toggle" = "切換 %1$@";
 "menu.view.customize_toolbar" = "自訂工具列…";
 "menu.view.find" = "尋找";
-"menu.view.hide_sidebar" = "隱藏側邊欄";
 "menu.view.reload_page" = "重新載入頁面";
 "menu.view.show_sidebar" = "顯示側邊欄";
 "mtls.beta.info" = "此為測試版功能，如果遇到任何問題，請使用下方按鈕回報。\

@@ -1131,8 +1131,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "mac.sidebar.hidden_section.header" = "Verborgen";
 "mac.sidebar.hide" = "Verbergen";
 "mac.sidebar.notifications" = "Notificaties";
-"mac.sidebar.reset_to_defaults" = "Terugzetten naar standaardinstellingen";
-"mac.sidebar.set_default_dashboard" = "Instellen als standaard dashboard";
 "mac.sidebar.settings" = "Instellingen";
 "mac.sidebar.show" = "Weergeven";
 "mac.toggle_sidebar.accessibility_label" = "Zijbalk omschakelen";
@@ -1205,7 +1203,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.customize_toolbar" = "Werkbalk aanpassen…";
 "menu.view.find" = "Vinden";
-"menu.view.hide_sidebar" = "Zijbalk verbergen";
 "menu.view.reload_page" = "Herlaad pagina";
 "menu.view.show_sidebar" = "Zijbalk weergeven";
 "mtls.beta.info" = "Dit is een bètafunctie. Als je problemen ondervindt, meld ze dan via de knop hieronder. \
