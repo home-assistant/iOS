@@ -486,7 +486,7 @@ class FocusNameSensorTests: XCTestCase {
     func testLiveConfirmationDoesNotCarryOverToTheNextFilterRun() throws {
         Current.focusFilter.setActiveFocusName("Work")
         Current.date = { [now] in now.addingTimeInterval(60) }
-        Current.focusFilter.confirmLive(try XCTUnwrap(Current.focusFilter.activeFocusState()))
+        try Current.focusFilter.confirmLive(XCTUnwrap(Current.focusFilter.activeFocusState()))
         XCTAssertNotNil(Current.focusFilter.activeFocusState()?.liveConfirmedDate)
 
         Current.date = { [now] in now.addingTimeInterval(120) }
@@ -501,9 +501,9 @@ class FocusNameSensorTests: XCTestCase {
         XCTAssertNil(Current.focusFilter.activeFocusState()?.liveConfirmedDate)
 
         Current.date = { [now] in now.addingTimeInterval(60) }
-        Current.focusFilter.confirmLive(try XCTUnwrap(Current.focusFilter.activeFocusState()))
+        try Current.focusFilter.confirmLive(XCTUnwrap(Current.focusFilter.activeFocusState()))
         Current.date = { [now] in now.addingTimeInterval(120) }
-        Current.focusFilter.confirmLive(try XCTUnwrap(Current.focusFilter.activeFocusState()))
+        try Current.focusFilter.confirmLive(XCTUnwrap(Current.focusFilter.activeFocusState()))
         XCTAssertEqual(Current.focusFilter.activeFocusState()?.liveConfirmedDate, now.addingTimeInterval(60))
     }
 
