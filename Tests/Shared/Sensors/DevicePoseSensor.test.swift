@@ -6,6 +6,7 @@ import XCTest
 import UIKit
 
 class DevicePoseSensorTests: XCTestCase {
+    private var originalSensors: SensorContainer!
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),
@@ -16,6 +17,8 @@ class DevicePoseSensorTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        originalSensors = Current.sensors
+        Current.sensors = SensorContainer()
         Current.hinge = HingeObserver(isSupported: true)
         SensorEnablementStore.resetForTesting()
     }
@@ -24,6 +27,8 @@ class DevicePoseSensorTests: XCTestCase {
         super.tearDown()
 
         Current.hinge = HingeObserver()
+        Current.sensors = originalSensors
+        originalSensors = nil
         SensorEnablementStore.resetForTesting()
     }
 

@@ -4,6 +4,7 @@ import XCTest
 
 #if os(iOS) && !targetEnvironment(macCatalyst)
 class HingeSensorTests: XCTestCase {
+    private var originalSensors: SensorContainer!
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),
@@ -13,6 +14,9 @@ class HingeSensorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+
+        originalSensors = Current.sensors
+        Current.sensors = SensorContainer()
 
         // Supported regardless of the simulator's OS, so every branch is exercised wherever the
         // suite runs rather than skipped on anything older than the API.
@@ -24,6 +28,8 @@ class HingeSensorTests: XCTestCase {
         super.tearDown()
 
         Current.hinge = HingeObserver()
+        Current.sensors = originalSensors
+        originalSensors = nil
         SensorEnablementStore.resetForTesting()
     }
 
