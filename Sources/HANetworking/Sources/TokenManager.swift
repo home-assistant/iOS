@@ -66,6 +66,14 @@ public final class TokenManager: @unchecked Sendable {
     ///
     /// Keyed by the refresh token itself so logging back in clears it for free: re-authentication stores
     /// a token minted from a fresh authorization code, which this set does not contain.
+    ///
+    /// Membership means "the server told us to re-authenticate", which is not quite the same as "this
+    /// token is gone": the whole `400...403` range lands here, so a reverse proxy answering 403 for its
+    /// own reasons latches a token that was never revoked. That is deliberate — the same range already
+    /// drove the re-authentication prompt before this set existed, so the user was blocked either way,
+    /// and going quiet is better than hammering an endpoint that is refusing us. It is also why the set
+    /// is in memory rather than persisted: a relaunch is the escape hatch that retries once and heals a
+    /// token that only looked dead.
     private let rejectedRefreshTokens = HAProtected<Set<String>>(value: [])
 
     public init(server: Server) {
