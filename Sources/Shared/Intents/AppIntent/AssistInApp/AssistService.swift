@@ -143,7 +143,12 @@ public final class AssistService: AssistServiceProtocol {
     }
 
     public func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
-        Current.api(for: server)?.connection.send(AssistRequests.fetchPipelinesTypedRequest) { [weak self] result in
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("Failed to fetch Assist pipelines: no API available for server")
+            completion(nil)
+            return
+        }
+        api.connection.send(AssistRequests.fetchPipelinesTypedRequest) { [weak self] result in
             switch result {
             case let .success(response):
                 self?.saveInDatabase(response)
