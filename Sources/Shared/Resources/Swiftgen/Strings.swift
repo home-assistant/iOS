@@ -7989,6 +7989,8 @@ public enum L10n {
     public static var connectionFailed: String { return L10n.tr("Localizable", "token_error.connection_failed") }
     /// Token is expired.
     public static var expired: String { return L10n.tr("Localizable", "token_error.expired") }
+    /// Session is no longer valid. Please log in again.
+    public static var reauthenticationRequired: String { return L10n.tr("Localizable", "token_error.reauthentication_required") }
     /// Token is unavailable.
     public static var tokenUnavailable: String { return L10n.tr("Localizable", "token_error.token_unavailable") }
   }

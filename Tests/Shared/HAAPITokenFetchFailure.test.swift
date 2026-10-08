@@ -63,6 +63,22 @@ class HAAPITokenFetchFailureTests: XCTestCase {
         XCTAssertTrue(failure.errorDescription?.contains("invalid_grant") == true)
     }
 
+    /// Once the token manager refuses to send credentials the server already rejected, the websocket
+    /// never gets a token again, so the reconnect loop has to stop on that refusal exactly as it does
+    /// on the server's own rejection — otherwise it spins until the user logs back in.
+    func testTokenFetchFailureMarksALocalRefusalAsPermanent() {
+        let failure = HomeAssistantAPI.tokenFetchFailure(from: TokenManager.TokenError.reauthenticationRequired)
+
+        XCTAssertTrue(failure.shouldDisconnectPermanently)
+    }
+
+    /// A token that merely lapsed is refreshed on the next attempt, so it must stay retriable.
+    func testTokenFetchFailureLeavesAnExpiredTokenRetryable() {
+        let failure = HomeAssistantAPI.tokenFetchFailure(from: TokenManager.TokenError.expired)
+
+        XCTAssertFalse(failure.shouldDisconnectPermanently)
+    }
+
     func testTokenFetchFailureLeavesTransientErrorsRetryable() {
         let failure = HomeAssistantAPI.tokenFetchFailure(from: URLError(.notConnectedToInternet))
 

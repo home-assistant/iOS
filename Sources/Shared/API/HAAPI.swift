@@ -34,9 +34,15 @@ public class HomeAssistantAPI {
         let errorDescription = String(describing: error)
         let underlyingInfo = "\(errorType): \(errorDescription)"
 
+        // The server's own 400...403, and the same verdict reached without asking it again: once the
+        // token manager has a refusal on file it stops sending the credentials, so a reconnect loop
+        // would spin forever on a token fetch that can only fail until the user logs back in.
+        let isPermanent = error.authenticationAPIError?.shouldRequireReauthentication == true
+            || (error as? TokenManager.TokenError) == .reauthenticationRequired
+
         return TokenFetchFailure(
             underlyingType: underlyingInfo,
-            shouldDisconnectPermanently: error.authenticationAPIError?.shouldRequireReauthentication == true
+            shouldDisconnectPermanently: isPermanent
         )
     }
 
