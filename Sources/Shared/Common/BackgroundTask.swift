@@ -19,6 +19,7 @@ public enum BackgroundTask: String {
     case webhookInvoke = "webhook-invoke"
     case manualLocationUpdate = "manual-location-update"
     case signaledUpdateSensors = "signaled-update-sensors"
+    case sensorUpdateRetry = "sensor-update-retry"
     case connectApi = "connect-api"
     case realmWrite = "realm-write"
     case pushLocationRequest = "push-location-request"
