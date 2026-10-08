@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "Громкость";
 "assist_pipeline_picker.no_pipelines" = "Нет доступных pipeline";
 "assist_pipeline_picker.placeholder" = "Выберите обработчик";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Изменить";
 "camera_list.edit.on.title" = "Готово";
 "camera_list.empty.message" = "В Home Assistant не найдено объектов камер";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Все домены";
 "entity_picker.filter.domain.title" = "Домен";
 "entity_picker.filter.group_by.area" = "Группировка по пространствам";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Группировка по доменам";
 "entity_picker.filter.group_by.title" = "Group by";
 "entity_picker.filter.server.title" = "Серверы";
 "entity_picker.list.area.no_area.title" = "Нет пространств";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Выбрать объект";
 "entity_picker.refresh.updating" = "Обновление…";
 "entity_picker.reload" = "Reload";
@@ -1428,6 +1431,7 @@ Home Assistant - это бесплатное программное обеспе
 "onboarding.welcome.learn_more" = "Узнать больше";
 "onboarding.welcome.logo.accessibility_label" = "Логотип Home Assistant";
 "onboarding.welcome.primary_button" = "Подключиться к моему Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Начало работы";
 "onboarding.welcome.title" = "Добро пожаловать в Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Получите доступ к серверу Home Assistant, где бы вы ни находились. \
@@ -2715,6 +2719,7 @@ Home Assistant — это приложение с открытым исходн�
 "watch.home.areas.title" = "Пространства";
 "watch.home.cancel_and_use_cache.title" = "Отменить и использовать кэш";
 "watch.home.device.empty" = "Для этого устройства нет совместимых объектов.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Пропустить";
 "watch.home.run.confirmation.title" = "Вы уверены, что хотите запустить \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "Текущее состояние замка неизвестно, поэтому действие не было отправлено. Дождитесь загрузки состояния и повторите попытку.";
@@ -2959,6 +2964,10 @@ Home Assistant — это приложение с открытым исходн�
 "watch.settings.developer.warning.message" = "Эти параметры предназначены для отладки. Используйте их только под руководством разработчика.";
 "watch.settings.developer.warning.title" = "Предупреждение";
 "watch.settings.last_updated" = "Обновлено %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Элементы не настроены, пожалуйста, выберите элементы ниже.";
 "watch.settings.no_servers" = "Серверы еще не синхронизированы. Откройте Home Assistant на сопряженном iPhone, затем обновите страницу на главном экране.";
 "watch.settings.perform_action.footer" = "Где выполняются действия. Если iPhone находится поблизости, функция Авто использует его, в противном случае Apple Watch подключаются напрямую к Home Assistant.";

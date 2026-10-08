@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "Hangerőszabályzó";
 "assist_pipeline_picker.no_pipelines" = "Nincsenek elérhető folyamatok";
 "assist_pipeline_picker.placeholder" = "Válasszon folyamatot";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Szerkesztés";
 "camera_list.edit.on.title" = "Kész";
 "camera_list.empty.message" = "Nem találhatók kamera entitások a Home Assistant beállításában";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Összes tartomány";
 "entity_picker.filter.domain.title" = "Tartomány";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "Csoportosítás";
 "entity_picker.filter.server.title" = "Szerverek";
 "entity_picker.list.area.no_area.title" = "Nincs terület";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Válasszon entitást";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "Reload";
@@ -1427,6 +1430,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "onboarding.welcome.learn_more" = "Tudjon meg többet";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
 "onboarding.welcome.primary_button" = "Csatlakozás a saját Home Assistant rendszeremhez";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Első lépések";
 "onboarding.welcome.title" = "%@ Home Assistant üdvözli Önt!";
 "onboarding.welcome.updated.body" = "Érje el a Home Assistant szerverét útközben is.\
@@ -2716,6 +2720,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Mégse és gyorsítótár használata";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Kihagyás";
 "watch.home.run.confirmation.title" = "Biztosan futtatni szeretné: \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2960,6 +2965,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.warning.message" = "These options are for debugging. Only use them when guided by a developer.";
 "watch.settings.developer.warning.title" = "Warning";
 "watch.settings.last_updated" = "Frissítve: %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Nincsenek konfigurált elemek, kérjük, válasszon elemeket alább.";
 "watch.settings.no_servers" = "Még nincs szinkronizált szerver. Nyissa meg a Home Assistant alkalmazást a párosított iPhone-ján, majd frissítsen a főképernyőről.";
 "watch.settings.perform_action.footer" = "Meghatározza, hogy hol futnak a műveletek. Az automatikus mód az iPhone-t használja, ha az a közelben van, egyébként az Apple Watch közvetlenül csatlakozik a Home Assistant-hoz.";

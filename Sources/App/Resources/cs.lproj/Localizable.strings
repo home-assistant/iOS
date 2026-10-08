@@ -358,7 +358,7 @@
 "assist.chat.menu.edit" = "Upravit";
 "assist.chat.menu.replay" = "Přehrát znovu";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
-"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
+"assist.error.speech_to_text_unsupported" = "Tento pipeline Assist nemá žádný modul pro převod řeči na text. Vyberte pipeline, který jej má, nebo v nastavení Assist povolte převod řeči na text v zařízení.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Zeptej se mě na cokoli...";
@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "Ovládání hlasitosti";
 "assist_pipeline_picker.no_pipelines" = "Nejsou dostupné žádné pipeline";
 "assist_pipeline_picker.placeholder" = "Vyberte pipeline";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Upravit";
 "camera_list.edit.on.title" = "Hotovo";
 "camera_list.empty.message" = "V nastavení Home Assistanta nebyly nalezeny žádné kamery";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Všechny domény";
 "entity_picker.filter.domain.title" = "Doména";
 "entity_picker.filter.group_by.area" = "Seskupit podle oblasti";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Seskupit podle domény";
 "entity_picker.filter.group_by.title" = "Seskupit podle";
 "entity_picker.filter.server.title" = "Servery";
 "entity_picker.list.area.no_area.title" = "Žádná oblast";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Vyberte entitu";
 "entity_picker.refresh.updating" = "Aktualizování…";
 "entity_picker.reload" = "Znovu načíst";
@@ -1428,6 +1431,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "onboarding.welcome.learn_more" = "Více informací";
 "onboarding.welcome.logo.accessibility_label" = "Logo Home Assistanta";
 "onboarding.welcome.primary_button" = "Připojit k mému Home Assistantovi";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Začínáme";
 "onboarding.welcome.title" = "Vítejte v Home Assistantovi %@!";
 "onboarding.welcome.updated.body" = "Přistupujte k serveru Home Assistant na cestách.\
@@ -2717,6 +2721,7 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "watch.home.areas.title" = "Oblasti";
 "watch.home.cancel_and_use_cache.title" = "Zrušit a použít mezipaměť";
 "watch.home.device.empty" = "Pro toto zařízení nejsou k dispozici žádné kompatibilní entity.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Přeskočit";
 "watch.home.run.confirmation.title" = "Opravdu chcete spustit \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "Aktuální stav zámku zatím není znám, takže akce nebyla odeslána. Počkejte, až se stav načte, a zkuste to znovu.";
@@ -2961,6 +2966,10 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "watch.settings.developer.warning.message" = "Tyto volby slouží k ladění. Používejte je jen s pokyny vývojáře.";
 "watch.settings.developer.warning.title" = "Varování";
 "watch.settings.last_updated" = "Aktualizováno %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Nejsou nastaveny žádné položky, vyberte položky níže.";
 "watch.settings.no_servers" = "Zatím nebyly synchronizovány žádné servery. Otevřete na spárovaném iPhonu Home Assistanta a poté obnovte stránku z domovské obrazovky.";
 "watch.settings.perform_action.footer" = "Kde se spouštějí akce. Funkce Auto používá váš iPhone, když je poblíž, jinak se Apple Watch připojí přímo k Home Assistantovi.";

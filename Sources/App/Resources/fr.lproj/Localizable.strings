@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "Contrôle du volume";
 "assist_pipeline_picker.no_pipelines" = "Aucun pipeline disponible";
 "assist_pipeline_picker.placeholder" = "Choisir un pipeline";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Modifier";
 "camera_list.edit.on.title" = "Terminé";
 "camera_list.empty.message" = "Aucune entité caméra trouvée dans votre configuration Home Assistant";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Tous les domaines";
 "entity_picker.filter.domain.title" = "Domaine";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "Grouper par";
 "entity_picker.filter.server.title" = "Serveurs";
 "entity_picker.list.area.no_area.title" = "Aucune pièce";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Choisir une entité";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "Reload";
@@ -1428,6 +1431,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "onboarding.welcome.learn_more" = "En savoir plus";
 "onboarding.welcome.logo.accessibility_label" = "Logo Home Assistant";
 "onboarding.welcome.primary_button" = "Se connecter à mon Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Premiers pas";
 "onboarding.welcome.title" = "Bienvenue dans Home Assistant %@ !";
 "onboarding.welcome.updated.body" = "Accédez à votre serveur Home Assistant où que vous soyez.\
@@ -2717,6 +2721,7 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Annuler et utiliser le cache";
 "watch.home.device.empty" = "Il n'y a pas d'entité compatible avec cet appareil";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Ignorer";
 "watch.home.run.confirmation.title" = "Êtes-vous sûr de vouloir exécuter « %@ » ?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2961,6 +2966,10 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "watch.settings.developer.warning.message" = "Ces options sont destinées au débogage. Ne les utilisez que sur les conseils d'un développeur.";
 "watch.settings.developer.warning.title" = "Avertissement";
 "watch.settings.last_updated" = "Mis à jour %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Aucun élément configuré, veuillez choisir les éléments ci-dessous.";
 "watch.settings.no_servers" = "Aucun serveur synchronisé pour le moment. Ouvrez Home Assistant sur votre iPhone associé, puis actualisez depuis l'écran d'accueil.";
 "watch.settings.perform_action.footer" = "Où les actions s'exécutent. Auto utilise votre iPhone lorsqu'il est à proximité, sinon l'Apple Watch se connecte directement à Home Assistant.";

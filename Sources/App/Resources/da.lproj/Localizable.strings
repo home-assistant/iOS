@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "Lydstyrkekontrol";
 "assist_pipeline_picker.no_pipelines" = "Ingen tilgængelige pipelines";
 "assist_pipeline_picker.placeholder" = "Vælg pipeline";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Redigér";
 "camera_list.edit.on.title" = "Færdig";
 "camera_list.empty.message" = "Ingen kameraenheder fundet i din Home Assistant-opsætning";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Alle domæner";
 "entity_picker.filter.domain.title" = "Domæne";
 "entity_picker.filter.group_by.area" = "Gruppér efter område";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Gruppér efter domæne";
 "entity_picker.filter.group_by.title" = "Gruppér efter";
 "entity_picker.filter.server.title" = "Servere";
 "entity_picker.list.area.no_area.title" = "Intet område";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Vælg entitet";
 "entity_picker.refresh.updating" = "Opdaterer…";
 "entity_picker.reload" = "Genindlæs";
@@ -1428,6 +1431,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "onboarding.welcome.learn_more" = "Lær mere";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant-logo";
 "onboarding.welcome.primary_button" = "Opret forbindelse til min Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Kom godt i gang";
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Tilgå din Home Assistant-server, når du er på farten. \
@@ -2717,6 +2721,7 @@ Serveren svarer kun, mens appen er åben, og stopper, når du lukker den.";
 "watch.home.areas.title" = "Områder";
 "watch.home.cancel_and_use_cache.title" = "Annullér og brug cache";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Spring over";
 "watch.home.run.confirmation.title" = "Er du sikker på, at du vil køre \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2961,6 +2966,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.warning.message" = "These options are for debugging. Only use them when guided by a developer.";
 "watch.settings.developer.warning.title" = "Warning";
 "watch.settings.last_updated" = "Opdateret %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Ingen elementer konfigureret. Vælg venligst elementer nedenfor.";
 "watch.settings.no_servers" = "Ingen servere er synkroniseret endnu. Åbn Home Assistant på din parrede iPhone, og opdatér derefter fra startskærmen.";
 "watch.settings.perform_action.footer" = "Hvor handlingerne udføres. Auto bruger din iPhone, når den er i nærheden; ellers opretter Apple Watch direkte forbindelse til Home Assistant.";
