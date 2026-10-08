@@ -66,6 +66,8 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         let result = settle(tokenManager.bearerToken)
         XCTAssertThrowsError(try result.get()) { error in
             XCTAssertEqual(error as? TokenManager.TokenError, .reauthenticationRequired)
+            // Whatever surfaces the error tells the user to log in, rather than naming a token.
+            XCTAssertEqual(error.localizedDescription, L10n.TokenError.reauthenticationRequired)
         }
     }
 
