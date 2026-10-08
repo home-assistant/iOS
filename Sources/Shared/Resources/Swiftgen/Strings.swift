@@ -7782,6 +7782,8 @@ public enum L10n {
       public enum UnavailableOnDevice {
         /// Unavailable on this device
         public static var header: String { return L10n.tr("Localizable", "settings_sensors.sensors.unavailable_on_device.header") }
+        /// Unavailable
+        public static var state: String { return L10n.tr("Localizable", "settings_sensors.sensors.unavailable_on_device.state") }
       }
     }
     public enum Servers {

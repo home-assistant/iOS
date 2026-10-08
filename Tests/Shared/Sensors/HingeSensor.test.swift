@@ -44,6 +44,17 @@ class HingeSensorTests: XCTestCase {
         }
     }
 
+    /// A device that has reported a hinge still has one when the reading goes back to nothing, so
+    /// its sensors stay listed, unread, rather than dropping out of the list.
+    func testDeviceWhoseHingeWentAwayReportsUnavailable() throws {
+        Current.hinge.setState(HingeState(angleDegrees: 90, status: .partiallyOpen))
+        Current.hinge.setState(nil)
+
+        let sensors = try hang(HingeSensor(request: request).sensors())
+        XCTAssertEqual(sensors.map(\.UniqueID), ["hinge_angle", "hinge_status"])
+        XCTAssertEqual(sensors.compactMap { $0.State as? String }, ["unavailable", "unavailable"])
+    }
+
     /// Before anything has observed the hinge the sensors stay listed, so their rows remain
     /// available to switch on.
     func testNoReadingYetReportsUnavailable() throws {

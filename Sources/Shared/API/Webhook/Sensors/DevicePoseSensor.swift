@@ -15,7 +15,7 @@ public final class DevicePoseSensor: SensorProvider {
             return .init(error: HingeSensor.HingeError.unsupported)
         }
 
-        if observer.hasReceivedUpdate, observer.state == nil {
+        if observer.hasReceivedUpdate, !observer.hasHinge {
             return .init(error: HingeSensor.HingeError.unsupported)
         }
 

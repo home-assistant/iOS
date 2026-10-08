@@ -174,7 +174,7 @@ struct SensorListView: View {
                 if !viewModel.filteredUnavailableSensors.isEmpty {
                     Section {
                         ForEach(viewModel.filteredUnavailableSensors, id: \.UniqueID) { sensor in
-                            SensorRow(sensor: sensor, isEnabled: false)
+                            SensorRow(sensor: sensor, isEnabled: false, isAvailable: false)
                         }
                     } header: {
                         Text(L10n.SettingsSensors.Sensors.UnavailableOnDevice.header)
