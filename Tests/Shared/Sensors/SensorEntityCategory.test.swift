@@ -89,6 +89,7 @@ struct SensorEntityCategoryTests {
     func hingeSensorsAreNotDiagnostic() {
         #expect(SensorEntityCategory.category(forSensorUniqueID: "hinge_angle") == nil)
         #expect(SensorEntityCategory.category(forSensorUniqueID: "hinge_status") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "device_pose") == nil)
     }
 
     @Test("Focus is something automations act on, not a diagnostic")

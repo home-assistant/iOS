@@ -20,9 +20,24 @@ public final class HingeObserver: ObservableObject {
     /// this device has none.
     @Published public private(set) var hasReceivedUpdate = false
 
+    @Published public private(set) var deviceOrientationRawValue = 0
+
     /// Emits the current reading and every subsequent change, so the hinge sensors can report it.
     public var statePublisher: AnyPublisher<HingeState?, Never> {
         $state.eraseToAnyPublisher()
+    }
+
+    public var pose: DevicePose? {
+        state.map { DevicePose(status: $0.status, uiDeviceOrientationRawValue: deviceOrientationRawValue) }
+    }
+
+    public var posePublisher: AnyPublisher<DevicePose?, Never> {
+        $state
+            .combineLatest($deviceOrientationRawValue)
+            .map { state, orientation in
+                state.map { DevicePose(status: $0.status, uiDeviceOrientationRawValue: orientation) }
+            }
+            .eraseToAnyPublisher()
     }
 
     /// Whether this device could ever report a hinge, which on anything older than the API is no.
@@ -55,5 +70,10 @@ public final class HingeObserver: ObservableObject {
         hasReceivedUpdate = true
         guard state != self.state else { return }
         self.state = state
+    }
+
+    public func setDeviceOrientation(rawValue: Int) {
+        guard rawValue != deviceOrientationRawValue else { return }
+        deviceOrientationRawValue = rawValue
     }
 }

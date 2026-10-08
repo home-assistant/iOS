@@ -429,6 +429,7 @@ public class AppEnvironment {
         $0.register(provider: CameraMotionSensor.self)
         $0.register(provider: CameraStreamSensor.self)
         $0.register(provider: HingeSensor.self)
+        $0.register(provider: DevicePoseSensor.self)
         #if os(iOS) && !targetEnvironment(macCatalyst)
         $0.register(provider: HealthKitSensor.self)
         #endif

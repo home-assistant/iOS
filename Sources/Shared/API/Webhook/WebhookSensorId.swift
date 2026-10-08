@@ -34,4 +34,5 @@ public enum WebhookSensorId: String, CaseIterable {
     case cameraStream
     case hingeAngle = "hinge_angle"
     case hingeStatus = "hinge_status"
+    case devicePose = "device_pose"
 }

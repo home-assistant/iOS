@@ -190,6 +190,30 @@ class HingeObserverTests: XCTestCase {
         XCTAssertEqual(received, [nil, HingeState(angleDegrees: 45, status: .partiallyOpen), nil])
     }
 
+    func testPoseIsNilUntilAHingeIsReported() {
+        let observer = HingeObserver()
+        observer.setDeviceOrientation(rawValue: 3)
+        XCTAssertNil(observer.pose)
+
+        observer.setState(HingeState(angleDegrees: 100, status: .partiallyOpen))
+        XCTAssertEqual(observer.pose, .book)
+    }
+
+    func testPosePublisherEmitsWhenTheHingeOrTheOrientationChanges() {
+        let observer = HingeObserver()
+        var received: [DevicePose?] = []
+        let cancellable = observer.posePublisher.sink { received.append($0) }
+
+        observer.setState(HingeState(angleDegrees: 100, status: .partiallyOpen))
+        observer.setDeviceOrientation(rawValue: 1)
+        observer.setDeviceOrientation(rawValue: 1)
+        observer.setDeviceOrientation(rawValue: 4)
+
+        cancellable.cancel()
+        XCTAssertEqual(received, [nil, .partiallyOpen, .laptop, .book])
+        XCTAssertEqual(observer.deviceOrientationRawValue, 4)
+    }
+
     /// Whatever this machine answers, it has to answer without crashing — and on anything older
     /// than the API it has to answer no.
     func testSystemSupportIsFalseBelowTheAPI() {

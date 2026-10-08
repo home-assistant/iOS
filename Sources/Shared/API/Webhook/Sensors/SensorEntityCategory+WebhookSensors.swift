@@ -41,7 +41,8 @@ public extension SensorEntityCategory {
              .cameraMotion,
              .cameraStream,
              .hingeAngle,
-             .hingeStatus:
+             .hingeStatus,
+             .devicePose:
             return nil
         }
     }
