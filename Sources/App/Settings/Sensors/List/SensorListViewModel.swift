@@ -116,7 +116,11 @@ class SensorListViewModel: ObservableObject {
         self.enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
         self.servers = Current.servers.all
         self.deviceHasHinge = Current.hinge.hasHinge
+        // Only a change is passed on: the publisher opens with the value read just above, and
+        // assigning it again would republish a screen that has nothing new to show.
         Current.hinge.$hasHinge
+            .removeDuplicates()
+            .dropFirst()
             .receive(on: DispatchQueue.main)
             .assign(to: &$deviceHasHinge)
         Current.sensors.register(observer: self)
