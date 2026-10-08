@@ -24,10 +24,9 @@ struct SensorRow: View {
                         LabsLabel()
                     }
                 }
-                // The badge sits on the state line rather than beside the name: the state it
-                // qualifies is right there, and a long sensor name keeps the full width to wrap
-                // into instead of being squeezed word by word.
-                HStack(spacing: DesignSystem.Spaces.one) {
+                // The badge sits under the state rather than beside it, so neither a long name nor
+                // a long translated state has to share its width with the badge.
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                     Text(stateText)
                         .foregroundColor(.secondary)
                         .font(.subheadline)
