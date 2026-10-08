@@ -24,29 +24,91 @@ final class WebViewControllerWindowControlsTests: XCTestCase {
         server = nil
     }
 
-    /// Full screen, and every device without window controls, report the corner-adapted safe area unchanged.
+    /// A window whose corners reserve no more than the plain safe area has nothing to clear.
     func testWebViewTopInsetIsZeroWhenNothingIsReservedInTheCorners() {
-        XCTAssertEqual(WebViewController.webViewTopInset(cornerAdaptedSafeAreaTop: 0, safeAreaTop: 0, idiom: .pad), 0)
-        XCTAssertEqual(WebViewController.webViewTopInset(cornerAdaptedSafeAreaTop: 59, safeAreaTop: 59, idiom: .pad), 0)
+        XCTAssertEqual(
+            WebViewController.webViewTopInset(
+                cornerAdaptedSafeAreaTop: 0,
+                safeAreaTop: 0,
+                idiom: .pad,
+                isWindowed: true
+            ),
+            0
+        )
+        XCTAssertEqual(
+            WebViewController.webViewTopInset(
+                cornerAdaptedSafeAreaTop: 59,
+                safeAreaTop: 59,
+                idiom: .pad,
+                isWindowed: true
+            ),
+            0
+        )
     }
 
     /// The whole inset, not only the part beyond the safe area, which the frontend no longer insets itself by.
     func testWebViewTopInsetIsTheWholeCornerAdaptedInsetWhenWindowControlsNeedRoom() {
-        XCTAssertEqual(WebViewController.webViewTopInset(cornerAdaptedSafeAreaTop: 44, safeAreaTop: 0, idiom: .pad), 44)
         XCTAssertEqual(
-            WebViewController.webViewTopInset(cornerAdaptedSafeAreaTop: 64, safeAreaTop: 20, idiom: .pad),
+            WebViewController.webViewTopInset(
+                cornerAdaptedSafeAreaTop: 44,
+                safeAreaTop: 0,
+                idiom: .pad,
+                isWindowed: true
+            ),
+            44
+        )
+        XCTAssertEqual(
+            WebViewController.webViewTopInset(
+                cornerAdaptedSafeAreaTop: 64,
+                safeAreaTop: 20,
+                idiom: .pad,
+                isWindowed: true
+            ),
             64
+        )
+    }
+
+    /// Full screen draws no window controls: hiding the status bar there must not leave the room it freed
+    /// reserved, however much the display's rounded corners adapt the safe area.
+    func testWebViewTopInsetIsZeroInFullScreenWhateverTheCornersReserve() {
+        XCTAssertEqual(
+            WebViewController.webViewTopInset(
+                cornerAdaptedSafeAreaTop: 24,
+                safeAreaTop: 0,
+                idiom: .pad,
+                isWindowed: false
+            ),
+            0
+        )
+        XCTAssertEqual(
+            WebViewController.webViewTopInset(
+                cornerAdaptedSafeAreaTop: 64,
+                safeAreaTop: 20,
+                idiom: .pad,
+                isWindowed: false
+            ),
+            0
         )
     }
 
     /// No iPhone draws window controls, so a rounded display's corner adaptation must not shrink the web view.
     func testWebViewTopInsetIsZeroOnIPhoneWhateverTheCornersReserve() {
         XCTAssertEqual(
-            WebViewController.webViewTopInset(cornerAdaptedSafeAreaTop: 17, safeAreaTop: 0, idiom: .phone),
+            WebViewController.webViewTopInset(
+                cornerAdaptedSafeAreaTop: 17,
+                safeAreaTop: 0,
+                idiom: .phone,
+                isWindowed: true
+            ),
             0
         )
         XCTAssertEqual(
-            WebViewController.webViewTopInset(cornerAdaptedSafeAreaTop: 64, safeAreaTop: 20, idiom: .phone),
+            WebViewController.webViewTopInset(
+                cornerAdaptedSafeAreaTop: 64,
+                safeAreaTop: 20,
+                idiom: .phone,
+                isWindowed: true
+            ),
             0
         )
     }
@@ -130,6 +192,69 @@ final class WebViewControllerWindowControlsTests: XCTestCase {
         XCTAssertEqual(sut.userInterfaceIdiom(sut.view), sut.view.traitCollection.userInterfaceIdiom)
     }
 
+    /// A view that is not in a window yet belongs to no scene, so there are no controls to clear.
+    func testSceneIsNotWindowedWithoutAWindow() {
+        let sut = WebViewController(server: server)
+        sut.loadViewIfNeeded()
+
+        XCTAssertFalse(sut.isSceneWindowed(sut.view))
+    }
+
+    /// The test host runs full screen, so a window on its scene fills the display and reserves nothing.
+    func testSceneIsNotWindowedWhenTheWindowFillsTheScreen() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let sut = WebViewController(server: server)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        sut.loadViewIfNeeded()
+
+        XCTAssertEqual(window.bounds.size, scene.screen.bounds.size)
+        XCTAssertFalse(sut.isSceneWindowed(sut.view))
+    }
+
+    /// A scene the size of its display owns it; anything smaller in either axis shares it with other windows.
+    /// UIKit keeps a scene's window at the scene's own size, so only the comparison itself is testable here.
+    func testSceneIsWindowedOnlyWhenItIsSmallerThanItsScreen() {
+        let screen = CGSize(width: 1032, height: 1376)
+
+        XCTAssertFalse(WebViewController.sceneIsWindowed(windowSize: screen, screenSize: screen))
+        XCTAssertTrue(
+            WebViewController.sceneIsWindowed(
+                windowSize: CGSize(width: 600, height: screen.height),
+                screenSize: screen
+            )
+        )
+        XCTAssertTrue(
+            WebViewController.sceneIsWindowed(
+                windowSize: CGSize(width: screen.width, height: 700),
+                screenSize: screen
+            )
+        )
+    }
+
+    /// A point of rounding is not a window: the comparison has to tolerate it.
+    func testSceneIsNotWindowedWhenTheSizesOnlyDifferByRounding() {
+        XCTAssertFalse(
+            WebViewController.sceneIsWindowed(
+                windowSize: CGSize(width: 1032, height: 1375.5),
+                screenSize: CGSize(width: 1032, height: 1376)
+            )
+        )
+    }
+
+    /// Full screen hides the status bar without handing its room to a strip the web content cannot reach.
+    func testWebViewIsEdgeToEdgeInFullScreenWhenTheStatusBarIsHidden() {
+        let sut = makeSUT(idiom: .pad, isWindowed: false)
+        sut.cornerAdaptedSafeAreaTop = { _ in 24 }
+
+        layOut(sut)
+
+        XCTAssertEqual(sut.windowControlsTopInset, 0)
+        XCTAssertEqual(sut.webViewTopConstraint?.constant, 0)
+        XCTAssertEqual(sut.webView.frame.minY, 0)
+        XCTAssertEqual(sut.statusBarView?.isHidden, true)
+    }
+
     /// The frontend's Assist button is drawn in the web view, so the zoom anchor has to follow it down.
     func testAssistZoomAnchorFollowsTheWebViewBelowTheWindowControls() {
         let sut = makeSUT(idiom: .pad)
@@ -146,9 +271,10 @@ final class WebViewControllerWindowControlsTests: XCTestCase {
         sut.view.layoutIfNeeded()
     }
 
-    private func makeSUT(idiom: UIUserInterfaceIdiom = .phone) -> WebViewController {
+    private func makeSUT(idiom: UIUserInterfaceIdiom = .phone, isWindowed: Bool = true) -> WebViewController {
         let sut = WebViewController(server: server)
         sut.userInterfaceIdiom = { _ in idiom }
+        sut.isSceneWindowed = { _ in isWindowed }
         // `viewDidLoad` builds `webView`, the status-bar view, and the constraints the inset moves.
         sut.loadViewIfNeeded()
         sut.view.frame = CGRect(x: 0, y: 0, width: 820, height: 1180)

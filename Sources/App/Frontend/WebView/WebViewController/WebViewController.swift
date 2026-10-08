@@ -150,6 +150,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         view.traitCollection.userInterfaceIdiom
     }
 
+    /// Whether the scene shares the display instead of owning it, which is when iPadOS draws its window
+    /// controls over the app; replaceable in tests, whose views are never in a window.
+    var isSceneWindowed: @MainActor (UIView) -> Bool = { view in
+        guard let window = view.window, let screen = window.windowScene?.screen else { return false }
+        return WebViewController.sceneIsWindowed(windowSize: window.bounds.size, screenSize: screen.bounds.size)
+    }
+
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
         improvManager: ImprovManager.shared
@@ -494,6 +501,7 @@ extension WebViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.setNeedsStatusBarAppearanceUpdate()
+                self?.updateThemedStatusBar()
             }
             .store(in: &kioskCancellables)
 
