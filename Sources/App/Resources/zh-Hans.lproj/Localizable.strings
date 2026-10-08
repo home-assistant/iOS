@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "音量控制";
 "assist_pipeline_picker.no_pipelines" = "没有可用的管道";
 "assist_pipeline_picker.placeholder" = "选取管道";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "编辑";
 "camera_list.edit.on.title" = "完成";
 "camera_list.empty.message" = "您的 Home Assistant 设置中未找到任何摄像头实体";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "全部域";
 "entity_picker.filter.domain.title" = "域";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "组别";
 "entity_picker.filter.server.title" = "服务器";
 "entity_picker.list.area.no_area.title" = "无区域";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "选取实体";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "重新加载";
@@ -1426,6 +1429,7 @@
 "onboarding.welcome.learn_more" = "了解更多信息";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant 图标";
 "onboarding.welcome.primary_button" = "连接到我的 Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "入门";
 "onboarding.welcome.title" = "欢迎使用 Home Assistant %@ ！";
 "onboarding.welcome.updated.body" = "随时随地访问您的 Home Assistant 服务器。\
@@ -2716,6 +2720,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.home.areas.title" = "区域";
 "watch.home.cancel_and_use_cache.title" = "取消并使用缓存";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "跳过";
 "watch.home.run.confirmation.title" = "您确定要运行“%@”吗 ？";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2960,6 +2965,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.warning.message" = "These options are for debugging. Only use them when guided by a developer.";
 "watch.settings.developer.warning.title" = "Warning";
 "watch.settings.last_updated" = "已更新 %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "未配置任何项目，请选择下面的项目。";
 "watch.settings.no_servers" = "尚未同步任何服务器。请在已配对的 iPhone 上打开 Home Assistant，然后在主屏幕上刷新。";
 "watch.settings.perform_action.footer" = "Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.";

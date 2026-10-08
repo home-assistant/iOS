@@ -358,7 +358,7 @@
 "assist.chat.menu.edit" = "編輯";
 "assist.chat.menu.replay" = "重播";
 "assist.error.pipelines_response" = "獲取助理 Pipeline 失敗，請檢查 Pipeline 設定。";
-"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
+"assist.error.speech_to_text_unsupported" = "助理設定沒有語音轉文字引擎。請選擇具有語音轉文字引擎的設定檔，或在助理設定中啟用裝置端語音轉文字功能。";
 "assist.modern_ui.header.title" = "助理";
 "assist.modern_ui.pipeline.label" = "助理設定";
 "assist.modern_ui.text_field.placeholder" = "詢問任何問題...";
@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "音量控制";
 "assist_pipeline_picker.no_pipelines" = "沒有可用的助理設定";
 "assist_pipeline_picker.placeholder" = "選擇助理設定";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "編輯";
 "camera_list.edit.on.title" = "完成";
 "camera_list.empty.message" = "Home Assistant 設定中未找到任何攝影機實體";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "所有實體類群";
 "entity_picker.filter.domain.title" = "實體類群";
 "entity_picker.filter.group_by.area" = "依分區分組";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "依實體群組分組";
 "entity_picker.filter.group_by.title" = "群組：";
 "entity_picker.filter.server.title" = "伺服器";
 "entity_picker.list.area.no_area.title" = "無分區";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "選擇實體";
 "entity_picker.refresh.updating" = "正在更新…";
 "entity_picker.reload" = "重新載入";
@@ -1428,6 +1431,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "onboarding.welcome.learn_more" = "了解更多";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
 "onboarding.welcome.primary_button" = "連線至我的 Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "開始使用";
 "onboarding.welcome.title" = "歡迎使用 Home Assistant %@！";
 "onboarding.welcome.updated.body" = "隨時隨地存取您的 Home Assistant 伺服器。\
@@ -2717,6 +2721,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.home.areas.title" = "分區";
 "watch.home.cancel_and_use_cache.title" = "取消並使用快取";
 "watch.home.device.empty" = "此裝置沒有相容的實體。";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "跳過";
 "watch.home.run.confirmation.title" = "確定要執行 \"%@\"？";
 "watch.home.run.error.lock_state_unknown" = "門鎖的目前狀態尚未載入，因此未傳送操作。請等待狀態載入後再試一次。";
@@ -2961,6 +2966,10 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.settings.developer.warning.message" = "這些選項用於除錯，請僅在開發人員的指導下使用。";
 "watch.settings.developer.warning.title" = "警告";
 "watch.settings.last_updated" = "已更新 %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "未設定項目、請於下方選擇項目。";
 "watch.settings.no_servers" = "尚未同步任何伺服器。請在配對的 iPhone 上開啟 Home Assistant，然後從主畫面重新整理。";
 "watch.settings.perform_action.footer" = "操作執行位置。自動將在 iPhone 靠近時使用 iPhone，否則 Apple Watch 將直接連線至 Home Assistant。";

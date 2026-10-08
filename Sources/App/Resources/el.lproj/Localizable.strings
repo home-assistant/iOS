@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "Ελεγχος έντασης";
 "assist_pipeline_picker.no_pipelines" = "Δεν υπάρχουν διαθέσιμα pipelines";
 "assist_pipeline_picker.placeholder" = "Επιλογή pipeline";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Επεξεργασία";
 "camera_list.edit.on.title" = "Εγινε";
 "camera_list.empty.message" = "Δεν βρέθηκαν οντότητες κάμερας στη διαμόρφωση του Home Assistant σας";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Ολοι οι τομείς";
 "entity_picker.filter.domain.title" = "Τομέας";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "Ομαδοποίηση κατά";
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "Καμία περιοχή";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Επιλογή οντότητας";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "Reload";
@@ -1428,6 +1431,7 @@
 "onboarding.welcome.learn_more" = "Μάθετε περισσότερα";
 "onboarding.welcome.logo.accessibility_label" = "Λογότυπο Home Assistant";
 "onboarding.welcome.primary_button" = "Σύνδεση με το Home Assistant μου";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Ξεκινώντας";
 "onboarding.welcome.title" = "Καλώς ορίσατε στο Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Πρόσβαση στον Home Assistant server εν κινήσει. \
@@ -2717,6 +2721,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Ακύρωση και χρήση μνήμης cache";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Παράλειψη";
 "watch.home.run.confirmation.title" = "Θέλετε σίγουρα να εκτελέσετε το \"%@\";";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2961,6 +2966,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.warning.message" = "These options are for debugging. Only use them when guided by a developer.";
 "watch.settings.developer.warning.title" = "Warning";
 "watch.settings.last_updated" = "Ενημερώθηκε %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Δεν έχουν διαμορφωθεί στοιχεία, παρακαλώ επιλέξτε στοιχεία παρακάτω.";
 "watch.settings.no_servers" = "Δεν έχουν συγχρονιστεί ακόμη διακομιστές. Ανοίξτε το Home Assistant στο αντιστοιχισμένο iPhone σας και, στη συνέχεια, κάντε ανανέωση από την Αρχική οθόνη.";
 "watch.settings.perform_action.footer" = "Που εκτελούνται οι ενέργειες. Η επιλογή Αυτόματο χρησιμοποιεί το iPhone σας όταν βρίσκεται κοντά, διαφορετικά το Apple Watch συνδέεται απευθείας με το Home Assistant.";
