@@ -1131,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "Hidden";
 "mac.sidebar.hide" = "Hide";
 "mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
 "mac.sidebar.settings" = "Settings";
 "mac.sidebar.show" = "Show";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
@@ -1205,7 +1203,6 @@
 "menu.status_item.toggle" = "トグル %1$@";
 "menu.view.customize_toolbar" = "ツールバーのカスタマイズ…";
 "menu.view.find" = "探す";
-"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "ページをリロード";
 "menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "これはベータ版の機能です。問題が発生した場合は、下のボタンを使用して報告してください。\

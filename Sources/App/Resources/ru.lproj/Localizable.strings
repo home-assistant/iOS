@@ -1131,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "Hidden";
 "mac.sidebar.hide" = "Hide";
 "mac.sidebar.notifications" = "Уведомления";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
 "mac.sidebar.settings" = "Настройки";
 "mac.sidebar.show" = "Show";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
@@ -1205,7 +1203,6 @@
 "menu.status_item.toggle" = "Переключить %1$@";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Найти";
-"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Перезагрузить страницу";
 "menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Это бета-версия функции. Если у вас возникнут какие-либо проблемы, пожалуйста, сообщите о них, нажав на кнопку ниже.\

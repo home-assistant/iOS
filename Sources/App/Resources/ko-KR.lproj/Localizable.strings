@@ -1131,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "숨김";
 "mac.sidebar.hide" = "숨기기";
 "mac.sidebar.notifications" = "알림";
-"mac.sidebar.reset_to_defaults" = "기본값으로 재설정";
-"mac.sidebar.set_default_dashboard" = "기본 대시보드로 설정";
 "mac.sidebar.settings" = "설정";
 "mac.sidebar.show" = "표시";
 "mac.toggle_sidebar.accessibility_label" = "사이드바 전환";
@@ -1205,7 +1203,6 @@
 "menu.status_item.toggle" = "%1$@ 토글";
 "menu.view.customize_toolbar" = "도구 모음 사용자 지정…";
 "menu.view.find" = "찾기";
-"menu.view.hide_sidebar" = "사이드바 숨기기";
 "menu.view.reload_page" = "페이지 새로고침";
 "menu.view.show_sidebar" = "사이드바 표시";
 "mtls.beta.info" = "이는 베타 기능입니다. 문제가 발생하면 아래 버튼을 사용하여 신고해 주세요.\

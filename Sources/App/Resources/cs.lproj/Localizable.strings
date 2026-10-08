@@ -1131,8 +1131,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "mac.sidebar.hidden_section.header" = "Skrytý";
 "mac.sidebar.hide" = "Skrýt";
 "mac.sidebar.notifications" = "Oznámení";
-"mac.sidebar.reset_to_defaults" = "Obnovit na výchozí nastavení";
-"mac.sidebar.set_default_dashboard" = "Nastavit jako výchozí ovládací panel";
 "mac.sidebar.settings" = "Nastavení";
 "mac.sidebar.show" = "Zobrazit";
 "mac.toggle_sidebar.accessibility_label" = "Přepnout postranní panel";
@@ -1205,7 +1203,6 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "menu.status_item.toggle" = "Přepnout %1$@";
 "menu.view.customize_toolbar" = "Přizpůsobit panel nástrojů...";
 "menu.view.find" = "Najít";
-"menu.view.hide_sidebar" = "Skrýt postranní panel";
 "menu.view.reload_page" = "Znovu načíst stránku";
 "menu.view.show_sidebar" = "Zobrazit postranní panel";
 "mtls.beta.info" = "Toto je beta verze. Pokud narazíte na nějaké problémy, nahlaste je pomocí tlačítka níže.\

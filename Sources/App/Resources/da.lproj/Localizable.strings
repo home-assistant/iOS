@@ -1131,8 +1131,6 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "mac.sidebar.hidden_section.header" = "Skjult";
 "mac.sidebar.hide" = "Skjul";
 "mac.sidebar.notifications" = "Notifikationer";
-"mac.sidebar.reset_to_defaults" = "Nulstil til standardindstillinger";
-"mac.sidebar.set_default_dashboard" = "Angiv som standardbetjeningspanel";
 "mac.sidebar.settings" = "Indstillinger";
 "mac.sidebar.show" = "Vis";
 "mac.toggle_sidebar.accessibility_label" = "Vis/skjul sidepanel";
@@ -1205,7 +1203,6 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "menu.status_item.toggle" = "Skift %1$@";
 "menu.view.customize_toolbar" = "Tilpas værktøjslinjen…";
 "menu.view.find" = "Find";
-"menu.view.hide_sidebar" = "Skjul sidepanel";
 "menu.view.reload_page" = "Genindlæs side";
 "menu.view.show_sidebar" = "Vis sidepanel";
 "mtls.beta.info" = "Dette er en betafunktion. Hvis du oplever problemer, bedes du rapportere dem ved hjælp af knappen nedenfor.\

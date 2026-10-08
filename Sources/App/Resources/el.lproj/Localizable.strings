@@ -1131,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "Hidden";
 "mac.sidebar.hide" = "Hide";
 "mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
 "mac.sidebar.settings" = "Settings";
 "mac.sidebar.show" = "Show";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
@@ -1205,7 +1203,6 @@
 "menu.status_item.toggle" = "Εναλλαγή %1$@";
 "menu.view.customize_toolbar" = "Προσαρμογή γραμμής εργαλείων…";
 "menu.view.find" = "Εύρεση";
-"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Επαναφόρτωση σελίδας";
 "menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Αυτή είναι μια λειτουργία beta. Εάν αντιμετωπίσετε οποιοδήποτε πρόβλημα, παρακαλώ αναφέρετέ το χρησιμοποιώντας το παρακάτω κουμπί. \
