@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "音量調節";
 "assist_pipeline_picker.no_pipelines" = "利用可能なパイプラインはありません";
 "assist_pipeline_picker.placeholder" = "パイプラインを選択";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "編集";
 "camera_list.edit.on.title" = "完了";
 "camera_list.empty.message" = "Home Assistant の設定でカメラエンティティが見つかりません";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "すべてのドメイン";
 "entity_picker.filter.domain.title" = "ドメイン";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "グループ化";
 "entity_picker.filter.server.title" = "サーバー";
 "entity_picker.list.area.no_area.title" = "エリアなし";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "エンティティを選択";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "Reload";
@@ -1427,6 +1430,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "onboarding.welcome.learn_more" = "もっと詳しく知る";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant のロゴ";
 "onboarding.welcome.primary_button" = "Home Assistantに接続";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "はじめる";
 "onboarding.welcome.title" = "Home Assistantへようこそ %@！";
 "onboarding.welcome.updated.body" = "外出先からHome Assistantサーバーにアクセスできます。 \
@@ -2716,6 +2720,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "キャンセルしてキャッシュを使用する";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "スキップ";
 "watch.home.run.confirmation.title" = "「 %@ 」を実行してもよろしいですか?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2960,6 +2965,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.warning.message" = "These options are for debugging. Only use them when guided by a developer.";
 "watch.settings.developer.warning.title" = "Warning";
 "watch.settings.last_updated" = "更新済み %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "項目が設定されていません。以下の項目を選択してください。";
 "watch.settings.no_servers" = "サーバーはまだ同期されていません。ペアリング済みのiPhoneでHome Assistantを開き、ホーム画面から更新してください。";
 "watch.settings.perform_action.footer" = "アクションが実行される場所。近くにある場合はiPhoneが自動で使用され、そうでない場合はApple WatchがHome Assistantに直接接続されます。";

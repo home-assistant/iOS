@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "Volumeregeling";
 "assist_pipeline_picker.no_pipelines" = "Geen pijplijnen beschikbaar";
 "assist_pipeline_picker.placeholder" = "Kies pijplijn";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Bewerk";
 "camera_list.edit.on.title" = "Klaar";
 "camera_list.empty.message" = "Geen camera-entiteiten gevonden in je Home Assistant setup";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Alle domeinen";
 "entity_picker.filter.domain.title" = "Domein";
 "entity_picker.filter.group_by.area" = "Groeperen per ruimte";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Groeperen per domein";
 "entity_picker.filter.group_by.title" = "Groeperen op";
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "Geen ruimte";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Kies entiteit";
 "entity_picker.refresh.updating" = "Bijwerken...";
 "entity_picker.reload" = "Herladen";
@@ -1428,6 +1431,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "onboarding.welcome.learn_more" = "Meer informatie";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant-logo";
 "onboarding.welcome.primary_button" = "Maak verbinding met mijn Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Aan de slag";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Onderweg toegang tot je Home Assistant-server. \
@@ -2717,6 +2721,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "watch.home.areas.title" = "Ruimtes";
 "watch.home.cancel_and_use_cache.title" = "Annuleer en gebruik cache";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Overslaan";
 "watch.home.run.confirmation.title" = "Weet je zeker dat je \"%@\" wilt uitvoeren?";
 "watch.home.run.error.lock_state_unknown" = "De huidige status van het slot is nog niet bekend, dus de actie is niet verzonden. Wacht tot de status is geladen en probeer het opnieuw.";
@@ -2961,6 +2966,10 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.settings.developer.warning.message" = "Deze opties zijn bedoeld voor foutopsporing. Gebruik ze alleen onder begeleiding van een ontwikkelaar.";
 "watch.settings.developer.warning.title" = "Waarschuwing";
 "watch.settings.last_updated" = "Bijgewerkt op %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Geen items geconfigureerd, kies hieronder items.";
 "watch.settings.no_servers" = "Er zijn nog geen servers gesynchroniseerd. Open Home Assistant op je gekoppelde iPhone en vernieuw vervolgens het startscherm.";
 "watch.settings.perform_action.footer" = "Waar acties worden uitgevoerd. De functie ‘Auto’ maakt gebruik van je iPhone als die in de buurt is, anders maakt de Apple Watch rechtstreeks verbinding met Home Assistant.";

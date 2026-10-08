@@ -399,6 +399,7 @@
 "assist.watch.volume.title" = "Helitugevuse reguleerimine";
 "assist_pipeline_picker.no_pipelines" = "Ühendusvoogu pole saadaval";
 "assist_pipeline_picker.placeholder" = "Vali voog";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Muuda";
 "camera_list.edit.on.title" = "Valmis";
 "camera_list.empty.message" = "Home Assistanti seadistusest ei leitud kaameraüksusi";
@@ -715,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Kõik domeenid";
 "entity_picker.filter.domain.title" = "Domeen";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "Rühmita";
 "entity_picker.filter.server.title" = "Serverid";
 "entity_picker.list.area.no_area.title" = "Ala puudub";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Vali olem";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "Reload";
@@ -1428,6 +1431,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.welcome.learn_more" = "Lisateave";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistanti logo";
 "onboarding.welcome.primary_button" = "Home Assistantiga ühenduse loomine";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Alustamine";
 "onboarding.welcome.title" = "Tere tulemast Home Assistanti %@!";
 "onboarding.welcome.updated.body" = "Pääse oma Home Assistant serverile ligi liikvel olles. \
@@ -2717,6 +2721,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Tühista ja kasuta vahemälu";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Jäta vahele";
 "watch.home.run.confirmation.title" = "Kas oled kindel, et soovid käivitada \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2961,6 +2966,10 @@ Kuigi ühtegi URL-i ei peeta turvaliseks, ei sünkroniseerita selle serveri andm
 "watch.settings.developer.warning.message" = "Need valikud on mõeldud veaotsinguks. Kasuta neid ainult arendaja juhendamisel.";
 "watch.settings.developer.warning.title" = "Hoiatus";
 "watch.settings.last_updated" = "Uuendatud %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Üksusi pole konfigureeritud, vali allolevad üksused.";
 "watch.settings.no_servers" = "Ühtegi serverit pole veel sünkroonitud. Ava oma seotud iPhone'is rakendus Home Assistant ja seejärel värskenda avakuvalt.";
 "watch.settings.perform_action.footer" = "Kus toimingud toimuvad. Kasutab automaatselt teie iPhone'i, kui see on läheduses, vastasel juhul loob Apple Watch otseühenduse Home Assistantiga.";
