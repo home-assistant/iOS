@@ -1003,7 +1003,10 @@ public class HomeAssistantAPI {
         limitedTo: [SensorProvider.Type]?,
         location: CLLocation? = nil
     ) -> Promise<Void> {
-        firstly {
+        let retry = sensorUpdateRetry
+        let generation = retry.beginUpdate()
+
+        return firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
                 limitedTo: limitedTo,
@@ -1017,7 +1020,7 @@ public class HomeAssistantAPI {
                 shouldIncludeNilValues: false
             )
             return (sensorResponse, mapper.toJSONArray(sensorResponse.sensors))
-        }.then { [server, retry = sensorUpdateRetry] _, payload -> Promise<Void> in
+        }.then { [server] _, payload -> Promise<Void> in
             if payload.isEmpty {
                 Current.Log.info("skipping network request for unchanged sensor update")
                 return .value(())
@@ -1029,10 +1032,10 @@ public class HomeAssistantAPI {
                 ).tap { result in
                     switch result {
                     case .fulfilled:
-                        retry.noteSuccess()
+                        retry.noteSuccess(generation: generation, limitedTo: limitedTo)
                     case let .rejected(error):
                         Current.Log.error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
-                        retry.noteFailure(limitedTo: limitedTo)
+                        retry.noteFailure(generation: generation, limitedTo: limitedTo)
                     }
                 }
             }

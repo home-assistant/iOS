@@ -508,26 +508,43 @@ class FocusNameSensorTests: XCTestCase {
     }
 
     /// The Intents extension is launched by iOS to receive the status, with no network information
-    /// cached: without refreshing it a server reachable only at home has no usable URL and the
-    /// report goes nowhere while claiming success.
-    func testStatusIntentRefreshesNetworkInformationBeforePickingServers() throws {
+    /// cached: without refreshing it first a server reachable only at home has no usable URL and
+    /// the report goes nowhere while claiming success. So the refresh has to have happened by the
+    /// time the Focus sensors go out.
+    func testStatusIntentRefreshesNetworkInformationBeforeReporting() throws {
         Current.isAppExtension = true
         let previousServers = Current.servers
         let previousApis = Current.cachedApis
+        let previousWebhooks = Current.webhooks
         let previousRefresh = Current.connectivity.refreshNetworkInformation
         let previousSettleDelay = FocusStatusIntentHandler.settleDelay
         addTeardownBlock {
             Current.servers = previousServers
             Current.cachedApis = previousApis
+            Current.webhooks = previousWebhooks
             Current.connectivity.refreshNetworkInformation = previousRefresh
             FocusStatusIntentHandler.settleDelay = previousSettleDelay
         }
-        Current.servers = FakeServerManager(initial: 0)
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
         Current.cachedApis = [:]
         FocusStatusIntentHandler.settleDelay = 0
 
-        let refreshed = expectation(description: "network information refreshed")
-        Current.connectivity.refreshNetworkInformation = { refreshed.fulfill() }
+        var refreshed = false
+        Current.connectivity.refreshNetworkInformation = { refreshed = true }
+
+        let sent = expectation(description: "focus sensors reported")
+        var refreshedBeforeReporting: Bool?
+        let webhooks = FakeWebhookManager()
+        webhooks.sendRequestHandler = { _, _, request, seal in
+            if request.type == "update_sensor_states" {
+                refreshedBeforeReporting = refreshed
+                sent.fulfill()
+            }
+            seal.fulfill(())
+        }
+        Current.webhooks = webhooks
 
         let completed = expectation(description: "intent handled")
         FocusStatusIntentHandler().handle(
@@ -537,7 +554,8 @@ class FocusNameSensorTests: XCTestCase {
             completed.fulfill()
         }
 
-        wait(for: [refreshed, completed], timeout: 10)
+        wait(for: [sent, completed], timeout: 10)
+        XCTAssertEqual(refreshedBeforeReporting, true)
         XCTAssertEqual(Current.focusStatus.lastReceived()?.isFocused, true)
     }
 }

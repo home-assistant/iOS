@@ -4,8 +4,17 @@ import PromiseKit
 import XCTest
 
 class SensorUpdateRetryTests: XCTestCase {
-    private enum TestError: Error {
-        case failed
+    /// Records what was asked of it instead of touching `ProcessInfo`.
+    private final class RecordingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        var names = [String]()
+
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            names.append(name)
+            return wrapping(nil)
+        }
     }
 
     private var scheduled: [(delay: TimeInterval, block: () -> Void)] = []
@@ -36,46 +45,59 @@ class SensorUpdateRetryTests: XCTestCase {
         scheduled.last?.block()
     }
 
-    private func providerNames(_ providers: [SensorProvider.Type]?) -> [String]? {
-        providers?.map { String(describing: $0) }
+    private func providerNames(_ providers: [SensorProvider.Type]?) -> Set<String>? {
+        providers.map { Set($0.map { String(describing: $0) }) }
+    }
+
+    private func names(_ providers: [SensorProvider.Type]) -> Set<String> {
+        Set(providers.map { String(describing: $0) })
+    }
+
+    /// A failed update, as the API reports it: numbered when it started, failed afterwards.
+    private func fail(limitedTo providers: [SensorProvider.Type]?) -> UInt64 {
+        let generation = retry.beginUpdate()
+        retry.noteFailure(generation: generation, limitedTo: providers)
+        return generation
+    }
+
+    private func succeed(limitedTo providers: [SensorProvider.Type]?) {
+        retry.noteSuccess(generation: retry.beginUpdate(), limitedTo: providers)
     }
 
     func testAFailureSchedulesOneRetryThatReadsTheSameProviders() {
-        retry.noteFailure(limitedTo: [FocusSensor.self])
+        _ = fail(limitedTo: [FocusSensor.self])
 
         XCTAssertEqual(scheduled.count, 1)
         XCTAssertEqual(scheduled[0].delay, SensorUpdateRetry.delays[0])
 
         fireLastScheduled()
         XCTAssertEqual(performed.count, 1)
-        XCTAssertEqual(providerNames(performed[0]), [String(describing: FocusSensor.self)])
+        XCTAssertEqual(providerNames(performed[0]), names([FocusSensor.self]))
     }
 
     /// A second failure before the retry fires widens what it reads rather than queueing another.
     func testFailuresWhileARetryIsPendingMergeIntoIt() {
-        retry.noteFailure(limitedTo: [FocusSensor.self])
-        retry.noteFailure(limitedTo: [BatterySensor.self])
+        _ = fail(limitedTo: [FocusSensor.self])
+        _ = fail(limitedTo: [BatterySensor.self])
 
         XCTAssertEqual(scheduled.count, 1)
 
         fireLastScheduled()
         XCTAssertEqual(performed.count, 1)
-        XCTAssertEqual(
-            providerNames(performed[0]),
-            [String(describing: FocusSensor.self), String(describing: BatterySensor.self)]
-        )
+        XCTAssertEqual(providerNames(performed[0]), names([FocusSensor.self, BatterySensor.self]))
     }
 
-    /// A full update that failed covers everything a limited one would have.
+    /// A full update that failed covers everything a limited one would have, whichever came first.
     func testAFullUpdateFailureAbsorbsALimitedOne() {
-        retry.noteFailure(limitedTo: [FocusSensor.self])
-        retry.noteFailure(limitedTo: nil)
+        _ = fail(limitedTo: [FocusSensor.self])
+        _ = fail(limitedTo: nil)
         fireLastScheduled()
         XCTAssertEqual(performed.count, 1)
         XCTAssertNil(performed[0])
 
-        retry.noteFailure(limitedTo: nil)
-        retry.noteFailure(limitedTo: [FocusSensor.self])
+        succeed(limitedTo: nil)
+        _ = fail(limitedTo: nil)
+        _ = fail(limitedTo: [FocusSensor.self])
         fireLastScheduled()
         XCTAssertEqual(performed.count, 2)
         XCTAssertNil(performed[1])
@@ -84,11 +106,49 @@ class SensorUpdateRetryTests: XCTestCase {
     /// An update that got through in the meantime carried newer values than the retry would, so
     /// the retry has nothing left to do.
     func testASuccessBeforeTheRetryFiresCancelsIt() {
-        retry.noteFailure(limitedTo: nil)
-        retry.noteSuccess()
+        _ = fail(limitedTo: nil)
+        succeed(limitedTo: nil)
 
         fireLastScheduled()
         XCTAssertTrue(performed.isEmpty)
+    }
+
+    /// A limited update getting through says nothing about the sensors it didn't carry: a full
+    /// update that failed is still owed its retry.
+    func testALimitedSuccessDoesNotCancelAFullRetry() {
+        _ = fail(limitedTo: nil)
+        succeed(limitedTo: [FocusSensor.self])
+
+        fireLastScheduled()
+        XCTAssertEqual(performed.count, 1)
+        XCTAssertNil(performed[0])
+    }
+
+    /// Only the sensors the successful update carried drop out of the retry.
+    func testALimitedSuccessNarrowsTheRetryToTheRest() {
+        _ = fail(limitedTo: [FocusSensor.self, BatterySensor.self])
+        succeed(limitedTo: [FocusSensor.self])
+
+        fireLastScheduled()
+        XCTAssertEqual(performed.count, 1)
+        XCTAssertEqual(providerNames(performed[0]), names([BatterySensor.self]))
+    }
+
+    /// Requests don't resolve in the order they started: one that read its values before a newer
+    /// run failed can't stand in for it, so its late success leaves that retry in place.
+    func testAnOlderSuccessDoesNotCancelANewerFailure() {
+        let older = retry.beginUpdate()
+        _ = fail(limitedTo: nil)
+        retry.noteSuccess(generation: older, limitedTo: nil)
+
+        fireLastScheduled()
+        XCTAssertEqual(performed.count, 1)
+
+        let olderLimited = retry.beginUpdate()
+        _ = fail(limitedTo: [FocusSensor.self])
+        retry.noteSuccess(generation: olderLimited, limitedTo: [FocusSensor.self])
+        fireLastScheduled()
+        XCTAssertEqual(performed.count, 2)
     }
 
     /// Each failed retry waits longer than the last, up to the longest delay, which repeats until
@@ -97,14 +157,14 @@ class SensorUpdateRetryTests: XCTestCase {
         let delays = SensorUpdateRetry.delays
 
         for expected in delays + [delays[delays.count - 1]] {
-            retry.noteFailure(limitedTo: nil)
+            _ = fail(limitedTo: nil)
             XCTAssertEqual(scheduled.last?.delay, expected)
             fireLastScheduled()
         }
         XCTAssertEqual(performed.count, delays.count + 1)
 
-        retry.noteSuccess()
-        retry.noteFailure(limitedTo: nil)
+        succeed(limitedTo: nil)
+        _ = fail(limitedTo: nil)
         XCTAssertEqual(scheduled.last?.delay, delays[0])
     }
 
@@ -113,96 +173,40 @@ class SensorUpdateRetryTests: XCTestCase {
     func testNoRetryIsScheduledFromAnAppExtension() {
         Current.isAppExtension = true
 
-        retry.noteFailure(limitedTo: nil)
+        _ = fail(limitedTo: nil)
 
         XCTAssertTrue(scheduled.isEmpty)
     }
-}
 
-/// The retry wired into the API: a failed `update_sensor_states` is sent again later, and a
-/// successful one in between calls it off.
-class HomeAssistantAPISensorUpdateRetryTests: XCTestCase {
-    private enum TestError: Error {
-        case unreachable
+    /// A short wait is held open by a background task so it survives the app being backgrounded;
+    /// a long one isn't, since a suspended app can't run it anyway.
+    func testShortWaitsAreHeldOpenByABackgroundTask() {
+        let runner = RecordingBackgroundTaskRunner()
+        let previousRunner = Current.backgroundTask
+        Current.backgroundTask = runner
+        addTeardownBlock { Current.backgroundTask = previousRunner }
+
+        let held = expectation(description: "held wait ran")
+        SensorUpdateRetry.wait(0.05, holdingBackgroundTask: true) { held.fulfill() }
+        wait(for: [held], timeout: 5)
+        XCTAssertEqual(runner.names, [BackgroundTask.sensorUpdateRetry.rawValue])
+
+        let plain = expectation(description: "plain wait ran")
+        SensorUpdateRetry.wait(0.05, holdingBackgroundTask: false) { plain.fulfill() }
+        wait(for: [plain], timeout: 5)
+        XCTAssertEqual(runner.names.count, 1)
     }
 
-    private var api: HomeAssistantAPI!
-    private var webhookManager: FakeWebhookManager!
-    private var previousWebhookManager: WebhookManager!
-    private var scheduled: [(delay: TimeInterval, block: () -> Void)] = []
+    /// The default scheduler decides by the delay alone.
+    func testTheDefaultScheduleHoldsOnlyShortDelays() {
+        let runner = RecordingBackgroundTaskRunner()
+        let previousRunner = Current.backgroundTask
+        Current.backgroundTask = runner
+        addTeardownBlock { Current.backgroundTask = previousRunner }
 
-    override func setUp() {
-        super.setUp()
-        Current.isAppExtension = false
-        api = HomeAssistantAPI(server: .fake())
-        webhookManager = FakeWebhookManager()
-        previousWebhookManager = Current.webhooks
-        Current.webhooks = webhookManager
-        scheduled = []
-        api.sensorUpdateRetry.schedule = { [weak self] delay, block in
-            self?.scheduled.append((delay, block))
-        }
-    }
-
-    override func tearDown() {
-        Current.webhooks = previousWebhookManager
-        api = nil
-        super.tearDown()
-    }
-
-    private func answerSensorUpdates(
-        succeeding: Bool,
-        onRequest: @escaping (WebhookRequest) -> Void = { _ in }
-    ) {
-        webhookManager.sendRequestHandler = { _, _, request, seal in
-            onRequest(request)
-            if succeeding {
-                seal.fulfill(())
-            } else {
-                seal.reject(TestError.unreachable)
-            }
-        }
-    }
-
-    func testAFailedUpdateIsSentAgainWhenTheRetryFires() throws {
-        var sent = 0
-        answerSensorUpdates(succeeding: false) { request in
-            if request.type == "update_sensor_states" { sent += 1 }
-        }
-
-        XCTAssertThrowsError(try hang(api.UpdateSensors(trigger: .Launch)))
-        XCTAssertEqual(sent, 1)
-        XCTAssertEqual(scheduled.count, 1)
-
-        let retried = expectation(description: "retried")
-        answerSensorUpdates(succeeding: true) { request in
-            if request.type == "update_sensor_states" {
-                sent += 1
-                retried.fulfill()
-            }
-        }
-        scheduled[0].block()
-        wait(for: [retried], timeout: 10)
-        XCTAssertEqual(sent, 2)
-    }
-
-    func testASuccessfulUpdateInBetweenCallsTheRetryOff() throws {
-        answerSensorUpdates(succeeding: false)
-        XCTAssertThrowsError(try hang(api.UpdateSensors(trigger: .Launch)))
-        XCTAssertEqual(scheduled.count, 1)
-
-        var sent = 0
-        answerSensorUpdates(succeeding: true) { request in
-            if request.type == "update_sensor_states" { sent += 1 }
-        }
-        try hang(api.UpdateSensors(trigger: .Periodic))
-        XCTAssertEqual(sent, 1)
-
-        scheduled[0].block()
-        // Nothing fires asynchronously for a cancelled retry, so give any stray send a moment.
-        let settled = expectation(description: "settled")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { settled.fulfill() }
-        wait(for: [settled], timeout: 5)
-        XCTAssertEqual(sent, 1)
+        let ran = expectation(description: "scheduled block ran")
+        SensorUpdateRetry { _ in .value(()) }.schedule(0.05) { ran.fulfill() }
+        wait(for: [ran], timeout: 5)
+        XCTAssertEqual(runner.names, [BackgroundTask.sensorUpdateRetry.rawValue])
     }
 }
