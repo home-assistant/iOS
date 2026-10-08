@@ -14,7 +14,8 @@ struct OnboardingWelcomeView: View {
     /// Advances to the servers list; the onboarding container swaps content in place (no navigation
     /// push — tearing the container down with a pushed page leaks its hosting view).
     let continueAction: () -> Void
-    /// Offered only while the previous Home Assistant app is installed on this device.
+    /// Offered only while the previous Home Assistant app is installed on this device, as a notice
+    /// under the welcome text rather than a button: the transfer is a stopgap, not a feature.
     var transferAction: (() -> Void)?
 
     var body: some View {
@@ -63,6 +64,17 @@ struct OnboardingWelcomeView: View {
             Text(verbatim: L10n.Onboarding.Welcome.Updated.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+            if let transferAction {
+                HAAlertView(alertType: .warning, narrow: true) {
+                    Text(verbatim: L10n.Onboarding.Welcome.TransferNotice.body)
+                } action: {
+                    Button(L10n.Onboarding.Welcome.TransferNotice.link, action: transferAction)
+                        .font(DesignSystem.Font.body.bold())
+                        .tint(Color.haPrimary)
+                        .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeTransfer.rawValue)
+                }
+                .padding(.top, DesignSystem.Spaces.one)
+            }
         }
         .padding()
     }
@@ -74,11 +86,6 @@ struct OnboardingWelcomeView: View {
             }
             .buttonStyle(.primaryButton)
             .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeContinue.rawValue)
-            if let transferAction {
-                Button(L10n.Onboarding.Welcome.transferButton, action: transferAction)
-                    .buttonStyle(.secondaryButton)
-                    .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeTransfer.rawValue)
-            }
             Button(L10n.Onboarding.Welcome.Updated.secondaryButton) {
                 showLearnMore = true
             }

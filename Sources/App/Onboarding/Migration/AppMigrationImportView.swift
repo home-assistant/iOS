@@ -1,7 +1,7 @@
 import Shared
 import SwiftUI
 
-/// The new app's side of the handoff: waiting for the previous app, then receiving and applying.
+/// The new app's side of the handoff: checking the previous app opened, then receiving and applying.
 struct AppMigrationImportView: View {
     let state: AppMigrationImportState
     let openPreviousAppAction: () -> Void
@@ -10,18 +10,20 @@ struct AppMigrationImportView: View {
 
     var body: some View {
         switch state {
-        case .waitingForPreviousApp:
+        case .openingPreviousApp:
             BaseOnboardingView(
                 illustration: {
-                    ProgressView()
-                        .controlSize(.large)
-                        .tint(.haPrimary)
-                        .frame(height: 96)
+                    MaterialDesignIconsImage(icon: .transferIcon, size: 96)
+                        .foregroundStyle(.haPrimary)
+                        .padding(.top, DesignSystem.Spaces.two)
                 },
-                title: L10n.AppMigration.Import.Waiting.title,
-                primaryDescription: L10n.AppMigration.Import.Waiting.body,
-                primaryActionTitle: L10n.AppMigration.Import.Waiting.openButton,
-                primaryAction: openPreviousAppAction,
+                title: L10n.AppMigration.Import.OpenCheck.title,
+                primaryDescription: L10n.AppMigration.Import.OpenCheck.body,
+                primaryActionTitle: L10n.AppMigration.Import.OpenCheck.retryButton,
+                primaryAction: {
+                    AppMigrationHaptics.tap()
+                    openPreviousAppAction()
+                },
                 secondaryActionTitle: L10n.AppMigration.Import.cancelButton,
                 secondaryAction: cancelAction
             )
@@ -48,9 +50,9 @@ struct AppMigrationImportView: View {
     }
 }
 
-#Preview("Waiting") {
+#Preview("Opening the previous app") {
     AppMigrationImportView(
-        state: .waitingForPreviousApp,
+        state: .openingPreviousApp,
         openPreviousAppAction: {},
         retryAction: {},
         cancelAction: {}

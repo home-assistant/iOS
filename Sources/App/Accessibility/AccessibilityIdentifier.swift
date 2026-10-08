@@ -30,6 +30,7 @@ enum AccessibilityIdentifier: String {
     case migrationIntroContinue = "migration.intro.continue"
     case migrationOverviewStart = "migration.overview.start"
     case migrationCompleteContinue = "migration.complete.continue"
+    case migrationCompleteErase = "migration.complete.erase"
     case migrationExportTransfer = "migration.export.transfer"
     case migrationExportOpenNewApp = "migration.export.openNewApp"
     case migrationExportTransferAgain = "migration.export.transferAgain"

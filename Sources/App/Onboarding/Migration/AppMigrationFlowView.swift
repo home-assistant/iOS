@@ -10,6 +10,12 @@ struct AppMigrationFlowView: View {
     let skipAction: () -> Void
     let finishAction: () -> Void
 
+    /// Offered while the previous app is still around to be wiped.
+    private var eraseAction: (() -> Void)? {
+        guard coordinator.isPreviousAppInstalled else { return nil }
+        return { coordinator.erasePreviousApp() }
+    }
+
     var body: some View {
         if let permissionsToAllow {
             AppMigrationPermissionsView(permissions: permissionsToAllow) {
@@ -23,7 +29,11 @@ struct AppMigrationFlowView: View {
                 }
             }
         } else if let summary = coordinator.completedSummary {
-            AppMigrationSuccessView(summary: summary) {
+            AppMigrationSuccessView(
+                summary: summary,
+                previousAppErased: coordinator.previousAppErased,
+                eraseAction: eraseAction
+            ) {
                 if summary.grantedPermissions.isEmpty {
                     coordinator.finishImport()
                     finishAction()

@@ -7,4 +7,7 @@ enum AppMigrationHandoffPhase: Equatable {
     /// still has to reach the new app along with the payload.
     case requested(AppMigrationSession, startedHere: Bool)
     case handedOff
+    /// The new app asked this one to wipe itself after the transfer; nothing is left to show but the
+    /// reminder to delete the app.
+    case erased
 }

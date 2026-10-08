@@ -10,6 +10,10 @@ struct AppMigrationCompleteView: View {
     /// only marks where it lands; once settled the checkmark is drawn here for good.
     var checkmarkNamespace: Namespace.ID?
     var checkmarkSettled = true
+    /// Set once the previous app reports it wiped itself.
+    var previousAppErased = false
+    /// Asks the previous app to wipe itself; absent when it is not installed any more.
+    var eraseAction: (() -> Void)?
     let continueAction: () -> Void
 
     var body: some View {
@@ -29,6 +33,14 @@ struct AppMigrationCompleteView: View {
             primaryDescription: summary.completionBody,
             secondaryDescription: summary.serverCount == 0 ? nil : summary.serversDescription,
             content: {
+                if previousAppErased {
+                    HAAlertView(title: L10n.AppMigration.Complete.Erased.title, alertType: .success) {
+                        Text(L10n.AppMigration.Complete.Erased.body)
+                    } action: {
+                        EmptyView()
+                    }
+                    .padding(.top, DesignSystem.Spaces.two)
+                }
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                     HASectionPill(L10n.AppMigration.Complete.Section.nextSteps)
                     CardView(cornerRadius: DesignSystem.CornerRadius.two) {
@@ -51,11 +63,22 @@ struct AppMigrationCompleteView: View {
                 AppMigrationHaptics.tap()
                 continueAction()
             },
-            primaryActionIdentifier: AccessibilityIdentifier.migrationCompleteContinue.rawValue
+            primaryActionIdentifier: AccessibilityIdentifier.migrationCompleteContinue.rawValue,
+            secondaryActionTitle: eraseAction == nil || previousAppErased ? nil : L10n.AppMigration.Complete
+                .eraseButton,
+            secondaryAction: {
+                AppMigrationHaptics.warning()
+                eraseAction?()
+            },
+            secondaryActionIdentifier: AccessibilityIdentifier.migrationCompleteErase.rawValue
         )
     }
 }
 
 #Preview {
-    AppMigrationCompleteView(summary: .preview, continueAction: {})
+    AppMigrationCompleteView(summary: .preview, eraseAction: {}, continueAction: {})
+}
+
+#Preview("Previous app erased") {
+    AppMigrationCompleteView(summary: .preview, previousAppErased: true, eraseAction: {}, continueAction: {})
 }
