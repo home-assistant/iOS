@@ -176,6 +176,22 @@ class HingeObserverTests: XCTestCase {
         XCTAssertNil(observer.state)
     }
 
+    /// A device keeps the hinge it reported even once the reading goes back to nothing, which is
+    /// what keeps the hinge sensors switchable on a device that folds.
+    func testHasHingeOnceOneIsReportedAndKeepsIt() {
+        let observer = HingeObserver()
+        XCTAssertFalse(observer.hasHinge)
+
+        observer.setState(nil)
+        XCTAssertFalse(observer.hasHinge)
+
+        observer.setState(HingeState(angleDegrees: 45, status: .partiallyOpen))
+        XCTAssertTrue(observer.hasHinge)
+
+        observer.setState(nil)
+        XCTAssertTrue(observer.hasHinge)
+    }
+
     func testStateIsKept() {
         let observer = HingeObserver()
         observer.setState(HingeState(angleDegrees: 45, status: .partiallyOpen))

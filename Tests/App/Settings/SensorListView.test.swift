@@ -64,22 +64,65 @@ struct SensorListViewTests {
         }
     }
 
-    /// The screen reads the servers and the selection straight out of `Current`, so both are put
-    /// back afterwards rather than left for whatever test runs next.
+    /// A device that does not fold can never report the hinge sensors, so they sit in a section of
+    /// their own at the bottom, with no switch to turn them on.
+    @MainActor
+    @Test func hingeSensorsAreUnavailableOnADeviceWithoutAHinge() throws {
+        try withServers(count: 2) { servers in
+            let server = try #require(servers.all.first)
+            let viewModel = SensorListViewModel(server: server)
+            viewModel.sensors = [
+                WebhookSensor(name: "Activity", uniqueID: WebhookSensorId.activity.rawValue, state: "Walking"),
+            ]
+            assertLightDarkSnapshots(
+                of: NavigationView { SensorListView(server: server, viewModel: viewModel) },
+                drawHierarchyInKeyWindow: true
+            )
+        }
+    }
+
+    /// On a device that folds they are sensors like any other, each with its own switch.
+    @MainActor
+    @Test func hingeSensorsCanBeSwitchedOnOnADeviceWithAHinge() throws {
+        try withServers(count: 2) { servers in
+            let server = try #require(servers.all.first)
+            let state = HingeState(angleDegrees: 118.5, status: .partiallyOpen)
+            Current.hinge.setState(state)
+            Current.sensors.setEnabled(true, forUniqueID: WebhookSensorId.hingeAngle.rawValue, on: server)
+            let viewModel = SensorListViewModel(server: server)
+            viewModel.sensors = [
+                HingeSensor.angleSensor(for: state),
+                HingeSensor.statusSensor(for: state),
+                DevicePoseSensor.sensor(for: .laptop),
+            ]
+            assertLightDarkSnapshots(
+                of: NavigationView { SensorListView(server: server, viewModel: viewModel) },
+                drawHierarchyInKeyWindow: true
+            )
+        }
+    }
+
+    /// The screen reads the servers, the selection and the hinge straight out of `Current`, so all
+    /// three are put back afterwards rather than left for whatever test runs next.
     @MainActor
     private func withServers(count: Int, _ body: (FakeServerManager) throws -> Void) throws {
         let previousServers = Current.servers
         let previousSensors = Current.sensors
+        let previousHinge = Current.hinge
         // Shared app group defaults, so whatever ran before could have moved this and changed the
         // row the snapshot renders.
         let previousInterval = Current.settingsStore.periodicUpdateInterval
         defer {
             Current.servers = previousServers
             Current.sensors = previousSensors
+            Current.hinge = previousHinge
             Current.settingsStore.periodicUpdateInterval = previousInterval
             SensorEnablementStore.resetForTesting()
         }
         Current.settingsStore.periodicUpdateInterval = 300
+        // Supported whatever the simulator's OS, and without a hinge until a test reports one, so
+        // which section the hinge sensors land in is the test's choice rather than the machine's.
+        Current.hinge = HingeObserver(isSupported: true)
 
         // Named apart rather than left as identical fakes: `Server` sorts on name once sort orders
         // tie, so same-named servers would come out in whatever order the snapshot happened to get.

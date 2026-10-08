@@ -169,7 +169,20 @@ struct SensorListView: View {
                     }
                 }
 
-                if viewModel.isSearching, viewModel.filteredSensors.isEmpty {
+                // Sensors this device can never report stay in sight, so their absence above is
+                // explained, but with no switch to turn them on and nothing to configure.
+                if !viewModel.filteredUnavailableSensors.isEmpty {
+                    Section {
+                        ForEach(viewModel.filteredUnavailableSensors, id: \.UniqueID) { sensor in
+                            SensorRow(sensor: sensor, isEnabled: false)
+                        }
+                    } header: {
+                        Text(L10n.SettingsSensors.Sensors.UnavailableOnDevice.header)
+                    }
+                }
+
+                if viewModel.isSearching, viewModel.filteredSensors.isEmpty,
+                   viewModel.filteredUnavailableSensors.isEmpty {
                     Section {
                         Text(L10n.SettingsSensors.Sensors.noResults)
                             .foregroundStyle(.secondary)
