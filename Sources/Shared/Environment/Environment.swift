@@ -431,6 +431,8 @@ public class AppEnvironment {
         $0.register(provider: KioskScreensaverSensor.self)
         $0.register(provider: CameraMotionSensor.self)
         $0.register(provider: CameraStreamSensor.self)
+        $0.register(provider: HingeSensor.self)
+        $0.register(provider: DevicePoseSensor.self)
         #if os(iOS) && !targetEnvironment(macCatalyst)
         $0.register(provider: HealthKitSensor.self)
         #endif
@@ -485,6 +487,10 @@ public class AppEnvironment {
     public var onboardingObservation = OnboardingStateObservation()
 
     public lazy var kiosk = KioskModeManager()
+
+    /// The latest hinge reading on a folding device, fed by the interaction the app attaches
+    /// to its root view.
+    public lazy var hinge = HingeObserver()
 
     public lazy var appLabs = AppLabsStore()
 
