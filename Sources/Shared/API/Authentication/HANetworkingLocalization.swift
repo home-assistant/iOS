@@ -67,6 +67,8 @@ extension TokenManager.TokenError: @retroactive LocalizedError {
             return L10n.TokenError.expired
         case .connectionFailed:
             return L10n.TokenError.connectionFailed
+        case .reauthenticationRequired:
+            return L10n.TokenError.reauthenticationRequired
         }
     }
 }
