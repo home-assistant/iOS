@@ -59,7 +59,7 @@ final class SensorUpdateRetry {
 
     /// Runs the block after the delay. Replaceable in tests, which can't wait minutes.
     var schedule: (TimeInterval, @escaping () -> Void) -> Void = { delay, block in
-        Self.wait(delay, holdingBackgroundTask: delay <= Self.heldAliveUpTo, then: block)
+        SensorUpdateRetry.wait(delay, holdingBackgroundTask: delay <= SensorUpdateRetry.heldAliveUpTo, then: block)
     }
 
     /// - Parameter perform: sends an update limited to the given providers, or everything for
