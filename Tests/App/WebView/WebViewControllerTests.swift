@@ -1319,6 +1319,48 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertTrue(sut.prefersStatusBarHidden)
     }
 
+    /// Hiding the status bar leaves no room for a themed strip to fill, whichever setting asked for it.
+    func testThemedStatusBarStripIsDroppedWhenKioskHidesTheStatusBar() async throws {
+        let previousDatabase = Current.database
+        let previousKiosk = Current.kiosk
+        let previousSensors = Current.sensors
+        let previousFullScreen = Current.settingsStore.fullScreen
+        let previousBelowStatusBar = Current.settingsStore.webViewAlwaysBelowStatusBar
+        defer {
+            Current.database = previousDatabase
+            Current.kiosk = previousKiosk
+            Current.sensors = previousSensors
+            Current.settingsStore.fullScreen = previousFullScreen
+            Current.settingsStore.webViewAlwaysBelowStatusBar = previousBelowStatusBar
+        }
+        Current.sensors = SensorContainer()
+
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+        Current.database = { database }
+        Current.settingsStore.fullScreen = false
+        Current.settingsStore.webViewAlwaysBelowStatusBar = true
+
+        func setKiosk(hideStatusBar: Bool) throws {
+            try database.write { db in
+                try KioskSettings(enabled: true, hideStatusBar: hideStatusBar).insert(db, onConflict: .replace)
+            }
+        }
+
+        try setKiosk(hideStatusBar: false)
+        Current.kiosk = KioskModeManager()
+
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.setupKioskModeObservation()
+        sut.updateThemedStatusBar()
+        await waitUntil { overlayState.statusBarColor != nil }
+
+        try setKiosk(hideStatusBar: true)
+        await waitUntil { overlayState.statusBarColor == nil }
+    }
+
     func testCurrentPageURLIsNilBeforeAnyPageLoads() {
         let sut = makeSUT()
         sut.webView = WKWebView(frame: .zero)
