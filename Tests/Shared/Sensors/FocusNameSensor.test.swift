@@ -558,4 +558,35 @@ class FocusNameSensorTests: XCTestCase {
         XCTAssertEqual(refreshedBeforeReporting, true)
         XCTAssertEqual(Current.focusStatus.lastReceived()?.isFocused, true)
     }
+
+    /// With no server to report to, the status is still stored and the intent still succeeds: the
+    /// app's next update reads it back.
+    func testStatusIntentSucceedsWithNoServerToReportTo() throws {
+        Current.isAppExtension = true
+        let previousServers = Current.servers
+        let previousApis = Current.cachedApis
+        let previousRefresh = Current.connectivity.refreshNetworkInformation
+        let previousSettleDelay = FocusStatusIntentHandler.settleDelay
+        addTeardownBlock {
+            Current.servers = previousServers
+            Current.cachedApis = previousApis
+            Current.connectivity.refreshNetworkInformation = previousRefresh
+            FocusStatusIntentHandler.settleDelay = previousSettleDelay
+        }
+        Current.servers = FakeServerManager(initial: 0)
+        Current.cachedApis = [:]
+        Current.connectivity.refreshNetworkInformation = {}
+        FocusStatusIntentHandler.settleDelay = 0
+
+        let completed = expectation(description: "intent handled")
+        FocusStatusIntentHandler().handle(
+            intent: INShareFocusStatusIntent(focusStatus: INFocusStatus(isFocused: false))
+        ) { response in
+            XCTAssertEqual(response.code, .success)
+            completed.fulfill()
+        }
+
+        wait(for: [completed], timeout: 10)
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.isFocused, false)
+    }
 }
