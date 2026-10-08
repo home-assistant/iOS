@@ -296,6 +296,7 @@
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
 		FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */; };
+		B4C21E7A0D3F5169A8E20C62 /* HARemoteMedia in Frameworks */ = {isa = PBXBuildFile; productRef = B4C21E7A0D3F5169A8E20C61 /* HARemoteMedia */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2667,6 +2668,8 @@
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
+		B4C21E7A0D3F5169A8E20C65 /* RemoteMedia */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMedia; sourceTree = "<group>"; };
+		B4C21E7A0D3F5169A8E20C66 /* RemoteMedia */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RemoteMedia; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2900,6 +2903,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4C21E7A0D3F5169A8E20C62 /* HARemoteMedia in Frameworks */,
 				DE51600000000000000000A3 /* HADesignSystem in Frameworks */,
 				DE51600000000000000000D3 /* HAIconic in Frameworks */,
 				DE51600000000000000000F3 /* HANetworking in Frameworks */,
@@ -3150,6 +3154,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				B4C21E7A0D3F5169A8E20C65 /* RemoteMedia */,
 				42EDBE083002FC020051FC9B /* LiveActivity */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
@@ -3203,6 +3208,7 @@
 		D03D894320E0BC1800D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				B4C21E7A0D3F5169A8E20C66 /* RemoteMedia */,
 				42F467200000000000000001 /* NotificationSender */,
 				421125C62F51DE9200971BAD /* StatePrecision.test.swift */,
 				42A1B2C02F60000000000002 /* HomeAssistantAPIGetConfig.test.swift */,
@@ -3860,6 +3866,7 @@
 				11A31C93252128B900D50A78 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				B4C21E7A0D3F5169A8E20C65 /* RemoteMedia */,
 				11B38EE0275C545C00205C7B /* Intents */,
 				42CA28AC2B101D320093B31A /* DesignSystem */,
 				42EDBE083002FC020051FC9B /* LiveActivity */,
@@ -3890,6 +3897,7 @@
 			);
 			name = "Shared-iOS";
 			packageProductDependencies = (
+				B4C21E7A0D3F5169A8E20C61 /* HARemoteMedia */,
 				427692E22B98B82500F24321 /* SharedPush */,
 				DE51600000000000000000A2 /* HADesignSystem */,
 				DE51600000000000000000D2 /* HAIconic */,
@@ -3929,6 +3937,7 @@
 				D03D894920E0BC1800D4F28D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				B4C21E7A0D3F5169A8E20C66 /* RemoteMedia */,
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
 				42EDBB703002FBBE0051FC9B /* Extensions */,
 				42EDBC003002FBD10051FC9B /* Webhook */,
@@ -4179,6 +4188,7 @@
 				DE51600000000000000000D1 /* XCLocalSwiftPackageReference "Sources/HAIconic" */,
 				DE51600000000000000000F1 /* XCLocalSwiftPackageReference "Sources/HANetworking" */,
 				DE51600000000000000000B1 /* XCLocalSwiftPackageReference "Sources/WebhookCrypto" */,
+				B4C21E7A0D3F5169A8E20C41 /* XCLocalSwiftPackageReference "Sources/HARemoteMedia" */,
 				DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */,
 				CAFEBABE00000000000000A1 /* XCLocalSwiftPackageReference "Sources/HAWatchCommunicationMessages" */,
 				DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */,
@@ -6209,6 +6219,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/WebhookCrypto;
 		};
+		B4C21E7A0D3F5169A8E20C41 /* XCLocalSwiftPackageReference "Sources/HARemoteMedia" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Sources/HARemoteMedia;
+		};
 		DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/HAUtilities;
@@ -6927,6 +6941,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50E39AE66A27140CC5E69307 /* XCRemoteSwiftPackageReference "xcode27-realm-swift" */;
 			productName = RealmSwift;
+		};
+		B4C21E7A0D3F5169A8E20C61 /* HARemoteMedia */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B4C21E7A0D3F5169A8E20C41 /* XCLocalSwiftPackageReference "Sources/HARemoteMedia" */;
+			productName = HARemoteMedia;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
