@@ -90,6 +90,14 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 return .init(LegacyNotificationCommandType.showCamera.rawValue, homeassistant: homeassistant)
             case .hideCamera:
                 return .init(LegacyNotificationCommandType.hideCamera.rawValue)
+            case .cameraCall:
+                var homeassistant = [String: Any]()
+
+                if let entityId = data["entity_id"] {
+                    homeassistant["entity_id"] = entityId
+                }
+
+                return .init(LegacyNotificationCommandType.cameraCall.rawValue, homeassistant: homeassistant)
             default: return nil
             }
         }()
@@ -286,6 +294,7 @@ enum LegacyNotificationCommandType: String {
     case updateWidgets = "update_widgets"
     case showCamera = "show_camera"
     case hideCamera = "hide_camera"
+    case cameraCall = "command_call"
 }
 
 public enum NotificationPayloadKey: String, CaseIterable {

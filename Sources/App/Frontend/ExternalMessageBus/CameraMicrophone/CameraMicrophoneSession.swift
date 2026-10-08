@@ -87,6 +87,10 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         finish(with: .interrupted, notifiesEnd: false)
     }
 
+    func setMicrophoneEnabled(_ enabled: Bool) {
+        client?.setMicrophoneEnabled(enabled)
+    }
+
     private func connect() {
         guard let api = Current.api(for: server) else {
             finish(with: .serverUnavailable)

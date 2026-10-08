@@ -1,0 +1,27 @@
+{
+    "input": {
+        "title": "extra excluded title",
+        "message": "command_call",
+        "data": {
+            "entity_id": "camera.front_door"
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "10.15",
+            "app_version": "2026.1"
+        }
+    },
+    "rate_limit": false,
+    "headers": {
+        "apns-push-type": "background"
+    },
+    "payload": {
+        "aps": {
+            "contentAvailable": true
+        },
+        "homeassistant": {
+            "command": "command_call",
+            "entity_id": "camera.front_door"
+        }
+    }
+}

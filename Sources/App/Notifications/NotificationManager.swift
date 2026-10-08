@@ -41,6 +41,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     override init() {
         super.init()
+        if !Current.isCatalyst {
+            commandManager.register(command: "command_call", handler: CameraCallCommandHandler())
+        }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didBecomeActive),
