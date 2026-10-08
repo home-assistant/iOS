@@ -76,7 +76,10 @@ struct SensorListViewTests {
             ]
             assertLightDarkSnapshots(
                 of: NavigationView { SensorListView(server: server, viewModel: viewModel) },
-                drawHierarchyInKeyWindow: true
+                drawHierarchyInKeyWindow: true,
+                // Tall enough for the whole list: the section this covers sits at the very bottom,
+                // below the fold of a phone-sized frame.
+                layout: .fixed(width: 390, height: 2200)
             )
         }
     }
@@ -97,7 +100,9 @@ struct SensorListViewTests {
             ]
             assertLightDarkSnapshots(
                 of: NavigationView { SensorListView(server: server, viewModel: viewModel) },
-                drawHierarchyInKeyWindow: true
+                drawHierarchyInKeyWindow: true,
+                // Tall enough for all three, which run past the fold of a phone-sized frame.
+                layout: .fixed(width: 390, height: 2200)
             )
         }
     }
