@@ -3858,10 +3858,6 @@ public enum L10n {
       public static var hide: String { return L10n.tr("Localizable", "mac.sidebar.hide") }
       /// Notifications
       public static var notifications: String { return L10n.tr("Localizable", "mac.sidebar.notifications") }
-      /// Reset to Defaults
-      public static var resetToDefaults: String { return L10n.tr("Localizable", "mac.sidebar.reset_to_defaults") }
-      /// Set as Default Dashboard
-      public static var setDefaultDashboard: String { return L10n.tr("Localizable", "mac.sidebar.set_default_dashboard") }
       /// Settings
       public static var settings: String { return L10n.tr("Localizable", "mac.sidebar.settings") }
       /// Show
@@ -4139,8 +4135,6 @@ public enum L10n {
       public static var customizeToolbar: String { return L10n.tr("Localizable", "menu.view.customize_toolbar") }
       /// Find
       public static var find: String { return L10n.tr("Localizable", "menu.view.find") }
-      /// Hide Sidebar
-      public static var hideSidebar: String { return L10n.tr("Localizable", "menu.view.hide_sidebar") }
       /// Reload Page
       public static var reloadPage: String { return L10n.tr("Localizable", "menu.view.reload_page") }
       /// Show Sidebar
@@ -7788,6 +7782,8 @@ public enum L10n {
       public enum UnavailableOnDevice {
         /// Unavailable on this device
         public static var header: String { return L10n.tr("Localizable", "settings_sensors.sensors.unavailable_on_device.header") }
+        /// Unavailable
+        public static var state: String { return L10n.tr("Localizable", "settings_sensors.sensors.unavailable_on_device.state") }
       }
     }
     public enum Servers {

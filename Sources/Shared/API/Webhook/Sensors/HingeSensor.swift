@@ -60,9 +60,10 @@ public final class HingeSensor: SensorProvider {
             return .init(error: HingeError.unsupported)
         }
 
-        // A device that answered about its hinge and reported none has no hinge, so the sensor is
-        // dropped rather than left permanently unavailable on every iPhone that does not fold.
-        if observer.hasReceivedUpdate, observer.state == nil {
+        // A device that answered about its hinge and has never reported one has no hinge, so the
+        // sensor is dropped rather than left permanently unavailable on every iPhone that does not
+        // fold. One that has reported a hinge keeps its sensors even while the reading is gone.
+        if observer.hasReceivedUpdate, !observer.hasHinge {
             return .init(error: HingeError.unsupported)
         }
 

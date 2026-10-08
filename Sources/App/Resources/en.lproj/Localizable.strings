@@ -1131,8 +1131,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "mac.sidebar.hidden_section.header" = "Hidden";
 "mac.sidebar.hide" = "Hide";
 "mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
 "mac.sidebar.settings" = "Settings";
 "mac.sidebar.show" = "Show";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
@@ -1205,7 +1203,6 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Find";
-"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Reload Page";
 "menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
@@ -2387,6 +2384,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_sensors.sensors.no_results" = "No sensors match your search";
 "settings_sensors.sensors.search_prompt" = "Search sensors";
 "settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
 "settings_sensors.servers.header" = "Servers";
 "settings_sensors.servers.search_prompt" = "Search servers";

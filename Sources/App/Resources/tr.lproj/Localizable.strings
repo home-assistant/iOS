@@ -1131,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "Gizli";
 "mac.sidebar.hide" = "Gizle";
 "mac.sidebar.notifications" = "Bildirimler";
-"mac.sidebar.reset_to_defaults" = "Varsayılan Ayarlara Geri Dön";
-"mac.sidebar.set_default_dashboard" = "Varsayılan Gösterge Paneli Olarak Ayarla";
 "mac.sidebar.settings" = "Ayarlar";
 "mac.sidebar.show" = "Göster";
 "mac.toggle_sidebar.accessibility_label" = "Kenar Çubuğunu Aç/Kapat";
@@ -1205,7 +1203,6 @@
 "menu.status_item.toggle" = "Geçiş %1$@";
 "menu.view.customize_toolbar" = "Araç Çubuğunu Özelleştir…";
 "menu.view.find" = "Bul";
-"menu.view.hide_sidebar" = "Kenar Çubuğunu Gizle";
 "menu.view.reload_page" = "Sayfayı Yeniden Yükle";
 "menu.view.show_sidebar" = "Kenar Çubuğunu Göster";
 "mtls.beta.info" = "Bu beta bir özelliktir, herhangi bir sorun yaşarsanız lütfen aşağıdaki düğmeyi kullanarak bildirin. \

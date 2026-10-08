@@ -1131,8 +1131,6 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "mac.sidebar.hidden_section.header" = "Hidden";
 "mac.sidebar.hide" = "Hide";
 "mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
 "mac.sidebar.settings" = "Settings";
 "mac.sidebar.show" = "Show";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
@@ -1205,7 +1203,6 @@ Questo server richiede un certificato client (mTLS), ma l'operazione è stata an
 "menu.status_item.toggle" = "Attiva/disattiva %1$@";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Trova";
-"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Ricarica la pagina";
 "menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "Si tratta di una funzionalità in beta; in caso di problemi, ti preghiamo di segnalarli utilizzando il pulsante qui sotto.\

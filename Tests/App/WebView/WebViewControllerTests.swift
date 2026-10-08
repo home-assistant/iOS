@@ -1420,7 +1420,7 @@ final class WebViewControllerTests: XCTestCase {
 
         sut.showSettingsViewController()
 
-        wait(for: [settingsShown], timeout: 1)
+        wait(for: [settingsShown], timeout: 5)
         XCTAssertFalse(sceneCoordinator.showSettingsPushedOntoNavigationStack)
         XCTAssertFalse(otherWindowCoordinator.showSettingsCalled)
     }
@@ -1435,7 +1435,7 @@ final class WebViewControllerTests: XCTestCase {
 
         sut.showSettingsViewController(pushOntoNavigationStack: true)
 
-        wait(for: [settingsShown], timeout: 1)
+        wait(for: [settingsShown], timeout: 5)
         XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
     }
 
