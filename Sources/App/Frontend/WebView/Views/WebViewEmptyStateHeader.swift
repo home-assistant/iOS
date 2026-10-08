@@ -18,6 +18,10 @@ struct WebViewEmptyStateHeader: View {
     let settingsAction: () -> Void
     let serverSelectionAction: (Server) -> Void
     let dismissAction: () -> Void
+    /// Visual shift of the server selection only, so it can sit at the display's horizontal center
+    /// when a horizontal safe-area inset (iPhone Duo camera or vertical bar) narrows the layout. The
+    /// accessories keep their safe-area edges either way.
+    var serverSelectionHorizontalOffset: CGFloat = 0
 
     var body: some View {
         HStack {
@@ -29,38 +33,8 @@ struct WebViewEmptyStateHeader: View {
             )
             Spacer()
             if showsServerSelection {
-                if Current.isCatalyst {
-                    Menu {
-                        ForEach(Current.servers.all, id: \.identifier) { availableServer in
-                            Button {
-                                serverSelectionAction(availableServer)
-                            } label: {
-                                Label(availableServer.info.name, systemSymbol: symbol(for: availableServer))
-                            }
-                        }
-                    } label: {
-                        HStack(spacing: DesignSystem.Spaces.one) {
-                            Image(systemSymbol: .serverRack)
-                                .foregroundStyle(Color.haPrimary)
-                            Text(server.info.name)
-                                .font(.callout)
-                                .lineLimit(1)
-                            Image(systemSymbol: .chevronUpChevronDown)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.horizontal, DesignSystem.Spaces.two)
-                        .padding(.vertical, DesignSystem.Spaces.one)
-                        .background(Color(uiColor: .secondarySystemBackground))
-                        .clipShape(.capsule)
-                    }
-                    .buttonStyle(.plain)
-                } else {
-                    ServerPickerView(server: server, onSelect: serverSelectionAction)
-                        // Using .secondarySystemBackground to visually distinguish the server selection view
-                        .background(Color(uiColor: .secondarySystemBackground))
-                        .clipShape(Capsule())
-                }
+                serverSelection
+                    .offset(x: serverSelectionHorizontalOffset)
             }
             Spacer()
             Accessory(
@@ -71,6 +45,42 @@ struct WebViewEmptyStateHeader: View {
             )
         }
         .padding()
+    }
+
+    @ViewBuilder
+    private var serverSelection: some View {
+        if Current.isCatalyst {
+            Menu {
+                ForEach(Current.servers.all, id: \.identifier) { availableServer in
+                    Button {
+                        serverSelectionAction(availableServer)
+                    } label: {
+                        Label(availableServer.info.name, systemSymbol: symbol(for: availableServer))
+                    }
+                }
+            } label: {
+                HStack(spacing: DesignSystem.Spaces.one) {
+                    Image(systemSymbol: .serverRack)
+                        .foregroundStyle(Color.haPrimary)
+                    Text(server.info.name)
+                        .font(.callout)
+                        .lineLimit(1)
+                    Image(systemSymbol: .chevronUpChevronDown)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, DesignSystem.Spaces.two)
+                .padding(.vertical, DesignSystem.Spaces.one)
+                .background(Color(uiColor: .secondarySystemBackground))
+                .clipShape(.capsule)
+            }
+            .buttonStyle(.plain)
+        } else {
+            ServerPickerView(server: server, onSelect: serverSelectionAction)
+                // Using .secondarySystemBackground to visually distinguish the server selection view
+                .background(Color(uiColor: .secondarySystemBackground))
+                .clipShape(Capsule())
+        }
     }
 
     private var leadingAccessory: WebViewEmptyStateStyle.HeaderAccessory {
