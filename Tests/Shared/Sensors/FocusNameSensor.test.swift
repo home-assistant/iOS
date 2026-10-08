@@ -20,6 +20,7 @@ class FocusNameSensorTests: XCTestCase {
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
         Current.focusFilter.state.value = nil
+        Current.focusFilter.liveConfirmation.value = nil
         Current.focusStatus.receivedStatus.value = nil
         Current.date = { [now] in now }
 
@@ -31,6 +32,7 @@ class FocusNameSensorTests: XCTestCase {
     override func tearDownWithError() throws {
         try clearFocusNames()
         Current.focusFilter.state.value = nil
+        Current.focusFilter.liveConfirmation.value = nil
         Current.focusStatus.receivedStatus.value = nil
         Current.focusFilter = FocusFilterWrapper()
         Current.focusStatus = FocusStatusWrapper()
@@ -64,6 +66,14 @@ class FocusNameSensorTests: XCTestCase {
         Current.focusStatus.isAvailable = { focusAvailable }
         Current.focusStatus.authorizationStatus = { focusAuthorization }
         Current.focusStatus.status = { .init(isFocused: liveIsFocused) }
+    }
+
+    /// Only the live answer, leaving `activeFocusState` reading what was stored so the confirmation
+    /// it records can be read back.
+    private func setUpLiveStatus(isFocused: Bool?) {
+        Current.focusStatus.isAvailable = { true }
+        Current.focusStatus.authorizationStatus = { .authorized }
+        Current.focusStatus.status = { .init(isFocused: isFocused) }
     }
 
     private func received(
@@ -419,5 +429,115 @@ class FocusNameSensorTests: XCTestCase {
         Current.focusFilter.forgetFocusName("Sleep")
 
         XCTAssertEqual(Current.focusFilter.state.value?.name, "Work")
+    }
+
+    /// The filter run lands in the app, which iOS launches in the background after the Intents
+    /// extension has already stored the push saying the Focus started — so the push that should
+    /// confirm the Focus usually predates the run and can't. The live answer confirms it instead,
+    /// and then a live "not focused" is this Focus ending, with or without the push that said so.
+    func testEndsTheNameOnceTheLiveStatusSaysNotFocusedAfterItConfirmedTheFocus() throws {
+        FocusName(name: "Work").save()
+        let filterRan = now.addingTimeInterval(-3600)
+        Current.focusFilter.state.value = FocusFilterState(name: "Work", date: filterRan)
+        Current.focusFilter.liveConfirmation.value = FocusFilterLiveConfirmation(
+            filterDate: filterRan,
+            date: now.addingTimeInterval(-1800)
+        )
+        Current.focusStatus.lastReceived = { [now] in
+            FocusStatusState(isFocused: true, date: now.addingTimeInterval(-3602), lastEndedDate: nil)
+        }
+        setUpLiveStatus(isFocused: false)
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "")
+        XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, false)
+    }
+
+    /// The confirmation is taken from the live answer only once the switch window has passed:
+    /// inside it the answer can still be about the Focus that just ended.
+    func testLiveFocusedConfirmsTheNameOnceTheSwitchWindowPassed() throws {
+        FocusName(name: "Work").save()
+        let filterRan = now.addingTimeInterval(-FocusReport.switchGracePeriod)
+        Current.focusFilter.state.value = FocusFilterState(name: "Work", date: filterRan)
+        setUpLiveStatus(isFocused: true)
+
+        _ = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertNil(Current.focusFilter.activeFocusState()?.liveConfirmedDate, "still inside the switch window")
+
+        Current.date = { [now] in now.addingTimeInterval(1) }
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Work")
+        XCTAssertEqual(Current.focusFilter.activeFocusState()?.liveConfirmedDate, now.addingTimeInterval(1))
+    }
+
+    /// A Focus whose status the user doesn't share never reads back as "focused", so it is never
+    /// confirmed by the live answer, and a live "not focused" keeps meaning nothing about it.
+    func testLiveNotFocusedNeverConfirmsNorEndsAnUnsharedFocus() throws {
+        FocusName(name: "Work").save()
+        Current.focusFilter.state.value = FocusFilterState(name: "Work", date: now.addingTimeInterval(-3600))
+        setUpLiveStatus(isFocused: false)
+
+        let sensors = try hang(FocusNameSensor(request: request).sensors())
+        XCTAssertEqual(sensors[0].State as? String, "Work")
+        XCTAssertNil(Current.focusFilter.activeFocusState()?.liveConfirmedDate)
+    }
+
+    /// A confirmation belongs to the run it confirmed: the next named run is a different Focus.
+    func testLiveConfirmationDoesNotCarryOverToTheNextFilterRun() throws {
+        Current.focusFilter.setActiveFocusName("Work")
+        Current.date = { [now] in now.addingTimeInterval(60) }
+        Current.focusFilter.confirmLive(try XCTUnwrap(Current.focusFilter.activeFocusState()))
+        XCTAssertNotNil(Current.focusFilter.activeFocusState()?.liveConfirmedDate)
+
+        Current.date = { [now] in now.addingTimeInterval(120) }
+        Current.focusFilter.setActiveFocusName("Sleep")
+        XCTAssertNil(Current.focusFilter.activeFocusState()?.liveConfirmedDate)
+    }
+
+    /// Only the run still current can be confirmed, and only once.
+    func testConfirmLiveIgnoresAnOutdatedRunAndRepeats() throws {
+        Current.focusFilter.setActiveFocusName("Work")
+        Current.focusFilter.confirmLive(FocusFilterState(name: "Work", date: now.addingTimeInterval(-1)))
+        XCTAssertNil(Current.focusFilter.activeFocusState()?.liveConfirmedDate)
+
+        Current.date = { [now] in now.addingTimeInterval(60) }
+        Current.focusFilter.confirmLive(try XCTUnwrap(Current.focusFilter.activeFocusState()))
+        Current.date = { [now] in now.addingTimeInterval(120) }
+        Current.focusFilter.confirmLive(try XCTUnwrap(Current.focusFilter.activeFocusState()))
+        XCTAssertEqual(Current.focusFilter.activeFocusState()?.liveConfirmedDate, now.addingTimeInterval(60))
+    }
+
+    /// The Intents extension is launched by iOS to receive the status, with no network information
+    /// cached: without refreshing it a server reachable only at home has no usable URL and the
+    /// report goes nowhere while claiming success.
+    func testStatusIntentRefreshesNetworkInformationBeforePickingServers() throws {
+        Current.isAppExtension = true
+        let previousServers = Current.servers
+        let previousApis = Current.cachedApis
+        let previousRefresh = Current.connectivity.refreshNetworkInformation
+        let previousSettleDelay = FocusStatusIntentHandler.settleDelay
+        addTeardownBlock {
+            Current.servers = previousServers
+            Current.cachedApis = previousApis
+            Current.connectivity.refreshNetworkInformation = previousRefresh
+            FocusStatusIntentHandler.settleDelay = previousSettleDelay
+        }
+        Current.servers = FakeServerManager(initial: 0)
+        Current.cachedApis = [:]
+        FocusStatusIntentHandler.settleDelay = 0
+
+        let refreshed = expectation(description: "network information refreshed")
+        Current.connectivity.refreshNetworkInformation = { refreshed.fulfill() }
+
+        let completed = expectation(description: "intent handled")
+        FocusStatusIntentHandler().handle(
+            intent: INShareFocusStatusIntent(focusStatus: INFocusStatus(isFocused: true))
+        ) { response in
+            XCTAssertEqual(response.code, .success)
+            completed.fulfill()
+        }
+
+        wait(for: [refreshed, completed], timeout: 10)
+        XCTAssertEqual(Current.focusStatus.lastReceived()?.isFocused, true)
     }
 }

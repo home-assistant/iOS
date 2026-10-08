@@ -17,13 +17,28 @@ class FocusStatusIntentHandler: NSObject, INShareFocusStatusIntentHandling {
         Current.focusStatus.update(fromReceived: currentState)
         Current.Log.info("starting, status from intent is \(String(describing: currentState)) from \(intent)")
 
+        // `Current.apis` picks each server's URL from the cached network information, which this
+        // extension — launched by iOS to hand us the status — doesn't have yet. Without it a server
+        // only reachable on the home network has no usable URL, `apis` is empty, and the update
+        // "succeeds" without reaching anyone. Fetched during the wait rather than after it.
+        let networkRefreshed = Promise<Void> { seal in
+            Task {
+                await Current.connectivity.refreshNetworkInformation()
+                seal.fulfill(())
+            }
+        }
+
         firstly {
-            after(seconds: Self.settleDelay)
-        }.then {
+            when(fulfilled: after(seconds: Self.settleDelay), networkRefreshed)
+        }.then { _ -> Promise<Void> in
+            let apis = Current.apis
+            if apis.isEmpty {
+                Current.Log.error("no server to report the focus status to")
+            }
             // Only the Focus sensors: an Intents extension gets little time to begin with, and the
             // wait above spends some of it, so a full update risks being cut off before the state
             // this handler exists to report goes out.
-            when(fulfilled: Current.apis.map {
+            return when(fulfilled: apis.map {
                 $0.updateFocusSensors(trigger: .Siri)
             })
         }.done {
