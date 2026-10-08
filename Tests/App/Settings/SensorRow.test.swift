@@ -91,6 +91,12 @@ struct SensorRowTests {
                 icon: "mdi:book-open-outline",
                 state: HingeStatus.partiallyOpen.rawValue
             ), isEnabled: true)
+            SensorRow(sensor: WebhookSensor(
+                name: "Pose",
+                uniqueID: WebhookSensorId.devicePose.rawValue,
+                icon: "mdi:laptop",
+                state: DevicePose.laptop.rawValue
+            ), isEnabled: true)
         }
         assertLightDarkSnapshots(of: view)
     }
