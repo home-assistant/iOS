@@ -7,6 +7,7 @@ import Testing
 struct RemoteMediaArtworkLifecycleTests {
     private static let coverA = "/api/media_player_proxy/media_player.living_room?token=secret&cache=a"
     private static let coverB = "/api/media_player_proxy/media_player.living_room?token=secret&cache=b"
+    private static let remote = "https://192.168.1.11:32400/library/metadata/42/thumb?X-Plex-Token=plex-secret"
 
     // MARK: - Attaching a prepared cover
 
@@ -120,6 +121,59 @@ struct RemoteMediaArtworkLifecycleTests {
         let next = try reduce(first, RemoteMediaFixtures.mapped("idle"))
         #expect(next.snapshot.track?.title == "Song")
         #expect(next.artworkSource == first.artworkSource)
+    }
+
+    // MARK: - Local proxy and remote picture
+
+    /// Home Assistant sends both pictures. The proxy path is the source, so it is the reference that
+    /// survives repeated reports and reports that leave the pictures out.
+    @Test func theLocalProxyStaysTheSourceAcrossReports() throws {
+        let first = try report("track-1", picture: Self.remote, local: Self.coverA)
+        let source = try #require(first.artworkSource)
+        #expect(source.reference == Self.coverA)
+
+        let repeated = try reduce(first, report("track-1", picture: Self.remote, local: Self.coverA))
+        #expect(repeated.artworkSource == source)
+        let kept = try reduce(first, report("track-1", picture: nil, local: nil))
+        #expect(kept.artworkSource == source)
+        #expect(
+            kept.displayedSnapshot(preparedArtworkFrom: source).track?.artwork == .available(cacheKey: source.cacheKey)
+        )
+    }
+
+    /// The remote address can change on every report, for example when its token is rotated. While the
+    /// proxy path is unchanged that is not a new cover, so nothing is fetched again.
+    @Test func aChangingRemotePictureDoesNotInvalidateTheLocalSource() throws {
+        let first = try report("track-1", picture: Self.remote, local: Self.coverA)
+        let source = try #require(first.artworkSource)
+
+        let next = try reduce(first, report("track-1", picture: Self.remote + "&rotated=1", local: Self.coverA))
+
+        #expect(next.artworkSource == source)
+        #expect(next.artworkSource?.cacheKey == source.cacheKey)
+        #expect(
+            next.displayedSnapshot(preparedArtworkFrom: source).track?.artwork == .available(cacheKey: source.cacheKey)
+        )
+    }
+
+    @Test func aNewLocalProxyForTheSameTrackInvalidatesThePreparedCover() throws {
+        let first = try report("track-1", picture: Self.remote, local: Self.coverA)
+        let sourceA = try #require(first.artworkSource)
+
+        let next = try reduce(first, report("track-1", picture: Self.remote, local: Self.coverB))
+        let sourceB = try #require(next.artworkSource)
+
+        #expect(sourceB.reference == Self.coverB)
+        #expect(sourceB.cacheKey != sourceA.cacheKey)
+        #expect(next.displayedSnapshot(preparedArtworkFrom: sourceA).track?.artwork == .deferred)
+    }
+
+    @Test func theLocalProxyDoesNotLeakIntoTheCacheKeyOrDescriptions() throws {
+        let state = try report("track-1", picture: Self.remote, local: Self.coverA)
+        let source = try #require(state.artworkSource)
+        #expect(!source.cacheKey.hexString.contains("secret"))
+        #expect(!String(describing: source).contains("secret"))
+        #expect(!String(describing: state).contains("plex-secret"))
     }
 
     // MARK: - Identity: one track, one player
@@ -245,6 +299,7 @@ struct RemoteMediaArtworkLifecycleTests {
     private func report(
         _ contentId: String,
         picture: String?,
+        local: String? = nil,
         server: String = "server-1",
         entity: String = "media_player.living_room",
         partial: Bool = false
@@ -260,6 +315,7 @@ struct RemoteMediaArtworkLifecycleTests {
             attributes["media_position_updated_at"] = "2026-09-06T12:00:00+00:00"
         }
         attributes["entity_picture"] = picture
+        attributes["entity_picture_local"] = local
         return RemoteMediaSnapshotMapper.map(
             serverId: server, entityId: entityId, state: "playing", attributes: attributes
         )

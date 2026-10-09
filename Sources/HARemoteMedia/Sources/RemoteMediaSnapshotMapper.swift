@@ -10,8 +10,11 @@ import Foundation
 ///   features when negative.
 /// - `friendly_name` falls back to the entity id.
 /// - `media_content_id` becomes a `RemoteMediaDigest`; the id itself is never carried.
-/// - `entity_picture` makes the artwork `deferred`, or `absent` when missing. The picture stays out of
-///   the snapshot and is returned as `RemoteMediaEntityState.artworkSource`.
+/// - Artwork comes from `entity_picture_local` when it is non-empty, otherwise from `entity_picture`.
+///   The local value is Home Assistant's own proxy path, so it is the one to fetch through that
+///   server's connection; `entity_picture` can be an absolute third-party URL. Either one makes the
+///   artwork `deferred`, and neither makes it `absent`. The picture stays out of the snapshot and is
+///   returned as `RemoteMediaEntityState.artworkSource`.
 public enum RemoteMediaSnapshotMapper {
     /// - Parameter serverId: A stable local identifier of the entity's server, passed unchanged on every
     ///   report for it. It never reaches a snapshot; it only keeps one server's artwork from being taken
@@ -22,7 +25,8 @@ public enum RemoteMediaSnapshotMapper {
         state: String,
         attributes: [String: Any]
     ) -> RemoteMediaEntityState {
-        let artworkReference = string(attributes["entity_picture"])
+        let artworkReference = string(attributes["entity_picture_local"])
+            ?? string(attributes["entity_picture"])
         let player = RemoteMediaPlayer(
             name: string(attributes["friendly_name"]) ?? entityId.rawValue,
             deviceClass: string(attributes["device_class"]),

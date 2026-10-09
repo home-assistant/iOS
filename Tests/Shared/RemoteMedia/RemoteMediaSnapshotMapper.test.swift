@@ -302,6 +302,62 @@ struct RemoteMediaSnapshotMapperTests {
 
     // MARK: - Artwork
 
+    @Test func localProxyTakesPrecedenceOverCredentialBearingRemotePicture() throws {
+        let proxy = "/api/media_player_proxy/media_player.living_room?token=ha-token"
+        let remote = "https://192.168.1.11:32400/library/metadata/42/thumb?X-Plex-Token=plex-secret"
+        let mapped = try RemoteMediaFixtures.mapped("playing", """
+        {"media_title": "Song", "entity_picture_local": "\(proxy)",
+         "entity_picture": "\(remote)"}
+        """)
+        let source = try #require(mapped.artworkSource)
+        #expect(source.reference == proxy)
+        #expect(!source.reference.contains("X-Plex-Token"))
+        #expect(mapped.snapshot.track?.artwork == .deferred)
+        #expect(!String(describing: source).contains("plex-secret"))
+        #expect(!source.cacheKey.hexString.contains("plex-secret"))
+    }
+
+    @Test(arguments: [
+        #"{"media_title":"Song","entity_picture_local":null,"entity_picture":"https://example.com/cover.jpg"}"#,
+        #"{"media_title":"Song","entity_picture_local":"","entity_picture":"https://example.com/cover.jpg"}"#,
+        #"{"media_title":"Song","entity_picture_local":42,"entity_picture":"https://example.com/cover.jpg"}"#,
+        #"{"media_title":"Song","entity_picture":"https://example.com/cover.jpg"}"#,
+    ])
+    func remotePictureIsUsedWhenLocalProxyIsUnusable(_ json: String) throws {
+        let mapped = try RemoteMediaFixtures.mapped("playing", json)
+        #expect(mapped.artworkSource?.reference == "https://example.com/cover.jpg")
+        #expect(mapped.snapshot.track?.artwork == .deferred)
+    }
+
+    @Test func localProxyWorksWithoutRemotePicture() throws {
+        let mapped = try RemoteMediaFixtures.mapped("playing", """
+        {"media_title": "Song", "entity_picture_local": "/api/media_player_proxy/media_player.living_room"}
+        """)
+        #expect(mapped.artworkSource?.reference == "/api/media_player_proxy/media_player.living_room")
+        #expect(mapped.snapshot.track?.artwork == .deferred)
+    }
+
+    @Test func localProxyWinsOverAnEmptyRemotePicture() throws {
+        let mapped = try RemoteMediaFixtures.mapped("playing", """
+        {"media_title": "Song", "entity_picture_local": "/api/media_player_proxy/media_player.living_room",
+         "entity_picture": ""}
+        """)
+        #expect(mapped.artworkSource?.reference == "/api/media_player_proxy/media_player.living_room")
+        #expect(mapped.snapshot.track?.artwork == .deferred)
+    }
+
+    @Test(arguments: [
+        #"{"media_title":"Song","entity_picture_local":"","entity_picture":""}"#,
+        #"{"media_title":"Song","entity_picture_local":null,"entity_picture":null}"#,
+        #"{"media_title":"Song","entity_picture_local":"","entity_picture":7}"#,
+        #"{"media_title":"Song","entity_picture_local":""}"#,
+    ])
+    func emptyPicturesAreNoArtwork(_ json: String) throws {
+        let mapped = try RemoteMediaFixtures.mapped("playing", json)
+        #expect(mapped.artworkSource == nil)
+        #expect(mapped.snapshot.track?.artwork == .absent)
+    }
+
     @Test func noEntityPictureIsNoArtwork() throws {
         let mapped = try RemoteMediaFixtures.mapped("playing", #"{"media_title": "Song"}"#)
         #expect(mapped.snapshot.track?.artwork == .absent)
