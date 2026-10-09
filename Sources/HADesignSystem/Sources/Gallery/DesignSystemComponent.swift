@@ -1102,7 +1102,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                         options: [
                             .init(
                                 id: "cloud",
-                                label: "Home Assistant Cloud",
+                                label: "Home Assistant Link",
                                 description: "The easiest way to connect from anywhere."
                             ),
                             .init(

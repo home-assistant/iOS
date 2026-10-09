@@ -134,7 +134,7 @@ struct ConnectionErrorDetailsView: View {
     private var cloudStatusView: some View {
         if let server, server.info.connection.canUseCloud,
            let cloudText = try? AttributedString(
-               markdown: L10n.Connection.Error.FailedConnect.Cloud.title
+               markdown: L10n.Connection.Error.FailedConnect.CloudLink.title(AppConstants.homeAssistantLinkName)
            ) {
             if server.info.connection.useCloud {
                 Text(cloudText)
@@ -142,9 +142,12 @@ struct ConnectionErrorDetailsView: View {
                     .foregroundStyle(.secondary)
             } else {
                 // Alert user when it has deactivated cloud usage in the App
-                Text(verbatim: L10n.Connection.Error.FailedConnect.CloudInactive.title)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
+                Text(
+                    verbatim: L10n.Connection.Error.FailedConnect.CloudInactiveLink
+                        .title(AppConstants.homeAssistantLinkName)
+                )
+                .font(.callout)
+                .foregroundStyle(.secondary)
             }
         }
     }

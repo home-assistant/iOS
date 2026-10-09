@@ -1,7 +1,7 @@
 import Shared
 import SwiftUI
 
-/// Lists every webhook URL this server can be reached at — the Home Assistant Cloud cloudhook when
+/// Lists every webhook URL this server can be reached at — the Home Assistant Link cloudhook when
 /// there is one, plus the URLs the app derives from the server's own internal/remote/external URLs —
 /// shows which one is in use right now, and lets each be checked for reachability.
 struct WebhookDetailView: View {
@@ -38,7 +38,7 @@ struct WebhookDetailView: View {
                     }
                 }
             } footer: {
-                Text(L10n.Settings.ConnectionSection.Webhook.footer)
+                Text(L10n.Settings.ConnectionSection.Webhook.footerLink(AppConstants.homeAssistantLinkName))
             }
 
             ForEach(Array(viewModel.endpoints.enumerated()), id: \.element.id) { index, endpoint in
