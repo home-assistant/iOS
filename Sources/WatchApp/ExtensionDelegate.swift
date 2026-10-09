@@ -476,7 +476,6 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     }
 
     private func decodeAndApplyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
-        _ = Self.changePendingMirrorApplies(by: -1)
         defer { publishAppliedMirrorsIfIdle() }
         var data = data
         // Full-reference (v2) pushes travel compressed; the transfer metadata says so explicitly.
@@ -507,11 +506,15 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // on so a burst applies one mirror at a time: in parallel they blew the background CPU
         // budget (CAROUSEL 0xc51bad01).
         let didFinish = DispatchSemaphore(value: 0)
-        defer { didFinish.wait() }
-        Self.performProtectedDatabaseWork(reason: "watch-mirror-apply", finished: { didApply in
+        var didApply = false
+        defer {
+            didFinish.wait()
             if didApply {
                 Self.hasUnpublishedMirror = true
             }
+        }
+        Self.performProtectedDatabaseWork(reason: "watch-mirror-apply", finished: { succeeded in
+            didApply = succeeded
             didFinish.signal()
         }) {
             do {
@@ -552,7 +555,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// Publishes once per burst, after the last queued mirror, so a failure at the end of a burst
     /// doesn't drop the mirrors applied before it.
     private func publishAppliedMirrorsIfIdle() {
-        guard Self.hasUnpublishedMirror, Self.changePendingMirrorApplies(by: 0) == 0 else { return }
+        // Counted until here, so zero means nothing else is queued or still applying.
+        guard Self.changePendingMirrorApplies(by: -1) == 0, Self.hasUnpublishedMirror else { return }
         Self.hasUnpublishedMirror = false
         DispatchQueue.main.async { [weak self] in
             // Rebuild complication snapshots and let the home screen re-render from the fresh data.
