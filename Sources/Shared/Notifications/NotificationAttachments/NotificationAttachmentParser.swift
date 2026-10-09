@@ -80,7 +80,7 @@ struct NotificationAttachmentInfo: Equatable {
             contentType = .mpeg
         case "mpeg2":
             contentType = .mpeg2Video
-        case "mpeg4":
+        case "mpeg4", "mp4":
             contentType = .mpeg4Movie
         case "mpeg4audio":
             contentType = .mpeg4Audio

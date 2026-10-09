@@ -94,6 +94,22 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         XCTAssertEqual(result.lazy, false)
     }
 
+    func testContentTypeMP4() {
+        let content = UNMutableNotificationContent()
+        content.userInfo["attachment"] = [
+            "url": "https://example.com/video.mp4",
+            "content-type": "mp4",
+        ]
+        let promise = parser.attachmentInfo(from: content)
+
+        guard let result = promise.wait().attachmentInfo else {
+            XCTFail("not an attachment")
+            return
+        }
+
+        XCTAssertEqual(result.typeHint, kUTTypeMPEG4)
+    }
+
     func testAttachmentHidden() {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
