@@ -130,18 +130,18 @@ struct AppIconShortcutItemsUpdaterTests {
         let previousProvider = Current.magicItemProvider
         let previousRunner = Current.backgroundTask
         let previousServers = Current.servers
-        let previousIsAppInBackground = AppIconShortcutItemsUpdater.isAppInBackground
+        let previousIsAppActive = AppIconShortcutItemsUpdater.isAppActive
         Current.database = { database }
         Current.magicItemProvider = { StubMagicItemProvider(entitiesPerServer: entitiesPerServer) }
         Current.backgroundTask = PassthroughBackgroundTaskRunner()
         Current.servers = servers
-        AppIconShortcutItemsUpdater.isAppInBackground = { false }
+        AppIconShortcutItemsUpdater.isAppActive = { true }
         defer {
             Current.database = previousDatabase
             Current.magicItemProvider = previousProvider
             Current.backgroundTask = previousRunner
             Current.servers = previousServers
-            AppIconShortcutItemsUpdater.isAppInBackground = previousIsAppInBackground
+            AppIconShortcutItemsUpdater.isAppActive = previousIsAppActive
             UIApplication.shared.shortcutItems = []
         }
 
@@ -275,17 +275,17 @@ struct AppIconShortcutItemsUpdaterTests {
     }
 
     @MainActor
-    @Test("Defers a background start until the app becomes active")
-    func defersBackgroundStartToForeground() async throws {
+    @Test("Defers a start while the app is not active until it becomes active")
+    func defersInactiveStartToForeground() async throws {
         try await withConfiguredItems([entityItem(id: "light.kitchen")]) { _ in
             defer { AppIconShortcutItemsUpdater.stop() }
-            AppIconShortcutItemsUpdater.isAppInBackground = { true }
+            AppIconShortcutItemsUpdater.isAppActive = { false }
             AppIconShortcutItemsUpdater.start()
             NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishRoutine, object: nil)
             try await Task.sleep(for: .milliseconds(200))
             #expect(publishedTypes.isEmpty)
 
-            AppIconShortcutItemsUpdater.isAppInBackground = { false }
+            AppIconShortcutItemsUpdater.isAppActive = { true }
             NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
             let published = await waitUntil { publishedTypes == ["appIconShortcut.1|entity|light.kitchen"] }
@@ -308,6 +308,13 @@ struct AppIconShortcutItemsUpdaterTests {
 
             #expect(publishedTypes.isEmpty)
         }
+    }
+
+    @MainActor
+    @Test("Follows the live application state by default")
+    func defaultActivityFollowsApplicationState() {
+        let isActive = Current.isCatalyst || UIApplication.shared.applicationState == .active
+        #expect(AppIconShortcutItemsUpdater.isAppActive() == isActive)
     }
 
     @Test("Round-trips a shortcut type back into its identifier")

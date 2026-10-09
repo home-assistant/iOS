@@ -20,8 +20,9 @@ enum AppIconShortcutItemsUpdater {
     private static var requestedGeneration = 0
     private static var publishedGeneration = 0
 
-    static var isAppInBackground: () -> Bool = {
-        !Current.isCatalyst && UIApplication.shared.applicationState == .background
+    /// `.inactive` counts as not active: launches, background ones included, start there.
+    static var isAppActive: () -> Bool = {
+        Current.isCatalyst || UIApplication.shared.applicationState == .active
     }
 
     /// Publishes the configured items now and again each time the database updater finishes a
@@ -63,10 +64,10 @@ enum AppIconShortcutItemsUpdater {
     /// Background launches (WatchConnectivity, location, background refresh) don't need the
     /// shortcuts, and reading every entity and area row there was the top 0xdead10cc kill.
     private static func updateOrDeferToForeground() {
-        if isAppInBackground() {
-            needsUpdateOnForeground = true
-        } else {
+        if isAppActive() {
             update()
+        } else {
+            needsUpdateOnForeground = true
         }
     }
 
