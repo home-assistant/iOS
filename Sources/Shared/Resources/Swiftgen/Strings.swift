@@ -1488,9 +1488,21 @@ public enum L10n {
       public static var placeholder: String { return L10n.tr("Localizable", "assist.text_field.placeholder") }
     }
     public enum Watch {
+      public enum AudioStream {
+        /// Home Assistant never received the recording.
+        public static var notReceived: String { return L10n.tr("Localizable", "assist.watch.audio_stream.not_received") }
+        /// Server not found on iPhone.
+        public static var serverNotFound: String { return L10n.tr("Localizable", "assist.watch.audio_stream.server_not_found") }
+        /// The iPhone could not read the recording.
+        public static var unreadable: String { return L10n.tr("Localizable", "assist.watch.audio_stream.unreadable") }
+      }
       public enum MicButton {
         /// Tap to
         public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.title") }
+        public enum TapOrHold {
+          /// Tap or hold to
+          public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.tap_or_hold.title") }
+        }
       }
       public enum NotReachable {
         /// Assist requires iPhone connectivity. Your iPhone is currently unreachable.
@@ -3943,6 +3955,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "magic_item.display_text.title") }
     }
     public enum IconColor {
+      /// Color
+      public static var color: String { return L10n.tr("Localizable", "magic_item.icon_color.color") }
+      /// Custom
+      public static var custom: String { return L10n.tr("Localizable", "magic_item.icon_color.custom") }
+      /// Default
+      public static var `default`: String { return L10n.tr("Localizable", "magic_item.icon_color.default") }
       /// Icon color
       public static var title: String { return L10n.tr("Localizable", "magic_item.icon_color.title") }
     }
@@ -8139,6 +8157,10 @@ public enum L10n {
         public enum Recording {
           /// Recording...
           public static var title: String { return L10n.tr("Localizable", "watch.assist.button.recording.title") }
+        }
+        public enum ReleaseToSend {
+          /// Release to send
+          public static var title: String { return L10n.tr("Localizable", "watch.assist.button.release_to_send.title") }
         }
         public enum SendRequest {
           /// Tap to send request

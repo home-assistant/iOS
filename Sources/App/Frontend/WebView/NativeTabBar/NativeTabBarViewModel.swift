@@ -19,6 +19,8 @@ final class NativeTabBarViewModel: ObservableObject {
     @Published private(set) var selection: NativeTabBarTab
     /// The More tab shows its list until the user opens a page from it, then the frontend takes over.
     @Published private(set) var moreShowsFrontend = false
+    /// The bar steps aside while the frontend's more-info dialog is up, until it closes or the frontend navigates.
+    @Published private(set) var isTabBarHidden = false
     @Published var showsCustomize = false
     private(set) var customizeZoomsFromButton = true
     @Published private(set) var accentColor: Color = .haPrimary
@@ -96,6 +98,14 @@ final class NativeTabBarViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.revealFrontend()
+            }
+            .store(in: &cancellables)
+
+        overlayState.$isMoreInfoDialogOpen
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isOpen in
+                self?.isTabBarHidden = isOpen
             }
             .store(in: &cancellables)
 

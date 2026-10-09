@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Ha engedélyezve van, az Assist nem játszik le hangválaszokat, még akkor sem, ha a folyamat szöveg-beszéd funkcióval van konfigurálva. A szöveges válaszokat továbbra is látni fogja.";
 "assist.settings.tts_mute.toggle" = "Hangválaszok elnémítása";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Koppintson ide";
 "assist.watch.not_reachable.title" = "Az Assist használatához iPhone csatlakozás szükséges. Az Ön iPhone-ja jelenleg nem elérhető.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
@@ -1156,6 +1157,9 @@ Ez a szerver kliens tanúsítványt (mTLS) igényel, de a művelet megszakítva.
 "magic_item.background_color.title" = "Háttérszín";
 "magic_item.display_text.title" = "Szöveg megjelenítése";
 "magic_item.edit" = "Mentés";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Ikon színe";
 "magic_item.icon_name.title" = "Ikon neve";
 "magic_item.item_type.action.list.title" = "iOS műveletek";
@@ -2476,6 +2480,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "vacuum.control.start" = "Start";
 "vacuum.control.stop" = "Stop";
 "watch.assist.button.recording.title" = "Felvétel...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Koppintson a kérelem elküldéséhez";
 "watch.assist.lack_config.error.title" = "Kérjük, konfigurálja az Assist funkciót az iOS mobilalkalmazás segítségével";
 "watch.complications.builder.color" = "Gauge color";

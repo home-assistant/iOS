@@ -10,6 +10,8 @@ protocol ImmediateCommunicatorServiceDelegate: AnyObject {
     func didReceiveTTS(url: URL)
     func didReceiveOnDeviceTTS(_ payload: AssistOnDeviceTTSPayload)
     func didReceiveError(code: String, message: String)
+    /// The iPhone stopped listening to the audio stream `streamId`: the user stopped speaking.
+    func didReceiveAudioStreamStop(streamId: String)
 }
 
 final class ImmediateCommunicatorService {
@@ -79,6 +81,12 @@ final class ImmediateCommunicatorService {
                 return
             }
             observers.forEach({ $0.delegate?.didReceiveError(code: payload.code, message: payload.message) })
+        case .assistAudioStreamStop:
+            guard let payload = AssistAudioStreamEndPayload(content: message.content) else {
+                Current.Log.error("Received assistAudioStreamStop without a stream id")
+                return
+            }
+            observers.forEach({ $0.delegate?.didReceiveAudioStreamStop(streamId: payload.streamId) })
         default:
             break
         }

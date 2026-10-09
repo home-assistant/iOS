@@ -37,9 +37,7 @@ platform :mac do
 
     begin
       notarize(
-        package: developer_id_app_path,
-        # not the _app_ bundle id, just an id that notarize uses for referencing
-        bundle_id: 'io.home-assistant.fastlane.developer-id'
+        package: developer_id_app_path
       )
     rescue StandardError => e
       puts "Failed with #{e}; retrying notarize in a few seconds..."

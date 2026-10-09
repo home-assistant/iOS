@@ -69,7 +69,7 @@ final class WatchCoverControlsViewModel: ObservableObject {
             let customColor = itemInfo.customization?.customIconColor.map { UIColor(hex: $0) }
             return entity.stateIconColor(customColor: customColor) ?? .white
         }
-        if let hex = itemInfo.customization?.iconColor {
+        if let hex = itemInfo.customization?.customIconColor {
             return UIColor(hex: hex)
         }
         return .white

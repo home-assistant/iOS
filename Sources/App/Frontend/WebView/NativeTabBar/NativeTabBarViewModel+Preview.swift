@@ -3,12 +3,14 @@ import Foundation
 import Shared
 
 extension NativeTabBarViewModel {
-    /// A tab bar over a fixed set of sidebar pages, for previews and snapshot tests.
+    /// A tab bar over a fixed set of sidebar pages, for previews and snapshot tests. The overlay state can be
+    /// handed in so a test can drive what the frontend reports, such as its more-info dialog.
     @MainActor
     static func preview(
         hiddenPanelPaths: [String] = [],
         additionalServers: [Server] = [],
         isAdmin: Bool = true,
+        overlayState: WebFrontendOverlayState? = nil,
         suiteName: String = "NativeTabBarPreview"
     ) -> NativeTabBarViewModel {
         let server = ServerFixture.standard
@@ -26,7 +28,7 @@ extension NativeTabBarViewModel {
             for: server.identifier.rawValue
         )
 
-        let overlayState = WebFrontendOverlayState()
+        let overlayState = overlayState ?? WebFrontendOverlayState()
         return NativeTabBarViewModel(
             sidebar: MacSidebarViewModel(
                 server: server,

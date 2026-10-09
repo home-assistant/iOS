@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Οταν είναι ενεργοποιημένο, το Assist δεν θα αναπαράγει απαντήσεις ήχου, ακόμη και αν το pipeline έχει διαμορφωμένη τη μετατροπή κειμένου σε ομιλία. Θα εξακολουθείτε να βλέπετε απαντήσεις κειμένου.";
 "assist.settings.tts_mute.toggle" = "Σίγαση φωνητικών απαντήσεων";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Πατήστε για να";
 "assist.watch.not_reachable.title" = "Το Assist απαιτεί συνδεσιμότητα iPhone. Το iPhone σας δεν είναι προσβάσιμο αυτή τη στιγμή.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
@@ -1156,6 +1157,9 @@
 "magic_item.background_color.title" = "Χρώμα φόντου";
 "magic_item.display_text.title" = "Εμφάνιση κειμένου";
 "magic_item.edit" = "Αποθήκευση";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Χρώμα εικονιδίου";
 "magic_item.icon_name.title" = "Ονομα εικονιδίου";
 "magic_item.item_type.action.list.title" = "Ενέργειες iOS";
@@ -2477,6 +2481,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "vacuum.control.start" = "Start";
 "vacuum.control.stop" = "Stop";
 "watch.assist.button.recording.title" = "Καταγραφή...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Πατήστε για αποστολή αιτήματος";
 "watch.assist.lack_config.error.title" = "Παρακαλώ ρυθμίστε το Assist χρησιμοποιώντας την εφαρμογή iOS companion";
 "watch.complications.builder.color" = "Gauge color";

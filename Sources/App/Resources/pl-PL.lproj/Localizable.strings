@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Po włączeniu tej opcji Asystent nie będzie odtwarzał odpowiedzi audio, nawet jeśli w kanale jest skonfigurowana funkcja zamiany tekstu na mowę. Nadal będą wyświetlane odpowiedzi tekstowe.";
 "assist.settings.tts_mute.toggle" = "Wycisz odpowiedzi głosowe";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
@@ -1156,6 +1157,9 @@
 "magic_item.background_color.title" = "Kolor tła";
 "magic_item.display_text.title" = "Wyświetlany tekst";
 "magic_item.edit" = "Save";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Kolor ikony";
 "magic_item.icon_name.title" = "Nazwa ikony";
 "magic_item.item_type.action.list.title" = "Akcje iOS";
@@ -2475,6 +2479,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "vacuum.control.start" = "Start";
 "vacuum.control.stop" = "Stop";
 "watch.assist.button.recording.title" = "Nagrywanie...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Tap to send request";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.complications.builder.color" = "Gauge color";

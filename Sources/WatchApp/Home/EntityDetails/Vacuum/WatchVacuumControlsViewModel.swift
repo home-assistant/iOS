@@ -71,11 +71,14 @@ final class WatchVacuumControlsViewModel: ObservableObject {
         item.icon(info: itemInfo)
     }
 
+    /// The color follows the entity's state, as on the home rows. Only a custom *color* overrides it,
+    /// whatever the state.
     var iconColor: UIColor {
-        if let hex = itemInfo.customization?.iconColor {
-            return UIColor(hex: hex)
+        let customColor = itemInfo.customization?.customIconColor.map { UIColor(hex: $0) }
+        if let entity {
+            return entity.stateIconColor(customColor: customColor) ?? .white
         }
-        return .white
+        return customColor ?? .white
     }
 
     func startStateUpdates() {

@@ -388,6 +388,7 @@
 "assist.settings.tts_mute.footer" = "Etkinleştirildiğinde, işlem hattında metinden sese dönüştürme yapılandırılmış olsa bile Assist sesli yanıtları oynatmaz. Yine de metin yanıtlarını göreceksiniz.";
 "assist.settings.tts_mute.toggle" = "Sesli yanıtları sessize al";
 "assist.text_field.placeholder" = "Bir istek girin...";
+"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Dokunun";
 "assist.watch.not_reachable.title" = "Assist için iPhone bağlantısı gerekir. iPhone'unuza şu anda erişilemiyor.";
 "assist.watch.on_device_stt.no_speech_recognized" = "Herhangi bir konuşma algılanmadı.";
@@ -1156,6 +1157,9 @@
 "magic_item.background_color.title" = "Arka plan rengi";
 "magic_item.display_text.title" = "Ekran metni";
 "magic_item.edit" = "Kaydet";
+"magic_item.icon_color.color" = "Color";
+"magic_item.icon_color.custom" = "Custom";
+"magic_item.icon_color.default" = "Default";
 "magic_item.icon_color.title" = "Simge rengi";
 "magic_item.icon_name.title" = "Simge adı";
 "magic_item.item_type.action.list.title" = "iOS Eylemleri";
@@ -1304,7 +1308,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "\"Yerel Ağ\" gizlilik izni reddedilmiş olabilir. Bunu sistem Ayarları uygulamasında değiştirebilirsiniz.";
 "onboarding.device_name_check.error.prompt" = "Bunun yerine hangi cihaz adı kullanılmalıdır?";
 "onboarding.device_name_check.error.title" = "%1$@ ' adında bir cihaz zaten var";
-"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
+"onboarding.device_name_check.error.unreachable" = "Cihaz adını kontrol etmek için Home Assistant'a bağlanılamadı. Bağlantınızı kontrol edin ve tekrar deneyin.";
 "onboarding.invitation.accept_button" = "Kabul et";
 "onboarding.invitation.address_title" = "Home Assistant adresi";
 "onboarding.invitation.description" = "Home Assistant, yerel kontrolü ve gizliliği ön planda tutan açık kaynaklı bir ev otomasyon sistemidir.";
@@ -2402,9 +2406,9 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "tab_bar.item.search" = "Ara";
 "tab_bar.more.app_settings" = "Uygulama Ayarları";
 "tab_bar.more.customize" = "Özelleştir";
-"tab_bar.more.edit_profile" = "Edit profile";
+"tab_bar.more.edit_profile" = "Profili düzenle";
 "tab_bar.more.home_assistant_settings" = "Home Assistant Ayarları";
-"tab_bar.more.other_servers" = "Other servers";
+"tab_bar.more.other_servers" = "Diğer sunucular";
 "tab_bar.more.title" = "Daha fazla";
 "tags.allowed.delete_all" = "Tümünü sil";
 "tags.allowed.delete_all.confirm.button" = "Tümünü sil";
@@ -2477,6 +2481,7 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "vacuum.control.start" = "Başlat";
 "vacuum.control.stop" = "Durdur";
 "watch.assist.button.recording.title" = "Kayıt...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "İstek göndermek için dokunun";
 "watch.assist.lack_config.error.title" = "Lütfen iOS yardımcı uygulamasını kullanarak Assist'i yapılandırın";
 "watch.complications.builder.color" = "Gösterge rengi";
@@ -2678,7 +2683,7 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "watch.configurator.sections.icon.header" = "Simge";
 "watch.configurator.sections.ring.footer" = "Metni çevreleyen ilerlemeyi gösteren halka.";
 "watch.configurator.sections.ring.header" = "Halka";
-"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
+"watch.context_sync.timed_out" = "Saatin güncellemeyi kabul etmesini beklerken zaman aşımı oluştu.";
 "watch.cover_controls.close" = "Kapat";
 "watch.cover_controls.open" = "Aç";
 "watch.cover_controls.position" = "Pozisyon";

@@ -18,6 +18,7 @@ final class WatchCommunicatorAssistTests: XCTestCase {
     private var failsLater = false
     private var lateFailures: [() -> Void] = []
     private var sentMessages: [HAWatchConnectivity.ImmediateMessage] = []
+    private var streamReplies: [HAWatchConnectivity.ImmediateMessage] = []
     private var service: WatchCommunicatorService!
 
     override func setUp() {
@@ -38,6 +39,7 @@ final class WatchCommunicatorAssistTests: XCTestCase {
         failsLater = false
         lateFailures = []
         sentMessages = []
+        streamReplies = []
 
         service = WatchCommunicatorService()
         service.assistConfiguration = { [weak self] in self?.configuration ?? AssistConfiguration() }
@@ -96,6 +98,50 @@ final class WatchCommunicatorAssistTests: XCTestCase {
             content: payload.content,
             reply: { _ in }
         ))
+    }
+
+    private func startStream(_ streamId: String = "stream", serverId: String? = nil) {
+        let payload = AssistAudioStreamStartPayload(
+            streamId: streamId,
+            sampleRate: 16000,
+            pipelineId: "pipeline",
+            serverId: serverId ?? server.identifier.rawValue
+        )
+        service.handleAssistAudioStreamStart(.init(
+            identifier: InteractiveImmediateMessages.assistAudioStreamStart.rawValue,
+            content: payload.content,
+            reply: { [weak self] in self?.streamReplies.append($0) }
+        ))
+    }
+
+    private func streamChunk(_ audio: Data, sequence: Int, isFinal: Bool = false, streamId: String = "stream") {
+        let payload = AssistAudioStreamChunkPayload(
+            streamId: streamId,
+            sequence: sequence,
+            audio: audio,
+            isFinal: isFinal
+        )
+        service.handleAssistAudioStreamChunk(.init(
+            identifier: InteractiveImmediateMessages.assistAudioStreamChunk.rawValue,
+            content: payload.content,
+            reply: { [weak self] in self?.streamReplies.append($0) }
+        ))
+    }
+
+    private func cancelStream(_ streamId: String = "stream") {
+        service.handleAssistAudioStreamCancel(.init(
+            identifier: InteractiveImmediateMessages.assistAudioStreamCancel.rawValue,
+            content: AssistAudioStreamEndPayload(streamId: streamId).content,
+            reply: { [weak self] in self?.streamReplies.append($0) }
+        ))
+    }
+
+    private var acks: [AssistAudioStreamAckPayload] {
+        streamReplies.compactMap { AssistAudioStreamAckPayload(content: $0.content) }
+    }
+
+    private var stoppedStreams: [String] {
+        messages(.assistAudioStreamStop).compactMap { AssistAudioStreamEndPayload(content: $0.content)?.streamId }
     }
 
     private func messages(_ response: InteractiveImmediateResponses) -> [HAWatchConnectivity.ImmediateMessage] {
@@ -249,6 +295,336 @@ final class WatchCommunicatorAssistTests: XCTestCase {
             [WyomingProtocolError.speechRecognitionNotAuthorized.errorDescription]
         )
         XCTAssertNil(assistService.assistSource)
+    }
+
+    // MARK: - Streamed recordings
+
+    func testStreamStartsTheServerSTTRunBeforeAnyAudioArrives() {
+        startStream()
+
+        XCTAssertEqual(
+            assistService.assistSource,
+            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
+        )
+        XCTAssertEqual(acks, [AssistAudioStreamAckPayload(streamId: "stream", isListening: true)])
+    }
+
+    func testStreamedAudioWaitsForThePipelineAndThenGoesStraightThrough() {
+        startStream()
+        streamChunk(Data([1, 2]), sequence: 0)
+        streamChunk(Data([3, 4]), sequence: 1)
+        XCTAssertTrue(assistService.audioChunksSent.isEmpty)
+
+        service.didReceiveGreenLightForAudioInput()
+        streamChunk(Data([5, 6]), sequence: 2)
+
+        XCTAssertEqual(assistService.audioChunksSent, [Data([1, 2, 3, 4]), Data([5, 6])])
+        XCTAssertFalse(assistService.finishSendingAudioCalled)
+        XCTAssertEqual(acks.map(\.isListening), [true, true, true, true])
+    }
+
+    func testRepeatedChunkIsNotSentTwice() {
+        startStream()
+        service.didReceiveGreenLightForAudioInput()
+
+        streamChunk(Data([1, 2]), sequence: 0)
+        streamChunk(Data([1, 2]), sequence: 0)
+
+        XCTAssertEqual(assistService.audioChunksSent, [Data([1, 2])])
+    }
+
+    func testPipelineHearingTheEndOfSpeechStopsTheWatchRecording() {
+        startStream()
+        service.didReceiveGreenLightForAudioInput()
+        streamChunk(Data([1, 2]), sequence: 0)
+
+        service.didReceiveEvent(.sttVadEnd)
+
+        XCTAssertEqual(stoppedStreams, ["stream"])
+        XCTAssertTrue(assistService.finishSendingAudioCalled)
+
+        // A chunk already on its way is answered as no longer wanted.
+        streamChunk(Data([3, 4]), sequence: 1)
+        XCTAssertEqual(acks.last, AssistAudioStreamAckPayload(streamId: "stream", isListening: false))
+        XCTAssertEqual(assistService.audioChunksSent, [Data([1, 2])])
+
+        service.didReceiveEvent(.sttEnd)
+        XCTAssertEqual(stoppedStreams, ["stream"])
+    }
+
+    func testRunEndingWhileStreamingStopsTheWatchRecording() {
+        startStream()
+        service.didReceiveGreenLightForAudioInput()
+
+        service.didReceiveEvent(.runEnd)
+
+        XCTAssertEqual(stoppedStreams, ["stream"])
+    }
+
+    func testSubmittedStreamEndsTheAudioWithoutStoppingTheWatch() {
+        startStream()
+        service.didReceiveGreenLightForAudioInput()
+
+        streamChunk(Data([1, 2]), sequence: 0, isFinal: true)
+
+        XCTAssertEqual(assistService.audioChunksSent, [Data([1, 2])])
+        XCTAssertTrue(assistService.finishSendingAudioCalled)
+        XCTAssertEqual(acks.last?.isListening, false)
+        service.didReceiveEvent(.sttVadEnd)
+        XCTAssertTrue(stoppedStreams.isEmpty)
+    }
+
+    func testStreamSubmittedBeforeThePipelineIsReadyEndsOnceItIs() {
+        startStream()
+        streamChunk(Data([1, 2]), sequence: 0)
+        streamChunk(Data(), sequence: 1, isFinal: true)
+        XCTAssertFalse(assistService.finishSendingAudioCalled)
+
+        service.didReceiveGreenLightForAudioInput()
+
+        XCTAssertEqual(assistService.audioChunksSent, [Data([1, 2])])
+        XCTAssertTrue(assistService.finishSendingAudioCalled)
+    }
+
+    func testCancelledStreamAbandonsTheRunInsteadOfFinishingIt() {
+        startStream()
+        service.didReceiveGreenLightForAudioInput()
+
+        cancelStream()
+        streamChunk(Data([1, 2]), sequence: 0)
+
+        XCTAssertTrue(assistService.cancelRunCalled)
+        XCTAssertFalse(assistService.finishSendingAudioCalled)
+        XCTAssertTrue(assistService.audioChunksSent.isEmpty)
+        XCTAssertEqual(acks.last, AssistAudioStreamAckPayload(streamId: "stream", isListening: false))
+    }
+
+    /// The service holds one run at a time: the previous question's late events would otherwise end
+    /// the new stream's run.
+    func testNewStreamAbandonsThePreviousRun() {
+        startStream("first")
+        XCTAssertFalse(assistService.cancelRunCalled)
+
+        startStream("second")
+        streamChunk(Data([1, 2]), sequence: 0, streamId: "first")
+
+        XCTAssertTrue(assistService.cancelRunCalled)
+        XCTAssertEqual(acks.last, AssistAudioStreamAckPayload(streamId: "first", isListening: false))
+    }
+
+    func testStreamTheWatchStopsFeedingIsAbandoned() {
+        service.assistAudioStreamTimeout = 0.05
+        startStream()
+
+        waitUntil { assistService.cancelRunCalled }
+
+        // The watch may still be recording, to send the recording whole once it is done.
+        XCTAssertTrue(messages(.assistError).isEmpty)
+    }
+
+    func testSubmittedStreamThePipelineNeverTakesIsReportedToTheWatch() {
+        service.assistAudioStreamTimeout = 0.05
+        startStream()
+        streamChunk(Data([1, 2]), sequence: 0, isFinal: true)
+
+        waitUntil { assistService.cancelRunCalled }
+
+        let errors = messages(.assistError).compactMap { AssistErrorPayload(content: $0.content) }
+        XCTAssertEqual(errors.map(\.code), ["audio_stream_timeout"])
+    }
+
+    func testPipelineErrorEndsTheStream() {
+        startStream()
+
+        service.didReceiveError(code: "stt-provider-missing", message: "No speech-to-text provider")
+        streamChunk(Data([1, 2]), sequence: 0)
+
+        XCTAssertEqual(acks.last?.isListening, false)
+        XCTAssertFalse(assistService.cancelRunCalled)
+    }
+
+    func testStreamToAnUnknownServerReportsTheErrorAndDoesNotListen() {
+        startStream(serverId: "unknown")
+
+        XCTAssertNil(assistService.assistSource)
+        let errors = messages(.assistError).compactMap { AssistErrorPayload(content: $0.content) }
+        XCTAssertEqual(errors.map(\.code), ["unknown_server"])
+        XCTAssertEqual(acks, [AssistAudioStreamAckPayload(streamId: "stream", isListening: false)])
+    }
+
+    func testUnreadableStreamMessagesAreStillAnswered() {
+        func unreadable(_ identifier: InteractiveImmediateMessages) -> HAWatchConnectivity.InteractiveImmediateMessage {
+            .init(identifier: identifier.rawValue, content: [:], reply: { [weak self] in
+                self?.streamReplies.append($0)
+            })
+        }
+
+        service.handleAssistAudioStreamStart(unreadable(.assistAudioStreamStart))
+        service.handleAssistAudioStreamChunk(unreadable(.assistAudioStreamChunk))
+        service.handleAssistAudioStreamCancel(unreadable(.assistAudioStreamCancel))
+
+        XCTAssertEqual(streamReplies.count, 3)
+        XCTAssertTrue(acks.isEmpty)
+        let errors = messages(.assistError).compactMap { AssistErrorPayload(content: $0.content) }
+        XCTAssertEqual(errors.map(\.code), ["invalid_payload"])
+    }
+
+    func testUnreadableStreamStartLeavesTheStreamInProgressAlone() {
+        startStream()
+
+        service.handleAssistAudioStreamStart(.init(
+            identifier: InteractiveImmediateMessages.assistAudioStreamStart.rawValue,
+            content: [:],
+            reply: { _ in }
+        ))
+        streamChunk(Data([1, 2]), sequence: 0)
+
+        XCTAssertEqual(acks.last, AssistAudioStreamAckPayload(streamId: "stream", isListening: true))
+    }
+
+    func testWholeRecordingFromAWatchThatGaveUpStreamingReplacesTheStream() {
+        startStream()
+
+        sendRecording()
+        service.didReceiveGreenLightForAudioInput()
+
+        XCTAssertTrue(assistService.cancelRunCalled)
+        XCTAssertEqual(assistService.audioChunksSent, [audioData])
+        XCTAssertTrue(assistService.finishSendingAudioCalled)
+    }
+
+    func testStreamMessagesReachTheirHandlersThroughTheMessageRouter() {
+        service.setupMessages()
+
+        route(.assistAudioStreamStart, AssistAudioStreamStartPayload(
+            streamId: "stream",
+            sampleRate: 16000,
+            pipelineId: "pipeline",
+            serverId: server.identifier.rawValue
+        ).content)
+        route(.assistAudioStreamChunk, AssistAudioStreamChunkPayload(
+            streamId: "stream",
+            sequence: 0,
+            audio: Data([1, 2]),
+            isFinal: false
+        ).content)
+        route(.assistAudioStreamCancel, AssistAudioStreamEndPayload(streamId: "stream").content)
+
+        XCTAssertEqual(
+            assistService.assistSource,
+            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
+        )
+        XCTAssertTrue(assistService.cancelRunCalled)
+    }
+
+    /// Delivers a message the way the watch's arrive. Every listener gets it on the main queue, so
+    /// once the queue is flushed this service has handled it.
+    private func route(_ identifier: InteractiveImmediateMessages, _ content: [String: Any]) {
+        Communicator.shared.interactiveImmediateMessage.notify(.init(
+            identifier: identifier.rawValue,
+            content: content,
+            reply: { _ in }
+        ))
+        flushMainQueue()
+    }
+
+    func testChunkAfterAGapIsStillSent() {
+        startStream()
+        service.didReceiveGreenLightForAudioInput()
+
+        streamChunk(Data([1, 2]), sequence: 0)
+        streamChunk(Data([5, 6]), sequence: 2)
+
+        XCTAssertEqual(assistService.audioChunksSent, [Data([1, 2]), Data([5, 6])])
+    }
+
+    // MARK: - Streamed recordings, on-device speech-to-text
+
+    func testStreamIsTranscribedOnThePhoneWhenSTTIsOnDevice() {
+        configuration = AssistConfiguration(enableOnDeviceSTT: true, onDeviceSTTLocaleIdentifier: "pt-BR")
+        recognizer.finalTranscript = " Turn on the lights "
+
+        startStream()
+        streamChunk(Data([1, 2]), sequence: 0)
+        XCTAssertTrue(recognizer.didReceiveAudio)
+        XCTAssertNil(assistService.assistSource)
+        XCTAssertEqual(acks.last?.isListening, true)
+
+        streamChunk(Data([3, 4]), sequence: 1, isFinal: true)
+        waitUntil { assistService.assistSource != nil }
+
+        XCTAssertEqual(recognizerLocale?.identifier, "pt-BR")
+        XCTAssertTrue(recognizer.didEndAudio)
+        XCTAssertEqual(
+            assistService.assistSource,
+            .text(input: "Turn on the lights", pipelineId: "pipeline", expectTTS: true)
+        )
+        XCTAssertFalse(assistService.sendAudioDataCalled)
+        XCTAssertTrue(stoppedStreams.isEmpty)
+        let echoed = messages(.assistSTTResponse).compactMap { AssistTextResponsePayload(content: $0.content) }
+        XCTAssertEqual(echoed.map(\.text), ["Turn on the lights"])
+    }
+
+    func testRecognizerHearingTheEndOfSpeechStopsTheWatchRecording() {
+        configuration = AssistConfiguration(enableOnDeviceSTT: true)
+
+        startStream()
+        streamChunk(Data([1, 2]), sequence: 0)
+        recognizer.report("Turn on the lights", isFinal: true)
+        waitUntil { assistService.assistSource != nil }
+
+        XCTAssertEqual(stoppedStreams, ["stream"])
+        XCTAssertEqual(
+            assistService.assistSource,
+            .text(input: "Turn on the lights", pipelineId: "pipeline", expectTTS: true)
+        )
+        streamChunk(Data([3, 4]), sequence: 1)
+        XCTAssertEqual(acks.last?.isListening, false)
+    }
+
+    /// Transcribing takes a moment: a recording the user started meanwhile must not be ended by the
+    /// previous one's transcript, nor have that transcript answered while it is being made.
+    func testTranscriptOfAReplacedRequestIsDropped() {
+        configuration = AssistConfiguration(enableOnDeviceSTT: true)
+        recognizer.finalTranscript = "Turn on the lights"
+        startStream("first")
+        streamChunk(Data([1, 2]), sequence: 0, isFinal: true, streamId: "first")
+
+        configuration = AssistConfiguration()
+        startStream("second")
+        waitUntil { recognizer.didEndAudio }
+        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+
+        XCTAssertEqual(
+            assistService.assistSource,
+            .audio(pipelineId: "pipeline", audioSampleRate: 16000, tts: true)
+        )
+        XCTAssertTrue(messages(.assistSTTResponse).isEmpty)
+        XCTAssertTrue(messages(.assistError).isEmpty)
+        streamChunk(Data([3, 4]), sequence: 0, streamId: "second")
+        XCTAssertEqual(acks.last, AssistAudioStreamAckPayload(streamId: "second", isListening: true))
+    }
+
+    func testCancelledOnDeviceStreamStopsTheRecognizer() {
+        configuration = AssistConfiguration(enableOnDeviceSTT: true)
+        startStream()
+        streamChunk(Data([1, 2]), sequence: 0)
+
+        cancelStream()
+
+        XCTAssertTrue(recognizer.didCancel)
+        XCTAssertFalse(recognizer.didEndAudio)
+    }
+
+    func testUnavailableRecognizerReportsTheErrorAndDoesNotListen() {
+        configuration = AssistConfiguration(enableOnDeviceSTT: true)
+        recognizerFailure = WyomingProtocolError.speechRecognitionNotAuthorized
+
+        startStream()
+
+        let errors = messages(.assistError).compactMap { AssistErrorPayload(content: $0.content) }
+        XCTAssertEqual(errors.map(\.code), ["on_device_stt_failed"])
+        XCTAssertEqual(acks, [AssistAudioStreamAckPayload(streamId: "stream", isListening: false)])
     }
 
     // MARK: - Written prompts
@@ -521,6 +897,7 @@ private final class FakeSpeechRecognizer: OnDeviceSpeechRecognizing {
     var failure: Error?
     private(set) var didReceiveAudio = false
     private(set) var didEndAudio = false
+    private(set) var didCancel = false
 
     private var onTranscript: ((String, Bool) -> Void)?
     private var onFailure: ((Error) -> Void)?
@@ -546,5 +923,12 @@ private final class FakeSpeechRecognizer: OnDeviceSpeechRecognizing {
         }
     }
 
-    func cancel() {}
+    func cancel() {
+        didCancel = true
+    }
+
+    /// What the recognizer heard while the audio is still streaming in.
+    func report(_ transcript: String, isFinal: Bool) {
+        onTranscript?(transcript, isFinal)
+    }
 }
