@@ -7781,6 +7781,12 @@ public enum L10n {
         /// When app is open
         public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
       }
+      public enum UnavailableOnDevice {
+        /// Unavailable on this device
+        public static var header: String { return L10n.tr("Localizable", "settings_sensors.sensors.unavailable_on_device.header") }
+        /// Unavailable
+        public static var state: String { return L10n.tr("Localizable", "settings_sensors.sensors.unavailable_on_device.state") }
+      }
     }
     public enum Servers {
       /// Each server receives the sensors you pick for it, so a sensor can report to one and not another.

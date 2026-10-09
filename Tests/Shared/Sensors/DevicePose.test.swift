@@ -26,14 +26,14 @@ class DevicePoseTests: XCTestCase {
         }
     }
 
-    func testPartiallyOpenUprightIsLaptop() {
-        XCTAssertEqual(pose(.partiallyOpen, Orientation.portrait), .laptop)
-        XCTAssertEqual(pose(.partiallyOpen, Orientation.portraitUpsideDown), .laptop)
+    func testPartiallyOpenUprightIsBook() {
+        XCTAssertEqual(pose(.partiallyOpen, Orientation.portrait), .book)
+        XCTAssertEqual(pose(.partiallyOpen, Orientation.portraitUpsideDown), .book)
     }
 
-    func testPartiallyOpenSidewaysIsBook() {
-        XCTAssertEqual(pose(.partiallyOpen, Orientation.landscapeLeft), .book)
-        XCTAssertEqual(pose(.partiallyOpen, Orientation.landscapeRight), .book)
+    func testPartiallyOpenSidewaysIsLaptop() {
+        XCTAssertEqual(pose(.partiallyOpen, Orientation.landscapeLeft), .laptop)
+        XCTAssertEqual(pose(.partiallyOpen, Orientation.landscapeRight), .laptop)
     }
 
     func testPartiallyOpenWithoutAnUprightOrientationIsPartiallyOpen() {

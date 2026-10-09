@@ -20,6 +20,13 @@ public final class HingeObserver: ObservableObject {
     /// this device has none.
     @Published public private(set) var hasReceivedUpdate = false
 
+    /// Whether this device has reported a hinge at any point this launch, which is what decides
+    /// whether the hinge sensors can be switched on.
+    ///
+    /// Unlike ``state`` this never goes back: the reading returns to `nil` when the view observing
+    /// the hinge leaves a hierarchy that reports one, but the device still has the hinge it reported.
+    @Published public private(set) var hasHinge = false
+
     @Published public private(set) var deviceOrientationRawValue = 0
 
     /// Emits the current reading and every subsequent change, so the hinge sensors can report it.
@@ -68,6 +75,9 @@ public final class HingeObserver: ObservableObject {
         // Always recorded, even when the reading has not changed: the first update is what proves
         // this device answers about a hinge at all.
         hasReceivedUpdate = true
+        if state != nil, !hasHinge {
+            hasHinge = true
+        }
         guard state != self.state else { return }
         self.state = state
     }

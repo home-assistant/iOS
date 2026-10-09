@@ -18,6 +18,10 @@ struct WebViewEmptyStateHeader: View {
     let settingsAction: () -> Void
     let serverSelectionAction: (Server) -> Void
     let dismissAction: () -> Void
+    /// Visual shift of the server selection only, so it can sit at the display's horizontal center
+    /// when a horizontal safe-area inset (iPhone Duo camera or vertical bar) narrows the layout. The
+    /// accessories keep their safe-area edges either way.
+    var serverSelectionHorizontalOffset: CGFloat = 0
 
     var body: some View {
         HStack {
@@ -55,11 +59,15 @@ struct WebViewEmptyStateHeader: View {
                         .clipShape(.capsule)
                     }
                     .buttonStyle(.plain)
+                    .padding(.horizontal, abs(serverSelectionHorizontalOffset))
+                    .offset(x: serverSelectionHorizontalOffset)
                 } else {
                     ServerPickerView(server: server, onSelect: serverSelectionAction)
                         // Using .secondarySystemBackground to visually distinguish the server selection view
                         .background(Color(uiColor: .secondarySystemBackground))
                         .clipShape(Capsule())
+                        .padding(.horizontal, abs(serverSelectionHorizontalOffset))
+                        .offset(x: serverSelectionHorizontalOffset)
                 }
             }
             Spacer()

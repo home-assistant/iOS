@@ -253,7 +253,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::sensor::title" = "Cảm biến";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Nhàn rỗi";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Đóng";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Hoạt động";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Hoạt động (tiêu hao nhiều pin hơn, cập nhật nhanh nhất)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Bị vô hiệu hóa";
 "component::siren::entity_component::_::state::off" = "Tắt";
 "component::siren::entity_component::_::state::on" = "Bật";

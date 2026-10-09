@@ -2438,6 +2438,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "thread.transter_to_homeassistant.title" = "转移至 Home Assistant";
 "token_error.connection_failed" = "连接失败。";
 "token_error.expired" = "令牌已过期。";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "令牌不可用。";
 "unauthenticated.message.body" = "您的会话已过期。重新验证身份可继续，如果您使用了代理或网络受限，请检查您的连接。";
 "unauthenticated.message.title" = "您尚未通过身份验证";
