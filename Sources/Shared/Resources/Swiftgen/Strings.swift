@@ -10050,6 +10050,8 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.cover.description") }
         /// Choose cover
         public static var pendingConfiguration: String { return L10n.tr("Localizable", "widgets.controls.cover.pending_configuration") }
+        /// Show next action
+        public static var showNextAction: String { return L10n.tr("Localizable", "widgets.controls.cover.show_next_action") }
         /// Cover
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.cover.title") }
       }
