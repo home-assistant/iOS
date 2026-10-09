@@ -186,14 +186,6 @@
         }
       },
       {
-        "package": "realm-core",
-        "repositoryURL": "https://github.com/fruitcoder/realm-core.git",
-        "state": {
-          "revision": "bd17f8a0f0803db816701b558e25a31fa37f1b6e",
-          "version": "20.1.5"
-        }
-      },
-      {
         "package": "sdk-ios",
         "repositoryURL": "https://github.com/improv-wifi/sdk-iOS.git",
         "state": {
@@ -286,13 +278,6 @@
         "state": {
           "revision": "4def3c1c772ca90ad5e7bfc8ac437c3b0b4276cf",
           "version": "7.1.5"
-        }
-      },
-      {
-        "package": "xcode27-realm-swift",
-        "repositoryURL": "https://github.com/bgoncal/xcode27-realm-swift.git",
-        "state": {
-          "revision": "dc01270ec79aa9f51dd37fe34e9da030a117170a"
         }
       },
       {
