@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+@testable import Shared
 import XCTest
 
 final class WebViewExternalBusMessageTests: XCTestCase {
@@ -12,6 +13,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.tagWrite.rawValue, "tag/write")
         XCTAssertEqual(WebViewExternalBusMessage.themeUpdate.rawValue, "theme-update")
         XCTAssertEqual(WebViewExternalBusMessage.matterCommission.rawValue, "matter/commission")
+        XCTAssertEqual(WebViewExternalBusMessage.matterShareDevice.rawValue, "matter/share_device")
         XCTAssertEqual(WebViewExternalBusMessage.threadImportCredentials.rawValue, "thread/import_credentials")
         XCTAssertEqual(WebViewExternalBusMessage.barCodeScanner.rawValue, "bar_code/scan")
         XCTAssertEqual(WebViewExternalBusMessage.barCodeScannerClose.rawValue, "bar_code/close")
@@ -46,7 +48,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
         XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 29)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 30)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -86,6 +88,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasSidebar",
             "canWriteTag",
             "canCommissionMatter",
+            "canShareMatterDeviceToAppleHome",
             "hasMatterStatusReport",
             "canImportThreadCredentials",
             "hasBarCodeScanner",
@@ -102,5 +105,22 @@ final class WebViewExternalBusMessageTests: XCTestCase {
 
         let actualKeys = Set(result.keys)
         XCTAssertEqual(actualKeys, expectedKeys)
+    }
+
+    @MainActor func testConfigResultReportsWhetherMatterDevicesCanBeSharedToAppleHome() {
+        let canShareDevice = Current.matter.canShareDevice
+        defer { Current.matter.canShareDevice = canShareDevice }
+
+        Current.matter.canShareDevice = true
+        XCTAssertEqual(
+            WebViewExternalBusMessage.configResult["canShareMatterDeviceToAppleHome"] as? Bool,
+            true
+        )
+
+        Current.matter.canShareDevice = false
+        XCTAssertEqual(
+            WebViewExternalBusMessage.configResult["canShareMatterDeviceToAppleHome"] as? Bool,
+            false
+        )
     }
 }
