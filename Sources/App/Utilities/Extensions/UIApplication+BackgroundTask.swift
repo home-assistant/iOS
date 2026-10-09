@@ -8,13 +8,22 @@ class ApplicationBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
         withName name: String,
         wrapping: (TimeInterval?) -> Promise<PromiseValue>
     ) -> Promise<PromiseValue> {
-        UIApplication.shared.backgroundTask(withName: name, wrapping: wrapping)
+        callAsFunction(withName: name, requiringAssertion: false, wrapping: wrapping)
+    }
+
+    public func callAsFunction<PromiseValue>(
+        withName name: String,
+        requiringAssertion: Bool,
+        wrapping: (TimeInterval?) -> Promise<PromiseValue>
+    ) -> Promise<PromiseValue> {
+        UIApplication.shared.backgroundTask(withName: name, requiringAssertion: requiringAssertion, wrapping: wrapping)
     }
 }
 
 private extension UIApplication {
     func backgroundTask<PromiseValue>(
         withName name: String,
+        requiringAssertion: Bool,
         wrapping: (TimeInterval?) -> Promise<PromiseValue>
     ) -> Promise<PromiseValue> {
         HomeAssistantBackgroundTask.execute(
@@ -37,7 +46,8 @@ private extension UIApplication {
                 return (identifier == .invalid ? nil : identifier, remaining)
             }, endBackgroundTask: { identifier in
                 self.endBackgroundTask(identifier)
-            }, wrapping: wrapping
+            }, requiresAssertion: requiringAssertion,
+            wrapping: wrapping
         )
     }
 }

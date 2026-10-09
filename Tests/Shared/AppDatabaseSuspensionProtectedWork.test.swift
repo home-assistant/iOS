@@ -178,6 +178,42 @@ struct AppDatabaseSuspensionProtectedWorkTests {
         }
     }
 
+    @Test("A denied background task skips the work and leaves the database suspended")
+    func deniedBackgroundTaskSkipsWork() {
+        let (suspension, recorder) = makeSuspension()
+        let didRunWork = Box<Bool>()
+
+        withBackgroundTaskRunner(DenyingBackgroundTaskRunner()) {
+            suspension.performProtectedWork(named: .panelsSave) {
+                didRunWork.value = true
+            }
+
+            #expect(waitUntil { recorder.posted.last == Database.suspendNotification })
+        }
+
+        #expect(didRunWork.value == nil)
+        // Nothing resumed the database for work that never started.
+        #expect(!recorder.posted.contains(Database.resumeNotification))
+    }
+
+    /// Refuses the assertion, as iOS does when the app has no background time left.
+    private final class DenyingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            wrapping(nil)
+        }
+
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            requiringAssertion: Bool,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            requiringAssertion ? Promise(error: BackgroundTaskError.denied) : wrapping(nil)
+        }
+    }
+
     @Test("Work resumes the database and leaves it resumed when the app stayed foregrounded")
     func foregroundWorkLeavesDatabaseResumed() {
         let (suspension, recorder) = makeSuspension()

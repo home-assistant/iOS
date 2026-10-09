@@ -151,7 +151,10 @@ public class LegacyModelManager: ServerObserver {
         // protected time a write caught mid-statement at the process freeze holds the app-group
         // SQLite file lock and the system kills the app with 0xdead10cc. The writes only start once
         // the task is held, so a freeze while acquiring it can't catch one mid-statement either.
-        return Current.backgroundTask(withName: BackgroundTask.legacyModelCleanup.rawValue) { [workQueue] _ in
+        return Current.backgroundTask(
+            withName: BackgroundTask.legacyModelCleanup.rawValue,
+            requiringAssertion: true
+        ) { [workQueue] _ in
             let (promise, seal) = Promise<Void>.pending()
             workQueue.async {
                 let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
@@ -175,11 +178,14 @@ public class LegacyModelManager: ServerObserver {
             return promise
         }
         .recover { error -> Promise<Void> in
-            // Out of background time: suspend GRDB right away, aborting any in-flight write so
-            // the file lock is released before the process is frozen. Ordinary write failures
-            // (rethrown below) must not suspend the database.
-            if case BackgroundTaskError.outOfTime = error {
+            // Out of background time, or none granted: suspend GRDB right away, aborting any
+            // in-flight write so the file lock is released before the process is frozen. Ordinary
+            // write failures (rethrown below) must not suspend the database.
+            switch error {
+            case BackgroundTaskError.outOfTime, BackgroundTaskError.denied:
                 AppDatabaseSuspension.suspend()
+            default:
+                break
             }
             throw error
         }
