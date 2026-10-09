@@ -2440,6 +2440,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "thread.transter_to_homeassistant.title" = "Home Assistantに転送";
 "token_error.connection_failed" = "接続に失敗しました。";
 "token_error.expired" = "トークンの有効期限が切れています。";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "トークンが利用できません。";
 "unauthenticated.message.body" = "セッションの有効期限が切れました。続行するには再度認証を行うか、プロキシまたはネットワーク制限の背後にいる場合は接続を確認してください。";
 "unauthenticated.message.title" = "あなたは認証されていません";

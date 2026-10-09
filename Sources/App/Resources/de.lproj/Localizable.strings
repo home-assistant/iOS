@@ -399,7 +399,7 @@
 "assist.watch.volume.title" = "Lautstärkeregler";
 "assist_pipeline_picker.no_pipelines" = "Keine Pipelines verfügbar";
 "assist_pipeline_picker.placeholder" = "Pipeline auswählen";
-"assist_pipeline_picker.reload" = "Reload";
+"assist_pipeline_picker.reload" = "Neu laden";
 "camera_list.edit.off.title" = "Bearbeiten";
 "camera_list.edit.on.title" = "Fertig";
 "camera_list.empty.message" = "In deinem Home Assistant Setup wurden keine Kamera-Entitäten gefunden";
@@ -716,12 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Alle Domains";
 "entity_picker.filter.domain.title" = "Domain";
 "entity_picker.filter.group_by.area" = "Nach Bereich gruppieren";
-"entity_picker.filter.group_by.device" = "Group by Device";
+"entity_picker.filter.group_by.device" = "Nach Gerät gruppieren";
 "entity_picker.filter.group_by.domain" = "Nach Domäne gruppieren";
 "entity_picker.filter.group_by.title" = "Gruppieren nach";
 "entity_picker.filter.server.title" = "Server";
 "entity_picker.list.area.no_area.title" = "Kein Bereich";
-"entity_picker.list.device.no_device.title" = "No device";
+"entity_picker.list.device.no_device.title" = "Kein Gerät";
 "entity_picker.placeholder" = "Entität auswählen";
 "entity_picker.refresh.updating" = "Wird aktualisiert …";
 "entity_picker.reload" = "Neu laden";
@@ -1428,7 +1428,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "onboarding.welcome.learn_more" = "Mehr erfahren";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant-Logo";
 "onboarding.welcome.primary_button" = "Mit meinem Home Assistant verbinden";
-"onboarding.welcome.primary_button_compact" = "Connect";
+"onboarding.welcome.primary_button_compact" = "Verbinden";
 "onboarding.welcome.secondary_button" = "Erste Schritte";
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Greife von unterwegs auf deinen Home Assistant-Server zu.\
@@ -2441,6 +2441,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "thread.transter_to_homeassistant.title" = "An Home Assistant übertragen";
 "token_error.connection_failed" = "Verbindung fehlgeschlagen.";
 "token_error.expired" = "Das Token ist abgelaufen.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Token ist nicht verfügbar.";
 "unauthenticated.message.body" = "Deine Sitzung ist abgelaufen. Bitte authentifiziere dich erneut, um fortzufahren, oder überprüfe deine Verbindung, ob du dich hinter einem Proxy befindest oder Netzwerkbeschränkungen vorliegen.";
 "unauthenticated.message.title" = "Du bist nicht authentifiziert";
@@ -2719,7 +2720,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "watch.home.areas.title" = "Bereiche";
 "watch.home.cancel_and_use_cache.title" = "Abbrechen und Cache verwenden";
 "watch.home.device.empty" = "Für dieses Gerät sind keine kompatiblen Entitäten vorhanden.";
-"watch.home.device.part_of" = "Part of %@";
+"watch.home.device.part_of" = "Teil von %@";
 "watch.home.loading.skip.title" = "Überspringen";
 "watch.home.run.confirmation.title" = "Möchtest du „%@“ wirklich ausführen?";
 "watch.home.run.error.lock_state_unknown" = "Der aktuelle Zustand des Schlosses ist noch nicht bekannt, daher wurde die Aktion nicht gesendet. Warte, bis der Zustand geladen ist, und versuche es erneut.";
@@ -2964,10 +2965,10 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "watch.settings.developer.warning.message" = "Diese Optionen dienen der Fehlersuche. Verwende sie nur unter Anleitung eines Entwicklers.";
 "watch.settings.developer.warning.title" = "Warnung";
 "watch.settings.last_updated" = "%@ aktualisiert";
-"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
-"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
-"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
-"watch.settings.location.title" = "Location";
+"watch.settings.location.footer" = "Deine Apple Watch meldet ihren Standort von selbst an Home Assistant – als eigenständiges Gerät, unabhängig von deinem iPhone. „Zone“ übermittelt lediglich die Zone, in der sich das Gerät befindet. Es werden keine Daten gesendet, bis du dies explizit auswählst.";
+"watch.settings.location.permission_denied" = "Home Assistant kann nicht auf den Standort dieser Apple Watch zugreifen. Erlaube den Zugriff in den Einstellungen deiner Apple Watch unter Datenschutz & Sicherheit > Ortungsdienste.";
+"watch.settings.location.servers_footer" = "Jeder Server erhält den Standort, den du für ihn auswählst.";
+"watch.settings.location.title" = "Standort";
 "watch.settings.no_items.phone.title" = "Keine Einträge konfiguriert. Bitte wähle untenstehende Einträge aus.";
 "watch.settings.no_servers" = "Es wurden noch keine Server synchronisiert. Öffne Home Assistant auf deinem gekoppelten iPhone und aktualisiere die Seite vom Startbildschirm aus.";
 "watch.settings.perform_action.footer" = "Wo Aktionen ausgeführt werden. „Auto“ nutzt dein iPhone, wenn es in der Nähe ist; andernfalls verbindet sich die Apple Watch direkt mit Home Assistant.";

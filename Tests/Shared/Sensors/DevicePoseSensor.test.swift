@@ -48,6 +48,18 @@ class DevicePoseSensorTests: XCTestCase {
         }
     }
 
+    /// A device that has reported a hinge still has one when the reading goes back to nothing, so
+    /// the pose stays listed, unread, rather than dropping out of the list.
+    func testDeviceWhoseHingeWentAwayReportsUnavailable() throws {
+        Current.hinge.setState(HingeState(angleDegrees: 90, status: .partiallyOpen))
+        Current.hinge.setState(nil)
+
+        let sensors = try hang(DevicePoseSensor(request: request).sensors())
+
+        XCTAssertEqual(sensors.map(\.UniqueID), ["device_pose"])
+        XCTAssertEqual(sensors.first?.State as? String, "unavailable")
+    }
+
     func testNoReadingYetReportsUnavailable() throws {
         let sensors = try hang(DevicePoseSensor(request: request).sensors())
 

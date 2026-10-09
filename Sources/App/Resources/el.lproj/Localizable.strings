@@ -2441,6 +2441,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "thread.transter_to_homeassistant.title" = "Μεταφορά στο Home Assistant";
 "token_error.connection_failed" = "Η σύνδεση απέτυχε.";
 "token_error.expired" = "Το διακριτικό έχει λήξει.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Το διακριτικό δεν είναι διαθέσιμο.";
 "unauthenticated.message.body" = "Η περίοδος λειτουργίας σας έχει λήξει. Παρακαλώ επαναλάβετε τον έλεγχο ταυτότητας για να συνεχίσετε ή ελέγξτε τη σύνδεσή σας αν βρίσκεστε πίσω από έναν διακομιστή μεσολάβησης (proxy) ή περιορισμό δικτύου.";
 "unauthenticated.message.title" = "Δεν έχει γίνει έλεγχος ταυτότητας";

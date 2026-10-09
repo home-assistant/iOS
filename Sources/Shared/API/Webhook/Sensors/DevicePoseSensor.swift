@@ -1,13 +1,13 @@
 import Foundation
 import PromiseKit
 
-final class DevicePoseSensor: SensorProvider {
-    let request: SensorProviderRequest
-    init(request: SensorProviderRequest) {
+public final class DevicePoseSensor: SensorProvider {
+    public let request: SensorProviderRequest
+    public init(request: SensorProviderRequest) {
         self.request = request
     }
 
-    func sensors() -> Promise<[WebhookSensor]> {
+    public func sensors() -> Promise<[WebhookSensor]> {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         let observer = Current.hinge
 
@@ -15,20 +15,26 @@ final class DevicePoseSensor: SensorProvider {
             return .init(error: HingeSensor.HingeError.unsupported)
         }
 
-        if observer.hasReceivedUpdate, observer.state == nil {
+        if observer.hasReceivedUpdate, !observer.hasHinge {
             return .init(error: HingeSensor.HingeError.unsupported)
         }
 
         let _: DevicePoseSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
         guard let pose = observer.pose else {
-            return .value([HingeSensor.unreadSensor(named: "Pose", id: .devicePose)])
+            return .value([Self.unreadSensor()])
         }
 
         return .value([Self.sensor(for: pose)])
         #else
         return .init(error: HingeSensor.HingeError.unsupported)
         #endif
+    }
+
+    /// The pose sensor as it stands before anything has read the hinge. Also what the sensors list
+    /// shows for it on a device without one, which never reads a hinge at all.
+    public static func unreadSensor() -> WebhookSensor {
+        HingeSensor.unreadSensor(named: "Pose", id: .devicePose)
     }
 
     static func sensor(for pose: DevicePose) -> WebhookSensor {

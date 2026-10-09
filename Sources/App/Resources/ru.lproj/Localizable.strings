@@ -721,7 +721,7 @@
 "entity_picker.filter.group_by.title" = "Group by";
 "entity_picker.filter.server.title" = "Серверы";
 "entity_picker.list.area.no_area.title" = "Нет пространств";
-"entity_picker.list.device.no_device.title" = "No device";
+"entity_picker.list.device.no_device.title" = "Нет устройства";
 "entity_picker.placeholder" = "Выбрать объект";
 "entity_picker.refresh.updating" = "Обновление…";
 "entity_picker.reload" = "Reload";
@@ -2439,6 +2439,7 @@ Home Assistant — это приложение с открытым исходн�
 "thread.transter_to_homeassistant.title" = "Перенос в Home Assistant";
 "token_error.connection_failed" = "Сбой соединения.";
 "token_error.expired" = "Срок действия токена истёк.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Токен недоступен.";
 "unauthenticated.message.body" = "Срок действия вашей сессии истек. Пожалуйста, пройдите повторную аутентификацию, чтобы продолжить, или проверьте соединение, если вы находитесь за прокси-сервером или сетевыми ограничениями.";
 "unauthenticated.message.title" = "Вы не аутентифицированы";
@@ -2962,8 +2963,8 @@ Home Assistant — это приложение с открытым исходн�
 "watch.settings.developer.warning.title" = "Предупреждение";
 "watch.settings.last_updated" = "Обновлено %@";
 "watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
-"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
-"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.permission_denied" = "Home Assistant не может получить доступ к данным о местоположении на этих Apple Watch. Разрешите доступ в приложении Настройки на Apple Watch в разделе Конфиденциальность и безопасность > Геолокация.";
+"watch.settings.location.servers_footer" = "Каждый сервер получает то местоположение, которое вы для него выберете.";
 "watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Элементы не настроены, пожалуйста, выберите элементы ниже.";
 "watch.settings.no_servers" = "Серверы еще не синхронизированы. Откройте Home Assistant на сопряженном iPhone, затем обновите страницу на главном экране.";

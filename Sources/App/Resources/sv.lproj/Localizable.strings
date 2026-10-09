@@ -2436,6 +2436,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "thread.transter_to_homeassistant.title" = "Flytta till Home Assistant";
 "token_error.connection_failed" = "Anslutningen misslyckades.";
 "token_error.expired" = "Token har upphört att gälla.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Token är inte tillgänglig.";
 "unauthenticated.message.body" = "Din session har löpt ut. Autentisera dig igen för att fortsätta, eller kontrollera din anslutning om du befinner dig bakom en proxy eller nätverksbegränsning.";
 "unauthenticated.message.title" = "Du är inte autentiserad";
