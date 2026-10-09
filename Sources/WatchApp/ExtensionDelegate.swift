@@ -142,24 +142,27 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         finished: @escaping (Bool) -> Void,
         _ work: @escaping () -> Bool
     ) {
+        // The two callbacks can run concurrently; whichever claims the activity first is the only
+        // one that proceeds and reports.
         let lock = NSLock()
-        var didStartWork = false
+        var isClaimed = false
+        let claim: () -> Bool = {
+            lock.lock()
+            defer { lock.unlock() }
+            guard !isClaimed else { return false }
+            isClaimed = true
+            return true
+        }
         ProcessInfo.processInfo.performExpiringActivity(withReason: reason) { expired in
             if expired {
                 // Nothing was claimed on this path, so only suspend if no sibling is mid-write.
                 AppDatabaseSuspension.suspendIfIdle()
-                // An expiry can arrive while `work` is still running; that run reports on its own.
-                lock.lock()
-                let isWorkRunning = didStartWork
-                lock.unlock()
-                if !isWorkRunning {
+                if claim() {
                     finished(false)
                 }
                 return
             }
-            lock.lock()
-            didStartWork = true
-            lock.unlock()
+            guard claim() else { return }
             AppDatabaseSuspension.beginProtectedAccess()
             let didSucceed = work()
             DispatchQueue.main.async {
