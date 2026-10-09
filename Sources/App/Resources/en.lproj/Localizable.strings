@@ -404,6 +404,11 @@
 "camera_list.title" = "Cameras";
 "camera_list.unavailable.message" = "Camera streaming is not available on Mac.";
 "camera_list.unavailable.title" = "Not Available on Mac";
+"camera_microphone.errors.connection_failed" = "Unable to connect the microphone to the camera";
+"camera_microphone.errors.interrupted" = "The microphone stream was stopped";
+"camera_microphone.errors.microphone_denied" = "Microphone access is needed to talk through the camera. You can allow it in Settings.";
+"camera_microphone.errors.signaling_failed" = "The camera could not start the microphone stream";
+"camera_microphone.errors.timed_out" = "The camera took too long to respond";
 "camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "No stream available";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";

@@ -311,22 +311,12 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         RTCAudioSessionConfiguration.setWebRTC(configuration)
     }
 
-    private static func restorePlaybackAudioSession(deactivating: Bool) {
+    private static func restorePlaybackAudioSession() {
         let configuration = RTCAudioSessionConfiguration.webRTC()
         configuration.category = AVAudioSession.Category.playback.rawValue
         configuration.mode = AVAudioSession.Mode.moviePlayback.rawValue
         configuration.categoryOptions = [.mixWithOthers]
         RTCAudioSessionConfiguration.setWebRTC(configuration)
-        guard deactivating else { return }
-
-        let session = RTCAudioSession.sharedInstance()
-        session.lockForConfiguration()
-        defer { session.unlockForConfiguration() }
-        do {
-            try session.setActive(false)
-        } catch {
-            Current.Log.error("Failed to release the microphone audio session on close: \(error.localizedDescription)")
-        }
     }
 
     weak var delegate: WebRTCClientDelegate?
@@ -430,7 +420,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
     func closeConnection() {
         peerConnection.close()
         guard media.recordsMicrophone else { return }
-        WebRTCClient.restorePlaybackAudioSession(deactivating: media != .call)
+        WebRTCClient.restorePlaybackAudioSession()
     }
 
     // MARK: Signaling

@@ -1553,6 +1553,21 @@ public enum L10n {
     }
   }
 
+  public enum CameraMicrophone {
+    public enum Errors {
+      /// Unable to connect the microphone to the camera
+      public static var connectionFailed: String { return L10n.tr("Localizable", "camera_microphone.errors.connection_failed") }
+      /// The microphone stream was stopped
+      public static var interrupted: String { return L10n.tr("Localizable", "camera_microphone.errors.interrupted") }
+      /// Microphone access is needed to talk through the camera. You can allow it in Settings.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_microphone.errors.microphone_denied") }
+      /// The camera could not start the microphone stream
+      public static var signalingFailed: String { return L10n.tr("Localizable", "camera_microphone.errors.signaling_failed") }
+      /// The camera took too long to respond
+      public static var timedOut: String { return L10n.tr("Localizable", "camera_microphone.errors.timed_out") }
+    }
+  }
+
   public enum CameraPlayer {
     /// Camera
     public static var defaultCameraName: String { return L10n.tr("Localizable", "camera_player.default_camera_name") }
