@@ -246,6 +246,17 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         XCTAssertFalse(client.isClosed)
     }
 
+    func testTheMicrophoneIsSwitchedOnTheClient() throws {
+        _ = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+
+        session.setMicrophoneEnabled(true)
+        XCTAssertTrue(client.isMicrophoneEnabled)
+
+        session.setMicrophoneEnabled(false)
+        XCTAssertFalse(client.isMicrophoneEnabled)
+    }
+
     // MARK: - Failures
 
     func testARejectedOfferFailsTheStartWithCoresMessage() throws {

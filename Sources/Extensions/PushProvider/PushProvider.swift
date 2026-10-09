@@ -6,6 +6,15 @@ import Shared
 import UserNotifications
 
 @objc class PushProvider: NEAppPushProvider, LocalPushManagerDelegate {
+    private struct IncomingCallCommandHandler: NotificationCommandHandler {
+        let reportIncomingCall: ([String: Any]) -> Void
+
+        func handle(_ payload: [String: Any]) -> Promise<Void> {
+            reportIncomingCall(payload)
+            return .value(())
+        }
+    }
+
     private let commandManager = NotificationCommandManager()
     private let periodicUpdateManager = PeriodicUpdateManager(applicationStateGetter: { .background })
 
@@ -26,6 +35,10 @@ import UserNotifications
 
     override init() {
         super.init()
+        commandManager.register(command: "command_call", handler: IncomingCallCommandHandler { [weak self] payload in
+            Current.Log.notify("reporting an incoming camera call", log: .info)
+            self?.reportIncomingCall(userInfo: payload)
+        })
         Current.Log.notify("initialized", log: .info)
     }
 

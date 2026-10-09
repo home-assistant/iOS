@@ -57,6 +57,21 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertEqual(content.interruptionLevel, .active)
     }
 
+    func testCameraCallIsACommandThatKeepsTheCamera() throws {
+        let event = try LocalPushEvent(data: .dictionary([
+            "message": "command_call",
+            "data": ["entity_id": "camera.front_door"],
+        ]))
+
+        let content = event.content(server: server)
+
+        let homeassistant = try XCTUnwrap(content.userInfo["homeassistant"] as? [String: Any])
+        XCTAssertEqual(homeassistant["command"] as? String, "command_call")
+        XCTAssertEqual(homeassistant["entity_id"] as? String, "camera.front_door")
+        XCTAssertEqual(content.userInfo["webhook_id"] as? String, server.info.connection.webhookID)
+        XCTAssertTrue(content.body.isEmpty)
+    }
+
     func testNotificationIconFromDataIsPreservedForDecoration() throws {
         let data = HAData.dictionary([
             "message": "some_message",

@@ -471,6 +471,10 @@ extension NotificationManagerLocalPushInterfaceExtension: NEAppPushDelegate {
         _ manager: NEAppPushManager,
         didReceiveIncomingCallWithUserInfo userInfo: [AnyHashable: Any] = [:]
     ) {
-        // we do not have calls
+        guard let request = CameraCallRequest(payload: userInfo) else {
+            Current.Log.error("Local push reported a call without a camera: \(userInfo)")
+            return
+        }
+        CameraCallManager.shared.reportIncomingCall(request) { _ in }
     }
 }
