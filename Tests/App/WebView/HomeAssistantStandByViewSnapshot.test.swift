@@ -33,6 +33,19 @@ struct HomeAssistantStandByViewSnapshotTests {
         assertLightDarkWindowSnapshots(style: .clientCertificateRejected, named: "stand-by-client-certificate-rejected")
     }
 
+    @MainActor @Test func standByDisconnectedWithTrailingInsetIsCenteredOnTheDisplay() async throws {
+        guard #available(iOS 18.0, *) else {
+            assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
+            return
+        }
+
+        assertLightDarkWindowSnapshots(
+            style: .disconnected,
+            additionalSafeAreaInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 84),
+            named: "stand-by-disconnected-trailing-inset"
+        )
+    }
+
     /// The web view's failures arrive while the loading state is already up, so the empty state usually
     /// comes in through a change rather than on appear. It has to settle to the same screen either way.
     @MainActor @Test func standByEmptyStateArrivingAfterAppearRendersLikeStartingWithIt() async throws {
@@ -71,6 +84,7 @@ struct HomeAssistantStandByViewSnapshotTests {
     @MainActor
     private func assertLightDarkWindowSnapshots(
         style: WebViewEmptyStateStyle,
+        additionalSafeAreaInsets: UIEdgeInsets = .zero,
         named name: String,
         fileID: StaticString = #fileID,
         file: StaticString = #filePath,
@@ -80,7 +94,11 @@ struct HomeAssistantStandByViewSnapshotTests {
     ) {
         for interfaceStyle in [UIUserInterfaceStyle.light, .dark] {
             assertSnapshot(
-                of: render(style: style, interfaceStyle: interfaceStyle),
+                of: render(
+                    style: style,
+                    interfaceStyle: interfaceStyle,
+                    additionalSafeAreaInsets: additionalSafeAreaInsets
+                ),
                 as: .image(precision: 0.96, perceptualPrecision: 0.96),
                 named: "\(name)-\(interfaceStyle == .light ? "light" : "dark")",
                 fileID: fileID,
@@ -98,7 +116,8 @@ struct HomeAssistantStandByViewSnapshotTests {
     private func render(
         style: WebViewEmptyStateStyle,
         interfaceStyle: UIUserInterfaceStyle,
-        startsLoading: Bool = false
+        startsLoading: Bool = false,
+        additionalSafeAreaInsets: UIEdgeInsets = .zero
     ) -> UIImage {
         let server = HomeAssistantStandByView.previewServer(
             name: "mTLS Server",
@@ -116,6 +135,7 @@ struct HomeAssistantStandByViewSnapshotTests {
         }
         let controller = UIHostingController(rootView: makeView(emptyState: startsLoading ? nil : emptyState))
         controller.overrideUserInterfaceStyle = interfaceStyle
+        controller.additionalSafeAreaInsets = additionalSafeAreaInsets
         // On the host app's scene, so the window is a real one that reports appearance; a window
         // without a scene never appears, and the content (which fades in on appear) stays hidden.
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first
