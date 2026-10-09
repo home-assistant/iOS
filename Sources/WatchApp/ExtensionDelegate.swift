@@ -463,15 +463,22 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
     private func applyStagedDatabaseMirrors() {
         guard PushedMirrorStagingStore.hasStagedMirrors else { return }
+        // Counts the batch before it's queued, so an apply already running can't publish ahead of it.
+        _ = Self.changePendingMirrorApplies(by: 1)
         Self.pushedMirrorQueue.async { [weak self] in
             // Taking the entries removes them, so bail out before that when there is nothing left
             // to apply them with — otherwise a staged mirror is dropped unread.
-            guard let self else { return }
+            guard let self else {
+                _ = Self.changePendingMirrorApplies(by: -1)
+                return
+            }
             let entries = PushedMirrorStagingStore.takeAll()
             _ = Self.changePendingMirrorApplies(by: entries.count)
             for entry in entries {
                 decodeAndApplyPushedDatabaseMirror(entry.data, metadata: entry.metadata)
             }
+            // Releases the batch's own count.
+            publishAppliedMirrorsIfIdle()
         }
     }
 
