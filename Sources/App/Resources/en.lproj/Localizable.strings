@@ -3127,7 +3127,6 @@ Right-click your desktop, choose Edit Widgets, search for Home Assistant, and ch
 "widgets.controls.button.title" = "Button";
 "widgets.controls.cover.description" = "Toggle cover";
 "widgets.controls.cover.pending_configuration" = "Choose cover";
-"widgets.controls.cover.show_next_action" = "Show next action";
 "widgets.controls.cover.title" = "Cover";
 "widgets.controls.fan.description" = "Turn on/off your fan";
 "widgets.controls.fan.pending_configuration" = "Choose fan";

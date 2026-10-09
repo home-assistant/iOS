@@ -10,9 +10,7 @@ struct ControlCover: ControlWidget {
         AppIntentControlConfiguration(
             kind: WidgetsKind.controlCover.rawValue,
             provider: ControlCoverValueProvider()
-        ) { control in
-            let template = control.entity
-
+        ) { template in
             ControlWidgetToggle(isOn: template.value, action: {
                 let intent = CoverIntent()
                 intent.entity = .init(
@@ -29,16 +27,13 @@ struct ControlCover: ControlWidget {
                 // swiftlint:disable:next sf_safe_symbol
                 Label(template.name, systemImage: template.icon.id)
             }, valueLabel: { isOn in
-                let title: String = control.showNextAction
-                    ? (isOn ? L10n.closeLabel : L10n.openLabel)
-                    : (
-                        isOn
-                            ? CoreStrings.componentCoverEntityComponentStateOpen
-                            : CoreStrings.componentCoverEntityComponentStateClosed
-                    )
-
                 // swiftlint:disable:next sf_safe_symbol
-                Label(title, systemImage: template.icon.id)
+                Label(
+                    isOn
+                        ? CoreStrings.componentCoverEntityComponentStateOpen
+                        : CoreStrings.componentCoverEntityComponentStateClosed,
+                    systemImage: template.icon.id
+                )
             })
             .tint(Color.haPrimary)
         }

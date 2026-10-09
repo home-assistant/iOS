@@ -6,9 +6,7 @@ import WidgetKit
 
 @available(iOS 18, *)
 struct ControlCoverValueProvider: AppIntentControlValueProvider {
-    func currentValue(
-        configuration: ControlCoverConfiguration
-    ) async throws -> ControlCoverValue {
+    func currentValue(configuration: ControlCoverConfiguration) async throws -> ControlEntityItem {
         try await ControlRefreshDelay.wait()
         guard let serverId = configuration.entity?.serverId,
               let lightId = configuration.entity?.entityId,
@@ -23,36 +21,25 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
             ControlEntityProvider.States.opening.rawValue,
         ].contains(state)
         let icon = isOpen ? configuration.openIcon : configuration.closedIcon
+        return item(entity: configuration.entity, value: isOpen, iconName: icon, displayText: configuration.displayText)
+    }
 
-        return ControlCoverValue(
-            entity: item(
-                entity: configuration.entity,
-                value: isOpen,
-                iconName: icon,
-                displayText: configuration.displayText
-            ),
-            showNextAction: configuration.showNextAction
+    func placeholder(for configuration: ControlCoverConfiguration) -> ControlEntityItem {
+        item(
+            entity: configuration.entity,
+            value: nil,
+            iconName: configuration.openIcon,
+            displayText: configuration.displayText
         )
     }
 
-    func placeholder(
-        for configuration: ControlCoverConfiguration
-    ) -> ControlCoverValue {
-        ControlCoverValue(
-            entity: item(
-                entity: configuration.entity,
-                value: nil,
-                iconName: configuration.openIcon,
-                displayText: configuration.displayText
-            ),
-            showNextAction: configuration.showNextAction
+    func previewValue(configuration: ControlCoverConfiguration) -> ControlEntityItem {
+        item(
+            entity: configuration.entity,
+            value: nil,
+            iconName: configuration.openIcon,
+            displayText: configuration.displayText
         )
-    }
-
-    func previewValue(
-        configuration: ControlCoverConfiguration
-    ) -> ControlCoverValue {
-        placeholder(for: configuration)
     }
 
     private func item(
@@ -92,4 +79,35 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
             iconName: (value ?? false) ? SFSymbol.blindsVerticalOpen.rawValue : SFSymbol.blindsVerticalClosed.rawValue
         )
     }
+}
+
+@available(iOS 18.0, *)
+struct ControlCoverConfiguration: ControlConfigurationIntent {
+    static var title: LocalizedStringResource = .init(
+        "widgets.controls.cover.description",
+        defaultValue: "Toggle cover"
+    )
+
+    @Parameter(
+        title: .init("app_intents.server.title", defaultValue: "Server")
+    )
+    var server: IntentServerAppEntity?
+    @Parameter(
+        title: .init("widgets.controls.cover.title", defaultValue: "Cover")
+    )
+    var entity: IntentCoverEntity?
+    @Parameter(
+        title: .init("app_intents.open_state_icon.title", defaultValue: "Icon for open state"),
+        default: SFSymbolEntity(id: SFSymbol.curtainsOpen.rawValue)
+    )
+    var openIcon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.closed_state_icon.title", defaultValue: "Icon for closed state"),
+        default: SFSymbolEntity(id: SFSymbol.curtainsClosed.rawValue)
+    )
+    var closedIcon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }
