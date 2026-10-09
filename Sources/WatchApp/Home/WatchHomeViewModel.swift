@@ -690,7 +690,6 @@ final class WatchHomeViewModel: ObservableObject {
         // holding the app-group SQLite lock when it was frozen (0xdead10cc).
         guard WKApplication.shared().applicationState != .background else {
             needsCacheLoadOnActive = true
-            finishCacheLoad()
             return
         }
         refreshServerURLAttention()
