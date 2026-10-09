@@ -148,4 +148,14 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
 
         XCTAssertEqual(try hang(promise), "hello!")
     }
+
+    func testProcessInfoRunnerRunsRequiredWorkOnceTheActivityIsGranted() {
+        let promise: Promise<String> = ProcessInfoBackgroundTaskRunner()(
+            withName: "name",
+            requiringAssertion: true,
+            wrapping: { _ in .value("granted") }
+        )
+
+        XCTAssertEqual(try hang(promise), "granted")
+    }
 }

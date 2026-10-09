@@ -331,8 +331,12 @@ class ModelManagerTests: XCTestCase {
 
         let previousRunner = Current.backgroundTask
         Current.backgroundTask = DenyingBackgroundTaskRunner()
+        defer {
+            Current.backgroundTask = previousRunner
+            // The denial suspends the shared database coordinator; later tests expect it resumed.
+            AppDatabaseSuspension.resume()
+        }
         XCTAssertThrowsError(try hang(manager.cleanup(definitions: definitions)))
-        Current.backgroundTask = previousRunner
 
         servers.notify()
         testQueue.sync {}
