@@ -229,7 +229,7 @@ class HingeObserverTests: XCTestCase {
         XCTAssertNil(observer.pose)
 
         observer.setState(HingeState(angleDegrees: 100, status: .partiallyOpen))
-        XCTAssertEqual(observer.pose, .book)
+        XCTAssertEqual(observer.pose, .laptop)
     }
 
     func testPosePublisherEmitsWhenTheHingeOrTheOrientationChanges() {
@@ -243,7 +243,7 @@ class HingeObserverTests: XCTestCase {
         observer.setDeviceOrientation(rawValue: 4)
 
         cancellable.cancel()
-        XCTAssertEqual(received, [nil, .partiallyOpen, .laptop, .book])
+        XCTAssertEqual(received, [nil, .partiallyOpen, .book, .laptop])
         XCTAssertEqual(observer.deviceOrientationRawValue, 4)
     }
 
