@@ -41,18 +41,18 @@ final class HingeSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
 /// iPhone Duo only: `Current.hinge` is fed by a `UIHingeInteraction` the app attaches to its root
 /// view, so a device without a hinge answers that it has none as soon as the interaction is
 /// attached, and nothing arrives at all while the app is off screen.
-final class HingeSensor: SensorProvider {
+public final class HingeSensor: SensorProvider {
     public enum HingeError: Error, Equatable {
         /// This device can never report a hinge: it has none, or it predates the API.
         case unsupported
     }
 
-    let request: SensorProviderRequest
-    init(request: SensorProviderRequest) {
+    public let request: SensorProviderRequest
+    public init(request: SensorProviderRequest) {
         self.request = request
     }
 
-    func sensors() -> Promise<[WebhookSensor]> {
+    public func sensors() -> Promise<[WebhookSensor]> {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         let observer = Current.hinge
 
@@ -60,9 +60,10 @@ final class HingeSensor: SensorProvider {
             return .init(error: HingeError.unsupported)
         }
 
-        // A device that answered about its hinge and reported none has no hinge, so the sensor is
-        // dropped rather than left permanently unavailable on every iPhone that does not fold.
-        if observer.hasReceivedUpdate, observer.state == nil {
+        // A device that answered about its hinge and has never reported one has no hinge, so the
+        // sensor is dropped rather than left permanently unavailable on every iPhone that does not
+        // fold. One that has reported a hinge keeps its sensors even while the reading is gone.
+        if observer.hasReceivedUpdate, !observer.hasHinge {
             return .init(error: HingeError.unsupported)
         }
 
@@ -72,10 +73,7 @@ final class HingeSensor: SensorProvider {
         guard let state = observer.state else {
             // Nothing has observed the hinge yet this launch. The sensors stay listed, reporting
             // that they have no reading, so their rows remain available to switch on.
-            return .value([
-                Self.unreadSensor(named: "Hinge Angle", id: .hingeAngle),
-                Self.unreadSensor(named: "Hinge Status", id: .hingeStatus),
-            ])
+            return .value(Self.unreadSensors())
         }
 
         return .value([
@@ -85,6 +83,15 @@ final class HingeSensor: SensorProvider {
         #else
         return .init(error: HingeError.unsupported)
         #endif
+    }
+
+    /// The angle and status sensors as they stand before anything has read the hinge. Also what the
+    /// sensors list shows for them on a device without one, which never reads a hinge at all.
+    public static func unreadSensors() -> [WebhookSensor] {
+        [
+            unreadSensor(named: "Hinge Angle", id: .hingeAngle),
+            unreadSensor(named: "Hinge Status", id: .hingeStatus),
+        ]
     }
 
     /// A sensor the app knows but has no reading for yet, reported as explicitly unavailable so

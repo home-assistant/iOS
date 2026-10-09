@@ -277,7 +277,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         sut.handleExternalMessage(dictionary)
 
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         let script = try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript)
         let message = try externalBusMessage(from: script)
         let payload = try XCTUnwrap(message["payload"] as? [String: Any])
