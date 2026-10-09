@@ -1837,7 +1837,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.manage_storage.item.downloads.title" = "Downloads";
 "settings.debugging.manage_storage.item.frontend_asset_cache.explanation" = "Scripts, styles and images the web view stored for the frontend. They download again on the next load.";
 "settings.debugging.manage_storage.item.frontend_asset_cache.title" = "Frontend asset cache";
-"settings.debugging.manage_storage.item.legacy_realm_store.explanation" = "The old store zones, notification categories and complications are imported from. It is only kept until that import has run.";
+"settings.debugging.manage_storage.item.legacy_realm_store.explanation" = "Leftover data from an older version of the app. Nothing uses it anymore.";
 "settings.debugging.manage_storage.item.legacy_realm_store.title" = "Legacy database";
 "settings.debugging.manage_storage.item.location_history.explanation" = "Recorded location updates and their errors, shown on the location history screen.";
 "settings.debugging.manage_storage.item.location_history.title" = "Location history";
@@ -1869,7 +1869,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.manage_storage.sort.smallest_first" = "Smallest first";
 "settings.debugging.manage_storage.sort.title" = "Sort";
 "settings.debugging.manage_storage.subtitle" = "See what this app is storing on your device, and clear out anything it can rebuild.";
-"settings.debugging.manage_storage.summary.footer" = "Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, files you added yourself, and anything still waiting to be imported. Everything else is a copy the app makes again when it needs it.";
+"settings.debugging.manage_storage.summary.footer" = "Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.";
 "settings.debugging.manage_storage.summary.protected" = "Protected items";
 "settings.debugging.manage_storage.summary.reclaimable" = "Can be freed";
 "settings.debugging.manage_storage.summary.total" = "Total used";

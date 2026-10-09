@@ -47,6 +47,9 @@ func resetStores() {
     Current.notificationHistoryStore.clearAllEntries()
     removeAppCache(at: AppConstants.widgetsCacheURL)
     removeAppCache(at: AppConstants.watchMagicItemsInfo)
+    for url in ManageStoragePaths.live.legacyRealmStore {
+        removeAppCache(at: url)
+    }
 
     Current.clientEventStore.addEvent(ClientEvent(
         text: L10n.Settings.Debugging.ResetApp.clientEvent,
