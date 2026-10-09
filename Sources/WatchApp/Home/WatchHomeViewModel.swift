@@ -61,6 +61,8 @@ final class WatchHomeViewModel: ObservableObject {
     private var guaranteedObserver: HAWatchConnectivity.ObservationToken?
     private let runtimeSessions: WatchExtendedRuntimeSessionHolding
     private var isHoldingRuntimeSession = false
+    private var didBecomeActiveObserver: NSObjectProtocol?
+    private var needsCacheLoadOnActive = false
 
     /// Minimum time each `loadingStatus` value stays on screen, so rapid chunk progress doesn't blink
     /// through numbers too fast to read.
@@ -100,11 +102,25 @@ final class WatchHomeViewModel: ObservableObject {
         self.guaranteedObserver = Communicator.shared.guaranteedMessage.observe { [weak self] message in
             Task { @MainActor in self?.handleGuaranteedConfigResponse(message) }
         }
+        self.didBecomeActiveObserver = NotificationCenter.default.addObserver(
+            forName: WKApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.needsCacheLoadOnActive else { return }
+                self.needsCacheLoadOnActive = false
+                self.loadCache()
+            }
+        }
     }
 
     deinit {
         if let guaranteedObserver {
             Communicator.shared.guaranteedMessage.unobserve(guaranteedObserver)
+        }
+        if let didBecomeActiveObserver {
+            NotificationCenter.default.removeObserver(didBecomeActiveObserver)
         }
         endExtendedRuntime()
     }
@@ -670,6 +686,13 @@ final class WatchHomeViewModel: ObservableObject {
     /// mirrors how the iPhone watch-configuration editor resolves item info.
     @MainActor
     func loadCache(isRetry: Bool = false) {
+        // Nothing is on screen while backgrounded, and these reads are what got the app killed for
+        // holding the app-group SQLite lock when it was frozen (0xdead10cc).
+        guard WKApplication.shared().applicationState != .background else {
+            needsCacheLoadOnActive = true
+            finishCacheLoad()
+            return
+        }
         refreshServerURLAttention()
         let fetchedConfig: WatchConfig?
         do {
