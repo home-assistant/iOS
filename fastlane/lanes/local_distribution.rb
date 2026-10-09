@@ -2,6 +2,7 @@
 
 require 'base64'
 require 'digest'
+require 'json'
 require 'plist'
 require 'securerandom'
 require 'shellwords'
@@ -21,6 +22,11 @@ LOCAL_DISTRIBUTION_PLATFORMS = {
   'mac' => %w[mac]
 }.freeze
 
+LOCAL_DISTRIBUTION_ARTIFACTS = {
+  'ios' => 'build/ios',
+  'mac' => 'build/macos'
+}.freeze
+
 LOCAL_DISTRIBUTION_PROFILES = {
   'ios' => %w[iOS_App_Store__],
   'mac' => %w[Mac_App_Store__ Mac_Dev_ID__]
@@ -35,10 +41,14 @@ lane :local_distribution do |options|
 
   version_file = File.expand_path('../Configuration/Version.xcconfig')
   original_version = File.read(version_file)
-  keychain = nil
+  keychain_password = nil
 
   begin
-    keychain = local_distribution_signing_keychain(platforms)
+    missing = local_distribution_missing_identities(platforms)
+    unless missing.empty?
+      keychain_password = local_distribution_create_keychain
+      local_distribution_import_identities(missing, platforms, keychain_password)
+    end
     import_provisioning_profiles
     local_distribution_check_profiles(platforms)
 
@@ -49,11 +59,12 @@ lane :local_distribution do |options|
 
     platforms.each { |platform| sh("cd .. ; bundle exec fastlane #{platform} build") }
 
-    UI.success('Uploaded. Artifacts are in build/ios and build/macos.')
+    folders = platforms.map { |platform| LOCAL_DISTRIBUTION_ARTIFACTS.fetch(platform) }
+    UI.success("Uploaded. Artifacts are in #{folders.join(' and ')}.")
     UI.success('Attach build/macos/home-assistant-mac.zip to the GitHub release.') if platforms.include?('mac')
   ensure
     File.write(version_file, original_version)
-    delete_keychain(name: keychain) if keychain
+    delete_keychain(name: LOCAL_DISTRIBUTION_KEYCHAIN) if keychain_password
   end
 end
 
@@ -122,17 +133,29 @@ def local_distribution_xcode
   UI.important("Building with #{local_distribution_xcode_label(local_distribution_xcode_app)}")
 end
 
-def local_distribution_latest_run
-  number = `gh run list --workflow distribute.yml --limit 1 --json number --jq '.[0].number' 2>/dev/null`.strip
-  number.match?(/\A\d+\z/) ? number.to_i : nil
+def local_distribution_runs
+  JSON.parse(`gh run list --workflow distribute.yml --limit 200 --json number,status,conclusion 2>/dev/null`)
+rescue JSON::ParserError
+  nil
+end
+
+def local_distribution_check_run(number)
+  runs = local_distribution_runs
+  return UI.important("Couldn't list Distribute runs with gh, so run #{number} wasn't checked.") unless runs
+
+  run = runs.find { |candidate| candidate['number'] == number.to_i }
+  UI.user_error!("Run #{number} isn't a recent Distribute run. Reserve one on GitHub first.") unless run
+  return if run['conclusion'] == 'cancelled'
+
+  state = run['conclusion'].to_s.empty? ? "is still #{run['status']}" : "ended as #{run['conclusion']}"
+  UI.user_error!("Run #{number} #{state}. Use a cancelled Distribute run so its build number is unused.")
 end
 
 def local_distribution_run_number(requested)
   text = 'Distribute run number reserved for this build (start and cancel a Distribute run on GitHub to reserve one):'
   number = (requested || local_distribution_prompt { UI.input(text) }).to_s.strip
-  latest = local_distribution_latest_run
   UI.user_error!("'#{number}' is not a run number.") unless number.match?(/\A\d+\z/)
-  UI.user_error!("Run #{number} doesn't exist yet. Reserve it on GitHub first.") if latest && number.to_i > latest
+  local_distribution_check_run(number)
   number
 end
 
@@ -166,17 +189,20 @@ def local_distribution_missing_identities(platforms)
   end
 end
 
-def local_distribution_signing_keychain(platforms)
-  missing = local_distribution_missing_identities(platforms)
-  return nil if missing.empty?
+def local_distribution_create_keychain
+  path = File.expand_path("~/Library/Keychains/#{LOCAL_DISTRIBUTION_KEYCHAIN}")
+  delete_keychain(name: LOCAL_DISTRIBUTION_KEYCHAIN) if ["#{path}-db", path].any? { |file| File.exist?(file) }
 
-  keychain_password = SecureRandom.hex
-  create_keychain(name: LOCAL_DISTRIBUTION_KEYCHAIN, password: keychain_password,
+  password = SecureRandom.hex
+  create_keychain(name: LOCAL_DISTRIBUTION_KEYCHAIN, password: password,
                   timeout: 3600, unlock: true, add_to_search_list: true)
+  password
+end
+
+def local_distribution_import_identities(missing, platforms, keychain_password)
   missing.each { |name| local_distribution_import_p12(name, keychain_password) }
   still_missing = local_distribution_missing_identities(platforms)
   UI.user_error!("Still no valid identity for: #{still_missing.join(', ')}") unless still_missing.empty?
-  LOCAL_DISTRIBUTION_KEYCHAIN
 end
 
 def local_distribution_p12_data(name, secret)
