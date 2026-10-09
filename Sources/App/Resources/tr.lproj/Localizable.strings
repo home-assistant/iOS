@@ -2441,6 +2441,7 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "thread.transter_to_homeassistant.title" = "Home Asistanına Aktar";
 "token_error.connection_failed" = "Bağlantı kurulamadı.";
 "token_error.expired" = "Anahtar süresi doldu.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Anahtar kullanılamıyor.";
 "unauthenticated.message.body" = "Oturumunuzun süresi doldu. Devam etmek için lütfen yeniden kimlik doğrulaması yapın veya bir proxy ya da ağ kısıtlamasının arkasındaysanız bağlantınızı kontrol edin.";
 "unauthenticated.message.title" = "Kimliğiniz doğrulanmadı";

@@ -2440,6 +2440,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "thread.transter_to_homeassistant.title" = "Átvitel a Home Assistantba";
 "token_error.connection_failed" = "A kapcsolat sikertelen.";
 "token_error.expired" = "A token lejárt.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "A token nem elérhető.";
 "unauthenticated.message.body" = "A munkamenet lejárt. Kérjük, hitelesítse magát újra a folytatáshoz, vagy ellenőrizze a kapcsolatot, ha proxy vagy hálózati korlátozás mögött van.";
 "unauthenticated.message.title" = "Nincs hitelesítve";

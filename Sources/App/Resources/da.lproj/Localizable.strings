@@ -2441,6 +2441,7 @@ Serveren svarer kun, mens appen er åben, og stopper, når du lukker den.";
 "thread.transter_to_homeassistant.title" = "Overfør til Home Assistant";
 "token_error.connection_failed" = "Forbindelsen mislykkedes.";
 "token_error.expired" = "Token er udløbet.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Token er ikke tilgængelig.";
 "unauthenticated.message.body" = "Din session er udløbet. Godkend venligst igen for at fortsætte, eller tjek din forbindelse, hvis du er bag en proxy- eller netværksbegrænsning.";
 "unauthenticated.message.title" = "Du er ikke autentificeret";

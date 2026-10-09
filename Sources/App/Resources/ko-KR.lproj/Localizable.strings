@@ -2441,6 +2441,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "thread.transter_to_homeassistant.title" = "Home Assistant로 전송";
 "token_error.connection_failed" = "연결에 실패했습니다.";
 "token_error.expired" = "토큰이 만료되었습니다.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "토큰을 사용할 수 없습니다.";
 "unauthenticated.message.body" = "세션이 만료되었습니다. 계속하려면 다시 인증하거나, 프록시 또는 네트워크 제한 뒤에 있는 경우 연결을 확인하세요.";
 "unauthenticated.message.title" = "인증되지 않았습니다";

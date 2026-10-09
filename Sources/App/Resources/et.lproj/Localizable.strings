@@ -2441,6 +2441,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "thread.transter_to_homeassistant.title" = "Siirda Home Assistantisse";
 "token_error.connection_failed" = "Ühendus nurjus.";
 "token_error.expired" = "Token on aegunud.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Token pole saadaval.";
 "unauthenticated.message.body" = "Seanss on aegunud. Jätkamiseks tuvasta end uuesti või kontrolli oma ühendust kui oled puhverserveri või võrgupiirangu taga.";
 "unauthenticated.message.title" = "Tuvastamine puudub";
