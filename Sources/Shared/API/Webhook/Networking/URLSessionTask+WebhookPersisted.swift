@@ -5,21 +5,29 @@ struct WebhookPersisted: Codable {
     var server: Identifier<Server>
     var request: WebhookRequest
     var identifier: WebhookResponseIdentifier
+    var requestIdentifier: String?
 
     enum CodingKeys: CodingKey {
         case server
         case request
         case identifier
+        case requestIdentifier
     }
 
     enum CodingError: Error {
         case requestFailure
     }
 
-    init(server: Identifier<Server>, request: WebhookRequest, identifier: WebhookResponseIdentifier) {
+    init(
+        server: Identifier<Server>,
+        request: WebhookRequest,
+        identifier: WebhookResponseIdentifier,
+        requestIdentifier: String? = nil
+    ) {
         self.server = server
         self.request = request
         self.identifier = identifier
+        self.requestIdentifier = requestIdentifier
     }
 
     func encode(to encoder: Encoder) throws {
@@ -31,6 +39,7 @@ struct WebhookPersisted: Codable {
         )
         try container.encode(identifier, forKey: .identifier)
         try container.encode(server, forKey: .server)
+        try container.encodeIfPresent(requestIdentifier, forKey: .requestIdentifier)
     }
 
     init(from decoder: Decoder) throws {
@@ -40,6 +49,7 @@ struct WebhookPersisted: Codable {
         self.request = try Mapper<WebhookRequest>(context: WebhookRequestContext.local).map(JSON: json)
         self.identifier = try container.decode(WebhookResponseIdentifier.self, forKey: .identifier)
         self.server = try container.decode(Identifier<Server>.self, forKey: .server)
+        self.requestIdentifier = try container.decodeIfPresent(String.self, forKey: .requestIdentifier)
     }
 }
 
