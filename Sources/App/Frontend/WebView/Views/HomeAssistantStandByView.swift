@@ -190,6 +190,7 @@ struct HomeAssistantStandByView: View {
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.three)
+        .padding(.horizontal, abs(contentOffset.width))
         .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
         .frame(
             maxWidth: .infinity,
@@ -258,10 +259,12 @@ struct HomeAssistantStandByView: View {
                     reauthAction: emptyState.reauthAction,
                     clientCertificateAction: emptyState.clientCertificateAction
                 )
+                .padding(.horizontal, abs(contentOffset.width))
                 .offset(x: contentOffset.width)
                 .opacity(contentOpacity)
             } else if showsCleanCacheAndReloadButton {
                 cleanCacheButton
+                    .padding(.horizontal, abs(contentOffset.width))
                     .offset(x: contentOffset.width)
                     .transition(.opacity)
             }

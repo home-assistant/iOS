@@ -59,12 +59,14 @@ struct WebViewEmptyStateHeader: View {
                         .clipShape(.capsule)
                     }
                     .buttonStyle(.plain)
+                    .padding(.horizontal, abs(serverSelectionHorizontalOffset))
                     .offset(x: serverSelectionHorizontalOffset)
                 } else {
                     ServerPickerView(server: server, onSelect: serverSelectionAction)
                         // Using .secondarySystemBackground to visually distinguish the server selection view
                         .background(Color(uiColor: .secondarySystemBackground))
                         .clipShape(Capsule())
+                        .padding(.horizontal, abs(serverSelectionHorizontalOffset))
                         .offset(x: serverSelectionHorizontalOffset)
                 }
             }

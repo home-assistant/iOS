@@ -13,6 +13,7 @@ struct WebViewEmptyStateMessage: View {
             Text(style.title)
                 .font(.title2)
                 .fontWeight(.semibold)
+                .multilineTextAlignment(.center)
             Text(bodyText)
                 .font(.callout)
                 .foregroundColor(.secondary)

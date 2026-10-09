@@ -15,13 +15,19 @@ import UIKit
 /// test bundle, so file names have to be unique across suites, and the `WebViewEmptyStateView` suite
 /// already records the plain certificate names.
 struct HomeAssistantStandByViewSnapshotTests {
+    private static let iPhoneDuoSize = CGSize(width: 466, height: 678)
+    private static let iPhoneDuoVerticalBarInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 84)
+
     @MainActor @Test func standByClientCertificateRequiredSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
 
-        assertLightDarkWindowSnapshots(style: .clientCertificateRequired, named: "stand-by-client-certificate-required")
+        await assertLightDarkWindowSnapshots(
+            style: .clientCertificateRequired,
+            named: "stand-by-client-certificate-required"
+        )
     }
 
     @MainActor @Test func standByClientCertificateRejectedSnapshot() async throws {
@@ -30,7 +36,10 @@ struct HomeAssistantStandByViewSnapshotTests {
             return
         }
 
-        assertLightDarkWindowSnapshots(style: .clientCertificateRejected, named: "stand-by-client-certificate-rejected")
+        await assertLightDarkWindowSnapshots(
+            style: .clientCertificateRejected,
+            named: "stand-by-client-certificate-rejected"
+        )
     }
 
     @MainActor @Test func standByDisconnectedWithTrailingInsetIsCenteredOnTheDisplay() async throws {
@@ -39,10 +48,30 @@ struct HomeAssistantStandByViewSnapshotTests {
             return
         }
 
-        assertLightDarkWindowSnapshots(
+        await assertLightDarkWindowSnapshots(
             style: .disconnected,
-            additionalSafeAreaInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 84),
+            windowSize: Self.iPhoneDuoSize,
+            additionalSafeAreaInsets: Self.iPhoneDuoVerticalBarInsets,
             named: "stand-by-disconnected-trailing-inset"
+        )
+    }
+
+    @MainActor @Test func standByStuckLoadingWithTrailingInsetIsCenteredOnTheDisplay() async throws {
+        guard #available(iOS 18.0, *) else {
+            assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
+            return
+        }
+
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 1)
+        StandByOHFBrandingState.shared.markStandByDismissed()
+
+        await assertLightDarkWindowSnapshots(
+            style: nil,
+            windowSize: Self.iPhoneDuoSize,
+            additionalSafeAreaInsets: Self.iPhoneDuoVerticalBarInsets,
+            named: "stand-by-stuck-loading-trailing-inset"
         )
     }
 
@@ -54,8 +83,8 @@ struct HomeAssistantStandByViewSnapshotTests {
             return
         }
 
-        let fromTheStart = render(style: .clientCertificateRequired, interfaceStyle: .light)
-        let afterLoading = render(style: .clientCertificateRequired, interfaceStyle: .light, startsLoading: true)
+        let fromTheStart = await render(style: .clientCertificateRequired, interfaceStyle: .light)
+        let afterLoading = await render(style: .clientCertificateRequired, interfaceStyle: .light, startsLoading: true)
 
         let diffing = Diffing<UIImage>.image(precision: 0.96, perceptualPrecision: 0.96)
         if let difference = diffing.diff(fromTheStart, afterLoading) {
@@ -83,7 +112,8 @@ struct HomeAssistantStandByViewSnapshotTests {
 
     @MainActor
     private func assertLightDarkWindowSnapshots(
-        style: WebViewEmptyStateStyle,
+        style: WebViewEmptyStateStyle?,
+        windowSize: CGSize = CGSize(width: 390, height: 844),
         additionalSafeAreaInsets: UIEdgeInsets = .zero,
         named name: String,
         fileID: StaticString = #fileID,
@@ -91,14 +121,16 @@ struct HomeAssistantStandByViewSnapshotTests {
         testName: String = #function,
         line: UInt = #line,
         column: UInt = #column
-    ) {
+    ) async {
         for interfaceStyle in [UIUserInterfaceStyle.light, .dark] {
+            let image = await render(
+                style: style,
+                interfaceStyle: interfaceStyle,
+                windowSize: windowSize,
+                additionalSafeAreaInsets: additionalSafeAreaInsets
+            )
             assertSnapshot(
-                of: render(
-                    style: style,
-                    interfaceStyle: interfaceStyle,
-                    additionalSafeAreaInsets: additionalSafeAreaInsets
-                ),
+                of: image,
                 as: .image(precision: 0.96, perceptualPrecision: 0.96),
                 named: "\(name)-\(interfaceStyle == .light ? "light" : "dark")",
                 fileID: fileID,
@@ -114,22 +146,33 @@ struct HomeAssistantStandByViewSnapshotTests {
     /// after the loading state has already appeared.
     @MainActor
     private func render(
-        style: WebViewEmptyStateStyle,
+        style: WebViewEmptyStateStyle?,
         interfaceStyle: UIUserInterfaceStyle,
         startsLoading: Bool = false,
+        windowSize: CGSize = CGSize(width: 390, height: 844),
         additionalSafeAreaInsets: UIEdgeInsets = .zero
-    ) -> UIImage {
+    ) async -> UIImage {
         let server = HomeAssistantStandByView.previewServer(
             name: "mTLS Server",
             configuredURLTypes: [.external],
             activeURLType: .external
         )
-        let emptyState = HomeAssistantStandByView.previewEmptyState(style: style, server: server)
+        let emptyState = style.map { HomeAssistantStandByView.previewEmptyState(style: $0, server: server) }
         func makeView(emptyState: WebFrontendOverlayState.EmptyStateContent?) -> HomeAssistantStandByView {
-            HomeAssistantStandByView(
+            guard style == nil else {
+                return HomeAssistantStandByView(
+                    server: server,
+                    emptyState: emptyState,
+                    // The content fades in on appear and on change; render its settled state rather than the fade.
+                    contentFadeAnimation: nil
+                )
+            }
+            return HomeAssistantStandByView(
                 server: server,
-                emptyState: emptyState,
-                // The content fades in on appear and on change; render its settled state rather than the fade.
+                emptyState: nil,
+                onCleanCacheAndReload: {},
+                delayedSettingsButtonDelay: .zero,
+                cleanCacheButtonDelay: .zero,
                 contentFadeAnimation: nil
             )
         }
@@ -140,7 +183,7 @@ struct HomeAssistantStandByViewSnapshotTests {
         // without a scene never appears, and the content (which fades in on appear) stays hidden.
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first
         let window = scene.map { UIWindow(windowScene: $0) } ?? UIWindow()
-        window.frame = CGRect(origin: .zero, size: CGSize(width: 390, height: 844))
+        window.frame = CGRect(origin: .zero, size: windowSize)
         window.overrideUserInterfaceStyle = interfaceStyle
         window.rootViewController = controller
         window.makeKeyAndVisible()
@@ -148,14 +191,14 @@ struct HomeAssistantStandByViewSnapshotTests {
         controller.endAppearanceTransition()
         window.layoutIfNeeded()
         // Let the appear-driven state changes (the content fade-in) apply before drawing.
-        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.5))
+        try? await Task.sleep(for: .seconds(1))
         window.layoutIfNeeded()
 
         if startsLoading {
             // Same view identity, so the change handler moves it from loading to the empty state.
             controller.rootView = makeView(emptyState: emptyState)
             window.layoutIfNeeded()
-            RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.5))
+            try? await Task.sleep(for: .seconds(1))
             window.layoutIfNeeded()
         }
 
