@@ -19,8 +19,7 @@ enum ManageStorageInventory {
 
     static func items(
         paths: ManageStoragePaths,
-        isCatalyst: Bool,
-        hasCompletedLegacyStoreMigration: Bool
+        isCatalyst: Bool
     ) -> [ManageStorageItem] {
         protectingRowsThatHoldProtectedData(in: [
             ManageStorageItem(
@@ -40,9 +39,8 @@ enum ManageStorageInventory {
             ManageStorageItem(
                 id: .legacyRealmStore,
                 category: .appData,
-                // Until the importer has run, this store is the only copy of the zones, notification
-                // categories and complications it still holds.
-                protection: hasCompletedLegacyStoreMigration ? .deletable : .protected(.pendingMigration),
+                // Nothing reads it anymore; it's only left over from before the move to GRDB.
+                protection: .deletable,
                 source: .files(paths.legacyRealmStore)
             ),
             ManageStorageItem(

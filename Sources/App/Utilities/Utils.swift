@@ -48,11 +48,6 @@ func resetStores() {
     removeAppCache(at: AppConstants.widgetsCacheURL)
     removeAppCache(at: AppConstants.watchMagicItemsInfo)
 
-    // Clearing the app group defaults above also clears the Realm→GRDB
-    // migration flag, so drop the legacy store too or the importer would
-    // repopulate GRDB from it on the next launch.
-    RealmToGRDBMigration.deleteLegacyStore()
-
     Current.clientEventStore.addEvent(ClientEvent(
         text: L10n.Settings.Debugging.ResetApp.clientEvent,
         type: .settings

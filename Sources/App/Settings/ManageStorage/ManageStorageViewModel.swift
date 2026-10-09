@@ -19,15 +19,10 @@ final class ManageStorageViewModel: ObservableObject {
     init(
         paths: ManageStoragePaths = .live,
         isCatalyst: Bool = Current.isCatalyst,
-        hasCompletedLegacyStoreMigration: Bool = RealmToGRDBMigration.hasCompletedMigration,
         measurer: ManageStorageMeasuring = ManageStorageMeasurer(),
         cleaner: ManageStorageCleaning = ManageStorageCleaner()
     ) {
-        self.items = ManageStorageInventory.items(
-            paths: paths,
-            isCatalyst: isCatalyst,
-            hasCompletedLegacyStoreMigration: hasCompletedLegacyStoreMigration
-        )
+        self.items = ManageStorageInventory.items(paths: paths, isCatalyst: isCatalyst)
         self.measurer = measurer
         self.cleaner = cleaner
     }
