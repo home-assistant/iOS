@@ -292,6 +292,25 @@ class ModelManagerTests: XCTestCase {
         XCTAssertEqual(reassigned.serverIdentifier, servers.all.first?.identifier.rawValue)
     }
 
+    func testServerChangeWithoutMembershipChangeSkipsCleanup() throws {
+        XCTAssertNoThrow(try hang(manager.cleanup(definitions: [
+            .orphanDelete(
+                recordType: TestStoreModel1.self,
+                serverIdentifierColumnName: "serverIdentifier"
+            ),
+        ])))
+
+        try database.write { db in
+            try TestStoreModel1(identifier: "orphan", serverIdentifier: "gone", value: nil).save(db)
+        }
+
+        servers.notify()
+        testQueue.sync {}
+
+        let remaining = try database.read { try TestStoreModel1.fetchAll($0) }
+        XCTAssertEqual(remaining.map(\.identifier), ["orphan"])
+    }
+
     func testFetchInvokesDefinition() {
         let (fetchPromise1, fetchSeal1) = Promise<Void>.pending()
         let (fetchPromise2, fetchSeal2) = Promise<Void>.pending()

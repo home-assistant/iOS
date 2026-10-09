@@ -137,6 +137,47 @@ struct AppDatabaseSuspensionProtectedWorkTests {
         #expect(runner.names == [BackgroundTask.appIconShortcutItems.rawValue])
     }
 
+    @Test("The work starts only once the background task is held")
+    func workStartsAfterBackgroundTaskIsHeld() {
+        let (suspension, _) = makeSuspension()
+        let runner = SlowToAcquireBackgroundTaskRunner()
+        let taskWasHeld = Box<Bool>()
+
+        withBackgroundTaskRunner(runner) {
+            suspension.performProtectedWork(named: .panelsSave) {
+                taskWasHeld.value = runner.isHeld
+            }
+
+            #expect(waitUntil { taskWasHeld.value != nil })
+        }
+
+        #expect(taskWasHeld.value == true)
+    }
+
+    /// Takes a moment to acquire, like the synchronous RunningBoard call behind
+    /// `beginBackgroundTask`.
+    private final class SlowToAcquireBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        private let lock = NSLock()
+        private var held = false
+
+        var isHeld: Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            return held
+        }
+
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            usleep(100_000)
+            lock.lock()
+            held = true
+            lock.unlock()
+            return wrapping(nil)
+        }
+    }
+
     @Test("Work resumes the database and leaves it resumed when the app stayed foregrounded")
     func foregroundWorkLeavesDatabaseResumed() {
         let (suspension, recorder) = makeSuspension()

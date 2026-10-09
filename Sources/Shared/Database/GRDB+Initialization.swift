@@ -227,24 +227,26 @@ public final class AppDatabaseSuspension {
     /// the process alive until the statement finishes; if the system expires it first, GRDB is
     /// suspended instead, which aborts the statement and releases the lock before the freeze.
     func performProtectedWork(named name: BackgroundTask, _ work: @escaping @Sendable () -> Void) {
-        let (untilWorkEnds, workEndSeal) = Promise<Void>.pending()
         beginProtectedAccess()
-        // Started before the background task is armed, so the task's window always covers work that
-        // is already under way rather than work still waiting for a thread.
-        Self.workQueue.async { [self] in
-            work()
-            // `suspend()` sets `wantsSuspension` again, so a still-set flag is how we learn the app
-            // backgrounded while the work ran and the database has to go back to suspended.
-            endProtectedAccess(suspend: lifecycleWantsSuspension)
-            workEndSeal.fulfill(())
-        }
-        Current.backgroundTask(withName: name.rawValue) { _ in untilWorkEnds }
-            .catch { [self] _ in
-                // Out of background time: the process is about to be frozen, so suspend even though
-                // this aborts whatever statement is in flight — releasing the app-group file lock is
-                // what avoids the 0xdead10cc kill. The caller retries on its next update.
-                suspend()
+        // The work only starts once the background task is held: acquiring it is a synchronous call
+        // to RunningBoard, and a process frozen inside it must not already hold the file lock.
+        Current.backgroundTask(withName: name.rawValue) { [self] _ in
+            let (untilWorkEnds, workEndSeal) = Promise<Void>.pending()
+            Self.workQueue.async { [self] in
+                work()
+                // `suspend()` sets `wantsSuspension` again, so a still-set flag is how we learn the app
+                // backgrounded while the work ran and the database has to go back to suspended.
+                endProtectedAccess(suspend: lifecycleWantsSuspension)
+                workEndSeal.fulfill(())
             }
+            return untilWorkEnds
+        }
+        .catch { [self] _ in
+            // Out of background time: the process is about to be frozen, so suspend even though
+            // this aborts whatever statement is in flight — releasing the app-group file lock is
+            // what avoids the 0xdead10cc kill. The caller retries on its next update.
+            suspend()
+        }
     }
 
     private var lifecycleWantsSuspension: Bool {
