@@ -1745,13 +1745,13 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         let sut = makeSUT()
 
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let hungAttempt = sut.loadActiveURLTask
         await waitUntil { gate.waiterCount == 1 }
         sut.loadActiveURLTaskStartDate = Current.date()
             .addingTimeInterval(-WebViewController.loadActiveURLStaleInterval)
 
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
 
         // The replacement attempt is itself parked at the gate, so only the synchronous
         // fallback can have loaded anything.
@@ -1776,7 +1776,7 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 
         // First attempt hangs refreshing network information.
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let hungAttempt = sut.loadActiveURLTask
         XCTAssertNotNil(hungAttempt)
         await waitUntil { gate.waiterCount == 1 }
@@ -1785,14 +1785,14 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         sut.loadActiveURLTaskStartDate = Current.date()
             .addingTimeInterval(-WebViewController.loadActiveURLStaleInterval)
         gate.shouldHold = false
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         XCTAssertEqual(hungAttempt?.isCancelled, true)
         await sut.loadActiveURLTask?.value
         XCTAssertNil(sut.loadActiveURLTask)
 
         // A third attempt is in flight when the hung attempt finally wakes up.
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let inFlightAttempt = sut.loadActiveURLTask
         XCTAssertNotNil(inFlightAttempt)
         await waitUntil { gate.waiterCount == 2 }
@@ -1805,6 +1805,14 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         gate.releaseNext()
         await inFlightAttempt?.value
         XCTAssertNil(sut.loadActiveURLTask)
+    }
+
+    /// Starts an attempt whose network refresh `AsyncGate` may hold. Nothing else is held: whatever
+    /// else refreshes network information while the test runs passes straight through.
+    private func loadActiveURLHoldingAtGate(_ sut: WebViewController) {
+        AsyncGate.$holdsCallers.withValue(true) {
+            sut.loadActiveURLIfNeeded()
+        }
     }
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
@@ -1840,6 +1848,11 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 /// Parks `refreshNetworkInformation` calls while `shouldHold` is set, releasing them one at a
 /// time in arrival order so tests can interleave hung and healthy load attempts deterministically.
 private final class AsyncGate: @unchecked Sendable {
+    /// Set around the calls that start the attempts a test means to hold. The closure the gate stands
+    /// in for is global, so a webhook send or a network path update while the test runs calls it too,
+    /// and holding those as well throws off the counts and the release order the tests rely on.
+    @TaskLocal static var holdsCallers = false
+
     private let lock = NSLock()
     private var waiters = [CheckedContinuation<Void, Never>]()
     private var holding = false
@@ -1864,7 +1877,7 @@ private final class AsyncGate: @unchecked Sendable {
     }
 
     func holdIfNeeded() async {
-        guard shouldHold else { return }
+        guard shouldHold, Self.holdsCallers else { return }
         await withCheckedContinuation { continuation in
             lock.lock()
             waiters.append(continuation)
