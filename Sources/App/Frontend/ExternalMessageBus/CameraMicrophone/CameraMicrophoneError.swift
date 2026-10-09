@@ -1,4 +1,5 @@
 import Foundation
+import Shared
 
 enum CameraMicrophoneError: Error, Equatable {
     case microphoneDenied
@@ -21,12 +22,12 @@ enum CameraMicrophoneError: Error, Equatable {
 
     var message: String {
         switch self {
-        case .microphoneDenied: return "Microphone access was denied"
-        case .serverUnavailable: return "Home Assistant is not reachable"
-        case let .signalingFailed(message): return message ?? "WebRTC signaling failed"
-        case .connectionFailed: return "The WebRTC connection failed"
-        case .timedOut: return "The WebRTC connection timed out"
-        case .interrupted: return "The microphone session was interrupted"
+        case .microphoneDenied: return L10n.CameraMicrophone.Errors.microphoneDenied
+        case .serverUnavailable: return L10n.CameraPlayer.Errors.unableToConnectToServer
+        case let .signalingFailed(message): return message ?? L10n.CameraMicrophone.Errors.signalingFailed
+        case .connectionFailed: return L10n.CameraMicrophone.Errors.connectionFailed
+        case .timedOut: return L10n.CameraMicrophone.Errors.timedOut
+        case .interrupted: return L10n.CameraMicrophone.Errors.interrupted
         }
     }
 }

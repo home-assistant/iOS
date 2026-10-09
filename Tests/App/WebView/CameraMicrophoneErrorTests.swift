@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import Shared
 import XCTest
 
 final class CameraMicrophoneErrorTests: XCTestCase {
@@ -28,5 +29,12 @@ final class CameraMicrophoneErrorTests: XCTestCase {
 
     func testASignalingFailureCarriesTheServersMessage() {
         XCTAssertEqual(CameraMicrophoneError.signalingFailed("Camera offline").message, "Camera offline")
+    }
+
+    func testASignalingFailureWithoutAServerMessageIsLocalized() {
+        XCTAssertEqual(
+            CameraMicrophoneError.signalingFailed(nil).message,
+            L10n.CameraMicrophone.Errors.signalingFailed
+        )
     }
 }

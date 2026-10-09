@@ -312,15 +312,6 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         configuration.mode = AVAudioSession.Mode.moviePlayback.rawValue
         configuration.categoryOptions = [.mixWithOthers]
         RTCAudioSessionConfiguration.setWebRTC(configuration)
-
-        let session = RTCAudioSession.sharedInstance()
-        session.lockForConfiguration()
-        defer { session.unlockForConfiguration() }
-        do {
-            try session.setActive(false)
-        } catch {
-            Current.Log.error("Failed to release the microphone audio session on close: \(error.localizedDescription)")
-        }
     }
 
     weak var delegate: WebRTCClientDelegate?
