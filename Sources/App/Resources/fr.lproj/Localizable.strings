@@ -2441,6 +2441,7 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "thread.transter_to_homeassistant.title" = "Transférer vers Home Assistant";
 "token_error.connection_failed" = "La connexion a échoué.";
 "token_error.expired" = "Le jeton a expiré.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Le jeton n'est pas disponible.";
 "unauthenticated.message.body" = "Votre session a expiré. Veuillez vous réauthentifier pour continuer, ou vérifiez votre connexion si vous êtes derrière un proxy ou une restriction réseau.";
 "unauthenticated.message.title" = "Vous n'êtes pas authentifié";

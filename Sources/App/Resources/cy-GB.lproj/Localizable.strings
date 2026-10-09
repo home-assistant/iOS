@@ -2441,6 +2441,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
 "token_error.connection_failed" = "Methodd y cysylltiad.";
 "token_error.expired" = "Mae Token wedi dod i ben.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Nid yw Token ar gael.";
 "unauthenticated.message.body" = "Your session has expired. Please re-authenticate to continue, or check your connection if you are behind a proxy or network restriction.";
 "unauthenticated.message.title" = "You are unauthenticated";

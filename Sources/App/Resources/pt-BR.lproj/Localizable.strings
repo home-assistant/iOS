@@ -358,7 +358,7 @@
 "assist.chat.menu.edit" = "Editar";
 "assist.chat.menu.replay" = "Reproduzir novamente";
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
-"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
+"assist.error.speech_to_text_unsupported" = "Este pipeline do Assist não tem um mecanismo de conversão de fala em texto. Escolha um pipeline que tenha um ou habilite a Conversão de fala em texto no dispositivo nas configurações do Assist.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Pergunte o que quiser...";
@@ -2441,6 +2441,7 @@ O servidor só responde enquanto o aplicativo está aberto, e para quando você 
 "thread.transter_to_homeassistant.title" = "Transferir para o Home Assistant";
 "token_error.connection_failed" = "Falha na conexão.";
 "token_error.expired" = "O token expirou.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "O token não está disponível.";
 "unauthenticated.message.body" = "Sua sessão expirou. Autentique-se novamente para continuar ou verifique sua conexão se você estiver atrás de um proxy ou restrição de rede.";
 "unauthenticated.message.title" = "Você não está autenticado";
