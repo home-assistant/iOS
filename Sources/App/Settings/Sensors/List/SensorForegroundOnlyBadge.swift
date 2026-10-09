@@ -4,7 +4,7 @@ import SwiftUI
 /// Marks a sensor row whose sensor only reports while the app is open on screen.
 ///
 /// A quiet capsule rather than a coloured one: this is a fact about the sensor, not a warning. It
-/// sits beside the sensor's state, which is what it qualifies.
+/// sits under the sensor's state, which is what it qualifies.
 struct SensorForegroundOnlyBadge: View {
     var body: some View {
         Text(L10n.SettingsSensors.Sensors.ForegroundOnly.badge)
@@ -13,8 +13,6 @@ struct SensorForegroundOnlyBadge: View {
             .padding(.horizontal, DesignSystem.Spaces.one)
             .padding(.vertical, DesignSystem.Spaces.micro)
             .background(Color(uiColor: .tertiaryFill), in: Capsule())
-            // Keeps its shape next to a state description that wants the width.
-            .fixedSize()
             .accessibilityLabel(L10n.SettingsSensors.Sensors.ForegroundOnly.accessibilityLabel)
     }
 }
@@ -23,7 +21,7 @@ struct SensorForegroundOnlyBadge: View {
     List {
         VStack(alignment: .leading) {
             Text("Camera Motion")
-            HStack(spacing: DesignSystem.Spaces.one) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                 Text("false")
                     .foregroundColor(.secondary)
                     .font(.subheadline)

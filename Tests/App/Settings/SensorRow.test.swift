@@ -46,6 +46,20 @@ struct SensorRowTests {
         assertLightDarkSnapshots(of: view)
     }
 
+    /// A long state keeps the full width of the row to wrap into, with the badge on its own line
+    /// below it rather than squeezing the state word by word.
+    @MainActor
+    @Test func testForegroundOnlyRowViewWithLongState() async throws {
+        let sensor = Self.cameraMotionSensor()
+        sensor.State = "Motion detected near the front door and the garage"
+        let view = List {
+            Toggle(isOn: .constant(true)) {
+                SensorRow(sensor: sensor, isEnabled: true)
+            }
+        }
+        assertLightDarkSnapshots(of: view)
+    }
+
     /// The kiosk sensors keep reporting a value in the background, it just stops changing — the
     /// same badge, because reading a frozen value from Home Assistant is the same trap.
     @MainActor
