@@ -38,11 +38,6 @@ public enum BackgroundTaskError: Error {
 }
 
 public protocol HomeAssistantBackgroundTaskRunner {
-    func callAsFunction<PromiseValue>(
-        withName name: String,
-        wrapping: (TimeInterval?) -> Promise<PromiseValue>
-    ) -> Promise<PromiseValue>
-
     /// With `requiringAssertion`, the work is skipped and `.denied` returned when the system refuses
     /// the assertion; database work started without one can be frozen holding the file lock.
     func callAsFunction<PromiseValue>(
@@ -55,10 +50,9 @@ public protocol HomeAssistantBackgroundTaskRunner {
 public extension HomeAssistantBackgroundTaskRunner {
     func callAsFunction<PromiseValue>(
         withName name: String,
-        requiringAssertion: Bool,
         wrapping: (TimeInterval?) -> Promise<PromiseValue>
     ) -> Promise<PromiseValue> {
-        callAsFunction(withName: name, wrapping: wrapping)
+        callAsFunction(withName: name, requiringAssertion: false, wrapping: wrapping)
     }
 }
 

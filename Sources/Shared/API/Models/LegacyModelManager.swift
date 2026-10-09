@@ -11,7 +11,9 @@ public class LegacyModelManager: ServerObserver {
     private var subscribedSubscriptions = [SubscribeDefinition]()
     private var subscribedServerIdentifiers = Set<Identifier<Server>>()
     private var cleanupDefinitions = [CleanupDefinition]()
-    private var cleanedUpServerIdentifiers = Set<Identifier<Server>>()
+    /// Membership of the last cleanup that succeeded, and of the one still running, if any.
+    private var cleanedUpServerIdentifiers: Set<Identifier<Server>>?
+    private var cleaningServerIdentifiers: Set<Identifier<Server>>?
 
     private static var includedDomains: [Domain] = [.zone, .person]
 
@@ -143,7 +145,8 @@ public class LegacyModelManager: ServerObserver {
         Current.servers.add(observer: self)
 
         cleanupDefinitions = definitions
-        cleanedUpServerIdentifiers = Set(Current.servers.all.map(\.identifier))
+        let serverIdentifiers = Set(Current.servers.all.map(\.identifier))
+        cleaningServerIdentifiers = serverIdentifiers
 
         // Hold a background task while the writes run: cleanup is triggered by `serversDidChange`,
         // which can fire while the app is backgrounded. The expiring-activity protection in the
@@ -176,6 +179,14 @@ public class LegacyModelManager: ServerObserver {
                 }
             }
             return promise
+        }
+        .get { [weak self] in
+            self?.cleanedUpServerIdentifiers = serverIdentifiers
+        }
+        .ensure { [weak self] in
+            if self?.cleaningServerIdentifiers == serverIdentifiers {
+                self?.cleaningServerIdentifiers = nil
+            }
         }
         .recover { error -> Promise<Void> in
             // Out of background time, or none granted: suspend GRDB right away, aborting any
@@ -406,7 +417,8 @@ public class LegacyModelManager: ServerObserver {
         }
         // Cleanup drops rows of removed servers; detail changes (token refreshes, versions) don't
         // need it, and running it on each one was a background write the app got killed during.
-        if Set(Current.servers.all.map(\.identifier)) != cleanedUpServerIdentifiers {
+        let serverIdentifiers = Set(Current.servers.all.map(\.identifier))
+        if serverIdentifiers != cleanedUpServerIdentifiers, serverIdentifiers != cleaningServerIdentifiers {
             cleanup(definitions: cleanupDefinitions).cauterize()
         }
     }

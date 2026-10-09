@@ -6,13 +6,6 @@ import UIKit
 class ApplicationBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
     public func callAsFunction<PromiseValue>(
         withName name: String,
-        wrapping: (TimeInterval?) -> Promise<PromiseValue>
-    ) -> Promise<PromiseValue> {
-        callAsFunction(withName: name, requiringAssertion: false, wrapping: wrapping)
-    }
-
-    public func callAsFunction<PromiseValue>(
-        withName name: String,
         requiringAssertion: Bool,
         wrapping: (TimeInterval?) -> Promise<PromiseValue>
     ) -> Promise<PromiseValue> {

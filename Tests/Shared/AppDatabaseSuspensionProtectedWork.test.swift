@@ -64,6 +64,7 @@ struct AppDatabaseSuspensionProtectedWorkTests {
 
         func callAsFunction<PromiseValue>(
             withName name: String,
+            requiringAssertion: Bool,
             wrapping: (TimeInterval?) -> Promise<PromiseValue>
         ) -> Promise<PromiseValue> {
             lock.lock()
@@ -168,6 +169,7 @@ struct AppDatabaseSuspensionProtectedWorkTests {
 
         func callAsFunction<PromiseValue>(
             withName name: String,
+            requiringAssertion: Bool,
             wrapping: (TimeInterval?) -> Promise<PromiseValue>
         ) -> Promise<PromiseValue> {
             usleep(100_000)
@@ -198,13 +200,6 @@ struct AppDatabaseSuspensionProtectedWorkTests {
 
     /// Refuses the assertion, as iOS does when the app has no background time left.
     private final class DenyingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
-        func callAsFunction<PromiseValue>(
-            withName name: String,
-            wrapping: (TimeInterval?) -> Promise<PromiseValue>
-        ) -> Promise<PromiseValue> {
-            wrapping(nil)
-        }
-
         func callAsFunction<PromiseValue>(
             withName name: String,
             requiringAssertion: Bool,

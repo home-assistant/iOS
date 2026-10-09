@@ -4,15 +4,17 @@ import PromiseKit
 public class ProcessInfoBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
     public func callAsFunction<PromiseValue>(
         withName name: String,
+        requiringAssertion: Bool,
         wrapping: (TimeInterval?) -> Promise<PromiseValue>
     ) -> Promise<PromiseValue> {
-        ProcessInfo.processInfo.backgroundTask(withName: name, wrapping: wrapping)
+        ProcessInfo.processInfo.backgroundTask(withName: name, requiringAssertion: requiringAssertion, wrapping: wrapping)
     }
 }
 
 private extension ProcessInfo {
     func backgroundTask<PromiseValue>(
         withName name: String,
+        requiringAssertion: Bool,
         wrapping: (TimeInterval?) -> Promise<PromiseValue>
     ) -> Promise<PromiseValue> {
         let identifier = UUID()
@@ -31,7 +33,8 @@ private extension ProcessInfo {
                 return (identifier, nil)
             }, endBackgroundTask: { _ in
                 semaphore.signal()
-            }, wrapping: wrapping
+            }, requiresAssertion: requiringAssertion,
+            wrapping: wrapping
         )
     }
 }

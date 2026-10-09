@@ -7,6 +7,16 @@ import PromiseKit
 import XCTest
 
 class ModelManagerTests: XCTestCase {
+    private final class DenyingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            requiringAssertion: Bool,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            requiringAssertion ? Promise(error: BackgroundTaskError.denied) : wrapping(nil)
+        }
+    }
+
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
     private var testQueue: DispatchQueue!
@@ -309,6 +319,26 @@ class ModelManagerTests: XCTestCase {
 
         let remaining = try database.read { try TestStoreModel1.fetchAll($0) }
         XCTAssertEqual(remaining.map(\.identifier), ["orphan"])
+    }
+
+    func testDeniedCleanupRunsAgainOnTheNextServerChange() throws {
+        let definitions: [LegacyModelManager.CleanupDefinition] = [
+            .orphanDelete(recordType: TestStoreModel1.self, serverIdentifierColumnName: "serverIdentifier"),
+        ]
+        try database.write { db in
+            try TestStoreModel1(identifier: "orphan", serverIdentifier: "gone", value: nil).save(db)
+        }
+
+        let previousRunner = Current.backgroundTask
+        Current.backgroundTask = DenyingBackgroundTaskRunner()
+        XCTAssertThrowsError(try hang(manager.cleanup(definitions: definitions)))
+        Current.backgroundTask = previousRunner
+
+        servers.notify()
+        testQueue.sync {}
+
+        let remaining = try database.read { try TestStoreModel1.fetchAll($0) }
+        XCTAssertEqual(remaining.map(\.identifier), [])
     }
 
     func testFetchInvokesDefinition() {
