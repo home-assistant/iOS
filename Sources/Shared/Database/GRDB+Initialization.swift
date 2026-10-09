@@ -241,10 +241,15 @@ public final class AppDatabaseSuspension {
             }
             return untilWorkEnds
         }
-        .catch { [self] _ in
-            // Out of background time, or none granted: the process is about to be frozen, so suspend
-            // even though this aborts whatever statement is in flight — releasing the app-group file
-            // lock is what avoids the 0xdead10cc kill. The caller retries on its next update.
+        .catch { [self] error in
+            if case BackgroundTaskError.denied = error {
+                // Nothing started, so let any sibling still holding its own assertion finish first.
+                suspendIfIdle()
+                return
+            }
+            // Out of background time: the process is about to be frozen, so suspend even though
+            // this aborts whatever statement is in flight — releasing the app-group file lock is
+            // what avoids the 0xdead10cc kill. The caller retries on its next update.
             suspend()
         }
     }

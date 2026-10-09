@@ -189,12 +189,15 @@ public class LegacyModelManager: ServerObserver {
             }
         }
         .recover { error -> Promise<Void> in
-            // Out of background time, or none granted: suspend GRDB right away, aborting any
-            // in-flight write so the file lock is released before the process is frozen. Ordinary
-            // write failures (rethrown below) must not suspend the database.
+            // Out of background time: suspend GRDB right away, aborting any in-flight write so the
+            // file lock is released before the process is frozen. Denied means nothing started, so
+            // other protected work is left to finish. Ordinary write failures (rethrown below) must
+            // not suspend the database.
             switch error {
-            case BackgroundTaskError.outOfTime, BackgroundTaskError.denied:
+            case BackgroundTaskError.outOfTime:
                 AppDatabaseSuspension.suspend()
+            case BackgroundTaskError.denied:
+                AppDatabaseSuspension.suspendIfIdle()
             default:
                 break
             }
