@@ -139,6 +139,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// run, so callers don't publish side effects for a write that rolled back.
     private static func performProtectedDatabaseWork(
         reason: String,
+        finished: @escaping () -> Void,
         _ work: @escaping () -> Bool,
         completion: (() -> Void)? = nil
     ) {
@@ -146,10 +147,12 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             if expired {
                 // Nothing was claimed on this path, so only suspend if no sibling is mid-write.
                 AppDatabaseSuspension.suspendIfIdle()
+                finished()
                 return
             }
             AppDatabaseSuspension.beginProtectedAccess()
             let didSucceed = work()
+            finished()
             DispatchQueue.main.async {
                 // Re-suspend when this was the last access in flight and we're still backgrounded;
                 // harmless when active (any `Current.database()` access resumes it again).
@@ -416,6 +419,15 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// arrives on — decoding there at launch was a watchdog-kill crash cluster. Serial so burst
     /// deliveries decode in arrival order.
     private static let pushedMirrorQueue = DispatchQueue(label: "pushed-mirror-decode", qos: .utility)
+    private static let pendingMirrorAppliesLock = NSLock()
+    private static var pendingMirrorApplies = 0
+
+    private static func changePendingMirrorApplies(by delta: Int) -> Int {
+        pendingMirrorAppliesLock.lock()
+        defer { pendingMirrorAppliesLock.unlock() }
+        pendingMirrorApplies += delta
+        return pendingMirrorApplies
+    }
 
     /// Apply a reference database mirror the iPhone pushed proactively over `transferFile` (arrives even
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
@@ -433,6 +445,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             return
         }
 
+        _ = Self.changePendingMirrorApplies(by: 1)
         Self.pushedMirrorQueue.async { [weak self] in
             self?.decodeAndApplyPushedDatabaseMirror(data, metadata: metadata)
         }
@@ -444,13 +457,16 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             // Taking the entries removes them, so bail out before that when there is nothing left
             // to apply them with — otherwise a staged mirror is dropped unread.
             guard let self else { return }
-            for entry in PushedMirrorStagingStore.takeAll() {
+            let entries = PushedMirrorStagingStore.takeAll()
+            _ = Self.changePendingMirrorApplies(by: entries.count)
+            for entry in entries {
                 decodeAndApplyPushedDatabaseMirror(entry.data, metadata: entry.metadata)
             }
         }
     }
 
     private func decodeAndApplyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        _ = Self.changePendingMirrorApplies(by: -1)
         var data = data
         // Full-reference (v2) pushes travel compressed; the transfer metadata says so explicitly.
         if metadata?[WatchDatabaseMirror.compressedKey] as? Bool == true {
@@ -476,8 +492,12 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             ))
             return
         }
-        // Pushed mirrors typically arrive while the app is backgrounded — protect the write.
-        Self.performProtectedDatabaseWork(reason: "watch-mirror-apply") {
+        // Pushed mirrors typically arrive while the app is backgrounded — protect the write. Waited
+        // on so a burst applies one mirror at a time: in parallel they blew the background CPU
+        // budget (CAROUSEL 0xc51bad01).
+        let didFinish = DispatchSemaphore(value: 0)
+        defer { didFinish.wait() }
+        Self.performProtectedDatabaseWork(reason: "watch-mirror-apply", finished: { didFinish.signal() }) {
             do {
                 try mirror.apply()
                 // The push carries the phone's digests in the transfer metadata; storing them for
@@ -511,6 +531,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 return false
             }
         } completion: { [weak self] in
+            // The next mirror in the burst publishes these once it lands.
+            guard Self.changePendingMirrorApplies(by: 0) == 0 else { return }
             // Rebuild complication snapshots and let the home screen re-render from the fresh data.
             WatchWidgetComplicationSnapshotStore.update()
             NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
