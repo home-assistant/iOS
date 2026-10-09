@@ -175,14 +175,14 @@ public class LegacyModelManager: ServerObserver {
             return promise
         }
         .recover { error -> Promise<Void> in
-                // Out of background time: suspend GRDB right away, aborting any in-flight write so
-                // the file lock is released before the process is frozen. Ordinary write failures
-                // (rethrown below) must not suspend the database.
-                if case BackgroundTaskError.outOfTime = error {
-                    AppDatabaseSuspension.suspend()
-                }
-                throw error
+            // Out of background time: suspend GRDB right away, aborting any in-flight write so
+            // the file lock is released before the process is frozen. Ordinary write failures
+            // (rethrown below) must not suspend the database.
+            if case BackgroundTaskError.outOfTime = error {
+                AppDatabaseSuspension.suspend()
             }
+            throw error
+        }
     }
 
     public struct SubscribeDefinition {
