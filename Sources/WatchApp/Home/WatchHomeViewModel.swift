@@ -735,22 +735,36 @@ final class WatchHomeViewModel: ObservableObject {
         let provider = magicItemProvider
         provider.loadInformation { [weak self] entitiesPerServer in
             DispatchQueue.main.async {
-                guard let self else { return }
-                var infos: [MagicItem.Info] = []
-                for item in config.items {
-                    if let info = provider.getInfo(for: item) { infos.append(info) }
-                    if item.type == .folder, let children = item.items {
-                        for child in children {
-                            if let info = provider.getInfo(for: child) { infos.append(info) }
-                        }
-                    }
-                }
-                self.updateConfig(config: config, magicItemsInfo: infos)
-                self.updateAreasMode(config: config, entitiesPerServer: entitiesPerServer)
-                self.resetError()
-                self.finishCacheLoad()
+                self?.applyLoadedInformation(config: config, provider: provider, entitiesPerServer: entitiesPerServer)
             }
         }
+    }
+
+    @MainActor
+    private func applyLoadedInformation(
+        config: WatchConfig,
+        provider: MagicItemProviderProtocol,
+        entitiesPerServer: [String: [HAAppEntity]]
+    ) {
+        var infos: [MagicItem.Info] = []
+        for item in config.items {
+            if let info = provider.getInfo(for: item) { infos.append(info) }
+            if item.type == .folder, let children = item.items {
+                for child in children {
+                    if let info = provider.getInfo(for: child) { infos.append(info) }
+                }
+            }
+        }
+        updateConfig(config: config, magicItemsInfo: infos)
+        // The wrist can go down while the items load; the areas read would then start
+        // backgrounded, so leave it to the load that runs on the next activation.
+        if WKApplication.shared().applicationState == .background {
+            needsCacheLoadOnActive = true
+        } else {
+            updateAreasMode(config: config, entitiesPerServer: entitiesPerServer)
+        }
+        resetError()
+        finishCacheLoad()
     }
 
     /// Serial queue for the areas-mode computation — the area fetch is a synchronous database read
