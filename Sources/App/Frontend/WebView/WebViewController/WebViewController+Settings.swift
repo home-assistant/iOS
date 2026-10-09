@@ -100,9 +100,9 @@ extension WebViewController {
     }
 
     /// Publishes the themed status-bar strip to SwiftUI. In compact-width layouts the web view runs truly
-    /// edge-to-edge (no strip) by default when the server core supports it (2026.8+) or full-screen is
-    /// enabled. The strip is drawn for older cores, in regular-width layouts (unless full-screen is
-    /// enabled), or when the developer "always below status bar" override is on.
+    /// edge-to-edge (no strip) by default when the server core supports it (2026.8+), and in every layout
+    /// once the status bar is hidden by full screen or kiosk mode. The strip is drawn for older cores, in
+    /// regular-width layouts, or when the developer "always below status bar" override is on.
     func updateThemedStatusBar() {
         #if os(macOS)
         // A Mac window's title bar is drawn by AppKit, so there is no strip for the frontend to colour.
@@ -114,7 +114,7 @@ extension WebViewController {
         let coreSupportsEdgeToEdge = server.info.version >= .canDisplayEdgeToEdge
         let belowStatusBarOverride = Current.settingsStore.webViewAlwaysBelowStatusBar
         let edgeToEdge = (isCompactWidth && coreSupportsEdgeToEdge && !belowStatusBarOverride)
-            || Current.settingsStore.fullScreen
+            || WebViewChromeState.resolveStatusBarHidden()
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             overlayState?.statusBarColor = (edgeToEdge || Current.isCatalyst) ? nil : themedStatusBarColor()

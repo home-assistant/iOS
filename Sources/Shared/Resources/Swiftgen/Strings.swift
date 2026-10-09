@@ -1390,6 +1390,8 @@ public enum L10n {
     public enum Error {
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
+      /// This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.
+      public static var speechToTextUnsupported: String { return L10n.tr("Localizable", "assist.error.speech_to_text_unsupported") }
     }
     public enum ModernUi {
       public enum Header {
@@ -1524,6 +1526,8 @@ public enum L10n {
     public static var noPipelines: String { return L10n.tr("Localizable", "assist_pipeline_picker.no_pipelines") }
     /// Pick pipeline
     public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
+    /// Reload
+    public static var reload: String { return L10n.tr("Localizable", "assist_pipeline_picker.reload") }
   }
 
   public enum CameraList {
@@ -2602,6 +2606,8 @@ public enum L10n {
       public enum GroupBy {
         /// Group by Area
         public static var area: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.area") }
+        /// Group by Device
+        public static var device: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.device") }
         /// Group by Domain
         public static var domain: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.domain") }
         /// Group by
@@ -2617,6 +2623,12 @@ public enum L10n {
         public enum NoArea {
           /// No area
           public static var title: String { return L10n.tr("Localizable", "entity_picker.list.area.no_area.title") }
+        }
+      }
+      public enum Device {
+        public enum NoDevice {
+          /// No device
+          public static var title: String { return L10n.tr("Localizable", "entity_picker.list.device.no_device.title") }
         }
       }
     }
@@ -3846,10 +3858,6 @@ public enum L10n {
       public static var hide: String { return L10n.tr("Localizable", "mac.sidebar.hide") }
       /// Notifications
       public static var notifications: String { return L10n.tr("Localizable", "mac.sidebar.notifications") }
-      /// Reset to Defaults
-      public static var resetToDefaults: String { return L10n.tr("Localizable", "mac.sidebar.reset_to_defaults") }
-      /// Set as Default Dashboard
-      public static var setDefaultDashboard: String { return L10n.tr("Localizable", "mac.sidebar.set_default_dashboard") }
       /// Settings
       public static var settings: String { return L10n.tr("Localizable", "mac.sidebar.settings") }
       /// Show
@@ -4129,8 +4137,6 @@ public enum L10n {
       public static var customizeToolbar: String { return L10n.tr("Localizable", "menu.view.customize_toolbar") }
       /// Find
       public static var find: String { return L10n.tr("Localizable", "menu.view.find") }
-      /// Hide Sidebar
-      public static var hideSidebar: String { return L10n.tr("Localizable", "menu.view.hide_sidebar") }
       /// Reload Page
       public static var reloadPage: String { return L10n.tr("Localizable", "menu.view.reload_page") }
       /// Show Sidebar
@@ -4841,6 +4847,8 @@ public enum L10n {
       public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
       /// Connect to my Home Assistant
       public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button") }
+      /// Connect
+      public static var primaryButtonCompact: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button_compact") }
       /// Getting started
       public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.secondary_button") }
       /// Welcome to Home Assistant %@!
@@ -7977,6 +7985,8 @@ public enum L10n {
     public static var connectionFailed: String { return L10n.tr("Localizable", "token_error.connection_failed") }
     /// Token is expired.
     public static var expired: String { return L10n.tr("Localizable", "token_error.expired") }
+    /// Session is no longer valid. Please log in again.
+    public static var reauthenticationRequired: String { return L10n.tr("Localizable", "token_error.reauthentication_required") }
     /// Token is unavailable.
     public static var tokenUnavailable: String { return L10n.tr("Localizable", "token_error.token_unavailable") }
   }
@@ -8830,6 +8840,10 @@ public enum L10n {
       public enum Device {
         /// There are no compatible entities for this device.
         public static var empty: String { return L10n.tr("Localizable", "watch.home.device.empty") }
+        /// Part of %@
+        public static func partOf(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.home.device.part_of", String(describing: p1))
+        }
       }
       public enum Loading {
         public enum Skip {
@@ -9574,6 +9588,16 @@ public enum L10n {
           /// Warning
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.warning.title") }
         }
+      }
+      public enum Location {
+        /// Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.location.footer") }
+        /// Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.
+        public static var permissionDenied: String { return L10n.tr("Localizable", "watch.settings.location.permission_denied") }
+        /// Each server receives the location you choose for it.
+        public static var serversFooter: String { return L10n.tr("Localizable", "watch.settings.location.servers_footer") }
+        /// Location
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.location.title") }
       }
       public enum NoItems {
         public enum Phone {

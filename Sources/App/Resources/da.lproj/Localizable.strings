@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Redigér";
 "assist.chat.menu.replay" = "Afspil igen";
 "assist.error.pipelines_response" = "Kunne ikke hente Assist-pipelines. Tjek venligst din pipelines-konfiguration.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Spørg mig om hvad som helst...";
@@ -388,13 +389,17 @@
 "assist.settings.tts_mute.footer" = "Når den er aktiveret, afspiller Assist ikke lydsvar, selv om pipelinen har tekst-til-tale konfigureret. Du vil stadig se tekstsvar.";
 "assist.settings.tts_mute.toggle" = "Slå stemmesvar fra";
 "assist.text_field.placeholder" = "Indtast en anmodning...";
-"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
+"assist.watch.mic_button.tap_or_hold.title" = "Tryk eller hold nede for at";
 "assist.watch.mic_button.title" = "Tryk for";
 "assist.watch.not_reachable.title" = "Assist kræver iPhone-forbindelse. Din iPhone er i øjeblikket ikke tilgængelig.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No speech was recognized.";
 "assist.watch.volume.title" = "Lydstyrkekontrol";
 "assist_pipeline_picker.no_pipelines" = "Ingen tilgængelige pipelines";
 "assist_pipeline_picker.placeholder" = "Vælg pipeline";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Redigér";
 "camera_list.edit.on.title" = "Færdig";
 "camera_list.empty.message" = "Ingen kameraenheder fundet i din Home Assistant-opsætning";
@@ -711,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Alle domæner";
 "entity_picker.filter.domain.title" = "Domæne";
 "entity_picker.filter.group_by.area" = "Gruppér efter område";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Gruppér efter domæne";
 "entity_picker.filter.group_by.title" = "Gruppér efter";
 "entity_picker.filter.server.title" = "Servere";
 "entity_picker.list.area.no_area.title" = "Intet område";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Vælg entitet";
 "entity_picker.refresh.updating" = "Opdaterer…";
 "entity_picker.reload" = "Genindlæs";
@@ -1124,8 +1131,6 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "mac.sidebar.hidden_section.header" = "Skjult";
 "mac.sidebar.hide" = "Skjul";
 "mac.sidebar.notifications" = "Notifikationer";
-"mac.sidebar.reset_to_defaults" = "Nulstil til standardindstillinger";
-"mac.sidebar.set_default_dashboard" = "Angiv som standardbetjeningspanel";
 "mac.sidebar.settings" = "Indstillinger";
 "mac.sidebar.show" = "Vis";
 "mac.toggle_sidebar.accessibility_label" = "Vis/skjul sidepanel";
@@ -1198,7 +1203,6 @@ Denne server kræver et klientcertifikat (mTLS), men handlingen blev annulleret.
 "menu.status_item.toggle" = "Skift %1$@";
 "menu.view.customize_toolbar" = "Tilpas værktøjslinjen…";
 "menu.view.find" = "Find";
-"menu.view.hide_sidebar" = "Skjul sidepanel";
 "menu.view.reload_page" = "Genindlæs side";
 "menu.view.show_sidebar" = "Vis sidepanel";
 "mtls.beta.info" = "Dette er en betafunktion. Hvis du oplever problemer, bedes du rapportere dem ved hjælp af knappen nedenfor.\
@@ -1424,6 +1428,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "onboarding.welcome.learn_more" = "Lær mere";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant-logo";
 "onboarding.welcome.primary_button" = "Opret forbindelse til min Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Kom godt i gang";
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Tilgå din Home Assistant-server, når du er på farten. \
@@ -2481,7 +2486,7 @@ Serveren svarer kun, mens appen er åben, og stopper, når du lukker den.";
 "vacuum.control.start" = "Start";
 "vacuum.control.stop" = "Stop";
 "watch.assist.button.recording.title" = "Optager...";
-"watch.assist.button.release_to_send.title" = "Release to send";
+"watch.assist.button.release_to_send.title" = "Slip for at sende";
 "watch.assist.button.send_request.title" = "Tryk for at sende anmodning";
 "watch.assist.lack_config.error.title" = "Konfigurér Assist ved hjælp af iOS-appen";
 "watch.complications.builder.color" = "Gauge color";
@@ -2713,6 +2718,7 @@ Serveren svarer kun, mens appen er åben, og stopper, når du lukker den.";
 "watch.home.areas.title" = "Områder";
 "watch.home.cancel_and_use_cache.title" = "Annullér og brug cache";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Spring over";
 "watch.home.run.confirmation.title" = "Er du sikker på, at du vil køre \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2957,6 +2963,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.warning.message" = "These options are for debugging. Only use them when guided by a developer.";
 "watch.settings.developer.warning.title" = "Warning";
 "watch.settings.last_updated" = "Opdateret %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Ingen elementer konfigureret. Vælg venligst elementer nedenfor.";
 "watch.settings.no_servers" = "Ingen servere er synkroniseret endnu. Åbn Home Assistant på din parrede iPhone, og opdatér derefter fra startskærmen.";
 "watch.settings.perform_action.footer" = "Hvor handlingerne udføres. Auto bruger din iPhone, når den er i nærheden; ellers opretter Apple Watch direkte forbindelse til Home Assistant.";

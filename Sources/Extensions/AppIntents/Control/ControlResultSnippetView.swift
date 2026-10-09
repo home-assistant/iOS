@@ -35,7 +35,7 @@ struct ControlResultSnippetView: View {
                     .font(.subheadline)
                     .foregroundStyle(accent)
                     .lineLimit(1)
-                if let context {
+                if let context = state.context {
                     Text(context)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -66,14 +66,6 @@ struct ControlResultSnippetView: View {
                 .resizable()
                 .scaledToFit()
         }
-    }
-
-    /// `Floor • Area • Device`, whichever of the three are known.
-    private var context: String? {
-        [state.floorName, state.areaName, state.deviceName]
-            .compactMap { $0 }
-            .joined(separator: " • ")
-            .nilIfEmpty
     }
 }
 

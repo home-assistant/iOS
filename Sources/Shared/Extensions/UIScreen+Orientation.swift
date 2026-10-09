@@ -4,6 +4,9 @@ import Foundation
 import UIKit
 
 public extension UIScreen {
+    // TODO: Modernization - Callers reach this through `UIScreen.main`, which is deprecated. Call it on the
+    // screen of the window whose content rotates (`view.window?.windowScene?.screen`), or move camera rotation
+    // to `AVCaptureDevice.RotationCoordinator` (iOS 17+) and delete this helper.
     /// The screen's current rotation, expressed as the equivalent device orientation.
     ///
     /// Unlike `UIDevice.current.orientation` this is derived from the screen geometry,

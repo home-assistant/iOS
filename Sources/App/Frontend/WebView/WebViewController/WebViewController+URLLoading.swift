@@ -315,6 +315,46 @@ extension WebViewController {
         }
     }
 
+    /// Sends the web view home after a navigation the frontend can't honor — a 404, a forbidden page, or a
+    /// malformed deeplink URL. Loads the frontend root (the kiosk dashboard when kiosk mode targets this
+    /// server, otherwise the server default) instead of leaving the user on a server error page or the
+    /// disconnected empty state.
+    ///
+    /// `failedURL` is the destination that failed. When it already is the root, the root itself is broken,
+    /// so we fall back to the normal empty state rather than bouncing into the same failure again.
+    func redirectToActiveURLRoot(failedURL: URL?) {
+        // Resolving the root can suspend for two network-state lookups. A newer redirect replaces this one,
+        // and the page the web view is on when the redirect is requested is captured so a navigation the
+        // user triggers meanwhile (a tap, a deep link) is not overwritten by this now-stale redirect.
+        redirectToRootTask?.cancel()
+        let urlWhenRequested = webView.url
+        redirectToRootTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let webviewURL = await server.webviewURL() else {
+                guard !Task.isCancelled else { return }
+                Current.Log.error("Cannot redirect to root, \(server.identifier.rawValue) has no active URL")
+                showNoActiveURLError()
+                return
+            }
+            let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
+            guard !Task.isCancelled, webView.url == urlWhenRequested else {
+                Current.Log.info("Skipping stale root redirect: a newer navigation took over")
+                return
+            }
+            switch Self.rootRedirectOutcome(target: target, failedURL: failedURL) {
+            case let .loadRoot(url):
+                Current.Log.info("redirecting web view to root after a disallowed navigation: \(url.path)")
+                loadViewIfNeeded()
+                overlayState?.externalNavigationRequests.send()
+                load(request: URLRequest(url: url))
+            case let .showEmptyState(failed):
+                Current.Log.error("Root \(target.path) itself failed to load; showing empty state instead of looping")
+                latestLoadError = Self.serverErrorLoadError(for: failed)
+                showEmptyState()
+            }
+        }
+    }
+
     func showNoActiveURLError() {
         // Load about:blank in webview to prevent any current connections
         load(request: URLRequest(url: URL(string: "about:blank")!))

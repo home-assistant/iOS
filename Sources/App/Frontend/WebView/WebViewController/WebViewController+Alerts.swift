@@ -494,13 +494,22 @@ extension WebViewController {
         showEmptyState()
     }
 
+    /// The shake gesture only exists on a phone, so only a phone offers the toggle. Read from this
+    /// controller's traits rather than the device, which is what a resizable window reports.
+    var showsShakeDisclaimerToggle: Bool {
+        #if os(macOS)
+        false
+        #else
+        traitCollection.userInterfaceIdiom == .phone
+        #endif
+    }
+
     func openDebug() {
+        let showsShakeDisclaimerToggle = showsShakeDisclaimerToggle
         let controller = PlatformHostingController(rootView: AnyView(
             NavigationView {
                 VStack {
-                    #if os(iOS)
-                    // Shaking to open this screen is something only an iPhone is held to do.
-                    if UIDevice.current.userInterfaceIdiom == .phone {
+                    if showsShakeDisclaimerToggle {
                         HStack(spacing: DesignSystem.Spaces.half) {
                             Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
                             Toggle(isOn: .init(get: {
@@ -514,7 +523,6 @@ extension WebViewController {
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
                         .padding(DesignSystem.Spaces.one)
                     }
-                    #endif
                     DebugView()
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {

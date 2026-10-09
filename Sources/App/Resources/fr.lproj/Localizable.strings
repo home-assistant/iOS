@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Modifier";
 "assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Impossible d'obtenir les pipelines Assist, veuillez vérifier la configuration de vos pipelines.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Demandez-moi n'importe quoi...";
@@ -388,6 +389,9 @@
 "assist.settings.tts_mute.footer" = "Lorsque cette option est activée, Assist ne lira pas les réponses audio, même si le pipeline dispose d'une synthèse vocale configurée. Vous verrez toujours les réponses textuelles.";
 "assist.settings.tts_mute.toggle" = "Couper les réponses vocales";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Appuyer pour";
 "assist.watch.not_reachable.title" = "Assist nécessite la connectivité de l'iPhone. Votre iPhone est actuellement injoignable.";
@@ -395,6 +399,7 @@
 "assist.watch.volume.title" = "Contrôle du volume";
 "assist_pipeline_picker.no_pipelines" = "Aucun pipeline disponible";
 "assist_pipeline_picker.placeholder" = "Choisir un pipeline";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Modifier";
 "camera_list.edit.on.title" = "Terminé";
 "camera_list.empty.message" = "Aucune entité caméra trouvée dans votre configuration Home Assistant";
@@ -711,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Tous les domaines";
 "entity_picker.filter.domain.title" = "Domaine";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "Grouper par";
 "entity_picker.filter.server.title" = "Serveurs";
 "entity_picker.list.area.no_area.title" = "Aucune pièce";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Choisir une entité";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "Reload";
@@ -1124,8 +1131,6 @@ Ce serveur requiert un certificat client (mTLS), mais l'opération a été annul
 "mac.sidebar.hidden_section.header" = "Caché";
 "mac.sidebar.hide" = "Cacher";
 "mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Réinitialiser les valeurs par défaut";
-"mac.sidebar.set_default_dashboard" = "Définir comme tableau de bord par défaut";
 "mac.sidebar.settings" = "Paramètres";
 "mac.sidebar.show" = "Afficher";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
@@ -1198,7 +1203,6 @@ Ce serveur requiert un certificat client (mTLS), mais l'opération a été annul
 "menu.status_item.toggle" = "Basculer %1$@";
 "menu.view.customize_toolbar" = "Personnaliser la barre d'outils…";
 "menu.view.find" = "Rechercher";
-"menu.view.hide_sidebar" = "Cacher la barre latérale";
 "menu.view.reload_page" = "Rafraîchir la page";
 "menu.view.show_sidebar" = "Afficher la barre latérale";
 "mtls.beta.info" = "Il s'agit d'une fonctionnalité bêta ; si vous rencontrez des problèmes, veuillez les signaler à l'aide du bouton ci-dessous.\
@@ -1424,6 +1428,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "onboarding.welcome.learn_more" = "En savoir plus";
 "onboarding.welcome.logo.accessibility_label" = "Logo Home Assistant";
 "onboarding.welcome.primary_button" = "Se connecter à mon Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Premiers pas";
 "onboarding.welcome.title" = "Bienvenue dans Home Assistant %@ !";
 "onboarding.welcome.updated.body" = "Accédez à votre serveur Home Assistant où que vous soyez.\
@@ -2713,6 +2718,7 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Annuler et utiliser le cache";
 "watch.home.device.empty" = "Il n'y a pas d'entité compatible avec cet appareil";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Ignorer";
 "watch.home.run.confirmation.title" = "Êtes-vous sûr de vouloir exécuter « %@ » ?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2957,6 +2963,10 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "watch.settings.developer.warning.message" = "Ces options sont destinées au débogage. Ne les utilisez que sur les conseils d'un développeur.";
 "watch.settings.developer.warning.title" = "Avertissement";
 "watch.settings.last_updated" = "Mis à jour %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Aucun élément configuré, veuillez choisir les éléments ci-dessous.";
 "watch.settings.no_servers" = "Aucun serveur synchronisé pour le moment. Ouvrez Home Assistant sur votre iPhone associé, puis actualisez depuis l'écran d'accueil.";
 "watch.settings.perform_action.footer" = "Où les actions s'exécutent. Auto utilise votre iPhone lorsqu'il est à proximité, sinon l'Apple Watch se connecte directement à Home Assistant.";

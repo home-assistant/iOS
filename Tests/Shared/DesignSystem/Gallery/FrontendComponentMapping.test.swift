@@ -12,6 +12,7 @@ struct FrontendComponentMappingTests {
     /// Listing them here rather than allowing any `nil` is the point: adding a component without a
     /// mapping fails this test, so a genuinely new port cannot quietly arrive unmapped.
     private static let appNative: Set<DesignSystemComponent> = [
+        .glassButton,
         .card,
         .floatingPanel,
         .fullScreenLoader,

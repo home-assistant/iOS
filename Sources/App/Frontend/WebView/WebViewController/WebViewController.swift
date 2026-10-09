@@ -112,6 +112,9 @@ final class WebViewController: PlatformViewController, WKNavigationDelegate, WKU
     /// a hung attempt must never block URL loading until the app is killed.
     var loadActiveURLTask: Task<Void, Never>?
     var loadActiveURLTaskStartDate: Date?
+    /// The in-flight "send the web view home" redirect, if any. Tracked so a newer redirect replaces it and
+    /// so a navigation that starts while it is resolving the root cancels it before it can navigate.
+    var redirectToRootTask: Task<Void, Never>?
 
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { ApplicationState.current == .background }
@@ -161,6 +164,13 @@ final class WebViewController: PlatformViewController, WKNavigationDelegate, WKU
     /// Which idiom the frontend is being shown in; only iPad windows get controls drawn over them.
     var userInterfaceIdiom: @MainActor (UIView) -> UIUserInterfaceIdiom = { view in
         view.traitCollection.userInterfaceIdiom
+    }
+
+    /// Whether the scene shares the display instead of owning it, which is when iPadOS draws its window
+    /// controls over the app; replaceable in tests, whose views are never in a window.
+    var isSceneWindowed: @MainActor (UIView) -> Bool = { view in
+        guard let window = view.window, let screen = window.windowScene?.screen else { return false }
+        return WebViewController.sceneIsWindowed(windowSize: window.bounds.size, screenSize: screen.bounds.size)
     }
     #endif
 
@@ -372,6 +382,9 @@ final class WebViewController: PlatformViewController, WKNavigationDelegate, WKU
 
         observeConnectionNotifications()
         setupKioskModeObservation()
+        #if !targetEnvironment(macCatalyst)
+        setupHingeObservation()
+        #endif
         observeSiriExposureForOnscreenContent()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
@@ -608,6 +621,7 @@ extension WebViewController {
                 #if os(iOS)
                 self?.setNeedsStatusBarAppearanceUpdate()
                 #endif
+                self?.updateThemedStatusBar()
             }
             .store(in: &kioskCancellables)
 

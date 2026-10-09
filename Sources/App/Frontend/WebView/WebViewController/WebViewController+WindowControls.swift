@@ -11,21 +11,28 @@ extension WebViewController {
         return Self.webViewTopInset(
             cornerAdaptedSafeAreaTop: cornerAdaptedSafeAreaTop(view),
             safeAreaTop: view.safeAreaInsets.top,
-            idiom: userInterfaceIdiom(view)
+            idiom: userInterfaceIdiom(view),
+            isWindowed: isSceneWindowed(view)
         )
+    }
+
+    /// A scene smaller than its display shares it with other windows, which is what iPadOS draws controls over.
+    static func sceneIsWindowed(windowSize: CGSize, screenSize: CGSize) -> Bool {
+        abs(windowSize.width - screenSize.width) > 1 || abs(windowSize.height - screenSize.height) > 1
     }
 
     /// The whole inset, not only the part beyond the safe area, which the frontend no longer insets itself by.
     ///
-    /// Only iPadOS windows get controls drawn over them. On iPhone the corner-adapted safe area is bigger than
-    /// the plain one on rounded displays alone, and reserving that room leaves a strip of app-drawn colour the
-    /// web content cannot reach: a dialog scrim, for one, stops short of the top of the screen.
+    /// Only iPadOS windows get controls drawn over them. A full-screen scene has none, and reserving room
+    /// there leaves a strip of app-drawn colour the web content cannot reach: with the status bar hidden by
+    /// full screen or kiosk mode, the corner adaptation of the rounded display alone would hold its space.
     static func webViewTopInset(
         cornerAdaptedSafeAreaTop: CGFloat,
         safeAreaTop: CGFloat,
-        idiom: UIUserInterfaceIdiom
+        idiom: UIUserInterfaceIdiom,
+        isWindowed: Bool
     ) -> CGFloat {
-        guard idiom == .pad else { return 0 }
+        guard idiom == .pad, isWindowed else { return 0 }
 
         return cornerAdaptedSafeAreaTop > safeAreaTop ? cornerAdaptedSafeAreaTop : 0
     }

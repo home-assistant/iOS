@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Edit";
 "assist.chat.menu.replay" = "Replay";
 "assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Ask me anything...";
@@ -388,6 +389,9 @@
 "assist.settings.tts_mute.footer" = "When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.";
 "assist.settings.tts_mute.toggle" = "Nonaktifkan respons suara";
 "assist.text_field.placeholder" = "Enter a request...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Ketuk untuk";
 "assist.watch.not_reachable.title" = "Assist memerlukan konektivitas iPhone. iPhone Anda saat ini tidak dapat dijangkau.";
@@ -395,6 +399,7 @@
 "assist.watch.volume.title" = "Pengatur volume";
 "assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Pilih saluran";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Edit";
 "camera_list.edit.on.title" = "Selesai";
 "camera_list.empty.message" = "Tidak ditemukan entitas kamera dalam pengaturan Home Assistant Anda.";
@@ -711,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Semua domain";
 "entity_picker.filter.domain.title" = "Domain";
 "entity_picker.filter.group_by.area" = "Group by Area";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Group by Domain";
 "entity_picker.filter.group_by.title" = "Kelompokkan berdasarkan";
 "entity_picker.filter.server.title" = "Server";
 "entity_picker.list.area.no_area.title" = "Tidak ada area";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Pilih entitas";
 "entity_picker.refresh.updating" = "Updating…";
 "entity_picker.reload" = "Reload";
@@ -1124,8 +1131,6 @@ Server ini memerlukan sertifikat klien (mTLS) tetapi operasi dibatalkan.";
 "mac.sidebar.hidden_section.header" = "Hidden";
 "mac.sidebar.hide" = "Hide";
 "mac.sidebar.notifications" = "Notifications";
-"mac.sidebar.reset_to_defaults" = "Reset to Defaults";
-"mac.sidebar.set_default_dashboard" = "Set as Default Dashboard";
 "mac.sidebar.settings" = "Settings";
 "mac.sidebar.show" = "Show";
 "mac.toggle_sidebar.accessibility_label" = "Toggle Sidebar";
@@ -1198,7 +1203,6 @@ Server ini memerlukan sertifikat klien (mTLS) tetapi operasi dibatalkan.";
 "menu.status_item.toggle" = "Aktifkan/Nonaktifkan %1$@";
 "menu.view.customize_toolbar" = "Customize Toolbar…";
 "menu.view.find" = "Temukan";
-"menu.view.hide_sidebar" = "Hide Sidebar";
 "menu.view.reload_page" = "Muat Ulang Halaman";
 "menu.view.show_sidebar" = "Show Sidebar";
 "mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
@@ -1423,6 +1427,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "onboarding.welcome.learn_more" = "Pelajari lebih lanjut";
 "onboarding.welcome.logo.accessibility_label" = "Logo Home Assistant";
 "onboarding.welcome.primary_button" = "Hubungkan ke Home Assistant saya";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Memulai";
 "onboarding.welcome.title" = "Selamat datang di Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Akses server Home Assistant Anda di mana saja. \
@@ -2712,6 +2717,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.home.areas.title" = "Areas";
 "watch.home.cancel_and_use_cache.title" = "Batalkan dan gunakan cache";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Lewati";
 "watch.home.run.confirmation.title" = "Yakin ingin menjalankan \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "The lock's current state isn't known yet, so the action wasn't sent. Wait for the state to load and try again.";
@@ -2956,6 +2962,10 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.developer.warning.message" = "These options are for debugging. Only use them when guided by a developer.";
 "watch.settings.developer.warning.title" = "Warning";
 "watch.settings.last_updated" = "Updated %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Tidak ada item yang dikonfigurasi, pilih item di bawah ini.";
 "watch.settings.no_servers" = "No servers synced yet. Open Home Assistant on your paired iPhone, then refresh from the Home screen.";
 "watch.settings.perform_action.footer" = "Where actions run. Auto uses your iPhone when it's nearby, otherwise the Apple Watch connects directly to Home Assistant.";

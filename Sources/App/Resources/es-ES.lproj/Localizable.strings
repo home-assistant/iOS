@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Editar";
 "assist.chat.menu.replay" = "Repetir";
 "assist.error.pipelines_response" = "No se han podido obtener los pipelines de Assist; comprueba la configuración de tus pipelines.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pipeline";
 "assist.modern_ui.text_field.placeholder" = "Pregúntame lo que quieras...";
@@ -388,13 +389,17 @@
 "assist.settings.tts_mute.footer" = "Cuando esté activada, Assist no reproducirá respuestas de audio aunque el pipeline tenga configurada la conversión de texto a voz. Seguirás viendo las respuestas en texto.";
 "assist.settings.tts_mute.toggle" = "Silenciar las respuestas de voz";
 "assist.text_field.placeholder" = "Introduce una solicitud...";
-"assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
+"assist.watch.mic_button.tap_or_hold.title" = "Toca o mantén pulsado para";
 "assist.watch.mic_button.title" = "Pulsa para";
 "assist.watch.not_reachable.title" = "Assist requiere conexión con el iPhone. No es posible contactar con tu iPhone en este momento.";
 "assist.watch.on_device_stt.no_speech_recognized" = "No se reconoció ninguna voz.";
 "assist.watch.volume.title" = "Control de volumen";
 "assist_pipeline_picker.no_pipelines" = "No hay pipelines disponibles";
 "assist_pipeline_picker.placeholder" = "Seleccionar pipeline";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Editar";
 "camera_list.edit.on.title" = "Hecho";
 "camera_list.empty.message" = "No se han encontrado entidades de cámara en tu Home Assistant";
@@ -711,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Todos los dominios";
 "entity_picker.filter.domain.title" = "Dominio";
 "entity_picker.filter.group_by.area" = "Agrupar por área";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Agrupar por dominio";
 "entity_picker.filter.group_by.title" = "Agrupar por";
 "entity_picker.filter.server.title" = "Servidores";
 "entity_picker.list.area.no_area.title" = "Ninguna área";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Seleccionar entidad";
 "entity_picker.refresh.updating" = "Actualizando…";
 "entity_picker.reload" = "Recargar";
@@ -1124,8 +1131,6 @@ Este servidor requiere un certificado de cliente (mTLS), pero la operación se h
 "mac.sidebar.hidden_section.header" = "Oculto";
 "mac.sidebar.hide" = "Ocultar";
 "mac.sidebar.notifications" = "Notificaciones";
-"mac.sidebar.reset_to_defaults" = "Restablecer valores predeterminados";
-"mac.sidebar.set_default_dashboard" = "Establecer como panel de control predeterminado";
 "mac.sidebar.settings" = "Ajustes";
 "mac.sidebar.show" = "Mostrar";
 "mac.toggle_sidebar.accessibility_label" = "Mostrar/ocultar la barra lateral";
@@ -1158,8 +1163,8 @@ Este servidor requiere un certificado de cliente (mTLS), pero la operación se h
 "magic_item.display_text.title" = "Texto a mostrar";
 "magic_item.edit" = "Guardar";
 "magic_item.icon_color.color" = "Color";
-"magic_item.icon_color.custom" = "Custom";
-"magic_item.icon_color.default" = "Default";
+"magic_item.icon_color.custom" = "Personalizado";
+"magic_item.icon_color.default" = "Por defecto";
 "magic_item.icon_color.title" = "Color del icono";
 "magic_item.icon_name.title" = "Nombre del icono";
 "magic_item.item_type.action.list.title" = "Acciones de iOS";
@@ -1198,7 +1203,6 @@ Este servidor requiere un certificado de cliente (mTLS), pero la operación se h
 "menu.status_item.toggle" = "Alternar %1$@";
 "menu.view.customize_toolbar" = "Personalizar la barra de herramientas…";
 "menu.view.find" = "Buscar";
-"menu.view.hide_sidebar" = "Ocultar la barra lateral";
 "menu.view.reload_page" = "Recargar la página";
 "menu.view.show_sidebar" = "Mostrar la barra lateral";
 "mtls.beta.info" = "Esta es una función en fase beta; si detectas algún problema, por favor, comunícalo mediante el botón que aparece a continuación.\
@@ -1308,7 +1312,7 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "onboarding.connection_test_result.local_network_permission.description" = "Es posible que se haya denegado el permiso de Red local. Puedes modificarlo en la aplicación Ajustes del sistema.";
 "onboarding.device_name_check.error.prompt" = "¿Qué nombre de dispositivo se debería utilizar en su lugar?";
 "onboarding.device_name_check.error.title" = "Ya existe un dispositivo con el nombre \"%1$@\".";
-"onboarding.device_name_check.error.unreachable" = "Couldn't reach Home Assistant to check the device name. Check your connection and try again.";
+"onboarding.device_name_check.error.unreachable" = "No se ha podido conectar con Home Assistant para comprobar el nombre del dispositivo. Comprueba tu conexión e inténtalo de nuevo.";
 "onboarding.invitation.accept_button" = "Aceptar";
 "onboarding.invitation.address_title" = "Dirección de Home Assistant";
 "onboarding.invitation.description" = "Home Assistant es una solución de domótica de código abierto que da prioridad al control local y a la privacidad.";
@@ -1424,6 +1428,7 @@ Home Assistant es un software de domótica gratuito y de código abierto que se 
 "onboarding.welcome.learn_more" = "Más información";
 "onboarding.welcome.logo.accessibility_label" = "Logo de Home Assistant";
 "onboarding.welcome.primary_button" = "Conectar a mi Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Empezando";
 "onboarding.welcome.title" = "¡Bienvenido a Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Accede a tu servidor de Home Assistant desde cualquier lugar. \
@@ -2481,7 +2486,7 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "vacuum.control.start" = "Comenzar";
 "vacuum.control.stop" = "Parar";
 "watch.assist.button.recording.title" = "Grabando...";
-"watch.assist.button.release_to_send.title" = "Release to send";
+"watch.assist.button.release_to_send.title" = "Soltar para enviar";
 "watch.assist.button.send_request.title" = "Pulsa para enviar la solicitud";
 "watch.assist.lack_config.error.title" = "Configura Assist mediante la aplicación complementaria para iOS.";
 "watch.complications.builder.color" = "Color del medidor";
@@ -2683,7 +2688,7 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "watch.configurator.sections.icon.header" = "Icono";
 "watch.configurator.sections.ring.footer" = "El anillo que muestra el progreso alrededor del texto.";
 "watch.configurator.sections.ring.header" = "Anillo";
-"watch.context_sync.timed_out" = "Timed out waiting for the watch to accept the update.";
+"watch.context_sync.timed_out" = "Se ha agotado el tiempo de espera mientras se esperaba a que el reloj aceptara la actualización.";
 "watch.cover_controls.close" = "Cerrar";
 "watch.cover_controls.open" = "Abrir";
 "watch.cover_controls.position" = "Posición";
@@ -2713,6 +2718,7 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "watch.home.areas.title" = "Áreas";
 "watch.home.cancel_and_use_cache.title" = "Cancelar y utilizar la caché";
 "watch.home.device.empty" = "No hay entidades compatibles con este dispositivo.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Saltar";
 "watch.home.run.confirmation.title" = "¿Estás seguro de que quieres ejecutar \"%@\"?";
 "watch.home.run.error.lock_state_unknown" = "Aún se desconoce el estado actual de la cerradura, por lo que no se ha enviado la acción. Espera a que se cargue el estado e inténtalo de nuevo.";
@@ -2957,6 +2963,10 @@ Aunque ninguna URL se considera segura, los datos de este servidor no se sincron
 "watch.settings.developer.warning.message" = "Estas opciones sirven para la depuración. Úsalas únicamente si te lo indica un desarrollador.";
 "watch.settings.developer.warning.title" = "Advertencia";
 "watch.settings.last_updated" = "Actualizado %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "No hay elementos configurados, por favor seleccione los elementos a continuación.";
 "watch.settings.no_servers" = "Aún no se ha sincronizado ningún servidor. Abre Home Assistant en tu iPhone emparejado y, a continuación, actualiza la pantalla de inicio.";
 "watch.settings.perform_action.footer" = "Donde se ejecutan las acciones. La función Auto utiliza tu iPhone cuando está cerca; de lo contrario, el Apple Watch se conecta directamente a Home Assistant.";

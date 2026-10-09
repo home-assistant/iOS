@@ -140,7 +140,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         card
             .frame(maxWidth: maxWidth, alignment: .center)
             .background(Color(uiColor: .systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
+            .clipShape(sheetShape)
             .shadow(color: .black.opacity(0.2), radius: 20)
             .padding(DesignSystem.Spaces.one)
             .fixedSize(horizontal: false, vertical: true)
@@ -170,6 +170,20 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         }
     }
 
+    /// From iOS 26 the corners follow the container the sheet actually sits in, which the screen-radius
+    /// arithmetic in `perfectCornerRadius` only approximates for the built-in display.
+    private var sheetShape: AnyShape {
+        if #available(iOS 26, macOS 26, *) {
+            let minimumCornerRadius: CGFloat = horizontalSizeClass == .compact ? DesignSystem.CornerRadius.one : 50
+            return AnyShape(ConcentricRectangle(
+                corners: .concentric(minimum: .fixed(minimumCornerRadius)),
+                isUniform: true
+            ))
+        } else {
+            return AnyShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
+        }
+    }
+
     private var perfectCornerRadius: CGFloat {
         let cornerRadius: CGFloat = {
             #if os(macOS)
@@ -177,6 +191,9 @@ public struct AppleLikeBottomSheet<Content: View>: View {
             return 50
             #else
             if horizontalSizeClass == .compact {
+                // TODO: Modernization - `UIScreen.main` is deprecated and only describes the built-in display.
+                // Below iOS 26 the screen has to come from the hosting window (`view.window?.windowScene?.screen`),
+                // which a SwiftUI view can only reach through a representable.
                 return UIScreen.main.displayCornerRadius - DesignSystem.Spaces.one
             } else {
                 return 50

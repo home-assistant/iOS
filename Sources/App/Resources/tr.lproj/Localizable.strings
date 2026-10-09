@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Düzenle";
 "assist.chat.menu.replay" = "Tekrar oynat";
 "assist.error.pipelines_response" = "Assist ardışık düzenleri alınamadı. Lütfen ardışık düzen yapılandırmanızı kontrol edin.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "İş akışı";
 "assist.modern_ui.text_field.placeholder" = "Bana soru sor...";
@@ -388,6 +389,9 @@
 "assist.settings.tts_mute.footer" = "Etkinleştirildiğinde, işlem hattında metinden sese dönüştürme yapılandırılmış olsa bile Assist sesli yanıtları oynatmaz. Yine de metin yanıtlarını göreceksiniz.";
 "assist.settings.tts_mute.toggle" = "Sesli yanıtları sessize al";
 "assist.text_field.placeholder" = "Bir istek girin...";
+"assist.watch.audio_stream.not_received" = "Home Assistant never received the recording.";
+"assist.watch.audio_stream.server_not_found" = "Server not found on iPhone.";
+"assist.watch.audio_stream.unreadable" = "The iPhone could not read the recording.";
 "assist.watch.mic_button.tap_or_hold.title" = "Tap or hold to";
 "assist.watch.mic_button.title" = "Dokunun";
 "assist.watch.not_reachable.title" = "Assist için iPhone bağlantısı gerekir. iPhone'unuza şu anda erişilemiyor.";
@@ -395,6 +399,7 @@
 "assist.watch.volume.title" = "Ses seviyesi kontrolü";
 "assist_pipeline_picker.no_pipelines" = "Mevcut işlem hattı yok";
 "assist_pipeline_picker.placeholder" = "İşlem hattını seçin";
+"assist_pipeline_picker.reload" = "Reload";
 "camera_list.edit.off.title" = "Düzenle";
 "camera_list.edit.on.title" = "Bitti";
 "camera_list.empty.message" = "Home Assistant kurulumunuzda hiçbir kamera öğesi bulunamadı";
@@ -711,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Tüm alan adları";
 "entity_picker.filter.domain.title" = "Alan adı";
 "entity_picker.filter.group_by.area" = "Bölgeye Göre Gruplandır";
+"entity_picker.filter.group_by.device" = "Group by Device";
 "entity_picker.filter.group_by.domain" = "Alan adına göre gruplandır";
 "entity_picker.filter.group_by.title" = "Gruplandır";
 "entity_picker.filter.server.title" = "Sunucular";
 "entity_picker.list.area.no_area.title" = "Alan yok";
+"entity_picker.list.device.no_device.title" = "No device";
 "entity_picker.placeholder" = "Varlığı seç";
 "entity_picker.refresh.updating" = "Güncelleniyor…";
 "entity_picker.reload" = "Tekrar yükle";
@@ -1124,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "Gizli";
 "mac.sidebar.hide" = "Gizle";
 "mac.sidebar.notifications" = "Bildirimler";
-"mac.sidebar.reset_to_defaults" = "Varsayılan Ayarlara Geri Dön";
-"mac.sidebar.set_default_dashboard" = "Varsayılan Gösterge Paneli Olarak Ayarla";
 "mac.sidebar.settings" = "Ayarlar";
 "mac.sidebar.show" = "Göster";
 "mac.toggle_sidebar.accessibility_label" = "Kenar Çubuğunu Aç/Kapat";
@@ -1198,7 +1203,6 @@
 "menu.status_item.toggle" = "Geçiş %1$@";
 "menu.view.customize_toolbar" = "Araç Çubuğunu Özelleştir…";
 "menu.view.find" = "Bul";
-"menu.view.hide_sidebar" = "Kenar Çubuğunu Gizle";
 "menu.view.reload_page" = "Sayfayı Yeniden Yükle";
 "menu.view.show_sidebar" = "Kenar Çubuğunu Göster";
 "mtls.beta.info" = "Bu beta bir özelliktir, herhangi bir sorun yaşarsanız lütfen aşağıdaki düğmeyi kullanarak bildirin. \
@@ -1424,6 +1428,7 @@
 "onboarding.welcome.learn_more" = "Daha fazla bilgi edin";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logosu";
 "onboarding.welcome.primary_button" = "Ev Asistanıma bağlanın";
+"onboarding.welcome.primary_button_compact" = "Connect";
 "onboarding.welcome.secondary_button" = "Başlarken";
 "onboarding.welcome.title" = "Home Assistant'a Hoş Geldiniz %@!";
 "onboarding.welcome.updated.body" = "Hareket halindeyken Ev Asistanı sunucunuza erişin. \
@@ -2713,6 +2718,7 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "watch.home.areas.title" = "Alanlar";
 "watch.home.cancel_and_use_cache.title" = "İptal et ve önbelleği kullan";
 "watch.home.device.empty" = "Bu cihaz için uyumlu herhangi bir cihaz bulunmamaktadır.";
+"watch.home.device.part_of" = "Part of %@";
 "watch.home.loading.skip.title" = "Atla";
 "watch.home.run.confirmation.title" = "\" %@ \" çalıştırmak istediğinizden emin misiniz?";
 "watch.home.run.error.lock_state_unknown" = "Kilidin mevcut durumu henüz bilinmiyor, bu nedenle işlem gönderilmedi. Durumun yüklenmesini bekleyin ve tekrar deneyin.";
@@ -2957,6 +2963,10 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "watch.settings.developer.warning.message" = "Bu seçenekler hata ayıklama içindir. Yalnızca bir geliştirici tarafından yönlendirildiğinizde kullanın.";
 "watch.settings.developer.warning.title" = "Uyarı";
 "watch.settings.last_updated" = "Güncellendi %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Location";
 "watch.settings.no_items.phone.title" = "Hiçbir öğe yapılandırılmadı, lütfen aşağıdaki öğeleri seçin.";
 "watch.settings.no_servers" = "Henüz hiçbir sunucu senkronize edilmedi. Eşleştirilmiş iPhone'unuzda Home Assistant'ı açın, ardından Ana ekrandan yenileyin.";
 "watch.settings.perform_action.footer" = "İşlemlerin yürütüldüğü yer. Otomatik ayar, yakındayken iPhone'unuzu kullanır; aksi takdirde Apple Watch doğrudan Home Assistant'a bağlanır.";

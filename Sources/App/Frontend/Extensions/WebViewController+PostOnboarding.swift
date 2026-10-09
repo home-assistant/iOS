@@ -25,9 +25,21 @@ extension WebViewController {
         return ![.authorized, .denied].contains(status)
     }
 
-    private func showNotificationPermissionRequest() {
-        let view = NotificationPermissionRequestView().embeddedInHostingController()
-        view.presentsAsTransparentOverlay()
-        present(view, animated: true)
+    /// A system sheet, so it stays clear of the vertical bar and the safe area the way any other
+    /// sheet does. On the Mac it is a sheet sized to its content.
+    func showNotificationPermissionRequest() {
+        let controller = NotificationPermissionRequestView().embeddedInHostingController()
+
+        #if os(macOS)
+        controller.presentsAsTransparentOverlay()
+        #else
+        if Current.isCatalyst {
+            controller.modalPresentationStyle = .formSheet
+        } else if let sheet = controller.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        #endif
+        present(controller, animated: true)
     }
 }

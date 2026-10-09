@@ -286,6 +286,9 @@ public class MotionDetectionManager: NSObject {
     /// wall-mounted tablet reports (`.faceUp`, `.faceDown`, `.unknown`).
     ///
     /// Must be called on the main thread: it reads UIKit state.
+    // TODO: Modernization - `UIScreen.main` is deprecated. Rotate frames with
+    // `AVCaptureDevice.RotationCoordinator` (iOS 17+), or read the screen of the window this capture
+    // serves (`view.window?.windowScene?.screen`) instead of the main screen.
     private static func currentVideoOrientation() -> AVCaptureVideoOrientation {
         AVCaptureVideoOrientation(deviceOrientation: UIDevice.current.orientation)
             ?? AVCaptureVideoOrientation(deviceOrientation: UIScreen.main.orientation)

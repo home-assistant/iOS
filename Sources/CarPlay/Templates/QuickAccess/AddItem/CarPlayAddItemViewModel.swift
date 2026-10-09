@@ -324,9 +324,7 @@ private extension HAAppEntity {
 
 private extension Pipeline {
     var hasSpeechToTextAndTextToSpeech: Bool {
-        let stt = sttEngine?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let tts = ttsEngine?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return !stt.isEmpty && !tts.isEmpty
+        supportsSpeechToText && supportsTextToSpeech
     }
 }
 #endif

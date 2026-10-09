@@ -320,6 +320,9 @@ public class AppEnvironment {
     /// Wrapper around UIApplication for use in shared framework
     public var application: (() -> UIApplication)?
 
+    // TODO: Modernization - `UIScreen.main` is deprecated. Brightness belongs to the screen of the window
+    // asking for it (`view.window?.windowScene?.screen`); thread that screen in from callers that have a
+    // window instead of resolving it here.
     /// Wrapper around UIScreen.main.brightness for testability
     public var screenBrightness: () -> CGFloat = { UIScreen.main.brightness }
     public var setScreenBrightness: (CGFloat) -> Void = { UIScreen.main.brightness = $0 }
@@ -446,6 +449,8 @@ public class AppEnvironment {
         $0.register(provider: CameraMotionSensor.self)
         $0.register(provider: CameraStreamSensor.self)
         #if os(iOS) && !targetEnvironment(macCatalyst)
+        $0.register(provider: HingeSensor.self)
+        $0.register(provider: DevicePoseSensor.self)
         $0.register(provider: HealthKitSensor.self)
         #endif
     }
@@ -503,6 +508,10 @@ public class AppEnvironment {
     public var onboardingObservation = OnboardingStateObservation()
 
     public lazy var kiosk = KioskModeManager()
+
+    /// The latest hinge reading on a folding device, fed by the interaction the app attaches
+    /// to its root view.
+    public lazy var hinge = HingeObserver()
 
     public lazy var appLabs = AppLabsStore()
 

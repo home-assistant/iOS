@@ -48,10 +48,6 @@ extension WebViewController {
         #endif
     }
 
-    @objc func toggleNativeSidebar() {
-        MacNativeSidebarState.shared.toggle()
-    }
-
     @objc func openServerInSafari() {
         guard let url = currentPageURL else { return }
         URLOpener.shared.open(url, options: [:], completionHandler: nil)

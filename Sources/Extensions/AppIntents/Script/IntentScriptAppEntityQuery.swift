@@ -34,7 +34,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: [.script]).getEntitiesExposedToSiri(matching: string)
 
         for (server, values) in entities {
-            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let deviceContexts = values.deviceContexts(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
             let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
             scriptEntities.append((server, values.map({ entity in
@@ -44,7 +44,9 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                     serverId: entity.serverId,
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name,
-                    deviceName: deviceMap[entity.entityId]?.name,
+                    deviceName: deviceContexts[entity.entityId]?.deviceName,
+                    parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                    contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                     floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue

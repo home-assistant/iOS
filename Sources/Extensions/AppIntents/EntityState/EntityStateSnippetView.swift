@@ -39,7 +39,7 @@ struct EntityStateSnippetView: View {
                 Text(state.formattedState)
                     .font(.title3)
                     .fontWeight(.semibold)
-                if let context {
+                if let context = state.context {
                     Text(context)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -53,14 +53,6 @@ struct EntityStateSnippetView: View {
     /// The frontend's state color, so the card reads the same as the dashboard.
     private var iconColor: Color {
         EntityStateColor.color(domain: state.domain, deviceClass: state.deviceClass, state: state.state) ?? .secondary
-    }
-
-    /// `Floor • Area • Device`, whichever of the three are known.
-    private var context: String? {
-        [state.floorName, state.areaName, state.deviceName]
-            .compactMap { $0 }
-            .joined(separator: " • ")
-            .nilIfEmpty
     }
 }
 
@@ -77,6 +69,7 @@ extension HAEntityStateAppEntity {
         state.isActive = true
         state.areaName = "Kitchen"
         state.floorName = "Ground floor"
+        state.context = "Ground floor\(EntityContextSubtitle.separator)Kitchen"
         state.serverName = "Home"
         state.attributes = "{\"brightness\":200}"
         state.iconName = "mdi:ceiling-light"

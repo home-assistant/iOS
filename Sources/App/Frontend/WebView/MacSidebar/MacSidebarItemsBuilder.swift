@@ -70,8 +70,7 @@ enum MacSidebarItemsBuilder {
                 id: panel.path,
                 kind: .panel(path: "/" + panel.path),
                 title: panel.title,
-                icon: icon(for: panel),
-                isDashboard: panel.component == lovelaceComponent
+                icon: icon(for: panel)
             )
         }
     }
@@ -99,8 +98,7 @@ enum MacSidebarItemsBuilder {
                     id: panel.path,
                     kind: .panel(path: "/" + panel.path),
                     title: panel.title,
-                    icon: icon(for: panel),
-                    isDashboard: panel.component == lovelaceComponent
+                    icon: icon(for: panel)
                 )
             }
     }
