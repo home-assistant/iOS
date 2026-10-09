@@ -1,5 +1,6 @@
 import Foundation
-@testable import Shared
+@testable import HomeAssistant
+import Shared
 import Testing
 
 /// Lives with the Manage Storage tests because that screen is what the flag gates: the inventory

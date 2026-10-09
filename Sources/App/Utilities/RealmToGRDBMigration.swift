@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 import RealmSwift
+import Shared
 
 // MARK: - Legacy Realm models
 

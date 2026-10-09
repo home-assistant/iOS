@@ -6,7 +6,7 @@ import UIKit
 
 public class SettingsStore {
     let keychain = AppConstants.Keychain
-    let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
+    public let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
     private let seenWhatsNewReleaseIDsKey = "seenWhatsNewReleaseIDs"
     private let seenTestFlightMessageIDsKey = "seenTestFlightMessageIDs"
 
