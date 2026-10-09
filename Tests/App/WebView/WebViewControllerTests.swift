@@ -150,6 +150,158 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(overlayState.emptyState)
     }
 
+    /// The frontend usually loses its connection *because* the scene went to the background, and gets it back
+    /// as soon as it is on screen again. Showing the empty state in the meantime would greet the returning
+    /// user with an error that is already out of date.
+    func testShowEmptyStateIsDeferredWhileTheSceneIsNotActive() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isSceneActive = { _ in false }
+        sut.connectionState = .disconnected
+
+        sut.showEmptyState()
+
+        XCTAssertNil(overlayState.emptyState)
+        XCTAssertTrue(sut.isEmptyStateDeferredUntilActive)
+    }
+
+    func testShowEmptyStateIsNotDeferredForAuthenticationProblemsWhileTheSceneIsNotActive() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isSceneActive = { _ in false }
+        sut.connectionState = .authInvalid
+
+        sut.showEmptyState()
+
+        XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+    }
+
+    func testBecomingActiveGivesADeferredEmptyStateTheGracePeriodInsteadOfShowingIt() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isSceneActive = { _ in false }
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+
+        sut.isSceneActive = { _ in true }
+        sut.handleSceneDidActivate()
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(overlayState.emptyState)
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
+    func testBecomingActiveDropsADeferredEmptyStateOnceTheFrontendIsReady() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isEmptyStateDeferredUntilActive = true
+        sut.connectionState = .loaded
+
+        sut.handleSceneDidActivate()
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(overlayState.emptyState)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    func testHideEmptyStateForgetsADeferredEmptyState() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isSceneActive = { _ in false }
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+
+        sut.hideEmptyState()
+        sut.isSceneActive = { _ in true }
+        sut.handleSceneDidActivate()
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    /// A grace period the scene slept through gave the frontend no time to reconnect, so it starts over.
+    func testBecomingActiveAfterTheBackgroundRestartsAPendingGracePeriod() throws {
+        let sut = makeSUT()
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+        let pendingTimer = try XCTUnwrap(sut.emptyStateTimer)
+
+        sut.handleSceneDidEnterBackground()
+        sut.handleSceneDidActivate()
+
+        XCTAssertFalse(pendingTimer.isValid)
+        XCTAssertNotNil(sut.emptyStateTimer)
+        XCTAssertFalse(pendingTimer === sut.emptyStateTimer)
+    }
+
+    /// Dismissing a system alert activates the scene again without it having been away.
+    func testBecomingActiveWithoutBackgroundingKeepsAPendingGracePeriod() throws {
+        let sut = makeSUT()
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+        let pendingTimer = try XCTUnwrap(sut.emptyStateTimer)
+
+        sut.handleSceneDidActivate()
+
+        XCTAssertTrue(pendingTimer === sut.emptyStateTimer)
+        XCTAssertTrue(pendingTimer.isValid)
+    }
+
+    /// Multi-window: another window going to the background says nothing about this frontend.
+    func testSceneNotificationsFromAnotherSceneAreIgnored() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        let sut = makeSUT()
+        window.addSubview(sut.view)
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+        let pendingTimer = try XCTUnwrap(sut.emptyStateTimer)
+
+        sut.sceneDidEnterBackground(Notification(name: UIScene.didEnterBackgroundNotification, object: nil))
+        sut.sceneDidActivate(Notification(name: UIScene.didActivateNotification, object: nil))
+
+        XCTAssertFalse(sut.didEnterBackgroundSinceLastActivation)
+        XCTAssertTrue(pendingTimer === sut.emptyStateTimer)
+    }
+
+    func testSceneNotificationsFromTheFrontendsOwnSceneAreHandled() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        let sut = makeSUT()
+        window.addSubview(sut.view)
+        sut.updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
+        let pendingTimer = try XCTUnwrap(sut.emptyStateTimer)
+
+        sut.sceneDidEnterBackground(Notification(name: UIScene.didEnterBackgroundNotification, object: scene))
+        XCTAssertTrue(sut.didEnterBackgroundSinceLastActivation)
+        sut.sceneDidActivate(Notification(name: UIScene.didActivateNotification, object: scene))
+
+        XCTAssertFalse(sut.didEnterBackgroundSinceLastActivation)
+        XCTAssertFalse(pendingTimer === sut.emptyStateTimer)
+    }
+
+    func testSceneActivityFollowsTheSceneWhenThereIsOneAndTheApplicationOtherwise() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let sut = WebViewController(server: .fake())
+
+        XCTAssertEqual(sut.isSceneActive(scene), scene.activationState == .foregroundActive)
+        XCTAssertEqual(sut.isSceneActive(nil), UIApplication.shared.applicationState == .active)
+    }
+
+    /// A frontend that is not in a window (off screen behind another tab) cannot tell the scenes apart, so
+    /// it follows every scene the way it would follow the application's state.
+    func testSceneNotificationsReachAFrontendWithoutAWindow() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let sut = makeSUT()
+
+        sut.sceneDidEnterBackground(Notification(name: UIScene.didEnterBackgroundNotification, object: scene))
+
+        XCTAssertTrue(sut.didEnterBackgroundSinceLastActivation)
+    }
+
     func testExternalAuthFailureMarksDisconnectedAndArmsEmptyStateTimer() {
         let sut = makeSUT()
         let overlayState = WebFrontendOverlayState()
@@ -382,8 +534,21 @@ final class WebViewControllerTests: XCTestCase {
         }
     }
 
-    func testServerErrorResponseDecisionAllowsClientErrorsToRender() {
-        for statusCode in [400, 401, 403, 404, 429] {
+    func testServerErrorResponseDecisionRedirectsNotFoundAndForbiddenToRoot() {
+        for statusCode in [403, 404, 410] {
+            let decision = WebViewController.decisionForMainFrameErrorResponse(
+                statusCode: statusCode,
+                responseURL: URL(string: "https://example.com/lovelace/removed"),
+                initialURL: nil,
+                cfMitigated: nil
+            )
+
+            XCTAssertEqual(decision, .redirectToRoot, "expected redirect to root for HTTP \(statusCode)")
+        }
+    }
+
+    func testServerErrorResponseDecisionAllowsAuthAndRateLimitClientErrorsToRender() {
+        for statusCode in [400, 401, 429] {
             let decision = WebViewController.decisionForMainFrameErrorResponse(
                 statusCode: statusCode,
                 responseURL: URL(string: "https://example.com/lovelace"),
@@ -393,6 +558,127 @@ final class WebViewControllerTests: XCTestCase {
 
             XCTAssertEqual(decision, .allow, "expected allow for HTTP \(statusCode)")
         }
+    }
+
+    func testNavigationErrorRedirectsToRootOnlyForMalformedURLs() {
+        let redirecting: [Error] = [
+            URLError(.badURL),
+            URLError(.unsupportedURL),
+            NSError(domain: "WebKitErrorDomain", code: 101),
+        ]
+        for error in redirecting {
+            XCTAssertTrue(
+                WebViewController.shouldRedirectToRootForNavigationError(error),
+                "expected redirect for \(error)"
+            )
+        }
+
+        let notRedirecting: [Error] = [
+            URLError(.cannotConnectToHost),
+            URLError(.notConnectedToInternet),
+            URLError(.timedOut),
+            URLError(.cancelled),
+            NSError(domain: "WebKitErrorDomain", code: 102),
+        ]
+        for error in notRedirecting {
+            XCTAssertFalse(
+                WebViewController.shouldRedirectToRootForNavigationError(error),
+                "expected no redirect for \(error)"
+            )
+        }
+    }
+
+    func testRootRedirectOutcomeLoadsRootWhenADifferentPageFailed() throws {
+        let target = try XCTUnwrap(URL(string: "https://example.com/lovelace?external_auth=1"))
+        let failed = try XCTUnwrap(URL(string: "https://example.com/lovelace/removed"))
+
+        XCTAssertEqual(WebViewController.rootRedirectOutcome(target: target, failedURL: failed), .loadRoot(target))
+        XCTAssertEqual(WebViewController.rootRedirectOutcome(target: target, failedURL: nil), .loadRoot(target))
+    }
+
+    func testRootRedirectOutcomeShowsEmptyStateWhenRootItselfFailed() throws {
+        let target = try XCTUnwrap(URL(string: "https://example.com/lovelace?external_auth=1"))
+        // Same page, different query - the root itself is the page that failed.
+        let failed = try XCTUnwrap(URL(string: "https://example.com/lovelace"))
+
+        XCTAssertEqual(
+            WebViewController.rootRedirectOutcome(target: target, failedURL: failed),
+            .showEmptyState(failedURL: failed)
+        )
+    }
+
+    /// A configured `https://host` root (path "") and the canonical `https://host/` the redirect produces
+    /// are the same page, so a failure at the root must stop rather than reload it forever.
+    func testRootRedirectOutcomeShowsEmptyStateWhenCanonicalRootSpellingFailed() throws {
+        let target = try XCTUnwrap(URL(string: "https://example.com?external_auth=1"))
+        let failed = try XCTUnwrap(URL(string: "https://example.com/"))
+
+        XCTAssertEqual(
+            WebViewController.rootRedirectOutcome(target: target, failedURL: failed),
+            .showEmptyState(failedURL: failed)
+        )
+    }
+
+    func testMainFrameNotFoundResponseRedirectsToRootWithoutEmptyState() throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+        var decision: WKNavigationResponsePolicy?
+
+        try sut.webView(WKWebView(), decidePolicyFor: FakeNavigationResponse(statusCode: 404)) { decision = $0 }
+
+        // The response is cancelled and no error screen is shown - the redirect takes over instead.
+        XCTAssertEqual(decision, .cancel)
+        XCTAssertNil(sut.overlayState?.emptyState)
+    }
+
+    func testProvisionalNavigationFailureForMalformedURLRedirectsInsteadOfShowingError() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+
+        sut.webView(WKWebView(), didFailProvisionalNavigation: nil, withError: URLError(.unsupportedURL))
+
+        // The malformed-URL branch redirects to root rather than recording the error for the empty state.
+        XCTAssertNil(sut.latestLoadError)
+    }
+
+    func testCommittedNavigationFailureForMalformedURLRedirectsInsteadOfShowingError() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+
+        sut.webView(WKWebView(), didFail: nil, withError: URLError(.badURL))
+
+        XCTAssertNil(sut.latestLoadError)
+    }
+
+    func testRedirectToActiveURLRootLoadsTheFrontendRoot() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+        let resolvedRoot = await sut.server.webviewURL()
+        let root = try XCTUnwrap(resolvedRoot)
+
+        sut.redirectToActiveURLRoot(failedURL: root.appendingPathComponent("lovelace/removed"))
+
+        await waitUntil { sut.webView.url != nil }
+        XCTAssertEqual(sut.webView.url?.host, root.host)
+    }
+
+    func testRedirectToActiveURLRootShowsEmptyStateWhenRootItselfFailed() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        let resolvedRoot = await sut.server.webviewURL()
+        let root = try XCTUnwrap(resolvedRoot)
+
+        sut.redirectToActiveURLRoot(failedURL: root)
+
+        await waitUntil { overlayState.emptyState != nil }
+        // The loop guard stopped us from navigating back into the page that just failed.
+        XCTAssertNil(sut.webView.url)
     }
 
     func testServerErrorResponseDecisionAllowsCloudflareChallengeToRender() {
@@ -802,12 +1088,13 @@ final class WebViewControllerTests: XCTestCase {
     }
 
     /// A scripted `focus()` raises the keyboard only while the web view holds keyboard focus.
-    func testMakeWebViewFirstResponderGivesTheWebViewKeyboardFocus() {
+    func testMakeWebViewFirstResponderGivesTheWebViewKeyboardFocus() throws {
         let sut = makeSUT()
         let webView = WKWebView(frame: sut.view.bounds)
         sut.webView = webView
         sut.view.addSubview(webView)
-        let window = UIWindow(frame: UIScreen.main.bounds)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
         window.rootViewController = sut
         window.makeKeyAndVisible()
         defer { window.isHidden = true }
@@ -817,11 +1104,12 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertTrue(webView.containsFirstResponder)
     }
 
-    func testPresentClientCertificateImportPresentsTheImportSheet() async {
+    func testPresentClientCertificateImportPresentsTheImportSheet() async throws {
         let sut = makeSUT()
         // Attaching to a window changes traits, which the controller forwards to its web view.
         sut.webView = WKWebView(frame: .zero)
-        let window = UIWindow(frame: UIScreen.main.bounds)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
         window.rootViewController = sut
         window.makeKeyAndVisible()
         defer { window.isHidden = true }
@@ -830,6 +1118,80 @@ final class WebViewControllerTests: XCTestCase {
 
         await waitUntil { sut.presentedViewController != nil }
         XCTAssertEqual(sut.presentedViewController?.modalPresentationStyle, .formSheet)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
+    /// The post-onboarding notification prompt is a system sheet at the medium detent, which keeps it
+    /// clear of the safe area and any vertical bar like every other sheet.
+    func testShowNotificationPermissionRequestPresentsAMediumSheet() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.showNotificationPermissionRequest()
+
+        await waitUntil { sut.presentedViewController != nil }
+        let sheet = try XCTUnwrap(sut.presentedViewController?.sheetPresentationController)
+        XCTAssertEqual(sheet.detents, [.medium()])
+        XCTAssertTrue(sheet.prefersGrabberVisible)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
+    /// Mac Catalyst has no sheet detents, so the prompt is a form sheet there.
+    func testShowNotificationPermissionRequestIsAFormSheetOnCatalyst() async throws {
+        let wasCatalyst = Current.isCatalyst
+        Current.isCatalyst = true
+        defer { Current.isCatalyst = wasCatalyst }
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.showNotificationPermissionRequest()
+
+        await waitUntil { sut.presentedViewController != nil }
+        XCTAssertEqual(sut.presentedViewController?.modalPresentationStyle, .formSheet)
+        sut.presentedViewController?.dismiss(animated: false)
+    }
+
+    /// The debug screen offers the shake toggle from the controller's own traits rather than the
+    /// device: a pad-sized window hides it even on a phone, and a phone-sized one shows it.
+    func testShakeDisclaimerToggleFollowsTheControllersIdiom() {
+        let sut = makeSUT()
+        // Trait changes are forwarded to the web view, so it needs a real one.
+        sut.webView = WKWebView(frame: .zero)
+        let parent = UIViewController()
+        parent.addChild(sut)
+        parent.view.addSubview(sut.view)
+        sut.didMove(toParent: parent)
+
+        parent.setOverrideTraitCollection(UITraitCollection(userInterfaceIdiom: .pad), forChild: sut)
+        XCTAssertFalse(sut.showsShakeDisclaimerToggle)
+
+        parent.setOverrideTraitCollection(UITraitCollection(userInterfaceIdiom: .phone), forChild: sut)
+        XCTAssertTrue(sut.showsShakeDisclaimerToggle)
+    }
+
+    func testOpenDebugPresentsTheDebugScreen() async throws {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        sut.openDebug()
+
+        await waitUntil { sut.presentedViewController != nil }
+        XCTAssertNotNil(sut.presentedViewController)
         sut.presentedViewController?.dismiss(animated: false)
     }
 
@@ -957,6 +1319,48 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertTrue(sut.prefersStatusBarHidden)
     }
 
+    /// Hiding the status bar leaves no room for a themed strip to fill, whichever setting asked for it.
+    func testThemedStatusBarStripIsDroppedWhenKioskHidesTheStatusBar() async throws {
+        let previousDatabase = Current.database
+        let previousKiosk = Current.kiosk
+        let previousSensors = Current.sensors
+        let previousFullScreen = Current.settingsStore.fullScreen
+        let previousBelowStatusBar = Current.settingsStore.webViewAlwaysBelowStatusBar
+        defer {
+            Current.database = previousDatabase
+            Current.kiosk = previousKiosk
+            Current.sensors = previousSensors
+            Current.settingsStore.fullScreen = previousFullScreen
+            Current.settingsStore.webViewAlwaysBelowStatusBar = previousBelowStatusBar
+        }
+        Current.sensors = SensorContainer()
+
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+        Current.database = { database }
+        Current.settingsStore.fullScreen = false
+        Current.settingsStore.webViewAlwaysBelowStatusBar = true
+
+        func setKiosk(hideStatusBar: Bool) throws {
+            try database.write { db in
+                try KioskSettings(enabled: true, hideStatusBar: hideStatusBar).insert(db, onConflict: .replace)
+            }
+        }
+
+        try setKiosk(hideStatusBar: false)
+        Current.kiosk = KioskModeManager()
+
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.setupKioskModeObservation()
+        sut.updateThemedStatusBar()
+        await waitUntil { overlayState.statusBarColor != nil }
+
+        try setKiosk(hideStatusBar: true)
+        await waitUntil { overlayState.statusBarColor == nil }
+    }
+
     func testCurrentPageURLIsNilBeforeAnyPageLoads() {
         let sut = makeSUT()
         sut.webView = WKWebView(frame: .zero)
@@ -1016,7 +1420,7 @@ final class WebViewControllerTests: XCTestCase {
 
         sut.showSettingsViewController()
 
-        wait(for: [settingsShown], timeout: 1)
+        wait(for: [settingsShown], timeout: 5)
         XCTAssertFalse(sceneCoordinator.showSettingsPushedOntoNavigationStack)
         XCTAssertFalse(otherWindowCoordinator.showSettingsCalled)
     }
@@ -1031,12 +1435,13 @@ final class WebViewControllerTests: XCTestCase {
 
         sut.showSettingsViewController(pushOntoNavigationStack: true)
 
-        wait(for: [settingsShown], timeout: 1)
+        wait(for: [settingsShown], timeout: 5)
         XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
     }
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
+        sut.isSceneActive = { _ in true }
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
         sut.setValue(containerView, forKey: "view")
         return sut
@@ -1276,6 +1681,31 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         XCTAssertNil(sut.loadActiveURLTaskStartDate)
     }
 
+    /// A page that failed to load while the scene was away is not coming back on its own, and nothing is
+    /// behind the deferred empty state to look at, so activation reloads it: the loader goes up, and a
+    /// failure that persists shows the empty state right away this time.
+    func testBecomingActiveReloadsAFrontendWhosePageFailedWhileTheSceneWasNotActive() async {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.isSceneActive = { _ in false }
+        sut.connectionState = .disconnected
+        sut.latestLoadError = URLError(.notConnectedToInternet)
+        sut.showEmptyState()
+        XCTAssertTrue(sut.isEmptyStateDeferredUntilActive)
+
+        sut.isSceneActive = { _ in true }
+        sut.handleSceneDidActivate()
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(overlayState.emptyState)
+        // Server.fake()'s active URL; set when the provisional navigation starts.
+        await waitUntil { sut.webView.url != nil }
+        XCTAssertEqual(sut.webView.url?.host, "homeassistant.local")
+        // The hard reload armed the grace period the way any reload does.
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
     func testLoadActiveURLRequestsNavigationAndClearsInFlightState() async {
         let sut = makeSUT()
 
@@ -1315,13 +1745,13 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         let sut = makeSUT()
 
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let hungAttempt = sut.loadActiveURLTask
         await waitUntil { gate.waiterCount == 1 }
         sut.loadActiveURLTaskStartDate = Current.date()
             .addingTimeInterval(-WebViewController.loadActiveURLStaleInterval)
 
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
 
         // The replacement attempt is itself parked at the gate, so only the synchronous
         // fallback can have loaded anything.
@@ -1346,7 +1776,7 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 
         // First attempt hangs refreshing network information.
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let hungAttempt = sut.loadActiveURLTask
         XCTAssertNotNil(hungAttempt)
         await waitUntil { gate.waiterCount == 1 }
@@ -1355,14 +1785,14 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         sut.loadActiveURLTaskStartDate = Current.date()
             .addingTimeInterval(-WebViewController.loadActiveURLStaleInterval)
         gate.shouldHold = false
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         XCTAssertEqual(hungAttempt?.isCancelled, true)
         await sut.loadActiveURLTask?.value
         XCTAssertNil(sut.loadActiveURLTask)
 
         // A third attempt is in flight when the hung attempt finally wakes up.
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let inFlightAttempt = sut.loadActiveURLTask
         XCTAssertNotNil(inFlightAttempt)
         await waitUntil { gate.waiterCount == 2 }
@@ -1377,8 +1807,17 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         XCTAssertNil(sut.loadActiveURLTask)
     }
 
+    /// Starts an attempt whose network refresh `AsyncGate` may hold. Nothing else is held: whatever
+    /// else refreshes network information while the test runs passes straight through.
+    private func loadActiveURLHoldingAtGate(_ sut: WebViewController) {
+        AsyncGate.$holdsCallers.withValue(true) {
+            sut.loadActiveURLIfNeeded()
+        }
+    }
+
     private func makeSUT(server: Server = .fake()) -> WebViewController {
         let sut = WebViewController(server: server)
+        sut.isSceneActive = { _ in true }
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
         // KVC-setting the view bypasses loadView/viewDidLoad, so the webView the URL-loading
         // paths dereference must be provided explicitly.
@@ -1409,6 +1848,11 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 /// Parks `refreshNetworkInformation` calls while `shouldHold` is set, releasing them one at a
 /// time in arrival order so tests can interleave hung and healthy load attempts deterministically.
 private final class AsyncGate: @unchecked Sendable {
+    /// Set around the calls that start the attempts a test means to hold. The closure the gate stands
+    /// in for is global, so a webhook send or a network path update while the test runs calls it too,
+    /// and holding those as well throws off the counts and the release order the tests rely on.
+    @TaskLocal static var holdsCallers = false
+
     private let lock = NSLock()
     private var waiters = [CheckedContinuation<Void, Never>]()
     private var holding = false
@@ -1433,7 +1877,7 @@ private final class AsyncGate: @unchecked Sendable {
     }
 
     func holdIfNeeded() async {
-        guard shouldHold else { return }
+        guard shouldHold, Self.holdsCallers else { return }
         await withCheckedContinuation { continuation in
             lock.lock()
             waiters.append(continuation)

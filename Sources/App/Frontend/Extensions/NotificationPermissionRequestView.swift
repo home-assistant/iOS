@@ -3,49 +3,44 @@ import SwiftUI
 
 struct NotificationPermissionRequestView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var bottomSheetState: AppleLikeBottomSheetViewState?
 
     var body: some View {
-        AppleLikeBottomSheet(
-            title: L10n.Permission.Notification.title, content: {
+        VStack(spacing: DesignSystem.Spaces.three) {
+            // The sheet is fixed to the medium detent, so the text scrolls rather than pushing the
+            // buttons out of reach at large type sizes or in a longer language.
+            ScrollView {
                 VStack(spacing: DesignSystem.Spaces.three) {
-                    ScrollView {
-                        Text(L10n.Permission.Notification.body)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, DesignSystem.Spaces.one)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .frame(maxHeight: 200)
-                    VStack(spacing: DesignSystem.Spaces.one) {
-                        Button {
-                            triggerNativePopup()
-                        } label: {
-                            Text(L10n.Permission.Notification.primaryButton)
-                        }
-                        .buttonStyle(.primaryButton)
-                        .accessibilityIdentifier(AccessibilityIdentifier.notificationPermissionRequestPrimary.rawValue)
-                        Button {
-                            triggerNativePopup()
-                        } label: {
-                            Text(L10n.Permission.Notification.secondaryButton)
-                        }
-                        .buttonStyle(.secondaryButton)
-                        .accessibilityIdentifier(
-                            AccessibilityIdentifier.notificationPermissionRequestSecondary.rawValue
-                        )
-                    }
+                    Text(L10n.Permission.Notification.title)
+                        .font(DesignSystem.Font.title2.bold())
+                        .multilineTextAlignment(.center)
+                    Text(L10n.Permission.Notification.body)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
                 }
-            },
-            contentInsets: .init(
-                top: .zero,
-                leading: DesignSystem.Spaces.two,
-                bottom: DesignSystem.Spaces.three,
-                trailing: DesignSystem.Spaces.two
-            ),
-            bottomSheetMinHeight: 310,
-            state: $bottomSheetState
-        )
+                .frame(maxWidth: .infinity)
+            }
+            VStack(spacing: DesignSystem.Spaces.one) {
+                Button {
+                    triggerNativePopup()
+                } label: {
+                    Text(L10n.Permission.Notification.primaryButton)
+                }
+                .buttonStyle(.primaryButton)
+                .accessibilityIdentifier(AccessibilityIdentifier.notificationPermissionRequestPrimary.rawValue)
+                Button {
+                    triggerNativePopup()
+                } label: {
+                    Text(L10n.Permission.Notification.secondaryButton)
+                }
+                .buttonStyle(.secondaryButton)
+                .accessibilityIdentifier(
+                    AccessibilityIdentifier.notificationPermissionRequestSecondary.rawValue
+                )
+            }
+        }
+        .padding(.horizontal, DesignSystem.Spaces.three)
+        .padding(.top, DesignSystem.Spaces.four)
+        .padding(.bottom, DesignSystem.Spaces.one)
     }
 
     private func triggerNativePopup() {
@@ -61,6 +56,11 @@ struct NotificationPermissionRequestView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    NotificationPermissionRequestView()
+    Color.clear
+        .sheet(isPresented: .constant(true)) {
+            NotificationPermissionRequestView()
+                .presentationDetents([.medium])
+        }
 }

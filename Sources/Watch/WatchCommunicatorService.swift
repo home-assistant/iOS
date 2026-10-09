@@ -33,6 +33,8 @@ final class WatchCommunicatorService {
     private var assistMessageSequence = 0
     private var assistRunFirstSequence = 1
     private var isAssistRunInProgress = false
+    /// Counts the watch's Assist requests, so work finishing after a newer one started is dropped.
+    private var assistRunID = 0
 
     /// One in-progress chunked audio upload from the watch.
     private struct AudioChunkSession {
@@ -47,6 +49,30 @@ final class WatchCommunicatorService {
     /// Partial uploads that stop receiving chunks for this long are abandoned (the watch retried or
     /// gave up) and dropped, so they can't leak memory or corrupt a later recording.
     private static let audioChunkSessionTimeout: TimeInterval = 60
+
+    /// One recording the watch streams while it is being made.
+    private struct AssistAudioStream {
+        let id: String
+        /// Transcribes the stream on the phone; `nil` when the pipeline's own speech-to-text does.
+        let recognition: OnDeviceSpeechRecognitionSession?
+        let pipelineId: String
+        let server: Server
+        let configuration: AssistConfiguration
+        var nextSequence = 0
+        /// Audio that arrived before the pipeline was ready for it.
+        var pendingAudio = Data()
+        var isPipelineReady = false
+        /// The watch submitted the recording: the stream only stays until the pipeline has its audio.
+        var isSubmitted = false
+        var abandonment: DispatchWorkItem?
+    }
+
+    /// The recording the watch is streaming, from `assistAudioStreamStart` until the phone stops
+    /// listening to it or the watch submits or cancels it.
+    private var assistAudioStream: AssistAudioStream?
+    /// A stream the watch stops feeding for this long was abandoned — the watch lost the link or
+    /// closed Assist mid-recording — so the run waiting on its audio is cancelled.
+    var assistAudioStreamTimeout: TimeInterval = 30
 
     /// One in-progress database sync: the ordered chunks plus which indices have been served, so
     /// the buffer is freed once every chunk went out at least once — the watch pipelines its
@@ -190,6 +216,12 @@ final class WatchCommunicatorService {
                     assistPipelinesFetch(message: message)
                 case .assistAudioDataChunked:
                     handleAssistAudioChunkedMessage(message)
+                case .assistAudioStreamStart:
+                    handleAssistAudioStreamStart(message)
+                case .assistAudioStreamChunk:
+                    handleAssistAudioStreamChunk(message)
+                case .assistAudioStreamCancel:
+                    handleAssistAudioStreamCancel(message)
                 case .assistTextInput:
                     handleAssistTextInputMessage(message)
                 case .magicItemPressed:
@@ -210,10 +242,13 @@ final class WatchCommunicatorService {
     /// watch, surface a brief toast so the user can see the two devices talking. Silently skipped when
     /// the app isn't active (a toast wouldn't be visible) or on OS versions without the toast overlay.
     private func presentWatchInteractionToast(for messageId: InteractiveImmediateMessages) {
-        // Skip keepalives, per-chunk pulls (the sync start already toasts) and relayed requests —
-        // those arrive one per watch interaction and often several per screen, so toasting them
-        // would bury the ones that mean something.
-        guard messageId != .ping, messageId != .watchDatabaseMirrorChunk, messageId != .httpRequest else { return }
+        // Skip keepalives, per-chunk pulls (the sync start already toasts), streamed audio (the stream
+        // start already toasts) and relayed requests — those arrive one per watch interaction and
+        // often several per screen, so toasting them would bury the ones that mean something.
+        let untoasted: [InteractiveImmediateMessages] = [
+            .ping, .watchDatabaseMirrorChunk, .assistAudioStreamChunk, .assistAudioStreamCancel, .httpRequest,
+        ]
+        guard !untoasted.contains(messageId) else { return }
         guard #available(iOS 18, *) else { return }
 
         let message: String
@@ -555,7 +590,7 @@ final class WatchCommunicatorService {
                 let serverId = server.identifier.rawValue
                 // The user picks the server before seeing entities, so drop the server prefix that
                 // `getInfo` adds to the context line when multiple servers are configured.
-                let serverPrefix = "\(server.info.name) • "
+                let serverPrefix = "\(server.info.name)\(EntityContextSubtitle.separator)"
                 let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
                 let candidates: [WatchConfigAvailableItems.Candidate] = (entitiesPerServer[serverId] ?? [])
                     .filter { $0.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded) }
@@ -975,6 +1010,8 @@ extension WatchCommunicatorService {
     }
 
     private func assistAudioData(payload: AssistAudioChunkPayload, data: Data) {
+        // A watch that gave up streaming this recording uploads it whole instead.
+        dropAssistAudioStream(cancellingRun: true)
         beginAssistRun()
         guard let server = assistTargetServer(for: payload.serverId) else {
             Current.Log.error("Assist audio targets unknown server \(payload.serverId)")
@@ -1024,39 +1061,87 @@ extension WatchCommunicatorService {
         server: Server,
         configuration: AssistConfiguration
     ) {
-        let locale = configuration.onDeviceSTTLocaleIdentifier.map { Locale(identifier: $0) } ?? Locale.current
+        let runID = assistRunID
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
-                let session = try OnDeviceSpeechRecognitionSession(
-                    format: .init(rate: Int(sampleRate), width: 2, channels: 1)
-                ) { try makeSpeechRecognizer(locale) }
+                let session = try makeOnDeviceRecognition(sampleRate: sampleRate, configuration: configuration)
                 session.append(WAVDataChunk.pcm(in: data))
-                let input = try await session.finish().trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !input.isEmpty else {
-                    didReceiveError(
-                        code: "no_speech_recognized",
-                        message: L10n.Assist.Watch.OnDeviceStt.noSpeechRecognized
-                    )
-                    return
-                }
-                didReceiveSttContent(input)
-                initAssistServiceIfNeeded(server: server).assist(source: .text(
-                    input: input,
+                await runPipeline(
+                    onTranscriptOf: session,
+                    runID: runID,
                     pipelineId: pipelineId,
-                    expectTTS: requestsServerTTS(configuration)
-                ))
+                    server: server,
+                    configuration: configuration
+                )
             } catch {
-                Current.Log.error("On-device transcription of watch audio failed: \(error.localizedDescription)")
-                didReceiveError(code: "on_device_stt_failed", message: error.localizedDescription)
+                reportOnDeviceTranscriptionFailure(error)
             }
         }
+    }
+
+    @MainActor
+    private func makeOnDeviceRecognition(
+        sampleRate: Double,
+        configuration: AssistConfiguration
+    ) throws -> OnDeviceSpeechRecognitionSession {
+        let locale = configuration.onDeviceSTTLocaleIdentifier.map { Locale(identifier: $0) } ?? Locale.current
+        return try OnDeviceSpeechRecognitionSession(
+            format: .init(rate: Int(sampleRate), width: 2, channels: 1)
+        ) { try makeSpeechRecognizer(locale) }
+    }
+
+    /// Runs the pipeline on the text the phone's own recognizer heard once its audio has ended.
+    /// Transcribing takes a moment, so a request the watch made in the meantime wins: the transcript
+    /// of request `runID` is dropped once a newer one started.
+    @MainActor
+    private func runPipeline(
+        onTranscriptOf session: OnDeviceSpeechRecognitionSession,
+        runID: Int,
+        pipelineId: String,
+        server: Server,
+        configuration: AssistConfiguration
+    ) async {
+        let transcript: Swift.Result<String, Error>
+        do {
+            transcript = try await .success(session.finish())
+        } catch {
+            transcript = .failure(error)
+        }
+        guard runID == assistRunID else {
+            Current.Log.info("Dropping the transcript of a watch Assist request a newer one replaced")
+            return
+        }
+        do {
+            let input = try transcript.get().trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !input.isEmpty else {
+                didReceiveError(
+                    code: "no_speech_recognized",
+                    message: L10n.Assist.Watch.OnDeviceStt.noSpeechRecognized
+                )
+                return
+            }
+            didReceiveSttContent(input)
+            initAssistServiceIfNeeded(server: server).assist(source: .text(
+                input: input,
+                pipelineId: pipelineId,
+                expectTTS: requestsServerTTS(configuration)
+            ))
+        } catch {
+            reportOnDeviceTranscriptionFailure(error)
+        }
+    }
+
+    private func reportOnDeviceTranscriptionFailure(_ error: Error) {
+        Current.Log.error("On-device transcription of watch audio failed: \(error.localizedDescription)")
+        didReceiveError(code: "on_device_stt_failed", message: error.localizedDescription)
     }
 
     /// Run an Assist pipeline with the prompt written on the watch. There is no audio to upload, so
     /// unlike the recording flow this starts the pipeline as soon as the message arrives; the
     /// response travels back through the same delegate messages.
     func handleAssistTextInputMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        dropAssistAudioStream(cancellingRun: true)
         beginAssistRun()
         // Every path acknowledges: the watch treats a missing reply as a delivery failure and would
         // report that on top of the failure reported here.
@@ -1116,6 +1201,7 @@ extension WatchCommunicatorService {
     }
 
     private func beginAssistRun() {
+        assistRunID += 1
         undeliveredAssistMessages.removeAll()
         assistRunFirstSequence = assistMessageSequence + 1
         isAssistRunInProgress = true
@@ -1168,6 +1254,240 @@ extension WatchCommunicatorService {
     }
 }
 
+// MARK: - Assist audio stream
+
+/// The watch streams a recording while it is being made, the way in-app Assist streams the
+/// microphone: the pipeline — or the phone's on-device recognizer — hears the audio as it arrives,
+/// and when it hears the user stop speaking the phone tells the watch to stop recording, so nobody
+/// has to submit it. Submitting by hand still works: the watch's last chunk is marked final.
+extension WatchCommunicatorService {
+    func handleAssistAudioStreamStart(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let payload = AssistAudioStreamStartPayload(content: message.content) else {
+            Current.Log.error("Invalid assist audio stream start")
+            sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistError.rawValue,
+                content: AssistErrorPayload(
+                    code: "invalid_payload",
+                    message: L10n.Assist.Watch.AudioStream.unreadable
+                ).content
+            ))
+            // Answered anyway: without a reply the watch waits out its timeout before giving up.
+            message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue))
+            return
+        }
+        // A new recording replaces one the watch never finished, and the run of the previous
+        // question goes with it: its late events would otherwise end this stream's run.
+        dropAssistAudioStream(cancellingRun: true)
+        assistService?.cancelRun()
+        pendingAudioData = nil
+        beginAssistRun()
+        startAssistAudioStream(payload)
+        replyToAssistAudioStream(message, streamId: payload.streamId)
+    }
+
+    func handleAssistAudioStreamChunk(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let payload = AssistAudioStreamChunkPayload(content: message.content) else {
+            Current.Log.error("Invalid assist audio stream chunk")
+            message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue))
+            return
+        }
+        defer { replyToAssistAudioStream(message, streamId: payload.streamId) }
+        guard var stream = assistAudioStream, stream.id == payload.streamId, !stream.isSubmitted,
+              payload.sequence >= stream.nextSequence else {
+            return
+        }
+        if payload.sequence > stream.nextSequence {
+            Current.Log.warning("Assist audio stream skipped from chunk \(stream.nextSequence) to \(payload.sequence)")
+        }
+        stream.nextSequence = payload.sequence + 1
+        stream.isSubmitted = payload.isFinal
+        if stream.recognition == nil, !stream.isPipelineReady {
+            stream.pendingAudio.append(payload.audio)
+        }
+        assistAudioStream = stream
+
+        if let recognition = stream.recognition {
+            MainActor.assumeIsolated { recognition.append(payload.audio) }
+        } else if stream.isPipelineReady, !payload.audio.isEmpty {
+            assistService?.sendAudioData(payload.audio)
+        }
+
+        if payload.isFinal {
+            finishSubmittedAssistAudioStream()
+        } else {
+            armAssistAudioStreamAbandonment()
+        }
+    }
+
+    /// The user was not asking anything, so the run is abandoned instead of finished.
+    func handleAssistAudioStreamCancel(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let payload = AssistAudioStreamEndPayload(content: message.content) else {
+            Current.Log.error("Invalid assist audio stream cancel")
+            message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue))
+            return
+        }
+        if assistAudioStream?.id == payload.streamId {
+            dropAssistAudioStream(cancellingRun: true)
+        }
+        replyToAssistAudioStream(message, streamId: payload.streamId)
+    }
+
+    private func startAssistAudioStream(_ payload: AssistAudioStreamStartPayload) {
+        guard let server = assistTargetServer(for: payload.serverId) else {
+            Current.Log.error("Assist audio stream targets unknown server \(payload.serverId)")
+            didReceiveError(code: "unknown_server", message: L10n.Assist.Watch.AudioStream.serverNotFound)
+            return
+        }
+
+        let configuration = assistConfiguration()
+        var recognition: OnDeviceSpeechRecognitionSession?
+        if configuration.enableOnDeviceSTT {
+            do {
+                recognition = try MainActor.assumeIsolated {
+                    let session = try makeOnDeviceRecognition(
+                        sampleRate: payload.sampleRate,
+                        configuration: configuration
+                    )
+                    session.onListeningEnded = { [weak self] in
+                        guard self?.assistAudioStream?.id == payload.streamId else { return }
+                        self?.stopListeningToAssistAudioStream()
+                    }
+                    return session
+                }
+            } catch {
+                reportOnDeviceTranscriptionFailure(error)
+                return
+            }
+        }
+
+        assistAudioStream = AssistAudioStream(
+            id: payload.streamId,
+            recognition: recognition,
+            pipelineId: payload.pipelineId,
+            server: server,
+            configuration: configuration
+        )
+        armAssistAudioStreamAbandonment()
+        if recognition == nil {
+            initAssistServiceIfNeeded(server: server).assist(source: .audio(
+                pipelineId: payload.pipelineId,
+                audioSampleRate: payload.sampleRate,
+                tts: requestsServerTTS(configuration)
+            ))
+        }
+    }
+
+    /// The pipeline is ready for audio: what arrived before goes out first.
+    private func sendAssistAudioStreamToPipeline() {
+        guard var stream = assistAudioStream, stream.recognition == nil, !stream.isPipelineReady else { return }
+        stream.isPipelineReady = true
+        let pendingAudio = stream.pendingAudio
+        stream.pendingAudio = Data()
+        assistAudioStream = stream
+        if !pendingAudio.isEmpty {
+            assistService?.sendAudioData(pendingAudio)
+        }
+        if stream.isSubmitted {
+            finishSubmittedAssistAudioStream()
+        }
+    }
+
+    /// The watch sent its last chunk. A pipeline not ready for audio yet gets it, and its end, once
+    /// it is.
+    private func finishSubmittedAssistAudioStream() {
+        guard let stream = assistAudioStream, stream.isSubmitted else { return }
+        if let recognition = stream.recognition {
+            removeAssistAudioStream()
+            transcribeAssistAudioStream(stream, with: recognition)
+        } else if stream.isPipelineReady {
+            removeAssistAudioStream()
+            assistService?.finishSendingAudio()
+        }
+    }
+
+    /// The pipeline or the on-device recognizer heard the user stop speaking, or the run is over:
+    /// the watch stops recording instead of waiting for the user to submit.
+    private func stopListeningToAssistAudioStream() {
+        guard let stream = assistAudioStream else { return }
+        removeAssistAudioStream()
+        if !stream.isSubmitted {
+            sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistAudioStreamStop.rawValue,
+                content: AssistAudioStreamEndPayload(streamId: stream.id).content
+            ))
+        }
+        if let recognition = stream.recognition {
+            transcribeAssistAudioStream(stream, with: recognition)
+        } else if stream.isPipelineReady {
+            assistService?.finishSendingAudio()
+        }
+    }
+
+    private func transcribeAssistAudioStream(
+        _ stream: AssistAudioStream,
+        with recognition: OnDeviceSpeechRecognitionSession
+    ) {
+        let runID = assistRunID
+        Task { @MainActor [weak self] in
+            await self?.runPipeline(
+                onTranscriptOf: recognition,
+                runID: runID,
+                pipelineId: stream.pipelineId,
+                server: stream.server,
+                configuration: stream.configuration
+            )
+        }
+    }
+
+    /// Drops the stream in progress and stops its recognizer. `cancellingRun` also abandons the
+    /// pipeline run it was feeding, so nothing heard so far is acted on.
+    private func dropAssistAudioStream(cancellingRun: Bool) {
+        guard let stream = assistAudioStream else { return }
+        removeAssistAudioStream()
+        if let recognition = stream.recognition {
+            MainActor.assumeIsolated { recognition.cancel() }
+        } else if cancellingRun {
+            assistService?.cancelRun()
+        }
+        if cancellingRun {
+            isAssistRunInProgress = false
+        }
+    }
+
+    private func removeAssistAudioStream() {
+        assistAudioStream?.abandonment?.cancel()
+        assistAudioStream = nil
+    }
+
+    private func armAssistAudioStreamAbandonment() {
+        guard let streamId = assistAudioStream?.id else { return }
+        assistAudioStream?.abandonment?.cancel()
+        let abandonment = DispatchWorkItem { [weak self] in
+            guard let self, let stream = assistAudioStream, stream.id == streamId else { return }
+            Current.Log.warning("Dropping assist audio stream \(streamId): the watch stopped sending audio")
+            dropAssistAudioStream(cancellingRun: true)
+            // A watch that submitted the recording is waiting for an answer that will not come. One
+            // that did not may still be recording, to send it whole once it is done.
+            if stream.isSubmitted {
+                didReceiveError(code: "audio_stream_timeout", message: L10n.Assist.Watch.AudioStream.notReceived)
+            }
+        }
+        assistAudioStream?.abandonment = abandonment
+        DispatchQueue.main.asyncAfter(deadline: .now() + assistAudioStreamTimeout, execute: abandonment)
+    }
+
+    private func replyToAssistAudioStream(
+        _ message: HAWatchConnectivity.InteractiveImmediateMessage,
+        streamId: String
+    ) {
+        let isListening = assistAudioStream.map { $0.id == streamId && !$0.isSubmitted } ?? false
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue,
+            content: AssistAudioStreamAckPayload(streamId: streamId, isListening: isListening).content
+        ))
+    }
+}
+
 // MARK: - AssistServiceDelegate
 
 extension WatchCommunicatorService: AssistServiceDelegate {
@@ -1179,6 +1499,11 @@ extension WatchCommunicatorService: AssistServiceDelegate {
         Current.Log.info("Watch Assist received event: \(event)")
         if event == .runEnd {
             isAssistRunInProgress = false
+        }
+        // Voice activity detection heard the user stop speaking — the pipeline reads no audio after
+        // that — or the run is over: the watch stops recording, as in-app Assist does.
+        if [.sttVadEnd, .sttEnd, .runEnd].contains(event), assistAudioStream?.recognition == nil {
+            stopListeningToAssistAudioStream()
         }
     }
 
@@ -1209,7 +1534,11 @@ extension WatchCommunicatorService: AssistServiceDelegate {
     }
 
     func didReceiveGreenLightForAudioInput() {
-        sendPendingAudioData()
+        if assistAudioStream != nil {
+            sendAssistAudioStreamToPipeline()
+        } else {
+            sendPendingAudioData()
+        }
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
@@ -1222,6 +1551,8 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 
     func didReceiveError(code: String, message: String) {
         isAssistRunInProgress = false
+        // The run the stream was feeding is over; the watch stops recording when it reads the error.
+        dropAssistAudioStream(cancellingRun: false)
         let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistError.rawValue,
             content: AssistErrorPayload(code: code, message: message).content

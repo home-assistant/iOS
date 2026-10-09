@@ -115,6 +115,11 @@ enum WatchServerSync {
         // The restored state is the whole list, so any server it left out is one the iPhone no
         // longer has; its sensor choices go with it, as they do on the iPhone when it is removed.
         WatchUserDefaults.shared.applySyncedServersToSensorEnablement(Current.servers.all.map(\.identifier))
+        // Its location choice goes too, and so do the zones the watch fetched for it.
+        WatchUserDefaults.shared.applySyncedServersToLocationPrivacy(Current.servers.all.map(\.identifier))
+        WatchZoneSync.removeZones(exceptFor: Set(Current.servers.all.map(\.identifier).filter {
+            WatchUserDefaults.shared.locationPrivacy(forServer: $0) == .zoneOnly
+        }))
     }
 
     /// Re-apply each server's watch-local "Always use" URL choice. `ConnectionInfo` is overwritten on

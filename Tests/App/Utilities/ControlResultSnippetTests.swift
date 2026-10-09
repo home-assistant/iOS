@@ -192,7 +192,7 @@ struct ControlResultSnippetTests {
         state.name = "Ceiling"
         state.formattedState = "On"
         state.iconName = "mdi:ceiling-light"
-        state.areaName = "Kitchen"
+        state.context = "Kitchen"
         let view = ControlResultSnippetView(state: state)
         #expect(!String(describing: view.body).isEmpty)
     }
@@ -205,7 +205,7 @@ struct ControlResultSnippetTests {
             state.name = "Ceiling"
             state.formattedState = "On"
             state.iconName = iconName
-            state.areaName = "Kitchen"
+            state.context = "Kitchen"
             let view = ControlResultSnippetView(state: state)
             #expect(!String(describing: view.body).isEmpty, "no body for \(iconName)")
         }

@@ -37,7 +37,7 @@ extension WatchHomeViewModel {
 
     func addItem(_ item: MagicItem, info: MagicItem.Info?) {
         watchConfig.items.append(item)
-        seedInfo(info)
+        seedInfo(info, for: item)
     }
 
     func addFolder(named name: String, iconName: String?) {
@@ -67,7 +67,7 @@ extension WatchHomeViewModel {
                 updated.items = watchConfig.items[index].items
             }
             watchConfig.items[index] = updated
-            seedInfo(info)
+            seedInfo(info, for: updated)
             return
         }
         for (folderIndex, folder) in watchConfig.items.enumerated() where folder.type == .folder {
@@ -77,7 +77,7 @@ extension WatchHomeViewModel {
             var updatedFolder = folder
             updatedFolder.items = items
             watchConfig.items[folderIndex] = updatedFolder
-            seedInfo(info)
+            seedInfo(info, for: item)
             return
         }
     }
@@ -111,7 +111,7 @@ extension WatchHomeViewModel {
         items.append(item)
         folder.items = items
         watchConfig.items[index] = folder
-        seedInfo(info)
+        seedInfo(info, for: item)
     }
 
     func deleteItemInFolder(folderId: String, at offsets: IndexSet) {
@@ -255,7 +255,7 @@ extension WatchHomeViewModel {
         magicItemProvider.loadInformation { entitiesPerServer in
             let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in
                 let serverId = server.identifier.rawValue
-                let serverPrefix = "\(server.info.name) • "
+                let serverPrefix = "\(server.info.name)\(EntityContextSubtitle.separator)"
                 let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
                 let candidates: [WatchConfigAvailableItems.Candidate] = (entitiesPerServer[serverId] ?? [])
                     .filter { $0.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded) }
@@ -297,8 +297,10 @@ extension WatchHomeViewModel {
         }
     }
 
-    private func seedInfo(_ info: MagicItem.Info?) {
-        guard let info else { return }
+    /// Rows read an item's customization from its cached info, which the phone only rebuilds on its
+    /// next sync, so the info takes the edited item's customization for an edit made offline to show.
+    private func seedInfo(_ info: MagicItem.Info?, for item: MagicItem) {
+        guard let info = info?.replacingCustomization(item.customization) else { return }
         if let index = magicItemsInfo.firstIndex(where: { $0.id == info.id }) {
             magicItemsInfo[index] = info
         } else {

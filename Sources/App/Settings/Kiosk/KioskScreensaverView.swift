@@ -16,6 +16,8 @@ struct KioskScreensaverView: View {
                 content
             }
         }
+        // The whole screensaver is edge to edge so the clock centers on the display, not on the
+        // safe area a camera or vertical bar (iPhone Duo) leaves.
         .ignoresSafeArea()
         .contentShape(Rectangle())
         .onTapGesture(perform: onWake)
@@ -306,10 +308,10 @@ final class KioskScreensaverController: ObservableObject {
         }
 
         if brightnessBeforeDimming == nil {
-            brightnessBeforeDimming = UIScreen.main.brightness
+            brightnessBeforeDimming = Current.screenBrightness()
         }
 
-        UIScreen.main.brightness = CGFloat(min(max(screensaver.dimLevel, 0), 1))
+        Current.setScreenBrightness(CGFloat(min(max(screensaver.dimLevel, 0), 1)))
         #endif
     }
 
@@ -328,7 +330,7 @@ final class KioskScreensaverController: ObservableObject {
     private func restoreBrightness() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         guard let brightnessBeforeDimming else { return }
-        UIScreen.main.brightness = brightnessBeforeDimming
+        Current.setScreenBrightness(brightnessBeforeDimming)
         self.brightnessBeforeDimming = nil
         #endif
     }

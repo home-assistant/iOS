@@ -68,10 +68,10 @@
 "app_intents.active_entities.name_with_server" = "%1$@ on %2$@";
 "app_intents.active_entities.title" = "Get what is on";
 "app_intents.add_to.description" = "Adds a Home Assistant entity to the Apple Watch, CarPlay quick access or the Mac toolbar";
-"app_intents.add_to.destination.name" = "Destination";
+"app_intents.add_to.destination.name" = "Bestemming";
 "app_intents.add_to.dialog.added" = "Added %1$@ to %2$@";
 "app_intents.add_to.dialog.already_added" = "%1$@ is already in %2$@";
-"app_intents.add_to.entity.name" = "Entity";
+"app_intents.add_to.entity.name" = "Entiteit";
 "app_intents.add_to.error.unavailable" = "%@ isn't available on this device";
 "app_intents.add_to.error.unsupported" = "%1$@ can't be added to %2$@";
 "app_intents.add_to.title" = "Entiteit toevoegen aan";
@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "Bewerk";
 "assist.chat.menu.replay" = "Opnieuw afspelen";
 "assist.error.pipelines_response" = "Assist-pijplijnen konden niet worden verkregen. Controleer je pijplijnconfiguratie.";
+"assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
 "assist.modern_ui.pipeline.label" = "Pijplijn";
 "assist.modern_ui.text_field.placeholder" = "Vraag me vanalles...";
@@ -388,12 +389,17 @@
 "assist.settings.tts_mute.footer" = "Als deze optie is ingeschakeld, speelt Assist geen audiorespons af, zelfs niet als de pijplijn tekst-naar-spraak heeft geconfigureerd. Je zult nog steeds tekstreacties te zien krijgen.";
 "assist.settings.tts_mute.toggle" = "Spraakreacties dempen";
 "assist.text_field.placeholder" = "Typ een verzoek...";
+"assist.watch.audio_stream.not_received" = "Home Assistant heeft de opname nooit ontvangen.";
+"assist.watch.audio_stream.server_not_found" = "Server niet gevonden op iPhone.";
+"assist.watch.audio_stream.unreadable" = "De iPhone kon de opname niet uitlezen.";
+"assist.watch.mic_button.tap_or_hold.title" = "Tik of houd ingedrukt om";
 "assist.watch.mic_button.title" = "Tik om";
 "assist.watch.not_reachable.title" = "Assist vereist iPhone-connectiviteit. Je iPhone is nu niet bereikbaar.";
 "assist.watch.on_device_stt.no_speech_recognized" = "Er werd geen spraak herkend.";
 "assist.watch.volume.title" = "Volumeregeling";
 "assist_pipeline_picker.no_pipelines" = "Geen pijplijnen beschikbaar";
 "assist_pipeline_picker.placeholder" = "Kies pijplijn";
+"assist_pipeline_picker.reload" = "Herladen";
 "camera_list.edit.off.title" = "Bewerk";
 "camera_list.edit.on.title" = "Klaar";
 "camera_list.empty.message" = "Geen camera-entiteiten gevonden in je Home Assistant setup";
@@ -710,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "Alle domeinen";
 "entity_picker.filter.domain.title" = "Domein";
 "entity_picker.filter.group_by.area" = "Groeperen per ruimte";
+"entity_picker.filter.group_by.device" = "Groeperen op apparaat";
 "entity_picker.filter.group_by.domain" = "Groeperen per domein";
 "entity_picker.filter.group_by.title" = "Groeperen op";
 "entity_picker.filter.server.title" = "Servers";
 "entity_picker.list.area.no_area.title" = "Geen ruimte";
+"entity_picker.list.device.no_device.title" = "Geen apparaat";
 "entity_picker.placeholder" = "Kies entiteit";
 "entity_picker.refresh.updating" = "Bijwerken...";
 "entity_picker.reload" = "Herladen";
@@ -1123,8 +1131,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "mac.sidebar.hidden_section.header" = "Verborgen";
 "mac.sidebar.hide" = "Verbergen";
 "mac.sidebar.notifications" = "Notificaties";
-"mac.sidebar.reset_to_defaults" = "Terugzetten naar standaardinstellingen";
-"mac.sidebar.set_default_dashboard" = "Instellen als standaard dashboard";
 "mac.sidebar.settings" = "Instellingen";
 "mac.sidebar.show" = "Weergeven";
 "mac.toggle_sidebar.accessibility_label" = "Zijbalk omschakelen";
@@ -1156,6 +1162,9 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "magic_item.background_color.title" = "Achtergrondkleur";
 "magic_item.display_text.title" = "Tekst weergeven";
 "magic_item.edit" = "Opslaan";
+"magic_item.icon_color.color" = "Kleur";
+"magic_item.icon_color.custom" = "Aangepast";
+"magic_item.icon_color.default" = "Standaard";
 "magic_item.icon_color.title" = "Icoon kleur";
 "magic_item.icon_name.title" = "Icoon naam";
 "magic_item.item_type.action.list.title" = "iOS-acties";
@@ -1194,7 +1203,6 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.customize_toolbar" = "Werkbalk aanpassen…";
 "menu.view.find" = "Vinden";
-"menu.view.hide_sidebar" = "Zijbalk verbergen";
 "menu.view.reload_page" = "Herlaad pagina";
 "menu.view.show_sidebar" = "Zijbalk weergeven";
 "mtls.beta.info" = "Dit is een bètafunctie. Als je problemen ondervindt, meld ze dan via de knop hieronder. \
@@ -1304,6 +1312,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.connection_test_result.local_network_permission.description" = "De privacy toestemming \"Lokaal netwerk\" is mogelijk geweigerd. Je kan dit wijzigen in de systeem instellingen app.";
 "onboarding.device_name_check.error.prompt" = "Welke apparaat moet in plaats daarvan worden gebruikt?";
 "onboarding.device_name_check.error.title" = "Er bestaat al een apparaat met de naam ' %1$@ '";
+"onboarding.device_name_check.error.unreachable" = "Er kon geen verbinding worden gemaakt met Home Assistant om de apparaatnaam te controleren. Controleer je verbinding en probeer het opnieuw.";
 "onboarding.invitation.accept_button" = "Accepteren";
 "onboarding.invitation.address_title" = "Home Assistant-adres";
 "onboarding.invitation.description" = "Home Assistant is een open-source systeem voor huisautomatisering dat lokale bediening en privacy op de eerste plaats zet.";
@@ -1419,6 +1428,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "onboarding.welcome.learn_more" = "Meer informatie";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant-logo";
 "onboarding.welcome.primary_button" = "Maak verbinding met mijn Home Assistant";
+"onboarding.welcome.primary_button_compact" = "Verbinden";
 "onboarding.welcome.secondary_button" = "Aan de slag";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "onboarding.welcome.updated.body" = "Onderweg toegang tot je Home Assistant-server. \
@@ -2431,6 +2441,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "thread.transter_to_homeassistant.title" = "Overzetten naar Home Assistant";
 "token_error.connection_failed" = "Verbinding mislukt.";
 "token_error.expired" = "Token is verlopen.";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "Token is niet beschikbaar.";
 "unauthenticated.message.body" = "Je sessie is verlopen. Meld je opnieuw aan om verder te gaan, of controleer je verbinding als je achter een proxy of netwerkbeperking zit.";
 "unauthenticated.message.title" = "Je bent ongeauthenticeerd";
@@ -2476,6 +2487,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "vacuum.control.start" = "Start";
 "vacuum.control.stop" = "Stop";
 "watch.assist.button.recording.title" = "Opnemen...";
+"watch.assist.button.release_to_send.title" = "Release to send";
 "watch.assist.button.send_request.title" = "Tik om aanvraag te versturen";
 "watch.assist.lack_config.error.title" = "Configureer Assist met behulp van de iOS-companion app";
 "watch.complications.builder.color" = "Kleur van de meter";
@@ -2677,6 +2689,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "watch.configurator.sections.icon.header" = "Icoon";
 "watch.configurator.sections.ring.footer" = "De ring toont de voortgang van de tekst.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.context_sync.timed_out" = "Time-out bij het wachten tot het horloge de update accepteerde.";
 "watch.cover_controls.close" = "Sluit";
 "watch.cover_controls.open" = "Open";
 "watch.cover_controls.position" = "Positie";
@@ -2706,6 +2719,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "watch.home.areas.title" = "Ruimtes";
 "watch.home.cancel_and_use_cache.title" = "Annuleer en gebruik cache";
 "watch.home.device.empty" = "There are no compatible entities for this device.";
+"watch.home.device.part_of" = "Onderdeel van %@";
 "watch.home.loading.skip.title" = "Overslaan";
 "watch.home.run.confirmation.title" = "Weet je zeker dat je \"%@\" wilt uitvoeren?";
 "watch.home.run.error.lock_state_unknown" = "De huidige status van het slot is nog niet bekend, dus de actie is niet verzonden. Wacht tot de status is geladen en probeer het opnieuw.";
@@ -2950,6 +2964,10 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.settings.developer.warning.message" = "Deze opties zijn bedoeld voor foutopsporing. Gebruik ze alleen onder begeleiding van een ontwikkelaar.";
 "watch.settings.developer.warning.title" = "Waarschuwing";
 "watch.settings.last_updated" = "Bijgewerkt op %@";
+"watch.settings.location.footer" = "Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.";
+"watch.settings.location.permission_denied" = "Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.";
+"watch.settings.location.servers_footer" = "Each server receives the location you choose for it.";
+"watch.settings.location.title" = "Locatie";
 "watch.settings.no_items.phone.title" = "Geen items geconfigureerd, kies hieronder items.";
 "watch.settings.no_servers" = "Er zijn nog geen servers gesynchroniseerd. Open Home Assistant op je gekoppelde iPhone en vernieuw vervolgens het startscherm.";
 "watch.settings.perform_action.footer" = "Waar acties worden uitgevoerd. De functie ‘Auto’ maakt gebruik van je iPhone als die in de buurt is, anders maakt de Apple Watch rechtstreeks verbinding met Home Assistant.";

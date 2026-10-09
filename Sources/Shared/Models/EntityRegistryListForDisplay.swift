@@ -44,6 +44,7 @@ public struct EntityRegistryListForDisplay: HADataDecodable {
         public let areaId: String? // ai
         public let hidden: Bool? // hb
         public let icon: String? // ic
+        public let nextNamePart: String? // np
 
         public init(data: HAData) throws {
             self.entityId = try data.decode("ei")
@@ -58,6 +59,7 @@ public struct EntityRegistryListForDisplay: HADataDecodable {
             self.areaId = try? data.decode("ai")
             self.hidden = try? data.decode("hb")
             self.icon = try? data.decode("ic")
+            self.nextNamePart = try? data.decode("np")
         }
 
         public var isHidden: Bool { hidden == true }
@@ -109,7 +111,8 @@ public struct EntityRegistryListForDisplay: HADataDecodable {
             decimalPlaces: Int? = nil,
             areaId: String? = nil,
             hidden: Bool? = nil,
-            icon: String? = nil
+            icon: String? = nil,
+            nextNamePart: String? = nil
         ) {
             self.serverId = serverId
             self.entityId = entityId
@@ -124,6 +127,7 @@ public struct EntityRegistryListForDisplay: HADataDecodable {
             self.areaId = areaId
             self.hidden = hidden
             self.icon = icon
+            self.nextNamePart = nextNamePart
         }
         #endif
     }

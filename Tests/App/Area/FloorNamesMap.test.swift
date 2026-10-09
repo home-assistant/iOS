@@ -130,7 +130,7 @@ struct FloorNamesMapTests {
             icon: nil,
             rawDeviceClass: nil
         )
-        #expect(collidingEntity.contextualSubtitle == "Upstairs • Bedroom")
+        #expect(collidingEntity.contextualSubtitle == "Upstairs ▸ Bedroom")
 
         let uniqueEntity = HAAppEntity(
             id: "\(serverId)-light.kitchen",

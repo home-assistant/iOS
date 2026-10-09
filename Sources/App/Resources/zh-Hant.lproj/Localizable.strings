@@ -358,6 +358,7 @@
 "assist.chat.menu.edit" = "編輯";
 "assist.chat.menu.replay" = "重播";
 "assist.error.pipelines_response" = "獲取助理 Pipeline 失敗，請檢查 Pipeline 設定。";
+"assist.error.speech_to_text_unsupported" = "助理設定沒有語音轉文字引擎。請選擇具有語音轉文字引擎的設定檔，或在助理設定中啟用裝置端語音轉文字功能。";
 "assist.modern_ui.header.title" = "助理";
 "assist.modern_ui.pipeline.label" = "助理設定";
 "assist.modern_ui.text_field.placeholder" = "詢問任何問題...";
@@ -388,12 +389,17 @@
 "assist.settings.tts_mute.footer" = "啟用後，即使助理設定已設定為文字轉語音、助理也不會以語音回應。仍然可以看到文字回應。";
 "assist.settings.tts_mute.toggle" = "靜音語音回應";
 "assist.text_field.placeholder" = "輸入請求...";
+"assist.watch.audio_stream.not_received" = "Home Assistant 從未收到錄音。";
+"assist.watch.audio_stream.server_not_found" = "在 iPhone 上找不到伺服器。";
+"assist.watch.audio_stream.unreadable" = "iPhone 無法讀取錄音。";
+"assist.watch.mic_button.tap_or_hold.title" = "點選或長按以";
 "assist.watch.mic_button.title" = "點擊";
 "assist.watch.not_reachable.title" = "助理需要 iPhone 連線、目前無法存取您的 iPhone。";
 "assist.watch.on_device_stt.no_speech_recognized" = "未辨識到任何語音。";
 "assist.watch.volume.title" = "音量控制";
 "assist_pipeline_picker.no_pipelines" = "沒有可用的助理設定";
 "assist_pipeline_picker.placeholder" = "選擇助理設定";
+"assist_pipeline_picker.reload" = "重新載入";
 "camera_list.edit.off.title" = "編輯";
 "camera_list.edit.on.title" = "完成";
 "camera_list.empty.message" = "Home Assistant 設定中未找到任何攝影機實體";
@@ -710,10 +716,12 @@
 "entity_picker.filter.domain.all.title" = "所有實體類群";
 "entity_picker.filter.domain.title" = "實體類群";
 "entity_picker.filter.group_by.area" = "依分區分組";
+"entity_picker.filter.group_by.device" = "依裝置分組";
 "entity_picker.filter.group_by.domain" = "依實體群組分組";
 "entity_picker.filter.group_by.title" = "群組：";
 "entity_picker.filter.server.title" = "伺服器";
 "entity_picker.list.area.no_area.title" = "無分區";
+"entity_picker.list.device.no_device.title" = "無裝置";
 "entity_picker.placeholder" = "選擇實體";
 "entity_picker.refresh.updating" = "正在更新…";
 "entity_picker.reload" = "重新載入";
@@ -1123,8 +1131,6 @@
 "mac.sidebar.hidden_section.header" = "已隱藏";
 "mac.sidebar.hide" = "隱藏";
 "mac.sidebar.notifications" = "通知";
-"mac.sidebar.reset_to_defaults" = "重置為預設值";
-"mac.sidebar.set_default_dashboard" = "設定為預設儀表板";
 "mac.sidebar.settings" = "設定";
 "mac.sidebar.show" = "顯示";
 "mac.toggle_sidebar.accessibility_label" = "切換側邊欄";
@@ -1156,6 +1162,9 @@
 "magic_item.background_color.title" = "背景顏色";
 "magic_item.display_text.title" = "顯示文字";
 "magic_item.edit" = "儲存";
+"magic_item.icon_color.color" = "顏色";
+"magic_item.icon_color.custom" = "自訂";
+"magic_item.icon_color.default" = "預設";
 "magic_item.icon_color.title" = "圖示顏色";
 "magic_item.icon_name.title" = "圖示名稱";
 "magic_item.item_type.action.list.title" = "iOS 操作";
@@ -1194,7 +1203,6 @@
 "menu.status_item.toggle" = "切換 %1$@";
 "menu.view.customize_toolbar" = "自訂工具列…";
 "menu.view.find" = "尋找";
-"menu.view.hide_sidebar" = "隱藏側邊欄";
 "menu.view.reload_page" = "重新載入頁面";
 "menu.view.show_sidebar" = "顯示側邊欄";
 "mtls.beta.info" = "此為測試版功能，如果遇到任何問題，請使用下方按鈕回報。\
@@ -1304,6 +1312,7 @@
 "onboarding.connection_test_result.local_network_permission.description" = "\"區域網絡\"隱私權限可能設為拒絕。您可以在系統設定應用中更改此設定。";
 "onboarding.device_name_check.error.prompt" = "所要使用的裝置名稱？";
 "onboarding.device_name_check.error.title" = "裝置已存在名稱 '%1$@'";
+"onboarding.device_name_check.error.unreachable" = "無法連線至 Home Assistant 以檢查裝置名稱。請檢查連線並再試一次。";
 "onboarding.invitation.accept_button" = "接受";
 "onboarding.invitation.address_title" = "Home Assistant 位址";
 "onboarding.invitation.description" = "Home Assistant 是一款以本地控制和隱私優先的開源家庭自動化系統。";
@@ -1419,6 +1428,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "onboarding.welcome.learn_more" = "了解更多";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
 "onboarding.welcome.primary_button" = "連線至我的 Home Assistant";
+"onboarding.welcome.primary_button_compact" = "連線";
 "onboarding.welcome.secondary_button" = "開始使用";
 "onboarding.welcome.title" = "歡迎使用 Home Assistant %@！";
 "onboarding.welcome.updated.body" = "隨時隨地存取您的 Home Assistant 伺服器。\
@@ -2431,6 +2441,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "thread.transter_to_homeassistant.title" = "傳送至 Home Assistant";
 "token_error.connection_failed" = "連線失敗。";
 "token_error.expired" = "權杖已過期。";
+"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
 "token_error.token_unavailable" = "權杖不可用。";
 "unauthenticated.message.body" = "工作階段已過期。請重新驗證身分以繼續，或者如果位於代理伺服器或網路限制之後，請檢查網路連線。";
 "unauthenticated.message.title" = "您未經身份驗證";
@@ -2476,6 +2487,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "vacuum.control.start" = "開始";
 "vacuum.control.stop" = "停止";
 "watch.assist.button.recording.title" = "錄製中...";
+"watch.assist.button.release_to_send.title" = "放開以傳送";
 "watch.assist.button.send_request.title" = "點擊以傳送請求";
 "watch.assist.lack_config.error.title" = "請設定使用 iOS companion App 設定助理";
 "watch.complications.builder.color" = "測量顏色";
@@ -2677,6 +2689,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.configurator.sections.icon.header" = "圖示";
 "watch.configurator.sections.ring.footer" = "文字周圍的圓環顯示進度。";
 "watch.configurator.sections.ring.header" = "圓環";
+"watch.context_sync.timed_out" = "等待手錶接受更新時逾時。";
 "watch.cover_controls.close" = "關閉";
 "watch.cover_controls.open" = "開啟";
 "watch.cover_controls.position" = "位置";
@@ -2706,6 +2719,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.home.areas.title" = "分區";
 "watch.home.cancel_and_use_cache.title" = "取消並使用快取";
 "watch.home.device.empty" = "此裝置沒有相容的實體。";
+"watch.home.device.part_of" = "%@的一部分";
 "watch.home.loading.skip.title" = "跳過";
 "watch.home.run.confirmation.title" = "確定要執行 \"%@\"？";
 "watch.home.run.error.lock_state_unknown" = "門鎖的目前狀態尚未載入，因此未傳送操作。請等待狀態載入後再試一次。";
@@ -2950,6 +2964,10 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.settings.developer.warning.message" = "這些選項用於除錯，請僅在開發人員的指導下使用。";
 "watch.settings.developer.warning.title" = "警告";
 "watch.settings.last_updated" = "已更新 %@";
+"watch.settings.location.footer" = "Apple Watch 會自行向 Home Assistant 回報其位置，作為獨立於 iPhone 的裝置。區域功能僅傳送所在的區域，在選擇之前不會傳送任何資料。";
+"watch.settings.location.permission_denied" = "Home Assistant 無法存取此 Apple Watch 的位置。請在 Apple Watch 上的設定 App 中，前往隱私權與安全性 > 定位服務允許存取。";
+"watch.settings.location.servers_footer" = "每台伺服器都會收到您為其選擇的位置。";
+"watch.settings.location.title" = "位置";
 "watch.settings.no_items.phone.title" = "未設定項目、請於下方選擇項目。";
 "watch.settings.no_servers" = "尚未同步任何伺服器。請在配對的 iPhone 上開啟 Home Assistant，然後從主畫面重新整理。";
 "watch.settings.perform_action.footer" = "操作執行位置。自動將在 iPhone 靠近時使用 iPhone，否則 Apple Watch 將直接連線至 Home Assistant。";
