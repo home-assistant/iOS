@@ -47,14 +47,19 @@ func resetStores() {
     Current.notificationHistoryStore.clearAllEntries()
     removeAppCache(at: AppConstants.widgetsCacheURL)
     removeAppCache(at: AppConstants.watchMagicItemsInfo)
-    for url in ManageStoragePaths.live.legacyRealmStore {
-        removeAppCache(at: url)
-    }
+    removeLegacyRealmStore()
 
     Current.clientEventStore.addEvent(ClientEvent(
         text: L10n.Settings.Debugging.ResetApp.clientEvent,
         type: .settings
     ))
+}
+
+/// Nothing reads the pre-GRDB Realm store anymore; a reset shouldn't leave it on disk.
+func removeLegacyRealmStore(paths: ManageStoragePaths = .live) {
+    for url in paths.legacyRealmStore {
+        removeAppCache(at: url)
+    }
 }
 
 private func removeAppCache(at url: URL) {
