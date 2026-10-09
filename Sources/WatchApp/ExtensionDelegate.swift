@@ -155,9 +155,11 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         }
         ProcessInfo.processInfo.performExpiringActivity(withReason: reason) { expired in
             if expired {
+                // Claimed before suspending, so the work path can't start in between.
+                let didClaim = claim()
                 // Nothing was claimed on this path, so only suspend if no sibling is mid-write.
                 AppDatabaseSuspension.suspendIfIdle()
-                if claim() {
+                if didClaim {
                     finished(false)
                 }
                 return
