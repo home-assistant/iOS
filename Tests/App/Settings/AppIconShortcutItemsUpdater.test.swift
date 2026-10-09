@@ -130,15 +130,18 @@ struct AppIconShortcutItemsUpdaterTests {
         let previousProvider = Current.magicItemProvider
         let previousRunner = Current.backgroundTask
         let previousServers = Current.servers
+        let previousIsAppInBackground = AppIconShortcutItemsUpdater.isAppInBackground
         Current.database = { database }
         Current.magicItemProvider = { StubMagicItemProvider(entitiesPerServer: entitiesPerServer) }
         Current.backgroundTask = PassthroughBackgroundTaskRunner()
         Current.servers = servers
+        AppIconShortcutItemsUpdater.isAppInBackground = { false }
         defer {
             Current.database = previousDatabase
             Current.magicItemProvider = previousProvider
             Current.backgroundTask = previousRunner
             Current.servers = previousServers
+            AppIconShortcutItemsUpdater.isAppInBackground = previousIsAppInBackground
             UIApplication.shared.shortcutItems = []
         }
 
@@ -268,6 +271,42 @@ struct AppIconShortcutItemsUpdaterTests {
                 publishedTypes == ["appIconShortcut.1|entity|light.kitchen", "appIconShortcut.1|entity|light.hall"]
             }
             #expect(republished)
+        }
+    }
+
+    @MainActor
+    @Test("Defers a background start until the app becomes active")
+    func defersBackgroundStartToForeground() async throws {
+        try await withConfiguredItems([entityItem(id: "light.kitchen")]) { _ in
+            defer { AppIconShortcutItemsUpdater.stop() }
+            AppIconShortcutItemsUpdater.isAppInBackground = { true }
+            AppIconShortcutItemsUpdater.start()
+            NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishRoutine, object: nil)
+            try await Task.sleep(for: .milliseconds(200))
+            #expect(publishedTypes.isEmpty)
+
+            AppIconShortcutItemsUpdater.isAppInBackground = { false }
+            NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+            let published = await waitUntil { publishedTypes == ["appIconShortcut.1|entity|light.kitchen"] }
+            #expect(published)
+        }
+    }
+
+    @MainActor
+    @Test("Becoming active without a deferred update publishes nothing")
+    func becomingActiveWithoutDeferredUpdateDoesNothing() async throws {
+        try await withConfiguredItems([entityItem(id: "light.kitchen")]) { _ in
+            defer { AppIconShortcutItemsUpdater.stop() }
+            AppIconShortcutItemsUpdater.start()
+            let published = await waitUntil { !publishedTypes.isEmpty }
+            #expect(published)
+            UIApplication.shared.shortcutItems = []
+
+            NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+            try await Task.sleep(for: .milliseconds(200))
+
+            #expect(publishedTypes.isEmpty)
         }
     }
 
