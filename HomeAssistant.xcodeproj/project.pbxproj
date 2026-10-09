@@ -1919,6 +1919,7 @@
 				ForceCloseWarningManager.swift,
 				FrontendThemeProvider.swift,
 				FrontendThemeProviderProtocol.swift,
+				HingeObserver.swift,
 				HomeViewConfigurationTable.swift,
 				ImpactFeedbackGeneratorProtocol.swift,
 				KioskModeManager.swift,

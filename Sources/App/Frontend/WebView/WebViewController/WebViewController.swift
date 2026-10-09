@@ -326,7 +326,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         observeConnectionNotifications()
         setupKioskModeObservation()
+        #if !targetEnvironment(macCatalyst)
         setupHingeObservation()
+        #endif
         observeSiriExposureForOnscreenContent()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
