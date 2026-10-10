@@ -2383,6 +2383,8 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.sensors.no_results" = "Keine Sensoren passen zu deiner Suche";
 "settings_sensors.sensors.search_prompt" = "Sensoren durchsuchen";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Jeder Server erhält die Sensoren, die du für ihn auswählst; ein Sensor kann also an den einen, aber nicht an den anderen melden.";
 "settings_sensors.servers.header" = "Server";
 "settings_sensors.servers.search_prompt" = "Server suchen";
@@ -2441,7 +2443,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "thread.transter_to_homeassistant.title" = "An Home Assistant übertragen";
 "token_error.connection_failed" = "Verbindung fehlgeschlagen.";
 "token_error.expired" = "Das Token ist abgelaufen.";
-"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
+"token_error.reauthentication_required" = "Die Sitzung ist abgelaufen. Bitte melde dich erneut an.";
 "token_error.token_unavailable" = "Token ist nicht verfügbar.";
 "unauthenticated.message.body" = "Deine Sitzung ist abgelaufen. Bitte authentifiziere dich erneut, um fortzufahren, oder überprüfe deine Verbindung, ob du dich hinter einem Proxy befindest oder Netzwerkbeschränkungen vorliegen.";
 "unauthenticated.message.title" = "Du bist nicht authentifiziert";
