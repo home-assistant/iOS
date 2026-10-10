@@ -190,9 +190,8 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertFalse(sut.isFullScreenLoaderVisible)
     }
 
-    /// A page restored from WebKit's page cache never re-announces `frontend/loaded`, and external-bus
-    /// messages that land while the app is backgrounded are dropped outright. Both leave the loader with no
-    /// signal at all, so once the navigation itself has finished it has to give up rather than cover a
+    /// A page restored from WebKit's page cache never re-announces `frontend/loaded`, which leaves the loader
+    /// with no signal at all, so once the navigation itself has finished it has to give up rather than cover a
     /// working frontend forever.
     func testWatchdogDismissesStandbyLoaderWhenTheFrontendNeverReportsAfterLoading() async {
         let overlayState = WebFrontendOverlayState()
@@ -225,6 +224,29 @@ final class HomeAssistantViewTests: XCTestCase {
         try? await Task.sleep(for: .milliseconds(120))
         XCTAssertTrue(sut.isFullScreenLoaderMounted)
         XCTAssertTrue(sut.isFullScreenLoaderVisible)
+    }
+
+    /// The watchdog fires once per load, and in the background it can be spent before the frontend's reports
+    /// are handed over. A loader that is still up when the scene comes back gets another round.
+    func testBecomingActiveGivesALoaderThatIsStillUpAnotherWatchdogRound() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+        overlayState.emptyState = emptyStateContent()
+        try? await Task.sleep(for: .milliseconds(120))
+        overlayState.emptyState = nil
+        try? await Task.sleep(for: .milliseconds(120))
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+
+        NotificationCenter.default.post(name: UIScene.didActivateNotification, object: nil)
+
+        await waitUntil { !sut.isFullScreenLoaderMounted }
+        XCTAssertFalse(sut.shouldShowStandByView)
     }
 
     /// A navigation that is still in flight has not failed yet: the watchdog only counts down once the
