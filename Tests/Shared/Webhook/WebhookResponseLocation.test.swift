@@ -25,6 +25,14 @@ class WebhookResponseLocationTests: XCTestCase {
         XCTAssertTrue(WebhookResponseLocation.shouldReplace(request: request3, with: request1))
     }
 
+    /// A retried sensor update never carries a location, so it asks for no notification and is
+    /// given the time a user-driven update gets.
+    func testRetryTriggerIsSilentAndUnhurried() {
+        XCTAssertNil(LocationUpdateTrigger.Retry.notificationPreferenceKey)
+        XCTAssertEqual(LocationUpdateTrigger.Retry.oneShotTimeout(maximum: nil), 30)
+        XCTAssertEqual(LocationUpdateTrigger.Retry.rawValue, "Retry")
+    }
+
     func testNotifications() throws {
         for trigger in LocationUpdateTrigger.allCases {
             for prefState in [true, false] {
