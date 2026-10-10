@@ -1,4 +1,3 @@
-import PromiseKit
 import Shared
 import SwiftUI
 import UIKit
@@ -75,8 +74,8 @@ extension WebViewController {
         }
     }
 
-    /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view
-    /// Returns true if the navigation was successful
+    /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view.
+    /// The retry handler manages frontend readiness; completion is false only when Core does not support navigation.
     private func navigateThroughFrontend(path: String, completion: @escaping (Bool) -> Void) {
         guard server.info.version >= .canNavigateThroughFrontend else {
             Current.Log.warning("Cannot navigate through frontend, core version is too low")
@@ -84,19 +83,13 @@ extension WebViewController {
             return
         }
         Current.Log.verbose("Requesting navigation using external bus to path: \(path)")
-        webViewExternalMessageHandler.sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.navigate.rawValue,
+        webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+            command: .navigate,
             payload: [
                 "path": path,
-            ]
-        )).pipe { result in
-            switch result {
-            case .fulfilled:
-                completion(true)
-            case .rejected:
-                completion(false)
-            }
-        }
+            ],
+            completion: completion
+        )
     }
 
     /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`

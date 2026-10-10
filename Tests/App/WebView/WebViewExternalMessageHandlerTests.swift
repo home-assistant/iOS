@@ -454,14 +454,20 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
     @MainActor func testSendExternalBusCommandWithRetrySendsCommandWithCorrelatableID() throws {
         let firstSend = expectation(description: "command sent")
+        let completion = expectation(description: "completion")
         mockWebViewController.evaluateJavaScriptExpectation = firstSend
+        var succeeded: Bool?
 
         sut.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": true],
             maxAttempts: 3,
             retryDelay: .milliseconds(10),
-            acknowledgementTimeout: .seconds(5)
+            acknowledgementTimeout: .milliseconds(10),
+            completion: {
+                succeeded = $0
+                completion.fulfill()
+            }
         )
 
         wait(for: [firstSend], timeout: 1)
@@ -470,6 +476,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(message["command"] as? String, WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue)
         XCTAssertEqual((message["payload"] as? [String: Any])?["enable"] as? Bool, true)
         XCTAssertNotNil(message["id"] as? Int)
+        wait(for: [completion], timeout: 1)
+        XCTAssertEqual(succeeded, true)
     }
 
     @MainActor func testSendExternalBusCommandWithRetryRetriesWhenFrontendRejects() throws {
@@ -508,14 +516,20 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
     @MainActor func testSendExternalBusCommandWithRetryGivesUpAfterMaxAttempts() throws {
         let firstSend = expectation(description: "first send")
+        let completion = expectation(description: "completion")
         mockWebViewController.evaluateJavaScriptExpectation = firstSend
+        var succeeded: Bool?
 
         sut.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": true],
             maxAttempts: 1,
             retryDelay: .milliseconds(10),
-            acknowledgementTimeout: .seconds(5)
+            acknowledgementTimeout: .seconds(5),
+            completion: {
+                succeeded = $0
+                completion.fulfill()
+            }
         )
 
         wait(for: [firstSend], timeout: 1)
@@ -534,8 +548,9 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "error": ["code": "not_ready", "message": "Command handler not ready"],
         ])
 
-        wait(for: [noFurtherSend], timeout: 0.5)
+        wait(for: [completion, noFurtherSend], timeout: 0.5)
         XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+        XCTAssertEqual(succeeded, false)
     }
 
     /// What the more-info dialog is showing is what a spoken "this" has to mean, so the handler hands
