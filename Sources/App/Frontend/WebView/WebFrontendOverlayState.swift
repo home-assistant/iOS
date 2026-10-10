@@ -25,6 +25,10 @@ final class WebFrontendOverlayState: ObservableObject {
     /// notifications, App Intents), so a host that has the frontend off screen can bring it back.
     let externalNavigationRequests = PassthroughSubject<Void, Never>()
 
+    /// Fires when the scene showing the frontend becomes active after having been in the background, so the
+    /// host can give a stand-by loader that is still up another watchdog round.
+    let sceneReturnedFromBackground = PassthroughSubject<Void, Never>()
+
     /// True while the frontend's more-info dialog is up, as reported over the external bus. The App Labs
     /// tab bar steps aside for it and comes back when the dialog closes or the frontend moves on to
     /// another route; see `WebViewController+OnscreenContent`.
