@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/home-assistant/HAKit.git",
       "state" : {
-        "revision" : "02777d0b7ce4b635ca7dd46bcd74a032eb79dd60",
-        "version" : "0.4.18"
+        "revision" : "0535d4aabd0a50e2c18cdcaa2f4423ff057a546a",
+        "version" : "0.4.19"
       }
     },
     {
@@ -240,7 +240,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/bgoncal/starscream",
       "state" : {
-        "revision" : "aaaf609d07eb487b2fccbe77f6267cf0843e2b19"
+        "revision" : "9f793f7396d0def800c18be36769deb6d1313238"
       }
     },
     {
