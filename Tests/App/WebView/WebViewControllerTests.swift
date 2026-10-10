@@ -1,4 +1,5 @@
 import Alamofire
+import Combine
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
@@ -249,6 +250,40 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertTrue(pendingTimer === sut.emptyStateTimer)
         XCTAssertTrue(pendingTimer.isValid)
+    }
+
+    /// A page that loaded while the scene was away is still waiting for its `config/get` reply, and nothing
+    /// else would make the frontend ask again.
+    func testBecomingActiveDeliversFrontendMessagesHeldInTheBackground() {
+        let sut = makeSUT()
+        let externalMessageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = externalMessageHandler
+        let scriptMessageHandler = sut.webViewScriptMessageHandler
+        scriptMessageHandler.isAppInBackground = { true }
+        scriptMessageHandler.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "config/get"])
+
+        scriptMessageHandler.isAppInBackground = { false }
+        sut.handleSceneDidActivate()
+
+        XCTAssertEqual(externalMessageHandler.handledExternalMessages.map { $0["type"] as? String }, ["config/get"])
+    }
+
+    /// Only a return from the background tells the host: dismissing a system alert activates the scene without
+    /// it having been away.
+    func testBecomingActiveTellsTheHostOnlyWhenTheSceneReturnsFromTheBackground() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        var returns = 0
+        let subscription = overlayState.sceneReturnedFromBackground.sink { returns += 1 }
+        defer { subscription.cancel() }
+
+        sut.handleSceneDidActivate()
+        XCTAssertEqual(returns, 0)
+
+        sut.handleSceneDidEnterBackground()
+        sut.handleSceneDidActivate()
+        XCTAssertEqual(returns, 1)
     }
 
     /// Multi-window: another window going to the background says nothing about this frontend.

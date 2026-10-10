@@ -14,8 +14,20 @@ enum WKUserContentControllerMessage: String, CaseIterable {
 }
 
 final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
+    /// External bus messages held while the app is in the background and handed over once it is active,
+    /// rather than dropped. The frontend waits for its `config/get` reply before it asks for a token, so a
+    /// page that loads in the background never connects without it, and the connection reports are what
+    /// take the stand-by loader down.
+    private static let externalBusMessagesDeferredInBackground: Set<WebViewExternalBusMessage> = [
+        .configGet,
+        .connectionStatus,
+        .frontendLoaded,
+    ]
+
     weak var webView: WebViewControllerProtocol?
     var isAppInBackground: @MainActor () -> Bool = { ApplicationState.current == .background }
+
+    private var deferredExternalBusMessages: [[String: Any]] = []
 
     @MainActor func userContentController(
         _ userContentController: WKUserContentController,
@@ -34,6 +46,13 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
     @MainActor func handle(messageName: String, messageBody: [String: Any]) {
         guard !isAppInBackground() else {
+            if let type = Self.typeDeferredInBackground(messageName: messageName, messageBody: messageBody) {
+                Current.Log.verbose("Deferring external bus message \(type) until app is active")
+                // Only the latest of each matters: an older page is gone, and an older connection report is stale.
+                deferredExternalBusMessages.removeAll { ($0["type"] as? String) == type }
+                deferredExternalBusMessages.append(messageBody)
+                return
+            }
             Current.Log.verbose("Ignoring WKUserContentController message \(messageName) because app is in background")
             // The frontend caches the pending getExternalAuth promise and never asks again while it
             // stays unsettled, so the callback must be rejected instead of dropped - otherwise the
@@ -47,6 +66,9 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
             }
             return
         }
+
+        // Anything held back while in the background was sent first, so it is handled first.
+        deliverDeferredMessages()
 
         switch WKUserContentControllerMessage(rawValue: messageName) {
         case .externalBus:
@@ -95,6 +117,28 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     /// Handles externalBus messages by passing them to the webViewExternalMessageHandler.
     private func handleExternalBus(_ messageBody: [String: Any]) {
         webView?.webViewExternalMessageHandler.handleExternalMessage(messageBody)
+    }
+
+    /// Hands over the external bus messages held back while the app was in the background, in the order the
+    /// frontend last sent each of them.
+    @MainActor func deliverDeferredMessages() {
+        guard !isAppInBackground(), !deferredExternalBusMessages.isEmpty else { return }
+        let messages = deferredExternalBusMessages
+        deferredExternalBusMessages = []
+        Current.Log.info("Delivering \(messages.count) external bus messages received in the background")
+        for message in messages {
+            handleExternalBus(message)
+        }
+    }
+
+    private static func typeDeferredInBackground(messageName: String, messageBody: [String: Any]) -> String? {
+        guard WKUserContentControllerMessage(rawValue: messageName) == .externalBus,
+              let type = messageBody["type"] as? String,
+              let message = WebViewExternalBusMessage(rawValue: type),
+              externalBusMessagesDeferredInBackground.contains(message) else {
+            return nil
+        }
+        return type
     }
 
     /// Updates the theme colors based on the message body.

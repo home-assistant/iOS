@@ -2383,6 +2383,8 @@ Sunucu yalnızca uygulama açıkken yanıt verir ve uygulamadan çıktığınız
 "settings_sensors.sensors.header" = "Sensörler";
 "settings_sensors.sensors.no_results" = "Arama kriterlerinize uyan sensör bulunamadı";
 "settings_sensors.sensors.search_prompt" = "Sensörleri ara";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Her sunucu, sizin onun için seçtiğiniz sensörleri alır; dolayısıyla bir sensör bir sunucuya rapor verebilir, diğerine ise vermeyebilir.";
 "settings_sensors.servers.header" = "Sunucular";
 "settings_sensors.servers.search_prompt" = "Sunucuları ara";
