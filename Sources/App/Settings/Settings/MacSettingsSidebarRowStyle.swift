@@ -12,6 +12,10 @@ struct MacSettingsSidebarRowStyle: ViewModifier {
     @State private var isHovering = false
 
     func body(content: Content) -> some View {
+        #if os(macOS)
+        // The system sidebar draws its own selection and hover states.
+        content
+        #else
         if Current.isCatalyst {
             content
                 .onHover { isHovering = $0 }
@@ -31,6 +35,7 @@ struct MacSettingsSidebarRowStyle: ViewModifier {
         } else {
             content
         }
+        #endif
     }
 
     private var fillOpacity: CGFloat {

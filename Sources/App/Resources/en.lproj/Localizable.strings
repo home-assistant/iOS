@@ -1197,6 +1197,7 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.actions.title" = "Actions";
 "menu.application.about" = "About %@";
 "menu.application.preferences" = "Preferences…";
+"menu.application.settings" = "Settings…";
 "menu.file.update_sensors" = "Update Sensors";
 "menu.help.help" = "%@ Help";
 "menu.status_item.quit" = "Quit";

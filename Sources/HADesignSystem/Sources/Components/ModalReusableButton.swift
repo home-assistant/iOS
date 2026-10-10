@@ -36,7 +36,7 @@ public struct ModalReusableButton: View {
         }, label: {
             image
                 .modify { view in
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         view
                             .padding(DesignSystem.Spaces.oneAndHalf)
                             .frame(width: 44, height: 44)

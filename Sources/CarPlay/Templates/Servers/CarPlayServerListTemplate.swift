@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -348,3 +349,4 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         return item
     }
 }
+#endif

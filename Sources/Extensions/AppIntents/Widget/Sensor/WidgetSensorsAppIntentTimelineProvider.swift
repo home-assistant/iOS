@@ -5,7 +5,7 @@ import PromiseKit
 import Shared
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetSensorsEntry
     typealias Intent = WidgetSensorsAppIntent
@@ -136,7 +136,7 @@ enum WidgetDetailsTableDataSource {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetSensorsEntry: TimelineEntry {
     var date = Date()
 

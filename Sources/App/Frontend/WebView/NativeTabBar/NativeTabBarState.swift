@@ -12,6 +12,10 @@ final class NativeTabBarState: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
+        #if os(macOS)
+        // The tab bar is an iOS layout; the Mac has the native sidebar in its place.
+        self.isEnabled = false
+        #else
         self.isEnabled = AppLabsFeature.iosNativeTabBar.isEnabled
 
         Current.appLabs.enabledFeatureIdsPublisher
@@ -22,6 +26,7 @@ final class NativeTabBarState: ObservableObject {
                 self?.isEnabled = isEnabled
             }
             .store(in: &cancellables)
+        #endif
     }
 
     /// The frontend's `sidebar/show`: the hamburger with no sidebar of its own to open.

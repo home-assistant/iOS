@@ -181,7 +181,13 @@ public final class AppDatabaseSuspension {
     /// so parallel suites can't interfere through shared state.
     init(
         performExpiringActivity: @escaping (String, @escaping (Bool) -> Void) -> Void = { reason, block in
+            #if os(macOS)
+            // A Mac app is never frozen with the database open, so the activity never expires: run the
+            // block off the calling thread the way the system would, and never call back to suspend.
+            DispatchQueue.global(qos: .utility).async { block(false) }
+            #else
             ProcessInfo.processInfo.performExpiringActivity(withReason: reason, using: block)
+            #endif
         },
         postNotification: @escaping (Notification.Name) -> Void = { name in
             NotificationCenter.default.post(name: name, object: nil)

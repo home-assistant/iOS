@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 
 @objc final class MacBridgeNetworkConnectivityImpl: NSObject, MacBridgeNetworkConnectivity {
@@ -38,3 +39,4 @@ import Foundation
         self.hardwareAddress = hardwareAddress.lowercased()
     }
 }
+#endif

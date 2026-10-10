@@ -7,7 +7,7 @@ import Shared
 /// Deliberately not scoped to a server parameter: the widget merges events from any number of
 /// calendars, and a household with two servers onboarded has no reason to be forced into picking
 /// one of them first.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetCalendarAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [WidgetCalendarAppEntity] {
         identifiers.compactMap { identifier in

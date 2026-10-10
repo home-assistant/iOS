@@ -1,4 +1,8 @@
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// An icon name the server sent, resolved the way the frontend resolves it: the few brand logos the
 /// frontend bundles itself, and Material Design Icons for everything else.

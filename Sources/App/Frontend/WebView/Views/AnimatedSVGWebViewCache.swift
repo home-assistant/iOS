@@ -1,4 +1,9 @@
+import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Keeps a warm, already-loaded `AnimatedSVGWebView` instance for animated SVGs so the loading logo
 /// appears instantly instead of paying WKWebView's web-content-process spin-up and first-paint cost
@@ -39,7 +44,7 @@ final class AnimatedSVGWebViewCache {
     func preloadOnFirstActivation(_ resourceName: String) {
         guard firstActivationObserver == nil else { return }
         firstActivationObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didBecomeActiveNotification,
+            forName: AppLifecycle.didBecomeActiveNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in

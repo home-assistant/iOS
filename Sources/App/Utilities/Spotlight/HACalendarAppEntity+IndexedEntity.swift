@@ -3,7 +3,7 @@ import CoreSpotlight
 import Foundation
 import Shared
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 extension HACalendarAppEntity: IndexedEntity {
     /// Mirrors `HAAppEntityAppIntentEntity`: Spotlight renders `contentDescription` as the second row
     /// and does not fall back to the display representation's subtitle, so the entity id is set there

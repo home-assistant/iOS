@@ -7,7 +7,7 @@ import Foundation
 /// The editor's extra controls — interval, weekday set, end date/count — only appear once a
 /// frequency is chosen and are left out here; the rule this produces is what the frontend sends for
 /// a freshly picked preset.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 enum CalendarEventRepeatAppEnum: String, Codable, Sendable, AppEnum {
     case none
     case yearly

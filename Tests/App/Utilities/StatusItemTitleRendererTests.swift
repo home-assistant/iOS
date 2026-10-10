@@ -77,4 +77,38 @@ final class StatusItemTitleRendererTests: XCTestCase {
 
         XCTAssertEqual(updates, [L10n.errorLabel])
     }
+
+    func testRestFailureLeavesTheTitleToTheLiveSubscription() throws {
+        var updates = [String]()
+        _ = StatusItemTitleRenderer.subscribe(api: api, template: "{{ now() }}") { updates.append($0) }
+
+        let pendingRequest = try XCTUnwrap(connection.pendingRequests.first)
+        pendingRequest.completion(.failure(.internal(debugDescription: "unit-test")))
+        XCTAssertEqual(updates, [])
+
+        let pendingSubscription = try XCTUnwrap(connection.pendingSubscriptions.first)
+        pendingSubscription.handler(pendingSubscription.cancellable, .dictionary([
+            "result": "live value",
+            "listeners": [:],
+        ]))
+        XCTAssertEqual(updates, ["live value"])
+    }
+
+    /// Whatever shape the template renders to is shown as text.
+    func testEveryRenderedShapeBecomesAString() throws {
+        var updates = [String]()
+        for data in [HAData.dictionary(["a": 1]), .array([.primitive(1), .primitive(2)]), .empty] {
+            connection = HAMockConnection()
+            connection.automaticallyTransitionToConnecting = false
+            api.connection = connection
+            _ = StatusItemTitleRenderer.subscribe(api: api, template: "{{ now() }}") { updates.append($0) }
+            let pendingRequest = try XCTUnwrap(connection.pendingRequests.first)
+            pendingRequest.completion(.success(data))
+        }
+
+        XCTAssertEqual(
+            updates,
+            [String(describing: ["a": 1]), String(describing: [HAData.primitive(1), .primitive(2)]), ""]
+        )
+    }
 }

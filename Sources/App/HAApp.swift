@@ -2,8 +2,98 @@ import CoreSpotlight
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 
+#if os(macOS)
+@main
+struct HAApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some Scene {
+        // Registered while the scene graph is built rather than when a window appears: the app can be
+        // running with no window at all, and the menu bar item still has to be able to open one.
+        let _ = MacWindowOpener.shared.register(openWindow)
+
+        // Main Onboarding + Home Assistant Frontend
+        WindowGroup(id: SceneActivity.webView.activityIdentifier) {
+            ConditionalContainerView()
+                .toastOverlay()
+                .onOpenURL { handleIncoming(url: $0) }
+                .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { handleIncoming(userActivity: $0) }
+                .onContinueUserActivity(CSSearchableItemActionType) { handleIncoming(userActivity: $0) }
+                // A link opens in the window that is already there instead of in a new one.
+                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
+                .toggleStyle(.haStyle)
+                .background(MacBrowserModeWindowGuard())
+                .frame(
+                    minWidth: SceneActivity.webView.minimumWindowSize.width,
+                    minHeight: SceneActivity.webView.minimumWindowSize.height
+                )
+        }
+        .defaultSize(SceneActivity.webView.initialWindowSize)
+        #if os(macOS)
+            // The page's title is the window's name in the Window menu and the Dock, not a label in the toolbar:
+            // the frontend shows the page's own title, and the toolbar is for the items the user puts there.
+            .windowToolbarStyle(.unifiedCompact(showsTitle: false))
+        #endif
+            .commands {
+                MainWindowGroupCommands()
+                AppMenuBarCommands()
+                MacWebViewCommands()
+            }
+
+        Window(L10n.Settings.NavigationBar.title, id: SceneActivity.settings.activityIdentifier) {
+            SettingsView()
+                .injectingViewControllerProvider()
+        }
+        .defaultSize(SceneActivity.settings.initialWindowSize)
+        .commandsRemoved()
+
+        Window(L10n.About.title, id: SceneActivity.about.activityIdentifier) {
+            NavigationStack {
+                AboutView()
+            }
+            .injectingViewControllerProvider()
+        }
+        .defaultSize(SceneActivity.about.initialWindowSize)
+        .commandsRemoved()
+
+        Window(L10n.Assist.ModernUi.Header.title, id: SceneActivity.assist.activityIdentifier) {
+            AssistWindowView()
+                .injectingViewControllerProvider()
+        }
+        .defaultSize(SceneActivity.assist.initialWindowSize)
+
+        WindowGroup(id: SceneActivity.onboarding.activityIdentifier) {
+            OnboardingNavigationView(onboardingStyle: .secondary)
+                .injectingViewControllerProvider()
+                .frame(
+                    minWidth: SceneActivity.onboarding.minimumWindowSize.width,
+                    minHeight: SceneActivity.onboarding.minimumWindowSize.height
+                )
+        }
+        .defaultSize(SceneActivity.onboarding.initialWindowSize)
+    }
+
+    /// Routes deep links (`homeassistant://…`) and universal web links into `IncomingURLHandler` once the
+    /// app coordinator is available.
+    @MainActor
+    private func handleIncoming(url: URL) {
+        // Synchronously, before waiting on the coordinator: the link names where to land, so
+        // location-based home switching must not fire for the activation it is opening.
+        LocationBasedServerSwitcher.shared.deepLinkWillOpen()
+        Current.sceneManager.appCoordinator.done { IncomingURLHandler(coordinator: $0).handle(url: url) }
+    }
+
+    @MainActor
+    private func handleIncoming(userActivity: NSUserActivity) {
+        LocationBasedServerSwitcher.shared.deepLinkWillOpen()
+        Current.sceneManager.appCoordinator.done {
+            IncomingURLHandler(coordinator: $0).handle(userActivity: userActivity)
+        }
+    }
+}
+#else
 @main
 struct HAApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
@@ -78,3 +168,4 @@ struct HAApp: App {
         }
     }
 }
+#endif

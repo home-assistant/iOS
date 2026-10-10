@@ -15,7 +15,7 @@ struct SiriSettingsView: View {
     }
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: nil,
                 headerImageAlternativeView: AnyView(
@@ -40,7 +40,7 @@ struct SiriSettingsView: View {
                     )) {
                         Text(row.name)
                     }
-                    if #available(iOS 27.0, *), row.isExposed,
+                    if #available(iOS 27.0, macOS 27.0, *), row.isExposed,
                        let server = Current.servers.server(for: .init(rawValue: row.id)) {
                         NavigationLink {
                             SiriServerConfigurationView(server: server)

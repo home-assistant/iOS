@@ -8,7 +8,8 @@ public struct ScreenCaptureProtectionModifier: ViewModifier {
     }
 
     public func body(content: Content) -> some View {
-        #if !os(watchOS)
+        // Only iOS and Catalyst report capture; the Mac and the watch show the content as it is.
+        #if os(iOS)
         if #available(iOS 17, macCatalyst 17, *) {
             content.modifier(SceneCaptureBlur(blurRadius: blurRadius))
         } else {
@@ -19,7 +20,7 @@ public struct ScreenCaptureProtectionModifier: ViewModifier {
         #endif
     }
 
-    #if !os(watchOS)
+    #if os(iOS)
     /// The blur itself, shared by both sources of the capture state. Internal so the tests can
     /// render the captured look without a capture in progress.
     struct CaptureBlur: ViewModifier {

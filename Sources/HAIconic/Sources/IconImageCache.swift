@@ -1,4 +1,8 @@
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Memoizes the bitmaps behind `IconDrawable.image(ofSize:color:edgeInsets:)`, which rasterizes a glyph
 /// through TextKit on every call. Callers ask for the same glyph repeatedly: a SwiftUI row re-renders for
@@ -66,17 +70,16 @@ final class IconImageCache: @unchecked Sendable {
     /// cannot be read) skips the cache.
     private static func colorKey(_ color: UIColor?) -> String? {
         guard let color else { return "default" }
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        if color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
-            return "\(red),\(green),\(blue),\(alpha)"
+        if let components = color.rgbaComponents {
+            return "\(components.red),\(components.green),\(components.blue),\(components.alpha)"
         }
+        #if !os(macOS)
         var white: CGFloat = 0
+        var alpha: CGFloat = 0
         if color.getWhite(&white, alpha: &alpha) {
             return "w\(white),\(alpha)"
         }
+        #endif
         return nil
     }
 

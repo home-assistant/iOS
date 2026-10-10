@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 /// Reports whether its traits put the system bars in a vertical column, once per change.
@@ -38,3 +39,4 @@ final class VerticalBarObserverViewController: UIViewController {
         onChange?(value)
     }
 }
+#endif

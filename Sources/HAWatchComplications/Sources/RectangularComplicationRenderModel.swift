@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 
 /// The resolved, target-agnostic rendering inputs for the rectangular complication.
@@ -76,3 +77,4 @@ public struct RectangularComplicationRenderModel {
         self.valueRidesGauge = valueRidesGauge
     }
 }
+#endif

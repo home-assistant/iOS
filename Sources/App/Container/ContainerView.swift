@@ -1,7 +1,6 @@
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 
 struct ContainerView: View {
     @StateObject private var state = OnboardingStateObservable()
@@ -32,6 +31,9 @@ struct ContainerView: View {
             coordinator.settingsPresenter = appSettings
             appSettings.appCoordinator = coordinator
             coordinator.onShowSettings = { [weak coordinator] pushOntoNavigationStack in
+                #if os(macOS)
+                appSettings.presentSettings()
+                #else
                 // Push only in compact width, read from the window at presentation time.
                 let sizeClass = coordinator?.window?.traitCollection.horizontalSizeClass
                 if pushOntoNavigationStack, sizeClass == .compact, !NativeTabBarState.shared.isEnabled {
@@ -39,6 +41,7 @@ struct ContainerView: View {
                 } else {
                     appSettings.presentSettings()
                 }
+                #endif
             }
             coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
             coordinator.onShowDownloadManager = { viewModel.presentDownloadManager($0) }
@@ -58,9 +61,9 @@ struct ContainerView: View {
                 AssistSettingsView()
             case let .downloadManager(viewModel):
                 // The case is only ever set on iOS 17+ (the `WKDownload` delegate path); guard for the floor.
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14.0, *) {
                     DownloadManagerView(viewModel: viewModel)
-                    #if !targetEnvironment(macCatalyst)
+                    #if !(targetEnvironment(macCatalyst) || os(macOS))
                         .presentationDetents([.medium, .large])
                     #endif
                 }
@@ -95,23 +98,33 @@ struct ContainerView: View {
             Current.sceneManager.setWebViewController(webViewController)
         }
         .id(server.identifier.rawValue)
+        #if os(macOS)
+            .onDisappear {
+                if let webViewController = coordinator.frontend as? WebViewController {
+                    Current.sceneManager.unregisterWebViewController(webViewController)
+                }
+                Current.sceneManager.unregisterAppCoordinator(coordinator)
+            }
+        #endif
 
-        if #available(iOS 26, *), nativeTabBar.isEnabled {
+        if #available(iOS 26, macOS 26, *), nativeTabBar.isEnabled {
             homeAssistant
         } else {
             NavigationStack(path: $appSettings.pushPath) {
                 homeAssistant
-                    .toolbar(.hidden, for: .navigationBar)
-                    .navigationDestination(for: AppSettingsPushRoute.self) { route in
-                        switch route {
-                        case .settings:
-                            SettingsView(embedInOwnNavigation: false)
-                                .injectingViewControllerProvider()
-                        case let .item(item):
-                            item.destinationView
-                                .injectingViewControllerProvider()
-                        }
+                #if os(iOS)
+                .toolbar(.hidden, for: .navigationBar)
+                #endif
+                .navigationDestination(for: AppSettingsPushRoute.self) { route in
+                    switch route {
+                    case .settings:
+                        SettingsView(embedInOwnNavigation: false)
+                            .injectingViewControllerProvider()
+                    case let .item(item):
+                        item.destinationView
+                            .injectingViewControllerProvider()
                     }
+                }
             }
         }
     }

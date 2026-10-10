@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import UIKit
 
@@ -18,3 +19,9 @@ extension WebViewController {
         view.addInteraction(interaction)
     }
 }
+#else
+extension WebViewController {
+    /// A Mac has no hinge to observe; the hinge sensors report themselves unsupported on their own.
+    func setupHingeObservation() {}
+}
+#endif

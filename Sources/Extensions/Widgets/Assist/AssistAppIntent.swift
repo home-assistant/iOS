@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 // AppIntent that open app needs to have it's target the widget extension AND app target!
-@available(iOS 18, watchOS 10, *)
+@available(iOS 18, macOS 15, watchOS 10, *)
 struct AssistAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.controls.assist.title",
@@ -13,7 +13,7 @@ struct AssistAppIntent: AppIntent {
 
     static var openAppWhenRun: Bool = true
     // `openAppWhenRun` is deprecated from iOS 26; both stay until the deployment target passes 26.
-    @available(iOS 26.0, watchOS 26.0, *)
+    @available(iOS 26.0, macOS 26.0, watchOS 26.0, *)
     static var supportedModes: IntentModes { .foreground }
 
     @Parameter(title: .init("app_intents.assist.pipeline.title", defaultValue: "Pipeline"))

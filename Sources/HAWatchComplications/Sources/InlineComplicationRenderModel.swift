@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 
 /// The resolved, target-agnostic rendering inputs for the inline complication.
@@ -14,3 +15,4 @@ public struct InlineComplicationRenderModel {
         self.text = text
     }
 }
+#endif

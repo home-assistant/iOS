@@ -6,7 +6,7 @@ import Shared
 ///
 /// `calendar/event/update` replaces the whole event, so every field the caller left out is refilled
 /// from the event as it stands rather than cleared.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppIntent(schema: .calendar.updateEvent)
 struct UpdateEventSchemaIntent {
     var event: CalendarEventSchemaEntity

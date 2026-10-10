@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import AVFoundation
 import Foundation
 import Shared
@@ -184,3 +185,4 @@ extension CarPlayAssistTonePlayer: AVAudioPlayerDelegate {
         }
     }
 }
+#endif

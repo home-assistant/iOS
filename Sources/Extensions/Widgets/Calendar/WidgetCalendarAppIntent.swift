@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetCalendarAppIntent: AppIntent, WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.calendar.title", defaultValue: "Calendar")
     static let description = IntentDescription(

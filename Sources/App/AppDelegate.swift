@@ -1,6 +1,6 @@
 import Alamofire
 import CallbackURLKit
-#if DEBUG
+#if DEBUG && os(iOS)
 import DebugSwift
 #endif
 import FirebaseCore
@@ -8,9 +8,15 @@ import FirebaseMessaging
 import Intents
 import KeychainAccess
 import PromiseKit
+#if os(iOS)
 import SafariServices
+#endif
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import WidgetKit
 import XCGLogger
 
@@ -18,6 +24,7 @@ let keychain = AppConstants.Keychain
 
 let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
+#if os(iOS)
 private extension UIApplication {
     /// Under the SwiftUI `App` lifecycle `UIApplication.shared.delegate` is SwiftUI's own internal
     /// delegate — not the `@UIApplicationDelegateAdaptor`-managed `AppDelegate` — so the bare
@@ -40,14 +47,27 @@ extension AppEnvironment {
         UIApplication.shared.typedDelegate.notificationManager
     }
 }
+#else
+extension AppEnvironment {
+    // The adaptor creates the delegate before anything else in the app runs, so it is always there to ask.
+    var sceneManager: SceneManager {
+        AppDelegate.shared!.sceneManager
+    }
 
+    var notificationManager: NotificationManager {
+        AppDelegate.shared!.notificationManager
+    }
+}
+#endif
+
+#if os(iOS)
 // `@main` is on `HAApp`; this delegate is installed via `@UIApplicationDelegateAdaptor`.
 class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Set from `init` so the adaptor-managed delegate stays reachable; see `UIApplication.typedDelegate`.
     private(set) static var shared: AppDelegate?
 
     let sceneManager = SceneManager()
-    private let lifecycleManager = LifecycleManager()
+    fileprivate let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
 
     override init() {
@@ -60,10 +80,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     #endif
     private var zoneManager: ZoneManager?
     #if targetEnvironment(macCatalyst)
-    private let statusItemManager = StatusItemManager()
+    fileprivate let statusItemManager = StatusItemManager()
     #endif
 
     private var watchCommunicatorService: WatchCommunicatorService?
+    private var liveActivityPendingEndObserver: Any?
+    private var liveActivityPendingStartObserver: Any?
 
     func application(
         _ application: UIApplication,
@@ -279,45 +301,192 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         IntentHandlerFactory.handler(for: intent)
     }
+}
+#else
+// `@main` is on `HAApp`; this delegate is installed via `@NSApplicationDelegateAdaptor`.
+class AppDelegate: NSObject, NSApplicationDelegate {
+    /// Set from `init` so the adaptor-managed delegate stays reachable from anywhere in the app.
+    private(set) static var shared: AppDelegate?
 
-    // MARK: - Private helpers
+    let sceneManager = SceneManager()
+    fileprivate let lifecycleManager = LifecycleManager()
+    let notificationManager = NotificationManager()
+    fileprivate let statusItemManager = StatusItemManager()
+    private var zoneManager: ZoneManager?
 
+    override init() {
+        super.init()
+        AppDelegate.shared = self
+    }
+
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        MaterialDesignIcons.register()
+
+        guard !Current.isRunningTests else {
+            return
+        }
+
+        setDefaults()
+
+        // swiftlint:disable prohibit_environment_assignment
+        Current.requestSensorPermissions = { uniqueIDs in
+            Task { @MainActor in
+                SensorPermissionRequester.shared.requestPermissionsIfNeeded(forSensorUniqueIDs: uniqueIDs)
+            }
+        }
+
+        Current.tags = TagActivityManager()
+        // swiftlint:enable prohibit_environment_assignment
+
+        notificationManager.setupNotifications()
+        setupFirebase()
+        setupModels()
+        setupLocalization()
+        setupMenus()
+
+        AnimatedSVGWebViewCache.shared
+            .preloadOnFirstActivation(HomeAssistantStandByView.loadingLogoResourceName)
+
+        Current.clientEventStore.addEvent(ClientEvent(text: "Application Starting", type: .unknown))
+
+        zoneManager = ZoneManager()
+
+        BackgroundRefreshManager.register()
+        BackgroundRefreshManager.scheduleAppRefresh()
+        RemindersSyncBackgroundRefresher.register()
+        RemindersSyncBackgroundRefresher.schedule()
+
+        migrateIfNeeded()
+        RemindersSyncManager.shared.start()
+        if #available(macOS 15.0, *) {
+            SpotlightEntityIndexer.shared.start()
+        }
+        if #available(macOS 14.0, *) {
+            HomeAssistantAppShortcuts.updateAppShortcutParameters()
+        }
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        if NSClassFromString("XCTest") != nil {
+            return
+        }
+
+        lifecycleManager.didFinishLaunching()
+        FlightGreetingManager.shared.start()
+        LocationBasedServerSwitcher.shared.start()
+
+        statusItemManager.configure()
+
+        checkForUpdate()
+        checkForAlerts()
+    }
+
+    /// The menu behind the Dock icon, on top of the entries macOS puts there itself.
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        let menu = NSMenu()
+        let openSettings = NSMenuItem(
+            title: L10n.ShortcutItem.OpenSettings.title,
+            action: #selector(openSettingsFromDock),
+            keyEquivalent: ""
+        )
+        openSettings.target = self
+        menu.addItem(openSettings)
+        return menu
+    }
+
+    @objc private func openSettingsFromDock() {
+        Current.sceneManager.activateAnyScene(for: .settings)
+    }
+
+    /// The Dock icon was clicked with no window on screen. When "Open Home Assistant UI in browser" is on
+    /// there is no in-app web view to show, so the browser opens instead of a new window.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !flag, StatusItemPrimaryAction.openInBrowserIfNeeded() {
+            return false
+        }
+        return true
+    }
+
+    /// Closing the last window leaves the app running: it keeps reporting sensors, and the menu bar item
+    /// and Dock icon bring a window back.
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        false
+    }
+
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        // Posted before termination is under way, so whoever observes it can still start the work it needs
+        // to finish, such as reporting that the Mac is no longer active; the reply waits for that work.
+        NotificationCenter.default.post(name: Current.macBridge.terminationWillBeginNotification, object: nil)
+        ProcessInfoBackgroundTaskRunner.whenIdle(
+            after: Self.terminationSettleTime,
+            timeout: Self.terminationGracePeriod
+        ) {
+            Current.Log.info("terminating with \(ProcessInfoBackgroundTaskRunner.inFlight) background tasks left")
+            sender.reply(toApplicationShouldTerminate: true)
+        }
+        return .terminateLater
+    }
+
+    /// How long the work the notification above starts gets to begin before an idle app quits.
+    private static let terminationSettleTime: TimeInterval = 0.5
+    private static let terminationGracePeriod: TimeInterval = 5
+
+    func applicationWillTerminate(_ notification: Notification) {
+        Current.forceCloseWarningManager.postImmediateWarning()
+    }
+
+    func application(_ application: NSApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        notificationManager.didFailToRegisterForRemoteNotifications(error: error)
+    }
+
+    func application(_ application: NSApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        notificationManager.didRegisterForRemoteNotifications(deviceToken: deviceToken)
+    }
+
+    func application(_ application: NSApplication, didReceiveRemoteNotification userInfo: [String: Any]) {
+        notificationManager.didReceiveRemoteNotification(userInfo: userInfo)
+    }
+
+    func application(_ application: NSApplication, handlerFor intent: INIntent) -> Any? {
+        IntentHandlerFactory.handler(for: intent)
+    }
+}
+#endif
+
+// MARK: - Launch steps shared by the iOS and macOS delegates
+
+extension AppDelegate {
     @objc func checkForUpdate(_ sender: AnyObject? = nil) {
         guard Current.updater.isSupported else { return }
 
         let dueToUserInteraction = sender != nil
 
         Current.updater.check(dueToUserInteraction: dueToUserInteraction).done { [sceneManager] update in
-            let alert = UIAlertController(
+            let alert = AppAlert(
                 title: L10n.Updater.UpdateAvailable.title,
-                message: nil,
-                preferredStyle: .alert
+                actions: [
+                    .init(title: L10n.Updater.UpdateAvailable.open(update.name)) {
+                        URLOpener.shared.open(update.htmlUrl, options: [:], completionHandler: nil)
+                    },
+                    .init(title: L10n.okLabel, style: .cancel),
+                ]
             )
-            alert.addAction(UIAlertAction(
-                title: L10n.Updater.UpdateAvailable.open(update.name),
-                style: .default,
-                handler: { _ in
-                    URLOpener.shared.open(update.htmlUrl, options: [:], completionHandler: nil)
-                }
-            ))
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
 
             sceneManager.appCoordinator.done {
-                $0.present(alert, animated: true, completion: nil)
+                $0.present(alert: alert)
             }
         }.catch { [sceneManager] error in
             Current.Log.error("check error: \(error)")
 
             if dueToUserInteraction {
-                let alert = UIAlertController(
+                let alert = AppAlert(
                     title: L10n.Updater.NoUpdatesAvailable.title,
                     message: error.localizedDescription,
-                    preferredStyle: .alert
+                    actions: [.init(title: L10n.okLabel, style: .cancel)]
                 )
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
 
                 sceneManager.appCoordinator.done {
-                    $0.present(alert, animated: true, completion: nil)
+                    $0.present(alert: alert)
                 }
             }
         }
@@ -356,33 +525,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     return
                 }
 
-                let alert = UIAlertController(
-                    title: L10n.Alerts.Deprecations.NotificationCategory.title,
-                    message: L10n.Alerts.Deprecations.NotificationCategory.message("iOS-2022.4"),
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: L10n.Nfc.List.learnMore, style: .default, handler: { _ in
-                    userDefaults.set(true, forKey: seenKey)
-                    openURLInBrowser(
-                        URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications")!,
-                        nil
-                    )
-                }))
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: { _ in
-                    userDefaults.set(true, forKey: seenKey)
-                }))
+                let alert = Self.notificationCategoryDeprecationAlert(userDefaults: userDefaults, seenKey: seenKey)
                 sceneManager.appCoordinator.done {
-                    $0.present(alert)
+                    $0.present(alert: alert)
                 }
             }.catch { error in
                 Current.Log.error("couldn't check for if user: \(error)")
             }
     }
 
+    /// Tells an admin that notification categories are now configured on the server. Either button marks
+    /// the alert as seen so it stays away afterwards; the first one also opens the documentation.
+    static func notificationCategoryDeprecationAlert(userDefaults: UserDefaults, seenKey: String) -> AppAlert {
+        AppAlert(
+            title: L10n.Alerts.Deprecations.NotificationCategory.title,
+            message: L10n.Alerts.Deprecations.NotificationCategory.message("iOS-2022.4"),
+            actions: [
+                .init(title: L10n.Nfc.List.learnMore) {
+                    userDefaults.set(true, forKey: seenKey)
+                    openURLInBrowser(
+                        URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications")!,
+                        nil
+                    )
+                },
+                .init(title: L10n.okLabel, style: .cancel) {
+                    userDefaults.set(true, forKey: seenKey)
+                },
+            ]
+        )
+    }
+
+    #if os(iOS)
     private func setupWatchCommunicator() {
         watchCommunicatorService = WatchCommunicatorService()
         watchCommunicatorService?.setup()
     }
+    #endif
 
     func setupLocalization() {
         Current.localized.add(stringProvider: { request in
@@ -394,9 +572,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
 
-    private var liveActivityPendingEndObserver: Any?
-    private var liveActivityPendingStartObserver: Any?
-
+    #if os(iOS)
     private func setupLiveActivityReattachment() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
@@ -437,6 +613,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         #endif
     }
+    #endif
 
     private func setupFirebase() {
         let optionsFile: String = {
@@ -464,7 +641,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // and region monitoring has nothing to track.
         Current.modelManager.cleanup().cauterize()
         Current.modelManager.subscribe(isAppInForeground: {
-            UIApplication.shared.applicationState == .active
+            ApplicationState.current == .active
         })
     }
 
@@ -484,22 +661,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc private func menuRelatedSettingDidChange(_ note: Notification) {
+        #if os(iOS)
         UIMenuSystem.main.setNeedsRebuild()
-        #if targetEnvironment(macCatalyst)
+        #endif
+        #if targetEnvironment(macCatalyst) || os(macOS)
         statusItemManager.configure()
         #endif
     }
 
     @objc private func apiDidConnect(_ note: Notification) {
+        #if os(iOS)
         UIMenuSystem.main.setNeedsRebuild()
-        #if targetEnvironment(macCatalyst)
+        #endif
+        #if targetEnvironment(macCatalyst) || os(macOS)
         statusItemManager.apiDidConnect()
         #endif
     }
 
+    #if os(iOS)
     private func setupUIApplicationShortcutItems() {
         AppIconShortcutItemsUpdater.start()
     }
+    #endif
 
     private func migrateIfNeeded() {
         resetLocalPush()

@@ -4,7 +4,7 @@ import Foundation
 import Shared
 
 /// A Home Assistant todo list in the shape Apple Intelligence understands.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEntity(schema: .reminders.list)
 struct ReminderListSchemaEntity: IndexedEntity {
     static let defaultQuery = ReminderListSchemaEntityQuery()

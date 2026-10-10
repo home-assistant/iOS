@@ -1,6 +1,10 @@
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 @preconcurrency import WebKit
 
 // MARK: - Settings, Appearance & Pull-to-Refresh
@@ -13,8 +17,13 @@ extension WebViewController {
     func styleUI(publishesThemedStatusBar: Bool) {
         precondition(isViewLoaded && webView != nil)
 
-        let cachedColors = ThemeColors.cachedThemeColors(for: traitCollection)
+        let cachedColors = cachedThemeColors
 
+        #if os(macOS)
+        view.wantsLayer = true
+        view.layer?.backgroundColor = cachedColors[.primaryBackgroundColor].cgColor
+        webView?.underPageBackgroundColor = cachedColors[.primaryBackgroundColor]
+        #else
         view.backgroundColor = cachedColors[.primaryBackgroundColor]
         webView?.backgroundColor = cachedColors[.primaryBackgroundColor]
         webView?.scrollView.backgroundColor = cachedColors[.primaryBackgroundColor]
@@ -24,14 +33,26 @@ extension WebViewController {
             statusBarView.backgroundColor = themedStatusBarColor()
             statusBarView.isOpaque = true
         }
+        #endif
         if publishesThemedStatusBar {
             updateThemedStatusBar()
         }
 
+        #if os(iOS)
         let headerBackgroundIsLight = cachedColors[.appThemeColor].isLight
         underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent
 
         setNeedsStatusBarAppearanceUpdate()
+        #endif
+    }
+
+    /// The frontend's theme colours for the appearance this controller is shown in.
+    private var cachedThemeColors: ThemeColors {
+        #if os(macOS)
+        ThemeColors.cachedThemeColors(for: view.effectiveAppearance)
+        #else
+        ThemeColors.cachedThemeColors(for: traitCollection)
+        #endif
     }
 
     func updateWebViewSettings(reason: WebViewSettingsUpdateReason) {
@@ -43,7 +64,12 @@ extension WebViewController {
         // resizing the scrolling viewport.
         let viewScale = Current.settingsStore.pageZoom.viewScaleValue
         Current.Log.info("setting view scale to \(viewScale)")
+        #if os(macOS)
+        // The Mac's web view has the zoom Safari uses, which scales content without resizing the viewport.
+        webView.pageZoom = CGFloat(Double(viewScale) ?? 1)
+        #else
         webView.setValue(viewScale, forKey: "viewScale")
+        #endif
 
         if !Current.isCatalyst {
             let zoomValue = Current.settingsStore.pinchToZoom ? "true" : "false"
@@ -51,8 +77,10 @@ extension WebViewController {
         }
 
         if reason == .settingChange {
+            #if os(iOS)
             setNeedsUpdateOfHomeIndicatorAutoHidden()
             setNeedsStatusBarAppearanceUpdate()
+            #endif
             // The web view is always edge-to-edge (see `setupWebViewConstraints`); only the SwiftUI-themed
             // status-bar strip reacts to setting changes.
             updateThemedStatusBar()
@@ -65,7 +93,7 @@ extension WebViewController {
 
     /// The themed colour for the top status-bar area (web app theme, or header background on older cores).
     func themedStatusBarColor() -> UIColor {
-        let cachedColors = ThemeColors.cachedThemeColors(for: traitCollection)
+        let cachedColors = cachedThemeColors
         return server.info.version < .canUseAppThemeForStatusBar
             ? cachedColors[.appHeaderBackgroundColor]
             : cachedColors[.appThemeColor]
@@ -76,6 +104,12 @@ extension WebViewController {
     /// once the status bar is hidden by full screen or kiosk mode. The strip is drawn for older cores, in
     /// regular-width layouts, or when the developer "always below status bar" override is on.
     func updateThemedStatusBar() {
+        #if os(macOS)
+        // A Mac window's title bar is drawn by AppKit, so there is no strip for the frontend to colour.
+        DispatchQueue.main.async { [weak self] in
+            self?.overlayState?.statusBarColor = nil
+        }
+        #else
         let isCompactWidth = traitCollection.horizontalSizeClass == .compact
         let coreSupportsEdgeToEdge = server.info.version >= .canDisplayEdgeToEdge
         let belowStatusBarOverride = Current.settingsStore.webViewAlwaysBelowStatusBar
@@ -85,6 +119,7 @@ extension WebViewController {
             guard let self else { return }
             overlayState?.statusBarColor = (edgeToEdge || Current.isCatalyst) ? nil : themedStatusBarColor()
         }
+        #endif
     }
 
     func pullToRefreshActions() {
@@ -96,7 +131,7 @@ extension WebViewController {
         // called via menu/keyboard shortcut too
         firstly {
             HomeAssistantAPI.manuallyUpdate(
-                applicationState: UIApplication.shared.applicationState,
+                applicationState: ApplicationState.current,
                 type: .userRequested
             )
         }.catch { error in

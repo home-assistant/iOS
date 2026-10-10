@@ -52,7 +52,11 @@ struct ZoneMapSnapshotView: View {
             longitudinalMeters: regionMeters
         )
         options.size = size
+        #if os(macOS)
+        options.appearance = NSAppearance(named: colorScheme == .dark ? .darkAqua : .aqua)
+        #else
         options.traitCollection = UITraitCollection(userInterfaceStyle: colorScheme == .dark ? .dark : .light)
+        #endif
 
         do {
             let snapshot = try await MKMapSnapshotter(options: options).start()
@@ -63,17 +67,28 @@ struct ZoneMapSnapshotView: View {
     }
 
     private func drawZoneOverlay(on snapshot: MKMapSnapshotter.Snapshot, size: CGSize) -> UIImage {
-        let center = snapshot.point(for: coordinate)
+        let center = snapshot.topLeftPoint(for: coordinate)
         // Project a point on the circle's edge to know the radius in screen points.
         let edgeCoordinate = coordinate.moving(
             distance: .init(value: radius, unit: .meters),
             direction: .init(value: 90, unit: .degrees)
         )
-        let pointRadius = abs(snapshot.point(for: edgeCoordinate).x - center.x)
+        let pointRadius = abs(snapshot.topLeftPoint(for: edgeCoordinate).x - center.x)
         let zoneColor = UIColor(Color.haPrimary)
 
         return UIGraphicsImageRenderer(size: size).image { _ in
+            #if os(macOS)
+            snapshot.image.draw(
+                in: CGRect(origin: .zero, size: size),
+                from: .zero,
+                operation: .sourceOver,
+                fraction: 1,
+                respectFlipped: true,
+                hints: nil
+            )
+            #else
             snapshot.image.draw(at: .zero)
+            #endif
 
             let circle = UIBezierPath(ovalIn: CGRect(
                 x: center.x - pointRadius,

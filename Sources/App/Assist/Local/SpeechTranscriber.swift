@@ -22,7 +22,7 @@ protocol SpeechTranscriberProtocol: AnyObject {
 
 /// A speech-to-text transcriber using Apple's Speech framework.
 /// Supports real-time transcription with partial results.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 @MainActor
 public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtocol {
     // MARK: - Types
@@ -214,9 +214,10 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
     }
 
     /// Configures the audio session, engine and recognition task for a session the caller has
-    /// already marked as listening, and which it unwinds if this throws.
+    /// already marked as listening, and which it unwinds if this throws. A Mac has no audio session:
+    /// the engine records from the system input as it is.
     private func startRecognition(with speechRecognizer: SFSpeechRecognizer) throws {
-        // Configure audio session
+        #if !os(macOS)
         if managesAudioSession {
             let audioSession = AVAudioSession.sharedInstance()
             // `.default` rather than `.measurement`, which the framework documents as disabling the
@@ -236,6 +237,7 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
             // only when deactivating.
             try audioSession.setActive(true)
         }
+        #endif
 
         // Create audio engine
         audioEngine = AVAudioEngine()
@@ -259,6 +261,10 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         // Get input node
         let inputNode = audioEngine.inputNode
         let recordingFormat = inputNode.outputFormat(forBus: 0)
+        // A machine without an audio input reports an empty format, and installing a tap for it raises.
+        guard recordingFormat.sampleRate > 0, recordingFormat.channelCount > 0 else {
+            throw TranscriberError.notAvailable
+        }
 
         // Capture recognitionRequest locally so the tap closure does not access a @MainActor property
         // from a background thread. The level's rate limit is held the same way, and the tap calls
@@ -319,9 +325,11 @@ public final class SpeechTranscriber: ObservableObject, SpeechTranscriberProtoco
         isListening = false
 
         // Deactivate audio session
+        #if !os(macOS)
         if managesAudioSession {
             try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         }
+        #endif
 
         if wasListening {
             onListeningStateChange?(false)

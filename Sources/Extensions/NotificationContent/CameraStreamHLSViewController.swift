@@ -2,12 +2,20 @@ import AVKit
 import Foundation
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
-class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
+class CameraStreamHLSViewController: PlatformViewController, CameraStreamHandler {
     let api: HomeAssistantAPI
     let url: URL
+    #if os(macOS)
+    let playerView: AVPlayerView
+    #else
     let playerViewController: AVPlayerViewController
+    #endif
     let promise: Promise<Void>
     var didUpdateState: (CameraStreamHandlerState) -> Void = { _ in }
     private let seal: Resolver<Void>
@@ -38,11 +46,17 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     init(api: HomeAssistantAPI, url: URL) {
         self.api = api
         self.url = url
+        #if os(macOS)
+        self.playerView = AVPlayerView()
+        #else
         self.playerViewController = AVPlayerViewController()
+        #endif
         (self.promise, self.seal) = Promise<Void>.pending()
         super.init(nibName: nil, bundle: nil)
 
+        #if !os(macOS)
         addChild(playerViewController)
+        #endif
     }
 
     @available(*, unavailable)
@@ -52,29 +66,64 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
     deinit {
         observationTokens.forEach { $0.invalidate() }
-        playerViewController.player?.pause()
-        playerViewController.player = nil
+        player?.pause()
+        player = nil
     }
+
+    /// The player behind whichever AVKit view the platform shows the stream in.
+    private var player: AVPlayer? {
+        get {
+            #if os(macOS)
+            playerView.player
+            #else
+            playerViewController.player
+            #endif
+        }
+        set {
+            #if os(macOS)
+            playerView.player = newValue
+            #else
+            playerViewController.player = newValue
+            #endif
+        }
+    }
+
+    /// The view the stream is drawn in, which is what the aspect ratio is applied to.
+    private var playerContentView: PlatformView {
+        #if os(macOS)
+        playerView
+        #else
+        playerViewController.view
+        #endif
+    }
+
+    #if os(macOS)
+    override func loadView() {
+        view = NSView()
+    }
+    #endif
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(playerViewController.view)
-        playerViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(playerContentView)
+        playerContentView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            playerViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
-            playerViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            playerViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            playerViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            playerContentView.topAnchor.constraint(equalTo: view.topAnchor),
+            playerContentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            playerContentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            playerContentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
+        #if !os(macOS)
         playerViewController.didMove(toParent: self)
+        #endif
 
         setupVideo()
     }
 
     func pause() {
-        playerViewController.player?.pause()
+        player?.pause()
     }
 
     func play() {
@@ -83,10 +132,10 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
     var hasAudio: Bool { true }
 
-    var isMuted: Bool { playerViewController.player?.isMuted ?? true }
+    var isMuted: Bool { player?.isMuted ?? true }
 
     func setMuted(_ muted: Bool) {
-        playerViewController.player?.isMuted = muted
+        player?.isMuted = muted
     }
 
     private var aspectRatioConstraint: NSLayoutConstraint? {
@@ -102,7 +151,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         didSet {
             if oldValue != lastSize, let size = lastSize {
                 aspectRatioConstraint = NSLayoutConstraint.aspectRatioConstraint(
-                    on: playerViewController.view,
+                    on: playerContentView,
                     size: size
                 )
             }
@@ -110,7 +159,10 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     }
 
     private func setupVideo() {
+        // A Mac has no audio session: the player goes straight to the system output.
+        #if !os(macOS)
         try? AVAudioSession.sharedInstance().setCategory(.playback)
+        #endif
 
         let asset: AVURLAsset
 
@@ -136,7 +188,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
         let playerItem = AVPlayerItem(asset: asset)
         let videoPlayer = AVPlayer(playerItem: playerItem)
-        playerViewController.player = videoPlayer
+        player = videoPlayer
 
         // assume 16:9
         lastSize = CGSize(width: 16, height: 9)

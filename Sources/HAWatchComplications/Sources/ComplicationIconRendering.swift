@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 import UIKit
 
@@ -12,3 +13,4 @@ public enum ComplicationIconRendering {
         Image(uiImage: uiImage).renderingMode(templateRenderingMode(usesCustomColor: usesCustomColor))
     }
 }
+#endif

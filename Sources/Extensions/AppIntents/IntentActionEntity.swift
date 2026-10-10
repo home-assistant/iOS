@@ -2,7 +2,7 @@ import AppIntents
 import SFSafeSymbols
 import Shared
 
-@available(iOS 17.0, watchOS 10.0, *)
+@available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct IntentActionEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Action")
     static let defaultQuery = IntentActionEntityQuery()

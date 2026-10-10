@@ -24,7 +24,7 @@ struct AppMenuBarCommands: Commands {
         }
 
         CommandGroup(replacing: .appSettings) {
-            Button(L10n.Menu.Application.preferences) {
+            Button(L10n.Menu.Application.settings) {
                 Current.sceneManager.activateAnyScene(for: .settings)
             }
             .keyboardShortcut(",", modifiers: .command)
@@ -48,7 +48,13 @@ struct MainWindowGroupCommands: Commands {
     /// The Entities menu only appears where a menu bar exists. On iPhone it would never be shown,
     /// but UIKit would still build the whole tree during keyboard-shortcut lookup on every key
     /// event, hanging the main thread on large setups.
-    private static let showsEntitiesMenu: Bool = Current.isCatalyst || UIDevice.current.userInterfaceIdiom == .pad
+    private static let showsEntitiesMenu: Bool = {
+        #if os(macOS)
+        true
+        #else
+        Current.isCatalyst || UIDevice.current.userInterfaceIdiom == .pad
+        #endif
+    }()
 
     @StateObject private var dataSource = DataSource()
 

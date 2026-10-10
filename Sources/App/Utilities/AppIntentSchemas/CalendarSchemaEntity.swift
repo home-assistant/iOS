@@ -8,7 +8,7 @@ import Shared
 /// Parallel to `HACalendarAppEntity` rather than replacing it: the schema domain is iOS 27, and
 /// annotating the shipped entity would drag its query, the calendar intents and the Spotlight
 /// extension to iOS 27 with it, putting calendars out of reach for everyone below that.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEntity(schema: .calendar.calendar)
 struct CalendarSchemaEntity: IndexedEntity {
     static let defaultQuery = CalendarSchemaEntityQuery()

@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import AVFoundation
 import CarPlay
 import Foundation
@@ -1158,3 +1159,4 @@ extension CarPlayAssistSession: AssistServiceDelegate {
         enterErrorState(message: message)
     }
 }
+#endif

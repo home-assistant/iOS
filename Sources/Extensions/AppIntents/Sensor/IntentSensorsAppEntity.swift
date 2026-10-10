@@ -3,7 +3,7 @@ import Foundation
 import SFSafeSymbols
 import Shared
 
-@available(iOS 17.0, macOS 13.0, tvOS 16.0, *)
+@available(iOS 17.0, macOS 14.0, tvOS 16.0, *)
 struct IntentSensorsAppEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Sensor")
 
@@ -58,7 +58,7 @@ struct IntentSensorsAppEntity: AppEntity, EntityContextRepresentable {
     }
 }
 
-@available(iOS 17.0, macOS 13.0, tvOS 16.0, *)
+@available(iOS 17.0, macOS 14.0, tvOS 16.0, *)
 struct IntentSensorsAppEntityQuery: EntityQuery {
     @IntentParameterDependency<WidgetSensorsAppIntent>(\.$server)
     var config

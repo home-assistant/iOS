@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import Shared
 import UIKit
@@ -37,3 +38,4 @@ enum HingeInteractionFactory {
         return HingeState(angleRadians: angle.doubleValue, uiKitStatusRawValue: status.intValue)
     }
 }
+#endif

@@ -6,6 +6,7 @@ public enum CarPlayAssistAudioCategory: String, CaseIterable, Codable {
     case playback
     case record
 
+    #if !os(macOS)
     public var avCategory: AVAudioSession.Category {
         switch self {
         case .playAndRecord:
@@ -16,6 +17,7 @@ public enum CarPlayAssistAudioCategory: String, CaseIterable, Codable {
             .record
         }
     }
+    #endif
 
     public var title: String {
         switch self {
@@ -36,6 +38,7 @@ public enum CarPlayAssistAudioMode: String, CaseIterable, Codable {
     case spokenAudio
     case measurement
 
+    #if !os(macOS)
     public var avMode: AVAudioSession.Mode {
         switch self {
         case .default:
@@ -50,6 +53,7 @@ public enum CarPlayAssistAudioMode: String, CaseIterable, Codable {
             .measurement
         }
     }
+    #endif
 
     public var title: String {
         switch self {

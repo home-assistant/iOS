@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 15, *)
 struct ButtonIntent: AppIntent {
     static var title: LocalizedStringResource = .init("app_intents.intent.button.title", defaultValue: "Press button")
 

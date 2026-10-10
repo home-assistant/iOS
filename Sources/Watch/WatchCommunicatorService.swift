@@ -3,7 +3,6 @@ import ObjectMapper
 import PromiseKit
 import Shared
 import SwiftUI
-import UIKit
 
 final class WatchCommunicatorService {
     enum WatchAssistCommunicatorError: Error {
@@ -162,7 +161,7 @@ final class WatchCommunicatorService {
 
         // Present any client-certificate import the watch requested while the app was backgrounded.
         didBecomeActiveObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didBecomeActiveNotification,
+            forName: AppLifecycle.didBecomeActiveNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -249,7 +248,7 @@ final class WatchCommunicatorService {
             .ping, .watchDatabaseMirrorChunk, .assistAudioStreamChunk, .assistAudioStreamCancel, .httpRequest,
         ]
         guard !untoasted.contains(messageId) else { return }
-        guard #available(iOS 18, *) else { return }
+        guard #available(iOS 18, macOS 15, *) else { return }
 
         let message: String
         switch messageId {
@@ -266,7 +265,7 @@ final class WatchCommunicatorService {
         }
 
         Task { @MainActor in
-            guard UIApplication.shared.applicationState == .active else { return }
+            guard ApplicationState.current == .active else { return }
             ToastPresenter.shared.show(
                 id: "watch-interaction",
                 symbol: .applewatch,
@@ -391,8 +390,9 @@ final class WatchCommunicatorService {
     }
 
     private func presentPendingClientCertImportIfPossible() {
+        #if os(iOS)
         guard let serverId = pendingCertImportServerId else { return }
-        guard UIApplication.shared.applicationState == .active else {
+        guard ApplicationState.current == .active else {
             Current.Log.info("[mTLS] Client certificate import requested; will present when the app is active")
             return
         }
@@ -423,8 +423,13 @@ final class WatchCommunicatorService {
         let host = UIHostingController(rootView: NavigationView { importView }.navigationViewStyle(.stack))
         host.modalPresentationStyle = .formSheet
         presenter.present(host, animated: true)
+        #else
+        // No watch pairs with a Mac, so a request can never arrive there.
+        pendingCertImportServerId = nil
+        #endif
     }
 
+    #if os(iOS)
     private static func topViewController() -> UIViewController? {
         let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
         let scene = scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
@@ -435,6 +440,7 @@ final class WatchCommunicatorService {
         }
         return top
     }
+    #endif
 
     func handleAssistAudioChunkedMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
         guard let payload = AssistAudioChunkPayload(content: message.content) else {

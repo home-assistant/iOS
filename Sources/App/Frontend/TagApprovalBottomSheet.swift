@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 struct TagApprovalBottomSheet: View {
     @State private var bottomSheetState: AppleLikeBottomSheetViewState?

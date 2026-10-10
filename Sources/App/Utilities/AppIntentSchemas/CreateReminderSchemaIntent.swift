@@ -7,7 +7,7 @@ import Shared
 /// Flags, tags, URLs, images, location triggers, recurrence and sections have no equivalent in the
 /// `todo` domain, so they are accepted to satisfy the schema and then ignored rather than being
 /// folded into the note, which would put text on the list the user did not dictate.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppIntent(schema: .reminders.createReminder)
 struct CreateReminderSchemaIntent {
     var title: String

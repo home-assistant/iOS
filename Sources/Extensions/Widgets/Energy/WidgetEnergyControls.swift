@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// The design system draws the period and the timestamp; both are the same control — a tap on either
 /// reloads the widget's timeline — so this is what wraps them.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 enum WidgetEnergyControls {
     /// Wraps the period label. The action, not the period, is what the control does, so that is what
     /// VoiceOver announces.

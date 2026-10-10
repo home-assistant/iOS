@@ -1,4 +1,4 @@
-#if os(iOS)
+#if !os(watchOS)
 import Foundation
 
 /// Asks the paired Apple Watch to fetch fresh values and re-render its complications.

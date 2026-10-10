@@ -1,6 +1,10 @@
 import Alamofire
 import Foundation
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Combines MJPEG response-boundary notifications with mTLS client certificate handling.
 ///

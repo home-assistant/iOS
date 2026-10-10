@@ -19,9 +19,11 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
     private var dataPlayer: AVAudioPlayer?
     private var downloadTask: URLSessionDataTask?
 
+    /// A Mac has no audio session to configure, and its players go straight to the system output.
     func play(url: URL, server: Server?) {
         stopCurrentPlayback()
 
+        #if !os(macOS)
         let audioSession = AVAudioSession.sharedInstance()
 
         // Each step is attempted independently: if deactivation fails (e.g. while the
@@ -53,6 +55,7 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
             delegate?.volumeIsZero()
             return
         }
+        #endif
 
         // Falls back to streaming when the server is unknown: for the servers streaming can
         // handle, playback keeps working, and the certificate-requiring ones failed either way.

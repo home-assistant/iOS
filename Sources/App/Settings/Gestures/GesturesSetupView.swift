@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 
@@ -141,3 +142,4 @@ extension GesturesSetupView: SettingsScreenSearchable {
         ]
     }
 }
+#endif

@@ -106,7 +106,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     @ViewBuilder
     func icon(size: CGFloat) -> some View {
-        if self == .siri, #available(iOS 26.0, *) {
+        if self == .siri, #available(iOS 26.0, macOS 26.0, *) {
             Image(systemSymbol: SFSymbol(rawValue: "siri"))
                 .resizable()
                 .scaledToFit()
@@ -135,7 +135,11 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .macToolbar:
             MacToolbarSettingsView()
         case .gestures:
+            #if os(macOS)
+            EmptyView()
+            #else
             GesturesSetupView()
+            #endif
         case .greetings:
             GreetingsSettingsView()
         case .kiosk:
@@ -172,7 +176,11 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .carPlay:
             CarPlayConfigurationView()
         case .complications:
+            #if os(macOS)
+            EmptyView()
+            #else
             SettingsComplicationsView()
+            #endif
         case .help:
             EmptyView()
         case .permissions:
@@ -190,7 +198,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     var isVisible: Bool {
         // Filter based on platform
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         // Kiosk mode is unsupported on macOS.
         let hiddenItems: [SettingsItem] = [
             .servers,
@@ -221,7 +229,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .watch, .complications:
             return Self.isWatchAvailable
         case .carPlay:
-            return UIDevice.current.userInterfaceIdiom == .phone
+            return Self.isPhone
         case .appLabs:
             // App Labs is limited to TestFlight builds while its features mature.
             return AppLabsFeature.isLabsAvailable
@@ -276,7 +284,12 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .servers: return SettingsServersView.settingsSearchEntries
         case .general: return GeneralSettingsView.settingsSearchEntries
         case .macToolbar: return MacToolbarSettingsView.settingsSearchEntries
-        case .gestures: return GesturesSetupView.settingsSearchEntries
+        case .gestures:
+            #if os(macOS)
+            return []
+            #else
+            return GesturesSetupView.settingsSearchEntries
+            #endif
         case .greetings: return GreetingsSettingsView.settingsSearchEntries
         case .kiosk: return KioskSettingsView.settingsSearchEntries
         case .location: return LocationSettingsView.settingsSearchEntries
@@ -299,7 +312,12 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .siri: return SiriSettingsView.settingsSearchEntries
         case .watch: return WatchConfigurationView.settingsSearchEntries
         case .carPlay: return CarPlayConfigurationView.settingsSearchEntries
-        case .complications: return ComplicationsRootView.settingsSearchEntries
+        case .complications:
+            #if os(macOS)
+            return []
+            #else
+            return ComplicationsRootView.settingsSearchEntries
+            #endif
         case .permissions: return SensorPermissionsView.settingsSearchEntries
         case .privacy: return PrivacyView.settingsSearchEntries
         case .debugging: return DebugView.settingsSearchEntries
@@ -336,8 +354,17 @@ enum SettingsItem: String, Hashable, CaseIterable {
         return !contentMatches(searchQuery: query).isEmpty
     }
 
+    /// Whether this is an iPhone, the only device an Apple Watch pairs with or CarPlay runs from.
+    private static var isPhone: Bool {
+        #if os(macOS)
+        false
+        #else
+        UIDevice.current.userInterfaceIdiom == .phone
+        #endif
+    }
+
     private static var isWatchAvailable: Bool {
-        guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
+        guard isPhone else { return false }
         if Current.isDebug {
             return true
         } else if case .paired = Communicator.shared.lastKnownWatchState {
@@ -370,9 +397,11 @@ struct SettingsNotificationsView: View {
     }
 }
 
+#if os(iOS)
 struct SettingsComplicationsView: View {
     var body: some View {
         ComplicationsRootView()
             .navigationTitle(L10n.Settings.DetailsSection.WatchRowComplications.title)
     }
 }
+#endif

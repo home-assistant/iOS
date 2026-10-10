@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import SFSafeSymbols
 import Shared
@@ -143,3 +144,4 @@ struct CarPlayTabsSelectionView: View {
 #Preview {
     CarPlayTabsSelectionView(viewModel: CarPlayConfigurationViewModel())
 }
+#endif

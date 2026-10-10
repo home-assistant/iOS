@@ -1,7 +1,6 @@
 import Alamofire
 import Shared
 import SwiftUI
-import UIKit
 
 // MARK: - Empty State
 
@@ -88,9 +87,13 @@ extension WebViewController {
         connectionState == .disconnected && latestLoadError != nil
     }
 
-    /// The scene this frontend is shown in, once its view is in a window.
-    var frontendWindowScene: UIWindowScene? {
+    /// The scene this frontend is shown in, once its view is in a window. On the Mac that is the window.
+    var frontendWindowScene: PlatformWindowScene? {
+        #if os(macOS)
+        viewIfLoaded?.window
+        #else
         viewIfLoaded?.window?.windowScene
+        #endif
     }
 
     @objc func sceneDidEnterBackground(_ notification: Notification) {
@@ -107,7 +110,13 @@ extension WebViewController {
     /// others' transitions say nothing about this frontend. A frontend that is not in a window cannot
     /// tell the scenes apart, so for it every scene counts, as the application's state would.
     private func concernsFrontendScene(_ notification: Notification) -> Bool {
+        #if os(macOS)
+        // Hiding the app takes every window away; a window notification names the one it is about.
+        if notification.object is NSApplication { return true }
+        guard let scene = notification.object as? NSWindow else { return false }
+        #else
         guard let scene = notification.object as? UIScene else { return false }
+        #endif
         guard let frontendWindowScene else { return true }
         return scene === frontendWindowScene
     }
@@ -208,7 +217,7 @@ extension WebViewController {
     func presentLatestLoadErrorDetails() {
         guard let latestLoadError else { return }
         presentOverlayController(
-            controller: UIHostingController(rootView: ConnectionErrorDetailsView(
+            controller: PlatformHostingController(rootView: ConnectionErrorDetailsView(
                 server: server,
                 error: latestLoadError
             )),

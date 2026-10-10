@@ -2,7 +2,6 @@ import HADesignSystem
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 /// The card Siri and the Shortcuts app show under the spoken answer of `GetEntityStateAppIntent`.
 @available(macOS 13.0, *)

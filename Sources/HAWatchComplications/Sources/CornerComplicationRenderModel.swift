@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 
 /// The resolved, target-agnostic rendering inputs for the corner complication.
@@ -45,3 +46,4 @@ public struct CornerComplicationRenderModel {
         self.curvesText = curvesText
     }
 }
+#endif

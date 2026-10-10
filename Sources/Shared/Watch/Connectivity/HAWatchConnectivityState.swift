@@ -12,7 +12,7 @@ public extension HAWatchConnectivity {
         case activated
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     /// Mirrors the pod's `WatchState` shape exactly so existing pattern-matching call sites compile
     /// unchanged after the swap.
     enum WatchState: Equatable {

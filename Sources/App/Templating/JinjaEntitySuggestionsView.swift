@@ -42,7 +42,7 @@ struct JinjaEntitySuggestionsView: View {
                     .frame(maxWidth: 220, alignment: .leading)
                     .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
                     .padding(.vertical, DesignSystem.Spaces.half)
-                    .background(Capsule().fill(Color(uiColor: .tertiarySystemFill)))
+                    .background(Capsule().fill(Color(uiColor: .tertiaryFill)))
                 }
                 .buttonStyle(.plain)
             }

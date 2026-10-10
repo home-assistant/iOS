@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import WidgetKit
 
-@available(iOS 18, *)
+@available(iOS 18, macOS 26, *)
 struct ControlSwitchValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlSwitchConfiguration) async throws -> ControlEntityItem {
         try await ControlRefreshDelay.wait()
@@ -84,7 +84,7 @@ struct ControlSwitchValueProvider: AppIntentControlValueProvider {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 18.0, macOS 26.0, *)
 struct ControlSwitchConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.switch.description",

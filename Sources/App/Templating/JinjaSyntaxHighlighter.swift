@@ -1,4 +1,9 @@
+import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Colors Jinja template source for the template editor: literal text is secondary, expression
 /// bodies primary, with delimiters, keywords, numbers, and strings tinted — a lightweight take on
@@ -46,7 +51,7 @@ enum JinjaSyntaxHighlighter {
 
         for reference in entityReferences where NSMaxRange(reference.range) <= fullRange.length {
             result.addAttributes([
-                .backgroundColor: UIColor.tertiarySystemFill,
+                .backgroundColor: UIColor.tertiaryFill,
                 .foregroundColor: UIColor.label,
                 .underlineStyle: NSUnderlineStyle.single.rawValue,
                 .underlineColor: UIColor.haPrimary,

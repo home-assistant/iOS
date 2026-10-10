@@ -77,7 +77,7 @@ struct EntityPicker: View {
 
     private var fullscreen: some View {
         content
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 CloseButton {
@@ -91,7 +91,7 @@ struct EntityPicker: View {
         }
         #endif
         .navigationViewStyle(.stack)
-        #if !targetEnvironment(macCatalyst)
+        #if !(targetEnvironment(macCatalyst) || os(macOS))
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
         #endif
@@ -150,7 +150,7 @@ struct EntityPicker: View {
             multipleSelectionConfirmButton
         }
         .animation(.easeInOut(duration: 0.35), value: viewModel.isRefreshing)
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     reloadToolbarButton
@@ -174,7 +174,7 @@ struct EntityPicker: View {
 
     @ViewBuilder
     private func capsuleFieldBackground(_ content: some View) -> some View {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, *) {
             content
                 .glassEffect(.regular.interactive(), in: .capsule)
                 .contentShape(Capsule())
@@ -203,7 +203,7 @@ struct EntityPicker: View {
         }
     }
 
-    #if targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst) || os(macOS)
     @ViewBuilder
     private var reloadToolbarButton: some View {
         if viewModel.isRefreshing {
@@ -322,7 +322,7 @@ struct EntityPicker: View {
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
         .modify { view in
-            if #available(iOS 17.0, *) {
+            if #available(iOS 17.0, macOS 14.0, *) {
                 view.scrollClipDisabled()
             } else {
                 view
@@ -338,7 +338,7 @@ struct EntityPicker: View {
         }
         .tint(.haPrimary)
         .modify { view in
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, macOS 26.0, *) {
                 view.buttonStyle(.bordered)
             } else {
                 view

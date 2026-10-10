@@ -83,7 +83,9 @@ struct ConnectionURLView: View {
 
     private var urlTextField: some View {
         TextField(viewModel.placeholder, text: $viewModel.url)
+        #if !os(macOS)
             .textContentType(.URL)
+        #endif
             .keyboardType(.URL)
             .autocapitalization(.none)
             .autocorrectionDisabled()

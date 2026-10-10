@@ -1,3 +1,4 @@
+#if os(iOS)
 import HAWatchComplications
 import Shared
 import SwiftUI
@@ -27,4 +28,5 @@ struct InlineComplicationPreview: View {
     InlineComplicationPreview(context: .preview(.inline, gauge: false))
         .padding()
 }
+#endif
 #endif

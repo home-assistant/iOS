@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 
 /// The inline complication's on-face content: a single line of text. On the watch the system renders
@@ -51,4 +52,5 @@ private func face(_ model: InlineComplicationRenderModel) -> some View {
 #Preview("Long line") {
     face(.sample(text: "Basement Dehumidifier - 1234 L")).padding()
 }
+#endif
 #endif

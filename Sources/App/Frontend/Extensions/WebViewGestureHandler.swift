@@ -163,7 +163,7 @@ final class WebViewGestureHandler {
 
     /// The scene the gesture was made in, so what it asks for happens in that window rather than in
     /// whichever one the app last registered.
-    private var sceneOfGesture: UIWindowScene? {
+    private var sceneOfGesture: PlatformWindowScene? {
         webView?.presentationWindow?.windowScene
     }
 }

@@ -26,7 +26,7 @@ enum AppLabsFeature: String, CaseIterable, Identifiable {
     var isAvailableOnThisDevice: Bool {
         switch self {
         case .iosNativeTabBar:
-            if #available(iOS 26, *) {
+            if #available(iOS 26, macOS 26, *) {
                 return !Current.isCatalyst
             }
             return false

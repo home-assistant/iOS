@@ -4,7 +4,7 @@ import PromiseKit
 import AVFoundation
 import CoreMediaIO
 #endif
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 import CoreAudio
 #endif
 
@@ -15,7 +15,7 @@ class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
         // so iOS (which has neither CoreMediaIO nor the CoreAudio APIs we need) doesn't whine about empty enum
         case invalid
 
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         // Carries the property selector as well as the object, because the system object is observed
         // for more than one property and the two registrations must not collapse into one.
         case coreAudio(AudioObjectID, AudioObjectPropertySelector)
@@ -27,7 +27,7 @@ class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
         var id: UInt32 {
             switch self {
             case .invalid: return .max
-            #if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst) || os(macOS)
             case let .coreAudio(id, _): return id
             #if canImport(CoreMediaIO)
             case let .coreMedia(id): return id
@@ -87,7 +87,7 @@ class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
 
     // object IDs both alias to UInt32 so we can't rely on the type system to know which method to call
 
-    #if targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst) || os(macOS)
     #if canImport(CoreMediaIO)
     func addCoreAudioObserver(
         for id: AudioObjectID,
@@ -121,7 +121,7 @@ class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
     override func observe() {
         super.observe()
         guard !isObserving else { return }
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         #if canImport(CoreMediaIO)
         addCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject), property: .allDevices)
         #endif
@@ -139,7 +139,7 @@ class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
     override func stopObserving() {
         super.stopObserving()
         guard isObserving else { return }
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         #if canImport(CoreMediaIO)
         removeCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject))
         #endif
@@ -158,7 +158,7 @@ public class InputOutputDeviceSensor: SensorProvider {
 
     public let request: SensorProviderRequest
 
-    #if targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst) || os(macOS)
     #if canImport(CoreMediaIO)
     let cameraSystemObject: HACoreMediaObjectSystem
     #endif
@@ -167,7 +167,7 @@ public class InputOutputDeviceSensor: SensorProvider {
 
     public required init(request: SensorProviderRequest) {
         self.request = request
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         #if canImport(CoreMediaIO)
         self.cameraSystemObject = HACoreMediaObjectSystem()
         #endif
@@ -180,7 +180,7 @@ public class InputOutputDeviceSensor: SensorProvider {
 
         let sensors: Promise<[WebhookSensor]>
 
-        #if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
+        #if canImport(CoreMediaIO) && (targetEnvironment(macCatalyst) || os(macOS))
         let queue: DispatchQueue = .global(qos: .userInitiated)
         sensors = firstly {
             Promise<Void>.value(())
@@ -209,7 +209,7 @@ public class InputOutputDeviceSensor: SensorProvider {
         return sensors
     }
 
-    #if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
+    #if canImport(CoreMediaIO) && (targetEnvironment(macCatalyst) || os(macOS))
     private static func sensors(
         cameras: [HACoreMediaObjectCamera],
         audioInputs: [HACoreAudioObjectDevice],

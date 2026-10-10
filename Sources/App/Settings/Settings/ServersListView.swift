@@ -7,11 +7,13 @@ struct ServersListView: View {
     @StateObject private var observer = ServersObserver()
     @State private var showAddServer = false
     @State private var serverPendingDeletion: Server?
+    #if !os(macOS)
     @Environment(\.editMode) private var editMode
+    #endif
 
     var body: some View {
         ForEach(observer.servers, id: \.identifier) { server in
-            NavigationLink(destination: ConnectionSettingsView(server: server)) {
+            MacSettingsSidebarLink(destination: ConnectionSettingsView(server: server)) {
                 HomeAssistantAccountRowView(server: server, isCompact: Current.isCatalyst)
             }
             .tag(MacSettingsSidebarSelection.server(server.identifier))
@@ -55,14 +57,14 @@ struct ServersListView: View {
             observer.moveServers(from: source, to: destination)
         }
 
-        NavigationLink(destination: ServerSwitchingSettingsView()) {
+        MacSettingsSidebarLink(destination: ServerSwitchingSettingsView()) {
             Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
         }
         .tag(MacSettingsSidebarSelection.serverSwitching)
         .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverSwitching)
 
         Button {
-            #if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst) || os(macOS)
             Current.sceneManager.activateAnyScene(for: .onboarding)
             #else
             showAddServer = true
@@ -70,7 +72,10 @@ struct ServersListView: View {
         } label: {
             Label(L10n.Settings.ConnectionSection.addServer, systemSymbol: .plus)
         }
-        #if !targetEnvironment(macCatalyst)
+        #if os(macOS)
+        // A bordered button would read as a control dropped into the sidebar instead of one of its rows.
+        .buttonStyle(.plain)
+        #elseif !targetEnvironment(macCatalyst)
         .fullScreenCover(isPresented: $showAddServer) {
             OnboardingNavigationView(onboardingStyle: .secondary)
         }

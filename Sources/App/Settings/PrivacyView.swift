@@ -9,7 +9,7 @@ struct PrivacyView: View {
     @State private var analytics: Bool = Current.settingsStore.privacy.analytics
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: .lockIcon,
                 title: L10n.SettingsDetails.Privacy.title,

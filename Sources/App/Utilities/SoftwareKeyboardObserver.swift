@@ -1,6 +1,10 @@
 import Combine
 import Foundation
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Whether an on-screen keyboard is up, as opposed to a hardware keyboard driving a focused field.
 @MainActor
@@ -9,8 +13,14 @@ final class SoftwareKeyboardObserver: ObservableObject {
 
     @Published private(set) var isShown = false
 
+    #if !os(macOS)
     private var cancellables = Set<AnyCancellable>()
+    #endif
 
+    #if os(macOS)
+    /// A Mac has no on-screen keyboard, so there is nothing to observe and `isShown` stays false.
+    init() {}
+    #else
     /// Keyboard notifications carry the screen the keyboard appears on as their object, which is also the
     /// coordinate space the end frame is expressed in. UIKit posts them on the main actor.
     init(
@@ -34,6 +44,7 @@ final class SoftwareKeyboardObserver: ObservableObject {
             }
             .store(in: &cancellables)
     }
+    #endif
 
     static func isShown(endFrame: CGRect?, screenHeight: CGFloat?) -> Bool {
         guard let endFrame, let screenHeight, endFrame.height >= minimumHeight else { return false }

@@ -1,5 +1,9 @@
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 @preconcurrency import WebKit
 
 // MARK: - Web View Configuration & Setup
@@ -28,6 +32,20 @@ extension WebViewController {
         return userContentController
     }
 
+    #if os(macOS)
+    /// The web view fills the controller's view; only the find bar, when it is up, takes room above it.
+    func setupWebViewConstraints() {
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        let topConstraint = webView.topAnchor.constraint(equalTo: view.topAnchor)
+        webViewTopConstraint = topConstraint
+        NSLayoutConstraint.activate([
+            topConstraint,
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+    #else
     func setupWebViewConstraints(statusBarView: UIView) {
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -51,6 +69,7 @@ extension WebViewController {
         webViewTopConstraint?.isActive = true
         updateWindowControlsInset()
     }
+    #endif
 
     func setupURLObserver() {
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in

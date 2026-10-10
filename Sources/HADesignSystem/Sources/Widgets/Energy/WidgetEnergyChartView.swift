@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// Gas is deliberately absent. It is metered in m³ as often as in kWh, so the dashboard gives it a
 /// card of its own rather than a series on this one; the widget shows it as a figure instead.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 public struct WidgetEnergyChartView: View {
     private let points: [WidgetEnergyChartPoint]
     private let showsGrid: Bool
@@ -228,7 +228,7 @@ public struct WidgetEnergyChartView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     WidgetEnergyChartView(
         points: WidgetEnergySampleData.chartPoints,

@@ -1,6 +1,16 @@
 import SwiftUI
-import UIKit
 
+#if os(macOS)
+/// Reports how far hardware cutouts such as the camera reach into a view from its sides. A Mac window
+/// never has one reaching into it, so the insets are left as they are.
+struct OcclusionRegionsReader: View {
+    @Binding var insets: EdgeInsets
+
+    var body: some View {
+        Color.clear
+    }
+}
+#else
 /// Reports how far hardware cutouts such as the camera reach into a view from its sides.
 struct OcclusionRegionsReader: UIViewRepresentable {
     @Binding var insets: EdgeInsets
@@ -17,6 +27,7 @@ struct OcclusionRegionsReader: UIViewRepresentable {
         }
     }
 }
+#endif
 
 #Preview {
     Text("Steps clear of the camera")

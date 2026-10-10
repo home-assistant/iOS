@@ -25,7 +25,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     ]
 
     weak var webView: WebViewControllerProtocol?
-    var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+    var isAppInBackground: @MainActor () -> Bool = { ApplicationState.current == .background }
 
     private var deferredExternalBusMessages: [[String: Any]] = []
 
@@ -92,6 +92,16 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
     /// Handle theme changes from frontend, updating local cache and UI
     private func handleThemeUpdate(_ messageBody: [String: Any]) {
+        #if os(macOS)
+        guard let appearance = webView?.effectiveAppearance else {
+            let message = "WebViewController missing appearance for theme update"
+            Current.Log.error(message)
+            assertionFailure(message)
+            return
+        }
+
+        ThemeColors.updateCache(with: messageBody, for: appearance)
+        #else
         guard let traitCollection = webView?.traitCollection else {
             let message = "WebViewController missing traitCollection for theme update"
             Current.Log.error(message)
@@ -100,6 +110,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
         }
 
         ThemeColors.updateCache(with: messageBody, for: traitCollection)
+        #endif
         webView?.styleUI(publishesThemedStatusBar: true)
     }
 
@@ -139,7 +150,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     /// drawn in the user's configured colors. Separate from `updateThemeColors`, which carries only the
     /// handful the status bar needs and is what keeps that path working if this one ever fails.
     private func handleUpdateThemeVariables(_ messageBody: [String: Any]) {
-        guard let server = webView?.server, let traitCollection = webView?.traitCollection else {
+        guard let server = webView?.server, let isDarkAppearance = webView?.isDarkAppearance else {
             Current.Log.error("Received theme variables with no web view to attribute them to")
             return
         }
@@ -147,7 +158,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
         guard let capture = FrontendThemeCaptureMessage(
             messageBody: messageBody,
             serverId: serverId,
-            fallbackAppearance: traitCollection.userInterfaceStyle == .dark ? .dark : .light,
+            fallbackAppearance: isDarkAppearance ? .dark : .light,
             capturedAt: Current.date()
         ) else {
             Current.Log.error("Received a theme variables message with nothing worth storing")

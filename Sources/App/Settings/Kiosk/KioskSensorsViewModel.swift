@@ -2,7 +2,11 @@ import Combine
 import Foundation
 import PromiseKit
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Backs the "Sensors" menu inside kiosk settings. The sensors shown here are the same
 /// `WebhookSensor`s exposed in the standard sensor settings, and enabling/disabling them goes
@@ -41,7 +45,7 @@ final class KioskSensorsViewModel: ObservableObject {
     func refresh() {
         firstly {
             HomeAssistantAPI.manuallyUpdate(
-                applicationState: UIApplication.shared.applicationState,
+                applicationState: ApplicationState.current,
                 type: .userRequested
             )
         }.catch { error in

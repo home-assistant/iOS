@@ -1,5 +1,10 @@
 import Foundation
+import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public extension UIColor {
     convenience init?(rgbString string: String) {

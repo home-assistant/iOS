@@ -4,7 +4,7 @@ import SwiftUI
 
 /// The time the entry was last refreshed, preceded by a small reload glyph, mirroring the energy
 /// widget. The pair is one control: tapping either part reloads the widget's timeline.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetCalendarRefreshButton: View {
     let date: Date
 
@@ -20,7 +20,7 @@ struct WidgetCalendarRefreshButton: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     WidgetCalendarRefreshButton(date: Date())
         .padding()

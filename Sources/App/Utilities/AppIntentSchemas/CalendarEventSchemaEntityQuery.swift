@@ -5,7 +5,7 @@ import Shared
 
 /// Answers from the cached calendar events, re-read from the server first: Home Assistant has no
 /// "fetch event by id" endpoint, so the cache is what an identifier resolves against.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 struct CalendarEventSchemaEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [CalendarEventSchemaEntity] {
         let wanted = Set(identifiers)

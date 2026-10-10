@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import Shared
 import UIKit
@@ -138,3 +139,4 @@ final class WindowScenesManager {
         )
     }
 }
+#endif

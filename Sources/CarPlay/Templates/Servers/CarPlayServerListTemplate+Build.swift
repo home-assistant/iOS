@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 
 extension CarPlayServersListTemplate {
@@ -5,3 +6,4 @@ extension CarPlayServersListTemplate {
         CarPlayServersListTemplate(viewModel: .init())
     }
 }
+#endif

@@ -2,7 +2,11 @@ import CoreLocation
 import CoreMotion
 import Foundation
 import KeychainAccess
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public class SettingsStore {
     let keychain = AppConstants.Keychain
@@ -71,7 +75,7 @@ public class SettingsStore {
         Set(prefs.stringArray(forKey: seenTestFlightMessageIDsKey) ?? [])
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var matterLastPreferredNetWorkMacExtendedAddress: String? {
         get {
             keychain["matterLastPreferredNetWorkMacExtendedAddress"]
@@ -108,7 +112,7 @@ public class SettingsStore {
         }
     }
 
-    public func isLocationEnabled(for state: UIApplication.State) -> Bool {
+    public func isLocationEnabled(for state: ApplicationState) -> Bool {
         let authorizationStatus: CLAuthorizationStatus
 
         let locationManager = CLLocationManager()
@@ -358,6 +362,18 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "refreshWebViewAfterInactive")
+        }
+    }
+
+    /// Whether the app's own "Allow notifications?" prompt has been answered. The system's permission is
+    /// what decides afterwards; this only keeps the prompt from coming back when the system could not record
+    /// an answer, as on a Mac build that is not signed for notifications.
+    public var notificationPermissionPromptAnswered: Bool {
+        get {
+            prefs.bool(forKey: "notificationPermissionPromptAnswered")
+        }
+        set {
+            prefs.set(newValue, forKey: "notificationPermissionPromptAnswered")
         }
     }
 
@@ -648,7 +664,7 @@ public class SettingsStore {
         }
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var gestures: [AppGesture: HAGestureAction] {
         get {
             guard let data = prefs.data(forKey: "gesturesSettings"),

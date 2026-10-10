@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 import UIKit
 
@@ -21,3 +22,4 @@ final class CameraOverlayHostingController: UIHostingController<AnyView> {
         onDismiss?()
     }
 }
+#endif

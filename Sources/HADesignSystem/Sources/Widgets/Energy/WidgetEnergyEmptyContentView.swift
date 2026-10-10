@@ -4,7 +4,7 @@ import SwiftUI
 
 /// The home screen Energy card when the widget can't read anything at all: no server URL to reach,
 /// no energy dashboard, or a load that failed.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 public struct WidgetEnergyEmptyContentView: View {
     /// Wraps a rendered label in the control that runs it.
     public typealias ControlContent = (AnyView) -> AnyView
@@ -40,7 +40,7 @@ public struct WidgetEnergyEmptyContentView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     WidgetEnergyEmptyContentView(message: "No energy data", retryControl: { $0 })
         .frame(width: 158, height: 158)

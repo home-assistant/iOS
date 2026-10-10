@@ -1,3 +1,6 @@
+// The complication render models, and the content views that draw them, are not built for the Mac, where
+// no widget mirrors a watch complication.
+#if !os(macOS)
 import HAWatchComplications
 import Shared
 
@@ -50,3 +53,4 @@ extension ComplicationRenderContext {
         )
     }
 }
+#endif

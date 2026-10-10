@@ -1,10 +1,14 @@
 import AVFoundation
 import Combine
+#if os(macOS)
+import CoreAudio
+#endif
 import Foundation
 import HAKit
 import Intents
 import PromiseKit
 
+#if os(iOS)
 final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     /// Activating or deactivating an audio session (Assist recording, TTS playback, a camera stream)
     /// fires several route changes in a row, and each signal costs a full sensor update, so wait for
@@ -41,6 +45,32 @@ final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, Sensor
         isObserving = false
     }
 }
+#endif
+
+#if os(macOS)
+final class MacAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
+    private let signal: () -> Void
+
+    init(signal: @escaping () -> Void) {
+        self.signal = signal
+        super.init(relatedSensorsIds: [
+            .iPhoneAudioOutput,
+        ])
+    }
+
+    override func observe() {
+        super.observe()
+        guard !isObserving else { return }
+        let status = HACoreAudioProperty<AudioDeviceID>.defaultOutputDevice.addListener(
+            objectID: UInt32(kAudioObjectSystemObject)
+        ) { [weak self] in
+            self?.signal()
+        }
+        Current.Log.info("added default output device observer: \(status)")
+        isObserving = true
+    }
+}
+#endif
 
 /// iOS AudioOutputSensor
 final class AudioOutputSensor: SensorProvider {
@@ -59,9 +89,23 @@ final class AudioOutputSensor: SensorProvider {
             icon: "mdi:volume-high",
             state: audioOutput
         ))
+        #elseif os(macOS)
+        sensors.append(.init(
+            name: "Audio Output",
+            uniqueID: WebhookSensorId.iPhoneAudioOutput.rawValue,
+            icon: "mdi:volume-high",
+            state: getDefaultOutput() ?? "unavailable"
+        ))
         #endif
         return .value(sensors)
     }
+
+    #if os(macOS)
+    private func getDefaultOutput() -> String? {
+        let _: MacAudioOutputSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
+        return HACoreAudioObjectSystem().defaultOutputDevice?.transportTypeName
+    }
+    #endif
 
     #if os(iOS)
     private func getAudioOutput() -> [AudioOutput] {

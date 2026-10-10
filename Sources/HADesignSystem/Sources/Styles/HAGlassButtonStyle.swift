@@ -18,7 +18,7 @@ public struct HAGlassButtonStyle: ButtonStyle {
             .haButtonFlexSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .modify { view in
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, macOS 26.0, *) {
                     view.glassEffect(.regular.interactive(), in: .capsule)
                 } else {
                     view.background(.regularMaterial, in: Capsule())

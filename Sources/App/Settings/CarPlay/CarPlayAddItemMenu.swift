@@ -70,7 +70,7 @@ struct CarPlayAddItemMenu: View {
     }
 
     private var isAssistSupported: Bool {
-        if #available(iOS 26.4, *) {
+        if #available(iOS 26.4, macOS 26.4, *) {
             return true
         } else {
             return false

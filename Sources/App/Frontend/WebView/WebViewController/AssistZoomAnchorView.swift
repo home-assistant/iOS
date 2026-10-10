@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 /// Stand-in source for the zoom transition into Assist.
@@ -52,3 +53,4 @@ final class AssistZoomAnchorView: UIView {
         return anchor
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -25,3 +26,4 @@ extension CarPlayTemplateProvider {
         CarPlayOperationAlert.present(error, on: alertPresenter)
     }
 }
+#endif

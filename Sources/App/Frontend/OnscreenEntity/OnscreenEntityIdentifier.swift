@@ -12,7 +12,7 @@ import Shared
 /// `OpenableEntityAppEntity` for covers, `DimmableLightAppEntity`, `ThermostatAppEntity` and
 /// `LockAppEntity` for dimming, setting and locking — while `HAAppEntityAppIntentEntity` names every
 /// entity and is what "add this to CarPlay" and "show this" take.
-@available(iOS 18.2, *)
+@available(iOS 18.2, macOS 15.2, *)
 enum OnscreenEntityIdentifier {
     /// Every identifier the entity answers to, the one an activity should carry first.
     ///

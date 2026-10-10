@@ -1,3 +1,4 @@
+#if os(iOS)
 import HAWatchComplications
 import Shared
 import SwiftUI
@@ -38,4 +39,5 @@ struct CircularComplicationPreview: View {
     CircularComplicationPreview(context: .preview(.circular))
         .padding()
 }
+#endif
 #endif

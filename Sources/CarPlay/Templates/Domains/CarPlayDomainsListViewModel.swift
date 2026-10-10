@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -112,3 +113,4 @@ final class CarPlayDomainsListViewModel {
         domain == .cover ? overrideCoverIcon : domain.icon()
     }
 }
+#endif

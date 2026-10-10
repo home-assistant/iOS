@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 import HAKit
 import Shared
@@ -18,3 +19,4 @@ extension CarPlayEntitiesListTemplate {
         return CarPlayEntitiesListTemplate(viewModel: viewModel, title: title)
     }
 }
+#endif

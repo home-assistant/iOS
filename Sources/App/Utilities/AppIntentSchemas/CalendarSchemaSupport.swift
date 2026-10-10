@@ -3,7 +3,7 @@ import Foundation
 import Shared
 
 /// Lookups and validation shared by the calendar schema intents.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 enum CalendarSchemaSupport {
     /// The calendars Siri may offer, honouring the per-server opt-out.
     ///

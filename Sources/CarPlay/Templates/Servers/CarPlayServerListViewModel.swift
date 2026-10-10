@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -230,3 +231,4 @@ extension CarPlayServerListViewModel: ServerObserver {
         setServer(server: server)
     }
 }
+#endif

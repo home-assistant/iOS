@@ -1,3 +1,4 @@
+#if os(iOS)
 import Shared
 import SwiftUI
 import UIKit
@@ -439,3 +440,4 @@ extension Binding where Value == String {
         ))
     }
 }
+#endif

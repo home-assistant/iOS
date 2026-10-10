@@ -1,6 +1,10 @@
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 @MainActor
 final class WebhookDetailViewModel: ObservableObject {

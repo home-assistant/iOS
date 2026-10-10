@@ -10,8 +10,9 @@ struct OnboardingServersListView: View {
         static let manualEntryTransitionID = "manual-entry"
     }
 
+    /// Set to leave the screen. The list does not read `\.dismiss` itself, see `DismissWhenModifier`.
+    @State private var isDismissRequested = false
     @Namespace private var manualEntryGeometry
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -103,11 +104,7 @@ struct OnboardingServersListView: View {
         .onDisappear {
             onDisappear()
         }
-        .onChange(of: viewModel.shouldDismiss) { newValue in
-            if newValue {
-                dismiss()
-            }
-        }
+        .dismiss(when: viewModel.shouldDismiss || isDismissRequested)
         .onChange(of: viewModel.discoveredInstances) { newValue in
             if newValue.count == 1 {
                 scheduleAutoConnect()
@@ -249,14 +246,14 @@ struct OnboardingServersListView: View {
         if onboardingStyle.insertsCancelButton, !Current.isCatalyst {
             ToolbarItem(placement: .topBarLeading) {
                 Button(L10n.cancelLabel) {
-                    dismiss()
+                    isDismissRequested = true
                 }
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
             if prefillURL != nil {
                 CloseButton {
-                    dismiss()
+                    isDismissRequested = true
                 }
             } else if viewModel.manualInputLoading {
                 // Loading happens when URL is manually inputed by user
@@ -361,7 +358,7 @@ struct OnboardingServersListView: View {
 
     private func rejectInvitation() {
         if onboardingStyle == .secondary {
-            dismiss()
+            isDismissRequested = true
             return
         }
         rejectedInvitation = true

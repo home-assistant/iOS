@@ -1,11 +1,63 @@
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 import AppKit
 #endif
+#if os(iOS)
+import UIKit
+#endif
 
+#if os(macOS)
+/// Installs the main window's toolbar. It draws nothing itself: it only needs to be in the window so it can
+/// find it.
+struct MacWebViewTitleBar: NSViewRepresentable {
+    let server: Server
+    weak var webViewController: WebViewController?
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    func makeNSView(context: Context) -> NSView {
+        MacWebViewTitleBarAnchorView { [weak coordinator = context.coordinator] window in
+            coordinator?.attach(to: window)
+        }
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        context.coordinator.update(server: server, webViewController: webViewController)
+        context.coordinator.attach(to: nsView.window)
+    }
+
+    static func dismantleNSView(_ nsView: NSView, coordinator: Coordinator) {
+        coordinator.removeToolbar()
+    }
+
+    private final class MacWebViewTitleBarAnchorView: NSView {
+        private let attachToolbar: (NSWindow?) -> Void
+
+        init(attachToolbar: @escaping (NSWindow?) -> Void) {
+            self.attachToolbar = attachToolbar
+            super.init(frame: .zero)
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            attachToolbar(window)
+        }
+
+        override func hitTest(_ point: NSPoint) -> NSView? {
+            nil
+        }
+    }
+}
+#else
 struct MacWebViewTitleBar: UIViewControllerRepresentable {
     let server: Server
     weak var webViewController: WebViewController?
@@ -54,8 +106,9 @@ private final class MacWebViewTitleBarViewController: UIViewController {
         attachToolbar(view.window?.windowScene)
     }
 }
+#endif
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 extension MacWebViewTitleBar {
     @MainActor
     final class Coordinator: NSObject, NSToolbarDelegate {
@@ -77,8 +130,21 @@ extension MacWebViewTitleBar {
         ].contains($0) }
 
         private weak var webViewController: WebViewController?
+        #if os(macOS)
+        /// The window the toolbar is installed in. A Mac window is also the scene requests are routed to.
+        private weak var windowScene: NSWindow?
+        private var installedToolbar: NSToolbar? {
+            get { windowScene?.toolbar }
+            set { windowScene?.toolbar = newValue }
+        }
+        #else
         private weak var titlebar: UITitlebar?
         private weak var windowScene: UIWindowScene?
+        private var installedToolbar: NSToolbar? {
+            get { titlebar?.toolbar }
+            set { titlebar?.toolbar = newValue }
+        }
+        #endif
         private weak var serverPickerItem: NSMenuToolbarItem?
         private var toolbar: NSToolbar?
         private var server: Server?
@@ -102,6 +168,28 @@ extension MacWebViewTitleBar {
             refreshToolbarState()
         }
 
+        #if os(macOS)
+        func attach(to window: NSWindow?) {
+            guard let window else { return }
+            windowScene = window
+
+            if toolbar == nil || window.toolbar !== toolbar {
+                let toolbar = NSToolbar(identifier: Constants.toolbarIdentifier)
+                toolbar.delegate = self
+                toolbar.displayMode = .iconOnly
+                toolbar.allowsUserCustomization = true
+                toolbar.autosavesConfiguration = true
+
+                window.titleVisibility = .hidden
+                window.toolbarStyle = .unifiedCompact
+                window.titlebarSeparatorStyle = .none
+                window.toolbar = toolbar
+                self.toolbar = toolbar
+            }
+
+            refreshToolbarState()
+        }
+        #else
         func attach(to windowScene: UIWindowScene?) {
             guard let titlebar = windowScene?.titlebar else { return }
             self.titlebar = titlebar
@@ -125,9 +213,10 @@ extension MacWebViewTitleBar {
 
             refreshToolbarState()
         }
+        #endif
 
         private func refreshToolbarState() {
-            guard let toolbar, titlebar?.toolbar === toolbar else { return }
+            guard let toolbar, installedToolbar === toolbar else { return }
             updateEnabledItems()
             updateServerPicker()
         }
@@ -137,8 +226,8 @@ extension MacWebViewTitleBar {
                 NotificationCenter.default.removeObserver(macToolbarConfigObserver)
                 self.macToolbarConfigObserver = nil
             }
-            guard titlebar?.toolbar === toolbar else { return }
-            titlebar?.toolbar = nil
+            guard installedToolbar === toolbar else { return }
+            installedToolbar = nil
             toolbar = nil
         }
 
@@ -165,7 +254,7 @@ extension MacWebViewTitleBar {
 
         private func handleMacToolbarConfigChanged(_ change: MacToolbarConfigChange?) {
             loadMacToolbarItems()
-            guard let toolbar, titlebar?.toolbar === toolbar else { return }
+            guard let toolbar, installedToolbar === toolbar else { return }
 
             switch change {
             case let .added(item):
@@ -357,7 +446,11 @@ extension MacWebViewTitleBar {
             serverPickerItem.paletteLabel = L10n.ServersSelection.title
             serverPickerItem.toolTip = title
             serverPickerItem.image = serverPickerTitleImage(title: title)
+            #if os(macOS)
+            serverPickerItem.menu = serverPickerMenu()
+            #else
             serverPickerItem.itemMenu = serverPickerMenu()
+            #endif
         }
 
         private func serverPickerTitleImage(title: String) -> UIImage {
@@ -378,6 +471,36 @@ extension MacWebViewTitleBar {
             .withRenderingMode(.alwaysTemplate)
         }
 
+        #if os(macOS)
+        private func serverPickerMenu() -> NSMenu {
+            let selectedIdentifier = server?.identifier
+            let menu = NSMenu(title: L10n.WebView.ServerSelection.title)
+            for server in Current.servers.all {
+                let item = NSMenuItem(
+                    title: server.info.name,
+                    action: #selector(selectServer(_:)),
+                    keyEquivalent: ""
+                )
+                item.target = self
+                item.representedObject = server.identifier.rawValue
+                item.state = server.identifier == selectedIdentifier ? .on : .off
+                menu.addItem(item)
+            }
+            return menu
+        }
+
+        @objc private func selectServer(_ sender: NSMenuItem) {
+            guard let identifier = sender.representedObject as? String,
+                  let server = Current.servers.all.first(where: { $0.identifier.rawValue == identifier }) else {
+                return
+            }
+            // Not `activate(server:)`: like the server-cycling gestures, the toolbar menu
+            // switches in place without sending the user back to the Home Assistant root.
+            Current.sceneManager.appCoordinator(for: windowScene).done { coordinator in
+                coordinator.open(server: server)
+            }
+        }
+        #else
         private func serverPickerMenu() -> UIMenu {
             let selectedIdentifier = server?.identifier
             let actions = Current.servers.all.map { server in
@@ -394,6 +517,7 @@ extension MacWebViewTitleBar {
             }
             return UIMenu(title: L10n.WebView.ServerSelection.title, children: actions)
         }
+        #endif
 
         private func gestureToolbarItem(for identifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
             guard let action = identifier.gestureAction else { return nil }
@@ -494,12 +618,21 @@ extension MacWebViewTitleBar {
         }
 
         private func toolbarImage(symbol: SFSymbol, accessibilityLabel: String) -> UIImage {
+            #if os(macOS)
+            let configuration = NSImage.SymbolConfiguration(
+                pointSize: Constants.symbolPointSize,
+                weight: .regular
+            )
+            let symbolImage = NSImage(systemSymbol: symbol)
+                .withSymbolConfiguration(configuration) ?? NSImage(systemSymbol: symbol)
+            #else
             let configuration = UIImage.SymbolConfiguration(
                 pointSize: Constants.symbolPointSize,
                 weight: .regular
             )
             let symbolImage = UIImage(systemSymbol: symbol)
                 .applyingSymbolConfiguration(configuration) ?? UIImage(systemSymbol: symbol)
+            #endif
 
             return UIGraphicsImageRenderer(size: Constants.imageCanvasSize).image { _ in
                 symbolImage.draw(in: CGRect(

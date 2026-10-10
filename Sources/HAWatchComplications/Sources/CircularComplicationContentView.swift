@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 import UIKit
 import WidgetKit
@@ -245,4 +246,5 @@ private func face(_ model: CircularComplicationRenderModel) -> some View {
 #Preview("No gauge") {
     face(.sample(fraction: nil)).padding()
 }
+#endif
 #endif

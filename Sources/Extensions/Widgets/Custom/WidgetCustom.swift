@@ -5,7 +5,7 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetCustom: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
@@ -161,7 +161,7 @@ enum WidgetCustomSupportedFamilies {
 
 // UNCOMMENT ON DEMAND: If all previews are uncommented, Xcode will, most probably, fail to render them all at once.
 
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Small empty", as: .systemSmall) {
 //    WidgetCustom()
 // } timeline: {
@@ -175,7 +175,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Small 1 Item", as: .systemSmall) {
 //    WidgetCustom()
 // } timeline: {
@@ -191,7 +191,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 //
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Small 2 Items", as: .systemSmall) {
 //    WidgetCustom()
 // } timeline: {
@@ -208,7 +208,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 //
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Small 3 Items", as: .systemSmall) {
 //    WidgetCustom()
 // } timeline: {
@@ -226,7 +226,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Medium 1 item", as: .systemMedium) {
 //    WidgetCustom()
 // } timeline: {
@@ -242,7 +242,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 //
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Medium 2 items", as: .systemMedium) {
 //    WidgetCustom()
 // } timeline: {
@@ -259,7 +259,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Medium 3 items", as: .systemMedium) {
 //    WidgetCustom()
 // } timeline: {
@@ -277,7 +277,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Medium 4 items", as: .systemMedium) {
 //    WidgetCustom()
 // } timeline: {
@@ -296,7 +296,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Medium 5 items", as: .systemMedium) {
 //    WidgetCustom()
 // } timeline: {
@@ -316,7 +316,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 //
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Medium 6 items", as: .systemMedium) {
 //    WidgetCustom()
 // } timeline: {
@@ -337,7 +337,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 //
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Medium empty", as: .systemMedium) {
 //    WidgetCustom()
 // } timeline: {
@@ -351,7 +351,7 @@ enum WidgetCustomSupportedFamilies {
 //    )
 // }
 //
-// @available(iOS 17, *)
+// @available(iOS 17, macOS 14, *)
 // #Preview("Large empty", as: .systemLarge) {
 //    WidgetCustom()
 // } timeline: {

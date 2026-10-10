@@ -24,7 +24,7 @@ public struct DeviceBattery {
             }
         }
 
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         init(verboseInfo: [String: Any]) {
             let isCharged = verboseInfo[kIOPSIsChargedKey] as? Bool ?? false
             let isCharging = verboseInfo[kIOPSIsChargingKey] as? Bool ?? false

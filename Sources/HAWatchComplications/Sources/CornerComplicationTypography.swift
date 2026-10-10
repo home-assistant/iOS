@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 
 /// Type shared by the watch corner view and the preview / snapshot rendering, so both draw the same
@@ -9,3 +10,4 @@ public enum CornerComplicationTypography {
     /// has no font of its own.
     public static let flatTextFont = Font.system(size: 20, weight: .semibold)
 }
+#endif

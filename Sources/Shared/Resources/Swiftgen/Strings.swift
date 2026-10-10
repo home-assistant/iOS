@@ -4111,6 +4111,8 @@ public enum L10n {
       }
       /// Preferences…
       public static var preferences: String { return L10n.tr("Localizable", "menu.application.preferences") }
+      /// Settings…
+      public static var settings: String { return L10n.tr("Localizable", "menu.application.settings") }
     }
     public enum File {
       /// Update Sensors

@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HAKit
@@ -169,3 +170,4 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         updateItems(entityProviders: entityProviders)
     }
 }
+#endif

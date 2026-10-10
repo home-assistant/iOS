@@ -2,7 +2,6 @@ import HADesignSystem
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import UIKit
 
 /// The card Siri shows after a control command has changed something.
 ///

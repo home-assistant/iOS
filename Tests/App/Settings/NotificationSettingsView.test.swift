@@ -58,6 +58,20 @@ struct NotificationSettingsViewTests {
         #expect(Current.settingsStore.notificationTapActionsEnabled)
     }
 
+    /// Clearing the badge resets the app icon's number and the count the row shows.
+    @MainActor
+    @Test func clearingTheBadgeResetsTheCount() {
+        var count = 3
+        let badge = AppIconBadge(count: { count }, clear: { count = 0 })
+        let viewModel = NotificationSettingsViewModel(badge: badge)
+        #expect(viewModel.badgeCountText == "3")
+
+        viewModel.clearBadge()
+
+        #expect(count == 0)
+        #expect(viewModel.badgeCountText == "0")
+    }
+
     private func withCatalyst(_ isCatalyst: Bool, _ body: () throws -> Void) rethrows {
         let previous = Current.isCatalyst
         Current.isCatalyst = isCatalyst

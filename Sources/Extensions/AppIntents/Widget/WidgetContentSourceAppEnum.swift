@@ -6,9 +6,11 @@ enum WidgetContentSourceAppEnum: String, Codable, Sendable, AppEnum {
     /// The widget picks a single entity and its value is generated automatically from the entity's state.
     case entity
 
+    #if !os(macOS)
     /// The widget mirrors one of the watch complications the user already built, rendered by the very
-    /// same views the watch and the complication editor use.
+    /// same views the watch and the complication editor use. A Mac has no watch complications to mirror.
     case complication
+    #endif
 
     /// The user provides Jinja templates rendered by the server (requires an admin user).
     case template
@@ -16,6 +18,12 @@ enum WidgetContentSourceAppEnum: String, Codable, Sendable, AppEnum {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(
         name: .init("widgets.content_source.title", defaultValue: "Source")
     )
+    #if os(macOS)
+    static var caseDisplayRepresentations: [WidgetContentSourceAppEnum: DisplayRepresentation] = [
+        .entity: DisplayRepresentation(title: .init("widgets.content_source.entity", defaultValue: "Entity")),
+        .template: DisplayRepresentation(title: .init("widgets.content_source.template", defaultValue: "Template")),
+    ]
+    #else
     static var caseDisplayRepresentations: [WidgetContentSourceAppEnum: DisplayRepresentation] = [
         .entity: DisplayRepresentation(title: .init("widgets.content_source.entity", defaultValue: "Entity")),
         .complication: DisplayRepresentation(title: .init(
@@ -24,4 +32,5 @@ enum WidgetContentSourceAppEnum: String, Codable, Sendable, AppEnum {
         )),
         .template: DisplayRepresentation(title: .init("widgets.content_source.template", defaultValue: "Template")),
     ]
+    #endif
 }

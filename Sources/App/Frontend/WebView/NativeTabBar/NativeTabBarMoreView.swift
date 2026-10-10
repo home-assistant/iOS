@@ -1,3 +1,4 @@
+#if os(iOS)
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -128,3 +129,4 @@ struct NativeTabBarMoreView: View {
         NativeTabBarMoreView(viewModel: .preview())
     }
 }
+#endif

@@ -7,10 +7,25 @@ import SwiftUI
 /// The view is vended by `AnimatedSVGWebViewCache`, which keeps it warm (preloaded at launch) so it
 /// appears without WKWebView's cold-start delay. The SVG should declare a `viewBox` so it scales to
 /// fill; the wrapper HTML forces it to 100% width/height on a transparent background.
-struct AnimatedSVGView: UIViewRepresentable {
+struct AnimatedSVGView {
     /// Name of the `.svg` resource in the main bundle (without extension).
     let resourceName: String
+}
 
+#if os(macOS)
+extension AnimatedSVGView: NSViewRepresentable {
+    func makeNSView(context: Context) -> AnimatedSVGWebView {
+        AnimatedSVGWebViewCache.shared.webView(for: resourceName)
+    }
+
+    func updateNSView(_ nsView: AnimatedSVGWebView, context: Context) {
+        // Another chance to catch a page WebKit stopped or reclaimed while it was off-screen; it
+        // costs nothing when the animation is already running.
+        nsView.resumeAnimationIfNeeded()
+    }
+}
+#else
+extension AnimatedSVGView: UIViewRepresentable {
     func makeUIView(context: Context) -> AnimatedSVGWebView {
         AnimatedSVGWebViewCache.shared.webView(for: resourceName)
     }
@@ -21,6 +36,7 @@ struct AnimatedSVGView: UIViewRepresentable {
         uiView.resumeAnimationIfNeeded()
     }
 }
+#endif
 
 #Preview {
     AnimatedSVGView(resourceName: "home-assistant-logo-loading")

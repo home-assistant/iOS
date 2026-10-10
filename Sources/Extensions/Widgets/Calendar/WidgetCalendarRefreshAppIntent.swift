@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import WidgetKit
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetCalendarRefreshAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.calendar.refresh_title",

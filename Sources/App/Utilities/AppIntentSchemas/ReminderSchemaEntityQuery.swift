@@ -4,7 +4,7 @@ import Shared
 
 /// Todo items are not cached locally, so this reads them from the server a list at a time, the same
 /// way the todo widget does.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 struct ReminderSchemaEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [ReminderSchemaEntity] {
         let wanted = Set(identifiers)

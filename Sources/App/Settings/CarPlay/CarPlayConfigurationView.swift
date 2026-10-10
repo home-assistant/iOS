@@ -2,7 +2,6 @@ import Foundation
 import Shared
 import StoreKit
 import SwiftUI
-import UIKit
 
 struct CarPlayConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
@@ -55,9 +54,11 @@ struct CarPlayConfigurationView: View {
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
+                    #if !os(macOS)
                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                         SKStoreReviewController.requestReview(in: windowScene)
                     }
+                    #endif
                     dismiss()
                 }, label: {
                     Text(L10n.doneLabel)
@@ -183,7 +184,7 @@ struct CarPlayConfigurationView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17.0, macOS 14.0, *) {
             label.selectionDisabled(isUnsupported)
         } else {
             label
@@ -191,7 +192,7 @@ struct CarPlayConfigurationView: View {
     }
 
     private var isGridLayoutSupported: Bool {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, *) {
             return true
         } else {
             return false
@@ -272,12 +273,17 @@ struct CarPlayConfigurationView: View {
 
     private var tabsSection: some View {
         Section(L10n.CarPlay.Config.Tabs.title) {
+            #if canImport(CarPlay)
             NavigationLink {
                 CarPlayTabsSelectionView(viewModel: viewModel)
             } label: {
                 Text(viewModel.config.tabs.map { viewModel.config.name(for: $0) }.joined(separator: ", "))
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
+            #else
+            Text(viewModel.config.tabs.map { viewModel.config.name(for: $0) }.joined(separator: ", "))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            #endif
         }
         .animation(.bouncy, value: viewModel.config.tabs)
     }

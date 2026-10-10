@@ -6,7 +6,13 @@
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
+#import <TargetConditionals.h>
+
+#if TARGET_OS_OSX
+#import <AppKit/AppKit.h>
+#else
 #import <UIKit/UIKit.h>
+#endif
 
 //! Project version number for Shared.
 FOUNDATION_EXPORT double SharedVersionNumber;

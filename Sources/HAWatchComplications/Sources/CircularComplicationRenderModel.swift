@@ -1,3 +1,4 @@
+#if !os(macOS)
 import SwiftUI
 
 /// The resolved, target-agnostic rendering inputs for the circular complication.
@@ -71,3 +72,4 @@ public struct CircularComplicationRenderModel {
         return showsIcon && iconImage != nil && showsValue && !valueText.isEmpty
     }
 }
+#endif

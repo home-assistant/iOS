@@ -1,4 +1,5 @@
-#if !targetEnvironment(macCatalyst)
+#if canImport(CoreNFC)
+#if !(targetEnvironment(macCatalyst) || os(macOS))
 import CoreNFC
 
 extension NFCNDEFPayload {
@@ -20,4 +21,5 @@ extension NFCNDEFPayload {
         )
     }
 }
+#endif
 #endif

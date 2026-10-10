@@ -185,7 +185,7 @@ public class ConnectivityWrapper {
         return applied.state
     }
 
-    #if targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst) || os(macOS)
     init() {
         self.hasWiFi = { Current.macBridge.networkConnectivity.hasWiFi }
         self.connectivityDidChangeNotification = { Current.macBridge.networkConnectivityDidChangeNotification }

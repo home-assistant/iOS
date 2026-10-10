@@ -1,6 +1,10 @@
 import Combine
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 /// Observable state the `WebViewController` publishes to its SwiftUI host (`HomeAssistantView`) so blocking
 /// screens can be layered over the web view in SwiftUI (a `ZStack`) instead of presented as UIKit

@@ -1,5 +1,9 @@
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 @preconcurrency import WebKit
 
 // MARK: - Blank Frontend Detection & Recovery

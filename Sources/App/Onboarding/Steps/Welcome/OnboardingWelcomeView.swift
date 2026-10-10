@@ -64,6 +64,9 @@ struct OnboardingWelcomeView: View {
                 }
             }
         }
+        #if os(macOS)
+        .background(Color(uiColor: .systemBackground))
+        #endif
         .sheet(isPresented: $showLearnMore) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantCompanionGetStarted)
         }

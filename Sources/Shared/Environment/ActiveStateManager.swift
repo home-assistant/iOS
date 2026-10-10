@@ -95,7 +95,7 @@ public class ActiveStateManager {
             return NotificationCenter.default
         }
 
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         return Current.macBridge.distributedNotificationCenter
         #else
         return NotificationCenter.default
@@ -107,7 +107,7 @@ public class ActiveStateManager {
             return NotificationCenter.default
         }
 
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         return Current.macBridge.workspaceNotificationCenter
         #else
         return NotificationCenter.default
@@ -309,7 +309,7 @@ private enum UpdateType: CaseIterable {
         case .fastUserSwitchEnd: return .workspace(.init("NSWorkspaceSessionDidBecomeActiveNotification"))
         // default notification center; likely some shim we post internally
         case .terminateStart:
-            #if targetEnvironment(macCatalyst)
+            #if targetEnvironment(macCatalyst) || os(macOS)
             return .default(Current.macBridge.terminationWillBeginNotification)
             #else
             return .default(.init("NonMac_terminationWillBeginNotification"))

@@ -19,7 +19,7 @@ struct ImportExportConfigurationView: View {
     @StateObject private var viewModel = ImportExportConfigurationViewModel()
 
     var body: some View {
-        List {
+        GroupedList {
             AppleLikeListTopRowHeader(
                 image: .swapHorizontalIcon,
                 title: L10n.Settings.Debugging.ConfigurationTransfer.Header.title,

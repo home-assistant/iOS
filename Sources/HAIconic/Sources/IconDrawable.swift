@@ -8,7 +8,11 @@
 //  Licensed under the Apache 2.0 license
 //  For more information see https://github.com/home-assistant/Iconic
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import CoreText
 
 /** A wrapper class for Objective-C compatibility. */
@@ -161,6 +165,12 @@ extension IconDrawable {
         mString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: range)
 
         // Renders the attributed string as image using Text Kit
+        #if os(macOS)
+        guard rect.size.width > 0, rect.size.height > 0 else { return UIImage() }
+        return UIGraphicsImageRenderer(size: rect.size).image { _ in
+            mString.draw(in: rect)
+        }
+        #else
         UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
         mString.draw(in: rect)
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -171,6 +181,7 @@ extension IconDrawable {
             assertionFailure("Failed to get image for IconDrawable name: \(name). image(ofSize size: CGSize, color: UIColor?, edgeInsets: UIEdgeInsets) -> UIImage")
             return UIImage()
         }
+        #endif
     }
 
     public static func font(ofSize fontSize: CGFloat) -> UIFont {

@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import Foundation
 import HAKit
 import PromiseKit
@@ -170,3 +171,4 @@ final class CarPlayVacuumControlViewModel {
             }
     }
 }
+#endif

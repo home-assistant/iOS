@@ -1,6 +1,16 @@
 import SwiftUI
-import UIKit
 
+#if os(macOS)
+/// Follows whether the system lays the bars out in a vertical column, as on an unfolded iPhone. A Mac
+/// never does, so the binding is left as it is.
+struct VerticalBarObserver: View {
+    @Binding var hasVerticalBar: Bool
+
+    var body: some View {
+        Color.clear
+    }
+}
+#else
 /// Follows whether the system lays the bars out in a vertical column, as on an unfolded iPhone.
 struct VerticalBarObserver: UIViewControllerRepresentable {
     @Binding var hasVerticalBar: Bool
@@ -17,6 +27,7 @@ struct VerticalBarObserver: UIViewControllerRepresentable {
         }
     }
 }
+#endif
 
 #Preview {
     Text("Follows the bar layout")

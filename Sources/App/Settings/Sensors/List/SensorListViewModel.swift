@@ -140,7 +140,7 @@ class SensorListViewModel: ObservableObject {
     func refresh() {
         firstly {
             HomeAssistantAPI.manuallyUpdate(
-                applicationState: UIApplication.shared.applicationState,
+                applicationState: ApplicationState.current,
                 type: .userRequested
             )
         }.catch { [weak self] error in

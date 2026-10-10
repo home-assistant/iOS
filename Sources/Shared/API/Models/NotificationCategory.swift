@@ -57,7 +57,7 @@ public struct NotificationCategory: Codable, FetchableRecord, PersistableRecord,
 
         if sendDismissActions { categoryOptions.insert(.customDismissAction) }
 
-        #if os(iOS)
+        #if !os(watchOS)
         if hiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
         if hiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
         #endif
@@ -65,7 +65,7 @@ public struct NotificationCategory: Codable, FetchableRecord, PersistableRecord,
         return categoryOptions
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var categories: [UNNotificationCategory] {
         [
             UNNotificationCategory(

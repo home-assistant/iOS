@@ -2,7 +2,11 @@ import CoreLocation
 import CoreMotion
 import Foundation
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import UserNotifications
 
 public enum PermissionStatus {
@@ -185,7 +189,12 @@ public enum PermissionType {
             let locationManager = CLLocationManager()
             return locationManager.authorizationStatus.genericStatus
         case .motion:
+            #if os(macOS)
+            // No Mac has the motion coprocessor this permission guards, so there is nothing to grant.
+            return .restricted
+            #else
             return CMMotionActivityManager.authorizationStatus().genericStatus
+            #endif
         case .notification:
             guard let authorizationStatus = fetchNotificationsAuthorizationStatus() else { return .denied }
             return authorizationStatus.genericStatus
@@ -250,6 +259,9 @@ public enum PermissionType {
                 }
             }
         case .motion:
+            #if os(macOS)
+            completionHandler(false, .restricted)
+            #else
             let manager = CMMotionActivityManager()
             let now = Date()
 
@@ -262,13 +274,18 @@ public enum PermissionType {
                 }
                 completionHandler(true, .authorized)
             })
+            #endif
         case .notification:
             UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
                 if let error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")
                 }
                 DispatchQueue.main.async {
+                    #if os(macOS)
+                    NSApplication.shared.registerForRemoteNotifications()
+                    #else
                     UIApplication.shared.registerForRemoteNotifications()
+                    #endif
                     let status: PermissionStatus = granted ? .authorized : .denied
                     completionHandler(granted, status)
                 }

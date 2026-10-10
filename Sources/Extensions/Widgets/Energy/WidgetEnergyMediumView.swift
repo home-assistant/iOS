@@ -3,7 +3,7 @@ import SwiftUI
 import WidgetKit
 
 /// Medium/large layout: period totals for solar and grid, monetary cost, and the net-grid chart.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEnergyMediumView: View {
     let entry: WidgetEnergyEntry
 
@@ -45,7 +45,7 @@ struct WidgetEnergyMediumView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview(as: .systemMedium) {
     WidgetEnergy()
 } timeline: {

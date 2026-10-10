@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import Foundation
 import HADesignSystem
@@ -125,3 +126,4 @@ public extension UIImage {
         )
     }
 }
+#endif

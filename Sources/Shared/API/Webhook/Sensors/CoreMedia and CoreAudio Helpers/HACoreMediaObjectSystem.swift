@@ -1,6 +1,6 @@
 import Foundation
 
-#if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
+#if canImport(CoreMediaIO) && (targetEnvironment(macCatalyst) || os(macOS))
 import CoreMediaIO
 
 class HACoreMediaObjectSystem: HACoreMediaObject {

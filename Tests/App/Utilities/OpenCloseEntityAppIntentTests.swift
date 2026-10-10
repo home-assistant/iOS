@@ -30,12 +30,19 @@ struct OpenCloseEntityAppIntentTests {
         connection: HAMockConnection
     ) async throws -> HARequest? {
         let task = Task { try await intent.perform() }
+        // The request only reaches the connection once the network information has been refreshed,
+        // which takes a while on a loaded machine. Giving up here, rather than awaiting a perform that
+        // nobody will answer, is what keeps a slow refresh from hanging the whole run.
         var waited = 0
-        while connection.pendingRequests.isEmpty, waited < 200 {
+        while connection.pendingRequests.isEmpty, waited < 2000 {
             try await Task.sleep(nanoseconds: 5_000_000)
             waited += 1
         }
-        let request = connection.pendingRequests.first?.request
+        guard let request = connection.pendingRequests.first?.request else {
+            task.cancel()
+            Issue.record("the intent sent no request within 10 seconds")
+            return nil
+        }
         for pending in connection.pendingRequests {
             pending.completion(.success(.empty))
         }

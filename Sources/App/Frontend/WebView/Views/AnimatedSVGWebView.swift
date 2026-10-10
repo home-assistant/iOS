@@ -1,5 +1,9 @@
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import WebKit
 
 /// A transparent, non-interactive `WKWebView` that renders an animated SVG bundled with the app and
@@ -48,17 +52,21 @@ final class AnimatedSVGWebView: WKWebView {
     init(resourceName: String) {
         self.resourceName = resourceName
         super.init(frame: .zero, configuration: WKWebViewConfiguration())
+        #if os(macOS)
+        makeBackgroundTransparent()
+        #else
         isOpaque = false
         backgroundColor = .clear
         scrollView.backgroundColor = .clear
         scrollView.isScrollEnabled = false
         // Let taps fall through to the logo dismiss gesture behind the view.
         isUserInteractionEnabled = false
+        #endif
         navigationDelegate = self
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationWillEnterForeground),
-            name: UIApplication.willEnterForegroundNotification,
+            name: AppLifecycle.willEnterForegroundNotification,
             object: nil
         )
         load()
@@ -69,10 +77,22 @@ final class AnimatedSVGWebView: WKWebView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    #if os(macOS)
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        resumeAnimationIfNeeded()
+    }
+
+    /// Let clicks fall through to the logo dismiss gesture behind the view.
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        nil
+    }
+    #else
     override func didMoveToWindow() {
         super.didMoveToWindow()
         resumeAnimationIfNeeded()
     }
+    #endif
 
     /// Gets the document animating again now that it can be seen. Safe to call repeatedly: a running
     /// animation is left untouched, so this never restarts a healthy loop from its first frame.

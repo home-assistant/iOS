@@ -5,7 +5,7 @@ import Foundation
 /// Only frequency, interval and how the rule ends are carried across — the parts Siri produces from
 /// a spoken phrase. A rule that also narrows by weekday or month-day keeps its frequency and loses
 /// the narrowing, which repeats more often than asked rather than silently dropping the event.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 extension Calendar.RecurrenceRule {
     var rrule: String? {
         guard let frequency = rruleFrequency else { return nil }

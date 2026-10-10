@@ -1,14 +1,14 @@
 import Shared
 import SwiftUI
-import UIKit
 @preconcurrency import WebKit
-#if targetEnvironment(macCatalyst)
+#if os(macOS)
 import AppKit
 #endif
 
 // MARK: - Status Bar & Toolbar
 
 extension WebViewController {
+    #if os(iOS)
     func setupStatusBarView() -> UIView {
         let statusBarView = UIView()
         statusBarView.tag = 111
@@ -30,6 +30,7 @@ extension WebViewController {
 
         return statusBarView
     }
+    #endif
 
     func openServer(_ server: Server) {
         // Not `activate(server:)`: like the server-cycling gestures, the status bar menu switches
@@ -40,7 +41,9 @@ extension WebViewController {
     }
 
     @objc func customizeToolbar() {
-        #if targetEnvironment(macCatalyst)
+        #if os(macOS)
+        view.window?.toolbar?.runCustomizationPalette(nil)
+        #elseif targetEnvironment(macCatalyst)
         view.window?.windowScene?.titlebar?.toolbar?.runCustomizationPalette(nil)
         #endif
     }
@@ -292,10 +295,25 @@ extension WebViewController {
         return false;
     }
     """
+
     @objc func showFindInteraction() {
+        #if os(macOS)
+        textFinder.performAction(.showFindInterface)
+        #else
         // Present the find interaction UI
         if let findInteraction = webView.findInteraction {
             findInteraction.presentFindNavigator(showingReplace: false)
         }
+        #endif
     }
 }
+
+#if os(macOS)
+extension WebViewController: NSUserInterfaceValidations {
+    func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+        guard item.action == #selector(performTextFinderAction(_:)) else { return true }
+        guard let action = NSTextFinder.Action(rawValue: item.tag) else { return false }
+        return textFinder.validateAction(action)
+    }
+}
+#endif

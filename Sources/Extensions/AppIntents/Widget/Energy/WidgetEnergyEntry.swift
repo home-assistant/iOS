@@ -2,7 +2,7 @@ import Foundation
 import Shared
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 struct WidgetEnergyEntry: TimelineEntry {
     var date = Date()
     var period: WidgetEnergyPeriod = .today
@@ -129,7 +129,7 @@ struct WidgetEnergyEntry: TimelineEntry {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 extension WidgetEnergyEntry.ChartPoint {
     /// The drawing half of the bucket, for the design system's energy chart.
     var designSystemModel: WidgetEnergyChartPoint {

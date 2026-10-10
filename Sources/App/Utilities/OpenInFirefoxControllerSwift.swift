@@ -5,7 +5,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import UIKit
 
 open class OpenInFirefoxControllerSwift {
     enum FirefoxType {
@@ -27,10 +26,6 @@ open class OpenInFirefoxControllerSwift {
 
     let type: FirefoxType
 
-    // This would need to be changed if used from an extension… but you
-    // can't open arbitrary URLs from an extension anyway.
-    let app = UIApplication.shared
-
     init(type: FirefoxType = .regular) {
         self.type = type
     }
@@ -42,7 +37,7 @@ open class OpenInFirefoxControllerSwift {
     }
 
     open func isFirefoxInstalled() -> Bool {
-        app.canOpenURL(URL(string: "\(type.urlScheme)://")!)
+        URLOpener.shared.canOpenURL(URL(string: "\(type.urlScheme)://")!)
     }
 
     open func openInFirefox(_ url: URL, privateTab: Bool = false) {
@@ -51,7 +46,7 @@ open class OpenInFirefoxControllerSwift {
             let escaped = encodeByAddingPercentEscapes(url.absoluteString)
             if let firefoxURL =
                 URL(string: "\(type.urlScheme)://open-url?\(privateTab ? "private=true&" : "")url=\(escaped)") {
-                app.open(firefoxURL, options: [:], completionHandler: nil)
+                URLOpener.shared.open(firefoxURL, options: [:], completionHandler: nil)
             }
         }
     }

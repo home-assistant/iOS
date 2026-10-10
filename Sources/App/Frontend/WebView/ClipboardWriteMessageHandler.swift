@@ -1,5 +1,9 @@
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 @preconcurrency import WebKit
 
 /// WKWebView silently no-ops `navigator.clipboard.writeText` from ingress iframes, so this bridge

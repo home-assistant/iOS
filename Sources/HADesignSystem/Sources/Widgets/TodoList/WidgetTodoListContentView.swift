@@ -3,7 +3,6 @@ import Foundation
 import HAIconic
 import SFSafeSymbols
 import SwiftUI
-import UIKit
 import WidgetKit
 
 /// The to-do widget: the list's name, a reload and an add control, then the open items with their
@@ -11,7 +10,7 @@ import WidgetKit
 ///
 /// The controls are handed back to the caller to wrap — completing an item is an App Intent and
 /// adding one is a deep link, neither of which the design system knows how to build.
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 public struct WidgetTodoListContentView: View {
     /// Wraps a rendered control in whatever runs it.
     public typealias ControlContent = (AnyView) -> AnyView
@@ -232,7 +231,7 @@ public struct WidgetTodoListContentView: View {
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     WidgetTodoListContentView(
         title: "Groceries",
@@ -249,7 +248,7 @@ public struct WidgetTodoListContentView: View {
     .frame(width: 338, height: 158)
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview("Small") {
     WidgetTodoListContentView(
         title: "Groceries",

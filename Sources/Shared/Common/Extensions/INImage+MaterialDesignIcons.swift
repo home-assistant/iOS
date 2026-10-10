@@ -2,7 +2,7 @@ import Foundation
 import Intents
 
 public extension INImage {
-    #if os(iOS)
+    #if os(iOS) || os(macOS)
     convenience init(
         icon: MaterialDesignIcons,
         foreground: UIColor,
@@ -12,7 +12,13 @@ public extension INImage {
 
         let iconRect = CGRect(x: 0, y: 0, width: 64, height: 64)
 
-        let iconData = UIKit.UIGraphicsImageRenderer(size: iconRect.size).pngData { _ in
+        #if os(macOS)
+        let renderer = UIGraphicsImageRenderer(size: iconRect.size)
+        #else
+        let renderer = UIKit.UIGraphicsImageRenderer(size: iconRect.size)
+        #endif
+
+        let iconData = renderer.pngData { _ in
             let imageRect = iconRect.insetBy(dx: 8, dy: 8)
 
             background.set()

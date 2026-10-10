@@ -17,7 +17,7 @@ struct WidgetTileInteraction {
     let family: WidgetFamily
 
     func content(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle, tile: AnyView) -> AnyView {
-        if #available(iOS 17, *) {
+        if #available(iOS 17, macOS 14, *) {
             if model.showConfirmation {
                 return AnyView(confirmationContent(model: model, sizeStyle: sizeStyle))
             } else if isSplit(model) {
@@ -48,7 +48,8 @@ struct WidgetTileInteraction {
     /// opens the item. `nil` for every tile that is a single control, which is all of them before
     /// iOS 17 and all of them while a confirmation is pending.
     func regions(model: WidgetBasicViewModel) -> WidgetTileRegions? {
-        guard #available(iOS 17, *), !model.showConfirmation, let iconInteractionType = model.iconInteractionType else {
+        guard #available(iOS 17, macOS 14, *), !model.showConfirmation,
+              let iconInteractionType = model.iconInteractionType else {
             return nil
         }
         return WidgetTileRegions(
@@ -78,7 +79,7 @@ struct WidgetTileInteraction {
     /// One half of a split tile, wrapped in whatever runs it. Either half asks for confirmation when
     /// the item requires it, except a tap that only opens the entity's more-info dialog: that
     /// changes nothing, so there is nothing to confirm first.
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     @ViewBuilder
     private func control(
         model: WidgetBasicViewModel,
@@ -115,7 +116,7 @@ struct WidgetTileInteraction {
     /// drawn around the link, not inside it — so redrawing it as a tile would paint a second one.
     @ViewBuilder
     private func linkTile(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle, tile: AnyView) -> some View {
-        if #available(iOS 18.0, *) {
+        if #available(iOS 18.0, macOS 15.0, *) {
             tile
         } else if family.isLockScreenAccessory {
             tile
@@ -132,7 +133,7 @@ struct WidgetTileInteraction {
 
     /// The intent that flips the tile into its confirmation state. `confirmsTapAction` records which
     /// half asked, so confirming runs that half's behavior.
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     private func confirmationStateIntent(
         for model: WidgetBasicViewModel,
         confirmsTapAction: Bool = false
@@ -144,7 +145,7 @@ struct WidgetTileInteraction {
         return intent
     }
 
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     private func intent(for model: WidgetBasicViewModel, isConfirmationDone: Bool = true) -> (any AppIntent)? {
         intent(
             for: actionInteractionType(for: model),
@@ -153,7 +154,7 @@ struct WidgetTileInteraction {
         )
     }
 
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     private func intent(
         for interactionType: WidgetInteractionType,
         model: WidgetBasicViewModel,
@@ -207,7 +208,7 @@ struct WidgetTileInteraction {
     }
 
     /// The confirmation a tile turns into once it has been asked to run something that requires one.
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     private func confirmationContent(
         model: WidgetBasicViewModel,
         sizeStyle: WidgetTileSizeStyle
@@ -244,7 +245,7 @@ struct WidgetTileInteraction {
 
     /// A deep link that has to be confirmed first: tapping it only flips the widget into its
     /// confirmation state, and the form is what actually follows the link.
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     private func linkThatRequiresConfirmation(
         model: WidgetBasicViewModel,
         sizeStyle: WidgetTileSizeStyle,

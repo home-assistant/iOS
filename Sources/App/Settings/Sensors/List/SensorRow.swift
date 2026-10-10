@@ -11,7 +11,7 @@ struct SensorRow: View {
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
             if let icon = sensor.Icon.flatMap({ MaterialDesignIcons(serversideValueNamed: $0) }) {
-                Image(uiImage: icon.settingsIcon(for: UITraitCollection.current))
+                Image(uiImage: icon.settingsIcon())
                     .renderingMode(.template)
                     .foregroundColor(isEnabled ? .accentColor : .secondary)
             }

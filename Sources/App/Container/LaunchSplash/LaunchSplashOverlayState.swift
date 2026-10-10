@@ -29,7 +29,7 @@ final class LaunchSplashOverlayState: ObservableObject {
         // macOS has no system launch screen to bridge from, so the fake splash is disabled on Catalyst
         // by starting already `.finished`: the overlay renders nothing and every phase consumer
         // (server-pill fade-in, logo anchors) behaves as if the launch hand-off already completed.
-        #if targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) || os(macOS)
         self.phase = .finished
         #else
         self.phase = .waiting

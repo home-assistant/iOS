@@ -5,7 +5,7 @@ This is the router for AI coding agents (LLMs) working on the Home Assistant for
 Home Assistant for Apple Platforms is a native Swift companion app for [Home Assistant](https://www.home-assistant.io/) home automation. The primary user interaction is through a `WKWebView` displaying the Home Assistant web frontend, with native features for notifications, sensors, location tracking, widgets, CarPlay, Apple Watch, and more.
 
 - **Language**: Swift 5.8+
-- **Platforms**: iOS, watchOS, macOS (Catalyst), CarPlay
+- **Platforms**: iOS, watchOS, macOS (native, with the Catalyst build kept until it is retired), CarPlay
 - **Build System**: Xcode 27.0+, Swift Package Manager
 - **Project**: Open `HomeAssistant.xcodeproj` directly (dependencies are managed via Swift Package Manager)
 
@@ -14,7 +14,7 @@ Home Assistant for Apple Platforms is a native Swift companion app for [Home Ass
 These apply to every change, even if you don't load the matching skill:
 
 - **One type per file**: each `struct`/`class`/`enum` lives in its own file named after the type — never stack multiple top-level types (especially SwiftUI `View` structs) in one file. Small `private` helper types nested inside the type are the only exception. Every SwiftUI view ships with a `#Preview`. See [`ha-ios-ui`](.agents/skills/ha-ios-ui/SKILL.md) for the full UI rules.
-- **No navigation title under an Apple-like header**: a screen whose `List` starts with `AppleLikeListTopRowHeader` already shows its title in that header, so it must not also set `.navigationTitle`. Two titles stack as the user scrolls.
+- **No navigation title under an Apple-like header**: a screen whose `List` or `GroupedList` starts with `AppleLikeListTopRowHeader` already shows its title in that header, so it must not also set `.navigationTitle`. Two titles stack as the user scrolls.
 - **SwiftUI confirmations stay on the trigger**: apply `.confirmationDialog` directly to the `Button` that opens it, not to a parent `List`, `Section`, or container view. This keeps confirmation ownership local and avoids dialogs firing from unrelated controls.
 - **TestFlight gating is `Current.isTestFlight`, and always paired with an ungating PR**: `Current.isTestFlight` is the only supported way to limit a feature to beta builds — never add a bespoke flag, build setting, or `#if` for it. Every change that puts a feature behind that gate must be accompanied by a parallel draft PR that removes the gate, so shipping the feature to everyone is a one-click merge. See [`ha-ios-workflow-ci`](.agents/skills/ha-ios-workflow-ci/SKILL.md) for the full procedure.
 - **Every sensor is opt-in, always listed, and asks for its own permission**: nothing reports until the user switches it on, so never add a sensor to a default-on list and never make installing an update start reporting something new (`SensorRegistry.legacyEraSensorIDs` is frozen at the release that introduced the allowlist, which is what keeps a new sensor out of the upgrade path; a new ID belongs in `WebhookSensorId` alone). A `SensorProvider` must still list its sensor when it cannot read one, reporting the state as `unavailable` rather than erroring out, because an errored provider drops out of the sensors list and takes the row that switches it on with it. Where a sensor needs an iOS permission, map its ID in `SensorPermission.required(forSensorUniqueID:)` so switching it on is what prompts for that permission. Only a device that can never produce the sensor is an error. Classify every new sensor in `SensorEntityCategory.category(forSensorUniqueID:)` — its switch is exhaustive, so adding a `WebhookSensorId` case without deciding won't compile — and never set `entityCategory` where the sensor is built. Enablement is per server — `Current.sensors.isEnabled(uniqueID:for:)` for what a given server receives, `isEnabledForAnyServer(uniqueID:)` for device-level work that happens once however many servers the values reach — and a server the user adds starts with nothing enabled, so never seed a new server from another one's selection.
@@ -34,6 +34,7 @@ These apply to every change, even if you don't load the matching skill:
 | [`ha-ios-ui`](.agents/skills/ha-ios-ui/SKILL.md) | Building UI, choosing SwiftUI vs UIKit, or following the one-struct-per-file, inline-body, and `#Preview` rules |
 | [`ha-ios-testing`](.agents/skills/ha-ios-testing/SKILL.md) | Writing unit or snapshot tests, or mocking dependencies by overriding `Current` |
 | [`ha-ios-workflow-ci`](.agents/skills/ha-ios-workflow-ci/SKILL.md) | Preparing a change for commit, gating a feature behind TestFlight, or understanding the CI gates that must pass before merge |
+| [`ha-ios-macos`](.agents/skills/ha-ios-macos/SKILL.md) | Touching `#if os(macOS)` code, giving UIKit code an AppKit counterpart, presenting a SwiftUI screen from AppKit, adding a Mac window, menu or sheet, or building and running the native Mac app |
 | [`ha-ios-skill-maintenance`](.agents/skills/ha-ios-skill-maintenance/SKILL.md) | Adding, editing, or reorganizing these skills, or updating this router |
 
 ## Additional Resources

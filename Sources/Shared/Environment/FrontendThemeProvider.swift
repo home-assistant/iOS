@@ -142,9 +142,7 @@ public final class FrontendThemeProvider: FrontendThemeProviderProtocol {
         #else
         let lightColor = light ?? dark ?? .clear
         let darkColor = dark ?? light ?? .clear
-        return Color(UIColor { traits in
-            traits.userInterfaceStyle == .dark ? UIColor(darkColor) : UIColor(lightColor)
-        })
+        return Color(UIColor.dynamic(light: UIColor(lightColor), dark: UIColor(darkColor)))
         #endif
     }
 }

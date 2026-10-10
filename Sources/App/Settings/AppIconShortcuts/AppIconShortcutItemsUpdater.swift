@@ -1,11 +1,17 @@
 import SFSafeSymbols
 import Shared
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 enum AppIconShortcutItemsUpdater {
     private static let shortcutTypePrefix = "appIconShortcut."
     private static let shortcutTypeSeparator: Character = "|"
+    #if !os(macOS)
     private static let maximumShortcutItems = 4
+    #endif
 
     struct ShortcutIdentifier: Equatable {
         let serverId: String
@@ -14,21 +20,31 @@ enum AppIconShortcutItemsUpdater {
     }
 
     private static var databaseUpdateObserver: NSObjectProtocol?
+    #if !os(macOS)
     private static var didBecomeActiveObserver: NSObjectProtocol?
     private static var needsUpdateOnForeground = false
     private static let generationLock = NSLock()
     private static var requestedGeneration = 0
     private static var publishedGeneration = 0
+    #endif
 
     /// `.inactive` counts as not active: launches, background ones included, start there.
+    /// A Mac app publishes nothing, so it never has to wait for the foreground.
     static var isAppActive: () -> Bool = {
-        Current.isCatalyst || UIApplication.shared.applicationState == .active
+        #if os(macOS)
+        return true
+        #else
+        return Current.isCatalyst || UIApplication.shared.applicationState == .active
+        #endif
     }
 
     /// Publishes the configured items now and again each time the database updater finishes a
     /// server, so titles resolved before the entity table was synced (a fresh install, an imported
     /// configuration) catch up without waiting for the next launch.
+    ///
+    /// Does nothing on a Mac, where an app has no Home Screen quick actions to publish.
     static func start() {
+        #if !os(macOS)
         if databaseUpdateObserver == nil {
             databaseUpdateObserver = NotificationCenter.default.addObserver(
                 forName: .appDatabaseUpdaterDidFinishRoutine,
@@ -50,17 +66,21 @@ enum AppIconShortcutItemsUpdater {
             }
         }
         updateOrDeferToForeground()
+        #endif
     }
 
     static func stop() {
+        #if !os(macOS)
         for observer in [databaseUpdateObserver, didBecomeActiveObserver].compactMap({ $0 }) {
             NotificationCenter.default.removeObserver(observer)
         }
         databaseUpdateObserver = nil
         didBecomeActiveObserver = nil
         needsUpdateOnForeground = false
+        #endif
     }
 
+    #if !os(macOS)
     /// Background launches (WatchConnectivity, location, background refresh) don't need the
     /// shortcuts, and reading every entity and area row there was the top 0xdead10cc kill.
     private static func updateOrDeferToForeground() {
@@ -70,8 +90,13 @@ enum AppIconShortcutItemsUpdater {
             needsUpdateOnForeground = true
         }
     }
+    #endif
 
     static func update(completion: @escaping @Sendable () -> Void = {}) {
+        #if os(macOS)
+        // Nothing to publish: a Mac app has no Home Screen quick actions.
+        DispatchQueue.main.async(execute: completion)
+        #else
         let generation = nextGeneration()
         // `loadInformation` fetches every entity, area, and device row for every server
         // synchronously on the calling thread, and `update()` runs at app launch — keep that work
@@ -110,6 +135,7 @@ enum AppIconShortcutItemsUpdater {
                 publish(shortcutItems: shortcutItems, generation: generation, completion: completion)
             }
         }
+        #endif
     }
 
     static func identifier(from shortcutType: String) -> ShortcutIdentifier? {
@@ -127,6 +153,7 @@ enum AppIconShortcutItemsUpdater {
         )
     }
 
+    #if !os(macOS)
     private static func hasUnreadableServer(
         for items: [MagicItem],
         entitiesPerServer: [String: [HAAppEntity]]
@@ -208,4 +235,5 @@ enum AppIconShortcutItemsUpdater {
             return nil
         }
     }
+    #endif
 }

@@ -1,12 +1,16 @@
 import Foundation
+#if canImport(WatchConnectivity)
 import WatchConnectivity
+#endif
 
 /// Identity handle for an in-flight transfer, so completions can be keyed by `ObjectIdentifier`
 /// without depending on the (non-constructible) concrete WatchConnectivity transfer classes.
 public protocol WCTransferHandle: AnyObject {}
 
+#if canImport(WatchConnectivity)
 extension WCSessionUserInfoTransfer: WCTransferHandle {}
 extension WCSessionFileTransfer: WCTransferHandle {}
+#endif
 
 /// The subset of `WCSession` the connectivity layer touches, abstracted for testability. `…Proxy`
 /// suffixes avoid redeclaring `WCSession`'s own members in its conformance.
@@ -30,7 +34,7 @@ public protocol WCSessionProtocol: AnyObject {
     @discardableResult func transferUserInfoProxy(_ userInfo: [String: Any]) -> WCTransferHandle
     @discardableResult func transferFileProxy(_ file: URL, metadata: [String: Any]?) -> WCTransferHandle
 
-    #if os(iOS)
+    #if !os(watchOS)
     var isPairedProxy: Bool { get }
     var isWatchAppInstalledProxy: Bool { get }
     var isComplicationEnabledProxy: Bool { get }
@@ -40,6 +44,7 @@ public protocol WCSessionProtocol: AnyObject {
     #endif
 }
 
+#if canImport(WatchConnectivity)
 extension WCSession: WCSessionProtocol {
     public var delegateProxy: WCSessionDelegate? {
         get { delegate }
@@ -77,7 +82,7 @@ extension WCSession: WCSessionProtocol {
         transferFile(file, metadata: metadata)
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var isPairedProxy: Bool { isPaired }
     public var isWatchAppInstalledProxy: Bool { isWatchAppInstalled }
     public var isComplicationEnabledProxy: Bool { isComplicationEnabled }
@@ -90,3 +95,4 @@ extension WCSession: WCSessionProtocol {
     }
     #endif
 }
+#endif

@@ -7,7 +7,7 @@ import Shared
 /// The reminders schema has no read action — Apple only defines create, update and delete — so this
 /// is a plain intent. It returns the same entity the update and delete intents take, so a Shortcut
 /// can read a list and act on what it finds without an intermediate step.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 struct GetRemindersAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.reminders.get_items.title",

@@ -27,10 +27,12 @@ struct WidgetAssistView: View {
     @ViewBuilder
     private var content: some View {
         switch widgetFamily {
+        #if !os(macOS)
         case .accessoryCircular:
             accessoryCircular
                 .widgetBackground(Color.clear)
                 .widgetURL(entry.widgetURL)
+        #endif
         case .systemSmall:
             singleHomeScreenItem
                 .widgetBackground(Color.clear)

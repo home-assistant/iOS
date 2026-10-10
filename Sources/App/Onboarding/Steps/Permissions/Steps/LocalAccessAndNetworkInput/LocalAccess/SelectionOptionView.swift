@@ -166,7 +166,7 @@ private struct SelectionIndicator: View {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 #Preview("Single Selection") {
     @Previewable @State var selection: String? = "secure"
 
@@ -206,7 +206,7 @@ private struct SelectionIndicator: View {
     .padding()
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 #Preview("Multiple Selection") {
     @Previewable @State var selections: Set<String> = ["option1"]
 

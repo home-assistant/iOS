@@ -7,7 +7,7 @@ import Shared
 ///
 /// Home Assistant has no concept of attendees, organizers, alarms or travel time, so those are
 /// empty or nil — which is the truthful answer for an event that has none, not a placeholder.
-@available(iOS 27.0, *)
+@available(iOS 27.0, macOS 27.0, *)
 @AppEntity(schema: .calendar.event)
 struct CalendarEventSchemaEntity: IndexedEntity {
     static let defaultQuery = CalendarEventSchemaEntityQuery()

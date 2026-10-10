@@ -1,6 +1,5 @@
 import Shared
 import SwiftUI
-import UIKit
 
 enum BannerDuration {
     case seconds(TimeInterval)
@@ -152,7 +151,7 @@ private extension BannerAction? {
 }
 
 protocol BannerPresenter: AnyObject {
-    func show(on viewController: UIViewController, request: BannerRequest)
+    func show(on viewController: PlatformViewController, request: BannerRequest)
     func hide(id: String)
 }
 
@@ -161,7 +160,7 @@ final class DefaultBannerPresenter: BannerPresenter {
     private var currentRequest: BannerRequest?
     private var autoDismissWorkItem: DispatchWorkItem?
 
-    func show(on viewController: UIViewController, request: BannerRequest) {
+    func show(on viewController: PlatformViewController, request: BannerRequest) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             if let currentRequest, currentOverlay != nil, currentRequest.matchesPresentation(of: request) {
@@ -170,7 +169,12 @@ final class DefaultBannerPresenter: BannerPresenter {
 
             dismissCurrent(animated: false)
 
+            #if os(macOS)
+            // `loadViewIfNeeded()` needs macOS 14; reading the view loads it on every release.
+            _ = viewController.view
+            #else
             viewController.loadViewIfNeeded()
+            #endif
 
             let overlay = BannerOverlayView(request: request)
             overlay.translatesAutoresizingMaskIntoConstraints = false
@@ -245,6 +249,10 @@ final class DefaultBannerPresenter: BannerPresenter {
     }
 }
 
+#if os(macOS)
+/// The banner is drawn by `MacBannerOverlayView` on the Mac; the presenter above drives both the same way.
+private typealias BannerOverlayView = MacBannerOverlayView
+#else
 private final class BannerOverlayView: UIView {
     private let request: BannerRequest
     private let backgroundButton = UIButton(type: .custom)
@@ -439,6 +447,7 @@ private final class BannerOverlayView: UIView {
         onActionRequested?()
     }
 }
+#endif
 
 // MARK: - Alerts & Message Presentation
 
@@ -488,12 +497,16 @@ extension WebViewController {
     /// The shake gesture only exists on a phone, so only a phone offers the toggle. Read from this
     /// controller's traits rather than the device, which is what a resizable window reports.
     var showsShakeDisclaimerToggle: Bool {
+        #if os(macOS)
+        false
+        #else
         traitCollection.userInterfaceIdiom == .phone
+        #endif
     }
 
     func openDebug() {
         let showsShakeDisclaimerToggle = showsShakeDisclaimerToggle
-        let controller = UIHostingController(rootView: AnyView(
+        let controller = PlatformHostingController(rootView: AnyView(
             NavigationView {
                 VStack {
                     if showsShakeDisclaimerToggle {

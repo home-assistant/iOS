@@ -447,7 +447,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor private func startOnDeviceTranscription() {
         // Use a pre-injected transcriber (e.g. from tests) or create a production one.
         if speechTranscriber == nil {
-            guard #available(iOS 17.0, *) else { return }
+            guard #available(iOS 17.0, macOS 14.0, *) else { return }
             let localeIdentifier = configuration.onDeviceSTTLocaleIdentifier
             speechTranscriber = localeIdentifier.map { SpeechTranscriber(localeIdentifier: $0) } ?? SpeechTranscriber()
         }

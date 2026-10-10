@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import PromiseKit
 import Shared
@@ -41,3 +42,4 @@ private extension UIApplication {
         )
     }
 }
+#endif

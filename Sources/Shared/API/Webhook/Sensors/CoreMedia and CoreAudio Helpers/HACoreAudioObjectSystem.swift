@@ -1,6 +1,6 @@
 import Foundation
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
 import CoreAudio
 
 class HACoreAudioObjectSystem: HACoreAudioObject {
@@ -14,6 +14,11 @@ class HACoreAudioObjectSystem: HACoreAudioObject {
         } else {
             return []
         }
+    }
+
+    var defaultOutputDevice: HACoreAudioObjectDevice? {
+        guard let id = value(for: .defaultOutputDevice), id != kAudioObjectUnknown else { return nil }
+        return HACoreAudioObjectDevice(id: id)
     }
 
     var allInputDevices: [HACoreAudioObjectDevice] {

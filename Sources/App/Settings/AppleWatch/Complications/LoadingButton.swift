@@ -1,3 +1,4 @@
+#if os(iOS)
 import SwiftUI
 
 /// A SwiftUI replacement for `ButtonRowWithLoading`. Shows a progress indicator
@@ -39,3 +40,4 @@ private struct LoadingButtonLabel: View {
             .foregroundColor(isEnabled ? .accentColor : .secondary)
     }
 }
+#endif

@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct WidgetOpenPageAppIntent: WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
     // Carries over configurations from the deprecated SiriKit widget intent
     static let intentClassName = "WidgetOpenPageIntent"

@@ -3,10 +3,10 @@ import SwiftUI
 
 struct AssistTypingIndicator: View {
     var body: some View {
-        if #available(iOS 18.0, watchOS 11.0, *) {
+        if #available(iOS 18.0, macOS 15.0, watchOS 11.0, *) {
             icon
                 .symbolEffect(.variableColor.iterative.dimInactiveLayers.reversing, options: .repeat(.continuous))
-        } else if #available(iOS 17.0, watchOS 10, *) {
+        } else if #available(iOS 17.0, macOS 14.0, watchOS 10, *) {
             icon
                 .symbolEffect(.variableColor)
         } else {

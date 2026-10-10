@@ -6,7 +6,7 @@ import Shared
 ///
 /// The result is the same entity the delete intent takes, so a Shortcut can read a calendar and act
 /// on what it finds without an intermediate step.
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct GetCalendarEventsAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "app_intents.calendar.get_events.title",
