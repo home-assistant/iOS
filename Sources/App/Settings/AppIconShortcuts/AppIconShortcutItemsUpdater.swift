@@ -14,9 +14,16 @@ enum AppIconShortcutItemsUpdater {
     }
 
     private static var databaseUpdateObserver: NSObjectProtocol?
+    private static var didBecomeActiveObserver: NSObjectProtocol?
+    private static var needsUpdateOnForeground = false
     private static let generationLock = NSLock()
     private static var requestedGeneration = 0
     private static var publishedGeneration = 0
+
+    /// `.inactive` counts as not active: launches, background ones included, start there.
+    static var isAppActive: () -> Bool = {
+        Current.isCatalyst || UIApplication.shared.applicationState == .active
+    }
 
     /// Publishes the configured items now and again each time the database updater finishes a
     /// server, so titles resolved before the entity table was synced (a fresh install, an imported
@@ -28,17 +35,40 @@ enum AppIconShortcutItemsUpdater {
                 object: nil,
                 queue: .main
             ) { _ in
+                updateOrDeferToForeground()
+            }
+        }
+        if didBecomeActiveObserver == nil {
+            didBecomeActiveObserver = NotificationCenter.default.addObserver(
+                forName: UIApplication.didBecomeActiveNotification,
+                object: nil,
+                queue: .main
+            ) { _ in
+                guard needsUpdateOnForeground else { return }
+                needsUpdateOnForeground = false
                 update()
             }
         }
-        update()
+        updateOrDeferToForeground()
     }
 
     static func stop() {
-        if let databaseUpdateObserver {
-            NotificationCenter.default.removeObserver(databaseUpdateObserver)
+        for observer in [databaseUpdateObserver, didBecomeActiveObserver].compactMap({ $0 }) {
+            NotificationCenter.default.removeObserver(observer)
         }
         databaseUpdateObserver = nil
+        didBecomeActiveObserver = nil
+        needsUpdateOnForeground = false
+    }
+
+    /// Background launches (WatchConnectivity, location, background refresh) don't need the
+    /// shortcuts, and reading every entity and area row there was the top 0xdead10cc kill.
+    private static func updateOrDeferToForeground() {
+        if isAppActive() {
+            update()
+        } else {
+            needsUpdateOnForeground = true
+        }
     }
 
     static func update(completion: @escaping @Sendable () -> Void = {}) {
