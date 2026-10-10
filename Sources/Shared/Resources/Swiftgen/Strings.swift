@@ -6088,7 +6088,7 @@ public enum L10n {
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.frontend_asset_cache.title") }
           }
           public enum LegacyRealmStore {
-            /// The old store zones, notification categories and complications are imported from. It is only kept until that import has run.
+            /// Leftover data from an older version of the app. Nothing uses it anymore.
             public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.explanation") }
             /// Legacy database
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.title") }
@@ -6187,7 +6187,7 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.sort.title") }
         }
         public enum Summary {
-          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, files you added yourself, and anything still waiting to be imported. Everything else is a copy the app makes again when it needs it.
+          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.
           public static var footer: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.footer") }
           /// Protected items
           public static var protected: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.protected") }

@@ -20,7 +20,6 @@ public enum BackgroundTask: String {
     case manualLocationUpdate = "manual-location-update"
     case signaledUpdateSensors = "signaled-update-sensors"
     case connectApi = "connect-api"
-    case realmWrite = "realm-write"
     case pushLocationRequest = "push-location-request"
     case remindersSync = "reminders-sync"
     case legacyModelCleanup = "legacy-model-cleanup"

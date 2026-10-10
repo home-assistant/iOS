@@ -1,6 +1,5 @@
 import Foundation
 import PromiseKit
-import RealmSwift
 import Shared
 import SwiftUI
 import UIKit

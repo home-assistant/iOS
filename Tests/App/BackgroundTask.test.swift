@@ -21,7 +21,6 @@ struct BackgroundTaskTests {
         assert(BackgroundTask.manualLocationUpdate.rawValue == "manual-location-update")
         assert(BackgroundTask.signaledUpdateSensors.rawValue == "signaled-update-sensors")
         assert(BackgroundTask.connectApi.rawValue == "connect-api")
-        assert(BackgroundTask.realmWrite.rawValue == "realm-write")
         assert(BackgroundTask.pushLocationRequest.rawValue == "push-location-request")
     }
 }
