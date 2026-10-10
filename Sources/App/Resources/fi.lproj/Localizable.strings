@@ -2383,6 +2383,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_sensors.sensors.header" = "Anturit";
 "settings_sensors.sensors.no_results" = "Hakuehtojasi vastaavia antureita ei löytynyt";
 "settings_sensors.sensors.search_prompt" = "Hae antureita";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
 "settings_sensors.servers.header" = "Palvelimet";
 "settings_sensors.servers.search_prompt" = "Search servers";

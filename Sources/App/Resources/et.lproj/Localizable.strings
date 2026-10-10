@@ -2383,6 +2383,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_sensors.sensors.header" = "Andurid";
 "settings_sensors.sensors.no_results" = "No sensors match your search";
 "settings_sensors.sensors.search_prompt" = "Search sensors";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Each server receives the sensors you pick for it, so a sensor can report to one and not another.";
 "settings_sensors.servers.header" = "Servers";
 "settings_sensors.servers.search_prompt" = "Search servers";

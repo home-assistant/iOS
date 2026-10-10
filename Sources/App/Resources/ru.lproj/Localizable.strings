@@ -2381,6 +2381,8 @@ Home Assistant — это приложение с открытым исходн�
 "settings_sensors.sensors.header" = "Датчики";
 "settings_sensors.sensors.no_results" = "Нет датчиков, соответствующих вашему запросу";
 "settings_sensors.sensors.search_prompt" = "Поиск датчиков";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Каждый сервер получает те датчики, которые вы для него выбираете, поэтому датчик может отчитываться перед одним и не делать этого перед другими.";
 "settings_sensors.servers.header" = "Серверы";
 "settings_sensors.servers.search_prompt" = "Поиск серверов";
