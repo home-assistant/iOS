@@ -36,7 +36,6 @@ struct FolderDetailView: View {
                 ReorderableSectionHeader(isEditing: $isEditingItems)
             }
         }
-        .preferredColorScheme(.dark)
         .navigationTitle(folder?.displayText ?? L10n.Watch.Configuration.Folder.defaultName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -61,7 +60,6 @@ struct FolderDetailView: View {
                         guard let itemToAdd else { return }
                         viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
                     }
-                    .preferredColorScheme(.dark)
                 }
             case .assistPrompt:
                 NavigationView {
@@ -70,7 +68,6 @@ struct FolderDetailView: View {
                     }
                 }
                 .navigationViewStyle(.stack)
-                .preferredColorScheme(.dark)
             }
         }
         .sheet(isPresented: $showEditFolder) {
@@ -80,7 +77,6 @@ struct FolderDetailView: View {
                         viewModel.updateFolder(updatedFolder)
                     }
                 }
-                .preferredColorScheme(.dark)
             }
         }
     }
@@ -100,7 +96,6 @@ struct FolderDetailView: View {
                 AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
                     viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
                 }
-                .environment(\.colorScheme, .dark)
             } label: {
                 itemLabel(item: item)
             }
@@ -109,7 +104,6 @@ struct FolderDetailView: View {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
                     viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
                 }
-                .environment(\.colorScheme, .dark)
             } label: {
                 itemLabel(item: item)
             }
