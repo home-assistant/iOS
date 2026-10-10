@@ -6276,7 +6276,7 @@
 			repositoryURL = "https://github.com/bgoncal/starscream";
 			requirement = {
 				kind = revision;
-				revision = aaaf609d07eb487b2fccbe77f6267cf0843e2b19;
+				revision = 9f793f7396d0def800c18be36769deb6d1313238;
 			};
 		};
 		42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
