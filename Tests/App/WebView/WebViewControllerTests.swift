@@ -1,4 +1,5 @@
 import Alamofire
+import Combine
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
@@ -265,6 +266,24 @@ final class WebViewControllerTests: XCTestCase {
         sut.handleSceneDidActivate()
 
         XCTAssertEqual(externalMessageHandler.handledExternalMessages.map { $0["type"] as? String }, ["config/get"])
+    }
+
+    /// Only a return from the background tells the host: dismissing a system alert activates the scene without
+    /// it having been away.
+    func testBecomingActiveTellsTheHostOnlyWhenTheSceneReturnsFromTheBackground() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        var returns = 0
+        let subscription = overlayState.sceneReturnedFromBackground.sink { returns += 1 }
+        defer { subscription.cancel() }
+
+        sut.handleSceneDidActivate()
+        XCTAssertEqual(returns, 0)
+
+        sut.handleSceneDidEnterBackground()
+        sut.handleSceneDidActivate()
+        XCTAssertEqual(returns, 1)
     }
 
     /// Multi-window: another window going to the background says nothing about this frontend.

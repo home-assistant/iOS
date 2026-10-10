@@ -243,7 +243,7 @@ final class HomeAssistantViewTests: XCTestCase {
         try? await Task.sleep(for: .milliseconds(120))
         XCTAssertTrue(sut.isFullScreenLoaderMounted)
 
-        NotificationCenter.default.post(name: UIScene.didActivateNotification, object: nil)
+        overlayState.sceneReturnedFromBackground.send()
 
         await waitUntil { !sut.isFullScreenLoaderMounted }
         XCTAssertFalse(sut.shouldShowStandByView)

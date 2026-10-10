@@ -302,9 +302,9 @@ final class HomeAssistantViewModel: ObservableObject {
             .store(in: &cancellables)
 
         // The watchdog fires once per load, and in the background it can spend that on a frontend whose
-        // reports are being held back. A loader that is still up when the scene comes back gets another one.
-        NotificationCenter.default.publisher(for: UIScene.didActivateNotification)
-            .sink { [weak self] _ in
+        // reports are being held back. A loader that is still up when its scene comes back gets another one.
+        overlayState.sceneReturnedFromBackground
+            .sink { [weak self] in
                 self?.armLoaderWatchdog()
             }
             .store(in: &cancellables)

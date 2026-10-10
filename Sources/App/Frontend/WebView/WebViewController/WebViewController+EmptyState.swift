@@ -129,6 +129,9 @@ extension WebViewController {
 
         let returnedFromBackground = didEnterBackgroundSinceLastActivation
         didEnterBackgroundSinceLastActivation = false
+        if returnedFromBackground {
+            overlayState?.sceneReturnedFromBackground.send()
+        }
 
         guard isEmptyStateDeferredUntilActive else {
             if returnedFromBackground, emptyStateTimer != nil {
