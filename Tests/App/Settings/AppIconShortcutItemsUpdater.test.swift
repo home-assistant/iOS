@@ -12,6 +12,7 @@ struct AppIconShortcutItemsUpdaterTests {
     private final class PassthroughBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
         func callAsFunction<PromiseValue>(
             withName name: String,
+            requiringAssertion: Bool,
             wrapping: (TimeInterval?) -> Promise<PromiseValue>
         ) -> Promise<PromiseValue> {
             wrapping(nil)
