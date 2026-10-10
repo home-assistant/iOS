@@ -160,6 +160,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // `BrandedSwitchToggleStyle` at the hosting seams instead.
         UISwitch.appearance().onTintColor = .haPrimary
 
+        // `lifecycleManager.didFinishLaunching()` schedules native requests, so the mirror starts first.
+        WebViewCookieMirror.shared.start()
         lifecycleManager.didFinishLaunching()
         setupDebugSwift()
         FlightGreetingManager.shared.start()

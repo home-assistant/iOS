@@ -36,7 +36,7 @@ final class CameraHLSAssetLoader: NSObject {
     /// so the caller keeps the plain asset and this loader is not needed.
     static func asset(for url: URL, api: HomeAssistantAPI) -> (asset: AVURLAsset, loader: CameraHLSAssetLoader?) {
         guard needsCustomLoading(url: url, connection: api.server.info.connection) else {
-            return (AVURLAsset(url: url), nil)
+            return (AVURLAsset.withMirroredCookies(url: url), nil)
         }
 
         let asset = AVURLAsset(url: url, options: customLoadingOptions)
