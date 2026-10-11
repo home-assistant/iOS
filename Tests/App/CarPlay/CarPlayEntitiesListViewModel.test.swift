@@ -223,4 +223,80 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         provider.setExecutingState(false)
         XCTAssertFalse(provider.isOperationInFlight)
     }
+
+    @available(iOS 26.0, *)
+    func testStateUpdatesPreserveProviderOrderWhenNamesChange() throws {
+        let hall = try stateEntity(id: "light.hall", name: "Hall")
+        let kitchen = try stateEntity(id: "light.kitchen", name: "Kitchen")
+        showStates([hall, kitchen])
+        XCTAssertEqual(try displayedEntityNames(), ["Hall", "Kitchen"])
+
+        let updatedHall = try stateEntity(id: "light.hall", name: "Zulu")
+        let updatedKitchen = try stateEntity(id: "light.kitchen", name: "Alpha")
+        sut.updateStates(entities: cachedStates([updatedHall, updatedKitchen]))
+        drainMainQueue()
+
+        XCTAssertEqual(try displayedEntityNames(), ["Zulu", "Alpha"])
+    }
+
+    @available(iOS 26.0, *)
+    func testStateUpdatesKeepMissingRowsAndDoNotInsertNewEntities() throws {
+        let hall = try stateEntity(id: "light.hall", name: "Hall")
+        let kitchen = try stateEntity(id: "light.kitchen", name: "Kitchen")
+        showStates([hall, kitchen])
+
+        let updatedKitchen = try stateEntity(id: "light.kitchen", name: "Kitchen updated")
+        let added = try stateEntity(id: "light.new", name: "New")
+        let otherDomain = try stateEntity(id: "sensor.room", name: "Room")
+        sut.updateStates(entities: cachedStates([updatedKitchen, added, otherDomain]))
+        drainMainQueue()
+
+        XCTAssertEqual(try displayedEntityNames(), ["Hall", "Kitchen updated"])
+    }
+
+    @available(iOS 26.0, *)
+    func testUnchangedStatesDoNotReplacePresentedRows() throws {
+        let hall = try stateEntity(id: "light.hall", name: "Hall")
+        showStates([hall])
+        let originalRow = try XCTUnwrap(template.template.sections.flatMap(\.items).first as? CPListImageRowItem)
+
+        sut.updateStates(entities: cachedStates([hall]))
+        drainMainQueue()
+
+        let currentRow = try XCTUnwrap(template.template.sections.flatMap(\.items).first as? CPListImageRowItem)
+        XCTAssertTrue(currentRow === originalRow)
+    }
+
+    private func stateEntity(id: String, name: String) throws -> HAEntity {
+        try HAEntity(
+            entityId: id,
+            state: "on",
+            lastChanged: Date(timeIntervalSince1970: 0),
+            lastUpdated: Date(timeIntervalSince1970: 0),
+            attributes: ["friendly_name": name],
+            context: .init(id: "", userId: "", parentId: "")
+        )
+    }
+
+    private func cachedStates(_ entities: [HAEntity]) -> HACachedStates {
+        HACachedStates(entitiesDictionary: Dictionary(uniqueKeysWithValues: entities.map { ($0.entityId, $0) }))
+    }
+
+    private func showStates(_ entities: [HAEntity]) {
+        sut = CarPlayEntitiesListViewModel(
+            filterType: .domain("light"),
+            server: server,
+            entitiesCachedStates: cachedStates(entities)
+        )
+        template = CarPlayEntitiesListTemplate(viewModel: sut, title: "Lights")
+        sut.update()
+        drainMainQueue()
+    }
+
+    @available(iOS 26.0, *)
+    private func displayedEntityNames() throws -> [String] {
+        let rows = template.template.sections.flatMap(\.items).compactMap { $0 as? CPListImageRowItem }
+        let elements = rows.flatMap(\.elements)
+        return try elements.map { try XCTUnwrap($0 as? CPListImageRowItemCondensedElement).title }
+    }
 }
