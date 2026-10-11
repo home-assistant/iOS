@@ -107,7 +107,7 @@ public final class HealthKitSensor: SensorProvider {
         let calendar = Current.calendar()
         let start: Date
         switch metric.aggregation {
-        case .cumulativeSum:
+        case .cumulativeSum, .activitySummary:
             start = calendar.startOfDay(for: now)
         case .mostRecent:
             start = calendar.date(byAdding: .day, value: -metric.lookbackDays, to: now)

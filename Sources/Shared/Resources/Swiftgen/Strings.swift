@@ -7628,6 +7628,14 @@ public enum L10n {
           /// Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.
           public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.in_bed.footer") }
         }
+        public enum MoveGoal {
+          /// Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.
+          public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.move_goal.footer") }
+        }
+        public enum RingNeedsWatch {
+          /// Only an Apple Watch tracks this ring. Without one the ring has no goal, and this sensor stays unavailable.
+          public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.ring_needs_watch.footer") }
+        }
       }
       public enum Sensors {
         /// Enable all Apple Health sensors

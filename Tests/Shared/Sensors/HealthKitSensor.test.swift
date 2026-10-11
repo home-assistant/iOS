@@ -449,6 +449,54 @@ class HealthKitSensorTests: XCTestCase {
         XCTAssertEqual(sleepWindow.end, now)
     }
 
+    func testEnablingASecondRingMetricObservesItDespiteTheSharedIdentifier() throws {
+        // Every ring metric reads the one activity summary type, but each is observed through sample
+        // types of its own, so the observation has to follow the enabled metrics, not their identifier.
+        let move = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_active_energy_burned_goal"))
+        let stand = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_apple_stand_hours"))
+        XCTAssertEqual(move.identifier, stand.identifier)
+
+        var observed = expectation(description: "move goal observed")
+        Current.healthKitService.setObservedMetrics = { [weak self] metrics, _ in
+            self?.recordObservation(of: metrics)
+            observed.fulfill()
+        }
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: move.uniqueID)
+        _ = try generateSensors()
+        wait(for: [observed], timeout: 5)
+        XCTAssertTrue(observedMetricIDs().contains(move.uniqueID))
+        XCTAssertFalse(observedMetricIDs().contains(stand.uniqueID))
+
+        observed = expectation(description: "stand hours observed too")
+        Current.sensors.setEnabledForAllServers(true, forUniqueID: stand.uniqueID)
+        _ = try generateSensors()
+
+        wait(for: [observed], timeout: 5)
+        XCTAssertTrue(observedMetricIDs().contains(move.uniqueID))
+        XCTAssertTrue(observedMetricIDs().contains(stand.uniqueID))
+    }
+
+    func testStandHoursAndGoalAreReportedAsWholeNumbers() throws {
+        let stand = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_apple_stand_hours"))
+        let standGoal = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_apple_stand_hours_goal"))
+        Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [stand.uniqueID, standGoal.uniqueID])
+        stubbedValues[stand.uniqueID] = 7.6
+        stubbedValues[standGoal.uniqueID] = 11.4
+
+        let sensors = try generateSensors()
+
+        let standSensor = try XCTUnwrap(sensor(stand, in: sensors))
+        XCTAssertEqual(standSensor.Name, "Stand Hours")
+        XCTAssertEqual(standSensor.Icon, "mdi:human-handsup")
+        XCTAssertEqual(standSensor.UnitOfMeasurement, "hours")
+        XCTAssertEqual(standSensor.State as? Int, 8)
+
+        let goalSensor = try XCTUnwrap(sensor(standGoal, in: sensors))
+        XCTAssertEqual(goalSensor.Name, "Stand Goal")
+        XCTAssertEqual(goalSensor.UnitOfMeasurement, "hours")
+        XCTAssertEqual(goalSensor.State as? Int, 11)
+    }
+
     func testSleepMinutesAreReportedAsWholeMinutes() throws {
         let deepSleep = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_deep"))
         Current.sensors.setEnabledForAllServers(true, forUniqueID: deepSleep.uniqueID)

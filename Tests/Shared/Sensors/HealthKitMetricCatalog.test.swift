@@ -26,6 +26,10 @@ class HealthKitMetricCatalogTests: XCTestCase {
         return false
     }
 
+    private func isActivityRingMetric(_ metric: HealthKitMetric) -> Bool {
+        metric.aggregation.activitySummaryField != nil
+    }
+
     func testCatalogIsNotEmptyAndCoversEveryCategory() {
         XCTAssertGreaterThan(HealthKitMetric.all.count, 20)
         for category in HealthKitMetricCategory.allCases {
@@ -44,7 +48,7 @@ class HealthKitMetricCatalogTests: XCTestCase {
 
     func testHealthKitIdentifiersAreUniqueAndResolveOnThisOS() {
         var seen = Set<String>()
-        for metric in HealthKitMetric.all where !isSleepMetric(metric) {
+        for metric in HealthKitMetric.all where !isSleepMetric(metric) && !isActivityRingMetric(metric) {
             XCTAssertTrue(
                 metric.identifier.hasPrefix("HKQuantityTypeIdentifier"),
                 metric.identifier
@@ -89,19 +93,75 @@ class HealthKitMetricCatalogTests: XCTestCase {
         }
     }
 
-    func testOnlyInBedCarriesAFooter() throws {
-        // Nothing writes `inBed` samples on its own, so it's the one metric whose sensor needs the list
-        // to say where its samples have to come from.
-        let inBed = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_in_bed"))
-        XCTAssertEqual(inBed.footer, .timeInBedSource)
+    func testOnlyMetricsThatNeedAnotherSourceCarryAFooter() throws {
+        // Nothing writes `inBed` samples on its own, only an Apple Watch tracks the Exercise and Stand
+        // rings, and the Move goal is energy only, so those are the sensors whose row has to say why
+        // they can read as unavailable.
+        let footers = [
+            "health_sleep_in_bed": HealthKitMetricFooter.timeInBedSource,
+            "health_active_energy_burned_goal": .moveGoalEnergyOnly,
+            "health_apple_exercise_time_goal": .ringNeedsWatch,
+            "health_apple_stand_hours": .ringNeedsWatch,
+            "health_apple_stand_hours_goal": .ringNeedsWatch,
+        ]
 
-        for metric in HealthKitMetric.all where metric.uniqueID != inBed.uniqueID {
-            XCTAssertNil(metric.footer, metric.uniqueID)
+        for metric in HealthKitMetric.all {
+            XCTAssertEqual(metric.footer, footers[metric.uniqueID], metric.uniqueID)
         }
     }
 
+    func testActivityRingMetricsReadTheActivitySummaryAndCoverEveryGoal() throws {
+        let rings = HealthKitMetric.all.filter { isActivityRingMetric($0) }
+        XCTAssertEqual(rings.map(\.uniqueID), HealthKitMetric.activityRingMetrics.map(\.uniqueID))
+
+        var seen = Set<HealthKitActivitySummaryField>()
+        for metric in rings {
+            XCTAssertEqual(metric.identifier, HealthKitActivitySummaryField.identifier, metric.uniqueID)
+            XCTAssertEqual(metric.category, .activity, metric.uniqueID)
+            XCTAssertEqual(metric.decimalPlaces, 0, metric.uniqueID)
+            let field = try XCTUnwrap(metric.aggregation.activitySummaryField)
+            XCTAssertTrue(seen.insert(field).inserted, "duplicate \(metric.uniqueID)")
+        }
+
+        for ring in HealthKitActivityRing.allCases {
+            XCTAssertTrue(seen.contains(.goal(ring)), ring.rawValue)
+        }
+        // Move and Exercise progress are the existing sample-based sensors; only Stand has no
+        // quantity type to sum, so it's the one ring read from the summary.
+        XCTAssertEqual(seen.filter { !$0.isGoal }, [.progress(.stand)])
+    }
+
+    func testEachGoalMatchesTheSensorItIsTheGoalFor() throws {
+        for (progressID, goalID, ring) in [
+            ("health_active_energy_burned", "health_active_energy_burned_goal", HealthKitActivityRing.move),
+            ("health_apple_exercise_time", "health_apple_exercise_time_goal", .exercise),
+            ("health_apple_stand_hours", "health_apple_stand_hours_goal", .stand),
+        ] {
+            let progress = try XCTUnwrap(HealthKitMetric.metric(uniqueID: progressID))
+            let goal = try XCTUnwrap(HealthKitMetric.metric(uniqueID: goalID))
+
+            XCTAssertEqual(goal.aggregation, .activitySummary(.goal(ring)), goalID)
+            XCTAssertEqual(progress.unit, goal.unit, goalID)
+            XCTAssertEqual(progress.queryUnit, goal.queryUnit, goalID)
+            XCTAssertEqual(progress.deviceClass, goal.deviceClass, goalID)
+            // Progress resets daily like the other totals; a goal is a setting that can be lowered.
+            XCTAssertEqual(progress.stateClass, .totalIncreasing, progressID)
+            XCTAssertEqual(goal.stateClass, .measurement, goalID)
+        }
+    }
+
+    func testStandHoursAreCountedInHours() throws {
+        let stand = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_apple_stand_hours"))
+        XCTAssertEqual(stand.aggregation, .activitySummary(.progress(.stand)))
+        XCTAssertEqual(stand.name, "Stand Hours")
+        XCTAssertEqual(stand.unit, "hours")
+        XCTAssertEqual(stand.queryUnit, .count)
+        XCTAssertNil(stand.deviceClass)
+    }
+
     func testUnitsAreCompatibleWithTheirQuantityType() {
-        for metric in HealthKitMetric.all where isAvailableOnThisOS(metric) && !isSleepMetric(metric) {
+        for metric in HealthKitMetric.all
+            where isAvailableOnThisOS(metric) && !isSleepMetric(metric) && !isActivityRingMetric(metric) {
             guard let type = quantityType(for: metric), let unit = metric.queryUnit.hkUnit else { continue }
             XCTAssertTrue(type.is(compatibleWith: unit), "\(metric.identifier) / \(unit)")
         }
