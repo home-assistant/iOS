@@ -1,5 +1,6 @@
 import Foundation
 import Network
+import os
 import Shared
 
 /// A server's WebSocket connection to this device, accepted by the listener.
@@ -20,33 +21,33 @@ final class SendspinWebSocket: SendspinFrameConnection, @unchecked Sendable {
         self.queue = queue
     }
 
-    var remoteDescription: String {
-        "\(connection.endpoint)"
-    }
-
     /// Waits for the WebSocket upgrade to finish, or for the connection to fail first.
     func start() async throws {
+        let isResumed = OSAllocatedUnfairLock(initialState: false)
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            var resumed = false
-            connection.stateUpdateHandler = { [weak self] state in
-                guard !resumed else {
-                    if case .cancelled = state { self?.connection.stateUpdateHandler = nil }
-                    return
-                }
+            connection.stateUpdateHandler = { [weak connection = self.connection] state in
+                let outcome: Result<Void, Error>
                 switch state {
                 case .ready:
-                    resumed = true
-                    continuation.resume()
+                    outcome = .success(())
                 case let .failed(error), let .waiting(error):
-                    resumed = true
-                    self?.connection.cancel()
-                    continuation.resume(throwing: error)
+                    outcome = .failure(error)
                 case .cancelled:
-                    resumed = true
-                    continuation.resume(throwing: Failure.closed)
+                    outcome = .failure(Failure.closed)
                 default:
-                    break
+                    return
                 }
+                // Only the first decisive state answers the upgrade; later ones belong to `receive`.
+                let isFirst = isResumed.withLock { resumed in
+                    defer { resumed = true }
+                    return !resumed
+                }
+                guard isFirst else { return }
+                connection?.stateUpdateHandler = nil
+                if case .failure = outcome {
+                    connection?.cancel()
+                }
+                continuation.resume(with: outcome)
             }
             connection.start(queue: queue)
         }

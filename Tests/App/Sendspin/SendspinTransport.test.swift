@@ -31,15 +31,17 @@ struct SendspinTransportTests {
         #expect(!reassembler.isInFlight)
     }
 
-    @Test(arguments: [
-        ([Data([1])], SendspinFragmentReassembler.Failure.missingFlags),
+    private static let malformedSequences: [([Data], SendspinFragmentReassembler.Failure)] = [
+        ([Data([1])], .missingFlags),
         ([Data([1, 0x80, 4])], .reservedFlags),
         ([Data([1, 0x02, 4]), Data([1, 0x02, 4])], .firstWhileInFlight),
         ([Data([1, 0x01, 4])], .continuationWithoutFirst),
         ([Data([1, 0x02])], .missingOriginalType),
         ([Data([1, 0x02, 1])], .nestedFragment),
         ([Data([1, 0x02, 4]), Data([0])], .messageWhileInFlight),
-    ])
+    ]
+
+    @Test(arguments: malformedSequences)
     func malformedSequencesAreProtocolErrors(frames: [Data], failure: SendspinFragmentReassembler.Failure) {
         var reassembler = SendspinFragmentReassembler()
         #expect(throws: failure) {
