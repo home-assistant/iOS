@@ -15,7 +15,7 @@ enum SendspinPCMDecoder {
         case 32: bytesPerSample = 4
         default: throw Failure.unsupportedBitDepth(bitDepth)
         }
-        guard channels > 0, data.count % (bytesPerSample * channels) == 0 else { throw Failure.partialFrame }
+        guard channels > 0, data.count.isMultiple(of: bytesPerSample * channels) else { throw Failure.partialFrame }
 
         let sampleCount = data.count / bytesPerSample
         var samples = [Float](repeating: 0, count: sampleCount)
