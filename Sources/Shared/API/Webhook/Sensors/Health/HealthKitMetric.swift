@@ -30,8 +30,9 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
     public let category: HealthKitMetricCategory
     public let deviceClass: DeviceClass?
     public let stateClass: SensorStateClass?
-    /// How far back a `.mostRecent` metric looks for a sample, or a `.sleep` metric for a night.
-    /// Ignored for `.cumulativeSum` and `.activitySummary`, which always read the current day.
+    /// How far back a `.mostRecent` metric looks for a sample, a `.sleep` metric for a night, or an
+    /// `.activitySummary` goal for the latest summary. Ignored for `.cumulativeSum` and for summary
+    /// progress, which always read the current day.
     public let lookbackDays: Int
     /// Multiplier applied to the raw HealthKit value, e.g. 100 to turn a 0…1 fraction into a percentage.
     public let scale: Double

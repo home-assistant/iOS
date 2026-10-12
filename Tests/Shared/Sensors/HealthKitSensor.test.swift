@@ -476,6 +476,32 @@ class HealthKitSensorTests: XCTestCase {
         XCTAssertTrue(observedMetricIDs().contains(stand.uniqueID))
     }
 
+    func testGoalsLookBackForTheLatestSummaryWhileProgressReadsToday() throws {
+        let standHours = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_apple_stand_hours"))
+        let standGoal = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_apple_stand_hours_goal"))
+        Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [standHours.uniqueID, standGoal.uniqueID])
+        Current.healthKitService.queryValue = { [weak self] metric, start, end in
+            self?.recordWindow(start: start, end: end, for: metric.uniqueID)
+            return nil
+        }
+
+        _ = try generateSensors()
+
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        let calendar = Calendar(identifier: .gregorian)
+        let today = calendar.startOfDay(for: now)
+
+        let hoursWindow = try XCTUnwrap(window(standHours.uniqueID))
+        XCTAssertEqual(hoursWindow.start, today)
+        XCTAssertEqual(hoursWindow.end, now)
+
+        // A goal survives the gap between midnight and the day's first sample by carrying the latest
+        // summary over.
+        let goalWindow = try XCTUnwrap(window(standGoal.uniqueID))
+        XCTAssertEqual(goalWindow.start, calendar.date(byAdding: .day, value: -standGoal.lookbackDays, to: today))
+        XCTAssertEqual(goalWindow.end, now)
+    }
+
     func testStandHoursAndGoalAreReportedAsWholeNumbers() throws {
         let stand = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_apple_stand_hours"))
         let standGoal = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_apple_stand_hours_goal"))

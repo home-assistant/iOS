@@ -8,18 +8,18 @@ class HealthKitActivityRingTests: XCTestCase {
         move: Double = 420,
         moveGoal: Double = 600,
         exercise: Double = 25,
-        exerciseGoal: Double = 30,
+        exerciseGoal: Double? = 30,
         stand: Double = 7,
-        standGoal: Double = 12
+        standGoal: Double? = 12
     ) -> HKActivitySummary {
         let summary = HKActivitySummary()
         summary.activityMoveMode = .activeEnergy
         summary.activeEnergyBurned = HKQuantity(unit: .kilocalorie(), doubleValue: move)
         summary.activeEnergyBurnedGoal = HKQuantity(unit: .kilocalorie(), doubleValue: moveGoal)
         summary.appleExerciseTime = HKQuantity(unit: .minute(), doubleValue: exercise)
-        summary.appleExerciseTimeGoal = HKQuantity(unit: .minute(), doubleValue: exerciseGoal)
+        summary.exerciseTimeGoal = exerciseGoal.map { HKQuantity(unit: .minute(), doubleValue: $0) }
         summary.appleStandHours = HKQuantity(unit: .count(), doubleValue: stand)
-        summary.appleStandHoursGoal = HKQuantity(unit: .count(), doubleValue: standGoal)
+        summary.standHoursGoal = standGoal.map { HKQuantity(unit: .count(), doubleValue: $0) }
         return summary
     }
 
@@ -43,8 +43,9 @@ class HealthKitActivityRingTests: XCTestCase {
     }
 
     func testRingWithoutAGoalIsUnavailableRatherThanZero() {
-        // What a summary looks like without an Apple Watch: the Move ring is tracked, the others aren't.
-        let summary = summary(exercise: 0, exerciseGoal: 0, stand: 0, standGoal: 0)
+        // What a summary looks like without an Apple Watch: the Move ring is tracked, the others have
+        // no goal at all.
+        let summary = summary(exercise: 0, exerciseGoal: nil, stand: 0, standGoal: nil)
 
         XCTAssertEqual(HealthKitActivitySummaryField.progress(.move).value(in: summary, unit: .kilocalorie()), 420)
         XCTAssertEqual(HealthKitActivitySummaryField.goal(.move).value(in: summary, unit: .kilocalorie()), 600)

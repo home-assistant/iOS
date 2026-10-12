@@ -64,7 +64,9 @@ public struct HealthKitService {
 
     /// Reads a single metric over the given window, returning `nil` when the running OS doesn't know the
     /// metric, when it isn't authorized, or when there simply are no samples. An activity summary metric
-    /// reads the summary of the local calendar day containing `end`.
+    /// reads the latest summary of the local calendar days from `start` to `end`: the window is a single
+    /// day for a ring's progress, and a few days for a goal, so a goal doesn't drop out every night
+    /// before the first sample creates the new day's summary.
     public var queryValue: (HealthKitMetric, Date, Date) async throws -> Double? = { metric, start, end in
         guard HKHealthStore.isHealthDataAvailable(), !Current.isAppExtension else {
             return nil
@@ -75,8 +77,13 @@ public struct HealthKitService {
             guard let unit = metric.queryUnit.hkUnit else {
                 return nil
             }
-            let day = HealthKitService.activitySummaryDay(containing: end, calendar: Current.calendar())
-            return try await HealthKitService.activitySummary(for: day).flatMap { field.value(in: $0, unit: unit) }
+            let calendar = Current.calendar()
+            let summary = try await HealthKitService.latestActivitySummary(
+                from: HealthKitService.activitySummaryDay(containing: start, calendar: calendar),
+                to: HealthKitService.activitySummaryDay(containing: end, calendar: calendar),
+                calendar: calendar
+            )
+            return summary.flatMap { field.value(in: $0, unit: unit) }
         case let .sleep(stages):
             guard let categoryType = HealthKitService.sampleType(for: metric) as? HKCategoryType else {
                 return nil
@@ -165,26 +172,38 @@ public struct HealthKitService {
         return objectTypes
     }
 
-    /// The components `HKQuery.predicateForActivitySummary(with:)` matches a day by: the local calendar
-    /// day containing `date`, era through day, with the calendar attached as HealthKit requires.
+    /// The components HealthKit's activity summary predicates match a day by: the local calendar day
+    /// containing `date`, era through day, with the calendar attached as HealthKit requires.
     static func activitySummaryDay(containing date: Date, calendar: Calendar) -> DateComponents {
         var day = calendar.dateComponents([.era, .year, .month, .day], from: date)
         day.calendar = calendar
         return day
     }
 
-    private static func activitySummary(for day: DateComponents) async throws -> HKActivitySummary? {
-        try await withCheckedThrowingContinuation { continuation in
+    /// The most recent summary between the two days, inclusive, or `nil` when none of them has one.
+    private static func latestActivitySummary(
+        from start: DateComponents,
+        to end: DateComponents,
+        calendar: Calendar
+    ) async throws -> HKActivitySummary? {
+        let summaries: [HKActivitySummary] = try await withCheckedThrowingContinuation { continuation in
             let query = HKActivitySummaryQuery(
-                predicate: HKQuery.predicateForActivitySummary(with: day)
+                predicate: HKQuery.predicate(forActivitySummariesBetweenStart: start, end: end)
             ) { _, summaries, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else {
-                    continuation.resume(returning: summaries?.first)
+                    continuation.resume(returning: summaries ?? [])
                 }
             }
             healthStore.execute(query)
+        }
+
+        // The order HealthKit returns them in isn't documented.
+        return summaries.max { lhs, rhs in
+            let lhsDate = calendar.date(from: lhs.dateComponents(for: calendar)) ?? .distantPast
+            let rhsDate = calendar.date(from: rhs.dateComponents(for: calendar)) ?? .distantPast
+            return lhsDate < rhsDate
         }
     }
 

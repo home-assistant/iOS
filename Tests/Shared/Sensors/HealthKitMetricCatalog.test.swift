@@ -110,6 +110,12 @@ class HealthKitMetricCatalogTests: XCTestCase {
         }
     }
 
+    func testEveryFooterResolvesToText() {
+        for footer in HealthKitMetricFooter.allCases {
+            XCTAssertFalse(footer.text.isEmpty, footer.rawValue)
+        }
+    }
+
     func testActivityRingMetricsReadTheActivitySummaryAndCoverEveryGoal() throws {
         let rings = HealthKitMetric.all.filter { isActivityRingMetric($0) }
         XCTAssertEqual(rings.map(\.uniqueID), HealthKitMetric.activityRingMetrics.map(\.uniqueID))

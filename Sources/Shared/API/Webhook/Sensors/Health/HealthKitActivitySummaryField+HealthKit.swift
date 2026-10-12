@@ -21,15 +21,15 @@ public extension HealthKitActivitySummaryField {
 
     /// This field of `summary` in `unit`, or `nil` when the ring isn't being tracked.
     ///
-    /// A ring nobody is tracking — Exercise and Stand without an Apple Watch — comes back with a goal
-    /// of zero, and its progress is then a zero that was never measured. A Move ring set to move time
-    /// rather than energy, the mode Fitness offers younger users and wheelchair users, may still carry
-    /// energy numbers, but they aren't the ring. None of that is reported: an untracked ring and its
-    /// goal both stay unavailable.
+    /// A ring nobody is tracking — Exercise and Stand without an Apple Watch — has no goal, and its
+    /// progress is then a zero that was never measured. A Move ring set to move time rather than
+    /// energy, the mode Fitness offers younger users and wheelchair users, may still carry energy
+    /// numbers, but they aren't the ring. None of that is reported: an untracked ring and its goal
+    /// both stay unavailable.
     func value(in summary: HKActivitySummary, unit: HKUnit) -> Double? {
-        let goal = ring.goal(in: summary)
         let progress = ring.progress(in: summary)
-        guard goal.is(compatibleWith: unit), progress.is(compatibleWith: unit),
+        guard let goal = ring.goal(in: summary),
+              goal.is(compatibleWith: unit), progress.is(compatibleWith: unit),
               isTracked(in: summary, goal: goal, unit: unit) else {
             return nil
         }
@@ -40,12 +40,13 @@ public extension HealthKitActivitySummaryField {
         }
     }
 
-    /// `goal` must already be known to be compatible with `unit`.
+    /// `goal` must already be known to be compatible with `unit`. Exercise and Stand are tracked
+    /// whenever they have a goal at all; Move's goal is always present, so it has to be checked.
     private func isTracked(in summary: HKActivitySummary, goal: HKQuantity, unit: HKUnit) -> Bool {
-        if ring == .move, summary.activityMoveMode != .activeEnergy {
-            return false
+        guard ring == .move else {
+            return true
         }
-        return goal.doubleValue(for: unit) > 0
+        return summary.activityMoveMode == .activeEnergy && goal.doubleValue(for: unit) > 0
     }
 }
 #endif
