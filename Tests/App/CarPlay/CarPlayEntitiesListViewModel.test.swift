@@ -55,20 +55,15 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         entityId: String = "light.kitchen",
         domain: String = "light",
         state: String = "on",
-        offline: Bool = false
+        offline: Bool = false,
+        entities: [HAEntity]? = nil
     ) throws {
         if offline {
             server = offlineServer()
         }
-        entity = try HAEntity(
-            entityId: entityId,
-            state: state,
-            lastChanged: Date(),
-            lastUpdated: Date(),
-            attributes: [:],
-            context: .init(id: "", userId: "", parentId: "")
-        )
-        let states = HACachedStates(entitiesDictionary: [entityId: entity])
+        let entities = try entities ?? [makeEntity(entityId: entityId, state: state)]
+        entity = entities.first
+        let states = cachedStates(entities)
         sut = CarPlayEntitiesListViewModel(
             filterType: .domain(domain),
             server: server,
@@ -226,13 +221,14 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
 
     @available(iOS 26.0, *)
     func testStateUpdatesPreserveProviderOrderWhenNamesChange() throws {
-        let hall = try stateEntity(id: "light.hall", name: "Hall")
-        let kitchen = try stateEntity(id: "light.kitchen", name: "Kitchen")
-        showStates([hall, kitchen])
+        let hall = try makeEntity(entityId: "light.hall", name: "Hall")
+        let kitchen = try makeEntity(entityId: "light.kitchen", name: "Kitchen")
+        try makeSut(entities: [hall, kitchen])
+        drainMainQueue()
         XCTAssertEqual(try displayedEntityNames(), ["Hall", "Kitchen"])
 
-        let updatedHall = try stateEntity(id: "light.hall", name: "Zulu")
-        let updatedKitchen = try stateEntity(id: "light.kitchen", name: "Alpha")
+        let updatedHall = try makeEntity(entityId: "light.hall", name: "Zulu")
+        let updatedKitchen = try makeEntity(entityId: "light.kitchen", name: "Alpha")
         sut.updateStates(entities: cachedStates([updatedHall, updatedKitchen]))
         drainMainQueue()
 
@@ -240,15 +236,16 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
     }
 
     @available(iOS 26.0, *)
-    func testStateUpdatesKeepMissingRowsAndDoNotInsertNewEntities() throws {
-        let hall = try stateEntity(id: "light.hall", name: "Hall")
-        let kitchen = try stateEntity(id: "light.kitchen", name: "Kitchen")
-        showStates([hall, kitchen])
+    func testStateUpdatesDoNotInsertNewEntities() throws {
+        let hall = try makeEntity(entityId: "light.hall", name: "Hall")
+        let kitchen = try makeEntity(entityId: "light.kitchen", name: "Kitchen")
+        try makeSut(entities: [hall, kitchen])
+        drainMainQueue()
 
-        let updatedKitchen = try stateEntity(id: "light.kitchen", name: "Kitchen updated")
-        let added = try stateEntity(id: "light.new", name: "New")
-        let otherDomain = try stateEntity(id: "sensor.room", name: "Room")
-        sut.updateStates(entities: cachedStates([updatedKitchen, added, otherDomain]))
+        let updatedKitchen = try makeEntity(entityId: "light.kitchen", name: "Kitchen updated")
+        let added = try makeEntity(entityId: "light.new", name: "New")
+        let otherDomain = try makeEntity(entityId: "sensor.room", name: "Room")
+        sut.updateStates(entities: cachedStates([hall, updatedKitchen, added, otherDomain]))
         drainMainQueue()
 
         XCTAssertEqual(try displayedEntityNames(), ["Hall", "Kitchen updated"])
@@ -256,8 +253,9 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
 
     @available(iOS 26.0, *)
     func testUnchangedStatesDoNotReplacePresentedRows() throws {
-        let hall = try stateEntity(id: "light.hall", name: "Hall")
-        showStates([hall])
+        let hall = try makeEntity(entityId: "light.hall", name: "Hall")
+        try makeSut(entities: [hall])
+        drainMainQueue()
         let originalRow = try XCTUnwrap(template.template.sections.flatMap(\.items).first as? CPListImageRowItem)
 
         sut.updateStates(entities: cachedStates([hall]))
@@ -267,30 +265,23 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         XCTAssertTrue(currentRow === originalRow)
     }
 
-    private func stateEntity(id: String, name: String) throws -> HAEntity {
+    private func makeEntity(
+        entityId: String,
+        state: String = "on",
+        name: String? = nil
+    ) throws -> HAEntity {
         try HAEntity(
-            entityId: id,
-            state: "on",
+            entityId: entityId,
+            state: state,
             lastChanged: Date(timeIntervalSince1970: 0),
             lastUpdated: Date(timeIntervalSince1970: 0),
-            attributes: ["friendly_name": name],
+            attributes: name.map { ["friendly_name": $0] } ?? [:],
             context: .init(id: "", userId: "", parentId: "")
         )
     }
 
     private func cachedStates(_ entities: [HAEntity]) -> HACachedStates {
         HACachedStates(entitiesDictionary: Dictionary(uniqueKeysWithValues: entities.map { ($0.entityId, $0) }))
-    }
-
-    private func showStates(_ entities: [HAEntity]) {
-        sut = CarPlayEntitiesListViewModel(
-            filterType: .domain("light"),
-            server: server,
-            entitiesCachedStates: cachedStates(entities)
-        )
-        template = CarPlayEntitiesListTemplate(viewModel: sut, title: "Lights")
-        sut.update()
-        drainMainQueue()
     }
 
     @available(iOS 26.0, *)
