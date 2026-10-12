@@ -1951,6 +1951,24 @@
 			);
 			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
 		};
+		42FD000000A200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/connectInstructions.dark.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/connectInstructions.light.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/failed.dark.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/failed.light.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/off.dark.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/off.light.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/pairingToken.dark.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/pairingToken.light.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/playing.dark.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/playing.light.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/waitingForMusicAssistant.dark.png",
+				"__Snapshots__/SendspinSettingsViewSnapshot.test/waitingForMusicAssistant.light.png",
+			);
+			target = B657A8FB1CA646EB00121384 /* Tests-App */;
+		};
 		42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -2668,7 +2686,7 @@
 		42FD0000009000510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
 		42FD0000009100510051FC9B /* VoiceToolsServer */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceToolsServer; sourceTree = "<group>"; };
 		42FD000000A000510051FC9B /* Sendspin */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sendspin; sourceTree = "<group>"; };
-		42FD000000A100510051FC9B /* Sendspin */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sendspin; sourceTree = "<group>"; };
+		42FD000000A100510051FC9B /* Sendspin */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD000000A200510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Sendspin; sourceTree = "<group>"; };
 		46F103242D7214F7002BC586 /* ClientEvents */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001100510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClientEvents; sourceTree = "<group>"; };
 		8881A40916A3424685660E6B /* LiveActivity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000001500510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveActivity; sourceTree = "<group>"; };
 		D00302BC20D4BEC0004C2CA9 /* Environment */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (42FD0000000F00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000001000510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 42FD0000000E00510051FC9B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Environment; sourceTree = "<group>"; };
