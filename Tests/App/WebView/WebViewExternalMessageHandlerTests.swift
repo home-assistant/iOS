@@ -472,6 +472,58 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertNotNil(message["id"] as? Int)
     }
 
+    @MainActor func testSendExternalBusCommandWithRetryCompletesWhenFrontendStaysSilent() {
+        let completion = expectation(description: "completion")
+        var succeeded: Bool?
+
+        sut.sendExternalBusCommandWithRetry(
+            command: .navigate,
+            payload: ["path": "/?more-info-entity-id=light.kitchen"],
+            maxAttempts: 3,
+            retryDelay: .milliseconds(10),
+            acknowledgementTimeout: .milliseconds(10),
+            completion: {
+                succeeded = $0
+                completion.fulfill()
+            }
+        )
+
+        wait(for: [completion], timeout: 1)
+        XCTAssertEqual(succeeded, true)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+    }
+
+    @MainActor func testSendExternalBusCommandWithRetryCompletesWhenFrontendAcknowledges() throws {
+        let firstSend = expectation(description: "command sent")
+        let completion = expectation(description: "completion")
+        mockWebViewController.evaluateJavaScriptExpectation = firstSend
+        var succeeded: Bool?
+
+        sut.sendExternalBusCommandWithRetry(
+            command: .navigate,
+            payload: ["path": "/?more-info-entity-id=light.kitchen"],
+            maxAttempts: 3,
+            retryDelay: .milliseconds(10),
+            acknowledgementTimeout: .seconds(5),
+            completion: {
+                succeeded = $0
+                completion.fulfill()
+            }
+        )
+
+        wait(for: [firstSend], timeout: 1)
+        let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let id = try XCTUnwrap(message["id"] as? Int)
+        sut.handleExternalMessage([
+            "type": "result",
+            "id": id,
+            "success": true,
+        ])
+
+        wait(for: [completion], timeout: 1)
+        XCTAssertEqual(succeeded, true)
+    }
+
     @MainActor func testSendExternalBusCommandWithRetryRetriesWhenFrontendRejects() throws {
         let firstSend = expectation(description: "first send")
         mockWebViewController.evaluateJavaScriptExpectation = firstSend
@@ -508,14 +560,20 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
     @MainActor func testSendExternalBusCommandWithRetryGivesUpAfterMaxAttempts() throws {
         let firstSend = expectation(description: "first send")
+        let completion = expectation(description: "completion")
         mockWebViewController.evaluateJavaScriptExpectation = firstSend
+        var succeeded: Bool?
 
         sut.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": true],
             maxAttempts: 1,
             retryDelay: .milliseconds(10),
-            acknowledgementTimeout: .seconds(5)
+            acknowledgementTimeout: .seconds(5),
+            completion: {
+                succeeded = $0
+                completion.fulfill()
+            }
         )
 
         wait(for: [firstSend], timeout: 1)
@@ -534,8 +592,9 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "error": ["code": "not_ready", "message": "Command handler not ready"],
         ])
 
-        wait(for: [noFurtherSend], timeout: 0.5)
+        wait(for: [completion, noFurtherSend], timeout: 0.5)
         XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+        XCTAssertEqual(succeeded, false)
     }
 
     /// What the more-info dialog is showing is what a spoken "this" has to mean, so the handler hands
