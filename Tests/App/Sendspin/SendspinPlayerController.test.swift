@@ -1,6 +1,5 @@
 import Foundation
 @testable import HomeAssistant
-import Shared
 import Testing
 
 @MainActor
@@ -32,16 +31,15 @@ struct SendspinPlayerControllerTests {
         #expect(controller.status == .stopped)
 
         controller.applyConfiguration(SendspinPlayerConfiguration(isEnabled: true, playerName: "Test"))
-        #expectawait (waitFor(controller) { status in
+        let started = await waitFor(controller) { status in
             if case .listening = status { return true }
             if case .failed = status { return true }
             return false
-        })
+        }
+        #expect(started)
 
         controller.applicationDidEnterBackground()
-        if !Current.isCatalyst {
-            #expect(controller.status == .stopped)
-        }
+        #expect(controller.status == .stopped)
         controller.applicationWillEnterForeground()
         #expect(controller.status != .stopped)
 

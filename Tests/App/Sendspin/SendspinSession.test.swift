@@ -136,8 +136,10 @@ struct SendspinSessionTests {
         #expect(harness.audio.enqueued.map(\.timestamp) == [1_000_000])
         #expect(harness.audio.clearCount == 1)
         #expect(harness.audio.volume?.0 == 20)
-        #expectawait (harness.session.isStreaming)
-        #expectawait (harness.session.supportedControllerCommands == ["play", "pause"])
+        let isStreaming = await harness.session.isStreaming
+        #expect(isStreaming)
+        let offersGroupCommands = await harness.session.supportedControllerCommands == ["play", "pause"]
+        #expect(offersGroupCommands)
 
         await harness.session.sendControllerCommand(SendspinControllerCommand(command: "pause"))
         let command = try await harness.server.receive(SendspinClientCommand.self, type: "client/command")
@@ -165,7 +167,8 @@ struct SendspinSessionTests {
         let afterMute = try await harness.server.receive(SendspinClientState.self, type: "client/state")
         #expect(afterMute.player?.muted == true)
         #expect(harness.audio.stopCount == 1)
-        #expectawait (harness.session.isStreaming == false)
+        let stoppedStreaming = await harness.session.isStreaming == false
+        #expect(stoppedStreaming)
 
         await harness.session.setAvailable(false)
         let unavailable = try await harness.server.receive(SendspinClientState.self, type: "client/state")
@@ -201,8 +204,10 @@ struct SendspinSessionTests {
             if case let .metadata(metadata, _) = event { return metadata?.title == "Song" }
             return false
         })
-        #expectawait (harness.host.candidates.first?.activity == .playback)
-        #expectawait (harness.host.closeCount == 1)
+        let admittedForPlayback = await harness.host.candidates.first?.activity == .playback
+        #expect(admittedForPlayback)
+        let reportedClose = await harness.host.closeCount == 1
+        #expect(reportedClose)
         #expect(harness.credentials.lastPlaybackServerID == harness.server.serverID)
     }
 
@@ -244,9 +249,11 @@ struct SendspinSessionTests {
         try harness.activate(["playback"], roles: [SendspinSession.playerRole])
         let state = try await harness.server.receive(SendspinClientState.self, type: "client/state")
         #expect(state.player != nil)
-        #expectawait (harness.session.isPaired)
+        let isPaired = await harness.session.isPaired
+        #expect(isPaired)
         #expect(harness.credentials.pairingRecords().map(\.serverID) == [harness.server.serverID])
-        #expectawait (harness.host.events.contains(.paired(serverName: "Music Assistant")))
+        let reportedPairing = await harness.host.events.contains(.paired(serverName: "Music Assistant"))
+        #expect(reportedPairing)
 
         try harness.server.send(type: "server/unpair", payload: SendspinEmptyPayload())
         let goodbye = try await harness.server.receive(SendspinClientGoodbye.self, type: "client/goodbye")
@@ -268,7 +275,8 @@ struct SendspinSessionTests {
         let goodbye = try await harness.server.receive(SendspinClientGoodbye.self, type: "client/goodbye")
         #expect(goodbye.reason == .pairingRequired)
         await harness.run.value
-        #expectawait (harness.host.candidates.isEmpty)
+        let neverAsked = await harness.host.candidates.isEmpty
+        #expect(neverAsked)
     }
 
     @Test func stepsAsideWhenTheHostRefusesTheConnection() async throws {
@@ -306,7 +314,8 @@ struct SendspinSessionTests {
             reference: SendspinPskReference(pskID: SendspinPsk.generate().identifier, category: .longTerm),
             psk: .sentinel
         )
-        #expectawait (harness.session.isPaired == false)
+        let staysUnpaired = await harness.session.isPaired == false
+        #expect(staysUnpaired)
         await harness.session.disconnect(reason: .userRequest)
         await harness.run.value
     }
@@ -320,7 +329,8 @@ struct SendspinSessionTests {
         )
         await harness.run.value
         #expect(harness.connection.isClosed)
-        #expectawait (harness.host.closeCount == 1)
+        let reportedRejectedClose = await harness.host.closeCount == 1
+        #expect(reportedRejectedClose)
     }
 
     @Test func dropsAServerThatNeverActivates() async throws {

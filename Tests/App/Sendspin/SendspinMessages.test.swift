@@ -8,56 +8,62 @@ struct SendspinMessagesTests {
     }
 
     @Test func decodesEveryServerMessage() throws {
-        #expecttry (
-            decode(#"{"type":"server/hello","payload":{"name":"MA","languages":["en"]}}"#)
-                == .hello(SendspinServerHello(name: "MA", languages: ["en"]))
-        )
-        #expecttry (
-            decode(#"{"type":"server/activate","payload":{"activities":["playback"],"active_roles":["player@v1"]}}"#)
-                == .activate(SendspinServerActivate(activities: ["playback"], activeRoles: ["player@v1"], pairing: nil))
-        )
-        #expecttry (decode(
-            #"{"type":"server/time","payload":{"client_transmitted":1,"server_received":2,"server_transmitted":3}}"#
-        ) == .time(SendspinServerTime(clientTransmitted: 1, serverReceived: 2, serverTransmitted: 3)))
-        #expecttry (
-            decode(#"{"type":"server/command","payload":{"player":{"command":"volume","volume":30}}}"#)
-                == .command(SendspinServerCommand(player: SendspinPlayerCommand(
+        let cases: [(String, SendspinServerMessage)] = [
+            (
+                #"{"type":"server/hello","payload":{"name":"MA","languages":["en"]}}"#,
+                .hello(SendspinServerHello(name: "MA", languages: ["en"]))
+            ),
+            (
+                #"{"type":"server/activate","payload":{"activities":["playback"],"active_roles":["player@v1"]}}"#,
+                .activate(SendspinServerActivate(activities: ["playback"], activeRoles: ["player@v1"], pairing: nil))
+            ),
+            (
+                #"{"type":"server/time","payload":{"client_transmitted":1,"server_received":2,"server_transmitted":3}}"#,
+                .time(SendspinServerTime(clientTransmitted: 1, serverReceived: 2, serverTransmitted: 3))
+            ),
+            (
+                #"{"type":"server/command","payload":{"player":{"command":"volume","volume":30}}}"#,
+                .command(SendspinServerCommand(player: SendspinPlayerCommand(
                     command: "volume",
                     volume: 30,
                     mute: nil,
                     outputDelayMs: nil
                 )))
-        )
-        #expecttry (decode(
-            #"{"type":"stream/start","payload":{"server_transmitted":1,"player":{"codec":"pcm","sample_rate":48000,"channels":2,"bit_depth":16}}}"#
-        ) == .streamStart(SendspinStreamStart(player: SendspinStreamFormat(
-            codec: "pcm",
-            sampleRate: 48000,
-            channels: 2,
-            bitDepth: 16,
-            codecHeader: nil
-        ))))
-        #expecttry (
-            decode(#"{"type":"stream/clear","payload":{"server_transmitted":1,"roles":["player"]}}"#)
-                == .streamClear(SendspinStreamRoles(roles: ["player"]))
-        )
-        #expecttry (decode(#"{"type":"stream/end","payload":{}}"#) == .streamEnd(SendspinStreamRoles(roles: nil)))
-        #expecttry (
-            decode(
-                #"{"type":"group/update","payload":{"playback_state":"playing","group_id":"g","group_name":"Kitchen"}}"#
-            )
-                == .groupUpdate(SendspinGroupUpdate(playbackState: "playing", groupID: "g", groupName: "Kitchen"))
-        )
-        #expecttry (decode(#"{"type":"server/unpair","payload":{}}"#) == .unpair)
-        #expecttry (decode(#"{"type":"server/pair-finalize","payload":{}}"#) == .pairFinalize)
-        #expecttry (
-            decode(#"{"type":"pair/abort","payload":{"reason":"user_cancelled"}}"#)
-                == .pairAbort(SendspinPairAbort(reason: "user_cancelled"))
-        )
-        #expecttry (
-            decode(#"{"type":"noise/handshake","payload":{"data":"AA"}}"#)
-                == .handshake(SendspinNoiseHandshakeMessage(data: "AA"))
-        )
+            ),
+            (
+                #"{"type":"stream/start","payload":{"server_transmitted":1,"player":{"codec":"pcm","sample_rate":48000,"channels":2,"bit_depth":16}}}"#,
+                .streamStart(SendspinStreamStart(player: SendspinStreamFormat(
+                    codec: "pcm",
+                    sampleRate: 48000,
+                    channels: 2,
+                    bitDepth: 16,
+                    codecHeader: nil
+                )))
+            ),
+            (
+                #"{"type":"stream/clear","payload":{"server_transmitted":1,"roles":["player"]}}"#,
+                .streamClear(SendspinStreamRoles(roles: ["player"]))
+            ),
+            (#"{"type":"stream/end","payload":{}}"#, .streamEnd(SendspinStreamRoles(roles: nil))),
+            (
+                #"{"type":"group/update","payload":{"playback_state":"playing","group_id":"g","group_name":"Kitchen"}}"#,
+                .groupUpdate(SendspinGroupUpdate(playbackState: "playing", groupID: "g", groupName: "Kitchen"))
+            ),
+            (#"{"type":"server/unpair","payload":{}}"#, .unpair),
+            (#"{"type":"server/pair-finalize","payload":{}}"#, .pairFinalize),
+            (
+                #"{"type":"pair/abort","payload":{"reason":"user_cancelled"}}"#,
+                .pairAbort(SendspinPairAbort(reason: "user_cancelled"))
+            ),
+            (
+                #"{"type":"noise/handshake","payload":{"data":"AA"}}"#,
+                .handshake(SendspinNoiseHandshakeMessage(data: "AA"))
+            ),
+        ]
+        for (json, expected) in cases {
+            let decoded = try decode(json)
+            #expect(decoded == expected, "\(json)")
+        }
     }
 
     @Test func decodesServerState() throws {
@@ -78,7 +84,8 @@ struct SendspinMessagesTests {
 
     /// Unknown types are ignored, as the specification requires; broken messages are not.
     @Test func ignoresUnknownTypesButRejectsGarbage() throws {
-        #expecttry (decode(#"{"type":"server/something-new","payload":{"x":1}}"#) == nil)
+        let unknown = try decode(#"{"type":"server/something-new","payload":{"x":1}}"#)
+        #expect(unknown == nil)
         #expect(throws: (any Error).self) { try decode("not json") }
         #expect(throws: (any Error).self) { try decode(#"{"type":"server/time","payload":{}}"#) }
     }
@@ -97,10 +104,9 @@ struct SendspinMessagesTests {
             ),
             unpairedAccess: SendspinUnpairedAccess(enabled: true)
         )
-        let json = try #requiretry (
-            JSONSerialization
-                .jsonObject(with: SendspinClientMessage.hello(hello).encoded()) as? [String: Any]
-        )
+        let encoded = try SendspinClientMessage.hello(hello).encoded()
+        let object = try JSONSerialization.jsonObject(with: encoded)
+        let json = try #require(object as? [String: Any])
         #expect(json["type"] as? String == "client/hello")
         let payload = try #require(json["payload"] as? [String: Any])
         #expect(payload["player@v1_support"] != nil)

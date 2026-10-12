@@ -61,9 +61,11 @@ struct SendspinNoiseHandshakeTests {
     }
 
     @Test func identitiesEncodeAsBase64URL() throws {
-        #expecttry (identity.clientID == Vector.clientID)
-        #expecttry (SendspinBase64URL.encode(serverPublicKey) == Vector.serverID)
-        #expecttry (SendspinIdentity(privateKeyBytes: identity.privateKeyBytes)?.clientID == Vector.clientID)
+        let identity = try identity
+        let serverPublicKey = try serverPublicKey
+        #expect(identity.clientID == Vector.clientID)
+        #expect(SendspinBase64URL.encode(serverPublicKey) == Vector.serverID)
+        #expect(SendspinIdentity(privateKeyBytes: identity.privateKeyBytes)?.clientID == Vector.clientID)
         #expect(SendspinIdentity(privateKeyBytes: Data([1, 2, 3])) == nil)
     }
 
@@ -90,7 +92,8 @@ struct SendspinNoiseHandshakeTests {
 
         let time = Data([0]) + Data(#"{"type":"client/time","payload":{"client_transmitted":1}}"#.utf8)
         _ = try transport.encrypt(time)
-        #expecttry (transport.encrypt(time) == Self.bytes(Vector.clientToServerSecond))
+        let matchesReference = try transport.encrypt(time) == Self.bytes(Vector.clientToServerSecond)
+        #expect(matchesReference)
     }
 
     /// A re-handshake uses the previous handshake hash as its prologue and a long-term PSK.
@@ -111,7 +114,8 @@ struct SendspinNoiseHandshakeTests {
         var transport = result.transport
         #expect(result.message == Self.bytes(Vector.rehandshakeMessage2))
         #expect(transport.handshakeHash == Self.bytes(Vector.rehandshakeHash))
-        #expecttry (transport.decrypt(Self.bytes(Vector.rehandshakeServerToClient)).first == 0)
+        let isJSON = try transport.decrypt(Self.bytes(Vector.rehandshakeServerToClient)).first == 0
+        #expect(isJSON)
     }
 
     @Test func aWrongPrologueFailsToAuthenticate() throws {

@@ -59,14 +59,18 @@ struct SendspinPlayerServiceTests {
         var louder = Self.settings
         louder.volume = 30
         await service.update(settings: louder)
-        #expecttry await (server.receive(SendspinClientState.self, type: "client/state").player?.volume == 30)
+        let louderState = try await server.receive(SendspinClientState.self, type: "client/state")
+        #expect(louderState.player?.volume == 30)
 
         await service.setAvailable(false)
-        #expecttry await (server.receive(SendspinClientState.self, type: "client/state").available == false)
-        #expectawait (service.isStreaming == false)
+        let unavailableState = try await server.receive(SendspinClientState.self, type: "client/state")
+        #expect(unavailableState.available == false)
+        let isStreaming = await service.isStreaming
+        #expect(isStreaming == false)
 
         await service.stop(reason: .shutdown)
-        #expecttry await (server.receive(SendspinClientGoodbye.self, type: "client/goodbye").reason == .shutdown)
+        let goodbye = try await server.receive(SendspinClientGoodbye.self, type: "client/goodbye")
+        #expect(goodbye.reason == .shutdown)
         _ = try await recorder.wait { $0 == .stopped }
     }
 
@@ -83,7 +87,8 @@ struct SendspinPlayerServiceTests {
         let (secondLink, _) = try await connectServer(port: port, name: "Second")
         defer { secondLink.close() }
 
-        #expecttry await (first.receive(SendspinClientGoodbye.self, type: "client/goodbye").reason == .anotherServer)
+        let displaced = try await first.receive(SendspinClientGoodbye.self, type: "client/goodbye")
+        #expect(displaced.reason == .anotherServer)
         _ = try await recorder.wait { $0 == .connected(serverName: "Second") }
 
         // Renaming the player reconnects every server, since the name only travels in the hello.

@@ -7,7 +7,8 @@ struct SendspinTransportTests {
         let message = Data([0]) + Data("{}".utf8)
         #expect(SendspinFragmentation.plaintexts(for: message) == [message])
         var reassembler = SendspinFragmentReassembler()
-        #expecttry (reassembler.receive(message) == message)
+        let passesThrough = try reassembler.receive(message) == message
+        #expect(passesThrough)
     }
 
     @Test func largeMessagesRoundTripThroughFragments() throws {
@@ -20,10 +21,13 @@ struct SendspinTransportTests {
         #expect(fragments.last?[1] == SendspinFragmentation.lastFlag)
 
         var reassembler = SendspinFragmentReassembler()
-        #expecttry (reassembler.receive(fragments[0]) == nil)
+        let waitsAfterFirst = try reassembler.receive(fragments[0]) == nil
+        #expect(waitsAfterFirst)
         #expect(reassembler.isInFlight)
-        #expecttry (reassembler.receive(fragments[1]) == nil)
-        #expecttry (reassembler.receive(fragments[2]) == message)
+        let waitsAfterSecond = try reassembler.receive(fragments[1]) == nil
+        #expect(waitsAfterSecond)
+        let reassembled = try reassembler.receive(fragments[2]) == message
+        #expect(reassembled)
         #expect(!reassembler.isInFlight)
     }
 
