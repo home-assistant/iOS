@@ -68,7 +68,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         beaconRangingRetryDelay: TimeInterval = 1,
         strongFarBeaconRSSIThreshold: Int = -82,
         backgroundExecution: BeaconScanBackgroundExecution = UIApplicationBeaconScanBackgroundExecution(),
-        now: @escaping () -> Date = Date.init,
+        now: @escaping () -> Date = { Current.date() },
         schedule: @escaping (TimeInterval, DispatchWorkItem) -> Void = {
             DispatchQueue.main.asyncAfter(deadline: .now() + $0, execute: $1)
         }
@@ -90,6 +90,8 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     }
 
     func startForegroundBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        // Keep the new radio behaviour in beta until device validation is complete.
+        guard Current.isTestFlight else { return }
         let desiredEntries = beaconEntries(in: regions)
         invalidateChangedBeaconEntries(desiredEntries, manager: manager)
         let identifiersToRemove = foregroundBeaconEntries.compactMap { identifier, entry in
@@ -116,6 +118,8 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     }
 
     func startBackgroundBeaconMonitoring(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        // Keep the new radio behaviour in beta until device validation is complete.
+        guard Current.isTestFlight else { return }
         let desiredRegions = Dictionary(
             uniqueKeysWithValues: regions.compactMap { region -> (String, CLBeaconRegion)? in
                 guard let beaconRegion = region as? CLBeaconRegion else { return nil }
@@ -135,7 +139,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
             in: Set(desiredRegions.values.map { $0 as CLRegion }),
             manager: manager
         )
-        recordBeaconBackgroundEvent("Reconciled bounded background beacon ranging")
+        Current.Log.debug("Reconciled bounded background beacon ranging")
     }
 
     func stopBackgroundBeaconMonitoring(manager: CLLocationManager) {
@@ -143,7 +147,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         backgroundBeaconRegions.removeAll()
         stopOpportunisticBeaconScanning(manager: manager)
         if wasMonitoring {
-            recordBeaconBackgroundEvent("Stopped bounded background beacon ranging")
+            Current.Log.debug("Stopped bounded background beacon ranging")
         }
     }
 
@@ -163,6 +167,8 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     }
 
     func startOpportunisticBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        // Keep the new radio behaviour in beta until device validation is complete.
+        guard Current.isTestFlight else { return }
         let entries = beaconEntries(in: regions)
         let requestedRegions = entries.mapValues(\.region)
         guard opportunisticBeaconScanTimeout == nil ||
@@ -226,12 +232,6 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         delegate?.collector(self, didLog: .didFailMonitoring(region, error))
     }
 
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if manager.authorizationStatus == .authorizedWhenInUse {
-            manager.requestAlwaysAuthorization()
-        }
-    }
-
     func locationManager(
         _ manager: CLLocationManager,
         rangingBeaconsDidFailFor beaconConstraint: CLBeaconIdentityConstraint,
@@ -273,7 +273,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
 
         let event = Self.event(for: region, state: state)
 
-        if let beaconRegion = region as? CLBeaconRegion {
+        if Current.isTestFlight, let beaconRegion = region as? CLBeaconRegion {
             switch state {
             case .inside:
                 guard !foregroundBeaconIdentifiersInside.contains(beaconRegion.identifier) else { return }
@@ -353,8 +353,8 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         _ manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
     ) {
-        startOpportunisticBeaconScanning(in: manager.monitoredRegions, manager: manager)
-
+        // Location fixes do not start additional radio scans. Ranging is owned by
+        // verified entries and foreground/background lifecycle handoffs.
         let event = ZoneManagerEvent(
             eventType: .locationChange(locations)
         )
@@ -468,15 +468,13 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         }
 
         for identifier in identifiersToExit {
-            guard foregroundBeaconIdentifiersInside.remove(identifier) != nil,
-                  let entry = foregroundBeaconEntries[identifier] ??
-                  opportunisticBeaconEntries[identifier] else { continue }
+            guard let entry = foregroundBeaconEntries[identifier] ??
+                opportunisticBeaconEntries[identifier] else { continue }
 
+            // Empty ranging samples are not proof of departure at the edge of range.
+            // Keep our inside state until Core Location confirms an outside state.
             beaconReconciliationStates.removeValue(forKey: identifier)
-            delegate?.collector(
-                self,
-                didCollect: Self.event(for: entry.region, state: .outside)
-            )
+            manager.requestState(for: entry.region)
         }
     }
 
@@ -657,14 +655,6 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         pendingBeaconEntries.values.contains { $0.constraint == constraint } ||
             foregroundBeaconEntries.values.contains { $0.constraint == constraint } ||
             opportunisticBeaconEntries.values.contains { $0.constraint == constraint }
-    }
-
-    private func recordBeaconBackgroundEvent(_ text: String, payload: [String: String] = [:]) {
-        Current.clientEventStore.addEvent(ClientEvent(
-            text: text,
-            type: .locationUpdate,
-            payload: payload
-        ))
     }
 
     private static func event(for region: CLRegion, state: CLRegionState) -> ZoneManagerEvent {

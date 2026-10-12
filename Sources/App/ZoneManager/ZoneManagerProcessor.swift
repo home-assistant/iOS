@@ -177,6 +177,12 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
 
             zone.setInRegion(state == .inside)
 
+            // Preserve the existing location contract: a beacon exit has no GPS or
+            // location_name and must not replace the device tracker with unknown.
+            if region is CLBeaconRegion, state == .outside {
+                return ignore(.beaconExitIgnored)
+            }
+
             return .value(())
         }
     }

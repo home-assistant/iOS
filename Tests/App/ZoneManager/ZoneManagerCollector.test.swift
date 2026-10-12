@@ -56,6 +56,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
     }
 
+    private var previousIsTestFlight = false
     private var scheduler: TestScheduler!
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
@@ -70,6 +71,8 @@ class ZoneManagerCollectorTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        previousIsTestFlight = Current.isTestFlight
+        Current.isTestFlight = true
 
         database = try DatabaseQueue()
         try AppZoneTable().createIfNeeded(database: database)
@@ -86,6 +89,7 @@ class ZoneManagerCollectorTests: XCTestCase {
 
     override func tearDown() {
         Current.database = previousDatabase
+        Current.isTestFlight = previousIsTestFlight
 
         super.tearDown()
     }
@@ -111,6 +115,20 @@ class ZoneManagerCollectorTests: XCTestCase {
             now: { scheduler.now },
             schedule: { scheduler.schedule(after: $0, work: $1) }
         )
+    }
+
+    func testProductionKeepsLegacyBeaconEventsWithoutRangingOrBackgroundLease() throws {
+        Current.isTestFlight = false
+        let region = try storedBeaconRegion(entityId: "production")
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        collector.startBackgroundBeaconMonitoring(in: [region], manager: locationManager)
+        collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .inside), .region(region, .outside)])
+        XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
+        XCTAssertEqual(backgroundExecution.beginCount, 0)
+        XCTAssertEqual(locationManager.startUpdatingLocationCount, 0)
     }
 
     func testDidFailDoesLog() {
@@ -148,18 +166,18 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
     }
 
-    func testWhenInUseAuthorizationRequestsAlwaysAuthorization() {
+    func testWhenInUseAuthorizationDoesNotPromptFromCollector() {
         locationManager.overrideAuthorizationStatus = .authorizedWhenInUse
 
-        collector.locationManagerDidChangeAuthorization(locationManager)
+        (collector as CLLocationManagerDelegate).locationManagerDidChangeAuthorization?(locationManager)
 
-        XCTAssertEqual(locationManager.requestAlwaysAuthorizationCount, 1)
+        XCTAssertEqual(locationManager.requestAlwaysAuthorizationCount, 0)
     }
 
     func testAlwaysAuthorizationDoesNotRequestAgain() {
         locationManager.overrideAuthorizationStatus = .authorizedAlways
 
-        collector.locationManagerDidChangeAuthorization(locationManager)
+        (collector as CLLocationManagerDelegate).locationManagerDidChangeAuthorization?(locationManager)
 
         XCTAssertEqual(locationManager.requestAlwaysAuthorizationCount, 0)
     }
@@ -905,7 +923,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertNil(event.associatedZone)
     }
 
-    func testLocationUpdateStartsShortBeaconScan() throws {
+    func testLocationUpdateDoesNotStartAdditionalBeaconScan() throws {
         let server = Server.fake()
         let zone = AppZone(
             entityId: "beacon_region",
@@ -923,10 +941,13 @@ class ZoneManagerCollectorTests: XCTestCase {
             didUpdateLocations: [CLLocation(latitude: 1.23, longitude: 4.56)]
         )
 
-        XCTAssertEqual(locationManager.startedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
+        XCTAssertTrue(locationManager.monitoredRegionsReadsWereOnMainThread.isEmpty)
+        XCTAssertEqual(backgroundExecution.beginCount, 0)
+        XCTAssertEqual(delegate.events.count, 1)
     }
 
-    func testLocationUpdateAlsoScansBeaconAlreadyInsideZone() throws {
+    func testLocationUpdateInsideZoneDoesNotStartAdditionalBeaconScan() throws {
         let server = Server.fake()
         let zone = AppZone(
             entityId: "beacon_region",
@@ -944,7 +965,10 @@ class ZoneManagerCollectorTests: XCTestCase {
             didUpdateLocations: [CLLocation(latitude: 1.23, longitude: 4.56)]
         )
 
-        XCTAssertEqual(locationManager.startedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
+        XCTAssertTrue(locationManager.monitoredRegionsReadsWereOnMainThread.isEmpty)
+        XCTAssertEqual(backgroundExecution.beginCount, 0)
+        XCTAssertEqual(delegate.events.count, 1)
     }
 
     func testStoredInsideUsableSampleDoesNotRepeatEntry() throws {
@@ -1004,6 +1028,11 @@ class ZoneManagerCollectorTests: XCTestCase {
 
         collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
 
+        XCTAssertTrue(delegate.events.isEmpty, "Radio silence alone must not emit an exit")
+        XCTAssertEqual(locationManager.requestedRegions, [region])
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        XCTAssertTrue(delegate.events.isEmpty, "An inside confirmation must not create a duplicate entry")
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
         XCTAssertEqual(delegate.events, [
             .init(eventType: .region(region, .outside), associatedZone: zone),
         ])
@@ -1073,6 +1102,11 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
         XCTAssertTrue(delegate.events.isEmpty)
         collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        XCTAssertTrue(delegate.events.isEmpty, "Radio silence alone must not emit an exit")
+        XCTAssertEqual(locationManager.requestedRegions, [region])
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        XCTAssertTrue(delegate.events.isEmpty, "An inside confirmation must not create a duplicate entry")
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
         XCTAssertEqual(delegate.events.count, 1)
         XCTAssertEqual(delegate.events.first?.eventType, .region(region, .outside))
     }
@@ -1198,6 +1232,11 @@ class ZoneManagerCollectorTests: XCTestCase {
             )
         }
 
+        XCTAssertTrue(delegate.events.isEmpty, "Radio silence alone must not emit an exit")
+        XCTAssertEqual(locationManager.requestedRegions, [region])
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        XCTAssertTrue(delegate.events.isEmpty, "An inside confirmation must not create a duplicate entry")
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
         XCTAssertEqual(delegate.events, [
             .init(eventType: .region(region, .outside), associatedZone: AppZone.zone(identifier: region.identifier)),
         ])
@@ -1389,7 +1428,36 @@ class ZoneManagerCollectorTests: XCTestCase {
 
         scheduler.advance(by: 1)
         collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        XCTAssertTrue(delegate.events.isEmpty, "Radio silence alone must not emit an exit")
+        XCTAssertEqual(locationManager.requestedRegions, [region])
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        XCTAssertTrue(delegate.events.isEmpty, "An inside confirmation must not create a duplicate entry")
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
         XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .outside)])
+    }
+
+    func testDefaultClockUsesCurrentDateForExitConfirmationThreshold() throws {
+        let previousDate = Current.date
+        var now = Date(timeIntervalSince1970: 1000)
+        Current.date = { now }
+        defer { Current.date = previousDate }
+        collector = ZoneManagerCollectorImpl(backgroundExecution: backgroundExecution, schedule: { _, _ in })
+        collector.delegate = delegate
+        let region = try storedBeaconRegion(entityId: "default_clock", inRegion: true)
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        for _ in 0 ..< 3 {
+            collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        }
+        XCTAssertTrue(locationManager.requestedRegions.isEmpty)
+        now = now.addingTimeInterval(8)
+        collector.didRange(samples: [], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+        XCTAssertEqual(locationManager.requestedRegions, [region])
+        XCTAssertTrue(delegate.events.isEmpty)
     }
 
     func testForegroundScanUsesUpdatedStoredStateForReentry() throws {
@@ -1501,7 +1569,7 @@ class ZoneManagerCollectorTests: XCTestCase {
     func testRepeatedLocationUpdatesDoNotExtendActiveScanWindow() throws {
         let region = try storedBeaconRegion(entityId: "bounded_updates")
         locationManager.overrideMonitoredRegions = [region]
-        collector.locationManager(locationManager, didUpdateLocations: [])
+        collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
         for _ in 0 ..< 4 {
             scheduler.advance(by: 5)
             collector.locationManager(locationManager, didUpdateLocations: [])
