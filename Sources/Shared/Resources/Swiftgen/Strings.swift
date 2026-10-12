@@ -6615,6 +6615,8 @@ public enum L10n {
       public static var privacy: String { return L10n.tr("Localizable", "settings.search_keywords.privacy") }
       /// reminders, todo, to-do, tasks, lists, shopping list, sync
       public static var remindersSync: String { return L10n.tr("Localizable", "settings.search_keywords.reminders_sync") }
+      /// sendspin, music assistant, speaker, audio, music, multiroom, player, cast
+      public static var sendspin: String { return L10n.tr("Localizable", "settings.search_keywords.sendspin") }
       /// battery, motion, pedometer, focus, device data
       public static var sensors: String { return L10n.tr("Localizable", "settings.search_keywords.sensors") }
       /// connection, url, account, instance, add server
@@ -6656,6 +6658,106 @@ public enum L10n {
       public enum StayInformed {
         /// Stay informed
         public static var header: String { return L10n.tr("Localizable", "settings.sections.stay_informed.header") }
+      }
+    }
+    public enum Sendspin {
+      /// Play music from Music Assistant on this device with Sendspin, in sync with the other speakers in your home.
+      public static var body: String { return L10n.tr("Localizable", "settings.sendspin.body") }
+      /// Music Assistant finds this device on your local network. The audio is encrypted from end to end and never leaves your network.
+      public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.footer") }
+      /// Now playing
+      public static var nowPlaying: String { return L10n.tr("Localizable", "settings.sendspin.now_playing") }
+      /// Music Assistant speaker
+      public static var title: String { return L10n.tr("Localizable", "settings.sendspin.title") }
+      /// Use as a speaker
+      public static var toggle: String { return L10n.tr("Localizable", "settings.sendspin.toggle") }
+      /// Allow without pairing
+      public static var unpairedAccess: String { return L10n.tr("Localizable", "settings.sendspin.unpaired_access") }
+      public enum Connect {
+        /// Set up Music Assistant, for example as an app in Home Assistant, and make sure its Sendspin provider is enabled.
+        public static var step1: String { return L10n.tr("Localizable", "settings.sendspin.connect.step1") }
+        /// Turn on Use as a speaker in this screen and allow local network access when asked. This device must be on the same network as Music Assistant.
+        public static var step2: String { return L10n.tr("Localizable", "settings.sendspin.connect.step2") }
+        /// Music Assistant discovers the speaker by itself and lists it as a new player under the name shown here.
+        public static var step3: String { return L10n.tr("Localizable", "settings.sendspin.connect.step3") }
+        /// Approve the player in Music Assistant. If you turned off Allow without pairing, pair it instead with the pairing token from this screen.
+        public static var step4: String { return L10n.tr("Localizable", "settings.sendspin.connect.step4") }
+        /// How to connect
+        public static var title: String { return L10n.tr("Localizable", "settings.sendspin.connect.title") }
+        public enum HomeAssistant {
+          /// Once Music Assistant is set up in Home Assistant, this speaker shows up there as a media player. Add it to a dashboard, or play to it from automations and scripts with the Music Assistant play media action.
+          public static var body: String { return L10n.tr("Localizable", "settings.sendspin.connect.home_assistant.body") }
+          /// Example action
+          public static var example: String { return L10n.tr("Localizable", "settings.sendspin.connect.home_assistant.example") }
+          /// Use it from Home Assistant
+          public static var header: String { return L10n.tr("Localizable", "settings.sendspin.connect.home_assistant.header") }
+        }
+        public enum MusicAssistant {
+          /// Music Assistant can only find this speaker while the app is open or already playing.
+          public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.connect.music_assistant.footer") }
+          /// Add it to Music Assistant
+          public static var header: String { return L10n.tr("Localizable", "settings.sendspin.connect.music_assistant.header") }
+        }
+      }
+      public enum ForgetPairedServers {
+        /// Forget
+        public static var confirm: String { return L10n.tr("Localizable", "settings.sendspin.forget_paired_servers.confirm") }
+        /// These servers will have to pair again before they can use this speaker without approval.
+        public static var message: String { return L10n.tr("Localizable", "settings.sendspin.forget_paired_servers.message") }
+        /// Forget paired servers
+        public static var title: String { return L10n.tr("Localizable", "settings.sendspin.forget_paired_servers.title") }
+      }
+      public enum OutputDelay {
+        /// Delays this speaker so it stays in sync when it plays through something that adds its own lag, like a Bluetooth speaker or a TV.
+        public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.output_delay.footer") }
+        /// Output delay
+        public static var title: String { return L10n.tr("Localizable", "settings.sendspin.output_delay.title") }
+        /// %li ms
+        public static func value(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.output_delay.value", p1)
+        }
+      }
+      public enum PairedServers {
+        /// Paired servers
+        public static var header: String { return L10n.tr("Localizable", "settings.sendspin.paired_servers.header") }
+      }
+      public enum PairingToken {
+        /// When Music Assistant asks for a pairing token, scan this code or paste the token. Pairing makes sure only your server can play here without asking.
+        public static var body: String { return L10n.tr("Localizable", "settings.sendspin.pairing_token.body") }
+        /// Copy token
+        public static var copy: String { return L10n.tr("Localizable", "settings.sendspin.pairing_token.copy") }
+        /// Pairing token
+        public static var title: String { return L10n.tr("Localizable", "settings.sendspin.pairing_token.title") }
+      }
+      public enum Player {
+        /// Music that starts playing keeps going when you leave the app. While nothing plays, the speaker is only available with the app open.
+        public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.player.footer") }
+        /// Name
+        public static var name: String { return L10n.tr("Localizable", "settings.sendspin.player.name") }
+        /// Status
+        public static var status: String { return L10n.tr("Localizable", "settings.sendspin.player.status") }
+      }
+      public enum Security {
+        /// Without pairing, Music Assistant asks you to approve this speaker before it can be used.
+        public static var footer: String { return L10n.tr("Localizable", "settings.sendspin.security.footer") }
+        /// Security
+        public static var header: String { return L10n.tr("Localizable", "settings.sendspin.security.header") }
+      }
+      public enum Status {
+        /// Connected to %@
+        public static func connected(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.status.connected", String(describing: p1))
+        }
+        /// Waiting for Music Assistant
+        public static var listening: String { return L10n.tr("Localizable", "settings.sendspin.status.listening") }
+        /// Playing from %@
+        public static func playing(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.sendspin.status.playing", String(describing: p1))
+        }
+        /// Starting...
+        public static var starting: String { return L10n.tr("Localizable", "settings.sendspin.status.starting") }
+        /// Stopped
+        public static var stopped: String { return L10n.tr("Localizable", "settings.sendspin.status.stopped") }
       }
     }
     public enum ServerSelect {

@@ -139,6 +139,16 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
+    @Test("SendspinPlayerConfigurationTable conforms to DatabaseTableProtocol")
+    func sendspinPlayerConfigurationTableConformance() throws {
+        let table = SendspinPlayerConfigurationTable()
+        #expect(table.tableName == GRDBDatabaseTable.sendspinPlayerConfiguration.rawValue)
+        #expect(!table.definedColumns.isEmpty, "definedColumns should not be empty")
+
+        let expectedColumns = DatabaseTables.SendspinPlayerConfiguration.allCases.map(\.rawValue)
+        #expect(Set(table.definedColumns) == Set(expectedColumns))
+    }
+
     @Test("ServerInfoMirrorTable conforms to DatabaseTableProtocol")
     func serverInfoMirrorTableConformance() throws {
         let table = ServerInfoMirrorTable()
@@ -169,10 +179,10 @@ struct DatabaseTableProtocolTests {
         #expect(Set(table.definedColumns) == Set(expectedColumns))
     }
 
-    @Test("All 34 tables conform to DatabaseTableProtocol")
+    @Test("All 35 tables conform to DatabaseTableProtocol")
     func allTablesConformToProtocol() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 34, "Should have exactly 34 tables")
+        #expect(tables.count == 35, "Should have exactly 35 tables")
 
         for table in tables {
             // Verify each table has a non-empty tableName
