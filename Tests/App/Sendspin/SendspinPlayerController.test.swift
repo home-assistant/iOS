@@ -1,5 +1,6 @@
 import Foundation
 @testable import HomeAssistant
+import Shared
 import Testing
 
 @MainActor
