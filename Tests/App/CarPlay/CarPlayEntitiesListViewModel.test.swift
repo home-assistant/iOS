@@ -100,6 +100,18 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         XCTAssertEqual(connection.pendingRequests.count, 1)
     }
 
+    func testTappingAnOpenCoverClosesIt() throws {
+        connectAPI()
+        try makeSut(entityId: "cover.garage_door", domain: "cover", state: "open")
+        let released = expectation(description: "row handler released")
+
+        sut.handleEntityTap(entity: entity) { released.fulfill() }
+
+        wait(for: [released], timeout: 30)
+        let request = try XCTUnwrap(connection.pendingRequests.first)
+        XCTAssertEqual(request.request.data["service"] as? String, "close_cover")
+    }
+
     func testATapMarksTheRowExecutingUntilTheServerAnswers() throws {
         connectAPI()
         try makeSut()

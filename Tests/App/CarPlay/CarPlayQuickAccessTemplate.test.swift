@@ -8,6 +8,29 @@ import XCTest
 /// Covers what tapping a Quick Access row does once a request is in flight: the action is
 /// dispatched, a repeat tap is ignored while it is outstanding, and every outcome settles the row.
 final class CarPlayQuickAccessTemplateTests: XCTestCase {
+    private final class ConfirmationRequiredMagicItemProvider: MagicItemProviderProtocol {
+        func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
+            completion([:])
+        }
+
+        func loadInformation() async -> [String: [HAAppEntity]] {
+            [:]
+        }
+
+        func getInfo(for item: MagicItem) -> MagicItem.Info? {
+            .init(
+                id: item.serverUniqueId,
+                name: "Garage door",
+                iconName: "mdi:garage",
+                customization: .init(requiresConfirmation: true)
+            )
+        }
+
+        func getAreaName(for item: MagicItem) -> String? {
+            nil
+        }
+    }
+
     private var previousServers: ServerManager!
     private var server: Server!
     private var connection: HAMockConnection!
@@ -140,6 +163,55 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         drainMainQueue()
 
         XCTAssertEqual(connection.pendingRequests.count, 1)
+    }
+
+    func testTappingAnOpenCoverRowClosesIt() throws {
+        connectAPI()
+        try seedState(entityId: "cover.garage_door", state: "open")
+        let rendered = rows(for: [item(id: "cover.garage_door", type: .entity)])
+
+        try tap(XCTUnwrap(rendered.first))
+        drainMainQueue()
+
+        let request = try XCTUnwrap(connection.pendingRequests.first)
+        XCTAssertEqual(request.request.data["service"] as? String, "close_cover")
+    }
+
+    func testTappingAClosedCoverRowOpensIt() throws {
+        connectAPI()
+        try seedState(entityId: "cover.garage_door", state: "closed")
+        let rendered = rows(for: [item(id: "cover.garage_door", type: .entity)])
+
+        try tap(XCTUnwrap(rendered.first))
+        drainMainQueue()
+
+        let request = try XCTUnwrap(connection.pendingRequests.first)
+        XCTAssertEqual(request.request.data["service"] as? String, "open_cover")
+    }
+
+    func testARowThatRequiresConfirmationActsOnTheStateWhenConfirmed() throws {
+        let previousProvider = Current.magicItemProvider
+        defer { Current.magicItemProvider = previousProvider }
+        Current.magicItemProvider = { ConfirmationRequiredMagicItemProvider() }
+        sut = CarPlayQuickAccessTemplate(viewModel: CarPlayQuickAccessViewModel())
+        connectAPI()
+        let presenter = FakeCarPlayAlertPresenter()
+        sut.alertPresenterOverride = presenter
+        try seedState(entityId: "cover.garage_door", state: "open")
+        let rendered = rows(for: [item(id: "cover.garage_door", type: .entity)])
+
+        try tap(XCTUnwrap(rendered.first))
+        drainMainQueue()
+        XCTAssertTrue(connection.pendingRequests.isEmpty)
+
+        try seedState(entityId: "cover.garage_door", state: "closed")
+        let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
+        let confirm = try XCTUnwrap(alert.actions.last)
+        confirm.handler(confirm)
+        drainMainQueue()
+
+        let request = try XCTUnwrap(connection.pendingRequests.first)
+        XCTAssertEqual(request.request.data["service"] as? String, "open_cover")
     }
 
     func testTappingAScriptRowDispatchesItsAction() throws {
