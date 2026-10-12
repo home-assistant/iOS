@@ -375,7 +375,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         XCTAssertFalse(AppZone.zone(identifier: circularRegion.identifier)?.inRegion ?? true)
     }
 
-    func testBeaconExitProcessed() throws {
+    func testBeaconExitResetsRegionWithoutSubmittingIncompleteLocation() throws {
         try setUpZones(beacon: { _, zone in
             zone.inRegion = true
         })
@@ -395,11 +395,12 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         wait(for: [expectation], timeout: 10.0)
 
-        XCTAssertNoThrow(try hang(promise))
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? ZoneManagerIgnoreReason, .beaconExitIgnored)
+        }
         XCTAssertFalse(AppZone.zone(identifier: beaconRegion.identifier)?.inRegion ?? true)
         for api in apis {
-            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
-            XCTAssertEqual(api.submitLocationInvocation?.zone, beaconRegionZone)
+            XCTAssertNil(api.submitLocationInvocation)
         }
     }
 
