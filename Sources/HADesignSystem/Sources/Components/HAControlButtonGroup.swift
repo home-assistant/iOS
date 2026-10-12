@@ -5,20 +5,28 @@ import SwiftUI
 /// of the frontend's `ha-control-button-group`.
 public struct HAControlButtonGroup<Content: View>: View {
     private let vertical: Bool
+    private let thickness: CGFloat
+    private let spacing: CGFloat
     private let content: Content
 
-    public init(vertical: Bool = false, @ViewBuilder content: () -> Content) {
+    /// - Parameter thickness: `--control-button-group-thickness`, the same 40pt a control button
+    ///   is by default.
+    public init(
+        vertical: Bool = false,
+        thickness: CGFloat = 40,
+        spacing: CGFloat = DesignSystem.Spaces.oneAndHalf,
+        @ViewBuilder content: () -> Content
+    ) {
         self.vertical = vertical
+        self.thickness = thickness
+        self.spacing = spacing
         self.content = content()
     }
 
-    /// `--control-button-group-thickness`, the same 40pt a control button is.
-    private static var thickness: CGFloat { 40 }
-
     private var layout: AnyLayout {
         vertical
-            ? AnyLayout(VStackLayout(spacing: DesignSystem.Spaces.oneAndHalf))
-            : AnyLayout(HStackLayout(spacing: DesignSystem.Spaces.oneAndHalf))
+            ? AnyLayout(VStackLayout(spacing: spacing))
+            : AnyLayout(HStackLayout(spacing: spacing))
     }
 
     public var body: some View {
@@ -26,8 +34,8 @@ public struct HAControlButtonGroup<Content: View>: View {
             content
         }
         .frame(
-            width: vertical ? Self.thickness : nil,
-            height: vertical ? nil : Self.thickness
+            width: vertical ? thickness : nil,
+            height: vertical ? nil : thickness
         )
     }
 }
