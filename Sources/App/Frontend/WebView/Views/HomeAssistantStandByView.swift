@@ -24,9 +24,9 @@ struct HomeAssistantStandByView: View {
 
     private let delayedSettingsButtonDelay: Duration
     private let cleanCacheButtonDelay: Duration
-    /// Animates the content fading in on appear (and the move between loading and empty state). `nil`
-    /// renders the settled state straight away, which is what a snapshot needs: the fade is driven
-    /// frame by frame, and a test window gets no frames.
+    /// Animates the content fading in on appear, the delayed loader buttons appearing, and the move
+    /// between loading and empty state. `nil` renders the settled state straight away, which is what a
+    /// snapshot needs: the fade is driven frame by frame, and a test window gets no frames.
     private let contentFadeAnimation: Animation?
 
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
@@ -81,8 +81,8 @@ struct HomeAssistantStandByView: View {
         layoutDirection: LayoutDirection,
         showsEmptyState: Bool
     ) -> CGSize {
-        // Laid out inside the safe area, then shifted by half the horizontal inset asymmetry (iPhone
-        // Duo camera or vertical bar) so it reads as centered on the whole display.
+        // Widened by the horizontal inset asymmetry (iPhone Duo camera or vertical bar), then shifted by
+        // half of it, so it is centered on the whole display and keeps its usual side margins.
         let horizontal = SafeAreaCenteringOffset.horizontal(
             safeAreaInsets: safeAreaInsets,
             layoutDirection: layoutDirection
@@ -190,7 +190,7 @@ struct HomeAssistantStandByView: View {
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.three)
-        .padding(.horizontal, abs(contentOffset.width))
+        .padding(.horizontal, -abs(contentOffset.width))
         .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
         .frame(
             maxWidth: .infinity,
@@ -259,12 +259,12 @@ struct HomeAssistantStandByView: View {
                     reauthAction: emptyState.reauthAction,
                     clientCertificateAction: emptyState.clientCertificateAction
                 )
-                .padding(.horizontal, abs(contentOffset.width))
+                .padding(.horizontal, -abs(contentOffset.width))
                 .offset(x: contentOffset.width)
                 .opacity(contentOpacity)
             } else if showsCleanCacheAndReloadButton {
                 cleanCacheButton
-                    .padding(.horizontal, abs(contentOffset.width))
+                    .padding(.horizontal, -abs(contentOffset.width))
                     .offset(x: contentOffset.width)
                     .transition(.opacity)
             }
@@ -336,12 +336,12 @@ struct HomeAssistantStandByView: View {
         guard !showsEmptyState else { return }
         try? await Task.sleep(for: delayedSettingsButtonDelay)
         guard !Task.isCancelled, !showsEmptyState else { return }
-        withAnimation(DesignSystem.Animation.default) {
+        withAnimation(contentFadeAnimation) {
             showsDelayedSettingsButton = true
         }
         try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
         guard !Task.isCancelled, !showsEmptyState else { return }
-        withAnimation(DesignSystem.Animation.default) {
+        withAnimation(contentFadeAnimation) {
             showsCleanCacheButton = true
         }
     }
