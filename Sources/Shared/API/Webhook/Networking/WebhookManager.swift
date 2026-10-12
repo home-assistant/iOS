@@ -487,7 +487,8 @@ public class WebhookManager: NSObject {
                 server: server.identifier,
                 request: request,
                 identifier: identifier,
-                requestIdentifier: requestIdentifier
+                requestIdentifier: requestIdentifier,
+                allowsEndpointFallback: true
             )
             task.webhookPersisted = persisted
 
@@ -955,6 +956,18 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         // dispatch
         if let (handlerType, persisted) = responseInfo(from: task),
            let server = server(for: persisted) {
+            if retryPersistedEndpoint(
+                sessionInfo: sessionInfo,
+                task: task,
+                taskKey: taskKey,
+                persisted: persisted,
+                server: server,
+                error: error,
+                uploadFile: temporaryUploadFile
+            ) {
+                return
+            }
+
             let result = Promise<Data?> { seal in
                 let data = self.pendingDataForTask[taskKey]
                 self.pendingDataForTask.removeValue(forKey: taskKey)
@@ -1007,6 +1020,68 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         } else {
             Current.Log.notify("no handler for background task")
             Current.Log.error("couldn't find appropriate handler for \(task)")
+        }
+    }
+
+    /// Only failures before connecting can safely replay a POST. Persist the consumed allowance
+    /// on the replacement task so restoration cannot start another fallback.
+    private func retryPersistedEndpoint(
+        sessionInfo: WebhookSessionInfo,
+        task: URLSessionTask,
+        taskKey: TaskKey,
+        persisted: WebhookPersisted,
+        server: Server,
+        error: Error?,
+        uploadFile: URL?
+    ) -> Bool {
+        guard persisted.allowsEndpointFallback,
+              task.response == nil,
+              task.countOfBytesSent == 0,
+              let error = error as NSError?, error.domain == NSURLErrorDomain,
+              [URLError.cannotConnectToHost, .cannotFindHost, .dnsLookupFailed, .notConnectedToInternet]
+              .map(\.rawValue).contains(error.code),
+              var request = task.originalRequest,
+              let fallbackURL = server.webhookURLUsingLastKnownNetworkState(),
+              fallbackURL != request.url else {
+            return false
+        }
+
+        do {
+            let data: Data
+            if let uploadFile {
+                data = try Data(contentsOf: uploadFile)
+            } else {
+                // Restored URLSession tasks no longer have our in-memory temporary-file mapping.
+                let json = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
+                    .toJSON(persisted.request)
+                data = try JSONSerialization.data(withJSONObject: json, options: [.sortedKeys])
+            }
+            let file = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+                .appendingPathComponent(UUID().uuidString).appendingPathExtension("json")
+            try data.write(to: file)
+            request.url = fallbackURL
+            request.httpBody = data
+            let replacement = sessionInfo.session.uploadTask(with: request, fromFile: file)
+            var metadata = persisted
+            metadata.allowsEndpointFallback = false
+            replacement.webhookPersisted = metadata
+            let replacementKey = TaskKey(sessionInfo: sessionInfo, task: replacement)
+            var resolver = resolverForTask.removeValue(forKey: taskKey)
+            if resolver == nil, let requestIdentifier = persisted.requestIdentifier {
+                let (completion, seal) = Promise<Void>.pending()
+                registerActivePersistedRequest(completion, requestIdentifier: requestIdentifier)
+                restoredPersistedRequestIDs.insert(requestIdentifier)
+                resolver = seal
+            }
+            resolverForTask[replacementKey] = resolver
+            temporaryUploadFileForTask[replacementKey] = file
+            pendingDataForTask.removeValue(forKey: taskKey)
+            replacement.resume()
+            Current.Log.info("retrying persisted request after preconnection failure: \(replacementKey)")
+            return true
+        } catch {
+            Current.Log.error("could not prepare persisted endpoint fallback: \(error)")
+            return false
         }
     }
 

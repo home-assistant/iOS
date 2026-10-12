@@ -6,12 +6,14 @@ struct WebhookPersisted: Codable {
     var request: WebhookRequest
     var identifier: WebhookResponseIdentifier
     var requestIdentifier: String?
+    var allowsEndpointFallback: Bool
 
     enum CodingKeys: CodingKey {
         case server
         case request
         case identifier
         case requestIdentifier
+        case allowsEndpointFallback
     }
 
     enum CodingError: Error {
@@ -22,12 +24,14 @@ struct WebhookPersisted: Codable {
         server: Identifier<Server>,
         request: WebhookRequest,
         identifier: WebhookResponseIdentifier,
-        requestIdentifier: String? = nil
+        requestIdentifier: String? = nil,
+        allowsEndpointFallback: Bool = false
     ) {
         self.server = server
         self.request = request
         self.identifier = identifier
         self.requestIdentifier = requestIdentifier
+        self.allowsEndpointFallback = allowsEndpointFallback
     }
 
     func encode(to encoder: Encoder) throws {
@@ -40,6 +44,7 @@ struct WebhookPersisted: Codable {
         try container.encode(identifier, forKey: .identifier)
         try container.encode(server, forKey: .server)
         try container.encodeIfPresent(requestIdentifier, forKey: .requestIdentifier)
+        try container.encode(allowsEndpointFallback, forKey: .allowsEndpointFallback)
     }
 
     init(from decoder: Decoder) throws {
@@ -50,6 +55,7 @@ struct WebhookPersisted: Codable {
         self.identifier = try container.decode(WebhookResponseIdentifier.self, forKey: .identifier)
         self.server = try container.decode(Identifier<Server>.self, forKey: .server)
         self.requestIdentifier = try container.decodeIfPresent(String.self, forKey: .requestIdentifier)
+        self.allowsEndpointFallback = try container.decodeIfPresent(Bool.self, forKey: .allowsEndpointFallback) ?? false
     }
 }
 
