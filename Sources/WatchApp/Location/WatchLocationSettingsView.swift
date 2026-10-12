@@ -25,7 +25,6 @@ struct WatchLocationSettingsView: View {
             } else if viewModel.servers.count == 1, let server = viewModel.servers.first {
                 // Keyed by server so a sync that replaces the only server doesn't carry its choice over.
                 WatchLocationPrivacySection(server: server)
-                    .labelsHidden()
                     .id(server.identifier.rawValue)
             } else {
                 Section {
