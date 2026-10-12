@@ -1108,6 +1108,7 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertFalse(decoded.allowsEndpointFallback)
     }
 
+    @MainActor
     private func checkPersistedEndpointFallback(
         error: Error,
         expectsFallback: Bool,
@@ -1115,6 +1116,10 @@ class WebhookManagerTests: XCTestCase {
         sameEndpoint: Bool = false,
         restored: Bool = false
     ) async throws {
+        let previousNetworkState = Current.connectivity.lastKnownNetworkState
+        Current.connectivity.lastKnownNetworkState = { NetworkState(ssid: "MyWifi") }
+        defer { Current.connectivity.lastKnownNetworkState = previousNetworkState }
+
         let server = Server.fake { info in
             info.connection.set(address: URL(string: "http://homeassistant.local:8123")!, for: .internal)
             info.connection.set(
