@@ -942,7 +942,7 @@ public class HomeAssistantAPI {
             }
         } else {
             // Use domain's main action for all other domains
-            request = .executeMainAction(domain: domain, entityId: entityId)
+            request = .executeMainAction(domain: domain, entityId: entityId, state: state)
         }
 
         if let request {
