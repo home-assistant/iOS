@@ -760,11 +760,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         } else if supportsConfirmation, info.customization?.requiresConfirmation ?? false {
             showConfirmationForRunningMagicItem(item: magicItem, info: info) { [weak self] in
                 executionStarted()
-                self?.executeMagicItem(magicItem, currentItemState: currentItemState, completion: executionFinished)
+                self?.executeMagicItem(magicItem, completion: executionFinished)
             }
         } else {
             executionStarted()
-            executeMagicItem(magicItem, currentItemState: currentItemState, completion: executionFinished)
+            executeMagicItem(magicItem, completion: executionFinished)
         }
     }
 
@@ -787,7 +787,6 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func executeMagicItem(
         _ magicItem: MagicItem,
-        currentItemState: String,
         completion: @escaping () -> Void
     ) {
         guard let server = Current.servers.all.first(where: { server in
@@ -798,7 +797,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return
         }
         let deadline = makeDeadline(server: server, executionFinished: completion)
-        magicItem.execute(on: server, source: .CarPlay, currentItemState: currentItemState) { success, error in
+        magicItem.execute(
+            on: server,
+            source: .CarPlay,
+            currentItemState: resolvedEntity(for: magicItem)?.state ?? ""
+        ) { success, error in
             if success {
                 deadline.succeed()
             } else {

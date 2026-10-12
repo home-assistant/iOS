@@ -189,7 +189,7 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         XCTAssertEqual(request.request.data["service"] as? String, "open_cover")
     }
 
-    func testAnOpenCoverRowThatRequiresConfirmationClosesItOnceConfirmed() throws {
+    func testARowThatRequiresConfirmationActsOnTheStateWhenConfirmed() throws {
         let previousProvider = Current.magicItemProvider
         defer { Current.magicItemProvider = previousProvider }
         Current.magicItemProvider = { ConfirmationRequiredMagicItemProvider() }
@@ -204,13 +204,14 @@ final class CarPlayQuickAccessTemplateTests: XCTestCase {
         drainMainQueue()
         XCTAssertTrue(connection.pendingRequests.isEmpty)
 
+        try seedState(entityId: "cover.garage_door", state: "closed")
         let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
         let confirm = try XCTUnwrap(alert.actions.last)
         confirm.handler(confirm)
         drainMainQueue()
 
         let request = try XCTUnwrap(connection.pendingRequests.first)
-        XCTAssertEqual(request.request.data["service"] as? String, "close_cover")
+        XCTAssertEqual(request.request.data["service"] as? String, "open_cover")
     }
 
     func testTappingAScriptRowDispatchesItsAction() throws {
