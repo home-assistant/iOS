@@ -2256,6 +2256,10 @@ public enum L10n {
       public static var adjustLower: String { return L10n.tr("Localizable", "component.circular_slider.adjust_lower") }
       /// Adjust upper target
       public static var adjustUpper: String { return L10n.tr("Localizable", "component.circular_slider.adjust_upper") }
+      /// Decrease
+      public static var decrease: String { return L10n.tr("Localizable", "component.circular_slider.decrease") }
+      /// Increase
+      public static var increase: String { return L10n.tr("Localizable", "component.circular_slider.increase") }
     }
     public enum CollapsibleView {
       /// Collapse
@@ -2268,6 +2272,12 @@ public enum L10n {
       public static var lessSaturation: String { return L10n.tr("Localizable", "component.color_picker.less_saturation") }
       /// More saturation
       public static var moreSaturation: String { return L10n.tr("Localizable", "component.color_picker.more_saturation") }
+    }
+    public enum Cover {
+      /// Buttons
+      public static var buttonsMode: String { return L10n.tr("Localizable", "component.cover.buttons_mode") }
+      /// Position
+      public static var positionMode: String { return L10n.tr("Localizable", "component.cover.position_mode") }
     }
     public enum Distribution {
       /// Show less
@@ -2283,7 +2293,31 @@ public enum L10n {
       /// Previous period
       public static var previous: String { return L10n.tr("Localizable", "component.energy_period.previous") }
     }
+    public enum Light {
+      /// Brightness
+      public static var brightness: String { return L10n.tr("Localizable", "component.light.brightness") }
+      /// Color
+      public static var color: String { return L10n.tr("Localizable", "component.light.color") }
+      /// Color temperature
+      public static var colorTemperature: String { return L10n.tr("Localizable", "component.light.color_temperature") }
+      /// Set white
+      public static var setWhite: String { return L10n.tr("Localizable", "component.light.set_white") }
+    }
+    public enum Lock {
+      /// Lock
+      public static var lock: String { return L10n.tr("Localizable", "component.lock.lock") }
+      /// Open door
+      public static var openDoor: String { return L10n.tr("Localizable", "component.lock.open_door") }
+      /// Really open?
+      public static var openDoorConfirm: String { return L10n.tr("Localizable", "component.lock.open_door_confirm") }
+      /// Door open
+      public static var openDoorDone: String { return L10n.tr("Localizable", "component.lock.open_door_done") }
+      /// Unlock
+      public static var unlock: String { return L10n.tr("Localizable", "component.lock.unlock") }
+    }
     public enum MediaControl {
+      /// Mute
+      public static var mute: String { return L10n.tr("Localizable", "component.media_control.mute") }
       /// Next
       public static var next: String { return L10n.tr("Localizable", "component.media_control.next") }
       /// Pause
@@ -2292,6 +2326,28 @@ public enum L10n {
       public static var play: String { return L10n.tr("Localizable", "component.media_control.play") }
       /// Previous
       public static var previous: String { return L10n.tr("Localizable", "component.media_control.previous") }
+      /// All
+      public static var repeatAll: String { return L10n.tr("Localizable", "component.media_control.repeat_all") }
+      /// Repeat
+      public static var repeatMode: String { return L10n.tr("Localizable", "component.media_control.repeat_mode") }
+      /// Off
+      public static var repeatOff: String { return L10n.tr("Localizable", "component.media_control.repeat_off") }
+      /// One
+      public static var repeatOne: String { return L10n.tr("Localizable", "component.media_control.repeat_one") }
+      /// Shuffle
+      public static var shuffle: String { return L10n.tr("Localizable", "component.media_control.shuffle") }
+      /// Stop
+      public static var stop: String { return L10n.tr("Localizable", "component.media_control.stop") }
+      /// Track position
+      public static var trackPosition: String { return L10n.tr("Localizable", "component.media_control.track_position") }
+      /// Unmute
+      public static var unmute: String { return L10n.tr("Localizable", "component.media_control.unmute") }
+      /// Volume
+      public static var volume: String { return L10n.tr("Localizable", "component.media_control.volume") }
+      /// Volume down
+      public static var volumeDown: String { return L10n.tr("Localizable", "component.media_control.volume_down") }
+      /// Volume up
+      public static var volumeUp: String { return L10n.tr("Localizable", "component.media_control.volume_up") }
     }
     public enum QrCode {
       /// Could not generate the QR code
@@ -2307,13 +2363,53 @@ public enum L10n {
       /// Submit
       public static var submit: String { return L10n.tr("Localizable", "component.qr_scanner.submit") }
     }
+    public enum Scene {
+      /// Activate
+      public static var activate: String { return L10n.tr("Localizable", "component.scene.activate") }
+    }
+    public enum StateToggle {
+      /// Toggle
+      public static var toggle: String { return L10n.tr("Localizable", "component.state_toggle.toggle") }
+      /// Turn off
+      public static var turnOff: String { return L10n.tr("Localizable", "component.state_toggle.turn_off") }
+      /// Turn on
+      public static var turnOn: String { return L10n.tr("Localizable", "component.state_toggle.turn_on") }
+    }
     public enum TimeInput {
       /// Clear
       public static var clear: String { return L10n.tr("Localizable", "component.time_input.clear") }
     }
+    public enum Timer {
+      /// Cancel
+      public static var cancel: String { return L10n.tr("Localizable", "component.timer.cancel") }
+      /// Finish
+      public static var finish: String { return L10n.tr("Localizable", "component.timer.finish") }
+      /// Pause
+      public static var pause: String { return L10n.tr("Localizable", "component.timer.pause") }
+      /// Set
+      public static var setDuration: String { return L10n.tr("Localizable", "component.timer.set_duration") }
+      /// Start
+      public static var start: String { return L10n.tr("Localizable", "component.timer.start") }
+    }
     public enum Tip {
       /// Tip
       public static var `prefix`: String { return L10n.tr("Localizable", "component.tip.prefix") }
+    }
+    public enum Update {
+      /// Clear skipped
+      public static var clearSkipped: String { return L10n.tr("Localizable", "component.update.clear_skipped") }
+      /// Update
+      public static var install: String { return L10n.tr("Localizable", "component.update.install") }
+      /// Read release announcement
+      public static var releaseAnnouncement: String { return L10n.tr("Localizable", "component.update.release_announcement") }
+      /// Skip
+      public static var skip: String { return L10n.tr("Localizable", "component.update.skip") }
+    }
+    public enum Vacuum {
+      /// By area
+      public static var byArea: String { return L10n.tr("Localizable", "component.vacuum.by_area") }
+      /// Cleaning
+      public static var cleaning: String { return L10n.tr("Localizable", "component.vacuum.cleaning") }
     }
   }
 
