@@ -180,6 +180,7 @@ class ZoneManagerTests: XCTestCase {
         }
     }
 
+    private var previousIsTestFlight = false
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
     private var collector: FakeCollector!
@@ -223,6 +224,8 @@ class ZoneManagerTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        previousIsTestFlight = Current.isTestFlight
+        Current.isTestFlight = true
 
         Current.settingsStore.locationSources.zone = true
         Current.settingsStore.locationSources.significantLocationChange = true
@@ -266,6 +269,7 @@ class ZoneManagerTests: XCTestCase {
             XCTAssertEqual(clientEventStore.processorCompletionCount, expectedCount)
             loggedEventsUpdatedExpectation = nil
             managers.removeAll()
+            Current.isTestFlight = previousIsTestFlight
             Current.database = previousDatabase
             Current.clientEventStore = previousClientEventStore
             Current.notificationDispatcher = previousNotificationDispatcher
@@ -338,6 +342,101 @@ class ZoneManagerTests: XCTestCase {
         manager.applicationWillResignActive()
         XCTAssertEqual(collector.backgroundMonitoredRegions, [region])
         XCTAssertTrue(locationManager.monitoredRegionsReadsWereOnMainThread.isEmpty)
+    }
+
+    @MainActor
+    func testProductionUsesTransientDeliveryAndLeavesBetaOutboxUntouched() throws {
+        Current.isTestFlight = false
+        let outbox = FakeZoneEventOutbox()
+        let api = apis[0]
+        let pending = try PendingZoneEvent(
+            serverIdentifier: api.server.identifier.rawValue,
+            eventType: "ios.zone_entered", eventData: [:], createdAt: Current.date(), isBeacon: true
+        )
+        outbox.events = [pending]
+        let manager = newZoneManager(zoneEventOutbox: outbox, scheduleZoneEventRetryWork: { _, _ in
+            XCTFail("Production must not schedule beta retries or watchdogs")
+        })
+        processor.promiseToReturn = .value(())
+        let zone = AppZone(entityId: "zone.home", serverIdentifier: api.server.identifier.rawValue)
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "home@beacon")
+        manager.collector(collector, didCollect: .init(eventType: .region(region, .inside), associatedZone: zone))
+        manager.applicationDidBecomeActive()
+        manager.applicationWillResignActive()
+        XCTAssertEqual(api.ephemeralEventCount, 1)
+        XCTAssertEqual(api.lastTransientEvent?.eventType, "ios.zone_entered")
+        XCTAssertEqual(api.lastTransientEvent?.eventData["zone"] as? String, "zone.home")
+        XCTAssertTrue(api.createdEvents.isEmpty)
+        XCTAssertEqual(outbox.events.map(\.id), [pending.id])
+        XCTAssertNil(outbox.events.first?.deliveryStartedAt)
+    }
+
+    @MainActor
+    func testProductionTransientFailureKeepsLegacyNotificationWithoutQueueing() async throws {
+        Current.isTestFlight = false
+        let outbox = FakeZoneEventOutbox()
+        let api = apis[0]
+        api.transientEventResult = .init(error: TestError.anyError)
+        let manager = newZoneManager(zoneEventOutbox: outbox)
+        processor.promiseToReturn = .value(())
+        let zone = AppZone(entityId: "zone.home", serverIdentifier: api.server.identifier.rawValue)
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "home@beacon")
+        manager.collector(collector, didCollect: .init(eventType: .region(region, .inside), associatedZone: zone))
+        // Promise.pipe invokes the legacy failure handler synchronously for a resolved result.
+        XCTAssertEqual(api.ephemeralEventCount, 1)
+        XCTAssertTrue(loggedEvents.contains { $0.text.hasPrefix("Failed to fire ZoneManager event:") })
+        XCTAssertTrue(notificationDispatcher.notifications.contains { $0.id == .debug })
+        XCTAssertTrue(outbox.events.isEmpty)
+        XCTAssertTrue(api.createdEvents.isEmpty)
+    }
+
+    @MainActor
+    func testProductionUnavailableURLDoesNotActivateBetaPersistence() {
+        Current.isTestFlight = false
+        let api = apis[0]
+        let originalConnection = api.server.info.connection
+        api.server.update { $0.connection.set(address: nil, for: .external) }
+        defer { api.server.update { $0.connection = originalConnection } }
+        XCTAssertNil(Current.api(for: api.server))
+        let outbox = FakeZoneEventOutbox()
+        let manager = newZoneManager(zoneEventOutbox: outbox)
+        processor.promiseToReturn = .value(())
+        let zone = AppZone(entityId: "zone.home", serverIdentifier: api.server.identifier.rawValue)
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "home@beacon")
+        manager.collector(collector, didCollect: .init(eventType: .region(region, .inside), associatedZone: zone))
+        XCTAssertEqual(api.ephemeralEventCount, 0)
+        XCTAssertTrue(outbox.events.isEmpty)
+    }
+
+    @MainActor
+    func testBeaconWatchdogUsesInjectedClockWithoutUserFacingStageSpam() async throws {
+        let outbox = FakeZoneEventOutbox()
+        let api = apis[0]
+        let pending = try PendingZoneEvent(
+            serverIdentifier: api.server.identifier.rawValue,
+            eventType: "ios.zone_entered", eventData: [:], createdAt: Current.date(), isBeacon: true
+        )
+        outbox.events = [pending]
+        let (delivery, seal) = Promise<Void>.pending()
+        api.persistentEventResult = delivery
+        var jobs = [(delay: TimeInterval, work: () -> Void)]()
+        let manager = newZoneManager(zoneEventOutbox: outbox, scheduleZoneEventRetryWork: {
+            jobs.append(($0, $1))
+        })
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(jobs.map(\.delay), [ZoneManager.beaconUploadWatchdogDelay])
+        XCTAssertTrue(loggedEvents.isEmpty)
+        try XCTUnwrap(jobs.first).work()
+        XCTAssertTrue(loggedEvents.isEmpty, "Stalled/intermediate stages belong in debug logs")
+        XCTAssertEqual(api.createdEventIdentifiers, [pending.id], "Watchdog must not resend an active upload")
+        let removed = expectation(description: "confirmed upload removed")
+        outbox.observeRemoval { _ in removed.fulfill() }
+        seal.fulfill(())
+        await fulfillment(of: [removed], timeout: 5)
+        XCTAssertEqual(loggedEvents.map(\.text), ["Beacon delivery: webhook_confirmed"])
+        try XCTUnwrap(jobs.first).work()
+        XCTAssertEqual(loggedEvents.count, 1, "A completed upload invalidates its watchdog")
+        XCTAssertTrue(outbox.events.isEmpty)
     }
 
     func testZonePayloadPreservesDeviceMetadataAndStateMapping() {
@@ -1863,6 +1962,8 @@ private class FakeHassAPI: HomeAssistantAPI {
     var createdEventPromise: Promise<CreatedEventInfo>!
     var createdEventSeal: Resolver<CreatedEventInfo>?
     var ephemeralEventCount = 0
+    var transientEventResult: Promise<Void> = .value(())
+    var lastTransientEvent: CreatedEventInfo?
     var persistentEventResult: Promise<Void> {
         get { synchronized { storedPersistentEventResult } }
         set { synchronized { storedPersistentEventResult = newValue } }
@@ -1888,7 +1989,8 @@ private class FakeHassAPI: HomeAssistantAPI {
 
     override func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
         ephemeralEventCount += 1
-        return .value(())
+        lastTransientEvent = (eventType, eventData)
+        return transientEventResult
     }
 
     override func startPersistentEvent(

@@ -21,6 +21,8 @@ class ZoneManager {
     private var confirmedZoneEventIDs = Set<UUID>()
     private var zoneEventRetryAttempt = 0
     private var zoneEventRetryIdentifier: UUID?
+    private var beaconUploadWatchdogIdentifier: UUID?
+    static let beaconUploadWatchdogDelay: TimeInterval = 15
     private var synchronizedRegions = Set<CLRegion>()
     private let scheduleZoneEventRetryWork: (TimeInterval, @escaping () -> Void) -> Void
     private let zoneEventRetryDelay: (Int) -> TimeInterval
@@ -229,6 +231,11 @@ class ZoneManager {
         switch event.eventType {
         case let .region(region, state):
             let eventInfo = HomeAssistantAPI.zoneStateEvent(server: server, region: region, state: state, zone: zone)
+            // Beta-only durable custom events. Location updates retain their existing path.
+            guard Current.isTestFlight else {
+                fireTransientZoneEvent(server: server, eventType: eventInfo.eventType, eventData: eventInfo.eventData)
+                return
+            }
             enqueueZoneEvent(
                 serverIdentifier: server.identifier.rawValue,
                 eventType: eventInfo.eventType,
@@ -237,6 +244,27 @@ class ZoneManager {
             )
         case .locationChange:
             break
+        }
+    }
+
+    private func fireTransientZoneEvent(server: Server, eventType: String, eventData: [String: Any]) {
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available to fire ZoneManager event, server: \(server)")
+            return
+        }
+        // Preserve the pre-outbox delivery path for production builds.
+        api.CreateEvent(eventType: eventType, eventData: eventData).pipe { result in
+            switch result {
+            case .fulfilled:
+                Current.Log.info("Fired ZoneManager event")
+            case let .rejected(error):
+                let message = "Failed to fire ZoneManager event: \(error.localizedDescription)"
+                Current.Log.error(message)
+                Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
+                Current.notificationDispatcher.send(.init(
+                    id: .debug, title: "DEBUG: Failed to fire ZoneManager", body: message
+                ))
+            }
         }
     }
 
@@ -298,6 +326,7 @@ class ZoneManager {
         pendingEvent: PendingZoneEvent
     ) {
         drainingZoneEventIDs.remove(pendingEvent.id)
+        beaconUploadWatchdogIdentifier = nil
 
         switch result {
         case .success:
@@ -321,6 +350,8 @@ class ZoneManager {
     }
 
     private func flushPendingZoneEvents() {
+        // Do not start or reconcile beta uploads in production builds.
+        guard Current.isTestFlight else { return }
         guard let pendingEvents = loadPendingZoneEvents() else { return }
         // Disk expiry also ends in-memory ownership. A never-completing transport must
         // not keep a removed event blocking every server on subsequent wakes.
@@ -412,6 +443,9 @@ class ZoneManager {
         logZoneEventDrainBlocked(pendingEvent, reason: reason)
         do {
             try zoneEventOutbox.remove(id: pendingEvent.id)
+            Current.clientEventStore.addEvent(.init(
+                text: "ZoneManager outbox event discarded: \(reason)", type: .locationUpdate
+            ))
             drainPendingZoneEvents(remainingEvents)
         } catch {
             logZoneEventOutboxFailure("remove undeliverable event", error: error)
@@ -507,14 +541,15 @@ class ZoneManager {
     }
 
     private func logZoneEventDrainBlocked(_ pendingEvent: PendingZoneEvent, reason: String) {
-        let message = "ZoneManager outbox drain blocked: \(reason)"
+        let message = "ZoneManager outbox drain blocked (\(pendingEvent.id)): \(reason)"
         Current.Log.error(message)
-        Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
     }
 
     private func scheduleBeaconUploadWatchdog(for pendingEvent: PendingZoneEvent) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 15) { [weak self] in
-            guard let self,
+        let identifier = UUID()
+        beaconUploadWatchdogIdentifier = identifier
+        scheduleZoneEventRetryWork(Self.beaconUploadWatchdogDelay) { [weak self] in
+            guard let self, beaconUploadWatchdogIdentifier == identifier,
                   drainingZoneEventIDs.contains(pendingEvent.id),
                   (try? self.zoneEventOutbox.pendingEvents())?.contains(where: {
                       $0.id == pendingEvent.id
@@ -523,7 +558,7 @@ class ZoneManager {
             logBeaconDeliveryStage(
                 "webhook_stalled",
                 pendingEvent: pendingEvent,
-                detail: "No completion after 15 seconds"
+                detail: "No completion after \(Self.beaconUploadWatchdogDelay) seconds"
             )
         }
     }
@@ -534,6 +569,10 @@ class ZoneManager {
         detail: String? = nil
     ) {
         guard pendingEvent.isBeacon else { return }
+        Current.Log.debug("Beacon delivery: \(stage), id: \(pendingEvent.id), \(detail ?? "")")
+        // Intermediate stages belong in debug logs, not the bounded user-facing history.
+        // Failures already have a single outcome entry in handleZoneEventResult.
+        guard stage == "webhook_confirmed" else { return }
         Current.clientEventStore.addEvent(ClientEvent(
             text: "Beacon delivery: \(stage)",
             type: .networkRequest,
@@ -651,18 +690,6 @@ extension ZoneManager: ZoneManagerCollectorDelegate {
     }
 
     func collector(_ collector: ZoneManagerCollector, didCollect event: ZoneManagerEvent) {
-        if case let .region(region, state) = event.eventType, region is CLBeaconRegion {
-            Current.clientEventStore.addEvent(ClientEvent(
-                text: "Beacon delivery: accepted_sample",
-                type: .locationUpdate,
-                payload: [
-                    "stage": "accepted_sample",
-                    "region": region.identifier,
-                    "state": String(describing: state),
-                    "recorded_at": ISO8601DateFormatter().string(from: Current.date()),
-                ]
-            ))
-        }
         fire(event: event)
         perform(event: event)
     }

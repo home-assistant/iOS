@@ -327,10 +327,9 @@ public struct ConnectionInfo: Codable, Equatable {
     /// network state may still claim that the phone is at home. Prefer a configured remote path
     /// that is reachable on both Wi-Fi and cellular, then fall back to the normal cached-state
     /// evaluation for local-only installations.
-    /// This selects one endpoint, not a retry policy. If a configured remote endpoint is unreachable
-    /// on the local network or the internet is down, delivery fails even if internal HA is reachable.
-    /// We do not automatically replay a POST on another URL: a lost response does not prove that
-    /// HA did not process it. The durable caller must retain the event and decide when to retry.
+    /// This selects the initial endpoint. Persisted uploads may try the cached normal endpoint
+    /// once after an unambiguous preconnection failure, never after a timeout or lost response:
+    /// those do not prove that HA did not process the POST.
     public mutating func preferredBackgroundWebhookURL() -> URL? {
         if let cloudhookURL {
             return cloudhookURL

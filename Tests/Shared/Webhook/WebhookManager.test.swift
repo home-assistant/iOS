@@ -1044,6 +1044,162 @@ class WebhookManagerTests: XCTestCase {
         try await delivery.value
     }
 
+    func testPersistedEndpointFallbackForPreconnectionFailures() async throws {
+        for code in [URLError.cannotConnectToHost, .cannotFindHost, .dnsLookupFailed, .notConnectedToInternet] {
+            try await checkPersistedEndpointFallback(error: URLError(code), expectsFallback: true)
+            HTTPStubs.removeAllStubs()
+        }
+    }
+
+    func testPersistedEndpointDoesNotReplayAmbiguousOrUnrelatedFailures() async throws {
+        for code in [URLError.timedOut, .networkConnectionLost, .secureConnectionFailed, .cancelled] {
+            try await checkPersistedEndpointFallback(error: URLError(code), expectsFallback: false)
+            HTTPStubs.removeAllStubs()
+        }
+        try await checkPersistedEndpointFallback(
+            error: NSError(domain: "NotURLError", code: URLError.cannotConnectToHost.rawValue),
+            expectsFallback: false
+        )
+    }
+
+    func testPersistedEndpointFallbackStopsAfterSecondConnectionFailure() async throws {
+        try await checkPersistedEndpointFallback(
+            error: URLError(.cannotConnectToHost),
+            expectsFallback: true,
+            fallbackFails: true
+        )
+    }
+
+    func testPersistedEndpointDoesNotRetryTheSameURL() async throws {
+        try await checkPersistedEndpointFallback(
+            error: URLError(.cannotConnectToHost), expectsFallback: false, sameEndpoint: true
+        )
+    }
+
+    func testRestoredPersistedEndpointFallbackPreservesCompletionIdentity() async throws {
+        try await checkPersistedEndpointFallback(
+            error: URLError(.cannotConnectToHost), expectsFallback: true, restored: true
+        )
+    }
+
+    func testPersistedEndpointFallbackAllowanceSurvivesCodingAndDefaultsOffForLegacyTasks() throws {
+        var persisted = WebhookPersisted(
+            server: api1.server.identifier,
+            request: WebhookRequest(type: "webhook_name", data: ["json": true]),
+            identifier: .unhandled,
+            requestIdentifier: "stable-id",
+            allowsEndpointFallback: true
+        )
+        for allowed in [true, false] {
+            persisted.allowsEndpointFallback = allowed
+            let decoded = try JSONDecoder().decode(WebhookPersisted.self, from: JSONEncoder().encode(persisted))
+            XCTAssertEqual(decoded.allowsEndpointFallback, allowed)
+            XCTAssertEqual(decoded.requestIdentifier, "stable-id")
+        }
+        var legacy = try XCTUnwrap(
+            JSONSerialization
+                .jsonObject(with: JSONEncoder().encode(persisted)) as? [String: Any]
+        )
+        legacy.removeValue(forKey: "allowsEndpointFallback")
+        let decoded = try JSONDecoder().decode(
+            WebhookPersisted.self,
+            from: JSONSerialization.data(withJSONObject: legacy)
+        )
+        XCTAssertFalse(decoded.allowsEndpointFallback)
+    }
+
+    private func checkPersistedEndpointFallback(
+        error: Error,
+        expectsFallback: Bool,
+        fallbackFails: Bool = false,
+        sameEndpoint: Bool = false,
+        restored: Bool = false
+    ) async throws {
+        let server = Server.fake { info in
+            info.connection.set(address: URL(string: "http://homeassistant.local:8123")!, for: .internal)
+            info.connection.set(
+                address: URL(string: sameEndpoint ? "http://homeassistant.local:8123" : "https://ha.example.com")!,
+                for: .external
+            )
+            info.connection.internalSSIDs = ["MyWifi"]
+        }
+        let remote = try XCTUnwrap(server.preferredBackgroundWebhookURL())
+        let local = try XCTUnwrap(server.webhookURLUsingLastKnownNetworkState())
+        if sameEndpoint {
+            XCTAssertEqual(remote, local)
+        } else {
+            XCTAssertNotEqual(remote, local)
+        }
+        let request = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let first = expectation(description: "one initial attempt")
+        first.assertForOverFulfill = true
+        let fallback = expectsFallback ? expectation(description: "one fallback attempt") : nil
+        fallback?.assertForOverFulfill = true
+        stub(condition: { $0.url == remote }, response: { _ in
+            first.fulfill()
+            return HTTPStubsResponse(error: error)
+        })
+        stub(condition: { !sameEndpoint && $0.url == local }, response: { actual in
+            if let fallback {
+                fallback.fulfill()
+            } else {
+                XCTFail("A failure with an ambiguous outcome must not replay the POST")
+            }
+            XCTAssertEqual(actual.httpMethod, "POST")
+            XCTAssertEqual(actual.timeoutInterval, 19)
+            XCTAssertEqual(actual.value(forHTTPHeaderField: "Content-Type"), "application/json")
+            XCTAssertEqualWebhookRequest(actual.ohhttpStubs_httpBody, request, server: server)
+            if fallbackFails {
+                return HTTPStubsResponse(error: URLError(.cannotConnectToHost))
+            }
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+        let stableIdentifier = UUID().uuidString
+        let delivery: Task<Void, Error>
+        if restored {
+            let completed = expectation(description: "restored fallback handler started")
+            let identifier = WebhookResponseIdentifier(rawValue: "restored-endpoint-fallback")
+            manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
+            ReplacingTestHandler.onInit = { completed.fulfill() }
+            var original = URLRequest(url: remote)
+            original.httpMethod = "POST"
+            original.timeoutInterval = 19
+            original.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            let task = manager.currentBackgroundSessionInfo.session.uploadTask(with: original, from: Data())
+            task.webhookPersisted = WebhookPersisted(
+                server: server.identifier, request: request, identifier: identifier,
+                requestIdentifier: stableIdentifier, allowsEndpointFallback: true
+            )
+            manager.serverCache[server.identifier] = server
+            task.resume()
+            await fulfillment(of: [completed], timeout: 5)
+            await waitForBackgroundInvocations()
+            guard case .completed(.success) = await manager
+                .reconcilePersistedBackground(requestIdentifier: stableIdentifier) else {
+                return XCTFail("Restored fallback must retain its consumable completion identity")
+            }
+            delivery = Task {}
+        } else {
+            let result = await MainActor.run {
+                manager.startPersistedBackground(
+                    server: server,
+                    request: request,
+                    requestIdentifier: stableIdentifier,
+                    requestTimeout: 19
+                )
+            }
+            delivery = try result.get()
+        }
+        do {
+            try await delivery.value
+            XCTAssertTrue(expectsFallback && !fallbackFails)
+        } catch {
+            XCTAssertTrue(!expectsFallback || fallbackFails, "Unexpected delivery failure: \(error)")
+        }
+        // Delivery completion causally bounds all attempts, so no sleep is needed for forbidden replays.
+        await fulfillment(of: [first] + (fallback.map { [$0] } ?? []), timeout: 2)
+    }
+
     func testReconcilePersistedBackgroundReturnsSameActiveRequestWithoutReplacement() async throws {
         let networkSemaphore = DispatchSemaphore(value: 0)
         stub(condition: { [webhookURL1] request in request.url == webhookURL1 }, response: { _ in
