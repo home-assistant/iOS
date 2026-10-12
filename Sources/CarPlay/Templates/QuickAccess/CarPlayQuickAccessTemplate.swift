@@ -797,7 +797,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return
         }
         let deadline = makeDeadline(server: server, executionFinished: completion)
-        magicItem.execute(on: server, source: .CarPlay) { success, error in
+        magicItem.execute(
+            on: server,
+            source: .CarPlay,
+            currentItemState: resolvedEntity(for: magicItem)?.state ?? ""
+        ) { success, error in
             if success {
                 deadline.succeed()
             } else {

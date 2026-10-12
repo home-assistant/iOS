@@ -8,6 +8,7 @@ final class MockWebViewExternalMessageHandler: WebViewExternalMessageHandlerProt
 
     var handleExternalMessageCalled = false
     var handleExternalMessageParams: [String: Any]?
+    var handledExternalMessages: [[String: Any]] = []
     var sendExternalBusCalled = false
     var sendExternalBusMessage: Shared.WebSocketMessage?
     var sendExternalBusCommandWithRetryCalled = false
@@ -27,6 +28,7 @@ final class MockWebViewExternalMessageHandler: WebViewExternalMessageHandlerProt
     func handleExternalMessage(_ dictionary: [String: Any]) {
         handleExternalMessageCalled = true
         handleExternalMessageParams = dictionary
+        handledExternalMessages.append(dictionary)
     }
 
     func sendExternalBus(message: Shared.WebSocketMessage) -> PromiseKit.Promise<Void> {

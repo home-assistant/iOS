@@ -2383,6 +2383,8 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "settings_sensors.sensors.header" = "Senzory";
 "settings_sensors.sensors.no_results" = "Vašemu hledání neodpovídají žádné senzory";
 "settings_sensors.sensors.search_prompt" = "Vyhledání senzorů";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Každý server přijímá senzory, které pro něj vyberete, takže senzor může hlásit jednomu a ne jinému.";
 "settings_sensors.servers.header" = "Servery";
 "settings_sensors.servers.search_prompt" = "Hledat servery";
@@ -2441,7 +2443,7 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "thread.transter_to_homeassistant.title" = "Přenést do Home Assistanta";
 "token_error.connection_failed" = "Připojení se nezdařilo.";
 "token_error.expired" = "Platnost tokenu vypršela.";
-"token_error.reauthentication_required" = "Session is no longer valid. Please log in again.";
+"token_error.reauthentication_required" = "Relace již není platná. Přihlaste se znovu.";
 "token_error.token_unavailable" = "Token není dostupný.";
 "unauthenticated.message.body" = "Vaše relace vypršela. Pro pokračování se znovu přihlaste, nebo zkontrolujte připojení, pokud se nacházíte za proxy serverem nebo síťovým omezením.";
 "unauthenticated.message.title" = "Nejste ověřeni";

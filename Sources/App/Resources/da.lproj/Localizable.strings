@@ -2383,6 +2383,8 @@ Serveren svarer kun, mens appen er åben, og stopper, når du lukker den.";
 "settings_sensors.sensors.header" = "Sensorer";
 "settings_sensors.sensors.no_results" = "Ingen sensorer matcher din søgning";
 "settings_sensors.sensors.search_prompt" = "Søg i sensorer";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Hver server modtager de sensorer, du vælger til den, så en sensor kan sende data til den ene server, men ikke til den anden.";
 "settings_sensors.servers.header" = "Servere";
 "settings_sensors.servers.search_prompt" = "Søg i servere";

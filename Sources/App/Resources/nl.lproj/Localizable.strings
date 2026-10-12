@@ -2383,6 +2383,8 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.sensors.no_results" = "Er zijn geen sensoren gevonden die overeenkomen met je zoekopdracht.";
 "settings_sensors.sensors.search_prompt" = "Zoek sensoren";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Elke server ontvangt de sensoren die je ervoor selecteert, dus een sensor kan aan de ene server wel gegevens doorgeven en aan de andere niet.";
 "settings_sensors.servers.header" = "Servers";
 "settings_sensors.servers.search_prompt" = "Servers zoeken";

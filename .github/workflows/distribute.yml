@@ -26,7 +26,7 @@ jobs:
         kind: [mac, ios]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8  # v1.327.0
+      - uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83  # v1.328.0
         with:
           ruby-version: .ruby-version
       - name: Install Gems
@@ -79,33 +79,33 @@ jobs:
       - name: Dump Version Information
         run: cat Configuration/Version.xcconfig
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         name: "Upload iOS IPA"
         if: success() && matrix.kind == 'ios'
         with:
           name: ios-app-store.ipa
           path: build/ios/Home Assistant.ipa
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         name: "Upload iOS dSYMs"
         if: success() && matrix.kind == 'ios'
         with:
           name: ios.dSYM.zip
           path: build/ios/Home Assistant.app.dSYM.zip
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         name: "Upload Mac Developer ID App"
         if: success() && matrix.kind == 'mac'
         with:
           name: mac-developer-id.zip
           path: build/macos/home-assistant-mac.zip
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         name: "Upload Mac App Store Package"
         if: success() && matrix.kind == 'mac'
         with:
           name: mac-app-store.pkg
           path: build/macos/Home Assistant.pkg
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         name: "Upload Mac dSYMs"
         if: success() && matrix.kind == 'mac'
         with:

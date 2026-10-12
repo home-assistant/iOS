@@ -2378,6 +2378,8 @@ The server only answers while the app is open, and stops when you leave it.";
 "settings_sensors.sensors.header" = "Sensorer";
 "settings_sensors.sensors.no_results" = "Inga sensorer stämmer överens med din sökning";
 "settings_sensors.sensors.search_prompt" = "Sök sensorer";
+"settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
+"settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
 "settings_sensors.servers.footer" = "Varje server tar emot de sensorer som du väljer ut för den, vilket innebär att en sensor kan rapportera till en server men inte till en annan.";
 "settings_sensors.servers.header" = "Servrar";
 "settings_sensors.servers.search_prompt" = "Sök servrar";
