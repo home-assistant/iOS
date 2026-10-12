@@ -41,7 +41,6 @@ struct WatchLocationPrivacySection: View {
                 Text(verbatim: L10n.Settings.ConnectionSection.LocationSendType.title)
             }
             .pickerStyle(.inline)
-            .labelsHidden()
         } footer: {
             Text(verbatim: L10n.Watch.Settings.Location.footer)
         }
