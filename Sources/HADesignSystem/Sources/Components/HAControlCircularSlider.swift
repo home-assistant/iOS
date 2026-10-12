@@ -154,9 +154,12 @@ public struct HAControlCircularSlider: View {
         )
         // Without this the dial is announced as a value VoiceOver cannot change — which, for the
         // thermostat and humidifier cards, means the target can be heard but never set.
-        .accessibilityAdjustableAction { direction in
-            guard acceptsInput else { return }
-            adjust(by: direction == .increment ? scale.step : -scale.step)
+        .modify { view in
+            if acceptsInput {
+                view.accessibilityAdjustableAction { direction in
+                    adjust(by: direction == .increment ? scale.step : -scale.step)
+                }
+            }
         }
         // A dual dial has two targets and one adjustable action, so the swipe moves whichever
         // handle these actions have selected. Without them the lower target could be heard but

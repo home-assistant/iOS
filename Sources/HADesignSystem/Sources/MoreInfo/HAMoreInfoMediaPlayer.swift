@@ -96,6 +96,14 @@ public struct HAMoreInfoMediaPlayer: View {
     private var strings: HADesignSystemEnvironment.Strings { HADesignSystemEnvironment.current.strings }
     private var artworkSize: CGFloat { isPlaying ? DesignSystem.StateControl.dialDiameter : 240 }
 
+    private var repeatValue: String {
+        switch repeatMode?.wrappedValue ?? .off {
+        case .off: strings.repeatOff
+        case .all: strings.repeatAll
+        case .one: strings.repeatOne
+        }
+    }
+
     private var repeatIcon: MaterialDesignIcons {
         switch repeatMode?.wrappedValue ?? .off {
         case .off: .repeatOffIcon
@@ -191,6 +199,9 @@ public struct HAMoreInfoMediaPlayer: View {
                                 .buttonStyle(.plain)
                                 .disabled(select.isDisabled)
                                 .accessibilityLabel(Text(select.label))
+                                .accessibilityValue(Text(
+                                    select.options.first { $0.id == select.selection.wrappedValue }?.label ?? ""
+                                ))
                                 .frame(maxWidth: .infinity)
                             }
                         }
@@ -204,10 +215,11 @@ public struct HAMoreInfoMediaPlayer: View {
 
     @ViewBuilder
     private var transport: some View {
-        if onPlayPause != nil || onStop != nil || onPrevious != nil || onNext != nil {
+        if onPlayPause != nil || onStop != nil || onPrevious != nil || onNext != nil || repeatMode != nil
+            || shuffle != nil {
             HStack {
                 if let repeatMode {
-                    plainButton(repeatIcon, label: strings.repeatMode) {
+                    plainButton(repeatIcon, label: strings.repeatMode, value: repeatValue) {
                         let modes = RepeatMode.allCases
                         let next = modes.firstIndex(of: repeatMode.wrappedValue).map { ($0 + 1) % modes.count } ?? 0
                         repeatMode.wrappedValue = modes[next]
@@ -246,7 +258,11 @@ public struct HAMoreInfoMediaPlayer: View {
                 }
                 Spacer()
                 if let shuffle {
-                    plainButton(shuffle.wrappedValue ? .shuffleIcon : .shuffleDisabledIcon, label: strings.shuffle) {
+                    plainButton(
+                        shuffle.wrappedValue ? .shuffleIcon : .shuffleDisabledIcon,
+                        label: strings.shuffle,
+                        isSelected: shuffle.wrappedValue
+                    ) {
                         shuffle.wrappedValue.toggle()
                     }
                 } else {
@@ -258,7 +274,7 @@ public struct HAMoreInfoMediaPlayer: View {
 
     @ViewBuilder
     private var volumeRow: some View {
-        if volume != nil || onVolumeDown != nil || onVolumeUp != nil {
+        if volume != nil || isMuted != nil || onVolumeDown != nil || onVolumeUp != nil {
             HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
                 if let isMuted {
                     plainButton(
@@ -288,7 +304,13 @@ public struct HAMoreInfoMediaPlayer: View {
         }
     }
 
-    private func plainButton(_ icon: MaterialDesignIcons, label: String, action: @escaping () -> Void) -> some View {
+    private func plainButton(
+        _ icon: MaterialDesignIcons,
+        label: String,
+        value: String? = nil,
+        isSelected: Bool = false,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             MaterialDesignIconsImage(icon: icon, size: 24)
                 .frame(width: 48, height: 48)
@@ -296,6 +318,8 @@ public struct HAMoreInfoMediaPlayer: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(label))
+        .accessibilityValue(Text(value ?? ""))
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private func roundButton(

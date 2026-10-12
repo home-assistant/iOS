@@ -23,7 +23,11 @@ public struct HAMoreInfoNumber: View {
     private let mode: Mode
     private let isUnavailable: Bool
     @Binding private var value: Double
+    @State private var draft: String?
+    @FocusState private var isEditing: Bool
 
+    /// - Parameter value: Written once editing ends, when the box loses focus or is submitted, as
+    ///   the frontend does; a half-typed number such as "-" is kept as typed until then.
     public init(
         name: String,
         icon: MaterialDesignIcons = .rayVertexIcon,
@@ -56,14 +60,13 @@ public struct HAMoreInfoNumber: View {
     }
 
     private var text: Binding<String> {
-        Binding(
-            get: { formattedValue },
-            set: { newValue in
-                if let parsed = try? Double(newValue, format: .number.locale(locale)) {
-                    value = scale.bounded(parsed)
-                }
-            }
-        )
+        Binding(get: { draft ?? formattedValue }, set: { draft = $0 })
+    }
+
+    private func commit() {
+        defer { draft = nil }
+        guard let draft, let parsed = try? Double(draft, format: .number.locale(locale)) else { return }
+        value = scale.bounded(parsed)
     }
 
     public var body: some View {
@@ -83,8 +86,14 @@ public struct HAMoreInfoNumber: View {
                 .disabled(isUnavailable)
             case .box:
                 HStack(spacing: DesignSystem.Spaces.one) {
-                    HATextField(placeholder: name, text: text)
+                    HATextField(placeholder: name, text: text, isFocused: $isEditing)
                         .keyboardType(.decimalPad)
+                        .onSubmit { isEditing = false }
+                        .onChange(of: isEditing) { editing in
+                            if !editing {
+                                commit()
+                            }
+                        }
                         .multilineTextAlignment(.trailing)
                         .frame(maxWidth: 140)
                     if let unit {

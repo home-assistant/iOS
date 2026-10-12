@@ -127,8 +127,8 @@ public struct HAMoreInfoLock: View {
         } footer: {
             if isJammed {
                 HAControlButtonGroup(spacing: DesignSystem.Spaces.oneAndHalf) {
-                    HAControlButton(title: strings.unlock) { isLocked = false }
-                    HAControlButton(title: strings.lock) { isLocked = true }
+                    HAControlButton(title: strings.unlock, isDisabled: isUnavailable) { isLocked = false }
+                    HAControlButton(title: strings.lock, isDisabled: isUnavailable) { isLocked = true }
                 }
                 .frame(maxWidth: DesignSystem.StateControl.length)
             }

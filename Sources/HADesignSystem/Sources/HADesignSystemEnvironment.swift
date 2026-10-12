@@ -100,6 +100,12 @@ public struct HADesignSystemEnvironment {
         public var shuffle = "Shuffle"
         /// Accessibility label for `HAMoreInfoMediaPlayer`'s repeat button.
         public var repeatMode = "Repeat"
+        /// Accessibility value of `HAMoreInfoMediaPlayer`'s repeat button with repeat off.
+        public var repeatOff = "Off"
+        /// Accessibility value of `HAMoreInfoMediaPlayer`'s repeat button repeating everything.
+        public var repeatAll = "All"
+        /// Accessibility value of `HAMoreInfoMediaPlayer`'s repeat button repeating one track.
+        public var repeatOne = "One"
         /// Accessibility label for `HAMoreInfoMediaPlayer`'s stop button.
         public var stop = "Stop"
         /// Accessibility label for `HAMoreInfoMediaPlayer`'s mute button.

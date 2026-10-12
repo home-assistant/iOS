@@ -11,17 +11,25 @@ public struct HAMoreInfoBattery: View {
     @Environment(\.locale) private var locale
     private let level: Double?
     private let isCharging: Bool
+    private let isLow: Bool
 
-    /// - Parameter level: 0–100, or `nil` when the device reports only low/not-low through a binary
-    ///   sensor, which shows the glyph alone.
-    public init(level: Double?, isCharging: Bool = false) {
+    /// - Parameters:
+    ///   - level: 0–100, or `nil` when the device reports only low/not-low through a binary sensor,
+    ///     which shows the glyph alone.
+    ///   - isLow: What that binary sensor reports. Ignored when there is a level, which says it
+    ///     already.
+    public init(level: Double?, isCharging: Bool = false, isLow: Bool = false) {
         self.level = level
         self.isCharging = isCharging
+        self.isLow = isLow
     }
 
     private var icon: MaterialDesignIcons {
         guard let level else {
-            return isCharging ? .batteryChargingIcon : .batteryIcon
+            if isCharging {
+                return .batteryChargingIcon
+            }
+            return isLow ? .batteryAlertIcon : .batteryIcon
         }
         let tens = Int((Swift.min(Swift.max(level, 0), 100) / 10).rounded())
         if isCharging {
@@ -71,6 +79,7 @@ public struct HAMoreInfoBattery: View {
         HAMoreInfoBattery(level: 84)
         HAMoreInfoBattery(level: 42, isCharging: true)
         HAMoreInfoBattery(level: nil)
+        HAMoreInfoBattery(level: nil, isLow: true)
     }
     .padding()
 }

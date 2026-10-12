@@ -366,9 +366,9 @@ Decisions worth knowing before changing them:
 - **Favourites are not here.** Light favourite colours, cover favourite positions and timer presets
   live in the entity registry's options and are edited in place; that is app work. The dialogs have
   room for them under the controls.
-- **Strings are in `HADesignSystemEnvironment` with English defaults** and are not yet wired to
-  `L10n` in `Shared`. Domain words that come from the entity (state names, attribute names, option
-  labels) are init parameters, as everywhere else in the package.
+- **Strings are in `HADesignSystemEnvironment`**, wired to the `component.*` keys in `Shared`.
+  Domain words that come from the entity (state names, attribute names, option labels) are init
+  parameters, as everywhere else in the package.
 - **`HAColorTemperature`** is `temperature2rgb` and `generateColorTemperatureGradient`, unit tested
   against the frontend's numbers; `HAStateControlSlider.slats` is the cover tilt's track.
 

@@ -144,6 +144,7 @@ extension DesignSystemComponent {
                 .init("Charging") { HAMoreInfoBattery(level: 42, isCharging: true) },
                 .init("Low") { HAMoreInfoBattery(level: 8) },
                 .init("Binary sensor, no level") { HAMoreInfoBattery(level: nil) },
+                .init("Binary sensor, low") { HAMoreInfoBattery(level: nil, isLow: true) },
             ]
         case .moreInfoStateCard:
             [

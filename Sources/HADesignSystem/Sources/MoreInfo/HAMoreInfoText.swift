@@ -14,10 +14,12 @@ public struct HAMoreInfoText: View {
     private let isUnavailable: Bool
     private let onSubmit: (() -> Void)?
     @Binding private var text: String
+    @FocusState private var isEditing: Bool
 
     /// - Parameters:
     ///   - isPassword: Hides what is typed, for an entity in `password` mode.
-    ///   - onSubmit: Called when editing ends, which is when the frontend sends the new value.
+    ///   - onSubmit: Called when editing ends, on submit or when the field loses focus, which is
+    ///     when the frontend sends the new value.
     public init(
         name: String,
         icon: MaterialDesignIcons = .formTextboxIcon,
@@ -43,18 +45,24 @@ public struct HAMoreInfoText: View {
             Group {
                 if isPassword {
                     SecureField(name, text: $text)
+                        .focused($isEditing)
                         .padding(DesignSystem.Spaces.two)
                         .overlay {
                             RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf)
                                 .stroke(.tileBorder, lineWidth: 1)
                         }
                 } else {
-                    HATextField(placeholder: name, text: $text)
+                    HATextField(placeholder: name, text: $text, isFocused: $isEditing)
                 }
             }
             .frame(maxWidth: 180)
             .disabled(isUnavailable)
-            .onSubmit { onSubmit?() }
+            .onSubmit { isEditing = false }
+            .onChange(of: isEditing) { editing in
+                if !editing {
+                    onSubmit?()
+                }
+            }
         }
     }
 }
