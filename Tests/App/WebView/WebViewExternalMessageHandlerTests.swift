@@ -473,7 +473,9 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
     }
 
     @MainActor func testSendExternalBusCommandWithRetryCompletesWhenFrontendStaysSilent() {
+        let firstSend = expectation(description: "command sent")
         let completion = expectation(description: "completion")
+        mockWebViewController.evaluateJavaScriptExpectation = firstSend
         var succeeded: Bool?
 
         sut.sendExternalBusCommandWithRetry(
@@ -487,6 +489,9 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
                 completion.fulfill()
             }
         )
+
+        wait(for: [firstSend], timeout: 1)
+        mockWebViewController.lastEvaluatedJavaScriptCompletion?(nil, nil)
 
         wait(for: [completion], timeout: 1)
         XCTAssertEqual(succeeded, true)
