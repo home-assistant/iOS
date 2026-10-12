@@ -55,20 +55,15 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         entityId: String = "light.kitchen",
         domain: String = "light",
         state: String = "on",
-        offline: Bool = false
+        offline: Bool = false,
+        entities: [HAEntity]? = nil
     ) throws {
         if offline {
             server = offlineServer()
         }
-        entity = try HAEntity(
-            entityId: entityId,
-            state: state,
-            lastChanged: Date(),
-            lastUpdated: Date(),
-            attributes: [:],
-            context: .init(id: "", userId: "", parentId: "")
-        )
-        let states = HACachedStates(entitiesDictionary: [entityId: entity])
+        let entities = try entities ?? [makeEntity(entityId: entityId, state: state)]
+        entity = entities.first
+        let states = cachedStates(entities)
         sut = CarPlayEntitiesListViewModel(
             filterType: .domain(domain),
             server: server,
@@ -234,5 +229,77 @@ final class CarPlayEntitiesListViewModelTests: XCTestCase {
         XCTAssertTrue(provider.isOperationInFlight)
         provider.setExecutingState(false)
         XCTAssertFalse(provider.isOperationInFlight)
+    }
+
+    @available(iOS 26.0, *)
+    func testStateUpdatesPreserveProviderOrderWhenNamesChange() throws {
+        let hall = try makeEntity(entityId: "light.hall", name: "Hall")
+        let kitchen = try makeEntity(entityId: "light.kitchen", name: "Kitchen")
+        try makeSut(entities: [hall, kitchen])
+        drainMainQueue()
+        XCTAssertEqual(try displayedEntityNames(), ["Hall", "Kitchen"])
+
+        let updatedHall = try makeEntity(entityId: "light.hall", name: "Zulu")
+        let updatedKitchen = try makeEntity(entityId: "light.kitchen", name: "Alpha")
+        sut.updateStates(entities: cachedStates([updatedHall, updatedKitchen]))
+        drainMainQueue()
+
+        XCTAssertEqual(try displayedEntityNames(), ["Zulu", "Alpha"])
+    }
+
+    @available(iOS 26.0, *)
+    func testStateUpdatesDoNotInsertNewEntities() throws {
+        let hall = try makeEntity(entityId: "light.hall", name: "Hall")
+        let kitchen = try makeEntity(entityId: "light.kitchen", name: "Kitchen")
+        try makeSut(entities: [hall, kitchen])
+        drainMainQueue()
+
+        let updatedKitchen = try makeEntity(entityId: "light.kitchen", name: "Kitchen updated")
+        let added = try makeEntity(entityId: "light.new", name: "New")
+        let otherDomain = try makeEntity(entityId: "sensor.room", name: "Room")
+        sut.updateStates(entities: cachedStates([hall, updatedKitchen, added, otherDomain]))
+        drainMainQueue()
+
+        XCTAssertEqual(try displayedEntityNames(), ["Hall", "Kitchen updated"])
+    }
+
+    @available(iOS 26.0, *)
+    func testUnchangedStatesDoNotReplacePresentedRows() throws {
+        let hall = try makeEntity(entityId: "light.hall", name: "Hall")
+        try makeSut(entities: [hall])
+        drainMainQueue()
+        let originalRow = try XCTUnwrap(template.template.sections.flatMap(\.items).first as? CPListImageRowItem)
+
+        sut.updateStates(entities: cachedStates([hall]))
+        drainMainQueue()
+
+        let currentRow = try XCTUnwrap(template.template.sections.flatMap(\.items).first as? CPListImageRowItem)
+        XCTAssertTrue(currentRow === originalRow)
+    }
+
+    private func makeEntity(
+        entityId: String,
+        state: String = "on",
+        name: String? = nil
+    ) throws -> HAEntity {
+        try HAEntity(
+            entityId: entityId,
+            state: state,
+            lastChanged: Date(timeIntervalSince1970: 0),
+            lastUpdated: Date(timeIntervalSince1970: 0),
+            attributes: name.map { ["friendly_name": $0] } ?? [:],
+            context: .init(id: "", userId: "", parentId: "")
+        )
+    }
+
+    private func cachedStates(_ entities: [HAEntity]) -> HACachedStates {
+        HACachedStates(entitiesDictionary: Dictionary(uniqueKeysWithValues: entities.map { ($0.entityId, $0) }))
+    }
+
+    @available(iOS 26.0, *)
+    private func displayedEntityNames() throws -> [String] {
+        let rows = template.template.sections.flatMap(\.items).compactMap { $0 as? CPListImageRowItem }
+        let elements = rows.flatMap(\.elements)
+        return try elements.map { try XCTUnwrap($0 as? CPListImageRowItemCondensedElement).title }
     }
 }
