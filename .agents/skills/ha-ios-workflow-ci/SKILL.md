@@ -64,14 +64,14 @@ No docs PR is needed for refactors, bug fixes that restore documented behavior, 
 1. Clone or update the docs repo next to this one and branch off `master`.
 2. Edit the relevant page under `docs/<area>/` (for example `docs/carplay/`, `docs/apple-watch/`, `docs/notifications/`, `docs/core/`). A new page also needs an entry in `sidebars.js`.
 3. Follow the repo's own `.github/copilot-instructions.md`: sentence-case headings, active voice, second person, **bold** for UI strings, _italics_ instead of ALL CAPS. Use the exact UI labels from `en.lproj/Localizable.strings`.
-4. Mark anything not yet in a stable release, including every TestFlight-gated feature, with `<span class='beta'>BETA</span>`. The ungating PR for that feature (see above) is the point where the flag should come off.
+4. Mark anything not yet in a stable release, including every TestFlight-gated feature, with `<span class='beta'>BETA</span>`. Remove the flag only once the stable release that contains the feature's ungating PR (see above) has shipped.
 5. Open it as a **draft**, filling in the docs repo's PR template without deleting any of it: under **Type of change** tick "Document new or changing features for which there is an existing pull request elsewhere", and link the app PR under **Additional information**.
 6. Put the docs PR number into the app PR's `Documentation:` line, so the two PRs link to each other.
 7. When the app PR changes during review in a way users would notice, update the docs PR to match.
 
 The docs PR stays a draft until the app change is merged and released; a human marks it ready for review.
 
-> Per the [AI policy](../../../AI_POLICY.md), a human must review and understand every PR before it is submitted. Open the docs draft in the same step as the app PR the developer asked you to open, never on your own initiative, and leave the AI-usage checkboxes in both templates for the developer to fill in.
+> Per the [AI policy](../../../AI_POLICY.md), a human must review and understand every PR before it is submitted, and agents never open PRs on their own initiative. Open the docs draft only when the developer has asked you to open the app PR, and in the same step. Otherwise, prepare the docs branch and PR text and hand them to the developer to review and submit, as with the ungating PR above. In both cases, leave the AI-usage checkboxes in both templates for the developer to fill in.
 
 ## Continuous Integration
 
