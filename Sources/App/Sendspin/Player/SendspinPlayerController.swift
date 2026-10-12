@@ -117,10 +117,10 @@ final class SendspinPlayerController: ObservableObject {
                 softwareVersion: Current.clientVersion().description
             ),
             onStatus: { [weak self] status in
-                Task { @MainActor in self?.service(generation, reported: status) }
+                Task { @MainActor in self?.serviceReported(status, generation: generation) }
             },
             onEvent: { [weak self] event in
-                Task { @MainActor in self?.service(generation, reported: event) }
+                Task { @MainActor in self?.serviceReported(event, generation: generation) }
             }
         )
         self.service = service
@@ -144,7 +144,7 @@ final class SendspinPlayerController: ObservableObject {
         Task { await service.stop(reason: reason) }
     }
 
-    private func service(_ generation: Int, reported status: SendspinPlayerStatus) {
+    private func serviceReported(_ status: SendspinPlayerStatus, generation: Int) {
         guard generation == self.generation else { return }
         self.status = status
         switch status {
@@ -157,7 +157,7 @@ final class SendspinPlayerController: ObservableObject {
         }
     }
 
-    private func service(_ generation: Int, reported event: SendspinSessionEvent) {
+    private func serviceReported(_ event: SendspinSessionEvent, generation: Int) {
         guard generation == self.generation else { return }
         switch event {
         case .connected:

@@ -62,7 +62,7 @@ actor SendspinPlayerService: SendspinSessionHost {
                 advertisedName: advertises ? settings.name : nil,
                 queue: queue
             ) { [weak self] event in
-                Task { await self?.listener(event) }
+                Task { await self?.handleListenerEvent(event) }
             }
         } catch {
             Current.Log.error("Sendspin: failed to open port \(port): \(error)")
@@ -88,7 +88,7 @@ actor SendspinPlayerService: SendspinSessionHost {
         listeningPort = nil
     }
 
-    private func listener(_ event: SendspinListener.Event) {
+    private func handleListenerEvent(_ event: SendspinListener.Event) {
         switch event {
         case let .ready(port):
             listeningPort = port
