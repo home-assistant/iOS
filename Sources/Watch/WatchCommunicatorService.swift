@@ -185,7 +185,7 @@ final class WatchCommunicatorService {
     func setupMessages() {
         Communicator.shared.interactiveImmediateMessage.observations
             .store[.init(queue: .main)] = { [weak self] message in
-                Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
+                Current.Log.verbose("Received \(message.identifier) with \(message.content.keys.sorted())")
 
                 guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
                     Current.Log

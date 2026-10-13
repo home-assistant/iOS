@@ -202,8 +202,10 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     func didRegisterForRemoteNotifications(deviceToken: Data) {
         let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
-        Current.crashReporter.setUserProperty(value: apnsToken, name: "APNS Token")
+        Current.Log.verbose(
+            "Successfully registered for push notifications! APNS token: \(LogRedaction.redactToken(apnsToken))"
+        )
+        Current.crashReporter.setUserProperty(value: LogRedaction.redactToken(apnsToken), name: "APNS Token")
 
         var tokenType: MessagingAPNSTokenType = .prod
 
@@ -235,7 +237,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }
 
     private func handleRemoteNotification(userInfo: [AnyHashable: Any]) -> Guarantee<UIBackgroundFetchResult> {
-        Current.Log.verbose("remote notification: \(userInfo)")
+        Current.Log.verbose("remote notification: \(LogRedaction.redactValues(in: userInfo))")
 
         return commandManager.handle(userInfo).map {
             UIBackgroundFetchResult.newData

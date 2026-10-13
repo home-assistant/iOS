@@ -248,6 +248,7 @@ public class AppEnvironment {
 
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
+        LogRedactionServerObserver.shared.start(observing: servers)
     }
 
     /// Crash reporting and related metadata gathering
@@ -681,6 +682,7 @@ public class AppEnvironment {
         fileDestination.showFileName = true
         fileDestination.showLineNumber = true
         fileDestination.showDate = true
+        fileDestination.formatters = LogRedaction.isEnabled ? [LogRedactionFormatter()] : nil
 
         // Process this destination in the background
         fileDestination.logQueue = XCGLogger.logQueue
