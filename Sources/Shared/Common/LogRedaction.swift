@@ -98,6 +98,7 @@ public enum LogRedaction {
                 anchors: ["webhook/", #"webhook\/"#]
             ),
             Rule(pattern: #"(APNS token: )[0-9a-fA-F]+"#, template: secret, anchors: ["APNS token: "]),
+            Rule(pattern: #"[A-Za-z0-9_\-]+:APA91[A-Za-z0-9_\-]+"#, template: placeholder, anchors: ["APA91"]),
             Rule(
                 pattern: #"(?<![A-Za-z0-9.\-])[A-Za-z0-9\-]+\.ui\.nabu\.casa\b"#,
                 template: remoteUIURLPlaceholder,

@@ -624,12 +624,13 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
 extension NotificationManager: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        let loggableCurrent = Current.settingsStore.pushID ?? "(null)"
-        let loggableNew = fcmToken ?? "(null)"
+        let currentToken = Current.settingsStore.pushID
+        let loggableCurrent = currentToken.map { LogRedaction.redactToken($0) } ?? "(null)"
+        let loggableNew = fcmToken.map { LogRedaction.redactToken($0) } ?? "(null)"
 
         Current.Log.info("Firebase registration token refreshed, new token: \(loggableNew)")
 
-        if loggableCurrent != loggableNew {
+        if currentToken != fcmToken {
             Current.Log.warning("FCM token has changed from \(loggableCurrent) to \(loggableNew)")
         }
 

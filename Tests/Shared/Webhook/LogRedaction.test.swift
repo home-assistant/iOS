@@ -69,6 +69,14 @@ struct LogRedactionTests {
         )
     }
 
+    @Test func redactsFirebaseTokensInRegistrationLogs() {
+        let refreshed = "Firebase registration token refreshed, new token: caQ67LCjO0q8hCk:APA91bHQXvDO18-K_x"
+        let changed = "FCM token has changed from dGVzdA-1_x:APA91bOld_token-1 to caQ67LCjO0q8hCk:APA91bNew-2"
+
+        #expect(LogRedaction.scrub(refreshed) == "Firebase registration token refreshed, new token: <redacted>")
+        #expect(LogRedaction.scrub(changed) == "FCM token has changed from <redacted> to <redacted>")
+    }
+
     @Test func leavesNonSecretValuesAlone() {
         let line = #"sending to 857e94d5bb2f434d: ["push_url": "https://example.com/push", "webhook_secret": "x"]"#
 
