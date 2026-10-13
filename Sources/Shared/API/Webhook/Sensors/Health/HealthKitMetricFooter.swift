@@ -11,9 +11,6 @@ public enum HealthKitMetricFooter: String, CaseIterable, Sendable {
     /// bed, so "In Bed" reads as unavailable until the user turns iPhone tracking on or installs a
     /// sleep app that records it.
     case timeInBedSource
-    /// Only an Apple Watch tracks the Exercise and Stand rings; without one their sensors read as
-    /// unavailable. See `HealthKitActivitySummaryField.value(in:unit:)`.
-    case ringNeedsWatch
     /// The Move goal is reported in kilocalories, so it reads as unavailable while the Move ring is set
     /// to move time.
     case moveGoalEnergyOnly
@@ -21,7 +18,6 @@ public enum HealthKitMetricFooter: String, CaseIterable, Sendable {
     public var text: String {
         switch self {
         case .timeInBedSource: return L10n.SettingsSensors.Health.Metric.InBed.footer
-        case .ringNeedsWatch: return L10n.SettingsSensors.Health.Metric.RingNeedsWatch.footer
         case .moveGoalEnergyOnly: return L10n.SettingsSensors.Health.Metric.MoveGoal.footer
         }
     }

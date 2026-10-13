@@ -111,20 +111,20 @@ public extension HealthKitMetric {
             .goal(.exercise),
             uniqueID: "health_apple_exercise_time_goal",
             name: "Exercise Goal",
-            footer: .ringNeedsWatch
+            requiresAppleWatch: true
         ),
         ringMetric(
             .progress(.stand),
             uniqueID: "health_apple_stand_hours",
             name: "Stand Hours",
             icon: "mdi:human-handsup",
-            footer: .ringNeedsWatch
+            requiresAppleWatch: true
         ),
         ringMetric(
             .goal(.stand),
             uniqueID: "health_apple_stand_hours_goal",
             name: "Stand Goal",
-            footer: .ringNeedsWatch
+            requiresAppleWatch: true
         ),
     ]
 
@@ -133,7 +133,8 @@ public extension HealthKitMetric {
         uniqueID: String,
         name: String,
         icon: String = "mdi:bullseye-arrow",
-        footer: HealthKitMetricFooter? = nil
+        footer: HealthKitMetricFooter? = nil,
+        requiresAppleWatch: Bool = false
     ) -> HealthKitMetric {
         let unit: String
         let queryUnit: HealthKitMetricUnit
@@ -152,6 +153,7 @@ public extension HealthKitMetric {
             name: name,
             icon: icon,
             footer: footer,
+            requiresAppleWatch: requiresAppleWatch,
             unit: unit,
             queryUnit: queryUnit,
             aggregation: .activitySummary(field),

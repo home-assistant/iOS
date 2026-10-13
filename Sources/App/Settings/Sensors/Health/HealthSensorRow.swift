@@ -29,10 +29,17 @@ struct HealthSensorRow: View {
                     VStack(alignment: .leading) {
                         Text(metric.name)
                             .foregroundColor(isEnabled ? .primary : .secondary)
-                        if let subtitle {
-                            Text(subtitle)
-                                .foregroundColor(.secondary)
-                                .font(.subheadline)
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                            if let subtitle {
+                                Text(subtitle)
+                                    .foregroundColor(.secondary)
+                                    .font(.subheadline)
+                            }
+                            // A fact about the sensor rather than a warning, so it stays even while
+                            // the sensor is off: it says why the row might read unavailable once on.
+                            if metric.requiresAppleWatch {
+                                SensorNoteBadge.requiresAppleWatch
+                            }
                         }
                     }
                 }
@@ -54,6 +61,9 @@ struct HealthSensorRow: View {
         HealthSensorRow(metric: .restingHeartRate, stateDescription: nil, isEnabled: .constant(false))
         if let inBed = HealthKitMetric.metric(uniqueID: "health_sleep_in_bed") {
             HealthSensorRow(metric: inBed, stateDescription: "unavailable", isEnabled: .constant(true))
+        }
+        if let standHours = HealthKitMetric.metric(uniqueID: "health_apple_stand_hours") {
+            HealthSensorRow(metric: standHours, stateDescription: "10 hours", isEnabled: .constant(true))
         }
     }
 }

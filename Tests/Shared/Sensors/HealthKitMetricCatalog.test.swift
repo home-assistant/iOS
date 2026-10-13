@@ -94,20 +94,27 @@ class HealthKitMetricCatalogTests: XCTestCase {
     }
 
     func testOnlyMetricsThatNeedAnotherSourceCarryAFooter() throws {
-        // Nothing writes `inBed` samples on its own, only an Apple Watch tracks the Exercise and Stand
-        // rings, and the Move goal is energy only, so those are the sensors whose row has to say why
-        // they can read as unavailable.
+        // Nothing writes `inBed` samples on its own, and the Move goal is energy only, so those are the
+        // sensors whose row has to explain why they can read as unavailable.
         let footers = [
             "health_sleep_in_bed": HealthKitMetricFooter.timeInBedSource,
             "health_active_energy_burned_goal": .moveGoalEnergyOnly,
-            "health_apple_exercise_time_goal": .ringNeedsWatch,
-            "health_apple_stand_hours": .ringNeedsWatch,
-            "health_apple_stand_hours_goal": .ringNeedsWatch,
         ]
 
         for metric in HealthKitMetric.all {
             XCTAssertEqual(metric.footer, footers[metric.uniqueID], metric.uniqueID)
         }
+    }
+
+    func testOnlyTheExerciseAndStandRingSensorsRequireAnAppleWatch() {
+        // Only an Apple Watch tracks those rings, so their rows carry the badge; the Move goal exists
+        // on an iPhone alone.
+        let watchOnly = HealthKitMetric.all.filter(\.requiresAppleWatch).map(\.uniqueID)
+
+        XCTAssertEqual(
+            Set(watchOnly),
+            ["health_apple_exercise_time_goal", "health_apple_stand_hours", "health_apple_stand_hours_goal"]
+        )
     }
 
     func testEveryFooterResolvesToText() {

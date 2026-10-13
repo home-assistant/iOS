@@ -7728,10 +7728,6 @@ public enum L10n {
           /// Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.
           public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.move_goal.footer") }
         }
-        public enum RingNeedsWatch {
-          /// Only an Apple Watch tracks this ring. Without one the ring has no goal, and this sensor stays unavailable.
-          public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.ring_needs_watch.footer") }
-        }
       }
       public enum Sensors {
         /// Enable all Apple Health sensors
@@ -7882,6 +7878,12 @@ public enum L10n {
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.accessibility_label") }
         /// When app is open
         public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
+      }
+      public enum RequiresAppleWatch {
+        /// Only reports with a paired Apple Watch
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.requires_apple_watch.accessibility_label") }
+        /// Requires Apple Watch
+        public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.requires_apple_watch.badge") }
       }
       public enum UnavailableOnDevice {
         /// Unavailable on this device

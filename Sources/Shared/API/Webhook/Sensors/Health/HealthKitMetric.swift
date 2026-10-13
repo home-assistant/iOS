@@ -20,6 +20,8 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
     public let icon: String
     /// Explanation shown under the sensor in settings, `nil` for a metric that needs none.
     public let footer: HealthKitMetricFooter?
+    /// Whether only an Apple Watch records this metric, which the sensor list marks with a badge.
+    public let requiresAppleWatch: Bool
     /// Unit of measurement reported to Home Assistant, `nil` for unitless metrics.
     public let unit: String?
     /// Unit the samples are read in, which is also what `unit` describes. A `.sleep` metric has no
@@ -47,6 +49,7 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
         name: String,
         icon: String,
         footer: HealthKitMetricFooter? = nil,
+        requiresAppleWatch: Bool = false,
         unit: String?,
         queryUnit: HealthKitMetricUnit,
         aggregation: HealthKitMetricAggregation,
@@ -63,6 +66,7 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
         self.name = name
         self.icon = icon
         self.footer = footer
+        self.requiresAppleWatch = requiresAppleWatch
         self.unit = unit
         self.queryUnit = queryUnit
         self.aggregation = aggregation

@@ -33,7 +33,7 @@ struct SensorRow: View {
                     // Some sensors cannot be kept current once the app leaves the screen, so the
                     // row says so rather than letting a frozen state look like a failure.
                     if isAvailable, SensorForegroundAvailability.isForegroundOnly(sensorUniqueID: sensor.UniqueID) {
-                        SensorForegroundOnlyBadge()
+                        SensorNoteBadge.foregroundOnly
                     }
                 }
             }
