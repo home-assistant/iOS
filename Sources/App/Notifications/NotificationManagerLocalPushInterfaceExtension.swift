@@ -14,6 +14,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     private var syncStates: PerServerContainer<LocalPushStateSync>!
     private var managers = [Identifier<Server>: [NEAppPushManager]]()
     private var appOpenRetryWorkItems = [DispatchWorkItem]()
+    private var isUpdatingManagers = false
+    private var queuedManagerUpdate: (reason: LocalPushRetryReason?, targetServer: Server?)?
 
     private var tokens: [NSKeyValueObservation] = [] {
         didSet {
@@ -114,10 +116,26 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         appOpenRetryWorkItems.removeAll()
     }
 
+    private func finishManagerUpdate() {
+        isUpdatingManagers = false
+        guard let queued = queuedManagerUpdate else { return }
+        queuedManagerUpdate = nil
+        updateManagers(reason: queued.reason, targetServer: queued.targetServer)
+    }
+
     private func updateManagers(
         reason: LocalPushRetryReason? = nil,
         targetServer: Server? = nil
     ) {
+        guard !isUpdatingManagers else {
+            Current.Log.info("coalescing local push manager update for \(reason?.eventValue ?? "none")")
+            queuedManagerUpdate = (
+                reason: reason ?? queuedManagerUpdate?.reason,
+                targetServer: targetServer ?? queuedManagerUpdate?.targetServer
+            )
+            return
+        }
+        isUpdatingManagers = true
         Current.Log.info()
 
         NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
@@ -133,6 +151,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                         error: error
                     )
                 }
+                finishManagerUpdate()
                 return
             }
 
@@ -182,6 +201,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                 DispatchQueue.main.asyncAfter(deadline: .now() + Self.managerReloadDelay) { [weak self] in
                     self?.reloadManagersAfterSave(reason: reason, targetServer: targetServer)
                 }
+            } else {
+                finishManagerUpdate()
             }
         }
     }
@@ -211,6 +232,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                         error: error
                     )
                 }
+                finishManagerUpdate()
                 return
             }
 
@@ -229,6 +251,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             if let reason {
                 logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers ?? [], error: nil)
             }
+            finishManagerUpdate()
         }
     }
 
@@ -300,13 +323,18 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
 
         do {
-            let existing = manager.providerConfiguration[PushProviderConfiguration.providerConfigurationKey] as? Data
-            let new = try encoder.encode(configurations)
+            let existing = PushProviderConfiguration.decode(
+                from: manager.providerConfiguration[PushProviderConfiguration.providerConfigurationKey] as? Data
+            )
 
-            if existing != new {
+            if existing != configurations {
+                Current.Log.info(
+                    "provider configuration changed from \(String(describing: existing)) to \(configurations)"
+                )
+                let encoded = try encoder.encode(configurations)
                 isDirty = true
                 manager.providerConfiguration = [
-                    PushProviderConfiguration.providerConfigurationKey: new,
+                    PushProviderConfiguration.providerConfigurationKey: encoded,
                 ]
             }
         } catch {

@@ -689,6 +689,24 @@ class LocalPushManagerTests: XCTestCase {
         apiConnection.setState(.disconnected(reason: .disconnected))
         XCTAssertEqual(manager.state, .available(received: 0))
     }
+
+    func testPushProviderConfigurationDecodeRoundTripsAndCompares() throws {
+        let server = api.server
+        let configurations = [
+            PushProviderConfiguration(
+                serverIdentifier: server.identifier,
+                settingsKey: PushProviderConfiguration.defaultSettingsKey(for: server)
+            ),
+        ]
+        let data = try JSONEncoder().encode(configurations)
+
+        XCTAssertEqual(PushProviderConfiguration.decode(from: data), configurations)
+        XCTAssertNil(PushProviderConfiguration.decode(from: nil))
+        XCTAssertNil(PushProviderConfiguration.decode(from: Data("not json".utf8)))
+
+        let other = PushProviderConfiguration(serverIdentifier: server.identifier, settingsKey: "other")
+        XCTAssertNotEqual(PushProviderConfiguration.decode(from: data), [other])
+    }
 }
 
 private final class FakeLocalNotificationDispatcher: LocalNotificationDispatcherProtocol {
