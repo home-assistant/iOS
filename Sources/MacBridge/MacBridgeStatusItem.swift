@@ -28,7 +28,7 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
         statusItem.isVisible = configuration.isVisible
         statusItem.button?.setAccessibilityLabel(configuration.accessibilityLabel)
 
-        let image = configuration.imageBundle.image(forResource: configuration.imageName)
+        let image = configuration.imageBundle.image(forResource: NSImage.Name(configuration.imageName))
         image?.isTemplate = true
         statusItem.button?.image = image
     }
