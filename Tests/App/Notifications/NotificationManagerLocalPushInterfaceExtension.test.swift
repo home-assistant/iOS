@@ -5,11 +5,18 @@ import XCTest
 
 final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
     private var servers: FakeServerManager!
+    private var originalServers: ServerManager!
 
     override func setUp() {
         super.setUp()
+        originalServers = Current.servers
         servers = FakeServerManager(initial: 0)
         Current.servers = servers
+    }
+
+    override func tearDown() {
+        Current.servers = originalServers
+        super.tearDown()
     }
 
     private enum TestError: Error {
@@ -42,20 +49,35 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
         }
     }
 
-    private func makeSettledInterface() -> NotificationManagerLocalPushInterfaceExtension {
-        let interface = NotificationManagerLocalPushInterfaceExtension()
-        wait(seconds: 1.5)
-        return interface
+    private func makeStaleManager() -> NEAppPushManager {
+        let stale = NEAppPushManager()
+        stale.matchSSIDs = ["Old"]
+        return stale
+    }
+
+    private func makeSavedManager(for server: Server) throws -> NEAppPushManager {
+        let configuration = [PushProviderConfiguration(
+            serverIdentifier: server.identifier,
+            settingsKey: PushProviderConfiguration.defaultSettingsKey(for: server)
+        )]
+        let manager = NEAppPushManager()
+        manager.isEnabled = true
+        manager.localizedDescription = "HomeAssistant for Home"
+        manager.providerBundleIdentifier = AppConstants.BundleID + ".PushProvider"
+        manager.matchSSIDs = ["Home"]
+        manager.providerConfiguration = try [
+            PushProviderConfiguration.providerConfigurationKey: JSONEncoder().encode(configuration),
+        ]
+        return manager
     }
 
     func testLoadFailureFinishesTheUpdateSoTheNextOneRuns() {
         let server = makeLocalPushServer()
-        let interface = makeSettledInterface()
         var loads = 0
-        interface.loadManagers = { completion in
+        let interface = NotificationManagerLocalPushInterfaceExtension(loadManagers: { completion in
             loads += 1
             completion(nil, TestError.loadFailed)
-        }
+        })
 
         interface.serversDidChange(servers)
         interface.serversDidChange(servers)
@@ -67,45 +89,63 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
 
     func testMatchingSavedConfigurationIsNotSavedAgain() throws {
         let server = makeLocalPushServer()
-        let configuration = [PushProviderConfiguration(
-            serverIdentifier: server.identifier,
-            settingsKey: PushProviderConfiguration.defaultSettingsKey(for: server)
-        )]
-        let encoded = try JSONEncoder().encode(configuration)
-        let interface = makeSettledInterface()
+        let saved = try makeSavedManager(for: server)
         var loads = 0
-        interface.loadManagers = { completion in
+        let interface = NotificationManagerLocalPushInterfaceExtension(loadManagers: { completion in
             loads += 1
-            let manager = NEAppPushManager()
-            manager.isEnabled = true
-            manager.localizedDescription = "HomeAssistant for Home"
-            manager.providerBundleIdentifier = AppConstants.BundleID + ".PushProvider"
-            manager.matchSSIDs = ["Home"]
-            manager.providerConfiguration = [PushProviderConfiguration.providerConfigurationKey: encoded]
-            completion([manager], nil)
-        }
+            completion([saved], nil)
+        })
 
         interface.serversDidChange(servers)
         wait(seconds: 1)
 
-        XCTAssertEqual(loads, 1)
+        XCTAssertEqual(loads, 2)
         assertDisabled(interface.status(for: server))
     }
 
     func testReloadFailureAfterSaveFinishesTheUpdate() {
         let server = makeLocalPushServer()
-        let interface = makeSettledInterface()
         var loads = 0
-        interface.loadManagers = { completion in
+        let interface = NotificationManagerLocalPushInterfaceExtension(loadManagers: { completion in
             loads += 1
-            if loads == 1 {
-                completion([], nil)
-            } else {
+            if loads.isMultiple(of: 2) {
                 completion(nil, TestError.loadFailed)
+            } else {
+                completion([], nil)
             }
-        }
+        })
 
         interface.serversDidChange(servers)
+        wait(seconds: 2)
+
+        XCTAssertEqual(loads, 4)
+        assertDisabled(interface.status(for: server))
+    }
+
+    func testReloadAfterSaveConfiguresTheSavedManager() throws {
+        let server = makeLocalPushServer()
+        let saved = try makeSavedManager(for: server)
+        var loads = 0
+        let interface = NotificationManagerLocalPushInterfaceExtension(loadManagers: { completion in
+            loads += 1
+            completion(loads == 1 ? [] : [saved], nil)
+        })
+
+        wait(seconds: 1.5)
+
+        XCTAssertEqual(loads, 2)
+        assertDisabled(interface.status(for: server))
+    }
+
+    func testUnmatchedSavedManagerIsRemovedBeforeTheUpdateFinishes() {
+        let server = makeLocalPushServer()
+        var loads = 0
+        let interface =
+            NotificationManagerLocalPushInterfaceExtension(loadManagers: { [stale = makeStaleManager()] completion in
+                loads += 1
+                completion([stale], nil)
+            })
+
         wait(seconds: 1.5)
 
         XCTAssertEqual(loads, 2)
@@ -118,6 +158,12 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
         let interface = NotificationManagerLocalPushInterfaceExtension()
         interface.serversDidChange(servers)
         interface.serversDidChange(servers)
+        let offMain = expectation(description: "server change from a background queue")
+        DispatchQueue.global().async {
+            interface.serversDidChange(self.servers)
+            offMain.fulfill()
+        }
+        wait(for: [offMain], timeout: 10)
 
         var observed = [NotificationManagerLocalPushStatus]()
         let token = interface.addObserver(for: server) { observed.append($0) }

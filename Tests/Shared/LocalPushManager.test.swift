@@ -723,13 +723,27 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertFalse(Current.settingsStore.notifyOnLocalPushStateChanges)
     }
 
-    func testDispatcherDropsLocalPushStateNotificationWhenToggleIsOff() {
+    func testDispatcherSendsLocalPushStateNotificationOnlyWhenToggleIsOn() {
         let original = Current.settingsStore.notifyOnLocalPushStateChanges
         defer { Current.settingsStore.notifyOnLocalPushStateChanges = original }
 
+        let dispatcher = LocalNotificationDispatcher()
+        var requests = [UNNotificationRequest]()
+        dispatcher.addRequest = { request, completion in
+            requests.append(request)
+            completion(nil)
+        }
+
         Current.settingsStore.notifyOnLocalPushStateChanges = false
-        LocalNotificationDispatcher().send(.init(id: .localPushStateChanged, title: "test"))
-        XCTAssertFalse(Current.settingsStore.notifyOnLocalPushStateChanges)
+        dispatcher.send(.init(id: .localPushStateChanged, title: "off"))
+        XCTAssertTrue(requests.isEmpty)
+
+        Current.settingsStore.notifyOnLocalPushStateChanges = true
+        dispatcher.send(.init(id: .localPushStateChanged, title: "on", body: "body"))
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(requests.first?.identifier, NotificationIdentifier.localPushStateChanged.rawValue)
+        XCTAssertEqual(requests.first?.content.title, "on")
+        XCTAssertEqual(requests.first?.content.body, "body")
     }
 }
 
