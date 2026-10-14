@@ -90,7 +90,7 @@ final class WebhookDetailViewModel: ObservableObject {
         }
 
         // The cloudhook is always listed, even when absent, so it is clear whether the webhook comes
-        // from Home Assistant Cloud or from one of this server's own URLs.
+        // from Home Assistant Link or from one of this server's own URLs.
         var resolvedEndpoints = [WebhookEndpoint(source: .cloudhook, url: cloudhookURL)]
         if let url = webhookURL(for: .internal) {
             resolvedEndpoints.append(WebhookEndpoint(source: .internalURL, url: url))

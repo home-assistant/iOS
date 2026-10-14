@@ -246,7 +246,7 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .internal
             url = internalURL
         } else if let remoteUIURL, useCloud {
-            // Home Assistant Cloud connection
+            // Home Assistant Link connection
             activeURLType = .remoteUI
             url = remoteUIURL
         } else if let externalURL {
@@ -337,7 +337,7 @@ public struct ConnectionInfo: Codable, Equatable {
     /// URL types that can be used to authenticate against this server, ordered by preference:
     /// remote UI > external > internal.
     ///
-    /// Remote UI is dropped when the user opted out of Home Assistant Cloud (`useCloud`): a server can
+    /// Remote UI is dropped when the user opted out of Home Assistant Link (`useCloud`): a server can
     /// keep a remote UI URL around while the user connects through their own external URL, and
     /// authenticating against the cloud URL in that case would ignore that choice. This generally
     /// follows how `evaluateActiveURL()` picks a URL, with one deliberate exception — when remote UI is

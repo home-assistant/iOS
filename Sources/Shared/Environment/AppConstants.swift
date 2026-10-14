@@ -4,6 +4,9 @@ import UIKit
 
 /// Contains shared constants
 public enum AppConstants {
+    /// Product name of the Nabu Casa remote access service. Not localized.
+    public static let homeAssistantLinkName = "Home Assistant Link"
+
     public enum WebURLs {
         public static var homeAssistant = URL(string: "https://www.home-assistant.io")!
         public static var homeAssistantGetStarted = URL(string: "https://www.home-assistant.io/installation/")!

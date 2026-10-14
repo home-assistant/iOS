@@ -157,7 +157,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         internalURL = server.info.connection.address(for: .internal)?.absoluteString ?? "—"
 
         if server.info.connection.useCloud, server.info.connection.canUseCloud {
-            externalURL = L10n.Settings.ConnectionSection.HomeAssistantCloud.title
+            externalURL = AppConstants.homeAssistantLinkName
         } else {
             externalURL = server.info.connection.address(for: .external)?.absoluteString ?? "—"
         }
