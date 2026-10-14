@@ -5,7 +5,8 @@ import SwiftUI
 /// An icon button that stays pressed, filling a circle behind its glyph while it is on. The SwiftUI
 /// counterpart of the frontend's `ha-icon-button-toggle`.
 public struct HAIconButtonToggle: View {
-    private let icon: MaterialDesignIcons
+    private let icon: MaterialDesignIcons?
+    private let swatch: AnyShapeStyle?
     private let label: String
     private let borderOnly: Bool
     @Binding private var isSelected: Bool
@@ -21,6 +22,22 @@ public struct HAIconButtonToggle: View {
         borderOnly: Bool = false
     ) {
         self.icon = icon
+        self.swatch = nil
+        self.label = label
+        _isSelected = isSelected
+        self.borderOnly = borderOnly
+    }
+
+    /// A toggle showing a filled circle of colour instead of a glyph: the light dialog's colour
+    /// wheel and colour-temperature swatches, which the frontend draws as `span.wheel`.
+    public init(
+        swatch: some ShapeStyle,
+        label: String,
+        isSelected: Binding<Bool>,
+        borderOnly: Bool = true
+    ) {
+        self.icon = nil
+        self.swatch = AnyShapeStyle(swatch)
         self.label = label
         _isSelected = isSelected
         self.borderOnly = borderOnly
@@ -30,21 +47,29 @@ public struct HAIconButtonToggle: View {
         Button {
             isSelected.toggle()
         } label: {
-            MaterialDesignIconsImage(icon: icon, size: 24)
-                .foregroundStyle(foreground)
-                .frame(width: 40, height: 40)
-                .background {
-                    if isSelected {
-                        Circle()
-                            .modify { circle in
-                                if borderOnly {
-                                    circle.stroke(Color(uiColor: .label), lineWidth: 2)
-                                } else {
-                                    circle.fill(Color(uiColor: .label))
-                                }
-                            }
-                    }
+            Group {
+                if let icon {
+                    MaterialDesignIconsImage(icon: icon, size: 24)
+                        .foregroundStyle(foreground)
+                } else if let swatch {
+                    Circle()
+                        .fill(swatch)
+                        .frame(width: 24, height: 24)
                 }
+            }
+            .frame(width: 40, height: 40)
+            .background {
+                if isSelected {
+                    Circle()
+                        .modify { circle in
+                            if borderOnly {
+                                circle.stroke(Color(uiColor: .label), lineWidth: 2)
+                            } else {
+                                circle.fill(Color(uiColor: .label))
+                            }
+                        }
+                }
+            }
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(label))

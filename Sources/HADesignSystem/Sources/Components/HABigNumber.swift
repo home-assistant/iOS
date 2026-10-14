@@ -53,7 +53,7 @@ public struct HABigNumber: View {
     }
 
     public var body: some View {
-        HStack(alignment: .bottom, spacing: .zero) {
+        HStack(alignment: unitPosition == .top && parts.fraction.isEmpty ? .top : .bottom, spacing: .zero) {
             Text(parts.integer)
                 .font(.system(size: size))
             // `.addon` in the frontend. The two positions differ in child order as well as axis —
@@ -104,7 +104,7 @@ public struct HABigNumber: View {
 
 extension HABigNumber: FrontendComponent {
     public static var frontendComponentName: String { "ha-big-number" }
-    public static var frontendComponentVersion: String { "2026-08-28" }
+    public static var frontendComponentVersion: String { "2026-10-12" }
 }
 
 #endif

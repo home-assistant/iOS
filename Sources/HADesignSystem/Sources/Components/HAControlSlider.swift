@@ -24,6 +24,10 @@ public struct HAControlSlider: View {
     private let isDisabled: Bool
     private let label: String?
     private let trackGradient: Gradient?
+    private let tint: Color
+    private let trackColor: Color
+    private let thickness: CGFloat
+    private let cornerRadius: CGFloat
     @Binding private var value: Double
 
     /// - Parameters:
@@ -32,6 +36,10 @@ public struct HAControlSlider: View {
     ///   - trackGradient: Paints the track with a gradient instead of the flat recess, and drops the
     ///     fill. This is what the light colour-temperature feature is: the track itself is the
     ///     scale, from warm to cool, and a cursor marks where on it you are.
+    ///   - tint: The fill, the frontend's `--control-slider-color`.
+    ///   - trackColor: The recess behind the fill at 20%, `--control-slider-background`. A more-info
+    ///     slider passes its state colour for both.
+    ///   - thickness: 40 on a card; ``DesignSystem/StateControl/thickness`` in a more-info dialog.
     public init(
         value: Binding<Double>,
         scale: HASliderScale = HASliderScale(),
@@ -40,7 +48,11 @@ public struct HAControlSlider: View {
         showsHandle: Bool = false,
         isDisabled: Bool = false,
         label: String? = nil,
-        trackGradient: Gradient? = nil
+        trackGradient: Gradient? = nil,
+        tint: Color = .haPrimary,
+        trackColor: Color = .haDisabled,
+        thickness: CGFloat = 40,
+        cornerRadius: CGFloat = DesignSystem.CornerRadius.oneAndHalf
     ) {
         _value = value
         self.scale = scale
@@ -50,10 +62,12 @@ public struct HAControlSlider: View {
         self.isDisabled = isDisabled
         self.label = label
         self.trackGradient = trackGradient
+        self.tint = tint
+        self.trackColor = trackColor
+        self.thickness = thickness
+        self.cornerRadius = cornerRadius
     }
 
-    private static let thickness: CGFloat = 40
-    private static let cornerRadius = DesignSystem.CornerRadius.oneAndHalf
     private static let cursorThickness: CGFloat = 14
 
     public var body: some View {
@@ -71,7 +85,7 @@ public struct HAControlSlider: View {
                     )
                 } else {
                     Rectangle()
-                        .fill(Color.haDisabled.opacity(0.2))
+                        .fill(trackColor.opacity(0.2))
                 }
                 // A gradient track *is* the scale, so only the cursor marks the value on it.
                 if trackGradient == nil || mode == .cursor {
@@ -93,10 +107,10 @@ public struct HAControlSlider: View {
             )
         }
         .frame(
-            width: vertical ? Self.thickness : nil,
-            height: vertical ? nil : Self.thickness
+            width: vertical ? thickness : nil,
+            height: vertical ? nil : thickness
         )
-        .clipShape(RoundedRectangle(cornerRadius: Self.cornerRadius))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .opacity(isDisabled ? 0.5 : 1)
         .accessibilityElement()
         .accessibilityLabel(optional: label)
@@ -115,8 +129,8 @@ public struct HAControlSlider: View {
     private func fill(length: CGFloat, fraction: Double) -> some View {
         switch mode {
         case .start, .end:
-            RoundedRectangle(cornerRadius: Self.cornerRadius)
-                .fill(Color.haPrimary)
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(tint)
                 // The grip belongs to the bar, so it is overlaid before the alignment frame below —
                 // on that frame it would land at the end of the whole track instead.
                 .overlay(alignment: handleAlignment) {
@@ -124,8 +138,8 @@ public struct HAControlSlider: View {
                         Capsule()
                             .fill(.white)
                             .frame(
-                                width: vertical ? Self.thickness / 2 : 4,
-                                height: vertical ? 4 : Self.thickness / 2
+                                width: vertical ? thickness / 2 : 4,
+                                height: vertical ? 4 : thickness / 2
                             )
                             .padding(vertical ? .vertical : .horizontal, DesignSystem.Spaces.half)
                     }
@@ -150,13 +164,13 @@ public struct HAControlSlider: View {
                     Capsule()
                         .fill(Color(uiColor: .label))
                         .frame(
-                            width: vertical ? Self.thickness / 4 : 2,
-                            height: vertical ? 2 : Self.thickness / 4
+                            width: vertical ? thickness / 4 : 2,
+                            height: vertical ? 2 : thickness / 4
                         )
                 }
                 .frame(
-                    width: vertical ? Self.thickness - DesignSystem.Spaces.one : Self.cursorThickness,
-                    height: vertical ? Self.cursorThickness : Self.thickness - DesignSystem.Spaces.one
+                    width: vertical ? thickness - DesignSystem.Spaces.one : Self.cursorThickness,
+                    height: vertical ? Self.cursorThickness : thickness - DesignSystem.Spaces.one
                 )
                 .offset(
                     x: vertical ? 0 : (length - Self.cursorThickness) * fraction,

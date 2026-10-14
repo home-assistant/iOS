@@ -11,6 +11,9 @@ public class LegacyModelManager: ServerObserver {
     private var subscribedSubscriptions = [SubscribeDefinition]()
     private var subscribedServerIdentifiers = Set<Identifier<Server>>()
     private var cleanupDefinitions = [CleanupDefinition]()
+    /// Membership of the last cleanup that succeeded, and of the one still running, if any.
+    private var cleanedUpServerIdentifiers: Set<Identifier<Server>>?
+    private var cleaningServerIdentifiers: Set<Identifier<Server>>?
 
     private static var includedDomains: [Domain] = [.zone, .person]
 
@@ -139,46 +142,67 @@ public class LegacyModelManager: ServerObserver {
     public func cleanup(
         definitions: [CleanupDefinition] = CleanupDefinition.defaults
     ) -> Promise<Void> {
-        let (promise, seal) = Promise<Void>.pending()
-
         Current.servers.add(observer: self)
 
         cleanupDefinitions = definitions
-        workQueue.async {
-            let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
-
-            try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIdentifiers)
-            try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIdentifiers)
-            try? AssistPipelines.deleteOrphans(keepingServerIds: serverIdentifiers)
-
-            do {
-                try Current.database().write { db in
-                    for definition in definitions {
-                        try definition.cleanup(db, serverIdentifiers)
-                    }
-                }
-                seal.fulfill(())
-            } catch {
-                Current.Log.error("cleanup failed: \(error)")
-                seal.reject(error)
-            }
-        }
+        let serverIdentifiers = Set(Current.servers.all.map(\.identifier))
+        cleaningServerIdentifiers = serverIdentifiers
 
         // Hold a background task while the writes run: cleanup is triggered by `serversDidChange`,
         // which can fire while the app is backgrounded. The expiring-activity protection in the
         // database accessor cannot abort a statement that is already executing, so without
         // protected time a write caught mid-statement at the process freeze holds the app-group
-        // SQLite file lock and the system kills the app with 0xdead10cc.
-        return Current.backgroundTask(withName: BackgroundTask.legacyModelCleanup.rawValue) { _ in promise }
-            .recover { error -> Promise<Void> in
-                // Out of background time: suspend GRDB right away, aborting any in-flight write so
-                // the file lock is released before the process is frozen. Ordinary write failures
-                // (rethrown below) must not suspend the database.
-                if case BackgroundTaskError.outOfTime = error {
-                    AppDatabaseSuspension.suspend()
+        // SQLite file lock and the system kills the app with 0xdead10cc. The writes only start once
+        // the task is held, so a freeze while acquiring it can't catch one mid-statement either.
+        return Current.backgroundTask(
+            withName: BackgroundTask.legacyModelCleanup.rawValue,
+            requiringAssertion: true
+        ) { [workQueue] _ in
+            let (promise, seal) = Promise<Void>.pending()
+            workQueue.async {
+                let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
+
+                try? WatchComplication.deleteOrphans(keepingServerIdentifiers: serverIdentifiers)
+                try? WatchComplicationConfig.deleteOrphans(keepingServerIds: serverIdentifiers)
+                try? AssistPipelines.deleteOrphans(keepingServerIds: serverIdentifiers)
+
+                do {
+                    try Current.database().write { db in
+                        for definition in definitions {
+                            try definition.cleanup(db, serverIdentifiers)
+                        }
+                    }
+                    seal.fulfill(())
+                } catch {
+                    Current.Log.error("cleanup failed: \(error)")
+                    seal.reject(error)
                 }
-                throw error
             }
+            return promise
+        }
+        .get { [weak self] in
+            self?.cleanedUpServerIdentifiers = serverIdentifiers
+        }
+        .ensure { [weak self] in
+            if self?.cleaningServerIdentifiers == serverIdentifiers {
+                self?.cleaningServerIdentifiers = nil
+            }
+        }
+        .recover { error -> Promise<Void> in
+            // Out of background time: suspend GRDB right away, aborting any in-flight write so the
+            // file lock is released before the process is frozen. Denied means nothing started, so
+            // other protected work is left to finish. Ordinary write failures (rethrown below) must
+            // not suspend the database.
+            switch error {
+            case BackgroundTaskError.outOfTime:
+                AppDatabaseSuspension.suspend()
+            case BackgroundTaskError.denied:
+                AppDatabaseSuspension.suspendIfIdle()
+            default:
+                break
+            }
+            throw error
+        }
     }
 
     public struct SubscribeDefinition {
@@ -394,6 +418,11 @@ public class LegacyModelManager: ServerObserver {
         if Set(subscribableAPIs().map(\.server.identifier)) != subscribedServerIdentifiers {
             subscribe(definitions: subscribedSubscriptions, isAppInForeground: LegacyModelManager.isAppInForeground)
         }
-        cleanup(definitions: cleanupDefinitions).cauterize()
+        // Cleanup drops rows of removed servers; detail changes (token refreshes, versions) don't
+        // need it, and running it on each one was a background write the app got killed during.
+        let serverIdentifiers = Set(Current.servers.all.map(\.identifier))
+        if serverIdentifiers != cleanedUpServerIdentifiers, serverIdentifiers != cleaningServerIdentifiers {
+            cleanup(definitions: cleanupDefinitions).cauterize()
+        }
     }
 }

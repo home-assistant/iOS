@@ -203,11 +203,52 @@ public class AppEnvironment {
             $0.lessSaturation = L10n.Component.ColorPicker.lessSaturation
             $0.adjustLowerTarget = L10n.Component.CircularSlider.adjustLower
             $0.adjustUpperTarget = L10n.Component.CircularSlider.adjustUpper
+            $0.decrease = L10n.Component.CircularSlider.decrease
+            $0.increase = L10n.Component.CircularSlider.increase
+            $0.toggle = L10n.Component.StateToggle.toggle
+            $0.turnOn = L10n.Component.StateToggle.turnOn
+            $0.turnOff = L10n.Component.StateToggle.turnOff
+            $0.lock = L10n.Component.Lock.lock
+            $0.unlock = L10n.Component.Lock.unlock
+            $0.openDoor = L10n.Component.Lock.openDoor
+            $0.openDoorConfirm = L10n.Component.Lock.openDoorConfirm
+            $0.openDoorDone = L10n.Component.Lock.openDoorDone
+            $0.shuffle = L10n.Component.MediaControl.shuffle
+            $0.repeatMode = L10n.Component.MediaControl.repeatMode
+            $0.repeatOff = L10n.Component.MediaControl.repeatOff
+            $0.repeatAll = L10n.Component.MediaControl.repeatAll
+            $0.repeatOne = L10n.Component.MediaControl.repeatOne
+            $0.stop = L10n.Component.MediaControl.stop
+            $0.mute = L10n.Component.MediaControl.mute
+            $0.unmute = L10n.Component.MediaControl.unmute
+            $0.volume = L10n.Component.MediaControl.volume
+            $0.volumeDown = L10n.Component.MediaControl.volumeDown
+            $0.volumeUp = L10n.Component.MediaControl.volumeUp
+            $0.trackPosition = L10n.Component.MediaControl.trackPosition
+            $0.timerStart = L10n.Component.Timer.start
+            $0.timerSet = L10n.Component.Timer.setDuration
+            $0.timerPause = L10n.Component.Timer.pause
+            $0.timerCancel = L10n.Component.Timer.cancel
+            $0.timerFinish = L10n.Component.Timer.finish
+            $0.updateInstall = L10n.Component.Update.install
+            $0.updateSkip = L10n.Component.Update.skip
+            $0.updateClearSkipped = L10n.Component.Update.clearSkipped
+            $0.updateReleaseAnnouncement = L10n.Component.Update.releaseAnnouncement
+            $0.coverPositionMode = L10n.Component.Cover.positionMode
+            $0.coverButtonsMode = L10n.Component.Cover.buttonsMode
+            $0.lightBrightness = L10n.Component.Light.brightness
+            $0.lightColor = L10n.Component.Light.color
+            $0.lightColorTemperature = L10n.Component.Light.colorTemperature
+            $0.lightSetWhite = L10n.Component.Light.setWhite
+            $0.sceneActivate = L10n.Component.Scene.activate
+            $0.vacuumCleaning = L10n.Component.Vacuum.cleaning
+            $0.vacuumByArea = L10n.Component.Vacuum.byArea
         }
         HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
 
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
+        LogRedactionServerObserver.shared.start(observing: servers)
     }
 
     /// Crash reporting and related metadata gathering
@@ -641,6 +682,7 @@ public class AppEnvironment {
         fileDestination.showFileName = true
         fileDestination.showLineNumber = true
         fileDestination.showDate = true
+        fileDestination.formatters = LogRedaction.isEnabled ? [LogRedactionFormatter()] : nil
 
         // Process this destination in the background
         fileDestination.logQueue = XCGLogger.logQueue
