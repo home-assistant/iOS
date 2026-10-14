@@ -28,6 +28,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
 
     private var deferredExternalBusMessages: [[String: Any]] = []
+    private var deferredGetExternalAuth: [String: Any]?
 
     @MainActor func userContentController(
         _ userContentController: WKUserContentController,
@@ -53,17 +54,11 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
                 deferredExternalBusMessages.append(messageBody)
                 return
             }
-            Current.Log.verbose("Ignoring WKUserContentController message \(messageName) because app is in background")
-            // The frontend caches the pending getExternalAuth promise and never asks again while it
-            // stays unsettled, so the callback must be rejected instead of dropped - otherwise the
-            // frontend can never reconnect until the web view is reloaded.
             if WKUserContentControllerMessage(rawValue: messageName) == .getExternalAuth {
-                if let callbackName = messageBody["callback"] as? String {
-                    sendGetExternalAuthFailure(callbackName: callbackName)
-                } else {
-                    Current.Log.error("getExternalAuth message without a string callback name")
-                }
+                deferGetExternalAuth(messageBody)
+                return
             }
+            Current.Log.verbose("Ignoring WKUserContentController message \(messageName) because app is in background")
             return
         }
 
@@ -111,13 +106,34 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     /// Hands over the external bus messages held back while the app was in the background, in the order the
     /// frontend last sent each of them.
     @MainActor func deliverDeferredMessages() {
-        guard !isAppInBackground(), !deferredExternalBusMessages.isEmpty else { return }
-        let messages = deferredExternalBusMessages
-        deferredExternalBusMessages = []
-        Current.Log.info("Delivering \(messages.count) external bus messages received in the background")
-        for message in messages {
-            handleExternalBus(message)
+        guard !isAppInBackground() else { return }
+
+        if !deferredExternalBusMessages.isEmpty {
+            let messages = deferredExternalBusMessages
+            deferredExternalBusMessages = []
+            Current.Log.info("Delivering \(messages.count) external bus messages received in the background")
+            for message in messages {
+                handleExternalBus(message)
+            }
         }
+
+        if let getExternalAuth = deferredGetExternalAuth {
+            deferredGetExternalAuth = nil
+            Current.Log.info("Answering getExternalAuth received in the background")
+            handleGetExternalAuth(getExternalAuth)
+        }
+    }
+
+    private func deferGetExternalAuth(_ messageBody: [String: Any]) {
+        guard messageBody["callback"] is String else {
+            Current.Log.error("getExternalAuth message without a string callback name")
+            return
+        }
+        Current.Log.verbose("Deferring getExternalAuth until app is active")
+        let force = (deferredGetExternalAuth?["force"] as? Bool ?? false) || (messageBody["force"] as? Bool ?? false)
+        var latest = messageBody
+        latest["force"] = force
+        deferredGetExternalAuth = latest
     }
 
     private static func typeDeferredInBackground(messageName: String, messageBody: [String: Any]) -> String? {
