@@ -152,6 +152,49 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
         assertDisabled(interface.status(for: server))
     }
 
+    func testRetryOnMatchingNetworkRecreatesAnInactiveManager() throws {
+        let server = makeLocalPushServer()
+        let saved = try makeSavedManager(for: server)
+        let originalNetworkState = Current.connectivity.currentNetworkState
+        defer { Current.connectivity.currentNetworkState = originalNetworkState }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "Home") }
+
+        var loads = 0
+        let interface = NotificationManagerLocalPushInterfaceExtension(loadManagers: { completion in
+            loads += 1
+            completion([saved], nil)
+        })
+        wait(seconds: 0.5)
+        XCTAssertEqual(loads, 1)
+
+        interface.retryLocalPush(for: server, reason: .manual)
+        wait(seconds: 2)
+
+        XCTAssertEqual(loads, 3)
+        assertDisabled(interface.status(for: server))
+    }
+
+    func testRetryAwayFromTheNetworkKeepsTheSavedManager() throws {
+        let server = makeLocalPushServer()
+        let saved = try makeSavedManager(for: server)
+        let originalNetworkState = Current.connectivity.currentNetworkState
+        defer { Current.connectivity.currentNetworkState = originalNetworkState }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: "Away") }
+
+        var loads = 0
+        let interface = NotificationManagerLocalPushInterfaceExtension(loadManagers: { completion in
+            loads += 1
+            completion([saved], nil)
+        })
+        wait(seconds: 0.5)
+
+        interface.retryLocalPush(for: server, reason: .manual)
+        wait(seconds: 1)
+
+        XCTAssertEqual(loads, 1)
+        assertDisabled(interface.status(for: server))
+    }
+
     func testOverlappingUpdatesCoalesceAndStatusIsDisabledWithoutActiveManager() {
         let server = makeLocalPushServer()
 

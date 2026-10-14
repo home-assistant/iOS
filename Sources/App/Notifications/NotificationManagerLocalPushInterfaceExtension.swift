@@ -19,7 +19,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     private let loadManagers: ManagerLoader
 
     private var isUpdatingManagers = false
-    private var queuedManagerUpdate: (reason: LocalPushRetryReason?, targetServer: Server?)?
+    private var queuedManagerUpdate: (reason: LocalPushRetryReason?, targetServer: Server?, currentSSID: String?)?
 
     private var tokens: [NSKeyValueObservation] = [] {
         didSet {
@@ -92,7 +92,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     func retryLocalPush(for server: Server?, reason: LocalPushRetryReason) {
         Task { [weak self] in
             guard let self else { return }
-            let servers = await retryEligibleServers(targetServer: server)
+            let currentSSID = await Current.connectivity.currentWiFiSSID()
+            let servers = retryEligibleServers(targetServer: server, currentSSID: currentSSID)
             guard !servers.isEmpty else {
                 Current.Log.info("Skipping local push retry for \(reason.eventValue), no eligible servers")
                 logRetryDiagnostics(reason: reason, targetServer: server, managers: [], error: nil)
@@ -100,7 +101,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
 
             Current.Log.info("Retrying local push for \(servers.count) server(s), reason: \(reason.eventValue)")
-            updateManagers(reason: reason, targetServer: server)
+            updateManagers(reason: reason, targetServer: server, currentSSID: currentSSID)
         }
     }
 
@@ -127,14 +128,15 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         isUpdatingManagers = false
         guard let queued = queuedManagerUpdate else { return }
         queuedManagerUpdate = nil
-        updateManagers(reason: queued.reason, targetServer: queued.targetServer)
+        updateManagers(reason: queued.reason, targetServer: queued.targetServer, currentSSID: queued.currentSSID)
     }
 
     private func handleLoadedManagers(
         _ managers: [NEAppPushManager]?,
         error: Error?,
         reason: LocalPushRetryReason?,
-        targetServer: Server?
+        targetServer: Server?,
+        currentSSID: String?
     ) {
         if let error {
             Current.Log.error("failed to load local push managers: \(error)")
@@ -154,6 +156,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
         var updatedManagers = [ConfigureManager]()
         var usedManagers = Set<NEAppPushManager>()
+        var staleManagers = [NEAppPushManager]()
+        var recreations = [(ssid: String, servers: [Server])]()
         var hasDirtyManagers = false
 
         // update or create managers for the servers we have
@@ -163,6 +167,15 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             let existing = managers?.first(where: { $0.matchSSIDs == [ssid] })
             if let existing {
                 usedManagers.insert(existing)
+            }
+            // A retry on the matching network with a manager iOS never activated: saving it again is
+            // ignored by the system, only a freshly created manager gets a new provider session.
+            if let existing, reason != nil, currentSSID == ssid, !existing.isActive {
+                Current.Log.info("recreating inactive push manager for \(ssid)")
+                staleManagers.append(existing)
+                recreations.append((ssid: ssid, servers: servers))
+                hasDirtyManagers = true
+                continue
             }
             let updated = updateManager(
                 existingManager: existing,
@@ -177,9 +190,10 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
         }
 
-        // remove any existing managers that didn't match
+        // remove any existing managers that didn't match, plus the stale ones being recreated
         let removals = DispatchGroup()
-        for manager in managers ?? [] where !usedManagers.contains(manager) {
+        let unusedManagers = (managers ?? []).filter { !usedManagers.contains($0) }
+        for manager in unusedManagers + staleManagers {
             removals.enter()
             manager.removeFromPreferences { error in
                 Current.Log.info("remove unused manager \(manager) result: \(String(describing: error))")
@@ -189,6 +203,16 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
         removals.notify(queue: .main) { [weak self] in
             guard let self else { return }
+
+            for recreation in recreations {
+                updatedManagers.append(updateManager(
+                    existingManager: nil,
+                    ssid: recreation.ssid,
+                    servers: recreation.servers,
+                    encoder: encoder,
+                    reason: reason
+                ))
+            }
 
             configure(managers: updatedManagers)
             if let reason, !hasDirtyManagers {
@@ -210,11 +234,12 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     private func updateManagers(
         reason: LocalPushRetryReason? = nil,
-        targetServer: Server? = nil
+        targetServer: Server? = nil,
+        currentSSID: String? = nil
     ) {
         guard Thread.isMainThread else {
             DispatchQueue.main.async { [weak self] in
-                self?.updateManagers(reason: reason, targetServer: targetServer)
+                self?.updateManagers(reason: reason, targetServer: targetServer, currentSSID: currentSSID)
             }
             return
         }
@@ -222,7 +247,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             Current.Log.info("coalescing local push manager update for \(reason?.eventValue ?? "none")")
             queuedManagerUpdate = (
                 reason: reason ?? queuedManagerUpdate?.reason,
-                targetServer: targetServer ?? queuedManagerUpdate?.targetServer
+                targetServer: targetServer ?? queuedManagerUpdate?.targetServer,
+                currentSSID: currentSSID ?? queuedManagerUpdate?.currentSSID
             )
             return
         }
@@ -231,7 +257,13 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
         loadManagers { [weak self] managers, error in
             DispatchQueue.main.async {
-                self?.handleLoadedManagers(managers, error: error, reason: reason, targetServer: targetServer)
+                self?.handleLoadedManagers(
+                    managers,
+                    error: error,
+                    reason: reason,
+                    targetServer: targetServer,
+                    currentSSID: currentSSID
+                )
             }
         }
     }
@@ -413,9 +445,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 
-    private func retryEligibleServers(targetServer: Server?) async -> [Server] {
-        let currentSSID = await Current.connectivity.currentWiFiSSID()
-        return (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
+    private func retryEligibleServers(targetServer: Server?, currentSSID: String?) -> [Server] {
+        (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
             LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: currentSSID)
         }
     }
