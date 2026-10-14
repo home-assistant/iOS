@@ -9,7 +9,9 @@ final class NotificationService: UNNotificationServiceExtension {
         _ request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
     ) {
-        Current.Log.info("didReceive \(request), user info \(request.content.userInfo)")
+        Current.Log.info(
+            "didReceive \(request), user info \(LogRedaction.redactValues(in: request.content.userInfo))"
+        )
 
         if !Self.isLiveActivity(request.content.userInfo) {
             Current.notificationHistoryStore.record(NotificationHistoryEntry(content: request.content, kind: .remote))

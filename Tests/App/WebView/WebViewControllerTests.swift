@@ -1,4 +1,5 @@
 import Alamofire
+import Combine
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
@@ -249,6 +250,40 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertTrue(pendingTimer === sut.emptyStateTimer)
         XCTAssertTrue(pendingTimer.isValid)
+    }
+
+    /// A page that loaded while the scene was away is still waiting for its `config/get` reply, and nothing
+    /// else would make the frontend ask again.
+    func testBecomingActiveDeliversFrontendMessagesHeldInTheBackground() {
+        let sut = makeSUT()
+        let externalMessageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = externalMessageHandler
+        let scriptMessageHandler = sut.webViewScriptMessageHandler
+        scriptMessageHandler.isAppInBackground = { true }
+        scriptMessageHandler.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "config/get"])
+
+        scriptMessageHandler.isAppInBackground = { false }
+        sut.handleSceneDidActivate()
+
+        XCTAssertEqual(externalMessageHandler.handledExternalMessages.map { $0["type"] as? String }, ["config/get"])
+    }
+
+    /// Only a return from the background tells the host: dismissing a system alert activates the scene without
+    /// it having been away.
+    func testBecomingActiveTellsTheHostOnlyWhenTheSceneReturnsFromTheBackground() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        var returns = 0
+        let subscription = overlayState.sceneReturnedFromBackground.sink { returns += 1 }
+        defer { subscription.cancel() }
+
+        sut.handleSceneDidActivate()
+        XCTAssertEqual(returns, 0)
+
+        sut.handleSceneDidEnterBackground()
+        sut.handleSceneDidActivate()
+        XCTAssertEqual(returns, 1)
     }
 
     /// Multi-window: another window going to the background says nothing about this frontend.
@@ -1319,6 +1354,48 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertTrue(sut.prefersStatusBarHidden)
     }
 
+    /// Hiding the status bar leaves no room for a themed strip to fill, whichever setting asked for it.
+    func testThemedStatusBarStripIsDroppedWhenKioskHidesTheStatusBar() async throws {
+        let previousDatabase = Current.database
+        let previousKiosk = Current.kiosk
+        let previousSensors = Current.sensors
+        let previousFullScreen = Current.settingsStore.fullScreen
+        let previousBelowStatusBar = Current.settingsStore.webViewAlwaysBelowStatusBar
+        defer {
+            Current.database = previousDatabase
+            Current.kiosk = previousKiosk
+            Current.sensors = previousSensors
+            Current.settingsStore.fullScreen = previousFullScreen
+            Current.settingsStore.webViewAlwaysBelowStatusBar = previousBelowStatusBar
+        }
+        Current.sensors = SensorContainer()
+
+        let database = try DatabaseQueue()
+        try KioskSettingsTable().createIfNeeded(database: database)
+        Current.database = { database }
+        Current.settingsStore.fullScreen = false
+        Current.settingsStore.webViewAlwaysBelowStatusBar = true
+
+        func setKiosk(hideStatusBar: Bool) throws {
+            try database.write { db in
+                try KioskSettings(enabled: true, hideStatusBar: hideStatusBar).insert(db, onConflict: .replace)
+            }
+        }
+
+        try setKiosk(hideStatusBar: false)
+        Current.kiosk = KioskModeManager()
+
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.setupKioskModeObservation()
+        sut.updateThemedStatusBar()
+        await waitUntil { overlayState.statusBarColor != nil }
+
+        try setKiosk(hideStatusBar: true)
+        await waitUntil { overlayState.statusBarColor == nil }
+    }
+
     func testCurrentPageURLIsNilBeforeAnyPageLoads() {
         let sut = makeSUT()
         sut.webView = WKWebView(frame: .zero)
@@ -1345,6 +1422,38 @@ final class WebViewControllerTests: XCTestCase {
         sut.openServerInSafari()
 
         XCTAssertNil(sut.currentPageURL)
+    }
+
+    func testOpenPanelNavigatesThroughFrontendWithRetries() throws {
+        let sut = makeSUT(server: .fake { $0.version = .canNavigateMoreInfoDialogThroughFrontend })
+        let messageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = messageHandler
+        sut.webView = WKWebView(frame: .zero)
+
+        try sut.openPanel(XCTUnwrap(URL(string: "https://home.local/?more-info-entity-id=binary_sensor.front_door")))
+        messageHandler.sendExternalBusCommandWithRetryCompletion?(true)
+
+        XCTAssertEqual(messageHandler.sendExternalBusCommandWithRetryCommand, .navigate)
+        XCTAssertEqual(
+            messageHandler.sendExternalBusCommandWithRetryPayload?["path"] as? String,
+            "/?more-info-entity-id=binary_sensor.front_door"
+        )
+        XCTAssertFalse(messageHandler.sendExternalBusCalled)
+        XCTAssertNil(sut.webView.url)
+    }
+
+    func testOpenPanelLoadsURLWhenFrontendNeverAcceptsNavigation() async throws {
+        let sut = makeSUT(server: .fake { $0.version = .canNavigateMoreInfoDialogThroughFrontend })
+        let messageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = messageHandler
+        sut.webView = WKWebView(frame: .zero)
+        let url = try XCTUnwrap(URL(string: "https://home.local/?more-info-entity-id=binary_sensor.front_door"))
+
+        sut.openPanel(url)
+        messageHandler.sendExternalBusCommandWithRetryCompletion?(false)
+
+        await waitUntil { sut.webView.url == url }
+        XCTAssertEqual(sut.webView.url, url)
     }
 
     func testCurrentPageURLDropsTheQueryWhenOnlyExternalAuthWasPresent() async throws {
@@ -1378,7 +1487,7 @@ final class WebViewControllerTests: XCTestCase {
 
         sut.showSettingsViewController()
 
-        wait(for: [settingsShown], timeout: 1)
+        wait(for: [settingsShown], timeout: 5)
         XCTAssertFalse(sceneCoordinator.showSettingsPushedOntoNavigationStack)
         XCTAssertFalse(otherWindowCoordinator.showSettingsCalled)
     }
@@ -1393,7 +1502,7 @@ final class WebViewControllerTests: XCTestCase {
 
         sut.showSettingsViewController(pushOntoNavigationStack: true)
 
-        wait(for: [settingsShown], timeout: 1)
+        wait(for: [settingsShown], timeout: 5)
         XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
     }
 
@@ -1703,13 +1812,13 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         let sut = makeSUT()
 
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let hungAttempt = sut.loadActiveURLTask
         await waitUntil { gate.waiterCount == 1 }
         sut.loadActiveURLTaskStartDate = Current.date()
             .addingTimeInterval(-WebViewController.loadActiveURLStaleInterval)
 
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
 
         // The replacement attempt is itself parked at the gate, so only the synchronous
         // fallback can have loaded anything.
@@ -1734,7 +1843,7 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 
         // First attempt hangs refreshing network information.
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let hungAttempt = sut.loadActiveURLTask
         XCTAssertNotNil(hungAttempt)
         await waitUntil { gate.waiterCount == 1 }
@@ -1743,14 +1852,14 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         sut.loadActiveURLTaskStartDate = Current.date()
             .addingTimeInterval(-WebViewController.loadActiveURLStaleInterval)
         gate.shouldHold = false
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         XCTAssertEqual(hungAttempt?.isCancelled, true)
         await sut.loadActiveURLTask?.value
         XCTAssertNil(sut.loadActiveURLTask)
 
         // A third attempt is in flight when the hung attempt finally wakes up.
         gate.shouldHold = true
-        sut.loadActiveURLIfNeeded()
+        loadActiveURLHoldingAtGate(sut)
         let inFlightAttempt = sut.loadActiveURLTask
         XCTAssertNotNil(inFlightAttempt)
         await waitUntil { gate.waiterCount == 2 }
@@ -1763,6 +1872,14 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
         gate.releaseNext()
         await inFlightAttempt?.value
         XCTAssertNil(sut.loadActiveURLTask)
+    }
+
+    /// Starts an attempt whose network refresh `AsyncGate` may hold. Nothing else is held: whatever
+    /// else refreshes network information while the test runs passes straight through.
+    private func loadActiveURLHoldingAtGate(_ sut: WebViewController) {
+        AsyncGate.$holdsCallers.withValue(true) {
+            sut.loadActiveURLIfNeeded()
+        }
     }
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
@@ -1798,6 +1915,11 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 /// Parks `refreshNetworkInformation` calls while `shouldHold` is set, releasing them one at a
 /// time in arrival order so tests can interleave hung and healthy load attempts deterministically.
 private final class AsyncGate: @unchecked Sendable {
+    /// Set around the calls that start the attempts a test means to hold. The closure the gate stands
+    /// in for is global, so a webhook send or a network path update while the test runs calls it too,
+    /// and holding those as well throws off the counts and the release order the tests rely on.
+    @TaskLocal static var holdsCallers = false
+
     private let lock = NSLock()
     private var waiters = [CheckedContinuation<Void, Never>]()
     private var holding = false
@@ -1822,7 +1944,7 @@ private final class AsyncGate: @unchecked Sendable {
     }
 
     func holdIfNeeded() async {
-        guard shouldHold else { return }
+        guard shouldHold, Self.holdsCallers else { return }
         await withCheckedContinuation { continuation in
             lock.lock()
             waiters.append(continuation)

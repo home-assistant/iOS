@@ -8,17 +8,22 @@ import SwiftUI
 /// the app draws its own dialog chrome, which is why the frontend has the element at all.
 public struct HADialogHeader<Actions: View>: View {
     private let title: String
+    private let overline: String?
     private let subtitle: String?
     private let onClose: (() -> Void)?
     private let actions: Actions
 
+    /// - Parameter overline: A small line above the title, as the more-info dialog puts the area and
+    ///   device breadcrumb over the entity's name.
     public init(
         title: String,
+        overline: String? = nil,
         subtitle: String? = nil,
         onClose: (() -> Void)? = nil,
         @ViewBuilder actions: () -> Actions
     ) {
         self.title = title
+        self.overline = overline
         self.subtitle = subtitle
         self.onClose = onClose
         self.actions = actions()
@@ -30,6 +35,12 @@ public struct HADialogHeader<Actions: View>: View {
                 CloseButton(size: .medium, alternativeAction: onClose)
             }
             VStack(alignment: .leading, spacing: .zero) {
+                if let overline {
+                    Text(overline)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
                 Text(title)
                     .font(DesignSystem.Font.headline)
                     .lineLimit(1)
@@ -55,8 +66,8 @@ public struct HADialogHeader<Actions: View>: View {
 
 public extension HADialogHeader where Actions == EmptyView {
     /// A header with nothing on its trailing edge.
-    init(title: String, subtitle: String? = nil, onClose: (() -> Void)? = nil) {
-        self.init(title: title, subtitle: subtitle, onClose: onClose) { EmptyView() }
+    init(title: String, overline: String? = nil, subtitle: String? = nil, onClose: (() -> Void)? = nil) {
+        self.init(title: title, overline: overline, subtitle: subtitle, onClose: onClose) { EmptyView() }
     }
 }
 
@@ -64,6 +75,7 @@ public extension HADialogHeader where Actions == EmptyView {
     VStack(spacing: DesignSystem.Spaces.three) {
         HADialogHeader(title: "Settings", onClose: {})
         HADialogHeader(title: "Ceiling light", subtitle: "Living room", onClose: {})
+        HADialogHeader(title: "Ceiling light", overline: "Living room ▸ Hue bridge", onClose: {})
         HADialogHeader(title: "With an action", onClose: {}) {
             Button("Save") {}
                 .buttonStyle(.textButton)

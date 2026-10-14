@@ -95,7 +95,7 @@ enum WatchRequestRelay {
         )
 
         onStep?("Relaying through iPhone…")
-        Current.Log.info("Relaying \(payload.method) \(url.absoluteString) through the iPhone")
+        Current.Log.info("Relaying \(payload.method) \(LogRedaction.redact(url)) through the iPhone")
 
         switch await deliver(payload, budget, priority) {
         case let .answered(response):
@@ -130,7 +130,7 @@ enum WatchRequestRelay {
             }
             return (body, http)
         case let .failure(failure, reason):
-            Current.Log.error("iPhone could not relay \(payload.method) \(url.absoluteString): \(reason)")
+            Current.Log.error("iPhone could not relay \(payload.method) \(LogRedaction.redact(url)): \(reason)")
             guard allowsDirectRetry(after: failure, payload: payload) else {
                 onStep?("iPhone already sent this request and it didn't come back: \(reason)")
                 throw WatchRelayError(reason: reason)
@@ -147,7 +147,8 @@ enum WatchRequestRelay {
     ) throws -> (Data, HTTPURLResponse)? {
         guard payload.isIdempotent else {
             Current.Log.error(
-                "iPhone received \(payload.method) \(url.absoluteString) but never reported back; not repeating it"
+                "iPhone received \(payload.method) \(LogRedaction.redact(url)) " +
+                    "but never reported back; not repeating it"
             )
             onStep?("iPhone received the request but didn't report back; not repeating it")
             throw WatchRelayError(reason: unansweredReason)

@@ -312,6 +312,66 @@ unreadable at phone width, so the month is dots and the titles are a list under 
 **Watch for a name already taken in `Shared`.** `HACalendarEvent` exists there, so the card's event
 type is `HACalendarCardEvent`.
 
+### 11 — More-info dialogs ✅
+
+Every page under `More Info dialogs` on `design.home-assistant.io` has a view in `Sources/MoreInfo`:
+`HAMoreInfoClimate`, `HAMoreInfoHumidifier`, `HAMoreInfoWaterHeater`, `HAMoreInfoFan`,
+`HAMoreInfoCover`, `HAMoreInfoLock`, `HAMoreInfoLawnMower`, `HAMoreInfoVacuum`, `HAMoreInfoLight`,
+`HAMoreInfoScene`, `HAMoreInfoMediaPlayer`, `HAMoreInfoNumber` (the Input Number and Number pages,
+which render the same `state-card-input_number`), `HAMoreInfoText` and `HAMoreInfoTimer`, plus
+`HAMoreInfoUpdate`. `HAMoreInfoDialog` is the chrome around any of them: close button, area and
+device breadcrumb, title and the app's own header actions.
+
+Reconciled against `home-assistant/frontend` `dev` as of 2026-10-12, not the June checkout: the
+dialogs changed a lot since (attributes moved to the separate details view, the update dialog was
+rebuilt, the timer gained presets). The live gallery rendered the humidifier, lawn mower and media
+player pages empty, so those three were built from the source alone.
+
+The dialogs are compositions, and the frontend's own structure says where to split them:
+
+- `HAMoreInfoLayout` is `more-info-control-style.ts`: header, centred controls, pickers under them.
+- `HAMoreInfoStateHeader`, `HAMoreInfoReadings` (the climate family's `.current` row) and
+  `HAMoreInfoStateCard` (`state-card-content`, for the domains without a dedicated design) are the
+  three headers a dialog can open with.
+- `HAControlSelectMenu` and `HAMoreInfoControlSelectContainer` are the mode pickers. Each dialog
+  takes them as `[HAMoreInfoSelect]`, so which pickers exist is the app's mapping from the entity's
+  supported features and the layout is written once.
+- `HAStateControlCircularSlider` is `state-control-circular-slider-style.ts`, the one dial behind
+  climate temperature, climate humidity, humidifier and water heater.
+- `HAStateControlSlider`, `HAStateControlToggle` and `HAStateControlCoverButtons` are the tall
+  controls: brightness, position, tilt, fan percentage and colour temperature are one slider with a
+  different mode and track.
+- `HAStateControlRobotStatus` draws what the vacuum and mower illustrations share; the two bodies
+  are `HAStateControlVacuumStatus` and `HAStateControlLawnMowerStatus`. They draw the frontend's
+  `prefers-reduced-motion` frame rather than the animation, for the same reason the energy card's
+  dots are not animated.
+- `HAMoreInfoCommand` and `HAMoreInfoCommandBar` are the vacuum and mower command rows, which the
+  media player's bottom row reuses the model of.
+
+The existing controls grew what the large versions need instead of being copied: `HAControlSlider`,
+`HAControlSwitch` and `HAControlSelect` take a colour, a thickness and a radius; `HAControlButton`
+can fill (`activeColor`), show words and fill its parent; `HAControlButtonGroup` takes a thickness;
+`HAIconButtonToggle` can show a colour swatch; `HADialogHeader` takes a breadcrumb. Every default is
+the old value, so nothing already drawn with them moved.
+
+`HAControlCircularSlider` is the exception. It now draws the way `renderArc` does: the coloured side
+at half strength, full strength only between the reading and the target, and a dual dial coloured
+from both ends (heat from the minimum, cool from the maximum) rather than between the handles. That
+is the same element the thermostat and humidifier cards use, so their recorded images changed too.
+
+Decisions worth knowing before changing them:
+
+- **The dial is 300pt, not the frontend's 320.** 320 does not fit the gallery's 350pt snapshot with
+  its padding, and the dial has no size of its own to shrink to (see the note on `HAGauge`).
+- **Favourites are not here.** Light favourite colours, cover favourite positions and timer presets
+  live in the entity registry's options and are edited in place; that is app work. The dialogs have
+  room for them under the controls.
+- **Strings are in `HADesignSystemEnvironment`**, wired to the `component.*` keys in `Shared`.
+  Domain words that come from the entity (state names, attribute names, option labels) are init
+  parameters, as everywhere else in the package.
+- **`HAColorTemperature`** is `temperature2rgb` and `generateColorTemperatureGradient`, unit tested
+  against the frontend's numbers; `HAStateControlSlider.slats` is the cover tilt's track.
+
 ## Every card a user can add to a dashboard is covered
 
 `LovelaceCardCoverageTests` pins all **71** card types from the frontend's

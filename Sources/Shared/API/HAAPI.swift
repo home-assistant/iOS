@@ -34,9 +34,15 @@ public class HomeAssistantAPI {
         let errorDescription = String(describing: error)
         let underlyingInfo = "\(errorType): \(errorDescription)"
 
+        // The server's own 400...403, and the same verdict reached without asking it again: once the
+        // token manager has a refusal on file it stops sending the credentials, so a reconnect loop
+        // would spin forever on a token fetch that can only fail until the user logs back in.
+        let isPermanent = error.authenticationAPIError?.shouldRequireReauthentication == true
+            || (error as? TokenManager.TokenError) == .reauthenticationRequired
+
         return TokenFetchFailure(
             underlyingType: underlyingInfo,
-            shouldDisconnectPermanently: error.authenticationAPIError?.shouldRequireReauthentication == true
+            shouldDisconnectPermanently: isPermanent
         )
     }
 
@@ -56,6 +62,7 @@ public class HomeAssistantAPI {
 
     private var rejectedReconnectAttempts = 0
     private var rejectedReconnectWorkItem: DispatchWorkItem?
+    private var connectivityObserver: NSObjectProtocol?
 
     /// Carries a sensor update that failed to reach this server to a later attempt.
     private(set) lazy var sensorUpdateRetry = SensorUpdateRetry { [weak self] providers in
@@ -187,6 +194,20 @@ public class HomeAssistantAPI {
         removeOldDownloadDirectory()
 
         Current.sensors.register(observer: self)
+
+        self.connectivityObserver = NotificationCenter.default.addObserver(
+            forName: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.reconnectWebSocketIfStillConnecting()
+        }
+    }
+
+    deinit {
+        if let connectivityObserver {
+            NotificationCenter.default.removeObserver(connectivityObserver)
+        }
     }
 
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
@@ -304,11 +325,10 @@ public class HomeAssistantAPI {
 
     static func shouldAttemptAutomaticWebSocketConnect(for state: HAConnectionState) -> Bool {
         switch state {
-        case .disconnected(reason: .disconnected):
+        case .disconnected(reason: .disconnected), .connecting:
             return true
         case .disconnected(reason: .waitingToReconnect),
              .disconnected(reason: .rejected),
-             .connecting,
              .authenticating,
              .ready:
             return false
@@ -323,6 +343,12 @@ public class HomeAssistantAPI {
             return
         }
 
+        connection.connect()
+    }
+
+    func reconnectWebSocketIfStillConnecting() {
+        guard case .connecting = connection.state else { return }
+        Current.Log.info("network changed while websocket is connecting; re-evaluating its URL")
         connection.connect()
     }
 
@@ -944,7 +970,7 @@ public class HomeAssistantAPI {
             }
         } else {
             // Use domain's main action for all other domains
-            request = .executeMainAction(domain: domain, entityId: entityId)
+            request = .executeMainAction(domain: domain, entityId: entityId, state: state)
         }
 
         if let request {

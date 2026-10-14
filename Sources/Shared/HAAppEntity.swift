@@ -86,8 +86,8 @@ public extension HAAppEntity {
                     Column(DatabaseTables.DisplayEntityRegistry.hidden.rawValue) == true
                         || Column(DatabaseTables.DisplayEntityRegistry.entityCategory.rawValue) != nil
                 )
+                .select(Column(DatabaseTables.DisplayEntityRegistry.entityId.rawValue), as: String.self)
                 .fetchAll(db)
-                .map(\.entityId)
         }
         return Set(ids ?? [])
     }
