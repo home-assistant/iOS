@@ -131,6 +131,17 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         updateManagers(reason: queued.reason, targetServer: queued.targetServer, currentSSID: queued.currentSSID)
     }
 
+    /// A retry on the matching network with a manager iOS never activated: saving it again is
+    /// ignored by the system, only a freshly created manager gets a new provider session.
+    private func shouldRecreate(
+        _ manager: NEAppPushManager,
+        ssid: String,
+        reason: LocalPushRetryReason?,
+        currentSSID: String?
+    ) -> Bool {
+        reason != nil && currentSSID == ssid && !manager.isActive
+    }
+
     private func handleLoadedManagers(
         _ managers: [NEAppPushManager]?,
         error: Error?,
@@ -168,9 +179,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             if let existing {
                 usedManagers.insert(existing)
             }
-            // A retry on the matching network with a manager iOS never activated: saving it again is
-            // ignored by the system, only a freshly created manager gets a new provider session.
-            if let existing, reason != nil, currentSSID == ssid, !existing.isActive {
+            if let existing, shouldRecreate(existing, ssid: ssid, reason: reason, currentSSID: currentSSID) {
                 Current.Log.info("recreating inactive push manager for \(ssid)")
                 staleManagers.append(existing)
                 recreations.append((ssid: ssid, servers: servers))
@@ -202,33 +211,50 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
 
         removals.notify(queue: .main) { [weak self] in
-            guard let self else { return }
+            self?.finishLoadedManagers(
+                updatedManagers,
+                recreating: recreations,
+                loaded: managers ?? [],
+                hasDirtyManagers: hasDirtyManagers,
+                reason: reason,
+                targetServer: targetServer
+            )
+        }
+    }
 
-            for recreation in recreations {
-                updatedManagers.append(updateManager(
-                    existingManager: nil,
-                    ssid: recreation.ssid,
-                    servers: recreation.servers,
-                    encoder: encoder,
-                    reason: reason
-                ))
-            }
+    private func finishLoadedManagers(
+        _ updatedManagers: [ConfigureManager],
+        recreating recreations: [(ssid: String, servers: [Server])],
+        loaded managers: [NEAppPushManager],
+        hasDirtyManagers: Bool,
+        reason: LocalPushRetryReason?,
+        targetServer: Server?
+    ) {
+        let encoder = JSONEncoder()
+        let recreated = recreations.map { recreation in
+            updateManager(
+                existingManager: nil,
+                ssid: recreation.ssid,
+                servers: recreation.servers,
+                encoder: encoder,
+                reason: reason
+            )
+        }
 
-            configure(managers: updatedManagers)
-            if let reason, !hasDirtyManagers {
-                logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers ?? [], error: nil)
-            }
+        configure(managers: updatedManagers + recreated)
+        if let reason, !hasDirtyManagers {
+            logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers, error: nil)
+        }
 
-            // If we made changes to managers, reload them after a brief delay to ensure
-            // the system picks up the changes, especially when enabling local push
-            // while already on the internal network
-            if hasDirtyManagers {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Self.managerReloadDelay) { [weak self] in
-                    self?.reloadManagersAfterSave(reason: reason, targetServer: targetServer)
-                }
-            } else {
-                finishManagerUpdate()
+        // If we made changes to managers, reload them after a brief delay to ensure
+        // the system picks up the changes, especially when enabling local push
+        // while already on the internal network
+        if hasDirtyManagers {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.managerReloadDelay) { [weak self] in
+                self?.reloadManagersAfterSave(reason: reason, targetServer: targetServer)
             }
+        } else {
+            finishManagerUpdate()
         }
     }
 
