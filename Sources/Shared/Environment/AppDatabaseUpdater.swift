@@ -19,6 +19,9 @@ public protocol AppDatabaseUpdaterProtocol {
 public extension Notification.Name {
     static let appDatabaseUpdaterDidFinishRoutine = Notification.Name("appDatabaseUpdaterDidFinishRoutine")
     static let appDatabaseUpdaterDidChangePhase = Notification.Name("appDatabaseUpdaterDidChangePhase")
+    /// Posted with the `Server` as `object` once a queued update for it has run its course, whether it
+    /// completed, was throttled, or was cancelled, so a control that started it can stop waiting.
+    static let appDatabaseUpdaterDidFinishServer = Notification.Name("appDatabaseUpdaterDidFinishServer")
 }
 
 public enum AppDatabaseUpdaterUserInfo {
@@ -318,6 +321,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     /// Performs an update for a single specific server.
     private func performSingleServerUpdate(server: Server) async {
+        defer {
+            NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishServer, object: server)
+        }
         guard !isUpdateCancelled() else {
             Current.Log.verbose(
                 "Dropping queued update for server \(server.info.name) - cancelled (foreground: \(isForeground))"

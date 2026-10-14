@@ -5309,14 +5309,26 @@ public enum L10n {
       public static var loggedInAs: String { return L10n.tr("Localizable", "settings.connection_section.logged_in_as") }
       /// Make default
       public static var makeDefault: String { return L10n.tr("Localizable", "settings.connection_section.make_default") }
+      /// Open
+      public static var openServer: String { return L10n.tr("Localizable", "settings.connection_section.open_server") }
       /// Update server information
       public static var refreshServer: String { return L10n.tr("Localizable", "settings.connection_section.refresh_server") }
+      /// Server Details
+      public static var serverDetailsTitle: String { return L10n.tr("Localizable", "settings.connection_section.server_details_title") }
+      /// Home Assistant %@
+      public static func serverVersionFooter(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.connection_section.server_version_footer", String(describing: p1))
+      }
       /// Servers
       public static var servers: String { return L10n.tr("Localizable", "settings.connection_section.servers") }
       /// Servers
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Drag to reorder your servers. The one at the top is used as the default server.
       public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
+      /// Sync
+      public static var syncServer: String { return L10n.tr("Localizable", "settings.connection_section.sync_server") }
+      /// Troubleshooting
+      public static var troubleshooting: String { return L10n.tr("Localizable", "settings.connection_section.troubleshooting") }
       public enum AlwaysFallbackInternal {
         /// Enabling this with an unsecure URL (http) may compromise your security on public networks.
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.footer") }
@@ -5344,6 +5356,8 @@ public enum L10n {
         public static var `import`: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import") }
         /// Importing...
         public static var importing: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.importing") }
+        /// Not configured
+        public static var notConfigured: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.not_configured") }
         /// Remove Certificate
         public static var remove: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove") }
         public enum ImportError {
@@ -5396,6 +5410,8 @@ public enum L10n {
         }
       }
       public enum ConnectionAccessSecurityLevel {
+        /// Protects your internal URL when you are not at home.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.footer") }
         /// Connection security level
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.title") }
         public enum LessSecure {
@@ -5424,6 +5440,8 @@ public enum L10n {
         public static var cannotRemoveLastUrl: String { return L10n.tr("Localizable", "settings.connection_section.errors.cannot_remove_last_url") }
       }
       public enum ExternalBaseUrl {
+        /// Used when this device is away from home.
+        public static var headerSubtitle: String { return L10n.tr("Localizable", "settings.connection_section.external_base_url.header_subtitle") }
         /// https://homeassistant.myhouse.com
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.external_base_url.placeholder") }
         /// External URL
@@ -5433,7 +5451,13 @@ public enum L10n {
         /// Home Assistant Cloud
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.home_assistant_cloud.title") }
       }
+      public enum HomeNetwork {
+        /// Home network
+        public static var header: String { return L10n.tr("Localizable", "settings.connection_section.home_network.header") }
+      }
       public enum InternalBaseUrl {
+        /// Used only while this device is on your home network.
+        public static var headerSubtitle: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.header_subtitle") }
         /// e.g. http://homeassistant.local:8123/
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder") }
         /// Internal URL
@@ -5460,6 +5484,8 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.header") }
         /// Hardware addresses must look like aa:bb:cc:dd:ee:ff
         public static var invalid: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.invalid") }
+        /// Router addresses
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.title") }
       }
       public enum InternalUrlSsids {
         /// Add new SSID
@@ -5500,8 +5526,12 @@ public enum L10n {
         }
       }
       public enum NetworkDetectionPermission {
+        /// Allow
+        public static var allow: String { return L10n.tr("Localizable", "settings.connection_section.network_detection_permission.allow") }
         /// Detecting your home network means reading its Wi-Fi name, which iOS only shares with apps that have location access. The Precise Location switch is what makes the name readable at all, including while you are using the app. The Always option is needed on top of it to keep reading the name while the app is in the background, for sensors and notifications. Tap here to change your settings.
         public static var message: String { return L10n.tr("Localizable", "settings.connection_section.network_detection_permission.message") }
+        /// Location access needed
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.network_detection_permission.title") }
       }
       public enum NoBaseUrl {
         /// No URL
@@ -5534,6 +5564,10 @@ public enum L10n {
           /// Updating entities
           public static var entities: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.entities") }
         }
+      }
+      public enum UrlAddress {
+        /// Address
+        public static var header: String { return L10n.tr("Localizable", "settings.connection_section.url_address.header") }
       }
       public enum UrlsHowItWorks {
         /// Your Home Assistant can be reached in two ways: directly on your home network, or over the internet. The app picks one for every request, and the choice can change as you move.

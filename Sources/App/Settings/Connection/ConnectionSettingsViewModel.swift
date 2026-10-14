@@ -11,17 +11,18 @@ final class ConnectionSettingsViewModel: ObservableObject {
     // MARK: - Published Properties
 
     @Published var serverName: String = ""
-    @Published var connectionPath: String = ""
+    @Published var activeURLType: ConnectionInfo.URLType?
     @Published var version: String = ""
     @Published var websocketState: HAConnectionState?
     @Published var localPushStatus: String = ""
     @Published var canRetryLocalPush = false
     @Published var loggedInUser: String = ""
+    @Published var profilePicture: UIImage?
     @Published var locationName: String = ""
     @Published var deviceName: String = ""
-    @Published var internalURL: String = ""
-    @Published var externalURL: String = ""
-    @Published var securityLevel: ConnectionSecurityLevel = .mostSecure
+    @Published var internalURL: String?
+    @Published var externalURL: String?
+    @Published var isUsingCloud = false
     @Published var locationPrivacy: ServerLocationPrivacy = .never
     @Published var sensorPrivacy: ServerSensorPrivacy = .none
     @Published var showDeleteConfirmation = false
@@ -29,6 +30,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
+    @Published var isSyncing = false
 
     // MARK: - Properties
 
@@ -36,6 +38,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     private var tokens: [HACancellable] = []
     private var localPushObserver: HACancellable?
     private var notificationCenterObserver: NSObjectProtocol?
+    private var syncFinishedObserver: NSObjectProtocol?
     private var canRetryLocalPushTask: Task<Void, Never>?
 
     // MARK: - Computed Properties
@@ -52,14 +55,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
         server.info.version <= .updateLocationGPSOptional
     }
 
-    var shouldShowSecurityLevelPicker: Bool {
-        guard let internalURL = server.info.connection.address(for: .internal) else {
-            return false
-        }
-
-        return internalURL.scheme?.lowercased() == "http"
-    }
-
     // MARK: - Initialization
 
     init(server: Server) {
@@ -74,9 +69,13 @@ final class ConnectionSettingsViewModel: ObservableObject {
         if let observer = notificationCenterObserver {
             NotificationCenter.default.removeObserver(observer)
         }
+        if let observer = syncFinishedObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
     func updateAppDatabase() {
+        isSyncing = true
         server.refreshAppDatabase(forceUpdate: true, showProgress: true)
     }
 
@@ -121,6 +120,19 @@ final class ConnectionSettingsViewModel: ObservableObject {
             })
         }
 
+        syncFinishedObserver = NotificationCenter.default.addObserver(
+            forName: .appDatabaseUpdaterDidFinishServer,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let finished = notification.object as? Server, finished.identifier == self?.server.identifier else {
+                return
+            }
+            Task { @MainActor [weak self] in
+                self?.isSyncing = false
+            }
+        }
+
         // Observe local push notifications
         let manager = Current.notificationManager.localPushManager
         localPushObserver = manager.addObserver(for: server) { [weak self] _ in
@@ -133,20 +145,36 @@ final class ConnectionSettingsViewModel: ObservableObject {
         updateFromServerInfo(server.info)
         updateURLs()
         clientCertificate = server.info.connection.clientCertificate
-        Current.api(for: server)?.currentUser { [weak self] user in
+        guard let api = Current.api(for: server) else { return }
+        api.cachedProfilePicture { [weak self] image in
+            Task { @MainActor [weak self] in
+                guard let self, profilePicture == nil else { return }
+                profilePicture = image
+            }
+        }
+        api.currentUser { [weak self] user in
             Task { @MainActor [weak self] in
                 self?.loggedInUser = user?.name ?? ""
+            }
+            guard let user else { return }
+            api.profilePicture(for: user) { [weak self] image in
+                Task { @MainActor [weak self] in
+                    self?.profilePicture = image
+                }
             }
         }
     }
 
     private func updateFromServerInfo(_ info: ServerInfo) {
         serverName = info.name
-        connectionPath = info.connection.activeURLType.description
+        // The stored copy re-evaluates the active URL on save, but observers get the value as written,
+        // so evaluate a copy here to keep the highlighted pill right after an edit.
+        var connection = server.info.connection
+        _ = connection.evaluateActiveURL()
+        activeURLType = connection.activeURLType
         version = info.version.description
         locationName = info.setting(for: .localName) ?? ""
         deviceName = info.setting(for: .overrideDeviceName) ?? ""
-        securityLevel = info.connection.connectionAccessSecurityLevel
         locationPrivacy = info.setting(for: .locationPrivacy)
         sensorPrivacy = info.setting(for: .sensorPrivacy)
         updateURLs()
@@ -154,13 +182,11 @@ final class ConnectionSettingsViewModel: ObservableObject {
     }
 
     private func updateURLs() {
-        internalURL = server.info.connection.address(for: .internal)?.absoluteString ?? "—"
-
-        if server.info.connection.useCloud, server.info.connection.canUseCloud {
-            externalURL = L10n.Settings.ConnectionSection.HomeAssistantCloud.title
-        } else {
-            externalURL = server.info.connection.address(for: .external)?.absoluteString ?? "—"
-        }
+        internalURL = server.info.connection.address(for: .internal)?.absoluteString
+        isUsingCloud = server.info.connection.useCloud && server.info.connection.canUseCloud
+        externalURL = isUsingCloud
+            ? L10n.Settings.ConnectionSection.HomeAssistantCloud.title
+            : server.info.connection.address(for: .external)?.absoluteString
     }
 
     private func updateLocalPushStatus() {
@@ -215,13 +241,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
         deviceName = newName ?? ""
     }
 
-    func updateSecurityLevel(_ level: ConnectionSecurityLevel) {
-        server.update { info in
-            info.connection.connectionAccessSecurityLevel = level
-        }
-        securityLevel = level
-    }
-
     func updateLocationPrivacy(_ privacy: ServerLocationPrivacy) {
         server.info.setSetting(value: privacy, for: .locationPrivacy)
         locationPrivacy = privacy
@@ -237,7 +256,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         Current.api(for: server)?.registerSensors().cauterize()
     }
 
-    func shareServer() -> UIActivityViewController? {
+    func invitationURL() -> URL? {
         guard let invitationServerURL = server.info.connection.invitationURL() else {
             Current.Log.error("Invitation button failed, no invitation URL found for server \(server.identifier)")
             return nil
@@ -249,7 +268,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
             return nil
         }
 
-        return UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
+        return invitationURL
     }
 
     func activateServer() {
