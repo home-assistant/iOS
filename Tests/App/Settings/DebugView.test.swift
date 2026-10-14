@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import Shared
 import Testing
 
 @MainActor
@@ -9,5 +10,21 @@ struct DebugViewTests {
     /// Building the body is the assertion; it traps if a row cannot be constructed.
     @Test func theScreenBuildsItsRows() {
         _ = DebugView().body
+    }
+
+    @Test func theDeveloperSectionBuildsItsRows() {
+        _ = DebugView().developerSection
+    }
+
+    @Test func theLocalPushStateToggleReadsAndWritesThePreference() {
+        let original = Current.settingsStore.notifyOnLocalPushStateChanges
+        defer { Current.settingsStore.notifyOnLocalPushStateChanges = original }
+
+        let binding = DebugView.notifyOnLocalPushStateChangesBinding
+        binding.wrappedValue = true
+        #expect(Current.settingsStore.notifyOnLocalPushStateChanges)
+        #expect(binding.wrappedValue)
+        binding.wrappedValue = false
+        #expect(!binding.wrappedValue)
     }
 }

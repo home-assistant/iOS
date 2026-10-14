@@ -348,7 +348,14 @@ struct DebugView: View {
         }
     }
 
-    private var developerSection: some View {
+    static var notifyOnLocalPushStateChangesBinding: Binding<Bool> {
+        .init(
+            get: { Current.settingsStore.notifyOnLocalPushStateChanges },
+            set: { Current.settingsStore.notifyOnLocalPushStateChanges = $0 }
+        )
+    }
+
+    var developerSection: some View {
         Section {
             NavigationLink {
                 ComponentsLibraryView()
@@ -498,6 +505,10 @@ struct DebugView: View {
                 Current.settingsStore.receiveDebugNotifications = newValue
             })) {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
+            }
+
+            Toggle(isOn: Self.notifyOnLocalPushStateChangesBinding) {
+                Text(L10n.Settings.Debugging.NotifyLocalPushStateChanges.title)
             }
 
             if !Current.isCatalyst, horizontalSizeClass == .compact {
