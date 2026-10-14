@@ -28,6 +28,15 @@ final class OnboardingServersListViewModel: ObservableObject {
     /// How long onboarding waits for mDNS to answer for a typed URL or an invitation link before
     /// settling for the locally generated identifier. Overridable so tests don't wait it out.
     var discoveryAdoptionTimeout: TimeInterval = 2
+
+    /// Runs the auth flow for a selected instance. Overridable so tests can control when it settles.
+    var authenticateInstance: (DiscoveredHomeAssistant, OnboardingAuthPresenter) -> Promise<Server> = {
+        OnboardingAuth().authenticate(to: $0, presenter: $1)
+    }
+
+    /// The auth flow whose result still counts. A cancelled flow can settle long after the user left
+    /// it (its cleanup waits for a token revocation), by which time a newer flow may be running.
+    private var currentAuthAttempt: UUID?
     private static let discoveryPollInterval = NSEC_PER_SEC / 10
 
     private var discovery = Current.bonjour()
@@ -140,10 +149,15 @@ final class OnboardingServersListViewModel: ObservableObject {
     private func authenticate(to instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
         Current.Log.verbose("Selected instance \(instance)")
 
-        let authentication = OnboardingAuth()
+        let attempt = UUID()
+        currentAuthAttempt = attempt
 
-        authentication.authenticate(to: instance, presenter: presenter).pipe { [weak self] result in
+        authenticateInstance(instance, presenter).pipe { [weak self] result in
             DispatchQueue.main.async {
+                if let self, self.currentAuthAttempt != attempt {
+                    Current.Log.verbose("Ignoring the result of a superseded onboarding authentication")
+                    return
+                }
                 switch result {
                 case let .fulfilled(server):
                     Current.Log.verbose("Onboarding authentication succeeded")

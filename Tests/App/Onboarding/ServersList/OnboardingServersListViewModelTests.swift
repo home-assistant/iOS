@@ -1,6 +1,7 @@
 import Foundation
 @testable import HomeAssistant
 import ObjectMapper
+import PromiseKit
 @testable import Shared
 import Testing
 
@@ -113,6 +114,34 @@ struct OnboardingServersListViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
         #expect(sut.currentlyInstanceLoading?.uuid == manual.uuid)
         #expect(sut.currentlyInstanceLoading?.hasHomeAssistantInstanceID == false)
+    }
+
+    /// A cancelled flow settles only after its cleanup, possibly after the user already started a
+    /// new one; it must not pop that newer flow's pages.
+    @Test @MainActor func testSupersededAuthResultDoesNotPopNewerFlow() async throws {
+        let mockBonjour = MockBonjour()
+        Current.bonjour = {
+            mockBonjour
+        }
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
+        let presenter = OnboardingAuthPresenter()
+        var resolvers: [Resolver<Server>] = []
+        sut.authenticateInstance = { _, _ in
+            let (promise, resolver) = Promise<Server>.pending()
+            resolvers.append(resolver)
+            return promise
+        }
+        let discovered = try Self.discoveredInstance()
+
+        sut.selectInstance(discovered, presenter: presenter)
+        sut.selectInstance(discovered, presenter: presenter)
+        presenter.push(.permissions(ServerFixture.standard))
+
+        resolvers[0].reject(PMKError.cancelled)
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        #expect(presenter.path.count == 1)
+        #expect(sut.currentlyInstanceLoading != nil)
     }
 
     @Test @MainActor func testOnboardingCompletionUpdatesDatabaseForServer() async {
