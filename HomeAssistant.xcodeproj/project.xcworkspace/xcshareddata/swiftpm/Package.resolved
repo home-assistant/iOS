@@ -1,5 +1,5 @@
 {
-  "originHash" : "9322f9372f09c51ce4e11e8644a264eb30808db838a2ccc404f021737736a780",
+  "originHash" : "bcf37b8f96cdf26dc29bc2674ef6fab26ec1ba567e21c769d1886e275a5c8f38",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -209,15 +209,6 @@
       }
     },
     {
-      "identity" : "realm-core",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/fruitcoder/realm-core.git",
-      "state" : {
-        "revision" : "bd17f8a0f0803db816701b558e25a31fa37f1b6e",
-        "version" : "20.1.5"
-      }
-    },
-    {
       "identity" : "sdk-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/improv-wifi/sdk-iOS.git",
@@ -322,14 +313,6 @@
       "state" : {
         "revision" : "4def3c1c772ca90ad5e7bfc8ac437c3b0b4276cf",
         "version" : "7.1.5"
-      }
-    },
-    {
-      "identity" : "xcode27-realm-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/bgoncal/xcode27-realm-swift.git",
-      "state" : {
-        "revision" : "dc01270ec79aa9f51dd37fe34e9da030a117170a"
       }
     },
     {

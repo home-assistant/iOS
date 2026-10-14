@@ -348,8 +348,8 @@ class MenuManager {
 
         Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
             isVisible: Current.settingsStore.locationVisibility.isStatusItemVisible,
-            image: Asset.statusItemIcon.image.cgImage!,
-            imageSize: Asset.statusItemIcon.image.size,
+            imageName: Asset.statusItemIcon.name,
+            imageBundle: Bundle(for: AppEnvironment.self),
             accessibilityLabel: appName,
             items: menuItems,
             primaryActionHandler: { callbackInfo in
@@ -519,8 +519,8 @@ final class StatusItemManager {
 
         Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
             isVisible: Current.settingsStore.locationVisibility.isStatusItemVisible,
-            image: Asset.statusItemIcon.image.cgImage!,
-            imageSize: Asset.statusItemIcon.image.size,
+            imageName: Asset.statusItemIcon.name,
+            imageBundle: Bundle(for: AppEnvironment.self),
             accessibilityLabel: appName,
             items: menuItems,
             primaryActionHandler: { callbackInfo in

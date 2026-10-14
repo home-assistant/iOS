@@ -64,6 +64,14 @@ public class HomeAssistantAPI {
     private var rejectedReconnectWorkItem: DispatchWorkItem?
     private var connectivityObserver: NSObjectProtocol?
 
+    /// Carries a sensor update that failed to reach this server to a later attempt.
+    private(set) lazy var sensorUpdateRetry = SensorUpdateRetry { [weak self] providers in
+        guard let self else { return .value(()) }
+        return Current.backgroundTask(withName: BackgroundTask.sensorUpdateRetry.rawValue) { _ in
+            self.UpdateSensors(trigger: .Retry, limitedTo: providers)
+        }
+    }
+
     /// Backoff (seconds) for reconnect attempts after a rejected websocket; its count also bounds the
     /// number of attempts. Overridable for tests.
     static var rejectedReconnectDelays: [TimeInterval] = [0, 5, 10]
@@ -1021,7 +1029,10 @@ public class HomeAssistantAPI {
         limitedTo: [SensorProvider.Type]?,
         location: CLLocation? = nil
     ) -> Promise<Void> {
-        firstly {
+        let retry = sensorUpdateRetry
+        let generation = retry.beginUpdate()
+
+        return firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
                 limitedTo: limitedTo,
@@ -1044,7 +1055,15 @@ public class HomeAssistantAPI {
                     identifier: .updateSensors,
                     server: server,
                     request: .init(type: "update_sensor_states", data: payload)
-                )
+                ).tap { result in
+                    switch result {
+                    case .fulfilled:
+                        retry.noteSuccess(generation: generation, limitedTo: limitedTo)
+                    case let .rejected(error):
+                        Current.Log.error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        retry.noteFailure(generation: generation, limitedTo: limitedTo)
+                    }
+                }
             }
         }
     }
