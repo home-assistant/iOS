@@ -707,6 +707,16 @@ class LocalPushManagerTests: XCTestCase {
         let other = PushProviderConfiguration(serverIdentifier: server.identifier, settingsKey: "other")
         XCTAssertNotEqual(PushProviderConfiguration.decode(from: data), [other])
     }
+
+    func testNotifyOnLocalPushStateChangesPreferenceRoundTrips() {
+        let original = Current.settingsStore.notifyOnLocalPushStateChanges
+        defer { Current.settingsStore.notifyOnLocalPushStateChanges = original }
+
+        Current.settingsStore.notifyOnLocalPushStateChanges = true
+        XCTAssertTrue(Current.settingsStore.notifyOnLocalPushStateChanges)
+        Current.settingsStore.notifyOnLocalPushStateChanges = false
+        XCTAssertFalse(Current.settingsStore.notifyOnLocalPushStateChanges)
+    }
 }
 
 private final class FakeLocalNotificationDispatcher: LocalNotificationDispatcherProtocol {
