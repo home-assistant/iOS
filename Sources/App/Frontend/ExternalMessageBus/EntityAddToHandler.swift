@@ -161,10 +161,10 @@ final class EntityAddToHandler {
             type: .entity
         ))
         let watchSettingsView = WatchConfigurationView(needsNavigationStack: true, viewModel: viewModel)
-            .preferredColorScheme(.dark)
-        let viewController = watchSettingsView.embeddedInHostingController()
-        viewController.overrideUserInterfaceStyle = .dark
-        webViewController.presentOverlayController(controller: viewController, animated: true)
+        webViewController.presentOverlayController(
+            controller: watchSettingsView.embeddedInHostingController(),
+            animated: true
+        )
     }
 
     private func addToMacToolbar(entityId: String, webViewController: WebViewControllerProtocol) {

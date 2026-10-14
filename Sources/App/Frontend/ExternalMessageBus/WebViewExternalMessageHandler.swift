@@ -13,6 +13,11 @@ protocol WebViewExternalMessageHandlerProtocol {
     func handleExternalMessage(_ dictionary: [String: Any])
     func sendExternalBus(message: WebSocketMessage) -> Promise<Void>
     func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?)
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    )
 
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
@@ -723,6 +728,7 @@ private final class PendingExternalBusCommand {
     let payload: [String: Any]?
     let retryDelay: DispatchTimeInterval
     let acknowledgementTimeout: DispatchTimeInterval
+    let completion: ((Bool) -> Void)?
     var attemptsRemaining: Int
     /// A fresh id is assigned per attempt so a late error result for a previous attempt is ignored.
     var messageID: Int
@@ -734,6 +740,7 @@ private final class PendingExternalBusCommand {
         attemptsRemaining: Int,
         retryDelay: DispatchTimeInterval,
         acknowledgementTimeout: DispatchTimeInterval,
+        completion: ((Bool) -> Void)?,
         messageID: Int
     ) {
         self.command = command
@@ -741,6 +748,7 @@ private final class PendingExternalBusCommand {
         self.attemptsRemaining = attemptsRemaining
         self.retryDelay = retryDelay
         self.acknowledgementTimeout = acknowledgementTimeout
+        self.completion = completion
         self.messageID = messageID
     }
 }
@@ -755,12 +763,21 @@ extension WebViewExternalMessageHandler {
     /// JavaScript evaluation itself fails), and treat the absence of any error within
     /// `acknowledgementTimeout` as success. Main thread only.
     func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?) {
+        sendExternalBusCommandWithRetry(command: command, payload: payload, completion: { _ in })
+    }
+
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    ) {
         sendExternalBusCommandWithRetry(
             command: command,
             payload: payload,
             maxAttempts: 6,
             retryDelay: .milliseconds(300),
-            acknowledgementTimeout: .milliseconds(750)
+            acknowledgementTimeout: .milliseconds(750),
+            completion: completion
         )
     }
 
@@ -769,7 +786,8 @@ extension WebViewExternalMessageHandler {
         payload: [String: Any]?,
         maxAttempts: Int,
         retryDelay: DispatchTimeInterval,
-        acknowledgementTimeout: DispatchTimeInterval
+        acknowledgementTimeout: DispatchTimeInterval,
+        completion: ((Bool) -> Void)? = nil
     ) {
         // Supersede any in-flight attempt for the same command so the latest payload wins.
         cancelPendingCommands(matching: command.rawValue)
@@ -780,6 +798,7 @@ extension WebViewExternalMessageHandler {
             attemptsRemaining: maxAttempts,
             retryDelay: retryDelay,
             acknowledgementTimeout: acknowledgementTimeout,
+            completion: completion,
             messageID: nextOutgoingMessageID
         )
         nextOutgoingMessageID += 1
@@ -791,6 +810,7 @@ extension WebViewExternalMessageHandler {
             Current.Log
                 .warning("External bus command \(pending.command) not acknowledged after retries, giving up")
             pendingCommands[pending.messageID] = nil
+            pending.completion?(false)
             return
         }
         pending.attemptsRemaining -= 1
@@ -810,6 +830,7 @@ extension WebViewExternalMessageHandler {
                 guard let self, let pending, pendingCommands[attemptID] === pending else { return }
                 Current.Log.verbose("External bus command \(pending.command) (id \(attemptID)) acknowledged")
                 pendingCommands[attemptID] = nil
+                pending.completion?(true)
             }
             pending.acknowledgementWorkItem = acknowledgementWorkItem
             DispatchQueue.main.asyncAfter(
@@ -856,6 +877,7 @@ extension WebViewExternalMessageHandler {
             // Defensive: the frontend doesn't currently send a success ack, only failures.
             pending.acknowledgementWorkItem?.cancel()
             pendingCommands[id] = nil
+            pending.completion?(true)
             return
         }
         Current.Log.verbose("External bus command \(pending.command) (id \(id)) rejected by frontend, retrying")

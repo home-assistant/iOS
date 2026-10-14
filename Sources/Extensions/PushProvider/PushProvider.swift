@@ -167,7 +167,7 @@ import UserNotifications
 
     func localPushManager(_ manager: LocalPushManager, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         commandManager.handle(userInfo).done {
-            Current.Log.notify("handled command: \(userInfo)", log: .info)
+            Current.Log.notify("handled command: \(LogRedaction.redactValues(in: userInfo))", log: .info)
         }.catch { error in
             Current.Log.notify("failed: \(error)", log: .info)
         }
