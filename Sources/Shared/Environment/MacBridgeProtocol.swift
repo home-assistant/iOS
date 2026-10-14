@@ -70,8 +70,9 @@ import Foundation
 
 @objc(MacBridgeStatusItemConfiguration) public protocol MacBridgeStatusItemConfiguration {
     var isVisible: Bool { get }
-    var image: CGImage { get }
-    var imageSize: CGSize { get }
+    /// Loaded by AppKit from the asset catalog so the vector template image reaches the menu bar unrasterized.
+    var imageName: String { get }
+    var imageBundle: Bundle { get }
     var accessibilityLabel: String { get }
     var items: [MacBridgeStatusItemMenuItem] { get }
     var primaryActionHandler: (MacBridgeStatusItemCallbackInfo) -> Void { get }

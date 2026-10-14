@@ -4,23 +4,23 @@ import UIKit
 class AppMacBridgeStatusItemConfiguration: MacBridgeStatusItemConfiguration {
     init(
         isVisible: Bool,
-        image: CGImage,
-        imageSize: CGSize,
+        imageName: String,
+        imageBundle: Bundle,
         accessibilityLabel: String,
         items: [MacBridgeStatusItemMenuItem],
         primaryActionHandler: @escaping (MacBridgeStatusItemCallbackInfo) -> Void
     ) {
         self.isVisible = isVisible
-        self.image = image
-        self.imageSize = imageSize
+        self.imageName = imageName
+        self.imageBundle = imageBundle
         self.accessibilityLabel = accessibilityLabel
         self.items = items
         self.primaryActionHandler = primaryActionHandler
     }
 
     var isVisible: Bool
-    var image: CGImage
-    var imageSize: CGSize
+    var imageName: String
+    var imageBundle: Bundle
     var accessibilityLabel: String
     var items: [MacBridgeStatusItemMenuItem]
     var primaryActionHandler: (MacBridgeStatusItemCallbackInfo) -> Void
