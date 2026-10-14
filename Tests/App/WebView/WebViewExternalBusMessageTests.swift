@@ -99,7 +99,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasAssist",
             "hasAssistSettings",
             "hasCameraPlayer",
-            "hasMicrophoneRecording",
+            "hasAudioRecorder",
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",

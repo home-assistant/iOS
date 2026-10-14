@@ -148,13 +148,13 @@ final class WebViewExternalMessageHandlerMicrophoneRecordingTests: XCTestCase {
         XCTAssertEqual(session.discardCount, 1)
     }
 
-    @MainActor func testTheConfigurationAdvertisesMicrophoneRecording() throws {
+    @MainActor func testTheConfigurationAdvertisesTheAudioRecorder() throws {
         let reply = try messageSentToTheFrontend {
             sut.handleExternalMessage(["id": 1, "type": "config/get"])
         }
 
         let result = try XCTUnwrap(reply["result"] as? [String: Any])
-        XCTAssertEqual(result["hasMicrophoneRecording"] as? Bool, true)
+        XCTAssertEqual(result["hasAudioRecorder"] as? Bool, true)
     }
 
     // MARK: - Helpers
