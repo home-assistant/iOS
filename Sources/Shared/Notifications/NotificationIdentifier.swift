@@ -13,4 +13,5 @@ public enum NotificationIdentifier: String {
 
     // Debug
     case debug
+    case localPushStateChanged
 }

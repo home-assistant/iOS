@@ -3837,6 +3837,27 @@ public enum L10n {
     }
   }
 
+  public enum LocalPush {
+    public enum StateNotification {
+      public enum Connected {
+        /// Connected to %@
+        public static func body(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "local_push.state_notification.connected.body", String(describing: p1))
+        }
+        /// Local push connected
+        public static var title: String { return L10n.tr("Localizable", "local_push.state_notification.connected.title") }
+      }
+      public enum Disconnected {
+        /// Lost %1$@: %2$@
+        public static func body(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "local_push.state_notification.disconnected.body", String(describing: p1), String(describing: p2))
+        }
+        /// Local push disconnected
+        public static var title: String { return L10n.tr("Localizable", "local_push.state_notification.disconnected.title") }
+      }
+    }
+  }
+
   public enum LocationChangeNotification {
     /// Location change
     public static var title: String { return L10n.tr("Localizable", "location_change_notification.title") }
@@ -6304,6 +6325,10 @@ public enum L10n {
           /// Force close required
           public static var title: String { return L10n.tr("Localizable", "settings.debugging.media_playback.restart_required.title") }
         }
+      }
+      public enum NotifyLocalPushStateChanges {
+        /// Notify when local push connects or disconnects
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.notify_local_push_state_changes.title") }
       }
       public enum ReceiveDebugNotifications {
         /// Receive debug notifications

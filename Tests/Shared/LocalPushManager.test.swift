@@ -558,6 +558,121 @@ class LocalPushManagerTests: XCTestCase {
         )
         XCTAssertEqual(confirm.request.data["confirm_id"] as? String, "test_confirm_id")
     }
+
+    func testSubscriptionRetriesIndefinitelyAcrossReconnects() throws {
+        setUpManager(webhookID: "webhook1")
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        XCTAssertNil(sub.request.retryDuration)
+        XCTAssertTrue(sub.request.shouldRetry)
+    }
+
+    func testConnectionDropMarksUnavailableAndKeepsCountAfterResubscribe() throws {
+        setUpManager(webhookID: "webhook1")
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.initiated(.success(.empty))
+        sub.handler(sub.cancellable, .dictionary(["message": "one"]))
+        sub.handler(sub.cancellable, .dictionary(["message": "two"]))
+        XCTAssertEqual(manager.state, .available(received: 2))
+
+        apiConnection.setState(.disconnected(reason: .waitingToReconnect(
+            lastError: nil,
+            atLatest: Date(),
+            retryCount: 1
+        )))
+        XCTAssertEqual(manager.state, .unavailable)
+
+        apiConnection.setState(.ready(version: "2026.10.1"))
+        XCTAssertEqual(manager.state, .unavailable)
+
+        sub.initiated(.success(.empty))
+        XCTAssertEqual(manager.state, .available(received: 2))
+
+        sub.handler(sub.cancellable, .dictionary(["message": "three"]))
+        XCTAssertEqual(manager.state, .available(received: 3))
+    }
+
+    func testConnectionDropBeforeSubscribedDoesNotChangeState() {
+        setUpManager(webhookID: "webhook1")
+        XCTAssertEqual(manager.state, .establishing)
+
+        apiConnection.setState(.disconnected(reason: .disconnected))
+        XCTAssertEqual(manager.state, .establishing)
+    }
+
+    func testAvailabilityTransitionsReportEventsAndDebugNotification() throws {
+        var events = [ClientEvent]()
+        let originalStore = Current.clientEventStore
+        Current.clientEventStore = MockClientEventStore(onAddEvent: { events.append($0) })
+        defer { Current.clientEventStore = originalStore }
+
+        let dispatcher = FakeLocalNotificationDispatcher()
+        let originalDispatcher = Current.notificationDispatcher
+        Current.notificationDispatcher = dispatcher
+        defer { Current.notificationDispatcher = originalDispatcher }
+
+        setUpManager(webhookID: "webhook1")
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        XCTAssertTrue(events.isEmpty)
+        XCTAssertTrue(dispatcher.sent.isEmpty)
+
+        sub.initiated(.success(.empty))
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(dispatcher.sent.count, 1)
+        XCTAssertEqual(dispatcher.sent.last?.id, .localPushStateChanged)
+        XCTAssertEqual(dispatcher.sent.last?.title, L10n.LocalPush.StateNotification.Connected.title)
+
+        sub.handler(sub.cancellable, .dictionary(["message": "one"]))
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(dispatcher.sent.count, 1)
+
+        apiConnection.setState(.disconnected(reason: .waitingToReconnect(
+            lastError: HAError.internal(debugDescription: "boom"),
+            atLatest: Date(),
+            retryCount: 2
+        )))
+        XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(events.last?.type, .notification)
+        let reason = try XCTUnwrap(events.last?.jsonPayload["reason"]?.value as? String)
+        XCTAssertTrue(reason.hasSuffix("(retry 2)"), reason)
+        XCTAssertEqual(events.last?.jsonPayload["received"]?.value as? Int, 1)
+        XCTAssertEqual(dispatcher.sent.count, 2)
+        XCTAssertEqual(dispatcher.sent.last?.title, L10n.LocalPush.StateNotification.Disconnected.title)
+
+        sub.initiated(.failure(.internal(debugDescription: "still down")))
+        XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(dispatcher.sent.count, 2)
+
+        sub.initiated(.success(.empty))
+        XCTAssertEqual(events.count, 3)
+        XCTAssertEqual(dispatcher.sent.count, 3)
+        XCTAssertEqual(dispatcher.sent.last?.title, L10n.LocalPush.StateNotification.Connected.title)
+
+        apiConnection.setState(.disconnected(reason: .rejected))
+        XCTAssertEqual(events.count, 4)
+        XCTAssertEqual(events.last?.jsonPayload["reason"]?.value as? String, "connection rejected")
+        XCTAssertEqual(dispatcher.sent.count, 4)
+    }
+
+    func testInvalidateStopsObservingConnectionState() throws {
+        setUpManager(webhookID: "webhook1")
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.initiated(.success(.empty))
+        XCTAssertEqual(manager.state, .available(received: 0))
+
+        manager.invalidate()
+        apiConnection.setState(.disconnected(reason: .disconnected))
+        XCTAssertEqual(manager.state, .available(received: 0))
+    }
+}
+
+private final class FakeLocalNotificationDispatcher: LocalNotificationDispatcherProtocol {
+    private(set) var sent = [LocalNotificationDispatcher.Notification]()
+
+    func send(_ notification: LocalNotificationDispatcher.Notification) {
+        sent.append(notification)
+    }
+
+    func reschedule(_ content: UNNotificationContent, after delay: TimeInterval) {}
 }
 
 private class FakeNotificationAttachmentManager: NotificationAttachmentManager {

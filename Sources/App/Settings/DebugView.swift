@@ -500,6 +500,14 @@ struct DebugView: View {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
 
+            Toggle(isOn: .init(get: {
+                Current.settingsStore.notifyOnLocalPushStateChanges
+            }, set: { newValue in
+                Current.settingsStore.notifyOnLocalPushStateChanges = newValue
+            })) {
+                Text(L10n.Settings.Debugging.NotifyLocalPushStateChanges.title)
+            }
+
             if !Current.isCatalyst, horizontalSizeClass == .compact {
                 Toggle(isOn: .init(get: {
                     Current.settingsStore.webViewAlwaysBelowStatusBar

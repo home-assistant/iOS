@@ -1142,6 +1142,10 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.title" = "Live Activities";
 "live_activity.token_unreachable.body" = "Home Assistant couldn't be reached to register this Live Activity, so it won't receive updates. Check the server's connection security level in the companion app settings, and if you rely on your internal URL make sure location permission is set to “Always”.";
 "live_activity.token_unreachable.title" = "Live Activity won't update";
+"local_push.state_notification.connected.body" = "Connected to %@";
+"local_push.state_notification.connected.title" = "Local push connected";
+"local_push.state_notification.disconnected.body" = "Lost %1$@: %2$@";
+"local_push.state_notification.disconnected.title" = "Local push disconnected";
 "location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
 "location_change_notification.beacon_region_enter.body" = "%@ entered via iBeacon";
@@ -1918,6 +1922,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.media_playback.restart_required.message" = "Force close and reopen the app for this change to take effect.";
 "settings.debugging.media_playback.restart_required.title" = "Force close required";
 "settings.debugging.media_playback.title" = "WKWebView Media Playback";
+"settings.debugging.notify_local_push_state_changes.title" = "Notify when local push connects or disconnects";
 "settings.debugging.receive_debug_notifications.title" = "Receive debug notifications";
 "settings.debugging.reset_app.alert_title" = "Delete all app data?";
 "settings.debugging.reset_app.client_event" = "Deleted all app data from debug settings";

@@ -78,10 +78,17 @@ public class LocalPushManager {
 
     public var state: State = .establishing {
         didSet {
+            if case let .available(received) = state {
+                receivedCountAcrossReconnects = received
+            }
             NotificationCenter.default.post(name: Self.stateDidChange, object: self)
+            reportTransitionIfNeeded(from: oldValue, to: state)
         }
     }
 
+    private var receivedCountAcrossReconnects = 0
+    private var pendingTransitionReason: String?
+    private var connectionStateToken: NSObjectProtocol?
     private var tokens = [HACancellable]()
 
     public init(
@@ -109,6 +116,10 @@ public class LocalPushManager {
             subscription.cancel()
         } else {
             Current.Log.info("no active subscription")
+        }
+        if let connectionStateToken {
+            NotificationCenter.default.removeObserver(connectionStateToken)
+            self.connectionStateToken = nil
         }
         NotificationCenter.default.removeObserver(self)
     }
@@ -145,6 +156,8 @@ public class LocalPushManager {
             return
         }
 
+        observeConnectionState(of: connection)
+
         subscription = .init(
             token: connection.subscribe(
                 to: .localPush(webhookID: webhookID, serverVersion: server.info.version),
@@ -162,11 +175,91 @@ public class LocalPushManager {
         switch result {
         case let .failure(error):
             Current.Log.error("failed to subscribe to notifications: \(error)")
+            pendingTransitionReason = String(describing: error)
             state = .unavailable
         case .success:
             Current.Log.info("started")
-            state = .available(received: 0)
+            state = .available(received: receivedCountAcrossReconnects)
         }
+    }
+
+    private func observeConnectionState(of connection: HAConnection) {
+        if let connectionStateToken {
+            NotificationCenter.default.removeObserver(connectionStateToken)
+        }
+        connectionStateToken = NotificationCenter.default.addObserver(
+            forName: HAConnectionState.didTransitionToStateNotification,
+            object: connection,
+            queue: nil
+        ) { [weak self, weak connection] _ in
+            guard let self, let connection else { return }
+            handle(connectionState: connection.state)
+        }
+    }
+
+    private func handle(connectionState: HAConnectionState) {
+        guard case let .disconnected(reason) = connectionState, case .available = state else {
+            return
+        }
+        Current.Log.info("connection dropped while subscribed: \(reason)")
+        pendingTransitionReason = Self.describe(disconnectReason: reason)
+        state = .unavailable
+    }
+
+    private static func describe(disconnectReason reason: HAConnectionState.DisconnectReason) -> String {
+        switch reason {
+        case .disconnected:
+            return "disconnected"
+        case let .waitingToReconnect(lastError, _, retryCount):
+            if let lastError {
+                return "\(lastError.localizedDescription) (retry \(retryCount))"
+            }
+            return "waiting to reconnect (retry \(retryCount))"
+        case .rejected:
+            return "connection rejected"
+        }
+    }
+
+    private func reportTransitionIfNeeded(from oldState: State, to newState: State) {
+        let reason = pendingTransitionReason
+        pendingTransitionReason = nil
+
+        let wasAvailable: Bool
+        if case .available = oldState {
+            wasAvailable = true
+        } else {
+            wasAvailable = false
+        }
+        let isAvailable: Bool
+        if case .available = newState {
+            isAvailable = true
+        } else {
+            isAvailable = false
+        }
+        guard wasAvailable != isAvailable else { return }
+
+        let serverName = server.info.name
+        let title: String
+        let body: String
+        if isAvailable {
+            title = L10n.LocalPush.StateNotification.Connected.title
+            body = L10n.LocalPush.StateNotification.Connected.body(serverName)
+        } else {
+            title = L10n.LocalPush.StateNotification.Disconnected.title
+            body = L10n.LocalPush.StateNotification.Disconnected.body(serverName, reason ?? "unknown")
+        }
+
+        Current.clientEventStore.addEvent(ClientEvent(
+            text: title,
+            type: .notification,
+            payload: [
+                "server_id": server.identifier.rawValue,
+                "server_name": serverName,
+                "reason": reason ?? "",
+                "received": receivedCountAcrossReconnects,
+            ]
+        ))
+        Current.notificationDispatcher.send(.init(id: .localPushStateChanged, title: title, body: body))
     }
 
     private func handle(event: LocalPushEvent) {

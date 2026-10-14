@@ -34,6 +34,9 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
             // Do not send debug notifications if the setting is disabled
             return
         }
+        if notification.id == .localPushStateChanged, !Current.settingsStore.notifyOnLocalPushStateChanges {
+            return
+        }
 
         let content = UNMutableNotificationContent()
         content.title = notification.title
