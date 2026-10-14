@@ -1245,6 +1245,10 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "menu.view.find" = "Find";
 "menu.view.reload_page" = "Reload Page";
 "menu.view.show_sidebar" = "Show Sidebar";
+"microphone_recording.errors.interrupted" = "The recording was stopped";
+"microphone_recording.errors.microphone_denied" = "Microphone access is needed to record audio. You can allow it in Settings.";
+"microphone_recording.errors.recording_failed" = "Unable to record audio from the microphone";
+"microphone_recording.errors.session_not_found" = "There is no recording for this session";
 "mtls.beta.info" = "This is a beta feature, if you experience any issues, please report them using the button below.\
 \
 Currently mTLS is only supported on iOS 17+, it may present issues related to displaying notification attachments, Assist TTS audio and it will not fully work on Apple Watch.";

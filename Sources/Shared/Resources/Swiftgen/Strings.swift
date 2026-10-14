@@ -4238,6 +4238,19 @@ public enum L10n {
     }
   }
 
+  public enum MicrophoneRecording {
+    public enum Errors {
+      /// The recording was stopped
+      public static var interrupted: String { return L10n.tr("Localizable", "microphone_recording.errors.interrupted") }
+      /// Microphone access is needed to record audio. You can allow it in Settings.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "microphone_recording.errors.microphone_denied") }
+      /// Unable to record audio from the microphone
+      public static var recordingFailed: String { return L10n.tr("Localizable", "microphone_recording.errors.recording_failed") }
+      /// There is no recording for this session
+      public static var sessionNotFound: String { return L10n.tr("Localizable", "microphone_recording.errors.session_not_found") }
+    }
+  }
+
   public enum Mtls {
     public enum Beta {
       /// This is a beta feature, if you experience any issues, please report them using the button below.

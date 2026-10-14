@@ -29,6 +29,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
     private let entityControlDonation: EntityControlDonation
+    private let microphoneRecordingBridge: MicrophoneRecordingBridge
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
@@ -38,10 +39,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     init(
         improvManager: any ImprovManagerProtocol,
-        entityControlDonation: EntityControlDonation = .init()
+        entityControlDonation: EntityControlDonation = .init(),
+        microphoneRecordingBridge: MicrophoneRecordingBridge = .init()
     ) {
         self.improvManager = improvManager
         self.entityControlDonation = entityControlDonation
+        self.microphoneRecordingBridge = microphoneRecordingBridge
+        microphoneRecordingBridge.onSessionEnded = { [weak self] sessionId, reason in
+            self?.notifyMicrophoneRecordingStopped(sessionId: sessionId, reason: reason)
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -66,6 +72,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
+                discardMicrophoneRecordingsLeftByPreviousPage()
                 let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -208,6 +215,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
+            case .microphoneRecordingStart:
+                startMicrophoneRecording(messageId: incomingMessage.ID ?? -1)
+            case .microphoneRecordingStop:
+                stopMicrophoneRecording(incomingMessage: incomingMessage)
             case .frontendReloadAndClearCache:
                 reloadAndClearFrontendCache()
             case .sidebarShow:
@@ -718,6 +729,51 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             cameraName: cameraName,
             on: webViewController
         )
+    }
+
+    // MARK: - Microphone recording
+
+    private func startMicrophoneRecording(messageId: Int) {
+        microphoneRecordingBridge.start { [weak self] result in
+            switch result {
+            case let .success(sessionId):
+                self?.sendExternalBus(message: .init(id: messageId, type: "result", result: ["session_id": sessionId]))
+            case let .failure(error):
+                self?.sendExternalBus(message: .init(id: messageId, errorCode: error.code, errorMessage: error.message))
+            }
+        }
+    }
+
+    private func stopMicrophoneRecording(incomingMessage: WebSocketMessage) {
+        let messageId = incomingMessage.ID ?? -1
+        guard let sessionId = incomingMessage.Payload?["session_id"] as? String else {
+            Current.Log.error("Received microphone/recording/stop but session_id was not string! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: "invalid_payload",
+                errorMessage: "session_id is required"
+            ))
+            return
+        }
+        microphoneRecordingBridge.stop(sessionId: sessionId) { [weak self] result in
+            switch result {
+            case let .success(recording):
+                self?.sendExternalBus(message: .init(id: messageId, type: "result", result: recording.payload))
+            case let .failure(error):
+                self?.sendExternalBus(message: .init(id: messageId, errorCode: error.code, errorMessage: error.message))
+            }
+        }
+    }
+
+    private func discardMicrophoneRecordingsLeftByPreviousPage() {
+        microphoneRecordingBridge.discardAll()
+    }
+
+    private func notifyMicrophoneRecordingStopped(sessionId: String, reason: MicrophoneRecordingStopReason) {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.microphoneRecordingStopped.rawValue,
+            payload: ["session_id": sessionId, "reason": reason.rawValue]
+        ))
     }
 }
 

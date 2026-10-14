@@ -30,6 +30,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityAddToGetActions = "entity/add_to/get_actions"
     case entityAddTo = "entity/add_to"
     case cameraPlayerShow = "camera/show"
+    case microphoneRecordingStart = "microphone/recording/start"
+    case microphoneRecordingStop = "microphone/recording/stop"
     case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
     case sidebarShow = "sidebar/show"
     case moreInfoOpened = "more_info/opened"
@@ -50,6 +52,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasAssist": true,
             "hasAssistSettings": true,
             "hasCameraPlayer": !Current.isCatalyst,
+            "hasMicrophoneRecording": true,
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
@@ -70,4 +73,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
     case showNotifications = "notifications/show"
+    case microphoneRecordingStopped = "microphone/recording/stopped"
 }
