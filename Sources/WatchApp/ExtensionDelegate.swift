@@ -46,9 +46,6 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             AppDatabaseSuspension.suspend()
         }
 
-        // Import any legacy Realm data into GRDB before anything reads it
-        RealmToGRDBMigration.migrateIfNeeded()
-
         UNUserNotificationCenter.current().delegate = self
 
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
