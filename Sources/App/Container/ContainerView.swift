@@ -76,7 +76,7 @@ struct ContainerView: View {
                         onDismiss: { viewModel.fullScreenCover = nil }
                     )
                     .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
+                        ToolbarItem(placement: .topBarTrailing) {
                             CloseButton { viewModel.fullScreenCover = nil }
                         }
                     }
