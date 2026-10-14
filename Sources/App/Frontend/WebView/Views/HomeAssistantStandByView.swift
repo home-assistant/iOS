@@ -350,7 +350,7 @@ struct HomeAssistantStandByView: View {
         Button(action: cleanCacheAndReload) {
             Text(L10n.WebView.EmptyState.cleanCacheAndReloadButton)
         }
-        .buttonStyle(.primaryButton)
+        .buttonStyle(.glassButton)
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding(.horizontal, DesignSystem.Spaces.two)
         .padding(.top)
