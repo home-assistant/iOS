@@ -348,7 +348,14 @@ struct DebugView: View {
         }
     }
 
-    private var developerSection: some View {
+    static var notifyOnLocalPushStateChangesBinding: Binding<Bool> {
+        .init(
+            get: { Current.settingsStore.notifyOnLocalPushStateChanges },
+            set: { Current.settingsStore.notifyOnLocalPushStateChanges = $0 }
+        )
+    }
+
+    var developerSection: some View {
         Section {
             NavigationLink {
                 ComponentsLibraryView()
@@ -500,11 +507,7 @@ struct DebugView: View {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
 
-            Toggle(isOn: .init(get: {
-                Current.settingsStore.notifyOnLocalPushStateChanges
-            }, set: { newValue in
-                Current.settingsStore.notifyOnLocalPushStateChanges = newValue
-            })) {
+            Toggle(isOn: Self.notifyOnLocalPushStateChangesBinding) {
                 Text(L10n.Settings.Debugging.NotifyLocalPushStateChanges.title)
             }
 

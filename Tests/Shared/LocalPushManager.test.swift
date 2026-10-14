@@ -677,6 +677,11 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(events.count, 4)
         XCTAssertEqual(events.last?.jsonPayload["reason"]?.value as? String, "connection rejected")
         XCTAssertEqual(dispatcher.sent.count, 4)
+
+        sub.initiated(.success(.empty))
+        apiConnection.setState(.disconnected(reason: .disconnected))
+        XCTAssertEqual(events.count, 6)
+        XCTAssertEqual(events.last?.jsonPayload["reason"]?.value as? String, "disconnected")
     }
 
     func testInvalidateStopsObservingConnectionState() throws {
@@ -715,6 +720,15 @@ class LocalPushManagerTests: XCTestCase {
         Current.settingsStore.notifyOnLocalPushStateChanges = true
         XCTAssertTrue(Current.settingsStore.notifyOnLocalPushStateChanges)
         Current.settingsStore.notifyOnLocalPushStateChanges = false
+        XCTAssertFalse(Current.settingsStore.notifyOnLocalPushStateChanges)
+    }
+
+    func testDispatcherDropsLocalPushStateNotificationWhenToggleIsOff() {
+        let original = Current.settingsStore.notifyOnLocalPushStateChanges
+        defer { Current.settingsStore.notifyOnLocalPushStateChanges = original }
+
+        Current.settingsStore.notifyOnLocalPushStateChanges = false
+        LocalNotificationDispatcher().send(.init(id: .localPushStateChanged, title: "test"))
         XCTAssertFalse(Current.settingsStore.notifyOnLocalPushStateChanges)
     }
 }

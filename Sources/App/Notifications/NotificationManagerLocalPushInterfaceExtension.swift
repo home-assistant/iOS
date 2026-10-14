@@ -14,6 +14,10 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     private var syncStates: PerServerContainer<LocalPushStateSync>!
     private var managers = [Identifier<Server>: [NEAppPushManager]]()
     private var appOpenRetryWorkItems = [DispatchWorkItem]()
+    var loadManagers: (@escaping ([NEAppPushManager]?, Error?) -> Void) -> Void = { completion in
+        NEAppPushManager.loadAllFromPreferences(completionHandler: completion)
+    }
+
     private var isUpdatingManagers = false
     private var queuedManagerUpdate: (reason: LocalPushRetryReason?, targetServer: Server?)?
 
@@ -138,7 +142,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         isUpdatingManagers = true
         Current.Log.info()
 
-        NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
+        loadManagers { [weak self] managers, error in
             guard let self else { return }
 
             if let error {
@@ -219,7 +223,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     ) {
         Current.Log.info("Reloading managers after configuration changes")
 
-        NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
+        loadManagers { [weak self] managers, error in
             guard let self else { return }
 
             if let error {
