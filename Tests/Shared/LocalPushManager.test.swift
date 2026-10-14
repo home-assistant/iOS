@@ -450,7 +450,7 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(added.last?.0.content.body, spy.decoratedBody)
     }
 
-    func testSilentLiveActivityCommandSuppressesBannerAndDefersConfirm() throws {
+    func testSilentLiveActivityCommandSuppressesBannerAndConfirmsImmediately() throws {
         setUpManager(webhookID: "webhook1")
 
         let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
@@ -470,16 +470,18 @@ class LocalPushManagerTests: XCTestCase {
 
         XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
         XCTAssertTrue(added.isEmpty)
-        XCTAssertFalse(
+        let confirm = try XCTUnwrap(
             apiConnection.pendingRequests
-                .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+                .first(where: { $0.request.type == "mobile_app/push_notification_confirm" })
         )
+        XCTAssertEqual(confirm.request.data["confirm_id"] as? String, "test_confirm_id")
+        XCTAssertEqual(confirm.request.data["webhook_id"] as? String, "webhook1")
     }
 
-    func testNonSilentLiveActivityCommandSuppressesBannerAndDefersConfirm() throws {
+    func testNonSilentLiveActivityCommandSuppressesBannerAndConfirmsImmediately() throws {
         // A live_update without `silent: true` must behave like the silent case: only update the
-        // Live Activity, never present a standalone banner, and defer the confirm to the live
-        // activity presentation path.
+        // Live Activity, never present a standalone banner, and confirm receipt right away so the
+        // server keeps the channel open even when the app cannot drain the hand-off yet.
         setUpManager(webhookID: "webhook1")
 
         let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
@@ -497,6 +499,30 @@ class LocalPushManagerTests: XCTestCase {
         waitForExpectations(timeout: 10.0)
 
         XCTAssertTrue(attachmentManager.contentRequests.isEmpty)
+        XCTAssertTrue(added.isEmpty)
+        let confirm = try XCTUnwrap(
+            apiConnection.pendingRequests
+                .first(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        )
+        XCTAssertEqual(confirm.request.data["confirm_id"] as? String, "test_confirm_id")
+    }
+
+    func testLiveActivityCommandWithoutConfirmIdDoesNotConfirm() throws {
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+            "data": [
+                "live_update": true,
+                "tag": "test_tag",
+            ],
+        ]))
+
+        let runLoop = expectation(description: "run loop")
+        DispatchQueue.main.async(execute: runLoop.fulfill)
+        waitForExpectations(timeout: 10.0)
+
         XCTAssertTrue(added.isEmpty)
         XCTAssertFalse(
             apiConnection.pendingRequests

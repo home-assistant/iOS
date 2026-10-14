@@ -268,7 +268,7 @@ public class LocalPushManager {
         state.increment()
 
         let baseContent = event.content(server: server)
-        var userInfo = baseContent.userInfo
+        let userInfo = baseContent.userInfo
         let isLiveActivity = Self.isLiveActivityCommand(userInfo)
 
         Current.notificationHistoryStore.record(NotificationHistoryEntry(
@@ -276,20 +276,7 @@ public class LocalPushManager {
             kind: isLiveActivity ? .liveActivityLocal : .local
         ))
 
-        if isLiveActivity, let confirmID = event.confirmID {
-            userInfo[Self.confirmIDUserInfoKey] = confirmID
-        }
-
         delegate?.localPushManager(self, didReceiveRemoteNotification: userInfo)
-
-        if isLiveActivity {
-            // A live update only starts/updates the Live Activity via the delegate above, silent
-            // or not; it never surfaces a standalone banner (the widget is the only visual
-            // feedback, matching NotificationManager.willPresent). The confirm is owned by the
-            // live activity presentation path, so it stays deferred here.
-            Current.Log.info("local push: Live Activity command, updating activity only, deferring confirm")
-            return
-        }
 
         guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to handle local push event")
@@ -304,6 +291,17 @@ public class LocalPushManager {
                 webhookID: webhookID,
                 confirmID: confirmID
             )).promise.map { _ in () }
+        }
+
+        if isLiveActivity {
+            // A live update only starts/updates the Live Activity via the delegate above, silent
+            // or not; it never surfaces a standalone banner (the widget is the only visual
+            // feedback, matching NotificationManager.willPresent). Receipt is confirmed right
+            // away: the server tears the channel down if the confirm is late, and the hand-off
+            // to the app can only run once the app is next active.
+            Current.Log.info("local push: Live Activity command, updating activity only")
+            confirmReceipt().cauterize()
+            return
         }
 
         if Self.isCommand(userInfo) {
@@ -338,8 +336,6 @@ public class LocalPushManager {
             }
         }
     }
-
-    static let confirmIDUserInfoKey = "hass_confirm_id"
 
     private static func isLiveActivityCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
         guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
