@@ -26,75 +26,95 @@ class OnboardingAuth {
     ) -> Promise<Server> {
         firstly {
             connect(to: startInstance, presenter: presenter)
-        }.then { [self] api -> Promise<Server> in
-            func steps(_ steps: OnboardingAuthStepPoint...) -> Promise<Void> {
-                var promise: Promise<Void> = .value(())
+        }.then { [self] api in
+            configure(api: api, presenter: presenter)
+        }
+    }
 
-                for step in steps {
-                    promise = promise.then { [self] in
-                        performPostSteps(checkPoint: step, api: api, presenter: presenter)
-                    }
+    /// The authenticated half of onboarding, for an API that already holds a working token: device
+    /// naming, `mobile_app` registration (which supplies the webhook ID and secret), config, sensors and
+    /// models, then persisting the server and announcing it. Sign-in reaches it after the login web view;
+    /// importing a server whose long-lived access token came from a file starts here directly.
+    ///
+    /// A failure in any step undoes what was written. `revokesTokenOnFailure` decides whether that undo
+    /// also revokes the token: sign-in minted it for this attempt, but an imported token is the user's
+    /// own and must survive a failed import.
+    func configure(
+        api: HomeAssistantAPI,
+        presenter: OnboardingAuthPresenter,
+        revokesTokenOnFailure: Bool = true
+    ) -> Promise<Server> {
+        func steps(_ steps: OnboardingAuthStepPoint...) -> Promise<Void> {
+            var promise: Promise<Void> = .value(())
+
+            for step in steps {
+                promise = promise.then { [self] in
+                    performPostSteps(checkPoint: step, api: api, presenter: presenter)
                 }
-
-                return promise
             }
 
-            // A server added next to an existing one is asked what it should receive at the end of
-            // onboarding (`OnboardingPrivacyView`), so it starts out sending nothing: the steps
-            // below would otherwise hand a system nobody has been asked about this device's exact
-            // location and every sensor the user switched on for another one. Abandoning the flow
-            // before the question is answered leaves it on these values rather than the defaults.
-            if !Current.servers.all.isEmpty {
-                api.server.info.setSetting(value: ServerSensorPrivacy.none, for: .sensorPrivacy)
-                api.server.info.setSetting(value: ServerLocationPrivacy.never, for: .locationPrivacy)
+            return promise
+        }
+
+        // A server added next to an existing one is asked what it should receive at the end of
+        // onboarding (`OnboardingPrivacyView`), so it starts out sending nothing: the steps
+        // below would otherwise hand a system nobody has been asked about this device's exact
+        // location and every sensor the user switched on for another one. Abandoning the flow
+        // before the question is answered leaves it on these values rather than the defaults.
+        if !Current.servers.all.isEmpty {
+            api.server.info.setSetting(value: ServerSensorPrivacy.none, for: .sensorPrivacy)
+            api.server.info.setSetting(value: ServerLocationPrivacy.never, for: .locationPrivacy)
+        }
+
+        // Set once the server is persisted, so a later failure undoes exactly what was written.
+        var persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+
+        return firstly {
+            steps(.beforeRegister, .register, .afterRegister)
+        }.map { () -> Server in
+            // `get_config` ran in `.afterRegister`, so by now the server reports its own
+            // instance ID and the identifier can be the one every onboarding route agrees on.
+            let identifier = Self.serverIdentifier(
+                for: api.server.info,
+                fallback: api.server.identifier,
+                existingServers: Current.servers.all
+            )
+            let existingInfo = Current.servers.server(for: identifier)?.info
+            persisted = (identifier, existingInfo)
+
+            // Re-authenticating a server the app already has is not a new server, and the
+            // privacy step is not shown for it, so it keeps the choices it already carries
+            // instead of the holdback above (or a default) overwriting them.
+            var serverInfo = api.server.info
+            if let existingInfo {
+                serverInfo.setSetting(value: existingInfo.setting(for: .sensorPrivacy), for: .sensorPrivacy)
+                serverInfo.setSetting(value: existingInfo.setting(for: .locationPrivacy), for: .locationPrivacy)
             }
 
-            // Set once the server is persisted, so a later failure undoes exactly what was written.
-            var persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
-
-            return firstly {
-                steps(.beforeRegister, .register, .afterRegister)
-            }.map { () -> Server in
-                // `get_config` ran in `.afterRegister`, so by now the server reports its own
-                // instance ID and the identifier can be the one every onboarding route agrees on.
-                let identifier = Self.serverIdentifier(
-                    for: api.server.info,
-                    fallback: api.server.identifier,
-                    existingServers: Current.servers.all
-                )
-                let existingInfo = Current.servers.server(for: identifier)?.info
-                persisted = (identifier, existingInfo)
-
-                // Re-authenticating a server the app already has is not a new server, and the
-                // privacy step is not shown for it, so it keeps the choices it already carries
-                // instead of the holdback above (or a default) overwriting them.
-                var serverInfo = api.server.info
-                if let existingInfo {
-                    serverInfo.setSetting(value: existingInfo.setting(for: .sensorPrivacy), for: .sensorPrivacy)
-                    serverInfo.setSetting(value: existingInfo.setting(for: .locationPrivacy), for: .locationPrivacy)
-                }
-
-                // actually persists to outside-onboarding
-                return Current.servers.add(identifier: identifier, serverInfo: serverInfo)
-            }.get { server in
-                // Nothing was persisted yet when `configuredAPI` ran, so the API it returned is built
-                // around a detached, in-memory `Server` — and everything that API created at init
-                // captured that instance: the token manager, the websocket's connection-info and
-                // token closures, the request adapters. Handing `api.server` the keychain-persisted
-                // server cannot reach any of them, so they keep reading the onboarding-time snapshot
-                // for the rest of the session. A later re-authentication then writes its new token to
-                // the persisted server while this API keeps presenting the superseded one, which Home
-                // Assistant answers with `auth: invalid` / 401 until the app is relaunched. Replace it
-                // with an API built on the persisted server, and drop the onboarding connection so the
-                // session doesn't keep two.
-                api.connection.disconnect()
-                Current.setCachedApi(HomeAssistantAPI(server: server), for: server.identifier)
-            }.then { server in
-                steps(.complete).map { server }
-            }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
-                when(resolved: undoConfigure(api: api, persisted: persisted))
-                    .then { _ in Promise<Server>(error: error) }
-            }
+            // actually persists to outside-onboarding
+            return Current.servers.add(identifier: identifier, serverInfo: serverInfo)
+        }.get { server in
+            // Nothing was persisted yet when `configuredAPI` ran, so the API it returned is built
+            // around a detached, in-memory `Server` — and everything that API created at init
+            // captured that instance: the token manager, the websocket's connection-info and
+            // token closures, the request adapters. Handing `api.server` the keychain-persisted
+            // server cannot reach any of them, so they keep reading the onboarding-time snapshot
+            // for the rest of the session. A later re-authentication then writes its new token to
+            // the persisted server while this API keeps presenting the superseded one, which Home
+            // Assistant answers with `auth: invalid` / 401 until the app is relaunched. Replace it
+            // with an API built on the persisted server, and drop the onboarding connection so the
+            // session doesn't keep two.
+            api.connection.disconnect()
+            Current.setCachedApi(HomeAssistantAPI(server: server), for: server.identifier)
+        }.then { server in
+            steps(.complete).map { server }
+        }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
+            when(resolved: undoConfigure(
+                api: api,
+                persisted: persisted,
+                revokesToken: revokesTokenOnFailure
+            ))
+            .then { _ in Promise<Server>(error: error) }
         }
     }
 
@@ -288,12 +308,14 @@ class OnboardingAuth {
 
     private func undoConfigure(
         api: HomeAssistantAPI,
-        persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+        persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?,
+        revokesToken: Bool
     ) -> Promise<Void> {
         Current.Log.info()
         let identifier = persisted?.identifier ?? api.server.identifier
-        return firstly {
-            when(resolved: api.tokenManager.revokeToken()).asVoid()
+        return firstly { () -> Guarantee<Void> in
+            guard revokesToken else { return .value(()) }
+            return when(resolved: api.tokenManager.revokeToken()).asVoid()
         }.done {
             api.connection.disconnect()
 

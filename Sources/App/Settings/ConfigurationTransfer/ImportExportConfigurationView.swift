@@ -129,6 +129,30 @@ struct ImportExportConfigurationView: View {
             } footer: {
                 Text(L10n.Settings.Debugging.ConfigurationTransfer.Actions.footer)
             }
+
+            Section {
+                Button {
+                    viewModel.startServerImport()
+                } label: {
+                    Label(
+                        title: { Text(L10n.ImportServers.Settings.button) },
+                        icon: { Image(systemSymbol: .serverRack) }
+                    )
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.outlinedButton)
+                .fileImporter(
+                    isPresented: $viewModel.showServerImporter,
+                    allowedContentTypes: ServerConfigurationUTType.importableContentTypes,
+                    allowsMultipleSelection: false
+                ) { result in
+                    viewModel.handleServerImportSelection(result)
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+            } footer: {
+                Text(L10n.ImportServers.Settings.footer)
+            }
         }
         .navigationTitle(L10n.Settings.Debugging.ConfigurationTransfer.title)
         .navigationBarTitleDisplayMode(.inline)

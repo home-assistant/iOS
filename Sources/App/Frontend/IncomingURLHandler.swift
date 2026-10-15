@@ -33,6 +33,14 @@ class IncomingURLHandler {
     @discardableResult
     func handle(url: URL) -> Bool {
         Current.Log.verbose("Received URL: \(url)")
+
+        // A document the user opened (AirDrop / Files / mail attachment / a shared link) arrives as a
+        // `file://` URL rather than a custom-scheme deep link. A server-configuration file routes to
+        // the import confirmation screen; everything else falls through to the handlers below.
+        if url.isFileURL {
+            return handleOpenedFile(url: url)
+        }
+
         var serviceData: [String: String] = [:]
         if let queryItems = url.queryItems {
             serviceData = queryItems
@@ -219,6 +227,31 @@ class IncomingURLHandler {
         } else {
             Current.Log.warning("Can't route incoming URL: \(url)")
             showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
+        }
+        return true
+    }
+
+    /// Routes a `file://` URL the user opened in the app. A server-configuration document is handed to
+    /// the import presenter (which shows a confirmation screen before adding anything); any other file
+    /// is not ours to handle.
+    private func handleOpenedFile(url: URL) -> Bool {
+        let pathExtension = url.pathExtension.lowercased()
+        guard ServerConfigurationImport.externallyOpenableFileExtensions.contains(pathExtension) else {
+            Current.Log.warning("Opened file with unhandled extension: \(url.lastPathComponent)")
+            return false
+        }
+
+        // Shown in the scene the file was opened in; documents arrive on the main thread.
+        if let coordinator {
+            MainActor.assumeIsolated {
+                ServerConfigurationImportPresenter.present(fileURL: url, coordinator: coordinator)
+            }
+        } else {
+            Current.sceneManager.appCoordinator.done { coordinator in
+                MainActor.assumeIsolated {
+                    ServerConfigurationImportPresenter.present(fileURL: url, coordinator: coordinator)
+                }
+            }
         }
         return true
     }

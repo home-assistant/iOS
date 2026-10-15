@@ -34,6 +34,30 @@ struct IncomingURLHandlerTests {
         try body()
     }
 
+    @MainActor
+    @Test func anOpenedServerFileShowsTheImportConfirmation() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).hassconfig")
+        try Data("""
+        { "kind": "home-assistant-servers", "schemaVersion": 1,
+          "servers": [ { "name": "Home", "externalURL": "https://home.example.com" } ] }
+        """.utf8).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        try withFakeServer { _, coordinator, handler in
+            #expect(handler.handle(url: url))
+            #expect(coordinator.presentedViewControllers.first is DismissalReportingHostingController)
+        }
+    }
+
+    @Test func anOpenedFileOfAnotherTypeIsNotHandled() throws {
+        try withFakeServer { _, coordinator, handler in
+            // Plain JSON is only accepted through the in-app picker, not from other apps.
+            #expect(!handler.handle(url: URL(fileURLWithPath: "/tmp/servers.json")))
+            #expect(!handler.handle(url: URL(fileURLWithPath: "/tmp/photo.jpg")))
+            #expect(coordinator.presentedViewControllers.isEmpty)
+        }
+    }
+
     @Test func cameraDeeplinkOpensTheMoreInfoDialog() throws {
         try withFakeServer { server, coordinator, handler in
             let url = try #require(URL(

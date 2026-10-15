@@ -6,6 +6,15 @@ import SwiftUI
 /// presenting `UIViewController`s themselves; `OnboardingNavigationView` binds `path` to its
 /// `NavigationStack` and renders the alert/sheet requests.
 final class OnboardingAuthPresenter: ObservableObject {
+    /// False for a presenter no screen is bound to — a server imported from a file with its access
+    /// token is set up without any onboarding UI. Steps that would otherwise ask the user something
+    /// must decide on their own (or fail) instead of pushing a page nobody will see.
+    let isInteractive: Bool
+
+    init(isInteractive: Bool = true) {
+        self.isInteractive = isInteractive
+    }
+
     /// The onboarding navigation stack. Auth steps append their pages (login web view, device naming,
     /// permissions) so each step is a real push.
     @Published var path: [OnboardingDestination] = []

@@ -3,11 +3,56 @@ import GRDB
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SwiftUI
 import Testing
+import UIKit
 
 @MainActor
 @Suite(.serialized)
 struct ImportExportConfigurationViewModelTests {
+    @Test func importingServersOpensTheFilePicker() async throws {
+        try await withViewModelTestWorld { _, viewModel in
+            viewModel.startServerImport()
+
+            #expect(viewModel.showServerImporter)
+        }
+    }
+
+    @Test func aFailedServerFilePickIsReported() async throws {
+        try await withViewModelTestWorld { _, viewModel in
+            struct PickerError: LocalizedError {
+                var errorDescription: String? { "picker failed" }
+            }
+
+            viewModel.handleServerImportSelection(.failure(PickerError()))
+
+            #expect(viewModel.errorMessage == "picker failed")
+        }
+    }
+
+    @Test func theScreenOffersServerImport() async throws {
+        try await withViewModelTestWorld { _, _ in
+            let window = UIWindow(frame: .init(x: 0, y: 0, width: 390, height: 1400))
+            window.rootViewController = UIHostingController(rootView: NavigationView {
+                ImportExportConfigurationView()
+            })
+            window.isHidden = false
+            defer { window.isHidden = true }
+            window.layoutIfNeeded()
+            try await Task.sleep(nanoseconds: 200_000_000)
+
+            #expect(window.rootViewController?.view.subviews.isEmpty == false)
+        }
+    }
+
+    @Test func aServerFilePickWithNoFileDoesNothing() async throws {
+        try await withViewModelTestWorld { _, viewModel in
+            viewModel.handleServerImportSelection(.success([]))
+
+            #expect(viewModel.errorMessage == nil)
+        }
+    }
+
     @Test func refreshingCountsReportsWhatIsConfigured() async throws {
         try await withViewModelTestWorld { database, viewModel in
             try seedCustomWidget(in: database, id: "widget")
