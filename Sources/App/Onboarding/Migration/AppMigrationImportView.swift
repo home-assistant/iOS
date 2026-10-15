@@ -40,8 +40,10 @@ struct AppMigrationImportView: View {
                 primaryDescription: message,
                 primaryActionTitle: L10n.AppMigration.Import.Failed.retryButton,
                 primaryAction: retryAction,
+                primaryActionIdentifier: AccessibilityIdentifier.migrationImportRetry.rawValue,
                 secondaryActionTitle: L10n.AppMigration.Import.Failed.manualButton,
-                secondaryAction: cancelAction
+                secondaryAction: cancelAction,
+                secondaryActionIdentifier: AccessibilityIdentifier.migrationImportManual.rawValue
             )
             .onAppear {
                 AppMigrationHaptics.error()

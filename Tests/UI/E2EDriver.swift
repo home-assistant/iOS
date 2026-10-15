@@ -379,6 +379,18 @@ final class E2EDriver {
     /// The prompt blocks the app's main thread until it is answered, so only SpringBoard is queried:
     /// a query aimed at the app would hang along with it. It is also not exposed as an alert element,
     /// so the whole SpringBoard tree is searched for the button.
+    /// Refuses the pasteboard read instead, the way a wary user would; nothing to do when no alert comes up.
+    @discardableResult
+    func denyPasteIfAsked() -> Bool {
+        let deny = NSPredicate(format: "label == 'Don’t Allow Paste' OR label == \"Don't Allow Paste\"")
+        let button = springboard.descendants(matching: .any).matching(deny).firstMatch
+        guard button.waitForExistence(timeout: Timeout.screen) else {
+            return false
+        }
+        button.tap()
+        return true
+    }
+
     @discardableResult
     func allowPasteIfAsked() -> Bool {
         let allow = NSPredicate(format: "label == 'Allow Paste'")

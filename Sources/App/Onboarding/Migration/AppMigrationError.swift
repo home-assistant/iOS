@@ -14,7 +14,7 @@ enum AppMigrationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .declined: L10n.AppMigration.Error.declined
-        case .noPayload: L10n.AppMigration.Error.noPayload
+        case .noPayload: L10n.AppMigration.Error.noPayloadAllowPaste
         case .wrongSession: L10n.AppMigration.Error.wrongSession
         case .invalidPayload: L10n.AppMigration.Error.invalidPayload
         case .unsupportedVersion: L10n.AppMigration.Error.unsupportedVersion
