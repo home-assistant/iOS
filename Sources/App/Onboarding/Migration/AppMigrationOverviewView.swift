@@ -57,6 +57,12 @@ struct AppMigrationOverviewView: View {
                     }
                 }
 
+                HAAlertView(title: L10n.AppMigration.Overview.PasteNotice.title, alertType: .info) {
+                    Text(L10n.AppMigration.Overview.PasteNotice.body)
+                } action: {
+                    EmptyView()
+                }
+
                 HASectionPill(
                     L10n.AppMigration.Overview.Section.moves,
                     icon: .checkmarkCircleFill,

@@ -46,7 +46,8 @@ final class E2EDriver {
     /// one, and it reads only the first 10 KB of that page, which no longer reaches the `redirect_uri`
     /// link tag. The debug pair is rejected with "Invalid redirect URI", so the flow could never log in.
     func launchForOnboarding() {
-        app.launchArguments = ["-FASTLANE_SNAPSHOT", "YES"]
+        // The previous app refuses to set up servers for users; the second flag lifts that for tests.
+        app.launchArguments = ["-FASTLANE_SNAPSHOT", "YES", "-AppMigrationAllowOnboarding"]
         app.launch()
     }
 
