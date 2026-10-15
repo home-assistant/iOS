@@ -43,7 +43,7 @@ public enum WatchRelayRequestHandler {
         // but carrying some other URL is refused rather than forwarded.
         guard WatchRelayURLRebase.isPermitted(payload.url, connection: server.info.connection) else {
             Current.Log.error(
-                "Watch relayed an HTTP request to \(payload.url.absoluteString), which is not a configured URL " +
+                "Watch relayed an HTTP request to \(LogRedaction.redact(payload.url)), which is not a configured URL " +
                     "for server \(payload.serverId)"
             )
             return .failure(.malformedRequest, reason: "The URL is not configured for this server")
@@ -57,10 +57,12 @@ public enum WatchRelayRequestHandler {
                 server,
                 configuration(timeout: payload.timeout)
             )
-            Current.Log.info("Relayed \(payload.method) \(url.absoluteString) for the watch: \(response.statusCode)")
+            Current.Log.info(
+                "Relayed \(payload.method) \(LogRedaction.redact(url)) for the watch: \(response.statusCode)"
+            )
             return envelope(for: response, body: data)
         } catch {
-            Current.Log.error("Relayed \(payload.method) \(url.absoluteString) for the watch failed: \(error)")
+            Current.Log.error("Relayed \(payload.method) \(LogRedaction.redact(url)) for the watch failed: \(error)")
             return .failure(.transport, reason: error.localizedDescription)
         }
     }
@@ -81,7 +83,7 @@ public enum WatchRelayRequestHandler {
               ) else {
             return payload.url
         }
-        Current.Log.info("Re-based the watch's \(payload.url.absoluteString) onto the iPhone's active URL")
+        Current.Log.info("Re-based the watch's \(LogRedaction.redact(payload.url)) onto the iPhone's active URL")
         return rebased
     }
 

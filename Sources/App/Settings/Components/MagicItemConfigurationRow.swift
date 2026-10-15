@@ -76,7 +76,7 @@ struct MagicItemConfigurationRow: View {
                 id: "1-light.kitchen",
                 name: "Kitchen light",
                 iconName: "mdi:lightbulb",
-                contextSubtitle: "Home • Kitchen"
+                contextSubtitle: "Home ▸ Kitchen"
             ),
             isReorderIndicatorVisible: false
         )
@@ -86,7 +86,7 @@ struct MagicItemConfigurationRow: View {
                 id: "1-light.kitchen",
                 name: "Kitchen light",
                 iconName: "mdi:lightbulb",
-                contextSubtitle: "Home • Kitchen"
+                contextSubtitle: "Home ▸ Kitchen"
             ),
             isReorderIndicatorVisible: true
         )

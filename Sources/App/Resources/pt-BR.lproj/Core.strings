@@ -135,7 +135,7 @@ Conclua a configuração seguindo as [instruções de configuração]({url}).";
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
 "component::improv_ble::config::step::provision::description" = "Insira as credenciais Wi-Fi para conectar o dispositivo à sua rede.";
 "component::improv_ble::config::step::user::data::address" = "Dispositivo";
-"component::improv_ble::config::step::user::description" = "Escolher um dispositivo para configurar";
+"component::improv_ble::config::step::user::description" = "Escolha um dispositivo para configurar";
 "component::input_boolean::entity_component::_::state::off" = "Desligado";
 "component::input_boolean::entity_component::_::state::on" = "Ligado";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Não";

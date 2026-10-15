@@ -106,9 +106,9 @@ struct OnboardingNavigationView: View {
         case let .login(loginViewModel):
             OnboardingAuthLoginView(viewModel: loginViewModel)
         case let .deviceName(request):
+            // Back would land on the finished login page; the view has its own Cancel.
             DeviceNameView(request: request)
                 .navigationBarBackButtonHidden(true)
-                .toolbar(.hidden, for: .navigationBar)
         case let .permissions(server):
             OnboardingPermissionsNavigationView(
                 onboardingServer: server,

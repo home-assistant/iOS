@@ -19,12 +19,13 @@ struct SoftwareKeyboardObserverTests {
         #expect(!SoftwareKeyboardObserver.isShown(endFrame: assistantBar, screenHeight: screenHeight))
 
         #expect(!SoftwareKeyboardObserver.isShown(endFrame: nil, screenHeight: screenHeight))
+        #expect(!SoftwareKeyboardObserver.isShown(endFrame: docked, screenHeight: nil))
     }
 
     @Test("The observer follows keyboard frame changes and hide notifications")
     func followsNotifications() async throws {
         let center = NotificationCenter()
-        let observer = SoftwareKeyboardObserver(notificationCenter: center, screenHeight: { 678 })
+        let observer = SoftwareKeyboardObserver(notificationCenter: center, screenHeight: { _ in 678 })
         #expect(!observer.isShown)
 
         center.post(
@@ -40,12 +41,13 @@ struct SoftwareKeyboardObserverTests {
         #expect(!observer.isShown)
     }
 
-    @Test("The default observer reads the main screen and listens to the default notification center")
+    @Test("The default observer reads the keyboard's screen and listens to the default notification center")
     func defaultObserver() async throws {
+        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
         let observer = SoftwareKeyboardObserver()
         NotificationCenter.default.post(
             name: UIResponder.keyboardWillChangeFrameNotification,
-            object: nil,
+            object: scene.screen,
             userInfo: [UIResponder.keyboardFrameEndUserInfoKey: CGRect(x: 0, y: 0, width: 466, height: 300)]
         )
         try await waitUntil { observer.isShown }

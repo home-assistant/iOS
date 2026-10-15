@@ -68,6 +68,33 @@ struct KioskPushPresentationTests {
         ToastPresenter.shared.hideCurrent()
     }
 
+    /// The brightness command goes through the environment's hook rather than the main screen, so
+    /// it reaches whichever screen the app is on and stays testable.
+    @available(iOS 18, *)
+    @MainActor
+    @Test func setsTheScreenBrightnessThroughTheEnvironment() async throws {
+        ToastPresenter.shared.hideCurrent()
+        let previousSet = Current.setScreenBrightness
+        defer { Current.setScreenBrightness = previousSet }
+        var brightness: CGFloat?
+        Current.setScreenBrightness = { brightness = $0 }
+
+        try withKiosk(settings: KioskSettings()) { manager in
+            let options = manager.kioskPushPresentationOptions(
+                for: request(identifier: "brightness", body: "kiosk_set_brightness", userInfo: ["level": 0.4])
+            )
+            #expect(options != nil)
+        }
+
+        // The level is applied from a main-queue hop after the command runs.
+        for _ in 0 ..< 100 where brightness == nil {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let applied = try #require(brightness)
+        #expect(abs(applied - 0.4) < 0.001)
+        ToastPresenter.shared.hideCurrent()
+    }
+
     @available(iOS 18, *)
     @MainActor
     @Test func runsTheCommandWithoutAToastWhenConfirmationsAreDisabled() async throws {
@@ -103,9 +130,14 @@ struct KioskPushPresentationTests {
         }
     }
 
-    private func request(identifier: String, body: String) -> UNNotificationRequest {
+    private func request(
+        identifier: String,
+        body: String,
+        userInfo: [AnyHashable: Any] = [:]
+    ) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.body = body
+        content.userInfo = userInfo
         return UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
     }
 

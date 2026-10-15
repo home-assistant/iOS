@@ -56,7 +56,6 @@ struct WatchConfigurationView: View {
                 viewModel.loadWatchConfig()
             }
         }
-        .preferredColorScheme(.dark)
         .navigationTitle("Apple Watch")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(content: {
@@ -85,7 +84,6 @@ struct WatchConfigurationView: View {
                         guard let itemToAdd else { return }
                         viewModel.addItem(itemToAdd)
                     }
-                    .preferredColorScheme(.dark)
                 }
             case .assistPrompt:
                 NavigationView {
@@ -94,7 +92,6 @@ struct WatchConfigurationView: View {
                     }
                 }
                 .navigationViewStyle(.stack)
-                .preferredColorScheme(.dark)
             }
         })
         .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
@@ -193,7 +190,6 @@ struct WatchConfigurationView: View {
             addFolderForm
         }
         .presentationDetents([.medium])
-        .preferredColorScheme(.dark)
     }
 
     private var addFolderForm: some View {
@@ -254,7 +250,6 @@ struct WatchConfigurationView: View {
                     folderId: item.id,
                     viewModel: viewModel
                 )
-                .environment(\.colorScheme, .dark)
             } label: {
                 itemRow(item: item)
             }
@@ -268,7 +263,6 @@ struct WatchConfigurationView: View {
                 AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
-                .environment(\.colorScheme, .dark)
             } label: {
                 itemRow(item: item)
             }
@@ -277,7 +271,6 @@ struct WatchConfigurationView: View {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
-                .environment(\.colorScheme, .dark)
             } label: {
                 itemRow(item: item)
             }

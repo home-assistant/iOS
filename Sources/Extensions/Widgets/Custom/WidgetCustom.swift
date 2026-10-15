@@ -125,7 +125,7 @@ struct WidgetCustom: Widget {
                 showStates: \(showStates), hasState: \(
                     state !=
                         nil
-                ), interactionType: \(String(describing: interactionType))
+                ), interactionType: \(LogRedaction.redact(String(describing: interactionType)))
                 """
             )
             return WidgetBasicViewModel(

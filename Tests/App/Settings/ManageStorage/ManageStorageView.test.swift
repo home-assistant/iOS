@@ -9,7 +9,6 @@ struct ManageStorageViewTests {
         let viewModel = ManageStorageViewModel(
             paths: .rooted(at: URL(fileURLWithPath: "/tmp/manage-storage-snapshot")),
             isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true,
             measurer: ManageStorageSampleMeasurer(),
             cleaner: ManageStorageSampleCleaner()
         )

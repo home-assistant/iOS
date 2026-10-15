@@ -24,6 +24,7 @@ struct KioskView: View {
                     settingsEntryButton
                         .padding(DesignSystem.Spaces.two)
                 }
+                // The entry sits in the display's own corner, past any camera or vertical bar inset.
                 .ignoresSafeArea()
             }
             .overlay {

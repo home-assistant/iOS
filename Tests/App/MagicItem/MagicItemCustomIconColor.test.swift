@@ -64,7 +64,7 @@ struct MagicItemCustomIconColorTests {
             name: "Kitchen light",
             iconName: "mdi:lightbulb",
             customization: .init(iconColor: "00AEF8"),
-            contextSubtitle: "Home • Kitchen"
+            contextSubtitle: "Home ▸ Kitchen"
         )
         var edited = MagicItem.Customization()
         edited.useCustomIconColor("#FF9800")

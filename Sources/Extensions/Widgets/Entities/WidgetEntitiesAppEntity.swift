@@ -19,6 +19,8 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
     var serverId: String
     var areaName: String?
     var deviceName: String?
+    var parentDeviceName: String?
+    var contextReach: EntityContextReach = .device
     var floorName: String?
     var displayString: String
 
@@ -37,6 +39,8 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
         serverId: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        parentDeviceName: String? = nil,
+        contextReach: EntityContextReach = .device,
         floorName: String? = nil,
         displayString: String
     ) {
@@ -45,6 +49,8 @@ struct WidgetEntitiesAppEntity: AppEntity, EntityContextRepresentable {
         self.serverId = serverId
         self.areaName = areaName
         self.deviceName = deviceName
+        self.parentDeviceName = parentDeviceName
+        self.contextReach = contextReach
         self.floorName = floorName
         self.displayString = displayString
     }

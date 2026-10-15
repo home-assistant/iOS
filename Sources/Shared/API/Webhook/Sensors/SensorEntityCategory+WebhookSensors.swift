@@ -39,7 +39,10 @@ public extension SensorEntityCategory {
              .kioskVolume,
              .kioskScreensaver,
              .cameraMotion,
-             .cameraStream:
+             .cameraStream,
+             .hingeAngle,
+             .hingeStatus,
+             .devicePose:
             return nil
         }
     }

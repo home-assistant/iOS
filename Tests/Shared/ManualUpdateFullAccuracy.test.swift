@@ -13,6 +13,7 @@ struct ManualUpdateFullAccuracyTests {
     private final class ExpiringBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
         func callAsFunction<PromiseValue>(
             withName name: String,
+            requiringAssertion: Bool,
             wrapping: (TimeInterval?) -> Promise<PromiseValue>
         ) -> Promise<PromiseValue> {
             _ = wrapping(nil)

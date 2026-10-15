@@ -8,6 +8,11 @@ import SwiftUI
 /// sides resolving the same text / gauge; `CornerComplicationContentView` renders the iPhone-side
 /// (and snapshot) approximation of the on-face layout.
 public struct CornerComplicationRenderModel {
+    public enum GaugeDisplay {
+        case gauge
+        case progress
+    }
+
     public var iconImage: Image?
     public var title: String
     public var showsName: Bool
@@ -22,6 +27,7 @@ public struct CornerComplicationRenderModel {
     /// the corner tip, the way ClockKit drew a Graphic Corner "Gauge Text" outer text. Legacy
     /// complications whose template drew its text flat opt out of the curve.
     public var curvesText: Bool
+    public var gaugeDisplay: GaugeDisplay
 
     public init(
         iconImage: Image? = nil,
@@ -32,7 +38,8 @@ public struct CornerComplicationRenderModel {
         fraction: Double? = nil,
         tint: Color = .complicationDefaultTint,
         textColor: Color? = nil,
-        curvesText: Bool = true
+        curvesText: Bool = true,
+        gaugeDisplay: GaugeDisplay = .gauge
     ) {
         self.iconImage = iconImage
         self.title = title
@@ -43,5 +50,6 @@ public struct CornerComplicationRenderModel {
         self.tint = tint
         self.textColor = textColor
         self.curvesText = curvesText
+        self.gaugeDisplay = gaugeDisplay
     }
 }

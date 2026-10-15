@@ -182,6 +182,28 @@ public extension AssistPipelines {
         )
     }
 
+    /// The pipeline a run asking for `pipelineId` targets: that one, or the server's preferred
+    /// pipeline when no id is given.
+    func pipeline(id pipelineId: String?) -> Pipeline? {
+        let id = pipelineId.flatMap { $0.isEmpty ? nil : $0 } ?? preferredPipeline
+        return pipelines.first { $0.id == id }
+    }
+
+    /// The cached pipeline a run on `serverId` targets, or nil when it is not in the cache — the
+    /// server's pipelines were never fetched, or the pipeline was added since.
+    static func cachedPipeline(id pipelineId: String?, serverId: String) -> Pipeline? {
+        do {
+            return try Current.database().read { db in
+                try AssistPipelines
+                    .filter(Column(DatabaseTables.AssistPipelines.serverId.rawValue) == serverId)
+                    .fetchOne(db)
+            }?.pipeline(id: pipelineId)
+        } catch {
+            Current.Log.error("Failed to read cached Assist pipelines: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
     static func config() throws -> [AssistPipelines]? {
         try Current.database().read({ db in
             try AssistPipelines.fetchAll(db)

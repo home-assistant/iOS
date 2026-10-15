@@ -75,7 +75,7 @@ public enum ServerRequestPerformer {
     private static func log(_ request: URLRequest, route: Route, outcome: String) {
         #if os(watchOS)
         Current.Log.info(
-            "[Request] \(request.httpMethod ?? "GET") \(request.url?.absoluteString ?? "?") " +
+            "[Request] \(request.httpMethod ?? "GET") \(request.url.map { LogRedaction.redact($0) } ?? "?") " +
                 "— \(route.rawValue) → \(outcome)"
         )
         #endif
