@@ -5,8 +5,7 @@ import SwiftUI
 struct NotificationDebugView: View {
     @StateObject private var viewModel = NotificationDebugViewModel()
 
-    @State private var showShareSheet = false
-    @State private var shareItems: [Any] = []
+    @State private var shareWrapper: ShareWrapper?
     @State private var resetAlert: ResetAlertInfo?
     @State private var ratePromise: Promise<RateLimitResponse>?
     @State private var rateLimitRemaining: Int?
@@ -43,8 +42,7 @@ struct NotificationDebugView: View {
 
                 Button {
                     guard let id = viewModel.pushID else { return }
-                    shareItems = [id]
-                    showShareSheet = true
+                    shareWrapper = ShareWrapper(items: [id])
                 } label: {
                     VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                         Text(L10n.SettingsDetails.Notifications.PushIdSection.header)
@@ -86,9 +84,7 @@ struct NotificationDebugView: View {
                 ratePromise = promise
             }
         }
-        .sheet(isPresented: $showShareSheet) {
-            NotificationsShareSheet(activityItems: shareItems)
-        }
+        .shareSheet(item: $shareWrapper)
         .alert(item: $resetAlert) { info in
             Alert(
                 title: Text(info.title),

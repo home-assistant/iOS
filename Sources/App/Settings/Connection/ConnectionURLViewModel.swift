@@ -33,6 +33,7 @@ final class ConnectionURLViewModel: ObservableObject {
     @Published var localPush: Bool
     @Published var ssids: [String]
     @Published var hardwareAddresses: [String]
+    @Published var securityLevel: ConnectionSecurityLevel
     @Published var isChecking = false
     @Published var showError = false
     @Published var errorMessage = ""
@@ -47,6 +48,26 @@ final class ConnectionURLViewModel: ObservableObject {
         self.localPush = server.info.connection.isLocalPushEnabled
         self.ssids = server.info.connection.internalSSIDs ?? []
         self.hardwareAddresses = server.info.connection.internalHardwareAddresses ?? []
+        self.securityLevel = server.info.connection.connectionAccessSecurityLevel
+    }
+
+    /// Whether anything on the screen differs from what the server has, so Save only lights up when it will do
+    /// something.
+    var hasChanges: Bool {
+        let connection = server.info.connection
+        return url != (connection.address(for: urlType)?.absoluteString ?? "")
+            || useCloud != connection.useCloud
+            || localPush != connection.isLocalPushEnabled
+            || ssids != (connection.internalSSIDs ?? [])
+            || hardwareAddresses != (connection.internalHardwareAddresses ?? [])
+            || securityLevel != connection.connectionAccessSecurityLevel
+    }
+
+    /// The security level only matters for a plain-HTTP internal URL, so the row follows the URL as it is typed.
+    var showsSecurityLevel: Bool {
+        guard urlType == .internal,
+              let url = URL(string: url.trimmingCharacters(in: .whitespaces)) else { return false }
+        return url.scheme?.lowercased() == "http"
     }
 
     var placeholder: String {
@@ -168,6 +189,9 @@ final class ConnectionURLViewModel: ObservableObject {
             info.connection.internalHardwareAddresses = hardwareAddresses
                 .map { $0.lowercased() }
                 .filter { !$0.isEmpty }
+            if urlType == .internal {
+                info.connection.connectionAccessSecurityLevel = securityLevel
+            }
         }
     }
 

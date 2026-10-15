@@ -11,4 +11,11 @@ struct GeneralSettingsViewTests {
     @Test func buildsTheEnhancedWebSecurityRow() {
         _ = GeneralSettingsView().body
     }
+
+    /// "Remember last page" lives here again, so search has to lead here for it, except on Catalyst,
+    /// where the toggle is not shown.
+    @Test func searchIndexesRememberLastPageWhereTheToggleShows() {
+        let titles = GeneralSettingsView.settingsSearchEntries.map(\.title)
+        #expect(titles.contains(L10n.SettingsDetails.General.Restoration.title) == !Current.isCatalyst)
+    }
 }

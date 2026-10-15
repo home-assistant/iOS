@@ -30,6 +30,8 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         var showMax: Bool?
         /// Raw `WatchComplicationConfig.GaugeStyle` (circular only); nil defaults to open.
         var gaugeStyle: String?
+        /// Raw `WatchComplicationConfig.CornerGaugeDisplay` (corner only); nil defaults to gauge.
+        var cornerGaugeDisplay: String? = nil
         /// Pre-formatted gauge min/max labels for the open circular gauge.
         var minLabel: String?
         var maxLabel: String?
@@ -302,6 +304,7 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
                 showMin: config.showsMin(for: family),
                 showMax: config.showsMax(for: family),
                 gaugeStyle: config.gaugeStyle(for: family).rawValue,
+                cornerGaugeDisplay: config.cornerGaugeDisplay(for: family).rawValue,
                 minLabel: range.map { label($0.min) },
                 maxLabel: range.map { label($0.max) },
                 textColor: textColorHex ?? config.textColor(for: family),

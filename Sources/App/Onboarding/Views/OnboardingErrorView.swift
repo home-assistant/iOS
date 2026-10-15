@@ -6,7 +6,6 @@ import SwiftUI
 struct OnboardingErrorView: View {
     @Environment(\.openURL) private var openURL
     @State private var viewAppeared: Bool = false
-    @State private var showShareSheet: Bool = false
 
     let error: Error
 
@@ -35,9 +34,6 @@ struct OnboardingErrorView: View {
         .onAppear {
             viewAppeared = true
         }
-        .sheet(isPresented: $showShareSheet, content: {
-            ShareActivityView(activityItems: [Current.Log.archiveURL()].compactMap { $0 })
-        })
     }
 
     private var errorContent: some View {
@@ -86,10 +82,6 @@ struct OnboardingErrorView: View {
                 ShareLink(item: archiveURL, label: {
                     Text(Current.Log.exportTitle)
                 })
-            } else {
-                Button(Current.Log.exportTitle) {
-                    showShareSheet = true
-                }
             }
         }
         .buttonStyle(.primaryButton)
