@@ -1,4 +1,3 @@
-import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -41,19 +40,6 @@ struct OnboardingPermissionsNavigationView: View {
             }
         }
         .animation(DesignSystem.Animation.default, value: viewModel.currentStepIndex)
-        .toolbar {
-            // The steps are not on a navigation stack, so going back needs its own button.
-            ToolbarItem(placement: .navigation) {
-                if viewModel.canGoBack {
-                    Button {
-                        viewModel.previousStep()
-                    } label: {
-                        Image(systemSymbol: .chevronBackward)
-                    }
-                    .accessibilityLabel(L10n.Onboarding.Permissions.back)
-                }
-            }
-        }
     }
 
     @ViewBuilder

@@ -1412,7 +1412,6 @@ Remote when you're ready.";
 "onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
 "onboarding.permissions.allow" = "Allow";
 "onboarding.permissions.allowed" = "Done";
-"onboarding.permissions.back" = "Back";
 "onboarding.permissions.change_later_note" = "You can change this permission later in Settings";
 "onboarding.permissions.focus.bullet.automations" = "Focus-based automations";
 "onboarding.permissions.focus.bullet.instant" = "Instant updates when status changes";

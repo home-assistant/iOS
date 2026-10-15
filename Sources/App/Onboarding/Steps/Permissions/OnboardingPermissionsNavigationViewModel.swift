@@ -88,12 +88,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         currentStepIndex >= lastStepIndex
     }
 
-    /// Whether the current step offers going back. The first step has nothing to go back to, and the
-    /// final steps only finish the flow.
-    var canGoBack: Bool {
-        currentStepIndex > 0 && ![.completion, .updatePreferencesSuccess].contains(currentStep)
-    }
-
     /// Returns the current step based on the current step index
     var currentStep: StepID {
         guard currentStepIndex < steps.count else { return .completion }
@@ -182,14 +176,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         navigateToStep(at: currentStepIndex + 1)
     }
 
-    /// Goes back to the previous step, e.g. from the home network input to the local access choice
-    func previousStep() {
-        guard canGoBack else { return }
-        // A save that lands after leaving the home network step must not count for the next visit.
-        storedSSIDSuccessfully = false
-        navigateToStep(at: currentStepIndex - 1)
-    }
-
     // MARK: - Step-Specific Actions
 
     /// Saves the home network SSID to the onboarding server configuration
@@ -204,8 +190,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                 info.connection.internalHardwareAddresses = [hardwareAddress]
             }
             DispatchQueue.main.async {
-                // Only counts while the step is still shown; going back drops a late save.
-                guard self?.currentStep == .homeNetwork else { return }
                 self?.storedSSIDSuccessfully = true
             }
         }

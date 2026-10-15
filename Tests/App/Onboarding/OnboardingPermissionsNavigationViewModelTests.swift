@@ -216,63 +216,6 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.currentStep == .localAccess)
     }
 
-    @Test("Previous step goes from home network back to local access")
-    func previousStepFromHomeNetworkToLocalAccess() async throws {
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard)
-        viewModel.navigateToStep(.homeNetwork)
-
-        #expect(viewModel.canGoBack)
-        viewModel.previousStep()
-
-        #expect(viewModel.currentStep == .localAccess)
-        #expect(viewModel.isAdvancing == false)
-    }
-
-    @Test("Going back forgets a home network save from the step being left")
-    func previousStepResetsStoredSSIDFlag() async throws {
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard)
-        viewModel.navigateToStep(.homeNetwork)
-        viewModel.storedSSIDSuccessfully = true
-
-        viewModel.previousStep()
-
-        #expect(viewModel.storedSSIDSuccessfully == false)
-    }
-
-    @Test("A home network save that lands after going back is dropped")
-    @MainActor
-    func lateHomeNetworkSaveAfterGoingBackIsDropped() async throws {
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard)
-        viewModel.navigateToStep(.homeNetwork)
-
-        viewModel.saveHomeNetwork(.init(networkName: "Home", hardwareAddress: nil))
-        viewModel.previousStep()
-        // Let the queued success callback run.
-        await withCheckedContinuation { continuation in
-            DispatchQueue.main.async { continuation.resume() }
-        }
-
-        #expect(viewModel.currentStep == .localAccess)
-        #expect(viewModel.storedSSIDSuccessfully == false)
-    }
-
-    @Test("Back is only offered between the first and the final steps")
-    func canGoBackOnlyBetweenFirstAndFinalSteps() async throws {
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard)
-
-        #expect(viewModel.canGoBack == false)
-        viewModel.previousStep()
-        #expect(viewModel.currentStepIndex == 0)
-
-        viewModel.nextStep()
-        #expect(viewModel.canGoBack)
-
-        viewModel.navigateToStep(.completion)
-        #expect(viewModel.canGoBack == false)
-        viewModel.previousStep()
-        #expect(viewModel.currentStep == .completion)
-    }
-
     @Test("Navigate to step by index with bounds checking")
     func navigateToStepByIndexWithBoundsChecking() async throws {
         let server = ServerFixture.standard
