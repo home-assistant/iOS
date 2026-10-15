@@ -256,21 +256,19 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.storedSSIDSuccessfully == false)
     }
 
-    @Test("Back is only offered between the first and the final steps")
-    func canGoBackOnlyBetweenFirstAndFinalSteps() async throws {
+    @Test("Back is only offered on the home network step")
+    func canGoBackOnlyOnHomeNetwork() async throws {
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard)
 
-        #expect(viewModel.canGoBack == false)
-        viewModel.previousStep()
-        #expect(viewModel.currentStepIndex == 0)
+        for step in viewModel.steps where step != .homeNetwork {
+            viewModel.navigateToStep(step)
+            #expect(viewModel.canGoBack == false, "\(step)")
+            viewModel.previousStep()
+            #expect(viewModel.currentStep == step)
+        }
 
-        viewModel.nextStep()
+        viewModel.navigateToStep(.homeNetwork)
         #expect(viewModel.canGoBack)
-
-        viewModel.navigateToStep(.completion)
-        #expect(viewModel.canGoBack == false)
-        viewModel.previousStep()
-        #expect(viewModel.currentStep == .completion)
     }
 
     @Test("Navigate to step by index with bounds checking")

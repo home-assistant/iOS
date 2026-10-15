@@ -41,17 +41,18 @@ struct OnboardingPermissionsNavigationView: View {
             }
         }
         .animation(DesignSystem.Animation.default, value: viewModel.currentStepIndex)
-        .toolbar {
-            // The steps are not on a navigation stack, so going back needs its own button.
-            ToolbarItem(placement: .navigation) {
-                if viewModel.canGoBack {
-                    Button {
-                        viewModel.previousStep()
-                    } label: {
-                        Image(systemSymbol: .chevronBackward)
-                    }
-                    .accessibilityLabel(L10n.Onboarding.Permissions.back)
+        .overlay(alignment: .topLeading) {
+            // The steps are not on a navigation stack and the page hides its bar, so the button lives here.
+            if viewModel.canGoBack {
+                Button {
+                    viewModel.previousStep()
+                } label: {
+                    Image(systemSymbol: .chevronBackward)
+                        .font(.title3.weight(.semibold))
+                        .frame(width: 44, height: 44)
                 }
+                .accessibilityLabel(L10n.Onboarding.Permissions.back)
+                .padding(.leading, DesignSystem.Spaces.one)
             }
         }
     }

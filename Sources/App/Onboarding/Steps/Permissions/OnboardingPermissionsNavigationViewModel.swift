@@ -88,10 +88,11 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         currentStepIndex >= lastStepIndex
     }
 
-    /// Whether the current step offers going back. The first step has nothing to go back to, and the
-    /// final steps only finish the flow.
+    /// Only the home network step offers going back; earlier steps have side effects (sensor
+    /// registration, permission prompts) that going back would not undo.
     var canGoBack: Bool {
-        currentStepIndex > 0 && ![.completion, .updatePreferencesSuccess].contains(currentStep)
+        currentStep == .homeNetwork && steps.indices.contains(currentStepIndex - 1)
+            && steps[currentStepIndex - 1] == .localAccess
     }
 
     /// Returns the current step based on the current step index
@@ -182,7 +183,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         navigateToStep(at: currentStepIndex + 1)
     }
 
-    /// Goes back to the previous step, e.g. from the home network input to the local access choice
+    /// Goes back from the home network input to the local access choice.
     func previousStep() {
         guard canGoBack else { return }
         // A save that lands after leaving the home network step must not count for the next visit.
