@@ -10,6 +10,11 @@ struct NotificationPermissionRequestView: View {
             // buttons out of reach at large type sizes or in a longer language.
             ScrollView {
                 VStack(spacing: DesignSystem.Spaces.three) {
+                    Image(uiImage: MaterialDesignIcons.bellIcon.image(
+                        ofSize: .init(width: 64, height: 64),
+                        color: .haPrimary
+                    ))
+                    .accessibilityHidden(true)
                     Text(L10n.Permission.Notification.title)
                         .font(DesignSystem.Font.title2.bold())
                         .multilineTextAlignment(.center)
