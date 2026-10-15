@@ -291,13 +291,16 @@ class OnboardingAuth {
         persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
     ) -> Promise<Void> {
         Current.Log.info()
-        let identifier = persisted?.identifier ?? api.server.identifier
         return firstly {
             when(resolved: api.tokenManager.revokeToken()).asVoid()
         }.done {
             api.connection.disconnect()
 
-            if let previousInfo = persisted?.previousInfo {
+            // Nothing persisted yet: a server stored under this identifier is not ours to remove.
+            guard let persisted else { return }
+            let identifier = persisted.identifier
+
+            if let previousInfo = persisted.previousInfo {
                 // This onboarding overwrote a server the user already had, so put it back instead
                 // of deleting it along with everything keyed to its identifier.
                 Current.servers.add(identifier: identifier, serverInfo: previousInfo)

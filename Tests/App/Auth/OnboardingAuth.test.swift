@@ -176,6 +176,20 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(Current.servers.server(for: identifier)?.info, existingInfo)
     }
 
+    func testFailureBeforeAnythingIsPersistedKeepsAnExistingServer() throws {
+        let uuid = try XCTUnwrap(instance.uuid)
+        let identifier = Identifier<Server>(rawValue: uuid)
+        let existingInfo = with(ServerInfo.fake()) {
+            $0.remoteName = "Server from before onboarding"
+        }
+        Current.servers.add(identifier: identifier, serverInfo: existingInfo)
+
+        let result = auth(postBeforeRegister: [.value(()), .init(error: TestError.cancelled)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(Current.servers.server(for: identifier)?.info, existingInfo)
+    }
+
     /// A server added next to an existing one is asked what it should receive at the end of
     /// onboarding, so it must not be handed this device's location or the sensors the user switched
     /// on for another one on its way through registration.
