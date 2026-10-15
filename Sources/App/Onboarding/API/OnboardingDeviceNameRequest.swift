@@ -2,7 +2,7 @@ import Foundation
 
 /// A request from `OnboardingAuthStepDeviceNaming` for the user to name this device, pushed onto the
 /// onboarding navigation stack. Name conflicts keep the screen up and surface `errorMessage` inline;
-/// popping the screen (back button) cancels the auth flow.
+/// leaving the screen unfinished cancels the auth flow.
 final class OnboardingDeviceNameRequest: ObservableObject, Identifiable {
     @Published private(set) var errorMessage: String?
     /// True from a save attempt until it fails; on success the screen stays up (with the indicator)
@@ -36,8 +36,8 @@ final class OnboardingDeviceNameRequest: ObservableObject, Identifiable {
         isFinished = true
     }
 
-    /// Called when the screen disappears; treats an unfinished dismissal (back button) as cancellation.
-    func cancelAfterDismissal() {
+    /// Idempotent: both the Cancel button and the screen disappearing call it.
+    func cancel() {
         guard !isFinished else { return }
         isFinished = true
         onCancel()
