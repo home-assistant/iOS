@@ -92,6 +92,7 @@ lane :test do
     project: 'HomeAssistant.xcodeproj',
     scheme: 'WatchApp',
     only_testing: ['HomeAssistant-WatchAppTests'],
+    parallel_testing: false,
     result_bundle: false,
     skip_package_dependencies_resolution: true,
     skip_detect_devices: true,
