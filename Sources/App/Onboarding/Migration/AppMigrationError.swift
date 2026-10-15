@@ -9,6 +9,7 @@ enum AppMigrationError: LocalizedError {
     case unsupportedVersion
     case previousAppUnavailable
     case newAppUnavailable
+    case previousAppErased
 
     var errorDescription: String? {
         switch self {
@@ -19,6 +20,7 @@ enum AppMigrationError: LocalizedError {
         case .unsupportedVersion: L10n.AppMigration.Error.unsupportedVersion
         case .previousAppUnavailable: L10n.AppMigration.Error.previousAppUnavailable
         case .newAppUnavailable: L10n.AppMigration.Error.newAppUnavailable
+        case .previousAppErased: L10n.AppMigration.Error.previousAppErased
         }
     }
 }

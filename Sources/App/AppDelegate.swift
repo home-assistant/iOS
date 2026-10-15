@@ -453,7 +453,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError("no firebase config found")
         }
 
-        notificationManager.setupFirebase()
+        // An app that handed its setup over must not come back with a push token of its own.
+        if MainActor.assumeIsolated({ AppMigrationCoordinator.shared.hasHandedOff }) {
+            MainActor.assumeIsolated { AppMigrationCoordinator.shared.releasePushRegistrationIfHandedOff() }
+        } else {
+            notificationManager.setupFirebase()
+        }
     }
 
     private func setupModels() {

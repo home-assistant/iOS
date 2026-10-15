@@ -5,6 +5,7 @@ import Shared
 /// previous app is in front, and the payload URL then cold-starts it.
 enum AppMigrationSessionStore {
     private static let keychainKey = "app_migration_session"
+    private static let completedKey = "app_migration_completed_session"
 
     private struct Record: Codable {
         let id: UUID
@@ -24,5 +25,14 @@ enum AppMigrationSessionStore {
 
     static func clear() {
         try? AppConstants.Keychain.remove(keychainKey)
+    }
+
+    /// The session whose payload was applied: the only one a later restart or erase may quote.
+    static func saveCompleted(_ sessionID: UUID) {
+        try? AppConstants.Keychain.set(sessionID.uuidString, key: completedKey)
+    }
+
+    static func loadCompleted() -> UUID? {
+        (try? AppConstants.Keychain.getString(completedKey))?.flatMap(UUID.init(uuidString:))
     }
 }

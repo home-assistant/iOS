@@ -1339,6 +1339,8 @@ public enum L10n {
       public static var newAppUnavailable: String { return L10n.tr("Localizable", "app_migration.error.new_app_unavailable") }
       /// Nothing was received from the previous app.
       public static var noPayload: String { return L10n.tr("Localizable", "app_migration.error.no_payload") }
+      /// The previous app has already been erased, so there is nothing left to transfer. Set this app up from scratch.
+      public static var previousAppErased: String { return L10n.tr("Localizable", "app_migration.error.previous_app_erased") }
       /// The previous Home Assistant app could not be opened.
       public static var previousAppUnavailable: String { return L10n.tr("Localizable", "app_migration.error.previous_app_unavailable") }
       /// Update the previous Home Assistant app before transferring.

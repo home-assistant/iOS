@@ -20,6 +20,11 @@ enum AppMigrationHandoffStore {
         defaults?.string(forKey: phaseKey) != nil
     }
 
+    /// A phase saved by a build that did not record the session falls back to one nothing can match.
+    private static var storedSessionID: UUID {
+        defaults?.string(forKey: sessionIDKey).flatMap(UUID.init(uuidString:)) ?? UUID()
+    }
+
     static func load() -> AppMigrationHandoffPhase? {
         switch defaults?.string(forKey: phaseKey) {
         case "requested":
@@ -28,9 +33,9 @@ enum AppMigrationHandoffStore {
                   let session = AppMigrationSession(id: id, keyString: key) else { return nil }
             return .requested(session, startedHere: defaults?.bool(forKey: startedHereKey) ?? false)
         case "handedOff":
-            return .handedOff
+            return .handedOff(sessionID: storedSessionID)
         case "erased":
-            return .erased
+            return .erased(sessionID: storedSessionID)
         default:
             return nil
         }
@@ -47,10 +52,12 @@ enum AppMigrationHandoffStore {
             defaults.set(session.id.uuidString, forKey: sessionIDKey)
             defaults.set(session.keyString, forKey: sessionKeyKey)
             defaults.set(startedHere, forKey: startedHereKey)
-        case .handedOff:
+        case let .handedOff(sessionID):
             defaults.set("handedOff", forKey: phaseKey)
-        case .erased:
+            defaults.set(sessionID.uuidString, forKey: sessionIDKey)
+        case let .erased(sessionID):
             defaults.set("erased", forKey: phaseKey)
+            defaults.set(sessionID.uuidString, forKey: sessionIDKey)
         case nil:
             defaults.removeObject(forKey: phaseKey)
         }

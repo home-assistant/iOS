@@ -9,10 +9,12 @@ enum WebhookError: LocalizedError, Equatable, CancellableError {
     case unacceptableStatusCode(Int)
     case unmappableValue
     case replaced
+    /// The app is handing its setup to another app: nothing may reach the server from here.
+    case connectionsSuspended
 
     var isCancelled: Bool {
         switch self {
-        case .replaced: return true
+        case .replaced, .connectionsSuspended: return true
         default: return false
         }
     }
@@ -30,6 +32,9 @@ enum WebhookError: LocalizedError, Equatable, CancellableError {
         case .replaced:
             // this shouldn't be user-facing
             return "<replaced>"
+        case .connectionsSuspended:
+            // nor this one: the app is mid-handoff and shows only the transfer screen
+            return "<suspended>"
         }
     }
 }
@@ -219,7 +224,11 @@ public class WebhookManager: NSObject {
         request: WebhookRequest,
         overrideURL: URL? = nil
     ) -> Promise<ResponseType> {
-        Current.backgroundTask(withName: BackgroundTask.webhookSendEphemeral.rawValue) { [self, dataQueue] _ in
+        guard !HomeAssistantAPI.connectionsSuspended else {
+            Current.Log.info("dropping ephemeral webhook \(request.type) while connections are suspended")
+            return Promise(error: WebhookError.connectionsSuspended)
+        }
+        return Current.backgroundTask(withName: BackgroundTask.webhookSendEphemeral.rawValue) { [self, dataQueue] _ in
             attemptNetworking {
                 firstly {
                     Self.urlRequest(for: request, server: server, baseURL: overrideURL)
@@ -310,6 +319,10 @@ public class WebhookManager: NSObject {
         server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
+        guard !HomeAssistantAPI.connectionsSuspended else {
+            Current.Log.info("dropping webhook \(request.type) while connections are suspended")
+            return Promise(error: WebhookError.connectionsSuspended)
+        }
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [dataQueue] in
@@ -361,6 +374,10 @@ public class WebhookManager: NSObject {
         server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
+        guard !HomeAssistantAPI.connectionsSuspended else {
+            Current.Log.info("dropping passive webhook \(request.type) while connections are suspended")
+            return Promise(error: WebhookError.connectionsSuspended)
+        }
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [self] in
