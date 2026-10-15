@@ -76,8 +76,8 @@ class DevicePoseSensorTests: XCTestCase {
 
         XCTAssertEqual(sensor.UniqueID, "device_pose")
         XCTAssertEqual(sensor.Name, "Pose")
-        XCTAssertEqual(sensor.State as? String, "book")
-        XCTAssertEqual(sensor.Icon, "mdi:book-open-variant")
+        XCTAssertEqual(sensor.State as? String, "laptop")
+        XCTAssertEqual(sensor.Icon, "mdi:laptop")
     }
 
     func testEachPoseReportsItsOwnIcon() {

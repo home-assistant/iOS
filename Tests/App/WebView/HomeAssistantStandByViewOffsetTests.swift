@@ -36,9 +36,28 @@ struct HomeAssistantStandByViewOffsetTests {
         #expect(offset.width == -42)
     }
 
-    @Test("The empty state stays inside the safe area")
-    func emptyStateKeepsTheSafeArea() {
+    @Test("The empty state is centred on the display width but stays inside the vertical safe area")
+    func emptyStateOnlyShiftsHorizontally() {
         let insets = EdgeInsets(top: 59, leading: 0, bottom: 34, trailing: 84)
+        let offset = HomeAssistantStandByView.contentOffset(
+            safeAreaInsets: insets,
+            layoutDirection: .leftToRight,
+            showsEmptyState: true
+        )
+        #expect(offset == CGSize(width: 42, height: 0))
+
+        let mirrored = EdgeInsets(top: 59, leading: 84, bottom: 34, trailing: 0)
+        let mirroredOffset = HomeAssistantStandByView.contentOffset(
+            safeAreaInsets: mirrored,
+            layoutDirection: .rightToLeft,
+            showsEmptyState: true
+        )
+        #expect(mirroredOffset == CGSize(width: 42, height: 0))
+    }
+
+    @Test("Without horizontal insets the empty state keeps its safe-area layout untouched")
+    func emptyStateWithoutHorizontalInsetsIsNotShifted() {
+        let insets = EdgeInsets(top: 59, leading: 0, bottom: 34, trailing: 0)
         let offset = HomeAssistantStandByView.contentOffset(
             safeAreaInsets: insets,
             layoutDirection: .leftToRight,

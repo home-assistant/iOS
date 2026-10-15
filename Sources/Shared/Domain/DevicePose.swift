@@ -20,9 +20,9 @@ public enum DevicePose: String, CaseIterable, Sendable {
         case .partiallyOpen:
             switch orientation {
             case UIDeviceOrientationRawValue.portrait, UIDeviceOrientationRawValue.portraitUpsideDown:
-                self = .laptop
-            case UIDeviceOrientationRawValue.landscapeLeft, UIDeviceOrientationRawValue.landscapeRight:
                 self = .book
+            case UIDeviceOrientationRawValue.landscapeLeft, UIDeviceOrientationRawValue.landscapeRight:
+                self = .laptop
             default:
                 self = .partiallyOpen
             }

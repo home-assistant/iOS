@@ -1,4 +1,5 @@
 import Alamofire
+import Combine
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
@@ -249,6 +250,40 @@ final class WebViewControllerTests: XCTestCase {
 
         XCTAssertTrue(pendingTimer === sut.emptyStateTimer)
         XCTAssertTrue(pendingTimer.isValid)
+    }
+
+    /// A page that loaded while the scene was away is still waiting for its `config/get` reply, and nothing
+    /// else would make the frontend ask again.
+    func testBecomingActiveDeliversFrontendMessagesHeldInTheBackground() {
+        let sut = makeSUT()
+        let externalMessageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = externalMessageHandler
+        let scriptMessageHandler = sut.webViewScriptMessageHandler
+        scriptMessageHandler.isAppInBackground = { true }
+        scriptMessageHandler.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "config/get"])
+
+        scriptMessageHandler.isAppInBackground = { false }
+        sut.handleSceneDidActivate()
+
+        XCTAssertEqual(externalMessageHandler.handledExternalMessages.map { $0["type"] as? String }, ["config/get"])
+    }
+
+    /// Only a return from the background tells the host: dismissing a system alert activates the scene without
+    /// it having been away.
+    func testBecomingActiveTellsTheHostOnlyWhenTheSceneReturnsFromTheBackground() {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        var returns = 0
+        let subscription = overlayState.sceneReturnedFromBackground.sink { returns += 1 }
+        defer { subscription.cancel() }
+
+        sut.handleSceneDidActivate()
+        XCTAssertEqual(returns, 0)
+
+        sut.handleSceneDidEnterBackground()
+        sut.handleSceneDidActivate()
+        XCTAssertEqual(returns, 1)
     }
 
     /// Multi-window: another window going to the background says nothing about this frontend.
@@ -1387,6 +1422,38 @@ final class WebViewControllerTests: XCTestCase {
         sut.openServerInSafari()
 
         XCTAssertNil(sut.currentPageURL)
+    }
+
+    func testOpenPanelNavigatesThroughFrontendWithRetries() throws {
+        let sut = makeSUT(server: .fake { $0.version = .canNavigateMoreInfoDialogThroughFrontend })
+        let messageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = messageHandler
+        sut.webView = WKWebView(frame: .zero)
+
+        try sut.openPanel(XCTUnwrap(URL(string: "https://home.local/?more-info-entity-id=binary_sensor.front_door")))
+        messageHandler.sendExternalBusCommandWithRetryCompletion?(true)
+
+        XCTAssertEqual(messageHandler.sendExternalBusCommandWithRetryCommand, .navigate)
+        XCTAssertEqual(
+            messageHandler.sendExternalBusCommandWithRetryPayload?["path"] as? String,
+            "/?more-info-entity-id=binary_sensor.front_door"
+        )
+        XCTAssertFalse(messageHandler.sendExternalBusCalled)
+        XCTAssertNil(sut.webView.url)
+    }
+
+    func testOpenPanelLoadsURLWhenFrontendNeverAcceptsNavigation() async throws {
+        let sut = makeSUT(server: .fake { $0.version = .canNavigateMoreInfoDialogThroughFrontend })
+        let messageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = messageHandler
+        sut.webView = WKWebView(frame: .zero)
+        let url = try XCTUnwrap(URL(string: "https://home.local/?more-info-entity-id=binary_sensor.front_door"))
+
+        sut.openPanel(url)
+        messageHandler.sendExternalBusCommandWithRetryCompletion?(false)
+
+        await waitUntil { sut.webView.url == url }
+        XCTAssertEqual(sut.webView.url, url)
     }
 
     func testCurrentPageURLDropsTheQueryWhenOnlyExternalAuthWasPresent() async throws {

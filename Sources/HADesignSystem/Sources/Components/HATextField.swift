@@ -8,15 +8,24 @@ import SwiftUI
 public struct HATextField: View {
     let placeholder: String
     @Binding var text: String
+    let isFocused: FocusState<Bool>.Binding?
 
-    public init(placeholder: String, text: Binding<String>) {
+    /// - Parameter isFocused: Tracks whether the field is being edited, for a caller that commits
+    ///   the value when editing ends.
+    public init(placeholder: String, text: Binding<String>, isFocused: FocusState<Bool>.Binding? = nil) {
         self.placeholder = placeholder
         self._text = text
+        self.isFocused = isFocused
     }
 
     public var body: some View {
         HStack {
             TextField(placeholder, text: $text)
+                .modify { field in
+                    if let isFocused {
+                        field.focused(isFocused)
+                    }
+                }
             Button(action: {
                 text = ""
             }, label: {

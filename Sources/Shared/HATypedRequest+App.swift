@@ -6,9 +6,10 @@ public extension HATypedRequest {
     /// Returns nil if the domain doesn't have a main action.
     static func executeMainAction(
         domain: Domain,
-        entityId: String
+        entityId: String,
+        state: String = ""
     ) -> HATypedRequest<HAResponseVoid>? {
-        guard let action = domain.mainAction else { return nil }
+        guard let action = domain.mainAction(state: state) else { return nil }
         return HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [

@@ -14,6 +14,12 @@ public struct HAControlSwitch: View {
     private let iconOff: MaterialDesignIcons?
     private let isDisabled: Bool
     private let label: String?
+    private let onColor: Color
+    private let offColor: Color
+    private let thickness: CGFloat
+    private let cornerRadius: CGFloat
+    private let padding: CGFloat
+    private let iconSize: CGFloat
     @Binding private var isOn: Bool
 
     /// - Parameter reversed: Starts the block at the far end, so switching on moves it towards the
@@ -25,7 +31,13 @@ public struct HAControlSwitch: View {
         iconOn: MaterialDesignIcons? = nil,
         iconOff: MaterialDesignIcons? = nil,
         isDisabled: Bool = false,
-        label: String? = nil
+        label: String? = nil,
+        onColor: Color = .haPrimary,
+        offColor: Color = .haDisabled,
+        thickness: CGFloat = 40,
+        cornerRadius: CGFloat = DesignSystem.CornerRadius.oneAndHalf,
+        padding: CGFloat = DesignSystem.Spaces.half,
+        iconSize: CGFloat = 20
     ) {
         _isOn = isOn
         self.vertical = vertical
@@ -34,15 +46,18 @@ public struct HAControlSwitch: View {
         self.iconOff = iconOff
         self.isDisabled = isDisabled
         self.label = label
+        self.onColor = onColor
+        self.offColor = offColor
+        self.thickness = thickness
+        self.cornerRadius = cornerRadius
+        self.padding = padding
+        self.iconSize = iconSize
     }
-
-    private static let thickness: CGFloat = 40
-    private static let padding = DesignSystem.Spaces.half
 
     /// On tints with the brand colour, off with the disabled grey — the block and the track behind
     /// it share the colour, the track at 20%.
     private var tint: Color {
-        isOn ? .haPrimary : .haDisabled
+        isOn ? onColor : offColor
     }
 
     /// Switching on moves the block to the far end; `reversed` swaps which end that is.
@@ -58,7 +73,7 @@ public struct HAControlSwitch: View {
 
     public var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf)
+            RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(tint.opacity(0.2))
             // The block is half the track, as `.switch .button { width: 50% }` is — not a thumb.
             // An equally weighted spacer on one side is what splits it, so no measurement is needed.
@@ -66,11 +81,11 @@ public struct HAControlSwitch: View {
                 if isAtFarEnd {
                     Color.clear.frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf - Self.padding)
+                RoundedRectangle(cornerRadius: cornerRadius - padding)
                     .fill(tint)
                     .overlay {
                         if let icon = isOn ? iconOn : iconOff {
-                            MaterialDesignIconsImage(icon: icon, size: 20)
+                            MaterialDesignIconsImage(icon: icon, size: iconSize)
                                 .foregroundStyle(.white)
                         }
                     }
@@ -79,11 +94,11 @@ public struct HAControlSwitch: View {
                     Color.clear.frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            .padding(Self.padding)
+            .padding(padding)
         }
         .frame(
-            width: vertical ? Self.thickness : nil,
-            height: vertical ? nil : Self.thickness
+            width: vertical ? thickness : nil,
+            height: vertical ? nil : thickness
         )
         .opacity(isDisabled ? 0.5 : 1)
         .contentShape(Rectangle())

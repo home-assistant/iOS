@@ -51,10 +51,12 @@ struct FrontendComponentMappingTests {
             "\(name) contains something other than a tag character"
         )
         // `ha-` and `hui-` are the frontend's two element prefixes; the chart modules under
-        // `src/components/chart/` are imported directly and so have neither.
-        let isElement = name.hasPrefix("ha-") || name.hasPrefix("hui-")
+        // `src/components/chart/` are imported directly and so have neither. The more-info controls
+        // and the state cards are elements too, registered without a prefix of their own:
+        // `more-info-climate`, `state-card-scene`.
+        let isElement = ["ha-", "hui-", "more-info-", "state-card-"].contains { name.hasPrefix($0) }
         let isChartModule = name.hasPrefix("state-history-chart-") || name == "statistics-chart"
-        #expect(isElement || isChartModule, "\(name) is neither an ha-/hui- element nor a chart module")
+        #expect(isElement || isChartModule, "\(name) is neither a frontend element nor a chart module")
     }
 
     /// A port is only correct as of some frontend state, so every mapped component records which.
@@ -109,5 +111,7 @@ struct FrontendComponentMappingTests {
         #expect(DesignSystemComponent.sparkline.frontendComponentName == "hui-graph-base")
         #expect(DesignSystemComponent.historyChart.frontendComponentName == "state-history-chart-line")
         #expect(HATipView.frontendComponentName == "ha-tip")
+        #expect(DesignSystemComponent.moreInfoClimate.frontendComponentName == "more-info-climate")
+        #expect(DesignSystemComponent.moreInfoScene.frontendComponentName == "state-card-scene")
     }
 }

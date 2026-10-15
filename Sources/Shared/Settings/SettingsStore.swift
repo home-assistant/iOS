@@ -682,6 +682,15 @@ public class SettingsStore {
         }
     }
 
+    public var notifyOnLocalPushStateChanges: Bool {
+        get {
+            prefs.bool(forKey: "notifyOnLocalPushStateChanges")
+        }
+        set {
+            prefs.set(newValue, forKey: "notifyOnLocalPushStateChanges")
+        }
+    }
+
     public static let defaultWebViewEmptyStateTimeout = 5
 
     /// Seconds the frontend can stay disconnected before the web view shows its empty state

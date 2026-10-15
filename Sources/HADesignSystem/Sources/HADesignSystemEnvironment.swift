@@ -76,6 +76,86 @@ public struct HADesignSystemEnvironment {
         public var adjustLowerTarget = "Adjust lower target"
         /// Named accessibility action selecting a dual dial's upper target.
         public var adjustUpperTarget = "Adjust upper target"
+        /// Accessibility label for the minus button under a more-info dial.
+        public var decrease = "Decrease"
+        /// Accessibility label for the plus button under a more-info dial.
+        public var increase = "Increase"
+        /// Accessibility label for `HAStateControlToggle`'s switch.
+        public var toggle = "Toggle"
+        /// Accessibility label for `HAStateControlToggle`'s on button, shown for an assumed state.
+        public var turnOn = "Turn on"
+        /// Accessibility label for `HAStateControlToggle`'s off button, shown for an assumed state.
+        public var turnOff = "Turn off"
+        /// What `HAMoreInfoLock` locks with.
+        public var lock = "Lock"
+        /// What `HAMoreInfoLock` unlocks with.
+        public var unlock = "Unlock"
+        /// `HAMoreInfoLock`'s open button.
+        public var openDoor = "Open door"
+        /// `HAMoreInfoLock`'s open button once tapped, asking for a second tap.
+        public var openDoorConfirm = "Really open?"
+        /// What `HAMoreInfoLock` says once the door has been opened.
+        public var openDoorDone = "Door open"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s shuffle button.
+        public var shuffle = "Shuffle"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s repeat button.
+        public var repeatMode = "Repeat"
+        /// Accessibility value of `HAMoreInfoMediaPlayer`'s repeat button with repeat off.
+        public var repeatOff = "Off"
+        /// Accessibility value of `HAMoreInfoMediaPlayer`'s repeat button repeating everything.
+        public var repeatAll = "All"
+        /// Accessibility value of `HAMoreInfoMediaPlayer`'s repeat button repeating one track.
+        public var repeatOne = "One"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s stop button.
+        public var stop = "Stop"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s mute button.
+        public var mute = "Mute"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s unmute button.
+        public var unmute = "Unmute"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s volume slider.
+        public var volume = "Volume"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s volume-down button.
+        public var volumeDown = "Volume down"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s volume-up button.
+        public var volumeUp = "Volume up"
+        /// Accessibility label for `HAMoreInfoMediaPlayer`'s position slider.
+        public var trackPosition = "Track position"
+        /// `HAMoreInfoTimer`'s start action.
+        public var timerStart = "Start"
+        /// `HAMoreInfoTimer`'s action restarting a running timer with the entered duration.
+        public var timerSet = "Set"
+        /// `HAMoreInfoTimer`'s pause action.
+        public var timerPause = "Pause"
+        /// `HAMoreInfoTimer`'s cancel action.
+        public var timerCancel = "Cancel"
+        /// `HAMoreInfoTimer`'s finish action.
+        public var timerFinish = "Finish"
+        /// `HAMoreInfoUpdate`'s install button.
+        public var updateInstall = "Update"
+        /// `HAMoreInfoUpdate`'s skip button.
+        public var updateSkip = "Skip"
+        /// `HAMoreInfoUpdate`'s button undoing a skip.
+        public var updateClearSkipped = "Clear skipped"
+        /// `HAMoreInfoUpdate`'s link to the release notes.
+        public var updateReleaseAnnouncement = "Read release announcement"
+        /// `HAMoreInfoCover`'s toggle to the position sliders.
+        public var coverPositionMode = "Position"
+        /// `HAMoreInfoCover`'s toggle to the open/stop/close buttons.
+        public var coverButtonsMode = "Buttons"
+        /// `HAMoreInfoLight`'s toggle to the brightness slider.
+        public var lightBrightness = "Brightness"
+        /// `HAMoreInfoLight`'s toggle to the colour wheel.
+        public var lightColor = "Color"
+        /// `HAMoreInfoLight`'s toggle to the colour-temperature slider.
+        public var lightColorTemperature = "Color temperature"
+        /// `HAMoreInfoLight`'s button switching a colour light back to white.
+        public var lightSetWhite = "Set white"
+        /// `HAMoreInfoScene`'s button.
+        public var sceneActivate = "Activate"
+        /// The vacuum's clean-by-area entry in `HAMoreInfoVacuum`.
+        public var vacuumCleaning = "Cleaning"
+        /// The value under `vacuumCleaning`.
+        public var vacuumByArea = "By area"
 
         public init() {}
     }

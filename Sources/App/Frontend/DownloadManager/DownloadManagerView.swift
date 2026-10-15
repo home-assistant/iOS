@@ -101,9 +101,7 @@ struct DownloadManagerView: View {
                         .onAppear {
                             shareWrapper = .init(url: url)
                         }
-                        .sheet(item: $shareWrapper, onDismiss: {}, content: { data in
-                            ActivityViewController(shareWrapper: data)
-                        })
+                        .shareSheet(item: $shareWrapper)
                 }
             }
         }

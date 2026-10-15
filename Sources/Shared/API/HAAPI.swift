@@ -62,6 +62,15 @@ public class HomeAssistantAPI {
 
     private var rejectedReconnectAttempts = 0
     private var rejectedReconnectWorkItem: DispatchWorkItem?
+    private var connectivityObserver: NSObjectProtocol?
+
+    /// Carries a sensor update that failed to reach this server to a later attempt.
+    private(set) lazy var sensorUpdateRetry = SensorUpdateRetry { [weak self] providers in
+        guard let self else { return .value(()) }
+        return Current.backgroundTask(withName: BackgroundTask.sensorUpdateRetry.rawValue) { _ in
+            self.UpdateSensors(trigger: .Retry, limitedTo: providers)
+        }
+    }
 
     /// Backoff (seconds) for reconnect attempts after a rejected websocket; its count also bounds the
     /// number of attempts. Overridable for tests.
@@ -185,6 +194,20 @@ public class HomeAssistantAPI {
         removeOldDownloadDirectory()
 
         Current.sensors.register(observer: self)
+
+        self.connectivityObserver = NotificationCenter.default.addObserver(
+            forName: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.reconnectWebSocketIfStillConnecting()
+        }
+    }
+
+    deinit {
+        if let connectivityObserver {
+            NotificationCenter.default.removeObserver(connectivityObserver)
+        }
     }
 
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
@@ -302,11 +325,10 @@ public class HomeAssistantAPI {
 
     static func shouldAttemptAutomaticWebSocketConnect(for state: HAConnectionState) -> Bool {
         switch state {
-        case .disconnected(reason: .disconnected):
+        case .disconnected(reason: .disconnected), .connecting:
             return true
         case .disconnected(reason: .waitingToReconnect),
              .disconnected(reason: .rejected),
-             .connecting,
              .authenticating,
              .ready:
             return false
@@ -321,6 +343,12 @@ public class HomeAssistantAPI {
             return
         }
 
+        connection.connect()
+    }
+
+    func reconnectWebSocketIfStillConnecting() {
+        guard case .connecting = connection.state else { return }
+        Current.Log.info("network changed while websocket is connecting; re-evaluating its URL")
         connection.connect()
     }
 
@@ -942,7 +970,7 @@ public class HomeAssistantAPI {
             }
         } else {
             // Use domain's main action for all other domains
-            request = .executeMainAction(domain: domain, entityId: entityId)
+            request = .executeMainAction(domain: domain, entityId: entityId, state: state)
         }
 
         if let request {
@@ -1001,7 +1029,10 @@ public class HomeAssistantAPI {
         limitedTo: [SensorProvider.Type]?,
         location: CLLocation? = nil
     ) -> Promise<Void> {
-        firstly {
+        let retry = sensorUpdateRetry
+        let generation = retry.beginUpdate()
+
+        return firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
                 limitedTo: limitedTo,
@@ -1024,7 +1055,15 @@ public class HomeAssistantAPI {
                     identifier: .updateSensors,
                     server: server,
                     request: .init(type: "update_sensor_states", data: payload)
-                )
+                ).tap { result in
+                    switch result {
+                    case .fulfilled:
+                        retry.noteSuccess(generation: generation, limitedTo: limitedTo)
+                    case let .rejected(error):
+                        Current.Log.error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        retry.noteFailure(generation: generation, limitedTo: limitedTo)
+                    }
+                }
             }
         }
     }

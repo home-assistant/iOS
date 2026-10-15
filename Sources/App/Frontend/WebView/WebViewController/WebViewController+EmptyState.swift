@@ -123,8 +123,15 @@ extension WebViewController {
     /// when the scene went to the background starts over, since the frontend could not use the part the
     /// scene slept through.
     func handleSceneDidActivate() {
+        // What the frontend reported while the scene was away settles the connection state read below, and a
+        // page that loaded in the background is still waiting for its `config/get` reply.
+        webViewScriptMessageHandler.deliverDeferredMessages()
+
         let returnedFromBackground = didEnterBackgroundSinceLastActivation
         didEnterBackgroundSinceLastActivation = false
+        if returnedFromBackground {
+            overlayState?.sceneReturnedFromBackground.send()
+        }
 
         guard isEmptyStateDeferredUntilActive else {
             if returnedFromBackground, emptyStateTimer != nil {

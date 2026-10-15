@@ -78,10 +78,17 @@ public class LocalPushManager {
 
     public var state: State = .establishing {
         didSet {
+            if case let .available(received) = state {
+                receivedCountAcrossReconnects = received
+            }
             NotificationCenter.default.post(name: Self.stateDidChange, object: self)
+            reportTransitionIfNeeded(from: oldValue, to: state)
         }
     }
 
+    private var receivedCountAcrossReconnects = 0
+    private var pendingTransitionReason: String?
+    private var connectionStateToken: NSObjectProtocol?
     private var tokens = [HACancellable]()
 
     public init(
@@ -109,6 +116,10 @@ public class LocalPushManager {
             subscription.cancel()
         } else {
             Current.Log.info("no active subscription")
+        }
+        if let connectionStateToken {
+            NotificationCenter.default.removeObserver(connectionStateToken)
+            self.connectionStateToken = nil
         }
         NotificationCenter.default.removeObserver(self)
     }
@@ -145,6 +156,8 @@ public class LocalPushManager {
             return
         }
 
+        observeConnectionState(of: connection)
+
         subscription = .init(
             token: connection.subscribe(
                 to: .localPush(webhookID: webhookID, serverVersion: server.info.version),
@@ -162,11 +175,91 @@ public class LocalPushManager {
         switch result {
         case let .failure(error):
             Current.Log.error("failed to subscribe to notifications: \(error)")
+            pendingTransitionReason = String(describing: error)
             state = .unavailable
         case .success:
             Current.Log.info("started")
-            state = .available(received: 0)
+            state = .available(received: receivedCountAcrossReconnects)
         }
+    }
+
+    private func observeConnectionState(of connection: HAConnection) {
+        if let connectionStateToken {
+            NotificationCenter.default.removeObserver(connectionStateToken)
+        }
+        connectionStateToken = NotificationCenter.default.addObserver(
+            forName: HAConnectionState.didTransitionToStateNotification,
+            object: connection,
+            queue: nil
+        ) { [weak self, weak connection] _ in
+            guard let self, let connection else { return }
+            handle(connectionState: connection.state)
+        }
+    }
+
+    private func handle(connectionState: HAConnectionState) {
+        guard case let .disconnected(reason) = connectionState, case .available = state else {
+            return
+        }
+        Current.Log.info("connection dropped while subscribed: \(reason)")
+        pendingTransitionReason = Self.describe(disconnectReason: reason)
+        state = .unavailable
+    }
+
+    private static func describe(disconnectReason reason: HAConnectionState.DisconnectReason) -> String {
+        switch reason {
+        case .disconnected:
+            return "disconnected"
+        case let .waitingToReconnect(lastError, _, retryCount):
+            if let lastError {
+                return "\(lastError.localizedDescription) (retry \(retryCount))"
+            }
+            return "waiting to reconnect (retry \(retryCount))"
+        case .rejected:
+            return "connection rejected"
+        }
+    }
+
+    private func reportTransitionIfNeeded(from oldState: State, to newState: State) {
+        let reason = pendingTransitionReason
+        pendingTransitionReason = nil
+
+        let wasAvailable: Bool
+        if case .available = oldState {
+            wasAvailable = true
+        } else {
+            wasAvailable = false
+        }
+        let isAvailable: Bool
+        if case .available = newState {
+            isAvailable = true
+        } else {
+            isAvailable = false
+        }
+        guard wasAvailable != isAvailable else { return }
+
+        let serverName = server.info.name
+        let title: String
+        let body: String
+        if isAvailable {
+            title = L10n.LocalPush.StateNotification.Connected.title
+            body = L10n.LocalPush.StateNotification.Connected.body(serverName)
+        } else {
+            title = L10n.LocalPush.StateNotification.Disconnected.title
+            body = L10n.LocalPush.StateNotification.Disconnected.body(serverName, reason ?? "unknown")
+        }
+
+        Current.clientEventStore.addEvent(ClientEvent(
+            text: title,
+            type: .notification,
+            payload: [
+                "server_id": server.identifier.rawValue,
+                "server_name": serverName,
+                "reason": reason ?? "",
+                "received": receivedCountAcrossReconnects,
+            ]
+        ))
+        Current.notificationDispatcher.send(.init(id: .localPushStateChanged, title: title, body: body))
     }
 
     private func handle(event: LocalPushEvent) {
@@ -175,7 +268,7 @@ public class LocalPushManager {
         state.increment()
 
         let baseContent = event.content(server: server)
-        var userInfo = baseContent.userInfo
+        let userInfo = baseContent.userInfo
         let isLiveActivity = Self.isLiveActivityCommand(userInfo)
 
         Current.notificationHistoryStore.record(NotificationHistoryEntry(
@@ -183,20 +276,7 @@ public class LocalPushManager {
             kind: isLiveActivity ? .liveActivityLocal : .local
         ))
 
-        if isLiveActivity, let confirmID = event.confirmID {
-            userInfo[Self.confirmIDUserInfoKey] = confirmID
-        }
-
         delegate?.localPushManager(self, didReceiveRemoteNotification: userInfo)
-
-        if isLiveActivity {
-            // A live update only starts/updates the Live Activity via the delegate above, silent
-            // or not; it never surfaces a standalone banner (the widget is the only visual
-            // feedback, matching NotificationManager.willPresent). The confirm is owned by the
-            // live activity presentation path, so it stays deferred here.
-            Current.Log.info("local push: Live Activity command, updating activity only, deferring confirm")
-            return
-        }
 
         guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to handle local push event")
@@ -211,6 +291,17 @@ public class LocalPushManager {
                 webhookID: webhookID,
                 confirmID: confirmID
             )).promise.map { _ in () }
+        }
+
+        if isLiveActivity {
+            // A live update only starts/updates the Live Activity via the delegate above, silent
+            // or not; it never surfaces a standalone banner (the widget is the only visual
+            // feedback, matching NotificationManager.willPresent). Receipt is confirmed right
+            // away: the server tears the channel down if the confirm is late, and the hand-off
+            // to the app can only run once the app is next active.
+            Current.Log.info("local push: Live Activity command, updating activity only")
+            confirmReceipt().cauterize()
+            return
         }
 
         if Self.isCommand(userInfo) {
@@ -245,8 +336,6 @@ public class LocalPushManager {
             }
         }
     }
-
-    static let confirmIDUserInfoKey = "hass_confirm_id"
 
     private static func isLiveActivityCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
         guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }

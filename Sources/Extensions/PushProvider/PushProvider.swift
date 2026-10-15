@@ -16,6 +16,15 @@ import UserNotifications
     }
 
     private var localPushManagers = [LocalPushManager]()
+    private var stateSyncs = [LocalPushStateSync]()
+
+    private func replaceLocalPushManagers(with newManagers: [LocalPushManager]) {
+        for manager in localPushManagers where !newManagers.contains(where: { $0 === manager }) {
+            manager.invalidate()
+        }
+        localPushManagers = newManagers
+    }
+
     private var stateObservers = [NSObjectProtocol]() {
         willSet {
             for observer in stateObservers where !newValue.contains(where: { $0 === observer }) {
@@ -35,6 +44,10 @@ import UserNotifications
 
     override func start(completionHandler: @escaping (Error?) -> Void) {
         Current.Log.notify("starting", log: .info)
+
+        stateObservers.removeAll()
+        stateSyncs.removeAll()
+        replaceLocalPushManagers(with: [])
 
         periodicUpdateManager.connectAPI(reason: .background)
 
@@ -59,7 +72,7 @@ import UserNotifications
 
                 when(fulfilled: providers.map(pushProvider.localPushManager(for:))).done { newManagers in
                     Current.Log.notify("started push managers: \(newManagers.count)", log: .info)
-                    pushProvider.localPushManagers = newManagers
+                    pushProvider.replaceLocalPushManagers(with: newManagers)
                     didStartSeal.fulfill(())
                 }.catch { error in
                     didStartSeal.reject(error)
@@ -77,12 +90,16 @@ import UserNotifications
         stateObservers.removeAll()
         periodicUpdateManager.invalidatePeriodicUpdateTimer()
 
-        for manager in localPushManagers {
-            manager.invalidate()
+        let stoppedManagers = localPushManagers
+        replaceLocalPushManagers(with: [])
+        for manager in stoppedManagers {
             Current.api(for: manager.server)?.connection.disconnect()
         }
 
-        localPushManagers.removeAll()
+        for sync in stateSyncs {
+            sync.value = nil
+        }
+        stateSyncs.removeAll()
         completionHandler()
     }
 
@@ -104,11 +121,13 @@ import UserNotifications
 
         let valueSync = LocalPushStateSync(settingsKey: configuration.settingsKey)
         valueSync.value = localPushManager.state
+        stateSyncs.append(valueSync)
         stateObservers.append(NotificationCenter.default.addObserver(
             forName: LocalPushManager.stateDidChange,
             object: localPushManager,
             queue: nil
-        ) { [localPushManager] _ in
+        ) { [weak localPushManager] _ in
+            guard let localPushManager else { return }
             valueSync.value = localPushManager.state
         })
 
@@ -167,7 +186,7 @@ import UserNotifications
 
     func localPushManager(_ manager: LocalPushManager, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         commandManager.handle(userInfo).done {
-            Current.Log.notify("handled command: \(userInfo)", log: .info)
+            Current.Log.notify("handled command: \(LogRedaction.redactValues(in: userInfo))", log: .info)
         }.catch { error in
             Current.Log.notify("failed: \(error)", log: .info)
         }
