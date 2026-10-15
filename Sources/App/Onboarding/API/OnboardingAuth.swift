@@ -297,7 +297,14 @@ class OnboardingAuth {
             api.connection.disconnect()
 
             // Nothing persisted yet: a server stored under this identifier is not ours to remove.
-            guard let persisted else { return }
+            guard let persisted else {
+                // Webhooks sent during onboarding cache an API for the unsaved server; drop only that.
+                let identifier = api.server.identifier
+                if Current.cachedApis[identifier]?.server === api.server {
+                    Current.resetAPICache(for: [identifier])
+                }
+                return
+            }
             let identifier = persisted.identifier
 
             if let previousInfo = persisted.previousInfo {

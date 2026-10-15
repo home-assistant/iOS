@@ -105,20 +105,23 @@ final class OnboardingServersListViewModel: ObservableObject {
     func selectInstance(_ instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
         currentlyInstanceLoading = instance
         authPresenter = presenter
+        let attempt = UUID()
+        currentAuthAttempt = attempt
 
         // An instance found over mDNS already carries Home Assistant's instance ID; a URL the user
         // typed or an invitation link does not, so let discovery answer for that address first and
         // onboard under the identifier the discovery flow would have produced.
         guard !instance.hasHomeAssistantInstanceID else {
-            authenticate(to: instance, presenter: presenter)
+            authenticate(to: instance, presenter: presenter, attempt: attempt)
             return
         }
 
         Task { @MainActor [weak self] in
             guard let self else { return }
             let adopted = await instanceAdoptingDiscoveredInstanceID(instance)
+            guard currentAuthAttempt == attempt else { return }
             currentlyInstanceLoading = adopted
-            authenticate(to: adopted, presenter: presenter)
+            authenticate(to: adopted, presenter: presenter, attempt: attempt)
         }
     }
 
@@ -145,11 +148,12 @@ final class OnboardingServersListViewModel: ObservableObject {
         return instance
     }
 
-    private func authenticate(to instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
+    private func authenticate(
+        to instance: DiscoveredHomeAssistant,
+        presenter: OnboardingAuthPresenter,
+        attempt: UUID
+    ) {
         Current.Log.verbose("Selected instance \(instance)")
-
-        let attempt = UUID()
-        currentAuthAttempt = attempt
 
         authenticateInstance(instance, presenter).pipe { [weak self] result in
             DispatchQueue.main.async {

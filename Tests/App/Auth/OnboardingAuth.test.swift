@@ -25,6 +25,7 @@ class OnboardingAuthTests: XCTestCase {
 
     override func tearDown() {
         Current.connectivity.currentNetworkState = previousCurrentNetworkState
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = nil
 
         super.tearDown()
     }
@@ -188,6 +189,32 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertThrowsError(try hang(result))
 
         XCTAssertEqual(Current.servers.server(for: identifier)?.info, existingInfo)
+    }
+
+    func testFailureBeforeAnythingIsPersistedKeepsTheExistingServersAPI() throws {
+        let identifier = Identifier<Server>(rawValue: try XCTUnwrap(instance.uuid))
+        Current.servers.add(identifier: identifier, serverInfo: .fake())
+        let existingAPI = HomeAssistantAPI(server: try XCTUnwrap(Current.servers.server(for: identifier)))
+        Current.setCachedApi(existingAPI, for: identifier)
+
+        let result = auth(postBeforeRegister: [.value(()), .init(error: TestError.cancelled)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertTrue(Current.cachedApis[identifier] === existingAPI)
+    }
+
+    func testFailureBeforeAnythingIsPersistedDropsTheUnsavedServersAPI() throws {
+        var unsavedServer: Server?
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            unsavedServer = api.server
+            _ = Current.api(for: api.server)
+        }
+
+        let result = auth(postBeforeRegister: [.init(error: TestError.cancelled), .value(()), .value(())])
+        XCTAssertThrowsError(try hang(result))
+
+        let server = try XCTUnwrap(unsavedServer)
+        XCTAssertNil(Current.cachedApis[server.identifier])
     }
 
     /// A server added next to an existing one is asked what it should receive at the end of
@@ -753,8 +780,10 @@ class FakeOnboardingAuthPostStepBeforeRegister1: FakeOnboardingAuthPostStepBefor
 
     static var wasInvokedPromise: Guarantee<Void>?
     static var wasInvokedResolver: ((()) -> Void)?
+    static var onPerform: ((HomeAssistantAPI) -> Void)?
     override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         Self.wasInvoked = true
+        Self.onPerform?(api)
         return Self.result
     }
 }

@@ -142,6 +142,33 @@ struct OnboardingServersListViewModelTests {
         #expect(sut.currentlyInstanceLoading != nil)
     }
 
+    @Test @MainActor func testSupersededAuthResultDuringDiscoveryWaitKeepsNewerFlowLoading() async throws {
+        let mockBonjour = MockBonjour()
+        Current.bonjour = {
+            mockBonjour
+        }
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
+        sut.discoveryAdoptionTimeout = 1
+        let presenter = OnboardingAuthPresenter()
+        var resolvers: [Resolver<Server>] = []
+        sut.authenticateInstance = { _, _ in
+            let (promise, resolver) = Promise<Server>.pending()
+            resolvers.append(resolver)
+            return promise
+        }
+
+        sut.selectInstance(try Self.discoveredInstance(), presenter: presenter)
+        sut.manualInputLoading = true
+        let manualURL = try #require(URL(string: "http://192.168.1.2:8123"))
+        sut.selectInstance(.init(manualURL: manualURL), presenter: presenter)
+
+        resolvers[0].reject(PMKError.cancelled)
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        #expect(sut.manualInputLoading)
+        #expect(sut.currentlyInstanceLoading != nil)
+    }
+
     @Test @MainActor func testOnboardingCompletionUpdatesDatabaseForServer() async {
         let mockBonjour = MockBonjour()
         Current.bonjour = {
