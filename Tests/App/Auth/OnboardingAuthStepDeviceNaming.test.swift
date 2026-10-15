@@ -148,22 +148,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    func testCancelPopsTheDeviceNameScreenRightAway() throws {
-        let expectation = setupPresenter(actions: (.cancel, nil))
-
-        let result = step.perform(point: .beforeRegister)
-        try respond(result: .success([
-            .init(name: deviceName, identifier: "any_other"),
-        ]))
-        wait(for: [expectation], timeout: 10.0)
-
-        XCTAssertFalse(presenter.path.contains { destination in
-            if case .deviceName = destination { return true }
-            return false
-        })
-        XCTAssertThrowsError(try hang(result))
-    }
-
     func testCancelButtonCancelsOnce() {
         var cancelCount = 0
         let request = OnboardingDeviceNameRequest(onSave: { _, _ in }, onCancel: { cancelCount += 1 })

@@ -291,21 +291,24 @@ class OnboardingAuth {
         persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
     ) -> Promise<Void> {
         Current.Log.info()
+
+        guard let persisted else {
+            // Nothing to roll back, so the flow doesn't wait for a revocation that can run until timeout.
+            api.tokenManager.revokeToken().ensure { withExtendedLifetime(api) {} }.cauterize()
+            api.connection.disconnect()
+            // Webhooks sent during onboarding cache an API for the unsaved server; drop only that.
+            let identifier = api.server.identifier
+            if Current.cachedApis[identifier]?.server === api.server {
+                Current.resetAPICache(for: [identifier])
+            }
+            return .value(())
+        }
+
+        let identifier = persisted.identifier
         return firstly {
             when(resolved: api.tokenManager.revokeToken()).asVoid()
         }.done {
             api.connection.disconnect()
-
-            // Nothing persisted yet: a server stored under this identifier is not ours to remove.
-            guard let persisted else {
-                // Webhooks sent during onboarding cache an API for the unsaved server; drop only that.
-                let identifier = api.server.identifier
-                if Current.cachedApis[identifier]?.server === api.server {
-                    Current.resetAPICache(for: [identifier])
-                }
-                return
-            }
-            let identifier = persisted.identifier
 
             if let previousInfo = persisted.previousInfo {
                 // This onboarding overwrote a server the user already had, so put it back instead

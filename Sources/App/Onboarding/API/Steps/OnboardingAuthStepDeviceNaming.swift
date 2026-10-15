@@ -97,8 +97,6 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
                 }
             }, onCancel: {
                 resetFirstUserDeviceNameInput()
-                // Pop now; the cleanup waits for a token revocation that can run until timeout.
-                presenter.popAuthFlow()
                 seal.reject(PMKError.cancelled)
             })
 

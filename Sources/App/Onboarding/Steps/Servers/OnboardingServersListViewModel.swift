@@ -28,14 +28,6 @@ final class OnboardingServersListViewModel: ObservableObject {
     /// How long onboarding waits for mDNS to answer for a typed URL or an invitation link before
     /// settling for the locally generated identifier. Overridable so tests don't wait it out.
     var discoveryAdoptionTimeout: TimeInterval = 2
-
-    /// Overridable so tests control when the auth flow settles.
-    var authenticateInstance: (DiscoveredHomeAssistant, OnboardingAuthPresenter) -> Promise<Server> = {
-        OnboardingAuth().authenticate(to: $0, presenter: $1)
-    }
-
-    /// A cancelled flow settles only after token revocation, possibly while a newer flow runs.
-    private var currentAuthAttempt: UUID?
     private static let discoveryPollInterval = NSEC_PER_SEC / 10
 
     private var discovery = Current.bonjour()
@@ -105,23 +97,20 @@ final class OnboardingServersListViewModel: ObservableObject {
     func selectInstance(_ instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
         currentlyInstanceLoading = instance
         authPresenter = presenter
-        let attempt = UUID()
-        currentAuthAttempt = attempt
 
         // An instance found over mDNS already carries Home Assistant's instance ID; a URL the user
         // typed or an invitation link does not, so let discovery answer for that address first and
         // onboard under the identifier the discovery flow would have produced.
         guard !instance.hasHomeAssistantInstanceID else {
-            authenticate(to: instance, presenter: presenter, attempt: attempt)
+            authenticate(to: instance, presenter: presenter)
             return
         }
 
         Task { @MainActor [weak self] in
             guard let self else { return }
             let adopted = await instanceAdoptingDiscoveredInstanceID(instance)
-            guard currentAuthAttempt == attempt else { return }
             currentlyInstanceLoading = adopted
-            authenticate(to: adopted, presenter: presenter, attempt: attempt)
+            authenticate(to: adopted, presenter: presenter)
         }
     }
 
@@ -148,48 +137,35 @@ final class OnboardingServersListViewModel: ObservableObject {
         return instance
     }
 
-    private func authenticate(
-        to instance: DiscoveredHomeAssistant,
-        presenter: OnboardingAuthPresenter,
-        attempt: UUID
-    ) {
+    private func authenticate(to instance: DiscoveredHomeAssistant, presenter: OnboardingAuthPresenter) {
         Current.Log.verbose("Selected instance \(instance)")
 
-        // Cancel pops the auth pages before the flow settles; stop the spinners right then.
-        presenter.onAuthFlowPopped = { [weak self] in
-            guard let self, currentAuthAttempt == attempt else { return }
-            resetSpecificLoaders()
-        }
+        let authentication = OnboardingAuth()
 
-        authenticateInstance(instance, presenter).pipe { [weak self] result in
+        authentication.authenticate(to: instance, presenter: presenter).pipe { [weak self] result in
             DispatchQueue.main.async {
-                // A released list model means its pages are gone; the presenter may already show a newer flow.
-                guard let self, self.currentAuthAttempt == attempt else {
-                    Current.Log.verbose("Ignoring the result of a superseded onboarding authentication")
-                    return
-                }
                 switch result {
                 case let .fulfilled(server):
                     Current.Log.verbose("Onboarding authentication succeeded")
-                    self.authenticationSucceeded(server: server)
+                    self?.authenticationSucceeded(server: server)
                 case let .rejected(error):
                     // The flow is over; pop whatever auth pages are still pushed.
                     presenter.popAuthFlow()
                     if let pmkError = error as? PMKError, pmkError.isCancelled {
                         /* No action needed, user cancelled flow */
-                        self.resetFlow()
+                        self?.resetFlow()
                     } else if Current.isCatalyst {
                         // Pushed in the same update as the pop above so the path change is atomic;
                         // a sheet is not used here because sheets don't receive mouse events
                         // reliably on Mac Catalyst.
-                        self.resetFlow()
+                        self?.resetFlow()
                         presenter.push(.connectionError(.init(error: error)))
                     } else {
-                        self.error = error
-                        self.showError = true
+                        self?.error = error
+                        self?.showError = true
                     }
                 }
-                self.resetSpecificLoaders()
+                self?.resetSpecificLoaders()
             }
         }
     }

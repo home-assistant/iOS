@@ -1,7 +1,6 @@
 import Foundation
 @testable import HomeAssistant
 import ObjectMapper
-import PromiseKit
 @testable import Shared
 import Testing
 
@@ -114,102 +113,6 @@ struct OnboardingServersListViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
         #expect(sut.currentlyInstanceLoading?.uuid == manual.uuid)
         #expect(sut.currentlyInstanceLoading?.hasHomeAssistantInstanceID == false)
-    }
-
-    @Test @MainActor func testSupersededAuthResultDoesNotPopNewerFlow() async throws {
-        let mockBonjour = MockBonjour()
-        Current.bonjour = {
-            mockBonjour
-        }
-        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
-        let presenter = OnboardingAuthPresenter()
-        var resolvers: [Resolver<Server>] = []
-        sut.authenticateInstance = { _, _ in
-            let (promise, resolver) = Promise<Server>.pending()
-            resolvers.append(resolver)
-            return promise
-        }
-        let discovered = try Self.discoveredInstance()
-
-        sut.selectInstance(discovered, presenter: presenter)
-        sut.selectInstance(discovered, presenter: presenter)
-        presenter.push(.permissions(ServerFixture.standard))
-
-        resolvers[0].reject(PMKError.cancelled)
-        try await Task.sleep(nanoseconds: 200_000_000)
-
-        #expect(presenter.path.count == 1)
-        #expect(sut.currentlyInstanceLoading != nil)
-    }
-
-    @Test @MainActor func testSupersededAuthResultDuringDiscoveryWaitKeepsNewerFlowLoading() async throws {
-        let mockBonjour = MockBonjour()
-        Current.bonjour = {
-            mockBonjour
-        }
-        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
-        sut.discoveryAdoptionTimeout = 1
-        let presenter = OnboardingAuthPresenter()
-        var resolvers: [Resolver<Server>] = []
-        sut.authenticateInstance = { _, _ in
-            let (promise, resolver) = Promise<Server>.pending()
-            resolvers.append(resolver)
-            return promise
-        }
-
-        try sut.selectInstance(Self.discoveredInstance(), presenter: presenter)
-        sut.manualInputLoading = true
-        let manualURL = try #require(URL(string: "http://192.168.1.2:8123"))
-        sut.selectInstance(.init(manualURL: manualURL), presenter: presenter)
-
-        resolvers[0].reject(PMKError.cancelled)
-        try await Task.sleep(nanoseconds: 200_000_000)
-
-        #expect(sut.manualInputLoading)
-        #expect(sut.currentlyInstanceLoading != nil)
-    }
-
-    @Test @MainActor func testPoppingTheAuthFlowStopsTheSpinnersBeforeTheFlowSettles() throws {
-        let mockBonjour = MockBonjour()
-        Current.bonjour = {
-            mockBonjour
-        }
-        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
-        let presenter = OnboardingAuthPresenter()
-        sut.authenticateInstance = { _, _ in Promise<Server>.pending().promise }
-
-        sut.invitationLoading = true
-        try sut.selectInstance(Self.discoveredInstance(), presenter: presenter)
-        presenter.popAuthFlow()
-
-        #expect(!sut.invitationLoading)
-    }
-
-    @Test @MainActor func testResultIsIgnoredOnceTheListModelIsReleased() async throws {
-        let mockBonjour = MockBonjour()
-        Current.bonjour = {
-            mockBonjour
-        }
-        let presenter = OnboardingAuthPresenter()
-        var resolver: Resolver<Server>?
-        var sut: OnboardingServersListViewModel? = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
-        weak let releasedSut = sut
-        sut?.authenticateInstance = { _, _ in
-            let (promise, pending) = Promise<Server>.pending()
-            resolver = pending
-            return promise
-        }
-        try sut?.selectInstance(Self.discoveredInstance(), presenter: presenter)
-        // The mock holds its observer strongly; the real Bonjour holds it weakly.
-        mockBonjour.observer = nil
-        sut = nil
-        #expect(releasedSut == nil)
-        presenter.push(.permissions(ServerFixture.standard))
-
-        resolver?.reject(PMKError.cancelled)
-        try await Task.sleep(nanoseconds: 200_000_000)
-
-        #expect(presenter.path.count == 1)
     }
 
     @Test @MainActor func testOnboardingCompletionUpdatesDatabaseForServer() async {
