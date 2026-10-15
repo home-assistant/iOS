@@ -10,6 +10,17 @@ struct AppMigrationFlowView: View {
     let skipAction: () -> Void
     let finishAction: () -> Void
 
+    /// The permissions screen only earns its place when something can still be asked: what iOS has
+    /// already settled for this app, or cannot offer on this device, is left out. Notifications are
+    /// kept because their status is only known asynchronously.
+    static func permissionsStillToAsk(from granted: [SensorPermission]) -> [SensorPermission] {
+        let requester = SensorPermissionRequester.shared
+        return granted.filter { permission in
+            guard requester.isAvailable(permission) else { return false }
+            return permission == .notification || requester.status(for: permission) == .notDetermined
+        }
+    }
+
     /// Offered while the previous app is still around to be wiped.
     private var eraseAction: (() -> Void)? {
         guard coordinator.isPreviousAppInstalled else { return nil }
@@ -34,11 +45,12 @@ struct AppMigrationFlowView: View {
                 previousAppErased: coordinator.previousAppErased,
                 eraseAction: eraseAction
             ) {
-                if summary.grantedPermissions.isEmpty {
+                let pending = Self.permissionsStillToAsk(from: summary.grantedPermissions)
+                if pending.isEmpty {
                     coordinator.finishImport()
                     finishAction()
                 } else {
-                    permissionsToAllow = summary.grantedPermissions
+                    permissionsToAllow = pending
                 }
             }
             .navigationBarBackButtonHidden(true)
