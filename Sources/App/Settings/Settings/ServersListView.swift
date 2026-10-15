@@ -2,6 +2,10 @@ import Shared
 import SwiftUI
 
 struct ServersListView: View {
+    private enum Constants {
+        static let previewWidth: CGFloat = 360
+    }
+
     var macSidebarSelection: MacSettingsSidebarSelection?
 
     @StateObject private var observer = ServersObserver()
@@ -34,6 +38,22 @@ struct ServersListView: View {
                 } label: {
                     Label(L10n.Settings.ConnectionSection.DeleteServer.title, systemSymbol: .trash)
                 }
+            } preview: {
+                ServerDetailsRowView(
+                    serverName: server.info.name,
+                    userName: "",
+                    profilePicture: nil,
+                    details: ServerDetailsRowView.details(for: server),
+                    isSyncing: false,
+                    transitionNamespace: nil,
+                    onEdit: { _ in },
+                    onSync: {},
+                    onTroubleshoot: {},
+                    onOpen: nil,
+                    showsActions: false
+                )
+                .frame(width: Constants.previewWidth)
+                .background(Color(uiColor: .secondarySystemGroupedBackground))
             }
             .confirmationDialog(
                 L10n.Settings.ConnectionSection.DeleteServer.title,
