@@ -155,34 +155,41 @@ final class OnboardingServersListViewModel: ObservableObject {
     ) {
         Current.Log.verbose("Selected instance \(instance)")
 
+        // Cancel pops the auth pages before the flow settles; stop the spinners right then.
+        presenter.onAuthFlowPopped = { [weak self] in
+            guard let self, currentAuthAttempt == attempt else { return }
+            resetSpecificLoaders()
+        }
+
         authenticateInstance(instance, presenter).pipe { [weak self] result in
             DispatchQueue.main.async {
-                if let self, self.currentAuthAttempt != attempt {
+                // A released list model means its pages are gone; the presenter may already show a newer flow.
+                guard let self, self.currentAuthAttempt == attempt else {
                     Current.Log.verbose("Ignoring the result of a superseded onboarding authentication")
                     return
                 }
                 switch result {
                 case let .fulfilled(server):
                     Current.Log.verbose("Onboarding authentication succeeded")
-                    self?.authenticationSucceeded(server: server)
+                    self.authenticationSucceeded(server: server)
                 case let .rejected(error):
                     // The flow is over; pop whatever auth pages are still pushed.
                     presenter.popAuthFlow()
                     if let pmkError = error as? PMKError, pmkError.isCancelled {
                         /* No action needed, user cancelled flow */
-                        self?.resetFlow()
+                        self.resetFlow()
                     } else if Current.isCatalyst {
                         // Pushed in the same update as the pop above so the path change is atomic;
                         // a sheet is not used here because sheets don't receive mouse events
                         // reliably on Mac Catalyst.
-                        self?.resetFlow()
+                        self.resetFlow()
                         presenter.push(.connectionError(.init(error: error)))
                     } else {
-                        self?.error = error
-                        self?.showError = true
+                        self.error = error
+                        self.showError = true
                     }
                 }
-                self?.resetSpecificLoaders()
+                self.resetSpecificLoaders()
             }
         }
     }

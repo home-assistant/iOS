@@ -169,6 +169,49 @@ struct OnboardingServersListViewModelTests {
         #expect(sut.currentlyInstanceLoading != nil)
     }
 
+    @Test @MainActor func testPoppingTheAuthFlowStopsTheSpinnersBeforeTheFlowSettles() throws {
+        let mockBonjour = MockBonjour()
+        Current.bonjour = {
+            mockBonjour
+        }
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
+        let presenter = OnboardingAuthPresenter()
+        sut.authenticateInstance = { _, _ in Promise<Server>.pending().promise }
+
+        sut.invitationLoading = true
+        sut.selectInstance(try Self.discoveredInstance(), presenter: presenter)
+        presenter.popAuthFlow()
+
+        #expect(!sut.invitationLoading)
+    }
+
+    @Test @MainActor func testResultIsIgnoredOnceTheListModelIsReleased() async throws {
+        let mockBonjour = MockBonjour()
+        Current.bonjour = {
+            mockBonjour
+        }
+        let presenter = OnboardingAuthPresenter()
+        var resolver: Resolver<Server>?
+        var sut: OnboardingServersListViewModel? = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
+        weak let releasedSut = sut
+        sut?.authenticateInstance = { _, _ in
+            let (promise, pending) = Promise<Server>.pending()
+            resolver = pending
+            return promise
+        }
+        sut?.selectInstance(try Self.discoveredInstance(), presenter: presenter)
+        // The mock holds its observer strongly; the real Bonjour holds it weakly.
+        mockBonjour.observer = nil
+        sut = nil
+        #expect(releasedSut == nil)
+        presenter.push(.permissions(ServerFixture.standard))
+
+        resolver?.reject(PMKError.cancelled)
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        #expect(presenter.path.count == 1)
+    }
+
     @Test @MainActor func testOnboardingCompletionUpdatesDatabaseForServer() async {
         let mockBonjour = MockBonjour()
         Current.bonjour = {

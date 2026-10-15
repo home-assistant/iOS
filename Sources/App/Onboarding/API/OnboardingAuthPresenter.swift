@@ -31,6 +31,9 @@ final class OnboardingAuthPresenter: ObservableObject {
         }
     }
 
+    /// Called after `popAuthFlow`, which a cancel triggers well before the flow's cleanup settles.
+    var onAuthFlowPopped: (() -> Void)?
+
     func push(_ destination: OnboardingDestination) {
         onMain { self.path.append(destination) }
     }
@@ -43,6 +46,7 @@ final class OnboardingAuthPresenter: ObservableObject {
             self.withoutAnimation {
                 self.path.removeAll(where: \.isAuthFlowStep)
             }
+            self.onAuthFlowPopped?()
         }
     }
 
