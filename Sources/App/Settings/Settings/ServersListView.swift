@@ -59,7 +59,11 @@ struct ServersListView: View {
                 L10n.Settings.ConnectionSection.DeleteServer.title,
                 isPresented: Binding(
                     get: { serverPendingDeletion?.identifier == server.identifier },
-                    set: { if !$0 { serverPendingDeletion = nil } }
+                    set: {
+                        if !$0 {
+                            serverPendingDeletion = nil
+                        }
+                    }
                 ),
                 titleVisibility: .visible
             ) {
@@ -92,12 +96,13 @@ struct ServersListView: View {
         } label: {
             Label(L10n.Settings.ConnectionSection.addServer, systemSymbol: .plus)
         }
+        .accessibilityIdentifier(AccessibilityIdentifier.settingsAddServer.rawValue)
         #if !targetEnvironment(macCatalyst)
-        .fullScreenCover(isPresented: $showAddServer) {
-            OnboardingNavigationView(onboardingStyle: .secondary)
-        }
+            .fullScreenCover(isPresented: $showAddServer) {
+                OnboardingNavigationView(onboardingStyle: .secondary)
+            }
         #endif
-        .macSettingsSidebarRow()
+            .macSettingsSidebarRow()
     }
 }
 

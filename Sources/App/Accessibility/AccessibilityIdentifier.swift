@@ -27,6 +27,7 @@ enum AccessibilityIdentifier: String {
     case notificationPermissionRequestPrimary = "notificationPermission.request.primary"
     case notificationPermissionRequestSecondary = "notificationPermission.request.secondary"
     case settingsList = "settings.list"
+    case settingsAddServer = "settings.addServer"
     case migrationIntroContinue = "migration.intro.continue"
     case migrationOverviewStart = "migration.overview.start"
     case migrationCompleteContinue = "migration.complete.continue"
