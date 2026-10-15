@@ -233,7 +233,8 @@ struct ConnectionSettingsView: View {
                 value: viewModel.externalURL,
                 isActive: (viewModel.activeURLType == .external || viewModel.activeURLType == .remoteUI)
                     && viewModel.externalURL != nil,
-                symbol: viewModel.isUsingCloud ? .icloud : nil
+                symbol: viewModel.isUsingCloud ? .icloud : nil,
+                copyValue: viewModel.externalAddress
             ),
         ]
     }

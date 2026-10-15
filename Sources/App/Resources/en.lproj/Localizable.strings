@@ -1638,7 +1638,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Internal URL will be used when the primary network interface has a MAC address matching one of these hardware addresses.";
 "settings.connection_section.internal_url_hardware_addresses.header" = "Hardware Addresses";
 "settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardware addresses must look like aa:bb:cc:dd:ee:ff";
-"settings.connection_section.internal_url_hardware_addresses.title" = "Router addresses";
+"settings.connection_section.internal_url_hardware_addresses.title" = "Network interface addresses";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Add new SSID";
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";

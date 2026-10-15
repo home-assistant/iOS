@@ -22,6 +22,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var deviceName: String = ""
     @Published var internalURL: String?
     @Published var externalURL: String?
+    /// The address behind the external pill: the remote UI URL while cloud is in use, else the external URL.
+    @Published var externalAddress: String?
     @Published var isUsingCloud = false
     @Published var locationPrivacy: ServerLocationPrivacy = .never
     @Published var sensorPrivacy: ServerSensorPrivacy = .none
@@ -125,9 +127,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            guard let finished = notification.object as? Server, finished.identifier == self?.server.identifier else {
-                return
-            }
+            let finishedId = notification.userInfo?[AppDatabaseUpdaterUserInfo.serverIdentifierKey] as? String
+            guard let finishedId, finishedId == self?.server.identifier.rawValue else { return }
             Task { @MainActor [weak self] in
                 self?.isSyncing = false
             }
@@ -184,9 +185,11 @@ final class ConnectionSettingsViewModel: ObservableObject {
     private func updateURLs() {
         internalURL = server.info.connection.address(for: .internal)?.absoluteString
         isUsingCloud = server.info.connection.useCloud && server.info.connection.canUseCloud
-        externalURL = isUsingCloud
-            ? L10n.Settings.ConnectionSection.HomeAssistantCloud.title
-            : server.info.connection.address(for: .external)?.absoluteString
+        let externalAddress = server.info.connection.address(for: .external)?.absoluteString
+        self.externalAddress = isUsingCloud
+            ? server.info.connection.address(for: .remoteUI)?.absoluteString
+            : externalAddress
+        externalURL = isUsingCloud ? L10n.Settings.ConnectionSection.HomeAssistantCloud.title : externalAddress
     }
 
     private func updateLocalPushStatus() {

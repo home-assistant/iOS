@@ -51,6 +51,8 @@ struct ServerDetailsRowViewDetailsTests {
         #expect(!details[1].isActive)
         #expect(details[2].value == "https://external.example.com")
         #expect(details[2].isActive)
+        #expect(details[2].copyValue == "https://external.example.com")
+        #expect(details[0].copyValue == nil)
     }
 
     @Test func internalURLIsActiveWhenItIsTheOnlyOne() {
@@ -84,5 +86,6 @@ struct ServerDetailsRowViewDetailsTests {
         #expect(details[2].value == L10n.Settings.ConnectionSection.HomeAssistantCloud.title)
         #expect(details[2].isActive)
         #expect(details[2].symbol == .icloud)
+        #expect(details[2].copyValue == "https://example.ui.nabu.casa")
     }
 }

@@ -67,6 +67,7 @@ struct ConnectionSettingsViewModelTests {
 
             #expect(viewModel.internalURL == "http://internal.example.com:8123")
             #expect(viewModel.externalURL == nil)
+            #expect(viewModel.externalAddress == nil)
             #expect(!viewModel.isUsingCloud)
             #expect(viewModel.activeURLType == .internal)
             #expect(viewModel.version == "2024.1")
@@ -85,6 +86,7 @@ struct ConnectionSettingsViewModelTests {
 
             #expect(viewModel.isUsingCloud)
             #expect(viewModel.externalURL == L10n.Settings.ConnectionSection.HomeAssistantCloud.title)
+            #expect(viewModel.externalAddress == "https://example.ui.nabu.casa")
             #expect(viewModel.activeURLType == .remoteUI)
         }
     }
@@ -99,11 +101,11 @@ struct ConnectionSettingsViewModelTests {
             viewModel.updateAppDatabase()
             #expect(viewModel.isSyncing)
 
-            NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishServer, object: otherServer)
+            AppDatabaseUpdaterUserInfo.postDidFinish(serverId: otherServer.identifier.rawValue)
             try await Task.sleep(for: .milliseconds(50))
             #expect(viewModel.isSyncing)
 
-            NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishServer, object: server)
+            AppDatabaseUpdaterUserInfo.postDidFinish(serverId: server.identifier.rawValue)
             try await Task.sleep(for: .milliseconds(50))
             #expect(!viewModel.isSyncing)
         }

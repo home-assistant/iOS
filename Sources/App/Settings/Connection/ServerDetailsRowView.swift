@@ -44,6 +44,9 @@ struct ServerDetailsRowView: View {
         let isPlaceholder: Bool
         let isActive: Bool
         let symbol: SFSymbol?
+        /// What Copy puts on the clipboard when it differs from `value`, such as the cloud pill's remote UI
+        /// address behind its "Home Assistant Cloud" label.
+        let copyValue: String?
 
         var id: EditOption { option }
 
@@ -52,13 +55,15 @@ struct ServerDetailsRowView: View {
             value: String?,
             isPlaceholder: Bool = false,
             isActive: Bool = false,
-            symbol: SFSymbol? = nil
+            symbol: SFSymbol? = nil,
+            copyValue: String? = nil
         ) {
             self.option = option
             self.value = value
             self.isPlaceholder = isPlaceholder
             self.isActive = isActive
             self.symbol = symbol
+            self.copyValue = copyValue ?? (option.isURL && symbol == nil ? value : nil)
         }
     }
 
@@ -66,19 +71,22 @@ struct ServerDetailsRowView: View {
         static let avatarSize: CGFloat = DesignSystem.Spaces.seven
     }
 
-    /// Shared by the pill's tap menu and its long-press context menu.
+    /// Shared by the pill's tap menu and its long-press context menu. Copy only shows when there is an
+    /// address to copy.
     private struct URLPillMenuItems: View {
-        let value: String
+        let copyValue: String?
         let onEdit: () -> Void
 
         var body: some View {
             Button(action: onEdit) {
                 Label(L10n.editLabel, systemSymbol: .pencil)
             }
-            Button {
-                UIPasteboard.general.string = value
-            } label: {
-                Label(L10n.copyLabel, systemSymbol: .docOnDoc)
+            if let copyValue {
+                Button {
+                    UIPasteboard.general.string = copyValue
+                } label: {
+                    Label(L10n.copyLabel, systemSymbol: .docOnDoc)
+                }
             }
         }
     }
@@ -175,7 +183,7 @@ struct ServerDetailsRowView: View {
                                 .truncationMode(.middle)
                         } else if let value = detail.value {
                             Menu {
-                                URLPillMenuItems(value: value) { onEdit(detail.option) }
+                                URLPillMenuItems(copyValue: detail.copyValue) { onEdit(detail.option) }
                             } label: {
                                 HStack(spacing: DesignSystem.Spaces.one) {
                                     Image(systemSymbol: detail.symbol ?? detail.option.symbol)
@@ -196,7 +204,7 @@ struct ServerDetailsRowView: View {
                             }
                             .buttonStyle(.plain)
                             .contextMenu {
-                                URLPillMenuItems(value: value) { onEdit(detail.option) }
+                                URLPillMenuItems(copyValue: detail.copyValue) { onEdit(detail.option) }
                             }
                             .modify { view in
                                 if #available(iOS 18.0, *), let transitionNamespace {
@@ -296,7 +304,8 @@ extension ServerDetailsRowView {
                 value: externalURL,
                 isActive: (connection.activeURLType == .external || connection.activeURLType == .remoteUI)
                     && externalURL != nil,
-                symbol: usesCloud ? .icloud : nil
+                symbol: usesCloud ? .icloud : nil,
+                copyValue: usesCloud ? connection.address(for: .remoteUI)?.absoluteString : externalURL
             ),
         ]
     }

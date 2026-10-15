@@ -19,14 +19,25 @@ public protocol AppDatabaseUpdaterProtocol {
 public extension Notification.Name {
     static let appDatabaseUpdaterDidFinishRoutine = Notification.Name("appDatabaseUpdaterDidFinishRoutine")
     static let appDatabaseUpdaterDidChangePhase = Notification.Name("appDatabaseUpdaterDidChangePhase")
-    /// Posted with the `Server` as `object` once a queued update for it has run its course, whether it
-    /// completed, was throttled, or was cancelled, so a control that started it can stop waiting.
+    /// Posted once a queued update for a server has run its course, whether it completed, was throttled,
+    /// was cancelled, or was discarded from the queue, so a control that started it can stop waiting. The
+    /// server's identifier travels in `userInfo` under `AppDatabaseUpdaterUserInfo.serverIdentifierKey`.
     static let appDatabaseUpdaterDidFinishServer = Notification.Name("appDatabaseUpdaterDidFinishServer")
 }
 
 public enum AppDatabaseUpdaterUserInfo {
     /// Localized description of the current update phase, carried by `.appDatabaseUpdaterDidChangePhase`.
     public static let phaseDescriptionKey = "phaseDescription"
+    /// Raw server identifier, carried by `.appDatabaseUpdaterDidFinishServer`.
+    public static let serverIdentifierKey = "serverIdentifier"
+
+    static func postDidFinish(serverId: String) {
+        NotificationCenter.default.post(
+            name: .appDatabaseUpdaterDidFinishServer,
+            object: nil,
+            userInfo: [serverIdentifierKey: serverId]
+        )
+    }
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -82,7 +93,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     // Actor for thread-safe task management and queuing
-    private actor TaskCoordinator {
+    actor TaskCoordinator {
         private var currentUpdateTasks: [String: Task<Void, Never>] = [:]
         private var updateQueue: [(serverId: String, task: () async -> Void)] = []
         // Servers that currently have work queued or running, mapped to the strongest pending force
@@ -117,7 +128,12 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 task.cancel()
             }
             currentUpdateTasks.removeAll()
+            // Entries still waiting never reach the finish broadcast of a run, so report them here.
+            let discarded = updateQueue.map(\.serverId)
             updateQueue.removeAll()
+            for serverId in discarded {
+                AppDatabaseUpdaterUserInfo.postDidFinish(serverId: serverId)
+            }
             pendingForceByServer.removeAll()
             pendingShowProgressByServer.removeAll()
             isProcessingQueue = false
@@ -322,7 +338,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     /// Performs an update for a single specific server.
     private func performSingleServerUpdate(server: Server) async {
         defer {
-            NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishServer, object: server)
+            AppDatabaseUpdaterUserInfo.postDidFinish(serverId: server.identifier.rawValue)
         }
         guard !isUpdateCancelled() else {
             Current.Log.verbose(

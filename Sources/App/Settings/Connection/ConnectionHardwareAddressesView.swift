@@ -1,15 +1,15 @@
 import Shared
 import SwiftUI
 
-/// The router hardware addresses that also mark the phone as being at home, kept off the internal URL
-/// screen because most setups only ever need the Wi-Fi name. Edits are saved from that screen.
+/// The MAC addresses of this device's network interface that also mark it as being at home, kept off the
+/// internal URL screen because most setups only ever need the Wi-Fi name. Edits are saved from that screen.
 struct ConnectionHardwareAddressesView: View {
     @ObservedObject var viewModel: ConnectionURLViewModel
 
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
-                image: .routerWirelessIcon,
+                image: .lanIcon,
                 title: L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.title,
                 subtitle: L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.footer
             )
