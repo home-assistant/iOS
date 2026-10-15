@@ -265,6 +265,7 @@ private func face(_ model: CornerComplicationRenderModel) -> some View {
 #Preview("Value + name + progress") {
     face(.sample(icon: false, gaugeDisplay: .progress)).padding()
 }
+
 @available(iOS 16.0, watchOS 10.0, *)
 #Preview("Value only") {
     face(.sample(icon: false, title: nil, fraction: nil)).padding()
