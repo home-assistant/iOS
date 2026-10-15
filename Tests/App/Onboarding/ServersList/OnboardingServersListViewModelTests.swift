@@ -116,8 +116,6 @@ struct OnboardingServersListViewModelTests {
         #expect(sut.currentlyInstanceLoading?.hasHomeAssistantInstanceID == false)
     }
 
-    /// A cancelled flow settles only after its cleanup, possibly after the user already started a
-    /// new one; it must not pop that newer flow's pages.
     @Test @MainActor func testSupersededAuthResultDoesNotPopNewerFlow() async throws {
         let mockBonjour = MockBonjour()
         Current.bonjour = {

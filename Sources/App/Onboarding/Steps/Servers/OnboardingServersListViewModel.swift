@@ -29,13 +29,12 @@ final class OnboardingServersListViewModel: ObservableObject {
     /// settling for the locally generated identifier. Overridable so tests don't wait it out.
     var discoveryAdoptionTimeout: TimeInterval = 2
 
-    /// Runs the auth flow for a selected instance. Overridable so tests can control when it settles.
+    /// Overridable so tests control when the auth flow settles.
     var authenticateInstance: (DiscoveredHomeAssistant, OnboardingAuthPresenter) -> Promise<Server> = {
         OnboardingAuth().authenticate(to: $0, presenter: $1)
     }
 
-    /// The auth flow whose result still counts. A cancelled flow can settle long after the user left
-    /// it (its cleanup waits for a token revocation), by which time a newer flow may be running.
+    /// A cancelled flow settles only after token revocation, possibly while a newer flow runs.
     private var currentAuthAttempt: UUID?
     private static let discoveryPollInterval = NSEC_PER_SEC / 10
 
