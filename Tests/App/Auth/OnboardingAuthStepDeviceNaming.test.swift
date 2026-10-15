@@ -148,6 +148,27 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
+    func testCancelButtonCancelsOnce() {
+        var cancelCount = 0
+        let request = OnboardingDeviceNameRequest(onSave: { _, _ in }, onCancel: { cancelCount += 1 })
+
+        request.cancel()
+        // The screen disappearing afterwards must not cancel a second time.
+        request.cancel()
+
+        XCTAssertEqual(cancelCount, 1)
+    }
+
+    func testCancelAfterFinishDoesNothing() {
+        var cancelCount = 0
+        let request = OnboardingDeviceNameRequest(onSave: { _, _ in }, onCancel: { cancelCount += 1 })
+
+        request.finish()
+        request.cancel()
+
+        XCTAssertEqual(cancelCount, 0)
+    }
+
     func testSaveShowsUnreachableErrorWhenDeviceListFails() throws {
         let requestExpectation = expectation(description: "device name request")
         var nameRequest: OnboardingDeviceNameRequest?
@@ -246,7 +267,7 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
                     case .default:
                         request.save(nextAction.1 ?? "")
                     case .cancel:
-                        request.cancelAfterDismissal()
+                        request.cancel()
                     }
                     expectation.fulfill()
                 }

@@ -23,6 +23,8 @@ struct WatchWidgetComplicationSnapshot: Codable {
         var showMax: Bool?
         /// Raw gauge style ("open"/"capacity") for circular; nil defaults to open.
         var gaugeStyle: String?
+        /// Raw corner gauge display ("gauge"/"progress"); nil defaults to gauge.
+        var cornerGaugeDisplay: String? = nil
         /// Pre-formatted gauge min/max labels for the open circular gauge.
         var minLabel: String?
         var maxLabel: String?
@@ -239,6 +241,11 @@ struct WatchWidgetComplicationSnapshot: Codable {
         options(for: widgetFamily)?.gaugeStyle == "capacity"
     }
 
+    /// Whether the corner bezel draws WidgetKit's native gauge marker or progress arc.
+    func usesProgressGauge(for widgetFamily: WidgetFamily) -> Bool {
+        widgetFamily == .accessoryCorner && options(for: widgetFamily)?.cornerGaugeDisplay == "progress"
+    }
+
     /// Gauge min/max labels (open circular gauge only), when a range is configured.
     func gaugeLabels(for widgetFamily: WidgetFamily) -> (min: String, max: String)? {
         guard let options = options(for: widgetFamily),
@@ -358,6 +365,7 @@ extension WatchWidgetComplicationSnapshot {
         subtitle: String = "Battery",
         fraction: Double? = 0.68,
         gaugeStyle: String = "open",
+        cornerGaugeDisplay: String = "gauge",
         showValue: Bool = true,
         showName: Bool = true,
         showIcon: Bool = true,
@@ -373,6 +381,7 @@ extension WatchWidgetComplicationSnapshot {
             showMin: true,
             showMax: true,
             gaugeStyle: gaugeStyle,
+            cornerGaugeDisplay: cornerGaugeDisplay,
             minLabel: "0",
             maxLabel: "100",
             textColor: nil
