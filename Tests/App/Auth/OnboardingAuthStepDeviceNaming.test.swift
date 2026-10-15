@@ -112,6 +112,41 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         XCTAssertNoThrow(try hang(result))
     }
 
+    func testNonInteractiveKeepsAFreeNameWithoutAsking() throws {
+        // Even the first naming of a session, which normally always asks, doesn't push a page when
+        // nothing is on screen to show it.
+        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = true
+        let presenter = OnboardingAuthPresenter(isInteractive: false)
+        let step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
+
+        let result = step.perform(point: .beforeRegister)
+        try respond(result: .success([
+            .init(name: "Someone Else", identifier: "any_other"),
+        ]))
+
+        XCTAssertNoThrow(try hang(result))
+        XCTAssertTrue(presenter.path.isEmpty)
+        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = false
+    }
+
+    func testNonInteractiveFailsWhenTheNameIsTaken() throws {
+        let presenter = OnboardingAuthPresenter(isInteractive: false)
+        let step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
+
+        let result = step.perform(point: .beforeRegister)
+        try respond(result: .success([
+            .init(name: deviceName.lowercased(), identifier: "any_other"),
+        ]))
+
+        XCTAssertThrowsError(try hang(result)) { error in
+            XCTAssertEqual(
+                (error as? OnboardingAuthStepDeviceNaming.DeviceNameTakenError)?.deviceName,
+                self.deviceName
+            )
+        }
+        XCTAssertTrue(presenter.path.isEmpty)
+    }
+
     func testDuplicateCancelled() throws {
         let expectation = setupPresenter(actions: (.cancel, nil))
 

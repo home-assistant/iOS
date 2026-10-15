@@ -3211,6 +3211,153 @@ public enum L10n {
     }
   }
 
+  public enum ImportServers {
+    /// Done
+    public static var done: String { return L10n.tr("Localizable", "import_servers.done") }
+    /// Adding servers…
+    public static var importing: String { return L10n.tr("Localizable", "import_servers.importing") }
+    /// Import servers
+    public static var title: String { return L10n.tr("Localizable", "import_servers.title") }
+    public enum Classification {
+      /// Added without sign-in (token is checked first)
+      public static var automatic: String { return L10n.tr("Localizable", "import_servers.classification.automatic") }
+      /// Already configured as “%@”
+      public static func duplicate(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.classification.duplicate", String(describing: p1))
+      }
+      /// Sign-in required
+      public static var guided: String { return L10n.tr("Localizable", "import_servers.classification.guided") }
+      /// Listed again above as “%@”; added only once
+      public static func repeatedInFile(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.classification.repeated_in_file", String(describing: p1))
+      }
+    }
+    public enum Confirm {
+      /// Add and sign in
+      public static var addAndSignIn: String { return L10n.tr("Localizable", "import_servers.confirm.add_and_sign_in") }
+      /// Add servers
+      public static var addServers: String { return L10n.tr("Localizable", "import_servers.confirm.add_servers") }
+      /// Every server in this file is already configured on this device.
+      public static var allDuplicates: String { return L10n.tr("Localizable", "import_servers.confirm.all_duplicates") }
+      /// Cancel
+      public static var cancel: String { return L10n.tr("Localizable", "import_servers.confirm.cancel") }
+      /// This file wants to add %li Home Assistant server(s) to this app. Review them below, then confirm.
+      public static func intro(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "import_servers.confirm.intro", p1)
+      }
+      /// Servers with a saved access token are added without signing in, once the token has been checked with the server. Servers without a token are signed in to afterwards, one after another, on the usual sign-in screen.
+      public static var sectionFooter: String { return L10n.tr("Localizable", "import_servers.confirm.section_footer") }
+      /// Servers in this file
+      public static var sectionHeader: String { return L10n.tr("Localizable", "import_servers.confirm.section_header") }
+      /// Sign in to servers
+      public static var signInServers: String { return L10n.tr("Localizable", "import_servers.confirm.sign_in_servers") }
+    }
+    public enum Error {
+      /// Another device on this server is already named “%@”. Sign in to this server instead, so you can choose a different name for this device.
+      public static func deviceNameTaken(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.error.device_name_taken", String(describing: p1))
+      }
+      /// The file does not list any servers.
+      public static var emptyServers: String { return L10n.tr("Localizable", "import_servers.error.empty_servers") }
+      /// A server entry has an invalid external URL: %@
+      public static func invalidExternalUrl(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.error.invalid_external_url", String(describing: p1))
+      }
+      /// A server entry has an invalid internal URL: %@
+      public static func invalidInternalUrl(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.error.invalid_internal_url", String(describing: p1))
+      }
+      /// A server entry is missing a name.
+      public static var missingName: String { return L10n.tr("Localizable", "import_servers.error.missing_name") }
+      /// This is not a Home Assistant server configuration file (kind: %@).
+      public static func notAServerFile(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.error.not_a_server_file", String(describing: p1))
+      }
+      /// missing
+      public static var notAServerFileUnknownKind: String { return L10n.tr("Localizable", "import_servers.error.not_a_server_file_unknown_kind") }
+      /// The server answered, but not as Home Assistant. Check the URL, and whether something in front of Home Assistant asks for its own sign-in.
+      public static var notHomeAssistant: String { return L10n.tr("Localizable", "import_servers.error.not_home_assistant") }
+      /// The file could not be read.
+      public static var notReadable: String { return L10n.tr("Localizable", "import_servers.error.not_readable") }
+      /// The access token was rejected by the server.
+      public static var tokenRejected: String { return L10n.tr("Localizable", "import_servers.error.token_rejected") }
+      /// The server did not return a valid HTTP response.
+      public static var tokenResponseInvalid: String { return L10n.tr("Localizable", "import_servers.error.token_response_invalid") }
+      /// The server returned an unexpected status (%li).
+      public static func tokenUnexpectedStatus(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "import_servers.error.token_unexpected_status", p1)
+      }
+      /// This file uses a newer format (schema %li) than this app understands.
+      public static func unsupportedSchema(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "import_servers.error.unsupported_schema", p1)
+      }
+    }
+    public enum Result {
+      /// Added
+      public static var added: String { return L10n.tr("Localizable", "import_servers.result.added") }
+      /// Failed — %@
+      public static func failed(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.result.failed", String(describing: p1))
+      }
+      /// Sign-in required
+      public static var guided: String { return L10n.tr("Localizable", "import_servers.result.guided") }
+      /// Pending
+      public static var pending: String { return L10n.tr("Localizable", "import_servers.result.pending") }
+      /// Skipped — %@
+      public static func skipped(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.result.skipped", String(describing: p1))
+      }
+    }
+    public enum Results {
+      /// Sign in to %li server(s)
+      public static func continueToSignIn(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "import_servers.results.continue_to_sign_in", p1)
+      }
+      /// Signing in opens the usual sign-in screen for each of these servers, one after another.
+      public static var footer: String { return L10n.tr("Localizable", "import_servers.results.footer") }
+      /// Results
+      public static var header: String { return L10n.tr("Localizable", "import_servers.results.header") }
+      /// Not now
+      public static var skipSignIn: String { return L10n.tr("Localizable", "import_servers.results.skip_sign_in") }
+    }
+    public enum Settings {
+      /// Import servers from file
+      public static var button: String { return L10n.tr("Localizable", "import_servers.settings.button") }
+      /// Pick a Home Assistant server-configuration file (.hassconfig, or the same content saved as .json) to add one or more servers at once. You'll confirm what gets added before anything changes.
+      public static var footer: String { return L10n.tr("Localizable", "import_servers.settings.footer") }
+    }
+    public enum Skipped {
+      /// The import was stopped before this server.
+      public static var cancelled: String { return L10n.tr("Localizable", "import_servers.skipped.cancelled") }
+      /// Already configured as “%@”.
+      public static func duplicate(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "import_servers.skipped.duplicate", String(describing: p1))
+      }
+      /// Listed more than once in this file.
+      public static var repeatedInFile: String { return L10n.tr("Localizable", "import_servers.skipped.repeated_in_file") }
+    }
+    public enum Summary {
+      /// %li added
+      public static func added(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "import_servers.summary.added", p1)
+      }
+      /// Nothing to import.
+      public static var empty: String { return L10n.tr("Localizable", "import_servers.summary.empty") }
+      /// %li failed
+      public static func failed(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "import_servers.summary.failed", p1)
+      }
+      /// %li need sign-in
+      public static func needsSignIn(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "import_servers.summary.needs_sign_in", p1)
+      }
+      /// %li skipped
+      public static func skipped(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "import_servers.summary.skipped", p1)
+      }
+    }
+  }
+
   public enum Improv {
     public enum Button {
       /// Continue

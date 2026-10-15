@@ -1,3 +1,4 @@
+import Foundation
 import HAKit
 import HAKit_PromiseKit
 import PromiseKit
@@ -52,6 +53,13 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
                 return .value(())
             }
 
+            guard presenter.isInteractive else {
+                return checkDeviceNameIsFree(
+                    deviceName: Current.device.deviceName(),
+                    registeredDevices: registeredDevices
+                )
+            }
+
             // this can be removed once the mobile_app notify service stops being device name specific
             return promptForDeviceName(
                 deviceName: Current.device.deviceName(),
@@ -101,6 +109,26 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
             })
 
             presenter.push(.deviceName(request))
+        }
+    }
+
+    /// With nothing on screen to ask through, keep this device's own name unless another device on the
+    /// server already uses it, and fail rather than register a second device under the same name.
+    private func checkDeviceNameIsFree(
+        deviceName: String,
+        registeredDevices: [RegisteredDevice]
+    ) -> Promise<Void> {
+        guard !registeredDevices.contains(where: { $0.matches(name: deviceName) }) else {
+            return Promise(error: DeviceNameTakenError(deviceName: deviceName))
+        }
+        return .value(())
+    }
+
+    struct DeviceNameTakenError: LocalizedError {
+        let deviceName: String
+
+        var errorDescription: String? {
+            L10n.ImportServers.Error.deviceNameTaken(deviceName)
         }
     }
 

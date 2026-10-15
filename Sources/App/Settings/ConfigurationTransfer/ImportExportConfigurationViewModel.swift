@@ -11,6 +11,7 @@ final class ImportExportConfigurationViewModel: ObservableObject {
     @Published var isImporting = false
     @Published var shareWrapper: ShareWrapper?
     @Published var showImporter = false
+    @Published var showServerImporter = false
     @Published var showImportConfirmation = false
     @Published var errorMessage: String?
     /// Name of the file waiting for confirmation, plus what it was found to contain. Both are shown
@@ -118,6 +119,33 @@ final class ImportExportConfigurationViewModel: ObservableObject {
             show(error: error)
         }
         isImporting = false
+    }
+
+    // MARK: - Server import (second entry point for ServerConfigurationImport)
+
+    func startServerImport() {
+        Current.impactFeedback.impactOccurred(style: .light)
+        showServerImporter = true
+    }
+
+    /// Hands a picked server-configuration file to the shared import presenter, which shows the
+    /// confirmation screen over the current scene — the same screen a file opened from outside the
+    /// app reaches, so both entry points behave identically.
+    func handleServerImportSelection(_ result: Result<[URL], Error>) {
+        switch result {
+        case let .success(urls):
+            guard let url = urls.first else {
+                Current.Log.info("Server configuration import file picker returned no file")
+                return
+            }
+            Current.sceneManager.appCoordinator.done { coordinator in
+                ServerConfigurationImportPresenter.present(fileURL: url, coordinator: coordinator)
+            }
+        case let .failure(error):
+            Current.Log.error("Server configuration import file picker failed: \(error.localizedDescription)")
+            playFailureHaptic()
+            show(error: error)
+        }
     }
 
     /// One line per category that the selected file actually carries, e.g. "Custom widgets: 3".

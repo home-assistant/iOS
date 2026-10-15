@@ -37,6 +37,21 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Home Assistant Server Configuration</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>io.homeassistant.serverconfig</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -46,6 +61,31 @@
 			<array>
 				<string>${ENV_URL_HANDLER}</string>
 			</array>
+		</dict>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>io.homeassistant.serverconfig</string>
+			<key>UTTypeDescription</key>
+			<string>Home Assistant Server Configuration</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>hassconfig</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>application/vnd.homeassistant.serverconfig+json</string>
+				</array>
+			</dict>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
@@ -80,6 +120,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
 	<key>NFCReaderUsageDescription</key>
 	<string>Reading and writing NFC tags allows you to trigger events.</string>
 	<key>NSAppTransportSecurity</key>
