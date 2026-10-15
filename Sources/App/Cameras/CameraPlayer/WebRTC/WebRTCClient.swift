@@ -490,7 +490,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
     }
 
     private func addMicrophoneTransceiver() {
-        let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "audio0")
+        let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "ha_microphone")
         let audioTransceiverInit = RTCRtpTransceiverInit()
         audioTransceiverInit.direction = .sendOnly
         audioTransceiverInit.streamIds = ["ha_ios"]
