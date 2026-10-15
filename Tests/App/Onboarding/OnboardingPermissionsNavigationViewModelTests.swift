@@ -239,6 +239,23 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.storedSSIDSuccessfully == false)
     }
 
+    @Test("A home network save that lands after going back is dropped")
+    @MainActor
+    func lateHomeNetworkSaveAfterGoingBackIsDropped() async throws {
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard)
+        viewModel.navigateToStep(.homeNetwork)
+
+        viewModel.saveHomeNetwork(.init(networkName: "Home", hardwareAddress: nil))
+        viewModel.previousStep()
+        // Let the queued success callback run.
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(viewModel.storedSSIDSuccessfully == false)
+    }
+
     @Test("Back is only offered between the first and the final steps")
     func canGoBackOnlyBetweenFirstAndFinalSteps() async throws {
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard)

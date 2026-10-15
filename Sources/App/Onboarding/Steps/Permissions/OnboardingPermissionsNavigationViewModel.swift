@@ -204,6 +204,8 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                 info.connection.internalHardwareAddresses = [hardwareAddress]
             }
             DispatchQueue.main.async {
+                // Only counts while the step is still shown; going back drops a late save.
+                guard self?.currentStep == .homeNetwork else { return }
                 self?.storedSSIDSuccessfully = true
             }
         }
