@@ -143,14 +143,18 @@ final class E2EDriver {
     }
 
     func openNativeSettingsFromFrontend() {
+        // Wide layouts keep the sidebar open, so the toggle is only needed when Settings is out of reach.
         // The toggle reports a successful tap even when the page swallows it, so the sidebar opening
         // is the only thing worth believing.
-        tapWebElement(
-            labelContaining: "sidebar toggle",
-            until: webElement(labelContaining: "settings"),
-            timeout: Timeout.frontend,
-            "frontend sidebar"
-        )
+        let settings = webElement(labelContaining: "settings")
+        if !isHittable(settings, within: Timeout.optional) {
+            tapWebElement(
+                labelContaining: "sidebar toggle",
+                until: settings,
+                timeout: Timeout.frontend,
+                "frontend sidebar"
+            )
+        }
         tapWebElement(labelContaining: "settings", timeout: Timeout.frontend, "frontend sidebar settings entry")
 
         // The app's own settings screen is opened by the frontend over the external message bus, so
