@@ -8,8 +8,11 @@ import UIKit
 @Suite(.serialized)
 @MainActor
 struct ShareSheetPresenterTests {
-    private func makeWindow() -> (UIWindow, UIView) {
-        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+    /// A window in the test host's scene: presenting needs a scene-backed window hierarchy.
+    private func makeWindow() throws -> (UIWindow, UIView) {
+        let scene = try #require(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
         let root = UIViewController()
         window.rootViewController = root
         window.makeKeyAndVisible()
@@ -19,11 +22,11 @@ struct ShareSheetPresenterTests {
     }
 
     private func settle() async throws {
-        try await Task.sleep(for: .milliseconds(300))
+        try await Task.sleep(for: .milliseconds(500))
     }
 
     @Test func presentsOnceAndClearsOnCompletion() async throws {
-        let (window, anchor) = makeWindow()
+        let (window, anchor) = try makeWindow()
         defer { window.isHidden = true }
         let coordinator = ShareSheetPresenter.Coordinator()
         let item = ShareWrapper(items: ["hello"])
@@ -48,7 +51,7 @@ struct ShareSheetPresenterTests {
     }
 
     @Test func presentsFromTheTopMostController() async throws {
-        let (window, anchor) = makeWindow()
+        let (window, anchor) = try makeWindow()
         defer { window.isHidden = true }
         let sheet = UIViewController()
         window.rootViewController?.present(sheet, animated: false)

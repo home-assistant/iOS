@@ -16,7 +16,8 @@ struct ServerDetailsRowViewTests {
         activeOption: ServerDetailsRowView.EditOption?,
         usesCloud: Bool = false,
         isSyncing: Bool = false,
-        showsActions: Bool = true
+        showsActions: Bool = true,
+        profilePicture: UIImage? = nil
     ) -> some View {
         List {
             Section {
@@ -26,7 +27,8 @@ struct ServerDetailsRowViewTests {
                     activeOption: activeOption,
                     usesCloud: usesCloud,
                     isSyncing: isSyncing,
-                    showsActions: showsActions
+                    showsActions: showsActions,
+                    profilePicture: profilePicture
                 )
             }
         }
@@ -38,12 +40,13 @@ struct ServerDetailsRowViewTests {
         activeOption: ServerDetailsRowView.EditOption?,
         usesCloud: Bool,
         isSyncing: Bool,
-        showsActions: Bool
+        showsActions: Bool,
+        profilePicture: UIImage?
     ) -> some View {
         ServerDetailsRowView(
             serverName: "Home",
             userName: "Bruno",
-            profilePicture: nil,
+            profilePicture: profilePicture,
             details: [
                 .init(option: .deviceName, value: "iPhone", isPlaceholder: true),
                 .init(option: .internalURL, value: internalURL, isActive: activeOption == .internalURL),
@@ -84,6 +87,23 @@ struct ServerDetailsRowViewTests {
                 externalURL: "https://home.example.com",
                 activeOption: .internalURL,
                 isSyncing: true
+            ),
+            layout: layout
+        )
+    }
+
+    @Test func withProfilePicture() async throws {
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 56, height: 56))
+        let picture = renderer.image { context in
+            UIColor.systemOrange.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 56, height: 56))
+        }
+        assertLightDarkSnapshots(
+            of: card(
+                internalURL: "http://homeassistant.local:8123",
+                externalURL: "https://home.example.com",
+                activeOption: .internalURL,
+                profilePicture: picture
             ),
             layout: layout
         )

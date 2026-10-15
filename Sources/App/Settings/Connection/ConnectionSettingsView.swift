@@ -60,13 +60,7 @@ struct ConnectionSettingsView: View {
             ServerURLEditorSheet(viewModel: viewModel, urlType: .external, transitionNamespace: urlTransitionNamespace)
         }
         .sheet(isPresented: $viewModel.isShowingHowItWorks) {
-            ServerSettingsSheet(
-                zoomSourceID: nil,
-                transitionNamespace: nil,
-                onClose: { viewModel.isShowingHowItWorks = false }
-            ) {
-                ConnectionURLsHowItWorksView(server: viewModel.server)
-            }
+            ServerHowItWorksSheet(viewModel: viewModel)
         }
         .sheet(isPresented: $showLocationPrivacySheet) {
             NavigationView {
