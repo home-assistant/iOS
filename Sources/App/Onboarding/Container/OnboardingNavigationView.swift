@@ -88,13 +88,23 @@ struct OnboardingNavigationView: View {
     private var root: some View {
         switch onboardingStyle {
         case .initial, .required:
-            OnboardingWelcomeView(
-                continueAction: { presenter.push(.serversList) },
-                transferAction: migrationCoordinator.isPreviousAppInstalled ? { presenter.push(.migration) } : nil
-            )
+            if AppMigrationRole.allowsOnboarding {
+                OnboardingWelcomeView(
+                    continueAction: { presenter.push(.serversList) },
+                    transferAction: migrationCoordinator.isPreviousAppInstalled ? { presenter.push(.migration) } : nil
+                )
+            } else {
+                AppMigrationNoServersView()
+            }
         case .secondary:
-            serversList
-                .navigationTitle(L10n.Settings.ConnectionSection.addServer)
+            if AppMigrationRole.allowsOnboarding {
+                serversList
+                    .navigationTitle(L10n.Settings.ConnectionSection.addServer)
+            } else {
+                // The previous app adds no servers any more: it explains the new app and offers to move
+                // the existing setup there instead.
+                AppMigrationAnnouncementView { AppMigrationAnnouncement.markSeen() }
+            }
         }
     }
 

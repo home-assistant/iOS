@@ -1512,11 +1512,23 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_migration.item.servers.title") }
       }
     }
+    public enum NoServers {
+      /// This app no longer connects to a Home Assistant server. Install the new Home Assistant app from the App Store and set up your home there.
+      public static var body: String { return L10n.tr("Localizable", "app_migration.no_servers.body") }
+      /// Home Assistant has a new app
+      public static var title: String { return L10n.tr("Localizable", "app_migration.no_servers.title") }
+    }
     public enum Overview {
       /// Start transfer
       public static var startButton: String { return L10n.tr("Localizable", "app_migration.overview.start_button") }
       /// What moves over
       public static var title: String { return L10n.tr("Localizable", "app_migration.overview.title") }
+      public enum PasteNotice {
+        /// Your setup is handed over through a protected paste. When the new app opens, iOS asks whether it may paste from the previous app. Choose Allow Paste, otherwise nothing is transferred.
+        public static var body: String { return L10n.tr("Localizable", "app_migration.overview.paste_notice.body") }
+        /// Allow the paste when iOS asks
+        public static var title: String { return L10n.tr("Localizable", "app_migration.overview.paste_notice.title") }
+      }
       public enum Section {
         /// Set up again in the new app
         public static var followUp: String { return L10n.tr("Localizable", "app_migration.overview.section.follow_up") }

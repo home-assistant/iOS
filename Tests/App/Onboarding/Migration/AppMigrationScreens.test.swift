@@ -86,6 +86,10 @@ struct AppMigrationScreensTests {
         )
     }
 
+    @MainActor @Test func noServers() {
+        assertLightDarkSnapshots(of: AppMigrationNoServersView(), named: "old-00c-no-servers")
+    }
+
     @MainActor @Test func exportRequested() {
         assertLightDarkSnapshots(of: exportView(.idle), named: "old-01-request")
     }

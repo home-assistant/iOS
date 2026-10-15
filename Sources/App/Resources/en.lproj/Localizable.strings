@@ -413,10 +413,14 @@
 "app_migration.item.notifications.title" = "Notification categories";
 "app_migration.item.servers.explanation" = "Stay signed in to every server.";
 "app_migration.item.servers.title" = "Servers and sign-ins";
+"app_migration.no_servers.body" = "This app no longer connects to a Home Assistant server. Install the new Home Assistant app from the App Store and set up your home there.";
+"app_migration.no_servers.title" = "Home Assistant has a new app";
 "app_migration.overview.section.follow_up" = "Set up again in the new app";
 "app_migration.overview.section.moves" = "Comes with you";
 "app_migration.overview.start_button" = "Start transfer";
 "app_migration.overview.title" = "What moves over";
+"app_migration.overview.paste_notice.body" = "Your setup is handed over through a protected paste. When the new app opens, iOS asks whether it may paste from the previous app. Choose Allow Paste, otherwise nothing is transferred.";
+"app_migration.overview.paste_notice.title" = "Allow the paste when iOS asks";
 "app_migration.permissions.allow_all_button" = "Allow all";
 "app_migration.permissions.allow_button" = "Allow";
 "app_migration.permissions.body" = "iOS treats this as a brand new app, so what you allowed in the previous app has to be allowed here once more.";

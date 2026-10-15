@@ -26,4 +26,12 @@ enum AppMigrationRole: Equatable {
     var baseURL: URL {
         URL(string: "\(urlScheme)://\(AppMigrationLink.host)")!
     }
+
+    /// Whether this build still sets up new servers. The previous app no longer does: existing setups
+    /// move to the new app and new ones start there. UI tests lift that to onboard the previous app.
+    static var allowsOnboarding: Bool {
+        guard current == .previousApp else { return true }
+        return Current.appConfiguration != .release
+            && ProcessInfo.processInfo.arguments.contains("-AppMigrationAllowOnboarding")
+    }
 }
