@@ -51,6 +51,12 @@ final class E2EDriver {
         app.launch()
     }
 
+    /// Launches the way a user would, with the previous app's refusal to set up servers in force.
+    func launchAsUser() {
+        app.launchArguments = ["-FASTLANE_SNAPSHOT", "YES"]
+        app.launch()
+    }
+
     /// From the welcome screen to the frontend with notifications granted.
     func onboard() {
         connectToInstance()
