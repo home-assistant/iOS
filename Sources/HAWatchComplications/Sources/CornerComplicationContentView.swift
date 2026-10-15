@@ -62,6 +62,18 @@ public struct CornerComplicationContentView: View {
     private var halfSpan: Double { min(32, 27.5 / gaugeRadius * 180 / .pi) }
     private var startAngle: Double { -90 - halfSpan }
     private var endAngle: Double { -90 + halfSpan }
+    private var currentAngle: Double {
+        guard let fraction = model.fraction else { return startAngle }
+        return startAngle + (endAngle - startAngle) * fraction
+    }
+
+    private var gaugeMarkerPoint: CGPoint {
+        let radians = currentAngle * .pi / 180
+        return CGPoint(
+            x: arcCenter.x + CGFloat(cos(radians)) * gaugeRadius,
+            y: arcCenter.y + CGFloat(sin(radians)) * gaugeRadius
+        )
+    }
 
     public var body: some View {
         let textColor = model.textColor ?? .primary
@@ -81,16 +93,34 @@ public struct CornerComplicationContentView: View {
                     style: StrokeStyle(lineWidth: arcLineWidth, lineCap: .round)
                 )
 
-                Path { path in
-                    path.addArc(
-                        center: arcCenter,
-                        radius: gaugeRadius,
-                        startAngle: .degrees(startAngle),
-                        endAngle: .degrees(startAngle + (endAngle - startAngle) * fraction),
-                        clockwise: false
-                    )
+                switch model.gaugeDisplay {
+                case .progress:
+                    Path { path in
+                        path.addArc(
+                            center: arcCenter,
+                            radius: gaugeRadius,
+                            startAngle: .degrees(startAngle),
+                            endAngle: .degrees(startAngle + (endAngle - startAngle) * fraction),
+                            clockwise: false
+                        )
+                    }
+                    .stroke(model.tint, style: StrokeStyle(lineWidth: arcLineWidth, lineCap: .round))
+                case .gauge:
+                    Circle()
+                        .fill(model.tint)
+                        .frame(width: arcLineWidth, height: arcLineWidth)
+                        .position(gaugeMarkerPoint)
                 }
-                .stroke(model.tint, style: StrokeStyle(lineWidth: arcLineWidth, lineCap: .round))
+            }
+
+            if model.gaugeDisplay == .gauge, model.fraction != nil {
+                Circle()
+                    .stroke(
+                        model.tint.opacity(0.5),
+                        style: StrokeStyle(lineWidth: 1)
+                    )
+                    .frame(width: arcLineWidth + 2, height: arcLineWidth + 2)
+                    .position(gaugeMarkerPoint)
             }
 
             // Corner inward: icon, name, value.
@@ -143,7 +173,8 @@ public extension CornerComplicationRenderModel {
         fraction: Double? = 0.68,
         tint: Color = .green,
         textColor: Color? = nil,
-        curvesText: Bool = true
+        curvesText: Bool = true,
+        gaugeDisplay: CornerComplicationRenderModel.GaugeDisplay = .gauge
     ) -> CornerComplicationRenderModel {
         CornerComplicationRenderModel(
             iconImage: icon ? sampleBoltIcon() : nil,
@@ -154,7 +185,8 @@ public extension CornerComplicationRenderModel {
             fraction: fraction,
             tint: tint,
             textColor: textColor,
-            curvesText: curvesText
+            curvesText: curvesText,
+            gaugeDisplay: gaugeDisplay
         )
     }
 }
@@ -180,6 +212,11 @@ private func face(_ model: CornerComplicationRenderModel) -> some View {
 @available(iOS 16.0, watchOS 10.0, *)
 #Preview("Value + name + gauge") {
     face(.sample(icon: false)).padding()
+}
+
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("Value + name + progress") {
+    face(.sample(icon: false, gaugeDisplay: .progress)).padding()
 }
 
 @available(iOS 16.0, watchOS 10.0, *)

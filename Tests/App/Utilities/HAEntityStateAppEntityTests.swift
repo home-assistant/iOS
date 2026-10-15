@@ -54,6 +54,7 @@ struct HAEntityStateAppEntityTests {
         #expect(result.unitOfMeasurement == nil)
         #expect(result.deviceClass == nil)
         #expect(result.areaName == "Kitchen")
+        #expect(result.context == "Kitchen")
         #expect(result.serverName == "Home")
         #expect(result.lastChanged == Date(timeIntervalSince1970: 1_700_000_000))
         #expect(result.lastUpdated == Date(timeIntervalSince1970: 1_700_000_060))
@@ -68,6 +69,7 @@ struct HAEntityStateAppEntityTests {
         #expect(result.areaName == nil)
         #expect(result.floorName == nil)
         #expect(result.deviceName == nil)
+        #expect(result.context == nil)
         #expect(!result.isActive)
     }
 

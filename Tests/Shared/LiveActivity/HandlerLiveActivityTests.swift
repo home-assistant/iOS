@@ -258,7 +258,6 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
             serverWebhookId: nil,
             state: HandlerStartOrUpdateLiveActivity.contentState(from: ["message": "m"]),
             relevanceScore: 0.4,
-            confirmID: nil,
             alert: false
         )
         let data = try JSONEncoder().encode(request)
@@ -307,7 +306,6 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
             serverWebhookId: nil,
             state: HandlerStartOrUpdateLiveActivity.contentState(from: ["message": "m"]),
             relevanceScore: relevanceScore,
-            confirmID: nil,
             alert: false
         )
     }

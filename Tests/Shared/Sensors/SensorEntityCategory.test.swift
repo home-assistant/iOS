@@ -85,6 +85,13 @@ struct SensorEntityCategoryTests {
         #expect(SensorEntityCategory.category(forSensorUniqueID: "kioskScreensaver") == nil)
     }
 
+    @Test("A folding phone's hinge is something automations act on, not a diagnostic")
+    func hingeSensorsAreNotDiagnostic() {
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "hinge_angle") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "hinge_status") == nil)
+        #expect(SensorEntityCategory.category(forSensorUniqueID: "device_pose") == nil)
+    }
+
     @Test("Focus is something automations act on, not a diagnostic")
     func focusSensorsAreNotDiagnostic() {
         #expect(SensorEntityCategory.category(forSensorUniqueID: "focus") == nil)

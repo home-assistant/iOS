@@ -74,7 +74,7 @@ struct JinjaEntitySuggestionsView: View {
             .init(
                 suggestion: .init(label: "sensor.solar_power", insertion: "sensor.solar_power"),
                 name: "Solar Power",
-                subtitle: "Ground Floor • Garage"
+                subtitle: "Ground Floor ▸ Garage"
             ),
             .init(
                 suggestion: .init(label: "sensor.bruno_battery_level", insertion: "sensor.bruno_battery_level"),

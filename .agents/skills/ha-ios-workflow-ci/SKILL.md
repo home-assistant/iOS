@@ -1,6 +1,6 @@
 ---
 name: ha-ios-workflow-ci
-description: The end-to-end change workflow, TestFlight feature gating, and CI gates. Use when preparing a change for commit, understanding the order of lint/autocorrect/test steps, gating a feature behind TestFlight with `Current.isTestFlight`, or knowing what GitHub Actions checks before a PR can merge.
+description: The end-to-end change workflow, TestFlight feature gating, companion documentation PRs, and CI gates. Use when preparing a change for commit or a PR, understanding the order of lint/autocorrect/test steps, gating a feature behind TestFlight with `Current.isTestFlight`, opening the matching draft PR in the companion.home-assistant docs repo for a user-facing change, or knowing what GitHub Actions checks before a PR can merge.
 ---
 
 # Workflow & Continuous Integration
@@ -13,6 +13,7 @@ description: The end-to-end change workflow, TestFlight feature gating, and CI g
 4. **Run autocorrect**: `bundle exec fastlane autocorrect` (see the `ha-ios-code-style` skill)
 5. **Run tests**: `bundle exec fastlane test` (see the `ha-ios-testing` skill)
 6. **Commit** your changes
+7. **Open the documentation draft PR** if the change is user-facing (see [Documentation PRs](#documentation-prs))
 
 ## TestFlight-Gated Features
 
@@ -43,6 +44,34 @@ Whenever a change puts a feature behind `Current.isTestFlight`, a second, parall
 The point is that graduating a feature out of beta is a one-click merge instead of an archaeology exercise: an unpaired gate tends to outlive the reason it was added.
 
 > Per the [AI policy](../../../AI_POLICY.md), agents do not open PRs autonomously. Prepare the ungating branch and hand both PRs to a human to review and submit.
+
+## Documentation PRs
+
+User-facing documentation for the app lives in a separate repo, [home-assistant/companion.home-assistant](https://github.com/home-assistant/companion.home-assistant) (Docusaurus, default branch `master`). Whenever a code change adds, changes, or removes something a user can see or configure, a **draft** PR in that repo must accompany the app PR. The app's PR template already has a `Documentation: home-assistant/companion.home-assistant#` line for it.
+
+### When a docs PR is needed
+
+Open one when the change:
+
+- Adds a feature, setting, screen, sensor, widget, control, App Intent, notification capability, or platform integration (Watch, CarPlay, Mac, widgets).
+- Changes how an existing feature behaves, where it lives in the UI, what it is called, or what it requires (iOS version, permission, server version).
+- Removes or deprecates something the docs describe.
+
+No docs PR is needed for refactors, bug fixes that restore documented behavior, test or CI changes, dependency bumps, or internal tooling. If unsure, search the docs repo for the feature's name: if the docs describe the thing you changed, they need to change too.
+
+### How to prepare it
+
+1. Clone or update the docs repo next to this one and branch off `master`.
+2. Edit the relevant page under `docs/<area>/` (for example `docs/carplay/`, `docs/apple-watch/`, `docs/notifications/`, `docs/core/`). A new page also needs an entry in `sidebars.js`.
+3. Follow the repo's own `.github/copilot-instructions.md`: sentence-case headings, active voice, second person, **bold** for UI strings, _italics_ instead of ALL CAPS. Use the exact UI labels from `en.lproj/Localizable.strings`.
+4. Mark anything not yet in a stable release, including every TestFlight-gated feature, with `<span class='beta'>BETA</span>`. Remove the flag only once the stable release that contains the feature's ungating PR (see above) has shipped.
+5. Open it as a **draft**, filling in the docs repo's PR template without deleting any of it: under **Type of change** tick "Document new or changing features for which there is an existing pull request elsewhere", and link the app PR under **Additional information**.
+6. Put the docs PR number into the app PR's `Documentation:` line, so the two PRs link to each other.
+7. When the app PR changes during review in a way users would notice, update the docs PR to match.
+
+The docs PR stays a draft until the app change is merged and released; a human marks it ready for review.
+
+> Per the [AI policy](../../../AI_POLICY.md), a human must review and understand every PR before it is submitted, and agents never open PRs on their own initiative. Open the docs draft only when the developer has asked you to open the app PR, and in the same step. Otherwise, prepare the docs branch and PR text and hand them to the developer to review and submit, as with the ungating PR above. In both cases, leave the AI-usage checkboxes in both templates for the developer to fill in.
 
 ## Continuous Integration
 

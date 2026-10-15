@@ -132,9 +132,7 @@ struct ImportExportConfigurationView: View {
         }
         .navigationTitle(L10n.Settings.Debugging.ConfigurationTransfer.title)
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $viewModel.shareWrapper) { wrapper in
-            ActivityViewController(shareWrapper: wrapper)
-        }
+        .shareSheet(item: $viewModel.shareWrapper)
         .alert(L10n.errorLabel, isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }

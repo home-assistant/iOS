@@ -90,14 +90,42 @@ final class KioskScreensaverControllerTests: XCTestCase {
 
     // MARK: - Helpers
 
+    /// Dimming goes through the environment's brightness hooks, so it never touches the main screen
+    /// directly and restores what it found once the screensaver goes away.
+    func testDimmingSetsAndRestoresTheScreenBrightness() throws {
+        let previousGet = Current.screenBrightness
+        let previousSet = Current.setScreenBrightness
+        defer {
+            Current.screenBrightness = previousGet
+            Current.setScreenBrightness = previousSet
+        }
+        var brightness: CGFloat = 0.8
+        Current.screenBrightness = { brightness }
+        Current.setScreenBrightness = { brightness = $0 }
+        let controller = try makeController(dimLevel: 0.3)
+
+        kiosk.requestScreensaver(.show)
+        waitUntil("screensaver active") { controller.isActive }
+        XCTAssertEqual(brightness, 0.3, accuracy: 0.001)
+
+        kiosk.requestScreensaver(.hide)
+        waitUntil("screensaver hidden") { !controller.isActive }
+        XCTAssertEqual(brightness, 0.8, accuracy: 0.001)
+    }
+
     private func makeController(
-        timeToStart: KioskScreensaverTimeout = .pushNotificationControlled
+        timeToStart: KioskScreensaverTimeout = .pushNotificationControlled,
+        dimLevel: Double? = nil
     ) throws -> KioskScreensaverController {
         try database.write { db in
             var settings = KioskSettings()
             settings.enabled = true
             settings.screensaver.enabled = true
             settings.screensaver.timeToStart = timeToStart
+            if let dimLevel {
+                settings.screensaver.dimEnabled = true
+                settings.screensaver.dimLevel = dimLevel
+            }
             try settings.insert(db, onConflict: .replace)
         }
         kiosk = KioskModeManager()

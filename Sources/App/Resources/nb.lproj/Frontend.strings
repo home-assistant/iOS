@@ -6,14 +6,14 @@
 "panel::developer_tools" = "Utviklerverktøy";
 "panel::energy" = "Energi";
 "panel::history" = "Historie";
-"panel::home" = "Overview";
+"panel::home" = "Oversikt";
 "panel::light" = "Lys";
-"panel::logbook" = "Loggbok";
+"panel::logbook" = "Aktivitet";
 "panel::mailbox" = "Postkasse";
 "panel::maintenance" = "Vedlikehold";
 "panel::map" = "Kart";
 "panel::media_browser" = "Media";
-"panel::notfound" = "Page not found";
+"panel::notfound" = "Siden ble ikke funnet";
 "panel::profile" = "Profil";
 "panel::security" = "Sikkerhet";
 "panel::shopping_list" = "Handleliste";

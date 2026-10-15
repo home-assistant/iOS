@@ -21,6 +21,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     case criticalButton
     case linkButton
     case textButton
+    case glassButton
     case closeButton
     case sheetCloseButton
     case textField
@@ -124,6 +125,37 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     case areaCard
     case distributionCard
     case assistVoiceOrb
+    case controlSelectMenu
+    case outlinedIconButton
+    case moreInfoDialog
+    case moreInfoLayout
+    case moreInfoStateHeader
+    case moreInfoReadings
+    case moreInfoControlSelectContainer
+    case moreInfoBattery
+    case moreInfoStateCard
+    case moreInfoCommandBar
+    case stateControlCircularSlider
+    case stateControlToggle
+    case stateControlSlider
+    case stateControlCoverButtons
+    case stateControlVacuumStatus
+    case stateControlLawnMowerStatus
+    case moreInfoClimate
+    case moreInfoHumidifier
+    case moreInfoWaterHeater
+    case moreInfoFan
+    case moreInfoCover
+    case moreInfoLock
+    case moreInfoLawnMower
+    case moreInfoVacuum
+    case moreInfoLight
+    case moreInfoScene
+    case moreInfoMediaPlayer
+    case moreInfoNumber
+    case moreInfoText
+    case moreInfoTimer
+    case moreInfoUpdate
 
     /// The `home-assistant/frontend` element this component is the counterpart of, or `nil` when it
     /// has none and is the app's own.
@@ -143,6 +175,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .criticalButton: HAButtonStyle.frontendComponentName
         case .linkButton: HAButtonStyle.frontendComponentName
         case .textButton: TextButton.frontendComponentName
+        case .glassButton: nil
         case .closeButton: CloseButton.frontendComponentName
         case .sheetCloseButton: SheetCloseButton.frontendComponentName
         case .textField: HATextField.frontendComponentName
@@ -246,6 +279,37 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .areaCard: HAAreaCard.frontendComponentName
         case .distributionCard: HADistributionCard.frontendComponentName
         case .assistVoiceOrb: nil
+        case .controlSelectMenu: HAControlSelectMenu.frontendComponentName
+        case .outlinedIconButton: HAOutlinedIconButton.frontendComponentName
+        case .moreInfoDialog: HAMoreInfoDialog<AnyView, AnyView, AnyView>.frontendComponentName
+        case .moreInfoLayout: HAMoreInfoLayout<AnyView, AnyView, AnyView>.frontendComponentName
+        case .moreInfoStateHeader: HAMoreInfoStateHeader<AnyView>.frontendComponentName
+        case .moreInfoReadings: HAMoreInfoReadings.frontendComponentName
+        case .moreInfoControlSelectContainer: HAMoreInfoControlSelectContainer<AnyView>.frontendComponentName
+        case .moreInfoBattery: HAMoreInfoBattery.frontendComponentName
+        case .moreInfoStateCard: HAMoreInfoStateCard<AnyView>.frontendComponentName
+        case .moreInfoCommandBar: HAMoreInfoCommandBar.frontendComponentName
+        case .stateControlCircularSlider: HAStateControlCircularSlider.frontendComponentName
+        case .stateControlToggle: HAStateControlToggle.frontendComponentName
+        case .stateControlSlider: HAStateControlSlider.frontendComponentName
+        case .stateControlCoverButtons: HAStateControlCoverButtons.frontendComponentName
+        case .stateControlVacuumStatus: HAStateControlVacuumStatus.frontendComponentName
+        case .stateControlLawnMowerStatus: HAStateControlLawnMowerStatus.frontendComponentName
+        case .moreInfoClimate: HAMoreInfoClimate.frontendComponentName
+        case .moreInfoHumidifier: HAMoreInfoHumidifier.frontendComponentName
+        case .moreInfoWaterHeater: HAMoreInfoWaterHeater.frontendComponentName
+        case .moreInfoFan: HAMoreInfoFan.frontendComponentName
+        case .moreInfoCover: HAMoreInfoCover.frontendComponentName
+        case .moreInfoLock: HAMoreInfoLock.frontendComponentName
+        case .moreInfoLawnMower: HAMoreInfoLawnMower.frontendComponentName
+        case .moreInfoVacuum: HAMoreInfoVacuum.frontendComponentName
+        case .moreInfoLight: HAMoreInfoLight.frontendComponentName
+        case .moreInfoScene: HAMoreInfoScene.frontendComponentName
+        case .moreInfoMediaPlayer: HAMoreInfoMediaPlayer.frontendComponentName
+        case .moreInfoNumber: HAMoreInfoNumber.frontendComponentName
+        case .moreInfoText: HAMoreInfoText.frontendComponentName
+        case .moreInfoTimer: HAMoreInfoTimer.frontendComponentName
+        case .moreInfoUpdate: HAMoreInfoUpdate.frontendComponentName
         }
     }
 
@@ -263,6 +327,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .criticalButton: HAButtonStyle.frontendComponentVersion
         case .linkButton: HAButtonStyle.frontendComponentVersion
         case .textButton: TextButton.frontendComponentVersion
+        case .glassButton: nil
         case .closeButton: CloseButton.frontendComponentVersion
         case .sheetCloseButton: SheetCloseButton.frontendComponentVersion
         case .textField: HATextField.frontendComponentVersion
@@ -366,6 +431,37 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .areaCard: HAAreaCard.frontendComponentVersion
         case .distributionCard: HADistributionCard.frontendComponentVersion
         case .assistVoiceOrb: nil
+        case .controlSelectMenu: HAControlSelectMenu.frontendComponentVersion
+        case .outlinedIconButton: HAOutlinedIconButton.frontendComponentVersion
+        case .moreInfoDialog: HAMoreInfoDialog<AnyView, AnyView, AnyView>.frontendComponentVersion
+        case .moreInfoLayout: HAMoreInfoLayout<AnyView, AnyView, AnyView>.frontendComponentVersion
+        case .moreInfoStateHeader: HAMoreInfoStateHeader<AnyView>.frontendComponentVersion
+        case .moreInfoReadings: HAMoreInfoReadings.frontendComponentVersion
+        case .moreInfoControlSelectContainer: HAMoreInfoControlSelectContainer<AnyView>.frontendComponentVersion
+        case .moreInfoBattery: HAMoreInfoBattery.frontendComponentVersion
+        case .moreInfoStateCard: HAMoreInfoStateCard<AnyView>.frontendComponentVersion
+        case .moreInfoCommandBar: HAMoreInfoCommandBar.frontendComponentVersion
+        case .stateControlCircularSlider: HAStateControlCircularSlider.frontendComponentVersion
+        case .stateControlToggle: HAStateControlToggle.frontendComponentVersion
+        case .stateControlSlider: HAStateControlSlider.frontendComponentVersion
+        case .stateControlCoverButtons: HAStateControlCoverButtons.frontendComponentVersion
+        case .stateControlVacuumStatus: HAStateControlVacuumStatus.frontendComponentVersion
+        case .stateControlLawnMowerStatus: HAStateControlLawnMowerStatus.frontendComponentVersion
+        case .moreInfoClimate: HAMoreInfoClimate.frontendComponentVersion
+        case .moreInfoHumidifier: HAMoreInfoHumidifier.frontendComponentVersion
+        case .moreInfoWaterHeater: HAMoreInfoWaterHeater.frontendComponentVersion
+        case .moreInfoFan: HAMoreInfoFan.frontendComponentVersion
+        case .moreInfoCover: HAMoreInfoCover.frontendComponentVersion
+        case .moreInfoLock: HAMoreInfoLock.frontendComponentVersion
+        case .moreInfoLawnMower: HAMoreInfoLawnMower.frontendComponentVersion
+        case .moreInfoVacuum: HAMoreInfoVacuum.frontendComponentVersion
+        case .moreInfoLight: HAMoreInfoLight.frontendComponentVersion
+        case .moreInfoScene: HAMoreInfoScene.frontendComponentVersion
+        case .moreInfoMediaPlayer: HAMoreInfoMediaPlayer.frontendComponentVersion
+        case .moreInfoNumber: HAMoreInfoNumber.frontendComponentVersion
+        case .moreInfoText: HAMoreInfoText.frontendComponentVersion
+        case .moreInfoTimer: HAMoreInfoTimer.frontendComponentVersion
+        case .moreInfoUpdate: HAMoreInfoUpdate.frontendComponentVersion
         }
     }
 
@@ -384,6 +480,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .criticalButton: "Critical Button"
         case .linkButton: "Link Button"
         case .textButton: "Text Button"
+        case .glassButton: "Glass Button"
         case .closeButton: "Close Button"
         case .sheetCloseButton: "Sheet Close Button"
         case .textField: "Text Field"
@@ -487,13 +584,54 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .areaCard: "Area Card"
         case .distributionCard: "Distribution Card"
         case .assistVoiceOrb: "Assist Voice Orb"
+        case .controlSelectMenu: "Control Select Menu"
+        case .outlinedIconButton: "Outlined Icon Button"
+        case .moreInfoDialog: "More Info Dialog"
+        case .moreInfoLayout: "More Info Layout"
+        case .moreInfoStateHeader: "More Info State Header"
+        case .moreInfoReadings: "More Info Readings"
+        case .moreInfoControlSelectContainer: "More Info Select Container"
+        case .moreInfoBattery: "More Info Battery"
+        case .moreInfoStateCard: "More Info State Card"
+        case .moreInfoCommandBar: "More Info Command Bar"
+        case .stateControlCircularSlider: "State Control Dial"
+        case .stateControlToggle: "State Control Toggle"
+        case .stateControlSlider: "State Control Slider"
+        case .stateControlCoverButtons: "State Control Cover Buttons"
+        case .stateControlVacuumStatus: "State Control Vacuum Status"
+        case .stateControlLawnMowerStatus: "State Control Lawn Mower Status"
+        case .moreInfoClimate: "Climate"
+        case .moreInfoHumidifier: "Humidifier"
+        case .moreInfoWaterHeater: "Water Heater"
+        case .moreInfoFan: "Fan"
+        case .moreInfoCover: "Cover"
+        case .moreInfoLock: "Lock"
+        case .moreInfoLawnMower: "Lawn Mower"
+        case .moreInfoVacuum: "Vacuum"
+        case .moreInfoLight: "Light"
+        case .moreInfoScene: "Scene"
+        case .moreInfoMediaPlayer: "Media Player"
+        case .moreInfoNumber: "Input Number / Number"
+        case .moreInfoText: "Input Text"
+        case .moreInfoTimer: "Timer"
+        case .moreInfoUpdate: "Update"
         }
     }
 
     public var category: ComponentCategory {
         switch self {
+        case .moreInfoDialog, .moreInfoLayout, .moreInfoStateHeader, .moreInfoReadings,
+             .moreInfoControlSelectContainer, .moreInfoBattery, .moreInfoStateCard, .moreInfoCommandBar,
+             .stateControlCircularSlider, .stateControlToggle, .stateControlSlider,
+             .stateControlCoverButtons, .stateControlVacuumStatus, .stateControlLawnMowerStatus,
+             .moreInfoClimate, .moreInfoHumidifier, .moreInfoWaterHeater, .moreInfoFan, .moreInfoCover,
+             .moreInfoLock, .moreInfoLawnMower, .moreInfoVacuum, .moreInfoLight, .moreInfoScene,
+             .moreInfoMediaPlayer, .moreInfoNumber, .moreInfoText, .moreInfoTimer, .moreInfoUpdate:
+            .moreInfo
+        case .controlSelectMenu, .outlinedIconButton:
+            .controls
         case .primaryButton, .secondaryButton, .outlinedButton, .neutralButton, .negativeButton,
-             .secondaryNegativeButton, .criticalButton, .linkButton, .textButton:
+             .secondaryNegativeButton, .criticalButton, .linkButton, .textButton, .glassButton:
             .buttons
         case .closeButton, .sheetCloseButton, .controlSlider, .controlSwitch, .controlButton,
              .controlButtonGroup, .gauge, .controlSelect, .controlNumberButtons,
@@ -547,6 +685,8 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
             buttonVariants { $0.buttonStyle(.linkButton) }
         case .textButton:
             buttonVariants { $0.buttonStyle(.textButton) }
+        case .glassButton:
+            buttonVariants { $0.buttonStyle(.glassButton) }
         case .closeButton:
             [
                 .init("Small") { CloseButton(size: .small) {} },
@@ -915,6 +1055,13 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                         borderOnly: true
                     )
                 },
+                .init("Colour swatch") {
+                    HAIconButtonToggle(
+                        swatch: AngularGradient(colors: [.red, .yellow, .green, .blue, .purple, .red], center: .center),
+                        label: "Color",
+                        isSelected: .constant(true)
+                    )
+                },
             ]
         case .progressButton:
             HAProgressButtonState.allCases.map { state in
@@ -933,6 +1080,14 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                     HAControlSlider(value: .constant(60), scale: HASliderScale(inverted: true))
                 },
                 .init("Disabled") { HAControlSlider(value: .constant(60), isDisabled: true) },
+                .init("State colour") {
+                    HAControlSlider(
+                        value: .constant(60),
+                        showsHandle: true,
+                        tint: FrontendColors.stateLightActiveColor.color,
+                        trackColor: FrontendColors.stateLightActiveColor.color
+                    )
+                },
                 .init("Gradient track") {
                     HAControlSlider(
                         value: .constant(40),
@@ -966,6 +1121,13 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                 },
                 .init("Reversed") { HAControlSwitch(isOn: .constant(true), reversed: true) },
                 .init("Disabled") { HAControlSwitch(isOn: .constant(true), isDisabled: true) },
+                .init("State colour") {
+                    HAControlSwitch(
+                        isOn: .constant(true),
+                        onColor: FrontendColors.stateLockLockedColor.color,
+                        offColor: FrontendColors.stateLockLockedColor.color
+                    )
+                },
                 .init("Vertical") {
                     HStack(spacing: DesignSystem.Spaces.three) {
                         HAControlSwitch(isOn: .constant(true), vertical: true)
@@ -979,6 +1141,17 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                 .init("Enabled") { HAControlButton(icon: .powerIcon, label: "Toggle") {} },
                 .init("Disabled") {
                     HAControlButton(icon: .minusIcon, label: "Decrease", isDisabled: true) {}
+                },
+                .init("Active") {
+                    HAControlButton(
+                        icon: .flashIcon,
+                        label: "On",
+                        activeColor: FrontendColors.stateSwitchActiveColor.color
+                    ) {}
+                },
+                .init("Title") {
+                    HAControlButton(title: "Open door") {}
+                        .frame(width: 130, height: 40)
                 },
             ]
         case .controlButtonGroup:
@@ -1041,6 +1214,18 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                         hidesOptionLabels: true
                     )
                 },
+                .init("State colour") {
+                    HAControlSelect(
+                        options: [
+                            .init(id: "low", label: "Low"),
+                            .init(id: "medium", label: "Medium"),
+                            .init(id: "high", label: "High"),
+                        ],
+                        selection: .constant("medium"),
+                        tint: FrontendColors.stateFanActiveColor.color,
+                        trackColor: FrontendColors.stateFanActiveColor.color
+                    )
+                },
                 .init("Disabled option") {
                     HAControlSelect(
                         options: [
@@ -1093,6 +1278,37 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                         high: .constant(24),
                         scale: HACircularSliderScale(min: 7, max: 35, step: 0.5),
                         current: 21
+                    )
+                },
+                .init("Cooling, coloured from the end") {
+                    HAControlCircularSlider(
+                        value: .constant(20),
+                        scale: HACircularSliderScale(min: 10, max: 30, step: 0.5),
+                        current: 24,
+                        mode: .end,
+                        activeColor: FrontendColors.stateClimateCoolColor.color
+                    )
+                },
+                .init("Dual target, heat and cool colours") {
+                    HAControlCircularSlider(
+                        low: .constant(20),
+                        high: .constant(25),
+                        scale: HACircularSliderScale(min: 10, max: 30, step: 1),
+                        current: 18,
+                        activeColor: FrontendColors.stateClimateHeatColor.color,
+                        highColor: FrontendColors.stateClimateCoolColor.color
+                    )
+                },
+                .init("Inactive") {
+                    HAControlCircularSlider(value: .constant(21), current: 19, isInactive: true)
+                },
+                .init("Whole ring, read only") {
+                    HAControlCircularSlider(
+                        value: .constant(0),
+                        current: 40,
+                        mode: .full,
+                        isReadOnly: true,
+                        activeColor: FrontendColors.stateClimateFanOnlyColor.color
                     )
                 },
                 .init("Without a current reading") {
@@ -1627,6 +1843,9 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                 .init("Title") { HADialogHeader(title: "Settings", onClose: {}) },
                 .init("With a subtitle") {
                     HADialogHeader(title: "Ceiling light", subtitle: "Living room", onClose: {})
+                },
+                .init("With a breadcrumb") {
+                    HADialogHeader(title: "Ceiling light", overline: "Living room ▸ Hue bridge", onClose: {})
                 },
                 .init("With an action") {
                     HADialogHeader(title: "With an action", onClose: {}) {
@@ -2405,6 +2624,14 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                     )
                 },
             ]
+        case .controlSelectMenu, .outlinedIconButton, .moreInfoDialog, .moreInfoLayout, .moreInfoStateHeader,
+             .moreInfoReadings, .moreInfoControlSelectContainer, .moreInfoBattery, .moreInfoStateCard,
+             .moreInfoCommandBar, .stateControlCircularSlider, .stateControlToggle, .stateControlSlider,
+             .stateControlCoverButtons, .stateControlVacuumStatus, .stateControlLawnMowerStatus,
+             .moreInfoClimate, .moreInfoHumidifier, .moreInfoWaterHeater, .moreInfoFan, .moreInfoCover,
+             .moreInfoLock, .moreInfoLawnMower, .moreInfoVacuum, .moreInfoLight, .moreInfoScene,
+             .moreInfoMediaPlayer, .moreInfoNumber, .moreInfoText, .moreInfoTimer, .moreInfoUpdate:
+            moreInfoVariants
         case .assistVoiceOrb:
             // The orb animates, so every variant pins its timeline — otherwise the recorded image
             // would depend on when the snapshot happened to be taken.
@@ -2564,7 +2791,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     ]
 
     /// 2026-08-29 09:41:07 UTC, pinned so the clock records the same time on every run.
-    private static let sampleDate = Date(timeIntervalSince1970: 1_787_996_467)
+    static let sampleDate = Date(timeIntervalSince1970: 1_787_996_467)
 
     /// 2026-08-29 10:09:37 UTC — a time whose three hands sit at clearly different angles, so a
     /// wrongly-driven hand is visible in the recording rather than hiding behind another.

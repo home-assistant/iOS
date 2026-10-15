@@ -29,9 +29,16 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
 
     public init() {}
 
+    var addRequest: (UNNotificationRequest, @escaping (Error?) -> Void) -> Void = { request, completion in
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: completion)
+    }
+
     public func send(_ notification: Notification) {
         if notification.id == .debug, !Current.settingsStore.receiveDebugNotifications {
             // Do not send debug notifications if the setting is disabled
+            return
+        }
+        if notification.id == .localPushStateChanged, !Current.settingsStore.notifyOnLocalPushStateChanges {
             return
         }
 
@@ -46,7 +53,7 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
             content: content,
             trigger: nil
         )
-        UNUserNotificationCenter.current().add(request) { error in
+        addRequest(request) { error in
             if let error {
                 Current.Log
                     .info("Error scheduling notification, id: \(notification.id) error: \(error.localizedDescription)")

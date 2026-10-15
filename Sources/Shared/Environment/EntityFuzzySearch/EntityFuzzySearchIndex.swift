@@ -5,6 +5,7 @@ public struct EntityFuzzySearchIndex {
     private static let keys: [FuzzyKey] = [
         FuzzyKey(name: "name", weight: 10),
         FuzzyKey(name: "deviceName", weight: 7),
+        FuzzyKey(name: "parentDeviceName", weight: 6),
         FuzzyKey(name: "areaName", weight: 6),
         FuzzyKey(name: "domainName", weight: 6),
         FuzzyKey(name: "floorName", weight: 5),
@@ -35,12 +36,13 @@ public struct EntityFuzzySearchIndex {
             Current.Log.error("Failed to fetch areas for entity fuzzy search: \(error)")
         }
 
-        let deviceNames = Self.deviceNames(for: serverId)
+        let (deviceNames, parentDeviceNames) = Self.deviceNames(for: serverId)
 
         self.documents = entities.map { entity in
             FuzzyDocument(id: entity.id, fieldValues: [
                 entity.name,
                 deviceNames[entity.entityId],
+                parentDeviceNames[entity.entityId],
                 areaNames[entity.entityId],
                 Domain(rawValue: entity.domain)?.name ?? entity.domain,
                 floorNames[entity.entityId],
@@ -53,7 +55,9 @@ public struct EntityFuzzySearchIndex {
         searcher.search(query, in: documents).map { entities[$0] }
     }
 
-    private static func deviceNames(for serverId: String) -> [String: String] {
+    private static func deviceNames(
+        for serverId: String
+    ) -> (deviceNames: [String: String], parentDeviceNames: [String: String]) {
         do {
             let registries = try Current.database().read { db in
                 try EntityRegistryListForDisplay.Entity
@@ -70,15 +74,19 @@ public struct EntityFuzzySearchIndex {
                 uniquingKeysWith: { first, _ in first }
             )
 
-            var result: [String: String] = [:]
+            var deviceNames: [String: String] = [:]
+            var parentDeviceNames: [String: String] = [:]
             for registry in registries {
                 guard let deviceId = registry.deviceId, let device = devicesByDeviceId[deviceId] else { continue }
-                result[registry.entityId] = device.displayName
+                deviceNames[registry.entityId] = device.displayName
+                parentDeviceNames[registry.entityId] = device.parentDeviceId.flatMap {
+                    devicesByDeviceId[$0]?.displayName
+                }
             }
-            return result
+            return (deviceNames, parentDeviceNames)
         } catch {
             Current.Log.error("Failed to build device names for entity fuzzy search: \(error)")
-            return [:]
+            return ([:], [:])
         }
     }
 }

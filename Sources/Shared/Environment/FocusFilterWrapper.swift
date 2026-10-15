@@ -8,10 +8,15 @@ public struct FocusFilterState: Codable, Equatable {
     public var name: String?
     /// When the filter last ran, so writing the same name twice still notifies observers.
     public var date: Date
+    /// When iOS itself answered that a Focus was on while this name stood, or `nil` while it never
+    /// has. A Focus whose status the user doesn't share reads back as "not focused" for as long as it
+    /// runs, so this is what says the live answer is about this Focus — and so can end it.
+    public var liveConfirmedDate: Date?
 
-    public init(name: String?, date: Date) {
+    public init(name: String?, date: Date, liveConfirmedDate: Date? = nil) {
         self.name = name
         self.date = date
+        self.liveConfirmedDate = liveConfirmedDate
     }
 }
 
@@ -39,10 +44,19 @@ public class FocusFilterWrapper {
 
     private(set) lazy var state = FocusFilterStateSync()
 
+    /// Unobserved on purpose — see `FocusFilterLiveConfirmation`.
+    private(set) lazy var liveConfirmation = UserDefaultsValueSync<FocusFilterLiveConfirmation>(
+        settingsKey: "FocusFilterLiveConfirmationKey"
+    )
+
     /// The last Focus Filter run, with the moment it happened so it can be ordered against what
-    /// the Focus status pushed us.
+    /// the Focus status pushed us, and whether iOS has confirmed it since.
     public lazy var activeFocusState: () -> FocusFilterState? = { [weak self] in
-        self?.state.value
+        guard let self, var state = state.value else { return nil }
+        if let confirmation = liveConfirmation.value, confirmation.filterDate == state.date {
+            state.liveConfirmedDate = confirmation.date
+        }
+        return state
     }
 
     /// The name reported by the last Focus Filter run, if any.
@@ -66,6 +80,16 @@ public class FocusFilterWrapper {
         }
 
         state.value = FocusFilterState(name: name, date: now)
+    }
+
+    /// Records that iOS answered a Focus was on while the named run `filterState` stood. Only the
+    /// run still current can be confirmed: a later run is a different Focus.
+    public lazy var confirmLive: (FocusFilterState) -> Void = { [weak self] filterState in
+        guard let self, let current = state.value, current.date == filterState.date,
+              current.name?.isEmpty == false else { return }
+        if let existing = liveConfirmation.value, existing.filterDate == current.date { return }
+        Current.Log.info("focus filter run for \(current.name ?? "") confirmed by the live focus status")
+        liveConfirmation.value = FocusFilterLiveConfirmation(filterDate: current.date, date: Current.date())
     }
 
     /// Stops reporting a name the user deleted in settings. A filter still paired with it reports
