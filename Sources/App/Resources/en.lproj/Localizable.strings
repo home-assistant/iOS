@@ -2046,6 +2046,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.sections.share_from_device.header" = "Share from this device";
 "settings.sections.stay_informed.header" = "Stay informed";
 "settings.server_select.title" = "Server";
+"settings.server_switching.automatic_switching.title" = "Automatic switching";
 "settings.server_switching.by_location.footer" = "When you open the app, it checks whether you are at one of your homes, either connected to its Wi-Fi network or inside its Home zone. If that home belongs to another server, that server is opened automatically. Checks happen only on this device while the app is in use, and your location is never stored.";
 "settings.server_switching.by_location.title" = "Switch Server by Location";
 "settings.server_switching.closest_server.source.location.accessibility_label" = "Based on your current location";
