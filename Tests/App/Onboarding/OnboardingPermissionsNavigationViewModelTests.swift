@@ -256,19 +256,24 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.storedSSIDSuccessfully == false)
     }
 
-    @Test("Back is only offered on the home network step")
-    func canGoBackOnlyOnHomeNetwork() async throws {
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard)
+    @Test("Back is only offered on the home network step, in every flow", arguments: [
+        OnboardingPermissionsNavigationViewModel.StepID.default,
+        OnboardingPermissionsNavigationViewModel.StepID.remoteConnectionCompatible,
+        [.disclaimer, .privacy, .localAccess, .homeNetwork, .completion],
+        [.location, .completion],
+        OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission,
+        OnboardingPermissionsNavigationViewModel.StepID.updateLocalAccessSecurityLevelPreference,
+        [.localAccess, .updatePreferencesSuccess],
+    ])
+    func canGoBackOnlyOnHomeNetwork(steps: [OnboardingPermissionsNavigationViewModel.StepID]) async throws {
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard, steps: steps)
 
-        for step in viewModel.steps where step != .homeNetwork {
-            viewModel.navigateToStep(step)
-            #expect(viewModel.canGoBack == false, "\(step)")
+        for (index, step) in steps.enumerated() {
+            viewModel.navigateToStep(at: index)
+            #expect(viewModel.canGoBack == (step == .homeNetwork), "\(step)")
             viewModel.previousStep()
-            #expect(viewModel.currentStep == step)
+            #expect(viewModel.currentStep == (step == .homeNetwork ? .localAccess : step), "\(step)")
         }
-
-        viewModel.navigateToStep(.homeNetwork)
-        #expect(viewModel.canGoBack)
     }
 
     @Test("Navigate to step by index with bounds checking")
