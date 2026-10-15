@@ -493,7 +493,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "audio0")
         let audioTransceiverInit = RTCRtpTransceiverInit()
         audioTransceiverInit.direction = .sendOnly
-        audioTransceiverInit.streamIds = ["stream"]
+        audioTransceiverInit.streamIds = ["ha_ios"]
         peerConnection.addTransceiver(with: audioTrack, init: audioTransceiverInit)
     }
 
