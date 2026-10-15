@@ -44,6 +44,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
     var notificationTapActionsEnabled: Bool?
     var macNativeFeaturesOnly: Bool?
     var receiveDebugNotifications: Bool?
+    var notifyOnLocalPushStateChanges: Bool?
     /// Seconds between periodic sensor updates. A negative value means "disabled", matching how
     /// `SettingsStore.periodicUpdateInterval` stores a nil interval.
     var periodicUpdateIntervalSeconds: Double?
@@ -88,6 +89,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
             notificationTapActionsEnabled: store.notificationTapActionsEnabled,
             macNativeFeaturesOnly: store.macNativeFeaturesOnly,
             receiveDebugNotifications: store.receiveDebugNotifications,
+            notifyOnLocalPushStateChanges: store.notifyOnLocalPushStateChanges,
             periodicUpdateIntervalSeconds: store.periodicUpdateInterval ?? -1,
             locationVisibility: store.locationVisibility.rawValue,
             menuItemTemplate: menuItemTemplateText,
@@ -157,6 +159,7 @@ struct AppSettingsSnapshot: Codable, Equatable {
         if let notificationTapActionsEnabled { store.notificationTapActionsEnabled = notificationTapActionsEnabled }
         if let macNativeFeaturesOnly { store.macNativeFeaturesOnly = macNativeFeaturesOnly }
         if let receiveDebugNotifications { store.receiveDebugNotifications = receiveDebugNotifications }
+        if let notifyOnLocalPushStateChanges { store.notifyOnLocalPushStateChanges = notifyOnLocalPushStateChanges }
         if let gestures { store.gestures = gestures }
         if let carPlayAssistDebugSettings { store.carPlayAssistDebugSettings = carPlayAssistDebugSettings }
     }
