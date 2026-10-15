@@ -6694,6 +6694,10 @@ public enum L10n {
       }
       /// Server Switching
       public static var title: String { return L10n.tr("Localizable", "settings.server_switching.title") }
+      public enum AutomaticSwitching {
+        /// Automatic switching
+        public static var title: String { return L10n.tr("Localizable", "settings.server_switching.automatic_switching.title") }
+      }
       public enum ByLocation {
         /// When you open the app, it checks whether you are at one of your homes, either connected to its Wi-Fi network or inside its Home zone. If that home belongs to another server, that server is opened automatically. Checks happen only on this device while the app is in use, and your location is never stored.
         public static var footer: String { return L10n.tr("Localizable", "settings.server_switching.by_location.footer") }

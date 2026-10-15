@@ -46,12 +46,28 @@ struct GeneralSettingsView: View {
                 pinchZoom
                 fullScreen
                 refreshAfterInactive
+                rememberLastPage
             }
 
             EnhancedWebSecuritySettingsRow(viewModel: .init())
         }
         .id(redrawHelper)
         .listTopContentMargin()
+    }
+
+    @ViewBuilder
+    private var rememberLastPage: some View {
+        // Mac has a system-level setting for state restoration
+        if !Current.isCatalyst {
+            Toggle(isOn: .init(get: {
+                Current.settingsStore.restoreLastURL
+            }, set: { newValue in
+                Current.settingsStore.restoreLastURL = newValue
+                redrawView()
+            })) {
+                Text(L10n.SettingsDetails.General.Restoration.title)
+            }
+        }
     }
 
     @ViewBuilder
@@ -293,6 +309,7 @@ extension GeneralSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.General.PageZoom.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.PinchToZoom.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.FullScreen.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.Restoration.title),
         ]
     }
 }

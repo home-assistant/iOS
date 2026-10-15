@@ -55,11 +55,13 @@ struct ServersListView: View {
             observer.moveServers(from: source, to: destination)
         }
 
-        NavigationLink(destination: ServerSwitchingSettingsView()) {
-            Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
+        if observer.servers.count > 1 {
+            NavigationLink(destination: ServerSwitchingSettingsView()) {
+                Label(L10n.Settings.ServerSwitching.AutomaticSwitching.title, systemSymbol: .location)
+            }
+            .tag(MacSettingsSidebarSelection.serverSwitching)
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverSwitching)
         }
-        .tag(MacSettingsSidebarSelection.serverSwitching)
-        .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverSwitching)
 
         Button {
             #if targetEnvironment(macCatalyst)

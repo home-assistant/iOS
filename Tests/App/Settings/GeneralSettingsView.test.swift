@@ -11,4 +11,10 @@ struct GeneralSettingsViewTests {
     @Test func buildsTheEnhancedWebSecurityRow() {
         _ = GeneralSettingsView().body
     }
+
+    /// "Remember last page" lives here again, so search has to lead here for it.
+    @Test func searchIndexesRememberLastPage() {
+        let titles = GeneralSettingsView.settingsSearchEntries.map(\.title)
+        #expect(titles.contains(L10n.SettingsDetails.General.Restoration.title))
+    }
 }
