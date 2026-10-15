@@ -394,6 +394,7 @@ public class HomeAssistantAPI {
                 case .unregisteredIdentifier,
                      .unacceptableStatusCode,
                      .replaced,
+                     .connectionsSuspended,
                      .none:
                     // not a WebhookError, or not one we think requires reintegration
                     Current.Log.info("not re-registering, but failed to update registration: \(error)")

@@ -39,6 +39,14 @@ final class AppMigrationCoordinator: ObservableObject {
         }
     }
 
+    /// The previous app once its setup has left: nothing of its own may reach the server any more.
+    var hasHandedOff: Bool {
+        switch handoffPhase {
+        case .handedOff, .erased: true
+        case .requested, nil: false
+        }
+    }
+
     var isPreviousAppInstalled: Bool {
         role == .newApp && UIApplication.shared.canOpenURL(AppMigrationRole.previousApp.baseURL)
     }
@@ -55,12 +63,13 @@ final class AppMigrationCoordinator: ObservableObject {
     func restoreHandoffIfNeeded() {
         guard role == .previousApp, handoffPhase != nil else { return }
         HomeAssistantAPI.connectionsSuspended = true
-        switch handoffPhase {
-        case .handedOff, .erased:
-            releasePushRegistration()
-        case .requested, nil:
-            break
-        }
+    }
+
+    /// Runs once Firebase is configured on a launch after the handoff: the token this app may have
+    /// been given back must go, and the app does not register for a new one.
+    func releasePushRegistrationIfHandedOff() {
+        guard hasHandedOff else { return }
+        releasePushRegistration()
     }
 
     @discardableResult
@@ -73,17 +82,25 @@ final class AppMigrationCoordinator: ObservableObject {
             } else {
                 receivePayload(sessionID: sessionID)
             }
-        case let (.newApp, .declined(sessionID)):
+        case let (.newApp, .declined(sessionID, reason)):
             guard currentSession()?.id == sessionID else { return false }
-            importState = .failed(message: AppMigrationError.declined.localizedDescription)
-        case (.newApp, .restart):
+            let error: AppMigrationError = reason == .previousAppErased ? .previousAppErased : .declined
+            importState = .failed(message: error.localizedDescription)
+        case let (.newApp, .restart(sessionID)):
+            guard sessionID == AppMigrationSessionStore.loadCompleted() else { return false }
             restartImport()
-        case (.newApp, .erased):
+        case let (.newApp, .erased(sessionID)):
+            guard sessionID == AppMigrationSessionStore.loadCompleted() else { return false }
             previousAppErased = true
         case let (.previousApp, .request(requested)):
-            enterTakeover(with: requested, startedHere: false)
-        case (.previousApp, .erase):
-            eraseAfterHandoff()
+            if case .erased = handoffPhase {
+                let declined = AppMigrationLink.declined(sessionID: requested.id, reason: .previousAppErased)
+                Task { _ = await open(declined.url(to: .newApp)) }
+            } else {
+                enterTakeover(with: requested, startedHere: false)
+            }
+        case let (.previousApp, .erase(sessionID)):
+            eraseAfterHandoff(sessionID: sessionID)
         default:
             return false
         }
@@ -125,7 +142,8 @@ final class AppMigrationCoordinator: ObservableObject {
 
     /// Sends the user over to the previous app so it wipes what it still holds; it comes straight back.
     func erasePreviousApp() {
-        Task { _ = await open(AppMigrationLink.erase.url(to: .previousApp)) }
+        guard let sessionID = AppMigrationSessionStore.loadCompleted() else { return }
+        Task { _ = await open(AppMigrationLink.erase(sessionID: sessionID).url(to: .previousApp)) }
     }
 
     private func currentSession() -> AppMigrationSession? {
@@ -178,6 +196,7 @@ final class AppMigrationCoordinator: ObservableObject {
                 }.value
                 await pace(from: started)
                 AppMigrationSessionStore.clear()
+                AppMigrationSessionStore.saveCompleted(sessionID)
                 self.session = nil
                 importState = nil
                 completedSummary = summary
@@ -252,7 +271,7 @@ final class AppMigrationCoordinator: ObservableObject {
                 Current.Log.info("App migration export: new app opened: \(opened)")
                 if opened {
                     exportState = .handedOff
-                    setHandoffPhase(.handedOff)
+                    setHandoffPhase(.handedOff(sessionID: request.id))
                     releasePushRegistration()
                 } else {
                     AppMigrationPasteboard.clear()
@@ -269,24 +288,32 @@ final class AppMigrationCoordinator: ObservableObject {
         Task { _ = await open(AppMigrationRole.newApp.baseURL) }
     }
 
-    /// The new app has the setup and asked for this one to be emptied: wipe everything, remember that
-    /// across relaunches, and hand the user back.
-    private func eraseAfterHandoff() {
-        guard case .handedOff = handoffPhase else { return }
+    /// The new app has the setup from this very session and asked for this one to be emptied: wipe
+    /// everything, remember that across relaunches, and hand the user back.
+    private func eraseAfterHandoff(sessionID: UUID) {
+        guard case .handedOff(sessionID) = handoffPhase else { return }
         wipeLocalData()
+        refreshLocalPushManagers()
         exportState = .erased
-        setHandoffPhase(.erased)
-        Task { _ = await open(AppMigrationLink.erased.url(to: .newApp)) }
+        setHandoffPhase(.erased(sessionID: sessionID))
+        Task { _ = await open(AppMigrationLink.erased(sessionID: sessionID).url(to: .newApp)) }
+    }
+
+    /// The local push extension reads its servers from the managers it was configured with, so they
+    /// have to be rebuilt whenever this app suspends or resumes: suspended, none may stay.
+    private func refreshLocalPushManagers() {
+        AppDelegate.shared?.notificationManager.localPushManager.retryLocalPush(for: nil, reason: .manual)
     }
 
     func transferAgain() {
-        Task { _ = await open(AppMigrationLink.restart.url(to: .newApp)) }
+        guard case let .handedOff(sessionID) = handoffPhase else { return }
+        Task { _ = await open(AppMigrationLink.restart(sessionID: sessionID).url(to: .newApp)) }
     }
 
     /// Leaves the takeover for now: tells the new app, forgets the handoff and lets this app reconnect.
     func declineExport() {
         if let request = exportRequest, !exportStartedHere {
-            Task { _ = await open(AppMigrationLink.declined(sessionID: request.id).url(to: .newApp)) }
+            Task { _ = await open(AppMigrationLink.declined(sessionID: request.id, reason: nil).url(to: .newApp)) }
         }
         exportRequest = nil
         exportStartedHere = false
@@ -327,6 +354,7 @@ final class AppMigrationCoordinator: ObservableObject {
         for api in Current.apis {
             api.connection.disconnect()
         }
+        refreshLocalPushManagers()
         Current.sceneManager.webViewControllerPromise.done { [weak self] controller in
             guard self?.handoffPhase != nil, let webView = controller.webView else { return }
             webView.stopLoading()
@@ -340,6 +368,7 @@ final class AppMigrationCoordinator: ObservableObject {
         for api in Current.apis {
             _ = api.Connect(reason: .warm)
         }
+        refreshLocalPushManagers()
         Current.sceneManager.webViewControllerPromise.done { controller in
             controller.loadActiveURLIfNeeded()
         }
