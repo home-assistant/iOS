@@ -12,7 +12,7 @@ extension View {
     }
 }
 
-private struct ShareSheetPresenter: UIViewRepresentable {
+struct ShareSheetPresenter: UIViewRepresentable {
     @Binding var item: ShareWrapper?
     let onDismiss: (() -> Void)?
 

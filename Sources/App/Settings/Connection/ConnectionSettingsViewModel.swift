@@ -32,7 +32,18 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
+    @Published var isCertificateImporterPresented = false
+    @Published var isCertificatePasswordPromptPresented = false
+    @Published var isRemoveCertificateConfirmationPresented = false
+    @Published var certificatePassword = ""
+    @Published var pendingCertificateURL: URL?
     @Published var isSyncing = false
+    @Published var isEditingInternalURL = false
+    @Published var isEditingExternalURL = false
+    @Published var isShowingHowItWorks = false
+    /// The name the alert is editing, with `nameDraft` as its text.
+    @Published var nameBeingEdited: ServerDetailsRowView.EditOption?
+    @Published var nameDraft = ""
 
     // MARK: - Properties
 
@@ -79,6 +90,53 @@ final class ConnectionSettingsViewModel: ObservableObject {
     func updateAppDatabase() {
         isSyncing = true
         server.refreshAppDatabase(forceUpdate: true, showProgress: true)
+    }
+
+    // MARK: - Editing
+
+    /// Routes an Edit choice to the alert or sheet that changes it.
+    func edit(_ option: ServerDetailsRowView.EditOption) {
+        switch option {
+        case .locationName:
+            nameDraft = locationName
+            nameBeingEdited = option
+        case .deviceName:
+            nameDraft = deviceName
+            nameBeingEdited = option
+        case .internalURL:
+            isEditingInternalURL = true
+        case .externalURL:
+            isEditingExternalURL = true
+        }
+    }
+
+    /// What the name alert shows while its field is empty: the value the app falls back to.
+    func namePlaceholder(for option: ServerDetailsRowView.EditOption) -> String {
+        switch option {
+        case .locationName:
+            return server.info.remoteName
+        case .deviceName:
+            return Current.device.deviceName()
+        case .internalURL, .externalURL:
+            return ""
+        }
+    }
+
+    func saveNameDraft() {
+        defer { nameBeingEdited = nil }
+        let newName = nameDraft.isEmpty ? nil : nameDraft
+        switch nameBeingEdited {
+        case .locationName:
+            updateLocationName(newName)
+        case .deviceName:
+            updateDeviceName(newName)
+        case .internalURL, .externalURL, nil:
+            break
+        }
+    }
+
+    func cancelNameEdit() {
+        nameBeingEdited = nil
     }
 
     func retryLocalPush() {
@@ -349,6 +407,30 @@ final class ConnectionSettingsViewModel: ObservableObject {
         }
 
         isImportingCertificate = false
+    }
+
+    /// Takes the file picker's result: a chosen file waits for its password, a failure is only logged.
+    func handleCertificatePick(_ result: Swift.Result<[URL], Error>) {
+        switch result {
+        case let .success(urls):
+            guard let url = urls.first else { return }
+            pendingCertificateURL = url
+            isCertificatePasswordPromptPresented = true
+        case let .failure(error):
+            Current.Log.error("Failed to select certificate file: \(error)")
+        }
+    }
+
+    func cancelCertificateImport() {
+        certificatePassword = ""
+        pendingCertificateURL = nil
+    }
+
+    /// Imports the picked file with the entered password, then forgets both.
+    func confirmCertificateImport() async {
+        guard let url = pendingCertificateURL else { return }
+        await importCertificate(from: url, password: certificatePassword)
+        cancelCertificateImport()
     }
 
     /// Remove the current client certificate

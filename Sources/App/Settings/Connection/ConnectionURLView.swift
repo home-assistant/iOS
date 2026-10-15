@@ -100,10 +100,7 @@ struct ConnectionURLView: View {
                 .sheet(isPresented: $showSecurityLevelPicker) {
                     LocalAccessPermissionViewInNavigationView(
                         initialSelection: viewModel.securityLevel,
-                        action: { level in
-                            viewModel.securityLevel = level
-                            showSecurityLevelPicker = false
-                        }
+                        action: applySecurityLevel
                     )
                 }
             }
@@ -161,6 +158,11 @@ struct ConnectionURLView: View {
         }
     }
 
+    private func applySecurityLevel(_ level: ConnectionSecurityLevel) {
+        viewModel.securityLevel = level
+        showSecurityLevelPicker = false
+    }
+
     // MARK: - Home Network Section
 
     @ViewBuilder
@@ -207,15 +209,11 @@ struct ConnectionURLView: View {
                 }
 
                 if urlType.isAffectedByHardwareAddress {
-                    NavigationLink {
-                        ConnectionHardwareAddressesView(viewModel: viewModel)
-                    } label: {
-                        HStack {
-                            Text(L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.title)
-                            Spacer()
-                            Text(String(viewModel.hardwareAddresses.filter { !$0.isEmpty }.count))
-                                .foregroundColor(.secondary)
-                        }
+                    NavigationLink(destination: ConnectionHardwareAddressesView(viewModel: viewModel)) {
+                        LabeledContent(
+                            L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.title,
+                            value: String(viewModel.hardwareAddresses.filter { !$0.isEmpty }.count)
+                        )
                     }
                 }
             } header: {

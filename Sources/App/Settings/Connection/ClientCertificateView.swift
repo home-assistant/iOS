@@ -6,11 +6,6 @@ import UniformTypeIdentifiers
 /// and removal.
 struct ClientCertificateView: View {
     @ObservedObject var viewModel: ConnectionSettingsViewModel
-    @State private var showCertificateImporter = false
-    @State private var showCertificatePasswordPrompt = false
-    @State private var certificatePassword = ""
-    @State private var pendingCertificateURL: URL?
-    @State private var showRemoveCertificateConfirmation = false
 
     var body: some View {
         List {
@@ -41,21 +36,20 @@ struct ClientCertificateView: View {
                         }
                         Spacer()
                         Button(role: .destructive) {
-                            showRemoveCertificateConfirmation = true
+                            viewModel.isRemoveCertificateConfirmationPresented = true
                         } label: {
                             Image(systemSymbol: .trash)
                         }
                         .confirmationDialog(
                             L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.title,
-                            isPresented: $showRemoveCertificateConfirmation,
+                            isPresented: $viewModel.isRemoveCertificateConfirmationPresented,
                             titleVisibility: .visible
                         ) {
                             Button(
                                 L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.remove,
-                                role: .destructive
-                            ) {
-                                viewModel.removeCertificate()
-                            }
+                                role: .destructive,
+                                action: viewModel.removeCertificate
+                            )
                             Button(L10n.cancelLabel, role: .cancel) {}
                         } message: {
                             Text(L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.message)
@@ -64,7 +58,7 @@ struct ClientCertificateView: View {
                 } else {
                     // No certificate configured
                     Button {
-                        showCertificateImporter = true
+                        viewModel.isCertificateImporterPresented = true
                     } label: {
                         if viewModel.isImportingCertificate {
                             HStack {
@@ -81,40 +75,22 @@ struct ClientCertificateView: View {
             }
         }
         .fileImporter(
-            isPresented: $showCertificateImporter,
+            isPresented: $viewModel.isCertificateImporterPresented,
             allowedContentTypes: ClientCertificateFile.allowedFormats,
-            allowsMultipleSelection: false
-        ) { result in
-            switch result {
-            case let .success(urls):
-                if let url = urls.first {
-                    pendingCertificateURL = url
-                    showCertificatePasswordPrompt = true
-                }
-            case let .failure(error):
-                Current.Log.error("Failed to select certificate file: \(error)")
-            }
-        }
+            allowsMultipleSelection: false,
+            onCompletion: viewModel.handleCertificatePick
+        )
         .alert(
             L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.title,
-            isPresented: $showCertificatePasswordPrompt
+            isPresented: $viewModel.isCertificatePasswordPromptPresented
         ) {
             SecureField(
                 L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.placeholder,
-                text: $certificatePassword
+                text: $viewModel.certificatePassword
             )
-            Button(L10n.cancelLabel, role: .cancel) {
-                certificatePassword = ""
-                pendingCertificateURL = nil
-            }
+            Button(L10n.cancelLabel, role: .cancel, action: viewModel.cancelCertificateImport)
             Button(L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.importButton) {
-                if let url = pendingCertificateURL {
-                    Task {
-                        await viewModel.importCertificate(from: url, password: certificatePassword)
-                        certificatePassword = ""
-                        pendingCertificateURL = nil
-                    }
-                }
+                Task { await viewModel.confirmCertificateImport() }
             }
         } message: {
             Text(L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.message)

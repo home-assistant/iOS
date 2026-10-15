@@ -111,6 +111,121 @@ struct ConnectionSettingsViewModelTests {
         }
     }
 
+    @Test func editRoutesEachOptionToItsEditor() async {
+        await withTestWorld {
+            let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+            server.info.setSetting(value: "Cabin", for: .localName)
+            server.info.setSetting(value: "My Phone", for: .overrideDeviceName)
+            let viewModel = ConnectionSettingsViewModel(server: server)
+
+            viewModel.edit(.locationName)
+            #expect(viewModel.nameBeingEdited == .locationName)
+            #expect(viewModel.nameDraft == "Cabin")
+            viewModel.cancelNameEdit()
+            #expect(viewModel.nameBeingEdited == nil)
+
+            viewModel.edit(.deviceName)
+            #expect(viewModel.nameBeingEdited == .deviceName)
+            #expect(viewModel.nameDraft == "My Phone")
+            viewModel.cancelNameEdit()
+
+            viewModel.edit(.internalURL)
+            #expect(viewModel.isEditingInternalURL)
+            viewModel.edit(.externalURL)
+            #expect(viewModel.isEditingExternalURL)
+            #expect(viewModel.nameBeingEdited == nil)
+        }
+    }
+
+    @Test func namePlaceholdersFallBackToWhatTheAppUses() async {
+        await withTestWorld {
+            let previousDeviceName = Current.device.deviceName
+            defer { Current.device.deviceName = previousDeviceName }
+            Current.device.deviceName = { "Test iPhone" }
+
+            let viewModel = ConnectionSettingsViewModel(
+                server: makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+            )
+            #expect(viewModel.namePlaceholder(for: .locationName) == "Test Server")
+            #expect(viewModel.namePlaceholder(for: .deviceName) == "Test iPhone")
+            #expect(viewModel.namePlaceholder(for: .internalURL).isEmpty)
+            #expect(viewModel.namePlaceholder(for: .externalURL).isEmpty)
+        }
+    }
+
+    @Test func savingTheNameDraftWritesTheEditedName() async {
+        await withTestWorld {
+            let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+            let viewModel = ConnectionSettingsViewModel(server: server)
+
+            viewModel.edit(.locationName)
+            viewModel.nameDraft = "Cabin"
+            viewModel.saveNameDraft()
+            #expect(server.info.setting(for: .localName) == "Cabin")
+            #expect(viewModel.locationName == "Cabin")
+            #expect(viewModel.nameBeingEdited == nil)
+
+            viewModel.edit(.deviceName)
+            viewModel.nameDraft = "My Phone"
+            viewModel.saveNameDraft()
+            #expect(server.info.setting(for: .overrideDeviceName) == "My Phone")
+            #expect(viewModel.deviceName == "My Phone")
+
+            viewModel.edit(.locationName)
+            viewModel.nameDraft = ""
+            viewModel.saveNameDraft()
+            #expect(server.info.setting(for: .localName) == nil)
+            #expect(viewModel.locationName.isEmpty)
+
+            viewModel.saveNameDraft()
+            #expect(viewModel.nameBeingEdited == nil)
+        }
+    }
+
+    @Test func certificatePickWaitsForAPassword() async {
+        await withTestWorld {
+            let viewModel = ConnectionSettingsViewModel(
+                server: makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+            )
+            let picked = URL(fileURLWithPath: "/tmp/home.p12")
+
+            viewModel.handleCertificatePick(.success([picked]))
+            #expect(viewModel.pendingCertificateURL == picked)
+            #expect(viewModel.isCertificatePasswordPromptPresented)
+
+            viewModel.certificatePassword = "secret"
+            viewModel.cancelCertificateImport()
+            #expect(viewModel.pendingCertificateURL == nil)
+            #expect(viewModel.certificatePassword.isEmpty)
+
+            viewModel.handleCertificatePick(.success([]))
+            #expect(viewModel.pendingCertificateURL == nil)
+
+            viewModel.handleCertificatePick(.failure(URLError(.cancelled)))
+            #expect(viewModel.pendingCertificateURL == nil)
+        }
+    }
+
+    @Test func confirmingAnUnreadableCertificateReportsTheError() async {
+        await withTestWorld {
+            let viewModel = ConnectionSettingsViewModel(
+                server: makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+            )
+
+            await viewModel.confirmCertificateImport()
+            #expect(viewModel.certificateError == nil)
+
+            viewModel.handleCertificatePick(.success([URL(fileURLWithPath: "/nonexistent/home.p12")]))
+            viewModel.certificatePassword = "secret"
+            await viewModel.confirmCertificateImport()
+            #expect(viewModel.certificateError != nil)
+            #expect(viewModel.clientCertificate == nil)
+            #expect(viewModel.pendingCertificateURL == nil)
+            #expect(viewModel.certificatePassword.isEmpty)
+            #expect(!viewModel.isImportingCertificate)
+        }
+    }
+
     @Test func invitationURLNeedsAnAddressToInviteTo() async {
         await withTestWorld {
             let shareable = ConnectionSettingsViewModel(

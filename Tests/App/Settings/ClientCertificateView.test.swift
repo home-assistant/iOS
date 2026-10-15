@@ -49,6 +49,40 @@ struct ClientCertificateViewTests {
         )
     }
 
+    @Test func expired() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 0)
+
+        let certificate = ClientCertificate(
+            keychainIdentifier: "test-server",
+            displayName: "home.p12",
+            importedAt: Date(timeIntervalSince1970: 1_600_000_000),
+            expiresAt: Date(timeIntervalSince1970: 1_650_000_000)
+        )
+        assertLightDarkSnapshots(
+            of: NavigationView {
+                ClientCertificateView(viewModel: ConnectionSettingsViewModel(server: server(certificate: certificate)))
+            },
+            drawHierarchyInKeyWindow: true,
+            layout: layout
+        )
+    }
+
+    @Test func importing() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 0)
+
+        let viewModel = ConnectionSettingsViewModel(server: server(certificate: nil))
+        viewModel.isImportingCertificate = true
+        assertLightDarkSnapshots(
+            of: NavigationView { ClientCertificateView(viewModel: viewModel) },
+            drawHierarchyInKeyWindow: true,
+            layout: layout
+        )
+    }
+
     @Test func configured() async throws {
         let previousServers = Current.servers
         defer { Current.servers = previousServers }

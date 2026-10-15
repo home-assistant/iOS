@@ -73,7 +73,7 @@ struct ServerDetailsRowView: View {
 
     /// Shared by the pill's tap menu and its long-press context menu. Copy only shows when there is an
     /// address to copy.
-    private struct URLPillMenuItems: View {
+    struct URLPillMenuItems: View {
         let copyValue: String?
         let onEdit: () -> Void
 

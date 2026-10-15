@@ -31,14 +31,19 @@ private final class FakeLocationManager: LocationManagerProtocol {
 @Suite(.serialized)
 @MainActor
 struct ConnectionURLViewTests {
-    private func server(internalURL: String) -> Server {
-        let info = ServerInfo(
+    private func server(
+        internalURL: String,
+        externalURL: String = "https://external.example.com",
+        remoteUIURL: String? = nil,
+        useCloud: Bool = false
+    ) -> Server {
+        var info = ServerInfo(
             name: "Test Server",
             connection: .init(
-                externalURL: URL(string: "https://external.example.com"),
+                externalURL: URL(string: externalURL),
                 internalURL: URL(string: internalURL),
                 cloudhookURL: nil,
-                remoteUIURL: nil,
+                remoteUIURL: remoteUIURL.flatMap(URL.init(string:)),
                 webhookID: "webhook-id",
                 webhookSecret: nil,
                 internalSSIDs: ["MyWifi"],
@@ -50,12 +55,16 @@ struct ConnectionURLViewTests {
             token: .init(accessToken: "token", refreshToken: "refresh", expiration: Date()),
             version: "2024.1"
         )
+        info.connection.useCloud = useCloud
         return Server.fake(identifier: .init(rawValue: "test-server"), initial: info)
     }
 
     private func snapshot(
         urlType: ConnectionInfo.URLType,
         internalURL: String,
+        externalURL: String = "https://external.example.com",
+        remoteUIURL: String? = nil,
+        useCloud: Bool = false,
         permission: LocationPermissionState,
         accuracy: CLAccuracyAuthorization,
         layout: SwiftUISnapshotLayout,
@@ -72,7 +81,15 @@ struct ConnectionURLViewTests {
 
         assertLightDarkSnapshots(
             of: NavigationView {
-                ConnectionURLView(server: server(internalURL: internalURL), urlType: urlType)
+                ConnectionURLView(
+                    server: server(
+                        internalURL: internalURL,
+                        externalURL: externalURL,
+                        remoteUIURL: remoteUIURL,
+                        useCloud: useCloud
+                    ),
+                    urlType: urlType
+                )
             },
             drawHierarchyInKeyWindow: true,
             layout: layout,
@@ -97,6 +114,29 @@ struct ConnectionURLViewTests {
             permission: .authorizedAlways,
             accuracy: .fullAccuracy,
             layout: .fixed(width: 390, height: 900)
+        )
+    }
+
+    @Test func externalWithCloud() async throws {
+        snapshot(
+            urlType: .external,
+            internalURL: "http://internal.example.com:8123",
+            remoteUIURL: "https://example.ui.nabu.casa",
+            useCloud: true,
+            permission: .authorizedAlways,
+            accuracy: .fullAccuracy,
+            layout: .fixed(width: 390, height: 600)
+        )
+    }
+
+    @Test func externalPlainHTTP() async throws {
+        snapshot(
+            urlType: .external,
+            internalURL: "http://internal.example.com:8123",
+            externalURL: "http://external.example.com",
+            permission: .authorizedAlways,
+            accuracy: .fullAccuracy,
+            layout: .fixed(width: 390, height: 700)
         )
     }
 

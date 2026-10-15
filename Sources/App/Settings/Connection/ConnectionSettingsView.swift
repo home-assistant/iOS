@@ -11,13 +11,8 @@ struct ConnectionSettingsView: View {
     @State private var isDeleteConfirmationPresented = false
     @State private var deleteError: Error?
     @State private var showDeleteError = false
-    @State private var showInternalURLSheet = false
-    @State private var showExternalURLSheet = false
     @State private var showLocationPrivacySheet = false
     @State private var showSensorPrivacySheet = false
-    @State private var nameBeingEdited: ServerDetailsRowView.EditOption?
-    @State private var nameDraft = ""
-    @State private var showHowItWorksSheet = false
     @Namespace private var urlTransitionNamespace
 
     let onDismiss: (() -> Void)?
@@ -39,19 +34,7 @@ struct ConnectionSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    ForEach(ServerDetailsRowView.EditOption.allCases, id: \.self) { option in
-                        Button {
-                            edit(option)
-                        } label: {
-                            Label(option.title, systemSymbol: option.symbol)
-                        }
-                    }
-                } label: {
-                    Image(systemSymbol: .pencil)
-                }
-                .tint(.haPrimary)
-                .accessibilityLabel(L10n.editLabel)
+                ServerEditMenu(onEdit: viewModel.edit)
             }
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.fixed, placement: .topBarTrailing)
@@ -70,67 +53,19 @@ struct ConnectionSettingsView: View {
             }
         }
         .shareSheet(item: $shareWrapper)
-        .sheet(isPresented: $showInternalURLSheet) {
-            NavigationView {
-                ConnectionURLView(
-                    server: viewModel.server,
-                    urlType: .internal
-                )
-                .navigationViewStyle(.stack)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton {
-                            showInternalURLSheet = false
-                        }
-                    }
-                }
-            }
-            .modify { view in
-                if #available(iOS 18.0, *) {
-                    view.navigationTransition(
-                        .zoom(sourceID: ServerDetailsRowView.EditOption.internalURL, in: urlTransitionNamespace)
-                    )
-                } else {
-                    view
-                }
-            }
+        .sheet(isPresented: $viewModel.isEditingInternalURL) {
+            ServerURLEditorSheet(viewModel: viewModel, urlType: .internal, transitionNamespace: urlTransitionNamespace)
         }
-        .sheet(isPresented: $showHowItWorksSheet) {
-            NavigationView {
+        .sheet(isPresented: $viewModel.isEditingExternalURL) {
+            ServerURLEditorSheet(viewModel: viewModel, urlType: .external, transitionNamespace: urlTransitionNamespace)
+        }
+        .sheet(isPresented: $viewModel.isShowingHowItWorks) {
+            ServerSettingsSheet(
+                zoomSourceID: nil,
+                transitionNamespace: nil,
+                onClose: { viewModel.isShowingHowItWorks = false }
+            ) {
                 ConnectionURLsHowItWorksView(server: viewModel.server)
-                    .navigationViewStyle(.stack)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            CloseButton {
-                                showHowItWorksSheet = false
-                            }
-                        }
-                    }
-            }
-        }
-        .sheet(isPresented: $showExternalURLSheet) {
-            NavigationView {
-                ConnectionURLView(
-                    server: viewModel.server,
-                    urlType: .external
-                )
-                .navigationViewStyle(.stack)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton {
-                            showExternalURLSheet = false
-                        }
-                    }
-                }
-            }
-            .modify { view in
-                if #available(iOS 18.0, *) {
-                    view.navigationTransition(
-                        .zoom(sourceID: ServerDetailsRowView.EditOption.externalURL, in: urlTransitionNamespace)
-                    )
-                } else {
-                    view
-                }
             }
         }
         .sheet(isPresented: $showLocationPrivacySheet) {
@@ -248,63 +183,27 @@ struct ConnectionSettingsView: View {
                 details: serverDetails,
                 isSyncing: viewModel.isSyncing,
                 transitionNamespace: urlTransitionNamespace,
-                onEdit: edit,
+                onEdit: viewModel.edit,
                 onSync: viewModel.updateAppDatabase,
-                onTroubleshoot: { showHowItWorksSheet = true },
+                onTroubleshoot: { viewModel.isShowingHowItWorks = true },
                 onOpen: viewModel.hasMultipleServers ? openServer : nil
             )
             .alert(
-                nameBeingEdited?.title ?? "",
+                viewModel.nameBeingEdited?.title ?? "",
                 isPresented: Binding(
-                    get: { nameBeingEdited != nil },
-                    set: { if !$0 { nameBeingEdited = nil } }
+                    get: { viewModel.nameBeingEdited != nil },
+                    set: { if !$0 { viewModel.cancelNameEdit() } }
                 ),
-                presenting: nameBeingEdited
+                presenting: viewModel.nameBeingEdited
             ) { option in
-                TextField(namePlaceholder(for: option), text: $nameDraft)
-                Button(L10n.cancelLabel, role: .cancel) {}
-                Button(L10n.saveLabel) {
-                    let newName = nameDraft.isEmpty ? nil : nameDraft
-                    switch option {
-                    case .locationName:
-                        viewModel.updateLocationName(newName)
-                    case .deviceName:
-                        viewModel.updateDeviceName(newName)
-                    case .internalURL, .externalURL:
-                        break
-                    }
-                }
+                TextField(viewModel.namePlaceholder(for: option), text: $viewModel.nameDraft)
+                Button(L10n.cancelLabel, role: .cancel, action: viewModel.cancelNameEdit)
+                Button(L10n.saveLabel, action: viewModel.saveNameDraft)
             }
         } footer: {
             if !viewModel.version.isEmpty {
                 Text(L10n.Settings.ConnectionSection.serverVersionFooter(viewModel.version))
             }
-        }
-    }
-
-    private func edit(_ option: ServerDetailsRowView.EditOption) {
-        switch option {
-        case .locationName:
-            nameDraft = viewModel.locationName
-            nameBeingEdited = option
-        case .deviceName:
-            nameDraft = viewModel.deviceName
-            nameBeingEdited = option
-        case .internalURL:
-            showInternalURLSheet = true
-        case .externalURL:
-            showExternalURLSheet = true
-        }
-    }
-
-    private func namePlaceholder(for option: ServerDetailsRowView.EditOption) -> String {
-        switch option {
-        case .locationName:
-            return viewModel.server.info.remoteName
-        case .deviceName:
-            return Current.device.deviceName()
-        case .internalURL, .externalURL:
-            return ""
         }
     }
 
