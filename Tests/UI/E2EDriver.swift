@@ -134,6 +134,14 @@ final class E2EDriver {
         // once that has happened rather than covering both and stalling if it never arrives.
         wait(for: app.webViews.firstMatch, timeout: Timeout.frontend, "frontend")
 
+        // A transfer that skipped the permissions step lands here with location still undecided, so the
+        // app covers the frontend with the location decision; declining leads through the local access
+        // and home network steps to a success screen that closes itself.
+        if tapIfPresent(app.buttons[.onboardingLocationSkip], timeout: Timeout.optional) {
+            tapIfPresent(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen)
+            tapIfPresent(app.buttons[.onboardingHomeNetworkNext], timeout: Timeout.screen)
+        }
+
         let request = app.buttons[.notificationPermissionRequestPrimary]
         guard request.waitForExistence(timeout: Timeout.screen) else { return }
 
