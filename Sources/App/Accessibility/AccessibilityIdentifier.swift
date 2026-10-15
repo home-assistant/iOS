@@ -41,4 +41,6 @@ enum AccessibilityIdentifier: String {
     case migrationGetNewAppStore = "migration.getNewApp.store"
     case migrationGetNewAppInstalled = "migration.getNewApp.installed"
     case migrationNoServersPrimary = "migration.noServers.primary"
+    case migrationImportRetry = "migration.import.retry"
+    case migrationImportManual = "migration.import.manual"
 }

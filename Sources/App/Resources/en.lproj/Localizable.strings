@@ -359,6 +359,7 @@
 "app_migration.error.invalid_payload" = "The transfer could not be read. Try again.";
 "app_migration.error.new_app_unavailable" = "The new Home Assistant app could not be opened.";
 "app_migration.error.no_payload" = "Nothing was received from the previous app.";
+"app_migration.error.no_payload_allow_paste" = "Nothing was received from the previous app. If iOS asked to allow a paste, choose Allow Paste and try again.";
 "app_migration.error.previous_app_erased" = "The previous app has already been erased, so there is nothing left to transfer. Set this app up from scratch.";
 "app_migration.error.previous_app_unavailable" = "The previous Home Assistant app could not be opened.";
 "app_migration.error.unsupported_version" = "Update the previous Home Assistant app before transferring.";

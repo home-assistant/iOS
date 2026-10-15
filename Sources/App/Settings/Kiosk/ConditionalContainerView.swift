@@ -141,6 +141,7 @@ struct ConditionalContainerView: View {
 
     private func applyKeepScreenOn() {
         UIApplication.shared.isIdleTimerDisabled = kiosk.shouldKeepScreenOn
+            || AppMigrationCoordinator.shared.keepsScreenOn
     }
 
     private func refreshWebViewIfSettingsClosed(_ isPresented: Bool) {

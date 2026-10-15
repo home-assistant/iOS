@@ -13,14 +13,25 @@ final class AppMigrationCoordinator: ObservableObject {
 
     let role = AppMigrationRole.current
 
-    @Published private(set) var importState: AppMigrationImportState?
-    @Published private(set) var completedSummary: AppMigrationSummary?
+    @Published private(set) var importState: AppMigrationImportState? {
+        didSet { updateScreenLock() }
+    }
+
+    @Published private(set) var completedSummary: AppMigrationSummary? {
+        didSet { updateScreenLock() }
+    }
+
     /// The previous app confirmed it wiped itself after this app asked it to.
     @Published private(set) var previousAppErased = false
     @Published private(set) var exportRequest: AppMigrationSession?
     private var exportStartedHere = false
-    @Published private(set) var exportState: AppMigrationExportState = .idle
-    @Published private(set) var handoffPhase: AppMigrationHandoffPhase?
+    @Published private(set) var exportState: AppMigrationExportState = .idle {
+        didSet { updateScreenLock() }
+    }
+
+    @Published private(set) var handoffPhase: AppMigrationHandoffPhase? {
+        didSet { updateScreenLock() }
+    }
 
     private var session: AppMigrationSession?
 
@@ -37,6 +48,25 @@ final class AppMigrationCoordinator: ObservableObject {
         case nil:
             break
         }
+        updateScreenLock()
+    }
+
+    /// A transfer in flight must not be cut short by auto-lock: the previous app from the takeover
+    /// until it has packaged, the new app from the request until the user leaves the completion screens.
+    var keepsScreenOn: Bool {
+        switch role {
+        case .newApp:
+            return importState != nil || completedSummary != nil
+        case .previousApp:
+            if case .requested = handoffPhase {
+                return true
+            }
+            return exportState == .preparing
+        }
+    }
+
+    private func updateScreenLock() {
+        UIApplication.shared.isIdleTimerDisabled = keepsScreenOn || Current.kiosk.shouldKeepScreenOn
     }
 
     /// The previous app once its setup has left: nothing of its own may reach the server any more.
