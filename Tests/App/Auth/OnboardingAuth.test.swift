@@ -192,9 +192,9 @@ class OnboardingAuthTests: XCTestCase {
     }
 
     func testFailureBeforeAnythingIsPersistedKeepsTheExistingServersAPI() throws {
-        let identifier = Identifier<Server>(rawValue: try XCTUnwrap(instance.uuid))
+        let identifier = try Identifier<Server>(rawValue: XCTUnwrap(instance.uuid))
         Current.servers.add(identifier: identifier, serverInfo: .fake())
-        let existingAPI = HomeAssistantAPI(server: try XCTUnwrap(Current.servers.server(for: identifier)))
+        let existingAPI = try HomeAssistantAPI(server: XCTUnwrap(Current.servers.server(for: identifier)))
         Current.setCachedApi(existingAPI, for: identifier)
 
         let result = auth(postBeforeRegister: [.value(()), .init(error: TestError.cancelled)])

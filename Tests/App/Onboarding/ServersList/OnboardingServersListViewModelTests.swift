@@ -157,7 +157,7 @@ struct OnboardingServersListViewModelTests {
             return promise
         }
 
-        sut.selectInstance(try Self.discoveredInstance(), presenter: presenter)
+        try sut.selectInstance(Self.discoveredInstance(), presenter: presenter)
         sut.manualInputLoading = true
         let manualURL = try #require(URL(string: "http://192.168.1.2:8123"))
         sut.selectInstance(.init(manualURL: manualURL), presenter: presenter)
@@ -179,7 +179,7 @@ struct OnboardingServersListViewModelTests {
         sut.authenticateInstance = { _, _ in Promise<Server>.pending().promise }
 
         sut.invitationLoading = true
-        sut.selectInstance(try Self.discoveredInstance(), presenter: presenter)
+        try sut.selectInstance(Self.discoveredInstance(), presenter: presenter)
         presenter.popAuthFlow()
 
         #expect(!sut.invitationLoading)
@@ -199,7 +199,7 @@ struct OnboardingServersListViewModelTests {
             resolver = pending
             return promise
         }
-        sut?.selectInstance(try Self.discoveredInstance(), presenter: presenter)
+        try sut?.selectInstance(Self.discoveredInstance(), presenter: presenter)
         // The mock holds its observer strongly; the real Bonjour holds it weakly.
         mockBonjour.observer = nil
         sut = nil
