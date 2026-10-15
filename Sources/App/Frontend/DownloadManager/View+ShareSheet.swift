@@ -46,17 +46,26 @@ struct ShareSheetPresenter: UIViewRepresentable {
                 while let presented = presenter.presentedViewController {
                     presenter = presented
                 }
-
-                let controller = UIActivityViewController(activityItems: item.items, applicationActivities: nil)
-                controller.popoverPresentationController?.sourceView = view
-                controller.popoverPresentationController?.sourceRect = view.bounds
-                controller.completionWithItemsHandler = { _, _, _, _ in
-                    self?.presentedID = nil
-                    clear()
-                    onDismiss?()
-                }
-                presenter.present(controller, animated: true)
+                self?.presentActivity(for: item, on: presenter, anchor: view, clear: clear, onDismiss: onDismiss)
             }
+        }
+
+        func presentActivity(
+            for item: ShareWrapper,
+            on presenter: UIViewController,
+            anchor: UIView,
+            clear: @escaping () -> Void,
+            onDismiss: (() -> Void)?
+        ) {
+            let controller = UIActivityViewController(activityItems: item.items, applicationActivities: nil)
+            controller.popoverPresentationController?.sourceView = anchor
+            controller.popoverPresentationController?.sourceRect = anchor.bounds
+            controller.completionWithItemsHandler = { [weak self] _, _, _, _ in
+                self?.presentedID = nil
+                clear()
+                onDismiss?()
+            }
+            presenter.present(controller, animated: true)
         }
     }
 }
