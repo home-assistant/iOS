@@ -90,7 +90,7 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
     }
 
     private func playStreaming(url: URL) {
-        let playerItem = AVPlayerItem(url: url)
+        let playerItem = AVPlayerItem(asset: AVURLAsset.withMirroredCookies(url: url))
         player.replaceCurrentItem(with: playerItem)
         player.play()
 

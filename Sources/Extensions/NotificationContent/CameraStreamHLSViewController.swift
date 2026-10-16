@@ -129,7 +129,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
                 "AVURLAssetRequiresCustomURLLoadingKey": true,
             ])
         } else {
-            asset = .init(url: url)
+            asset = .withMirroredCookies(url: url)
         }
 
         asset.resourceLoader.setDelegate(self, queue: .main)

@@ -116,6 +116,17 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertEqual(sut.currentState, .processing)
     }
 
+    /// AVPlayer streams the spoken reply over its own connection, so the cookies used by native
+    /// requests only reach the server if the player's asset carries them.
+    func testServerTTSStreamIsSentTheMirroredCookies() async throws {
+        let sut = makeSut()
+        sut.start()
+
+        try await CookieRecordingServer.expectMirroredCookie(path: "api/tts_proxy/reply.mp3") { url in
+            await MainActor.run { sut.didReceiveTtsMediaUrl(url) }
+        }
+    }
+
     func testIntentEndTransitionsToResponding() {
         let sut = makeSut()
         sut.start()
