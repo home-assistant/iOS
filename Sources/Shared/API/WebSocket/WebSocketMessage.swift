@@ -9,6 +9,7 @@ public class WebSocketMessage: Codable {
     public var Message: String?
     public var HAVersion: String?
     public var command: String?
+    public var error: ResultError?
 
     private enum CodingKeys: String, CodingKey {
         case MessageType = "type"
@@ -19,6 +20,7 @@ public class WebSocketMessage: Codable {
         case Message = "message"
         case HAVersion = "ha_version"
         case command = "command"
+        case error = "error"
     }
 
     public required init(from decoder: Decoder) throws {
@@ -61,6 +63,36 @@ public class WebSocketMessage: Codable {
         self.command = nil
     }
 
+    /// The frontend branches on `code` and shows its own text.
+    public struct ResultError: Codable, Equatable {
+        private static let canceledCode = "canceled"
+        private static let failedCode = "failed"
+
+        public let code: String
+        /// English detail for the app's log, never shown to the user.
+        public let message: String
+
+        public static func canceled(_ message: String) -> Self {
+            .init(code: canceledCode, message: message)
+        }
+
+        public static func failed(_ message: String) -> Self {
+            .init(code: failedCode, message: message)
+        }
+
+        public var isCanceled: Bool {
+            code == Self.canceledCode
+        }
+    }
+
+    public init(id: Int, error: ResultError) {
+        self.ID = id
+        self.MessageType = "result"
+        self.Success = false
+        self.error = error
+        self.command = nil
+    }
+
     public init(id: Int = -1, command: String, payload: [String: Any]? = nil) {
         self.ID = id
         self.MessageType = "command"
@@ -87,6 +119,7 @@ public class WebSocketMessage: Codable {
             try container.encode(Payload, forKey: .Payload)
         }
         try container.encodeIfPresent(command, forKey: .command)
+        try container.encodeIfPresent(error, forKey: .error)
     }
 
     init(_ messageType: String) {
@@ -96,7 +129,7 @@ public class WebSocketMessage: Codable {
 
 extension WebSocketMessage: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
-        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)))"
+        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)), error: \(String(describing: error)))"
     }
 
     public var debugDescription: String {

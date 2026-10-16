@@ -4000,7 +4000,7 @@
 								enabled = 1;
 							};
 							com.apple.HomeKit = {
-								enabled = 0;
+								enabled = 1;
 							};
 							com.apple.InAppPurchase = {
 								enabled = 1;
