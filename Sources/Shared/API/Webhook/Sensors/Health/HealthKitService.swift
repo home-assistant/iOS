@@ -63,27 +63,40 @@ public struct HealthKitService {
     }
 
     /// Reads a single metric over the given window, returning `nil` when the running OS doesn't know the
-    /// metric, when it isn't authorized, or when there simply are no samples.
+    /// metric, when it isn't authorized, or when there simply are no samples. An activity summary metric
+    /// reads the latest summary of the local calendar days from `start` to `end`: the window is a single
+    /// day for a ring's progress, and a few days for a goal, so a goal doesn't drop out every night
+    /// before the first sample creates the new day's summary.
     public var queryValue: (HealthKitMetric, Date, Date) async throws -> Double? = { metric, start, end in
-        guard HKHealthStore.isHealthDataAvailable(), !Current.isAppExtension,
-              let sampleType = HealthKitService.sampleType(for: metric) else {
+        guard HKHealthStore.isHealthDataAvailable(), !Current.isAppExtension else {
             return nil
         }
 
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
-
         switch metric.aggregation {
-        case let .sleep(stages):
-            guard let categoryType = sampleType as? HKCategoryType else {
+        case let .activitySummary(field):
+            guard let unit = metric.queryUnit.hkUnit else {
                 return nil
             }
+            let calendar = Current.calendar()
+            let summary = try await HealthKitService.latestActivitySummary(
+                from: HealthKitService.activitySummaryDay(containing: start, calendar: calendar),
+                to: HealthKitService.activitySummaryDay(containing: end, calendar: calendar),
+                calendar: calendar
+            )
+            return summary.flatMap { field.value(in: $0, unit: unit) }
+        case let .sleep(stages):
+            guard let categoryType = HealthKitService.sampleType(for: metric) as? HKCategoryType else {
+                return nil
+            }
+            let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
             return try await HealthKitService.sleepMinutes(in: stages, of: categoryType, predicate: predicate)
         case .cumulativeSum, .mostRecent:
-            guard let quantityType = sampleType as? HKQuantityType,
+            guard let quantityType = HealthKitService.sampleType(for: metric) as? HKQuantityType,
                   let unit = metric.queryUnit.hkUnit,
                   quantityType.is(compatibleWith: unit) else {
                 return nil
             }
+            let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
 
             // A cumulative sum is only legal for cumulative types; anything else falls back to the newest
             // sample, so a mismatch in the catalog can't make HealthKit raise.
@@ -117,17 +130,29 @@ public struct HealthKitService {
     }
 
     private static func sampleType(forIdentifier identifier: String) -> HKSampleType? {
-        if identifier == HealthKitSleepStage.sleepAnalysisIdentifier {
-            return HKObjectType.categoryType(forIdentifier: .sleepAnalysis)
+        if identifier.hasPrefix("HKCategoryTypeIdentifier") {
+            return HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier(rawValue: identifier))
         }
-        return HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: identifier))
+        if identifier.hasPrefix("HKQuantityTypeIdentifier") {
+            return HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: identifier))
+        }
+        // The activity summary type, which is read but isn't a sample type: nothing observes or delivers
+        // it. Anything else is a catalog typo, which the tests catch.
+        return nil
     }
 
-    /// May repeat a type, since every sleep metric reads the same one; callers dedupe.
-    private static func observableTypes(for metrics: [HealthKitMetric]) -> [HKSampleType] {
-        metrics
-            .filter { $0.queryUnit.hkUnit != nil }
-            .compactMap { sampleType(for: $0) }
+    /// May repeat a type: every sleep metric reads the same one, and a ring's progress is observed
+    /// through the sample type that moves it. Callers dedupe. Internal for the tests.
+    static func observableTypes(for metrics: [HealthKitMetric]) -> [HKSampleType] {
+        metrics.flatMap { metric -> [HKSampleType] in
+            if let field = metric.aggregation.activitySummaryField {
+                return field.observedSampleTypes
+            }
+            guard metric.queryUnit.hkUnit != nil, let type = sampleType(for: metric) else {
+                return []
+            }
+            return [type]
+        }
     }
 
     /// The read types behind the metrics the user turned on. Enablement is an allowlist, so a metric
@@ -136,9 +161,50 @@ public struct HealthKitService {
         readTypes(for: HealthKitMetric.all.filter { Current.sensors.isEnabledForAnyServer(uniqueID: $0.uniqueID) })
     }
 
-    private static func readTypes(for metrics: [HealthKitMetric]) -> Set<HKObjectType> {
+    /// Internal for the tests: an unauthorized activity summary query answers with no summaries rather
+    /// than an error, so forgetting to ask for the summary type would fail silently.
+    static func readTypes(for metrics: [HealthKitMetric]) -> Set<HKObjectType> {
         let types: [HKObjectType] = observableTypes(for: metrics)
-        return Set(types)
+        var objectTypes = Set(types)
+        if metrics.contains(where: { $0.aggregation.activitySummaryField != nil }) {
+            objectTypes.insert(HKObjectType.activitySummaryType())
+        }
+        return objectTypes
+    }
+
+    /// The components HealthKit's activity summary predicates match a day by: the local calendar day
+    /// containing `date`, era through day, with the calendar attached as HealthKit requires.
+    static func activitySummaryDay(containing date: Date, calendar: Calendar) -> DateComponents {
+        var day = calendar.dateComponents([.era, .year, .month, .day], from: date)
+        day.calendar = calendar
+        return day
+    }
+
+    /// The most recent summary between the two days, inclusive, or `nil` when none of them has one.
+    private static func latestActivitySummary(
+        from start: DateComponents,
+        to end: DateComponents,
+        calendar: Calendar
+    ) async throws -> HKActivitySummary? {
+        let summaries: [HKActivitySummary] = try await withCheckedThrowingContinuation { continuation in
+            let query = HKActivitySummaryQuery(
+                predicate: HKQuery.predicate(forActivitySummariesBetweenStart: start, end: end)
+            ) { _, summaries, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: summaries ?? [])
+                }
+            }
+            healthStore.execute(query)
+        }
+
+        // The order HealthKit returns them in isn't documented.
+        return summaries.max { lhs, rhs in
+            let lhsDate = calendar.date(from: lhs.dateComponents(for: calendar)) ?? .distantPast
+            let rhsDate = calendar.date(from: rhs.dateComponents(for: calendar)) ?? .distantPast
+            return lhsDate < rhsDate
+        }
     }
 
     private static func sum(
