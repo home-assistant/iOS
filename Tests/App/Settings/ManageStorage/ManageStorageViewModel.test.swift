@@ -9,14 +9,12 @@ struct ManageStorageViewModelTests {
     private func makeViewModel(
         byteCounts: [ManageStorageItemID: Int64] = [:],
         isCatalyst: Bool = false,
-        hasCompletedLegacyStoreMigration: Bool = true,
         cleaner: ManageStorageCleanerMock = ManageStorageCleanerMock()
     ) -> (ManageStorageViewModel, ManageStorageMeasurerMock, ManageStorageCleanerMock) {
         let measurer = ManageStorageMeasurerMock(byteCounts: byteCounts)
         let viewModel = ManageStorageViewModel(
             paths: paths,
             isCatalyst: isCatalyst,
-            hasCompletedLegacyStoreMigration: hasCompletedLegacyStoreMigration,
             measurer: measurer,
             cleaner: cleaner
         )
@@ -49,7 +47,6 @@ struct ManageStorageViewModelTests {
         let viewModel = ManageStorageViewModel(
             paths: paths,
             isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true,
             measurer: measurer,
             cleaner: ManageStorageCleanerMock()
         )
@@ -86,12 +83,6 @@ struct ManageStorageViewModelTests {
 
         #expect(viewModel.reclaimableByteCount == 150)
         #expect(viewModel.protectedItemCount == 3)
-    }
-
-    @Test func theLegacyStoreCountsAsProtectedWhileItsImportIsPending() {
-        let (viewModel, _, _) = makeViewModel(hasCompletedLegacyStoreMigration: false)
-
-        #expect(viewModel.protectedItemCount == 4)
     }
 
     @Test func rowsAreGroupedIntoTheCategoriesTheyBelongTo() async {
@@ -164,7 +155,6 @@ struct ManageStorageViewModelTests {
         let viewModel = ManageStorageViewModel(
             paths: paths,
             isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true,
             measurer: measurer,
             cleaner: cleaner
         )
@@ -212,7 +202,6 @@ struct ManageStorageViewModelTests {
         let viewModel = ManageStorageViewModel(
             paths: paths,
             isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true,
             measurer: measurer,
             cleaner: cleaner
         )
@@ -232,7 +221,6 @@ struct ManageStorageViewModelTests {
         let viewModel = ManageStorageViewModel(
             paths: paths,
             isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true,
             measurer: measurer,
             cleaner: ManageStorageCleanerMock()
         )
@@ -254,7 +242,6 @@ struct ManageStorageViewModelTests {
         let viewModel = ManageStorageViewModel(
             paths: paths,
             isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true,
             measurer: measurer,
             cleaner: cleaner
         )

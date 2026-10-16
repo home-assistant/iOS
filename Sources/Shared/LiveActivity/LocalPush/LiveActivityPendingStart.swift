@@ -20,14 +20,13 @@ enum LiveActivityPendingStart {
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
         let relevanceScore: Double?
-        let confirmID: String?
         /// Whether a non-silent update should fire an ActivityKit alert (sound + haptic). Decoded
         /// with a default so a queue serialized by an older build still drains.
         let alert: Bool
 
         // Declared explicitly: providing both init(from:) and encode(to:) opts out of synthesis.
         private enum CodingKeys: String, CodingKey {
-            case tag, title, serverWebhookId, state, relevanceScore, confirmID, alert
+            case tag, title, serverWebhookId, state, relevanceScore, alert
         }
 
         init(
@@ -36,7 +35,6 @@ enum LiveActivityPendingStart {
             serverWebhookId: String?,
             state: HALiveActivityAttributes.ContentState,
             relevanceScore: Double? = nil,
-            confirmID: String?,
             alert: Bool
         ) {
             self.tag = tag
@@ -44,7 +42,6 @@ enum LiveActivityPendingStart {
             self.serverWebhookId = serverWebhookId
             self.state = state
             self.relevanceScore = relevanceScore
-            self.confirmID = confirmID
             self.alert = alert
         }
 
@@ -55,7 +52,6 @@ enum LiveActivityPendingStart {
             self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
             self.state = try container.decode(HALiveActivityAttributes.ContentState.self, forKey: .state)
             self.relevanceScore = try container.decodeIfPresent(Double.self, forKey: .relevanceScore)
-            self.confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
             self.alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
         }
 
@@ -66,7 +62,6 @@ enum LiveActivityPendingStart {
             try container.encodeIfPresent(serverWebhookId, forKey: .serverWebhookId)
             try container.encode(state, forKey: .state)
             try container.encodeIfPresent(relevanceScore, forKey: .relevanceScore)
-            try container.encodeIfPresent(confirmID, forKey: .confirmID)
             try container.encode(alert, forKey: .alert)
         }
 
@@ -78,21 +73,9 @@ enum LiveActivityPendingStart {
                 serverWebhookId: serverWebhookId,
                 state: state,
                 relevanceScore: inherited,
-                confirmID: confirmID,
                 alert: alert
             )
         }
-    }
-
-    static func confirmLocalPushDelivery(for request: Request) {
-        guard let confirmID = request.confirmID, let webhookID = request.serverWebhookId else { return }
-        guard let server = Current.servers.all.first(where: { $0.info.connection.webhookID == webhookID }),
-              let api = Current.api(for: server) else {
-            Current.Log.error("LiveActivityPendingStart: no server for webhook to confirm local push delivery")
-            return
-        }
-        Current.Log.verbose("LiveActivityPendingStart: confirming local push delivery for tag \(request.tag)")
-        api.connection.send(.localPushConfirm(webhookID: webhookID, confirmID: confirmID)).promise.cauterize()
     }
 
     // Namespaced by App Group id so dev/beta/release installs never cross-signal.
@@ -287,7 +270,7 @@ public final class LiveActivityPendingStartObserver {
                 Task {
                     for request in requests {
                         do {
-                            let presented = try await Current.liveActivityRegistry?.startOrUpdate(
+                            _ = try await Current.liveActivityRegistry?.startOrUpdate(
                                 tag: request.tag,
                                 title: request.title,
                                 serverWebhookId: request.serverWebhookId,
@@ -295,9 +278,6 @@ public final class LiveActivityPendingStartObserver {
                                 relevanceScore: request.relevanceScore,
                                 alert: request.alert
                             )
-                            if presented == true {
-                                LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
-                            }
                         } catch {
                             Current.Log.error(
                                 "LiveActivityPendingStart: startOrUpdate failed for tag \(request.tag): \(error)"

@@ -254,6 +254,15 @@ public extension WatchComplicationConfig.GaugeStyle {
     }
 }
 
+public extension WatchComplicationConfig.CornerGaugeDisplay {
+    var title: String {
+        switch self {
+        case .gauge: return L10n.Watch.Complications.CornerGaugeDisplay.gauge
+        case .progress: return L10n.Watch.Complications.CornerGaugeDisplay.progress
+        }
+    }
+}
+
 public extension WatchComplicationConfig.Family {
     var title: String {
         switch self {

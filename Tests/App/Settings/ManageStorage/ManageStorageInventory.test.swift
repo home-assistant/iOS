@@ -6,15 +6,8 @@ import Testing
 struct ManageStorageInventoryTests {
     private let paths = ManageStoragePaths.rooted(at: URL(fileURLWithPath: "/tmp/manage-storage-inventory"))
 
-    private func items(
-        isCatalyst: Bool = false,
-        hasCompletedLegacyStoreMigration: Bool = true
-    ) -> [ManageStorageItem] {
-        ManageStorageInventory.items(
-            paths: paths,
-            isCatalyst: isCatalyst,
-            hasCompletedLegacyStoreMigration: hasCompletedLegacyStoreMigration
-        )
+    private func items(isCatalyst: Bool = false) -> [ManageStorageItem] {
+        ManageStorageInventory.items(paths: paths, isCatalyst: isCatalyst)
     }
 
     @Test func everyKnownStorageItemIsListedExactlyOnce() {
@@ -36,16 +29,6 @@ struct ManageStorageInventoryTests {
         #expect(byID[.appDatabase]?.protection == .protected(.essentialAppData))
         #expect(byID[.appPreferences]?.protection == .protected(.essentialAppData))
         #expect(byID[.notificationSounds]?.protection == .protected(.userProvidedContent))
-    }
-
-    @Test func theLegacyStoreIsOnlyDeletableOnceItHasBeenImported() {
-        let pending = items(hasCompletedLegacyStoreMigration: false)
-            .first { $0.id == .legacyRealmStore }
-        let imported = items(hasCompletedLegacyStoreMigration: true)
-            .first { $0.id == .legacyRealmStore }
-
-        #expect(pending?.protection == .protected(.pendingMigration))
-        #expect(imported?.protection == .deletable)
     }
 
     @Test func theUsersOwnDownloadsFolderIsProtectedOnMac() {
@@ -116,8 +99,7 @@ struct ManageStorageInventoryTests {
 
         let inventory = ManageStorageInventory.items(
             paths: overlapping,
-            isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true
+            isCatalyst: false
         )
 
         #expect(inventory.first { $0.id == .temporaryFiles }?.protection == .protected(.holdsProtectedData))
