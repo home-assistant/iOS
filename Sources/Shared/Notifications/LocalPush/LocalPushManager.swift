@@ -105,10 +105,10 @@ public class LocalPushManager {
         self.notificationCommunicationDecorator = notificationCommunicationDecorator
 
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        self.liveActivityConfirms.confirm = { [weak self] confirmID in
+        liveActivityConfirms.confirm = { [weak self] confirmID in
             self?.sendConfirm(confirmID: confirmID).cauterize()
         }
-        self.liveActivityConfirms.reopenChannel = { [weak self] in
+        liveActivityConfirms.reopenChannel = { [weak self] in
             self?.reopenSubscription()
         }
         #endif
