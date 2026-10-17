@@ -239,4 +239,58 @@ struct ConnectionSettingsViewModelTests {
             #expect(!unreachable.canShareServer)
         }
     }
+
+    /// Registering anew changes the app group's stored registration identifier, which the other tests share.
+    private func withRegistrationIdentifierRestored(_ body: () async throws -> Void) async rethrows {
+        let prefs = Current.settingsStore.prefs
+        let previousVendorID = Current.device.identifierForVendor
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationOwnersKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        defer {
+            Current.device.identifierForVendor = previousVendorID
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+        Current.device.identifierForVendor = { "this-device" }
+        try await body()
+    }
+
+    @Test func registeringAsANewDeviceRegistersWithThisServer() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                let viewModel = ConnectionSettingsViewModel(server: server)
+                var registered = [Server]()
+
+                await viewModel.registerAsNewDevice(ownership: RegistrationOwnership(register: { server in
+                    registered.append(server)
+                }))
+
+                #expect(registered == [server])
+                #expect(viewModel.registerAsNewDeviceError == nil)
+                #expect(!viewModel.isRegisteringAsNewDevice)
+            }
+        }
+    }
+
+    @Test func registeringAsANewDeviceReportsAFailure() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                let viewModel = ConnectionSettingsViewModel(server: server)
+
+                await viewModel.registerAsNewDevice(ownership: RegistrationOwnership(register: { server in
+                    throw ServerConnectionError.noActiveURL(server.info.name)
+                }))
+
+                #expect(viewModel.registerAsNewDeviceError is ServerConnectionError)
+                #expect(!viewModel.isRegisteringAsNewDevice)
+            }
+        }
+    }
 }

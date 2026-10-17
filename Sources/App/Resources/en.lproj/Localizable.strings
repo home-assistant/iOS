@@ -1542,6 +1542,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "reminders_sync.settings.synced_lists.header" = "Synced lists";
 "reminders_sync.settings.syncing" = "Syncing…";
 "requires_version" = "Requires %@ or later.";
+"restored_registrations.body" = "This device was restored from a backup of another one, so Home Assistant still sees it as that device. If you still use the other device, register this one as a new device so each keeps its own sensors, location and notifications.";
+"restored_registrations.errors.no_device_identifier" = "This device can't be told apart from others until it has been unlocked. Unlock it and try again.";
+"restored_registrations.failure" = "Couldn't register with %@. Try again, or later from that server's settings.";
+"restored_registrations.keep" = "This replaces the other device";
+"restored_registrations.progress" = "Registering…";
+"restored_registrations.register" = "Register as new device";
+"restored_registrations.servers" = "Servers: %@";
+"restored_registrations.title" = "Restored from another device?";
 "retry_label" = "Retry";
 "room_view.section.hidden" = "Hidden";
 "room_view.section.visible" = "Visible";
@@ -1660,6 +1668,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.no_base_url.title" = "No URL";
 "settings.connection_section.open_server" = "Open";
 "settings.connection_section.refresh_server" = "Update server information";
+"settings.connection_section.register_as_new_device.footer" = "Use this when another device restored from a backup of this one shares its registration, so each gets its own sensors, location and notifications.";
+"settings.connection_section.register_as_new_device.message" = "This device gets a new registration with this server. The current one stays in Home Assistant for any other device still using it. Remove it there once no device does.";
+"settings.connection_section.register_as_new_device.progress" = "Registering…";
+"settings.connection_section.register_as_new_device.success" = "Registered as a new device";
+"settings.connection_section.register_as_new_device.title" = "Register as new device";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "All";
 "settings.connection_section.sensor_send_type.setting.none" = "None";

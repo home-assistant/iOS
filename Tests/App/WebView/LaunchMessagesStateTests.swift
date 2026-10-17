@@ -27,6 +27,60 @@ final class LaunchMessagesStateTests: XCTestCase {
         XCTAssertTrue(sut.pending.isEmpty)
     }
 
+    /// Settling registrations a backup brought from another device comes before any other launch message.
+    func testRegistrationsOfAnotherDeviceComeFirst() {
+        withRegistrationIdentifier(from: "other-device") { servers in
+            let server = servers.addFake()
+
+            guard case let .restoredRegistrations(restored)? = LaunchMessagesState.messagesToShow().first else {
+                XCTFail("Expected the registrations of another device to come first")
+                return
+            }
+            XCTAssertEqual(restored, [server])
+        }
+    }
+
+    func testNoPromptForRegistrationsThisDeviceMade() {
+        withRegistrationIdentifier(from: "this-device") { servers in
+            servers.addFake()
+
+            XCTAssertFalse(LaunchMessagesState.messagesToShow().map(\.id).contains("restoredRegistrations"))
+        }
+    }
+
+    /// Runs `body` on "this-device", whose stored registration identifier came from `owner`.
+    private func withRegistrationIdentifier(
+        from owner: String,
+        _ body: (FakeServerManager) throws -> Void
+    ) rethrows {
+        let prefs = Current.settingsStore.prefs
+        let previousServers = Current.servers
+        let previousVendorID = Current.device.identifierForVendor
+        let previousIsCatalyst = Current.isCatalyst
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationOwnersKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        defer {
+            Current.servers = previousServers
+            Current.device.identifierForVendor = previousVendorID
+            Current.isCatalyst = previousIsCatalyst
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+
+        let servers = FakeServerManager(initial: 0)
+        Current.servers = servers
+        Current.device.identifierForVendor = { "this-device" }
+        Current.isCatalyst = false
+        keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(owner, forKey: SettingsStore.integrationDeviceIDKey)
+        try body(servers)
+    }
+
     private static func release(id: String = "test-release") -> WhatsNewRelease {
         WhatsNewRelease(
             id: WhatsNewReleaseId(id),
