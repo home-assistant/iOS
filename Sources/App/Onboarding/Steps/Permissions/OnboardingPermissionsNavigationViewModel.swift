@@ -78,6 +78,9 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// the exact location; the privacy step sets whichever level the user picked there.
     private var grantedLocationPrivacy: ServerLocationPrivacy = .exact
 
+    /// The security level the most secure choice replaced, restored when the user goes back to change it.
+    private var replacedSecurityLevel: ConnectionSecurityLevel?
+
     // MARK: - Step Management
 
     /// Returns all available steps in the onboarding flow
@@ -86,6 +89,16 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Determines if the user is advancing forward through the steps (for animation purposes)
     var isAdvancing: Bool {
         currentStepIndex >= lastStepIndex
+    }
+
+    /// Only the home network step offers going back: it is the one step that strands the user, and
+    /// the steps before it do not undo what they set.
+    var canGoBack: Bool {
+        canGoBack(fromStepAt: currentStepIndex)
+    }
+
+    func canGoBack(fromStepAt index: Int) -> Bool {
+        steps.indices.contains(index) && steps[index] == .homeNetwork
     }
 
     /// Returns the current step based on the current step index
@@ -176,6 +189,19 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         navigateToStep(at: currentStepIndex + 1)
     }
 
+    /// Goes back from the home network input to the local access choice, undoing that choice.
+    func previousStep() {
+        guard canGoBack else { return }
+        if let replacedSecurityLevel {
+            onboardingServer.update { info in
+                info.connection.connectionAccessSecurityLevel = replacedSecurityLevel
+            }
+            self.replacedSecurityLevel = nil
+        }
+        locationPermissionContext = .notRequested
+        navigateToStep(.localAccess)
+    }
+
     // MARK: - Step-Specific Actions
 
     /// Saves the home network SSID to the onboarding server configuration
@@ -190,6 +216,8 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                 info.connection.internalHardwareAddresses = [hardwareAddress]
             }
             DispatchQueue.main.async {
+                // The network is saved either way, but only moves the flow on while the step is shown.
+                guard self?.currentStep == .homeNetwork else { return }
                 self?.storedSSIDSuccessfully = true
             }
         }
@@ -310,6 +338,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
 
         if locationPermissionContext == .secureLocalConnection {
             // Configure most secure local connection using location data
+            replacedSecurityLevel = onboardingServer.info.connection.connectionAccessSecurityLevel
             onboardingServer.update { info in
                 info.connection.connectionAccessSecurityLevel = .mostSecure
             }

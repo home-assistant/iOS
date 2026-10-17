@@ -126,6 +126,15 @@ final class OnboardingE2ETests: XCTestCase {
         // No alert follows: location is already granted, so this step has nothing left to ask.
         tap(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen, "local access next button")
 
+        // The home network step is the one the user can leave again to change the choice.
+        tap(app.buttons[.onboardingHomeNetworkBack], timeout: Timeout.screen, "home network back button")
+        tap(
+            app.buttons[.onboardingLocalAccessSecureOption],
+            timeout: Timeout.screen,
+            "most secure local access option after going back"
+        )
+        tap(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen, "local access next button again")
+
         // Prefilled from the network the device reports, which is always "Simulator" here, so the
         // name only has to be accepted. Leaving it empty would stall the flow on a validation alert.
         tap(app.buttons[.onboardingHomeNetworkNext], timeout: Timeout.screen, "home network screen")

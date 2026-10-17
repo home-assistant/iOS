@@ -275,6 +275,95 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.currentStep == .localAccess)
     }
 
+    // MARK: - Back Navigation Tests
+
+    @Test("Previous step goes from home network back to local access")
+    func previousStepFromHomeNetworkToLocalAccess() async throws {
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: ServerFixture.standard,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.homeNetwork)
+
+        #expect(viewModel.canGoBack)
+        viewModel.previousStep()
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(viewModel.isAdvancing == false)
+    }
+
+    @Test("Going back undoes the most secure choice")
+    func previousStepRestoresSecurityLevel() async throws {
+        let server = Self.makeServer(
+            identifier: "going-back",
+            externalURL: nil,
+            internalURL: URL(string: "http://homeassistant.local:8123")
+        )
+        let previousStatus = Current.location.permissionStatus
+        defer { Current.location.permissionStatus = previousStatus }
+        Current.location.permissionStatus = { .authorizedAlways }
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.localAccess)
+
+        viewModel.requestLocationPermissionForSecureLocalConnection()
+        #expect(viewModel.currentStep == .homeNetwork)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .mostSecure)
+
+        viewModel.previousStep()
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .undefined)
+        #expect(viewModel.locationPermissionContext == .notRequested)
+    }
+
+    @Test("A home network save that lands after going back does not move the flow on")
+    @MainActor
+    func lateHomeNetworkSaveAfterGoingBackDoesNotMoveOn() async throws {
+        let server = Self.makeServer(
+            identifier: "late-save",
+            externalURL: nil,
+            internalURL: URL(string: "http://homeassistant.local:8123")
+        )
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.homeNetwork)
+
+        viewModel.saveHomeNetwork(.init(networkName: "Home", hardwareAddress: nil))
+        viewModel.previousStep()
+        // Let the queued success callback run.
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(viewModel.storedSSIDSuccessfully == false)
+    }
+
+    @Test("Back is only offered on the home network step, in every flow shape", arguments: [
+        OnboardingPermissionsNavigationViewModel.StepID.default,
+        OnboardingPermissionsNavigationViewModel.StepID.remoteConnectionCompatible,
+        [.disclaimer, .privacy, .localAccess, .homeNetwork, .completion],
+        [.location, .completion],
+        OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission,
+        OnboardingPermissionsNavigationViewModel.StepID.updateLocalAccessSecurityLevelPreference,
+        [.localAccess, .updatePreferencesSuccess],
+    ])
+    func canGoBackOnlyOnHomeNetwork(steps: [OnboardingPermissionsNavigationViewModel.StepID]) async throws {
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard, steps: steps)
+
+        for (index, step) in steps.enumerated() {
+            viewModel.navigateToStep(at: index)
+            #expect(viewModel.canGoBack == (step == .homeNetwork), "\(step)")
+            viewModel.previousStep()
+            #expect(viewModel.currentStep == (step == .homeNetwork ? .localAccess : step), "\(step)")
+        }
+    }
+
     // MARK: - Network SSID Tests
 
     @Test("Save Home Network")
