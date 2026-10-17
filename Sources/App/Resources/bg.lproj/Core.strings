@@ -253,7 +253,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::sensor::title" = "Сензор";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Празен ход";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Затворено";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Активен";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Активен (изразходва повече батерия, най-бързи актуализации)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Деактивирано";
 "component::siren::entity_component::_::state::off" = "Изключена";
 "component::siren::entity_component::_::state::on" = "Включена";

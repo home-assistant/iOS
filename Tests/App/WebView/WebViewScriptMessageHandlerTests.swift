@@ -27,21 +27,74 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
         Current.cachedApis = originalCachedApis
     }
 
-    @MainActor func testGetExternalAuthInBackgroundRejectsCallback() {
+    @MainActor func testGetExternalAuthInBackgroundIsNotRejected() {
         sut.isAppInBackground = { true }
 
         sut.handle(messageName: "getExternalAuth", messageBody: ["callback": "window.externalAuthSetToken"])
+        sut.deliverDeferredMessages()
 
+        XCTAssertFalse(mockWebViewController.evaluateJavaScriptCalled)
+    }
+
+    @MainActor func testGetExternalAuthInBackgroundIsAnsweredWithATokenOnceTheAppIsActive() throws {
+        _ = givenLoggedInServer()
+        sut.isAppInBackground = { true }
+        sut.handle(messageName: "getExternalAuth", messageBody: ["callback": "window.externalAuthSetToken"])
+
+        let answered = expectation(description: "getExternalAuth callback ran")
+        mockWebViewController.evaluateJavaScriptExpectation = answered
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
+
+        wait(for: [answered], timeout: 10)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+        let script = try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript)
+        XCTAssertTrue(script.hasPrefix("window.externalAuthSetToken(true, "))
+        XCTAssertTrue(script.contains("FakeAccessToken"))
+    }
+
+    @MainActor func testGetExternalAuthHeldInBackgroundKeepsAForcedRefresh() {
+        _ = givenLoggedInServer()
+        sut.isAppInBackground = { true }
+        sut.handle(
+            messageName: "getExternalAuth",
+            messageBody: ["callback": "window.externalAuthSetToken", "force": true]
+        )
+        sut.handle(messageName: "getExternalAuth", messageBody: ["callback": "window.externalAuthSetToken"])
+
+        let failed = expectation(description: "forced refresh failed")
+        mockWebViewController.handleExternalAuthFailureExpectation = failed
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
+
+        wait(for: [failed], timeout: 10)
         XCTAssertEqual(
             mockWebViewController.lastEvaluatedJavaScriptScript,
             "window.externalAuthSetToken(false, 'Token unavailable')"
         )
     }
 
+    @MainActor func testGetExternalAuthInBackgroundIsAnsweredOnlyOnce() {
+        _ = givenLoggedInServer()
+        sut.isAppInBackground = { true }
+        sut.handle(messageName: "getExternalAuth", messageBody: ["callback": "window.externalAuthSetToken"])
+
+        let answered = expectation(description: "getExternalAuth callback ran")
+        mockWebViewController.evaluateJavaScriptExpectation = answered
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
+        sut.deliverDeferredMessages()
+
+        wait(for: [answered], timeout: 10)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+    }
+
     @MainActor func testGetExternalAuthInBackgroundWithoutCallbackDoesNothing() {
         sut.isAppInBackground = { true }
 
         sut.handle(messageName: "getExternalAuth", messageBody: ["force": false])
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
 
         XCTAssertFalse(mockWebViewController.evaluateJavaScriptCalled)
     }
@@ -50,6 +103,8 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
         sut.isAppInBackground = { true }
 
         sut.handle(messageName: "getExternalAuth", messageBody: ["callback": 123])
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
 
         XCTAssertFalse(mockWebViewController.evaluateJavaScriptCalled)
     }
@@ -70,6 +125,76 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
 
         XCTAssertTrue(mockExternalMessageHandler.handleExternalMessageCalled)
         XCTAssertEqual(mockExternalMessageHandler.handleExternalMessageParams?["id"] as? Int, 1)
+    }
+
+    /// The frontend waits for its `config/get` reply before it asks for a token, so a page that loaded in the
+    /// background would never connect if the request were dropped.
+    @MainActor func testConfigGetInBackgroundIsDeliveredOnceTheAppIsActive() {
+        sut.isAppInBackground = { true }
+        sut.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "config/get"])
+        XCTAssertFalse(mockExternalMessageHandler.handleExternalMessageCalled)
+
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
+
+        XCTAssertEqual(handledExternalMessageTypes, ["config/get"])
+    }
+
+    /// An older page is gone by the time the app is back, and an older connection report is stale.
+    @MainActor func testOnlyTheLatestOfEachMessageHeldInBackgroundIsDelivered() {
+        sut.isAppInBackground = { true }
+        sut.handle(messageName: "externalBus", messageBody: ["type": "connection-status", "payload": ["event": "a"]])
+        sut.handle(messageName: "externalBus", messageBody: ["type": "frontend/loaded"])
+        sut.handle(messageName: "externalBus", messageBody: ["type": "connection-status", "payload": ["event": "b"]])
+
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
+
+        XCTAssertEqual(handledExternalMessageTypes, ["frontend/loaded", "connection-status"])
+        let events = mockExternalMessageHandler.handledExternalMessages.map {
+            ($0["payload"] as? [String: String])?["event"]
+        }
+        XCTAssertEqual(events, [nil, "b"])
+    }
+
+    @MainActor func testMessagesHeldInBackgroundAreHandledBeforeTheNextOne() {
+        sut.isAppInBackground = { true }
+        sut.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "config/get"])
+
+        sut.isAppInBackground = { false }
+        sut.handle(messageName: "externalBus", messageBody: ["id": 2, "type": "haptic"])
+
+        XCTAssertEqual(mockExternalMessageHandler.handledExternalMessages.map { $0["id"] as? Int }, [1, 2])
+    }
+
+    @MainActor func testMessagesHeldInBackgroundWaitWhileTheAppIsStillInBackground() {
+        sut.isAppInBackground = { true }
+        sut.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "config/get"])
+
+        sut.deliverDeferredMessages()
+
+        XCTAssertFalse(mockExternalMessageHandler.handleExternalMessageCalled)
+    }
+
+    @MainActor func testMessagesHeldInBackgroundAreDeliveredOnlyOnce() {
+        sut.isAppInBackground = { true }
+        sut.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "config/get"])
+
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
+        sut.deliverDeferredMessages()
+
+        XCTAssertEqual(handledExternalMessageTypes, ["config/get"])
+    }
+
+    @MainActor func testOtherExternalBusMessagesInBackgroundAreStillIgnored() {
+        sut.isAppInBackground = { true }
+        sut.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "haptic"])
+
+        sut.isAppInBackground = { false }
+        sut.deliverDeferredMessages()
+
+        XCTAssertFalse(mockExternalMessageHandler.handleExternalMessageCalled)
     }
 
     @MainActor func testFrontendRestoredIsForwardedToTheController() {
@@ -164,6 +289,10 @@ final class WebViewScriptMessageHandlerTests: XCTestCase {
         sut.handle(messageName: "updateThemeVariables", messageBody: ["variables": []])
 
         XCTAssertFalse(provider.storeCalled)
+    }
+
+    private var handledExternalMessageTypes: [String?] {
+        mockExternalMessageHandler.handledExternalMessages.map { $0["type"] as? String }
     }
 
     /// Points the environment at a single server the mock web view is showing. Its only URL refuses

@@ -34,9 +34,15 @@ public class HomeAssistantAPI {
         let errorDescription = String(describing: error)
         let underlyingInfo = "\(errorType): \(errorDescription)"
 
+        // The server's own 400...403, and the same verdict reached without asking it again: once the
+        // token manager has a refusal on file it stops sending the credentials, so a reconnect loop
+        // would spin forever on a token fetch that can only fail until the user logs back in.
+        let isPermanent = error.authenticationAPIError?.shouldRequireReauthentication == true
+            || (error as? TokenManager.TokenError) == .reauthenticationRequired
+
         return TokenFetchFailure(
             underlyingType: underlyingInfo,
-            shouldDisconnectPermanently: error.authenticationAPIError?.shouldRequireReauthentication == true
+            shouldDisconnectPermanently: isPermanent
         )
     }
 
@@ -56,6 +62,15 @@ public class HomeAssistantAPI {
 
     private var rejectedReconnectAttempts = 0
     private var rejectedReconnectWorkItem: DispatchWorkItem?
+    private var connectivityObserver: NSObjectProtocol?
+
+    /// Carries a sensor update that failed to reach this server to a later attempt.
+    private(set) lazy var sensorUpdateRetry = SensorUpdateRetry { [weak self] providers in
+        guard let self else { return .value(()) }
+        return Current.backgroundTask(withName: BackgroundTask.sensorUpdateRetry.rawValue) { _ in
+            self.UpdateSensors(trigger: .Retry, limitedTo: providers)
+        }
+    }
 
     /// Backoff (seconds) for reconnect attempts after a rejected websocket; its count also bounds the
     /// number of attempts. Overridable for tests.
@@ -179,6 +194,20 @@ public class HomeAssistantAPI {
         removeOldDownloadDirectory()
 
         Current.sensors.register(observer: self)
+
+        self.connectivityObserver = NotificationCenter.default.addObserver(
+            forName: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.reconnectWebSocketIfStillConnecting()
+        }
+    }
+
+    deinit {
+        if let connectivityObserver {
+            NotificationCenter.default.removeObserver(connectivityObserver)
+        }
     }
 
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
@@ -298,11 +327,10 @@ public class HomeAssistantAPI {
 
     static func shouldAttemptAutomaticWebSocketConnect(for state: HAConnectionState) -> Bool {
         switch state {
-        case .disconnected(reason: .disconnected):
+        case .disconnected(reason: .disconnected), .connecting:
             return true
         case .disconnected(reason: .waitingToReconnect),
              .disconnected(reason: .rejected),
-             .connecting,
              .authenticating,
              .ready:
             return false
@@ -317,6 +345,12 @@ public class HomeAssistantAPI {
             return
         }
 
+        connection.connect()
+    }
+
+    func reconnectWebSocketIfStillConnecting() {
+        guard case .connecting = connection.state else { return }
+        Current.Log.info("network changed while websocket is connecting; re-evaluating its URL")
         connection.connect()
     }
 
@@ -716,34 +750,17 @@ public class HomeAssistantAPI {
                 await seal(Current.connectivity.currentWiFiSSID())
             }
         }.then { [self] currentSSID -> Promise<Void> in
-            let update: WebhookUpdateLocation
-            let location: CLLocation?
-
-            switch server.info.setting(for: .locationPrivacy) {
-            case .exact:
-                update = .init(trigger: updateType, location: rawLocation, zone: zone, currentSSID: currentSSID)
-                location = rawLocation
-            case .zoneOnly:
-                let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
-                if updateType == .BeaconRegionEnter || rawLocation != nil {
-                    update = .init(
-                        trigger: updateType,
-                        usingNameOf: locationNameZone(
-                            for: updateType,
-                            from: inZones,
-                            fallbackZone: zone,
-                            supportsInZones: supportsInZones
-                        ),
-                        inZones: supportsInZones ? inZones : nil
-                    )
-                } else {
-                    update = .init(trigger: updateType)
-                }
-                location = nil
-            case .never:
-                update = .init(trigger: updateType)
-                location = nil
-            }
+            let privacy = server.info.setting(for: .locationPrivacy)
+            let update = WebhookUpdateLocation(
+                privacy: privacy,
+                trigger: updateType,
+                location: rawLocation,
+                zone: zone,
+                supportsInZones: supportsInZones,
+                currentSSID: currentSSID,
+                zonesContaining: { [server] in AppZone.zones(of: $0, in: server) }
+            )
+            let location = privacy == .exact ? rawLocation : nil
 
             return firstly { () -> Promise<Void> in
                 let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
@@ -776,35 +793,6 @@ public class HomeAssistantAPI {
                     )
                 )
             }.asVoid()
-        }
-    }
-
-    private func zones(
-        for updateType: LocationUpdateTrigger,
-        location rawLocation: CLLocation?,
-        fallbackZone zone: AppZone?
-    ) -> [AppZone] {
-        if updateType == .BeaconRegionEnter {
-            return zone.flatMap { $0.trackingEnabled ? [$0] : nil } ?? []
-        } else if let rawLocation {
-            return AppZone.zones(of: rawLocation, in: server)
-        } else {
-            return []
-        }
-    }
-
-    private func locationNameZone(
-        for updateType: LocationUpdateTrigger,
-        from zones: [AppZone],
-        fallbackZone zone: AppZone?,
-        supportsInZones: Bool
-    ) -> AppZone? {
-        if supportsInZones {
-            return zones.first { !$0.isPassive }
-        } else if updateType == .BeaconRegionEnter {
-            return zone
-        } else {
-            return zones.first
         }
     }
 
@@ -984,7 +972,7 @@ public class HomeAssistantAPI {
             }
         } else {
             // Use domain's main action for all other domains
-            request = .executeMainAction(domain: domain, entityId: entityId)
+            request = .executeMainAction(domain: domain, entityId: entityId, state: state)
         }
 
         if let request {
@@ -1043,7 +1031,10 @@ public class HomeAssistantAPI {
         limitedTo: [SensorProvider.Type]?,
         location: CLLocation? = nil
     ) -> Promise<Void> {
-        firstly {
+        let retry = sensorUpdateRetry
+        let generation = retry.beginUpdate()
+
+        return firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
                 limitedTo: limitedTo,
@@ -1066,7 +1057,15 @@ public class HomeAssistantAPI {
                     identifier: .updateSensors,
                     server: server,
                     request: .init(type: "update_sensor_states", data: payload)
-                )
+                ).tap { result in
+                    switch result {
+                    case .fulfilled:
+                        retry.noteSuccess(generation: generation, limitedTo: limitedTo)
+                    case let .rejected(error):
+                        Current.Log.error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        retry.noteFailure(generation: generation, limitedTo: limitedTo)
+                    }
+                }
             }
         }
     }

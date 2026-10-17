@@ -191,7 +191,7 @@ struct ControllableEntityAppEntityQueryTests {
         #expect(entity.subtitle == "Kitchen")
 
         Current.servers = FakeServerManager(initial: 2)
-        #expect(entity.subtitle == "Cabin • Kitchen")
+        #expect(entity.subtitle == "Cabin ▸ Kitchen")
     }
 
     /// The row a picker draws: the entity's name on top and its context underneath, with no image of

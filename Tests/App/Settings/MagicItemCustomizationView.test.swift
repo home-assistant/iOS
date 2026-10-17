@@ -93,6 +93,35 @@ struct MagicItemCustomizationViewTests {
         assertSnapshots(context: .widget, item: item)
     }
 
+    /// With no color chosen the icon color reads "Default" — the entity keeps the color the frontend
+    /// gives it for its state — and there is no color to pick.
+    @Test func iconColorDefaultsToTheEntityColor() {
+        assertSnapshots(context: .carPlay, item: .init(id: "light.kitchen", serverId: "1", type: .entity))
+    }
+
+    /// "Custom" fixes the icon to a color, which the row below it picks.
+    @Test func iconColorCustomShowsTheColorToPick() {
+        let item = MagicItem(
+            id: "light.kitchen",
+            serverId: "1",
+            type: .entity,
+            customization: .init(iconColor: "#FF9800", iconColorIsCustomized: true)
+        )
+        assertSnapshots(context: .carPlay, item: item)
+    }
+
+    /// The tint older versions wrote into an item just by opening this screen was never a choice, so
+    /// the item reads "Default".
+    @Test func iconColorSeededByTheAppReadsAsDefault() {
+        let item = MagicItem(
+            id: "light.kitchen",
+            serverId: "1",
+            type: .entity,
+            customization: .init(iconColor: "00AEF8")
+        )
+        assertSnapshots(context: .carPlay, item: item)
+    }
+
     /// `Current` is a shared global, so the mocked provider is put back as soon as the snapshot is
     /// taken — left in place it would follow whichever suite runs next.
     private func assertSnapshots(

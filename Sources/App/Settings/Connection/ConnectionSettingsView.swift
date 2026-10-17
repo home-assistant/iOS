@@ -1,28 +1,19 @@
 import HAKit
 import Shared
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// SwiftUI view for managing server connection settings
 struct ConnectionSettingsView: View {
     @StateObject private var viewModel: ConnectionSettingsViewModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
-    @State private var showShareSheet = false
-    @State private var showSecurityLevelPicker = false
-    @State private var activityViewController: UIActivityViewController?
+    @State private var shareWrapper: ShareWrapper?
     @State private var isDeleteConfirmationPresented = false
     @State private var deleteError: Error?
     @State private var showDeleteError = false
-    @State private var showInternalURLSheet = false
-    @State private var showExternalURLSheet = false
     @State private var showLocationPrivacySheet = false
     @State private var showSensorPrivacySheet = false
-    @State private var showCertificateImporter = false
-    @State private var showCertificatePasswordPrompt = false
-    @State private var certificatePassword = ""
-    @State private var pendingCertificateURL: URL?
-    @State private var showRemoveCertificateConfirmation = false
+    @Namespace private var urlTransitionNamespace
 
     let onDismiss: (() -> Void)?
 
@@ -39,20 +30,20 @@ struct ConnectionSettingsView: View {
             statusSection
             deleteSection
         }
-        .navigationTitle(viewModel.serverName)
+        .navigationTitle(L10n.Settings.ConnectionSection.serverDetailsTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if viewModel.hasMultipleServers {
-                    activateSection
-                }
+                ServerEditMenu(onEdit: viewModel.edit)
+            }
+            if #available(iOS 26.0, *) {
+                ToolbarSpacer(.fixed, placement: .topBarTrailing)
             }
             ToolbarItem(placement: .topBarTrailing) {
                 if viewModel.canShareServer {
                     Button {
-                        if let activityVC = viewModel.shareServer() {
-                            activityViewController = activityVC
-                            showShareSheet = true
+                        if let invitationURL = viewModel.invitationURL() {
+                            shareWrapper = ShareWrapper(url: invitationURL)
                         }
                     } label: {
                         Image(systemSymbol: .squareAndArrowUp)
@@ -61,42 +52,15 @@ struct ConnectionSettingsView: View {
                 }
             }
         }
-        .sheet(isPresented: $showShareSheet) {
-            if let activityVC = activityViewController {
-                embed(activityVC)
-            }
+        .shareSheet(item: $shareWrapper)
+        .sheet(isPresented: $viewModel.isEditingInternalURL) {
+            ServerURLEditorSheet(viewModel: viewModel, urlType: .internal, transitionNamespace: urlTransitionNamespace)
         }
-        .sheet(isPresented: $showInternalURLSheet) {
-            NavigationView {
-                ConnectionURLView(
-                    server: viewModel.server,
-                    urlType: .internal
-                )
-                .navigationViewStyle(.stack)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton {
-                            showInternalURLSheet = false
-                        }
-                    }
-                }
-            }
+        .sheet(isPresented: $viewModel.isEditingExternalURL) {
+            ServerURLEditorSheet(viewModel: viewModel, urlType: .external, transitionNamespace: urlTransitionNamespace)
         }
-        .sheet(isPresented: $showExternalURLSheet) {
-            NavigationView {
-                ConnectionURLView(
-                    server: viewModel.server,
-                    urlType: .external
-                )
-                .navigationViewStyle(.stack)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton {
-                            showExternalURLSheet = false
-                        }
-                    }
-                }
-            }
+        .sheet(isPresented: $viewModel.isShowingHowItWorks) {
+            ServerHowItWorksSheet(viewModel: viewModel)
         }
         .sheet(isPresented: $showLocationPrivacySheet) {
             NavigationView {
@@ -144,66 +108,6 @@ struct ConnectionSettingsView: View {
                 }
             }
         }
-        .sheet(isPresented: $showSecurityLevelPicker) {
-            LocalAccessPermissionViewInNavigationView(
-                initialSelection: viewModel.securityLevel,
-                action: { level in
-                    viewModel.updateSecurityLevel(level)
-                    showSecurityLevelPicker = false
-                }
-            )
-        }
-        .fileImporter(
-            isPresented: $showCertificateImporter,
-            allowedContentTypes: ClientCertificateFile.allowedFormats,
-            allowsMultipleSelection: false
-        ) { result in
-            switch result {
-            case let .success(urls):
-                if let url = urls.first {
-                    pendingCertificateURL = url
-                    showCertificatePasswordPrompt = true
-                }
-            case let .failure(error):
-                Current.Log.error("Failed to select certificate file: \(error)")
-            }
-        }
-        .alert(
-            L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.title,
-            isPresented: $showCertificatePasswordPrompt
-        ) {
-            SecureField(
-                L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.placeholder,
-                text: $certificatePassword
-            )
-            Button(L10n.cancelLabel, role: .cancel) {
-                certificatePassword = ""
-                pendingCertificateURL = nil
-            }
-            Button(L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.importButton) {
-                if let url = pendingCertificateURL {
-                    Task {
-                        await viewModel.importCertificate(from: url, password: certificatePassword)
-                        certificatePassword = ""
-                        pendingCertificateURL = nil
-                    }
-                }
-            }
-        } message: {
-            Text(L10n.Settings.ConnectionSection.ClientCertificate.PasswordPrompt.message)
-        }
-        .alert(
-            L10n.Settings.ConnectionSection.ClientCertificate.ImportError.title,
-            isPresented: Binding(
-                get: { viewModel.certificateError != nil },
-                set: { if !$0 { viewModel.certificateError = nil } }
-            ),
-            presenting: viewModel.certificateError
-        ) { _ in
-            Button(L10n.okLabel, role: .cancel) {}
-        } message: { error in
-            Text(error.localizedDescription)
-        }
         .onDisappear {
             onDismiss?()
         }
@@ -222,16 +126,6 @@ struct ConnectionSettingsView: View {
 
     private var statusSection: some View {
         Section(header: Text(L10n.Settings.StatusSection.header)) {
-            LabelRow(
-                title: L10n.Settings.ConnectionSection.connectingVia,
-                value: viewModel.connectionPath
-            )
-
-            LabelRow(
-                title: L10n.Settings.StatusSection.VersionRow.title,
-                value: viewModel.version
-            )
-
             WebSocketStatusView(state: viewModel.websocketState)
 
             LocalPushStatusRow(
@@ -246,103 +140,63 @@ struct ConnectionSettingsView: View {
             } label: {
                 Text(L10n.Settings.ConnectionSection.Webhook.title)
             }
-
-            LabelRow(
-                title: L10n.Settings.ConnectionSection.loggedInAs,
-                value: viewModel.loggedInUser
-            )
         }
     }
 
     // MARK: - Details Section
 
+    private var serverDetails: [ServerDetailsRowView.Detail] {
+        [
+            .init(
+                option: .deviceName,
+                value: viewModel.deviceName.isEmpty ? Current.device.deviceName() : viewModel.deviceName,
+                isPlaceholder: viewModel.deviceName.isEmpty
+            ),
+            .init(
+                option: .internalURL,
+                value: viewModel.internalURL,
+                isActive: viewModel.activeURLType == .internal && viewModel.internalURL != nil
+            ),
+            .init(
+                option: .externalURL,
+                value: viewModel.externalURL,
+                isActive: (viewModel.activeURLType == .external || viewModel.activeURLType == .remoteUI)
+                    && viewModel.externalURL != nil,
+                symbol: viewModel.isUsingCloud ? .icloud : nil,
+                copyValue: viewModel.externalAddress
+            ),
+        ]
+    }
+
     private var detailsSection: some View {
-        Section(header: Text(L10n.Settings.ConnectionSection.details)) {
-            TextFieldRow(
-                title: L10n.Settings.StatusSection.LocationNameRow.title,
-                placeholder: viewModel.server.info.remoteName,
-                text: Binding(
-                    get: { viewModel.locationName },
-                    set: { viewModel.updateLocationName($0.isEmpty ? nil : $0) }
-                )
+        Section {
+            ServerDetailsRowView(
+                serverName: viewModel.serverName,
+                userName: viewModel.loggedInUser,
+                profilePicture: viewModel.profilePicture,
+                details: serverDetails,
+                isSyncing: viewModel.isSyncing,
+                transitionNamespace: urlTransitionNamespace,
+                onEdit: viewModel.edit,
+                onSync: viewModel.updateAppDatabase,
+                onTroubleshoot: { viewModel.isShowingHowItWorks = true },
+                onOpen: viewModel.hasMultipleServers ? openServer : nil
             )
-
-            TextFieldRow(
-                title: L10n.SettingsDetails.General.DeviceName.title,
-                placeholder: Current.device.deviceName(),
-                text: Binding(
-                    get: { viewModel.deviceName },
-                    set: { viewModel.updateDeviceName($0.isEmpty ? nil : $0) }
-                )
-            )
-
-            if #available(iOS 26.0, *) {
-                NavigationLink {
-                    ConnectionURLView(
-                        server: viewModel.server,
-                        urlType: .internal
-                    )
-                } label: {
-                    NavigationRow(
-                        title: L10n.Settings.ConnectionSection.InternalBaseUrl.title,
-                        value: viewModel.internalURL
-                    )
-                }
-
-                NavigationLink {
-                    ConnectionURLView(
-                        server: viewModel.server,
-                        urlType: .external
-                    )
-                } label: {
-                    NavigationRow(
-                        title: L10n.Settings.ConnectionSection.ExternalBaseUrl.title,
-                        value: viewModel.externalURL
-                    )
-                }
-            } else {
-                Button {
-                    showInternalURLSheet = true
-                } label: {
-                    NavigationRow(
-                        title: L10n.Settings.ConnectionSection.InternalBaseUrl.title,
-                        value: viewModel.internalURL
-                    )
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    showExternalURLSheet = true
-                } label: {
-                    NavigationRow(
-                        title: L10n.Settings.ConnectionSection.ExternalBaseUrl.title,
-                        value: viewModel.externalURL
-                    )
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
+            .alert(
+                viewModel.nameBeingEdited?.title ?? "",
+                isPresented: Binding(
+                    get: { viewModel.nameBeingEdited != nil },
+                    set: { if !$0 { viewModel.cancelNameEdit() } }
+                ),
+                presenting: viewModel.nameBeingEdited
+            ) { option in
+                TextField(viewModel.namePlaceholder(for: option), text: $viewModel.nameDraft)
+                Button(L10n.cancelLabel, role: .cancel, action: viewModel.cancelNameEdit)
+                Button(L10n.saveLabel, action: viewModel.saveNameDraft)
             }
-
-            ConnectionURLsHowItWorksLink(server: viewModel.server)
-
-            if viewModel.shouldShowSecurityLevelPicker {
-                Button {
-                    showSecurityLevelPicker = true
-                } label: {
-                    NavigationRow(
-                        title: L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title,
-                        value: viewModel.securityLevel.description
-                    )
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-            }
-
-            Button {
-                viewModel.updateAppDatabase()
-            } label: {
-                Label(L10n.Settings.ConnectionSection.refreshServer, systemSymbol: .arrowClockwise)
+        } footer: {
+            if !viewModel.version.isEmpty {
+                Text(L10n.Settings.ConnectionSection.serverVersionFooter(viewModel.version))
             }
         }
     }
@@ -351,68 +205,16 @@ struct ConnectionSettingsView: View {
 
     private var clientCertificateSection: some View {
         Section {
-            if let certificate = viewModel.clientCertificate {
-                // Certificate is configured
-                HStack {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                        Text(certificate.displayName)
-                            .font(.body)
-                        if certificate.isExpired {
-                            Text(L10n.Settings.ConnectionSection.ClientCertificate.expired)
-                                .font(.caption)
-                                .foregroundColor(.red)
-                        } else if let expiresAt = certificate.expiresAt {
-                            Text(L10n.Settings.ConnectionSection.ClientCertificate.expiresAt(expiresAt.formatted(
-                                date: .abbreviated,
-                                time: .omitted
-                            )))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                    }
-                    Spacer()
-                    Button(role: .destructive) {
-                        showRemoveCertificateConfirmation = true
-                    } label: {
-                        Image(systemSymbol: .trash)
-                    }
-                    .confirmationDialog(
-                        L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.title,
-                        isPresented: $showRemoveCertificateConfirmation,
-                        titleVisibility: .visible
-                    ) {
-                        Button(
-                            L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.remove,
-                            role: .destructive
-                        ) {
-                            viewModel.removeCertificate()
-                        }
-                        Button(L10n.cancelLabel, role: .cancel) {}
-                    } message: {
-                        Text(L10n.Settings.ConnectionSection.ClientCertificate.RemoveConfirmation.message)
-                    }
-                }
-            } else {
-                // No certificate configured
-                Button {
-                    showCertificateImporter = true
-                } label: {
-                    if viewModel.isImportingCertificate {
-                        HStack {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                            Text(L10n.Settings.ConnectionSection.ClientCertificate.importing)
-                        }
-                    } else {
-                        Label(L10n.Settings.ConnectionSection.ClientCertificate.import, systemSymbol: .plusCircle)
-                    }
-                }
-                .disabled(viewModel.isImportingCertificate)
+            NavigationLink {
+                ClientCertificateView(viewModel: viewModel)
+            } label: {
+                NavigationRow(
+                    title: L10n.Settings.ConnectionSection.ClientCertificate.header,
+                    value: viewModel.clientCertificate?.displayName
+                        ?? L10n.Settings.ConnectionSection.ClientCertificate.notConfigured,
+                    valueColor: .secondary
+                )
             }
-        } header: {
-            Text(L10n.Settings.ConnectionSection.ClientCertificate.header)
-        } footer: {
-            Text(L10n.Settings.ConnectionSection.ClientCertificate.footer)
         }
     }
 
@@ -488,15 +290,11 @@ struct ConnectionSettingsView: View {
         }
     }
 
-    // MARK: - Activate Section
+    // MARK: - Open Server
 
-    private var activateSection: some View {
-        Button {
-            viewModel.activateServer()
-            dismissAppSettings()
-        } label: {
-            Text(L10n.Settings.ConnectionSection.activateServer)
-        }
+    private func openServer() {
+        viewModel.activateServer()
+        dismissAppSettings()
     }
 
     private func dismissAppSettings() {
@@ -554,18 +352,14 @@ extension ConnectionSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.General.DeviceName.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.InternalBaseUrl.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ExternalBaseUrl.title),
-            SettingsSearchEntry(L10n.Settings.ConnectionSection.UrlsHowItWorks.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title),
-            SettingsSearchEntry(L10n.Settings.ConnectionSection.refreshServer),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.syncServer),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.ClientCertificate.header),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.LocationSendType.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.SensorSendType.title),
-            SettingsSearchEntry(L10n.Settings.ConnectionSection.connectingVia),
-            SettingsSearchEntry(L10n.Settings.StatusSection.VersionRow.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.Websocket.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.LocalPush.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.Webhook.title),
-            SettingsSearchEntry(L10n.Settings.ConnectionSection.loggedInAs),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.DeleteServer.title),
         ]
     }
@@ -595,20 +389,6 @@ private struct NavigationRow: View {
     }
 }
 
-private struct LabelRow: View {
-    let title: String
-    let value: String
-
-    var body: some View {
-        HStack {
-            Text(title)
-            Spacer()
-            Text(value)
-                .foregroundColor(.secondary)
-        }
-    }
-}
-
 private struct LocalPushStatusRow: View {
     let title: String
     let value: String
@@ -627,22 +407,6 @@ private struct LocalPushStatusRow: View {
             .buttonStyle(.borderless)
             .disabled(!canRetry)
             .accessibilityLabel(L10n.SettingsDetails.Notifications.LocalPush.Retry.title)
-        }
-    }
-}
-
-private struct TextFieldRow: View {
-    let title: String
-    let placeholder: String
-    @Binding var text: String
-
-    var body: some View {
-        HStack {
-            Text(title)
-            Spacer()
-            TextField(placeholder, text: $text)
-                .multilineTextAlignment(.trailing)
-                .foregroundColor(.secondary)
         }
     }
 }

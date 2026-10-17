@@ -153,6 +153,6 @@ struct ReadableEntityAppEntityQueryTests {
         #expect(entity.subtitle == "Bathroom")
 
         Current.servers = FakeServerManager(initial: 2)
-        #expect(entity.subtitle == "Cabin • Bathroom")
+        #expect(entity.subtitle == "Cabin ▸ Bathroom")
     }
 }

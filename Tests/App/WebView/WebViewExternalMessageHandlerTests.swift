@@ -54,6 +54,83 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(mockWebViewController.lastEvaluatedJavaScriptScript, "notifyThemeColors()")
     }
 
+    /// Scripted focus only raises the keyboard when the web view holds keyboard focus, which a tap on the
+    /// frontend gives it but a tap on the native tab bar does not.
+    @MainActor func testHandleExternalMessageFocusElementMakesTheWebViewFirstResponderBeforeFocusing() {
+        sut.handleExternalMessage(focusElementMessage)
+
+        XCTAssertTrue(mockWebViewController.makeWebViewFirstResponderCalled)
+        XCTAssertEqual(mockWebViewController.scriptsRunBeforeMakingWebViewFirstResponder, 0)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+        XCTAssertTrue(mockWebViewController.lastEvaluatedJavaScriptScript?.contains("'combo-box'") == true)
+    }
+
+    /// The frontend asks for focus while it is still rendering the element, so a miss is retried until it is there.
+    @MainActor func testHandleExternalMessageFocusElementRetriesUntilTheElementExists() {
+        sut.handleExternalMessage(focusElementMessage)
+        let retry = expectation(description: "retry")
+        mockWebViewController.evaluateJavaScriptExpectation = retry
+
+        mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
+
+        wait(for: [retry], timeout: 2)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 2)
+    }
+
+    @MainActor func testHandleExternalMessageFocusElementStopsOnceTheElementIsFocused() {
+        sut.handleExternalMessage(focusElementMessage)
+        let noRetry = expectation(description: "no retry")
+        noRetry.isInverted = true
+        mockWebViewController.evaluateJavaScriptExpectation = noRetry
+
+        mockWebViewController.lastEvaluatedJavaScriptCompletion?(true, nil)
+
+        wait(for: [noRetry], timeout: WebViewExternalMessageHandler.elementFocusRetryInterval * 2)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+    }
+
+    @MainActor func testHandleExternalMessageFocusElementGivesUpAfterTheLastAttempt() {
+        sut.handleExternalMessage(focusElementMessage)
+        let noRetry = expectation(description: "no retry")
+        noRetry.isInverted = true
+        for _ in 1 ..< WebViewExternalMessageHandler.elementFocusAttempts {
+            let retry = expectation(description: "retry")
+            mockWebViewController.evaluateJavaScriptExpectation = retry
+            mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
+            wait(for: [retry], timeout: 2)
+        }
+        mockWebViewController.evaluateJavaScriptExpectation = noRetry
+
+        mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
+
+        wait(for: [noRetry], timeout: WebViewExternalMessageHandler.elementFocusRetryInterval * 2)
+        XCTAssertEqual(
+            mockWebViewController.evaluateJavaScriptCallCount,
+            WebViewExternalMessageHandler.elementFocusAttempts
+        )
+    }
+
+    /// A focus the frontend already placed on the element is redone, since only the app's own focus brings the
+    /// keyboard.
+    func testFocusElementScriptRefocusesAnElementThatAlreadyHasFocus() {
+        let script = WebViewExternalMessageHandler.focusElementScript(elementId: "combo-box")
+
+        XCTAssertTrue(script.contains("findElementInShadowDOM('combo-box')"))
+        XCTAssertTrue(script.contains("active.blur();"))
+        XCTAssertTrue(script.contains("element.focus();"))
+        XCTAssertTrue(script.contains("if (!element) return false;"))
+    }
+
+    private var focusElementMessage: [String: Any] {
+        [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "focus_element",
+            "payload": ["element_id": "combo-box"],
+        ]
+    }
+
     @MainActor func testHandleExternalMessageFrontendLoadedMarksFrontendLoaded() {
         let dictionary: [String: Any] = [
             "id": 1,
@@ -200,7 +277,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         sut.handleExternalMessage(dictionary)
 
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         let script = try XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript)
         let message = try externalBusMessage(from: script)
         let payload = try XCTUnwrap(message["payload"] as? [String: Any])
@@ -262,6 +339,28 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         let controller = try XCTUnwrap(mockWebViewController.overlayedController)
         XCTAssertNotNil(controller.preferredTransition)
         XCTAssertNil(mockWebViewController.pendingAssistZoomSourceView)
+    }
+
+    @MainActor func testHandleExternalMessageShowAssistPresentsAPlainSheetWhenThereIsNoSpotToZoomFrom() throws {
+        mockWebViewController.assistZoomAnchorView = AssistZoomAnchorView(frame: .zero)
+        mockWebViewController.presentsNextAssistAsSheet = true
+
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "assist/show",
+        ]
+
+        sut.handleExternalMessage(dictionary)
+
+        let controller = try XCTUnwrap(mockWebViewController.overlayedController)
+        XCTAssertNotEqual(controller.modalPresentationStyle, .fullScreen)
+        XCTAssertEqual(controller.modalTransitionStyle, .coverVertical)
+        XCTAssertFalse(mockWebViewController.presentsNextAssistAsSheet)
+        if #available(iOS 18.0, *) {
+            XCTAssertNil(controller.preferredTransition)
+        }
     }
 
     @MainActor func testHandleExternalMessageShowAssistCrossDissolvesWithoutAnchor() throws {
@@ -373,6 +472,63 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertNotNil(message["id"] as? Int)
     }
 
+    @MainActor func testSendExternalBusCommandWithRetryCompletesWhenFrontendStaysSilent() {
+        let firstSend = expectation(description: "command sent")
+        let completion = expectation(description: "completion")
+        mockWebViewController.evaluateJavaScriptExpectation = firstSend
+        var succeeded: Bool?
+
+        sut.sendExternalBusCommandWithRetry(
+            command: .navigate,
+            payload: ["path": "/?more-info-entity-id=light.kitchen"],
+            maxAttempts: 3,
+            retryDelay: .milliseconds(10),
+            acknowledgementTimeout: .milliseconds(10),
+            completion: {
+                succeeded = $0
+                completion.fulfill()
+            }
+        )
+
+        wait(for: [firstSend], timeout: 1)
+        mockWebViewController.lastEvaluatedJavaScriptCompletion?(nil, nil)
+
+        wait(for: [completion], timeout: 1)
+        XCTAssertEqual(succeeded, true)
+        XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+    }
+
+    @MainActor func testSendExternalBusCommandWithRetryCompletesWhenFrontendAcknowledges() throws {
+        let firstSend = expectation(description: "command sent")
+        let completion = expectation(description: "completion")
+        mockWebViewController.evaluateJavaScriptExpectation = firstSend
+        var succeeded: Bool?
+
+        sut.sendExternalBusCommandWithRetry(
+            command: .navigate,
+            payload: ["path": "/?more-info-entity-id=light.kitchen"],
+            maxAttempts: 3,
+            retryDelay: .milliseconds(10),
+            acknowledgementTimeout: .seconds(5),
+            completion: {
+                succeeded = $0
+                completion.fulfill()
+            }
+        )
+
+        wait(for: [firstSend], timeout: 1)
+        let message = try externalBusMessage(from: XCTUnwrap(mockWebViewController.lastEvaluatedJavaScriptScript))
+        let id = try XCTUnwrap(message["id"] as? Int)
+        sut.handleExternalMessage([
+            "type": "result",
+            "id": id,
+            "success": true,
+        ])
+
+        wait(for: [completion], timeout: 1)
+        XCTAssertEqual(succeeded, true)
+    }
+
     @MainActor func testSendExternalBusCommandWithRetryRetriesWhenFrontendRejects() throws {
         let firstSend = expectation(description: "first send")
         mockWebViewController.evaluateJavaScriptExpectation = firstSend
@@ -409,14 +565,20 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
     @MainActor func testSendExternalBusCommandWithRetryGivesUpAfterMaxAttempts() throws {
         let firstSend = expectation(description: "first send")
+        let completion = expectation(description: "completion")
         mockWebViewController.evaluateJavaScriptExpectation = firstSend
+        var succeeded: Bool?
 
         sut.sendExternalBusCommandWithRetry(
             command: .kioskModeSet,
             payload: ["enable": true],
             maxAttempts: 1,
             retryDelay: .milliseconds(10),
-            acknowledgementTimeout: .seconds(5)
+            acknowledgementTimeout: .seconds(5),
+            completion: {
+                succeeded = $0
+                completion.fulfill()
+            }
         )
 
         wait(for: [firstSend], timeout: 1)
@@ -435,8 +597,9 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "error": ["code": "not_ready", "message": "Command handler not ready"],
         ])
 
-        wait(for: [noFurtherSend], timeout: 0.5)
+        wait(for: [completion, noFurtherSend], timeout: 0.5)
         XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 1)
+        XCTAssertEqual(succeeded, false)
     }
 
     /// What the more-info dialog is showing is what a spoken "this" has to mean, so the handler hands

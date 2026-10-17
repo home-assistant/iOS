@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 import Shared
+import SwiftUI
 
 final class MagicItemCustomizationViewModel: ObservableObject {
     @Published var item: MagicItem
@@ -15,6 +16,33 @@ final class MagicItemCustomizationViewModel: ObservableObject {
 
     init(item: MagicItem) {
         self.item = item
+    }
+
+    /// Whether the icon keeps a color the user chose. "Custom" starts from the app's tint, and
+    /// "Default" lets the entity keep the color the frontend gives it for its state.
+    var usesCustomIconColor: Bool {
+        get {
+            item.customization?.customIconColor != nil
+        }
+        set {
+            if newValue {
+                item.customization?.useCustomIconColor(MagicItem.defaultIconColorHex)
+            } else {
+                item.customization?.useDefaultIconColor()
+            }
+        }
+    }
+
+    /// The color the icon is fixed to while ``usesCustomIconColor`` is on.
+    var customIconColor: Color {
+        get {
+            Color(hex: item.customization?.customIconColor)
+        }
+        set {
+            if let hex = newValue.hex() {
+                item.customization?.useCustomIconColor(hex)
+            }
+        }
     }
 
     /// Reads `supported_features` for the domains whose toggle depends on it. Other domains skip

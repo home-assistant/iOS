@@ -11,6 +11,11 @@ public struct HAControlSelect: View {
     private let vertical: Bool
     private let hidesOptionLabels: Bool
     private let isDisabled: Bool
+    private let tint: Color
+    private let trackColor: Color
+    private let thickness: CGFloat
+    private let cornerRadius: CGFloat
+    private let iconSize: CGFloat
     @Binding private var selection: String?
 
     /// - Parameter hidesOptionLabels: Shows only the icons, for a row too tight for words. Options
@@ -20,16 +25,25 @@ public struct HAControlSelect: View {
         selection: Binding<String?>,
         vertical: Bool = false,
         hidesOptionLabels: Bool = false,
-        isDisabled: Bool = false
+        isDisabled: Bool = false,
+        tint: Color = .haPrimary,
+        trackColor: Color = .haDisabled,
+        thickness: CGFloat = 40,
+        cornerRadius: CGFloat = DesignSystem.CornerRadius.oneAndMicro,
+        iconSize: CGFloat = 20
     ) {
         self.options = options
         _selection = selection
         self.vertical = vertical
         self.hidesOptionLabels = hidesOptionLabels
         self.isDisabled = isDisabled
+        self.tint = tint
+        self.trackColor = trackColor
+        self.thickness = thickness
+        self.cornerRadius = cornerRadius
+        self.iconSize = iconSize
     }
 
-    private static let thickness: CGFloat = 40
     private static let padding = DesignSystem.Spaces.half
 
     private var layout: AnyLayout {
@@ -47,7 +61,7 @@ public struct HAControlSelect: View {
                 } label: {
                     VStack(spacing: DesignSystem.Spaces.micro) {
                         if let icon = option.icon {
-                            MaterialDesignIconsImage(icon: icon, size: 20)
+                            MaterialDesignIconsImage(icon: icon, size: iconSize)
                         }
                         if !hidesOptionLabels || option.icon == nil {
                             Text(option.label)
@@ -56,9 +70,9 @@ public struct HAControlSelect: View {
                     }
                     .foregroundStyle(isSelected ? Color.white : Color(uiColor: .label))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(isSelected ? Color.haPrimary : .clear)
+                    .background(isSelected ? tint : .clear)
                     .clipShape(
-                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndMicro - Self.padding)
+                        RoundedRectangle(cornerRadius: cornerRadius - Self.padding)
                     )
                 }
                 .buttonStyle(.plain)
@@ -70,11 +84,11 @@ public struct HAControlSelect: View {
         }
         .padding(Self.padding)
         .frame(
-            width: vertical ? Self.thickness : nil,
-            height: vertical ? nil : Self.thickness
+            width: vertical ? thickness : nil,
+            height: vertical ? nil : thickness
         )
-        .background(Color.haDisabled.opacity(0.2))
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndMicro))
+        .background(trackColor.opacity(0.2))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .disabled(isDisabled)
         .opacity(isDisabled ? 0.5 : 1)
     }

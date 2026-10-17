@@ -11,10 +11,17 @@ struct NativeTabBarContainerView: View {
 
     @ObservedObject var viewModel: NativeTabBarViewModel
     @Environment(\.serverSelectionNamespace) private var transitionNamespace
+    @State private var hasVerticalBar = false
     let webViewController: WebViewController?
     let frontendOpacity: Double
     let frontendIgnoredSafeAreaEdges: Edge.Set
     let onNeedsWebViewController: () -> Void
+
+    /// The bar hides behind the frontend's more-info dialog: the dialog covers the page the bar would switch
+    /// away from, and the frontend reports when it closes or navigates.
+    private var tabBarVisibility: Visibility {
+        viewModel.isTabBarHidden ? .hidden : .automatic
+    }
 
     var body: some View {
         TabView(selection: Binding(
@@ -23,17 +30,22 @@ struct NativeTabBarContainerView: View {
         )) {
             ForEach(viewModel.regularTabItems) { item in
                 Tab(value: item.tab) {
-                    if item.sidebarItem != nil {
-                        NativeTabBarFrontendSlot(
-                            controller: webViewController,
-                            isActive: viewModel.selection == item.tab,
-                            onNeedsController: onNeedsWebViewController
-                        )
-                        .opacity(frontendOpacity)
-                        .ignoresSafeArea(edges: frontendIgnoredSafeAreaEdges)
-                    } else {
-                        Color.clear
+                    Group {
+                        if item.sidebarItem != nil {
+                            NativeTabBarFrontendTabView(
+                                viewModel: viewModel,
+                                item: item,
+                                webViewController: webViewController,
+                                frontendOpacity: frontendOpacity,
+                                frontendIgnoredSafeAreaEdges: frontendIgnoredSafeAreaEdges,
+                                showsBarItems: hasVerticalBar,
+                                onNeedsWebViewController: onNeedsWebViewController
+                            )
+                        } else {
+                            Color.clear
+                        }
                     }
+                    .toolbarVisibility(tabBarVisibility, for: .tabBar)
                 } label: {
                     Label {
                         Text(item.title)
@@ -63,6 +75,7 @@ struct NativeTabBarContainerView: View {
                     }
                 }
                 .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.moreShowsFrontend)
+                .toolbarVisibility(tabBarVisibility, for: .tabBar)
             } label: {
                 Label(L10n.TabBar.More.title, systemSymbol: .ellipsis)
             }
@@ -90,9 +103,15 @@ struct NativeTabBarContainerView: View {
         }
         .tabViewSearchActivation(.searchTabSelection)
         .tabBarMinimizeBehavior(.onScrollDown)
+        .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.isTabBarHidden)
+        .tint(viewModel.accentColor)
         .background(NativeTabBarLongPressInstaller {
             viewModel.showCustomize(zoomingFromButton: false)
         })
+        .background(VerticalBarObserver(hasVerticalBar: $hasVerticalBar))
+        .onChange(of: hasVerticalBar, initial: true) { _, hasVerticalBar in
+            viewModel.usesVerticalBar = hasVerticalBar
+        }
         .sheet(isPresented: $viewModel.showsCustomize) {
             NavigationStack {
                 NativeTabBarCustomizeView(viewModel: viewModel)

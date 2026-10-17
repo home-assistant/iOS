@@ -57,11 +57,12 @@ struct WatchAssistItemRow: View {
         return prompt
     }
 
+    /// Assist items are added with the app's tint, so that is what one without a picked color shows.
     private var iconColor: UIColor {
-        if let hex = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
+        if let hex = item.customization?.customIconColor ?? itemInfo.customization?.customIconColor {
             .init(hex: hex)
         } else {
-            .white
+            .haPrimary
         }
     }
 

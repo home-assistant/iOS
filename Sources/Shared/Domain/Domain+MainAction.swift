@@ -14,6 +14,11 @@ public extension Domain {
         return mainAction
     }
 
+    func mainAction(state: String) -> Service? {
+        guard mainAction == .toggle, !state.isEmpty else { return mainAction }
+        return toggleService(state: state)
+    }
+
     /// What the customization screen calls `explicitMainAction`: "Press" for a button, "Activate"
     /// for a scene, "Run" for a script, "Trigger" for an automation.
     var mainActionName: String? {

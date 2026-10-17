@@ -49,10 +49,6 @@ public class NotificationCommandManager {
             hadict["webhook_id"] = webhookId
         }
 
-        if let confirmID = payload[LocalPushManager.confirmIDUserInfoKey] as? String {
-            hadict[LocalPushManager.confirmIDUserInfoKey] = confirmID
-        }
-
         // Support data.live_update: true — the same field Android uses for Live Updates.
         // A single YAML automation can target both platforms with no platform-specific keys.
         #if os(iOS) && !targetEnvironment(macCatalyst)
@@ -109,7 +105,7 @@ private struct HandlerLocationUpdate: NotificationCommandHandler {
 
 private struct HandlerClearNotification: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Current.Log.verbose("Clearing notification for \(payload)")
+        Current.Log.verbose("Clearing notification for \(LogRedaction.redactValues(in: payload))")
         let keys = ["tag", "collapseId"].compactMap { payload[$0] as? String }
         if !keys.isEmpty {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
@@ -127,7 +123,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
             }
             return Promise<Void> { seal in
                 Task {
-                    Current.Log.verbose("Clearing live activity for \(payload)")
+                    Current.Log.verbose("Clearing live activity for \(LogRedaction.redactValues(in: payload))")
                     await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
                     // https://stackoverflow.com/a/56657888/6324550
                     DispatchQueue.main.async { seal.fulfill(()) }

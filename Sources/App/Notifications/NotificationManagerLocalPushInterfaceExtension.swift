@@ -14,6 +14,12 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     private var syncStates: PerServerContainer<LocalPushStateSync>!
     private var managers = [Identifier<Server>: [NEAppPushManager]]()
     private var appOpenRetryWorkItems = [DispatchWorkItem]()
+    typealias ManagerLoader = (@escaping ([NEAppPushManager]?, Error?) -> Void) -> Void
+
+    private let loadManagers: ManagerLoader
+
+    private var isUpdatingManagers = false
+    private var queuedManagerUpdate: (reason: LocalPushRetryReason?, targetServer: Server?, currentSSID: String?)?
 
     private var tokens: [NSKeyValueObservation] = [] {
         didSet {
@@ -66,7 +72,10 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 
-    override init() {
+    init(loadManagers: @escaping ManagerLoader = { completion in
+        NEAppPushManager.loadAllFromPreferences(completionHandler: completion)
+    }) {
+        self.loadManagers = loadManagers
         super.init()
         self.syncStates = PerServerContainer<LocalPushStateSync>(constructor: { [weak self] server in
             let sync = LocalPushStateSync(settingsKey: PushProviderConfiguration.defaultSettingsKey(for: server))
@@ -83,7 +92,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     func retryLocalPush(for server: Server?, reason: LocalPushRetryReason) {
         Task { [weak self] in
             guard let self else { return }
-            let servers = await retryEligibleServers(targetServer: server)
+            let currentSSID = await Current.connectivity.currentWiFiSSID()
+            let servers = retryEligibleServers(targetServer: server, currentSSID: currentSSID)
             guard !servers.isEmpty else {
                 Current.Log.info("Skipping local push retry for \(reason.eventValue), no eligible servers")
                 logRetryDiagnostics(reason: reason, targetServer: server, managers: [], error: nil)
@@ -91,7 +101,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
 
             Current.Log.info("Retrying local push for \(servers.count) server(s), reason: \(reason.eventValue)")
-            updateManagers(reason: reason, targetServer: server)
+            updateManagers(reason: reason, targetServer: server, currentSSID: currentSSID)
         }
     }
 
@@ -114,74 +124,172 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         appOpenRetryWorkItems.removeAll()
     }
 
+    private func finishManagerUpdate() {
+        isUpdatingManagers = false
+        guard let queued = queuedManagerUpdate else { return }
+        queuedManagerUpdate = nil
+        updateManagers(reason: queued.reason, targetServer: queued.targetServer, currentSSID: queued.currentSSID)
+    }
+
+    /// A retry on the matching network with a manager iOS never activated: saving it again is
+    /// ignored by the system, only a freshly created manager gets a new provider session.
+    private func shouldRecreate(
+        _ manager: NEAppPushManager,
+        ssid: String,
+        reason: LocalPushRetryReason?,
+        currentSSID: String?
+    ) -> Bool {
+        reason != nil && currentSSID == ssid && !manager.isActive
+    }
+
+    private func handleLoadedManagers(
+        _ managers: [NEAppPushManager]?,
+        error: Error?,
+        reason: LocalPushRetryReason?,
+        targetServer: Server?,
+        currentSSID: String?
+    ) {
+        if let error {
+            Current.Log.error("failed to load local push managers: \(error)")
+            if let reason {
+                logRetryDiagnostics(
+                    reason: reason,
+                    targetServer: targetServer,
+                    managers: managers ?? [],
+                    error: error
+                )
+            }
+            finishManagerUpdate()
+            return
+        }
+
+        let encoder = JSONEncoder()
+
+        var updatedManagers = [ConfigureManager]()
+        var usedManagers = Set<NEAppPushManager>()
+        var staleManagers = [NEAppPushManager]()
+        var recreations = [(ssid: String, servers: [Server])]()
+        var hasDirtyManagers = false
+
+        // update or create managers for the servers we have
+        for (ssid, servers) in serversBySSID() {
+            Current.Log.info("configuring push for \(ssid): \(servers)")
+
+            let existing = managers?.first(where: { $0.matchSSIDs == [ssid] })
+            if let existing {
+                usedManagers.insert(existing)
+            }
+            if let existing, shouldRecreate(existing, ssid: ssid, reason: reason, currentSSID: currentSSID) {
+                Current.Log.info("recreating inactive push manager for \(ssid)")
+                staleManagers.append(existing)
+                recreations.append((ssid: ssid, servers: servers))
+                hasDirtyManagers = true
+                continue
+            }
+            let updated = updateManager(
+                existingManager: existing,
+                ssid: ssid,
+                servers: servers,
+                encoder: encoder,
+                reason: reason
+            )
+            updatedManagers.append(updated)
+            if updated.isDirty {
+                hasDirtyManagers = true
+            }
+        }
+
+        // remove any existing managers that didn't match, plus the stale ones being recreated
+        let removals = DispatchGroup()
+        let unusedManagers = (managers ?? []).filter { !usedManagers.contains($0) }
+        for manager in unusedManagers + staleManagers {
+            removals.enter()
+            manager.removeFromPreferences { error in
+                Current.Log.info("remove unused manager \(manager) result: \(String(describing: error))")
+                removals.leave()
+            }
+        }
+
+        removals.notify(queue: .main) { [weak self] in
+            self?.finishLoadedManagers(
+                updatedManagers,
+                recreating: recreations,
+                loaded: managers ?? [],
+                hasDirtyManagers: hasDirtyManagers,
+                reason: reason,
+                targetServer: targetServer
+            )
+        }
+    }
+
+    private func finishLoadedManagers(
+        _ updatedManagers: [ConfigureManager],
+        recreating recreations: [(ssid: String, servers: [Server])],
+        loaded managers: [NEAppPushManager],
+        hasDirtyManagers: Bool,
+        reason: LocalPushRetryReason?,
+        targetServer: Server?
+    ) {
+        let encoder = JSONEncoder()
+        let recreated = recreations.map { recreation in
+            updateManager(
+                existingManager: nil,
+                ssid: recreation.ssid,
+                servers: recreation.servers,
+                encoder: encoder,
+                reason: reason
+            )
+        }
+
+        configure(managers: updatedManagers + recreated)
+        if let reason, !hasDirtyManagers {
+            logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers, error: nil)
+        }
+
+        // If we made changes to managers, reload them after a brief delay to ensure
+        // the system picks up the changes, especially when enabling local push
+        // while already on the internal network
+        if hasDirtyManagers {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.managerReloadDelay) { [weak self] in
+                self?.reloadManagersAfterSave(reason: reason, targetServer: targetServer)
+            }
+        } else {
+            finishManagerUpdate()
+        }
+    }
+
     private func updateManagers(
         reason: LocalPushRetryReason? = nil,
-        targetServer: Server? = nil
+        targetServer: Server? = nil,
+        currentSSID: String? = nil
     ) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.updateManagers(reason: reason, targetServer: targetServer, currentSSID: currentSSID)
+            }
+            return
+        }
+        guard !isUpdatingManagers else {
+            Current.Log.info("coalescing local push manager update for \(reason?.eventValue ?? "none")")
+            queuedManagerUpdate = (
+                reason: reason ?? queuedManagerUpdate?.reason,
+                targetServer: targetServer ?? queuedManagerUpdate?.targetServer,
+                currentSSID: currentSSID ?? queuedManagerUpdate?.currentSSID
+            )
+            return
+        }
+        isUpdatingManagers = true
         Current.Log.info()
 
-        NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
-            guard let self else { return }
-
-            if let error {
-                Current.Log.error("failed to load local push managers: \(error)")
-                if let reason {
-                    logRetryDiagnostics(
-                        reason: reason,
-                        targetServer: targetServer,
-                        managers: managers ?? [],
-                        error: error
-                    )
-                }
-                return
-            }
-
-            let encoder = JSONEncoder()
-
-            var updatedManagers = [ConfigureManager]()
-            var usedManagers = Set<NEAppPushManager>()
-            var hasDirtyManagers = false
-
-            // update or create managers for the servers we have
-            for (ssid, servers) in serversBySSID() {
-                Current.Log.info("configuring push for \(ssid): \(servers)")
-
-                let existing = managers?.first(where: { $0.matchSSIDs == [ssid] })
-                if let existing {
-                    usedManagers.insert(existing)
-                }
-                let updated = updateManager(
-                    existingManager: existing,
-                    ssid: ssid,
-                    servers: servers,
-                    encoder: encoder,
-                    reason: reason
+        loadManagers { [weak self] managers, error in
+            DispatchQueue.main.async {
+                self?.handleLoadedManagers(
+                    managers,
+                    error: error,
+                    reason: reason,
+                    targetServer: targetServer,
+                    currentSSID: currentSSID
                 )
-                updatedManagers.append(updated)
-                if updated.isDirty {
-                    hasDirtyManagers = true
-                }
-            }
-
-            // remove any existing managers that didn't match
-            for manager in managers ?? [] where !usedManagers.contains(manager) {
-                manager.removeFromPreferences { error in
-                    Current.Log.info("remove unused manager \(manager) result: \(String(describing: error))")
-                }
-            }
-
-            configure(managers: updatedManagers)
-            if let reason, !hasDirtyManagers {
-                logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers ?? [], error: nil)
-            }
-
-            // If we made changes to managers, reload them after a brief delay to ensure
-            // the system picks up the changes, especially when enabling local push
-            // while already on the internal network
-            if hasDirtyManagers {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Self.managerReloadDelay) { [weak self] in
-                    self?.reloadManagersAfterSave(reason: reason, targetServer: targetServer)
-                }
             }
         }
     }
@@ -198,38 +306,49 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     ) {
         Current.Log.info("Reloading managers after configuration changes")
 
-        NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
-            guard let self else { return }
-
-            if let error {
-                Current.Log.error("failed to reload local push managers: \(error)")
-                if let reason {
-                    logRetryDiagnostics(
-                        reason: reason,
-                        targetServer: targetServer,
-                        managers: managers ?? [],
-                        error: error
-                    )
-                }
-                return
-            }
-
-            var configureManagers = [ConfigureManager]()
-
-            // Only configure managers for currently enabled servers with configured SSIDs
-            for (ssid, servers) in serversBySSID() {
-                if let manager = managers?.first(where: { $0.matchSSIDs == [ssid] }) {
-                    configureManagers.append(
-                        ConfigureManager(ssid: ssid, manager: manager, servers: servers, isDirty: false)
-                    )
-                }
-            }
-
-            configure(managers: configureManagers)
-            if let reason {
-                logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers ?? [], error: nil)
+        loadManagers { [weak self] managers, error in
+            DispatchQueue.main.async {
+                self?.handleReloadedManagers(managers, error: error, reason: reason, targetServer: targetServer)
             }
         }
+    }
+
+    private func handleReloadedManagers(
+        _ managers: [NEAppPushManager]?,
+        error: Error?,
+        reason: LocalPushRetryReason?,
+        targetServer: Server?
+    ) {
+        if let error {
+            Current.Log.error("failed to reload local push managers: \(error)")
+            if let reason {
+                logRetryDiagnostics(
+                    reason: reason,
+                    targetServer: targetServer,
+                    managers: managers ?? [],
+                    error: error
+                )
+            }
+            finishManagerUpdate()
+            return
+        }
+
+        var configureManagers = [ConfigureManager]()
+
+        // Only configure managers for currently enabled servers with configured SSIDs
+        for (ssid, servers) in serversBySSID() {
+            if let manager = managers?.first(where: { $0.matchSSIDs == [ssid] }) {
+                configureManagers.append(
+                    ConfigureManager(ssid: ssid, manager: manager, servers: servers, isDirty: false)
+                )
+            }
+        }
+
+        configure(managers: configureManagers)
+        if let reason {
+            logRetryDiagnostics(reason: reason, targetServer: targetServer, managers: managers ?? [], error: nil)
+        }
+        finishManagerUpdate()
     }
 
     struct ConfigureManager {
@@ -300,13 +419,18 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
 
         do {
-            let existing = manager.providerConfiguration[PushProviderConfiguration.providerConfigurationKey] as? Data
-            let new = try encoder.encode(configurations)
+            let existing = PushProviderConfiguration.decode(
+                from: manager.providerConfiguration[PushProviderConfiguration.providerConfigurationKey] as? Data
+            )
 
-            if existing != new {
+            if existing != configurations {
+                Current.Log.info(
+                    "provider configuration changed from \(String(describing: existing)) to \(configurations)"
+                )
+                let encoded = try encoder.encode(configurations)
                 isDirty = true
                 manager.providerConfiguration = [
-                    PushProviderConfiguration.providerConfigurationKey: new,
+                    PushProviderConfiguration.providerConfigurationKey: encoded,
                 ]
             }
         } catch {
@@ -347,9 +471,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 
-    private func retryEligibleServers(targetServer: Server?) async -> [Server] {
-        let currentSSID = await Current.connectivity.currentWiFiSSID()
-        return (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
+    private func retryEligibleServers(targetServer: Server?, currentSSID: String?) -> [Server] {
+        (targetServer.map { [$0] } ?? Current.servers.all).filter { server in
             LocalPushRetryDiagnostics.canRetry(server: server, currentSSID: currentSSID)
         }
     }

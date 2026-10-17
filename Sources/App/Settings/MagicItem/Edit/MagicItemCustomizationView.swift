@@ -102,7 +102,7 @@ struct MagicItemCustomizationView: View {
                             viewModel.item.customization?.iconIsCustomized = true
                         }),
                         selectedColor: .init(get: {
-                            if let iconColorHex = viewModel.item.customization?.iconColor {
+                            if let iconColorHex = viewModel.item.customization?.customIconColor {
                                 return Color(hex: iconColorHex)
                             } else {
                                 return Color.haPrimary
@@ -131,17 +131,18 @@ struct MagicItemCustomizationView: View {
     @ViewBuilder
     private func customizationView(info: MagicItem.Info) -> some View {
         Section {
-            // Seeding the picker is a read, so it must not write the seed back: an entity only
-            // drops the color the frontend gives it once the user actually picks one here.
-            ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                if let configIconColor = viewModel.item.customization?.iconColor {
-                    return Color(hex: configIconColor)
-                }
-                return Color.haPrimary
-            }, set: { newColor in
-                viewModel.item.customization?.iconColor = newColor.hex()
-                viewModel.item.customization?.iconColorIsCustomized = true
-            }), supportsOpacity: false)
+            Picker(L10n.MagicItem.IconColor.title, selection: $viewModel.usesCustomIconColor) {
+                Text(verbatim: L10n.MagicItem.IconColor.default).tag(false)
+                Text(verbatim: L10n.MagicItem.IconColor.custom).tag(true)
+            }
+            .pickerStyle(.menu)
+            if viewModel.usesCustomIconColor {
+                ColorPicker(
+                    L10n.MagicItem.IconColor.color,
+                    selection: $viewModel.customIconColor,
+                    supportsOpacity: false
+                )
+            }
             if context != .carPlay {
                 Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
                 if useCustomColors {

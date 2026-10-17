@@ -13,6 +13,11 @@ protocol WebViewExternalMessageHandlerProtocol {
     func handleExternalMessage(_ dictionary: [String: Any])
     func sendExternalBus(message: WebSocketMessage) -> Promise<Void>
     func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?)
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    )
 
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
@@ -206,7 +211,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .frontendReloadAndClearCache:
                 reloadAndClearFrontendCache()
             case .sidebarShow:
-                MacNativeSidebarState.shared.show()
                 NativeTabBarState.shared.requestMore()
             case .moreInfoOpened:
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
@@ -273,19 +277,40 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
+    /// How long the frontend gets to render the element it asked to focus, in attempts and the pause between them.
+    static let elementFocusAttempts = 20
+    static let elementFocusRetryInterval: TimeInterval = 0.15
+
     func handleElementFocus(elementId: String) {
         Current.Log.verbose("Handle element focus for element ID: \(elementId)")
+        focusElement(elementId: elementId, attemptsLeft: Self.elementFocusAttempts)
+    }
 
-        // JavaScript to find and focus element in both regular DOM and Shadow DOM
-        let script = """
+    /// Keyboard focus only follows a scripted `focus()` while the web view is first responder, and the
+    /// frontend asks before the element is always on the page, so this keeps trying until it is.
+    private func focusElement(elementId: String, attemptsLeft: Int) {
+        webViewController?.makeWebViewFirstResponder()
+        webViewController?
+            .evaluateJavaScript(Self.focusElementScript(elementId: elementId)) { [weak self] result, error in
+                if let error {
+                    Current.Log.error("Error focusing element \(elementId): \(error)")
+                    return
+                }
+                guard result as? Bool == false, attemptsLeft > 1 else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.elementFocusRetryInterval) {
+                    self?.focusElement(elementId: elementId, attemptsLeft: attemptsLeft - 1)
+                }
+            }
+    }
+
+    /// Finds the element through shadow roots and focuses it; a focus that is already on it is redone so the
+    /// keyboard follows. Evaluates to whether the element was found.
+    static func focusElementScript(elementId: String) -> String {
+        """
         (function() {
-            // Helper function to search through shadow DOM recursively
             function findElementInShadowDOM(elementId, root = document) {
-                // Try to find by ID in current root
                 let element = root.getElementById(elementId);
                 if (element) return element;
-
-                // Search through all elements with shadow roots
                 const allElements = root.querySelectorAll('*');
                 for (const el of allElements) {
                     if (el.shadowRoot) {
@@ -295,22 +320,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 return null;
             }
-
-            // Search for the element
-            const elementId = '\(elementId)';
-            const element = findElementInShadowDOM(elementId);
-
-            if (element) {
-                element.focus();
+            function activeElement() {
+                let active = document.activeElement;
+                while (active && active.shadowRoot && active.shadowRoot.activeElement) {
+                    active = active.shadowRoot.activeElement;
+                }
+                return active;
             }
+            function contains(ancestor, node) {
+                while (node) {
+                    if (node === ancestor) return true;
+                    node = node.parentNode || (node.host ? node.host : null);
+                }
+                return false;
+            }
+            const element = findElementInShadowDOM('\(elementId)');
+            if (!element) return false;
+            const active = activeElement();
+            if (active && contains(element, active)) {
+                active.blur();
+            }
+            element.focus();
+            return true;
         })();
         """
-
-        webViewController?.evaluateJavaScript(script) { _, error in
-            if let error {
-                Current.Log.error("Error focusing element \(elementId): \(error)")
-            }
-        }
     }
 
     @discardableResult
@@ -527,6 +560,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         pipeline: String = "",
         autoStartRecording: Bool = false
     ) {
+        let presentsAsSheet = webViewController?.presentsNextAssistAsSheet ?? false
+        webViewController?.presentsNextAssistAsSheet = false
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
@@ -552,15 +587,18 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 preferredPipelineId: pipeline,
                 autoStartRecording: autoStartRecording
             ))
-            assistView.modalPresentationStyle = .fullScreen
             let tappedSource = webViewController?.pendingAssistZoomSourceView
             webViewController?.pendingAssistZoomSourceView = nil
-            if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+            if presentsAsSheet {
+                assistView.modalPresentationStyle = .automatic
+            } else if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+                assistView.modalPresentationStyle = .fullScreen
                 // Zoom out of the tapped tab bar spot when there is one, else the frontend's Assist anchor.
                 assistView.preferredTransition = .zoom { [weak self] _ in
                     tappedSource ?? self?.webViewController?.assistZoomAnchorView
                 }
             } else {
+                assistView.modalPresentationStyle = .fullScreen
                 assistView.modalTransitionStyle = .crossDissolve
             }
             webViewController?.presentOverlayController(controller: assistView, animated: true)
@@ -690,6 +728,7 @@ private final class PendingExternalBusCommand {
     let payload: [String: Any]?
     let retryDelay: DispatchTimeInterval
     let acknowledgementTimeout: DispatchTimeInterval
+    let completion: ((Bool) -> Void)?
     var attemptsRemaining: Int
     /// A fresh id is assigned per attempt so a late error result for a previous attempt is ignored.
     var messageID: Int
@@ -701,6 +740,7 @@ private final class PendingExternalBusCommand {
         attemptsRemaining: Int,
         retryDelay: DispatchTimeInterval,
         acknowledgementTimeout: DispatchTimeInterval,
+        completion: ((Bool) -> Void)?,
         messageID: Int
     ) {
         self.command = command
@@ -708,6 +748,7 @@ private final class PendingExternalBusCommand {
         self.attemptsRemaining = attemptsRemaining
         self.retryDelay = retryDelay
         self.acknowledgementTimeout = acknowledgementTimeout
+        self.completion = completion
         self.messageID = messageID
     }
 }
@@ -722,12 +763,21 @@ extension WebViewExternalMessageHandler {
     /// JavaScript evaluation itself fails), and treat the absence of any error within
     /// `acknowledgementTimeout` as success. Main thread only.
     func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?) {
+        sendExternalBusCommandWithRetry(command: command, payload: payload, completion: { _ in })
+    }
+
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    ) {
         sendExternalBusCommandWithRetry(
             command: command,
             payload: payload,
             maxAttempts: 6,
             retryDelay: .milliseconds(300),
-            acknowledgementTimeout: .milliseconds(750)
+            acknowledgementTimeout: .milliseconds(750),
+            completion: completion
         )
     }
 
@@ -736,7 +786,8 @@ extension WebViewExternalMessageHandler {
         payload: [String: Any]?,
         maxAttempts: Int,
         retryDelay: DispatchTimeInterval,
-        acknowledgementTimeout: DispatchTimeInterval
+        acknowledgementTimeout: DispatchTimeInterval,
+        completion: ((Bool) -> Void)? = nil
     ) {
         // Supersede any in-flight attempt for the same command so the latest payload wins.
         cancelPendingCommands(matching: command.rawValue)
@@ -747,6 +798,7 @@ extension WebViewExternalMessageHandler {
             attemptsRemaining: maxAttempts,
             retryDelay: retryDelay,
             acknowledgementTimeout: acknowledgementTimeout,
+            completion: completion,
             messageID: nextOutgoingMessageID
         )
         nextOutgoingMessageID += 1
@@ -758,6 +810,7 @@ extension WebViewExternalMessageHandler {
             Current.Log
                 .warning("External bus command \(pending.command) not acknowledged after retries, giving up")
             pendingCommands[pending.messageID] = nil
+            pending.completion?(false)
             return
         }
         pending.attemptsRemaining -= 1
@@ -777,6 +830,7 @@ extension WebViewExternalMessageHandler {
                 guard let self, let pending, pendingCommands[attemptID] === pending else { return }
                 Current.Log.verbose("External bus command \(pending.command) (id \(attemptID)) acknowledged")
                 pendingCommands[attemptID] = nil
+                pending.completion?(true)
             }
             pending.acknowledgementWorkItem = acknowledgementWorkItem
             DispatchQueue.main.asyncAfter(
@@ -823,6 +877,7 @@ extension WebViewExternalMessageHandler {
             // Defensive: the frontend doesn't currently send a success ack, only failures.
             pending.acknowledgementWorkItem?.cancel()
             pendingCommands[id] = nil
+            pending.completion?(true)
             return
         }
         Current.Log.verbose("External bus command \(pending.command) (id \(id)) rejected by frontend, retrying")

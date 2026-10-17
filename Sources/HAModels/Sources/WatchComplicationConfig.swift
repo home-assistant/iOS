@@ -26,6 +26,14 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var id: String { rawValue }
     }
 
+    /// How the corner family's bezel value indicator is drawn. WidgetKit's native `Gauge` and
+    /// `ProgressView` produce different watch-face presentations, so the corner family exposes both.
+    public enum CornerGaugeDisplay: String, Codable, CaseIterable, Identifiable {
+        case gauge
+        case progress
+        public var id: String { rawValue }
+    }
+
     /// The four modern WidgetKit accessory families.
     public enum Family: String, Codable, CaseIterable, Identifiable {
         case circular
@@ -115,6 +123,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         public var tint: String?
         /// Raw value of `GaugeStyle`; nil defaults to `.open`. Only meaningful for circular.
         public var gaugeStyle: String?
+        /// Raw value of `CornerGaugeDisplay`; nil defaults to `.gauge`. Only meaningful for corner.
+        public var cornerGaugeDisplay: String?
         /// Per-size override for the complication's text color; nil falls back to the config-wide
         /// `textColor`. Only configs saved while the color was per-size only still carry one — the
         /// editor writes the config-wide color now.
@@ -136,6 +146,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             gaugeAttribute: String? = nil,
             tint: String? = nil,
             gaugeStyle: String? = nil,
+            cornerGaugeDisplay: String? = nil,
             textColor: String? = nil,
             slots: [String: ComplicationSlotConfig]? = nil
         ) {
@@ -150,6 +161,7 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             self.gaugeAttribute = gaugeAttribute
             self.tint = tint
             self.gaugeStyle = gaugeStyle
+            self.cornerGaugeDisplay = cornerGaugeDisplay
             self.textColor = textColor
             self.slots = slots
         }
@@ -333,6 +345,15 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
 
     public func gaugeAttribute(for family: Family) -> String? {
         families?[family.rawValue]?.gaugeAttribute ?? gaugeAttribute
+    }
+
+    public func cornerGaugeDisplay(for family: Family) -> CornerGaugeDisplay {
+        guard family == .corner,
+              let rawValue = families?[family.rawValue]?.cornerGaugeDisplay,
+              let display = CornerGaugeDisplay(rawValue: rawValue) else {
+            return .gauge
+        }
+        return display
     }
 
     /// Whether the entity's unit of measurement is appended to the value. Global (the value text is

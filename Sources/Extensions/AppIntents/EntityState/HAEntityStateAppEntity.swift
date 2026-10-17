@@ -62,6 +62,9 @@ struct HAEntityStateAppEntity: TransientAppEntity {
     /// The server-side icon name (`mdi:lightbulb`), or an SF Symbol name when the entity has none.
     var iconName: String
 
+    /// The shared context line, as every entity picker shows it.
+    var context: String?
+
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(name)",
@@ -117,6 +120,17 @@ struct HAEntityStateAppEntity: TransientAppEntity {
         self.areaName = context.areaName?.nilIfEmpty
         self.floorName = context.floorName?.nilIfEmpty
         self.deviceName = context.deviceName?.nilIfEmpty
+        self.context = EntityContextSubtitle.make(
+            floorName: context.floorName,
+            areaName: context.areaName,
+            parentDeviceName: context.parentDeviceName,
+            deviceName: context.deviceName,
+            contextReach: context.contextReach,
+            entityName: context.displayString,
+            entityId: liveState.entityId,
+            domain: Domain(entityId: liveState.entityId),
+            fallbackToEntityId: false
+        )
         self.serverName = serverName
         self.lastChanged = liveState.lastChanged
         self.lastUpdated = liveState.lastUpdated

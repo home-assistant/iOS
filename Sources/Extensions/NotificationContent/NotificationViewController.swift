@@ -90,7 +90,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     func didReceive(_ notification: UNNotification) {
         let catID = notification.request.content.categoryIdentifier.lowercased()
-        Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
+        Current.Log.verbose(
+            "Received a notif with userInfo \(LogRedaction.redactValues(in: notification.request.content.userInfo))"
+        )
 
         guard let server = Current.servers.server(for: notification.request.content) else {
             Current.Log.info("ignoring push when unable to find server")

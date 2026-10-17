@@ -266,7 +266,10 @@ public class WebhookManager: NSObject {
         }.tap { [weak self] result in
             switch result {
             case let .fulfilled(response):
-                Current.Log.info("got successful response from \(server.identifier) for \(request.type): \(response)")
+                Current.Log.info(
+                    "got successful response from \(server.identifier) for \(request.type): " +
+                        "\(LogRedaction.redactValues(in: response))"
+                )
             case let .rejected(error):
                 Current.Log.error("got failure from \(server.identifier) for \(request.type): \(error)")
 
@@ -691,7 +694,7 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
                         "server(\(server.identifier))",
                         "request(\(persisted.request))",
                         "statusCode(\(statusCode.flatMap { String(describing: $0) } ?? "none"))",
-                        "body(\(body))",
+                        "body(\(LogRedaction.redactValues(in: body)))",
                     ]
 
                     return "got response: " + values.joined(separator: ", ")

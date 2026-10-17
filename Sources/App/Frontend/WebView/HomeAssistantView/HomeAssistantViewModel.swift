@@ -30,7 +30,7 @@ final class HomeAssistantViewModel: ObservableObject {
     let overlayState: WebFrontendOverlayState
     let chrome: WebViewChromeState
     let reconnectManager: WebViewReconnectManager
-    /// Feeds the App Labs native macOS sidebar and native iOS tab bar; only started once one of them is on screen.
+    /// Feeds the App Labs native iOS tab bar; only started once it is on screen.
     let sidebar: MacSidebarViewModel
     /// Lays `sidebar` out as tabs for the App Labs native iOS tab bar.
     let tabBar: NativeTabBarViewModel
@@ -93,6 +93,8 @@ final class HomeAssistantViewModel: ObservableObject {
             guard let self, let webViewController else { return }
             if let sourceFrame {
                 webViewController.setAssistZoomOrigin(sourceFrame)
+            } else {
+                webViewController.presentsNextAssistAsSheet = true
             }
             webViewController.webViewExternalMessageHandler.showAssist(
                 server: server,
@@ -101,10 +103,16 @@ final class HomeAssistantViewModel: ObservableObject {
             )
         }
         sidebar.onShowNotifications = { [weak self] in
-            self?.webViewController?.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
-                command: .showNotifications,
-                payload: nil
-            )
+            guard let webViewController = self?.webViewController else { return }
+            NotificationDrawerToggle(
+                evaluateJavaScript: { webViewController.evaluateJavaScript($0, completion: $1) },
+                showDrawer: {
+                    webViewController.webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+                        command: .showNotifications,
+                        payload: nil
+                    )
+                }
+            ).toggle()
         }
         sidebar.readLocalStorage = { [weak self] key, completion in
             guard let webViewController = self?.webViewController else {
@@ -260,6 +268,10 @@ final class HomeAssistantViewModel: ObservableObject {
         chrome.objectWillChange
             .sink { [weak self] _ in self?.objectWillChange.send() }
             .store(in: &cancellables)
+
+        tabBar.objectWillChange
+            .sink { [weak self] _ in self?.objectWillChange.send() }
+            .store(in: &cancellables)
     }
 
     private func bindOverlayState() {
@@ -286,6 +298,14 @@ final class HomeAssistantViewModel: ObservableObject {
         overlayState.$emptyState
             .sink { [weak self] emptyState in
                 self?.updateFullScreenLoaderVisibility(hasEmptyState: emptyState != nil)
+            }
+            .store(in: &cancellables)
+
+        // The watchdog fires once per load, and in the background it can spend that on a frontend whose
+        // reports are being held back. A loader that is still up when its scene comes back gets another one.
+        overlayState.sceneReturnedFromBackground
+            .sink { [weak self] in
+                self?.armLoaderWatchdog()
             }
             .store(in: &cancellables)
     }
@@ -353,12 +373,11 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     /// The loader only ever comes down on a frontend connection state, and that report can go missing: the
-    /// frontend announces `frontend/loaded` exactly once per page load, external-bus messages that arrive
-    /// while the app is backgrounded are dropped, and a document restored from WebKit's page cache never
-    /// announces itself again (`handleFrontendRestoredFromPageCache` covers that, but only while the frontend
-    /// was connected when the page was cached). The frontend behind the loader is alive in those cases, so
-    /// once the navigation itself has finished, wait a bounded amount of time for a connection state and then
-    /// get out of the user's way rather than covering a working frontend indefinitely.
+    /// frontend announces `frontend/loaded` exactly once per page load, and a document restored from WebKit's
+    /// page cache never announces itself again (`handleFrontendRestoredFromPageCache` covers that, but only
+    /// while the frontend was connected when the page was cached). The frontend behind the loader is alive in
+    /// those cases, so once the navigation itself has finished, wait a bounded amount of time for a connection
+    /// state and then get out of the user's way rather than covering a working frontend indefinitely.
     private func armLoaderWatchdog() {
         guard isFullScreenLoaderMounted else { return }
         let cycleID = loaderCycleID
