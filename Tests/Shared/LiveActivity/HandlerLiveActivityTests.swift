@@ -20,6 +20,7 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         Current.isAppExtension = false
         // Clear any cross-process hand-off queue left over from a prior test.
         _ = LiveActivityPendingStart.drainAll()
+        _ = LiveActivityLocalPushResult.take(confirmIDs: ["confirm-1"])
     }
 
     override func tearDown() {
@@ -249,6 +250,24 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         let json = #"{"tag":"t","title":"T","state":{"message":"m"},"alert":true}"#
         let request = try JSONDecoder().decode(LiveActivityPendingStart.Request.self, from: Data(json.utf8))
         XCTAssertNil(request.relevanceScore)
+        XCTAssertNil(request.confirmID)
+    }
+
+    func testPendingStartRequest_roundTripsConfirmID() throws {
+        let request = makePendingRequest(relevanceScore: nil, confirmID: "confirm-1")
+        let data = try JSONEncoder().encode(request)
+        let decoded = try JSONDecoder().decode(LiveActivityPendingStart.Request.self, from: data)
+        XCTAssertEqual(decoded, request)
+        XCTAssertEqual(decoded.confirmID, "confirm-1")
+    }
+
+    func testPendingStartAppend_laterRequest_keepsItsOwnConfirmID() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.9, confirmID: "confirm-1"))
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil, confirmID: "confirm-2"))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.confirmID, "confirm-2")
+        XCTAssertEqual(pending.first?.relevanceScore, 0.9)
     }
 
     func testPendingStartRequest_roundTripsRelevanceScore() throws {
@@ -290,22 +309,69 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
     func testPendingStartDrain_passesQueuedRelevanceScoreToRegistry() {
         LiveActivityPendingStart.append(makePendingRequest(relevanceScore: 0.6))
         LiveActivityPendingStartObserver.drain()
-        let deadline = Date().addingTimeInterval(5)
-        while mockRegistry.startOrUpdateCalls.isEmpty, Date() < deadline {
-            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
-        }
+        waitForRegistryCall()
         XCTAssertEqual(mockRegistry.startOrUpdateCalls.first?.tag, "queued-tag")
         XCTAssertEqual(mockRegistry.startOrUpdateCalls.first?.relevanceScore, 0.6)
         XCTAssertTrue(LiveActivityPendingStart.drainAll().isEmpty)
     }
 
-    private func makePendingRequest(relevanceScore: Double?) -> LiveActivityPendingStart.Request {
+    func testPendingStartDrain_withoutConfirmID_reportsNothing() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil))
+        LiveActivityPendingStartObserver.drain()
+        waitForRegistryCall()
+        XCTAssertTrue(LiveActivityLocalPushResult.take(confirmIDs: ["confirm-1"]).isEmpty)
+    }
+
+    func testPendingStartDrain_reportsPresentedToExtension() {
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil, confirmID: "confirm-1"))
+        LiveActivityPendingStartObserver.drain()
+        XCTAssertEqual(waitForLocalPushResult("confirm-1"), .presented)
+        XCTAssertEqual(mockRegistry.startOrUpdateCalls.count, 1)
+    }
+
+    func testPendingStartDrain_reportsNotPresentedWhenRegistryRefuses() {
+        // ActivityKit refuses a start from a backgrounded app; the extension must fall back to APNs.
+        mockRegistry.startOrUpdateError = ActivityAuthorizationError.visibility
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil, confirmID: "confirm-1"))
+        LiveActivityPendingStartObserver.drain()
+        XCTAssertEqual(waitForLocalPushResult("confirm-1"), .notPresented)
+    }
+
+    func testPendingStartDrain_reportsNotPresentedWhenActivitiesAreDisabled() {
+        mockRegistry.startOrUpdateResult = false
+        LiveActivityPendingStart.append(makePendingRequest(relevanceScore: nil, confirmID: "confirm-1"))
+        LiveActivityPendingStartObserver.drain()
+        XCTAssertEqual(waitForLocalPushResult("confirm-1"), .notPresented)
+    }
+
+    private func waitForRegistryCall() {
+        let deadline = Date().addingTimeInterval(5)
+        while mockRegistry.startOrUpdateCalls.isEmpty, Date() < deadline {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+        }
+    }
+
+    private func waitForLocalPushResult(_ confirmID: String) -> LiveActivityLocalPushResult.Outcome? {
+        let deadline = Date().addingTimeInterval(5)
+        var outcome: LiveActivityLocalPushResult.Outcome?
+        while outcome == nil, Date() < deadline {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+            outcome = LiveActivityLocalPushResult.take(confirmIDs: [confirmID])[confirmID]
+        }
+        return outcome
+    }
+
+    private func makePendingRequest(
+        relevanceScore: Double?,
+        confirmID: String? = nil
+    ) -> LiveActivityPendingStart.Request {
         LiveActivityPendingStart.Request(
             tag: "queued-tag",
             title: "T",
             serverWebhookId: nil,
             state: HandlerStartOrUpdateLiveActivity.contentState(from: ["message": "m"]),
             relevanceScore: relevanceScore,
+            confirmID: confirmID,
             alert: false
         )
     }
@@ -332,6 +398,20 @@ final class HandlerStartOrUpdateLiveActivityTests: XCTestCase {
         XCTAssertEqual(pending.first?.state.message, "Body")
         // A non-silent update carries alert = true so the drain fires an ActivityKit alert.
         XCTAssertEqual(pending.first?.alert, true)
+    }
+
+    func testHandle_inAppExtension_handsOffLocalPushConfirmID() throws {
+        Current.isAppExtension = true
+        let payload: [String: Any] = ["tag": "test-tag", "title": "Test", "hass_confirm_id": "confirm-1"]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.count, 1)
+        XCTAssertEqual(pending.first?.confirmID, "confirm-1")
+    }
+
+    func testMakeRequest_withoutConfirmID_isNil() throws {
+        let request = try HandlerStartOrUpdateLiveActivity.makeRequest(from: ["tag": "test-tag"])
+        XCTAssertNil(request.confirmID)
     }
 
     func testHandle_inAppExtension_silent_handsOffWithAlertFalse() throws {
