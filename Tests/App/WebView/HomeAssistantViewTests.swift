@@ -249,6 +249,29 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowStandByView)
     }
 
+    /// Assist opened on a cold launch hides the frontend, so the watchdog can spend its round probing a page
+    /// that had nowhere to render. A loader that is still up once Assist closes gets another round.
+    func testUncoveringTheFrontendGivesALoaderThatIsStillUpAnotherWatchdogRound() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+        overlayState.emptyState = emptyStateContent()
+        try? await Task.sleep(for: .milliseconds(120))
+        overlayState.emptyState = nil
+        try? await Task.sleep(for: .milliseconds(120))
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+
+        overlayState.frontendUncovered.send()
+
+        await waitUntil { !sut.isFullScreenLoaderMounted }
+        XCTAssertFalse(sut.shouldShowStandByView)
+    }
+
     /// A navigation that is still in flight has not failed yet: the watchdog only counts down once the
     /// document itself has finished, so a slow load keeps the loader rather than exposing a blank web view.
     func testWatchdogDoesNotDismissStandbyLoaderWhileTheNavigationIsStillRunning() async {
