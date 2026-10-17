@@ -81,6 +81,8 @@ struct AssistView: View {
     private let showCloseButton: Bool
     /// Renders the pre-iOS 26 materials instead of Liquid Glass, so the legacy look stays previewable.
     private let forcesLegacyAppearance: Bool
+    /// Runs once Assist leaves the screen, so whoever presented it can catch up on what it covered.
+    private let onDismiss: (() -> Void)?
     @State private var hasVerticalBar = false
     @State private var occlusionInsets = EdgeInsets()
     @StateObject private var softwareKeyboard = SoftwareKeyboardObserver()
@@ -89,11 +91,13 @@ struct AssistView: View {
         viewModel: AssistViewModel,
         showCloseButton: Bool = true,
         forcesLegacyAppearance: Bool = false,
-        forcesVerticalBar: Bool = false
+        forcesVerticalBar: Bool = false,
+        onDismiss: (() -> Void)? = nil
     ) {
         self._viewModel = .init(wrappedValue: viewModel)
         self.showCloseButton = showCloseButton
         self.forcesLegacyAppearance = forcesLegacyAppearance
+        self.onDismiss = onDismiss
         self._hasVerticalBar = State(initialValue: forcesVerticalBar)
     }
 
@@ -110,6 +114,7 @@ struct AssistView: View {
             .onDisappear {
                 assistSession.inProgress = false
                 viewModel.onDisappear()
+                onDismiss?()
             }
             .alert(isPresented: $viewModel.showError) {
                 .init(
