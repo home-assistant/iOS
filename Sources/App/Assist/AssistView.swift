@@ -82,7 +82,8 @@ struct AssistView: View {
     /// Renders the pre-iOS 26 materials instead of Liquid Glass, so the legacy look stays previewable.
     private let forcesLegacyAppearance: Bool
     /// Runs once Assist leaves the screen, so whoever presented it can catch up on what it covered.
-    private let onDismiss: (() -> Void)?
+    /// Not private so tests can check what a presenter wired into it.
+    let onDismiss: (() -> Void)?
     @State private var hasVerticalBar = false
     @State private var occlusionInsets = EdgeInsets()
     @StateObject private var softwareKeyboard = SoftwareKeyboardObserver()
