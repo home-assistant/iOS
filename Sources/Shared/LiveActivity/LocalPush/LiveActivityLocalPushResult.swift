@@ -19,36 +19,23 @@ enum LiveActivityLocalPushResult {
         AppConstants.AppGroupID + ".liveActivityLocalPushResult"
     }
 
-    private static let storeKey = "liveActivityLocalPushResults"
-    private static let lock = NSLock()
+    // One key per confirm id: the app writes and the extension consumes from separate processes,
+    // so a shared collection rewritten by both could drop a reply.
+    private static let keyPrefix = "liveActivityLocalPushResult."
 
     static func record(_ outcome: Outcome, confirmID: String) {
-        lock.lock()
-        defer { lock.unlock() }
-        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
-        var results = defaults.dictionary(forKey: storeKey) as? [String: String] ?? [:]
-        results[confirmID] = outcome.rawValue
-        defaults.set(results, forKey: storeKey)
+        UserDefaults(suiteName: AppConstants.AppGroupID)?.set(outcome.rawValue, forKey: keyPrefix + confirmID)
     }
 
-    /// Remove and return the outcomes recorded for `confirmIDs`. Other entries belong to another
-    /// server's manager and are left in place.
+    /// Remove and return the outcomes recorded for `confirmIDs`.
     static func take(confirmIDs: Set<String>) -> [String: Outcome] {
-        lock.lock()
-        defer { lock.unlock() }
-        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID),
-              var remaining = defaults.dictionary(forKey: storeKey) as? [String: String] else { return [:] }
+        guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [:] }
         var taken: [String: Outcome] = [:]
         for confirmID in confirmIDs {
-            guard let raw = remaining.removeValue(forKey: confirmID), let outcome = Outcome(rawValue: raw) else {
-                continue
-            }
-            taken[confirmID] = outcome
-        }
-        if remaining.isEmpty {
-            defaults.removeObject(forKey: storeKey)
-        } else {
-            defaults.set(remaining, forKey: storeKey)
+            let key = keyPrefix + confirmID
+            guard let raw = defaults.string(forKey: key) else { continue }
+            defaults.removeObject(forKey: key)
+            taken[confirmID] = Outcome(rawValue: raw)
         }
         return taken
     }

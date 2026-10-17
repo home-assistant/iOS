@@ -22,6 +22,7 @@ final class LiveActivityLocalPushConfirmTracker {
 
     private struct Pending {
         let tag: String
+        let deadline: DispatchTime
         let timeout: DispatchWorkItem
     }
 
@@ -35,9 +36,11 @@ final class LiveActivityLocalPushConfirmTracker {
         let callback: CFNotificationCallback = { _, observer, _, _, _ in
             // C callback can't capture self; re-derive it (see LiveActivityPendingStartObserver).
             guard let observer else { return }
-            Unmanaged<LiveActivityLocalPushConfirmTracker>.fromOpaque(observer)
+            let tracker = Unmanaged<LiveActivityLocalPushConfirmTracker>.fromOpaque(observer)
                 .takeUnretainedValue()
-                .handleResults()
+            DispatchQueue.main.async {
+                tracker.handleResults()
+            }
         }
         CFNotificationCenterAddObserver(
             CFNotificationCenterGetDarwinNotifyCenter(),
@@ -65,6 +68,9 @@ final class LiveActivityLocalPushConfirmTracker {
     func track(confirmID: String, tag: String) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            // A newer push for a tag that is already waiting keeps that tag's deadline, so a stream of
+            // updates to a suspended app cannot postpone the fallback forever.
+            let deadline = pending.values.first { $0.tag == tag }?.deadline ?? DispatchTime.now() + replyTimeout
             // The hand-off queue keeps only the newest start per tag, so the app never replies for
             // an older one; its content is stale either way, so release it now.
             releaseSuperseded(tag: tag)
@@ -73,8 +79,10 @@ final class LiveActivityLocalPushConfirmTracker {
                 Current.Log.info("local push: no reply from the app for Live Activity \(tag), re-sending via APNs")
                 fallBack()
             }
-            pending[confirmID] = Pending(tag: tag, timeout: timeout)
-            DispatchQueue.main.asyncAfter(deadline: .now() + replyTimeout, execute: timeout)
+            pending[confirmID] = Pending(tag: tag, deadline: deadline, timeout: timeout)
+            DispatchQueue.main.asyncAfter(deadline: deadline, execute: timeout)
+            // The app may have replied before this registration ran.
+            handleResults()
         }
     }
 

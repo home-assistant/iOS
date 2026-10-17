@@ -171,6 +171,33 @@ final class LocalPushManagerLiveActivityConfirmTests: XCTestCase {
         XCTAssertEqual(manager.state, .available(received: 1))
     }
 
+    func testReplyRecordedBeforeRegistrationIsConsumed() throws {
+        // The app can answer before the tracker's main-queue registration runs; that reply must
+        // still confirm the push instead of letting it time out into an APNs re-send.
+        LiveActivityLocalPushResult.record(.presented, confirmID: "confirm-1")
+        try receiveLiveActivityPush()
+
+        XCTAssertEqual(confirmedIDs, ["confirm-1"])
+        XCTAssertTrue(manager.liveActivityConfirms.pendingConfirmIDs.isEmpty)
+        XCTAssertEqual(apiConnection.pendingSubscriptions.count, 1)
+    }
+
+    func testUpdatesForSameTagKeepTheOriginalDeadline() throws {
+        manager.liveActivityConfirms.replyTimeout = 1
+        let start = Date()
+        try receiveLiveActivityPush(confirmID: "confirm-1")
+        waitUntil({ false }, timeout: 0.7)
+        try receiveLiveActivityPush(confirmID: "confirm-2")
+
+        waitUntil({ apiConnection.pendingSubscriptions.count == 2 }, timeout: 5)
+
+        // A fresh deadline for the second push would fall back no earlier than 1.7 s.
+        XCTAssertLessThan(Date().timeIntervalSince(start), 1.5)
+        XCTAssertEqual(apiConnection.pendingSubscriptions.count, 2)
+        XCTAssertEqual(confirmedIDs, ["confirm-1"])
+        XCTAssertTrue(manager.liveActivityConfirms.pendingConfirmIDs.isEmpty)
+    }
+
     func testNewerStartForSameTagConfirmsOlderPush() throws {
         try receiveLiveActivityPush(confirmID: "confirm-1")
         try receiveLiveActivityPush(confirmID: "confirm-2")
@@ -219,4 +246,6 @@ final class LocalPushManagerLiveActivityConfirmTests: XCTestCase {
         XCTAssertTrue(manager.liveActivityConfirms.pendingConfirmIDs.isEmpty)
     }
 }
+
+private class FakeHomeAssistantAPI: HomeAssistantAPI {}
 #endif
