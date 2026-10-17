@@ -19,14 +19,14 @@ enum LiveActivityPendingStart {
         let title: String
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
-        let confirmID: String?
+        let relevanceScore: Double?
         /// Whether a non-silent update should fire an ActivityKit alert (sound + haptic). Decoded
         /// with a default so a queue serialized by an older build still drains.
         let alert: Bool
 
         // Declared explicitly: providing both init(from:) and encode(to:) opts out of synthesis.
         private enum CodingKeys: String, CodingKey {
-            case tag, title, serverWebhookId, state, confirmID, alert
+            case tag, title, serverWebhookId, state, relevanceScore, alert
         }
 
         init(
@@ -34,14 +34,14 @@ enum LiveActivityPendingStart {
             title: String,
             serverWebhookId: String?,
             state: HALiveActivityAttributes.ContentState,
-            confirmID: String?,
+            relevanceScore: Double? = nil,
             alert: Bool
         ) {
             self.tag = tag
             self.title = title
             self.serverWebhookId = serverWebhookId
             self.state = state
-            self.confirmID = confirmID
+            self.relevanceScore = relevanceScore
             self.alert = alert
         }
 
@@ -51,7 +51,7 @@ enum LiveActivityPendingStart {
             self.title = try container.decode(String.self, forKey: .title)
             self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
             self.state = try container.decode(HALiveActivityAttributes.ContentState.self, forKey: .state)
-            self.confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
+            self.relevanceScore = try container.decodeIfPresent(Double.self, forKey: .relevanceScore)
             self.alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
         }
 
@@ -61,20 +61,21 @@ enum LiveActivityPendingStart {
             try container.encode(title, forKey: .title)
             try container.encodeIfPresent(serverWebhookId, forKey: .serverWebhookId)
             try container.encode(state, forKey: .state)
-            try container.encodeIfPresent(confirmID, forKey: .confirmID)
+            try container.encodeIfPresent(relevanceScore, forKey: .relevanceScore)
             try container.encode(alert, forKey: .alert)
         }
-    }
 
-    static func confirmLocalPushDelivery(for request: Request) {
-        guard let confirmID = request.confirmID, let webhookID = request.serverWebhookId else { return }
-        guard let server = Current.servers.all.first(where: { $0.info.connection.webhookID == webhookID }),
-              let api = Current.api(for: server) else {
-            Current.Log.error("LiveActivityPendingStart: no server for webhook to confirm local push delivery")
-            return
+        func inheritingRelevanceScore(from previous: Request?) -> Request {
+            guard relevanceScore == nil, let inherited = previous?.relevanceScore else { return self }
+            return Request(
+                tag: tag,
+                title: title,
+                serverWebhookId: serverWebhookId,
+                state: state,
+                relevanceScore: inherited,
+                alert: alert
+            )
         }
-        Current.Log.verbose("LiveActivityPendingStart: confirming local push delivery for tag \(request.tag)")
-        api.connection.send(.localPushConfirm(webhookID: webhookID, confirmID: confirmID)).promise.cauterize()
     }
 
     // Namespaced by App Group id so dev/beta/release installs never cross-signal.
@@ -99,8 +100,9 @@ enum LiveActivityPendingStart {
         lock.lock()
         defer { lock.unlock() }
         guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
-        var requests = load(from: defaults).filter { $0.tag != request.tag }
-        requests.append(request)
+        let queued = load(from: defaults)
+        var requests = queued.filter { $0.tag != request.tag }
+        requests.append(request.inheritingRelevanceScore(from: queued.first { $0.tag == request.tag }))
         store(requests, to: defaults)
         Current.Log.verbose("LiveActivityPendingStart: enqueued '\(request.tag)', pending=\(requests.count)")
     }
@@ -268,16 +270,14 @@ public final class LiveActivityPendingStartObserver {
                 Task {
                     for request in requests {
                         do {
-                            let presented = try await Current.liveActivityRegistry?.startOrUpdate(
+                            _ = try await Current.liveActivityRegistry?.startOrUpdate(
                                 tag: request.tag,
                                 title: request.title,
                                 serverWebhookId: request.serverWebhookId,
                                 state: request.state,
+                                relevanceScore: request.relevanceScore,
                                 alert: request.alert
                             )
-                            if presented == true {
-                                LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
-                            }
                         } catch {
                             Current.Log.error(
                                 "LiveActivityPendingStart: startOrUpdate failed for tag \(request.tag): \(error)"

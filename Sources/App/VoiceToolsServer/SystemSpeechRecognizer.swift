@@ -2,13 +2,13 @@ import AVFoundation
 import Foundation
 import Speech
 
-/// `WyomingSpeechRecognizing` backed by Apple's Speech framework.
+/// `OnDeviceSpeechRecognizing` backed by Apple's Speech framework.
 ///
 /// Pinned to the on-device recogniser: sending a Home Assistant user's audio to Apple's servers is
 /// the opposite of what running the pipeline locally is for, so a locale without on-device support
 /// is refused rather than quietly handled in the cloud.
 @MainActor
-final class SystemSpeechRecognizer: WyomingSpeechRecognizing {
+final class SystemSpeechRecognizer: OnDeviceSpeechRecognizing {
     private let recognizer: SFSpeechRecognizer
     private let request = SFSpeechAudioBufferRecognitionRequest()
     private var task: SFSpeechRecognitionTask?

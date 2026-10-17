@@ -33,8 +33,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Watches `.siriEntityExposureDidChange` so what is published on `userActivity` follows the
     /// user's Siri exposure setting; see `WebViewController+OnscreenContent`.
     var siriExposureObserver: NSObjectProtocol?
-    /// The entity the frontend's more-info dialog is showing, reported over the external bus.
-    var onscreenEntityId: String?
+    /// The entity the frontend's more-info dialog is showing, reported over the external bus. Mirrored
+    /// onto `overlayState` so the App Labs tab bar can hide while the dialog is up.
+    var onscreenEntityId: String? {
+        didSet {
+            overlayState?.isMoreInfoDialogOpen = onscreenEntityId != nil
+        }
+    }
+
     /// The path the dialog opened over, so a route change is recognised as having closed it.
     var onscreenEntityPath: String?
     /// The in-flight publish of what is on screen, cancelled when a newer one replaces it.
@@ -49,6 +55,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Stands in for the frontend's Assist button as the zoom transition's source; see `AssistZoomAnchorView`.
     var assistZoomAnchorView: UIView?
     var pendingAssistZoomSourceView: UIView?
+    var presentsNextAssistAsSheet = false
     /// An overlay presented from the window while this view was off screen behind the App Labs tab bar.
     weak var detachedOverlayController: UIViewController?
     var tabBarAssistZoomAnchor: AssistZoomAnchorView?
@@ -91,6 +98,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     var overlayState: WebFrontendOverlayState? {
         didSet {
             observeEmptyStateForWindowTitle()
+            overlayState?.isMoreInfoDialogOpen = onscreenEntityId != nil
         }
     }
 
@@ -109,9 +117,29 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// a hung attempt must never block URL loading until the app is killed.
     var loadActiveURLTask: Task<Void, Never>?
     var loadActiveURLTaskStartDate: Date?
+    /// The in-flight "send the web view home" redirect, if any. Tracked so a newer redirect replaces it and
+    /// so a navigation that starts while it is resolving the root cancels it before it can navigate.
+    var redirectToRootTask: Task<Void, Never>?
 
     /// Wrapper around the application state; replaceable in tests.
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+
+    /// Whether the scene showing this frontend is active, i.e. on screen and receiving events; replaceable
+    /// in tests. The scene's state rather than the application's: with several windows open, one frontend
+    /// can be in the background while the app as a whole stays active. Without a scene to ask (the view is
+    /// not in a window) the application's state is the best answer available.
+    var isSceneActive: @MainActor (UIWindowScene?) -> Bool = { scene in
+        guard let scene else { return UIApplication.shared.applicationState == .active }
+        return scene.activationState == .foregroundActive
+    }
+
+    /// Set when the disconnected empty state was asked for while the scene was not active. Nobody could
+    /// see it, and the frontend gets its grace period again once the scene is; see `showEmptyState()`.
+    var isEmptyStateDeferredUntilActive = false
+
+    /// Set when the scene enters the background and consumed by its next activation, which is how an
+    /// activation that follows a backgrounding is told apart from one that follows a system alert.
+    var didEnterBackgroundSinceLastActivation = false
 
     var blankFrontendRecoveryAttempts = 0
     var contentProcessTerminations = 0
@@ -133,6 +161,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Which idiom the frontend is being shown in; only iPad windows get controls drawn over them.
     var userInterfaceIdiom: @MainActor (UIView) -> UIUserInterfaceIdiom = { view in
         view.traitCollection.userInterfaceIdiom
+    }
+
+    /// Whether the scene shares the display instead of owning it, which is when iPadOS draws its window
+    /// controls over the app; replaceable in tests, whose views are never in a window.
+    var isSceneWindowed: @MainActor (UIView) -> Bool = { view in
+        guard let window = view.window, let screen = window.windowScene?.screen else { return false }
+        return WebViewController.sceneIsWindowed(windowSize: window.bounds.size, screenSize: screen.bounds.size)
     }
 
     /// Handler for messages sent from the webview to the app
@@ -289,6 +324,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     static func makeWebViewConfiguration() -> WKWebViewConfiguration {
+        // WebKit reads this when the web view is built, so it has to be settled first.
+        WebKitEnhancedSecurity.prepareForConfiguredServers()
+
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         // Avoid interrupting background audio when the frontend loads media-capable elements.
@@ -306,6 +344,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         observeConnectionNotifications()
         setupKioskModeObservation()
+        #if !targetEnvironment(macCatalyst)
+        setupHingeObservation()
+        #endif
         observeSiriExposureForOnscreenContent()
         // Weakly held; surfaces re-authentication when this server's refresh token is rejected.
         Current.onboardingObservation.register(observer: self)
@@ -485,6 +526,7 @@ extension WebViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.setNeedsStatusBarAppearanceUpdate()
+                self?.updateThemedStatusBar()
             }
             .store(in: &kioskCancellables)
 

@@ -2,7 +2,7 @@ import Foundation
 
 /// Payload of an `httpRequestResponse` message (phone → watch): the outcome of a relayed HTTP
 /// request. Key names cross the wire — never rename them.
-public enum WatchHTTPResponsePayload {
+public enum WatchHTTPResponsePayload: Equatable {
     /// The phone reached the server. The status is whatever it answered, 2xx or not — a 401 is a
     /// successful relay carrying a rejected token, and the watch handles it exactly as it would
     /// have on its own.

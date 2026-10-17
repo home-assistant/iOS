@@ -24,6 +24,8 @@ public class ConfigResponse: Mappable {
     public var CloudhookURL: URL?
     public var RemoteUIURL: URL?
 
+    public var entities: [String: ConfigResponseEntity]?
+
     public required init?(map: Map) {}
 
     public func mapping(map: Map) {
@@ -48,5 +50,7 @@ public class ConfigResponse: Mappable {
 
         CloudhookURL <- (map["cloudhook_url"], URLTransform())
         RemoteUIURL <- (map["remote_ui_url"], URLTransform())
+
+        entities <- map["entities"]
     }
 }

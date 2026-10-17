@@ -306,6 +306,9 @@ final class BarcodeScannerCamera: NSObject, @unchecked Sendable {
         }
     }
 
+    // TODO: Modernization - `UIScreen.main` is deprecated. Rotate frames with
+    // `AVCaptureDevice.RotationCoordinator` (iOS 17+) driven by the preview, or read the screen of the
+    // window hosting the preview (`view.window?.windowScene?.screen`) instead of the main screen.
     private var deviceOrientation: UIDeviceOrientation {
         var orientation = UIDevice.current.orientation
         if orientation == UIDeviceOrientation.unknown {

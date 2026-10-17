@@ -125,7 +125,11 @@ public enum WatchServiceCallSender {
         request.httpBody = body
         Task {
             do {
-                let (_, http) = try await ServerRequestPerformer.perform(request, server: server)
+                let (_, http) = try await ServerRequestPerformer.perform(
+                    request,
+                    server: server,
+                    priority: .userAction
+                )
                 guard (200 ..< 300).contains(http.statusCode) else {
                     finish(false)
                     return

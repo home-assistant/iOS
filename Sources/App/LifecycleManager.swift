@@ -67,7 +67,7 @@ class LifecycleManager {
         // freezes (0xdead10cc). Catalyst is excluded like the rest of its lifecycle handling: it can
         // report .background at launch without a foreground transition ever following to resume.
         if !Current.isCatalyst, UIApplication.shared.applicationState == .background {
-            AppDatabaseSuspension.suspend()
+            AppDatabaseSuspension.suspendIfIdle()
         }
         Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in

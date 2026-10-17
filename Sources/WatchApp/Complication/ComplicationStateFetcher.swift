@@ -55,7 +55,8 @@ enum ComplicationStateFetcher {
             let (data, http) = try await ServerRequestPerformer.perform(
                 request,
                 server: server,
-                configuration: boundedSessionConfiguration()
+                configuration: boundedSessionConfiguration(),
+                priority: .background
             )
             guard (200 ..< 300).contains(http.statusCode) else {
                 Current.Log.error("[Complication] HTTP \(http.statusCode) for \(request.url?.absoluteString ?? "?")")

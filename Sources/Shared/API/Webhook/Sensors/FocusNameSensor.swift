@@ -51,10 +51,10 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 ///
 /// The user creates the names in the app's Focus settings and pairs each one with a Focus in
 /// Settings › Focus › Focus Filters; activating that Focus runs our filter, which stores the paired
-/// name for this sensor to send. The stored name is sticky — iOS wipes it on deactivation and
-/// skips re-running the filter for quick reactivations — so ending and restarting a Focus blanks
-/// and restores the same name. Only knowing every Focus ended blanks it; not being able to tell
-/// keeps the last name rather than inventing a state.
+/// name for this sensor to send. The name lasts until that Focus ends — its filter's reset run, or
+/// iOS confirming every Focus ended — and a Focus that starts without a filter run afterwards is
+/// reported as running with no name, never as the Focus before it. Not being able to tell whether
+/// the named Focus ended keeps its name rather than inventing a state.
 ///
 /// The sensor is always listed, never erroring out while nothing is configured: its detail screen
 /// is the only route to the Focus names, so a sensor that dropped out of the list until a name
@@ -80,22 +80,13 @@ final class FocusNameSensor: SensorProvider {
 
         let report = FocusReport.current()
 
-        // iOS does tell us when every Focus ends (the pushed status and the filter's reset run),
-        // so the name is blanked then; an inconclusive status keeps the last name rather than
-        // inventing a state. Empty is also the state before any name exists, which is what keeps
-        // the sensor in the list for a user who has yet to configure it.
-        let state: String
-        if let name = report.name, report.isFocused != false {
-            state = name
-        } else {
-            state = ""
-        }
-
+        // Empty while no named Focus is running, which is also the state before any name exists —
+        // what keeps the sensor in the list for a user who has yet to configure it.
         let sensor = with(WebhookSensor(
             name: "Focus name",
             uniqueID: WebhookSensorId.focusName.rawValue,
             icon: "mdi:moon-waning-crescent",
-            state: state
+            state: report.name ?? ""
         )) {
             if let isFocused = report.isFocused {
                 $0.Attributes = ["Is focused": isFocused]

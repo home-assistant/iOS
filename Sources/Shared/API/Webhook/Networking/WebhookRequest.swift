@@ -67,3 +67,11 @@ public struct WebhookRequest: ImmutableMappable {
         }
     }
 }
+
+extension WebhookRequest: CustomStringConvertible {
+    public var description: String {
+        let redactedMetadata = localMetadata.map { LogRedaction.redactValues(in: $0) }
+        return "WebhookRequest(type: \"\(type)\", data: \(LogRedaction.redactValues(in: data)), " +
+            "localMetadata: \(String(describing: redactedMetadata)))"
+    }
+}

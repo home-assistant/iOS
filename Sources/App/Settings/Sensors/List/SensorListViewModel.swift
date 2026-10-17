@@ -1,11 +1,24 @@
+import Combine
 import Foundation
 import PromiseKit
 import Shared
 
 class SensorListViewModel: ObservableObject {
+    /// The server whose selection this screen edits, or `nil` on the root screen of an install with
+    /// more than one server, where the sensors themselves live one navigation step further in.
+    let server: Server?
+
     /// Every sensor, always sorted alphabetically no matter whether it is enabled or not.
     @Published var sensors: [WebhookSensor] = []
+    /// Mirrored here so toggling a sensor re-renders the list; `SensorContainer` isn't observable.
+    @Published private(set) var enabledUniqueIDs: Set<String> = []
+    /// Kept current from `serversDidChange`, so adding or removing one while this screen is open
+    /// doesn't leave it offering a server that is gone or hiding one that has just arrived.
+    @Published private(set) var servers: [Server] = []
     @Published var lastUpdateDate: Date?
+    /// Followed from `Current.hinge` rather than read once: the hinge is reported a moment after
+    /// launch, so an early look at this screen sees a device that has not said it folds yet.
+    @Published private(set) var deviceHasHinge: Bool
     @Published var periodicUpdateInterval: TimeInterval? = Current.settingsStore.periodicUpdateInterval
     @Published var searchTerm: String = ""
     @Published var alertMessage: String?
@@ -24,10 +37,11 @@ class SensorListViewModel: ObservableObject {
         #endif
     }
 
-    /// How many Apple Health metrics are switched on, shown as the badge of the link to their screen.
+    /// How many Apple Health metrics are switched on for this server, shown as the badge of the
+    /// link to their screen.
     var enabledHealthSensorCount: Int {
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        return HealthKitMetric.all.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) }.count
+        return HealthKitMetric.all.filter { enabledUniqueIDs.contains($0.uniqueID) }.count
         #else
         return 0
         #endif
@@ -47,19 +61,80 @@ class SensorListViewModel: ObservableObject {
         #endif
     }
 
-    /// The sensors matching the current search term, or all of them when not searching.
-    var filteredSensors: [WebhookSensor] {
-        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !term.isEmpty else { return sensors }
-        return sensors.filter { $0.Name?.localizedStandardContains(term) ?? false }
+    /// The sensors that can be switched on here: every one but those needing hardware this device
+    /// does not have.
+    var availableSensors: [WebhookSensor] {
+        sensors.filter {
+            SensorDeviceAvailability.isAvailable(sensorUniqueID: $0.UniqueID, deviceHasHinge: deviceHasHinge)
+        }
     }
 
-    init() {
+    /// The sensors this device can never report, listed at the bottom with nothing to switch on.
+    /// None until the list has loaded, so their section never sits alone under an empty one.
+    var unavailableSensors: [WebhookSensor] {
+        guard !sensors.isEmpty else { return [] }
+        return Self.sortedAlphabetically(SensorDeviceAvailability.unavailableSensors(deviceHasHinge: deviceHasHinge))
+    }
+
+    /// The available sensors matching the current search term, or all of them when not searching.
+    var filteredSensors: [WebhookSensor] {
+        matchingSearchTerm(availableSensors)
+    }
+
+    /// The unavailable sensors matching the current search term, or all of them when not searching.
+    var filteredUnavailableSensors: [WebhookSensor] {
+        matchingSearchTerm(unavailableSensors)
+    }
+
+    /// The servers the root screen lists, each leading to its own copy of this screen. Empty while
+    /// there is only one, whose sensors are shown on the root screen itself.
+    var selectableServers: [Server] {
+        servers.count > 1 ? servers.sorted() : []
+    }
+
+    /// The servers matching the current search term. Searching the root screen is searching the
+    /// list it actually shows, which is the servers rather than one of their sensors.
+    var filteredServers: [Server] {
+        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !term.isEmpty else { return selectableServers }
+        return selectableServers.filter { $0.info.name.localizedStandardContains(term) }
+    }
+
+    var allSensorsEnabled: Bool {
+        !availableSensors.isEmpty && availableSensors.allSatisfy { isEnabled($0) }
+    }
+
+    /// The root screen. It edits the only server directly when there is one, and lists the servers
+    /// instead when there are several, each of which gets its own copy of this screen.
+    convenience init() {
+        let all = Current.servers.all
+        self.init(server: all.count == 1 ? all.first : nil)
+    }
+
+    init(server: Server?) {
+        self.server = server
+        self.enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
+        self.servers = Current.servers.all
+        self.deviceHasHinge = Current.hinge.hasHinge
+        // Only a change is passed on: the publisher opens with the value read just above, and
+        // assigning it again would republish a screen that has nothing new to show.
+        Current.hinge.$hasHinge
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$deviceHasHinge)
         Current.sensors.register(observer: self)
+        Current.servers.add(observer: self)
     }
 
     deinit {
         Current.sensors.unregister(observer: self)
+        Current.servers.remove(observer: self)
+    }
+
+    func isEnabled(_ sensor: WebhookSensor) -> Bool {
+        guard let uniqueID = sensor.UniqueID else { return false }
+        return enabledUniqueIDs.contains(uniqueID)
     }
 
     func refresh() {
@@ -81,22 +156,39 @@ class SensorListViewModel: ObservableObject {
         Current.settingsStore.periodicUpdateInterval = interval
     }
 
-    /// Switches one sensor on or off, asking iOS for whatever permission it needs as it goes on.
+    /// Switches one sensor on or off for this screen's server, asking iOS for whatever permission
+    /// it needs as it goes on.
     func setEnabled(_ isEnabled: Bool, for sensor: WebhookSensor) {
-        Current.sensors.setEnabled(isEnabled, for: sensor)
-        guard let uniqueID = sensor.UniqueID else { return }
+        guard let server, let uniqueID = sensor.UniqueID else { return }
+        Current.sensors.setEnabled(isEnabled, forUniqueID: uniqueID, on: server)
+        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
         requestPermissionsIfNeeded(isEnabled: isEnabled, uniqueIDs: [uniqueID])
     }
 
+    /// Switches on or off every sensor that can be switched on here. Those this device can never
+    /// report are left as they are, since nothing on this screen could switch them back.
     func updateAllSensors(isEnabled: Bool) {
-        let uniqueIDs = sensors.compactMap(\.UniqueID)
-        Current.sensors.setEnabled(isEnabled, forUniqueIDs: uniqueIDs)
+        guard let server else { return }
+        let uniqueIDs = availableSensors.compactMap(\.UniqueID)
+        Current.sensors.setEnabled(isEnabled, forUniqueIDs: uniqueIDs, on: server)
+        enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
         requestPermissionsIfNeeded(isEnabled: isEnabled, uniqueIDs: uniqueIDs)
     }
 
     private func requestPermissionsIfNeeded(isEnabled: Bool, uniqueIDs: [String]) {
         guard isEnabled, !uniqueIDs.isEmpty else { return }
         Current.requestSensorPermissions(uniqueIDs)
+    }
+
+    private func matchingSearchTerm(_ sensors: [WebhookSensor]) -> [WebhookSensor] {
+        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !term.isEmpty else { return sensors }
+        return sensors.filter { $0.Name?.localizedStandardContains(term) ?? false }
+    }
+
+    private static func currentlyEnabledUniqueIDs(for server: Server?) -> Set<String> {
+        guard let server else { return [] }
+        return Current.sensors.enabledUniqueIDs(for: server)
     }
 
     /// Apple Health metrics are managed on their own screen — there are over a hundred of them, so
@@ -120,6 +212,16 @@ class SensorListViewModel: ObservableObject {
     }
 }
 
+// MARK: - ServerObserver
+
+extension SensorListViewModel: ServerObserver {
+    func serversDidChange(_ serverManager: ServerManager) {
+        DispatchQueue.main.async { [weak self] in
+            self?.servers = serverManager.all
+        }
+    }
+}
+
 // MARK: - SensorObserver
 
 extension SensorListViewModel: SensorObserver {
@@ -128,6 +230,9 @@ extension SensorListViewModel: SensorObserver {
         didSignalForUpdateBecause reason: SensorContainerUpdateReason,
         lastUpdate: SensorObserverUpdate?
     ) {
+        // The root screen of an install with several servers lists the servers themselves, so a
+        // change to what one of them receives has nothing to bring up to date here.
+        guard server != nil else { return }
         refresh()
     }
 
@@ -135,10 +240,13 @@ extension SensorListViewModel: SensorObserver {
         firstly {
             update.sensors
         }.done { [weak self] sensors in
+            guard let self else { return }
             let sorted = Self.sortedAlphabetically(Self.excludingHealthSensors(sensors))
+            let enabled = Self.currentlyEnabledUniqueIDs(for: server)
             DispatchQueue.main.async {
-                self?.sensors = sorted
-                self?.lastUpdateDate = update.on
+                self.sensors = sorted
+                self.enabledUniqueIDs = enabled
+                self.lastUpdateDate = update.on
             }
         }.catch { [weak self] error in
             DispatchQueue.main.async {

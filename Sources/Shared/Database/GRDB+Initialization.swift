@@ -94,6 +94,7 @@ public extension DatabaseQueue {
             SiriEntityExposureTable(),
             HACalendarTable(),
             HACalendarEventTable(),
+            FrontendThemeVariableTable(),
         ]
     }
 
@@ -226,24 +227,31 @@ public final class AppDatabaseSuspension {
     /// the process alive until the statement finishes; if the system expires it first, GRDB is
     /// suspended instead, which aborts the statement and releases the lock before the freeze.
     func performProtectedWork(named name: BackgroundTask, _ work: @escaping @Sendable () -> Void) {
-        let (untilWorkEnds, workEndSeal) = Promise<Void>.pending()
-        beginProtectedAccess()
-        // Started before the background task is armed, so the task's window always covers work that
-        // is already under way rather than work still waiting for a thread.
-        Self.workQueue.async { [self] in
-            work()
-            // `suspend()` sets `wantsSuspension` again, so a still-set flag is how we learn the app
-            // backgrounded while the work ran and the database has to go back to suspended.
-            endProtectedAccess(suspend: lifecycleWantsSuspension)
-            workEndSeal.fulfill(())
-        }
-        Current.backgroundTask(withName: name.rawValue) { _ in untilWorkEnds }
-            .catch { [self] _ in
-                // Out of background time: the process is about to be frozen, so suspend even though
-                // this aborts whatever statement is in flight — releasing the app-group file lock is
-                // what avoids the 0xdead10cc kill. The caller retries on its next update.
-                suspend()
+        // The work only starts once the background task is held: acquiring it is a synchronous call
+        // to RunningBoard, and a process frozen inside it must not already hold the file lock.
+        Current.backgroundTask(withName: name.rawValue, requiringAssertion: true) { [self] _ in
+            beginProtectedAccess()
+            let (untilWorkEnds, workEndSeal) = Promise<Void>.pending()
+            Self.workQueue.async { [self] in
+                work()
+                // `suspend()` sets `wantsSuspension` again, so a still-set flag is how we learn the app
+                // backgrounded while the work ran and the database has to go back to suspended.
+                endProtectedAccess(suspend: lifecycleWantsSuspension)
+                workEndSeal.fulfill(())
             }
+            return untilWorkEnds
+        }
+        .catch { [self] error in
+            if case BackgroundTaskError.denied = error {
+                // Nothing started, so let any sibling still holding its own assertion finish first.
+                suspendIfIdle()
+                return
+            }
+            // Out of background time: the process is about to be frozen, so suspend even though
+            // this aborts whatever statement is in flight — releasing the app-group file lock is
+            // what avoids the 0xdead10cc kill. The caller retries on its next update.
+            suspend()
+        }
     }
 
     private var lifecycleWantsSuspension: Bool {
@@ -290,6 +298,9 @@ public final class AppDatabaseSuspension {
     /// This is what `LifecycleManager.didEnterBackground` calls rather than `suspend()`: work under
     /// `performProtectedWork` holds a background task, so the process is not about to be frozen, and
     /// suspending outright would abort the very write the transition used to kill the app for.
+    /// A background launch arms suspension the same way: the app icon shortcuts' entity read is
+    /// already under way as protected work by then, and suspending outright interrupted it
+    /// mid-statement, which published bare entity ids as the shortcut titles.
     ///
     /// The intent is recorded either way, so deferring is not forgetting: whichever access finishes
     /// last reads it back through `endProtectedAccess(suspend:)` and suspends then. Dropping it

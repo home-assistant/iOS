@@ -5,6 +5,21 @@ import Testing
 
 struct ServerSwitchingSettingsViewTests {
     @MainActor
+    @Test func searchIndexesNothingWithASingleServer() {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+
+        Current.servers = FakeServerManager(initial: 1)
+        #expect(ServerSwitchingSettingsView.settingsSearchEntries.isEmpty)
+
+        Current.servers = FakeServerManager(initial: 2)
+        let titles = ServerSwitchingSettingsView.settingsSearchEntries.map(\.title)
+        #expect(titles.contains(L10n.Settings.ServerSwitching.AutomaticSwitching.title))
+        #expect(titles.contains(L10n.Settings.ServerSwitching.ByLocation.title))
+        #expect(!titles.contains(L10n.SettingsDetails.General.Restoration.title))
+    }
+
+    @MainActor
     @Test func serverSwitchingScreen() async throws {
         let previousServers = Current.servers
         defer { Current.servers = previousServers }

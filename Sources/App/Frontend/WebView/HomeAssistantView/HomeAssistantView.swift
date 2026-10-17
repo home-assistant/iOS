@@ -5,14 +5,12 @@ import UIKit
 struct HomeAssistantView: View, WebFrontendView {
     private enum Constants {
         static let launchMessagesFallbackDelay: TimeInterval = 2
-        static let macSidebarWidth: CGFloat = 240
     }
 
     @StateObject private var viewModel: HomeAssistantViewModel
     /// What's-New / TestFlight sheets are owned here so they can only ever present over the web
     /// frontend, never over onboarding.
     @StateObject private var launchMessages = LaunchMessagesState()
-    @ObservedObject private var nativeSidebar = MacNativeSidebarState.shared
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
     @ObservedObject private var appLabs = Current.appLabs
 
@@ -37,7 +35,7 @@ struct HomeAssistantView: View, WebFrontendView {
     /// The themed status-bar strip keeps the last frontend-provided colour until WebKit sends a new update.
     private var themedStatusBar: some View {
         GeometryReader { proxy in
-            if let color = viewModel.overlayState.statusBarColor {
+            if let color = viewModel.overlayState.statusBarColor, showsThemedStatusBar {
                 Color(uiColor: color)
                     .frame(height: proxy.safeAreaInsets.top)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -60,25 +58,12 @@ struct HomeAssistantView: View, WebFrontendView {
             }
             // The frontend chrome keeps one structural identity whichever App Labs layout is on, so its
             // appear/disappear fades never race each other when a layout is toggled.
-            HStack(spacing: 0) {
-                if nativeSidebar.isEnabled, nativeSidebar.isVisible {
-                    MacSidebarView(viewModel: viewModel.sidebar)
-                        .frame(width: Constants.macSidebarWidth)
-                        .transition(.move(edge: .leading))
-                    Divider()
-                        .ignoresSafeArea()
-                }
-                frontendContent
-            }
-            .animation(reduceMotion ? nil : DesignSystem.Animation.easeInOutFaster, value: nativeSidebar.isVisible)
+            frontendContent
         }
-        .onChange(of: nativeSidebar.isEnabled) { _ in
+        .onChange(of: nativeTabBar.isEnabled) { _ in
             // The frontend reads the `hasSidebar` external config once per page load, so a fresh web
             // view is what applies the new value. Reloading in place keeps the fade/loader state
             // consistent, unlike swapping the frontend's structural identity.
-            viewModel.resetWebFrontend()
-        }
-        .onChange(of: nativeTabBar.isEnabled) { _ in
             viewModel.resetWebFrontend()
         }
         .onChange(of: AppLabsFeature.nativeMoreInfo.isEnabled(in: appLabs.enabledFeatureIds)) { _ in
@@ -90,6 +75,12 @@ struct HomeAssistantView: View, WebFrontendView {
     /// With the tab bar on, the web view is hosted by the selected tab instead of `frontendContent`.
     private var isNativeTabBarActive: Bool {
         nativeTabBar.isEnabled
+    }
+
+    /// The strip belongs to the frontend: over a native tab it would cover the bar items that share the
+    /// status bar's row on wide screens.
+    private var showsThemedStatusBar: Bool {
+        !isNativeTabBarActive || viewModel.tabBar.showsFrontend
     }
 
     private var frontendContent: some View {

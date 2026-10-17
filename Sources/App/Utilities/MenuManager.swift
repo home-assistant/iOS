@@ -275,18 +275,6 @@ class MenuManager {
         ))
 
         #if targetEnvironment(macCatalyst)
-        if AppLabsFeature.macNativeSidebar.isEnabled {
-            commands.append(UIKeyCommand(
-                title: Current.settingsStore.macNativeSidebarVisible
-                    ? L10n.Menu.View.hideSidebar
-                    : L10n.Menu.View.showSidebar,
-                image: nil,
-                action: #selector(toggleNativeSidebar),
-                input: "s",
-                modifierFlags: [.command, .control]
-            ))
-        }
-
         commands.append(UICommand(
             title: L10n.Menu.View.customizeToolbar,
             image: nil,
@@ -360,8 +348,8 @@ class MenuManager {
 
         Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
             isVisible: Current.settingsStore.locationVisibility.isStatusItemVisible,
-            image: Asset.statusItemIcon.image.cgImage!,
-            imageSize: Asset.statusItemIcon.image.size,
+            imageName: Asset.statusItemIcon.name,
+            imageBundle: Bundle(for: AppEnvironment.self),
             accessibilityLabel: appName,
             items: menuItems,
             primaryActionHandler: { callbackInfo in
@@ -384,7 +372,6 @@ class MenuManager {
     @objc private func updateSensors() {}
     @objc private func showFindInteraction() {}
     @objc private func customizeToolbar() {}
-    @objc private func toggleNativeSidebar() {}
 }
 
 #if targetEnvironment(macCatalyst)
@@ -532,8 +519,8 @@ final class StatusItemManager {
 
         Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
             isVisible: Current.settingsStore.locationVisibility.isStatusItemVisible,
-            image: Asset.statusItemIcon.image.cgImage!,
-            imageSize: Asset.statusItemIcon.image.size,
+            imageName: Asset.statusItemIcon.name,
+            imageBundle: Bundle(for: AppEnvironment.self),
             accessibilityLabel: appName,
             items: menuItems,
             primaryActionHandler: { callbackInfo in

@@ -44,6 +44,16 @@ public struct Pipeline: Codable {
         self.wakeWordEntity = wakeWordEntity
         self.wakeWordId = wakeWordId
     }
+
+    /// Whether the server can transcribe audio sent to this pipeline.
+    public var supportsSpeechToText: Bool {
+        !(sttEngine?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "").isEmpty
+    }
+
+    /// Whether the server can speak this pipeline's replies.
+    public var supportsTextToSpeech: Bool {
+        !(ttsEngine?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "").isEmpty
+    }
 }
 
 /// The Assist pipelines available for a server, saved in database. The initializer that maps the

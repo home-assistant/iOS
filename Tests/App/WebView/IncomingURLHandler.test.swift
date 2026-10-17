@@ -1,3 +1,4 @@
+import GRDB
 @testable import HomeAssistant
 @testable import Shared
 import Testing
@@ -15,6 +16,22 @@ struct IncomingURLHandlerTests {
         let coordinator = MockAppCoordinator()
         let handler = IncomingURLHandler(coordinator: coordinator)
         try body(server, coordinator, handler)
+    }
+
+    private func withAppIconShortcutConfig(item: MagicItem, _ body: () throws -> Void) throws {
+        let database = try DatabaseQueue()
+        for table in DatabaseQueue.tables() {
+            try table.createIfNeeded(database: database)
+        }
+        try database.write { db in
+            try AppIconShortcutConfig(items: [item]).save(db)
+        }
+
+        let previousDatabase = Current.database
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        try body()
     }
 
     @Test func cameraDeeplinkOpensTheMoreInfoDialog() throws {
@@ -54,6 +71,31 @@ struct IncomingURLHandlerTests {
             #expect(!coordinator.showSettingsPushedOntoNavigationStack)
             #expect(coordinator.openedDeeplinks.isEmpty)
             #expect(coordinator.openedDeeplinksSelectingServer.isEmpty)
+        }
+    }
+
+    @Test func appIconShortcutNavigateStripsLeadingSlash() throws {
+        try withFakeServer { server, coordinator, handler in
+            let item = MagicItem(
+                id: "light.input_test",
+                serverId: server.identifier.rawValue,
+                type: .entity,
+                action: .navigate("/ios-input-test/0")
+            )
+
+            try withAppIconShortcutConfig(item: item) {
+                let shortcutItem = UIApplicationShortcutItem(
+                    type: "appIconShortcut.\(item.serverId)|\(item.type.rawValue)|\(item.id)",
+                    localizedTitle: "Input test"
+                )
+
+                try handler.handle(shortcutItem: shortcutItem).wait()
+
+                let routedURLString = try #require(coordinator.openedDeeplinksSelectingServer.first)
+                let components = try #require(URLComponents(string: routedURLString))
+                #expect(components.path == "/ios-input-test/0")
+                #expect(coordinator.openedDeeplinks.isEmpty)
+            }
         }
     }
 }

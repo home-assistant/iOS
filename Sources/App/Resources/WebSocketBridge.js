@@ -1,3 +1,105 @@
+// Every CSS custom property the current theme resolves to, so native screens can be drawn in the
+// user's colours. The names are discovered rather than hardcoded: a theme is free to declare
+// properties the app has never heard of, and the ones the frontend itself declares move between
+// releases. Two sources cover both -- the frontend applies the selected theme by setting properties
+// inline on <html>, and its own defaults are declared by the document's stylesheets.
+const collectThemeVariableNames = () => {
+    const names = new Set();
+
+    const inlineStyle = document.documentElement.style;
+    for (let i = 0; i < inlineStyle.length; i++) {
+        const name = inlineStyle.item(i);
+        if (name.startsWith('--')) {
+            names.add(name);
+        }
+    }
+
+    const collectFromRules = (rules, depth) => {
+        // @media / @supports blocks nest the dark-theme declarations one level down. The bound is
+        // paranoia about a pathological stylesheet, not a shape the frontend actually produces.
+        if (depth > 8) {
+            return;
+        }
+        for (const rule of Array.from(rules)) {
+            if (rule.style) {
+                for (let i = 0; i < rule.style.length; i++) {
+                    const name = rule.style.item(i);
+                    if (name.startsWith('--')) {
+                        names.add(name);
+                    }
+                }
+            }
+            if (rule.cssRules) {
+                collectFromRules(rule.cssRules, depth + 1);
+            }
+        }
+    };
+
+    for (const sheet of Array.from(document.styleSheets)) {
+        try {
+            // Reading cssRules throws for a cross-origin stylesheet; skip it rather than lose the rest.
+            if (sheet.cssRules) {
+                collectFromRules(sheet.cssRules, 0);
+            }
+        } catch (error) {
+            continue;
+        }
+    }
+
+    return Array.from(names).sort();
+};
+
+// Resolve every name to its computed value, plus a canonical colour when it is one.
+//
+// A probe element per property, all measured after they are in the document, keeps this to a single
+// style recalculation: setting and reading one shared element per property would force a synchronous
+// recalc for each of the several hundred of them.
+const resolveThemeVariables = (names) => {
+    const computedRoot = getComputedStyle(document.documentElement);
+
+    const container = document.createElement('div');
+    container.style.display = 'none';
+    document.body.appendChild(container);
+
+    const probes = names.map(name => {
+        const probe = document.createElement('div');
+        // background-color keeps the value only if it parses as a colour, so the computed result is
+        // both the canonical rgb/rgba representation and the test for whether this is a colour at all.
+        probe.style.backgroundColor = 'var(' + name + ')';
+        container.appendChild(probe);
+        return probe;
+    });
+
+    try {
+        return names.map((name, index) => {
+            const value = computedRoot.getPropertyValue(name).trim();
+            const computedColor = getComputedStyle(probes[index]).getPropertyValue('background-color');
+            // rgba(0, 0, 0, 0) is also what an unparseable value falls back to, so a genuinely
+            // transparent property is told apart by its own declared value.
+            const isColor = computedColor !== 'rgba(0, 0, 0, 0)' || value === 'transparent';
+            return {
+                name: name,
+                value: value,
+                color: isColor ? computedColor : null,
+            };
+        }).filter(variable => variable.value.length > 0 || variable.color !== null);
+    } finally {
+        // The probes must come back out even if reading one threw, or every theme change would leave
+        // several hundred more of them behind in the document.
+        document.body.removeChild(container);
+    }
+};
+
+// The frontend knows which appearance it resolved the theme in; the app would otherwise have to infer
+// it from the system trait, which is wrong whenever the user pins the frontend to light or dark.
+const currentThemeSettings = () => {
+    const themes = document.querySelector('home-assistant')?.hass?.themes;
+    return {
+        themeName: themes?.theme ?? null,
+        darkMode: themes?.darkMode ?? null,
+    };
+};
+
 const notifyThemeColors = () => {
     function doWait() {
         var colors = {};
@@ -21,6 +123,21 @@ const notifyThemeColors = () => {
         document.body.removeChild(element);
 
         window.webkit.messageHandlers.updateThemeColors.postMessage(colors);
+
+        try {
+            const settings = currentThemeSettings();
+            window.webkit.messageHandlers.updateThemeVariables.postMessage({
+                themeName: settings.themeName,
+                darkMode: settings.darkMode,
+                variables: resolveThemeVariables(collectThemeVariableNames()),
+            });
+        } catch (error) {
+            // The five colours above are what the status bar needs and they are already sent; the full
+            // set is an enhancement, so a failure here must not take them down with it.
+            window.webkit.messageHandlers.logError.postMessage({
+                "message": JSON.stringify('failed to collect theme variables: ' + error),
+            });
+        }
     }
     // wait a short amount for the computed styles to change
     setTimeout(doWait, 100);

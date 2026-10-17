@@ -255,9 +255,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        // Fires when the user swipes the app away while it is running in the background:
-        // deliver the force-close warning immediately (see ForceCloseWarningManager).
         Current.forceCloseWarningManager.postImmediateWarning()
+        // This prevents users from getting stuck on a page without a way to recover
+        if !Current.isCatalyst {
+            Current.settingsStore.lastActiveURLPath = nil
+        }
     }
 
     func application(
@@ -454,8 +456,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupModels() {
-        // Import any legacy Realm data into GRDB before anything reads it
-        RealmToGRDBMigration.migrateIfNeeded()
         NotificationCategory.setupObserver()
         // Start the server-state subscriptions that keep GRDB models in sync
         // (zones via the states cache); without this, appZone is never populated
@@ -496,7 +496,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupUIApplicationShortcutItems() {
-        AppIconShortcutItemsUpdater.update()
+        AppIconShortcutItemsUpdater.start()
     }
 
     private func migrateIfNeeded() {

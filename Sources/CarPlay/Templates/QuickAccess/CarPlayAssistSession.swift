@@ -1012,6 +1012,10 @@ final class CarPlayAssistSession: NSObject {
         guard shouldHandle else { return }
 
         cancelResponseWatchdog()
+        // The run can fail while the microphone is still live — a rejected `assist_pipeline/run`
+        // arrives before speech-to-text ever ends — so the recorder has to be stopped here too,
+        // not only on the stt-end and stop paths.
+        audioRecorder.stopRecording()
         stopOnDeviceSpeech()
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil

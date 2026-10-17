@@ -54,16 +54,14 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                     // In-app path handles APNs (foreground willPresent already plays the sound and
                     // suppresses the banner; background shows the system banner). Alerting is owned
                     // there, so the ActivityKit alert is only used on the local-push drain path.
-                    let presented = try await Current.liveActivityRegistry?.startOrUpdate(
+                    _ = try await Current.liveActivityRegistry?.startOrUpdate(
                         tag: request.tag,
                         title: request.title,
                         serverWebhookId: request.serverWebhookId,
                         state: request.state,
+                        relevanceScore: request.relevanceScore,
                         alert: false
                     )
-                    if presented == true {
-                        LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
-                    }
                     seal.fulfill(())
                 } catch {
                     Current.Log.error("HandlerStartOrUpdateLiveActivity: \(error)")
@@ -99,9 +97,24 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             title: title,
             serverWebhookId: payload["webhook_id"] as? String,
             state: contentState(from: payload),
-            confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String,
+            relevanceScore: relevanceScore(from: payload),
             alert: (payload["silent"] as? Bool) != true
         )
+    }
+
+    static func relevanceScore(from payload: [String: Any]) -> Double? {
+        let raw: Double?
+        switch payload["relevance_score"] {
+        case let number as NSNumber:
+            guard CFGetTypeID(number) != CFBooleanGetTypeID() else { return nil }
+            raw = number.doubleValue
+        case let string as String:
+            raw = Double(string.trimmingCharacters(in: .whitespaces))
+        default:
+            raw = nil
+        }
+        guard let raw, raw.isFinite else { return nil }
+        return min(max(raw, 0), 1)
     }
 
     // MARK: - Privacy Disclosure

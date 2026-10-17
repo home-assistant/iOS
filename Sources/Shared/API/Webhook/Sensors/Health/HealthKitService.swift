@@ -133,7 +133,7 @@ public struct HealthKitService {
     /// The read types behind the metrics the user turned on. Enablement is an allowlist, so a metric
     /// nobody switched on is simply absent and never gets asked for.
     private static func enabledReadTypes() -> Set<HKObjectType> {
-        readTypes(for: HealthKitMetric.all.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) })
+        readTypes(for: HealthKitMetric.all.filter { Current.sensors.isEnabledForAnyServer(uniqueID: $0.uniqueID) })
     }
 
     private static func readTypes(for metrics: [HealthKitMetric]) -> Set<HKObjectType> {

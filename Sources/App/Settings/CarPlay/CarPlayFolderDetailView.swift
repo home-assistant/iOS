@@ -74,7 +74,7 @@ struct CarPlayFolderDetailView: View {
         .sheet(isPresented: $showEditFolder) {
             if let folder {
                 NavigationView {
-                    FolderEditView(folder: folder, usesDarkColorScheme: false) { updatedFolder in
+                    FolderEditView(folder: folder) { updatedFolder in
                         viewModel.updateFolder(updatedFolder)
                     }
                 }

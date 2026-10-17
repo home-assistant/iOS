@@ -6,6 +6,7 @@ import WebKit
 enum WKUserContentControllerMessage: String, CaseIterable {
     case externalBus
     case updateThemeColors
+    case updateThemeVariables
     case getExternalAuth
     case revokeExternalAuth
     case logError
@@ -13,8 +14,21 @@ enum WKUserContentControllerMessage: String, CaseIterable {
 }
 
 final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
+    /// External bus messages held while the app is in the background and handed over once it is active,
+    /// rather than dropped. The frontend waits for its `config/get` reply before it asks for a token, so a
+    /// page that loads in the background never connects without it, and the connection reports are what
+    /// take the stand-by loader down.
+    private static let externalBusMessagesDeferredInBackground: Set<WebViewExternalBusMessage> = [
+        .configGet,
+        .connectionStatus,
+        .frontendLoaded,
+    ]
+
     weak var webView: WebViewControllerProtocol?
     var isAppInBackground: @MainActor () -> Bool = { UIApplication.shared.applicationState == .background }
+
+    private var deferredExternalBusMessages: [[String: Any]] = []
+    private var deferredGetExternalAuth: [String: Any]?
 
     @MainActor func userContentController(
         _ userContentController: WKUserContentController,
@@ -33,25 +47,31 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
     @MainActor func handle(messageName: String, messageBody: [String: Any]) {
         guard !isAppInBackground() else {
-            Current.Log.verbose("Ignoring WKUserContentController message \(messageName) because app is in background")
-            // The frontend caches the pending getExternalAuth promise and never asks again while it
-            // stays unsettled, so the callback must be rejected instead of dropped - otherwise the
-            // frontend can never reconnect until the web view is reloaded.
-            if WKUserContentControllerMessage(rawValue: messageName) == .getExternalAuth {
-                if let callbackName = messageBody["callback"] as? String {
-                    sendGetExternalAuthFailure(callbackName: callbackName)
-                } else {
-                    Current.Log.error("getExternalAuth message without a string callback name")
-                }
+            if let type = Self.typeDeferredInBackground(messageName: messageName, messageBody: messageBody) {
+                Current.Log.verbose("Deferring external bus message \(type) until app is active")
+                // Only the latest of each matters: an older page is gone, and an older connection report is stale.
+                deferredExternalBusMessages.removeAll { ($0["type"] as? String) == type }
+                deferredExternalBusMessages.append(messageBody)
+                return
             }
+            if WKUserContentControllerMessage(rawValue: messageName) == .getExternalAuth {
+                deferGetExternalAuth(messageBody)
+                return
+            }
+            Current.Log.verbose("Ignoring WKUserContentController message \(messageName) because app is in background")
             return
         }
+
+        // Anything held back while in the background was sent first, so it is handled first.
+        deliverDeferredMessages()
 
         switch WKUserContentControllerMessage(rawValue: messageName) {
         case .externalBus:
             handleExternalBus(messageBody)
         case .updateThemeColors:
             handleUpdateThemeColors(messageBody)
+        case .updateThemeVariables:
+            handleUpdateThemeVariables(messageBody)
         case .getExternalAuth:
             handleGetExternalAuth(messageBody)
         case .revokeExternalAuth:
@@ -83,9 +103,78 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
         webView?.webViewExternalMessageHandler.handleExternalMessage(messageBody)
     }
 
+    /// Hands over the external bus messages held back while the app was in the background, in the order the
+    /// frontend last sent each of them.
+    @MainActor func deliverDeferredMessages() {
+        guard !isAppInBackground() else { return }
+
+        if !deferredExternalBusMessages.isEmpty {
+            let messages = deferredExternalBusMessages
+            deferredExternalBusMessages = []
+            Current.Log.info("Delivering \(messages.count) external bus messages received in the background")
+            for message in messages {
+                handleExternalBus(message)
+            }
+        }
+
+        if let getExternalAuth = deferredGetExternalAuth {
+            deferredGetExternalAuth = nil
+            Current.Log.info("Answering getExternalAuth received in the background")
+            handleGetExternalAuth(getExternalAuth)
+        }
+    }
+
+    private func deferGetExternalAuth(_ messageBody: [String: Any]) {
+        guard messageBody["callback"] is String else {
+            Current.Log.error("getExternalAuth message without a string callback name")
+            return
+        }
+        Current.Log.verbose("Deferring getExternalAuth until app is active")
+        let force = (deferredGetExternalAuth?["force"] as? Bool ?? false) || (messageBody["force"] as? Bool ?? false)
+        var latest = messageBody
+        latest["force"] = force
+        deferredGetExternalAuth = latest
+    }
+
+    private static func typeDeferredInBackground(messageName: String, messageBody: [String: Any]) -> String? {
+        guard WKUserContentControllerMessage(rawValue: messageName) == .externalBus,
+              let type = messageBody["type"] as? String,
+              let message = WebViewExternalBusMessage(rawValue: type),
+              externalBusMessagesDeferredInBackground.contains(message) else {
+            return nil
+        }
+        return type
+    }
+
     /// Updates the theme colors based on the message body.
     private func handleUpdateThemeColors(_ messageBody: [String: Any]) {
         handleThemeUpdate(messageBody)
+    }
+
+    /// Persists the whole set of CSS custom properties the frontend resolved, so native screens can be
+    /// drawn in the user's configured colors. Separate from `updateThemeColors`, which carries only the
+    /// handful the status bar needs and is what keeps that path working if this one ever fails.
+    private func handleUpdateThemeVariables(_ messageBody: [String: Any]) {
+        guard let server = webView?.server, let traitCollection = webView?.traitCollection else {
+            Current.Log.error("Received theme variables with no web view to attribute them to")
+            return
+        }
+        let serverId = server.identifier.rawValue
+        guard let capture = FrontendThemeCaptureMessage(
+            messageBody: messageBody,
+            serverId: serverId,
+            fallbackAppearance: traitCollection.userInterfaceStyle == .dark ? .dark : .light,
+            capturedAt: Current.date()
+        ) else {
+            Current.Log.error("Received a theme variables message with nothing worth storing")
+            return
+        }
+
+        // Several hundred rows in one transaction is too much to put on the main thread, and it can
+        // straddle a backgrounding, so it goes through the protected-work path like the other bulk writes.
+        AppDatabaseSuspension.performProtectedWork(named: .frontendThemeSave) {
+            Current.frontendTheme().store(capture.variables, for: serverId, appearance: capture.appearance)
+        }
     }
 
     /// Retrieves an authentication token for the web view and invokes a JavaScript callback with the result.

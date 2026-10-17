@@ -28,12 +28,20 @@ final class WatchDeviceEntitiesViewModel: ObservableObject {
         Self.loadQueue.async { [weak self] in
             // Every entity of the device, not just the ones in the area the user came from: an
             // entity can override its device's area, and this screen is about the device.
+            // Child devices count as part of their parent, matching how core resolves a device
+            // target to its children's entities.
             WatchEntitySections.make(
                 serverId: serverId,
-                isIncluded: { _, device in device?.deviceId == deviceId }
+                isIncluded: { _, device in
+                    device?.deviceId == deviceId || device?.parentDeviceId == deviceId
+                }
             ) { sections in
+                let scoped = WatchEntitySections(
+                    controls: sections.controls.flatteningGroup(deviceId: deviceId),
+                    sensors: sections.sensors.flatteningGroup(deviceId: deviceId)
+                )
                 DispatchQueue.main.async { [weak self] in
-                    self?.sections = sections
+                    self?.sections = scoped
                     self?.isLoading = false
                 }
             }

@@ -2,7 +2,7 @@ import Foundation
 import Shared
 
 /// External Bus message types used by the web view integration.
-/// - See: Home Assistant External Bus docs: https://developers.home-assistant.io/docs/frontend/external-bus
+/// - See: Home Assistant External Bus docs: https://contributors.home-assistant.io/frontend/reference/external-bus/
 /// - See: Frontend implementation:
 /// https://github.com/home-assistant/frontend/blob/dev/src/external_app/external_messaging.ts
 enum WebViewExternalBusMessage: String, CaseIterable {
@@ -47,7 +47,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
-            "hasSidebar": AppLabsFeature.macNativeSidebar.isEnabled || AppLabsFeature.iosNativeTabBar.isEnabled,
+            "hasSidebar": AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
             "hasMatterStatusReport": Current.matter.isAvailable,
@@ -67,13 +67,6 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasNativeModal": AppLabsFeature.nativeMoreInfo.isEnabled,
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
-            "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
-                if #available(iOS 18, *), !Current.isCatalyst {
-                    return ToastPresenter.toastComponentVersion
-                } else {
-                    return -1
-                }
-            }(),
         ]
     }
 }

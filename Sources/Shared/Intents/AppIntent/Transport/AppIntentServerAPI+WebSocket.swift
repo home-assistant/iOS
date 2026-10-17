@@ -14,15 +14,36 @@ extension AppIntentServerAPI {
         data: [String: Any],
         returnResponse: Bool
     ) async throws -> CallServiceResponse {
-        try await haConnection(for: server)
-            .send(.callService(
-                domain: domain,
-                service: service,
-                serviceData: data,
-                returnResponse: returnResponse
-            ))
-            .promise
-            .asyncValue()
+        try await callActionViaWebSocket(
+            on: haConnection(for: server),
+            domain: domain,
+            service: service,
+            data: data,
+            returnResponse: returnResponse,
+            timeout: requestTimeout
+        )
+    }
+
+    static func callActionViaWebSocket(
+        on connection: HAConnection,
+        domain: String,
+        service: String,
+        data: [String: Any],
+        returnResponse: Bool,
+        timeout: TimeInterval
+    ) async throws -> CallServiceResponse {
+        let request = connection.send(.callService(
+            domain: domain,
+            service: service,
+            serviceData: data,
+            returnResponse: returnResponse
+        ))
+        do {
+            return try await request.promise.asyncValue(timeout: timeout)
+        } catch {
+            request.cancel()
+            throw error
+        }
     }
 
     static func renderTemplateViaWebSocket(server: Server, template: String) async throws -> String {

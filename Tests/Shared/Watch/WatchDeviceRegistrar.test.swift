@@ -288,13 +288,17 @@ struct WatchDeviceRegistrarTests {
         let systemName = Current.device.systemName
         let systemVersion = Current.device.systemVersion
         let identifierForVendor = Current.device.identifierForVendor
+        // The integration device ID is kept from its first read, so the stored one is set aside for the test.
+        let storedIntegrationDeviceID = Current.settingsStore.prefs.string(forKey: SettingsStore.integrationDeviceIDKey)
         defer {
             Current.device.deviceName = deviceName
             Current.device.systemModel = systemModel
             Current.device.systemName = systemName
             Current.device.systemVersion = systemVersion
             Current.device.identifierForVendor = identifierForVendor
+            Current.settingsStore.prefs.set(storedIntegrationDeviceID, forKey: SettingsStore.integrationDeviceIDKey)
         }
+        Current.settingsStore.prefs.removeObject(forKey: SettingsStore.integrationDeviceIDKey)
         Current.device.deviceName = { "Apple Watch" }
         Current.device.systemModel = { "Watch7,1" }
         Current.device.systemName = { "watchOS" }

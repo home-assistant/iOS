@@ -121,6 +121,6 @@ public enum WatchWebhookClient {
     /// The real transport, shared with every other server request (and relayed through the iPhone
     /// on watchOS when it's reachable).
     public static func perform(_ request: URLRequest, server: Server) async throws -> (Data, HTTPURLResponse) {
-        try await ServerRequestPerformer.perform(request, server: server)
+        try await ServerRequestPerformer.perform(request, server: server, priority: .background)
     }
 }

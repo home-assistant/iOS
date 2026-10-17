@@ -116,9 +116,17 @@ public final class KioskModeManager: ObservableObject {
         guard settings.enabled != lastSyncedKioskEnabled else { return }
         lastSyncedKioskEnabled = settings.enabled
 
+        let servers = Current.servers.all
         for sensorId in [WebhookSensorId.kioskBrightness, .kioskVolume, .kioskScreensaver] {
-            guard Current.sensors.isEnabled(uniqueID: sensorId.rawValue) != settings.enabled else { continue }
-            Current.sensors.setEnabled(settings.enabled, forUniqueID: sensorId.rawValue)
+            // Every server is checked rather than any one of them: a selection that differs between
+            // servers already satisfies "any", and skipping on that would leave behind the servers
+            // that disagree.
+            guard servers.contains(where: {
+                Current.sensors.isEnabled(uniqueID: sensorId.rawValue, for: $0) != settings.enabled
+            }) else { continue }
+            // Kiosk mode is a property of the device rather than of one server, so its own sensors
+            // follow it everywhere the device reports.
+            Current.sensors.setEnabledForAllServers(settings.enabled, forUniqueID: sensorId.rawValue)
         }
     }
 }

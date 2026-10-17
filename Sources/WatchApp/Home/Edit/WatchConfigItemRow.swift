@@ -27,12 +27,16 @@ struct WatchConfigItemRow: View {
         )
     }
 
+    /// Mirrors the home rows: a folder keeps the color it was given, an Assist item falls back to the
+    /// app's tint, and anything else shows a color only when the user picked one.
     private var iconColor: UIColor {
-        if let hex = itemInfo.customization?.iconColor {
-            .init(hex: hex)
-        } else {
-            .white
+        if item.type == .folder {
+            return itemInfo.customization?.iconColor.map { UIColor(hex: $0) } ?? .white
         }
+        if let hex = itemInfo.customization?.customIconColor {
+            return .init(hex: hex)
+        }
+        return item.isAssist ? .haPrimary : .white
     }
 
     private var textColor: Color {

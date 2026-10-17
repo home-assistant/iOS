@@ -24,12 +24,14 @@ struct HomeAssistantStandByView: View {
 
     private let delayedSettingsButtonDelay: Duration
     private let cleanCacheButtonDelay: Duration
-    /// Animates the content fading in on appear (and the move between loading and empty state). `nil`
-    /// renders the settled state straight away, which is what a snapshot needs: the fade is driven
-    /// frame by frame, and a test window gets no frames.
+    /// Animates the content fading in on appear, the delayed loader buttons appearing, and the move
+    /// between loading and empty state. `nil` renders the settled state straight away, which is what a
+    /// snapshot needs: the fade is driven frame by frame, and a test window gets no frames.
     private let contentFadeAnimation: Animation?
 
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
+
+    @Environment(\.layoutDirection) private var layoutDirection
 
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
@@ -74,13 +76,27 @@ struct HomeAssistantStandByView: View {
         showsEmptyState ? WebViewEmptyStateIcon.logoSize : LaunchSplashOverlayView.Constants.splashLogoSize
     }
 
-    private func contentOffset(safeAreaInsets: EdgeInsets) -> CGFloat {
-        guard !showsEmptyState else { return 0 }
-        // The splash logo sits at an offset from the full-screen center while this content is laid
-        // out inside the safe area; shift by the safe-area asymmetry plus the splash offset so the
-        // two logos coincide.
-        return (safeAreaInsets.bottom - safeAreaInsets.top) / 2
-            + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+    static func contentOffset(
+        safeAreaInsets: EdgeInsets,
+        layoutDirection: LayoutDirection,
+        showsEmptyState: Bool
+    ) -> CGSize {
+        // Widened by the horizontal inset asymmetry (iPhone Duo camera or vertical bar), then shifted by
+        // half of it, so it is centered on the whole display and keeps its usual side margins.
+        let horizontal = SafeAreaCenteringOffset.horizontal(
+            safeAreaInsets: safeAreaInsets,
+            layoutDirection: layoutDirection
+        )
+        // The empty state is anchored to the top of the vertical safe area, under its header, so it
+        // only takes the horizontal correction.
+        guard !showsEmptyState else { return CGSize(width: horizontal, height: 0) }
+        // The splash logo sits at an offset from the full-screen center; add the vertical safe-area
+        // asymmetry plus the splash offset so the two logos coincide.
+        return CGSize(
+            width: horizontal,
+            height: SafeAreaCenteringOffset.vertical(safeAreaInsets: safeAreaInsets)
+                + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset
+        )
     }
 
     init(
@@ -115,7 +131,15 @@ struct HomeAssistantStandByView: View {
             content(safeAreaInsets: proxy.safeAreaInsets)
         }
         .overlay(alignment: .bottom) {
-            ohfBrandingFooter
+            GeometryReader { proxy in
+                ohfBrandingFooter
+                    .offset(x: Self.contentOffset(
+                        safeAreaInsets: proxy.safeAreaInsets,
+                        layoutDirection: layoutDirection,
+                        showsEmptyState: showsEmptyState
+                    ).width)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            }
         }
         .onDisappear(perform: ohfBranding.markStandByDismissed)
     }
@@ -147,7 +171,12 @@ struct HomeAssistantStandByView: View {
     }
 
     private func content(safeAreaInsets: EdgeInsets) -> some View {
-        VStack(spacing: DesignSystem.Spaces.three) {
+        let contentOffset = Self.contentOffset(
+            safeAreaInsets: safeAreaInsets,
+            layoutDirection: layoutDirection,
+            showsEmptyState: showsEmptyState
+        )
+        return VStack(spacing: DesignSystem.Spaces.three) {
             iconView
             if let emptyState {
                 WebViewEmptyStateMessage(
@@ -161,6 +190,7 @@ struct HomeAssistantStandByView: View {
             }
         }
         .padding(.horizontal, DesignSystem.Spaces.three)
+        .padding(.horizontal, -abs(contentOffset.width))
         .padding(.top, showsEmptyState ? DesignSystem.Spaces.five : 0)
         .frame(
             maxWidth: .infinity,
@@ -183,7 +213,7 @@ struct HomeAssistantStandByView: View {
                     .transition(.opacity)
             }
         }
-        .offset(y: contentOffset(safeAreaInsets: safeAreaInsets))
+        .offset(contentOffset)
         .opacity(standByContentOpacity)
         // Sits in front of the background colour but behind the content, so swipes over empty areas reach it
         // while buttons keep priority.
@@ -208,12 +238,16 @@ struct HomeAssistantStandByView: View {
                     showsErrorDetailsButton: canShowErrorDetailsButton(for: emptyState),
                     settingsAction: emptyState.settingsAction,
                     serverSelectionAction: selectServer,
-                    dismissAction: emptyState.dismissAction
+                    dismissAction: emptyState.dismissAction,
+                    // The accessories stay at the safe-area edges (shifting them would push one under
+                    // the vertical bar); only the picker follows the display-centered logo below it.
+                    serverSelectionHorizontalOffset: contentOffset.width
                 )
                 .opacity(contentOpacity)
             }
         }
         .safeAreaInset(edge: .bottom) {
+            // Same horizontal shift as the logo and message, so the bottom actions line up with them.
             if let emptyState {
                 WebViewEmptyStateActionButtons(
                     style: emptyState.style,
@@ -225,9 +259,13 @@ struct HomeAssistantStandByView: View {
                     reauthAction: emptyState.reauthAction,
                     clientCertificateAction: emptyState.clientCertificateAction
                 )
+                .padding(.horizontal, -abs(contentOffset.width))
+                .offset(x: contentOffset.width)
                 .opacity(contentOpacity)
             } else if showsCleanCacheAndReloadButton {
                 cleanCacheButton
+                    .padding(.horizontal, -abs(contentOffset.width))
+                    .offset(x: contentOffset.width)
                     .transition(.opacity)
             }
         }
@@ -298,12 +336,12 @@ struct HomeAssistantStandByView: View {
         guard !showsEmptyState else { return }
         try? await Task.sleep(for: delayedSettingsButtonDelay)
         guard !Task.isCancelled, !showsEmptyState else { return }
-        withAnimation(DesignSystem.Animation.default) {
+        withAnimation(contentFadeAnimation) {
             showsDelayedSettingsButton = true
         }
         try? await Task.sleep(for: max(.zero, cleanCacheButtonDelay - delayedSettingsButtonDelay))
         guard !Task.isCancelled, !showsEmptyState else { return }
-        withAnimation(DesignSystem.Animation.default) {
+        withAnimation(contentFadeAnimation) {
             showsCleanCacheButton = true
         }
     }
@@ -312,7 +350,7 @@ struct HomeAssistantStandByView: View {
         Button(action: cleanCacheAndReload) {
             Text(L10n.WebView.EmptyState.cleanCacheAndReloadButton)
         }
-        .buttonStyle(.primaryButton)
+        .buttonStyle(.glassButton)
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding(.horizontal, DesignSystem.Spaces.two)
         .padding(.top)
