@@ -110,16 +110,15 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
     }
 
-    /// Signing in to a server the app already has again keeps the device it has there, under the identity it was
-    /// registered with and the name the server knows it by, rather than adding a device or taking over one left to
-    /// another device. Returns whether that device is there to take over, which needs no name checked.
+    /// Signing in again to a server the app already has keeps the device it has there, under the identity it was
+    /// registered with and the name the server knows it by, rather than adding a device. Returns whether that device
+    /// is there to take over, which needs no name checked.
     ///
-    /// A server reached by an address typed in only reports which one it is once registered, and more than one can
-    /// answer at the same address, so the devices the server has tell which of those it is. A server known by its
-    /// instance ID keeps its identity even where its device is gone, such as after restoring an older backup of Home
-    /// Assistant: it is registered again under that identity. Other servers are not looked at: an identifier one is
-    /// registered with can be another device's on this server, such as the one this device left there when it
-    /// registered as a new device. A registration another device owns is left to it either way.
+    /// Only a server discovered with its instance ID is known to be one the app has before registering: taking a
+    /// device for a server it isn't, such as another home answering at the same address, would take over the
+    /// registration another device has there. A server known by its instance ID keeps its identity even where its
+    /// device is gone, such as after restoring an older backup of Home Assistant: it is registered again under that
+    /// identity. A registration another device owns is left to it either way.
     private func reuseRegistrationOfExistingServer(among registeredDevices: [RegisteredDevice]) -> Bool {
         let settings = Current.settingsStore
         let ownership = RegistrationOwnership()
@@ -128,13 +127,12 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
         let matches = registrations(of: candidates, among: registeredDevices)
 
-        // Servers can share an identity, such as ones registered before this device took a new identifier: they are
-        // one device on this server either way.
+        // A server saved more than once can share an identity, which is one device on this server either way.
         if matches.count == 1, let match = matches.first {
             adopt(match.key, named: match.value.name)
             return true
         }
-        if OnboardingAuth.knowsInstance(of: api.server), let existing = candidates.first {
+        if let existing = candidates.first {
             adopt(settings.registrationIdentity(for: existing), named: existing.info.setting(for: .overrideDeviceName))
         }
         return false
