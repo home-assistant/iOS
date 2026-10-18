@@ -39,8 +39,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                     // channel is never re-delivered to the main app. So instead of dropping the request,
                     // hand it off to the app via the App Group queue + a Darwin signal, mirroring
                     // HandlerClearNotification's end hand-off. The app drains it on the signal and at
-                    // launch/foreground. (Darwin can't wake a suspended app, so a local-push start only
-                    // materializes when the app is next active; real-time background starts need APNs.)
+                    // launch/foreground, and reports back through the confirm id carried in the request
+                    // so the extension can have the server re-send via APNs when the app can't show it.
                     if Current.isAppExtension {
                         Current.Log.verbose(
                             "HandlerStartOrUpdateLiveActivity: handing off start for tag \(request.tag) to the app"
@@ -98,6 +98,7 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             serverWebhookId: payload["webhook_id"] as? String,
             state: contentState(from: payload),
             relevanceScore: relevanceScore(from: payload),
+            confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String,
             alert: (payload["silent"] as? Bool) != true
         )
     }

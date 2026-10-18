@@ -84,6 +84,20 @@ final class NotificationsCommandManagerLiveActivityTests: XCTestCase {
 
     // MARK: - live_update: true data flag routing (Android-compat)
 
+    func testHandle_inAppExtension_forwardsLocalPushConfirmIDToHandler() {
+        Current.isAppExtension = true
+        defer { Current.isAppExtension = false }
+        _ = LiveActivityPendingStart.drainAll()
+        let payload: [AnyHashable: Any] = [
+            "hass_confirm_id": "confirm-1",
+            "homeassistant": ["live_update": true, "tag": "cmd-tag"],
+        ]
+        XCTAssertNoThrow(try hang(sut.handle(payload)))
+        let pending = LiveActivityPendingStart.drainAll()
+        XCTAssertEqual(pending.first?.tag, "cmd-tag")
+        XCTAssertEqual(pending.first?.confirmID, "confirm-1")
+    }
+
     func testHandle_liveActivityFlag_callsStartOrUpdate() {
         let payload = makePayload([
             "live_update": true,
