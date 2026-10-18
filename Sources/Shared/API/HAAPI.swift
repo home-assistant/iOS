@@ -859,7 +859,9 @@ public class HomeAssistantAPI {
         var eventData: [String: String] = sharedEventDeviceInfo
         eventData["tag_id"] = tagPath
         if server.info.version < .tagWebhookAvailable {
-            eventData["device_id"] = Current.settingsStore.integrationDeviceID
+            // The device the server knows this one as, not one it is still being registered as.
+            eventData["device_id"] = Current.settingsStore.registrationRecord(for: server.identifier).current?.deviceID
+                ?? Current.settingsStore.integrationDeviceID
         }
         return (eventType: "tag_scanned", eventData: eventData)
     }

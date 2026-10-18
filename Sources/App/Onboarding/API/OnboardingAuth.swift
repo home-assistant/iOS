@@ -61,6 +61,16 @@ class OnboardingAuth {
             // Registering records what it made under the identifier onboarding started with, which can be the
             // identifier of a server the app already has.
             let registrationBeforeOnboarding = Current.settingsStore.registrationRecord(for: api.server.identifier)
+            // Signing in to a server the app already has registers with the identity its registration has, rather
+            // than adding a device or taking over one left to another device. A server reached by an address typed
+            // in only reports which one it is once registered, too late to choose the identity.
+            if let existing = Self.existingServer(reachedBy: api.server, among: Current.servers.all),
+               existing.identifier != api.server.identifier {
+                Current.settingsStore.setRegistrationRecord(
+                    Current.settingsStore.registrationRecord(for: existing.identifier),
+                    for: api.server.identifier
+                )
+            }
 
             return firstly {
                 steps(.beforeRegister, .register, .afterRegister)
@@ -311,6 +321,20 @@ class OnboardingAuth {
         return Identifier<Server>(rawValue: instanceID)
     }
 
+    /// The server the app already has that onboarding reached again, before registering tells for certain: the one
+    /// with the instance ID it was discovered with, else one answering at one of the same addresses.
+    static func existingServer(reachedBy server: Server, among servers: [Server]) -> Server? {
+        if let existing = servers.first(where: {
+            $0.identifier == server.identifier || $0.info.instanceID == server.identifier.rawValue
+        }) {
+            return existing
+        }
+
+        let addresses = server.info.connection.hostAndPortIdentities
+        guard !addresses.isEmpty else { return nil }
+        return servers.first { !$0.info.connection.hostAndPortIdentities.isDisjoint(with: addresses) }
+    }
+
     private func undoConfigure(
         api: HomeAssistantAPI,
         persisted: Persisted?
@@ -350,6 +374,12 @@ class OnboardingAuth {
 }
 
 private extension ConnectionInfo {
+    /// Every `host:port` the server is reached at, at home or away.
+    var hostAndPortIdentities: Set<String> {
+        let urls = [address(for: .internal), address(for: .external)]
+        return Set(urls.compactMap { $0?.hostAndPortIdentity })
+    }
+
     init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails) {
         self.init(
             externalURL: discovered.externalURL,

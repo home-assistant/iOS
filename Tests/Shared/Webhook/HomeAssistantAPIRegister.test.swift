@@ -91,4 +91,19 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         XCTAssertEqual(record.current, pending)
         XCTAssertNil(record.pending)
     }
+
+    /// Older servers learn which device scanned a tag from the event itself, so it names the device the server knows
+    /// this one as, never one it is still being registered as.
+    func testTagEventsOnOlderServersNameTheDeviceTheServerKnows() {
+        let server = Server.fake { $0.version = Version(minor: 113) }
+        let api = HomeAssistantAPI(server: server)
+        XCTAssertEqual(api.tagEvent(tagPath: "tag").eventData["device_id"], Current.settingsStore.integrationDeviceID)
+
+        Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "cabin-device-id", ownerVendorID: "this-device"),
+            pending: RegistrationIdentity(deviceID: "unconfirmed-device-id", ownerVendorID: "this-device")
+        ), for: server.identifier)
+
+        XCTAssertEqual(api.tagEvent(tagPath: "tag").eventData["device_id"], "cabin-device-id")
+    }
 }
