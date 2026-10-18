@@ -301,9 +301,11 @@ final class HomeAssistantViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // The watchdog fires once per load, and in the background it can spend that on a frontend whose
-        // reports are being held back. A loader that is still up when its scene comes back gets another one.
+        // The watchdog fires once per load, and in the background or behind Assist it can spend that on a
+        // frontend whose reports are held back or that cannot render. A loader that is still up when the
+        // frontend is back on screen gets another one.
         overlayState.sceneReturnedFromBackground
+            .merge(with: overlayState.frontendUncovered)
             .sink { [weak self] in
                 self?.armLoaderWatchdog()
             }

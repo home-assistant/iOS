@@ -268,6 +268,22 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(externalMessageHandler.handledExternalMessages.map { $0["type"] as? String }, ["config/get"])
     }
 
+    /// A cold launch into Assist can load the page while the app is still in the background, and the scene may
+    /// already be active by the time Assist closes, so closing it has to hand those reports over too.
+    func testOverlayDismissalDeliversFrontendMessagesHeldInTheBackground() {
+        let sut = makeSUT()
+        let externalMessageHandler = MockWebViewExternalMessageHandler()
+        sut.webViewExternalMessageHandler = externalMessageHandler
+        let scriptMessageHandler = sut.webViewScriptMessageHandler
+        scriptMessageHandler.isAppInBackground = { true }
+        scriptMessageHandler.handle(messageName: "externalBus", messageBody: ["id": 1, "type": "config/get"])
+
+        scriptMessageHandler.isAppInBackground = { false }
+        sut.handleOverlayDismissed()
+
+        XCTAssertEqual(externalMessageHandler.handledExternalMessages.map { $0["type"] as? String }, ["config/get"])
+    }
+
     /// Only a return from the background tells the host: dismissing a system alert activates the scene without
     /// it having been away.
     func testBecomingActiveTellsTheHostOnlyWhenTheSceneReturnsFromTheBackground() {
@@ -1641,6 +1657,24 @@ final class WebViewControllerURLLoadingTests: XCTestCase {
 
         await sut.loadActiveURLTask?.value
         XCTAssertNil(sut.loadActiveURLTask)
+    }
+
+    /// Assist opened on a cold launch covers the frontend before it first appears, so the events that
+    /// normally load the page pass while it is hidden. Closing Assist must start the load and tell the host.
+    func testOverlayDismissalLoadsTheActiveURLAndTellsTheHost() async {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        var uncovered = 0
+        let subscription = overlayState.frontendUncovered.sink { uncovered += 1 }
+        defer { subscription.cancel() }
+
+        sut.handleOverlayDismissed()
+
+        XCTAssertEqual(websiteDataStoreHandler.cleanFrontendAssetCacheIfNeededCallCount, 1)
+        XCTAssertNotNil(sut.loadActiveURLTask)
+        XCTAssertEqual(uncovered, 1)
+        await sut.loadActiveURLTask?.value
     }
 
     func testLoadActiveURLDoesNothingWhileAppIsInBackground() {
