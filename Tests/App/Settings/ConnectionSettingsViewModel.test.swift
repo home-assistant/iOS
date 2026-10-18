@@ -294,6 +294,11 @@ struct ConnectionSettingsViewModelTests {
                     ownership: RegistrationOwnership(register: { registered.append($0) })
                 )
 
+                // Asking first registers nothing.
+                viewModel.confirmRegisteringAsNewDevice()
+                #expect(viewModel.isRegisterAsNewDeviceConfirmationPresented)
+                #expect(registered.isEmpty)
+
                 viewModel.startRegisteringAsNewDevice()
 
                 for _ in 0 ..< 100 where registered.isEmpty {

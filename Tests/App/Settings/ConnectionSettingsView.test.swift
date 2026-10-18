@@ -49,4 +49,10 @@ struct ConnectionSettingsViewTests {
             layout: .fixed(width: 390, height: 2600)
         )
     }
+
+    /// Searching settings for registering as a new device leads to this screen, where the option lives.
+    @Test func searchFindsRegisteringAsANewDevice() {
+        let titles = ConnectionSettingsView.settingsSearchEntries.map(\.title)
+        #expect(titles.contains(L10n.Settings.ConnectionSection.RegisterAsNewDevice.title))
+    }
 }

@@ -32,11 +32,14 @@ final class LaunchMessagesStateTests: XCTestCase {
         withRegistrationIdentifier(from: "other-device") { servers in
             let server = servers.addFake()
 
-            guard case let .restoredRegistrations(restored)? = LaunchMessagesState.messagesToShow().first else {
+            let messages = LaunchMessagesState.messagesToShow()
+            guard case let .restoredRegistrations(restored)? = messages.first else {
                 XCTFail("Expected the registrations of another device to come first")
                 return
             }
             XCTAssertEqual(restored, [server])
+            // The test below looks for the prompt by this id.
+            XCTAssertEqual(messages.first?.id, "restoredRegistrations")
         }
     }
 

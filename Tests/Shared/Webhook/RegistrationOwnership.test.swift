@@ -356,6 +356,23 @@ struct RegistrationOwnershipTests {
         }
     }
 
+    /// Unless told otherwise, registering anew is done with the server itself.
+    @Test func registeringAnewRegistersWithTheServerByDefault() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let api = RegisteringAPI(server: server)
+            answerDevices(on: api)
+
+            await withAPI(api) {
+                let failures = await RegistrationOwnership(updateRegistration: { _ in }).registerAsNewDevice([server])
+                #expect(failures.isEmpty)
+            }
+
+            #expect(api.registeredNames == [server.info.mobileAppDeviceName])
+            #expect(api.connectReasons == [.warm])
+        }
+    }
+
     @Test func registeringWithAServerNeedsAURLToReachIt() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice) { info in

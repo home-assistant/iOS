@@ -9,7 +9,6 @@ struct ConnectionSettingsView: View {
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
     @State private var shareWrapper: ShareWrapper?
     @State private var isDeleteConfirmationPresented = false
-    @State private var isRegisterAsNewDeviceConfirmationPresented = false
     @State private var deleteError: Error?
     @State private var showDeleteError = false
     @State private var showLocationPrivacySheet = false
@@ -308,15 +307,13 @@ struct ConnectionSettingsView: View {
 
     private var registrationSection: some View {
         Section {
-            Button {
-                isRegisterAsNewDeviceConfirmationPresented = true
-            } label: {
+            Button(action: viewModel.confirmRegisteringAsNewDevice) {
                 Text(viewModel.registerAsNewDeviceTitle)
             }
             .disabled(viewModel.isRegisteringAsNewDevice || viewModel.isDeleting)
             .confirmationDialog(
                 L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
-                isPresented: $isRegisterAsNewDeviceConfirmationPresented,
+                isPresented: $viewModel.isRegisterAsNewDeviceConfirmationPresented,
                 titleVisibility: .visible
             ) {
                 Button(
@@ -329,12 +326,11 @@ struct ConnectionSettingsView: View {
             }
             .alert(
                 L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
-                isPresented: $viewModel.isShowingRegisterAsNewDeviceError,
-                presenting: viewModel.registerAsNewDeviceError
-            ) { _ in
+                isPresented: $viewModel.isShowingRegisterAsNewDeviceError
+            ) {
                 Button(L10n.okLabel, role: .cancel) {}
-            } message: { error in
-                Text(error.localizedDescription)
+            } message: {
+                Text(viewModel.registerAsNewDeviceError?.localizedDescription ?? "")
             }
         } footer: {
             Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.footer)

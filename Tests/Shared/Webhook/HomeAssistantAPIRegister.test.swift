@@ -180,6 +180,28 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         }
     }
 
+    /// A registration this device owns is updated as before, and keeps the name the server now has for it.
+    func testARegistrationThisDeviceOwnsIsUpdated() async throws {
+        let previousWebhooks = Current.webhooks
+        let webhooks = FakeWebhookManager()
+        Current.webhooks = webhooks
+        defer { Current.webhooks = previousWebhooks }
+        var sentTypes = [String]()
+        webhooks.sendEphemeralHandler = { _, request in
+            sentTypes.append(request.type)
+            return ["webhook_id": "webhook-id"]
+        }
+        let server = Server.fake { $0.setSetting(value: "Phone", for: .overrideDeviceName) }
+        Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "device-id", ownerVendorID: "this-device")
+        ), for: server.identifier)
+
+        _ = try await HomeAssistantAPI(server: server).updateRegistration().asyncValue()
+
+        XCTAssertEqual(sentTypes, ["update_registration"])
+        XCTAssertEqual(server.info.setting(for: .registeredDeviceName), "Phone")
+    }
+
     /// Older servers learn which device scanned a tag from the event itself, so it names the device the server knows
     /// this one as, never one it is still being registered as.
     func testTagEventsOnOlderServersNameTheDeviceTheServerKnows() {

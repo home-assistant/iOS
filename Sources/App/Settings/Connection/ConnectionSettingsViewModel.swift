@@ -29,6 +29,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var sensorPrivacy: ServerSensorPrivacy = .none
     @Published var showDeleteConfirmation = false
     @Published var isDeleting = false
+    @Published var isRegisterAsNewDeviceConfirmationPresented = false
     @Published var isRegisteringAsNewDevice = false
     @Published var registerAsNewDeviceError: Error?
     @Published var isShowingRegisterAsNewDeviceError = false
@@ -361,6 +362,11 @@ final class ConnectionSettingsViewModel: ObservableObject {
         isRegisteringAsNewDevice
             ? L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress
             : L10n.Settings.ConnectionSection.RegisterAsNewDevice.title
+    }
+
+    /// Asks before registering, since the current registration is left behind on the server.
+    func confirmRegisteringAsNewDevice() {
+        isRegisterAsNewDeviceConfirmationPresented = true
     }
 
     func startRegisteringAsNewDevice() {
