@@ -134,6 +134,21 @@ final class LocalPushManagerLiveActivityConfirmTests: XCTestCase {
         XCTAssertEqual(apiConnection.pendingSubscriptions.count, 1, "channel is kept as is")
     }
 
+    func testSendsNoConfirmOnceServerHasNoUsableURL() throws {
+        try receiveLiveActivityPush()
+        // The server loses its only URL while the push waits for the app, so there is nothing to
+        // send the confirm through when the app replies.
+        api.server.info.connection.set(address: nil, for: .external)
+
+        LiveActivityLocalPushResult.record(.presented, confirmID: "confirm-1")
+        LiveActivityLocalPushResult.postDarwinSignal()
+        waitUntil { manager.liveActivityConfirms.pendingConfirmIDs.isEmpty }
+
+        XCTAssertTrue(manager.liveActivityConfirms.pendingConfirmIDs.isEmpty)
+        XCTAssertTrue(confirmedIDs.isEmpty)
+        XCTAssertEqual(apiConnection.pendingSubscriptions.count, 1)
+    }
+
     func testReopensChannelWhenAppCouldNotPresent() throws {
         LiveActivityPendingStart.append(makeQueuedRequest())
         try receiveLiveActivityPush()
