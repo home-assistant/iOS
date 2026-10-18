@@ -48,6 +48,18 @@ final class LaunchMessagesStateTests: XCTestCase {
         }
     }
 
+    func testSettlingTheRestoredRegistrationsClosesThePrompt() {
+        withRegistrationIdentifier(from: "other-device") { servers in
+            let server = servers.addFake()
+            let sut = LaunchMessagesState()
+            sut.presented = .restoredRegistrations([server])
+
+            sut.restoredRegistrationsViewModel(for: [server]).keepRegistrations()
+
+            XCTAssertNil(sut.presented)
+        }
+    }
+
     /// Runs `body` on "this-device", whose stored registration identifier came from `owner`.
     private func withRegistrationIdentifier(
         from owner: String,

@@ -133,7 +133,7 @@ struct HomeAssistantView: View, WebFrontendView {
         .sheet(item: $launchMessages.presented, onDismiss: { launchMessages.showNext() }) { message in
             switch message {
             case let .restoredRegistrations(servers):
-                RestoredRegistrationsView(viewModel: RestoredRegistrationsViewModel(servers: servers))
+                RestoredRegistrationsView(viewModel: launchMessages.restoredRegistrationsViewModel(for: servers))
                     .presentationDetents([.medium, .large])
             case let .whatsNew(release):
                 WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }

@@ -1,7 +1,9 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SwiftUI
 import Testing
+import UIKit
 
 /// The launch prompt for a device restored from another one's backup: registering anew, retrying what failed, or
 /// keeping the registrations.
@@ -64,12 +66,30 @@ struct RestoredRegistrationsViewModelTests {
         return servers.add(identifier: .init(rawValue: name), serverInfo: info)
     }
 
+    /// Counts how often the prompt asked to be closed.
+    private final class FinishCounter {
+        var count = 0
+    }
+
+    /// Lays the prompt out in a window of its own, which is what makes SwiftUI evaluate its body.
+    private func render(_ viewModel: RestoredRegistrationsViewModel) {
+        let controller = UIHostingController(rootView: RestoredRegistrationsView(viewModel: viewModel))
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 640))
+        window.rootViewController = controller
+        window.isHidden = false
+        controller.view.setNeedsLayout()
+        controller.view.layoutIfNeeded()
+
+        window.isHidden = true
+        window.rootViewController = nil
+    }
+
     @Test func listsEveryServerByName() async {
         await withRestoredDevice { servers in
-            let viewModel = RestoredRegistrationsViewModel(servers: [
-                addServer(named: "Home", to: servers),
-                addServer(named: "Cabin", to: servers),
-            ])
+            let viewModel = RestoredRegistrationsViewModel(
+                servers: [addServer(named: "Home", to: servers), addServer(named: "Cabin", to: servers)],
+                onFinished: {}
+            )
 
             #expect(viewModel.serverNames == ListFormatter.localizedString(byJoining: ["Home", "Cabin"]))
         }
@@ -78,20 +98,45 @@ struct RestoredRegistrationsViewModelTests {
     @Test func registeringWithEveryServerClosesThePrompt() async {
         await withRestoredDevice { servers in
             let restored = [addServer(named: "Home", to: servers), addServer(named: "Cabin", to: servers)]
+            let finished = FinishCounter()
             var registered = [Server]()
-            let viewModel = RestoredRegistrationsViewModel(
+            var titlesWhileRegistering = [String]()
+            var viewModel: RestoredRegistrationsViewModel!
+            viewModel = RestoredRegistrationsViewModel(
                 servers: restored,
                 ownership: RegistrationOwnership(register: { server in
+                    titlesWhileRegistering.append(viewModel.registerTitle)
                     registered.append(server)
-                })
+                }),
+                onFinished: { finished.count += 1 }
             )
+            #expect(viewModel.registerTitle == L10n.RestoredRegistrations.register)
 
             await viewModel.registerAsNewDevice()
 
             #expect(registered == restored)
-            #expect(viewModel.isFinished)
+            #expect(titlesWhileRegistering == Array(repeating: L10n.RestoredRegistrations.progress, count: 2))
+            #expect(finished.count == 1)
             #expect(viewModel.failureMessage == nil)
             #expect(!viewModel.isRegistering)
+        }
+    }
+
+    @Test func theRegisterButtonStartsRegistering() async throws {
+        try await withRestoredDevice { servers in
+            let finished = FinishCounter()
+            let viewModel = RestoredRegistrationsViewModel(
+                servers: [addServer(named: "Home", to: servers)],
+                ownership: RegistrationOwnership(register: { _ in }),
+                onFinished: { finished.count += 1 }
+            )
+
+            viewModel.startRegistration()
+
+            for _ in 0 ..< 100 where finished.count == 0 {
+                try await Task.sleep(for: .milliseconds(20))
+            }
+            #expect(finished.count == 1)
         }
     }
 
@@ -99,34 +144,39 @@ struct RestoredRegistrationsViewModelTests {
         await withRestoredDevice { servers in
             let home = addServer(named: "Home", to: servers)
             let cabin = addServer(named: "Cabin", to: servers)
+            let finished = FinishCounter()
             let viewModel = RestoredRegistrationsViewModel(
                 servers: [home, cabin],
                 ownership: RegistrationOwnership(register: { server in
                     if server == cabin {
                         throw RegisterFailure()
                     }
-                })
+                }),
+                onFinished: { finished.count += 1 }
             )
 
             await viewModel.registerAsNewDevice()
 
             #expect(viewModel.servers == [cabin])
             #expect(viewModel.failureMessage == L10n.RestoredRegistrations.failure(viewModel.serverNames))
-            #expect(!viewModel.isFinished)
+            #expect(finished.count == 0)
             #expect(!viewModel.isRegistering)
+            // The prompt stays up, now naming the server to try again with.
+            render(viewModel)
         }
     }
 
     @Test func keepingTheRegistrationsClosesThePromptForGood() async {
         await withRestoredDevice { servers in
-            let viewModel = RestoredRegistrationsViewModel(servers: [
-                addServer(named: "Home", to: servers),
-                addServer(named: "Cabin", to: servers),
-            ])
+            let finished = FinishCounter()
+            let viewModel = RestoredRegistrationsViewModel(
+                servers: [addServer(named: "Home", to: servers), addServer(named: "Cabin", to: servers)],
+                onFinished: { finished.count += 1 }
+            )
 
             viewModel.keepRegistrations()
 
-            #expect(viewModel.isFinished)
+            #expect(finished.count == 1)
             #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
         }
     }

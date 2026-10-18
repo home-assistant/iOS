@@ -5,7 +5,6 @@ import SwiftUI
 /// with those servers as a new device, or keep them because it replaced the other device.
 struct RestoredRegistrationsView: View {
     @StateObject private var viewModel: RestoredRegistrationsViewModel
-    @Environment(\.dismiss) private var dismiss
 
     init(viewModel: @autoclosure @escaping () -> RestoredRegistrationsViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel())
@@ -41,21 +40,11 @@ struct RestoredRegistrationsView: View {
                 .frame(maxWidth: .infinity)
             }
             VStack(spacing: DesignSystem.Spaces.one) {
-                Button {
-                    Task { await viewModel.registerAsNewDevice() }
-                } label: {
-                    if viewModel.isRegistering {
-                        ProgressView()
-                            .tint(.white)
-                            .accessibilityLabel(L10n.RestoredRegistrations.progress)
-                    } else {
-                        Text(L10n.RestoredRegistrations.register)
-                    }
+                Button(action: viewModel.startRegistration) {
+                    Text(viewModel.registerTitle)
                 }
                 .buttonStyle(.primaryButton)
-                Button {
-                    viewModel.keepRegistrations()
-                } label: {
+                Button(action: viewModel.keepRegistrations) {
                     Text(L10n.RestoredRegistrations.keep)
                 }
                 .buttonStyle(.secondaryButton)
@@ -66,11 +55,6 @@ struct RestoredRegistrationsView: View {
         .padding(.top, DesignSystem.Spaces.four)
         .padding(.bottom, DesignSystem.Spaces.one)
         .interactiveDismissDisabled(viewModel.isRegistering)
-        .onChange(of: viewModel.isFinished) { isFinished in
-            if isFinished {
-                dismiss()
-            }
-        }
     }
 }
 
@@ -78,7 +62,8 @@ struct RestoredRegistrationsView: View {
     Color.clear
         .sheet(isPresented: .constant(true)) {
             RestoredRegistrationsView(viewModel: RestoredRegistrationsViewModel(
-                servers: FakeServerManager(initial: 2).all
+                servers: FakeServerManager(initial: 2).all,
+                onFinished: {}
             ))
             .presentationDetents([.medium, .large])
         }

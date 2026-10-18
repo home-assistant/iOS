@@ -54,6 +54,13 @@ final class LaunchMessagesState: ObservableObject {
         return queue
     }
 
+    /// The prompt for registrations restored from another device, closing itself once they are settled.
+    func restoredRegistrationsViewModel(for servers: [Server]) -> RestoredRegistrationsViewModel {
+        RestoredRegistrationsViewModel(servers: servers, onFinished: { [weak self] in
+            self?.presented = nil
+        })
+    }
+
     /// Presents the next queued message, if any. Called on evaluation and on each sheet dismiss so a
     /// single `.sheet` shows them in sequence.
     func showNext() {

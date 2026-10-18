@@ -15,8 +15,10 @@ struct RestoredRegistrationsViewTests {
             Server.fake(identifier: "cabin", initial: with(ServerInfo.fake()) { $0.remoteName = "Cabin" }),
         ]
 
+        let viewModel = RestoredRegistrationsViewModel(servers: servers, onFinished: {})
+
         assertLightDarkSnapshots(
-            of: AnyView(RestoredRegistrationsView(viewModel: RestoredRegistrationsViewModel(servers: servers))),
+            of: AnyView(RestoredRegistrationsView(viewModel: viewModel)),
             layout: .fixed(width: 390, height: 640),
             named: "restored-registrations-sheet"
         )

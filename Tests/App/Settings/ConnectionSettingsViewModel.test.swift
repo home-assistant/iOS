@@ -264,16 +264,42 @@ struct ConnectionSettingsViewModelTests {
         await withTestWorld {
             await withRegistrationIdentifierRestored {
                 let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
-                let viewModel = ConnectionSettingsViewModel(server: server)
                 var registered = [Server]()
-
-                await viewModel.registerAsNewDevice(ownership: RegistrationOwnership(register: { server in
-                    registered.append(server)
+                var titlesWhileRegistering = [String]()
+                var viewModel: ConnectionSettingsViewModel!
+                viewModel = ConnectionSettingsViewModel(server: server, ownership: RegistrationOwnership(register: {
+                    titlesWhileRegistering.append(viewModel.registerAsNewDeviceTitle)
+                    registered.append($0)
                 }))
+                #expect(viewModel.registerAsNewDeviceTitle == L10n.Settings.ConnectionSection.RegisterAsNewDevice.title)
+
+                await viewModel.registerAsNewDevice()
 
                 #expect(registered == [server])
+                #expect(titlesWhileRegistering == [L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress])
                 #expect(viewModel.registerAsNewDeviceError == nil)
+                #expect(!viewModel.isShowingRegisterAsNewDeviceError)
                 #expect(!viewModel.isRegisteringAsNewDevice)
+            }
+        }
+    }
+
+    @Test func confirmingRegistersAsANewDevice() async throws {
+        try await withTestWorld {
+            try await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                var registered = [Server]()
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { registered.append($0) })
+                )
+
+                viewModel.startRegisteringAsNewDevice()
+
+                for _ in 0 ..< 100 where registered.isEmpty {
+                    try await Task.sleep(for: .milliseconds(20))
+                }
+                #expect(registered == [server])
             }
         }
     }
@@ -282,13 +308,17 @@ struct ConnectionSettingsViewModelTests {
         await withTestWorld {
             await withRegistrationIdentifierRestored {
                 let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
-                let viewModel = ConnectionSettingsViewModel(server: server)
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { server in
+                        throw ServerConnectionError.noActiveURL(server.info.name)
+                    })
+                )
 
-                await viewModel.registerAsNewDevice(ownership: RegistrationOwnership(register: { server in
-                    throw ServerConnectionError.noActiveURL(server.info.name)
-                }))
+                await viewModel.registerAsNewDevice()
 
                 #expect(viewModel.registerAsNewDeviceError is ServerConnectionError)
+                #expect(viewModel.isShowingRegisterAsNewDeviceError)
                 #expect(!viewModel.isRegisteringAsNewDevice)
             }
         }

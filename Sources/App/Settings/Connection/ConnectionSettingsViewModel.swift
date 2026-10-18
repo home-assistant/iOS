@@ -31,6 +31,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var isDeleting = false
     @Published var isRegisteringAsNewDevice = false
     @Published var registerAsNewDeviceError: Error?
+    @Published var isShowingRegisterAsNewDeviceError = false
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
@@ -50,6 +51,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     // MARK: - Properties
 
     let server: Server
+    private let ownership: RegistrationOwnership
     private var tokens: [HACancellable] = []
     private var localPushObserver: HACancellable?
     private var notificationCenterObserver: NSObjectProtocol?
@@ -72,8 +74,9 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     // MARK: - Initialization
 
-    init(server: Server) {
+    init(server: Server, ownership: RegistrationOwnership = RegistrationOwnership()) {
         self.server = server
+        self.ownership = ownership
         setupObservers()
         loadInitialData()
     }
@@ -354,20 +357,27 @@ final class ConnectionSettingsViewModel: ObservableObject {
         await server.deleteFromApp(minimumDuration: 3.0)
     }
 
+    var registerAsNewDeviceTitle: String {
+        isRegisteringAsNewDevice
+            ? L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress
+            : L10n.Settings.ConnectionSection.RegisterAsNewDevice.title
+    }
+
+    func startRegisteringAsNewDevice() {
+        Task {
+            await registerAsNewDevice()
+        }
+    }
+
     /// Gives this device a registration of its own with the server. The current one stays on the server for any
     /// other device still using it, such as one restored from a backup of this device.
-    func registerAsNewDevice(ownership: RegistrationOwnership = RegistrationOwnership()) async {
+    func registerAsNewDevice() async {
         isRegisteringAsNewDevice = true
         defer { isRegisteringAsNewDevice = false }
 
         if let error = await ownership.registerAsNewDevice([server])[server] {
             registerAsNewDeviceError = error
-        } else {
-            // The new registration has no location until the next update, so send one now.
-            HomeAssistantAPI.manuallyUpdate(
-                applicationState: UIApplication.shared.applicationState,
-                type: .programmatic
-            ).cauterize()
+            isShowingRegisterAsNewDeviceError = true
         }
     }
 

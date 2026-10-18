@@ -311,15 +311,7 @@ struct ConnectionSettingsView: View {
             Button {
                 isRegisterAsNewDeviceConfirmationPresented = true
             } label: {
-                if viewModel.isRegisteringAsNewDevice {
-                    HStack {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                        Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress)
-                    }
-                } else {
-                    Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.title)
-                }
+                Text(viewModel.registerAsNewDeviceTitle)
             }
             .disabled(viewModel.isRegisteringAsNewDevice || viewModel.isDeleting)
             .confirmationDialog(
@@ -327,21 +319,17 @@ struct ConnectionSettingsView: View {
                 isPresented: $isRegisterAsNewDeviceConfirmationPresented,
                 titleVisibility: .visible
             ) {
-                Button(L10n.Settings.ConnectionSection.RegisterAsNewDevice.title) {
-                    Task {
-                        await viewModel.registerAsNewDevice()
-                    }
-                }
+                Button(
+                    L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
+                    action: viewModel.startRegisteringAsNewDevice
+                )
                 Button(L10n.cancelLabel, role: .cancel) {}
             } message: {
                 Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.message)
             }
             .alert(
                 L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
-                isPresented: Binding(
-                    get: { viewModel.registerAsNewDeviceError != nil },
-                    set: { if !$0 { viewModel.registerAsNewDeviceError = nil } }
-                ),
+                isPresented: $viewModel.isShowingRegisterAsNewDeviceError,
                 presenting: viewModel.registerAsNewDeviceError
             ) { _ in
                 Button(L10n.okLabel, role: .cancel) {}

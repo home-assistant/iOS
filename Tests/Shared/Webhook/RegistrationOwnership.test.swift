@@ -1,4 +1,5 @@
 import Foundation
+import PromiseKit
 @testable import Shared
 import Testing
 
@@ -11,6 +12,30 @@ struct RegistrationOwnershipTests {
     private static let otherDevice = "other-device"
 
     private struct RegisterFailure: Error {}
+
+    /// Stands in for the server: answers the registration and the reconnect that follows it.
+    private final class RegisteringAPI: HomeAssistantAPI {
+        var registerResult: Promise<Void> = .value(())
+        var connectResult: Promise<Void> = .value(())
+        private(set) var connectReasons = [ConnectReason]()
+
+        override func register() -> Promise<Void> {
+            registerResult
+        }
+
+        override func Connect(reason: ConnectReason) -> Promise<Void> {
+            connectReasons.append(reason)
+            return connectResult
+        }
+    }
+
+    /// Runs `body` with `api` answering for its server.
+    private func withAPI(_ api: HomeAssistantAPI, _ body: () async throws -> Void) async rethrows {
+        let previousAPIs = Current.cachedApis
+        defer { Current.cachedApis = previousAPIs }
+        Current.cachedApis = [api.server.identifier: api]
+        try await body()
+    }
 
     /// Runs `body` on a device with `vendorID`, whose stored registration identifier came from `identifierOwner`.
     private func withDevice<T>(
@@ -203,6 +228,40 @@ struct RegistrationOwnershipTests {
             await #expect(throws: ServerConnectionError.self) {
                 try await RegistrationOwnership.registerWithServer(server)
             }
+        }
+    }
+
+    /// A reconnect that fails leaves the new registration in place, to catch up on the next connect.
+    @Test func registeringWithAServerCatchesTheNewRegistrationUp() async throws {
+        try await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let api = RegisteringAPI(server: server)
+            api.connectResult = Promise(error: RegisterFailure())
+            SensorRegistrationVersionStore.recordRegistration(for: server.identifier)
+
+            try await withAPI(api) {
+                try await RegistrationOwnership.registerWithServer(server)
+            }
+
+            #expect(api.connectReasons == [.warm])
+            // The new registration has none of the old one's sensors, so the next connect registers them.
+            #expect(SensorRegistrationVersionStore.needsRegistration(for: server.identifier))
+        }
+    }
+
+    @Test func aRegistrationTheServerRefusesIsReported() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let api = RegisteringAPI(server: server)
+            api.registerResult = Promise(error: RegisterFailure())
+
+            await withAPI(api) {
+                await #expect(throws: RegisterFailure.self) {
+                    try await RegistrationOwnership.registerWithServer(server)
+                }
+            }
+
+            #expect(api.connectReasons.isEmpty)
         }
     }
 
