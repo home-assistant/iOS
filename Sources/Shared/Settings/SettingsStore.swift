@@ -63,6 +63,51 @@ public class SettingsStore {
         return current
     }
 
+    static let integrationDeviceIDOwnerKey = "integrationDeviceIDOwner"
+
+    /// The vendor identifier of the device `integrationDeviceID` belongs to. An identifier taken from the vendor
+    /// identifier belongs to the device that gave it, otherwise the owner is recorded next to it. Both live in the
+    /// app group, which a backup carries onto another device, so there they still name the device it came from.
+    public var integrationDeviceIDOwnerVendorID: String? {
+        prefs.string(forKey: Self.integrationDeviceIDOwnerKey) ?? persistedIntegrationDeviceID
+    }
+
+    /// Records that `integrationDeviceID` now belongs to the device with `vendorID`, wherever it came from.
+    public func takeOverIntegrationDeviceID(for vendorID: String) {
+        prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
+    }
+
+    /// Replaces `integrationDeviceID` with one no registration has used yet, owned by the device with `vendorID`.
+    /// Home Assistant replaces a `mobile_app` registration whose app and device identifiers match an existing one,
+    /// so only a fresh identifier makes the next registration a new device rather than taking over an existing one.
+    public func adoptNewIntegrationDeviceID(ownedBy vendorID: String) {
+        prefs.set(UUID().uuidString, forKey: Self.integrationDeviceIDKey)
+        prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
+    }
+
+    static let registrationOwnersKey = "registrationOwners"
+    private static let registrationOwnersLock = NSLock()
+
+    /// The vendor identifier of the device the registration with `server` belongs to, if one was recorded; otherwise
+    /// it was made under `integrationDeviceID` and belongs to that identifier's owner. Kept in the app group next to
+    /// the identifier rather than with the server in the Keychain, which outlives reinstalling the app: the
+    /// reinstalled app's own registrations would otherwise look like another device's.
+    public func registrationOwnerVendorID(for server: Identifier<Server>) -> String? {
+        registrationOwners[server.rawValue]
+    }
+
+    public func setRegistrationOwnerVendorID(_ vendorID: String?, for server: Identifier<Server>) {
+        Self.registrationOwnersLock.lock()
+        defer { Self.registrationOwnersLock.unlock() }
+        var owners = registrationOwners
+        owners[server.rawValue] = vendorID
+        prefs.set(owners, forKey: Self.registrationOwnersKey)
+    }
+
+    private var registrationOwners: [String: String] {
+        prefs.dictionary(forKey: Self.registrationOwnersKey) as? [String: String] ?? [:]
+    }
+
     private var seenWhatsNewReleaseIDs: Set<String> {
         Set(prefs.stringArray(forKey: seenWhatsNewReleaseIDsKey) ?? [])
     }

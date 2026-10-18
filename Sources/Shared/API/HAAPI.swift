@@ -596,7 +596,11 @@ public class HomeAssistantAPI {
     }
 
     public func register() -> Promise<Void> {
-        request(
+        // The registration belongs to whichever device owns the identifier it is made with: a device restored from
+        // another one's backup registers as that device until it is told otherwise.
+        let owner = Current.settingsStore.integrationDeviceIDOwnerVendorID
+
+        return request(
             path: "mobile_app/registrations",
             callingFunctionName: "\(#function)",
             method: .post,
@@ -618,6 +622,7 @@ public class HomeAssistantAPI {
                 server.connection.webhookSecret = resp.WebhookSecret
                 server.setSetting(value: server.mobileAppDeviceName, for: .registeredDeviceName)
             }
+            Current.settingsStore.setRegistrationOwnerVendorID(owner, for: server.identifier)
         }
     }
 

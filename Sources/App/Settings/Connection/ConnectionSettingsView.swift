@@ -9,6 +9,7 @@ struct ConnectionSettingsView: View {
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
     @State private var shareWrapper: ShareWrapper?
     @State private var isDeleteConfirmationPresented = false
+    @State private var isRegisterAsNewDeviceConfirmationPresented = false
     @State private var deleteError: Error?
     @State private var showDeleteError = false
     @State private var showLocationPrivacySheet = false
@@ -28,6 +29,7 @@ struct ConnectionSettingsView: View {
             clientCertificateSection
             privacySection
             statusSection
+            registrationSection
             deleteSection
         }
         .navigationTitle(L10n.Settings.ConnectionSection.serverDetailsTitle)
@@ -302,6 +304,55 @@ struct ConnectionSettingsView: View {
         appSettingsPresenter?.isPushPresented = false
     }
 
+    // MARK: - Registration Section
+
+    private var registrationSection: some View {
+        Section {
+            Button {
+                isRegisterAsNewDeviceConfirmationPresented = true
+            } label: {
+                if viewModel.isRegisteringAsNewDevice {
+                    HStack {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                        Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress)
+                    }
+                } else {
+                    Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.title)
+                }
+            }
+            .disabled(viewModel.isRegisteringAsNewDevice || viewModel.isDeleting)
+            .confirmationDialog(
+                L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
+                isPresented: $isRegisterAsNewDeviceConfirmationPresented,
+                titleVisibility: .visible
+            ) {
+                Button(L10n.Settings.ConnectionSection.RegisterAsNewDevice.title) {
+                    Task {
+                        await viewModel.registerAsNewDevice()
+                    }
+                }
+                Button(L10n.cancelLabel, role: .cancel) {}
+            } message: {
+                Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.message)
+            }
+            .alert(
+                L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
+                isPresented: Binding(
+                    get: { viewModel.registerAsNewDeviceError != nil },
+                    set: { if !$0 { viewModel.registerAsNewDeviceError = nil } }
+                ),
+                presenting: viewModel.registerAsNewDeviceError
+            ) { _ in
+                Button(L10n.okLabel, role: .cancel) {}
+            } message: { error in
+                Text(error.localizedDescription)
+            }
+        } footer: {
+            Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.footer)
+        }
+    }
+
     // MARK: - Delete Section
 
     private var deleteSection: some View {
@@ -360,6 +411,7 @@ extension ConnectionSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Settings.ConnectionSection.Websocket.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.LocalPush.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.Webhook.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.RegisterAsNewDevice.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.DeleteServer.title),
         ]
     }

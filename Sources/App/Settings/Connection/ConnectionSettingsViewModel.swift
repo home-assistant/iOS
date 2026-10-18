@@ -2,7 +2,9 @@ import Combine
 import Foundation
 import HAKit
 import PromiseKit
+import SFSafeSymbols
 import Shared
+import SwiftUI
 import UIKit
 
 /// ViewModel for ConnectionSettingsView, managing server connection settings and state
@@ -29,6 +31,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var sensorPrivacy: ServerSensorPrivacy = .none
     @Published var showDeleteConfirmation = false
     @Published var isDeleting = false
+    @Published var isRegisteringAsNewDevice = false
+    @Published var registerAsNewDeviceError: Error?
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
@@ -350,6 +354,32 @@ final class ConnectionSettingsViewModel: ObservableObject {
         defer { isDeleting = false }
 
         await server.deleteFromApp(minimumDuration: 3.0)
+    }
+
+    /// Gives this device a registration of its own with the server. The current one stays on the server for any
+    /// other device still using it, such as one restored from a backup of this device.
+    func registerAsNewDevice(ownership: RegistrationOwnership = RegistrationOwnership()) async {
+        isRegisteringAsNewDevice = true
+        defer { isRegisteringAsNewDevice = false }
+
+        if let error = await ownership.registerAsNewDevice([server])[server] {
+            registerAsNewDeviceError = error
+        } else {
+            // The new registration has no location until the next update, so send one now.
+            HomeAssistantAPI.manuallyUpdate(
+                applicationState: UIApplication.shared.applicationState,
+                type: .programmatic
+            ).cauterize()
+            if #available(iOS 18, *) {
+                ToastPresenter.shared.show(
+                    id: "register-as-new-device-\(server.identifier.rawValue)",
+                    symbol: .checkmarkSealFill,
+                    symbolForegroundStyle: (.white, .green),
+                    title: L10n.Settings.ConnectionSection.RegisterAsNewDevice.success,
+                    duration: 4
+                )
+            }
+        }
     }
 
     // MARK: - Client Certificate

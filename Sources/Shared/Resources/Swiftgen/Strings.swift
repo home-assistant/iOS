@@ -5164,6 +5164,31 @@ public enum L10n {
     }
   }
 
+  public enum RestoredRegistrations {
+    /// This device was restored from a backup of another one, so Home Assistant still sees it as that device. If you still use the other device, register this one as a new device so each keeps its own sensors, location and notifications.
+    public static var body: String { return L10n.tr("Localizable", "restored_registrations.body") }
+    /// Couldn't register with %@. Try again, or later from that server's settings.
+    public static func failure(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "restored_registrations.failure", String(describing: p1))
+    }
+    /// This replaces the other device
+    public static var keep: String { return L10n.tr("Localizable", "restored_registrations.keep") }
+    /// Registering…
+    public static var progress: String { return L10n.tr("Localizable", "restored_registrations.progress") }
+    /// Register as new device
+    public static var register: String { return L10n.tr("Localizable", "restored_registrations.register") }
+    /// Servers: %@
+    public static func servers(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "restored_registrations.servers", String(describing: p1))
+    }
+    /// Restored from another device?
+    public static var title: String { return L10n.tr("Localizable", "restored_registrations.title") }
+    public enum Errors {
+      /// This device can't be told apart from others until it has been unlocked. Unlock it and try again.
+      public static var noDeviceIdentifier: String { return L10n.tr("Localizable", "restored_registrations.errors.no_device_identifier") }
+    }
+  }
+
   public enum RoomView {
     public enum Section {
       /// Hidden
@@ -5536,6 +5561,18 @@ public enum L10n {
       public enum NoBaseUrl {
         /// No URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
+      }
+      public enum RegisterAsNewDevice {
+        /// Use this when another device restored from a backup of this one shares its registration, so each gets its own sensors, location and notifications.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.footer") }
+        /// This device gets a new registration with this server. The current one stays in Home Assistant for any other device still using it. Remove it there once no device does.
+        public static var message: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.message") }
+        /// Registering…
+        public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.progress") }
+        /// Registered as a new device
+        public static var success: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.success") }
+        /// Register as new device
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.title") }
       }
       public enum RemoteUiUrl {
         /// Remote UI URL
