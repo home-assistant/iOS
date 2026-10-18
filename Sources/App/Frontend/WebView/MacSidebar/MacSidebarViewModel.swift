@@ -1,0 +1,349 @@
+import Combine
+import Foundation
+import HAKit
+import Shared
+import SwiftUI
+
+@MainActor
+final class MacSidebarViewModel: ObservableObject {
+    @Published private(set) var mainItems: [MacSidebarItem] = []
+    @Published private(set) var fixedItems: [MacSidebarItem] = []
+    /// Panels the user can add back while editing; see `MacSidebarItemsBuilder.hiddenItems`.
+    @Published private(set) var hiddenItems: [MacSidebarItem] = []
+    @Published private(set) var user: HAResponseCurrentUser?
+    @Published private(set) var accentColor: Color = .haPrimary
+
+    /// Legacy per-browser sidebar preferences the frontend still honours when the server-side user data
+    /// has none; see the `localStorage` fallbacks in `ha-sidebar.ts` and `data/panel.ts`.
+    enum LegacyStorageKey: String, CaseIterable {
+        case panelOrder = "sidebarPanelOrder"
+        case hiddenPanels = "sidebarHiddenPanels"
+        case defaultPanel
+    }
+
+    let server: Server
+    var onNavigate: ((String) -> Void)?
+    var onShowNotifications: (() -> Void)?
+    /// Reads a `localStorage` value from the running frontend; the result is the raw JSON string or nil.
+    var readLocalStorage: ((_ key: String, _ completion: @escaping (String?) -> Void) -> Void)?
+
+    private var panels: [HAPanel] = []
+    private var defaultPanelPath = MacSidebarItemsBuilder.fallbackDefaultPanelPath
+    private var sidebarUserData = FrontendSidebarUserData()
+    private var legacyPanelOrder: [String]?
+    private var legacyHiddenPanels: [String]?
+    private var legacyDefaultPanel: String?
+    private var coreUserData = FrontendDefaultPanelData()
+    /// Stands in for `coreUserData.defaultPanel` until the live `core` value arrives, which is the only thing
+    /// that clears it: a cached default must not outlive one the user has since removed.
+    private var cachedUserDefaultPanel: String?
+    private var userDefaultPanel: String? { coreUserData.defaultPanel ?? cachedUserDefaultPanel }
+    private var systemDefaultPanel: String?
+    private var isAdmin = false
+    private var userName: String?
+    private var notificationIds: Set<String> = []
+    private var tokens: [HACancellable] = []
+    private var cancellables = Set<AnyCancellable>()
+    private let snapshotStore: MacSidebarSnapshotStore
+
+    init(
+        server: Server,
+        overlayState: WebFrontendOverlayState,
+        snapshotStore: MacSidebarSnapshotStore = .shared
+    ) {
+        self.server = server
+        self.snapshotStore = snapshotStore
+
+        overlayState.$connectionState
+            .filter(\.isReadyForDisplay)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.readLegacyPreferences()
+            }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: FrontendThemeProvider.didChangeNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateAccentColor()
+            }
+            .store(in: &cancellables)
+
+        restoreSnapshot()
+        rebuild()
+        updateAccentColor()
+    }
+
+    deinit {
+        tokens.forEach { $0.cancel() }
+    }
+
+    func start() {
+        guard tokens.isEmpty, let connection = Current.api(for: server)?.connection else { return }
+
+        tokens.append(connection.caches.panels.subscribe { [weak self] _, panels in
+            Task { @MainActor [weak self] in
+                self?.panels = panels.allPanels
+                self?.rebuild()
+            }
+        })
+
+        tokens.append(connection.caches.user.subscribe { [weak self] _, user in
+            Task { @MainActor [weak self] in
+                self?.user = user
+                self?.isAdmin = user.isAdmin
+                self?.userName = user.name
+                self?.rebuild()
+            }
+        })
+
+        tokens.append(connection.subscribe(
+            to: HATypedSubscription<FrontendSidebarUserData>.frontendUserData(key: FrontendSidebarUserData.userDataKey),
+            initiated: { [weak self] result in
+                guard case .failure = result else { return }
+                // Older cores have no `frontend/subscribe_user_data`; fall back to a one-off fetch.
+                Task { @MainActor [weak self] in
+                    self?.fetchSidebarUserData(connection: connection)
+                }
+            },
+            handler: { [weak self] _, userData in
+                Task { @MainActor [weak self] in
+                    self?.sidebarUserData = userData
+                    self?.rebuild()
+                }
+            }
+        ))
+
+        tokens.append(connection.send(
+            HATypedRequest<FrontendDefaultPanelData>.frontendUserData(key: FrontendDefaultPanelData.dataKey)
+        ) { [weak self] result in
+            guard case let .success(data) = result else { return }
+            Task { @MainActor [weak self] in
+                self?.coreUserData = data
+                self?.cachedUserDefaultPanel = nil
+                self?.rebuild()
+            }
+        })
+
+        tokens.append(connection.send(
+            HATypedRequest<FrontendDefaultPanelData>.frontendSystemData(key: FrontendDefaultPanelData.dataKey)
+        ) { [weak self] result in
+            guard case let .success(data) = result else { return }
+            Task { @MainActor [weak self] in
+                self?.systemDefaultPanel = data.defaultPanel
+                self?.rebuild()
+            }
+        })
+
+        tokens.append(connection.subscribe(
+            to: HATypedSubscription<PersistentNotificationsMessage>(
+                request: .init(type: "persistent_notification/subscribe")
+            ),
+            handler: { [weak self] _, message in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    notificationIds = message.apply(to: notificationIds)
+                    rebuild()
+                }
+            }
+        ))
+    }
+
+    func stop() {
+        tokens.forEach { $0.cancel() }
+        tokens = []
+    }
+
+    func select(itemId: String) {
+        guard let item = (mainItems + fixedItems).first(where: { $0.id == itemId }) else { return }
+        switch item.kind {
+        case .notifications:
+            onShowNotifications?()
+        case .panel, .profile:
+            if let path = item.navigationPath {
+                onNavigate?(path)
+            }
+        }
+    }
+
+    // MARK: - Editing
+
+    /// The frontend never lets the default panel be hidden.
+    func canHide(_ item: MacSidebarItem) -> Bool {
+        item.id != defaultPanelPath
+    }
+
+    func reorderItems(to order: [String]) {
+        let reordered = order.compactMap { id in mainItems.first(where: { $0.id == id }) }
+            + mainItems.filter { !order.contains($0.id) }
+        guard reordered != mainItems else { return }
+        mainItems = reordered
+        save(effectiveUserData.reordered(to: mainItems.map(\.id)))
+    }
+
+    func hide(itemId: String) {
+        guard let item = mainItems.first(where: { $0.id == itemId }), canHide(item) else { return }
+        save(effectiveUserData.hiding(itemId, visibleOrder: mainItems.map(\.id)))
+    }
+
+    func show(itemId: String) {
+        guard hiddenItems.contains(where: { $0.id == itemId }) else { return }
+        save(effectiveUserData.showing(itemId, visibleOrder: mainItems.map(\.id)))
+    }
+
+    /// The preferences in effect, with the frontend's `localStorage` fallback applied.
+    private var effectiveUserData: FrontendSidebarUserData {
+        FrontendSidebarUserData(
+            panelOrder: sidebarUserData.panelOrder ?? legacyPanelOrder,
+            hiddenPanels: sidebarUserData.hiddenPanels ?? legacyHiddenPanels
+        )
+    }
+
+    private func save(_ userData: FrontendSidebarUserData) {
+        sidebarUserData = userData
+        rebuild()
+        guard let connection = Current.api(for: server)?.connection else { return }
+        tokens.append(connection.send(
+            HATypedRequest<HAResponseVoid>.setFrontendUserData(
+                key: FrontendSidebarUserData.userDataKey,
+                value: userData.encoded
+            )
+        ) { result in
+            if case let .failure(error) = result {
+                Current.Log.error("Failed to save sidebar user data: \(error)")
+            }
+        })
+    }
+
+    private func readLegacyPreferences() {
+        guard let readLocalStorage else { return }
+        for key in LegacyStorageKey.allCases {
+            readLocalStorage(key.rawValue) { [weak self] value in
+                Task { @MainActor [weak self] in
+                    self?.applyLegacyPreference(key: key, rawValue: value)
+                }
+            }
+        }
+    }
+
+    private func applyLegacyPreference(key: LegacyStorageKey, rawValue: String?) {
+        let json = rawValue.flatMap { $0.data(using: .utf8) }.flatMap { try? JSONSerialization.jsonObject(with: $0) }
+        switch key {
+        case .panelOrder:
+            legacyPanelOrder = json as? [String]
+        case .hiddenPanels:
+            legacyHiddenPanels = json as? [String]
+        case .defaultPanel:
+            legacyDefaultPanel = (json as? String).flatMap { $0.isEmpty ? nil : $0 }
+        }
+        rebuild()
+    }
+
+    private func fetchSidebarUserData(connection: HAConnection) {
+        tokens.append(connection.send(
+            HATypedRequest<FrontendSidebarUserData>.frontendUserData(key: FrontendSidebarUserData.userDataKey)
+        ) { [weak self] result in
+            guard case let .success(userData) = result else { return }
+            Task { @MainActor [weak self] in
+                self?.sidebarUserData = userData
+                self?.rebuild()
+            }
+        })
+    }
+
+    private func restoreSnapshot() {
+        if let snapshot = snapshotStore.snapshot(for: server.identifier.rawValue) {
+            panels = snapshot.panels
+            sidebarUserData = FrontendSidebarUserData(
+                panelOrder: snapshot.panelOrder,
+                hiddenPanels: snapshot.hiddenPanels
+            )
+            legacyPanelOrder = snapshot.legacyPanelOrder
+            legacyHiddenPanels = snapshot.legacyHiddenPanels
+            legacyDefaultPanel = snapshot.legacyDefaultPanel
+            cachedUserDefaultPanel = snapshot.userDefaultPanel
+            systemDefaultPanel = snapshot.systemDefaultPanel
+            isAdmin = snapshot.isAdmin
+            userName = snapshot.userName
+        }
+        if panels.isEmpty {
+            loadCachedPanels()
+        }
+    }
+
+    private func storeSnapshot() {
+        snapshotStore.store(
+            MacSidebarSnapshot(
+                panels: panels,
+                panelOrder: sidebarUserData.panelOrder,
+                hiddenPanels: sidebarUserData.hiddenPanels,
+                legacyPanelOrder: legacyPanelOrder,
+                legacyHiddenPanels: legacyHiddenPanels,
+                legacyDefaultPanel: legacyDefaultPanel,
+                userDefaultPanel: userDefaultPanel,
+                systemDefaultPanel: systemDefaultPanel,
+                isAdmin: isAdmin,
+                userName: userName
+            ),
+            for: server.identifier.rawValue
+        )
+    }
+
+    private func loadCachedPanels() {
+        do {
+            panels = try AppPanel.panels(serverId: server.identifier.rawValue)?.map { panel in
+                HAPanel(
+                    icon: panel.icon,
+                    title: panel.title,
+                    path: panel.path,
+                    component: panel.component,
+                    showInSidebar: panel.showInSidebar,
+                    rawTitle: panel.title == panel.path ? nil : panel.title
+                )
+            } ?? []
+        } catch {
+            Current.Log.error("Failed to load cached panels for native sidebar: \(error)")
+        }
+    }
+
+    private func rebuild() {
+        defaultPanelPath = MacSidebarItemsBuilder.resolveDefaultPanelPath(
+            preferred: userDefaultPanel ?? systemDefaultPanel ?? legacyDefaultPanel,
+            panels: panels
+        )
+        let userData = effectiveUserData
+        let mainItems = MacSidebarItemsBuilder.mainItems(
+            panels: panels,
+            defaultPanelPath: defaultPanelPath,
+            panelOrder: userData.panelOrder ?? [],
+            hiddenPanels: userData.hiddenPanels ?? []
+        )
+        let hiddenItems = MacSidebarItemsBuilder.hiddenItems(
+            panels: panels,
+            defaultPanelPath: defaultPanelPath,
+            panelOrder: userData.panelOrder ?? [],
+            hiddenPanels: userData.hiddenPanels ?? []
+        )
+        let fixedItems = MacSidebarItemsBuilder.fixedItems(
+            panels: panels,
+            isAdmin: isAdmin,
+            userName: userName,
+            notificationsCount: notificationIds.count
+        )
+        if self.mainItems != mainItems {
+            self.mainItems = mainItems
+        }
+        if self.hiddenItems != hiddenItems {
+            self.hiddenItems = hiddenItems
+        }
+        if self.fixedItems != fixedItems {
+            self.fixedItems = fixedItems
+        }
+        storeSnapshot()
+    }
+
+    private func updateAccentColor() {
+        accentColor = Current.frontendTheme()
+            .color(of: FrontendColors.primaryColor.rawValue, for: server.identifier.rawValue) ?? .haPrimary
+    }
+}

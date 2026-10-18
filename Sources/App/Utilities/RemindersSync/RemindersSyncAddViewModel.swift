@@ -53,7 +53,7 @@ final class RemindersSyncAddViewModel: ObservableObject {
         if RemindersSyncManager.shared.authorizationState == .notDetermined {
             _ = await RemindersSyncManager.shared.requestAccess()
         }
-        reminderLists = RemindersSyncManager.shared.reminderLists()
+        reminderLists = await RemindersSyncManager.shared.reminderLists()
 
         // A reload can invalidate earlier selections (e.g. the selected server's last todo list
         // was deleted): clear anything that no longer exists before filling in defaults.

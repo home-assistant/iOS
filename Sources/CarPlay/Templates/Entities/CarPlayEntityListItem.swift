@@ -73,7 +73,13 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         refreshTemplate()
     }
 
+    /// Whether an action started from this row is still in flight, so a repeat tap doesn't run it
+    /// a second time. Deliberately not the "Executing…" subtitle, which lingers a moment past the
+    /// call so it doesn't flash by — a tap in that window is a legitimate second action.
+    private(set) var isOperationInFlight = false
+
     func setExecutingState(_ isExecuting: Bool) {
+        isOperationInFlight = isExecuting
         if isExecuting {
             pendingExecutingClearWorkItem?.cancel()
             pendingExecutingClearWorkItem = nil
@@ -150,35 +156,28 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     private func displayContent() -> DisplayContent {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
         let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
-        var iconColor = entity.carPlayIconColor()
-        var image = entity.getMDI(componentIcons: componentIcons).carPlayIcon(color: iconColor)
 
+        let customIconColor = (magicItem?.customization?.customIconColor).map { UIColor(hex: $0) }
+        let iconColor = entity.stateIconColor(customColor: customIconColor)
+
+        var icon = entity.getMDI(componentIcons: componentIcons)
         if let magicItem, let magicItemInfo {
             displayText = magicItem.name(info: magicItemInfo)
 
-            // Check if user has customized the icon color
-            let customIconColor: UIColor? = {
-                if let iconColorString = magicItem.customization?.iconColor {
-                    return UIColor(hex: iconColorString)
-                }
-                return nil
-            }()
-
             let userHasCustomizedIcon = magicItem.customization?.iconIsCustomized == true
             if !entityHasDynamicIcon || userHasCustomizedIcon {
-                // Use the configured icon, respecting any explicit user customization
-                iconColor = customIconColor ?? .haPrimary
-                image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: iconColor)
-            } else {
-                // Dynamic entity icons should reflect the live server-provided color,
-                // matching the main entities/controls views instead of saved quick-access tint.
-                iconColor = entity.carPlayIconColor()
-                image = entity.getMDI(componentIcons: componentIcons).carPlayIcon(color: iconColor)
+                // Use the configured icon, respecting any explicit user customization.
+                icon = magicItem.icon(info: magicItemInfo)
             }
         }
+        let image = icon.carPlayIcon(color: iconColor)
 
         var detailText: String?
-        if !entityHasIrrelevantState {
+        if entityHasIrrelevantState {
+            // No state worth showing, but where the item lives still is: keep the area on its own
+            // rather than dropping the line entirely.
+            detailText = area
+        } else {
             var renderedDetailText = getContextualStateDescription()
             if let area, !renderedDetailText.isEmpty {
                 renderedDetailText += Self.detailTextSeparator + area

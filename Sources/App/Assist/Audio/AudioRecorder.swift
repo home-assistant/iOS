@@ -15,6 +15,12 @@ protocol AudioRecorderDelegate: AnyObject {
     func didStartRecording(with sampleRate: Double)
     func didStopRecording()
     func didFailToRecord(error: Error)
+    /// Normalized microphone input level (0...1) emitted while recording, for UI feedback.
+    func didUpdateAudioLevel(_ level: Float)
+}
+
+extension AudioRecorderDelegate {
+    func didUpdateAudioLevel(_ level: Float) {}
 }
 
 enum AudioRecorderError: Error {
@@ -23,11 +29,29 @@ enum AudioRecorderError: Error {
 }
 
 final class AudioRecorder: NSObject, AudioRecorderProtocol {
+    private enum Constants {
+        /// Window of microphone average power (dBFS) mapped onto the 0...1 level. Kept narrow on purpose:
+        /// normal speech averages around -35...-18 dBFS, so a wider window leaves the orb barely moving.
+        static let powerFloor: Float = -45
+        static let powerCeiling: Float = -15
+        /// Buffers arrive far faster than a screen refresh, and every level costs the main thread a
+        /// published change, so they are emitted at about 30 Hz instead of once per buffer.
+        static let levelInterval: TimeInterval = 1.0 / 30
+    }
+
     weak var delegate: AudioRecorderDelegate?
     var managesAudioSession = true
 
     private(set) var audioSampleRate: Double?
     private var captureSession: AVCaptureSession?
+    /// Only ever read and written on the sample buffer delegate's own queue.
+    private var lastLevelEmission: TimeInterval = .zero
+
+    /// Everything that touches the capture session runs here. Configuring one blocks: `init` alone
+    /// makes a synchronous XPC call to LaunchServices, and `startRunning`/`stopRunning` wait on the
+    /// media server, which is enough to hang the main thread for hundreds of milliseconds. A serial
+    /// queue also keeps a stop from overtaking the start it belongs to.
+    private let sessionQueue = DispatchQueue(label: "assist-audio-recorder-session", qos: .userInitiated)
 
     override init() {
         super.init()
@@ -39,21 +63,25 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     }
 
     func startRecording() {
-        setupAudioRecorder()
-        guard let captureSession else { return }
-        DispatchQueue.global().async { [weak self] in
-            if let audioSampleRate = self?.audioSampleRate {
-                captureSession.startRunning()
-                self?.delegate?.didStartRecording(with: audioSampleRate)
-            } else {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            setupAudioRecorder()
+            // A failed setup has already told the delegate why.
+            guard let captureSession else { return }
+            guard let audioSampleRate else {
                 Current.Log.error("No sample rate available to start recording")
+                return
             }
+            captureSession.startRunning()
+            delegate?.didStartRecording(with: audioSampleRate)
         }
     }
 
     func stopRecording() {
-        captureSession?.stopRunning()
-        delegate?.didStopRecording()
+        sessionQueue.async { [weak self] in
+            self?.captureSession?.stopRunning()
+            self?.delegate?.didStopRecording()
+        }
     }
 
     private func setupAudioRecorder() {
@@ -133,6 +161,15 @@ extension AudioRecorder: AVCaptureAudioDataOutputSampleBufferDelegate {
         guard let data = sampleBuffer.audioSamples() else {
             Current.Log.error("Failed to extract audio samples from CMSampleBuffer")
             return
+        }
+
+        let now = ProcessInfo.processInfo.systemUptime
+        if now - lastLevelEmission >= Constants.levelInterval,
+           let averagePower = connection.audioChannels.first?.averagePowerLevel {
+            lastLevelEmission = now
+            let range = Constants.powerCeiling - Constants.powerFloor
+            let level = max(0, min(1, (averagePower - Constants.powerFloor) / range))
+            delegate?.didUpdateAudioLevel(level)
         }
 
         delegate?.didOutputSample(data: data)

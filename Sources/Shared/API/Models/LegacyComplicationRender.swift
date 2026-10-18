@@ -21,9 +21,11 @@ public struct LegacyComplicationRender: Equatable {
     public let bottomText: String
     /// Every area joined onto one line, for the single-line inline family.
     public let inlineText: String
+    /// Hex color for `title`, or nil to use the face's default.
+    public let titleColor: String?
     /// Hex color for `value`, or nil to use the face's default.
-    public let textColor: String?
-    /// Hex color for `bottomText`, or nil to fall back to `textColor`.
+    public let valueColor: String?
+    /// Hex color for `bottomText`, or nil to use the face's default.
     public let bottomTextColor: String?
     /// Gauge/ring fill (0...1), or nil when the template has neither.
     public let fraction: Double?
@@ -41,6 +43,18 @@ public struct LegacyComplicationRender: Equatable {
     public let maxLabel: String?
     /// The same areas mapped onto the families that lead with their content (see `ContentLed`).
     public let contentLed: ContentLed
+    /// Whether the corner's own text rides the outer curve of the corner, or sits flat and large in the
+    /// corner tip.
+    ///
+    /// ClockKit curved the text of two Graphic Corner templates: "Text Image" ran its text along the
+    /// arc beside its image, and "Stack Text" curved both of its lines around the corner, the Outer
+    /// area along the outer edge and the Inner area on the arc inside it. The "Gauge Text" outer text
+    /// was the corner's big flat number instead — the way the system's own gauge complications
+    /// (UV Index, Battery) still draw theirs — and the circular and small templates a corner slot falls
+    /// back to never curved anything. The modern corner curves its value by design, so the flat ones
+    /// have to opt out or they come back re-typeset small along the bezel — while a curved one left
+    /// flat is clipped to its first few characters in the corner tip.
+    public let curvesCornerText: Bool
 
     /// The corner and circular families' two text positions, which run the other way round to the rest.
     ///
@@ -62,7 +76,11 @@ public struct LegacyComplicationRender: Equatable {
 
     public init(complication: WatchComplication) {
         let data = complication.Data
-        let icon = data["icon"] as? [String: String]
+        // Only the templates that ever drew an icon get one. The editor used to store an icon for the
+        // rectangular "Standard Body" / "Text Gauge" and the Modular Large templates as well, but ClockKit
+        // never rendered it for them, so honoring that stored icon now would give those complications an
+        // icon they never had — and shove their text over to make room for it.
+        let icon = complication.Template.hasImage ? data["icon"] as? [String: String] : nil
         self.iconName = icon?["icon"]
         self.iconColor = icon?["icon_color"]
 
@@ -97,7 +115,8 @@ public struct LegacyComplicationRender: Equatable {
             default: return nil
             }
         }
-        self.textColor = graphicOnly(resolved.count > 1 ? resolved[1].color : resolved.first?.color)
+        self.titleColor = graphicOnly(resolved.count > 1 ? resolved[0].color : nil)
+        self.valueColor = graphicOnly(resolved.count > 1 ? resolved[1].color : resolved.first?.color)
         self.bottomTextColor = graphicOnly(resolved.dropFirst(2).first?.color)
         self.contentLed = ContentLed(
             value: resolved.first?.text ?? "",
@@ -105,10 +124,18 @@ public struct LegacyComplicationRender: Equatable {
             textColor: graphicOnly(resolved.first?.color)
         )
 
+        self.curvesCornerText = Self.curvedCornerTemplates.contains(complication.Template)
+
         self.fraction = Self.fraction(from: data)
         self.tint = Self.tint(from: data)
         self.gaugeStyle = Self.gaugeStyle(from: data)
     }
+
+    /// The Graphic Corner templates whose text ClockKit curved around the corner (see `curvesCornerText`).
+    private static let curvedCornerTemplates: Set<ComplicationTemplate> = [
+        .GraphicCornerTextImage,
+        .GraphicCornerStackText,
+    ]
 
     private typealias ResolvedArea = (area: ComplicationTextAreas, text: String, color: String?)
 

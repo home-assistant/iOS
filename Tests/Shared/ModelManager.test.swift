@@ -7,6 +7,16 @@ import PromiseKit
 import XCTest
 
 class ModelManagerTests: XCTestCase {
+    private final class DenyingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            requiringAssertion: Bool,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            requiringAssertion ? Promise(error: BackgroundTaskError.denied) : wrapping(nil)
+        }
+    }
+
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
     private var testQueue: DispatchQueue!
@@ -292,6 +302,47 @@ class ModelManagerTests: XCTestCase {
         XCTAssertEqual(reassigned.serverIdentifier, servers.all.first?.identifier.rawValue)
     }
 
+    func testServerChangeWithoutMembershipChangeSkipsCleanup() throws {
+        XCTAssertNoThrow(try hang(manager.cleanup(definitions: [
+            .orphanDelete(
+                recordType: TestStoreModel1.self,
+                serverIdentifierColumnName: "serverIdentifier"
+            ),
+        ])))
+
+        try database.write { db in
+            try TestStoreModel1(identifier: "orphan", serverIdentifier: "gone", value: nil).save(db)
+        }
+
+        servers.notify()
+        testQueue.sync {}
+
+        let remaining = try database.read { try TestStoreModel1.fetchAll($0) }
+        XCTAssertEqual(remaining.map(\.identifier), ["orphan"])
+    }
+
+    func testDeniedCleanupRunsAgainOnTheNextServerChange() throws {
+        let definitions: [LegacyModelManager.CleanupDefinition] = [
+            .orphanDelete(recordType: TestStoreModel1.self, serverIdentifierColumnName: "serverIdentifier"),
+        ]
+        try database.write { db in
+            try TestStoreModel1(identifier: "orphan", serverIdentifier: "gone", value: nil).save(db)
+        }
+
+        // The denial suspends the shared database coordinator; later tests expect it resumed.
+        defer { AppDatabaseSuspension.resume() }
+        let previousRunner = Current.backgroundTask
+        Current.backgroundTask = DenyingBackgroundTaskRunner()
+        XCTAssertThrowsError(try hang(manager.cleanup(definitions: definitions)))
+        Current.backgroundTask = previousRunner
+
+        servers.notify()
+        testQueue.sync {}
+
+        let remaining = try database.read { try TestStoreModel1.fetchAll($0) }
+        XCTAssertEqual(remaining.map(\.identifier), [])
+    }
+
     func testFetchInvokesDefinition() {
         let (fetchPromise1, fetchSeal1) = Promise<Void>.pending()
         let (fetchPromise2, fetchSeal2) = Promise<Void>.pending()
@@ -402,6 +453,51 @@ class ModelManagerTests: XCTestCase {
         XCTAssertTrue(handlers2_2.allSatisfy(\.wasCancelled))
 
         verify(apis: [api2, newApi])
+    }
+
+    /// A reconnect updates the server's version, which reports a server change; the subscription
+    /// must survive that instead of being torn down and rebuilt against the same servers.
+    func testServerChangeWithoutMembershipChangeKeepsSubscriptions() {
+        let handlers: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        var handlersIterator = handlers.makeIterator()
+        var subscribeCount = 0
+
+        let definitions: [LegacyModelManager.SubscribeDefinition] = [
+            .init(subscribe: { _, _, _, _ -> [HACancellable] in
+                subscribeCount += 1
+                return [handlersIterator.next()!]
+            }),
+        ]
+
+        manager.subscribe(definitions: definitions, isAppInForeground: { true })
+        XCTAssertEqual(subscribeCount, 2)
+
+        servers.notify()
+
+        XCTAssertEqual(subscribeCount, 2)
+        XCTAssertTrue(handlers.allSatisfy { !$0.wasCancelled })
+    }
+
+    func testUnsubscribeCancelsAndForgetsTheSubscribedServers() {
+        let handlers: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        var handlersIterator = handlers.makeIterator()
+        var subscribeCount = 0
+
+        let definitions: [LegacyModelManager.SubscribeDefinition] = [
+            .init(subscribe: { _, _, _, _ -> [HACancellable] in
+                subscribeCount += 1
+                return [handlersIterator.next()!]
+            }),
+        ]
+
+        manager.subscribe(definitions: definitions, isAppInForeground: { true })
+        manager.unsubscribe()
+
+        XCTAssertTrue(handlers.allSatisfy(\.wasCancelled))
+
+        servers.notify()
+
+        XCTAssertEqual(subscribeCount, 2, "Forgotten definitions must not be resubscribed by a server change")
     }
 
     func testStoreWithoutModels() throws {

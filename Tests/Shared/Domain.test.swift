@@ -63,6 +63,13 @@ struct DomainTests {
             .weather: "weather",
             .counter: "counter",
             .timer: "timer",
+            .aiTask: "ai_task",
+            .configurator: "configurator",
+            .imageProcessing: "image_processing",
+            .infrared: "infrared",
+            .plant: "plant",
+            .radioFrequency: "radio_frequency",
+            .tag: "tag",
         ]
 
         #expect(
@@ -258,7 +265,7 @@ struct DomainMappingTests {
     }
 
     @Test func mainActionMatchesExpectedGrouping() {
-        let toggle: Set<Domain> = [.cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve]
+        let toggle: Set<Domain> = [.cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve, .group]
         let press: Set<Domain> = [.button, .inputButton]
         let turnOn: Set<Domain> = [.scene, .script]
         let trigger: Set<Domain> = [.automation]
@@ -280,6 +287,63 @@ struct DomainMappingTests {
         }
     }
 
+    @Test func toggleMainActionFollowsTheFrontendsToggleEntity() {
+        #expect(Domain.cover.mainAction(state: "closed") == .openCover)
+        #expect(Domain.cover.mainAction(state: "open") == .closeCover)
+        #expect(Domain.cover.mainAction(state: "opening") == .closeCover)
+        #expect(Domain.cover.mainAction(state: "closing") == .closeCover)
+        #expect(Domain.cover.mainAction(state: "unavailable") == .closeCover)
+        #expect(Domain.valve.mainAction(state: "closed") == .openValve)
+        #expect(Domain.valve.mainAction(state: "open") == .closeValve)
+        #expect(Domain.light.mainAction(state: "off") == .turnOn)
+        #expect(Domain.light.mainAction(state: "on") == .turnOff)
+        #expect(Domain.switch.mainAction(state: "off") == .turnOn)
+        #expect(Domain.fan.mainAction(state: "on") == .turnOff)
+        #expect(Domain.inputBoolean.mainAction(state: "off") == .turnOn)
+        #expect(Domain.humidifier.mainAction(state: "on") == .turnOff)
+        #expect(Domain.group.mainAction(state: "off") == .turnOn)
+        #expect(Domain.group.mainAction(state: "home") == .turnOff)
+    }
+
+    @Test func toggleMainActionWithoutAStateToggles() {
+        for domain in Domain.allCases where domain.mainAction == .toggle {
+            #expect(domain.mainAction(state: "") == .toggle, "\(domain)")
+        }
+    }
+
+    @Test func nonToggleMainActionsIgnoreState() {
+        for domain in Domain.allCases where domain.mainAction != .toggle {
+            for state in ["open", "closed", "on", "off", "locked", ""] {
+                #expect(domain.mainAction(state: state) == domain.mainAction, "\(domain) in \(state)")
+            }
+        }
+    }
+
+    @Test func executeMainActionClosesAnOpenCover() {
+        let request = HATypedRequest<HAResponseVoid>.executeMainAction(
+            domain: .cover,
+            entityId: "cover.garage_door",
+            state: "open"
+        )
+        #expect(request?.request.data["domain"] as? String == "cover")
+        #expect(request?.request.data["service"] as? String == "close_cover")
+    }
+
+    @Test func executeMainActionTurnsAGroupOffThroughHomeAssistant() {
+        let request = HATypedRequest<HAResponseVoid>.executeMainAction(
+            domain: .group,
+            entityId: "group.downstairs",
+            state: "on"
+        )
+        #expect(request?.request.data["domain"] as? String == "homeassistant")
+        #expect(request?.request.data["service"] as? String == "turn_off")
+    }
+
+    @Test func executeMainActionWithoutStateToggles() {
+        let request = HATypedRequest<HAResponseVoid>.executeMainAction(domain: .cover, entityId: "cover.garage_door")
+        #expect(request?.request.data["service"] as? String == "toggle")
+    }
+
     @Test func actionabilityFollowsMainActionWithLockException() {
         for domain in Domain.allCases {
             let expected = domain.mainAction != nil || domain == .lock
@@ -298,7 +362,7 @@ struct DomainMappingTests {
     }
 
     @Test func irrelevantStateMembership() {
-        let expected: Set<Domain> = [.script, .scene]
+        let expected: Set<Domain> = [.automation, .scene, .script]
         for domain in Domain.allCases {
             #expect(
                 domain.hasIrrelevantState == expected.contains(domain),
@@ -309,29 +373,93 @@ struct DomainMappingTests {
 }
 
 struct MagicItemWidgetInteractionTests {
-    private func interactionKind(forEntityId id: String) -> String {
-        let item = MagicItem(id: id, serverId: "server-1", type: .entity)
+    private func interactionKind(for item: MagicItem) -> String {
         guard case let .appIntent(intent) = item.widgetInteractionType else {
             return "widgetURL"
         }
         switch intent {
         case .toggle: return "toggle"
-        case .press: return "press"
         case .activate: return "activate"
         case .script: return "script"
+        case .performAction: return "performAction"
         case .refresh: return "refresh"
         }
     }
 
-    @Test func widgetInteractionRoutesByMainAction() {
+    private func interactionKind(forEntityId id: String) -> String {
+        interactionKind(for: MagicItem(id: id, serverId: "server-1", type: .entity))
+    }
+
+    /// `openEntityDestinationURL` needs widget authenticity, which isn't available in every test
+    /// environment, so a more-info route is either the deeplink or the `refresh` no-op fallback.
+    private func isMoreInfoRoute(_ kind: String) -> Bool {
+        kind == "widgetURL" || kind == "refresh"
+    }
+
+    /// The icon runs the domain's own action for every `isActionable` domain — its toggle, or the
+    /// main action where the domain names one — and opens the entity otherwise.
+    @Test func widgetInteractionRoutesByTileIconDefault() {
         #expect(interactionKind(forEntityId: "light.kitchen") == "toggle")
         #expect(interactionKind(forEntityId: "switch.porch") == "toggle")
-        #expect(interactionKind(forEntityId: "button.doorbell") == "press")
+        #expect(interactionKind(forEntityId: "cover.garage") == "toggle")
+        #expect(interactionKind(forEntityId: "lock.front_door") == "toggle")
+        #expect(interactionKind(forEntityId: "group.downstairs") == "toggle")
+        #expect(interactionKind(forEntityId: "button.doorbell") == "activate")
         #expect(interactionKind(forEntityId: "scene.movie") == "activate")
+        #expect(interactionKind(forEntityId: "automation.wakeup") == "activate")
         #expect(interactionKind(forEntityId: "script.open_gate") == "activate")
-        #expect(interactionKind(forEntityId: "automation.wakeup") == "toggle")
-        let readOnly = interactionKind(forEntityId: "sensor.temperature")
-        #expect(readOnly == "widgetURL" || readOnly == "refresh")
+        #expect(isMoreInfoRoute(interactionKind(forEntityId: "media_player.tv")))
+        #expect(isMoreInfoRoute(interactionKind(forEntityId: "sensor.temperature")))
+    }
+
+    /// Widgets render entities of every domain, so a domain whose icon isn't a control must still
+    /// route somewhere — its more-info dialog in the web view — rather than producing an inert tile.
+    @Test func nonActionableDomainsOpenMoreInfo() {
+        for domain in Domain.allCases where !domain.isActionable {
+            let kind = interactionKind(forEntityId: "\(domain.rawValue).test")
+            #expect(isMoreInfoRoute(kind), "Domain.\(domain) should open more-info, got \(kind)")
+        }
+    }
+
+    /// And every actionable domain runs from its icon instead of opening the app.
+    @Test func actionableDomainsRunFromTheIcon() {
+        for domain in Domain.allCases where domain.isActionable {
+            let kind = interactionKind(forEntityId: "\(domain.rawValue).test")
+            let expected = domain.explicitMainAction != nil ? "activate" : "toggle"
+            #expect(kind == expected, "Domain.\(domain) should route to \(expected), got \(kind)")
+        }
+    }
+
+    /// Entities from custom integrations have domains this enum doesn't model; they still have a
+    /// more-info dialog, so they get the same route as any other non-actionable entity.
+    @Test func unmodeledDomainEntityOpensMoreInfo() {
+        #expect(isMoreInfoRoute(interactionKind(forEntityId: "some_custom_integration.thing")))
+    }
+
+    /// Non-entity items keyed by a UUID have no entity id to open, so they stay a no-op.
+    @Test func nonEntityItemWithoutDomainDoesNothing() {
+        let folder = MagicItem(id: "9C4E0A2E-0000-0000-0000-000000000000", serverId: "server-1", type: .folder)
+        #expect(interactionKind(for: folder) == "refresh")
+    }
+
+    /// An explicit action override is resolved before the domain, so it applies to entities whose
+    /// domain isn't modeled here too.
+    @Test func actionOverrideWinsOverUnmodeledDomain() {
+        let performAction = MagicItem(
+            id: "some_custom_integration.thing",
+            serverId: "server-1",
+            type: .entity,
+            action: .performAction("server-1", "notify.notify", "{}")
+        )
+        #expect(interactionKind(for: performAction) == "performAction")
+
+        let runScript = MagicItem(
+            id: "some_custom_integration.thing",
+            serverId: "server-1",
+            type: .entity,
+            action: .runScript("server-1", "script.open_gate")
+        )
+        #expect(interactionKind(for: runScript) == "activate")
     }
 }
 
@@ -447,24 +575,12 @@ struct DomainFeatureSupportTests {
         }
     }
 
-    @Test func commonlyUsedWidgetSupportedMembership() {
-        let expected: Set<Domain> = [.light, .switch, .cover, .fan, .inputBoolean, .humidifier, .valve]
-        #expect(Set(Domain.commonlyUsedWidgetSupported) == expected, "Domain.commonlyUsedWidgetSupported changed")
-    }
-
     @Test func sensorWidgetSupportedMembership() {
         let expected: Set<Domain> = [
             .sensor, .binarySensor, .inputBoolean, .person, .lock, .number, .inputNumber,
             .inputText, .inputSelect, .select, .climate, .weather, .sun, .deviceTracker, .update,
         ]
         #expect(Set(Domain.sensorWidgetSupported) == expected, "Domain.sensorWidgetSupported membership changed")
-    }
-
-    @Test func appDatabaseExcludedMembership() {
-        let expected: Set<Domain> = [
-            .geoLocation, .conversation, .stt, .tts, .wakeWord, .assistSatellite, .notify, .image,
-        ]
-        #expect(Set(Domain.appDatabaseExcluded) == expected, "Domain.appDatabaseExcluded membership changed")
     }
 
     @Test func groupsHaveNoDuplicates() {
@@ -474,29 +590,10 @@ struct DomainFeatureSupportTests {
             ("watchDisplayOnly", Domain.watchDisplayOnly),
             ("watchAddable", Domain.watchAddable),
             ("controlScreenDomains", Domain.controlScreenDomains),
-            ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
             ("sensorWidgetSupported", Domain.sensorWidgetSupported),
-            ("appDatabaseExcluded", Domain.appDatabaseExcluded),
         ]
         for (name, group) in groups {
             #expect(group.count == Set(group).count, "\(name) contains duplicate domains")
-        }
-    }
-
-    @Test func supportedDomainsAreNotExcludedFromPersistence() {
-        let excluded = Set(Domain.appDatabaseExcluded)
-        let featureLists: [(String, [Domain])] = [
-            ("carPlaySupported", Domain.carPlaySupported),
-            ("watchSupported", Domain.watchSupported),
-            ("watchAddable", Domain.watchAddable),
-            ("controlScreenDomains", Domain.controlScreenDomains),
-            ("commonlyUsedWidgetSupported", Domain.commonlyUsedWidgetSupported),
-            ("sensorWidgetSupported", Domain.sensorWidgetSupported),
-        ]
-        for (name, list) in featureLists {
-            for domain in list {
-                #expect(!excluded.contains(domain), "\(name) domain \(domain) must not be in appDatabaseExcluded")
-            }
         }
     }
 }

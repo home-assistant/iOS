@@ -8,6 +8,7 @@ struct FolderDetailView: View {
 
     @State private var addItemDestination: WatchAddItemDestination?
     @State private var showEditFolder = false
+    @State private var isEditingItems = false
 
     private var folder: MagicItem? {
         viewModel.watchConfig.items.first(where: { $0.type == .folder && $0.id == folderId })
@@ -31,9 +32,10 @@ struct FolderDetailView: View {
                     onSelectDestination: { addItemDestination = $0 },
                     onAddFolder: {}
                 )
+            } header: {
+                ReorderableSectionHeader(isEditing: $isEditingItems)
             }
         }
-        .preferredColorScheme(.dark)
         .navigationTitle(folder?.displayText ?? L10n.Watch.Configuration.Folder.defaultName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -58,7 +60,6 @@ struct FolderDetailView: View {
                         guard let itemToAdd else { return }
                         viewModel.addItemToFolder(folderId: folderId, item: itemToAdd)
                     }
-                    .preferredColorScheme(.dark)
                 }
             case .assistPrompt:
                 NavigationView {
@@ -67,7 +68,6 @@ struct FolderDetailView: View {
                     }
                 }
                 .navigationViewStyle(.stack)
-                .preferredColorScheme(.dark)
             }
         }
         .sheet(isPresented: $showEditFolder) {
@@ -77,7 +77,6 @@ struct FolderDetailView: View {
                         viewModel.updateFolder(updatedFolder)
                     }
                 }
-                .preferredColorScheme(.dark)
             }
         }
     }
@@ -88,57 +87,35 @@ struct FolderDetailView: View {
 
     @ViewBuilder
     private func row(for item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
-            id: item.id,
-            name: item.id,
-            iconName: "",
-            customization: nil
-        )
-
         if item.type == .complication {
             // Nothing to customize: a complication renders from its own configuration, so a name or
             // color set here would be silently ignored. Swipe removes it, as for any other row.
-            itemLabel(item: item, itemInfo: itemInfo)
+            itemLabel(item: item)
         } else if item.type == .assistPrompt {
             NavigationLink {
                 AssistPromptMagicItemView(mode: .edit, item: item) { updatedMagicItem in
                     viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
                 }
-                .environment(\.colorScheme, .dark)
             } label: {
-                itemLabel(item: item, itemInfo: itemInfo)
+                itemLabel(item: item)
             }
         } else {
             NavigationLink {
                 MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
                     viewModel.updateItemInFolder(folderId: folderId, item: updatedMagicItem)
                 }
-                .environment(\.colorScheme, .dark)
             } label: {
-                itemLabel(item: item, itemInfo: itemInfo)
+                itemLabel(item: item)
             }
         }
     }
 
-    private func itemLabel(item: MagicItem, itemInfo: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: image(for: item, itemInfo: itemInfo))
-                .renderingMode(.original)
-            Text(item.name(info: itemInfo))
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemSymbol: .line3Horizontal)
-                .foregroundStyle(.gray)
-        }
-    }
-
-    private func image(for item: MagicItem, itemInfo: MagicItem.Info) -> UIImage {
-        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
-        let color: UIColor = if let iconColor = item.customization?.iconColor ?? itemInfo.customization?.iconColor {
-            .init(hex: iconColor)
-        } else {
-            .haPrimary
-        }
-        return icon.image(ofSize: .init(width: 18, height: 18), color: color)
+    private func itemLabel(item: MagicItem) -> some View {
+        MagicItemConfigurationRow(
+            item: item,
+            info: viewModel.magicItemInfo(for: item),
+            isReorderIndicatorVisible: isEditingItems
+        )
     }
 }
 

@@ -1,4 +1,5 @@
 import Foundation
+import HADesignSystem
 import SwiftUI
 import UIKit
 
@@ -57,8 +58,11 @@ public struct ComplicationRenderContext {
     public var range: (min: Double, max: Double)? { config.gaugeRange(for: family) }
     public var gaugeStyle: WatchComplicationConfig.GaugeStyle { config.gaugeStyle(for: family) }
 
-    /// Gauge/ring tint; defaults to the accent color.
-    public var tint: Color { config.tint(for: family).map { Color(uiColor: UIColor(hex: $0)) } ?? .accentColor }
+    /// Gauge/ring tint; a complication with no color of its own falls back to the Home Assistant
+    /// primary color — the same value `HAWatchComplications`' `complicationDefaultTint` gives the
+    /// watch, so the preview and the face agree before the user picks a color. (`.accentColor` can't:
+    /// it resolves to whatever accent asset the *rendering target* declares.)
+    public var tint: Color { config.tint(for: family).map { Color(uiColor: UIColor(hex: $0)) } ?? .haPrimary }
     /// The configured value/text color, or nil when the complication sets none — so a surface that
     /// isn't drawing on the black watch face can fall back to its own primary color.
     public var configuredTextColor: Color? {

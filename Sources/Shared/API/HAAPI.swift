@@ -34,9 +34,15 @@ public class HomeAssistantAPI {
         let errorDescription = String(describing: error)
         let underlyingInfo = "\(errorType): \(errorDescription)"
 
+        // The server's own 400...403, and the same verdict reached without asking it again: once the
+        // token manager has a refusal on file it stops sending the credentials, so a reconnect loop
+        // would spin forever on a token fetch that can only fail until the user logs back in.
+        let isPermanent = error.authenticationAPIError?.shouldRequireReauthentication == true
+            || (error as? TokenManager.TokenError) == .reauthenticationRequired
+
         return TokenFetchFailure(
             underlyingType: underlyingInfo,
-            shouldDisconnectPermanently: error.authenticationAPIError?.shouldRequireReauthentication == true
+            shouldDisconnectPermanently: isPermanent
         )
     }
 
@@ -56,6 +62,15 @@ public class HomeAssistantAPI {
 
     private var rejectedReconnectAttempts = 0
     private var rejectedReconnectWorkItem: DispatchWorkItem?
+    private var connectivityObserver: NSObjectProtocol?
+
+    /// Carries a sensor update that failed to reach this server to a later attempt.
+    private(set) lazy var sensorUpdateRetry = SensorUpdateRetry { [weak self] providers in
+        guard let self else { return .value(()) }
+        return Current.backgroundTask(withName: BackgroundTask.sensorUpdateRetry.rawValue) { _ in
+            self.UpdateSensors(trigger: .Retry, limitedTo: providers)
+        }
+    }
 
     /// Backoff (seconds) for reconnect attempts after a rejected websocket; its count also bounds the
     /// number of attempts. Overridable for tests.
@@ -179,6 +194,20 @@ public class HomeAssistantAPI {
         removeOldDownloadDirectory()
 
         Current.sensors.register(observer: self)
+
+        self.connectivityObserver = NotificationCenter.default.addObserver(
+            forName: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.reconnectWebSocketIfStillConnecting()
+        }
+    }
+
+    deinit {
+        if let connectivityObserver {
+            NotificationCenter.default.removeObserver(connectivityObserver)
+        }
     }
 
     /// Builds a `URLSession` that presents this server's client certificate and honors its security
@@ -237,6 +266,9 @@ public class HomeAssistantAPI {
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
 
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+
         return Alamofire.Session(
             configuration: configuration,
             delegate: delegate,
@@ -262,13 +294,12 @@ public class HomeAssistantAPI {
     }
 
     public func VideoStreamer() -> MJPEGStreamer {
-        #if !os(watchOS)
-        let delegate: SessionDelegate = server.info.connection.clientCertificate != nil
-            ? MJPEGCertificateSessionDelegate(server: server)
-            : MJPEGStreamerSessionDelegate()
-        #else
-        let delegate = MJPEGStreamerSessionDelegate()
-        #endif
+        // Attached unconditionally, on every platform, for the same reason the REST session's
+        // delegate is (see `makeCertificateAwareURLSession`): the delegate resolves the certificate
+        // fresh at challenge time, so a streamer built before the server config carries the
+        // certificate still presents it. Gating on the init-time snapshot left the watch's camera
+        // notification stream permanently without a certificate, and an mTLS server refuses it.
+        let delegate = MJPEGStreamerSessionDelegate(server: server)
         return MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: delegate,
             interceptor: newInterceptor(),
@@ -294,11 +325,10 @@ public class HomeAssistantAPI {
 
     static func shouldAttemptAutomaticWebSocketConnect(for state: HAConnectionState) -> Bool {
         switch state {
-        case .disconnected(reason: .disconnected):
+        case .disconnected(reason: .disconnected), .connecting:
             return true
         case .disconnected(reason: .waitingToReconnect),
              .disconnected(reason: .rejected),
-             .connecting,
              .authenticating,
              .ready:
             return false
@@ -313,6 +343,12 @@ public class HomeAssistantAPI {
             return
         }
 
+        connection.connect()
+    }
+
+    func reconnectWebSocketIfStillConnecting() {
+        guard case .connecting = connection.state else { return }
+        Current.Log.info("network changed while websocket is connecting; re-evaluating its URL")
         connection.connect()
     }
 
@@ -359,6 +395,7 @@ public class HomeAssistantAPI {
                 promises.append(getConfig())
                 promises.append(Current.modelManager.fetch(apis: [self]))
                 promises.append(updateComplications(passively: false).asVoid())
+                promises.append(registerSensorsIfAppVersionChanged())
             }
 
             promises.append(UpdateSensors(trigger: reason.updateSensorTrigger).asVoid())
@@ -457,20 +494,18 @@ public class HomeAssistantAPI {
 
         return promise.done { [self] config in
             let previousVersion = server.info.version
-            let fetchedVersion = try? Version(hassVersion: config.Version)
 
             server.update { serverInfo in
-                serverInfo.connection.cloudhookURL = config.CloudhookURL
-                serverInfo.connection.set(address: config.RemoteUIURL, for: .remoteUI)
-                serverInfo.remoteName = config.LocationName ?? ServerInfo.defaultName
-                serverInfo.hassDeviceId = config.hassDeviceId
-
-                if let fetchedVersion {
-                    serverInfo.version = fetchedVersion
-                }
+                serverInfo.apply(config)
             }
 
-            if let fetchedVersion, fetchedVersion != previousVersion {
+            if LegacyWatchSensors.needsRetiring(reportedBy: config, on: server) {
+                Task { [server] in await LegacyWatchSensors.retire(reportedBy: config, on: server) }
+            }
+
+            let fetchedVersion = server.info.version
+
+            if fetchedVersion != previousVersion {
                 Current.Log
                     .info("Server \(server.identifier) version changed from \(previousVersion) to \(fetchedVersion)")
                 let changedServer = server
@@ -548,6 +583,8 @@ public class HomeAssistantAPI {
                         case let .success(data):
                             if let image = UIImage(data: data) {
                                 seal.fulfill(image)
+                            } else {
+                                seal.reject(APIError.invalidResponse)
                             }
                         case let .failure(error):
                             Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
@@ -579,6 +616,7 @@ public class HomeAssistantAPI {
                 server.connection.cloudhookURL = resp.CloudhookURL
                 server.connection.webhookID = resp.WebhookID
                 server.connection.webhookSecret = resp.WebhookSecret
+                server.setSetting(value: server.mobileAppDeviceName, for: .registeredDeviceName)
             }
         }
     }
@@ -590,7 +628,16 @@ public class HomeAssistantAPI {
                 type: "update_registration",
                 data: buildMobileAppUpdateRegistration()
             )
-        )
+        ).get { [self] _ in
+            rememberRegisteredDeviceName()
+        }
+    }
+
+    /// Keeps the device name the registration carries on the server, for the watch to name itself after.
+    private func rememberRegisteredDeviceName() {
+        let name = server.info.mobileAppDeviceName
+        guard server.info.setting(for: .registeredDeviceName) != name else { return }
+        server.update { $0.setSetting(value: name, for: .registeredDeviceName) }
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
@@ -661,7 +708,7 @@ public class HomeAssistantAPI {
             $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
             $0.AppVersion = HomeAssistantAPI.clientVersionDescription
             $0.DeviceID = Current.settingsStore.integrationDeviceID
-            $0.DeviceName = server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName()
+            $0.DeviceName = server.info.mobileAppDeviceName
             $0.Manufacturer = "Apple"
             $0.Model = Current.device.systemModel()
             $0.OSName = Current.device.systemName()
@@ -701,34 +748,17 @@ public class HomeAssistantAPI {
                 await seal(Current.connectivity.currentWiFiSSID())
             }
         }.then { [self] currentSSID -> Promise<Void> in
-            let update: WebhookUpdateLocation
-            let location: CLLocation?
-
-            switch server.info.setting(for: .locationPrivacy) {
-            case .exact:
-                update = .init(trigger: updateType, location: rawLocation, zone: zone, currentSSID: currentSSID)
-                location = rawLocation
-            case .zoneOnly:
-                let inZones = zones(for: updateType, location: rawLocation, fallbackZone: zone)
-                if updateType == .BeaconRegionEnter || rawLocation != nil {
-                    update = .init(
-                        trigger: updateType,
-                        usingNameOf: locationNameZone(
-                            for: updateType,
-                            from: inZones,
-                            fallbackZone: zone,
-                            supportsInZones: supportsInZones
-                        ),
-                        inZones: supportsInZones ? inZones : nil
-                    )
-                } else {
-                    update = .init(trigger: updateType)
-                }
-                location = nil
-            case .never:
-                update = .init(trigger: updateType)
-                location = nil
-            }
+            let privacy = server.info.setting(for: .locationPrivacy)
+            let update = WebhookUpdateLocation(
+                privacy: privacy,
+                trigger: updateType,
+                location: rawLocation,
+                zone: zone,
+                supportsInZones: supportsInZones,
+                currentSSID: currentSSID,
+                zonesContaining: { [server] in AppZone.zones(of: $0, in: server) }
+            )
+            let location = privacy == .exact ? rawLocation : nil
 
             return firstly { () -> Promise<Void> in
                 let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
@@ -764,39 +794,10 @@ public class HomeAssistantAPI {
         }
     }
 
-    private func zones(
-        for updateType: LocationUpdateTrigger,
-        location rawLocation: CLLocation?,
-        fallbackZone zone: AppZone?
-    ) -> [AppZone] {
-        if updateType == .BeaconRegionEnter {
-            return zone.flatMap { $0.trackingEnabled ? [$0] : nil } ?? []
-        } else if let rawLocation {
-            return AppZone.zones(of: rawLocation, in: server)
-        } else {
-            return []
-        }
-    }
-
-    private func locationNameZone(
-        for updateType: LocationUpdateTrigger,
-        from zones: [AppZone],
-        fallbackZone zone: AppZone?,
-        supportsInZones: Bool
-    ) -> AppZone? {
-        if supportsInZones {
-            return zones.first { !$0.isPassive }
-        } else if updateType == .BeaconRegionEnter {
-            return zone
-        } else {
-            return zones.first
-        }
-    }
-
     public var sharedEventDeviceInfo: [String: String] {
         [
             "sourceDevicePermanentID": AppConstants.PermanentID,
-            "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
+            "sourceDeviceName": server.info.mobileAppDeviceName,
             "sourceDeviceID": Current.settingsStore.deviceID,
         ]
     }
@@ -905,6 +906,17 @@ public class HomeAssistantAPI {
             self.textInput = (response as? UNTextInputNotificationResponse)?.userText
         }
 
+        /// Builds the same info for an action the app ran itself, without a `UNNotificationResponse`.
+        /// The watch needs this: watchOS never hands a text-input response back to the app for a
+        /// forwarded notification, so the watch collects the reply and fires the event on its own
+        /// (see `DynamicNotificationViewModel.perform(textInputAction:)`).
+        public init(content: UNNotificationContent, actionIdentifier: String, textInput: String?) {
+            self.identifier = UNNotificationContent.uncombinedAction(from: actionIdentifier)
+            self.category = content.categoryIdentifier
+            self.actionData = content.userInfo["homeassistant"]
+            self.textInput = textInput
+        }
+
         public init(map: ObjectMapper.Map) throws {
             self.identifier = try map.value("identifier")
             self.category = try? map.value("category")
@@ -958,7 +970,7 @@ public class HomeAssistantAPI {
             }
         } else {
             // Use domain's main action for all other domains
-            request = .executeMainAction(domain: domain, entityId: entityId)
+            request = .executeMainAction(domain: domain, entityId: entityId, state: state)
         }
 
         if let request {
@@ -986,7 +998,23 @@ public class HomeAssistantAPI {
             Current.webhooks.send(server: server, request: .init(type: "register_sensor", data: sensor.toJSON()))
         }.tap { result in
             Current.Log.info("finished registering sensors: \(result)")
-        }.asVoid()
+        }.asVoid().get { [server] _ in
+            guard uniqueIDs == nil else { return }
+            SensorRegistrationVersionStore.recordRegistration(for: server.identifier)
+        }
+    }
+
+    func registerSensorsIfAppVersionChanged() -> Promise<Void> {
+        guard SensorRegistrationVersionStore.needsRegistration(for: server.identifier) else {
+            return .value(())
+        }
+
+        Current.Log.info("registering all sensors with \(server.identifier) for this version of the app")
+
+        return registerSensors().recover { error -> Promise<Void> in
+            Current.Log.error("failed to register sensors for this version of the app: \(error)")
+            return .value(())
+        }
     }
 
     public func UpdateSensors(
@@ -1001,7 +1029,10 @@ public class HomeAssistantAPI {
         limitedTo: [SensorProvider.Type]?,
         location: CLLocation? = nil
     ) -> Promise<Void> {
-        firstly {
+        let retry = sensorUpdateRetry
+        let generation = retry.beginUpdate()
+
+        return firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
                 limitedTo: limitedTo,
@@ -1024,7 +1055,15 @@ public class HomeAssistantAPI {
                     identifier: .updateSensors,
                     server: server,
                     request: .init(type: "update_sensor_states", data: payload)
-                )
+                ).tap { result in
+                    switch result {
+                    case .fulfilled:
+                        retry.noteSuccess(generation: generation, limitedTo: limitedTo)
+                    case let .rejected(error):
+                        Current.Log.error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        retry.noteFailure(generation: generation, limitedTo: limitedTo)
+                    }
+                }
             }
         }
     }
@@ -1059,24 +1098,22 @@ public class HomeAssistantAPI {
         Current.backgroundTask(withName: BackgroundTask.manualLocationUpdate.rawValue) { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
-                    let locationManager = CLLocationManager()
+                    // Reading `accuracyAuthorization` is a synchronous XPC round-trip to locationd,
+                    // and on a cold launch it also waits for the daemon connection to come up. On
+                    // the main thread — where `manuallyUpdate` is called from — that was half of
+                    // the app's reported hangs, all of them inside this closure.
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        guard Current.locationManager.accuracyAuthorization != .fullAccuracy,
+                              type.allowsTemporaryAccess else {
+                            // Already precise, or this trigger may not ask: nothing to request.
+                            return seal(())
+                        }
 
-                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
-                        // already have full accuracy, don't need to request
-                        return seal(())
-                    }
-
-                    guard type.allowsTemporaryAccess else {
-                        return seal(())
-                    }
-
-                    Current.Log.info("requesting full accuracy for manual update")
-                    locationManager.requestTemporaryFullAccuracyAuthorization(
-                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
-                    ) { error in
-                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
-
-                        withExtendedLifetime(locationManager) {
+                        Current.Log.info("requesting full accuracy for manual update")
+                        Current.locationManager.requestTemporaryFullAccuracyAuthorization(
+                            purposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                        ) { error in
+                            Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
                             seal(())
                         }
                     }
@@ -1645,7 +1682,11 @@ extension HomeAssistantAPI: SensorObserver {
     ) {
         Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
             firstly { () -> Promise<Void> in
-                guard case let .settingsChange(changedUniqueIDs) = reason, !changedUniqueIDs.isEmpty else {
+                guard case let .settingsChange(changedUniqueIDs, serverIDs) = reason,
+                      !changedUniqueIDs.isEmpty,
+                      // An empty list is a change that isn't about one server, so every one of them
+                      // re-registers; otherwise only the servers whose selection actually moved do.
+                      serverIDs.isEmpty || serverIDs.contains(server.identifier) else {
                     return .value(())
                 }
                 // Carries the new enablement to Home Assistant, which only `register_sensor` can do.

@@ -111,13 +111,14 @@ private struct ToastWindowInstaller: UIViewRepresentable {
         }
     }
 
-    /// On iPhone the toast is drawn over the status bar / Dynamic Island, so it hides the status bar while
-    /// it shows. On iPad it sits below the status bar and leaves it exactly as the app had it.
+    /// In compact-width layouts the toast is drawn over the status bar / Dynamic Island, so it hides the
+    /// status bar while it shows. In regular-width layouts it sits below the status bar and leaves it
+    /// exactly as the app had it.
     private final class ToastHostingController: UIHostingController<ToastWindowContent> {
         var statusBarHiddenWhenIdle = false
 
         override var prefersStatusBarHidden: Bool {
-            UIDevice.current.userInterfaceIdiom == .phone ? true : statusBarHiddenWhenIdle
+            traitCollection.horizontalSizeClass == .compact ? true : statusBarHiddenWhenIdle
         }
     }
 }

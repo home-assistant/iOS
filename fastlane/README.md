@@ -165,6 +165,22 @@ Update the test cases from the fcm repo
 
 Run tests
 
+### e2e
+
+```sh
+[bundle exec] fastlane e2e
+```
+
+Run the end-to-end onboarding test against a running Home Assistant
+
+### local_distribution
+
+```sh
+[bundle exec] fastlane local_distribution
+```
+
+Distribute from this Mac, asking for what the Distribute workflow reads from GitHub secrets
+
 ----
 
 

@@ -46,7 +46,7 @@ struct IntentCameraEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     private func cameraEntities() async throws -> [(Server, [IntentCameraEntity])] {
-        guard let server = intent?.server.getServer() else {
+        guard let server = intent?.server.shortcutServer() else {
             return []
         }
 

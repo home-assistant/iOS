@@ -46,7 +46,7 @@ struct IntentActionEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     private func actionEntities() async throws -> [(Server, [IntentActionEntity])] {
-        guard let server = intent?.server.getServer() else {
+        guard let server = intent?.server.shortcutServer() else {
             return []
         }
 

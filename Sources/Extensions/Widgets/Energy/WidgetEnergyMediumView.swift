@@ -14,70 +14,34 @@ struct WidgetEnergyMediumView: View {
         // shape instead of collapsing to a bare chart. Totals rather than live power: these families
         // summarise the whole period, and the gallery placeholder entry carries live power too.
         let metrics = WidgetEnergyMetric.metricsOrPlaceholders(for: entry, figure: .totals)
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
-                ForEach(metrics) { metric in
-                    WidgetEnergyStatView(
-                        icon: metric.icon,
-                        value: metric.value,
-                        unit: metric.unit,
-                        label: metric.kind.totalLabel,
-                        direction: metric.direction,
-                        color: metric.color
-                    )
-                }
-
-                Spacer(minLength: 0)
-
-                topTrailingAccessory
-            }
-
-            // Drawn even with no points, so the period reads as "nothing yet" rather than as a card
-            // that lost its chart.
-            WidgetEnergyChartView(
-                points: entry.chartPoints,
-                source: entry.source,
-                period: entry.period,
-                date: entry.date
-            )
-            .frame(maxHeight: .infinity)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(DesignSystem.Spaces.two)
-        .widgetBackground(WidgetEnergyStyle.background)
+        let periodTitle = String(localized: entry.period.displayTitle)
+        // The expanded caption only survives while there are two figures sharing the row. Past that
+        // it is the caption that runs out of width first, and a truncated one says less than the
+        // short name it was an expansion of.
+        let usesExpandedLabel = metrics.count <= 2
+        WidgetEnergyMediumContentView(
+            stats: metrics.map { $0.designSystemModel(usesExpandedLabel: usesExpandedLabel) },
+            costText: costText,
+            periodTitle: periodTitle,
+            date: entry.date,
+            chartPoints: entry.chartPoints.map(\.designSystemModel),
+            showsGrid: entry.source.showsGrid,
+            showsSolar: entry.source.showsSolar,
+            showsBattery: entry.source.showsBattery && entry.batteryNet != nil,
+            isDaily: entry.period.chartUsesDailyBuckets,
+            dayStride: entry.period.chartDayStride,
+            periodRange: entry.period.dateRange(now: entry.date),
+            periodControl: WidgetEnergyControls.period(periodTitle),
+            refreshControl: WidgetEnergyControls.refresh(entry.date)
+        )
     }
 
-    /// The period cost when available, followed by the summarised period and the reload button
-    /// carrying the time the entry was refreshed. Replaces the shared header on these families, which
-    /// have room for it on the trailing edge of the stats row.
-    private var topTrailingAccessory: some View {
-        VStack(alignment: .trailing, spacing: DesignSystem.Spaces.half) {
-            if entry.source.showsGrid, let cost = entry.cost {
-                HStack(spacing: DesignSystem.Spaces.half) {
-                    Text(verbatim: WidgetEnergyStyle.cost(cost, code: entry.currencyCode))
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(WidgetEnergyStyle.primaryText)
-                    Image(
-                        uiImage: MaterialDesignIcons.transmissionTowerIcon
-                            .image(ofSize: .init(width: 16, height: 16), color: .white)
-                            .withRenderingMode(.alwaysTemplate)
-                    )
-                }
-
-                // The cost already claims a line, so period and time share the next one.
-                HStack(spacing: DesignSystem.Spaces.half) {
-                    WidgetEnergyPeriodButton(period: entry.period)
-                    Text(verbatim: "·")
-                        .font(.system(size: 11))
-                    WidgetEnergyRefreshButton(date: entry.date)
-                }
-            } else {
-                WidgetEnergyPeriodButton(period: entry.period)
-                WidgetEnergyRefreshButton(date: entry.date)
-            }
-        }
-        .lineLimit(1)
-        .foregroundStyle(WidgetEnergyStyle.secondaryText)
+    /// The period's cost, when there is a metered series for it to describe and a figure to show.
+    /// It covers electricity and gas together, so narrowing the widget to solar or the battery —
+    /// neither of which is billed — is what drops it.
+    private var costText: String? {
+        guard entry.source.showsGrid || entry.source.showsGas, let cost = entry.cost else { return nil }
+        return WidgetEnergyStyle.cost(cost, code: entry.currencyCode)
     }
 }
 
@@ -85,37 +49,44 @@ struct WidgetEnergyMediumView: View {
 #Preview(as: .systemMedium) {
     WidgetEnergy()
 } timeline: {
+    let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
+    let points = WidgetEnergyChartSample.day(startingAt: dayStart)
+    let totals = WidgetEnergyChartSample.totals(of: points)
+
     WidgetEnergyEntry(
         isConfigured: true,
-        gridConsumed: 6.2,
-        gridReturned: 10.5,
-        solarGenerated: 12.4,
+        gridConsumed: totals.gridConsumed,
+        gridReturned: totals.gridReturned,
+        solarGenerated: totals.solarGenerated,
         cost: -0.49,
         currencyCode: "EUR",
-        chartPoints: (0 ..< 24).map { hour in
-            let h = Double(hour)
-            let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
-            return WidgetEnergyEntry.ChartPoint(
-                date: dayStart.addingTimeInterval(h * 3600),
-                grid: 0.25 + 0.8 * exp(-pow(h - 7, 2) / 4) + 1.0 * exp(-pow(h - 20, 2) / 6),
-                solar: h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
-            )
-        }
+        chartPoints: points
     )
-    // A home with solar but no grid statistics: the grid figure is dropped, not blanked.
+    // A home with solar but no grid statistics: the grid figure is dropped, not blanked, and with
+    // nothing exported on screen the chart plots the full generation.
     WidgetEnergyEntry(
         period: .today,
         isConfigured: true,
-        solarGenerated: 40.3,
-        chartPoints: (0 ..< 24).map { hour in
-            let h = Double(hour)
-            let dayStart = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_700_000_000))
-            return WidgetEnergyEntry.ChartPoint(
-                date: dayStart.addingTimeInterval(h * 3600),
-                grid: 0,
-                solar: h >= 6 && h <= 18 ? 1.6 * sin((h - 6) / 12 * .pi) : 0
-            )
-        }
+        solarGenerated: totals.solarGenerated,
+        chartPoints: points.map { .init(date: $0.date, grid: 0, solar: $0.solar) }
+    )
+    // Every source a dashboard can configure: four figures in the row, the battery stacked into the
+    // chart, and a cost covering both the electricity and the gas.
+    let batteryPoints = WidgetEnergyChartSample.dayWithBattery(startingAt: dayStart)
+    let batteryTotals = WidgetEnergyChartSample.totals(of: batteryPoints)
+    WidgetEnergyEntry(
+        period: .today,
+        isConfigured: true,
+        gridConsumed: batteryTotals.gridConsumed,
+        gridReturned: batteryTotals.gridReturned,
+        solarGenerated: batteryTotals.solarGenerated,
+        batteryCharged: batteryTotals.batteryCharged,
+        batteryDischarged: batteryTotals.batteryDischarged,
+        gasConsumed: 4.8,
+        gasUnit: "m³",
+        cost: 3.10,
+        currencyCode: "EUR",
+        chartPoints: batteryPoints
     )
     // Early in the day, before any statistics exist.
     WidgetEnergyEntry(period: .today, isConfigured: true)

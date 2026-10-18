@@ -1,6 +1,8 @@
 import CallbackURLKit
 import CoreSpotlight
 import Foundation
+import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import SafariServices
 import Shared
@@ -24,6 +26,7 @@ class IncomingURLHandler {
         case invite
         case createCustomWidget = "createcustomwidget"
         case camera
+        case settings
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -73,31 +76,15 @@ class IncomingURLHandler {
                     handler: { self.sendLocationURLHandler() }
                 )
             case .camera:
-                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                guard let entityId = serviceData["entityId"],
+                      let destination = AppConstants.openEntityDestinationURL(
+                          entityId: entityId,
+                          serverId: serviceData["serverId"] ?? ""
+                      ) else {
+                    Current.Log.error("No entity found for open camera URL: \(url)")
                     return false
                 }
-                components.scheme = nil
-                components.host = nil
-
-                let queryParameters = components.queryItems
-                let serverId = queryParameters?.first(where: { $0.name == "serverId" })?.value
-                let entityId = queryParameters?.first(where: { $0.name == "entityId" })?.value
-
-                guard let entityId,
-                      let server = Current.servers.all.first(where: { server in
-                          server.identifier.rawValue == serverId
-                      }) else {
-                    Current.Log.error("No server found for open camera URL: \(url)")
-                    return false
-                }
-                presentOverFrontend { webViewController in
-                    let view = CameraPlayerView(
-                        server: server,
-                        cameraEntityId: entityId
-                    ).embeddedInHostingController()
-                    view.modalPresentationStyle = .overFullScreen
-                    webViewController.present(view, animated: true)
-                }
+                return handle(url: destination)
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
@@ -186,8 +173,7 @@ class IncomingURLHandler {
                     webViewController.webViewExternalMessageHandler.showAssist(
                         server: server,
                         pipeline: pipelineId,
-                        autoStartRecording: startlistening,
-                        focusInputOnAppear: false
+                        autoStartRecording: startlistening
                     )
                 }
             case .createCustomWidget:
@@ -227,6 +213,8 @@ class IncomingURLHandler {
                 Current.sceneManager.appCoordinator.done { coordinator in
                     coordinator.presentInvitation(url: inviteUrl)
                 }
+            case .settings:
+                coordinator.showSettings()
             }
         } else {
             Current.Log.warning("Can't route incoming URL: \(url)")
@@ -348,7 +336,8 @@ class IncomingURLHandler {
     }
 
     private func performAppIconShortcut(_ item: MagicItem, provider: MagicItemProviderProtocol) -> Promise<Void> {
-        if item.customization?.requiresConfirmation == true {
+        // Opening the entity changes nothing, so it is never confirmed first.
+        if item.customization?.requiresConfirmation == true, !item.widgetInteractionType.opensEntityInApp {
             return confirmAppIconShortcut(item, provider: provider)
         } else {
             return runAppIconShortcut(item, provider: provider)
@@ -388,7 +377,8 @@ class IncomingURLHandler {
             return customAction
         }
 
-        if case let .widgetURL(url) = item.widgetInteractionType {
+        let interactionType = item.widgetInteractionType
+        if case let .widgetURL(url) = interactionType {
             _ = handle(url: url)
             return .value(())
         }
@@ -410,12 +400,50 @@ class IncomingURLHandler {
             )
         }
 
-        return Promise { seal in
-            item.execute(on: server, source: .AppShortcut) { success, _ in
-                if success {
-                    seal.fulfill(())
-                } else {
-                    seal.reject(HomeAssistantAPI.APIError.notConfigured)
+        switch interactionType {
+        case let .appIntent(.toggle(entityId, domainString, _)):
+            // The same state-aware toggle a widget tile runs, so a lock shortcut locks or unlocks
+            // by the lock's state instead of doing nothing for want of one.
+            guard let domain = Domain(rawValue: domainString),
+                  let connection = Current.api(for: server)?.connection else {
+                Current.Log.error("No connection to toggle App Icon Shortcut magic item id: \(item.id)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            return Promise { seal in
+                Task {
+                    do {
+                        try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+                        seal.fulfill(())
+                    } catch {
+                        Current.Log.error(
+                            "Failed to toggle App Icon Shortcut magic item id: \(item.id), error: \(error)"
+                        )
+                        seal.reject(error)
+                    }
+                }
+            }
+        case let .appIntent(.activate(entityId, domainString, _)):
+            // The same request a widget tile's "Press", "Run" or "Trigger" sends, rather than the
+            // item's own run, so an entity behaves the same from either place.
+            guard let domain = Domain(rawValue: domainString),
+                  let connection = Current.api(for: server)?.connection,
+                  let request = HATypedRequest<HAResponseVoid>.mainAction(domain: domain, entityId: entityId) else {
+                Current.Log.error("Cannot activate App Icon Shortcut magic item id: \(item.id)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            return connection.send(request).promise.asVoid()
+        case let .appIntent(.performAction(serverId, actionId, payload)):
+            return performAction(serverId: serverId, actionId: actionId, payload: payload)
+        case .appIntent(.refresh):
+            return .value(())
+        case .widgetURL, .appIntent:
+            return Promise { seal in
+                item.execute(on: server, source: .AppShortcut) { success, _ in
+                    if success {
+                        seal.fulfill(())
+                    } else {
+                        seal.reject(HomeAssistantAPI.APIError.notConfigured)
+                    }
                 }
             }
         }
@@ -427,14 +455,45 @@ class IncomingURLHandler {
         switch action {
         case .default:
             return nil
+        case .nothing:
+            // There is no widget to reload from an app icon shortcut, so the tap ends here rather
+            // than showing the confirmation overlay for a no-op.
+            return .value(())
+        case .toggle, .mainAction, .turnOn, .turnOff:
+            // These resolve through the item's interaction type, the way a widget tile's do, so
+            // falling through keeps the confirmation overlay and error handling.
+            return nil
         case .moreInfoDialog:
-            if let url = AppConstants.openEntityDeeplinkURL(entityId: item.id, serverId: item.serverId) {
+            if let url = AppConstants.openEntityDestinationURL(entityId: item.id, serverId: item.serverId) {
                 _ = handle(url: url)
             }
             return .value(())
+        case let .url(urlString):
+            guard let url = ItemAction.resolvedURL(from: urlString) else {
+                Current.Log.error("App Icon Shortcut url action has no usable URL: \(urlString)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            // The app's own deep links are handled in place; everything else belongs to whichever
+            // app owns the scheme, the way the frontend hands a `url` action to the browser.
+            if let scheme = url.scheme, AppConstants.deeplinkSchemes.contains(scheme) {
+                _ = handle(url: url)
+            } else {
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
+            }
+            return .value(())
+        case let .performAction(serverId, actionId, payload):
+            return performAction(serverId: serverId, actionId: actionId, payload: payload)
         case let .navigate(path):
+            var normalizedPath = path.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if URL(string: normalizedPath)?.scheme == nil {
+                while normalizedPath.hasPrefix("/") {
+                    normalizedPath.removeFirst()
+                }
+            }
+
             if let url = AppConstants.navigateDeeplinkURL(
-                path: path,
+                path: normalizedPath,
                 serverId: item.serverId,
                 avoidUnnecessaryReload: true
             ) {
@@ -466,9 +525,54 @@ class IncomingURLHandler {
                 _ = handle(url: url)
             }
             return .value(())
-        case .nothing:
-            return .value(())
         }
+    }
+
+    /// Calls `domain.service` with the action's stored JSON payload — the same work
+    /// `PerformActionAppIntent` does for Shortcuts, reached through the transport-agnostic API it
+    /// itself calls, since an app icon shortcut runs in the app rather than through App Intents.
+    private func performAction(serverId: String, actionId: String, payload: String) -> Promise<Void> {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
+            Current.Log.error("Failed to get server for App Icon Shortcut perform action id: \(actionId)")
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+        let components = actionId.split(separator: ".")
+        guard components.count == 2 else {
+            Current.Log.error("App Icon Shortcut perform action id is not domain.service: \(actionId)")
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+
+        return Promise { seal in
+            Task {
+                do {
+                    _ = try await AppIntentServerAPI.callAction(
+                        server: server,
+                        domain: String(components[0]),
+                        service: String(components[1]),
+                        data: Self.actionPayload(from: payload),
+                        returnResponse: false
+                    )
+                    seal.fulfill(())
+                } catch {
+                    Current.Log.error(
+                        "Failed to execute App Icon Shortcut perform action id: \(actionId), error: \(error)"
+                    )
+                    seal.reject(error)
+                }
+            }
+        }
+    }
+
+    /// The action's data, as the JSON object the user typed. Anything unparseable sends no data
+    /// rather than failing the run — the same tolerance the payload field's default `{}` implies.
+    private static func actionPayload(from payload: String) -> [String: Any] {
+        let trimmed = payload.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [:] }
+        guard let object = try? JSONSerialization.jsonObject(with: Data(trimmed.utf8)) as? [String: Any] else {
+            Current.Log.error("App Icon Shortcut perform action payload is not a JSON object, sending no data")
+            return [:]
+        }
+        return object
     }
 
     /// Clears whatever is on screen — SwiftUI sheets included — before handing the frontend to `present`.

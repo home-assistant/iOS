@@ -2,6 +2,9 @@
 import Foundation
 import UIKit
 
+/// The display's own corner radius, so a view hugging the screen edge can match its curve.
+///
+/// Frontend counterpart: none — a hardware measurement the web has no access to.
 public extension UIScreen {
     private static let cornerRadiusKey: String = {
         let components = ["Radius", "Corner", "display", "_"]

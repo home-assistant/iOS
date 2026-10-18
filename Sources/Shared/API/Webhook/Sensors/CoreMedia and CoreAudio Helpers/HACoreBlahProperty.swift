@@ -213,17 +213,59 @@ extension HACoreAudioProperty {
         )
     }
 
-    static var isInputRunningSomewhere: HACoreAudioProperty<UInt32> {
+    static var processObjectList: HACoreAudioProperty<[AudioObjectID]> {
+        /*
+         An array of AudioObjectIDs that represent the processes currently doing IO on the system. Reading it
+         fails on macOS 13 and earlier, where the process objects do not exist.
+         */
         .init(
-            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceIsRunningSomewhere),
+            mSelector: AudioObjectPropertySelector(kAudioHardwarePropertyProcessObjectList),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
+    static var isProcessRunningInput: HACoreAudioProperty<UInt32> {
+        /*
+         A UInt32 where 1 means that the process is doing input IO. Unlike
+         kAudioDevicePropertyDeviceIsRunningSomewhere, this genuinely distinguishes the two directions.
+         */
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioProcessPropertyIsRunningInput),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
+    static var isProcessRunningOutput: HACoreAudioProperty<UInt32> {
+        /*
+         A UInt32 where 1 means that the process is doing output IO.
+         */
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioProcessPropertyIsRunningOutput),
+            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+        )
+    }
+
+    static var processInputDevices: HACoreAudioProperty<[AudioDeviceID]> {
+        /*
+         An array of AudioObjectIDs for the devices the process is using for IO. The scope of the address
+         picks the direction, so this address returns the devices it records from.
+         */
+        .init(
+            mSelector: AudioObjectPropertySelector(kAudioProcessPropertyDevices),
             mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeInput),
             mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
         )
     }
 
-    static var isOutputRunningSomewhere: HACoreAudioProperty<UInt32> {
+    static var processOutputDevices: HACoreAudioProperty<[AudioDeviceID]> {
+        /*
+         The devices the process is using for playback. See processInputDevices.
+         */
         .init(
-            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceIsRunningSomewhere),
+            mSelector: AudioObjectPropertySelector(kAudioProcessPropertyDevices),
             mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeOutput),
             mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
         )

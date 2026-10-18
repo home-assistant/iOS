@@ -25,7 +25,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
     /// not an entity). Built on demand and cached, so a config full of area entries costs one areas
     /// fetch per server rather than one per item.
     private var areasByIdPerServer: [String: [String: AppArea]] = [:]
-    private var devicesPerServer: [String: [String: AppDeviceRegistry]] = [:]
+    private var deviceContextsPerServer: [String: [String: EntityDeviceContext]] = [:]
     private var floorNamesPerServer: [String: [String: String]] = [:]
     /// Watch complication configs keyed by `"serverId-configId"` (a `MagicItem.serverUniqueId`).
     /// `nil` until loaded; refreshed by `loadAppEntities` so an edited or deleted complication is
@@ -197,6 +197,14 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         areasByIdPerServer = [:]
         // Rebuilt on every load so complication renames and deletions surface without a relaunch.
         complicationConfigIndex = Self.loadComplicationConfigIndex()
+        // Drop servers that are no longer configured: a long-lived provider (the CarPlay template
+        // keeps one) would otherwise keep resolving their entities, which makes an item pointing at
+        // a removed server look resolved and stops the migration from re-pointing it.
+        let configuredServerIds = Set(servers.map(\.identifier.rawValue))
+        entitiesPerServer = entitiesPerServer.filter { configuredServerIds.contains($0.key) }
+        areasPerServer = areasPerServer.filter { configuredServerIds.contains($0.key) }
+        deviceContextsPerServer = deviceContextsPerServer.filter { configuredServerIds.contains($0.key) }
+        floorNamesPerServer = floorNamesPerServer.filter { configuredServerIds.contains($0.key) }
         guard !servers.isEmpty else {
             completion()
             return
@@ -213,7 +221,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 // fixed number of DB reads) so `getInfo` can attach the context line per item without
                 // a per-item database read.
                 self?.areasPerServer[serverId] = entities.areasMap(for: serverId)
-                self?.devicesPerServer[serverId] = entities.devicesMap(for: serverId)
+                self?.deviceContextsPerServer[serverId] = entities.deviceContexts(for: serverId)
                 self?.floorNamesPerServer[serverId] = entities.floorNamesMap(for: serverId)
                 // Assigned last: it rebuilds the entity index, which the lookups above don't need.
                 self?.entitiesPerServer[serverId] = entities
@@ -417,11 +425,14 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         let serverName = Current.servers.all.count > 1
             ? Current.servers.server(for: .init(rawValue: entity.serverId))?.info.name
             : nil
+        let deviceContext = deviceContextsPerServer[entity.serverId]?[entity.entityId]
         return EntityContextSubtitle.make(
             serverName: serverName,
             floorName: floorNamesPerServer[entity.serverId]?[entity.entityId],
             areaName: areasPerServer[entity.serverId]?[entity.entityId]?.name,
-            deviceName: devicesPerServer[entity.serverId]?[entity.entityId]?.name,
+            parentDeviceName: deviceContext?.parentDeviceName,
+            deviceName: deviceContext?.deviceName,
+            contextReach: deviceContext?.reach ?? .device,
             entityName: entity.name,
             entityId: entity.entityId,
             domain: Domain(rawValue: entity.domain)

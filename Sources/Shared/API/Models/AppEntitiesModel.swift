@@ -8,7 +8,6 @@ public protocol AppEntitiesModelProtocol {
 
 final class AppEntitiesModel: AppEntitiesModelProtocol {
     static var shared = AppEntitiesModel()
-    private static let excludedDomains = Set(Domain.appDatabaseExcluded.map(\.rawValue))
     /// ServerId: Date
     private var lastDatabaseUpdate: [String: Date] = [:]
     /// ServerId: Int
@@ -16,25 +15,20 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
 
     public func updateModel(_ entities: Set<HAEntity>, server: Server) async {
         // Only update database after a few seconds or if the entities count changed
-        // First check for time to avoid unnecessary filtering to check count
         if !checkLastDatabaseUpdateRecently(server: server) {
-            let appRelatedEntities = persistableEntities(entities)
             Current.Log
                 .verbose(
                     "Updating App Entities for \(server.info.name) checkLastDatabaseUpdateLessThanMinuteAgo false, lastDatabaseUpdate \(String(describing: lastDatabaseUpdate)) "
                 )
-            updateLastUpdate(entitiesCount: appRelatedEntities.count, server: server)
-            await handle(appRelatedEntities: appRelatedEntities, server: server)
-        } else {
-            let appRelatedEntities = persistableEntities(entities)
-            if lastEntitiesCount[server.identifier.rawValue] != appRelatedEntities.count {
-                Current.Log
-                    .verbose(
-                        "Updating App Entities for \(server.info.name) entities count diff, count: last \(lastEntitiesCount), new \(appRelatedEntities.count)"
-                    )
-                updateLastUpdate(entitiesCount: appRelatedEntities.count, server: server)
-                await handle(appRelatedEntities: appRelatedEntities, server: server)
-            }
+            updateLastUpdate(entitiesCount: entities.count, server: server)
+            await handle(fetchedEntities: entities, server: server)
+        } else if lastEntitiesCount[server.identifier.rawValue] != entities.count {
+            Current.Log
+                .verbose(
+                    "Updating App Entities for \(server.info.name) entities count diff, count: last \(lastEntitiesCount), new \(entities.count)"
+                )
+            updateLastUpdate(entitiesCount: entities.count, server: server)
+            await handle(fetchedEntities: entities, server: server)
         }
     }
 
@@ -43,17 +37,13 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         lastDatabaseUpdate[server.identifier.rawValue] = Date()
     }
 
-    private func persistableEntities(_ entities: Set<HAEntity>) -> Set<HAEntity> {
-        entities.filter { !Self.excludedDomains.contains($0.domain) }
-    }
-
     // Avoid updating database too often
     private func checkLastDatabaseUpdateRecently(server: Server) -> Bool {
         guard let lastDate = lastDatabaseUpdate[server.identifier.rawValue] else { return false }
         return Date().timeIntervalSince(lastDate) < 15
     }
 
-    private func handle(appRelatedEntities: Set<HAEntity>, server: Server) async {
+    private func handle(fetchedEntities: Set<HAEntity>, server: Server) async {
         let serverId = server.identifier.rawValue
 
         // Resolve each entity's display name from the entity registry (`list_for_display` `en`) once,
@@ -96,7 +86,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         // without a live connection. `nil` when the map isn't available (old server / not yet fetched).
         let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
 
-        let appEntities = appRelatedEntities.map { entity -> HAAppEntity in
+        let appEntities = fetchedEntities.map { entity -> HAAppEntity in
             let deviceClass = entity.attributes.dictionary["device_class"] as? String
             let resolvedIcon = componentIcons.flatMap { map in
                 EntityIconResolver.componentDefaultIcon(domain: entity.domain, deviceClass: deviceClass, map: map)

@@ -37,6 +37,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your Apple Watch's location is sent to Home Assistant as its own device tracker. Always Allow lets it update in the background.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your Apple Watch's location is sent to Home Assistant as its own device tracker.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Record audio to talk to Assist.</string>
 	<key>UIBackgroundModes</key>
@@ -53,6 +57,10 @@
 	</array>
 	<key>WKApplication</key>
 	<true/>
+	<key>WKBackgroundModes</key>
+	<array>
+		<string>self-care</string>
+	</array>
 	<key>WKCompanionAppBundleIdentifier</key>
 	<string>$(BUNDLE_ID_PREFIX).HomeAssistant$(BUNDLE_ID_SUFFIX)</string>
 </dict>

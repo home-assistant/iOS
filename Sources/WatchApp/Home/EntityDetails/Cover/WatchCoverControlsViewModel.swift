@@ -62,11 +62,14 @@ final class WatchCoverControlsViewModel: ObservableObject {
         return item.icon(info: itemInfo)
     }
 
+    /// The color follows the entity's state whichever icon is drawn, so a custom icon still shows
+    /// whether the thing is on. Only a custom *color* overrides it, whatever the state.
     var iconColor: UIColor {
-        if let entity, itemInfo.customization?.iconIsCustomized != true {
-            return entity.carPlayIconColor() ?? .white
+        if let entity {
+            let customColor = itemInfo.customization?.customIconColor.map { UIColor(hex: $0) }
+            return entity.stateIconColor(customColor: customColor) ?? .white
         }
-        if let hex = itemInfo.customization?.iconColor {
+        if let hex = itemInfo.customization?.customIconColor {
             return UIColor(hex: hex)
         }
         return .white

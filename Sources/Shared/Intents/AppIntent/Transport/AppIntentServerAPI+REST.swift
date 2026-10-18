@@ -61,6 +61,24 @@ extension AppIntentServerAPI {
         return entities(fromRESTStates: json, domain: domain)
     }
 
+    static func entitiesViaREST(server: Server, domains: [Domain]) async throws -> [HAEntity] {
+        let json = try await HomeAssistantRESTClient.sendForJSON(
+            server: server,
+            path: ["states"],
+            timeout: requestTimeout
+        )
+        return entities(fromRESTStates: json, domains: domains)
+    }
+
+    static func entityStateViaREST(server: Server, entityId: String) async throws -> HAEntity {
+        let json = try await HomeAssistantRESTClient.sendForJSON(
+            server: server,
+            path: ["states", entityId],
+            timeout: requestTimeout
+        )
+        return try entityState(fromRESTState: json)
+    }
+
     static func assistViaREST(server: Server, prompt: String, pipelineId: String?) async throws -> String {
         // REST has no pipeline runner, so the pipeline's own conversation agent and language are
         // used — the same ones its intent stage would have run with. "Preferred" (no id) leaves both
@@ -143,16 +161,29 @@ extension AppIntentServerAPI {
     /// Maps a `GET /api/states` body, keeping only `domain` and decoding with the same HAKit model
     /// the WebSocket pipeline uses.
     public static func entities(fromRESTStates json: Any, domain: Domain) -> [HAEntity] {
+        entities(fromRESTStates: json, domains: [domain])
+    }
+
+    public static func entities(fromRESTStates json: Any, domains: [Domain]) -> [HAEntity] {
         guard let states = json as? [[String: Any]] else { return [] }
 
-        let prefix = "\(domain.rawValue)."
+        let prefixes = domains.map { "\($0.rawValue)." }
         let entities = states.compactMap { state -> HAEntity? in
-            guard let entityId = state["entity_id"] as? String, entityId.hasPrefix(prefix) else {
+            guard let entityId = state["entity_id"] as? String,
+                  prefixes.contains(where: { entityId.hasPrefix($0) }) else {
                 return nil
             }
             return try? HAEntity(data: HAData(value: state))
         }
         return sortedByDisplayName(entities)
+    }
+
+    /// Decodes a `GET /api/states/{entity_id}` body with the same HAKit model the WebSocket path uses.
+    public static func entityState(fromRESTState json: Any) throws -> HAEntity {
+        guard let state = json as? [String: Any] else {
+            throw HomeAssistantRESTError.invalidResponse
+        }
+        return try HAEntity(data: HAData(value: state))
     }
 
     /// Extracts the spoken answer from a `POST /api/conversation/process` body, throwing when the

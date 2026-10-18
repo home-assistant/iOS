@@ -9,7 +9,19 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
     public var title: String
     public var path: String
     public var component: String
+    /// Whether the server suggests this panel in the sidebar.
+    ///
+    /// Core only started reporting this in 2026.3; before that the key was absent. It is _not_ a
+    /// signal for "is this a dashboard the user has": dashboards with "Show in sidebar" turned off
+    /// and the built-in `home`/`light`/`security`/`climate`/`maintenance` dashboards are all
+    /// reported as `false`, yet the frontend still offers all of them as navigation targets.
     public var showInSidebar: Bool
+    /// `default_visible` from core 2026.3+, `nil` on older servers. Sidebar visibility is stored per
+    /// user in the frontend, so this is only the default that the sidebar starts from.
+    public var defaultVisible: Bool?
+    /// The `title` exactly as the server sent it; `nil` when the server sent none. The frontend hides
+    /// untitled panels from its sidebar, so keep the distinction that `title`'s fallback erases.
+    public var rawTitle: String?
 
     public init(data: HAData) throws {
         let component: String = try data.decode("component_name")
@@ -23,10 +35,17 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
         }()
 
         self.showInSidebar = data.decode("show_in_sidebar", fallback: true)
+        self.defaultVisible = try? data.decode("default_visible")
         self.icon = data.decode("icon", fallback: fallbackIcon)
-        self.path = try data.decode("url_path")
+        let path: String = try data.decode("url_path")
+        self.path = path
 
-        let title: String = data.decode("title", fallback: component)
+        // Servers before 2026.3 don't send a title for dashboards hidden from the sidebar; the
+        // frontend falls back to the path for those, which reads better than the component name.
+        // An empty title counts as no title, the way the frontend's `!panel.title` check does.
+        let rawTitle: String? = (try? data.decode("title") as String).flatMap { $0.isEmpty ? nil : $0 }
+        self.rawTitle = rawTitle
+        let title = rawTitle ?? path
 
         let possibleFrontendKey: String
         if path == "lovelace" {
@@ -38,12 +57,22 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
         self.title = Current.localized.frontend(possibleFrontendKey) ?? title
     }
 
-    public init(icon: String?, title: String, path: String, component: String, showInSidebar: Bool) {
+    public init(
+        icon: String?,
+        title: String,
+        path: String,
+        component: String,
+        showInSidebar: Bool,
+        defaultVisible: Bool? = nil,
+        rawTitle: String? = nil
+    ) {
         self.icon = icon
         self.title = title
         self.path = path
         self.component = component
         self.showInSidebar = showInSidebar
+        self.defaultVisible = defaultVisible
+        self.rawTitle = rawTitle
     }
 }
 
@@ -51,41 +80,21 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
     public var panelsByPath: [String: HAPanel]
     public var allPanels: [HAPanel]
 
+    /// Panels the frontend never offers as a navigation target.
+    /// `SYSTEM_PANELS` in https://github.com/home-assistant/frontend/blob/dev/src/data/panel.ts
+    ///
+    /// `app` is the supervisor's untitled ingress host panel, which only serves `/app/<add-on slug>`.
+    /// Every add-on panel _also_ has `component_name: "app"`, but its url path is the add-on slug and
+    /// the frontend lists it in the sidebar like any other panel.
+    private static let systemPanelPaths: Set<String> = ["_my_redirect", "notfound", "app"]
+    /// The built-in dashboard the frontend defaults to since core 2026.3.
+    private static let overviewPath = "home"
+    /// The other dashboards core 2026.3+ registers built in, none of which are in the sidebar.
+    private static let builtInDashboardPaths: Set<String> = ["light", "security", "climate", "maintenance"]
+
     public init(panelsByPath: [String: HAPanel]) {
         self.panelsByPath = panelsByPath
-        self.allPanels = panelsByPath.values.sorted(by: {
-            let sortedByTitle = $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
-
-            switch ($0.component, $1.component) {
-            case ("lovelace", "lovelace"):
-                return sortedByTitle
-            case ("lovelace", _):
-                return true
-            case (_, "lovelace"):
-                return false
-            default:
-                // from the frontend as of 9a928259549b255ae79fbdb412538109e31d62d2 2021-07-28
-                // https://github.com/home-assistant/frontend/blob/b26c44b2/src/components/ha-sidebar.ts#L55-L63
-                let pathSortValue = [
-                    "energy": 1,
-                    "map": 2,
-                    "logbook": 3,
-                    "history": 4,
-                    "developer-tools": 9,
-                    "hassio": 10,
-                    "config": 11,
-                ]
-
-                let sort0 = pathSortValue[$0.path, default: -1]
-                let sort1 = pathSortValue[$1.path, default: -1]
-
-                if sort0 == sort1 {
-                    return sortedByTitle
-                } else {
-                    return sort0 < sort1
-                }
-            }
-        })
+        self.allPanels = panelsByPath.values.sorted(by: Self.isSortedBefore)
     }
 
     public init(data: HAData) throws {
@@ -93,21 +102,85 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
             throw HADataError.missingKey("root")
         }
 
-        try self.init(
-            panelsByPath: dictionary
-                .compactMapKeys {
-                    if $0.hasPrefix("_") {
-                        return nil
-                    } else {
-                        return $0
-                    }
-                }
-                .mapValues {
-                    try HAPanel(data: .init(value: $0))
-                }
-                // non-show_in_sidebar dashboards have badly-named titles
-                .filter(\.value.showInSidebar)
-        )
+        // A panel we can't decode shouldn't cost the user every other panel, so decode leniently.
+        let panels = dictionary.compactMap { key, value -> (String, HAPanel)? in
+            guard !Self.isSystemPanel(path: key) else { return nil }
+
+            do {
+                let panel = try HAPanel(data: .init(value: value))
+                return (key, panel)
+            } catch {
+                Current.Log.error("Failed to decode panel \(key): \(error)")
+                return nil
+            }
+        }
+
+        self.init(panelsByPath: Dictionary(panels, uniquingKeysWith: { first, _ in first }))
+    }
+
+    private static func isSystemPanel(path: String) -> Bool {
+        // Underscore-prefixed paths are internal panels, e.g. `_my_redirect`.
+        path.hasPrefix("_") || systemPanelPaths.contains(path)
+    }
+
+    /// The order the frontend gives panels that aren't dashboards.
+    /// `SORT_VALUE_URL_PATHS` in https://github.com/home-assistant/frontend/blob/dev/src/components/ha-sidebar.ts
+    private static let pathSortValue = [
+        "energy": 1,
+        "map": 2,
+        "logbook": 3,
+        "history": 4,
+        // Moved into `config` in core 2026.2, kept for older servers
+        "developer-tools": 9,
+        "hassio": 10,
+        "config": 11,
+    ]
+
+    /// Dashboards first, then everything else, mirroring `panelSorter` in
+    /// https://github.com/home-assistant/frontend/blob/dev/src/components/ha-sidebar.ts
+    private enum SortGroup: Int, Comparable {
+        case overview
+        case dashboard
+        case builtInDashboard
+        case other
+
+        static func < (lhs: Self, rhs: Self) -> Bool {
+            lhs.rawValue < rhs.rawValue
+        }
+    }
+
+    private static func sortGroup(of panel: HAPanel) -> SortGroup {
+        if panel.path == overviewPath {
+            return .overview
+        } else if panel.component == "lovelace" {
+            return .dashboard
+        } else if builtInDashboardPaths.contains(panel.path) {
+            return .builtInDashboard
+        } else {
+            return .other
+        }
+    }
+
+    private static func isSortedBefore(_ lhs: HAPanel, _ rhs: HAPanel) -> Bool {
+        let sortedByTitle = lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
+
+        let lhsGroup = sortGroup(of: lhs)
+        let rhsGroup = sortGroup(of: rhs)
+        guard lhsGroup == rhsGroup else {
+            return lhsGroup < rhsGroup
+        }
+        guard lhsGroup == .other else {
+            return sortedByTitle
+        }
+
+        let lhsSort = pathSortValue[lhs.path, default: -1]
+        let rhsSort = pathSortValue[rhs.path, default: -1]
+
+        if lhsSort == rhsSort {
+            return sortedByTitle
+        } else {
+            return lhsSort < rhsSort
+        }
     }
 }
 

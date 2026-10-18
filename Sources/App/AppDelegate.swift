@@ -85,6 +85,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIApplication.shared
         }
 
+        Current.requestSensorPermissions = { uniqueIDs in
+            Task { @MainActor in
+                SensorPermissionRequester.shared.requestPermissionsIfNeeded(forSensorUniqueIDs: uniqueIDs)
+            }
+        }
+
         Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
             if Current.isCatalyst {
                 return false
@@ -111,12 +117,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let launchingForLocation = launchOptions?[.location] != nil
 
-        // Warm the stand-by loading logo's WKWebView so it renders without cold-start delay.
-        // Skip on background location launches: the stand-by view is not shown then, and
-        // spinning up WebKit off-screen risks the app being terminated for doing too much work.
-        if !launchingForLocation {
-            AnimatedSVGWebViewCache.shared.preload(HomeAssistantStandByView.loadingLogoResourceName)
-        }
+        AnimatedSVGWebViewCache.shared
+            .preloadOnFirstActivation(HomeAssistantStandByView.loadingLogoResourceName)
 
         let event = ClientEvent(
             text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
@@ -137,6 +139,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RemindersSyncManager.shared.start()
         if #available(iOS 18.0, *) {
             SpotlightEntityIndexer.shared.start()
+        }
+        if #available(iOS 17.0, *) {
+            HomeAssistantAppShortcuts.updateAppShortcutParameters()
         }
 
         return true
@@ -249,6 +254,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notificationManager.didReceiveRemoteNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
     }
 
+    func applicationWillTerminate(_ application: UIApplication) {
+        Current.forceCloseWarningManager.postImmediateWarning()
+        // This prevents users from getting stuck on a page without a way to recover
+        if !Current.isCatalyst {
+            Current.settingsStore.lastActiveURLPath = nil
+        }
+    }
+
     func application(
         _ application: UIApplication,
         handleEventsForBackgroundURLSession identifier: String,
@@ -277,7 +290,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.updater.check(dueToUserInteraction: dueToUserInteraction).done { [sceneManager] update in
             let alert = UIAlertController(
                 title: L10n.Updater.UpdateAvailable.title,
-                message: update.body,
+                message: nil,
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(
@@ -443,8 +456,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupModels() {
-        // Import any legacy Realm data into GRDB before anything reads it
-        RealmToGRDBMigration.migrateIfNeeded()
         NotificationCategory.setupObserver()
         // Start the server-state subscriptions that keep GRDB models in sync
         // (zones via the states cache); without this, appZone is never populated
@@ -485,7 +496,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupUIApplicationShortcutItems() {
-        AppIconShortcutItemsUpdater.update()
+        AppIconShortcutItemsUpdater.start()
     }
 
     private func migrateIfNeeded() {

@@ -89,6 +89,7 @@ final class ComplicationsRootViewModel: ObservableObject {
     private func notifyComplicationsChanged() {
         NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
         HomeAssistantAPI.syncWatchContext()
-        WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
+        // Delivers the change and then has the watch re-render its complications from it.
+        WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
     }
 }

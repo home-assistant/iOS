@@ -21,8 +21,10 @@ public enum GRDBDatabaseTable: String {
     case appArea
     case homeViewConfiguration
     case assistConfiguration
+    case voiceToolsServerConfiguration
     case allowedTags
     case kioskSettings
+    case appLabsFeatureState
     case notificationSnoozeAction
     // Legacy (ClockKit-era) watch complications, migrated off Realm.
     case watchComplication
@@ -38,10 +40,14 @@ public enum GRDBDatabaseTable: String {
     case remindersSyncHistoryEntry
     // Focus names the user pairs with an iOS Focus Filter
     case focusName
+    case siriServerExposure
+    case siriEntityExposure
     // Calendar entities mirrored from Home Assistant
     case HACalendar = "hACalendar"
     // Events cached from the calendars above, so a fetch failure can fall back to them
     case HACalendarEvent = "hACalendarEvent"
+    // Every CSS custom property the frontend theme resolves to, per server and per light/dark mode
+    case frontendThemeVariable
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -167,6 +173,7 @@ public enum DatabaseTables {
         case areaId
         case hidden
         case icon
+        case nextNamePart
     }
 
     // Device Registry (full device registry data)
@@ -191,6 +198,8 @@ public enum DatabaseTables {
         case modifiedAt
         case nameByUser
         case name
+        case nextNamePart
+        case parentDeviceId
         case primaryConfigEntry
         case serialNumber
         case swVersion
@@ -205,6 +214,15 @@ public enum DatabaseTables {
         case enableOnDeviceTTS
         case onDeviceTTSVoiceIdentifier
         case startMode
+    }
+
+    /// The voice tools server's own settings. Deliberately not part of `AssistConfiguration`:
+    /// what this device offers Home Assistant has nothing to do with how Assist behaves in the app,
+    /// and the two are configured independently.
+    public enum VoiceToolsServerConfiguration: String, CaseIterable {
+        case id
+        case isEnabled
+        case port
     }
 
     public enum AllowedTag: String, CaseIterable {
@@ -234,6 +252,7 @@ public enum DatabaseTables {
         case entityDisplayName
         case iconName
         case iconColor
+        case textColor
         case gaugeAttribute
         case valueAttribute
         case valuePrecision
@@ -270,6 +289,7 @@ public enum DatabaseTables {
         case enabled
         case requireAuthentication
         case acceptRemoteCommands
+        case showRemoteCommandConfirmations
         case serverId
         case dashboard
         case keepScreenOn
@@ -277,9 +297,16 @@ public enum DatabaseTables {
         case hideStatusBar
         case autoReload
         case settingsEntryPosition
+        case settingsEntryHidden
         case settingsEntryBackgroundColor
         case settingsEntryIconColor
         case screensaver
+    }
+
+    // App Labs feature flags. Column names must match `AppLabsFeatureState`'s stored properties.
+    public enum AppLabsFeatureState: String, CaseIterable {
+        case id
+        case isEnabled
     }
 
     public enum AppZone: String, CaseIterable {
@@ -373,6 +400,22 @@ public enum DatabaseTables {
 
     // Focus names paired with an iOS Focus Filter. Column names must match `FocusName`'s stored
     // properties.
+    /// Whether a server's entities may be offered to Siri, Spotlight and the Shortcuts app.
+    public enum SiriServerExposure: String, CaseIterable {
+        case serverId
+        case isExposed
+    }
+
+    /// Whether a calendar or to-do list may be offered to Siri, and which one is the default.
+    public enum SiriEntityExposure: String, CaseIterable {
+        case id
+        case serverId
+        case entityId
+        case domain
+        case isExposed
+        case isDefault
+    }
+
     public enum FocusName: String, CaseIterable {
         case id
         case name
@@ -404,5 +447,18 @@ public enum DatabaseTables {
         case backgroundColor
         case supportedFeatures
         case sortOrder
+    }
+
+    // One row per CSS custom property the frontend resolves. Column names must match
+    // `FrontendThemeVariable`'s stored properties.
+    public enum FrontendThemeVariable: String, CaseIterable {
+        case id
+        case serverId
+        case appearance
+        case name
+        case value
+        case colorValue
+        case themeName
+        case updatedAt
     }
 }

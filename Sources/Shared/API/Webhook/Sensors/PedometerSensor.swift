@@ -4,7 +4,6 @@ import PromiseKit
 
 public class PedometerSensor: SensorProvider {
     public enum PedometerError: Error {
-        case unauthorized
         case unavailable
         case noData
     }
@@ -20,7 +19,16 @@ public class PedometerSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        firstly { () -> Promise<CMPedometerData> in
+        guard Current.pedometer.isStepCountingAvailable() else {
+            Current.Log.warning("Pedometer is not available")
+            return .init(error: PedometerError.unavailable)
+        }
+
+        guard Current.pedometer.isAuthorized() else {
+            return .value(PedometerSensor.allCases.map(\.awaitingPermissionSensor))
+        }
+
+        return firstly { () -> Promise<CMPedometerData> in
             latestPedometerData()
         }.then { [request] data in
             when(resolved: PedometerSensor.allCases.map { $0.asSensor(from: data, request: request) })
@@ -36,15 +44,6 @@ public class PedometerSensor: SensorProvider {
     }
 
     private func latestPedometerData() -> Promise<CMPedometerData> {
-        guard Current.pedometer.isAuthorized() else {
-            return .init(error: PedometerError.unauthorized)
-        }
-
-        guard Current.pedometer.isStepCountingAvailable() else {
-            Current.Log.warning("Pedometer is not available")
-            return .init(error: PedometerError.unavailable)
-        }
-
         let (promise, seal) = Promise<CMPedometerData>.pending()
 
         let end = Current.date()
@@ -150,19 +149,30 @@ public class PedometerSensor: SensorProvider {
             }
         }
 
+        var awaitingPermissionSensor: WebhookSensor {
+            WebhookSensor(awaitingPermissionNamed: name, uniqueID: rawValue)
+        }
+
         func asSensor(from data: CMPedometerData, request: SensorProviderRequest) -> Promise<WebhookSensor> {
             guard let intVal = keyPath.intValue(on: data) else {
-                return .init(error: PedometerError.noData)
+                guard request.reason == .registration else {
+                    return .init(error: PedometerError.noData)
+                }
+                return .value(sensor(state: "unavailable", request: request))
             }
 
-            return .value(WebhookSensor(
+            return .value(sensor(state: intVal, request: request))
+        }
+
+        private func sensor(state: Any, request: SensorProviderRequest) -> WebhookSensor {
+            WebhookSensor(
                 name: name,
                 uniqueID: rawValue,
                 icon: icon(serverVersion: request.serverVersion),
-                state: intVal,
+                state: state,
                 unit: unit,
                 stateClass: stateClass
-            ))
+            )
         }
     }
 }

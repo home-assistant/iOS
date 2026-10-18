@@ -3,6 +3,10 @@ import HAIconic
 import SFSafeSymbols
 import SwiftUI
 
+/// A full-width action button for the foot of a modal.
+///
+/// Frontend counterpart: an `ha-button` in `ha-dialog-footer`'s action slot. Ported here as one
+/// type because the app presents these outside dialogs too.
 public struct ModalReusableButton: View {
     public enum Icon {
         case sfSymbol(SFSymbol)
@@ -66,4 +70,10 @@ public struct ModalReusableButton: View {
         /* no-op */
     })
 }
+
+extension ModalReusableButton: FrontendComponent {
+    public static var frontendComponentName: String { "ha-button" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
+}
+
 #endif

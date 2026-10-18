@@ -28,4 +28,7 @@ enum WatchHomeNavigation: Hashable {
     case areasList(serverId: String)
     /// The watch-compatible entities of one area.
     case areaEntities(areaId: String, serverId: String)
+    /// The watch-compatible entities of one device, pushed by tapping a device section header on
+    /// the area screen. The name travels along so the screen can title itself without a lookup.
+    case deviceEntities(deviceId: String, serverId: String, name: String)
 }

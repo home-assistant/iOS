@@ -7,27 +7,28 @@ struct TTSVoicePickerView: View {
     @Binding var selectedVoiceIdentifier: String?
     @Environment(\.dismiss) private var dismiss
     @State private var searchTerm = ""
-    @State private var voiceGroups: [VoiceGroup]
+    /// `nil` while the voice catalog is still loading.
+    @State private var voiceGroups: [VoiceGroup]?
 
     private struct VoiceGroup: Identifiable {
         let language: String
         let displayName: String
-        let voices: [AVSpeechSynthesisVoice]
+        let voices: [OnDeviceVoice]
         var id: String { language }
     }
 
     init(selectedVoiceIdentifier: Binding<String?>) {
         self._selectedVoiceIdentifier = selectedVoiceIdentifier
-        self._voiceGroups = State(initialValue: Self.makeVoiceGroups())
     }
 
     private var filteredVoiceGroups: [VoiceGroup] {
+        let groups = voiceGroups ?? []
         let trimmedSearchTerm = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedSearchTerm.isEmpty else {
-            return voiceGroups
+            return groups
         }
 
-        return voiceGroups.compactMap { group in
+        return groups.compactMap { group in
             if group.displayName.localizedCaseInsensitiveContains(trimmedSearchTerm) {
                 return group
             }
@@ -70,7 +71,7 @@ struct TTSVoicePickerView: View {
 
             ForEach(filteredVoiceGroups) { group in
                 Section(group.displayName.capitalizedFirst) {
-                    ForEach(group.voices, id: \.identifier) { voice in
+                    ForEach(group.voices) { voice in
                         Button {
                             selectedVoiceIdentifier = voice.identifier
                             dismiss()
@@ -96,12 +97,21 @@ struct TTSVoicePickerView: View {
                 }
             }
         }
+        .overlay {
+            if voiceGroups == nil {
+                ProgressView()
+            }
+        }
         .searchable(text: $searchTerm)
         .navigationTitle(L10n.Assist.Settings.OnDeviceTts.voice)
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            guard voiceGroups == nil else { return }
+            voiceGroups = await Self.makeVoiceGroups()
+        }
     }
 
-    private func qualityLabel(for voice: AVSpeechSynthesisVoice) -> String? {
+    private func qualityLabel(for voice: OnDeviceVoice) -> String? {
         switch voice.quality {
         case .enhanced: return L10n.Assist.Settings.OnDeviceTts.Quality.enhanced
         case .premium: return L10n.Assist.Settings.OnDeviceTts.Quality.premium
@@ -109,8 +119,11 @@ struct TTSVoicePickerView: View {
         }
     }
 
-    private static func makeVoiceGroups() -> [VoiceGroup] {
-        let grouped = Dictionary(grouping: AVSpeechSynthesisVoice.speechVoices()) { $0.language }
+    /// Reading the voice catalog blocks on the TextToSpeech daemon, so the groups are built
+    /// asynchronously rather than while the view is created.
+    private static func makeVoiceGroups() async -> [VoiceGroup] {
+        let voices = await OnDeviceVoiceCatalog.voices()
+        let grouped = Dictionary(grouping: voices) { $0.language }
         return grouped
             .map { language, voices in
                 VoiceGroup(
@@ -120,5 +133,11 @@ struct TTSVoicePickerView: View {
                 )
             }
             .sorted { $0.displayName < $1.displayName }
+    }
+}
+
+#Preview {
+    NavigationView {
+        TTSVoicePickerView(selectedVoiceIdentifier: .constant(nil))
     }
 }

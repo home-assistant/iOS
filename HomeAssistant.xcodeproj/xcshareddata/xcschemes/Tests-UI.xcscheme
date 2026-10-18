@@ -29,18 +29,12 @@
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </CodeCoverageTargets>
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B657A9061CA646EB00121384"
-               BuildableName = "HomeAssistant-Tests-UI.xctest"
-               BlueprintName = "Tests-UI"
-               ReferencedContainer = "container:HomeAssistant.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:Tests/UI/Tests-UI.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

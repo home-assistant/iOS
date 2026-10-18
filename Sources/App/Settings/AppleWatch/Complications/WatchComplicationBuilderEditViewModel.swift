@@ -159,7 +159,9 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         }
         NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
         HomeAssistantAPI.syncWatchContext()
-        WatchMirrorPushCoordinator.schedule(reason: .complicationChanged)
+        // Sends the new rows to the watch and, once they land, asks it to fetch their values and
+        // re-render — so the face shows the edit instead of waiting for its next periodic refresh.
+        WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
     }
 
     /// A template complication saved without a name gets "Complication-N" (first free number), so it

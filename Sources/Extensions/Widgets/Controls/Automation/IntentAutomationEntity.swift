@@ -11,12 +11,20 @@ struct IntentAutomationEntity: AppEntity, EntityContextRepresentable {
     static let defaultQuery = IntentAutomationAppEntityQuery()
 
     var id: String
+    @Property(title: .init("app_intents.entity.property.entity_id", defaultValue: "Entity ID"))
     var entityId: String
     var serverId: String
+    @Property(title: .init("app_intents.entity.property.server", defaultValue: "Server"))
     var serverName: String
+    @Property(title: .init("app_intents.entity.property.area", defaultValue: "Area"))
     var areaName: String?
+    @Property(title: .init("app_intents.entity.property.device", defaultValue: "Device"))
     var deviceName: String?
+    var parentDeviceName: String?
+    var contextReach: EntityContextReach = .device
+    @Property(title: .init("app_intents.entity.property.floor", defaultValue: "Floor"))
     var floorName: String?
+    @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
@@ -33,19 +41,23 @@ struct IntentAutomationEntity: AppEntity, EntityContextRepresentable {
         serverName: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        parentDeviceName: String? = nil,
+        contextReach: EntityContextReach = .device,
         floorName: String? = nil,
         displayString: String,
         iconName: String
     ) {
         self.id = id
-        self.entityId = entityId
         self.serverId = serverId
+        self.iconName = iconName
+        self.entityId = entityId
         self.serverName = serverName
         self.areaName = areaName
         self.deviceName = deviceName
+        self.parentDeviceName = parentDeviceName
+        self.contextReach = contextReach
         self.floorName = floorName
         self.displayString = displayString
-        self.iconName = iconName
     }
 }
 
@@ -75,7 +87,7 @@ struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: [.automation]).getEntities(matching: string)
 
         for (server, values) in entities {
-            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let deviceContexts = values.deviceContexts(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
             let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
             automationEntities.append((server, values.map({ entity in
@@ -85,7 +97,9 @@ struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
                     serverId: entity.serverId,
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name,
-                    deviceName: deviceMap[entity.entityId]?.name,
+                    deviceName: deviceContexts[entity.entityId]?.deviceName,
+                    parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                    contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                     floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.flowchart.rawValue

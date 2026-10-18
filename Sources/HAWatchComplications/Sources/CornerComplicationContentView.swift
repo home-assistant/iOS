@@ -26,7 +26,8 @@ public struct CornerComplicationContentView: View {
     private let stackSpacing: CGFloat = 2
     private let iconSize: CGFloat = 20
     private let nameHeight: CGFloat = 11
-    private let valueHeight: CGFloat = 17
+    private let curvedValueHeight: CGFloat = 17
+    private let flatValueHeight: CGFloat = 24
     private let gaugeInset: CGFloat = 9
     private let maxTextWidth: CGFloat = 56
     private let arcLineWidth: CGFloat = 6
@@ -36,6 +37,14 @@ public struct CornerComplicationContentView: View {
     private var showsIcon: Bool { model.iconImage != nil }
     private var showsName: Bool { model.showsName && !model.title.isEmpty }
     private var showsValue: Bool { model.showsValue && !model.valueText.isEmpty }
+
+    /// The value's line: the flat (legacy outer-text) variant is set larger than the curved one.
+    private var valueHeight: CGFloat { model.curvesText ? curvedValueHeight : flatValueHeight }
+    private var valueFont: Font {
+        model.curvesText
+            ? .system(size: 14, weight: .bold, design: .rounded)
+            : CornerComplicationTypography.flatTextFont
+    }
 
     /// Estimated height of the visible icon/name/value stack, so the gauge can hang just below it.
     private var stackContentHeight: CGFloat {
@@ -53,6 +62,18 @@ public struct CornerComplicationContentView: View {
     private var halfSpan: Double { min(32, 27.5 / gaugeRadius * 180 / .pi) }
     private var startAngle: Double { -90 - halfSpan }
     private var endAngle: Double { -90 + halfSpan }
+    private var currentAngle: Double {
+        guard let fraction = model.fraction else { return startAngle }
+        return startAngle + (endAngle - startAngle) * fraction
+    }
+
+    private var gaugeMarkerPoint: CGPoint {
+        let radians = currentAngle * .pi / 180
+        return CGPoint(
+            x: arcCenter.x + CGFloat(cos(radians)) * gaugeRadius,
+            y: arcCenter.y + CGFloat(sin(radians)) * gaugeRadius
+        )
+    }
 
     public var body: some View {
         let textColor = model.textColor ?? .primary
@@ -72,16 +93,34 @@ public struct CornerComplicationContentView: View {
                     style: StrokeStyle(lineWidth: arcLineWidth, lineCap: .round)
                 )
 
-                Path { path in
-                    path.addArc(
-                        center: arcCenter,
-                        radius: gaugeRadius,
-                        startAngle: .degrees(startAngle),
-                        endAngle: .degrees(startAngle + (endAngle - startAngle) * fraction),
-                        clockwise: false
-                    )
+                switch model.gaugeDisplay {
+                case .progress:
+                    Path { path in
+                        path.addArc(
+                            center: arcCenter,
+                            radius: gaugeRadius,
+                            startAngle: .degrees(startAngle),
+                            endAngle: .degrees(startAngle + (endAngle - startAngle) * fraction),
+                            clockwise: false
+                        )
+                    }
+                    .stroke(model.tint, style: StrokeStyle(lineWidth: arcLineWidth, lineCap: .round))
+                case .gauge:
+                    Circle()
+                        .fill(model.tint)
+                        .frame(width: arcLineWidth, height: arcLineWidth)
+                        .position(gaugeMarkerPoint)
                 }
-                .stroke(model.tint, style: StrokeStyle(lineWidth: arcLineWidth, lineCap: .round))
+            }
+
+            if model.gaugeDisplay == .gauge, model.fraction != nil {
+                Circle()
+                    .stroke(
+                        model.tint.opacity(0.5),
+                        style: StrokeStyle(lineWidth: 1)
+                    )
+                    .frame(width: arcLineWidth + 2, height: arcLineWidth + 2)
+                    .position(gaugeMarkerPoint)
             }
 
             // Corner inward: icon, name, value.
@@ -106,7 +145,7 @@ public struct CornerComplicationContentView: View {
                 }
                 if showsValue {
                     Text(model.valueText)
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .font(valueFont)
                         .foregroundStyle(textColor)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
@@ -133,7 +172,9 @@ public extension CornerComplicationRenderModel {
         title: String? = "Battery",
         fraction: Double? = 0.68,
         tint: Color = .green,
-        textColor: Color? = nil
+        textColor: Color? = nil,
+        curvesText: Bool = true,
+        gaugeDisplay: CornerComplicationRenderModel.GaugeDisplay = .gauge
     ) -> CornerComplicationRenderModel {
         CornerComplicationRenderModel(
             iconImage: icon ? sampleBoltIcon() : nil,
@@ -143,7 +184,9 @@ public extension CornerComplicationRenderModel {
             showsValue: showValue,
             fraction: fraction,
             tint: tint,
-            textColor: textColor
+            textColor: textColor,
+            curvesText: curvesText,
+            gaugeDisplay: gaugeDisplay
         )
     }
 }
@@ -172,6 +215,11 @@ private func face(_ model: CornerComplicationRenderModel) -> some View {
 }
 
 @available(iOS 16.0, watchOS 10.0, *)
+#Preview("Value + name + progress") {
+    face(.sample(icon: false, gaugeDisplay: .progress)).padding()
+}
+
+@available(iOS 16.0, watchOS 10.0, *)
 #Preview("Value only") {
     face(.sample(icon: false, title: nil, fraction: nil)).padding()
 }
@@ -179,5 +227,17 @@ private func face(_ model: CornerComplicationRenderModel) -> some View {
 @available(iOS 16.0, watchOS 10.0, *)
 #Preview("Icon + gauge") {
     face(.sample(showValue: false, title: nil)).padding()
+}
+
+/// The long-standing rain-sparkline recipe: an icon plus a block-element bar graph.
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("Icon + block-element sparkline") {
+    face(.sample(value: "▁▂▃▄▅▆▇█", title: nil, fraction: nil)).padding()
+}
+
+/// A legacy Graphic Corner "Gauge Text" complication: its outer text flat and large in the corner tip.
+@available(iOS 16.0, watchOS 10.0, *)
+#Preview("Legacy flat outer text + gauge") {
+    face(.sample(icon: false, value: "16.6", title: nil, curvesText: false)).padding()
 }
 #endif

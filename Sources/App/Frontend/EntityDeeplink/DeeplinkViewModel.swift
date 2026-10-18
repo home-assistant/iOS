@@ -4,7 +4,7 @@ import SwiftUI
 import UIKit
 
 final class DeeplinkViewModel: ObservableObject {
-    let entityId: String
+    let target: DeeplinkTarget
     let serverName: String
 
     @Published var includeServer = false
@@ -12,8 +12,8 @@ final class DeeplinkViewModel: ObservableObject {
 
     private var resetWorkItem: DispatchWorkItem?
 
-    init(entityId: String, serverName: String) {
-        self.entityId = entityId
+    init(target: DeeplinkTarget, serverName: String) {
+        self.target = target
         self.serverName = serverName
     }
 
@@ -21,11 +21,12 @@ final class DeeplinkViewModel: ObservableObject {
         Current.servers.all.count > 1
     }
 
+    var description: String {
+        target.localizedDescription
+    }
+
     var deeplink: String {
-        let url = includeServer
-            ? AppConstants.openEntityMoreInfoDeeplinkURL(entityId: entityId, serverName: serverName)
-            : AppConstants.openEntityMoreInfoDeeplinkURL(entityId: entityId)
-        return url?.absoluteString ?? ""
+        target.url(serverName: includeServer ? serverName : nil)?.absoluteString ?? ""
     }
 
     func copyToClipboard() {

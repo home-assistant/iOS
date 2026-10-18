@@ -18,6 +18,8 @@ final class WatchEntityDetailsViewModel: ObservableObject {
     let itemInfo: MagicItem.Info
 
     private let poller: WatchEntityStatePoller
+    /// The latest snapshot, which the icon takes its state color from.
+    private var entity: HAEntity?
 
     /// - Parameter initialEntity: a snapshot to render right away, used by previews so the screen
     ///   shows real content without a server. Polling replaces it as soon as it fetches.
@@ -25,6 +27,7 @@ final class WatchEntityDetailsViewModel: ObservableObject {
         self.item = item
         self.itemInfo = itemInfo
         self.poller = WatchEntityStatePoller(entityId: item.id, serverId: item.serverId)
+        self.entity = initialEntity
         self.details = initialEntity.map { WatchEntityDetails(entity: $0, serverId: item.serverId) }
     }
 
@@ -37,17 +40,21 @@ final class WatchEntityDetailsViewModel: ObservableObject {
         item.icon(info: itemInfo)
     }
 
+    /// The color follows the entity's state, as on the home rows. Only a custom *color* overrides it,
+    /// whatever the state.
     var iconColor: UIColor {
-        if let hex = itemInfo.customization?.iconColor {
-            return UIColor(hex: hex)
+        let customColor = itemInfo.customization?.customIconColor.map { UIColor(hex: $0) }
+        if let entity {
+            return entity.stateIconColor(customColor: customColor) ?? .white
         }
-        return .white
+        return customColor ?? .white
     }
 
     func startStateUpdates() {
         poller.start { [weak self] snapshot in
             guard let self else { return }
             if let entity = snapshot.entity {
+                self.entity = entity
                 details = WatchEntityDetails(entity: entity, serverId: item.serverId)
             }
             isStale = snapshot.isStale

@@ -59,6 +59,10 @@ final class WatchHomeViewModel: ObservableObject {
 
     /// Registration for background (`transferUserInfo`) config responses from the phone.
     private var guaranteedObserver: HAWatchConnectivity.ObservationToken?
+    private let runtimeSessions: WatchExtendedRuntimeSessionHolding
+    private var isHoldingRuntimeSession = false
+    private var didBecomeActiveObserver: NSObjectProtocol?
+    private var needsCacheLoadOnActive = false
 
     /// Minimum time each `loadingStatus` value stays on screen, so rapid chunk progress doesn't blink
     /// through numbers too fast to read.
@@ -91,11 +95,23 @@ final class WatchHomeViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + (Self.minStatusDisplay - elapsed), execute: work)
     }
 
-    init() {
+    init(runtimeSessions: WatchExtendedRuntimeSessionHolding = WatchExtendedRuntimeSessionManager.shared) {
+        self.runtimeSessions = runtimeSessions
         // The phone answers a background config pull with a guaranteed message; route it through the
         // same conflict-aware reconcile as the interactive reply so offline edits aren't clobbered.
         self.guaranteedObserver = Communicator.shared.guaranteedMessage.observe { [weak self] message in
             Task { @MainActor in self?.handleGuaranteedConfigResponse(message) }
+        }
+        self.didBecomeActiveObserver = NotificationCenter.default.addObserver(
+            forName: WKApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.needsCacheLoadOnActive else { return }
+                self.needsCacheLoadOnActive = false
+                self.loadCache()
+            }
         }
     }
 
@@ -103,6 +119,22 @@ final class WatchHomeViewModel: ObservableObject {
         if let guaranteedObserver {
             Communicator.shared.guaranteedMessage.unobserve(guaranteedObserver)
         }
+        if let didBecomeActiveObserver {
+            NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+        }
+        endExtendedRuntime()
+    }
+
+    private func beginExtendedRuntime() {
+        guard !isHoldingRuntimeSession else { return }
+        isHoldingRuntimeSession = true
+        runtimeSessions.begin(.databaseSync)
+    }
+
+    private func endExtendedRuntime() {
+        guard isHoldingRuntimeSession else { return }
+        isHoldingRuntimeSession = false
+        runtimeSessions.end(.databaseSync)
     }
 
     @MainActor
@@ -182,6 +214,7 @@ final class WatchHomeViewModel: ObservableObject {
         }
         isSyncInFlight = true
         isSyncUserInitiated = userInitiated
+        beginExtendedRuntime()
         isLoading = true
         clearError()
         setLoadingStatus(L10n.Watch.Sync.starting)
@@ -207,6 +240,7 @@ final class WatchHomeViewModel: ObservableObject {
         // keeps this abandoned sync from blocking a later reload.
         isLoading = false
         isSyncInFlight = false
+        endExtendedRuntime()
         loadCache()
         setLoadingStatus(L10n.Watch.Home.Sync.waiting)
         enqueueGuaranteedConfigPull()
@@ -248,6 +282,15 @@ final class WatchHomeViewModel: ObservableObject {
             return resolved
         }
         return .init(id: magicItem.id, name: magicItem.id, iconName: "")
+    }
+
+    /// The area the item's entity belongs to, or `nil` when it has none (or isn't an entity at all).
+    /// Rows whose domain has no state worth showing put this under the name instead, so a script or
+    /// automation still says where it lives. Resolved from the same registry the provider already
+    /// loaded for `info(for:)`, so it costs no extra database read.
+    func areaName(for magicItem: MagicItem) -> String? {
+        guard magicItem.type != .folder, !magicItem.serverId.isEmpty else { return nil }
+        return magicItemProvider.getAreaName(for: magicItem)
     }
 
     // MARK: - Offline-aware config reconciliation
@@ -643,6 +686,12 @@ final class WatchHomeViewModel: ObservableObject {
     /// mirrors how the iPhone watch-configuration editor resolves item info.
     @MainActor
     func loadCache(isRetry: Bool = false) {
+        // Nothing is on screen while backgrounded, and these reads are what got the app killed for
+        // holding the app-group SQLite lock when it was frozen (0xdead10cc).
+        guard WKApplication.shared().applicationState != .background else {
+            needsCacheLoadOnActive = true
+            return
+        }
         refreshServerURLAttention()
         let fetchedConfig: WatchConfig?
         do {
@@ -686,22 +735,36 @@ final class WatchHomeViewModel: ObservableObject {
         let provider = magicItemProvider
         provider.loadInformation { [weak self] entitiesPerServer in
             DispatchQueue.main.async {
-                guard let self else { return }
-                var infos: [MagicItem.Info] = []
-                for item in config.items {
-                    if let info = provider.getInfo(for: item) { infos.append(info) }
-                    if item.type == .folder, let children = item.items {
-                        for child in children {
-                            if let info = provider.getInfo(for: child) { infos.append(info) }
-                        }
-                    }
-                }
-                self.updateConfig(config: config, magicItemsInfo: infos)
-                self.updateAreasMode(config: config, entitiesPerServer: entitiesPerServer)
-                self.resetError()
-                self.finishCacheLoad()
+                self?.applyLoadedInformation(config: config, provider: provider, entitiesPerServer: entitiesPerServer)
             }
         }
+    }
+
+    @MainActor
+    private func applyLoadedInformation(
+        config: WatchConfig,
+        provider: MagicItemProviderProtocol,
+        entitiesPerServer: [String: [HAAppEntity]]
+    ) {
+        var infos: [MagicItem.Info] = []
+        for item in config.items {
+            if let info = provider.getInfo(for: item) { infos.append(info) }
+            if item.type == .folder, let children = item.items {
+                for child in children {
+                    if let info = provider.getInfo(for: child) { infos.append(info) }
+                }
+            }
+        }
+        updateConfig(config: config, magicItemsInfo: infos)
+        // The wrist can go down while the items load; the areas read would then start
+        // backgrounded, so leave it to the load that runs on the next activation.
+        if WKApplication.shared().applicationState == .background {
+            needsCacheLoadOnActive = true
+        } else {
+            updateAreasMode(config: config, entitiesPerServer: entitiesPerServer)
+        }
+        resetError()
+        finishCacheLoad()
     }
 
     /// Serial queue for the areas-mode computation — the area fetch is a synchronous database read
@@ -730,6 +793,20 @@ final class WatchHomeViewModel: ObservableObject {
             DispatchQueue.main.async { [weak self] in
                 self?.areasMode = mode
             }
+        }
+    }
+
+    /// Whether the home screen actually renders area content — the inline area rows or the grouped
+    /// "Areas" navigation row. The empty state text is suppressed when this is true: with no
+    /// configured items the screen still has the areas to browse, so it isn't empty.
+    var showsAreasContent: Bool {
+        switch areasMode {
+        case .hidden:
+            return false
+        case let .inline(areas):
+            return !areas.isEmpty
+        case .grouped:
+            return groupedAreasDestination() != nil
         }
     }
 
@@ -809,6 +886,7 @@ final class WatchHomeViewModel: ObservableObject {
                 // Loading is over — the sync (if any) has reached a terminal state, so a new reload may
                 // start.
                 self?.isSyncInFlight = false
+                self?.endExtendedRuntime()
                 self?.syncProgress = nil
                 if clearStatus {
                     // Cancel any pending throttled status update and clear immediately.

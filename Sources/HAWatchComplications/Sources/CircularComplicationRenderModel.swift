@@ -35,7 +35,7 @@ public struct CircularComplicationRenderModel {
         isCapacityGauge: Bool = false,
         minLabel: String? = nil,
         maxLabel: String? = nil,
-        tint: Color = .accentColor,
+        tint: Color = .complicationDefaultTint,
         textColor: Color? = nil
     ) {
         self.iconImage = iconImage
@@ -58,5 +58,16 @@ public struct CircularComplicationRenderModel {
         let hasIcon = showsIcon && iconImage != nil
         let hasName = showsName && !title.isEmpty
         return !hasIcon && !hasName
+    }
+
+    /// Whether the face leads with a large centered icon and renders the value in the open gauge's
+    /// bottom label instead of stacking the two in the middle.
+    ///
+    /// That bottom slot is occupied by the min/max labels when they're shown and doesn't exist on the
+    /// capacity ring, so this is exactly the open-gauge-without-min/max case: with the slot free, the
+    /// value reads better underneath and the icon gets the whole inner circle rather than sharing it.
+    public var isIconLedWithBottomValue: Bool {
+        guard fraction != nil, !isCapacityGauge, minLabel == nil, maxLabel == nil else { return false }
+        return showsIcon && iconImage != nil && showsValue && !valueText.isEmpty
     }
 }

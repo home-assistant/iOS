@@ -3,6 +3,7 @@ import CoreSpotlight
 import CryptoKit
 import Foundation
 import Shared
+import UIKit
 
 /// Publishes the entities and calendars cached in the local database to Spotlight, so searching the
 /// system for an entity's name (or its area, device or server) finds it and opens its more-info
@@ -46,7 +47,13 @@ final class SpotlightEntityIndexer: ServerObserver {
     private let index = CSSearchableIndex(name: Constants.indexName)
     private let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
     private var databaseObserver: NSObjectProtocol?
+    private var backgroundObserver: NSObjectProtocol?
+    private var foregroundObserver: NSObjectProtocol?
+    private var exposureObserver: NSObjectProtocol?
     private var reindexTask: Task<Void, Never>?
+    /// Set when a pass was cancelled or deferred because the app left the foreground, so the next
+    /// foreground redoes it instead of waiting for another database update.
+    private var needsReindexOnForeground = false
 
     private init() {}
 
@@ -62,8 +69,89 @@ final class SpotlightEntityIndexer: ServerObserver {
                 self?.scheduleReindex(reason: "database updated")
             }
         }
+        // Catalyst is excluded like the rest of its lifecycle handling: it can sit in .background
+        // without a foreground transition ever following, which would defer the reindex forever.
+        if !Current.isCatalyst {
+            backgroundObserver = NotificationCenter.default.addObserver(
+                forName: UIApplication.didEnterBackgroundNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor in
+                    self?.cancelPendingReindex()
+                }
+            }
+            foregroundObserver = NotificationCenter.default.addObserver(
+                forName: UIApplication.willEnterForegroundNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor in
+                    self?.reindexAfterForegroundIfNeeded()
+                }
+            }
+        }
+        // Changing which servers Siri may use has to take effect now, not at the next database
+        // update: the index and the App Shortcut parameters are what actually carry the change.
+        exposureObserver = NotificationCenter.default.addObserver(
+            forName: .siriEntityExposureDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.scheduleReindex(reason: "Siri exposure changed")
+            }
+        }
         Current.servers.add(observer: self)
         scheduleReindex(reason: "app launch")
+    }
+
+    /// A pass running while backgrounded reads the shared-container database with nothing keeping the
+    /// process alive, so a suspension mid-read is caught holding the SQLite file lock (0xdead10cc).
+    /// The index is only visible from Spotlight anyway, so the work can wait for the next foreground.
+    private func cancelPendingReindex() {
+        guard reindexTask != nil else { return }
+        reindexTask?.cancel()
+        reindexTask = nil
+        needsReindexOnForeground = true
+    }
+
+    /// Reindexes the named entities on request from the system, which asks when it notices the index
+    /// may be stale rather than waiting for the next database change.
+    @available(iOS 27.0, *)
+    func reindex(entityIds: [String]) async throws {
+        guard let snapshot = await Task.detached(priority: .utility) { Self.makeSnapshot() }.value else {
+            return
+        }
+        let entities = Self.entitiesToReindex(from: snapshot.entities, matching: entityIds)
+        guard !entities.isEmpty else { return }
+        try await index.indexAppEntities(entities)
+    }
+
+    /// The entities the system named, picked out of the current snapshot.
+    ///
+    /// Split out so the selection can be tested without driving the indexer, which only runs from
+    /// the system's requests, the same reason `indexableServers` below is its own function. The
+    /// system may name identifiers the snapshot no longer holds, so anything unknown is dropped
+    /// rather than reported.
+    nonisolated static func entitiesToReindex(
+        from entities: [HAAppEntityAppIntentEntity],
+        matching identifiers: [String]
+    ) -> [HAAppEntityAppIntentEntity] {
+        let wanted = Set(identifiers)
+        return entities.filter { wanted.contains($0.id) }
+    }
+
+    /// Rebuilds the whole index on request from the system.
+    @available(iOS 27.0, *)
+    func reindexEverything() async {
+        await reindex(reason: "system asked for a reindex")
+    }
+
+    private func reindexAfterForegroundIfNeeded() {
+        guard needsReindexOnForeground else { return }
+        needsReindexOnForeground = false
+        scheduleReindex(reason: "returned to foreground")
     }
 
     nonisolated func serversDidChange(_ serverManager: ServerManager) {
@@ -80,10 +168,31 @@ final class SpotlightEntityIndexer: ServerObserver {
             try? await Task.sleep(for: Constants.coalescingDelay)
             guard !Task.isCancelled else { return }
             await self?.reindex(reason: reason)
+            // Clear the finished pass so a background transition doesn't mistake it for pending
+            // work and re-arm a reindex. Cancellation is re-checked because a newer schedule may
+            // have replaced the stored task while this one was indexing; both run on the main
+            // actor, so the check and the clear can't interleave with a replacement.
+            guard !Task.isCancelled else { return }
+            self?.reindexTask = nil
+        }
+    }
+
+    /// Events are indexed on their own because the entity is iOS 27; see
+    /// `CalendarEventSpotlightIndexer` for why it isn't part of the snapshot.
+    private func reindexCalendarEvents() async {
+        if #available(iOS 27.0, *) {
+            await CalendarEventSpotlightIndexer.reindex(index: index, defaults: defaults)
         }
     }
 
     private func reindex(reason: String) async {
+        // A trigger fired while backgrounded (background refresh, servers changing) lands here with
+        // the coalescing delay already spent; defer it to the foreground instead of reading the
+        // database from an unprotected background process.
+        if !Current.isCatalyst, UIApplication.shared.applicationState == .background {
+            needsReindexOnForeground = true
+            return
+        }
         let snapshot = await Task.detached(priority: .utility) { Self.makeSnapshot() }.value
         guard let snapshot else { return }
 
@@ -128,6 +237,9 @@ final class SpotlightEntityIndexer: ServerObserver {
                 entityIds: indexedIds,
                 calendarIds: indexedCalendarIds
             ))
+            await reindexCalendarEvents()
+            // The entities that changed are the ones App Shortcut phrases name.
+            HomeAssistantAppShortcuts.updateAppShortcutParameters()
             Current.Log
                 .info(
                     "Spotlight entity index updated (\(reason)): \(indexedIds.count) entities, \(indexedCalendarIds.count) calendars, \(staleIds.count + staleCalendarIds.count) removed"
@@ -148,8 +260,36 @@ final class SpotlightEntityIndexer: ServerObserver {
     /// Hidden entities are excluded (as everywhere else in the app) and so are config/diagnostic ones,
     /// which would otherwise bury the entities people search for under firmware versions and signal
     /// strengths.
+    /// The servers whose entities belong in the index, in a stable order.
+    ///
+    /// Split out so the opt-out can be tested without driving the indexer, which only runs from
+    /// notifications and database observers.
+    nonisolated static func indexableServers(_ servers: [Server], hiding hidden: Set<String>) -> [Server] {
+        servers
+            .filter { !hidden.contains($0.identifier.rawValue) }
+            .sorted { $0.identifier.rawValue < $1.identifier.rawValue }
+    }
+
+    /// Calendars follow the same rule: they belong to a server too.
+    nonisolated static func indexableCalendars(_ calendars: [HACalendar], hiding hidden: Set<String>) -> [HACalendar] {
+        calendars.filter { !hidden.contains($0.serverId) }
+    }
+
+    /// The signature covers which servers are hidden, so flipping the setting reads as a change
+    /// rather than as a pass worth skipping.
+    nonisolated static func signaturePrefix(includesServerContext: Bool, hiding hidden: Set<String>) -> [String] {
+        [
+            "serverContext=\(includesServerContext)",
+            "hidden=\(hidden.sorted().joined(separator: ","))",
+        ]
+    }
+
     private nonisolated static func makeSnapshot() -> Snapshot? {
-        let servers = Current.servers.all.sorted { $0.identifier.rawValue < $1.identifier.rawValue }
+        // A server the user opted out of is left out of the index entirely, which is what removes
+        // its entities from Spotlight search. The signature covers the choice too, so toggling it
+        // is a change the next pass acts on rather than one it skips as unchanged.
+        let hiddenServerIds = SiriServerExposure.hiddenServerIds()
+        let servers = indexableServers(Current.servers.all, hiding: hiddenServerIds)
         let includesServerContext = servers.count > 1
 
         let allEntities: [HAAppEntity]
@@ -161,7 +301,7 @@ final class SpotlightEntityIndexer: ServerObserver {
         }
 
         var entities: [HAAppEntityAppIntentEntity] = []
-        var signatureLines = ["serverContext=\(includesServerContext)"]
+        var signatureLines = signaturePrefix(includesServerContext: includesServerContext, hiding: hiddenServerIds)
 
         for server in servers {
             let serverId = server.identifier.rawValue
@@ -169,7 +309,7 @@ final class SpotlightEntityIndexer: ServerObserver {
                 .filter { $0.serverId == serverId && $0.entityCategory == nil }
                 .sorted { $0.id < $1.id }
             let areasMap = serverEntities.areasMap(for: serverId)
-            let devicesMap = serverEntities.devicesMap(for: serverId)
+            let deviceContexts = serverEntities.deviceContexts(for: serverId)
             let floorNamesMap = serverEntities.floorNamesMap(for: serverId)
 
             for entity in serverEntities {
@@ -179,7 +319,9 @@ final class SpotlightEntityIndexer: ServerObserver {
                     serverId: serverId,
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name,
-                    deviceName: devicesMap[entity.entityId]?.name,
+                    deviceName: deviceContexts[entity.entityId]?.deviceName,
+                    parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                    contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                     floorName: floorNamesMap[entity.entityId],
                     displayString: entity.name,
                     iconName: iconName(for: entity),
@@ -191,6 +333,8 @@ final class SpotlightEntityIndexer: ServerObserver {
                     indexed.displayString,
                     indexed.areaName ?? "",
                     indexed.deviceName ?? "",
+                    indexed.parentDeviceName ?? "",
+                    "\(indexed.contextReach)",
                     indexed.floorName ?? "",
                     indexed.serverName,
                     indexed.iconName,
@@ -198,7 +342,8 @@ final class SpotlightEntityIndexer: ServerObserver {
             }
         }
 
-        let calendars = HACalendar.all().map(HACalendarAppEntity.init(calendar:))
+        let calendars = indexableCalendars(HACalendar.all(), hiding: hiddenServerIds)
+            .map(HACalendarAppEntity.init(calendar:))
         for calendar in calendars {
             signatureLines.append([
                 "calendar",

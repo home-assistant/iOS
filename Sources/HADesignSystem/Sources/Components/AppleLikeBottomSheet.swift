@@ -11,8 +11,14 @@ private enum AppleLikeBottomSheetConstants {
     static let closebuttonSize: CGFloat = 30
 }
 
+/// A sheet that rises from the bottom of the screen, drawn the way iOS draws one.
+///
+/// Frontend counterpart: `ha-bottom-sheet` and `ha-resizable-bottom-sheet`. Those exist because the
+/// web has no sheet of its own; this deliberately follows the platform's idiom rather than their
+/// styling, which is why it is named for the platform and not for them.
 public struct AppleLikeBottomSheet<Content: View>: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     /// Used for appear and disappear bottom sheet animation
     @State private var displayBottomSheet = false
     private let title: String?
@@ -96,7 +102,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         .frame(minHeight: bottomSheetMinHeight)
         .frame(maxWidth: maxWidth, alignment: .center)
         .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
+        .clipShape(sheetShape)
         .shadow(color: .black.opacity(0.2), radius: 20)
         .padding(DesignSystem.Spaces.one)
         .fixedSize(horizontal: false, vertical: true)
@@ -119,16 +125,33 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     private var maxWidth: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if horizontalSizeClass == .compact {
             .infinity
         } else {
             400
         }
     }
 
+    /// From iOS 26 the corners follow the container the sheet actually sits in, which the screen-radius
+    /// arithmetic in `perfectCornerRadius` only approximates for the built-in display.
+    private var sheetShape: AnyShape {
+        if #available(iOS 26, *) {
+            let minimumCornerRadius: CGFloat = horizontalSizeClass == .compact ? DesignSystem.CornerRadius.one : 50
+            return AnyShape(ConcentricRectangle(
+                corners: .concentric(minimum: .fixed(minimumCornerRadius)),
+                isUniform: true
+            ))
+        } else {
+            return AnyShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
+        }
+    }
+
     private var perfectCornerRadius: CGFloat {
         let cornerRadius: CGFloat = {
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if horizontalSizeClass == .compact {
+                // TODO: Modernization - `UIScreen.main` is deprecated and only describes the built-in display.
+                // Below iOS 26 the screen has to come from the hosting window (`view.window?.windowScene?.screen`),
+                // which a SwiftUI view can only reach through a representable.
                 return UIScreen.main.displayCornerRadius - DesignSystem.Spaces.one
             } else {
                 return 50
@@ -204,4 +227,10 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         trailing: DesignSystem.Spaces.two
     ), state: .constant(.initial), willDismiss: {})
 }
+
+extension AppleLikeBottomSheet: FrontendComponent {
+    public static var frontendComponentName: String { "ha-bottom-sheet" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
+}
+
 #endif

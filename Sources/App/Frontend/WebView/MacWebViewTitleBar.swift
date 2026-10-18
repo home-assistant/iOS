@@ -68,29 +68,36 @@ extension MacWebViewTitleBar {
             static let serverPickerHorizontalPadding: CGFloat = 8
         }
 
-        // Gestures excluding no-op, already existing toolbar actions and
-        // Smart back, which is not available as a toolbar action
+        // Gestures excluding no-op and already existing toolbar actions
         private static let gestureActions: [HAGestureAction] = HAGestureAction.allCases.filter { ![
             .none,
             .nextPage,
             .backPage,
-            .smartBack
+            .openInBrowser
         ].contains($0) }
 
         private weak var webViewController: WebViewController?
         private weak var titlebar: UITitlebar?
+        private weak var windowScene: UIWindowScene?
         private weak var serverPickerItem: NSMenuToolbarItem?
         private var toolbar: NSToolbar?
         private var server: Server?
         private var macToolbarItems: [MagicItem] = []
         private var macToolbarConfigObserver: NSObjectProtocol?
+        private var serverPickerSignature: String?
 
+        /// Runs on every SwiftUI update of the host view, and the frontend publishes state throughout a page
+        /// load, so anything expensive here (a database read, a re-rendered toolbar item) has to be skipped
+        /// when nothing changed rather than landing on top of the stand-by fade.
         func update(server: Server, webViewController: WebViewController?) {
+            let isFirstUpdate = self.server == nil
             self.server = server
             self.webViewController = webViewController
 
-            loadMacToolbarItems()
-            observeMacToolbarConfigChanges()
+            if isFirstUpdate {
+                loadMacToolbarItems()
+                observeMacToolbarConfigChanges()
+            }
 
             refreshToolbarState()
         }
@@ -98,6 +105,7 @@ extension MacWebViewTitleBar {
         func attach(to windowScene: UIWindowScene?) {
             guard let titlebar = windowScene?.titlebar else { return }
             self.titlebar = titlebar
+            self.windowScene = windowScene
 
             if toolbar == nil || titlebar.toolbar !== toolbar {
                 let toolbar = NSToolbar(identifier: Constants.toolbarIdentifier)
@@ -330,6 +338,7 @@ extension MacWebViewTitleBar {
             }
 
             serverPickerItem = item
+            serverPickerSignature = nil
             updateServerPicker()
             return item
         }
@@ -337,6 +346,13 @@ extension MacWebViewTitleBar {
         private func updateServerPicker() {
             guard let serverPickerItem else { return }
             let title = server?.info.name ?? L10n.WebView.ServerSelection.title
+            let signature = (
+                [server?.identifier.rawValue ?? "", title]
+                    + Current.servers.all.map { "\($0.identifier.rawValue)\t\($0.info.name)" }
+            )
+            .joined(separator: "\n")
+            guard serverPickerSignature != signature else { return }
+            serverPickerSignature = signature
             serverPickerItem.label = title
             serverPickerItem.paletteLabel = L10n.ServersSelection.title
             serverPickerItem.toolTip = title
@@ -368,10 +384,10 @@ extension MacWebViewTitleBar {
                 UIAction(
                     title: server.info.name,
                     state: server.identifier == selectedIdentifier ? .on : .off
-                ) { _ in
+                ) { [weak self] _ in
                     // Not `activate(server:)`: like the server-cycling gestures, the toolbar menu
                     // switches in place without sending the user back to the Home Assistant root.
-                    Current.sceneManager.appCoordinator.done { coordinator in
+                    Current.sceneManager.appCoordinator(for: self?.windowScene).done { coordinator in
                         coordinator.open(server: server)
                     }
                 }
@@ -407,8 +423,10 @@ extension MacWebViewTitleBar {
                 .arrowUturnBackward
             case .nextPage:
                 .arrowUturnForward
-            case .smartBack:
-                .arrowUturnBackward
+            case .openInBrowser:
+                .safari
+            case .createDeeplink:
+                .link
             case .showServersList:
                 .serverRack
             case .nextServer:
@@ -530,7 +548,7 @@ extension MacWebViewTitleBar {
                       entityId: magicItem.id,
                       serverId: magicItem.serverId
                   ) else { return }
-            Current.sceneManager.appCoordinator.done { coordinator in
+            Current.sceneManager.appCoordinator(for: windowScene).done { coordinator in
                 IncomingURLHandler(coordinator: coordinator).handle(url: url)
             }
         }

@@ -2,6 +2,10 @@
 import SFSafeSymbols
 import SwiftUI
 
+/// The circular dismiss button in the corner of a sheet or overlay.
+///
+/// Frontend counterpart: `ha-icon-button` carrying `mdiClose`, which is how the frontend builds
+/// every close affordance — it has no dedicated close element.
 public struct CloseButton: View {
     public enum Size {
         case small
@@ -88,4 +92,10 @@ public struct CloseButton: View {
         Spacer()
     }
 }
+
+extension CloseButton: FrontendComponent {
+    public static var frontendComponentName: String { "ha-icon-button" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
+}
+
 #endif

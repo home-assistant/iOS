@@ -203,6 +203,16 @@ struct WatchComplicationConfigurationSheet: View {
                     }
                     .pickerStyle(.segmented)
                 }
+                if currentFamily == .corner {
+                    Picker(selection: cornerGaugeDisplayBinding) {
+                        ForEach(WatchComplicationConfig.CornerGaugeDisplay.allCases) { display in
+                            Text(verbatim: display.title).tag(display)
+                        }
+                    } label: {
+                        Text(L10n.Watch.Complications.CornerGaugeDisplay.title)
+                    }
+                    .pickerStyle(.segmented)
+                }
                 // Numeric range + min/max labels only apply to entity gauges.
                 if viewModel.config.kind == .entity {
                     numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
@@ -346,6 +356,11 @@ struct WatchComplicationConfigurationSheet: View {
 
     // MARK: - Bindings
 
+    /// What the text color pickers show for a complication that sets none: the white every render
+    /// surface falls back to on the black watch face (see `ComplicationRenderContext.textColor`), so
+    /// the picker and the face never disagree about the default.
+    private static let defaultTextColor: Color = .white
+
     private func updateOptions(_ mutate: (inout WatchComplicationConfig.FamilyOptions) -> Void) {
         var options = viewModel.config.options(for: currentFamily)
         mutate(&options)
@@ -394,6 +409,13 @@ struct WatchComplicationConfigurationSheet: View {
         )
     }
 
+    private var cornerGaugeDisplayBinding: Binding<WatchComplicationConfig.CornerGaugeDisplay> {
+        Binding(
+            get: { viewModel.config.cornerGaugeDisplay(for: currentFamily) },
+            set: { value in updateOptions { $0.cornerGaugeDisplay = value.rawValue } }
+        )
+    }
+
     private var tintBinding: Binding<Color> {
         Binding(
             get: { viewModel.config.tint(for: currentFamily).map { Color(uiColor: UIColor($0)) } ?? Color.haPrimary },
@@ -401,13 +423,23 @@ struct WatchComplicationConfigurationSheet: View {
         )
     }
 
-    /// Text/value color; defaults to primary when unset.
+    /// Text/value color; an unset color shows as the white the complication actually draws on the
+    /// black watch face.
+    ///
+    /// Not `.primary`: it has no static `cgColor`, so the color well can't show it and falls back to
+    /// its own default swatch — which read as a color the complication would render (it never did),
+    /// while the face kept drawing white. `.primary` would be wrong here anyway: the picker sits in
+    /// the iPhone's light/dark UI, where it resolves to black, and the complication is drawn on the
+    /// watch's black face, where it resolves to white.
     private var textColorBinding: Binding<Color> {
         Binding(
             get: { viewModel.config.textColor(for: currentFamily)
-                .map { Color(uiColor: UIColor(hex: $0)) } ?? .primary
+                .map { Color(uiColor: UIColor(hex: $0)) } ?? Self.defaultTextColor
             },
-            set: { value in updateOptions { $0.textColor = UIColor(value).hexString(true) } }
+            // Config-wide, not per-size (like the icon color): writing only the selected size left
+            // every other size drawing the face default — the color picked on circular never reached
+            // the corner slot the complication was actually sitting in.
+            set: { value in viewModel.config.setTextColor(UIColor(value).hexString(true)) }
         )
     }
 
@@ -418,7 +450,7 @@ struct WatchComplicationConfigurationSheet: View {
             get: {
                 let hex = viewModel.config.slotColor(.bottomText, for: currentFamily)
                     ?? viewModel.config.textColor(for: currentFamily)
-                return hex.map { Color(uiColor: UIColor(hex: $0)) } ?? .primary
+                return hex.map { Color(uiColor: UIColor(hex: $0)) } ?? Self.defaultTextColor
             },
             set: { value in
                 var slot = viewModel.config.slotConfig(.bottomText, for: currentFamily) ?? ComplicationSlotConfig()
@@ -521,6 +553,22 @@ extension WatchComplicationConfigurationSheet {
         /// Attribute names offered by the Insert menu (entity kind; empty otherwise).
         let attributeKeys: [String]
 
+        /// Live reorder state: which pill the finger is carrying, how far it has travelled from the
+        /// slot it is laid out in, and the correction applied every time it trades places with a
+        /// neighbor so it keeps sitting under the finger.
+        @State private var draggingIndex: Int?
+        @State private var dragOffset: CGFloat = 0
+        @State private var dragCarry: CGFloat = 0
+        /// Measured pill widths by index: pills size to their content, so the distance to drag before
+        /// swapping is the neighbor's own width, not a fixed step.
+        @State private var pillWidths: [Int: CGFloat] = [:]
+        /// Mirrors the gesture's own lifetime: SwiftUI resets it when the drag is cancelled (and not
+        /// just when it ends), which is what releases a carried pill if the system interrupts the
+        /// gesture — otherwise the pill would stay offset and no further reorder could start.
+        @GestureState private var isCarryingPill = false
+
+        private static let pillSpacing = DesignSystem.Spaces.half
+
         private var family: WatchComplicationConfig.Family { config.widgetFamily }
 
         private var currentSlotConfig: ComplicationSlotConfig {
@@ -584,15 +632,26 @@ extension WatchComplicationConfigurationSheet {
                 if isCustomContent.wrappedValue {
                     // The formula is edited as pills, not raw token text: dynamic tokens are tinted
                     // capsules, hardcoded text is typed straight into neutral capsule fields, and each
-                    // pill removes with its x. New pieces come from the + menu and land at the end.
+                    // pill removes with its x. New pieces come from the + menu and land at the end,
+                    // from where a pill can be picked up by its grip and slid into place.
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: DesignSystem.Spaces.half) {
+                        HStack(spacing: Self.pillSpacing) {
                             ForEach(Array(formula.parts.enumerated()), id: \.offset) { index, part in
-                                partPill(at: index, part: part)
+                                reorderablePartPill(at: index, part: part)
                             }
                             insertMenu
                         }
                         .padding(.vertical, DesignSystem.Spaces.half)
+                    }
+                    .onChange(of: isCarryingPill) { carrying in
+                        if !carrying { endDrag() }
+                    }
+                    // Only worth saying once there is something to reorder — a single pill has nowhere
+                    // to go, and the hint would just be noise in every slot the user customizes.
+                    if formula.parts.count > 1 {
+                        Text(L10n.Watch.Complications.Builder.reorderTokensHint)
+                            .font(DesignSystem.Font.caption)
+                            .foregroundStyle(.secondary)
                     }
                     if config.kind == .customTemplate, let server, !formula.templates.isEmpty {
                         JinjaTemplateButton(
@@ -606,38 +665,190 @@ extension WatchComplicationConfigurationSheet {
             }
         }
 
-        /// One formula piece as a pill: text parts are edited in place, dynamic tokens show their
-        /// friendly name; every pill carries its own remove button.
-        @ViewBuilder
-        private func partPill(at index: Int, part: ComplicationFormula.Part) -> some View {
-            let isText: Bool = {
-                if case .text = part { return true }
-                return false
-            }()
-            HStack(spacing: DesignSystem.Spaces.half) {
-                if isText {
-                    TextField(L10n.Watch.Complications.Builder.tokenText, text: textBinding(at: index))
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .fixedSize()
-                } else {
-                    Text(verbatim: pillTitle(for: part))
+        /// A pill the user can pick up by its grip and slide along the row. The carried pill rides
+        /// above its neighbors and trades places with them as it passes them; the same move is offered
+        /// as VoiceOver actions, which cannot perform a drag.
+        ///
+        /// System drag and drop is deliberately not used here: a `.draggable` pill inside a form row
+        /// hands the drag to the row, so the whole row lifts instead of the pill.
+        private func reorderablePartPill(at index: Int, part: ComplicationFormula.Part) -> some View {
+            let isDragging = draggingIndex == index
+            return partPill(at: index, part: part)
+                .background {
+                    // The swap thresholds need each pill's laid-out width; measured here rather than
+                    // guessed from the text, since pills hold text fields of arbitrary length.
+                    GeometryReader { proxy in
+                        Color.clear
+                            .onAppear { pillWidths[index] = proxy.size.width }
+                            .onChange(of: proxy.size.width) { width in pillWidths[index] = width }
+                    }
                 }
-                Button {
-                    withAnimation { removePart(at: index) }
-                } label: {
-                    Image(systemSymbol: .xmarkCircleFill)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                .offset(x: isDragging ? dragOffset : 0)
+                .scaleEffect(isDragging ? 1.05 : 1)
+                .shadow(color: .black.opacity(isDragging ? 0.25 : 0), radius: 6, y: 2)
+                // Keeps the carried pill above the ones it slides past.
+                .zIndex(isDragging ? 1 : 0)
+                .accessibilityAction(named: Text(L10n.Watch.Complications.Builder.moveTokenLeft)) {
+                    _ = movePart(from: index, to: index - 1)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(L10n.Watch.Complications.Builder.removeToken(accessibilityTitle(for: part)))
+                .accessibilityAction(named: Text(L10n.Watch.Complications.Builder.moveTokenRight)) {
+                    _ = movePart(from: index, to: index + 1)
+                }
+        }
+
+        /// The reorder grip. The drag lives on this handle alone: a gesture spanning the whole capsule
+        /// would swallow the text field's taps and the remove button's.
+        private func dragHandle(at index: Int, part: ComplicationFormula.Part) -> some View {
+            Image(systemSymbol: .line3Horizontal)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .frame(width: 22)
+                .contentShape(Rectangle())
+                .gesture(reorderGesture(at: index))
+                .accessibilityLabel(L10n.Watch.Complications.Builder.reorderToken(accessibilityTitle(for: part)))
+        }
+
+        /// Press-and-hold, then slide. A plain drag would compete with the pill row's horizontal
+        /// scrolling, the form's vertical scrolling and the sheet's detent drag — all of which begin
+        /// with the same touch — so the press is what claims the touch for reordering.
+        private func reorderGesture(at index: Int) -> some Gesture {
+            LongPressGesture(minimumDuration: 0.2)
+                .sequenced(before: DragGesture(minimumDistance: 0))
+                .updating($isCarryingPill) { _, carrying, _ in carrying = true }
+                .onChanged { value in
+                    switch value {
+                    case let .first(pressed):
+                        // The press reports in-progress touches too; only a completed one picks the
+                        // pill up, so a quick tap on the grip changes nothing.
+                        if pressed { beginDrag(at: index) }
+                    case let .second(pressed, drag):
+                        // The press can complete straight into the drag phase without a separate
+                        // .first update, so the pickup is (idempotently) confirmed here too.
+                        guard pressed else { return }
+                        beginDrag(at: index)
+                        if let drag {
+                            updateDrag(translation: drag.translation.width)
+                        }
+                    }
+                }
+                .onEnded { _ in endDrag() }
+        }
+
+        private func beginDrag(at index: Int) {
+            guard draggingIndex == nil else { return }
+            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            dragOffset = 0
+            dragCarry = 0
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                draggingIndex = index
             }
-            .font(.callout)
-            .padding(.horizontal, DesignSystem.Spaces.one)
-            .padding(.vertical, DesignSystem.Spaces.half)
-            .foregroundStyle(isText ? Color.primary : Color.haPrimary)
-            .background(Capsule().fill(isText ? Color(uiColor: .tertiarySystemFill) : Color.haPrimary.opacity(0.15)))
+        }
+
+        /// Follows the finger and, once the pill has covered half of the neighbor it is heading for,
+        /// trades slots with it. The carry cancels the layout jump that trade causes, so the pill stays
+        /// pinned under the finger instead of hopping a pill-width ahead.
+        private func updateDrag(translation: CGFloat) {
+            guard let dragging = draggingIndex else { return }
+            var offset = translation + dragCarry
+            if offset > 0, let width = pillWidths[dragging + 1], offset > (width + Self.pillSpacing) / 2,
+               movePart(from: dragging, to: dragging + 1) {
+                draggingIndex = dragging + 1
+                dragCarry -= width + Self.pillSpacing
+                offset = translation + dragCarry
+            } else if offset < 0, dragging > 0, let width = pillWidths[dragging - 1],
+                      offset < -(width + Self.pillSpacing) / 2, movePart(from: dragging, to: dragging - 1) {
+                draggingIndex = dragging - 1
+                dragCarry += width + Self.pillSpacing
+                offset = translation + dragCarry
+            }
+            dragOffset = offset
+        }
+
+        private func endDrag() {
+            guard draggingIndex != nil else { return }
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                draggingIndex = nil
+                dragOffset = 0
+                dragCarry = 0
+            }
+        }
+
+        /// Moves a pill to another position, keeping the rest of the formula in order. Returns whether
+        /// anything moved, which is also the drop's "was this accepted" answer.
+        @discardableResult
+        private func movePart(from source: Int, to destination: Int) -> Bool {
+            guard source != destination, formula.parts.indices.contains(source),
+                  formula.parts.indices.contains(destination) else { return false }
+            reindexPillWidths { widths in
+                widths.insert(widths.remove(at: source), at: destination)
+            }
+            withAnimation {
+                updateParts { parts in
+                    parts.insert(parts.remove(at: source), at: destination)
+                }
+            }
+            return true
+        }
+
+        /// Applies a pill's move (or removal) to the measured widths as well. They are keyed by index,
+        /// so leaving them alone would have every pill from that position on carrying its neighbor's
+        /// width until SwiftUI re-measures — long enough to mistime the next swap of a drag in flight.
+        private func reindexPillWidths(_ mutate: (inout [CGFloat?]) -> Void) {
+            let count = max(formula.parts.count, (pillWidths.keys.max() ?? -1) + 1)
+            var widths: [CGFloat?] = (0 ..< count).map { pillWidths[$0] }
+            mutate(&widths)
+            pillWidths = widths.enumerated().reduce(into: [:]) { result, element in
+                result[element.offset] = element.element
+            }
+        }
+
+        /// One formula piece as a pill: text parts are edited in place, dynamic tokens show their
+        /// friendly name; every pill carries its own grip (once there is something to reorder) and
+        /// remove button.
+        private func partPill(at index: Int, part: ComplicationFormula.Part) -> some View {
+            let isText = isTextPart(part)
+            return pillChrome(isText: isText) {
+                HStack(spacing: DesignSystem.Spaces.half) {
+                    if formula.parts.count > 1 {
+                        dragHandle(at: index, part: part)
+                    }
+                    if isText {
+                        TextField(L10n.Watch.Complications.Builder.tokenText, text: textBinding(at: index))
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
+                            .fixedSize()
+                    } else {
+                        Text(verbatim: pillTitle(for: part))
+                    }
+                    Button {
+                        withAnimation { removePart(at: index) }
+                    } label: {
+                        Image(systemSymbol: .xmarkCircleFill)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(L10n.Watch.Complications.Builder.removeToken(accessibilityTitle(for: part)))
+                }
+            }
+        }
+
+        /// The pill's chrome: the capsule fill and text color that tell a dynamic token apart from
+        /// hardcoded text.
+        private func pillChrome(isText: Bool, @ViewBuilder content: () -> some View) -> some View {
+            content()
+                .font(.callout)
+                .padding(.horizontal, DesignSystem.Spaces.one)
+                .padding(.vertical, DesignSystem.Spaces.half)
+                .foregroundStyle(isText ? Color.primary : Color.haPrimary)
+                .background(
+                    Capsule().fill(isText ? Color(uiColor: .tertiarySystemFill) : Color.haPrimary.opacity(0.15))
+                )
+        }
+
+        private func isTextPart(_ part: ComplicationFormula.Part) -> Bool {
+            if case .text = part { return true }
+            return false
         }
 
         private func pillTitle(for part: ComplicationFormula.Part) -> String {
@@ -667,8 +878,9 @@ extension WatchComplicationConfigurationSheet {
         }
 
         private func removePart(at index: Int) {
+            guard formula.parts.indices.contains(index) else { return }
+            reindexPillWidths { widths in widths.remove(at: index) }
             updateParts { parts in
-                guard parts.indices.contains(index) else { return }
                 parts.remove(at: index)
             }
         }

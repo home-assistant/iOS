@@ -10,6 +10,7 @@ extension WebViewController {
     /// avoidUnnecessaryReload Avoids reloading when the URL is the same as the current one
     func open(inline url: URL, avoidUnnecessaryReload: Bool = false) {
         loadViewIfNeeded()
+        overlayState?.externalNavigationRequests.send()
 
         // these paths do not show frontend pages, and so we don't want to display them in our webview
         // otherwise the user will get stuck. e.g. /api is loaded by frigate to show video clips and images
@@ -37,6 +38,7 @@ extension WebViewController {
     /// Used for OpenPage intent
     func openPanel(_ url: URL) {
         loadViewIfNeeded()
+        overlayState?.externalNavigationRequests.send()
 
         guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil || server.info
             .version >= .canNavigateMoreInfoDialogThroughFrontend else {
@@ -53,7 +55,7 @@ extension WebViewController {
             return url.path
         }()
 
-        navigate(path: urlPathIncludingQueryParams) { [weak self] success in
+        navigateThroughFrontend(path: urlPathIncludingQueryParams) { [weak self] success in
             if !success {
                 Current.Log.warning("Failed to navigate through frontend for URL: \(url)")
                 // Fallback to loading the URL directly if navigation fails
@@ -62,28 +64,33 @@ extension WebViewController {
         }
     }
 
+    /// Used by the native iOS tab bar
+    func openSidebarPath(_ path: String) {
+        loadViewIfNeeded()
+        navigateThroughFrontend(path: path) { [weak self] success in
+            if !success {
+                Current.Log.warning("Failed to navigate through frontend for sidebar path: \(path)")
+                self?.navigateToPath(path: path)
+            }
+        }
+    }
+
     /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view
     /// Returns true if the navigation was successful
-    private func navigate(path: String, completion: @escaping (Bool) -> Void) {
+    private func navigateThroughFrontend(path: String, completion: @escaping (Bool) -> Void) {
         guard server.info.version >= .canNavigateThroughFrontend else {
             Current.Log.warning("Cannot navigate through frontend, core version is too low")
             completion(false)
             return
         }
         Current.Log.verbose("Requesting navigation using external bus to path: \(path)")
-        webViewExternalMessageHandler.sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.navigate.rawValue,
+        webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+            command: .navigate,
             payload: [
                 "path": path,
-            ]
-        )).pipe { result in
-            switch result {
-            case .fulfilled:
-                completion(true)
-            case .rejected:
-                completion(false)
-            }
-        }
+            ],
+            completion: completion
+        )
     }
 
     /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`
@@ -93,9 +100,13 @@ extension WebViewController {
         webView.reload()
     }
 
-    func showSettingsViewController() {
+    func showSettingsViewController(pushOntoNavigationStack: Bool) {
         getLatestConfig()
-        Current.sceneManager.appCoordinator.done { $0.showSettings() }
+        // Settings opens in the window the request came from: with multiple windows on screen, the app-wide
+        // coordinator is whichever scene registered last rather than this one.
+        Current.sceneManager.appCoordinator(for: view.window?.windowScene).done {
+            $0.showSettings(pushOntoNavigationStack: pushOntoNavigationStack)
+        }
     }
 
     func getLatestConfig() {

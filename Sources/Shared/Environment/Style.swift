@@ -13,18 +13,30 @@ public struct Style {
     }
 
     private class WiderButton: UIButton {
+        private var readableWidthConstraint: NSLayoutConstraint?
+
         override func didMoveToSuperview() {
             super.didMoveToSuperview()
 
-            if let superview {
-                switch traitCollection.userInterfaceIdiom {
-                case .pad, .mac:
-                    widthAnchor.constraint(equalTo: superview.readableContentGuide.widthAnchor)
-                        .isActive = true
-                default:
-                    break
-                }
+            readableWidthConstraint?.isActive = false
+            readableWidthConstraint = superview.map {
+                widthAnchor.constraint(equalTo: $0.readableContentGuide.widthAnchor)
             }
+            updateReadableWidthConstraint()
+        }
+
+        override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+            super.traitCollectionDidChange(previousTraitCollection)
+
+            if traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass {
+                updateReadableWidthConstraint()
+            }
+        }
+
+        // The size class isn't final until the button is in a window, so the constraint is re-evaluated
+        // on trait changes rather than fixed at add time.
+        private func updateReadableWidthConstraint() {
+            readableWidthConstraint?.isActive = traitCollection.horizontalSizeClass == .regular
         }
     }
 

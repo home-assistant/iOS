@@ -22,13 +22,25 @@ struct CircularComplicationWatchSnapshotTests {
             .environment(\.colorScheme, .dark)
     }
 
+    /// The icon slot carrying a configured color, which the face has to draw instead of tinting it away.
+    private static func customIconColor(_ model: CircularComplicationRenderModel) -> CircularComplicationRenderModel {
+        var model = model
+        model.iconImage = customColoredComplicationIcon()
+        return model
+    }
+
     private static var variants: [(String, CircularComplicationRenderModel)] {
         [
             ("icon-value-name-open", .sample()),
+            ("custom-icon-color", customIconColor(.sample(value: "", showValue: false, title: nil, fraction: nil))),
             ("no-min-max", .sample(showMinMax: false)),
             ("value-only", .sample(icon: false, title: nil)),
             ("value-and-name-no-icon", .sample(icon: false)),
             ("icon-and-value-no-name", .sample(title: nil)),
+            // Icon + value with the min/max labels hidden: the value moves into the open gauge's free
+            // bottom slot and the icon leads the center at full size (see `isIconLedWithBottomValue`).
+            // "no-min-max" above is the same layout with a name captioning the icon.
+            ("icon-led-value-at-bottom", .sample(title: nil, showMinMax: false)),
             ("capacity-ring", .sample(capacity: true)),
             ("no-gauge", .sample(fraction: nil)),
             ("icon-only-no-gauge", .sample(value: "", showValue: false, title: nil, fraction: nil)),

@@ -1,18 +1,31 @@
 import SFSafeSymbols
 import SwiftUI
 
+/// A single-line text field with a clear button.
+///
+/// Frontend counterpart: `ha-textfield` and its outlined variant `ha-outlined-field`, both of which
+/// wrap a Material text field. This draws the outlined one.
 public struct HATextField: View {
     let placeholder: String
     @Binding var text: String
+    let isFocused: FocusState<Bool>.Binding?
 
-    public init(placeholder: String, text: Binding<String>) {
+    /// - Parameter isFocused: Tracks whether the field is being edited, for a caller that commits
+    ///   the value when editing ends.
+    public init(placeholder: String, text: Binding<String>, isFocused: FocusState<Bool>.Binding? = nil) {
         self.placeholder = placeholder
         self._text = text
+        self.isFocused = isFocused
     }
 
     public var body: some View {
         HStack {
             TextField(placeholder, text: $text)
+                .modify { field in
+                    if let isFocused {
+                        field.focused(isFocused)
+                    }
+                }
             Button(action: {
                 text = ""
             }, label: {
@@ -38,4 +51,9 @@ public struct HATextField: View {
         HATextField(placeholder: "Placeholder", text: .constant("https://bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.com"))
     }
     .padding()
+}
+
+extension HATextField: FrontendComponent {
+    public static var frontendComponentName: String { "ha-textfield" }
+    public static var frontendComponentVersion: String { "2026-08-28" }
 }

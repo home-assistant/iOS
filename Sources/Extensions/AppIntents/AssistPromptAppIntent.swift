@@ -20,13 +20,30 @@ struct AssistPromptAppIntent: AppIntent, CustomIntentMigratedAppIntent {
     @Parameter(title: .init("app_intents.assist_prompt.prompt.title", defaultValue: "Prompt"))
     var prompt: String
 
-    @Parameter(title: .init("app_intents.assist.pipeline.title", defaultValue: "Pipeline"))
-    var pipeline: AssistPipelineEntity
+    /// Optional so a Siri phrase runs without a follow-up; nil uses the first server's preferred pipeline.
+    @Parameter(
+        title: .init("app_intents.assist.pipeline.title", defaultValue: "Pipeline"),
+        description: .init(
+            "app_intents.assist_prompt.pipeline.description",
+            defaultValue: "Leave empty to use the preferred pipeline of your first server"
+        )
+    )
+    var pipeline: AssistPipelineEntity?
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         await Current.connectivity.refreshNetworkInformation()
-        guard let server = Current.servers.server(for: .init(rawValue: pipeline.serverId)) else {
-            throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
+        // A saved pipeline outlives its server, and its id means nothing to a different one.
+        let server: Server
+        if let pipeline {
+            guard let pipelineServer = Current.servers.server(for: .init(rawValue: pipeline.serverId)) else {
+                throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
+            }
+            server = pipelineServer
+        } else {
+            guard let firstServer = Current.servers.all.first else {
+                throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
+            }
+            server = firstServer
         }
 
         guard server.info.version >= .conversationWebhook else {
@@ -39,7 +56,7 @@ struct AssistPromptAppIntent: AppIntent, CustomIntentMigratedAppIntent {
         let result = try await AppIntentServerAPI.assist(
             server: server,
             prompt: prompt,
-            pipelineId: pipeline.pipelineId
+            pipelineId: pipeline?.pipelineId
         )
         return .result(value: result)
     }

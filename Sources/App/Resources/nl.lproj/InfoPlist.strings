@@ -5,10 +5,10 @@
 "NSHealthShareUsageDescription" = "Lees bepaalde Apple Gezondheid-gegevens in, zodat deze als sensoren met Home Assistant kunnen worden gedeeld.";
 "NSHealthUpdateUsageDescription" = "Home Assistant schrijft geen gegevens naar Apple Gezondheid.";
 "NSLocalNetworkUsageDescription" = "Zoek en communiceer met je Home Assistant-instantie.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We raden aan om \"Altijd toestaan\" te selecteren voor de beste locatie-ervaring. Als je \"Alleen tijdens gebruik van de app\" selecteert, worden iBeacons, geofences, locatie-updates op de achtergrond en nauwkeurige rapportage uitgeschakeld.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  We hebben ook toestemming nodig om ‘altijd’ toegang te krijgen tot de locatie, zodat de app taken op de achtergrond kan uitvoeren. \n\n ⚠️  Zonder die toestemming kan de app niet bepalen welke verbinding (lokaal of op afstand) op de achtergrond moet worden gebruiken en zal dan altijd de verbinding op afstand gebruiken.";
 "NSLocationAlwaysUsageDescription" = "We hebben altijd toegang tot je locatie nodig voor functies zoals iBeacons, geofences, locatie updates (op de achtergrond) voor een nauwkeurige locatie bepaling.";
 "NSLocationUsageDescription" = "Als deze optie is ingeschakeld, wordt de locatie van je apparaat als apparaattracker naar de Home Assistant-server gestuurd.";
-"NSLocationWhenInUseUsageDescription" = "Alleen locatie toegang toestaan ​​terwijl de app in gebruik is, zal iBeacons, geofences en locatie voorzieningen/updates uitschakelen.";
+"NSLocationWhenInUseUsageDescription" = "Deze app heeft toegang tot je locatie nodig om rechtstreeks verbinding te maken met je Home Assistant-installatie. \n \n 1️⃣ Je locatie wordt alleen gebruikt om te controleren of je verbonden bent met je lokale netwerk. \n \n 2️⃣ Je locatie wordt met niemand gedeeld. \n \n 3️⃣ Als u dit niet toestaat, maakt de app in plaats daarvan altijd verbinding via het internet. Indien niet geconfigureerd, worden uw gegevens beschermd en wordt de verbinding geweigerd.";
 "NSMicrophoneUsageDescription" = "Neem audio op met je Home Assistant frontend.";
 "NSMotionUsageDescription" = "Beweging wordt gebruikt om locatie-updates met het huidige bewegingstype te verbeteren en om basisgegevens van de stappenteller te verstrekken.";
 "NSPhotoLibraryAddUsageDescription" = "Toegang tot de fotobibliotheek is nodig om foto's vanuit de webweergave op te slaan.";

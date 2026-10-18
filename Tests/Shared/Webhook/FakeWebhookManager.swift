@@ -14,4 +14,31 @@ class FakeWebhookManager: WebhookManager {
         sendRequestHandler?(identifier, server, request, seal)
         return promise
     }
+
+    /// Answers with the JSON a server would have returned. The typed `sendEphemeral` overloads all
+    /// funnel through this one, so callers still go through the real response mapping.
+    var sendEphemeralHandler: ((Server, WebhookRequest) -> Any)?
+
+    override func sendEphemeral<ResponseType>(
+        server: Server,
+        request: WebhookRequest,
+        overrideURL: URL? = nil
+    ) -> Promise<ResponseType> {
+        guard let sendEphemeralHandler else {
+            return .init(error: FakeWebhookManagerError.noEphemeralHandler)
+        }
+
+        guard let response = sendEphemeralHandler(server, request) as? ResponseType else {
+            return .init(error: FakeWebhookManagerError.ephemeralResponseTypeMismatch)
+        }
+
+        return .value(response)
+    }
+}
+
+enum FakeWebhookManagerError: Error {
+    /// No handler was set, so the test did not expect an ephemeral request at all.
+    case noEphemeralHandler
+    /// A handler answered, but with something other than the type the caller asked to decode.
+    case ephemeralResponseTypeMismatch
 }

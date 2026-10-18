@@ -33,8 +33,8 @@ struct GetCameraSnapshotAppIntent: AppIntent, CustomIntentMigratedAppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<IntentFile> {
         await Current.connectivity.refreshNetworkInformation()
-        guard camera.serverId == server.id,
-              let server = server.getServer(),
+        guard let server = server.shortcutServer(),
+              IntentServerAppEntity.shortcutServer(for: camera.serverId)?.identifier == server.identifier,
               let api = Current.api(for: server) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }

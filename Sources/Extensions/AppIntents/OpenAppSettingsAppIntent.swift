@@ -13,6 +13,9 @@ struct OpenAppSettingsAppIntent: AppIntent {
     ))
 
     static var openAppWhenRun: Bool = true
+    // `openAppWhenRun` is deprecated from iOS 26; both stay until the deployment target passes 26.
+    @available(iOS 26.0, watchOS 26.0, *)
+    static var supportedModes: IntentModes { .foreground }
 
     @MainActor
     func perform() async throws -> some IntentResult {

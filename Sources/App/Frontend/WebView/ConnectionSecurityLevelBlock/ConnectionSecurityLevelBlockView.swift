@@ -6,6 +6,8 @@ import SwiftUI
 struct ConnectionSecurityLevelBlockView: View {
     @StateObject private var viewModel: ConnectionSecurityLevelBlockViewModel
 
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
+
     @State private var showHomeNetworkSettings = false
     @State private var showConnectionSecurityPreferences = false
 
@@ -147,8 +149,9 @@ struct ConnectionSecurityLevelBlockView: View {
     }
 
     private func openSettings() {
-        // The coordinator handles Catalyst (separate Settings window) vs. the in-app Settings sheet.
-        Current.sceneManager.appCoordinator.done { $0.showSettings() }
+        // This scene's presenter, so Settings opens in this window alone; it handles Catalyst (where
+        // Settings is a separate window) vs. the in-app sheet.
+        appSettingsPresenter?.presentSettings()
     }
 
     private func requirementItem(systemSymbol: SFSymbol, title: String) -> some View {

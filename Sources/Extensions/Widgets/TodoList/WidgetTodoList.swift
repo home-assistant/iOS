@@ -25,8 +25,8 @@ struct WidgetTodoList: Widget {
         .supportedFamilies(supportedFamilies)
     }
 
-    private var supportedFamilies: [WidgetFamily] {
-        [.systemSmall, .systemMedium, .systemLarge]
+    var supportedFamilies: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
     }
 }
 

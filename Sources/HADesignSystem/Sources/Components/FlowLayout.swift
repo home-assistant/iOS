@@ -2,6 +2,9 @@ import SwiftUI
 
 /// Lays out children like words in a paragraph: one after another on a line, wrapping to a new
 /// line when the available width runs out. Used for pill/chip collections.
+///
+/// Frontend counterpart: none — this is `flex-wrap: wrap`, which the frontend gets from CSS and
+/// SwiftUI has to be told.
 public struct FlowLayout: Layout {
     public var spacing: CGFloat
 

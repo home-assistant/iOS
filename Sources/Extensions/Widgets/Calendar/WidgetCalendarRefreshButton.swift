@@ -1,5 +1,4 @@
 import Foundation
-import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -11,14 +10,7 @@ struct WidgetCalendarRefreshButton: View {
 
     var body: some View {
         Button(intent: WidgetCalendarRefreshAppIntent()) {
-            HStack(spacing: DesignSystem.Spaces.micro) {
-                Image(systemSymbol: .arrowClockwise)
-                    .font(.system(size: 9, weight: .semibold))
-                Text(date, style: .time)
-                    .font(.system(size: 11))
-            }
-            .foregroundStyle(.secondary)
-            .lineLimit(1)
+            WidgetRefreshLabel(date: date)
         }
         .buttonStyle(.plain)
         // The visible text is a timestamp, so name the action explicitly and leave the time as the

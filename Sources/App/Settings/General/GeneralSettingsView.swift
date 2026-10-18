@@ -46,10 +46,28 @@ struct GeneralSettingsView: View {
                 pinchZoom
                 fullScreen
                 refreshAfterInactive
+                rememberLastPage
             }
+
+            EnhancedWebSecuritySettingsRow(viewModel: .init())
         }
         .id(redrawHelper)
         .listTopContentMargin()
+    }
+
+    @ViewBuilder
+    private var rememberLastPage: some View {
+        // Mac has a system-level setting for state restoration
+        if !Current.isCatalyst {
+            Toggle(isOn: .init(get: {
+                Current.settingsStore.restoreLastURL
+            }, set: { newValue in
+                Current.settingsStore.restoreLastURL = newValue
+                redrawView()
+            })) {
+                Text(L10n.SettingsDetails.General.Restoration.title)
+            }
+        }
     }
 
     @ViewBuilder
@@ -282,8 +300,9 @@ struct GeneralSettingsView: View {
 }
 
 extension GeneralSettingsView: SettingsScreenSearchable {
+    /// "Remember last page" is a system setting on Catalyst, so it is only indexed where the toggle shows.
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        [
+        var entries = [
             SettingsSearchEntry(L10n.SettingsDetails.General.AppIcon.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.OpenInBrowser.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.OpenInPrivateTab.title),
@@ -292,5 +311,9 @@ extension GeneralSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.General.PinchToZoom.title),
             SettingsSearchEntry(L10n.SettingsDetails.General.FullScreen.title),
         ]
+        if !Current.isCatalyst {
+            entries.append(SettingsSearchEntry(L10n.SettingsDetails.General.Restoration.title))
+        }
+        return entries
     }
 }

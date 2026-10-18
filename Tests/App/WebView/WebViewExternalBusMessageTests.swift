@@ -41,7 +41,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "frontend/reload_and_clear_cache"
         )
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 25)
+        XCTAssertEqual(WebViewExternalBusMessage.sidebarShow.rawValue, "sidebar/show")
+        XCTAssertEqual(WebViewExternalBusMessage.moreInfoOpened.rawValue, "more_info/opened")
+        XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
+        XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
+
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 29)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -67,7 +72,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "kiosk_mode/set"
         )
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 9)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
+
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 10)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {
@@ -76,6 +83,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         // Expected keys currently defined in WebViewExternalBusMessage.configResult
         let expectedKeys: Set<String> = [
             "hasSettingsScreen",
+            "hasSidebar",
             "canWriteTag",
             "canCommissionMatter",
             "hasMatterStatusReport",
@@ -90,10 +98,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasEntityAddTo",
             "hasSplashscreen",
             "appVersion",
-            "toastComponentVersion",
         ]
 
         let actualKeys = Set(result.keys)
-        XCTAssertTrue(expectedKeys.isSubset(of: actualKeys), "Missing keys: \(expectedKeys.subtracting(actualKeys))")
+        XCTAssertEqual(actualKeys, expectedKeys)
     }
 }

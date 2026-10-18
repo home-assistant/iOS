@@ -22,16 +22,6 @@ struct WidgetCustomTimelineProvider: WidgetSingleEntryTimelineProvider {
         WidgetCustomConstants.expiration
     }
 
-    func makePlaceholder(in context: Context) -> WidgetCustomEntry {
-        .init(
-            date: .now,
-            magicItemInfoProvider: Current.magicItemProvider(),
-            entitiesState: [:],
-            showLastUpdateTime: false,
-            showStates: false
-        )
-    }
-
     func makePreviewEntry(in context: Context) -> WidgetCustomEntry {
         let items = WidgetPreviewSample.entities
             .prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
@@ -164,12 +154,12 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
     var showLastUpdateTime: Bool
 
     @Parameter(
-        title: .init("widgets.custom.show_states.param.title", defaultValue: "Show states (BETA)"),
+        title: .init("widgets.custom.show_states.param.title_no_beta", defaultValue: "Show states"),
         description: .init(
             "widgets.custom.show_states.description",
             defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
         ),
-        default: false
+        default: true
     )
     var showStates: Bool
 

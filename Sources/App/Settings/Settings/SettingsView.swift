@@ -2,9 +2,14 @@ import Shared
 import SwiftUI
 
 struct SettingsView: View {
+    private enum Constants {
+        static let macSidebarRowHeight: CGFloat = 32
+        static let macSidebarBottomPadding: CGFloat = DesignSystem.Spaces.three
+    }
+
     var embedInOwnNavigation: Bool = true
 
-    @State private var selectedItem: SettingsItem? = .general
+    @State private var macSidebarSelection: MacSettingsSidebarSelection? = .item(.general)
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
     @State private var testFlightMessage: TestFlightMessage?
@@ -35,23 +40,37 @@ struct SettingsView: View {
         // such as no back buttons for navigated views
         NavigationView {
             macOSSidebarContent
-            if let selectedItem {
-                selectedItem.destinationView
-            } else {
-                macOSPlaceholder
-            }
+            macOSDetail
         }
         .navigationViewStyle(.columns)
     }
 
+    @ViewBuilder
+    private var macOSDetail: some View {
+        switch macSidebarSelection {
+        case let .item(item):
+            item.destinationView
+        case let .server(identifier):
+            if let server = serversObserver.servers.first(where: { $0.identifier == identifier }) {
+                ConnectionSettingsView(server: server)
+            } else {
+                macOSPlaceholder
+            }
+        case .serverSwitching:
+            ServerSwitchingSettingsView()
+        case nil:
+            macOSPlaceholder
+        }
+    }
+
     private var macOSSidebarContent: some View {
-        List(selection: $selectedItem) {
+        List(selection: $macSidebarSelection) {
             if isSearching {
                 searchResultsContent
             } else {
                 // Servers section
-                Section(header: Text(L10n.Settings.ConnectionSection.serversHeader)) {
-                    ServersListView()
+                settingsSection(header: L10n.Settings.ConnectionSection.serversHeader) {
+                    ServersListView(macSidebarSelection: macSidebarSelection)
                 }
 
                 if isShowingTranslationKeys {
@@ -59,9 +78,19 @@ struct SettingsView: View {
                 }
 
                 // Settings items grouped by user objective
-                settingsSections(matching: nil)
+                settingsSections(SettingsSection.allCases, matching: nil)
             }
+            Color.clear
+                .frame(height: Constants.macSidebarBottomPadding)
+                .listRowInsets(EdgeInsets())
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
         }
+        .listStyle(.plain)
+        .environment(\.defaultMinListRowHeight, Constants.macSidebarRowHeight)
+        .labelStyle(MacSettingsSidebarLabelStyle())
+        .scrollContentBackground(.hidden)
+        .background(Color(uiColor: .secondarySystemBackground).ignoresSafeArea())
         .searchable(text: $searchText, prompt: Text(L10n.Settings.Search.prompt))
         .navigationTitle(L10n.Settings.NavigationBar.title)
         .toolbar {
@@ -82,22 +111,21 @@ struct SettingsView: View {
 
     // MARK: - iOS List View
 
+    // When pushed onto the container's stack (`embedInOwnNavigation == false`) items are pushed as
+    // `AppSettingsPushRoute.item` instead, resolved by `ContainerView`: that path must stay
+    // single-typed or SwiftUI's path diffing can fatally error comparing elements of different types.
     @ViewBuilder
     private var iOSView: some View {
         if embedInOwnNavigation {
             NavigationStack {
-                iOSNavigationContent
+                iOSListContent
+                    .navigationDestination(for: SettingsItem.self) { item in
+                        item.destinationView
+                    }
             }
         } else {
-            iOSNavigationContent
+            iOSListContent
         }
-    }
-
-    private var iOSNavigationContent: some View {
-        iOSListContent
-            .navigationDestination(for: SettingsItem.self) { item in
-                item.destinationView
-            }
     }
 
     private var iOSListContent: some View {
@@ -119,7 +147,7 @@ struct SettingsView: View {
                 }
 
                 // Settings items grouped by user objective
-                settingsSections(matching: nil)
+                settingsSections(SettingsSection.groupsAboveTrailingRows, matching: nil)
 
                 if let latestRelease = WhatsNewEngine().latestRelease() {
                     // What's New
@@ -159,8 +187,12 @@ struct SettingsView: View {
                         }
                     }
                 }
+
+                // App Labs sits below every other row, experiments last.
+                settingsSections([.appLabs], matching: nil)
             }
         }
+        .accessibilityIdentifier(AccessibilityIdentifier.settingsList.rawValue)
         .searchable(
             text: $searchText,
             placement: .navigationBarDrawer(displayMode: .always),
@@ -286,10 +318,12 @@ struct SettingsView: View {
                         NavigationLink(destination: ConnectionSettingsView(server: server)) {
                             serverSearchRow(server: server)
                         }
+                        .tag(MacSettingsSidebarSelection.server(server.identifier))
+                        .macSettingsSidebarRow(isSelected: macSidebarSelection == .server(server.identifier))
                     }
                 }
             }
-            settingsSections(matching: trimmedSearchQuery)
+            settingsSections(SettingsSection.allCases, matching: trimmedSearchQuery)
         } else {
             noSearchResultsSection
         }
@@ -297,7 +331,7 @@ struct SettingsView: View {
 
     private func serverSearchRow(server: Server) -> some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            HomeAssistantAccountRowView(server: server)
+            HomeAssistantAccountRowView(server: server, isCompact: Current.isCatalyst)
             if let serverContentSubtitle {
                 Text(serverContentSubtitle)
                     .font(.footnote)
@@ -307,11 +341,11 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
-    private func settingsSections(matching searchQuery: String?) -> some View {
-        ForEach(SettingsSection.allCases, id: \.self) { section in
+    private func settingsSections(_ sections: [SettingsSection], matching searchQuery: String?) -> some View {
+        ForEach(sections, id: \.self) { section in
             let items = searchQuery.map { section.items(matching: $0) } ?? section.items
             if !items.isEmpty {
-                Section(header: Text(section.header)) {
+                settingsSection(header: section.header) {
                     ForEach(items, id: \.self) { item in
                         settingsItemRow(item, searchQuery: searchQuery)
                     }
@@ -320,9 +354,55 @@ struct SettingsView: View {
         }
     }
 
+    /// A group whose header is nil renders as a plain section: its single entry already names
+    /// itself, so a header would only repeat it.
+    @ViewBuilder
+    private func settingsSection(
+        header: String?,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        if let header {
+            headedSettingsSection(header: header, content: content)
+        } else {
+            Section {
+                content()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func headedSettingsSection(
+        header: String,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        if Current.isCatalyst {
+            Section {
+                Text(header)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, DesignSystem.Spaces.two)
+                    .padding(.bottom, DesignSystem.Spaces.half)
+                    .listRowInsets(EdgeInsets(
+                        top: 0,
+                        leading: DesignSystem.Spaces.two,
+                        bottom: 0,
+                        trailing: DesignSystem.Spaces.two
+                    ))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .accessibilityAddTraits(.isHeader)
+                content()
+            }
+        } else {
+            Section(header: Text(header)) {
+                content()
+            }
+        }
+    }
+
     @ViewBuilder
     private func settingsItemRow(_ item: SettingsItem, searchQuery: String? = nil) -> some View {
-        let subtitle = searchQuery.flatMap { item.contentMatchesSubtitle(searchQuery: $0) }
+        let subtitle = searchQuery.flatMap { item.contentMatchesSubtitle(searchQuery: $0) } ?? item.subtitle
         if item == .help {
             Button {
                 if let url = URL(string: "https://companion.home-assistant.io") {
@@ -335,8 +415,25 @@ struct SettingsView: View {
                     item.accessoryIcon
                 }
             }
-        } else {
+            .macSettingsSidebarRow()
+        } else if Current.isCatalyst {
+            // The Catalyst sidebar lives in a `NavigationView`, which value-based links don't
+            // support, so it keeps the eager destination.
             NavigationLink(destination: item.destinationView) {
+                settingsItemLabel(item, subtitle: subtitle)
+            }
+            .tag(MacSettingsSidebarSelection.item(item))
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .item(item))
+        } else if embedInOwnNavigation {
+            // Value-based, resolved by `navigationDestination(for:)` in `iOSView`, so
+            // `item.destinationView` — and every destination's stored properties with it — is only
+            // constructed on navigation instead of for every row on every list evaluation.
+            NavigationLink(value: item) {
+                settingsItemLabel(item, subtitle: subtitle)
+            }
+        } else {
+            // Pushed onto the container's stack, whose path must stay `AppSettingsPushRoute`-typed.
+            NavigationLink(value: AppSettingsPushRoute.item(item)) {
                 settingsItemLabel(item, subtitle: subtitle)
             }
         }
@@ -366,6 +463,8 @@ struct SettingsView: View {
             VStack(alignment: .leading) {
                 HStack(spacing: DesignSystem.Spaces.one) {
                     Text(item.title)
+                        .fontWeight(macSidebarSelection == .item(item) ? .semibold : .regular)
+                        .lineLimit(Current.isCatalyst ? 1 : nil)
                     if item == .complications || item == .remindersSync {
                         LabsLabel()
                     }
@@ -377,7 +476,11 @@ struct SettingsView: View {
                 }
             }
         } icon: {
-            item.icon
+            if Current.isCatalyst {
+                item.icon(size: MacSettingsSidebarLabelStyle.iconSize)
+            } else {
+                item.icon
+            }
         }
     }
 

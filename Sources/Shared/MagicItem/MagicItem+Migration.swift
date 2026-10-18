@@ -5,10 +5,13 @@ import GRDB
 
 extension MagicItemProvider {
     /*
-     In case items in watch config are referencing a server that no longer
-     matches with server Id's available in the app, migration will try to find the
-     first server with that entityID available and replace the item with that server ID.
-     This can happen when the user deletes the server and add it back again.
+     In case items in a config are referencing a server that no longer matches any server Id
+     available in the app, migration will try to find a server that has that entityID available and
+     replace the item with that server ID. This can happen when the user deletes the server and adds
+     it back again.
+
+     Items whose server is still configured are left alone, even when their entity no longer
+     resolves — see `getSimilarItem(for:)`.
      */
     func migrateItemsIfNeeded(items: [MagicItem]) -> [MagicItem] {
         var items = removingUnsupportedItems(from: items)
@@ -20,17 +23,22 @@ extension MagicItemProvider {
             item.items = migrateItemsIfNeeded(items: folderItems)
             return item
         }
-        let infos = items.compactMap { getInfo(for: $0) }
 
-        if infos.count == items.count {
+        // `MagicItem.Info.id` is the item's *server*-unique id ("serverId-entityId"), so an item
+        // only counts as resolved when an info carries its own server's id. Matching on the bare
+        // entity id instead made every entity-backed item look unresolved the moment one of them
+        // was, and then re-pointed each of them — by entity id alone — at whichever server held
+        // that id first, silently moving an item to the identically named entity on another server.
+        let resolvedIds = Set(items.compactMap { getInfo(for: $0)?.id })
+
+        guard items.contains(where: { !resolvedIds.contains($0.serverUniqueId) }) else {
             return items
         }
 
-        let missingItems = items.filter { item in
-            !infos.contains { $0.id == item.id }
-        }
+        // Replace missing items with similar items
+        return items.map { item in
+            guard !resolvedIds.contains(item.serverUniqueId) else { return item }
 
-        let replacementItems = missingItems.compactMap { item -> MagicItem? in
             switch item.type {
             case .assistPipeline, .assistPrompt, .area:
                 // Assist items and areas are not entity-backed, so there is no entity to re-point
@@ -41,16 +49,9 @@ extension MagicItemProvider {
                 // similar item to re-point them at. `getInfo` already dropped the ones whose config
                 // is gone; the rest are kept as-is.
                 return item
-            case .unsupported:
-                return nil
             default:
-                return getSimilarItem(for: item)
+                return getSimilarItem(for: item) ?? item
             }
-        }
-
-        // Replace missing items with similar items
-        return items.map { item in
-            replacementItems.first(where: { $0.id == item.id }) ?? item
         }
     }
 
@@ -68,20 +69,35 @@ extension MagicItemProvider {
         }
     }
 
+    /// The same entity on another server, for an item whose own server is gone — the case this
+    /// migration exists for: a server that is removed and added back comes back with a new id,
+    /// orphaning every item that referenced the old one.
+    ///
+    /// Nothing is re-pointed while the item's server is still configured. Two servers can hold the
+    /// same entity id — two homes, each with a `cover.garage_door` — so an item that doesn't resolve
+    /// means that entity is gone from its own server. The identically named one next door is a
+    /// different device, not a replacement.
+    ///
+    /// Whether the server is gone is asked of the server list rather than of the entity cache: a
+    /// server whose entities simply failed to load has no entry there either, and an item must not
+    /// move to another server because of a failed read.
     private func getSimilarItem(for item: MagicItem) -> MagicItem? {
-        if let similarEntityInCache = entitiesPerServer.first(where: { dict in
-            dict.value.contains { $0.entityId == item.id }
-        }).flatMap(\.value)?.first(where: { entity in
-            entity.entityId == item.id
-        }) {
+        guard Current.servers.server(for: .init(rawValue: item.serverId)) == nil else { return nil }
+
+        // Sorted so the pick stays stable when more than one server holds the entity id; dictionary
+        // iteration order is not.
+        for serverId in entitiesPerServer.keys.sorted() {
+            let entities = entitiesPerServer[serverId] ?? []
+            guard let similarEntity = entities.first(where: { $0.entityId == item.id }) else { continue }
+
             return .init(
-                id: similarEntityInCache.entityId,
-                serverId: similarEntityInCache.serverId,
+                id: similarEntity.entityId,
+                serverId: similarEntity.serverId,
                 type: item.type,
                 customization: item.customization
             )
-        } else {
-            return nil
         }
+
+        return nil
     }
 }

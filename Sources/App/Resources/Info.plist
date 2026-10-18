@@ -4,6 +4,23 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>INAlternativeAppNames</key>
+	<array>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>HA</string>
+			<key>INAlternativeAppNamePronunciationHint</key>
+			<string>H A</string>
+		</dict>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Hass</string>
+		</dict>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Home</string>
+		</dict>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
@@ -77,6 +94,7 @@
 		<string>_hass-mobile-app._tcp</string>
 		<string>_home-assistant._tcp</string>
 		<string>_matter._tcp</string>
+		<string>_wyoming._tcp</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Take photos and send them to your Home Assistant server.</string>

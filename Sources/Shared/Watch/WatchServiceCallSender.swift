@@ -123,26 +123,26 @@ public enum WatchServiceCallSender {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(HomeAssistantAPI.userAgent, forHTTPHeaderField: "User-Agent")
         request.httpBody = body
-        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
-        let task = session.dataTask(with: request) { [session] _, response, error in
-            // The session strongly retains its delegate until invalidated; do it once the task ends.
-            defer { session.finishTasksAndInvalidate() }
-            if let error {
+        Task {
+            do {
+                let (_, http) = try await ServerRequestPerformer.perform(
+                    request,
+                    server: server,
+                    priority: .userAction
+                )
+                guard (200 ..< 300).contains(http.statusCode) else {
+                    finish(false)
+                    return
+                }
+                finish(true)
+            } catch {
                 Current.Log.error(
                     "REST \(domain.rawValue).\(service.rawValue) for \(entityId) failed: " +
                         error.localizedDescription
                 )
                 finish(false)
-                return
             }
-            guard let http = response as? HTTPURLResponse,
-                  (200 ..< 300).contains(http.statusCode) else {
-                finish(false)
-                return
-            }
-            finish(true)
         }
-        task.resume()
     }
     #endif
 }

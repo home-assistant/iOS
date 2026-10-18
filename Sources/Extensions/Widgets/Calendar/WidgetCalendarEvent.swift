@@ -99,3 +99,18 @@ extension WidgetCalendarEvent {
         return Array(sorted.prefix(limit))
     }
 }
+
+extension WidgetCalendarEvent {
+    /// The drawing half of the event, for the design system's calendar components.
+    var designSystemModel: WidgetCalendarEventModel {
+        .init(
+            id: id,
+            summary: summary,
+            start: start,
+            end: end,
+            isAllDay: isAllDay,
+            calendarName: calendarName,
+            calendarColor: calendarColor
+        )
+    }
+}

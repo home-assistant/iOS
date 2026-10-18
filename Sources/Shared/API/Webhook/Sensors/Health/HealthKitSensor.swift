@@ -35,7 +35,7 @@ public final class HealthKitSensor: SensorProvider {
         }
 
         let signaler: HealthKitSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
-        signaler.observe(metrics: metrics.filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) })
+        signaler.observe(metrics: metrics.filter { Current.sensors.isEnabledForAnyServer(uniqueID: $0.uniqueID) })
 
         let now = Current.date()
         let (promise, seal) = Promise<[WebhookSensor]>.pending()
@@ -67,7 +67,7 @@ public final class HealthKitSensor: SensorProvider {
         var reported = Set(prefs.object(forKey: reportedMetricsKey) as? [String] ?? [])
 
         let enabled = HealthKitMetric.all
-            .filter { Current.sensors.isEnabled(uniqueID: $0.uniqueID) }
+            .filter { Current.sensors.isEnabledForAnyServer(uniqueID: $0.uniqueID) }
             .map(\.uniqueID)
 
         if !Set(enabled).isSubset(of: reported) {
@@ -100,7 +100,7 @@ public final class HealthKitSensor: SensorProvider {
     }
 
     private static func value(for metric: HealthKitMetric, now: Date) async -> HealthSensorValue {
-        guard Current.sensors.isEnabled(uniqueID: metric.uniqueID) else {
+        guard Current.sensors.isEnabledForAnyServer(uniqueID: metric.uniqueID) else {
             return HealthSensorValue(metric: metric, value: nil)
         }
 
@@ -112,6 +112,10 @@ public final class HealthKitSensor: SensorProvider {
         case .mostRecent:
             start = calendar.date(byAdding: .day, value: -metric.lookbackDays, to: now)
                 ?? calendar.startOfDay(for: now)
+        case .sleep:
+            // Whole sleep days, so the night found is never one cut in half by the window's start.
+            let sleepDay = HealthKitSleepSummary.sleepDayStart(containing: now, calendar: calendar)
+            start = calendar.date(byAdding: .day, value: -metric.lookbackDays, to: sleepDay) ?? sleepDay
         }
 
         do {

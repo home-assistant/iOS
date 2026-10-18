@@ -17,6 +17,8 @@ public enum WebhookSensorId: String, CaseIterable {
     case primaryDisplayName = "primary_display_name"
     case primaryDisplayId = "primary_display_id"
     case frontmostApp = "frontmost_app"
+    /// No longer produced: the watch reports its battery itself, as a device of its own. Kept so the
+    /// frozen legacy-era set (`SensorRegistry.legacyEraSensorIDs`) still names IDs the app knows.
     case watchBattery = "watch-battery"
     case watchBatteryState = "watch-battery-state"
     case appVersion = "app-version"
@@ -30,4 +32,7 @@ public enum WebhookSensorId: String, CaseIterable {
     case kioskScreensaver
     case cameraMotion
     case cameraStream
+    case hingeAngle = "hinge_angle"
+    case hingeStatus = "hinge_status"
+    case devicePose = "device_pose"
 }

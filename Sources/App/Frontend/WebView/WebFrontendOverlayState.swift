@@ -18,6 +18,27 @@ final class WebFrontendOverlayState: ObservableObject {
     /// Last connection state reported by the web frontend external bus.
     @Published var connectionState: FrontEndConnectionState = .unknown
 
+    /// Path of the frontend page currently displayed, without query or fragment.
+    @Published var currentPath: String?
+
+    /// Fires when something other than the user's own taps in the frontend navigates it (deep links,
+    /// notifications, App Intents), so a host that has the frontend off screen can bring it back.
+    let externalNavigationRequests = PassthroughSubject<Void, Never>()
+
+    /// Fires when the scene showing the frontend becomes active after having been in the background, so the
+    /// host can give a stand-by loader that is still up another watchdog round.
+    let sceneReturnedFromBackground = PassthroughSubject<Void, Never>()
+
+    /// Fires when something presented over the frontend (Assist) goes away, so the host can give a stand-by
+    /// loader that is still up another watchdog round: a round spent while the frontend was hidden probed a
+    /// page that had nowhere to render.
+    let frontendUncovered = PassthroughSubject<Void, Never>()
+
+    /// True while the frontend's more-info dialog is up, as reported over the external bus. The App Labs
+    /// tab bar steps aside for it and comes back when the dialog closes or the frontend moves on to
+    /// another route; see `WebViewController+OnscreenContent`.
+    @Published var isMoreInfoDialogOpen = false
+
     /// Theme color for the top status-bar inset, drawn by `HomeAssistantView` over the (always edge-to-edge)
     /// web view. Nil when there should be no themed bar — i.e. edge-to-edge / full-screen is enabled, or on
     /// Catalyst (where the native status-bar view handles it).
@@ -25,7 +46,7 @@ final class WebFrontendOverlayState: ObservableObject {
 
     /// Data + actions to render the empty state as a SwiftUI overlay in `HomeAssistantStandByView`. Built by
     /// `WebViewController`, which owns the connection state and the actions (retry / settings / error
-    /// details / re-auth).
+    /// details / re-auth / certificate import).
     struct EmptyStateContent {
         let style: WebViewEmptyStateStyle
         let server: Server
@@ -35,6 +56,8 @@ final class WebFrontendOverlayState: ObservableObject {
         let settingsAction: () -> Void
         let errorDetailsAction: () -> Void
         let reauthAction: (ConnectionInfo.URLType) -> Void
+        /// Opens the client certificate import flow; the primary action of the client certificate styles.
+        let clientCertificateAction: () -> Void
         let dismissAction: () -> Void
     }
 }

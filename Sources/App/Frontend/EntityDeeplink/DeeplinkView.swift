@@ -18,7 +18,7 @@ struct DeeplinkView: View {
                     AppleLikeListTopRowHeader(
                         image: .linkVariantIcon,
                         title: L10n.Deeplink.title,
-                        subtitle: L10n.Deeplink.description
+                        subtitle: viewModel.description
                     )
                     .listRowBackground(Color.clear)
                 }
@@ -64,6 +64,13 @@ struct DeeplinkView: View {
                                 viewModel.includeServerChanged()
                             }
                     }
+                    .modify { view in
+                        if #available(iOS 17.0, *) {
+                            view.listSectionSpacing(DesignSystem.Spaces.two)
+                        } else {
+                            view
+                        }
+                    }
                 }
             }
             .modify { view in
@@ -104,7 +111,7 @@ struct DeeplinkView: View {
 #Preview {
     Color.clear
         .sheet(isPresented: .constant(true)) {
-            DeeplinkView(viewModel: DeeplinkViewModel(entityId: "light.mesa_de_jantar", serverName: "Home"))
+            DeeplinkView(viewModel: DeeplinkViewModel(target: .entity(id: "light.mesa_de_jantar"), serverName: "Home"))
                 .presentationDetents([.medium, .large])
         }
 }

@@ -53,8 +53,9 @@ struct WatchHomeView: View {
         // Standard path-driven navigation: every pushable screen (folders, a light's controls) is
         // registered once here at the root, and rows push by appending to the path through the
         // `watchNavigate` environment action. The home and folder screens hide the navigation bar
-        // themselves, so visually nothing changes at the root; only the light controls screen
-        // shows the system bar with a back button.
+        // themselves, so visually nothing changes at the root; the entity screens keep the system
+        // bar, and ask for it explicitly with `watchNativeNavigationBar()` — before watchOS 26 they
+        // would otherwise inherit the bar this root hides and be left with no back button at all.
         NavigationStack(path: $navigationPath) {
             content
                 .navigationDestination(for: WatchHomeNavigation.self) { destination in
@@ -79,6 +80,8 @@ struct WatchHomeView: View {
                         WatchAreasListView(serverId: serverId)
                     case let .areaEntities(areaId, serverId):
                         WatchAreaEntitiesView(areaId: areaId, serverId: serverId)
+                    case let .deviceEntities(deviceId, serverId, name):
+                        WatchDeviceEntitiesView(deviceId: deviceId, serverId: serverId, name: name)
                     }
                 }
         }
@@ -325,10 +328,15 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var listContent: some View {
         if viewModel.watchConfig.items.isEmpty {
-            Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .listRowBackground(Color.clear)
+            // The areas rows fill the screen on their own, so the "add items with +" hint only
+            // shows when there is genuinely nothing else. It also stays out of edit mode, where the
+            // header swaps the + for Done and the hint would point at a button that isn't there.
+            if !isEditing, !viewModel.showsAreasContent {
+                Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .listRowBackground(Color.clear)
+            }
         } else if !isEditing, viewModel.watchConfig.resolvedLayout == .grid {
             gridContent
         } else {
@@ -463,7 +471,8 @@ struct WatchHomeView: View {
             WatchMagicViewRow(
                 item: item,
                 itemInfo: viewModel.info(for: item),
-                subtitle: viewModel.serverName(for: item)
+                subtitle: viewModel.serverName(for: item),
+                areaName: viewModel.areaName(for: item)
             )
         }
     }

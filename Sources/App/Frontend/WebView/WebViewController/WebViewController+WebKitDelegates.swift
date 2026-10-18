@@ -12,7 +12,9 @@ extension WebViewController {
         // frontend (via the external bus) or a hard reload (`reload()`/`refresh()`) sets disconnected.
         overlayState?.isLoading = true
         didHandleServerErrorResponse = false
+        didReceiveClientCertificateChallenge = false
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
+        forgetOnscreenEntity()
     }
 
     func webView(
@@ -20,6 +22,10 @@ extension WebViewController {
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            // Remembered so a TLS failure or proxy refusal behind it is reported as a certificate problem.
+            didReceiveClientCertificateChallenge = true
+        }
         let result = server.info.connection.evaluate(challenge)
         completionHandler(result.0, result.1)
     }
@@ -52,7 +58,12 @@ extension WebViewController {
             }
 
             if !error.isCancelled {
+                if Self.shouldRedirectToRootForNavigationError(error) {
+                    redirectToActiveURLRoot(failedURL: (error as? URLError)?.failingURL ?? webView.url)
+                    return
+                }
                 latestLoadError = error
+                recordClientCertificateIssueIfNeeded(for: error)
                 showEmptyState()
             }
         }
@@ -88,14 +99,25 @@ extension WebViewController {
         }
 
         if shouldShowError {
+            if Self.shouldRedirectToRootForNavigationError(error) {
+                redirectToActiveURLRoot(failedURL: (error as? URLError)?.failingURL ?? webView.url)
+                return
+            }
             latestLoadError = error
+            recordClientCertificateIssueIfNeeded(for: error)
             showEmptyState()
         }
+    }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        handleContentProcessTermination()
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         overlayState?.isLoading = false
         latestLoadError = nil
+        // A page that loaded got through the handshake, so whatever certificate problem there was is gone.
+        clientCertificateIssue = nil
 
         // in case the view appears again, don't reload
         initialURL = nil
@@ -140,6 +162,16 @@ extension WebViewController {
             "Main frame HTTP \(httpResponse.statusCode) at \(navigationResponse.response.url?.absoluteString ?? "?"), cf-ray=\(cfRay), cf-mitigated=\(cfMitigated ?? "-")"
         )
 
+        // A proxy refusing the request over the client certificate gets no navigation error, only this
+        // response, so it is the one place the certificate empty state can come from.
+        if handleClientCertificateRefusalIfNeeded(
+            statusCode: httpResponse.statusCode,
+            responseURL: navigationResponse.response.url,
+            decisionHandler: decisionHandler
+        ) {
+            return
+        }
+
         switch Self.decisionForMainFrameErrorResponse(
             statusCode: httpResponse.statusCode,
             responseURL: navigationResponse.response.url,
@@ -148,6 +180,10 @@ extension WebViewController {
         ) {
         case .allow:
             decisionHandler(.allow)
+        case .redirectToRoot:
+            // Don't render the server's 404/403; send the user home to the frontend root instead.
+            decisionHandler(.cancel)
+            redirectToActiveURLRoot(failedURL: navigationResponse.response.url)
         case .reloadDefaultURL:
             // first: clear that saved url, it's bad
             initialURL = nil
@@ -178,21 +214,21 @@ extension WebViewController {
         initiatedByFrame frame: WKFrameInfo,
         completionHandler: @escaping (Bool) -> Void
     ) {
-        let style: UIAlertController.Style = {
-            switch webView.traitCollection.userInterfaceIdiom {
-            case .carPlay, .phone, .tv:
-                return .actionSheet
-            case .mac:
-                return .alert
-            case .pad, .unspecified, .vision:
-                // without a touch to tell us where, an action sheet in the middle of the screen isn't great
-                return .alert
-            @unknown default:
-                return .alert
-            }
-        }()
+        // Without a touch to tell us where, an action sheet in the middle of a wide window isn't great:
+        // compact widths get the bottom action sheet, everything else a centered alert.
+        let style: UIAlertController.Style = webView.traitCollection.horizontalSizeClass == .compact
+            ? .actionSheet
+            : .alert
 
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: style)
+
+        // iPad presents an unanchored action sheet as a popover and traps without location information,
+        // even in a compact-width window — anchor it to the web view, arrowless, as a backstop.
+        if let popover = alertController.popoverPresentationController {
+            popover.sourceView = webView
+            popover.sourceRect = CGRect(x: webView.bounds.midX, y: webView.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
 
         alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { _ in
             completionHandler(true)
@@ -289,8 +325,16 @@ extension WebViewController {
     enum MainFrameErrorResponseDecision: Equatable {
         case allow
         case reloadDefaultURL
+        case redirectToRoot
         case showEmptyState
     }
+
+    /// Client-error codes that mean "the page you asked for isn't there or isn't allowed" — a stale or
+    /// hand-crafted deeplink, a dashboard that was removed, a forbidden path. These are dead ends, so the
+    /// user is sent back to the frontend root instead of being left on the server's bare error page.
+    /// Authentication (401) and rate-limit (429) responses are deliberately excluded: they keep rendering
+    /// so an expired session still re-authenticates and a throttled server is not hammered with reloads.
+    static let redirectToRootStatusCodes: Set<Int> = [403, 404, 410]
 
     static func decisionForMainFrameErrorResponse(
         statusCode: Int,
@@ -304,10 +348,49 @@ extension WebViewController {
         if cfMitigated?.lowercased() == "challenge" {
             return .allow
         }
-        guard statusCode >= 500 else {
-            return .allow
+        if statusCode >= 500 {
+            return .showEmptyState
         }
-        return .showEmptyState
+        if redirectToRootStatusCodes.contains(statusCode) {
+            return .redirectToRoot
+        }
+        return .allow
+    }
+
+    /// Whether a failed navigation should bounce the web view back to the frontend root rather than show
+    /// the disconnected empty state. True only when the URL itself was the problem — a malformed or
+    /// unsupported deeplink target — never for connectivity failures: the root lives on the same host, so
+    /// redirecting on a lost or refused connection would just loop into the same failure.
+    static func shouldRedirectToRootForNavigationError(_ error: Error) -> Bool {
+        if error.isCancelled {
+            return false
+        }
+        let nsError = error as NSError
+        switch nsError.domain {
+        case NSURLErrorDomain:
+            return nsError.code == NSURLErrorBadURL || nsError.code == NSURLErrorUnsupportedURL
+        case "WebKitErrorDomain":
+            // 101 = WebKitErrorCannotShowURL: the URL is unsupported or malformed, not a reachability
+            // problem, so the root (a well-formed URL) is a safe place to land.
+            return nsError.code == 101
+        default:
+            return false
+        }
+    }
+
+    enum RootRedirectOutcome: Equatable {
+        case loadRoot(URL)
+        case showEmptyState(failedURL: URL)
+    }
+
+    /// Given the resolved frontend root and the URL that failed, decides whether to load the root or — when
+    /// the root itself is the page that failed — fall back to the empty state instead of looping into the
+    /// same failure. A `nil` failed URL (we could not tell what failed) always loads the root.
+    static func rootRedirectOutcome(target: URL, failedURL: URL?) -> RootRedirectOutcome {
+        if let failedURL, failedURL.isEqualIgnoringQueryParams(to: target) {
+            return .showEmptyState(failedURL: failedURL)
+        }
+        return .loadRoot(target)
     }
 
     static func connectionStateForInterceptedServerError(

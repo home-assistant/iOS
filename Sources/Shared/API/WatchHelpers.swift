@@ -3,7 +3,6 @@ import ObjectMapper
 import PromiseKit
 #if os(watchOS)
 import ClockKit
-import WatchKit
 #endif
 
 public extension HomeAssistantAPI {
@@ -50,10 +49,8 @@ public extension HomeAssistantAPI {
         content[WatchContext.activeFamilies.rawValue] = activeFamilies
         content[WatchContext.watchModel.rawValue] = Current.device.systemModel()
         content[WatchContext.watchVersion.rawValue] = Current.device.systemVersion()
-        let currentWatchInterfaceDevice = WKInterfaceDevice.current()
-        currentWatchInterfaceDevice.isBatteryMonitoringEnabled = true
-        content[WatchContext.watchBattery.rawValue] = currentWatchInterfaceDevice.batteryLevel
-        content[WatchContext.watchBatteryState.rawValue] = currentWatchInterfaceDevice.batteryState.rawValue
+        // Battery isn't relayed any more: the watch reports it to Home Assistant itself, as a
+        // device of its own (see `WatchDeviceReporter`).
 
         #endif
 
@@ -82,95 +79,60 @@ public extension HomeAssistantAPI {
         try Communicator.shared.sync(context)
     }
 
+    /// Sync the current context and wait for the outcome, for callers that show feedback (the Debug
+    /// "Sync watch context" button). The update runs on `watchContextSyncQueue`, never on the
+    /// caller's thread, and gives up after `watchContextSyncTimeout` rather than parking the caller
+    /// behind a stalled WCSession.
     static func SyncWatchContext() async -> NSError? {
-        #if os(iOS)
-        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
-            Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
-            return nil
-        }
-        #endif
-
-        let context = await HAWatchConnectivity.Context(content: HomeAssistantAPI.watchContext())
-
-        #if os(watchOS)
-        // `updateApplicationContext` waits synchronously on WCSession's internal operation queue,
-        // which stalls indefinitely while the companion channel is wedged. This method runs in a
-        // cooperative-pool task on every lifecycle transition, and the watch's cooperative pool is
-        // only two threads wide — two stuck updates wedged the entire pool (and GCD's worker
-        // budget with it), killing all async work in the app: direct sync, token refresh, even
-        // URLSession callbacks for magic items. So the blocking call is handed to a dedicated
-        // serial queue instead, gated to a single in-flight update, and never awaited here.
-        enqueueWatchContextSync(context)
-        return nil
-        #else
-        do {
-            try syncRespectingSizeLimit(context)
-            Current.Log.info("updated context")
-            Current.clientEventStore.addEvent(.init(
-                text: "Synced watch context to Apple Watch (updateApplicationContext)",
-                type: .database
-            ))
-        } catch let error as NSError {
-            Current.Log.error("Updating the context failed: \(error)")
-            Current.clientEventStore.addEvent(.init(
-                text: "Failed to sync watch context: \(error.localizedDescription)",
-                type: .database
-            ))
-            return error
-        }
-
-        return nil
-        #endif
+        await syncWatchContextAndWait(hasWatch: hasWatchToSync, on: watchContextSyncQueue)
     }
 
-    #if os(watchOS)
-    /// Dedicated home for the blocking `updateApplicationContext` call. A private serial queue
-    /// runs on GCD's overcommit band, so a call stuck inside WCSession costs one extra thread
-    /// without draining the worker budget the rest of the app depends on.
-    private static let watchContextSyncQueue = DispatchQueue(label: "watch-context-sync", qos: .utility)
-    private static let watchContextSyncGate = NSLock()
-    private static var watchContextSyncInFlight = false
-    /// The newest context that arrived while an update was in flight, delivered as soon as that update
-    /// returns. Only the newest is kept — the ones it replaces are already obsolete.
-    private static var pendingWatchContext: HAWatchConnectivity.Context?
+    /// Fire-and-forget context sync for every lifecycle trigger. Never waits: the update is handed
+    /// to `watchContextSyncQueue`, where a stalled WCSession costs one parked thread instead of the
+    /// cooperative pool (see `WatchContextSyncQueue`).
+    static func syncWatchContext() {
+        Task { await syncWatchContextInBackground(hasWatch: hasWatchToSync, on: watchContextSyncQueue) }
+    }
 
-    /// Hand the context to `updateApplicationContext` off the caller's thread, keeping at most one
-    /// update in flight: a call stuck inside WCSession would otherwise park a thread per caller.
-    /// Later contexts are coalesced rather than dropped — the in-flight call is carrying an *older*
-    /// snapshot, so discarding the new one would strand the watch on stale data until some unrelated
-    /// trigger happened to sync again.
-    private static func enqueueWatchContextSync(_ context: HAWatchConnectivity.Context) {
-        watchContextSyncGate.lock()
-        guard !watchContextSyncInFlight else {
-            pendingWatchContext = context
-            watchContextSyncGate.unlock()
-            Current.Log.info("Coalescing watch context sync: previous update still in flight (WCSession stalled?)")
-            return
-        }
-        watchContextSyncInFlight = true
-        watchContextSyncGate.unlock()
+    /// `SyncWatchContext()` with its inputs explicit, so tests can drive it.
+    internal static func syncWatchContextAndWait(hasWatch: Bool, on queue: WatchContextSyncQueue) async -> NSError? {
+        guard hasWatch else { return nil }
+        let context = await HAWatchConnectivity.Context(content: watchContext())
+        return await queue.sync(context, timeout: watchContextSyncTimeout).map { $0 as NSError }
+    }
 
-        watchContextSyncQueue.async {
-            var next: HAWatchConnectivity.Context? = context
-            while let current = next {
-                syncWatchContextNow(current)
-                // Claim the next context (or stand down) under the same lock the producer takes, so a
-                // context enqueued right as this update finishes can't be stranded.
-                watchContextSyncGate.lock()
-                if let pending = pendingWatchContext {
-                    next = pending
-                    pendingWatchContext = nil
-                } else {
-                    next = nil
-                    watchContextSyncInFlight = false
-                }
-                watchContextSyncGate.unlock()
-            }
+    /// `syncWatchContext()` with its inputs explicit, so tests can drive it.
+    internal static func syncWatchContextInBackground(hasWatch: Bool, on queue: WatchContextSyncQueue) async {
+        guard hasWatch else { return }
+        let context = await HAWatchConnectivity.Context(content: watchContext())
+        queue.enqueue(context)
+    }
+
+    /// Whether there is a counterpart to send the context to.
+    private static var hasWatchToSync: Bool {
+        #if os(iOS)
+        // The cached state: the live `currentWatchState` getters wait on WCSession's operation queue
+        // too, and the callers run on the cooperative pool.
+        guard case .paired(.installed) = Communicator.shared.lastKnownWatchState else {
+            Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
+            return false
         }
+        #endif
+        return true
+    }
+
+    /// How long an awaited sync waits for WCSession before reporting a timeout.
+    static let watchContextSyncTimeout: TimeInterval = 10
+
+    /// Dedicated home for the blocking `updateApplicationContext` call. Its private serial queue runs
+    /// on GCD's overcommit band, so a call stuck inside WCSession costs one extra thread without
+    /// draining the worker budget the rest of the app depends on.
+    internal static let watchContextSyncQueue = WatchContextSyncQueue(label: "watch-context-sync") { context in
+        try syncWatchContextNow(context)
     }
 
     /// The blocking `updateApplicationContext` call itself, always on `watchContextSyncQueue`.
-    private static func syncWatchContextNow(_ context: HAWatchConnectivity.Context) {
+    private static func syncWatchContextNow(_ context: HAWatchConnectivity.Context) throws {
         do {
             try syncRespectingSizeLimit(context)
             Current.Log.info("updated context")
@@ -184,15 +146,7 @@ public extension HomeAssistantAPI {
                 text: "Failed to sync watch context: \(error.localizedDescription)",
                 type: .database
             ))
-        }
-    }
-    #endif
-
-    /// Fire-and-forget `SyncWatchContext()` for callers that cannot await; sync errors are logged
-    /// by `SyncWatchContext()` itself.
-    static func syncWatchContext() {
-        Task {
-            _ = await SyncWatchContext()
+            throw error
         }
     }
 
@@ -205,30 +159,43 @@ public extension HomeAssistantAPI {
         case failed(String)
     }
 
+    /// The reload itself, once the caller has checked a watch is there; split out so tests can drive it.
+    internal static func reloadWatchComplications(on queue: WatchContextSyncQueue) async -> WatchReloadOutcome {
+        // Current watch builds read complications from the database mirror and ignore the context
+        // keys below, so the reload has to travel that way too — and, once the rows land, ask the
+        // watch to fetch their values and re-render. Without this the button only refreshed watches
+        // old enough to still read the context.
+        #if os(iOS)
+        WatchMirrorPushCoordinator.schedule(reason: .complicationSaved)
+        #endif
+        let context = await HAWatchConnectivity.Context(content: watchContext())
+        if let error = await queue.sync(context, timeout: watchContextSyncTimeout) {
+            Current.Log.error("Watch reload failed: \(error.localizedDescription)")
+            return .failed(error.localizedDescription)
+        }
+        Current.Log.info("Watch reload: context synced")
+        return .success
+    }
+
     #if os(iOS)
     /// Push the current context to the watch and report whether it worked, for the Complications
     /// settings "Reload" button. Distinguishes "no watch" (so the UI can explain why) from a transport
     /// failure (so the UI can show the error).
     static func reloadWatchComplications() async -> WatchReloadOutcome {
-        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
+        // The cached state, for the same reason as `hasWatchToSync`.
+        guard case .paired(.installed) = Communicator.shared.lastKnownWatchState else {
             Current.Log.warning("Watch reload requested but watch not paired or app not installed")
             return .watchUnavailable
         }
-        let context = await HAWatchConnectivity.Context(content: watchContext())
-        do {
-            try syncRespectingSizeLimit(context)
-            Current.Log.info("Watch reload: context synced")
-            return .success
-        } catch {
-            Current.Log.error("Watch reload failed: \(error.localizedDescription)")
-            return .failed(error.localizedDescription)
-        }
+        return await reloadWatchComplications(on: watchContextSyncQueue)
     }
     #endif
 
     func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
-        guard case .paired = Communicator.shared.currentWatchState else {
+        // The cached state: this runs once per server on every connect, and the live getters block
+        // on WCSession's operation queue.
+        guard case .paired = Communicator.shared.lastKnownWatchState else {
             Current.Log.verbose("skipping complication updates; no paired watch")
             return .value(())
         }
@@ -239,10 +206,7 @@ public extension HomeAssistantAPI {
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")
 
-            #if os(iOS)
-            // in case the user deleted the last complication, sync that fact up to the watch
-            HomeAssistantAPI.syncWatchContext()
-            #else
+            #if os(watchOS)
             // in case the user updated just the complication's metadata, force a refresh
             NotificationCenter.default.post(name: WatchComplication.didChangeNotification, object: nil)
             #endif
@@ -268,7 +232,16 @@ public enum WatchMirrorPushCoordinator {
     /// share the same source of truth.
     public enum Reason: String, CaseIterable {
         case databaseUpdated
+        /// Complication data changed on its own — e.g. the server re-rendered a legacy complication's
+        /// templates. Delivered like any other change; the watch rebuilds its faces when it applies
+        /// the mirror.
         case complicationChanged
+        /// The user created, edited, deleted or reordered a complication. Delivered *and* followed by
+        /// a complication refresh request (see `WatchComplicationRefreshRequest`), so the face shows
+        /// the change right after Save instead of at the watch's next periodic refresh. Kept apart
+        /// from `complicationChanged` because that request spends one of the watch's budgeted
+        /// background wakes, which belongs to a user action rather than to routine data flow.
+        case complicationSaved
         case serversChanged
         case watchConfigChanged
         case notificationSnoozeActionsChanged
@@ -278,6 +251,7 @@ public enum WatchMirrorPushCoordinator {
             switch self {
             case .databaseUpdated: return "database updated"
             case .complicationChanged: return "complication changed"
+            case .complicationSaved: return "complication saved"
             case .serversChanged: return "servers changed"
             case .watchConfigChanged: return "watch config changed"
             case .notificationSnoozeActionsChanged: return "notification snooze actions changed"
@@ -291,6 +265,11 @@ public enum WatchMirrorPushCoordinator {
     private static let queue = DispatchQueue(label: AppConstants.BundleID + ".watchMirrorPush")
     private static var pendingWork: DispatchWorkItem?
     private static var lastPushedData: Data?
+    /// Whether any trigger coalesced into the pending push was a complication change, so the watch is
+    /// told to re-render once it has the new rows. Tracked separately from the push's `reason`, which
+    /// is only the newest trigger: a complication save followed by an unrelated trigger within the
+    /// debounce window would otherwise silently lose its refresh.
+    private static var pendingComplicationRefresh = false
 
     private static let peerMirrorVersionKey = "watchMirrorPeerVersion"
 
@@ -311,6 +290,7 @@ public enum WatchMirrorPushCoordinator {
     /// Request a push. Safe to call from anywhere and as often as needed — it debounces and de-dupes.
     public static func schedule(reason: Reason) {
         queue.async {
+            pendingComplicationRefresh = pendingComplicationRefresh || reason == .complicationSaved
             pendingWork?.cancel()
             let work = DispatchWorkItem { push(reason: reason) }
             pendingWork = work
@@ -339,6 +319,21 @@ public enum WatchMirrorPushCoordinator {
     }
 
     private static func push(reason: Reason) {
+        // The debounce commonly fires after its trigger's own lifetime has ended — e.g. a background
+        // URLSession or WatchConnectivity wake — so the snapshot read and transfer hand-off run under
+        // a background task assertion, keeping the process alive instead of letting it be frozen
+        // mid-read holding the app-group SQLite file lock (0xdead10cc).
+        Current.backgroundTask(withName: BackgroundTask.watchMirrorPush.rawValue) { _ -> Promise<Void> in
+            performPush(reason: reason)
+            return .value(())
+        }.cauterize()
+    }
+
+    private static func performPush(reason: Reason) {
+        // Consumed up front: whether the watch gets asked to re-render is decided per push, and a
+        // failed one leaves the ask to the next push rather than firing against data that never landed.
+        let refreshesComplications = pendingComplicationRefresh
+        pendingComplicationRefresh = false
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
             Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): watch unavailable")
             return
@@ -361,6 +356,8 @@ public enum WatchMirrorPushCoordinator {
             carriedKeys = payload.carriedDigestKeys
             guard !carriedKeys.isEmpty else {
                 Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): no table changed")
+                // Nothing to send, but the watch already holds the complications — let it re-render now.
+                if refreshesComplications { WatchComplicationRefreshRequest.send() }
                 return
             }
             let encoded = try payload.encodeForWatch()
@@ -371,10 +368,13 @@ public enum WatchMirrorPushCoordinator {
                 text: "Watch mirror push failed to build (\(reason.logDescription)): \(error.localizedDescription)",
                 type: .database
             ))
+            // Nothing was sent, so keep the ask for the next push rather than dropping it.
+            pendingComplicationRefresh = pendingComplicationRefresh || refreshesComplications
             return
         }
         if data == lastPushedData {
             Current.Log.verbose("Skip watch mirror push (\(reason.logDescription)): unchanged")
+            if refreshesComplications { WatchComplicationRefreshRequest.send() }
             return
         }
         lastPushedData = data
@@ -392,12 +392,20 @@ public enum WatchMirrorPushCoordinator {
             content: data,
             metadata: metadata
         )) { result in
-            if case let .failure(error) = result {
+            switch result {
+            case .success:
+                // The transfer completes on delivery, so the watch now holds the new complication
+                // rows: this is the moment it can be told to fetch their values and re-render, rather
+                // than waiting for its next periodic refresh.
+                if refreshesComplications { WatchComplicationRefreshRequest.send() }
+            case let .failure(error):
                 Current.Log.error("Watch mirror push transfer failed (\(reason.logDescription)): \(error)")
                 // The watch got nothing, so drop both beliefs: the next push rebuilds in full.
                 queue.async {
                     lastPushedData = nil
                     lastPushedDigests = [:]
+                    // The rows never landed, so re-arm the ask for the push that carries them.
+                    pendingComplicationRefresh = pendingComplicationRefresh || refreshesComplications
                 }
             }
         }

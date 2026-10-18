@@ -1,10 +1,16 @@
 import Foundation
 
 public extension URL {
+    /// Stamps the widget authenticity token onto one of the app's own deep links, so
+    /// `IncomingURLHandler` accepts the parameters a widget sends with it.
+    ///
+    /// Only the app's own scheme is stamped: a magic item's `url` action points wherever the user
+    /// typed, and the token must never travel to a third party. Anything else is returned unchanged.
     func withWidgetAuthenticity() -> URL {
-        var components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
+        guard let scheme, AppConstants.deeplinkSchemes.contains(scheme) else { return self }
+        guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else { return self }
         components.insertWidgetAuthenticity()
-        return components.url!
+        return components.url ?? self
     }
 }
 

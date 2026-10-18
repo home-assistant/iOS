@@ -395,6 +395,13 @@ lane :update_strings do
     Dir.glob("#{resources_dir_full}/*.lproj/Intents.strings").each do |path|
       File.delete(path)
     end
+
+    # The phrases were uploaded once before they became hand-maintained, so the export can still
+    # write them back. Restore the committed files rather than delete them: unlike Intents.strings
+    # these are live, and Lokalise's copy is the stale one.
+    sh("cd .. && git checkout -- 'Sources/App/Resources/*.lproj/AppShortcuts.strings'", log: false) do |status|
+      UI.important('Could not restore AppShortcuts.strings; check it before committing.') unless status.success?
+    end
   end
 
   lang_frontend_to_ios = {
@@ -535,7 +542,9 @@ lane :push_strings do
   source_directories.each do |directory|
     puts "Enumerating #{directory}..."
     Dir.each_child(directory) do |file|
-      next if ['Frontend.strings', 'Core.strings', 'Intents.strings'].include?(file)
+      # AppShortcuts.strings is kept by hand: Siri phrases have to stay natural commands in each
+      # language rather than literal translations, and the token names must survive untouched.
+      next if ['Frontend.strings', 'Core.strings', 'Intents.strings', 'AppShortcuts.strings'].include?(file)
 
       lokalise_upload_file!(
         token: token,

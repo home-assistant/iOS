@@ -2,7 +2,7 @@ import Foundation
 import Shared
 
 /// External Bus message types used by the web view integration.
-/// - See: Home Assistant External Bus docs: https://developers.home-assistant.io/docs/frontend/external-bus
+/// - See: Home Assistant External Bus docs: https://contributors.home-assistant.io/frontend/reference/external-bus/
 /// - See: Frontend implementation:
 /// https://github.com/home-assistant/frontend/blob/dev/src/external_app/external_messaging.ts
 enum WebViewExternalBusMessage: String, CaseIterable {
@@ -31,10 +31,15 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityAddTo = "entity/add_to"
     case cameraPlayerShow = "camera/show"
     case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
+    case sidebarShow = "sidebar/show"
+    case moreInfoOpened = "more_info/opened"
+    case moreInfoClosed = "more_info/closed"
+    case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
+            "hasSidebar": AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
             "hasMatterStatusReport": Current.matter.isAvailable,
@@ -50,13 +55,6 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasEntityAddTo": true,
             "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
-            "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
-                if #available(iOS 18, *), !Current.isCatalyst {
-                    return ToastPresenter.toastComponentVersion
-                } else {
-                    return -1
-                }
-            }(),
         ]
     }
 }
@@ -71,4 +69,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case navigate = "navigate"
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
+    case showNotifications = "notifications/show"
 }

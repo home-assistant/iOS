@@ -39,8 +39,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                     // channel is never re-delivered to the main app. So instead of dropping the request,
                     // hand it off to the app via the App Group queue + a Darwin signal, mirroring
                     // HandlerClearNotification's end hand-off. The app drains it on the signal and at
-                    // launch/foreground. (Darwin can't wake a suspended app, so a local-push start only
-                    // materializes when the app is next active; real-time background starts need APNs.)
+                    // launch/foreground, and reports back through the confirm id carried in the request
+                    // so the extension can have the server re-send via APNs when the app can't show it.
                     if Current.isAppExtension {
                         Current.Log.verbose(
                             "HandlerStartOrUpdateLiveActivity: handing off start for tag \(request.tag) to the app"
@@ -54,16 +54,14 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
                     // In-app path handles APNs (foreground willPresent already plays the sound and
                     // suppresses the banner; background shows the system banner). Alerting is owned
                     // there, so the ActivityKit alert is only used on the local-push drain path.
-                    let presented = try await Current.liveActivityRegistry?.startOrUpdate(
+                    _ = try await Current.liveActivityRegistry?.startOrUpdate(
                         tag: request.tag,
                         title: request.title,
                         serverWebhookId: request.serverWebhookId,
                         state: request.state,
+                        relevanceScore: request.relevanceScore,
                         alert: false
                     )
-                    if presented == true {
-                        LiveActivityPendingStart.confirmLocalPushDelivery(for: request)
-                    }
                     seal.fulfill(())
                 } catch {
                     Current.Log.error("HandlerStartOrUpdateLiveActivity: \(error)")
@@ -99,9 +97,25 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             title: title,
             serverWebhookId: payload["webhook_id"] as? String,
             state: contentState(from: payload),
+            relevanceScore: relevanceScore(from: payload),
             confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String,
             alert: (payload["silent"] as? Bool) != true
         )
+    }
+
+    static func relevanceScore(from payload: [String: Any]) -> Double? {
+        let raw: Double?
+        switch payload["relevance_score"] {
+        case let number as NSNumber:
+            guard CFGetTypeID(number) != CFBooleanGetTypeID() else { return nil }
+            raw = number.doubleValue
+        case let string as String:
+            raw = Double(string.trimmingCharacters(in: .whitespaces))
+        default:
+            raw = nil
+        }
+        guard let raw, raw.isFinite else { return nil }
+        return min(max(raw, 0), 1)
     }
 
     // MARK: - Privacy Disclosure

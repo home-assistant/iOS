@@ -17,12 +17,16 @@ struct WidgetGaugeView: View {
         if let model = entry.complicationModel {
             complication(model)
         } else {
-            switch family {
-            case .systemSmall:
-                homeScreen
-            default:
-                nativeGauge
-            }
+            WidgetGaugeContentView(
+                gaugeType: entry.gaugeType.designSystemType,
+                value: entry.value,
+                valueLabel: entry.valueLabel,
+                label: entry.label,
+                min: entry.min,
+                max: entry.max,
+                family: family,
+                logo: Image(.logo)
+            )
         }
     }
 
@@ -41,80 +45,72 @@ struct WidgetGaugeView: View {
             CircularComplicationContentView(model: model)
         }
     }
-
-    /// On the Home Screen, every gauge type uses `GaugeArcView`, keeping sizing and labels consistent.
-    /// Normal and single-label gauges use the open-bottom range; capacity uses the full circle range.
-    @ViewBuilder private var homeScreen: some View {
-        switch entry.gaugeType {
-        case .normal:
-            styledArc(GaugeArcView(
-                value: entry.value,
-                centerLabel: entry.valueLabel,
-                minLabel: entry.min,
-                maxLabel: entry.max
-            ))
-        case .singleLabel:
-            styledArc(GaugeArcView(
-                value: entry.value,
-                centerLabel: entry.valueLabel,
-                topLabel: entry.label
-            ))
-        case .capacity:
-            styledArc(GaugeArcView(
-                value: entry.value,
-                centerLabel: entry.valueLabel,
-                usesFullCircleRange: true
-            ))
-        }
-    }
-
-    private static let arcScale: CGFloat = 0.72
-
-    /// Pads the frame-filling arc within the tile and tints it with the brand color (the Home Screen
-    /// renders full-color, so the fill would otherwise be black).
-    private func styledArc(_ gauge: some View) -> some View {
-        gauge
-            .scaleEffect(Self.arcScale)
-            .padding(Self.systemSmallPadding)
-            .tint(Color.haPrimary)
-    }
-
-    @ViewBuilder private var nativeGauge: some View {
-        switch entry.gaugeType {
-        case .normal:
-            Gauge(value: entry.value) {
-                placeholderText(entry.valueLabel)
-            } currentValueLabel: {
-                placeholderText(entry.valueLabel)
-            } minimumValueLabel: {
-                placeholderText(entry.min)
-            } maximumValueLabel: {
-                placeholderText(entry.max)
-            }
-            .gaugeStyle(.accessoryCircular)
-        case .singleLabel:
-            Gauge(value: entry.value) {
-                placeholderText(entry.label)
-            } currentValueLabel: {
-                placeholderText(entry.valueLabel)
-            }
-            .gaugeStyle(.accessoryCircular)
-        case .capacity:
-            Gauge(value: entry.value) {
-                placeholderText(entry.valueLabel)
-            } currentValueLabel: {
-                placeholderText(entry.valueLabel)
-            }
-            .gaugeStyle(.accessoryCircularCapacity)
-        }
-    }
-
-    @ViewBuilder private func placeholderText(_ text: String?) -> some View {
-        if let text {
-            Text(text)
-        } else {
-            Text("00")
-                .redacted(reason: .placeholder)
-        }
-    }
 }
+
+@available(iOS 17, *)
+#Preview(as: .systemSmall, widget: {
+    WidgetGauge()
+}, timeline: {
+    WidgetGaugeEntry(
+        gaugeType: .normal,
+        value: 0.67,
+        valueLabel: "67%",
+        label: nil,
+        min: "0",
+        max: "100",
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})
+
+@available(iOS 17, *)
+#Preview(as: .systemSmall, widget: {
+    WidgetGauge()
+}, timeline: {
+    WidgetGaugeEntry(
+        gaugeType: .singleLabel,
+        value: 0.67,
+        valueLabel: "67%",
+        label: "Battery",
+        min: nil,
+        max: nil,
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})
+
+@available(iOS 17, *)
+#Preview(as: .systemSmall, widget: {
+    WidgetGauge()
+}, timeline: {
+    WidgetGaugeEntry(
+        gaugeType: .capacity,
+        value: 0.67,
+        valueLabel: "100%",
+        label: nil,
+        min: "0",
+        max: "100",
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})
+
+@available(iOS 17, *)
+#Preview(as: .accessoryCircular, widget: {
+    WidgetGauge()
+}, timeline: {
+    WidgetGaugeEntry(
+        gaugeType: .normal,
+        value: 0.67,
+        valueLabel: "67%",
+        label: nil,
+        min: "0",
+        max: "100",
+        runScript: false,
+        script: nil,
+        showConfirmationNotification: true
+    )
+})

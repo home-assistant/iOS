@@ -8,19 +8,22 @@ final class AppPresentationDismisserTests: XCTestCase {
 
     override func tearDown() {
         cancellables.removeAll()
-        AppSettingsPresenter.shared.isSheetPresented = false
-        AppSettingsPresenter.shared.isPushPresented = false
         super.tearDown()
     }
 
-    func testDismissAllClearsSettingsPresentation() {
-        AppSettingsPresenter.shared.isSheetPresented = true
-        AppSettingsPresenter.shared.isPushPresented = true
+    func testDismissAllClearsSettingsPresentationInEveryScene() {
+        // A presenter per scene, as multi-window has: an incoming navigation clears all of them.
+        let presenter = AppSettingsPresenter()
+        let otherScenePresenter = AppSettingsPresenter()
+        presenter.isSheetPresented = true
+        presenter.isPushPresented = true
+        otherScenePresenter.isSheetPresented = true
 
         AppPresentationDismisser.shared.dismissAll()
 
-        XCTAssertFalse(AppSettingsPresenter.shared.isSheetPresented)
-        XCTAssertFalse(AppSettingsPresenter.shared.isPushPresented)
+        XCTAssertFalse(presenter.isSheetPresented)
+        XCTAssertFalse(presenter.isPushPresented)
+        XCTAssertFalse(otherScenePresenter.isSheetPresented)
     }
 
     func testDismissAllNotifiesViewsOwningTheirOwnPresentationState() {

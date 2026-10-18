@@ -7,14 +7,28 @@ import PromiseKit
 import XCTest
 
 class WebhookManagerTests: XCTestCase {
+    private final class PassthroughBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            requiringAssertion: Bool,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            wrapping(nil)
+        }
+    }
+
     private var manager: WebhookManager!
     private var api1: FakeHassAPI!
     private var api2: FakeHassAPI!
     private var webhookURL1: URL!
     private var webhookURL2: URL!
+    private var previousBackgroundTask: HomeAssistantBackgroundTaskRunner!
 
     override func setUp() {
         super.setUp()
+
+        previousBackgroundTask = Current.backgroundTask
+        Current.backgroundTask = PassthroughBackgroundTaskRunner()
 
         api1 = FakeHassAPI(server: .fake())
         api2 = FakeHassAPI(server: .fake())
@@ -31,6 +45,7 @@ class WebhookManagerTests: XCTestCase {
         ReplacingTestHandler.reset()
 
         Current.isBackgroundRequestsImmediate = { true }
+        Current.backgroundTask = previousBackgroundTask
     }
 
     func testBackgroundHandlingCallsCompletionHandler() {

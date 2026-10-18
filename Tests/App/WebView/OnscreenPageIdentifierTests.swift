@@ -1,0 +1,74 @@
+import Foundation
+import GRDB
+@testable import HomeAssistant
+@testable import Shared
+import Testing
+
+/// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
+/// to a type marked `@available`.
+@Suite(.serialized)
+struct OnscreenPageIdentifierTests {
+    @Test("A page resolves to an identifier keyed the way the widgets' page entity is")
+    func pageResolvesToAnIdentifier() throws {
+        guard #available(iOS 18.2, *) else { return }
+        try withExposureDatabase {
+            let page = try Self.page()
+
+            #expect(OnscreenPageIdentifier.make(for: page) != nil)
+            #expect(PageAppEntity.makeId(serverId: "1", panelPath: "lovelace") == "1-lovelace")
+        }
+    }
+
+    /// Saying which page someone is looking at is a stronger disclosure than listing the pages they
+    /// could open, so hiding a server from Siri has to hide its screens too.
+    @Test("A server hidden from Siri publishes no page")
+    func hiddenServerPublishesNothing() throws {
+        guard #available(iOS 18.2, *) else { return }
+        try withExposureDatabase {
+            let page = try Self.page()
+            SiriServerExposure.setExposed(false, serverId: "1")
+
+            #expect(OnscreenPageIdentifier.make(for: page) == nil)
+        }
+    }
+
+    /// The identifier the web view publishes has to be the one the widgets' own page query would
+    /// produce, or Siri resolves a page nothing can answer.
+    @Test("The widgets' page query names a panel the same way")
+    func pageQueryNamesAPanelTheSameWay() {
+        let server = Server.fake()
+        let panel = AppPanel(
+            id: "1-lovelace",
+            serverId: server.identifier.rawValue,
+            title: "Overview",
+            path: "lovelace",
+            component: "lovelace",
+            showInSidebar: true
+        )
+
+        #expect(
+            PageAppEntityQuery().id(for: panel, server: server) ==
+                PageAppEntity.makeId(serverId: server.identifier.rawValue, panelPath: "lovelace")
+        )
+    }
+
+    /// Built through the initializer so the test resolves the panel the way the app does.
+    private static func page() throws -> OnscreenPage {
+        let url = try #require(URL(string: "https://example.com/lovelace/0"))
+        return try #require(
+            OnscreenPage(url: url, title: "Overview", serverId: "1", knownPanelPaths: ["lovelace"])
+        )
+    }
+
+    private func withExposureDatabase(perform work: () throws -> Void) throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+
+        try SiriServerExposureTable().createIfNeeded(database: database)
+        Current.database = { database }
+
+        defer { Current.database = previousDatabase }
+
+        try work()
+    }
+}

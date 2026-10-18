@@ -23,9 +23,19 @@ struct RectangularComplicationWatchSnapshotTests {
             .environment(\.colorScheme, .dark)
     }
 
+    /// The icon slot carrying a configured color, which the face has to draw instead of tinting it away.
+    private static func customIconColor(
+        _ model: RectangularComplicationRenderModel
+    ) -> RectangularComplicationRenderModel {
+        var model = model
+        model.iconImage = customColoredComplicationIcon()
+        return model
+    }
+
     private static var variants: [(String, RectangularComplicationRenderModel)] {
         [
             ("icon-name-gauge", .sample()),
+            ("custom-icon-color", customIconColor(.sample(title: "Battery"))),
             ("all-slots", .sample(title: "Living Room", subtitle: "Temperature", bottomText: "Updated 2m ago")),
             ("all-slots-no-min-max", .sample(
                 title: "Living Room",
@@ -51,6 +61,24 @@ struct RectangularComplicationWatchSnapshotTests {
                 value: "82%",
                 bottomText: "Peak 4.2 kW",
                 textColor: .yellow
+            )),
+            ("per-slot-colors", .sample(
+                icon: false,
+                title: "Rain",
+                fraction: nil,
+                value: "▁▂▃▄▅▆▇█",
+                bottomText: "in 45m",
+                titleColor: .white,
+                valueColor: .green
+            )),
+            ("legacy-text-gauge", .sample(
+                icon: false,
+                title: "2.9 kWh / 1.4 kW",
+                fraction: 0.9,
+                value: "S 8.4 °C / D 6.9 °C",
+                showMinMax: false,
+                valueColor: .orange,
+                valueRidesGauge: false
             )),
         ]
     }

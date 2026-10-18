@@ -24,7 +24,11 @@ struct WidgetCalendar: Widget {
         }
         .configurationDisplayName(L10n.Widgets.Calendar.title)
         .description(L10n.Widgets.Calendar.description)
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies(supportedFamilies)
+    }
+
+    var supportedFamilies: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
     }
 }
 
@@ -69,7 +73,7 @@ struct WidgetCalendar: Widget {
         events: Array(WidgetCalendarPreviewSample.events(
             referenceDate: WidgetCalendarPreviewSample.referenceDate,
             calendar: .current
-        ).prefix(5)),
+        ).prefix(6)),
         calendarCount: 3,
         showsCalendarName: true,
         serverId: WidgetCalendarPreviewSample.previewServerId

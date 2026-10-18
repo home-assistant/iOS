@@ -2,12 +2,18 @@ import SwiftUI
 
 import SnapshotTesting
 
+/// How closely a render has to match its reference. Snapshots are captured through the render
+/// server, so a little noise between machines is expected and the comparison is not exact.
+public let defaultSnapshotPrecision: Float = 0.96
+
 public func assertSnapshot<Value>(
     of value: @autoclosure () throws -> Value,
     drawHierarchyInKeyWindow: Bool = false,
     layout: SwiftUISnapshotLayout = SwiftUISnapshotLayout.device(config: .iPhone13(.portrait)),
     traits: UITraitCollection = .init(),
     named: String? = nil,
+    precision: Float = defaultSnapshotPrecision,
+    perceptualPrecision: Float = defaultSnapshotPrecision,
     record recording: Bool? = nil,
     timeout: TimeInterval = 5,
     fileID: StaticString = #fileID,
@@ -20,8 +26,8 @@ public func assertSnapshot<Value>(
         of: value(),
         as: Snapshotting<Value, UIImage>.image(
             drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
-            precision: 0.96,
-            perceptualPrecision: 0.96,
+            precision: precision,
+            perceptualPrecision: perceptualPrecision,
             layout: layout,
             traits: traits
         ),
@@ -41,6 +47,8 @@ public func assertLightDarkSnapshots(
     drawHierarchyInKeyWindow: Bool = false,
     layout: SwiftUISnapshotLayout = SwiftUISnapshotLayout.device(config: .iPhone13(.portrait)),
     named: String? = nil,
+    precision: Float = defaultSnapshotPrecision,
+    perceptualPrecision: Float = defaultSnapshotPrecision,
     record recording: Bool? = nil,
     timeout: TimeInterval = 5,
     fileID: StaticString = #fileID,
@@ -62,6 +70,8 @@ public func assertLightDarkSnapshots(
             layout: layout,
             traits: .init(userInterfaceStyle: style),
             named: finalNamed,
+            precision: precision,
+            perceptualPrecision: perceptualPrecision,
             record: recording,
             timeout: timeout,
             fileID: fileID,

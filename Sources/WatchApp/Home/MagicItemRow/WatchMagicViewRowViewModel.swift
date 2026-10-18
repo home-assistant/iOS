@@ -130,8 +130,8 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         return domain.contextualStateDescription(for: liveEntity, serverId: item.serverId)
     }
 
-    /// Mirrors CarPlay: dynamic domains render the live state-driven icon and color unless the
-    /// user explicitly picked a custom icon; everything else uses the configured icon and color.
+    /// Mirrors CarPlay: only the domains whose icon changes with state render the live icon, and
+    /// only until the user explicitly picks one of their own.
     var icon: MaterialDesignIcons {
         if let liveEntity, usesLiveIcon {
             return liveEntity.getMDI()
@@ -139,11 +139,15 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         return item.icon(info: itemInfo)
     }
 
+    /// The color home-assistant/frontend gives the entity, the same as the widgets and CarPlay —
+    /// independent of which icon is drawn, so a custom icon still shows whether the thing is on.
+    /// Items with no live entity behind them (scripts, scenes, Assist) keep their configured color.
     var iconColor: UIColor {
-        if let liveEntity, usesLiveIcon {
-            return liveEntity.carPlayIconColor() ?? .white
+        if let liveEntity, item.type == .entity {
+            let customColor = itemInfo.customization?.customIconColor.map { UIColor(hex: $0) }
+            return liveEntity.stateIconColor(customColor: customColor) ?? .white
         }
-        if let hex = itemInfo.customization?.iconColor {
+        if let hex = itemInfo.customization?.customIconColor {
             return UIColor(hex: hex)
         }
         return .white
@@ -170,8 +174,9 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     /// State is only fetched for entity items whose domain reports a meaningful state — same
-    /// rule as CarPlay.
-    private var displaysState: Bool {
+    /// rule as CarPlay. The rows this excludes (scripts, scenes, automations) show the item's
+    /// server and area instead, so they still carry a context line.
+    var displaysState: Bool {
         guard item.type == .entity, let domain = item.domain else { return false }
         return !domain.hasIrrelevantState
     }

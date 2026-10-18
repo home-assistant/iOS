@@ -14,6 +14,7 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
         let title: String
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
+        let relevanceScore: Double?
         let alert: Bool
     }
 
@@ -42,6 +43,7 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
         title: String,
         serverWebhookId: String?,
         state: HALiveActivityAttributes.ContentState,
+        relevanceScore: Double?,
         alert: Bool
     ) async throws -> Bool {
         if let error = startOrUpdateError {
@@ -49,7 +51,14 @@ final class MockLiveActivityRegistry: LiveActivityRegistryProtocol {
             throw error
         }
         startOrUpdateCalls.append(
-            StartOrUpdateCall(tag: tag, title: title, serverWebhookId: serverWebhookId, state: state, alert: alert)
+            StartOrUpdateCall(
+                tag: tag,
+                title: title,
+                serverWebhookId: serverWebhookId,
+                state: state,
+                relevanceScore: relevanceScore,
+                alert: alert
+            )
         )
         return startOrUpdateResult
     }

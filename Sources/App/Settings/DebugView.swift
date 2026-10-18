@@ -7,8 +7,10 @@ import XCGLogger
 
 struct DebugView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
-    @State private var showShareSheet = false
+    @State private var logsShare: ShareWrapper?
     @State private var logsURL: URL?
     @State private var tapsOnCasitaLogo = 0
     @State private var showDeleteKeychainAlert = false
@@ -87,6 +89,15 @@ struct DebugView: View {
                     )
                 }
 
+                NavigationLink {
+                    ManageStorageView(viewModel: ManageStorageViewModel())
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .internaldrive),
+                        title: L10n.Settings.Debugging.ManageStorage.title
+                    )
+                }
+
                 if #available(iOS 17, *), !Current.isCatalyst {
                     NavigationLink {
                         ThreadCredentialsManagementView()
@@ -145,19 +156,12 @@ struct DebugView: View {
                 }
             }
         }
-        .sheet(isPresented: .init(get: { showShareSheet && logsURL != nil }, set: { showShareSheet = $0 })) {
-            if let logsURL {
-                ActivityViewController(shareWrapper: .init(url: logsURL))
-                    .onAppear {
-                        loadingLogs = false
-                    }
-                    .onDisappear {
-                        do {
-                            try FileManager.default.removeItem(at: logsURL)
-                        } catch {
-                            Current.Log.error("Error deleting logs file: \(error)")
-                        }
-                    }
+        .shareSheet(item: $logsShare) {
+            guard let logsURL else { return }
+            do {
+                try FileManager.default.removeItem(at: logsURL)
+            } catch {
+                Current.Log.error("Error deleting logs file: \(error)")
             }
         }
         .modifier(deleteKeychainAlert)
@@ -197,8 +201,8 @@ struct DebugView: View {
         if Current.isCatalyst {
             URLOpener.shared.open(url, options: [:], completionHandler: nil)
         } else {
-            loadingLogs = true
-            showShareSheet = true
+            loadingLogs = false
+            logsShare = ShareWrapper(url: url)
         }
     }
 
@@ -337,7 +341,14 @@ struct DebugView: View {
         }
     }
 
-    private var developerSection: some View {
+    static var notifyOnLocalPushStateChangesBinding: Binding<Bool> {
+        .init(
+            get: { Current.settingsStore.notifyOnLocalPushStateChanges },
+            set: { Current.settingsStore.notifyOnLocalPushStateChanges = $0 }
+        )
+    }
+
+    var developerSection: some View {
         Section {
             NavigationLink {
                 ComponentsLibraryView()
@@ -489,7 +500,11 @@ struct DebugView: View {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
 
-            if !Current.isCatalyst, UIDevice.current.userInterfaceIdiom == .phone {
+            Toggle(isOn: Self.notifyOnLocalPushStateChangesBinding) {
+                Text(L10n.Settings.Debugging.NotifyLocalPushStateChanges.title)
+            }
+
+            if !Current.isCatalyst, horizontalSizeClass == .compact {
                 Toggle(isOn: .init(get: {
                     Current.settingsStore.webViewAlwaysBelowStatusBar
                 }, set: { newValue in
@@ -664,8 +679,8 @@ struct DebugView: View {
     }
 
     private func dismissSettingsAfterReset() {
-        AppSettingsPresenter.shared.isSheetPresented = false
-        AppSettingsPresenter.shared.isPushPresented = false
+        appSettingsPresenter?.isSheetPresented = false
+        appSettingsPresenter?.isPushPresented = false
         dismiss()
     }
 
@@ -966,6 +981,7 @@ extension DebugView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Settings.LocationHistory.title),
             SettingsSearchEntry(L10n.Settings.DatabaseExplorer.title),
             SettingsSearchEntry(L10n.Settings.Debugging.ConfigurationTransfer.title),
+            SettingsSearchEntry(L10n.Settings.Debugging.ManageStorage.title),
             SettingsSearchEntry(L10n.Settings.Debugging.CachedEntityData.title),
             SettingsSearchEntry(L10n.Settings.Debugging.ClearWebCache.title),
             SettingsSearchEntry(L10n.Settings.Debugging.ResetApp.title),

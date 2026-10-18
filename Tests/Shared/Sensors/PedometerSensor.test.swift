@@ -27,10 +27,15 @@ class PedometerSensorTests: XCTestCase {
         Current.pedometer.queryStartEndHandler = { _, _, handler in handler(nil, nil) }
     }
 
-    func testUnauthorizedReturnsError() {
-        let promise = PedometerSensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? PedometerSensor.PedometerError, .unauthorized)
+    /// Listed rather than dropped: switching one on is what asks for motion access, so sensors
+    /// that vanished until it was granted would have no row left to switch on.
+    func testUnauthorizedReportsUnavailable() throws {
+        Current.pedometer.isStepCountingAvailable = { true }
+
+        let sensors = try hang(PedometerSensor(request: request).sensors())
+        XCTAssertEqual(Set(sensors.compactMap(\.UniqueID)), Set(PedometerSensor.allSensorIDs))
+        for sensor in sensors {
+            XCTAssertEqual(sensor.State as? String, "unavailable", sensor.UniqueID ?? "")
         }
     }
 
@@ -60,6 +65,21 @@ class PedometerSensorTests: XCTestCase {
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? TestError, .someError)
         }
+    }
+
+    func testRegistrationListsEverySensorEvenWithoutAValue() throws {
+        request.reason = .registration
+        Current.pedometer.isAuthorized = { true }
+        Current.pedometer.isStepCountingAvailable = { true }
+        Current.pedometer.queryStartEndHandler = { _, _, hand in hand(FakePedometerData(), nil) }
+
+        let sensors = try hang(PedometerSensor(request: request).sensors())
+
+        XCTAssertEqual(Set(sensors.compactMap(\.UniqueID)), Set(PedometerSensor.allSensorIDs))
+        let pace = sensors.first(where: { $0.UniqueID == "pedometer_avg_active_pace" })
+        XCTAssertEqual(pace?.State as? String, "unavailable")
+        XCTAssertEqual(pace?.UnitOfMeasurement, "m/s")
+        XCTAssertEqual(sensors.first(where: { $0.UniqueID == "pedometer_steps" })?.State as? Int, 0)
     }
 
     func testWithOnlyRequiredSteps() throws {

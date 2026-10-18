@@ -36,6 +36,43 @@ final class AnimatedSVGWebViewTests: XCTestCase {
         XCTAssertEqual(second.resourceName, resourceName)
     }
 
+    /// The web view must not be built during launch — that WebKit spin-up was half of the measured
+    /// launch time — so the preload waits for the app to become active.
+    func testFirstActivationPreloadWaitsForActivation() {
+        let cache = AnimatedSVGWebViewCache()
+
+        cache.preloadOnFirstActivation("cache-not-yet-activated")
+        XCTAssertFalse(cache.hasWarmWebView(for: "cache-not-yet-activated"))
+
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        XCTAssertTrue(cache.hasWarmWebView(for: "cache-not-yet-activated"))
+    }
+
+    func testFirstActivationPreloadStopsListeningAfterTheFirstActivation() {
+        let cache = AnimatedSVGWebViewCache()
+        cache.preloadOnFirstActivation("cache-first-only")
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // The observer is gone, so a later activation warms nothing new.
+        cache.preloadOnFirstActivation("cache-after-activation")
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        XCTAssertTrue(cache.hasWarmWebView(for: "cache-first-only"))
+        XCTAssertTrue(cache.hasWarmWebView(for: "cache-after-activation"))
+    }
+
+    func testFirstActivationPreloadIgnoresASecondRequestWhileWaiting() {
+        let cache = AnimatedSVGWebViewCache()
+        cache.preloadOnFirstActivation("cache-armed-first")
+        // A second call while one is pending must not register another observer.
+        cache.preloadOnFirstActivation("cache-armed-second")
+
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        XCTAssertTrue(cache.hasWarmWebView(for: "cache-armed-first"))
+        XCTAssertFalse(cache.hasWarmWebView(for: "cache-armed-second"))
+    }
+
     func testAnimationRunsOnceTheViewIsOnScreen() async {
         let webView = AnimatedSVGWebView(resourceName: HomeAssistantStandByView.loadingLogoResourceName)
 

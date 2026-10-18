@@ -21,12 +21,35 @@ public enum WatchUserDefaultsKey: String {
     /// shared app group (unlike the other keys) so the watch widget extension's own self fetch can
     /// read it too.
     case complicationRefreshNotificationsEnabled
+    /// The one list of switched-on sensors every server shared before they were chosen per server.
+    /// Only read by `WatchSensorEnablementStore`, which keeps the per-server lists under keys of
+    /// its own and removes this one once it has been handed to each server.
+    case enabledSensorIDs
+    /// When the watch last sent its sensors successfully, to any server.
+    case sensorReportLastSuccessAt
+    /// What the last failed sensor report said, cleared by the next run that has no failure.
+    case sensorReportLastError
 }
 
-public final class WatchUserDefaults {
+public final class WatchUserDefaults: WatchSensorSettings {
     public static var shared = WatchUserDefaults()
 
-    private let userDefaults = UserDefaults()
+    private let userDefaults: UserDefaults
+
+    /// Which sensors each server receives. Every sensor is opt-in, so an ID that isn't in a server's
+    /// list is off there and nothing about it is sent to that server.
+    private let sensorEnablement: WatchSensorEnablementStore
+
+    /// What each server receives of the watch's location. Opt-in: a server receives nothing until
+    /// the user picks exact or zone-only for it.
+    private let locationPrivacyStore: WatchLocationPrivacyStore
+
+    init() {
+        let defaults = UserDefaults()
+        self.userDefaults = defaults
+        self.sensorEnablement = WatchSensorEnablementStore(defaults: defaults, servers: { Current.servers.all })
+        self.locationPrivacyStore = WatchLocationPrivacyStore(defaults: defaults)
+    }
 
     public func set(_ value: Any?, key: WatchUserDefaultsKey) {
         userDefaults.set(value, forKey: key.rawValue)
@@ -143,6 +166,67 @@ public final class WatchUserDefaults {
         } else {
             userDefaults.removeObject(forKey: key)
         }
+    }
+
+    // MARK: - Watch sensors (reported by the watch as a device of its own)
+
+    public func enabledSensorIDs(forServer serverID: Identifier<Server>) -> Set<String> {
+        sensorEnablement.enabledSensorIDs(forServer: serverID)
+    }
+
+    public func isSensorEnabled(uniqueID: String, forServer serverID: Identifier<Server>) -> Bool {
+        sensorEnablement.isSensorEnabled(uniqueID: uniqueID, forServer: serverID)
+    }
+
+    public func setSensorEnabled(_ enabled: Bool, uniqueID: String, forServer serverID: Identifier<Server>) {
+        sensorEnablement.setSensorEnabled(enabled, uniqueID: uniqueID, forServer: serverID)
+    }
+
+    /// Hands a selection made before sensors were chosen per server to the servers the watch has,
+    /// once. Run at launch, before a sync can change which servers those are.
+    public func splitSensorEnablementAcrossServersIfNeeded() {
+        sensorEnablement.splitAcrossServersIfNeeded()
+    }
+
+    /// Settles the sensor choices against the servers a sync from the iPhone just restored,
+    /// dropping those of every server it left out.
+    public func applySyncedServersToSensorEnablement(_ serverIDs: [Identifier<Server>]) {
+        sensorEnablement.applySyncedServers(serverIDs)
+    }
+
+    // MARK: - Watch location (reported to the watch's own device tracker)
+
+    public func locationPrivacy(forServer serverID: Identifier<Server>) -> ServerLocationPrivacy {
+        locationPrivacyStore.locationPrivacy(forServer: serverID)
+    }
+
+    public func setLocationPrivacy(_ privacy: ServerLocationPrivacy, forServer serverID: Identifier<Server>) {
+        locationPrivacyStore.setLocationPrivacy(privacy, forServer: serverID)
+    }
+
+    public func isLocationClearPending(forServer serverID: Identifier<Server>) -> Bool {
+        locationPrivacyStore.isLocationClearPending(forServer: serverID)
+    }
+
+    public func setLocationClearPending(_ pending: Bool, forServer serverID: Identifier<Server>) {
+        locationPrivacyStore.setLocationClearPending(pending, forServer: serverID)
+    }
+
+    /// Drops the location choices of every server a sync from the iPhone left out.
+    public func applySyncedServersToLocationPrivacy(_ serverIDs: [Identifier<Server>]) {
+        locationPrivacyStore.applySyncedServers(serverIDs)
+    }
+
+    /// When the watch last sent its sensors successfully. `nil` until the first success.
+    public var lastSensorReportAt: Date? {
+        get { date(for: .sensorReportLastSuccessAt) }
+        set { set(newValue, key: .sensorReportLastSuccessAt) }
+    }
+
+    /// What the most recent run's first failure said, or `nil` when it had none.
+    public var lastSensorReportError: String? {
+        get { string(for: .sensorReportLastError) }
+        set { set(newValue, key: .sensorReportLastError) }
     }
 
     // MARK: - Assist pipeline display name

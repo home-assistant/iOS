@@ -60,6 +60,13 @@ public enum Domain: String, CaseIterable {
     case weather
     case counter
     case timer
+    case aiTask = "ai_task"
+    case configurator
+    case imageProcessing = "image_processing"
+    case infrared
+    case plant
+    case radioFrequency = "radio_frequency"
+    case tag
 
     public init?(entityId: String) {
         let domainString = entityId.components(separatedBy: ".").first ?? ""
@@ -83,30 +90,7 @@ public enum Domain: String, CaseIterable {
 
         case unknown
         case unavailable
-
-        /// States that represent an "active" condition
-        public var isActive: Bool {
-            Domain.activeStates.contains(self)
-        }
     }
-
-    /// States that represent an "active" condition
-    /// such as for displaying accent color for entity tile icon
-    public static var activeStates: [State] = [
-        .on,
-        .open,
-        .unlocked,
-        .unlocking,
-        .locking,
-        .opening,
-        .closing,
-    ]
-
-    /// States that represent a "problem" condition
-    public static var problemStates: [State] = [
-        .jammed,
-        .unavailable,
-    ]
 
     public var states: [State] {
         var states: [State] = []
@@ -387,6 +371,20 @@ public enum Domain: String, CaseIterable {
             image = .counterIcon
         case .timer:
             image = .timerOutlineIcon
+        case .aiTask:
+            image = .starFourPointsIcon
+        case .configurator:
+            image = .cogIcon
+        case .imageProcessing:
+            image = .imageFilterFramesIcon
+        case .infrared:
+            image = .ledOnIcon
+        case .plant:
+            image = .flowerIcon
+        case .radioFrequency:
+            image = .radioTowerIcon
+        case .tag:
+            image = .tagOutlineIcon
         }
         return image
     }
@@ -545,7 +543,17 @@ public enum Domain: String, CaseIterable {
             return CoreStrings.componentWeatherTitle
         case .timer:
             return CoreStrings.componentTimerTitle
-        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter:
+        case .aiTask:
+            return CoreStrings.componentAiTaskTitle
+        case .configurator:
+            return CoreStrings.componentConfiguratorTitle
+        case .imageProcessing:
+            return CoreStrings.componentImageProcessingTitle
+        case .plant:
+            return CoreStrings.componentPlantTitle
+        case .tag:
+            return CoreStrings.componentTagTitle
+        case .zone, .airQuality, .conversation, .stt, .tts, .wakeWord, .counter, .infrared, .radioFrequency:
             return rawValue
         }
     }
@@ -592,10 +600,12 @@ public enum Domain: String, CaseIterable {
         [.cover, .inputBoolean, .light, .lock, .switch].contains(self)
     }
 
-    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report
-    /// their last-triggered time.
+    /// Whether the domain's state adds no value in list UIs — scripts and scenes just report their
+    /// last-triggered time, and an automation reports whether it is *enabled*, never the state of
+    /// the light or fan it actually drives. Rows for these domains show where the item lives
+    /// (server, area) instead of a state the user can't read anything into.
     public var hasIrrelevantState: Bool {
-        [.script, .scene].contains(self)
+        [.automation, .scene, .script].contains(self)
     }
 
     public func localizedState(for state: String) -> String {
@@ -664,6 +674,50 @@ public extension Domain {
         .vacuum,
     ]
 
+    /// Domains a spoken command can reach, kept to what people actually name out loud.
+    ///
+    /// Deliberately absent: locks and sirens, where a misheard phrase has real consequences;
+    /// thermostats, which have their own set-temperature command; scenes, which only ever activate;
+    /// scripts, automations and buttons, which have their own actions and read oddly as "off"; and
+    /// media players, cameras, remotes and water heaters, which stay out to keep the list short.
+    static let voiceControllable: [Domain] = [
+        .light,
+        .switch,
+        .inputBoolean,
+        .cover,
+        .fan,
+        .humidifier,
+        .group,
+    ]
+
+    /// Domains whose on/off services read as open and close, so a spoken command should say
+    /// "open the curtain" rather than "turn on the curtain".
+    ///
+    /// `valve` belongs here by the same reasoning, but it isn't voice-controllable yet, and adding
+    /// it to this list alone would not expose it.
+    static let voiceOpenable: [Domain] = [
+        .cover,
+    ]
+
+    /// Domains a spoken on/off command should offer. Covers are handled by the open and close
+    /// command instead, where the wording matches what the service actually does.
+    static let voiceSwitchOffered: [Domain] = voiceControllable.filter { !voiceOpenable.contains($0) }
+
+    /// Domains a spoken question can report on, and the ones "show" opens the details of. The
+    /// controllable domains plus the sensors, which are what people most often ask about, and water
+    /// heaters, which read back a state worth hearing even though nobody switches one by voice.
+    static let voiceReadable: [Domain] = voiceControllable + [
+        .waterHeater,
+        .sensor,
+        .binarySensor,
+    ]
+
+    /// Whether a spoken command can turn an entity of this domain *off*. A scene has one service for
+    /// both directions, so "turn off the movie scene" would activate it — those are on-only.
+    var isVoiceSwitchable: Bool {
+        Domain.voiceControllable.contains(self) && toggleIsStateAware
+    }
+
     /// Domains that always show their own confirmation when tapped (state-aware lock handling),
     /// making the per-item "require confirmation" customization irrelevant.
     static let builtInConfirmationDomains: [Domain] = [
@@ -677,8 +731,7 @@ public extension Domain {
     static let watchAddable: [Domain] = watchSupported + watchDisplayOnly + controlScreenDomains
 
     /// Display order of the watch area screens' controllable entities, most commonly used domains
-    /// first (same spirit as `commonlyUsedWidgetSupported`, extended to every watch-runnable
-    /// domain). Domains not listed sort last.
+    /// first, covering every watch-runnable domain. Domains not listed sort last.
     static let watchAreaControlsOrder: [Domain] = [
         .light,
         .switch,
@@ -705,16 +758,6 @@ public extension Domain {
         return index
     }
 
-    static let commonlyUsedWidgetSupported: [Domain] = [
-        .light,
-        .switch,
-        .cover,
-        .fan,
-        .inputBoolean,
-        .humidifier,
-        .valve,
-    ]
-
     static let sensorWidgetSupported: [Domain] = [
         .sensor,
         .binarySensor,
@@ -732,17 +775,6 @@ public extension Domain {
         .deviceTracker,
         .update,
     ]
-
-    static let appDatabaseExcluded: [Domain] = [
-        .geoLocation,
-        .conversation,
-        .stt,
-        .tts,
-        .wakeWord,
-        .assistSatellite,
-        .notify,
-        .image,
-    ]
 }
 
 // MARK: - Main Action
@@ -750,6 +782,7 @@ public extension Domain {
 public extension Domain {
     /// The primary service to call when activating this domain.
     /// Returns nil for domains that don't have a single main action (e.g., sensors).
+    /// A group has no services of its own, so its toggle is addressed to `serviceDomain`.
     var mainAction: Service? {
         switch self {
         case .automation:
@@ -758,16 +791,17 @@ public extension Domain {
             return .press
         case .scene, .script:
             return .turnOn
-        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve:
+        case .cover, .fan, .inputBoolean, .light, .switch, .humidifier, .valve, .group:
             return .toggle
         case .lock:
             return nil // Lock requires state-aware action (lock/unlock)
         case .sensor, .binarySensor, .zone, .person, .camera, .todo, .climate,
              .airQuality, .alarmControlPanel, .alert, .assistSatellite, .calendar, .conversation, .date,
-             .dateTime, .deviceTracker, .event, .geoLocation, .group, .image, .inputDatetime, .inputNumber,
+             .dateTime, .deviceTracker, .event, .geoLocation, .image, .inputDatetime, .inputNumber,
              .inputSelect, .inputText, .lawnMower, .mediaPlayer, .notify, .number, .remote, .schedule,
              .select, .siren, .stt, .sun, .text, .time, .tts, .update, .vacuum, .wakeWord, .waterHeater,
-             .weather, .counter, .timer:
+             .weather, .counter, .timer, .aiTask, .configurator, .imageProcessing, .infrared, .plant,
+             .radioFrequency, .tag:
             return nil // Read-only or complex domains
         }
     }

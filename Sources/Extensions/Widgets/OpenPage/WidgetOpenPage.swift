@@ -13,7 +13,7 @@ struct WidgetOpenPage: Widget {
             content: { entry in
                 WidgetBasicContainerView(
                     emptyViewGenerator: {
-                        AnyView(WidgetEmptyView(message: L10n.Widgets.OpenPage.notConfigured))
+                        AnyView(WidgetEmptyStateView(message: L10n.Widgets.OpenPage.notConfigured))
                     },
                     contents: {
                         let showSubtitle = !entry.isPreview && Current.servers.all.count > 1
@@ -32,7 +32,8 @@ struct WidgetOpenPage: Widget {
                             )
                         }
                     }(),
-                    type: .button
+                    type: .button,
+                    widgetKind: .openPage
                 )
             }
         )
@@ -61,6 +62,6 @@ struct WidgetOpenPage: Widget {
 
 enum WidgetOpenPageSupportedFamilies {
     static var families: [WidgetFamily] {
-        [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .accessoryCircular]
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges + [.accessoryCircular]
     }
 }

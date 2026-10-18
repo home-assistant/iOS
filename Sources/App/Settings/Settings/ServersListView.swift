@@ -2,6 +2,12 @@ import Shared
 import SwiftUI
 
 struct ServersListView: View {
+    private enum Constants {
+        static let previewWidth: CGFloat = 360
+    }
+
+    var macSidebarSelection: MacSettingsSidebarSelection?
+
     @StateObject private var observer = ServersObserver()
     @State private var showAddServer = false
     @State private var serverPendingDeletion: Server?
@@ -10,8 +16,10 @@ struct ServersListView: View {
     var body: some View {
         ForEach(observer.servers, id: \.identifier) { server in
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
-                HomeAssistantAccountRowView(server: server)
+                HomeAssistantAccountRowView(server: server, isCompact: Current.isCatalyst)
             }
+            .tag(MacSettingsSidebarSelection.server(server.identifier))
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .server(server.identifier))
             .contextMenu {
                 Button {
                     server.refreshAppDatabase(forceUpdate: true, showProgress: true)
@@ -30,6 +38,22 @@ struct ServersListView: View {
                 } label: {
                     Label(L10n.Settings.ConnectionSection.DeleteServer.title, systemSymbol: .trash)
                 }
+            } preview: {
+                ServerDetailsRowView(
+                    serverName: server.info.name,
+                    userName: "",
+                    profilePicture: nil,
+                    details: ServerDetailsRowView.details(for: server),
+                    isSyncing: false,
+                    transitionNamespace: nil,
+                    onEdit: { _ in },
+                    onSync: {},
+                    onTroubleshoot: {},
+                    onOpen: nil,
+                    showsActions: false
+                )
+                .frame(width: Constants.previewWidth)
+                .background(Color(uiColor: .secondarySystemGroupedBackground))
             }
             .confirmationDialog(
                 L10n.Settings.ConnectionSection.DeleteServer.title,
@@ -51,8 +75,12 @@ struct ServersListView: View {
             observer.moveServers(from: source, to: destination)
         }
 
-        NavigationLink(destination: ServerSwitchingSettingsView()) {
-            Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
+        if observer.servers.count > 1 {
+            NavigationLink(destination: ServerSwitchingSettingsView()) {
+                Label(L10n.Settings.ServerSwitching.AutomaticSwitching.title, systemSymbol: .location)
+            }
+            .tag(MacSettingsSidebarSelection.serverSwitching)
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverSwitching)
         }
 
         Button {
@@ -69,6 +97,7 @@ struct ServersListView: View {
             OnboardingNavigationView(onboardingStyle: .secondary)
         }
         #endif
+        .macSettingsSidebarRow()
     }
 }
 

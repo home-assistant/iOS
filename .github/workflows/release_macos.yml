@@ -7,6 +7,9 @@ on:
         description: Release tag to publish, for example release/2026.5.0/2026.1985
         required: true
         type: string
+  push:
+    tags:
+      - 'release/*/*'
 
 permissions:
   actions: read
@@ -103,7 +106,7 @@ jobs:
                   owner,
                   repo,
                   workflow_id: workflowId,
-                  branch: 'main',
+                  head_sha: headSha,
                   per_page: 100,
                 },
                 (response, done) => {
@@ -121,19 +124,19 @@ jobs:
               );
 
               core.info(
-                `Checked ${runs.length} Distribute runs on main. ` +
+                `Checked ${runs.length} Distribute runs for ${headSha}. ` +
                 `Newest run numbers: ${runs.slice(0, 5).map((run) => run.run_number).join(', ')}`
               );
 
               const runWithExpectedNumber = [...runs]
                 .sort((lhs, rhs) => new Date(rhs.created_at) - new Date(lhs.created_at))
                 .find((run) => run.run_number === expectedRunNumber);
-              const matchingRun = runWithExpectedNumber?.head_sha === headSha ? runWithExpectedNumber : undefined;
+              const matchingRun = runWithExpectedNumber?.head_branch === 'main' ? runWithExpectedNumber : undefined;
 
               if (runWithExpectedNumber && !matchingRun) {
                 core.setFailed(
-                  `Distribute run #${expectedRunNumber} points to ` +
-                  `${runWithExpectedNumber.head_sha}, expected ${headSha}.`
+                  `Distribute run #${expectedRunNumber} ran on ` +
+                  `${runWithExpectedNumber.head_branch}, expected main.`
                 );
                 return;
               }
@@ -203,7 +206,7 @@ jobs:
             core.setOutput('artifact_name', artifact.name);
 
       - name: Download release asset
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
         with:
           run-id: ${{ steps.find_run.outputs.run_id }}
           name: ${{ steps.find_artifact.outputs.artifact_name }}

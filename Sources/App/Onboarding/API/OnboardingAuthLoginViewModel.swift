@@ -46,6 +46,11 @@ final class OnboardingAuthLoginViewModel: NSObject, ObservableObject, Identifiab
         self.authDetails = authDetails
         (self.promise, self.resolver) = Promise<URL>.pending()
 
+        // The server being onboarded isn't in `Current.servers` yet, so name its URL explicitly.
+        // Settling this before the web view is built also keeps WebKit from recording the domain as
+        // one that needed Enhanced Security, which the frontend would inherit afterwards.
+        WebKitEnhancedSecurity.prepare(for: WebKitEnhancedSecurity.configuredFrontendURLs() + [authDetails.url])
+
         let configuration = WKWebViewConfiguration()
         configuration.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
         configuration.defaultWebpagePreferences.preferredContentMode = Current.isCatalyst ? .desktop : .mobile

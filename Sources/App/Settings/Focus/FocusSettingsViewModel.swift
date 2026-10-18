@@ -14,7 +14,7 @@ final class FocusSettingsViewModel: ObservableObject {
     func load() {
         focusNames = FocusName.all()
         activeFocusName = Current.focusFilter.activeFocusName()
-        isFocusSensorEnabled = Current.sensors.isEnabled(uniqueID: WebhookSensorId.focusName.rawValue)
+        isFocusSensorEnabled = Current.sensors.isEnabledForAnyServer(uniqueID: WebhookSensorId.focusName.rawValue)
         isFocusPermissionGranted = Current.focusStatus.authorizationStatus() == .authorized
     }
 
@@ -36,9 +36,7 @@ final class FocusSettingsViewModel: ObservableObject {
     func delete(_ focusName: FocusName) {
         focusName.delete()
         // A deleted name may still be selected in a Focus Filter, so stop reporting it right away.
-        if Current.focusFilter.activeFocusName() == focusName.name {
-            Current.focusFilter.setActiveFocusName(nil)
-        }
+        Current.focusFilter.forgetFocusName(focusName.name)
         load()
     }
 }

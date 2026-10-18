@@ -2,6 +2,10 @@
 import HAIconic
 import SwiftUI
 
+/// The cog that opens the app's own settings.
+///
+/// Frontend counterpart: none. The web frontend reaches settings through its sidebar, not through
+/// a button; this belongs to the companion app's chrome.
 public struct SettingsButton: View {
     private let action: () -> Void
     private let tint: Color

@@ -50,7 +50,9 @@ struct FocusSettingsViewModelTests {
         let viewModel = try makeViewModel()
         var reportedName: String? = "Work"
         Current.focusFilter.activeFocusName = { reportedName }
-        Current.focusFilter.setActiveFocusName = { reportedName = $0 }
+        Current.focusFilter.forgetFocusName = { name in
+            if reportedName == name { reportedName = nil }
+        }
 
         viewModel.add(name: "Work")
         viewModel.add(name: "Sleep")
@@ -66,7 +68,9 @@ struct FocusSettingsViewModelTests {
         let viewModel = try makeViewModel()
         var reportedName: String? = "Sleep"
         Current.focusFilter.activeFocusName = { reportedName }
-        Current.focusFilter.setActiveFocusName = { reportedName = $0 }
+        Current.focusFilter.forgetFocusName = { name in
+            if reportedName == name { reportedName = nil }
+        }
 
         viewModel.add(name: "Work")
         let work = try #require(viewModel.focusNames.first { $0.name == "Work" })

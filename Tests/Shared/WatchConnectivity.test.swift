@@ -457,6 +457,34 @@ struct WatchConnectivityReceive_test {
         #expect(box.value == .immediatelyReachable)
         #expect(manager.currentReachability == .immediatelyReachable)
     }
+
+    /// Senders gate capability-dependent messages on this, and an unrecognised identifier is never
+    /// replied to — so a version that hasn't arrived yet has to read as "too old", not as absent.
+    @Test func counterpartProtocolVersionIsUnknownUntilSomethingArrives() {
+        let manager = WatchConnectivityManager(session: FakeWCSession())
+
+        #expect(manager.counterpartProtocolVersion == nil)
+    }
+
+    @Test func counterpartProtocolVersionIsLearnedFromAnyInboundMessage() {
+        let manager = WatchConnectivityManager(session: FakeWCSession())
+
+        manager.receiveMessage(["identifier": "ping", "content": [:], "version": 2])
+
+        #expect(manager.counterpartProtocolVersion == 2)
+    }
+
+    /// A message from a build that predates versioning can arrive after a versioned one — a queued
+    /// `transferUserInfo`, say — and must not walk the learned capability back.
+    @Test func counterpartProtocolVersionNeverDecreases() {
+        let manager = WatchConnectivityManager(session: FakeWCSession())
+
+        manager.receiveMessage(["identifier": "ping", "content": [:], "version": 2])
+        manager.receiveMessage(["identifier": "ping", "content": [:]])
+        manager.receiveMessage(["identifier": "ping", "content": [:], "version": 1])
+
+        #expect(manager.counterpartProtocolVersion == 2)
+    }
 }
 
 #if os(iOS)
@@ -573,6 +601,111 @@ struct WatchConnectivityQueue_test {
         fake.isReachableProxy = true
         manager.send(interactive("d"))
         #expect(sentIdentifiers(fake) == ["d"])
+    }
+
+    @Test func cancellingAQueuedSendWithdrawsIt() {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        manager.send(interactive("one"))
+        manager.send(interactive("two"))
+        var errors: [Error] = []
+        let queued = manager.send(interactive("three"), errorHandler: { errors.append($0) })
+        manager.send(interactive("four"))
+
+        #expect(manager.cancelQueuedInteractiveSend(queued))
+        #expect(manager.cancelQueuedInteractiveSend(queued) == false)
+
+        let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
+        fake.sentMessages[0].replyHandler?(reply)
+        fake.sentMessages[1].replyHandler?(reply)
+        #expect(sentIdentifiers(fake) == ["one", "two", "four"])
+        #expect(errors.isEmpty)
+    }
+
+    @Test func cancellingASendThatAlreadyWentOutChangesNothing() {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        let inFlight = manager.send(interactive("one"))
+
+        #expect(manager.cancelQueuedInteractiveSend(inFlight) == false)
+        #expect(sentIdentifiers(fake) == ["one"])
+    }
+
+    @Test func aQueuedSendExpiresWhileWaitingForASlot() async throws {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        manager.send(interactive("one"))
+        manager.send(interactive("two"))
+        var error: Error?
+        let queued = manager.send(interactive("expired"), timeout: 0.05, errorHandler: { error = $0 })
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        #expect(error as? HAWatchConnectivity.ConnectivityError == .notSentInTime)
+        #expect(manager.cancelQueuedInteractiveSend(queued) == false)
+
+        let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
+        fake.sentMessages[0].replyHandler?(reply)
+        #expect(sentIdentifiers(fake) == ["one", "two"])
+    }
+
+    @Test func aSendDequeuedPastItsTimeoutIsNeverSent() async throws {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        manager.send(interactive("one"))
+        manager.send(interactive("two"))
+        var errors: [Error] = []
+        manager.send(interactive("late"), timeout: 0.05, errorHandler: { errors.append($0) })
+
+        let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
+        let freeASlotAfterTheDeadline = {
+            Thread.sleep(forTimeInterval: 0.1)
+            fake.sentMessages[0].replyHandler?(reply)
+        }
+        if Thread.isMainThread {
+            freeASlotAfterTheDeadline()
+        } else {
+            DispatchQueue.main.sync(execute: freeASlotAfterTheDeadline)
+        }
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        #expect(sentIdentifiers(fake) == ["one", "two"])
+        #expect(errors.count == 1)
+        #expect(errors.first as? HAWatchConnectivity.ConnectivityError == .notSentInTime)
+
+        manager.send(interactive("next"))
+        #expect(sentIdentifiers(fake) == ["one", "two", "next"])
+    }
+
+    @Test func timeSpentQueuedCountsAgainstTheReplyTimeout() async throws {
+        let fake = FakeWCSession()
+        let manager = WatchConnectivityManager(session: fake)
+
+        manager.send(interactive("one"))
+        manager.send(interactive("two"))
+        var error: Error?
+        manager.send(interactive("waited"), timeout: 0.4, errorHandler: { error = $0 })
+        try await Task.sleep(nanoseconds: 300_000_000)
+
+        let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
+        fake.sentMessages[0].replyHandler?(reply)
+        #expect(sentIdentifiers(fake) == ["one", "two", "waited"])
+        #expect(error == nil)
+
+        try await Task.sleep(nanoseconds: 300_000_000)
+        #expect(error as? HAWatchConnectivity.ConnectivityError == .replyTimedOut)
+    }
+
+    @Test func aSendDroppedFromTheQueueDescribesItselfAsNeverSent() {
+        let error = HAWatchConnectivity.ConnectivityError.notSentInTime
+
+        #expect(error.errorDescription == "The message waited for a free send slot past its timeout and was not sent")
+        #expect((error as NSError).code == 8)
+        #expect((error as NSError).domain == HAWatchConnectivity.ConnectivityError.errorDomain)
+        #expect(error != HAWatchConnectivity.ConnectivityError.replyTimedOut)
     }
 
     /// Callers degrade to a background retry on these instead of showing the user an error, so the

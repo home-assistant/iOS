@@ -1,6 +1,11 @@
 #if !os(watchOS)
 import SwiftUI
 
+/// A rounded, filled container for a block of content.
+///
+/// Frontend counterpart: none directly — `ha-card` is ``HACard``, which came later and carries the
+/// header and the frontend's own metrics. This predates it and is what the app's existing screens
+/// use. The two overlap and are a candidate for consolidation.
 public struct CardView<Content: View>: View {
     public let content: () -> Content
     public let backgroundColor: Color?

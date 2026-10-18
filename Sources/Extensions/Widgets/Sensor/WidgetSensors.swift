@@ -14,7 +14,7 @@ struct WidgetSensors: Widget {
         ) { timelineEntry in
             WidgetBasicContainerView(
                 emptyViewGenerator: {
-                    AnyView(WidgetEmptyView(message: L10n.Widgets.Sensors.notConfigured))
+                    AnyView(WidgetEmptyStateView(message: L10n.Widgets.Sensors.notConfigured))
                 },
                 contents: timelineEntry.sensorData.map { sensor in
                     WidgetBasicViewModel(
@@ -29,7 +29,8 @@ struct WidgetSensors: Widget {
                         useCustomColors: false
                     )
                 },
-                type: .sensor
+                type: .sensor,
+                widgetKind: .sensors
             )
         }
         .contentMarginsDisabledIfAvailable()
@@ -57,10 +58,7 @@ struct WidgetSensors: Widget {
 
 enum WidgetDetailsTableSupportedFamilies {
     @available(iOS 17.0, *)
-    static let families: [WidgetFamily] = [
-        .systemSmall,
-        .systemMedium,
-        .systemLarge,
-        .systemExtraLarge,
-    ]
+    static var families: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
+    }
 }

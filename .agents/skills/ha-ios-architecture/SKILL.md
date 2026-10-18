@@ -9,7 +9,7 @@ Home Assistant for Apple Platforms is a native Swift companion app for [Home Ass
 
 - **Language**: Swift 5.8+
 - **Platforms**: iOS, watchOS, macOS (Catalyst), CarPlay
-- **Build System**: Xcode 26.2+, Swift Package Manager
+- **Build System**: Xcode 27.0+, Swift Package Manager
 - **Project**: Open `HomeAssistant.xcodeproj` directly (dependencies are managed via Swift Package Manager)
 
 ## Getting Started
@@ -103,8 +103,12 @@ Current.servers = FakeServerManager()
 
 **Never assign to `Current.*` properties outside of test code.** This is enforced by a custom SwiftLint rule that will fail CI. In production code, only _read_ from `Current`.
 
+### Beta-Only Features
+
+`Current.isTestFlight` is the only supported way to limit a feature to beta builds — no bespoke flags, build settings, or `#if` branches. Every gate must be paired with a draft PR that removes it; see the `ha-ios-workflow-ci` skill for the procedure.
+
 ## Additional Resources
 
-- [Home Assistant Developer Docs (Apple)](https://developers.home-assistant.io/docs/apple/)
+- [Home Assistant contributor docs (Apple)](https://contributors.home-assistant.io/companion/apple/)
 - [Contributing Guidelines](../../../CONTRIBUTING.md)
 - [Point-Free: How to Control the World](https://www.pointfree.co/blog/posts/21-how-to-control-the-world)

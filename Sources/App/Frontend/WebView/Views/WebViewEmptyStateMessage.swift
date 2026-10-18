@@ -13,6 +13,7 @@ struct WebViewEmptyStateMessage: View {
             Text(style.title)
                 .font(.title2)
                 .fontWeight(.semibold)
+                .multilineTextAlignment(.center)
             Text(bodyText)
                 .font(.callout)
                 .foregroundColor(.secondary)
@@ -37,8 +38,28 @@ struct WebViewEmptyStateMessage: View {
             style.body
         case .recoveredServerNeedingReauthentication:
             L10n.Onboarding.ServerImport.Reauthenticate.message(server.info.name)
+        case .clientCertificateRequired:
+            L10n.WebView.EmptyState.ClientCertificate.Required.body(server.info.name)
+        case .clientCertificateRejected:
+            L10n.WebView.EmptyState.ClientCertificate.Rejected.body(server.info.name)
         }
     }
+}
+
+#Preview("Client Certificate Required") {
+    WebViewEmptyStateMessage(
+        style: .clientCertificateRequired,
+        server: ServerFixture.standard,
+        complementaryMessageAction: {}
+    )
+}
+
+#Preview("Client Certificate Rejected") {
+    WebViewEmptyStateMessage(
+        style: .clientCertificateRejected,
+        server: ServerFixture.standard,
+        complementaryMessageAction: {}
+    )
 }
 
 #Preview("Disconnected") {

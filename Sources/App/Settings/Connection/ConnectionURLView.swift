@@ -10,6 +10,7 @@ struct ConnectionURLView: View {
     let urlType: ConnectionInfo.URLType
 
     @StateObject private var viewModel: ConnectionURLViewModel
+    @State private var showSecurityLevelPicker = false
 
     init(server: Server, urlType: ConnectionInfo.URLType) {
         self.urlType = urlType
@@ -18,13 +19,20 @@ struct ConnectionURLView: View {
 
     var body: some View {
         Form {
+            AppleLikeListTopRowHeader(
+                image: urlType == .internal ? .wifiIcon : .earthIcon,
+                title: urlType.description,
+                subtitle: headerSubtitle
+            )
             cloudToggleSection
             urlSection
-            ssidSection
-            hardwareAddressSection
+            homeNetworkSection
             localPushSection
+            Section {
+                ConnectionURLsHowItWorksLink(server: viewModel.server)
+            }
         }
-        .navigationTitle(urlType.description)
+        .navigationTitle(L10n.editLabel)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -60,10 +68,48 @@ struct ConnectionURLView: View {
 
     // MARK: - URL Section
 
-    @ViewBuilder
+    private var headerSubtitle: String? {
+        switch urlType {
+        case .internal:
+            return L10n.Settings.ConnectionSection.InternalBaseUrl.headerSubtitle
+        case .external:
+            return L10n.Settings.ConnectionSection.ExternalBaseUrl.headerSubtitle
+        case .remoteUI, .none:
+            return nil
+        }
+    }
+
     private var urlSection: some View {
-        Section("URL") {
+        Section {
             urlInputOrCloudMessage
+            if viewModel.showsSecurityLevel {
+                Button {
+                    showSecurityLevelPicker = true
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text(viewModel.securityLevel.description)
+                            .foregroundColor(.secondary)
+                        Image(systemSymbol: .chevronRight)
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+                .sheet(isPresented: $showSecurityLevelPicker) {
+                    LocalAccessPermissionViewInNavigationView(
+                        initialSelection: viewModel.securityLevel,
+                        action: applySecurityLevel
+                    )
+                }
+            }
+        } header: {
+            Text(L10n.Settings.ConnectionSection.UrlAddress.header)
+        } footer: {
+            if viewModel.showsSecurityLevel {
+                Text(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.footer)
+            }
         }
     }
 
@@ -83,6 +129,7 @@ struct ConnectionURLView: View {
 
     private var urlTextField: some View {
         TextField(viewModel.placeholder, text: $viewModel.url)
+            .foregroundColor(.haPrimary)
             .textContentType(.URL)
             .keyboardType(.URL)
             .autocapitalization(.none)
@@ -111,74 +158,68 @@ struct ConnectionURLView: View {
         }
     }
 
-    // MARK: - SSID Section
-
-    @ViewBuilder
-    private var ssidSection: some View {
-        if urlType.isAffectedBySSID {
-            locationPermissionSection
-            ssidListSection
-        }
+    private func applySecurityLevel(_ level: ConnectionSecurityLevel) {
+        viewModel.securityLevel = level
+        showSecurityLevelPicker = false
     }
 
-    private var ssidListSection: some View {
-        Section {
-            ForEach(viewModel.ssids.indices, id: \.self) { index in
-                HStack {
-                    TextField(
-                        L10n.Settings.ConnectionSection.InternalUrlSsids.placeholder,
-                        text: $viewModel.ssids[index]
-                    )
-                    .autocapitalization(.none)
-                    .autocorrectionDisabled()
-                    Button(action: { viewModel.removeSSID(at: index) }) {
-                        Image(systemSymbol: .minusCircleFill)
-                            .foregroundColor(.red)
+    // MARK: - Home Network Section
+
+    @ViewBuilder
+    private var homeNetworkSection: some View {
+        if urlType.isAffectedBySSID {
+            Section {
+                if shouldShowLocationPermission {
+                    HAAlertView(
+                        title: L10n.Settings.ConnectionSection.NetworkDetectionPermission.title,
+                        alertType: .warning,
+                        narrow: true
+                    ) {
+                        Text(L10n.Settings.ConnectionSection.NetworkDetectionPermission.message)
+                    } action: {
+                        Button(
+                            L10n.Settings.ConnectionSection.NetworkDetectionPermission.allow,
+                            action: handleLocationPermission
+                        )
+                        .buttonStyle(.bordered)
+                        .tint(.haWarning)
                     }
                 }
-            }
-            .onDelete { indexSet in
-                viewModel.removeSSIDs(at: indexSet)
-            }
 
-            Button(action: viewModel.addSSID) {
-                Text(L10n.Settings.ConnectionSection.InternalUrlSsids.addNewSsid)
-            }
-        } header: {
-            Text(L10n.Settings.ConnectionSection.InternalUrlSsids.header)
-        } footer: {
-            Text(L10n.Settings.ConnectionSection.InternalUrlSsids.footer)
-        }
-    }
-
-    // MARK: - Hardware Address Section
-
-    @ViewBuilder
-    private var hardwareAddressSection: some View {
-        if urlType.isAffectedByHardwareAddress {
-            Section {
-                ForEach(viewModel.hardwareAddresses.indices, id: \.self) { index in
+                ForEach(viewModel.ssids.indices, id: \.self) { index in
                     HStack {
-                        TextField("aa:bb:cc:dd:ee:ff", text: $viewModel.hardwareAddresses[index])
-                            .autocapitalization(.none)
-                            .autocorrectionDisabled()
-                        Button(action: { viewModel.removeHardwareAddress(at: index) }) {
+                        TextField(
+                            L10n.Settings.ConnectionSection.InternalUrlSsids.placeholder,
+                            text: $viewModel.ssids[index]
+                        )
+                        .autocapitalization(.none)
+                        .autocorrectionDisabled()
+                        Button(action: { viewModel.removeSSID(at: index) }) {
                             Image(systemSymbol: .minusCircleFill)
                                 .foregroundColor(.red)
                         }
                     }
                 }
                 .onDelete { indexSet in
-                    viewModel.removeHardwareAddresses(at: indexSet)
+                    viewModel.removeSSIDs(at: indexSet)
                 }
 
-                Button(action: viewModel.addHardwareAddress) {
-                    Text(L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.addNewSsid)
+                Button(action: viewModel.addSSID) {
+                    Text(L10n.Settings.ConnectionSection.InternalUrlSsids.addNewSsid)
+                }
+
+                if urlType.isAffectedByHardwareAddress {
+                    NavigationLink(destination: ConnectionHardwareAddressesView(viewModel: viewModel)) {
+                        LabeledContent(
+                            L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.title,
+                            value: String(viewModel.hardwareAddresses.filter { !$0.isEmpty }.count)
+                        )
+                    }
                 }
             } header: {
-                Text(L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.header)
+                Text(L10n.Settings.ConnectionSection.HomeNetwork.header)
             } footer: {
-                Text(L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.footer)
+                Text(L10n.Settings.ConnectionSection.InternalUrlSsids.footer)
             }
         }
     }
@@ -218,21 +259,7 @@ struct ConnectionURLView: View {
                 })
             }
             .tint(.haPrimary)
-        }
-    }
-
-    // MARK: - Location Permission Section
-
-    @ViewBuilder
-    private var locationPermissionSection: some View {
-        if shouldShowLocationPermission {
-            Section {
-                Button(action: handleLocationPermission) {
-                    Text(L10n.Settings.ConnectionSection.ssidPermissionAndAccuracyMessage)
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.leading)
-                }
-            }
+            .disabled(!viewModel.hasChanges)
         }
     }
 
@@ -255,9 +282,10 @@ struct ConnectionURLView: View {
     /// The prompt is shown when location permissions are insufficient for SSID detection:
     /// - Requires both "Always Allow" authorization AND full accuracy
     ///
-    /// SSID information requires "Always Allow" because the app needs to detect
-    /// network changes in the background. Full accuracy is needed on iOS 14+ to
-    /// access detailed network information including SSID names.
+    /// Full accuracy is what makes the SSID readable at all — with approximate location iOS never
+    /// hands the network name out, not even while the app is in the foreground. "Always Allow" is
+    /// needed on top of that for the SSID to stay readable while the app is in the background,
+    /// which is when sensor updates, notification actions and local push run.
     private var shouldShowLocationPermission: Bool {
         Current.locationManager.currentPermissionState != .authorizedAlways ||
             Current.locationManager.accuracyAuthorization != .fullAccuracy

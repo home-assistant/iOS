@@ -41,7 +41,7 @@ struct EntityRegistryTests {
     }
 }
 
-@Suite("AppEntitiesModel display-name resolution")
+@Suite("AppEntitiesModel display-name resolution", .serialized)
 struct AppEntitiesModelNameResolutionTests {
     private func makeEntity(_ entityId: String, friendlyName: String?) throws -> HAEntity {
         var attributes: [String: Any] = [:]
@@ -152,5 +152,46 @@ struct AppEntitiesModelNameResolutionTests {
         // Not-hidden and unregistered entities stay `nil`, mirroring how `entityCategory` is baked.
         try #expect(row("light.visible").isHidden == nil)
         try #expect(row("light.unregistered").isHidden == nil)
+    }
+
+    /// Persistence is domain-agnostic: Spotlight, the entity pickers and templating all read the
+    /// local database, so every domain the server reports is stored (including the assist, notify,
+    /// image and geo_location ones that used to be dropped, and domains the `Domain` enum
+    /// doesn't know). Features that support only some domains filter where they read.
+    @Test("every domain is persisted, including ones no feature supports")
+    func persistsEveryDomain() async throws {
+        let previousDatabase = Current.database
+        let database = try DatabaseQueue(path: ":memory:")
+        try HAppEntityTable().createIfNeeded(database: database)
+        try DisplayEntityRegistryTable().createIfNeeded(database: database)
+        Current.database = { database }
+        defer { Current.database = previousDatabase }
+
+        let serverId = "all-domains-test"
+        let server = Server.fake(identifier: .init(rawValue: serverId))
+
+        let entityIds = [
+            "light.kitchen",
+            "geo_location.nearby_fire",
+            "conversation.home_assistant",
+            "stt.whisper",
+            "tts.piper",
+            "wake_word.openwakeword",
+            "assist_satellite.kitchen_speaker",
+            "notify.mobile_app_iphone",
+            "image.doorbell_snapshot",
+            "some_custom_integration.thing",
+        ]
+        let entities = try Set(entityIds.map { try makeEntity($0, friendlyName: nil) })
+
+        await AppEntitiesModel().updateModel(entities, server: server)
+
+        let storedEntityIds = try await database.read { db in
+            try HAAppEntity
+                .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
+                .fetchAll(db)
+                .map(\.entityId)
+        }
+        #expect(Set(storedEntityIds) == Set(entityIds))
     }
 }

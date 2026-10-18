@@ -1,7 +1,5 @@
 import AppIntents
 import Foundation
-import HAKit
-import HAKit_PromiseKit
 import Shared
 import SwiftUI
 import WidgetKit
@@ -44,38 +42,33 @@ struct CustomWidgetToggleAppIntent: AppIntent {
         ) else {
             return .result()
         }
-        guard let request = HATypedRequest<HAResponseVoid>.executeMainAction(domain: domain, entityId: entityId) else {
-            Current.Log
-                .error(
-                    "ToggleAppIntent: no main action for domain \(domain.rawValue), entityId: \(entityId), serverId: \(serverId)"
-                )
+        guard domain.canToggle else {
+            Current.Log.error(
+                "ToggleAppIntent: \(domain.rawValue) cannot be toggled, entityId: \(entityId), serverId: \(serverId)"
+            )
             return .result()
         }
         Current.Log.verbose(
-            "ToggleAppIntent: sending main action, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+            "ToggleAppIntent: toggling, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
         )
         AppIntentHaptics.notify()
-        await withCheckedContinuation { continuation in
-            connection.send(request).promise.pipe { result in
-                switch result {
-                case .fulfilled:
-                    Current.Log.verbose(
-                        "ToggleAppIntent: main action succeeded, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
-                    )
-                    continuation.resume()
-                case let .rejected(error):
-                    Current.Log
-                        .error(
-                            "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
-                        )
-                    Current.notificationDispatcher.send(.init(
-                        id: .intentToggleFailed,
-                        title: L10n.Widgets.Custom.IntentToggleFailed.title,
-                        body: L10n.Widgets.Custom.IntentToggleFailed.body
-                    ))
-                    continuation.resume()
-                }
-            }
+        do {
+            // The frontend's toggle: the entity's state decides between the domain's on and off
+            // services, so a locked lock unlocks and a running script stops.
+            try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+            Current.Log.verbose(
+                "ToggleAppIntent: toggled, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+            )
+        } catch {
+            Current.Log
+                .error(
+                    "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
+                )
+            Current.notificationDispatcher.send(.init(
+                id: .intentToggleFailed,
+                title: L10n.Widgets.Custom.IntentToggleFailed.title,
+                body: L10n.Widgets.Custom.IntentToggleFailed.body
+            ))
         }
         _ = try await ResetAllCustomWidgetConfirmationAppIntent().perform()
         if widgetShowingStates {

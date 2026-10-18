@@ -12,7 +12,14 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
     fileprivate var watchConnectivityBackgroundPromise: Guarantee<Void>
     fileprivate var watchConnectivityBackgroundSeal: (()) -> Void
-    fileprivate var watchConnectivityWatchdogTimer: Timer?
+    fileprivate var watchConnectivityWatchdogTimer: DispatchSourceTimer?
+
+    /// The deadlines below have to be able to complete a task while the main thread is blocked, so
+    /// they run on their own queue rather than on the main run loop.
+    private static let watchdogQueue = DispatchQueue(label: "background-task-watchdog", qos: .utility)
+
+    private let pendingConnectivityTasksLock = NSLock()
+    private var pendingConnectivityTasks: [WKWatchConnectivityRefreshBackgroundTask] = []
 
     private var immediateCommunicatorService: ImmediateCommunicatorService?
     /// Held for the app's lifetime — see `observeLegacyComplicationRenders`.
@@ -39,9 +46,6 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             AppDatabaseSuspension.suspend()
         }
 
-        // Import any legacy Realm data into GRDB before anything reads it
-        RealmToGRDBMigration.migrateIfNeeded()
-
         UNUserNotificationCenter.current().delegate = self
 
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
@@ -63,8 +67,21 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // connection info doesn't carry the override across launches/syncs).
         WatchServerSync.applyURLOverrides()
 
+        // A sensor selection made before sensors were chosen per server goes to the servers the
+        // watch has right now, before a sync can replace them with ones it never reported to.
+        WatchUserDefaults.shared.splitSensorEnablementAcrossServersIfNeeded()
+
+        // The persisted servers can reference an mTLS client certificate this Watch's Keychain no
+        // longer has; ask the phone to re-send it rather than failing every request until the user
+        // happens to hit refresh.
+        WatchServerSync.requestCertificatesIfMissing()
+
         // schedule the next background refresh
         Current.backgroundRefreshScheduler.schedule().cauterize()
+
+        if WKApplication.shared().applicationState != .background {
+            applyStagedDatabaseMirrors()
+        }
     }
 
     func applicationDidBecomeActive() {
@@ -77,6 +94,12 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         // restart. Re-read and re-broadcast the live value so reachability recovers on foreground.
         Communicator.shared.refreshConnectivityState()
         HomeAssistantAPI.syncWatchContext()
+
+        // The watch reports its own sensors to Home Assistant as a device of its own; a foreground
+        // is one of the moments it does so (the periodic background refresh is the other).
+        Task {
+            await WatchDeviceReporter.shared.report(trigger: .foreground)
+        }
     }
 
     func applicationWillResignActive() {
@@ -91,6 +114,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
     func applicationWillEnterForeground() {
         AppDatabaseSuspension.resume()
+        applyStagedDatabaseMirrors()
     }
 
     func applicationDidEnterBackground() {
@@ -108,19 +132,36 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// mirror blobs within milliseconds, and each gets its own activity. Suspension is process-wide, so
     /// without the refcount the first block to finish would abort the writes still running behind it.
     ///
-    /// `work` reports whether it succeeded; `completion` runs on the main queue only for a successful
-    /// run, so callers don't publish side effects for a write that rolled back.
+    /// `work` reports whether it succeeded; `finished` gets that result once `work` has returned, or
+    /// `false` when the activity was denied before it started.
     private static func performProtectedDatabaseWork(
         reason: String,
-        _ work: @escaping () -> Bool,
-        completion: (() -> Void)? = nil
+        finished: @escaping (Bool) -> Void,
+        _ work: @escaping () -> Bool
     ) {
+        // The two callbacks can run concurrently; whichever claims the activity first is the only
+        // one that proceeds and reports.
+        let lock = NSLock()
+        var isClaimed = false
+        let claim: () -> Bool = {
+            lock.lock()
+            defer { lock.unlock() }
+            guard !isClaimed else { return false }
+            isClaimed = true
+            return true
+        }
         ProcessInfo.processInfo.performExpiringActivity(withReason: reason) { expired in
             if expired {
+                // Claimed before suspending, so the work path can't start in between.
+                let didClaim = claim()
                 // Nothing was claimed on this path, so only suspend if no sibling is mid-write.
                 AppDatabaseSuspension.suspendIfIdle()
+                if didClaim {
+                    finished(false)
+                }
                 return
             }
+            guard claim() else { return }
             AppDatabaseSuspension.beginProtectedAccess()
             let didSucceed = work()
             DispatchQueue.main.async {
@@ -129,9 +170,8 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 AppDatabaseSuspension.endProtectedAccess(
                     suspend: WKApplication.shared().applicationState == .background
                 )
-                guard didSucceed else { return }
-                completion?()
             }
+            finished(didSucceed)
         }
     }
 
@@ -151,39 +191,55 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 // wall-clock budget: 15s when warm, 25s when cold-launched for the refresh
                 // (CSLHandleBackgroundRefreshAction transgression). The refresh work below talks
                 // to the network with timeouts larger than that budget, so completing "when done"
-                // isn't enough — always complete at a hard deadline, even mid-work. Both paths run
-                // on the main queue (PromiseKit's default), so the flag needs no synchronization.
+                // isn't enough — always complete at a hard deadline, even mid-work.
+                let completionLock = NSLock()
                 var didComplete = false
-                let completeTask = {
-                    guard !didComplete else { return }
+                let completeTask = { () -> Bool in
+                    completionLock.lock()
+                    let alreadyCompleted = didComplete
                     didComplete = true
+                    completionLock.unlock()
+                    guard !alreadyCompleted else { return false }
                     backgroundTask.setTaskCompletedWithSnapshot(false)
+                    return true
                 }
 
                 // Schedule the next refresh up front so a deadline hit can't skip it.
                 Current.backgroundRefreshScheduler.schedule().cauterize()
 
-                after(seconds: 10).done {
-                    if !didComplete {
-                        Current.Log.info("completing background refresh task at deadline; work still running")
+                applyStagedDatabaseMirrors()
+
+                let deadline = DispatchSource.makeTimerSource(queue: Self.watchdogQueue)
+                deadline.schedule(deadline: .now() + 10)
+                deadline.setEventHandler {
+                    if completeTask() {
+                        Current.Log.info("completed background refresh task at deadline; work still running")
                     }
-                    completeTask()
+                    // Also releases the handler's reference back to the source, which is what keeps
+                    // the timer alive when the refresh work never finishes.
+                    deadline.cancel()
                 }
+                deadline.resume()
 
                 firstly {
                     when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
                 }.then { _ -> Promise<Void> in
                     // Refresh the modern watch-rendered complications by fetching their live values
-                    // directly over REST. This path doesn't need the paired iPhone, so a watch on its
-                    // own network (e.g. LTE) still updates as long as the server is reachable.
+                    // directly over REST, and report the watch's own sensors to Home Assistant. Neither
+                    // path needs the paired iPhone, so a watch on its own network (e.g. LTE) still
+                    // updates as long as the server is reachable. Both talk to the network, so they
+                    // run side by side to fit the budget above.
                     Promise { seal in
                         Task {
-                            await WatchWidgetComplicationSnapshotStore.refresh()
+                            async let complications = WatchWidgetComplicationSnapshotStore.refresh()
+                            async let sensors = WatchDeviceReporter.shared.report(trigger: .backgroundRefresh)
+                            _ = await (complications, sensors)
                             seal.fulfill(())
                         }
                     }
                 }.ensure {
-                    completeTask()
+                    deadline.cancel()
+                    _ = completeTask()
                 }.cauterize()
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
@@ -302,39 +358,58 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     }
 
     private func enqueueForCompletion(_ task: WKWatchConnectivityRefreshBackgroundTask) {
+        pendingConnectivityTasksLock.lock()
+        pendingConnectivityTasks.append(task)
+        pendingConnectivityTasksLock.unlock()
+
         DispatchQueue.main.async { [self] in
             guard Communicator.shared.hasPendingDataToBeReceived else {
                 // nothing else to be received
-                task.setTaskCompletedWithSnapshot(false)
+                completePendingConnectivityTasks()
                 return
             }
 
             // wait for it to send the next set of data
-            watchConnectivityBackgroundPromise.done {
-                task.setTaskCompletedWithSnapshot(false)
+            watchConnectivityBackgroundPromise.done { [weak self] in
+                self?.completePendingConnectivityTasks()
             }
 
-            if watchConnectivityWatchdogTimer == nil || watchConnectivityWatchdogTimer?.isValid == false {
+            if watchConnectivityWatchdogTimer == nil {
                 // 10s should be more than enough time, and the system timer's at 15s (last tested watchOS 7)
-                let timer = Timer.scheduledTimer(
-                    withTimeInterval: 10.0,
-                    repeats: true
-                ) { [weak self] _ in
+                let timer = DispatchSource.makeTimerSource(queue: Self.watchdogQueue)
+                timer.schedule(deadline: .now() + 10, repeating: 10)
+                timer.setEventHandler { [weak self] in
                     // we endeavor to not need this timer, but apple's api is so difficult to micromanage
                     // that it's just safer to guess and check every few seconds
                     Current.Log.info("ending background task due to our own watchdog timer")
                     // Force: data can stay "pending" indefinitely (e.g. a wedged file transfer), and
                     // holding the task past ~15s gets the app killed (CSLHandleBackgroundWCSessionAction
                     // transgression). The system delivers a new task when the data actually arrives.
+                    self?.completePendingConnectivityTasks()
                     self?.endWatchConnectivityBackgroundTaskIfNecessary(force: true)
                 }
+                timer.resume()
 
-                watchConnectivityBackgroundPromise.done {
-                    timer.invalidate()
+                watchConnectivityBackgroundPromise.done { [weak self] in
+                    timer.cancel()
+                    self?.watchConnectivityWatchdogTimer = nil
                 }
 
                 watchConnectivityWatchdogTimer = timer
             }
+        }
+    }
+
+    /// Completes every WatchConnectivity task still open. Safe to call off the main queue, which is
+    /// what lets the watchdog end them while the main thread is blocked.
+    private func completePendingConnectivityTasks() {
+        pendingConnectivityTasksLock.lock()
+        let tasks = pendingConnectivityTasks
+        pendingConnectivityTasks.removeAll()
+        pendingConnectivityTasksLock.unlock()
+
+        for task in tasks {
+            task.setTaskCompletedWithSnapshot(false)
         }
     }
 
@@ -354,17 +429,63 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
     /// arrives on — decoding there at launch was a watchdog-kill crash cluster. Serial so burst
     /// deliveries decode in arrival order.
     private static let pushedMirrorQueue = DispatchQueue(label: "pushed-mirror-decode", qos: .utility)
+    private static let pendingMirrorAppliesLock = NSLock()
+    private static var pendingMirrorApplies = 0
+    /// Only touched on `pushedMirrorQueue`.
+    private static var hasUnpublishedMirror = false
+
+    private static func changePendingMirrorApplies(by delta: Int) -> Int {
+        pendingMirrorAppliesLock.lock()
+        defer { pendingMirrorAppliesLock.unlock() }
+        pendingMirrorApplies += delta
+        return pendingMirrorApplies
+    }
 
     /// Apply a reference database mirror the iPhone pushed proactively over `transferFile` (arrives even
     /// when the watch app was suspended). Mirrors the watch-pull apply path so the watch's cached data
     /// (entities, areas, pipelines, complications) stays fresh without the user opening the app.
     private func applyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        // The decompress + decode + write costs more CPU than the WatchConnectivity background
+        // action's 2 second allowance, and that allowance covers the whole process — running it on
+        // another queue doesn't help. Backgrounded, the payload is staged and applied from a
+        // background refresh, whose budget is large enough for it.
+        guard WKApplication.shared().applicationState != .background else {
+            PushedMirrorStagingStore.store(data: data, metadata: metadata)
+            Current.backgroundRefreshScheduler
+                .schedule(preferredDate: Current.date().addingTimeInterval(1))
+                .cauterize()
+            return
+        }
+
+        _ = Self.changePendingMirrorApplies(by: 1)
         Self.pushedMirrorQueue.async { [weak self] in
             self?.decodeAndApplyPushedDatabaseMirror(data, metadata: metadata)
         }
     }
 
+    private func applyStagedDatabaseMirrors() {
+        guard PushedMirrorStagingStore.hasStagedMirrors else { return }
+        // Counts the batch before it's queued, so an apply already running can't publish ahead of it.
+        _ = Self.changePendingMirrorApplies(by: 1)
+        Self.pushedMirrorQueue.async { [weak self] in
+            // Taking the entries removes them, so bail out before that when there is nothing left
+            // to apply them with — otherwise a staged mirror is dropped unread.
+            guard let self else {
+                _ = Self.changePendingMirrorApplies(by: -1)
+                return
+            }
+            let entries = PushedMirrorStagingStore.takeAll()
+            _ = Self.changePendingMirrorApplies(by: entries.count)
+            for entry in entries {
+                decodeAndApplyPushedDatabaseMirror(entry.data, metadata: entry.metadata)
+            }
+            // Releases the batch's own count.
+            publishAppliedMirrorsIfIdle()
+        }
+    }
+
     private func decodeAndApplyPushedDatabaseMirror(_ data: Data, metadata: HAWatchConnectivity.Content?) {
+        defer { publishAppliedMirrorsIfIdle() }
         var data = data
         // Full-reference (v2) pushes travel compressed; the transfer metadata says so explicitly.
         if metadata?[WatchDatabaseMirror.compressedKey] as? Bool == true {
@@ -390,8 +511,21 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
             ))
             return
         }
-        // Pushed mirrors typically arrive while the app is backgrounded — protect the write.
-        Self.performProtectedDatabaseWork(reason: "watch-mirror-apply") {
+        // Pushed mirrors typically arrive while the app is backgrounded — protect the write. Waited
+        // on so a burst applies one mirror at a time: in parallel they blew the background CPU
+        // budget (CAROUSEL 0xc51bad01).
+        let didFinish = DispatchSemaphore(value: 0)
+        var didApply = false
+        defer {
+            didFinish.wait()
+            if didApply {
+                Self.hasUnpublishedMirror = true
+            }
+        }
+        Self.performProtectedDatabaseWork(reason: "watch-mirror-apply", finished: { succeeded in
+            didApply = succeeded
+            didFinish.signal()
+        }) {
             do {
                 try mirror.apply()
                 // The push carries the phone's digests in the transfer metadata; storing them for
@@ -424,7 +558,16 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
                 ))
                 return false
             }
-        } completion: { [weak self] in
+        }
+    }
+
+    /// Publishes once per burst, after the last queued mirror, so a failure at the end of a burst
+    /// doesn't drop the mirrors applied before it.
+    private func publishAppliedMirrorsIfIdle() {
+        // Counted until here, so zero means nothing else is queued or still applying.
+        guard Self.changePendingMirrorApplies(by: -1) == 0, Self.hasUnpublishedMirror else { return }
+        Self.hasUnpublishedMirror = false
+        DispatchQueue.main.async { [weak self] in
             // Rebuild complication snapshots and let the home screen re-render from the fresh data.
             WatchWidgetComplicationSnapshotStore.update()
             NotificationCenter.default.post(name: WatchComplicationConfig.didChangeNotification, object: nil)
@@ -506,32 +649,14 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
             return
         }
 
-        firstly { () -> Promise<Void> in
-            let (promise, seal) = Promise<Void>.pending()
-
-            if Communicator.shared.currentReachability == .immediatelyReachable {
-                Current.Log.info("sending via phone")
-                Communicator.shared.send(.init(
-                    identifier: InteractiveImmediateMessages.pushAction.rawValue,
-                    content: ["PushActionInfo": info.toJSON(), "Server": server.identifier.rawValue],
-                    reply: { message in
-                        Current.Log.verbose("Received reply dictionary \(message)")
-                        seal.fulfill(())
-                    }
-                ), errorHandler: { error in
-                    Current.Log.error("Received error when sending immediate message \(error)")
-                    seal.reject(error)
-                })
-            } else {
-                Current.Log.info("sending via local")
-                Current.api(for: server)?.handlePushAction(for: info)
-                    .pipe(to: seal.resolve)
+        Task {
+            do {
+                try await WatchPushActionSender.send(info, server: server)
+            } catch {
+                Current.Log.error("failed to send notification action: \(error)")
             }
-
-            return promise
-        }.ensure {
             completionHandler()
-        }.cauterize()
+        }
     }
 }
 

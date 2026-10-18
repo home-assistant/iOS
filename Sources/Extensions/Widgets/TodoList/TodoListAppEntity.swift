@@ -12,8 +12,10 @@ struct TodoListAppEntity: AppEntity {
 
     // UniqueID: serverId-entityId
     var id: String
+    @Property(title: .init("app_intents.entity.property.entity_id", defaultValue: "Entity ID"))
     var entityId: String
     var serverId: String
+    @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
     var displayString: String
     var iconName: String
 
@@ -29,10 +31,10 @@ struct TodoListAppEntity: AppEntity {
         iconName: String
     ) {
         self.id = id
-        self.entityId = entityId
         self.serverId = serverId
-        self.displayString = displayString
         self.iconName = iconName
+        self.entityId = entityId
+        self.displayString = displayString
     }
 }
 

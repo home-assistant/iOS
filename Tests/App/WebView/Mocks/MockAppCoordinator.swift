@@ -10,13 +10,28 @@ final class MockAppCoordinator: AppCoordinator {
     private(set) var showAssistSettingsCalled = false
     private(set) var dismissPresentedContentCallCount = 0
     private(set) var activatedServers: [Server] = []
+    private(set) var openedServers: [Server] = []
+    private(set) var openedDeeplinks: [(server: Server, urlString: String)] = []
+    private(set) var openedDeeplinksSelectingServer: [String] = []
+    private(set) var selectServerCallCount = 0
+    private(set) var selectServerZoomedFromStandBy = false
+    private(set) var presentedViewControllers: [UIViewController] = []
+    var onPresent: ((UIViewController) -> Void)?
+    var onOpenDeeplink: ((String) -> Void)?
+    var onSelectServer: (() -> Void)?
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
+    var onOpenServer: (() -> Void)?
 
     var presentedViewController: UIViewController?
     var window: UIWindow?
 
-    func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {}
+    func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
+        presentedViewControllers.append(viewController)
+        completion?()
+        onPresent?(viewController)
+    }
+
     func show(alert: ServerAlert) {}
 
     func showSettings(pushOntoNavigationStack: Bool) {
@@ -34,14 +49,21 @@ final class MockAppCoordinator: AppCoordinator {
     func showOnboardingPermissions(server: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID]) {}
 
     func open(server: Server) -> Guarantee<any WebFrontend> {
-        Guarantee<any WebFrontend> { _ in }
+        openedServers.append(server)
+        onOpenServer?()
+        return Guarantee<any WebFrontend> { _ in }
     }
 
     func activate(server: Server) {
         activatedServers.append(server)
     }
 
-    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {}
+    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {
+        selectServerCallCount += 1
+        selectServerZoomedFromStandBy = zoomsFromStandBy
+        onSelectServer?()
+    }
+
     func presentInvitation(url: URL?) {}
     func setup() {}
 
@@ -52,7 +74,10 @@ final class MockAppCoordinator: AppCoordinator {
         skipConfirm: Bool,
         avoidUnnecessaryReload: Bool,
         isComingFromAppIntent: Bool
-    ) {}
+    ) {
+        openedDeeplinks.append((server, urlString))
+        onOpenDeeplink?(urlString)
+    }
 
     func openSelectingServer(
         from: OpenSource,
@@ -60,7 +85,9 @@ final class MockAppCoordinator: AppCoordinator {
         skipConfirm: Bool,
         queryParameters: [URLQueryItem]?,
         isComingFromAppIntent: Bool
-    ) {}
+    ) {
+        openedDeeplinksSelectingServer.append(urlString)
+    }
 
     func dismissPresentedContent(completion: (() -> Void)?) {
         dismissPresentedContentCallCount += 1

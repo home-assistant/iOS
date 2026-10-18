@@ -34,20 +34,23 @@ class HACoreAudioObjectDevice: HACoreAudioObject {
         }
     }
 
-    var isInputOn: Bool {
-        if let isOn = value(for: .isInputRunningSomewhere) {
-            return isOn != 0
-        } else {
-            return false
-        }
+    /// Whether the device is currently recording.
+    ///
+    /// `isOn` covers the device as a whole, in either direction, so it can't answer this on its own for a
+    /// device that both records and plays back: playing music through a USB headset would report its
+    /// microphone as in use. `runningDevices` resolves the direction where CoreAudio can tell us, and is
+    /// `nil` where it can't.
+    func isInputOn(runningDevices: HACoreAudioRunningDevices?) -> Bool {
+        guard isInput else { return false }
+        guard let runningDevices else { return isOn }
+        return runningDevices.isRecording(deviceID: id, isRunningSomewhere: isOn)
     }
 
-    var isOutputOn: Bool {
-        if let isOn = value(for: .isOutputRunningSomewhere) {
-            return isOn != 0
-        } else {
-            return false
-        }
+    /// Whether the device is currently playing back. See `isInputOn(runningDevices:)`.
+    func isOutputOn(runningDevices: HACoreAudioRunningDevices?) -> Bool {
+        guard isOutput else { return false }
+        guard let runningDevices else { return isOn }
+        return runningDevices.isPlayingBack(deviceID: id, isRunningSomewhere: isOn)
     }
 
     var isInput: Bool {

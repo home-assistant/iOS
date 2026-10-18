@@ -38,7 +38,7 @@ final class AutomationAppIntent: AppIntent, @unchecked Sendable {
     )
     var hapticConfirmation: Bool
 
-    func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
+    func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
         await Current.connectivity.refreshNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
@@ -80,6 +80,9 @@ final class AutomationAppIntent: AppIntent, @unchecked Sendable {
 
         DataWidgetsUpdater.update()
 
-        return .result(value: success)
+        let dialog = success
+            ? L10n.AppIntents.Automations.SuccessMessage.content(automation.displayString)
+            : L10n.AppIntents.Automations.FailureMessage.content(automation.displayString)
+        return .result(value: success, dialog: .init(stringLiteral: dialog))
     }
 }

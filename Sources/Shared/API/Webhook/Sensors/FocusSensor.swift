@@ -4,6 +4,7 @@ import PromiseKit
 
 final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     var cancellable: HACancellable?
+    private var focusFilterCancellable: HACancellable?
     private let signal: () -> Void
 
     init(signal: @escaping () -> Void) {
@@ -15,12 +16,13 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
 
     deinit {
         cancellable?.cancel()
+        focusFilterCancellable?.cancel()
     }
 
     override func observe() {
         super.observe()
         guard !isObserving else { return }
-        cancellable = Current.focusStatus.trigger.observe { [weak self] _ in
+        cancellable = Current.focusStatus.receivedStatus.observe { [weak self] _ in
             #if os(watchOS)
             self?.signal()
             #else
@@ -30,6 +32,11 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
                 self?.signal()
             }
             #endif
+        }
+        // The sensor also stands on Focus Filter runs, whose own explicit sensor update can fail
+        // (unreachable server) — and they are the only signal when Focus status isn't shared.
+        focusFilterCancellable = Current.focusFilter.state.observe { [weak self] _ in
+            self?.signal()
         }
         isObserving = true
 
@@ -42,13 +49,13 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
         super.stopObserving()
         guard isObserving else { return }
         cancellable?.cancel()
+        focusFilterCancellable?.cancel()
         isObserving = false
     }
 }
 
 final class FocusSensor: SensorProvider {
     public enum FocusError: Error, Equatable {
-        case unauthorized
         case unavailable
     }
 
@@ -58,27 +65,36 @@ final class FocusSensor: SensorProvider {
     }
 
     func sensors() -> Promise<[WebhookSensor]> {
-        guard Current.focusStatus.isAvailable() else {
-            return .init(error: FocusError.unavailable)
-        }
+        // Everything we know, not just the live status: a Focus Filter run proves a Focus is on
+        // even while the live query still describes the one that just ended (or can't answer at
+        // all because the user doesn't share Focus status), and the status iOS pushed us is what
+        // says it ended. This is what flips the sensor when iOS wakes us for a Focus change.
+        let report = FocusReport.current()
 
-        guard Current.focusStatus.authorizationStatus() == .authorized else {
-            return .init(error: FocusError.unauthorized)
-        }
+        guard let isFocused = report.isFocused else {
+            // Only when nothing can answer does why it can't matter: a device without Focus has no
+            // sensor to offer. Anything else stays listed — reporting `unavailable` rather than
+            // dropping out, since the list row is the only switch there is — whether the permission
+            // is missing, which switching the sensor on asks for, or iOS simply gave no answer.
+            guard Current.focusStatus.isAvailable() else {
+                return .init(error: FocusError.unavailable)
+            }
 
-        let focusState = Current.focusStatus.status()
-        var sensors = [WebhookSensor]()
-
-        if let isFocused = focusState.isFocused {
-            sensors.append(with(WebhookSensor(
-                name: "Focus",
+            return .value([WebhookSensor(
+                awaitingPermissionNamed: "Focus",
                 uniqueID: WebhookSensorId.focus.rawValue,
-                icon: "mdi:moon-waning-crescent",
-                state: isFocused
-            )) {
-                $0.Type = "binary_sensor"
-            })
+                type: "binary_sensor"
+            )])
         }
+
+        let sensors = [with(WebhookSensor(
+            name: "Focus",
+            uniqueID: WebhookSensorId.focus.rawValue,
+            icon: "mdi:moon-waning-crescent",
+            state: isFocused
+        )) {
+            $0.Type = "binary_sensor"
+        }]
 
         // Set up our observer
         let _: FocusSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)

@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 
 /// Asks the user to name this device during onboarding. Pushed onto the onboarding navigation stack;
-/// going back cancels the auth flow, and name conflicts surface inline via the request's `errorMessage`.
+/// the cancel button ends the auth flow, and name conflicts surface inline via the request's `errorMessage`.
 struct DeviceNameView: View {
     @ObservedObject var request: OnboardingDeviceNameRequest
     @State private var deviceName: String = ""
@@ -36,10 +36,19 @@ struct DeviceNameView: View {
             primaryActionTitle: L10n.DeviceName.PrimaryButton.title,
             primaryAction: {
                 request.save(deviceName)
-            }
+            },
+            primaryActionIdentifier: AccessibilityIdentifier.onboardingDeviceNameSave.rawValue
         )
         .disableOnboardingPrimaryAction(deviceName.count < 3 || request.isSaving)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(L10n.cancelLabel) {
+                    request.cancel()
+                }
+                .disabled(request.isSaving)
+            }
+        }
         .onAppear {
             #if DEBUG
             deviceName = "Simulator \(UUID().uuidString.prefix(4))"
@@ -48,7 +57,7 @@ struct DeviceNameView: View {
             #endif
         }
         .onDisappear {
-            request.cancelAfterDismissal()
+            request.cancel()
         }
     }
 

@@ -8,8 +8,10 @@ struct IntentCameraEntity: AppEntity {
 
     let id: String
     let serverId: String
-    let entityId: String
-    let displayName: String
+    @Property(title: .init("app_intents.entity.property.entity_id", defaultValue: "Entity ID"))
+    var entityId: String
+    @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
+    var displayName: String
 
     var displayRepresentation: DisplayRepresentation {
         .init(

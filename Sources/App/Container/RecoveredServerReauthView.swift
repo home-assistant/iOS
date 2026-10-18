@@ -8,6 +8,8 @@ struct RecoveredServerReauthView: View {
     let server: Server
     let state: OnboardingStateObservable
 
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
+
     @State private var loginViewModel: OnboardingAuthLoginViewModel?
 
     var body: some View {
@@ -15,7 +17,7 @@ struct RecoveredServerReauthView: View {
             style: .recoveredServerNeedingReauthentication,
             server: server,
             availableReauthURLTypes: state.availableReauthURLTypes(for: server),
-            settingsAction: { Current.sceneManager.appCoordinator.done { $0.showSettings() } },
+            settingsAction: { appSettingsPresenter?.presentSettings() },
             recoveredServerReauthAction: { urlType, completion in
                 state.performRecoveredServerReauthentication(
                     for: server,

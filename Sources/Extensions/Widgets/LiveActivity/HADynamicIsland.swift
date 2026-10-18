@@ -6,31 +6,17 @@ import WidgetKit
 
 /// Builds the `DynamicIsland` for a Home Assistant Live Activity.
 /// Used in `HALiveActivityConfiguration`'s `dynamicIsland:` closure.
+///
+/// The expanded presentation uses the bottom region alone: it spans the island's full width, which
+/// is what keeps every row on one leading edge (see `HAExpandedContentView`).
 @available(iOS 17.2, *)
 func makeHADynamicIsland(
     attributes: HALiveActivityAttributes,
     state: HALiveActivityAttributes.ContentState
 ) -> DynamicIsland {
     DynamicIsland {
-        DynamicIslandExpandedRegion(.leading) {
-            HADynamicIslandIconContainerView(slug: state.icon, color: state.color, size: 28)
-                .padding(.leading, DesignSystem.Spaces.one)
-        }
-        DynamicIslandExpandedRegion(.center) {
-            Text(state.title ?? attributes.title)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(.white)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        DynamicIslandExpandedRegion(.trailing) {
-            HAExpandedTrailingView(state: state)
-                .padding(.trailing, DesignSystem.Spaces.one)
-        }
         DynamicIslandExpandedRegion(.bottom) {
-            HAExpandedBottomView(state: state)
-                .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
-                .padding(.bottom, DesignSystem.Spaces.one)
+            HAExpandedContentView(attributes: attributes, state: state)
         }
     } compactLeading: {
         HADynamicIslandIconView(slug: state.icon, color: state.color, size: 18)

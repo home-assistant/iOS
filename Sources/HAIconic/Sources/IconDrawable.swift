@@ -131,6 +131,19 @@ extension IconDrawable {
 
     public func image(ofSize size: CGSize, color: UIColor?, edgeInsets: UIEdgeInsets) -> UIImage {
 
+        return IconImageCache.shared.image(
+            familyName: Self.familyName,
+            name: name,
+            size: size,
+            color: color,
+            edgeInsets: edgeInsets
+        ) {
+            renderedImage(ofSize: size, color: color, edgeInsets: edgeInsets)
+        }
+    }
+
+    private func renderedImage(ofSize size: CGSize, color: UIColor?, edgeInsets: UIEdgeInsets) -> UIImage {
+
         let pointSize = min(size.width, size.height)
         let aString = attributedString(ofSize: pointSize, color: color)
         let mString = NSMutableAttributedString(attributedString: aString)

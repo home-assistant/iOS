@@ -19,8 +19,10 @@ final class WebViewGestureHandler {
             webViewNavigateBack()
         case .nextPage:
             webViewNavigateForward()
-        case .smartBack:
-            smartBack()
+        case .openInBrowser:
+            webView?.openInBrowser()
+        case .createDeeplink:
+            createDeeplink()
         case .showServersList:
             showServersList()
         case .nextServer:
@@ -51,11 +53,9 @@ final class WebViewGestureHandler {
             .cauterize()
     }
 
-    @discardableResult
-    private func webViewNavigateBack() -> Bool {
-        guard webView?.canGoBack ?? false else { return false }
+    private func webViewNavigateBack() {
+        guard webView?.canGoBack ?? false else { return }
         webView?.goBack()
-        return true
     }
 
     private func webViewNavigateForward() {
@@ -64,14 +64,15 @@ final class WebViewGestureHandler {
         }
     }
 
-    private func smartBack() {
-        if !webViewNavigateBack() {
-            showSidebar()
-        }
+    private func createDeeplink() {
+        guard let webView,
+              let url = webView.currentPageURL,
+              let target = DeeplinkTarget.page(from: url) else { return }
+        DeeplinkPresenter.present(target: target, from: webView)
     }
 
     private func showServersList() {
-        Current.sceneManager.appCoordinator.done { coordinator in
+        Current.sceneManager.appCoordinator(for: sceneOfGesture).done { coordinator in
             coordinator.selectServer(prompt: nil) { server in
                 coordinator.activate(server: server)
             }
@@ -155,8 +156,14 @@ final class WebViewGestureHandler {
 
         // Not `activate(server:)`: cycling servers with a gesture bypasses the server picker, so it
         // switches in place without sending the user back to the Home Assistant root.
-        Current.sceneManager.appCoordinator.done { coordinator in
+        Current.sceneManager.appCoordinator(for: sceneOfGesture).done { coordinator in
             coordinator.open(server: nextServer)
         }
+    }
+
+    /// The scene the gesture was made in, so what it asks for happens in that window rather than in
+    /// whichever one the app last registered.
+    private var sceneOfGesture: UIWindowScene? {
+        webView?.presentationWindow?.windowScene
     }
 }

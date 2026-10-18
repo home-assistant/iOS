@@ -630,6 +630,7 @@ class ServerManagerTests: XCTestCase {
             )
             $0.connection.webhookSecret = "webhook_secret"
             $0.hassDeviceId = "device-1"
+            $0.instanceID = "instance-1"
         }
 
         mirrorStore.set(info, key: "fake1")
@@ -642,6 +643,7 @@ class ServerManagerTests: XCTestCase {
         let restoredFromKeychain = try XCTUnwrap(keychain.getServerInfo(key: "fake1", decoder: JSONDecoder()))
         XCTAssertEqual(restoredFromKeychain.remoteName, info.remoteName)
         XCTAssertEqual(restoredFromKeychain.hassDeviceId, info.hassDeviceId)
+        XCTAssertEqual(restoredFromKeychain.instanceID, info.instanceID)
         XCTAssertEqual(restoredFromKeychain.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
         XCTAssertEqual(restoredFromKeychain.connection.isLocalPushEnabled, info.connection.isLocalPushEnabled)
         XCTAssertNil(restoredFromKeychain.connection.cloudhookURL)
@@ -652,6 +654,7 @@ class ServerManagerTests: XCTestCase {
         let restored = try XCTUnwrap(servers.server(for: "fake1"))
         XCTAssertEqual(restored.info.remoteName, info.remoteName)
         XCTAssertEqual(restored.info.hassDeviceId, info.hassDeviceId)
+        XCTAssertEqual(restored.info.instanceID, info.instanceID)
         XCTAssertEqual(restored.info.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
         XCTAssertEqual(restored.info.connection.isLocalPushEnabled, info.connection.isLocalPushEnabled)
         XCTAssertNil(restored.info.connection.cloudhookURL)

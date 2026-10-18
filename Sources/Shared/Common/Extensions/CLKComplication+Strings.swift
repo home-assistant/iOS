@@ -1407,15 +1407,22 @@ public enum ComplicationTemplate: String {
         }
     }
 
+    /// Whether the template draws the complication's icon, which is what decides both whether the editor
+    /// offers one and whether the face renders it.
+    ///
+    /// This is the set of templates the ClockKit renderer actually attached an image to — not the set
+    /// whose ClockKit counterpart merely had an image slot. The rectangular "Standard Body" and "Text
+    /// Gauge" and the Modular Large templates had an optional header image in ClockKit that this app
+    /// never filled, so their complications have always been text-only; listing them here would render
+    /// an icon they never showed and push their text over to make room for it.
     public var hasImage: Bool {
         switch self {
         case .CircularSmallRingImage, .CircularSmallSimpleImage, .CircularSmallStackImage, .ExtraLargeRingImage,
              .ExtraLargeSimpleImage, .ExtraLargeStackImage, .GraphicCircularClosedGaugeImage, .GraphicCircularImage,
              .GraphicCircularOpenGaugeImage, .GraphicCornerCircularImage, .GraphicCornerGaugeImage,
-             .GraphicCornerTextImage, .GraphicRectangularLargeImage, .GraphicRectangularStandardBody,
-             .GraphicRectangularTextGauge, .ModularLargeColumns, .ModularLargeStandardBody, .ModularLargeTable,
-             .ModularSmallRingImage, .ModularSmallSimpleImage, .ModularSmallStackImage, .UtilitarianLargeFlat,
-             .UtilitarianSmallFlat, .UtilitarianSmallRingImage, .UtilitarianSmallSquare, .GraphicBezelCircularText:
+             .GraphicCornerTextImage, .GraphicRectangularLargeImage, .ModularSmallRingImage, .ModularSmallSimpleImage,
+             .ModularSmallStackImage, .UtilitarianLargeFlat, .UtilitarianSmallFlat, .UtilitarianSmallRingImage,
+             .UtilitarianSmallSquare, .GraphicBezelCircularText:
             return true
         default:
             return false

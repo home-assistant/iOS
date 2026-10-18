@@ -10,6 +10,21 @@ set -e
 
 cd "$(git rev-parse --show-toplevel)"
 
+# GUI clients (GitHub Desktop, Tower, Xcode) run hooks with launchd's minimal
+# PATH: no Homebrew, so `bundle` is system Ruby 2.6 and cannot see the gems.
+case "$(ruby -e 'print RUBY_VERSION' 2>/dev/null)" in
+  3.*) ;;
+  *)
+    series=$(cut -d. -f1,2 .ruby-version 2>/dev/null)
+    for dir in /opt/homebrew/bin /usr/local/bin \
+               "/usr/local/opt/ruby@$series/bin" "/usr/local/lib/ruby/gems/$series.0/bin" \
+               "/opt/homebrew/opt/ruby@$series/bin" "/opt/homebrew/lib/ruby/gems/$series.0/bin"; do
+      [ -d "$dir" ] && PATH="$dir:$PATH"
+    done
+    export PATH
+    ;;
+esac
+
 staged=$(git diff --cached --name-only --diff-filter=ACMR)
 
 [ -n "$staged" ] || exit 0
