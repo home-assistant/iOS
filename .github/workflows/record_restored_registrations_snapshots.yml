@@ -1,0 +1,104 @@
+# TEMPORARY — delete this workflow before the branch is merged.
+#
+# Records the reference images for the restored-registrations prompt and re-records the server
+# settings screen, which gained a section, on the runner image and simulator CI compares against.
+name: Record restored registrations snapshots (temporary)
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - restored-device-registration
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+
+concurrency:
+  group: record-restored-registrations-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  record:
+    runs-on: xcode-27
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        name: "Restore: DerivedData"
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: >-
+            ${{ format('{0}-deriveddata-{1}-{2}',
+            runner.os,
+            env.DEVELOPER_DIR,
+            hashFiles('Package.resolved')) }}
+          restore-keys: >-
+            ${{ format('{0}-deriveddata-{1}-',
+            runner.os,
+            env.DEVELOPER_DIR) }}
+
+      - name: Force snapshot record mode
+        run: |
+          FILE=Sources/SharedTesting/SnapshotTestingHelper.swift
+          FOUND=$(grep -c 'record recording: Bool? = nil,' "$FILE")
+          if [ "$FOUND" -ne 2 ]; then
+            echo "Expected 2 record defaults in $FILE, found $FOUND" >&2
+            exit 1
+          fi
+          sed -i '' 's/record recording: Bool? = nil,/record recording: Bool? = true,/g' "$FILE"
+
+      - name: Resolve Swift packages
+        run: >-
+          xcodebuild -resolvePackageDependencies
+          -project HomeAssistant.xcodeproj
+          -scheme Tests-Unit
+
+      # Recording reports every rewritten snapshot as a failure, so the step's exit status says
+      # nothing about whether it worked. The commit step below is what decides that.
+      - name: Record the references
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project HomeAssistant.xcodeproj \
+            -scheme Tests-Unit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:Tests-App/RestoredRegistrationsViewTests \
+            -only-testing:Tests-App/ConnectionSettingsViewTests \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee xcodebuild.log | grep -E 'error:|\*\* TEST|✘|✔|recorded' || true
+
+      - name: Summarize
+        if: ${{ always() }}
+        run: |
+          {
+            echo '## Compiler errors'
+            echo '```'
+            grep -E 'error:' xcodebuild.log | sort -u | head -n 100 || true
+            echo '```'
+            echo '## Recorded snapshots'
+            echo '```'
+            git status --porcelain -- Tests || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Restore the helper
+        run: git checkout -- Sources/SharedTesting/SnapshotTestingHelper.swift
+
+      - name: Commit the recorded references
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- '*.png'
+          if git diff --cached --quiet; then
+            echo "No reference image changed — recording did not run" >&2
+            exit 1
+          fi
+          git diff --cached --stat
+          git commit -m "Record restored registrations snapshots"
+          git push origin "HEAD:${{ github.ref_name }}"
