@@ -294,6 +294,51 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
+    /// Two saved servers can answer at the address typed in, and the devices the server has tell which it is.
+    func testSigningInAgainTellsServersAtTheSameAddressApartByTheirDevices() throws {
+        let address = URL(string: "http://192.168.1.100:8123")
+        let home = Server.fake(identifier: "home") { $0.connection.set(address: address, for: .internal) }
+        let cabin = Server.fake(identifier: "cabin") { $0.connection.set(address: address, for: .internal) }
+        let cabinIdentity = RegistrationIdentity(deviceID: "cabin-device-id", ownerVendorID: "this-device")
+
+        try withServers([home, cabin]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+            ), for: "home")
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: cabinIdentity), for: "cabin")
+            signIn(at: address)
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: deviceName, identifier: "cabin-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server), cabinIdentity)
+        }
+    }
+
+    /// A server known by its instance ID keeps its identity even where Home Assistant no longer has its device, such
+    /// as after restoring an older backup of it.
+    func testSigningInToAKnownServerWithoutItsDeviceKeepsItsIdentity() throws {
+        let home = Server.fake(identifier: "server-from-an-older-install") { $0.instanceID = "instance-1" }
+        let identity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(
+                RegistrationRecord(current: identity),
+                for: "server-from-an-older-install"
+            )
+            api = HomeAssistantAPI(server: .fake(identifier: "instance-1"))
+            api.connection = connection
+            step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server), identity)
+        }
+    }
+
     /// Runs `body` with `servers` as the servers the app has, and no registration records.
     private func withServers(_ servers: [Server], _ body: () throws -> Void) rethrows {
         let previousServers = Current.servers

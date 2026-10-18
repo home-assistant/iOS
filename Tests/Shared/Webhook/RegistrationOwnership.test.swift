@@ -21,16 +21,27 @@ struct RegistrationOwnershipTests {
         var connectResult: Promise<Void> = .value(())
         private(set) var connectReasons = [ConnectReason]()
         private(set) var registeredNames = [String?]()
+        private(set) var updatedRegistrations = 0
 
         override func register(deviceName: String? = nil) -> Promise<Void> {
             registeredNames.append(deviceName)
             return registerResult
         }
 
+        override func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
+            updatedRegistrations += 1
+            return Promise(error: RegisterFailure())
+        }
+
         override func Connect(reason: ConnectReason) -> Promise<Void> {
             connectReasons.append(reason)
             return connectResult
         }
+    }
+
+    /// Keeps the registrations with `servers`, sending nothing to them.
+    private func keep(_ servers: [Server]) {
+        RegistrationOwnership(updateRegistration: { _ in }).keepRegistrations(of: servers)
     }
 
     /// Runs `body` with `api` answering for its server.
@@ -169,7 +180,7 @@ struct RegistrationOwnershipTests {
             let kept = [addServer(to: servers, ownedBy: nil), addServer(to: servers, ownedBy: Self.otherDevice)]
             let identifier = Current.settingsStore.integrationDeviceID
 
-            RegistrationOwnership().keepRegistrations(of: kept)
+            keep(kept)
 
             #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
             #expect(Current.settingsStore.integrationDeviceID == identifier)
@@ -182,7 +193,7 @@ struct RegistrationOwnershipTests {
             let kept = addServer(to: servers, ownedBy: nil)
             let left = addServer(to: servers, ownedBy: nil)
 
-            RegistrationOwnership().keepRegistrations(of: [kept])
+            keep([kept])
 
             #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [left])
         }
@@ -214,8 +225,9 @@ struct RegistrationOwnershipTests {
     }
 
     /// Registering under the identifier the current registration was made with would replace it on the server,
-    /// taking it away from any other device using it. The other servers keep the identity they have.
-    @Test func registeringAnewOnTheDeviceThatMadeTheRegistrationChangesOnlyThatServersIdentity() async {
+    /// taking it away from any other device using it. That registration is left to the device that shares the default
+    /// identifier, so this one takes a new default too, while the other servers keep the identity they have.
+    @Test func registeringAnewOnTheDeviceThatMadeTheRegistrationLeavesItsIdentifierBehind() async {
         await withDevice(identifierOwner: Self.thisDevice) { servers in
             let server = addServer(to: servers, ownedBy: Self.thisDevice)
             let other = addServer(to: servers, ownedBy: nil)
@@ -226,7 +238,38 @@ struct RegistrationOwnershipTests {
             #expect(failures.isEmpty)
             #expect(Current.settingsStore.registrationIdentity(for: server).deviceID != identity.deviceID)
             #expect(Current.settingsStore.registrationIdentity(for: other) == identity)
+            #expect(Current.settingsStore.integrationDeviceID != identity.deviceID)
+            #expect(Current.settingsStore.integrationDeviceIDOwnerVendorID == Self.thisDevice)
+        }
+    }
+
+    /// A server registered as a new device before keeps that registration's identifier out of the default, which
+    /// stays as it is.
+    @Test func registeringAnewAgainKeepsTheDefaultIdentifier() async {
+        await withDevice(identifierOwner: Self.thisDevice) { servers in
+            let server = addServer(to: servers, ownedBy: Self.thisDevice)
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "its-own-device-id", ownerVendorID: Self.thisDevice)
+            ), for: server.identifier)
+            let identity = Current.settingsStore.integrationDeviceIdentity
+
+            _ = await RegistrationOwnership(register: { _ in }).registerAsNewDevice([server])
+
             #expect(Current.settingsStore.integrationDeviceIdentity == identity)
+        }
+    }
+
+    /// Updates are held back while a registration is another device's, so keeping it sends this device's push token.
+    @Test func keepingARegistrationSendsThisDevicesRegistrationData() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let api = RegisteringAPI(server: server)
+
+            await withAPI(api) {
+                RegistrationOwnership().keepRegistrations(of: [server])
+            }
+
+            #expect(api.updatedRegistrations == 1)
         }
     }
 
@@ -273,7 +316,7 @@ struct RegistrationOwnershipTests {
             let deviceID = Current.settingsStore.registrationIdentity(for: server).deviceID
             _ = await RegistrationOwnership(register: { _ in throw RegisterFailure() }).registerAsNewDevice([server])
 
-            RegistrationOwnership().keepRegistrations(of: [server])
+            keep([server])
 
             #expect(Current.settingsStore.registrationRecord(for: server.identifier) == RegistrationRecord(
                 current: RegistrationIdentity(deviceID: deviceID, ownerVendorID: Self.thisDevice)
@@ -450,7 +493,7 @@ struct RegistrationOwnershipTests {
             let server = addServer(to: servers, ownedBy: nil)
             let deviceID = Current.settingsStore.integrationDeviceID
 
-            RegistrationOwnership().keepRegistrations(of: [server])
+            keep([server])
             let prefs = Current.settingsStore.prefs
             prefs.removeObject(forKey: SettingsStore.registrationRecordsKey)
             prefs.removeObject(forKey: SettingsStore.integrationDeviceIDKey)

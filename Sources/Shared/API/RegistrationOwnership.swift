@@ -14,14 +14,21 @@ import PromiseKit
 public struct RegistrationOwnership {
     /// Registers this device with a server from scratch, under `SettingsStore.registrationIdentity(for:)`.
     public typealias Register = (Server) async throws -> Void
+    /// Sends this device's registration data, such as its push token, to a server.
+    public typealias UpdateRegistration = (Server) -> Void
 
     /// How long to wait for the devices a server has: a WebSocket command has no deadline of its own.
     static let deviceListTimeout: TimeInterval = 30
 
     private let register: Register
+    private let updateRegistration: UpdateRegistration
 
-    public init(register: @escaping Register = RegistrationOwnership.registerWithServer(_:)) {
+    public init(
+        register: @escaping Register = RegistrationOwnership.registerWithServer(_:),
+        updateRegistration: @escaping UpdateRegistration = RegistrationOwnership.updateRegistrationWithServer(_:)
+    ) {
         self.register = register
+        self.updateRegistration = updateRegistration
     }
 
     /// The servers whose registration belongs to another device. Always empty on the Mac, which keeps the identifier
@@ -54,6 +61,9 @@ public struct RegistrationOwnership {
             }
         }
         settings.takeOverIntegrationDeviceID(for: vendorID)
+        // Updates are held back while a registration is another device's, so this device's push token only reaches
+        // the servers now.
+        servers.forEach(updateRegistration)
     }
 
     /// Registers this device with each of `servers` as a new device, each under an identifier of its own. Their
@@ -67,8 +77,13 @@ public struct RegistrationOwnership {
         }
 
         let settings = Current.settingsStore
+        // Registrations made with the default identifier are left to the device that shares it, so this device takes
+        // a new default for whatever it registers with from here on.
+        let leavesDefaultIdentifier = servers.contains {
+            settings.currentRegistrationIdentity(for: $0).deviceID == settings.integrationDeviceID
+        }
         recordIdentities()
-        if settings.integrationDeviceIDOwnerVendorID != vendorID {
+        if leavesDefaultIdentifier || settings.integrationDeviceIDOwnerVendorID != vendorID {
             // Every registration has its identity recorded by now, so this changes none of them, only what this
             // device registers with from here on, such as a server it is added to later.
             settings.adoptNewIntegrationDeviceID(ownedBy: vendorID)
@@ -117,6 +132,11 @@ public struct RegistrationOwnership {
             // The registration is in place; whatever did not catch up is retried on the next connect.
             Current.Log.error("registered with \(server.identifier) as a new device, but failed to connect: \(error)")
         }
+    }
+
+    /// Sends this device's registration data to `server`. A failure is retried on the next connect.
+    public static func updateRegistrationWithServer(_ server: Server) {
+        Current.api(for: server)?.updateRegistration().cauterize()
     }
 
     /// `name`, or the first of "`name` 2", "`name` 3" and on that no `mobile_app` device in `devices` has, other

@@ -110,22 +110,37 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     }
 
     /// Signing in to a server the app already has again keeps the device it has there, under the identity and name
-    /// it was registered with, rather than adding a device or taking over one left to another device. Only the
-    /// server's own devices tell whether it is that server: a server reached by an address typed in only reports
-    /// which one it is once registered, and another one can answer at the same address.
+    /// it was registered with, rather than adding a device or taking over one left to another device. Returns whether
+    /// that device is there to take over, which needs no name checked.
+    ///
+    /// A server reached by an address typed in only reports which one it is once registered, and more than one can
+    /// answer at the same address, so the devices the server has tell which of those it is. A server known by its
+    /// instance ID keeps its identity even where its device is gone, such as after restoring an older backup of Home
+    /// Assistant: it is registered again under that identity.
     private func reuseRegistrationOfExistingServer(among registeredDevices: [RegisteredDevice]) -> Bool {
-        guard let existing = OnboardingAuth.existingServer(reachedBy: api.server, among: Current.servers.all) else {
-            return false
+        let candidates = OnboardingAuth.existingServers(reachedBy: api.server, among: Current.servers.all)
+        let registered = candidates.filter { candidate in
+            let deviceID = Current.settingsStore.registrationIdentity(for: candidate).deviceID
+            return registeredDevices.contains { $0.id == deviceID }
         }
-        let identity = Current.settingsStore.registrationIdentity(for: existing)
-        guard registeredDevices.contains(where: { $0.id == identity.deviceID }) else { return false }
 
+        if registered.count == 1, let existing = registered.first {
+            adoptRegistration(of: existing)
+            return true
+        }
+        if OnboardingAuth.knowsInstance(of: api.server), let existing = candidates.first {
+            adoptRegistration(of: existing)
+        }
+        return false
+    }
+
+    private func adoptRegistration(of existing: Server) {
+        let identity = Current.settingsStore.registrationIdentity(for: existing)
         Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: identity), for: api.server.identifier)
         if api.server.info.setting(for: .overrideDeviceName) == nil,
            let name = existing.info.setting(for: .overrideDeviceName) {
             api.server.info.setSetting(value: name, for: .overrideDeviceName)
         }
-        return true
     }
 
     // In case the flow is completed or cancelled, we reset the first user device name input flag.

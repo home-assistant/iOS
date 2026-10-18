@@ -54,7 +54,10 @@ final class LaunchMessagesStateTests: XCTestCase {
             let sut = LaunchMessagesState()
             sut.presented = .restoredRegistrations([server])
 
-            sut.restoredRegistrationsViewModel(for: [server]).keepRegistrations()
+            sut.restoredRegistrationsViewModel(
+                for: [server],
+                ownership: RegistrationOwnership(updateRegistration: { _ in })
+            ).keepRegistrations()
 
             XCTAssertNil(sut.presented)
         }

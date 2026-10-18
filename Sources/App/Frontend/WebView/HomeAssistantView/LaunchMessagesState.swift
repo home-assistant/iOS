@@ -55,8 +55,11 @@ final class LaunchMessagesState: ObservableObject {
     }
 
     /// The prompt for registrations restored from another device, closing itself once they are settled.
-    func restoredRegistrationsViewModel(for servers: [Server]) -> RestoredRegistrationsViewModel {
-        RestoredRegistrationsViewModel(servers: servers, onFinished: { [weak self] in
+    func restoredRegistrationsViewModel(
+        for servers: [Server],
+        ownership: RegistrationOwnership = RegistrationOwnership()
+    ) -> RestoredRegistrationsViewModel {
+        RestoredRegistrationsViewModel(servers: servers, ownership: ownership, onFinished: { [weak self] in
             self?.presented = nil
         })
     }

@@ -169,8 +169,11 @@ struct RestoredRegistrationsViewModelTests {
     @Test func keepingTheRegistrationsClosesThePromptForGood() async {
         await withRestoredDevice { servers in
             let finished = FinishCounter()
+            let kept = [addServer(named: "Home", to: servers), addServer(named: "Cabin", to: servers)]
+            var updated = [Server]()
             let viewModel = RestoredRegistrationsViewModel(
-                servers: [addServer(named: "Home", to: servers), addServer(named: "Cabin", to: servers)],
+                servers: kept,
+                ownership: RegistrationOwnership(updateRegistration: { updated.append($0) }),
                 onFinished: { finished.count += 1 }
             )
 
@@ -178,6 +181,7 @@ struct RestoredRegistrationsViewModelTests {
 
             #expect(finished.count == 1)
             #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
+            #expect(updated == kept)
         }
     }
 }
