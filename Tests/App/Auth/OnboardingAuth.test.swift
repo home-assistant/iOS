@@ -236,33 +236,6 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(Current.settingsStore.registrationRecord(for: identifier), previous)
     }
 
-    /// A server signed in to again by an address typed in only reports which one it is once registered, so the
-    /// identity its registration has is found by its address beforehand, rather than registering with one that adds
-    /// a device or takes over the one left to another device.
-    func testSigningInToAServerAgainByItsAddressRegistersWithTheIdentityItHas() throws {
-        Current.connectivity.currentNetworkState = { NetworkState() }
-        let externalURL = instance.externalURL
-        let existing: Identifier<Server> = "existing-server"
-        Current.servers.add(identifier: existing, serverInfo: with(ServerInfo.fake()) {
-            $0.instanceID = "instance-1"
-            $0.connection.set(address: externalURL, for: .external)
-        })
-        let registration = Self.registration(deviceID: "cabin-device-id")
-        Current.settingsStore.setRegistrationRecord(registration, for: existing)
-        var registeredWith: RegistrationIdentity?
-        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
-            api.server.info.instanceID = "instance-1"
-            registeredWith = Current.settingsStore.registrationIdentity(for: api.server)
-        }
-
-        let server = try hang(auth())
-
-        XCTAssertNotEqual(server.identifier.rawValue, instance.uuid)
-        XCTAssertEqual(server.identifier, existing)
-        XCTAssertEqual(registeredWith, registration.current)
-        XCTAssertEqual(Current.settingsStore.registrationRecord(for: existing), registration)
-    }
-
     /// A discovered instance ID settles which server it is, even when another server answers at the same address.
     func testAnExistingServerIsFoundByTheInstanceIDItWasDiscoveredWith() {
         let existing = Server.fake(identifier: "server-from-an-older-install") { $0.instanceID = "instance-1" }

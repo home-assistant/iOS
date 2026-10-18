@@ -161,6 +161,25 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         XCTAssertEqual(server.info.setting(for: .registeredDeviceName), "Phone 2")
     }
 
+    /// A registration another device owns is left as it is until this device settles it: updating it would hand
+    /// that device's notifications to this one.
+    func testARegistrationAnotherDeviceOwnsIsNotUpdated() async {
+        let previousIsCatalyst = Current.isCatalyst
+        Current.isCatalyst = false
+        defer { Current.isCatalyst = previousIsCatalyst }
+        let server = Server.fake()
+        Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+        ), for: server.identifier)
+
+        do {
+            _ = try await HomeAssistantAPI(server: server).updateRegistration().asyncValue()
+            XCTFail("the registration is another device's")
+        } catch {
+            XCTAssertEqual(error as? RegistrationOwnershipError, .registeredByAnotherDevice)
+        }
+    }
+
     /// Older servers learn which device scanned a tag from the event itself, so it names the device the server knows
     /// this one as, never one it is still being registered as.
     func testTagEventsOnOlderServersNameTheDeviceTheServerKnows() {

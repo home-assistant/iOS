@@ -5186,6 +5186,8 @@ public enum L10n {
     public enum Errors {
       /// This device can't be told apart from others until it has been unlocked. Unlock it and try again.
       public static var noDeviceIdentifier: String { return L10n.tr("Localizable", "restored_registrations.errors.no_device_identifier") }
+      /// This server still knows this device as another one. Open the app to register it as a new device or keep that registration.
+      public static var registeredByAnotherDevice: String { return L10n.tr("Localizable", "restored_registrations.errors.registered_by_another_device") }
     }
   }
 

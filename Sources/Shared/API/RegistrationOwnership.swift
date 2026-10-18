@@ -28,12 +28,16 @@ public struct RegistrationOwnership {
     /// it registered with under Mac Catalyst on purpose, and while the device has no vendor identifier to compare.
     /// A server waiting to be signed in to again after a recovery is left out until it can be registered with.
     public func serversRegisteredByAnotherDevice() -> [Server] {
-        guard !Current.isCatalyst, let vendorID = Current.device.identifierForVendor() else { return [] }
-        return Current.servers.all.filter { server in
-            guard !server.info.requiresReauthenticationAfterMirrorRestore else { return false }
-            let owner = Current.settingsStore.currentRegistrationIdentity(for: server).ownerVendorID
-            return owner != nil && owner != vendorID
-        }
+        Current.servers.all.filter(isRegisteredByAnotherDevice)
+    }
+
+    /// Whether the registration with `server` belongs to another device, as `serversRegisteredByAnotherDevice()`
+    /// tells.
+    public func isRegisteredByAnotherDevice(_ server: Server) -> Bool {
+        guard !Current.isCatalyst, let vendorID = Current.device.identifierForVendor(),
+              !server.info.requiresReauthenticationAfterMirrorRestore else { return false }
+        let owner = Current.settingsStore.currentRegistrationIdentity(for: server).ownerVendorID
+        return owner != nil && owner != vendorID
     }
 
     /// Makes the registrations with `servers` this device's own, for when it replaced the device they came from, and
@@ -176,6 +180,10 @@ public struct RegistrationOwnership {
                 if record.current == nil {
                     record.current = identity
                 }
+            }
+            // Kept with the server too, which outlives the record when the app is reinstalled.
+            if server.info.setting(for: .registeredDeviceID) == nil {
+                server.update { $0.setSetting(value: identity.deviceID, for: .registeredDeviceID) }
             }
         }
     }

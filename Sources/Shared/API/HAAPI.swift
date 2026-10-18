@@ -363,6 +363,10 @@ public class HomeAssistantAPI {
                 Current.Log.info("skipping registration changes in extension")
                 return Promise<Void>.value(())
             }
+            guard !RegistrationOwnership().isRegisteredByAnotherDevice(server) else {
+                Current.Log.info("leaving the registration with \(server.identifier) to the device it belongs to")
+                return Promise<Void>.value(())
+            }
 
             return updateRegistration().asVoid().recover { [self] error -> Promise<Void> in
                 switch error as? WebhookError {
@@ -636,7 +640,14 @@ public class HomeAssistantAPI {
     }
 
     public func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
-        Current.webhooks.sendEphemeral(
+        // Updating a registration another device owns hands it this device's push token, so that device's
+        // notifications keep reaching this one even after it registers on its own. It waits until this device
+        // settles it.
+        guard !RegistrationOwnership().isRegisteredByAnotherDevice(server) else {
+            return Promise(error: RegistrationOwnershipError.registeredByAnotherDevice)
+        }
+
+        return Current.webhooks.sendEphemeral(
             server: server,
             request: .init(
                 type: "update_registration",

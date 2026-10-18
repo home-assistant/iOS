@@ -47,6 +47,10 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         fetchDeviceListWithTimeout().then { [self] registeredDevices -> Promise<Void> in
+            if reuseRegistrationOfExistingServer(among: registeredDevices) {
+                return .value(())
+            }
+
             let deviceID = Current.settingsStore.registrationIdentity(for: api.server).deviceID
             guard !registeredDevices.contains(where: { $0.id == deviceID }) else {
                 // if the integration is registered already, we will take over that one, so we don't need to look
@@ -103,6 +107,25 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
 
             presenter.push(.deviceName(request))
         }
+    }
+
+    /// Signing in to a server the app already has again keeps the device it has there, under the identity and name
+    /// it was registered with, rather than adding a device or taking over one left to another device. Only the
+    /// server's own devices tell whether it is that server: a server reached by an address typed in only reports
+    /// which one it is once registered, and another one can answer at the same address.
+    private func reuseRegistrationOfExistingServer(among registeredDevices: [RegisteredDevice]) -> Bool {
+        guard let existing = OnboardingAuth.existingServer(reachedBy: api.server, among: Current.servers.all) else {
+            return false
+        }
+        let identity = Current.settingsStore.registrationIdentity(for: existing)
+        guard registeredDevices.contains(where: { $0.id == identity.deviceID }) else { return false }
+
+        Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: identity), for: api.server.identifier)
+        if api.server.info.setting(for: .overrideDeviceName) == nil,
+           let name = existing.info.setting(for: .overrideDeviceName) {
+            api.server.info.setSetting(value: name, for: .overrideDeviceName)
+        }
+        return true
     }
 
     // In case the flow is completed or cancelled, we reset the first user device name input flag.

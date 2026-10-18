@@ -61,15 +61,6 @@ class OnboardingAuth {
             // Registering records what it made under the identifier onboarding started with, which can be the
             // identifier of a server the app already has.
             let registrationBeforeOnboarding = Current.settingsStore.registrationRecord(for: api.server.identifier)
-            // Signing in to a server the app already has registers with the identity its registration has, rather
-            // than adding a device or taking over one left to another device. A server reached by an address typed
-            // in only reports which one it is once registered, too late to choose the identity.
-            if let existing = Self.existingServer(reachedBy: api.server, among: Current.servers.all),
-               existing.identifier != api.server.identifier {
-                var registration = Current.settingsStore.registrationRecord(for: existing.identifier)
-                registration.current = Current.settingsStore.currentRegistrationIdentity(for: existing)
-                Current.settingsStore.setRegistrationRecord(registration, for: api.server.identifier)
-            }
 
             return firstly {
                 steps(.beforeRegister, .register, .afterRegister)

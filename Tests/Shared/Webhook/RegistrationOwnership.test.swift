@@ -443,10 +443,33 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    @Test func noDeviceIdentifierExplainsWhatToDo() {
+    /// Keeping a registration made before identities were kept with the server keeps its identifier with the server
+    /// too, so reinstalling the app, which clears the records and the identifier, doesn't lose it.
+    @Test func keepingARegistrationKeepsItsIdentifierWithTheServer() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: nil)
+            let deviceID = Current.settingsStore.integrationDeviceID
+
+            RegistrationOwnership().keepRegistrations(of: [server])
+            let prefs = Current.settingsStore.prefs
+            prefs.removeObject(forKey: SettingsStore.registrationRecordsKey)
+            prefs.removeObject(forKey: SettingsStore.integrationDeviceIDKey)
+            prefs.removeObject(forKey: SettingsStore.integrationDeviceIDOwnerKey)
+
+            #expect(Current.settingsStore.integrationDeviceID != deviceID)
+            #expect(Current.settingsStore.registrationIdentity(for: server).deviceID == deviceID)
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
+        }
+    }
+
+    @Test func errorsExplainWhatToDo() {
         #expect(
             RegistrationOwnershipError.noDeviceIdentifier.errorDescription
                 == L10n.RestoredRegistrations.Errors.noDeviceIdentifier
+        )
+        #expect(
+            RegistrationOwnershipError.registeredByAnotherDevice.errorDescription
+                == L10n.RestoredRegistrations.Errors.registeredByAnotherDevice
         )
     }
 }

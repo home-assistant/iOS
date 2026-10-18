@@ -1544,6 +1544,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "requires_version" = "Requires %@ or later.";
 "restored_registrations.body" = "This device was restored from a backup of another one, so Home Assistant still sees it as that device. If you still use the other device, register this one as a new device so each keeps its own sensors, location and notifications.";
 "restored_registrations.errors.no_device_identifier" = "This device can't be told apart from others until it has been unlocked. Unlock it and try again.";
+"restored_registrations.errors.registered_by_another_device" = "This server still knows this device as another one. Open the app to register it as a new device or keep that registration.";
 "restored_registrations.failure" = "Couldn't register with %@. Try again, or later from that server's settings.";
 "restored_registrations.keep" = "This replaces the other device";
 "restored_registrations.progress" = "Registering…";
