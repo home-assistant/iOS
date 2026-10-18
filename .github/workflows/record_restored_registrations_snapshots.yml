@@ -70,8 +70,14 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             -only-testing:Tests-App/RestoredRegistrationsViewTests \
             -only-testing:Tests-App/ConnectionSettingsViewTests \
+            -only-testing:Tests-App/RestoredRegistrationsViewModelTests \
+            -only-testing:Tests-App/LaunchMessagesStateTests \
+            -only-testing:Tests-App/ConnectionSettingsViewModelTests \
+            -only-testing:Tests-App/SettingsStoreIntegrationDeviceIDTests \
+            -only-testing:Tests-Shared/RegistrationOwnershipTests \
+            -only-testing:Tests-Shared/HomeAssistantAPIRegisterTests \
             COMPILER_INDEX_STORE_ENABLE=NO \
-            2>&1 | tee xcodebuild.log | grep -E 'error:|\*\* TEST|✘|✔|recorded' || true
+            2>&1 | tee xcodebuild.log | grep -E 'error:|\*\* TEST|✘|recorded|Test Case .* failed|Executed' || true
 
       - name: Summarize
         if: ${{ always() }}
@@ -80,6 +86,10 @@ jobs:
             echo '## Compiler errors'
             echo '```'
             grep -E 'error:' xcodebuild.log | sort -u | head -n 100 || true
+            echo '```'
+            echo '## Test failures'
+            echo '```'
+            grep -E '✘|Test Case .* failed|XCTAssert|Expectation failed' xcodebuild.log | head -n 100 || true
             echo '```'
             echo '## Recorded snapshots'
             echo '```'
