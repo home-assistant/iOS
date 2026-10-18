@@ -19,6 +19,9 @@ public struct RegistrationOwnership {
 
     /// How long to wait for the devices a server has: a WebSocket command has no deadline of its own.
     static let deviceListTimeout: TimeInterval = 30
+    /// How long to wait for a new registration to catch up before leaving it to carry on in the background, such as
+    /// sensor updates that fall back to a background session while the network is down. Non-private for tests.
+    static var reconnectTimeout: TimeInterval = 30
 
     private let register: Register
     private let updateRegistration: UpdateRegistration
@@ -132,7 +135,7 @@ public struct RegistrationOwnership {
         // The new registration has none of the sensors the previous one had.
         SensorRegistrationVersionStore.forgetRegistration(for: server.identifier)
         do {
-            try await api.Connect(reason: .warm).asyncValue()
+            try await api.Connect(reason: .warm).asyncValue(timeout: reconnectTimeout)
         } catch {
             // The registration is in place; whatever did not catch up is retried on the next connect.
             Current.Log.error("registered with \(server.identifier) as a new device, but failed to connect: \(error)")
@@ -168,11 +171,13 @@ public struct RegistrationOwnership {
     }
 
     /// The part of a notification action's name Home Assistant derives from a device `name`, as its `slugify` does:
-    /// lowercased Latin letters and digits, with everything between them collapsed into single underscores.
+    /// lowercased Latin letters and digits, with a comma between digits dropped, as in "1,000", and everything else
+    /// between them collapsed into single underscores.
     static func notificationName(_ name: String) -> String {
         let latin = name.applyingTransform(.toLatin, reverse: false) ?? name
         let plain = latin.applyingTransform(.stripDiacritics, reverse: false) ?? latin
         return plain.lowercased()
+            .replacingOccurrences(of: #"(?<=\d),(?=\d)"#, with: "", options: .regularExpression)
             .split { !($0.isASCII && ($0.isLetter || $0.isNumber)) }
             .joined(separator: "_")
     }

@@ -406,6 +406,30 @@ struct RegistrationOwnershipTests {
         }
     }
 
+    /// A reconnect that doesn't finish, such as while the network is down, leaves the new registration to catch up
+    /// in the background rather than keeping the prompt and the other servers waiting.
+    @Test func registeringWithAServerStopsWaitingForAReconnectThatDoesNotFinish() async throws {
+        let previousTimeout = RegistrationOwnership.reconnectTimeout
+        RegistrationOwnership.reconnectTimeout = 0.1
+        defer { RegistrationOwnership.reconnectTimeout = previousTimeout }
+
+        try await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let api = RegisteringAPI(server: server)
+            let (reconnect, seal) = Promise<Void>.pending()
+            api.connectResult = reconnect
+            answerDevices(on: api)
+
+            try await withAPI(api) {
+                try await RegistrationOwnership.registerWithServer(server)
+            }
+            seal.fulfill(())
+
+            #expect(api.registeredNames == [server.info.mobileAppDeviceName])
+            #expect(api.connectReasons == [.warm])
+        }
+    }
+
     @Test func aRegistrationTheServerRefusesIsReported() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -488,6 +512,21 @@ struct RegistrationOwnershipTests {
         #expect(RegistrationOwnership.notificationName("Bruno's iPhone") == "bruno_s_iphone")
         #expect(RegistrationOwnership.notificationName("  Phone -- 2 ") == "phone_2")
         #expect(RegistrationOwnership.notificationName("Café Ünïcode") == "cafe_unicode")
+        #expect(RegistrationOwnership.notificationName("Phone 1,000, 2") == "phone_1000_2")
+    }
+
+    /// Home Assistant drops a comma between digits from the name it gives the action, so "Phone 1,2" has the one
+    /// "Phone 12" would, and the number added to tell a new name apart is compared the same way.
+    @Test func aCommaBetweenDigitsDoesNotTellNamesApart() throws {
+        let devices = try [
+            Self.device(named: "Phone 1000", registeredAs: "other"),
+            Self.device(named: "Phone 1,2", registeredAs: "another"),
+            Self.device(named: "Phone 12 2", registeredAs: "yet-another"),
+        ].map { try DeviceRegistryEntry(data: HAData(value: $0)) }
+
+        let name: (String) -> String = { RegistrationOwnership.unusedDeviceName($0, among: devices, replacing: "this") }
+        #expect(name("Phone 1,000") == "Phone 1,000 2")
+        #expect(name("Phone 1,2") == "Phone 1,2 3")
     }
 
     /// Reinstalling the app clears its own records but keeps the servers, along with the identifier each one's
