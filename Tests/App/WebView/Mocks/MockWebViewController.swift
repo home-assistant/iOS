@@ -50,6 +50,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var closeNativeModalCalled = false
     var relayedNativeModalNavigationPath: String?
     var nativeModalUpdate: NativeModalUpdate?
+    var handleOverlayDismissedCallCount = 0
 
     init(role: WebViewControllerRole = .mainFrontend) {
         self.role = role
@@ -161,6 +162,10 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func refresh() {
         refreshCalled = true
+    }
+
+    func handleOverlayDismissed() {
+        handleOverlayDismissedCallCount += 1
     }
 
     func refreshIfDisconnected() {

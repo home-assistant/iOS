@@ -91,6 +91,11 @@ public class LocalPushManager {
     private var connectionStateToken: NSObjectProtocol?
     private var tokens = [HACancellable]()
 
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    /// Live Activity pushes whose confirm waits on the app's reply; see the tracker for the flow.
+    let liveActivityConfirms = LiveActivityLocalPushConfirmTracker()
+    #endif
+
     public init(
         server: Server,
         notificationCommunicationDecorator: NotificationCommunicationDecorator =
@@ -98,6 +103,15 @@ public class LocalPushManager {
     ) {
         self.server = server
         self.notificationCommunicationDecorator = notificationCommunicationDecorator
+
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        liveActivityConfirms.confirm = { [weak self] confirmID in
+            self?.sendConfirm(confirmID: confirmID).cauterize()
+        }
+        liveActivityConfirms.reopenChannel = { [weak self] in
+            self?.reopenSubscription()
+        }
+        #endif
 
         updateSubscription()
         tokens.append(server.observe { [weak self] _ in
@@ -169,6 +183,15 @@ public class LocalPushManager {
             ),
             webhookID: webhookID
         )
+    }
+
+    /// Re-open the channel. The server tears the previous one down first, which re-sends every
+    /// push it has not had confirmed through APNs, then registers the new one in the same request.
+    private func reopenSubscription() {
+        Current.Log.info("re-opening local push channel")
+        subscription?.cancel()
+        subscription = nil
+        updateSubscription()
     }
 
     private func handle(initiated result: Swift.Result<Void, HAError>) {
@@ -268,8 +291,14 @@ public class LocalPushManager {
         state.increment()
 
         let baseContent = event.content(server: server)
-        let userInfo = baseContent.userInfo
+        var userInfo = baseContent.userInfo
         let isLiveActivity = Self.isLiveActivityCommand(userInfo)
+        let liveActivityTag = isLiveActivity ? Self.liveActivityTag(in: userInfo) : nil
+        let deferredConfirmID = deferrableConfirmID(for: event, liveActivityTag: liveActivityTag)
+        if let deferredConfirmID {
+            // Rides along with the hand-off so the app can report the outcome of this exact push.
+            userInfo[Self.confirmIDUserInfoKey] = deferredConfirmID
+        }
 
         Current.notificationHistoryStore.record(NotificationHistoryEntry(
             content: baseContent,
@@ -283,29 +312,28 @@ public class LocalPushManager {
             return
         }
 
-        let confirmReceipt: () -> Promise<Void> = { [subscription] in
-            guard let confirmID = event.confirmID, let webhookID = subscription?.webhookID else {
-                return .value(())
-            }
-            return api.connection.send(.localPushConfirm(
-                webhookID: webhookID,
-                confirmID: confirmID
-            )).promise.map { _ in () }
+        let confirmReceipt: () -> Promise<Void> = { [weak self] in
+            guard let self, let confirmID = event.confirmID else { return .value(()) }
+            return sendConfirm(confirmID: confirmID)
         }
 
         if isLiveActivity {
-            // A live update only starts/updates the Live Activity via the delegate above, silent
-            // or not; it never surfaces a standalone banner (the widget is the only visual
-            // feedback, matching NotificationManager.willPresent). Receipt is confirmed right
-            // away: the server tears the channel down if the confirm is late, and the hand-off
-            // to the app can only run once the app is next active.
-            Current.Log.info("local push: Live Activity command, updating activity only")
-            confirmReceipt().cauterize()
+            handleLiveActivity(
+                deferredConfirmID: deferredConfirmID,
+                tag: liveActivityTag,
+                confirmReceipt: confirmReceipt
+            )
             return
         }
 
         if Self.isCommand(userInfo) {
             Current.Log.info("local push: handled as command, suppressing banner")
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            if let tag = Self.liveActivityTag(in: userInfo) {
+                // An end for a tag whose start is still waiting on the app makes that start moot.
+                liveActivityConfirms.confirmSuperseded(tag: tag)
+            }
+            #endif
             confirmReceipt().cauterize()
             return
         }
@@ -335,6 +363,61 @@ public class LocalPushManager {
                 Current.Log.error("failed to add local notification: \(error)")
             }
         }
+    }
+
+    static let confirmIDUserInfoKey = "hass_confirm_id"
+
+    private func handleLiveActivity(
+        deferredConfirmID: String?,
+        tag: String?,
+        confirmReceipt: () -> Promise<Void>
+    ) {
+        // A live update only starts/updates the Live Activity via the delegate, silent or not; it
+        // never surfaces a standalone banner (the widget is the only visual feedback, matching
+        // NotificationManager.willPresent).
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if let deferredConfirmID, let tag {
+            // The app can only show it while in the foreground, so the confirm waits for the app's
+            // reply; without one the channel is re-opened and the server re-sends the push through
+            // APNs, where push-to-start reaches a backgrounded app.
+            Current.Log.info("local push: Live Activity command, confirm deferred to the app")
+            liveActivityConfirms.track(confirmID: deferredConfirmID, tag: tag)
+            return
+        }
+        #endif
+        Current.Log.info("local push: Live Activity command, updating activity only")
+        confirmReceipt().cauterize()
+    }
+
+    /// The confirm to hold back until the app reports whether it showed the Live Activity, or nil
+    /// when the push should be confirmed right away: only the extension hands off to the app, the
+    /// server can only re-send through APNs when the registration has remote push, and a push
+    /// without a tag never becomes an activity.
+    private func deferrableConfirmID(for event: LocalPushEvent, liveActivityTag: String?) -> String? {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        guard Current.isAppExtension, Current.settingsStore.pushID != nil, liveActivityTag != nil else {
+            return nil
+        }
+        return event.confirmID
+        #else
+        return nil
+        #endif
+    }
+
+    private func sendConfirm(confirmID: String) -> Promise<Void> {
+        guard let webhookID = subscription?.webhookID, let api = Current.api(for: server) else {
+            return .value(())
+        }
+        return api.connection.send(.localPushConfirm(
+            webhookID: webhookID,
+            confirmID: confirmID
+        )).promise.map { _ in () }
+    }
+
+    private static func liveActivityTag(in userInfo: [AnyHashable: Any]) -> String? {
+        guard let hadict = userInfo["homeassistant"] as? [String: Any],
+              let tag = hadict["tag"] as? String, !tag.isEmpty else { return nil }
+        return tag
     }
 
     private static func isLiveActivityCommand(_ userInfo: [AnyHashable: Any]) -> Bool {

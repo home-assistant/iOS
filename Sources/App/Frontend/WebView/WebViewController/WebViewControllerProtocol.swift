@@ -29,6 +29,8 @@ protocol WebViewControllerProtocol: AnyObject {
     func makeWebViewFirstResponder()
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
+    /// Brings the frontend up to date once something presented over it, such as Assist, goes away.
+    func handleOverlayDismissed()
     func updateFrontendConnectionState(state: String)
     func handleFrontendRestoredFromPageCache()
     func handleExternalAuthFailure(error: Error)
