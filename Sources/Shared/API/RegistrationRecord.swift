@@ -2,8 +2,9 @@ import Foundation
 
 /// What this installation keeps about its `mobile_app` registration with a server.
 public struct RegistrationRecord: Codable, Equatable {
-    /// The identity the registration was made with. `nil` for a registration made before identities were
-    /// recorded, which was made with `integrationDeviceID` and belongs to that identifier's owner.
+    /// The identity the registration was made with. `nil` when this installation has no record of it, as with a
+    /// registration made before identities were recorded: `SettingsStore.currentRegistrationIdentity(for:)` then
+    /// works it out.
     public var current: RegistrationIdentity?
     /// The identity this device is registering itself with as a new device, until the server confirms it. Kept
     /// across attempts, so one whose response was lost after the server had made the registration is replaced by

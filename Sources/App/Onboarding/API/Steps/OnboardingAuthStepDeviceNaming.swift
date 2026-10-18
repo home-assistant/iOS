@@ -47,7 +47,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         fetchDeviceListWithTimeout().then { [self] registeredDevices -> Promise<Void> in
-            let deviceID = Current.settingsStore.registrationIdentity(for: api.server.identifier).deviceID
+            let deviceID = Current.settingsStore.registrationIdentity(for: api.server).deviceID
             guard !registeredDevices.contains(where: { $0.id == deviceID }) else {
                 // if the integration is registered already, we will take over that one, so we don't need to look
                 return .value(())

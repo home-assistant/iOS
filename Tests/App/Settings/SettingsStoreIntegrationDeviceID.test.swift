@@ -100,17 +100,19 @@ struct SettingsStoreIntegrationDeviceIDTests {
     @Test func registrationRecordsAreKeptPerServer() {
         withVendorIdentifier({ "first-vendor-id" }) {
             let settings = Current.settingsStore
+            let home = Server.fake(identifier: "home")
+            let cabin = Server.fake(identifier: "cabin")
             let identity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "other-vendor-id")
             settings.setRegistrationRecord(RegistrationRecord(current: identity), for: "home")
 
             #expect(settings.registrationRecord(for: "home") == RegistrationRecord(current: identity))
-            #expect(settings.registrationIdentity(for: "home") == identity)
+            #expect(settings.registrationIdentity(for: home) == identity)
             #expect(settings.registrationRecord(for: "cabin") == RegistrationRecord())
-            #expect(settings.registrationIdentity(for: "cabin") == settings.integrationDeviceIdentity)
+            #expect(settings.registrationIdentity(for: cabin) == settings.integrationDeviceIdentity)
 
             settings.setRegistrationRecord(RegistrationRecord(), for: "home")
 
-            #expect(settings.registrationIdentity(for: "home") == settings.integrationDeviceIdentity)
+            #expect(settings.registrationIdentity(for: home) == settings.integrationDeviceIdentity)
         }
     }
 
@@ -123,7 +125,35 @@ struct SettingsStoreIntegrationDeviceIDTests {
                 record.pending = pending
             }
 
-            #expect(Current.settingsStore.registrationIdentity(for: "home") == pending)
+            #expect(Current.settingsStore.registrationIdentity(for: Server.fake(identifier: "home")) == pending)
+        }
+    }
+
+    /// A backup carries over an attempt the device it came from started, which is that device's to finish.
+    @Test func anIdentityAnotherDeviceIsRegisteringIsNotRegisteredWith() {
+        withVendorIdentifier({ "restored-vendor-id" }) {
+            let current = RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "first-vendor-id")
+            Current.settingsStore.updateRegistrationRecord(for: "home") { record in
+                record.current = current
+                record.pending = RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "first-vendor-id")
+            }
+
+            #expect(Current.settingsStore.registrationIdentity(for: Server.fake(identifier: "home")) == current)
+        }
+    }
+
+    /// The identifier kept with the server outlives the app's own records, which reinstalling it clears, and the
+    /// registration is then this installation's.
+    @Test func theIdentifierKeptWithTheServerStandsInForAMissingRecord() {
+        withVendorIdentifier({ "first-vendor-id" }) {
+            let server = Server.fake(identifier: "home") {
+                $0.setSetting(value: "home-device-id", for: .registeredDeviceID)
+            }
+
+            #expect(Current.settingsStore.currentRegistrationIdentity(for: server) == RegistrationIdentity(
+                deviceID: "home-device-id",
+                ownerVendorID: "first-vendor-id"
+            ))
         }
     }
 

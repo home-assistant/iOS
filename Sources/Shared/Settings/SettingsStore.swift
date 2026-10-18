@@ -108,11 +108,28 @@ public class SettingsStore {
         registrationRecords[server.rawValue] ?? RegistrationRecord()
     }
 
-    /// The identity the next registration with `server` is made with: the one it is being registered as a new
-    /// device with, else the one its registration was made with, so registering again keeps its device.
-    public func registrationIdentity(for server: Identifier<Server>) -> RegistrationIdentity {
-        let record = registrationRecord(for: server)
-        return record.pending ?? record.current ?? integrationDeviceIdentity
+    /// The identity the registration with `server` was made with: as recorded, else the identifier kept with the
+    /// server, which outlives the record when the app is reinstalled, else `integrationDeviceID` for a registration
+    /// made before either was kept.
+    public func currentRegistrationIdentity(for server: Server) -> RegistrationIdentity {
+        if let current = registrationRecord(for: server.identifier).current {
+            return current
+        }
+        guard let deviceID = server.info.setting(for: .registeredDeviceID) else {
+            return integrationDeviceIdentity
+        }
+        return RegistrationIdentity(deviceID: deviceID, ownerVendorID: integrationDeviceIDOwnerVendorID)
+    }
+
+    /// The identity the next registration with `server` is made with: the one this device is registering it as a
+    /// new device with, else the one its registration has, so registering again keeps its device. An attempt another
+    /// device started, which a backup carries over, is that device's to finish.
+    public func registrationIdentity(for server: Server) -> RegistrationIdentity {
+        if let pending = registrationRecord(for: server.identifier).pending,
+           pending.ownerVendorID == Current.device.identifierForVendor() {
+            return pending
+        }
+        return currentRegistrationIdentity(for: server)
     }
 
     public func setRegistrationRecord(_ record: RegistrationRecord, for server: Identifier<Server>) {

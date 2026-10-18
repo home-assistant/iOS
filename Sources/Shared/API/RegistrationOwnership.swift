@@ -30,9 +30,9 @@ public struct RegistrationOwnership {
     public func serversRegisteredByAnotherDevice() -> [Server] {
         guard !Current.isCatalyst, let vendorID = Current.device.identifierForVendor() else { return [] }
         return Current.servers.all.filter { server in
-            guard !server.info.requiresReauthenticationAfterMirrorRestore,
-                  let owner = currentIdentity(of: server).ownerVendorID else { return false }
-            return owner != vendorID
+            guard !server.info.requiresReauthenticationAfterMirrorRestore else { return false }
+            let owner = Current.settingsStore.currentRegistrationIdentity(for: server).ownerVendorID
+            return owner != nil && owner != vendorID
         }
     }
 
@@ -102,19 +102,8 @@ public struct RegistrationOwnership {
 
         // Notifications reach a device through an action named after it, so the new registration can't take the
         // name of one it leaves on the server.
-        let previousName = server.info.setting(for: .overrideDeviceName)
         let name = try await unusedDeviceName(for: server, on: api)
-        if name != server.info.mobileAppDeviceName {
-            server.update { $0.setSetting(value: name, for: .overrideDeviceName) }
-        }
-
-        do {
-            try await api.register().asyncValue()
-        } catch {
-            // Keeping the registration it has after all must not rename it.
-            server.update { $0.setSetting(value: previousName, for: .overrideDeviceName) }
-            throw error
-        }
+        try await api.register(deviceName: name).asyncValue()
 
         // The new registration has none of the sensors the previous one had.
         SensorRegistrationVersionStore.forgetRegistration(for: server.identifier)
@@ -127,7 +116,8 @@ public struct RegistrationOwnership {
     }
 
     /// `name`, or the first of "`name` 2", "`name` 3" and on that no `mobile_app` device in `devices` has, other
-    /// than the one registered as `deviceID`, which the registration replaces.
+    /// than the one registered as `deviceID`, which the registration replaces. Names are compared the way Home
+    /// Assistant names notification actions after them, where "Phone 2" and "phone_2" are the same.
     static func unusedDeviceName(
         _ name: String,
         among devices: [DeviceRegistryEntry],
@@ -136,16 +126,26 @@ public struct RegistrationOwnership {
         let taken = Set(devices.compactMap { device -> String? in
             let registrations = (device.identifiers ?? []).filter { $0.count == 2 && $0.first == "mobile_app" }
             guard !registrations.isEmpty, !registrations.contains(["mobile_app", deviceID]) else { return nil }
-            return device.name?.lowercased()
+            return device.name.map(notificationName)
         })
 
         var candidate = name
         var number = 1
-        while taken.contains(candidate.lowercased()) {
+        while taken.contains(notificationName(candidate)) {
             number += 1
             candidate = "\(name) \(number)"
         }
         return candidate
+    }
+
+    /// The part of a notification action's name Home Assistant derives from a device `name`, as its `slugify` does:
+    /// lowercased Latin letters and digits, with everything between them collapsed into single underscores.
+    static func notificationName(_ name: String) -> String {
+        let latin = name.applyingTransform(.toLatin, reverse: false) ?? name
+        let plain = latin.applyingTransform(.stripDiacritics, reverse: false) ?? latin
+        return plain.lowercased()
+            .split { !($0.isASCII && ($0.isLetter || $0.isNumber)) }
+            .joined(separator: "_")
     }
 
     @MainActor
@@ -162,21 +162,16 @@ public struct RegistrationOwnership {
         return unusedDeviceName(
             server.info.mobileAppDeviceName,
             among: devices,
-            replacing: Current.settingsStore.registrationIdentity(for: server.identifier).deviceID
+            replacing: Current.settingsStore.registrationIdentity(for: server).deviceID
         )
     }
 
-    private func currentIdentity(of server: Server) -> RegistrationIdentity {
-        Current.settingsStore.registrationRecord(for: server.identifier).current
-            ?? Current.settingsStore.integrationDeviceIdentity
-    }
-
-    /// Records the identity of each registration made before identities were recorded, which until now are
+    /// Records the identity of each registration this installation has no record of, which until now follows
     /// `integrationDeviceID` and its owner, before either changes.
     private func recordIdentities() {
         let settings = Current.settingsStore
-        let identity = settings.integrationDeviceIdentity
         for server in Current.servers.all {
+            let identity = settings.currentRegistrationIdentity(for: server)
             settings.updateRegistrationRecord(for: server.identifier) { record in
                 if record.current == nil {
                     record.current = identity

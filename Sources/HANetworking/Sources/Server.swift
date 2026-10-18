@@ -44,6 +44,9 @@ public extension ServerSettingKey {
     static var overrideDeviceName: ServerSettingKey<String?> { "override_device_name" }
     /// The `device_name` the phone's `mobile_app` registration last sent; the watch reads it from the mirrored servers.
     static var registeredDeviceName: ServerSettingKey<String?> { "registered_device_name" }
+    /// The `device_id` the phone's `mobile_app` registration was made with, kept with the server so it outlives the
+    /// app's own records of it when the app is reinstalled.
+    static var registeredDeviceID: ServerSettingKey<String?> { "registered_device_id" }
     static var locationPrivacy: ServerSettingKey<ServerLocationPrivacy> { "privacy_location" }
     static var sensorPrivacy: ServerSettingKey<ServerSensorPrivacy> { "privacy_sensor" }
 }

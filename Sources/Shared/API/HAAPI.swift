@@ -595,14 +595,16 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func register() -> Promise<Void> {
-        let identity = Current.settingsStore.registrationIdentity(for: server.identifier)
+    /// Registers with the server, as `deviceName` when given. The name is only kept once the server has the
+    /// registration: until then, whichever registration the server already has goes on using the current one.
+    public func register(deviceName: String? = nil) -> Promise<Void> {
+        let identity = Current.settingsStore.registrationIdentity(for: server)
 
         return request(
             path: "mobile_app/registrations",
             callingFunctionName: "\(#function)",
             method: .post,
-            parameters: buildMobileAppRegistration(deviceID: identity.deviceID),
+            parameters: buildMobileAppRegistration(deviceID: identity.deviceID, deviceName: deviceName),
             encoding: JSONEncoding.default
         ).recover { error -> Promise<MobileAppRegistrationResponse> in
             if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
@@ -618,7 +620,11 @@ public class HomeAssistantAPI {
                 server.connection.cloudhookURL = resp.CloudhookURL
                 server.connection.webhookID = resp.WebhookID
                 server.connection.webhookSecret = resp.WebhookSecret
+                if let deviceName, deviceName != server.mobileAppDeviceName {
+                    server.setSetting(value: deviceName, for: .overrideDeviceName)
+                }
                 server.setSetting(value: server.mobileAppDeviceName, for: .registeredDeviceName)
+                server.setSetting(value: identity.deviceID, for: .registeredDeviceID)
             }
             Current.settingsStore.updateRegistrationRecord(for: server.identifier) { record in
                 record.current = identity
@@ -679,9 +685,10 @@ public class HomeAssistantAPI {
         )
     }
 
-    private func buildMobileAppRegistration(deviceID: String) -> [String: Any] {
+    private func buildMobileAppRegistration(deviceID: String, deviceName: String?) -> [String: Any] {
         let ident = with(mobileAppRegistrationRequestModel()) {
             $0.DeviceID = deviceID
+            $0.DeviceName = deviceName ?? $0.DeviceName
         }
         var json = Mapper().toJSON(ident)
 
@@ -860,8 +867,7 @@ public class HomeAssistantAPI {
         eventData["tag_id"] = tagPath
         if server.info.version < .tagWebhookAvailable {
             // The device the server knows this one as, not one it is still being registered as.
-            eventData["device_id"] = Current.settingsStore.registrationRecord(for: server.identifier).current?.deviceID
-                ?? Current.settingsStore.integrationDeviceID
+            eventData["device_id"] = Current.settingsStore.currentRegistrationIdentity(for: server).deviceID
         }
         return (eventType: "tag_scanned", eventData: eventData)
     }

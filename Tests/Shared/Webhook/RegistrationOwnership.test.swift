@@ -20,9 +20,11 @@ struct RegistrationOwnershipTests {
         var registerResult: Promise<Void> = .value(())
         var connectResult: Promise<Void> = .value(())
         private(set) var connectReasons = [ConnectReason]()
+        private(set) var registeredNames = [String?]()
 
-        override func register() -> Promise<Void> {
-            registerResult
+        override func register(deviceName: String? = nil) -> Promise<Void> {
+            registeredNames.append(deviceName)
+            return registerResult
         }
 
         override func Connect(reason: ConnectReason) -> Promise<Void> {
@@ -194,7 +196,7 @@ struct RegistrationOwnershipTests {
             var registeredWith = [Server: RegistrationIdentity]()
 
             let failures = await RegistrationOwnership(register: { server in
-                registeredWith[server] = Current.settingsStore.registrationIdentity(for: server.identifier)
+                registeredWith[server] = Current.settingsStore.registrationIdentity(for: server)
             }).registerAsNewDevice(restored)
 
             #expect(failures.isEmpty)
@@ -204,7 +206,7 @@ struct RegistrationOwnershipTests {
                 $0.ownerVendorID == Self.thisDevice && $0.deviceID != previousIdentity.deviceID
             })
             // Not registered anew, so it keeps the identity it was made with, which is the other device's.
-            #expect(Current.settingsStore.registrationIdentity(for: left.identifier) == previousIdentity)
+            #expect(Current.settingsStore.registrationIdentity(for: left) == previousIdentity)
             // What this device registers with from now on, such as a server it is added to later, is its own.
             #expect(Current.settingsStore.integrationDeviceID != previousIdentity.deviceID)
             #expect(Current.settingsStore.integrationDeviceIDOwnerVendorID == Self.thisDevice)
@@ -222,8 +224,8 @@ struct RegistrationOwnershipTests {
             let failures = await RegistrationOwnership(register: { _ in }).registerAsNewDevice([server])
 
             #expect(failures.isEmpty)
-            #expect(Current.settingsStore.registrationIdentity(for: server.identifier).deviceID != identity.deviceID)
-            #expect(Current.settingsStore.registrationIdentity(for: other.identifier) == identity)
+            #expect(Current.settingsStore.registrationIdentity(for: server).deviceID != identity.deviceID)
+            #expect(Current.settingsStore.registrationIdentity(for: other) == identity)
             #expect(Current.settingsStore.integrationDeviceIdentity == identity)
         }
     }
@@ -235,7 +237,7 @@ struct RegistrationOwnershipTests {
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
             var registeredWith = [RegistrationIdentity]()
             let ownership = RegistrationOwnership(register: { server in
-                registeredWith.append(Current.settingsStore.registrationIdentity(for: server.identifier))
+                registeredWith.append(Current.settingsStore.registrationIdentity(for: server))
                 throw RegisterFailure()
             })
 
@@ -257,7 +259,7 @@ struct RegistrationOwnershipTests {
             var registeredWith: RegistrationIdentity?
 
             _ = await RegistrationOwnership(register: { server in
-                registeredWith = Current.settingsStore.registrationIdentity(for: server.identifier)
+                registeredWith = Current.settingsStore.registrationIdentity(for: server)
             }).registerAsNewDevice([server])
 
             #expect(registeredWith?.deviceID != "abandoned")
@@ -268,7 +270,7 @@ struct RegistrationOwnershipTests {
     @Test func keepingARegistrationAfterFailingToRegisterAnewKeepsItsIdentity() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
-            let deviceID = Current.settingsStore.registrationIdentity(for: server.identifier).deviceID
+            let deviceID = Current.settingsStore.registrationIdentity(for: server).deviceID
             _ = await RegistrationOwnership(register: { _ in throw RegisterFailure() }).registerAsNewDevice([server])
 
             RegistrationOwnership().keepRegistrations(of: [server])
@@ -338,7 +340,7 @@ struct RegistrationOwnershipTests {
             }
 
             #expect(api.connectReasons == [.warm])
-            #expect(server.info.setting(for: .overrideDeviceName) == nil)
+            #expect(api.registeredNames == [server.info.mobileAppDeviceName])
             // The new registration has none of the old one's sensors, so the next connect registers them.
             #expect(SensorRegistrationVersionStore.needsRegistration(for: server.identifier))
         }
@@ -358,8 +360,7 @@ struct RegistrationOwnershipTests {
             }
 
             #expect(api.connectReasons.isEmpty)
-            // Kept with the registration it has, which must not be renamed.
-            #expect(server.info.setting(for: .overrideDeviceName) == nil)
+            #expect(api.registeredNames == ["\(server.info.mobileAppDeviceName) 2"])
         }
     }
 
@@ -380,7 +381,7 @@ struct RegistrationOwnershipTests {
                 try await RegistrationOwnership.registerWithServer(server)
             }
 
-            #expect(server.info.setting(for: .overrideDeviceName) == "Phone 3")
+            #expect(api.registeredNames == ["Phone 3"])
         }
     }
 
@@ -411,12 +412,35 @@ struct RegistrationOwnershipTests {
             Self.device(named: "Phone"),
             Self.device(named: "Tablet", registeredAs: "other"),
             Self.device(named: "Phone 2", registeredAs: "this"),
+            Self.device(named: "Laptop_2", registeredAs: "another"),
+            Self.device(named: "Laptop", registeredAs: "yet-another"),
         ].map { try DeviceRegistryEntry(data: HAData(value: $0)) }
 
         // Only another `mobile_app` registration takes a name, and the one being replaced is this device's own.
         #expect(RegistrationOwnership.unusedDeviceName("Phone", among: devices, replacing: "this") == "Phone")
         #expect(RegistrationOwnership.unusedDeviceName("Phone 2", among: devices, replacing: "this") == "Phone 2")
         #expect(RegistrationOwnership.unusedDeviceName("tablet", among: devices, replacing: "this") == "tablet 2")
+        // Home Assistant names both "Laptop 2" and "Laptop_2" notify.mobile_app_laptop_2.
+        #expect(RegistrationOwnership.unusedDeviceName("Laptop", among: devices, replacing: "this") == "Laptop 3")
+    }
+
+    @Test func namesCompareTheWayHomeAssistantNamesNotificationActions() {
+        #expect(RegistrationOwnership.notificationName("Bruno's iPhone") == "bruno_s_iphone")
+        #expect(RegistrationOwnership.notificationName("  Phone -- 2 ") == "phone_2")
+        #expect(RegistrationOwnership.notificationName("Café Ünïcode") == "cafe_unicode")
+    }
+
+    /// Reinstalling the app clears its own records but keeps the servers, along with the identifier each one's
+    /// registration was made with: the registration is still this device's, under the identifier it has.
+    @Test func aRegistrationKeepsTheIdentifierKeptWithTheServerAfterAReinstall() async {
+        await withDevice(identifierOwner: Self.thisDevice) { servers in
+            let server = addServer(to: servers, ownedBy: nil) { info in
+                info.setSetting(value: "cabin-device-id", for: .registeredDeviceID)
+            }
+
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
+            #expect(Current.settingsStore.registrationIdentity(for: server).deviceID == "cabin-device-id")
+        }
     }
 
     @Test func noDeviceIdentifierExplainsWhatToDo() {
