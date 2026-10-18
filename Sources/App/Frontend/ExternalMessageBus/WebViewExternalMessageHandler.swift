@@ -581,11 +581,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             )
             Current.sceneManager.activateAnyScene(for: .assist)
         } else {
-            // On iOS/iPad, present modally as before
+            // On iOS/iPad, present modally as before. Closing it re-checks the frontend underneath, which a
+            // cold launch straight into Assist covered before it ever loaded.
             let assistView = UIHostingController(rootView: AssistView.build(
                 server: server,
                 preferredPipelineId: pipeline,
-                autoStartRecording: autoStartRecording
+                autoStartRecording: autoStartRecording,
+                onDismiss: { [weak self] in
+                    self?.webViewController?.handleOverlayDismissed()
+                }
             ))
             let tappedSource = webViewController?.pendingAssistZoomSourceView
             webViewController?.pendingAssistZoomSourceView = nil

@@ -18,6 +18,7 @@ class LocalPushManagerTests: XCTestCase {
 
         attachmentManager = FakeNotificationAttachmentManager()
         Current.notificationAttachmentManager = attachmentManager
+        Current.isAppExtension = false
 
         let server: Server
 

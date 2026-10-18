@@ -109,6 +109,6 @@ Current.servers = FakeServerManager()
 
 ## Additional Resources
 
-- [Home Assistant Developer Docs (Apple)](https://developers.home-assistant.io/docs/apple/)
+- [Home Assistant contributor docs (Apple)](https://contributors.home-assistant.io/companion/apple/)
 - [Contributing Guidelines](../../../CONTRIBUTING.md)
 - [Point-Free: How to Control the World](https://www.pointfree.co/blog/posts/21-how-to-control-the-world)
