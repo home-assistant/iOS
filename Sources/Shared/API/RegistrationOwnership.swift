@@ -41,10 +41,15 @@ public struct RegistrationOwnership {
     /// Whether the registration with `server` belongs to another device, as `serversRegisteredByAnotherDevice()`
     /// tells.
     public func isRegisteredByAnotherDevice(_ server: Server) -> Bool {
-        guard !Current.isCatalyst, let vendorID = Current.device.identifierForVendor(),
-              !server.info.requiresReauthenticationAfterMirrorRestore else { return false }
-        let owner = Current.settingsStore.currentRegistrationIdentity(for: server).ownerVendorID
-        return owner != nil && owner != vendorID
+        !server.info.requiresReauthenticationAfterMirrorRestore
+            && belongsToAnotherDevice(Current.settingsStore.currentRegistrationIdentity(for: server))
+    }
+
+    /// Whether `identity` is another device's, so registering under it would take over that device's registration.
+    /// Never on the Mac, nor while the device has no vendor identifier to compare.
+    public func belongsToAnotherDevice(_ identity: RegistrationIdentity) -> Bool {
+        guard !Current.isCatalyst, let vendorID = Current.device.identifierForVendor() else { return false }
+        return identity.ownerVendorID != nil && identity.ownerVendorID != vendorID
     }
 
     /// Makes the registrations with `servers` this device's own, for when it replaced the device they came from, and

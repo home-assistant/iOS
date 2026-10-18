@@ -274,24 +274,84 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// A server saved at one of its addresses can be signed in to again at another, such as its local hostname rather
-    /// than its IP address, and the devices it has still tell it.
-    func testSigningInAgainAtAnotherAddressKeepsTheDeviceTheServerHas() throws {
-        let home = Server.fake(identifier: "home") {
-            $0.connection.set(address: URL(string: "http://192.168.1.100:8123"), for: .external)
-        }
-        let identity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+    /// An identifier another saved server is registered with can be another device's on this server, such as the one
+    /// this device left there when it registered as a new device, so only this server's own identity is kept.
+    func testSigningInAgainKeepsThisServersIdentityOverOneAnotherServerHas() throws {
+        let home = Server.fake(identifier: "instance-1")
+        let cabin = Server.fake(identifier: "cabin")
+        let homeIdentity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
 
-        try withServers([home]) {
-            Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: identity), for: "home")
-            signIn(at: URL(string: "http://homeassistant.local:8123"))
+        try withServers([home, cabin]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: homeIdentity), for: "instance-1")
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "this-device")
+            ), for: "cabin")
+            discover(instance: "instance-1")
 
             let result = step.perform(point: .beforeRegister)
-            try respond(result: .success([.init(name: "Zac's Phone 2", identifier: "home-device-id")]))
+            try respond(result: .success([.init(name: "Other Phone", identifier: "old-device-id")]))
             XCTAssertNoThrow(try hang(result))
 
-            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server), identity)
-            XCTAssertEqual(api.server.info.setting(for: .overrideDeviceName), "Zac's Phone 2")
+            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server), homeIdentity)
+        }
+    }
+
+    /// Signing in again to a server whose registration a backup brought from another device, before settling it,
+    /// registers this device under an identity of its own rather than taking over the other device's.
+    func testSigningInAgainToAServerAnotherDeviceIsRegisteredWithRegistersAnew() throws {
+        let home = Server.fake(identifier: "instance-1")
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+            ), for: "instance-1")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "old-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, "old-device-id")
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    /// The same, for a server saved under another identifier than the instance ID it is discovered by.
+    func testSigningInAgainToADiscoveredServerAnotherDeviceIsRegisteredWithLeavesItsIdentity() throws {
+        let home = Server.fake(identifier: "home") { $0.instanceID = "instance-1" }
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+            ), for: "home")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "old-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, "old-device-id")
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    /// Until this device settles the registrations a backup brought, the identifier it registers with by default is
+    /// the other device's, and a server that has that device gets one of this device's own instead.
+    func testSigningInWithAnotherDevicesIdentifierRegistersUnderOneOfItsOwn() throws {
+        try withServers([]) {
+            Current.settingsStore.prefs.set("other-device", forKey: SettingsStore.integrationDeviceIDKey)
+            let otherDevicesID = Current.settingsStore.integrationDeviceID
+            signIn(at: URL(string: "http://192.168.1.100:8123"))
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: otherDevicesID)]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, otherDevicesID)
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
         }
     }
 
@@ -327,6 +387,28 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
     func testSigningInAgainLeavesARegistrationAnotherDeviceOwns() throws {
         let address = URL(string: "http://192.168.1.100:8123")
         let home = Server.fake(identifier: "home") { $0.connection.set(address: address, for: .internal) }
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "other-device")
+            ), for: "home")
+            signIn(at: address)
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "home-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationRecord(for: api.server.identifier), RegistrationRecord())
+        }
+    }
+
+    /// A server waiting to be signed in to again after its credentials were recovered is no exception.
+    func testSigningInAgainAfterARecoveryLeavesARegistrationAnotherDeviceOwns() throws {
+        let address = URL(string: "http://192.168.1.100:8123")
+        let home = Server.fake(identifier: "home") {
+            $0.connection.set(address: address, for: .internal)
+            $0.token = ServerInfo.mirrorPlaceholderToken
+        }
 
         try withServers([home]) {
             Current.settingsStore.setRegistrationRecord(RegistrationRecord(
@@ -438,6 +520,13 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         Current.isCatalyst = false
         keys.forEach(prefs.removeObject(forKey:))
         try body()
+    }
+
+    /// Signs in to the server discovered with the instance ID `instance`.
+    private func discover(instance: String) {
+        api = HomeAssistantAPI(server: .fake(identifier: .init(rawValue: instance)))
+        api.connection = connection
+        step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
     }
 
     /// Signs in to the server at `address`, typed in rather than discovered.

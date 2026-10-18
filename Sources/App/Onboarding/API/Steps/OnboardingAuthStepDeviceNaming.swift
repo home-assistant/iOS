@@ -50,6 +50,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
             if reuseRegistrationOfExistingServer(among: registeredDevices) {
                 return .value(())
             }
+            leaveRegistrationOfAnotherDevice()
 
             let deviceID = Current.settingsStore.registrationIdentity(for: api.server).deviceID
             guard !registeredDevices.contains(where: { $0.id == deviceID }) else {
@@ -114,16 +115,18 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     /// another device. Returns whether that device is there to take over, which needs no name checked.
     ///
     /// A server reached by an address typed in only reports which one it is once registered, and more than one can
-    /// answer at the same address, so the devices the server has tell which of those it is, or which server it is when
-    /// it was saved under another of its addresses. A server known by its instance ID keeps its identity even where
-    /// its device is gone, such as after restoring an older backup of Home Assistant: it is registered again under
-    /// that identity.
+    /// answer at the same address, so the devices the server has tell which of those it is. A server known by its
+    /// instance ID keeps its identity even where its device is gone, such as after restoring an older backup of Home
+    /// Assistant: it is registered again under that identity. Other servers are not looked at: an identifier one is
+    /// registered with can be another device's on this server, such as the one this device left there when it
+    /// registered as a new device. A registration another device owns is left to it either way.
     private func reuseRegistrationOfExistingServer(among registeredDevices: [RegisteredDevice]) -> Bool {
-        let candidates = OnboardingAuth.existingServers(reachedBy: api.server, among: Current.servers.all)
-        var matches = registrations(of: candidates, among: registeredDevices)
-        if matches.isEmpty {
-            matches = registrations(of: Current.servers.all, among: registeredDevices)
+        let settings = Current.settingsStore
+        let ownership = RegistrationOwnership()
+        let candidates = OnboardingAuth.existingServers(reachedBy: api.server, among: Current.servers.all).filter {
+            !ownership.belongsToAnotherDevice(settings.registrationIdentity(for: $0))
         }
+        let matches = registrations(of: candidates, among: registeredDevices)
 
         // Servers can share an identity, such as ones registered before this device took a new identifier: they are
         // one device on this server either way.
@@ -132,29 +135,36 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
             return true
         }
         if OnboardingAuth.knowsInstance(of: api.server), let existing = candidates.first {
-            adopt(
-                Current.settingsStore.registrationIdentity(for: existing),
-                named: existing.info.setting(for: .overrideDeviceName)
-            )
+            adopt(settings.registrationIdentity(for: existing), named: existing.info.setting(for: .overrideDeviceName))
         }
         return false
     }
 
-    /// The identities `servers` are registered with that this server has a device for, leaving out the ones another
-    /// device owns.
+    /// The identities `servers` are registered with that this server has a device for.
     private func registrations(
         of servers: [Server],
         among registeredDevices: [RegisteredDevice]
     ) -> [RegistrationIdentity: RegisteredDevice] {
-        let ownership = RegistrationOwnership()
         var registrations = [RegistrationIdentity: RegisteredDevice]()
-        for server in servers where !ownership.isRegisteredByAnotherDevice(server) {
+        for server in servers {
             let identity = Current.settingsStore.registrationIdentity(for: server)
             if let device = registeredDevices.first(where: { $0.id == identity.deviceID }) {
                 registrations[identity] = device
             }
         }
         return registrations
+    }
+
+    /// Registering under an identity another device owns would take over that device's registration, such as when
+    /// signing in again to a server a backup brought along before settling it, or while the identifier this device
+    /// registers with by default is still the other device's. This device registers under one of its own instead.
+    private func leaveRegistrationOfAnotherDevice() {
+        let settings = Current.settingsStore
+        guard RegistrationOwnership().belongsToAnotherDevice(settings.registrationIdentity(for: api.server)),
+              let vendorID = Current.device.identifierForVendor() else { return }
+        settings.updateRegistrationRecord(for: api.server.identifier) { record in
+            record.pending = RegistrationIdentity(deviceID: settings.newIntegrationDeviceID(), ownerVendorID: vendorID)
+        }
     }
 
     private func adopt(_ identity: RegistrationIdentity, named name: String?) {
