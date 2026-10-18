@@ -1,12 +1,23 @@
 # Testing and debugging lanes
 
 require 'json'
+require 'open3'
 require 'shellwords'
 
-# Every available simulator of a platform, as `[runtime, device]` pairs.
+# Simulator runtimes of a platform that can actually boot. `simctl` keeps listing a runtime, and the
+# devices on it, as available after the runtime's files are gone from the runner, and installing on
+# one of those devices then fails with "runtime path not found".
+def usable_runtimes(platform)
+  JSON.parse(`xcrun simctl list runtimes available --json`)['runtimes']
+      .select { |runtime| runtime['platform'] == platform }
+      .select { |runtime| runtime['bundlePath'].nil? || File.directory?(runtime['bundlePath']) }
+end
+
+# Every available simulator of a platform on a usable runtime, as `[runtime, device]` pairs.
 def available_simulators(platform)
+  runtimes = usable_runtimes(platform).map { |runtime| runtime['identifier'] }
   JSON.parse(`xcrun simctl list devices available --json`)['devices']
-      .select { |runtime, _| runtime.include?(platform) }
+      .slice(*runtimes)
       .flat_map { |runtime, devices| devices.map { |device| [runtime, device] } }
 end
 
@@ -20,6 +31,35 @@ def newest_simulator(model, platform)
            .max_by { |runtime, _| runtime.scan(/\d+/).map(&:to_i) }
   UI.user_error!("No available #{platform} simulator named '#{model}'") if newest.nil?
   newest.last['udid']
+end
+
+# Newest usable runtime of a platform, downloading the platform's runtime when the runner has none.
+def newest_usable_runtime(platform)
+  sh('xcodebuild', '-downloadPlatform', platform) if usable_runtimes(platform).empty?
+  newest = usable_runtimes(platform).max_by { |runtime| runtime['version'].split('.').map(&:to_i) }
+  UI.user_error!("No usable #{platform} simulator runtime") if newest.nil?
+  newest
+end
+
+# Makes a simulator of the given model on a runtime, resolved to its UDID.
+def create_simulator(model, runtime)
+  device_type = runtime['supportedDeviceTypes'].find { |type| type['name'] == model }
+  UI.user_error!("#{runtime['name']} has no simulator named '#{model}'") if device_type.nil?
+  udid, status = Open3.capture2('xcrun', 'simctl', 'create', model, device_type['identifier'], runtime['identifier'])
+  UI.user_error!("Couldn't create a '#{model}' simulator on #{runtime['name']}") unless status.success?
+  udid.strip
+end
+
+# A simulator of the given watch model on the newest usable watchOS runtime, resolved to a UDID.
+#
+# Runner images ship the watch pre-made on a single runtime, and some runners come up without that
+# runtime's files, so neither the runtime nor the device on it can be taken for granted: download the
+# runtime when none is usable, and make the device when the runtime has none.
+def watch_simulator(model)
+  runtime = newest_usable_runtime('watchOS')
+  existing = available_simulators('watchOS')
+             .find { |identifier, device| identifier == runtime['identifier'] && device['name'] == model }
+  existing ? existing.last['udid'] : create_simulator(model, runtime)
 end
 
 desc 'Update the test cases from the fcm repo'
@@ -56,6 +96,15 @@ end
 
 desc 'Run tests'
 lane :test do
+  # The complication snapshot tests render the shared views on watchOS, so they run under the WatchApp
+  # scheme on a watch simulator — the iOS run below can't reach them. A plain name,OS destination is
+  # ambiguous here: CI pairs a watch to a phone, and a paired watch matches twice ("multiple devices
+  # matched"), so the watch is targeted by UDID, which is unambiguous even when paired. The references
+  # are rendered from the view rather than from the screen, so the model only has to be one the
+  # runtime supports. Resolved up front so a runner that has to download the runtime and can't fails
+  # before the long iOS run rather than after it.
+  watch_destination = "platform=watchOS Simulator,id=#{watch_simulator('Apple Watch Series 12 (46mm)')}"
+
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'Tests-Unit',
@@ -68,25 +117,6 @@ lane :test do
     xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
     destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
   )
-
-  # The complication snapshot tests render the shared views on watchOS, so they run under the WatchApp
-  # scheme on a watch simulator — the iOS run above can't reach them. A plain name,OS destination is
-  # ambiguous here: CI pairs a watch to a phone, and a paired watch matches twice ("multiple devices
-  # matched"). Which model gets paired varies per runner, so resolve the 46mm's UDID and target it by
-  # id, which is unambiguous even when paired. The references are rendered from the view rather than
-  # from the screen, so the model only has to be one the runner image ships — bump it when that image
-  # drops the one named here, or the destination resolves to nothing and the run fails before it
-  # builds.
-  watch_model = 'Apple Watch Series 12 (46mm)'
-  newest_watch = available_simulators('watchOS')
-                 .select { |_, device| device['name'] == watch_model }
-                 .max_by { |runtime, _| runtime.scan(/\d+/).map(&:to_i) }
-  watch_destination =
-    if newest_watch
-      "platform=watchOS Simulator,id=#{newest_watch.last['udid']}"
-    else
-      "platform=watchOS Simulator,name=#{watch_model},OS=latest"
-    end
 
   run_tests(
     project: 'HomeAssistant.xcodeproj',
