@@ -596,15 +596,13 @@ public class HomeAssistantAPI {
     }
 
     public func register() -> Promise<Void> {
-        // The registration belongs to whichever device owns the identifier it is made with: a device restored from
-        // another one's backup registers as that device until it is told otherwise.
-        let owner = Current.settingsStore.integrationDeviceIDOwnerVendorID
+        let identity = Current.settingsStore.registrationIdentity(for: server.identifier)
 
         return request(
             path: "mobile_app/registrations",
             callingFunctionName: "\(#function)",
             method: .post,
-            parameters: buildMobileAppRegistration(),
+            parameters: buildMobileAppRegistration(deviceID: identity.deviceID),
             encoding: JSONEncoding.default
         ).recover { error -> Promise<MobileAppRegistrationResponse> in
             if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
@@ -622,7 +620,12 @@ public class HomeAssistantAPI {
                 server.connection.webhookSecret = resp.WebhookSecret
                 server.setSetting(value: server.mobileAppDeviceName, for: .registeredDeviceName)
             }
-            Current.settingsStore.setRegistrationOwnerVendorID(owner, for: server.identifier)
+            Current.settingsStore.updateRegistrationRecord(for: server.identifier) { record in
+                record.current = identity
+                if record.pending == identity {
+                    record.pending = nil
+                }
+            }
         }
     }
 
@@ -676,8 +679,10 @@ public class HomeAssistantAPI {
         )
     }
 
-    private func buildMobileAppRegistration() -> [String: Any] {
-        let ident = mobileAppRegistrationRequestModel()
+    private func buildMobileAppRegistration(deviceID: String) -> [String: Any] {
+        let ident = with(mobileAppRegistrationRequestModel()) {
+            $0.DeviceID = deviceID
+        }
         var json = Mapper().toJSON(ident)
 
         if server.info.version < .canSendDeviceID {
@@ -712,7 +717,6 @@ public class HomeAssistantAPI {
             $0.AppIdentifier = AppConstants.BundleID
             $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
             $0.AppVersion = HomeAssistantAPI.clientVersionDescription
-            $0.DeviceID = Current.settingsStore.integrationDeviceID
             $0.DeviceName = server.info.mobileAppDeviceName
             $0.Manufacturer = "Apple"
             $0.Model = Current.device.systemModel()

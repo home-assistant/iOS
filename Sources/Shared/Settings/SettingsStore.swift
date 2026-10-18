@@ -31,8 +31,15 @@ public class SettingsStore {
     /// differently (the Mac moving from Catalyst to the native app) keeps the registration it has
     /// rather than registering a second device.
     public var integrationDeviceID: String {
-        let baseString = persistedIntegrationDeviceID ?? deviceID
+        Self.integrationDeviceID(from: persistedIntegrationDeviceID ?? deviceID)
+    }
 
+    /// An identifier no registration has used yet, in the form `integrationDeviceID` takes.
+    public func newIntegrationDeviceID() -> String {
+        Self.integrationDeviceID(from: UUID().uuidString)
+    }
+
+    private static func integrationDeviceID(from baseString: String) -> String {
         switch Current.appConfiguration {
         case .debug:
             return "debug_" + baseString
@@ -85,27 +92,49 @@ public class SettingsStore {
         prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
     }
 
-    static let registrationOwnersKey = "registrationOwners"
-    private static let registrationOwnersLock = NSLock()
-
-    /// The vendor identifier of the device the registration with `server` belongs to, if one was recorded; otherwise
-    /// it was made under `integrationDeviceID` and belongs to that identifier's owner. Kept in the app group next to
-    /// the identifier rather than with the server in the Keychain, which outlives reinstalling the app: the
-    /// reinstalled app's own registrations would otherwise look like another device's.
-    public func registrationOwnerVendorID(for server: Identifier<Server>) -> String? {
-        registrationOwners[server.rawValue]
+    /// `integrationDeviceID` and its owner: what a registration is made with when its server has no identity of its
+    /// own recorded.
+    public var integrationDeviceIdentity: RegistrationIdentity {
+        RegistrationIdentity(deviceID: integrationDeviceID, ownerVendorID: integrationDeviceIDOwnerVendorID)
     }
 
-    public func setRegistrationOwnerVendorID(_ vendorID: String?, for server: Identifier<Server>) {
-        Self.registrationOwnersLock.lock()
-        defer { Self.registrationOwnersLock.unlock() }
-        var owners = registrationOwners
-        owners[server.rawValue] = vendorID
-        prefs.set(owners, forKey: Self.registrationOwnersKey)
+    static let registrationRecordsKey = "registrationRecords"
+    private static let registrationRecordsLock = NSLock()
+
+    /// What is kept about the registration with `server`. Kept in the app group next to `integrationDeviceID`
+    /// rather than with the server in the Keychain, which outlives reinstalling the app: the reinstalled app's own
+    /// registrations would otherwise look like another device's.
+    public func registrationRecord(for server: Identifier<Server>) -> RegistrationRecord {
+        registrationRecords[server.rawValue] ?? RegistrationRecord()
     }
 
-    private var registrationOwners: [String: String] {
-        prefs.dictionary(forKey: Self.registrationOwnersKey) as? [String: String] ?? [:]
+    /// The identity the next registration with `server` is made with: the one it is being registered as a new
+    /// device with, else the one its registration was made with, so registering again keeps its device.
+    public func registrationIdentity(for server: Identifier<Server>) -> RegistrationIdentity {
+        let record = registrationRecord(for: server)
+        return record.pending ?? record.current ?? integrationDeviceIdentity
+    }
+
+    public func setRegistrationRecord(_ record: RegistrationRecord, for server: Identifier<Server>) {
+        updateRegistrationRecord(for: server) { $0 = record }
+    }
+
+    public func updateRegistrationRecord(
+        for server: Identifier<Server>,
+        _ update: (inout RegistrationRecord) -> Void
+    ) {
+        Self.registrationRecordsLock.lock()
+        defer { Self.registrationRecordsLock.unlock() }
+        var records = registrationRecords
+        var record = records[server.rawValue] ?? RegistrationRecord()
+        update(&record)
+        records[server.rawValue] = record == RegistrationRecord() ? nil : record
+        prefs.set(try? JSONEncoder().encode(records), forKey: Self.registrationRecordsKey)
+    }
+
+    private var registrationRecords: [String: RegistrationRecord] {
+        guard let data = prefs.data(forKey: Self.registrationRecordsKey) else { return [:] }
+        return (try? JSONDecoder().decode([String: RegistrationRecord].self, from: data)) ?? [:]
     }
 
     private var seenWhatsNewReleaseIDs: Set<String> {

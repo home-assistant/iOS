@@ -5,6 +5,13 @@ import PromiseKit
 import Shared
 
 class OnboardingAuth {
+    /// What onboarding wrote over when it persisted the server, for undoing it.
+    private struct Persisted {
+        var identifier: Identifier<Server>
+        var previousInfo: ServerInfo?
+        var previousRegistration: RegistrationRecord
+    }
+
     var login: OnboardingAuthLogin = OnboardingAuthLoginImpl()
     var tokenExchange: OnboardingAuthTokenExchange = OnboardingAuthTokenExchangeImpl()
     var preSteps: [OnboardingAuthPreStep.Type] = [
@@ -50,7 +57,10 @@ class OnboardingAuth {
             }
 
             // Set once the server is persisted, so a later failure undoes exactly what was written.
-            var persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+            var persisted: Persisted?
+            // Registering records what it made under the identifier onboarding started with, which can be the
+            // identifier of a server the app already has.
+            let registrationBeforeOnboarding = Current.settingsStore.registrationRecord(for: api.server.identifier)
 
             return firstly {
                 steps(.beforeRegister, .register, .afterRegister)
@@ -63,7 +73,21 @@ class OnboardingAuth {
                     existingServers: Current.servers.all
                 )
                 let existingInfo = Current.servers.server(for: identifier)?.info
-                persisted = (identifier, existingInfo)
+                let settings = Current.settingsStore
+                persisted = Persisted(
+                    identifier: identifier,
+                    previousInfo: existingInfo,
+                    previousRegistration: identifier == api.server.identifier
+                        ? registrationBeforeOnboarding
+                        : settings.registrationRecord(for: identifier)
+                )
+
+                // The registration belongs to the server as it is persisted.
+                if identifier != api.server.identifier {
+                    let registration = settings.registrationRecord(for: api.server.identifier)
+                    settings.setRegistrationRecord(registration, for: identifier)
+                    settings.setRegistrationRecord(registrationBeforeOnboarding, for: api.server.identifier)
+                }
 
                 // Re-authenticating a server the app already has is not a new server, and the
                 // privacy step is not shown for it, so it keeps the choices it already carries
@@ -92,7 +116,8 @@ class OnboardingAuth {
             }.then { server in
                 steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
-                when(resolved: undoConfigure(api: api, persisted: persisted))
+                Current.settingsStore.setRegistrationRecord(registrationBeforeOnboarding, for: api.server.identifier)
+                return when(resolved: undoConfigure(api: api, persisted: persisted))
                     .then { _ in Promise<Server>(error: error) }
             }
         }
@@ -288,7 +313,7 @@ class OnboardingAuth {
 
     private func undoConfigure(
         api: HomeAssistantAPI,
-        persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+        persisted: Persisted?
     ) -> Promise<Void> {
         Current.Log.info()
 
@@ -317,6 +342,7 @@ class OnboardingAuth {
             } else {
                 Current.servers.remove(identifier: identifier)
             }
+            Current.settingsStore.setRegistrationRecord(persisted.previousRegistration, for: identifier)
 
             Current.resetAPICache(for: [identifier])
         }

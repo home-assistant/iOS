@@ -22,7 +22,7 @@ struct RestoredRegistrationsViewModelTests {
         let keys = [
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
-            SettingsStore.registrationOwnersKey,
+            SettingsStore.registrationRecordsKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
         defer {

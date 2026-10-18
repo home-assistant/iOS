@@ -13,16 +13,16 @@ struct SettingsStoreIntegrationDeviceIDTests {
         let previousIdentifier = Current.device.identifierForVendor
         let previousStored = Current.settingsStore.prefs.string(forKey: SettingsStore.integrationDeviceIDKey)
         let previousOwner = Current.settingsStore.prefs.string(forKey: SettingsStore.integrationDeviceIDOwnerKey)
-        let previousRegistrationOwners = Current.settingsStore.prefs.object(forKey: SettingsStore.registrationOwnersKey)
+        let previousRecords = Current.settingsStore.prefs.object(forKey: SettingsStore.registrationRecordsKey)
         defer {
             Current.device.identifierForVendor = previousIdentifier
             Current.settingsStore.prefs.set(previousStored, forKey: SettingsStore.integrationDeviceIDKey)
             Current.settingsStore.prefs.set(previousOwner, forKey: SettingsStore.integrationDeviceIDOwnerKey)
-            Current.settingsStore.prefs.set(previousRegistrationOwners, forKey: SettingsStore.registrationOwnersKey)
+            Current.settingsStore.prefs.set(previousRecords, forKey: SettingsStore.registrationRecordsKey)
         }
         Current.settingsStore.prefs.removeObject(forKey: SettingsStore.integrationDeviceIDKey)
         Current.settingsStore.prefs.removeObject(forKey: SettingsStore.integrationDeviceIDOwnerKey)
-        Current.settingsStore.prefs.removeObject(forKey: SettingsStore.registrationOwnersKey)
+        Current.settingsStore.prefs.removeObject(forKey: SettingsStore.registrationRecordsKey)
         Current.device.identifierForVendor = identifier
         try body()
     }
@@ -85,16 +85,53 @@ struct SettingsStoreIntegrationDeviceIDTests {
         }
     }
 
-    @Test func registrationOwnersAreRecordedPerServer() {
+    @Test func newIdentifiersHaveNotBeenUsedAndTakeTheSameForm() {
         withVendorIdentifier({ "first-vendor-id" }) {
-            Current.settingsStore.setRegistrationOwnerVendorID("other-vendor-id", for: "home")
+            let identifier = Current.settingsStore.integrationDeviceID
+            let fresh = Current.settingsStore.newIntegrationDeviceID()
 
-            #expect(Current.settingsStore.registrationOwnerVendorID(for: "home") == "other-vendor-id")
-            #expect(Current.settingsStore.registrationOwnerVendorID(for: "cabin") == nil)
+            #expect(fresh != identifier)
+            #expect(fresh != Current.settingsStore.newIntegrationDeviceID())
+            #expect(UUID(uuidString: String(fresh.suffix(36))) != nil)
+            #expect(fresh.dropLast(36) == identifier.dropLast("first-vendor-id".count))
+        }
+    }
 
-            Current.settingsStore.setRegistrationOwnerVendorID(nil, for: "home")
+    @Test func registrationRecordsAreKeptPerServer() {
+        withVendorIdentifier({ "first-vendor-id" }) {
+            let settings = Current.settingsStore
+            let identity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "other-vendor-id")
+            settings.setRegistrationRecord(RegistrationRecord(current: identity), for: "home")
 
-            #expect(Current.settingsStore.registrationOwnerVendorID(for: "home") == nil)
+            #expect(settings.registrationRecord(for: "home") == RegistrationRecord(current: identity))
+            #expect(settings.registrationIdentity(for: "home") == identity)
+            #expect(settings.registrationRecord(for: "cabin") == RegistrationRecord())
+            #expect(settings.registrationIdentity(for: "cabin") == settings.integrationDeviceIdentity)
+
+            settings.setRegistrationRecord(RegistrationRecord(), for: "home")
+
+            #expect(settings.registrationIdentity(for: "home") == settings.integrationDeviceIdentity)
+        }
+    }
+
+    /// Registering as a new device is retried with the identity it started with until the server confirms it.
+    @Test func anIdentityBeingRegisteredIsTheOneRegisteredWith() {
+        withVendorIdentifier({ "first-vendor-id" }) {
+            let pending = RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "first-vendor-id")
+            Current.settingsStore.updateRegistrationRecord(for: "home") { record in
+                record.current = RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-vendor-id")
+                record.pending = pending
+            }
+
+            #expect(Current.settingsStore.registrationIdentity(for: "home") == pending)
+        }
+    }
+
+    @Test func unreadableRecordsAreTreatedAsNone() {
+        withVendorIdentifier({ "first-vendor-id" }) {
+            Current.settingsStore.prefs.set(Data("not json".utf8), forKey: SettingsStore.registrationRecordsKey)
+
+            #expect(Current.settingsStore.registrationRecord(for: "home") == RegistrationRecord())
         }
     }
 }

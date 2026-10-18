@@ -9,7 +9,7 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
     private let keys = [
         SettingsStore.integrationDeviceIDKey,
         SettingsStore.integrationDeviceIDOwnerKey,
-        SettingsStore.registrationOwnersKey,
+        SettingsStore.registrationRecordsKey,
     ]
     private var previousValues = [Any?]()
 
@@ -29,23 +29,66 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         super.tearDown()
     }
 
-    /// A device restored from another one's backup registers under that device's identifier until it is told
-    /// otherwise, so the registration it makes is recorded as that device's.
-    func testRegistrationBelongsToTheOwnerOfTheIdentifierItWasMadeWith() async throws {
-        Current.settingsStore.prefs.set("other-device", forKey: SettingsStore.integrationDeviceIDKey)
-        stub(condition: isMethodPOST() && isPath("/api/mobile_app/registrations")) { _ in
-            HTTPStubsResponse(
+    /// Answers the registration, keeping the `device_id` it was made with.
+    private func stubRegistration() -> () -> String? {
+        var deviceID: String?
+        stub(condition: isMethodPOST() && isPath("/api/mobile_app/registrations")) { request in
+            let body = request.ohhttpStubs_httpBody.flatMap { try? JSONSerialization.jsonObject(with: $0) }
+            deviceID = (body as? [String: Any])?["device_id"] as? String
+            return HTTPStubsResponse(
                 jsonObject: ["webhook_id": "new-webhook-id", "secret": "new-secret"],
                 statusCode: 201,
                 headers: ["Content-Type": "application/json"]
             )
         }
+        return { deviceID }
+    }
+
+    /// A device restored from another one's backup registers under that device's identifier until it is told
+    /// otherwise, so the registration it makes is recorded as that device's.
+    func testRegistrationBelongsToTheOwnerOfTheIdentifierItWasMadeWith() async throws {
+        Current.settingsStore.prefs.set("other-device", forKey: SettingsStore.integrationDeviceIDKey)
+        let registeredDeviceID = stubRegistration()
         let server = Server.fake()
 
         try await HomeAssistantAPI(server: server).register().asyncValue()
 
+        let identity = Current.settingsStore.integrationDeviceIdentity
+        XCTAssertEqual(identity.ownerVendorID, "other-device")
+        XCTAssertEqual(registeredDeviceID(), identity.deviceID)
         XCTAssertEqual(server.info.connection.webhookID, "new-webhook-id")
         XCTAssertEqual(server.info.connection.webhookSecret, "new-secret")
-        XCTAssertEqual(Current.settingsStore.registrationOwnerVendorID(for: server.identifier), "other-device")
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: server.identifier).current, identity)
+    }
+
+    /// Registering again, such as when the server lost the registration, keeps the device it had there, whatever
+    /// this device registers other servers with.
+    func testRegisteringAgainKeepsTheIdentityTheRegistrationHas() async throws {
+        let registeredDeviceID = stubRegistration()
+        let server = Server.fake()
+        let identity = RegistrationIdentity(deviceID: "cabin-device-id", ownerVendorID: "this-device")
+        Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: identity), for: server.identifier)
+
+        try await HomeAssistantAPI(server: server).register().asyncValue()
+
+        XCTAssertEqual(registeredDeviceID(), "cabin-device-id")
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: server.identifier).current, identity)
+    }
+
+    func testAnIdentityBeingRegisteredAsANewDeviceReplacesTheOneTheRegistrationHad() async throws {
+        let registeredDeviceID = stubRegistration()
+        let server = Server.fake()
+        let pending = RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "this-device")
+        Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device"),
+            pending: pending
+        ), for: server.identifier)
+
+        try await HomeAssistantAPI(server: server).register().asyncValue()
+
+        XCTAssertEqual(registeredDeviceID(), "new-device-id")
+        let record = Current.settingsStore.registrationRecord(for: server.identifier)
+        XCTAssertEqual(record.current, pending)
+        XCTAssertNil(record.pending)
     }
 }

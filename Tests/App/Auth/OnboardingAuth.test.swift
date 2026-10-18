@@ -9,12 +9,15 @@ class OnboardingAuthTests: XCTestCase {
     private var auth: OnboardingAuth!
     private var instance: DiscoveredHomeAssistant!
     private var previousCurrentNetworkState: (() async -> NetworkState)!
+    private var previousRegistrationRecords: Any?
 
     override func setUp() {
         super.setUp()
 
         auth = OnboardingAuth()
         previousCurrentNetworkState = Current.connectivity.currentNetworkState
+        previousRegistrationRecords = Current.settingsStore.prefs.object(forKey: SettingsStore.registrationRecordsKey)
+        Current.settingsStore.prefs.removeObject(forKey: SettingsStore.registrationRecordsKey)
 
         Current.servers = FakeServerManager()
 
@@ -25,6 +28,7 @@ class OnboardingAuthTests: XCTestCase {
 
     override func tearDown() {
         Current.connectivity.currentNetworkState = previousCurrentNetworkState
+        Current.settingsStore.prefs.set(previousRegistrationRecords, forKey: SettingsStore.registrationRecordsKey)
         FakeOnboardingAuthPostStepBeforeRegister1.onPerform = nil
 
         super.tearDown()
@@ -175,6 +179,65 @@ class OnboardingAuthTests: XCTestCase {
 
         XCTAssertEqual(Current.servers.all.count, 1)
         XCTAssertEqual(Current.servers.server(for: identifier)?.info, existingInfo)
+    }
+
+    /// Registering records what it made under the identifier onboarding starts with, which isn't always the one
+    /// the server is persisted under.
+    func testTheRegistrationIsRecordedForTheServerAsItIsPersisted() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let startIdentifier = try Identifier<Server>(rawValue: XCTUnwrap(instance.uuid))
+        let registration = Self.registration(deviceID: "new-device-id")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            Current.settingsStore.setRegistrationRecord(registration, for: api.server.identifier)
+        }
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.identifier, "instance-1")
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: server.identifier), registration)
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: startIdentifier), RegistrationRecord())
+    }
+
+    func testFailureAfterPersistingRestoresTheRegistrationRecords() throws {
+        let startIdentifier = try Identifier<Server>(rawValue: XCTUnwrap(instance.uuid))
+        let existing: Identifier<Server> = "existing-server"
+        Current.servers.add(identifier: existing, serverInfo: with(ServerInfo.fake()) { $0.instanceID = "instance-1" })
+        let previous = Self.registration(deviceID: "old-device-id")
+        Current.settingsStore.setRegistrationRecord(previous, for: existing)
+        let registration = Self.registration(deviceID: "new-device-id")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            Current.settingsStore.setRegistrationRecord(registration, for: api.server.identifier)
+        }
+
+        let result = auth(postComplete: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: existing), previous)
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: startIdentifier), RegistrationRecord())
+    }
+
+    /// Onboarding can start with the identifier of a server the app already has, and register over its record
+    /// before failing.
+    func testFailureBeforeAnythingIsPersistedRestoresTheRegistrationRecord() throws {
+        let identifier = try Identifier<Server>(rawValue: XCTUnwrap(instance.uuid))
+        Current.servers.add(identifier: identifier, serverInfo: .fake())
+        let previous = Self.registration(deviceID: "old-device-id")
+        Current.settingsStore.setRegistrationRecord(previous, for: identifier)
+        let registration = Self.registration(deviceID: "new-device-id")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            Current.settingsStore.setRegistrationRecord(registration, for: api.server.identifier)
+        }
+
+        let result = auth(postAfterRegister: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: identifier), previous)
+    }
+
+    private static func registration(deviceID: String) -> RegistrationRecord {
+        RegistrationRecord(current: RegistrationIdentity(deviceID: deviceID, ownerVendorID: "this-device"))
     }
 
     func testFailureBeforeAnythingIsPersistedKeepsAnExistingServer() throws {

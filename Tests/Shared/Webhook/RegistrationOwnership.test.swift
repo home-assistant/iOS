@@ -1,4 +1,6 @@
 import Foundation
+import HAKit
+import HAKit_Mocks
 import PromiseKit
 @testable import Shared
 import Testing
@@ -47,7 +49,7 @@ struct RegistrationOwnershipTests {
         let keys = [
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
-            SettingsStore.registrationOwnersKey,
+            SettingsStore.registrationRecordsKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
         let previousServers = Current.servers
@@ -81,8 +83,44 @@ struct RegistrationOwnershipTests {
         var info = ServerInfo.fake()
         update(&info)
         let server = servers.add(identifier: .init(rawValue: UUID().uuidString), serverInfo: info)
-        Current.settingsStore.setRegistrationOwnerVendorID(owner, for: server.identifier)
+        if let owner {
+            let settings = Current.settingsStore
+            let identity = RegistrationIdentity(deviceID: settings.integrationDeviceID, ownerVendorID: owner)
+            settings.setRegistrationRecord(RegistrationRecord(current: identity), for: server.identifier)
+        }
         return server
+    }
+
+    /// Stands in for the server's WebSocket on `api`, answering the devices it is asked for with `devices`.
+    @discardableResult
+    private func answerDevices(
+        on api: HomeAssistantAPI,
+        with devices: [[String: Any]] = []
+    ) -> Task<Void, Never> {
+        let connection = HAMockConnection()
+        api.connection = connection
+        return Task {
+            guard await waitForRequest(on: connection) else { return }
+            connection.pendingRequests[0].completion(.success(.init(value: devices)))
+        }
+    }
+
+    /// The request is sent from a task of its own, so give it a moment to arrive rather than assuming it is there.
+    private func waitForRequest(on connection: HAMockConnection) async -> Bool {
+        let deadline = Date().addingTimeInterval(5)
+        while connection.pendingRequests.isEmpty, Date() < deadline {
+            try? await Task.sleep(nanoseconds: 2_000_000)
+        }
+        #expect(!connection.pendingRequests.isEmpty)
+        return !connection.pendingRequests.isEmpty
+    }
+
+    private static func device(named name: String, registeredAs deviceID: String? = nil) -> [String: Any] {
+        [
+            "id": UUID().uuidString,
+            "name": name,
+            "identifiers": deviceID.map { [["mobile_app", $0]] } ?? [["hue", UUID().uuidString]],
+        ]
     }
 
     @Test func registrationsOfTheDeviceTheBackupCameFromAreFound() async {
@@ -148,41 +186,96 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    @Test func registeringAnewUsesAFreshIdentifierThisDeviceOwns() async throws {
-        try await withDevice { servers in
+    @Test func registeringAnewGivesEachServerAFreshIdentityThisDeviceOwns() async {
+        await withDevice { servers in
             let restored = [addServer(to: servers, ownedBy: nil), addServer(to: servers, ownedBy: Self.otherDevice)]
             let left = addServer(to: servers, ownedBy: nil)
-            let previousIdentifier = Current.settingsStore.integrationDeviceID
-            var registeredWith = [Server: String]()
+            let previousIdentity = Current.settingsStore.integrationDeviceIdentity
+            var registeredWith = [Server: RegistrationIdentity]()
 
             let failures = await RegistrationOwnership(register: { server in
-                registeredWith[server] = Current.settingsStore.integrationDeviceID
+                registeredWith[server] = Current.settingsStore.registrationIdentity(for: server.identifier)
             }).registerAsNewDevice(restored)
 
             #expect(failures.isEmpty)
             #expect(Set(registeredWith.keys) == Set(restored))
-            #expect(Set(registeredWith.values) == [Current.settingsStore.integrationDeviceID])
-            #expect(Current.settingsStore.integrationDeviceID != previousIdentifier)
-            let stored = try #require(Current.settingsStore.prefs.string(forKey: SettingsStore.integrationDeviceIDKey))
-            #expect(UUID(uuidString: stored) != nil)
+            #expect(Set(registeredWith.values.map(\.deviceID)).count == restored.count)
+            #expect(registeredWith.values.allSatisfy {
+                $0.ownerVendorID == Self.thisDevice && $0.deviceID != previousIdentity.deviceID
+            })
+            // Not registered anew, so it keeps the identity it was made with, which is the other device's.
+            #expect(Current.settingsStore.registrationIdentity(for: left.identifier) == previousIdentity)
+            // What this device registers with from now on, such as a server it is added to later, is its own.
+            #expect(Current.settingsStore.integrationDeviceID != previousIdentity.deviceID)
             #expect(Current.settingsStore.integrationDeviceIDOwnerVendorID == Self.thisDevice)
-            // Not registered anew, so its registration is still recorded as the other device's.
-            #expect(Current.settingsStore.registrationOwnerVendorID(for: left.identifier) == Self.otherDevice)
         }
     }
 
     /// Registering under the identifier the current registration was made with would replace it on the server,
-    /// taking it away from any other device using it.
-    @Test func registeringAnewOnTheDeviceThatMadeTheRegistrationStillChangesTheIdentifier() async {
+    /// taking it away from any other device using it. The other servers keep the identity they have.
+    @Test func registeringAnewOnTheDeviceThatMadeTheRegistrationChangesOnlyThatServersIdentity() async {
         await withDevice(identifierOwner: Self.thisDevice) { servers in
             let server = addServer(to: servers, ownedBy: Self.thisDevice)
-            let previousIdentifier = Current.settingsStore.integrationDeviceID
+            let other = addServer(to: servers, ownedBy: nil)
+            let identity = Current.settingsStore.integrationDeviceIdentity
 
             let failures = await RegistrationOwnership(register: { _ in }).registerAsNewDevice([server])
 
             #expect(failures.isEmpty)
-            #expect(Current.settingsStore.integrationDeviceID != previousIdentifier)
-            #expect(Current.settingsStore.integrationDeviceIDOwnerVendorID == Self.thisDevice)
+            #expect(Current.settingsStore.registrationIdentity(for: server.identifier).deviceID != identity.deviceID)
+            #expect(Current.settingsStore.registrationIdentity(for: other.identifier) == identity)
+            #expect(Current.settingsStore.integrationDeviceIdentity == identity)
+        }
+    }
+
+    /// The server may have made the registration before its response was lost, so trying again registers the same
+    /// identity, which replaces that registration rather than leaving it behind.
+    @Test func registeringAnewAgainReusesTheIdentityOfTheAttemptBefore() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            var registeredWith = [RegistrationIdentity]()
+            let ownership = RegistrationOwnership(register: { server in
+                registeredWith.append(Current.settingsStore.registrationIdentity(for: server.identifier))
+                throw RegisterFailure()
+            })
+
+            _ = await ownership.registerAsNewDevice([server])
+            _ = await ownership.registerAsNewDevice([server])
+
+            #expect(registeredWith.count == 2)
+            #expect(registeredWith.first == registeredWith.last)
+        }
+    }
+
+    /// An attempt the device the backup came from started is that device's to finish.
+    @Test func registeringAnewDoesNotReuseAnAttemptAnotherDeviceStarted() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            Current.settingsStore.updateRegistrationRecord(for: server.identifier) { record in
+                record.pending = RegistrationIdentity(deviceID: "abandoned", ownerVendorID: Self.otherDevice)
+            }
+            var registeredWith: RegistrationIdentity?
+
+            _ = await RegistrationOwnership(register: { server in
+                registeredWith = Current.settingsStore.registrationIdentity(for: server.identifier)
+            }).registerAsNewDevice([server])
+
+            #expect(registeredWith?.deviceID != "abandoned")
+            #expect(registeredWith?.ownerVendorID == Self.thisDevice)
+        }
+    }
+
+    @Test func keepingARegistrationAfterFailingToRegisterAnewKeepsItsIdentity() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let deviceID = Current.settingsStore.registrationIdentity(for: server.identifier).deviceID
+            _ = await RegistrationOwnership(register: { _ in throw RegisterFailure() }).registerAsNewDevice([server])
+
+            RegistrationOwnership().keepRegistrations(of: [server])
+
+            #expect(Current.settingsStore.registrationRecord(for: server.identifier) == RegistrationRecord(
+                current: RegistrationIdentity(deviceID: deviceID, ownerVendorID: Self.thisDevice)
+            ))
         }
     }
 
@@ -237,6 +330,7 @@ struct RegistrationOwnershipTests {
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
             let api = RegisteringAPI(server: server)
             api.connectResult = Promise(error: RegisterFailure())
+            answerDevices(on: api)
             SensorRegistrationVersionStore.recordRegistration(for: server.identifier)
 
             try await withAPI(api) {
@@ -244,6 +338,7 @@ struct RegistrationOwnershipTests {
             }
 
             #expect(api.connectReasons == [.warm])
+            #expect(server.info.setting(for: .overrideDeviceName) == nil)
             // The new registration has none of the old one's sensors, so the next connect registers them.
             #expect(SensorRegistrationVersionStore.needsRegistration(for: server.identifier))
         }
@@ -254,6 +349,7 @@ struct RegistrationOwnershipTests {
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
             let api = RegisteringAPI(server: server)
             api.registerResult = Promise(error: RegisterFailure())
+            answerDevices(on: api, with: [Self.device(named: server.info.mobileAppDeviceName, registeredAs: "other")])
 
             await withAPI(api) {
                 await #expect(throws: RegisterFailure.self) {
@@ -262,7 +358,65 @@ struct RegistrationOwnershipTests {
             }
 
             #expect(api.connectReasons.isEmpty)
+            // Kept with the registration it has, which must not be renamed.
+            #expect(server.info.setting(for: .overrideDeviceName) == nil)
         }
+    }
+
+    /// Notifications reach a device through an action named after it, so the new registration takes a name none of
+    /// the server's other devices has, such as the one it leaves there.
+    @Test func registeringWithAServerTakesANameNoOtherDeviceThereHas() async throws {
+        try await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice) { info in
+                info.setSetting(value: "Phone", for: .overrideDeviceName)
+            }
+            let api = RegisteringAPI(server: server)
+            answerDevices(on: api, with: [
+                Self.device(named: "Phone", registeredAs: "other"),
+                Self.device(named: "phone 2", registeredAs: "another"),
+            ])
+
+            try await withAPI(api) {
+                try await RegistrationOwnership.registerWithServer(server)
+            }
+
+            #expect(server.info.setting(for: .overrideDeviceName) == "Phone 3")
+        }
+    }
+
+    @Test func aServerWhoseDevicesCantBeListedIsNotRegisteredWith() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let api = RegisteringAPI(server: server)
+            let connection = HAMockConnection()
+            api.connection = connection
+            let failure = Task {
+                guard await waitForRequest(on: connection) else { return }
+                connection.pendingRequests[0].completion(.failure(.internal(debugDescription: "unreachable")))
+            }
+
+            await withAPI(api) {
+                await #expect(throws: HAError.self) {
+                    try await RegistrationOwnership.registerWithServer(server)
+                }
+            }
+
+            await failure.value
+            #expect(api.connectReasons.isEmpty)
+        }
+    }
+
+    @Test func onlyAnotherRegistrationTakesAName() throws {
+        let devices = try [
+            Self.device(named: "Phone"),
+            Self.device(named: "Tablet", registeredAs: "other"),
+            Self.device(named: "Phone 2", registeredAs: "this"),
+        ].map { try DeviceRegistryEntry(data: HAData(value: $0)) }
+
+        // Only another `mobile_app` registration takes a name, and the one being replaced is this device's own.
+        #expect(RegistrationOwnership.unusedDeviceName("Phone", among: devices, replacing: "this") == "Phone")
+        #expect(RegistrationOwnership.unusedDeviceName("Phone 2", among: devices, replacing: "this") == "Phone 2")
+        #expect(RegistrationOwnership.unusedDeviceName("tablet", among: devices, replacing: "this") == "tablet 2")
     }
 
     @Test func noDeviceIdentifierExplainsWhatToDo() {
