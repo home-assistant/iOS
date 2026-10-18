@@ -9,7 +9,7 @@ require 'shellwords'
 # one of those devices then fails with "runtime path not found".
 def usable_runtimes(platform)
   JSON.parse(`xcrun simctl list runtimes available --json`)['runtimes']
-      .select { |runtime| runtime['platform'] == platform }
+      .select { |runtime| runtime['identifier'].start_with?("com.apple.CoreSimulatorRuntime.#{platform}-") }
       .select { |runtime| runtime['bundlePath'].nil? || File.directory?(runtime['bundlePath']) }
 end
 
