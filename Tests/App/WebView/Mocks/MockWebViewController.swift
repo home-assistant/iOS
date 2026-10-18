@@ -46,6 +46,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var showLoggedOutStateCalled = false
     var showLoggedOutStateExpectation: XCTestExpectation?
     var openInBrowserCalled = false
+    var handleOverlayDismissedCallCount = 0
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -156,6 +157,10 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func refresh() {
         refreshCalled = true
+    }
+
+    func handleOverlayDismissed() {
+        handleOverlayDismissedCallCount += 1
     }
 
     func refreshIfDisconnected() {
