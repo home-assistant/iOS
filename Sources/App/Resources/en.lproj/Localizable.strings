@@ -1671,7 +1671,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.register_as_new_device.footer" = "Use this when another device restored from a backup of this one shares its registration, so each gets its own sensors, location and notifications.";
 "settings.connection_section.register_as_new_device.message" = "This device gets a new registration with this server. The current one stays in Home Assistant for any other device still using it. Remove it there once no device does.";
 "settings.connection_section.register_as_new_device.progress" = "Registering…";
-"settings.connection_section.register_as_new_device.success" = "Registered as a new device";
 "settings.connection_section.register_as_new_device.title" = "Register as new device";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "All";

@@ -2,9 +2,7 @@ import Combine
 import Foundation
 import HAKit
 import PromiseKit
-import SFSafeSymbols
 import Shared
-import SwiftUI
 import UIKit
 
 /// ViewModel for ConnectionSettingsView, managing server connection settings and state
@@ -370,15 +368,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
                 applicationState: UIApplication.shared.applicationState,
                 type: .programmatic
             ).cauterize()
-            if #available(iOS 18, *) {
-                ToastPresenter.shared.show(
-                    id: "register-as-new-device-\(server.identifier.rawValue)",
-                    symbol: .checkmarkSealFill,
-                    symbolForegroundStyle: (.white, .green),
-                    title: L10n.Settings.ConnectionSection.RegisterAsNewDevice.success,
-                    duration: 4
-                )
-            }
         }
     }
 

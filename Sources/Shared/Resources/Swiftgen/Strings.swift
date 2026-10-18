@@ -5569,8 +5569,6 @@ public enum L10n {
         public static var message: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.message") }
         /// Registering…
         public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.progress") }
-        /// Registered as a new device
-        public static var success: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.success") }
         /// Register as new device
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.title") }
       }
