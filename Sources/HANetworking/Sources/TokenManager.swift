@@ -8,6 +8,8 @@ public final class TokenManager: @unchecked Sendable {
         case tokenUnavailable
         case expired
         case connectionFailed
+        /// The stored credentials are dead and only a new login replaces them, so nothing was sent.
+        case reauthenticationRequired
     }
 
     public let server: Server
@@ -48,6 +50,31 @@ public final class TokenManager: @unchecked Sendable {
     /// Without this, every websocket reconnect and every request keeps re-sending a token the server has
     /// already rejected, which Home Assistant logs as invalid auth and eventually answers with an IP ban.
     private let rejectedAccessTokens = HAProtected<Set<String>>(value: [])
+
+    /// Refresh tokens the server answered with `400...403`, the same range that sends the user to the
+    /// re-authentication prompt.
+    ///
+    /// A refresh token dies only when it is gone server-side — the user deleted the session from their
+    /// profile, logged out, or the instance was restored from a backup — and nothing but a new login
+    /// brings it back, so every retry is guaranteed to fail. Each one costs Home Assistant a
+    /// `Login attempt or request with invalid authentication` warning and raises the "Login attempt
+    /// failed" notification, because `/auth/token` is decorated with core's `log_invalid_auth`. Without
+    /// this, one revoked session became sixteen refusals in twenty-two seconds in the field: the
+    /// websocket reconnect, the web view's `getExternalAuth` and the sensor timers each drive their own
+    /// refresh while the prompt waits for the user, and `refreshPromiseCache` only collapses the ones
+    /// that overlap.
+    ///
+    /// Keyed by the refresh token itself so logging back in clears it for free: re-authentication stores
+    /// a token minted from a fresh authorization code, which this set does not contain.
+    ///
+    /// Membership means "the server told us to re-authenticate", which is not quite the same as "this
+    /// token is gone": the whole `400...403` range lands here, so a reverse proxy answering 403 for its
+    /// own reasons latches a token that was never revoked. That is deliberate — the same range already
+    /// drove the re-authentication prompt before this set existed, so the user was blocked either way,
+    /// and going quiet is better than hammering an endpoint that is refusing us. It is also why the set
+    /// is in memory rather than persisted: a relaunch is the escape hatch that retries once and heals a
+    /// token that only looked dead.
+    private let rejectedRefreshTokens = HAProtected<Set<String>>(value: [])
 
     public init(server: Server) {
         self.authenticationAPI = AuthenticationAPI(server: server)
@@ -91,9 +118,12 @@ public final class TokenManager: @unchecked Sendable {
     /// The token strings themselves stay put: clearing them is what `mirrorPlaceholderToken` is, which
     /// would make the server look like one restored from the keychain mirror.
     public func handleTokenRevoked() {
-        let revokedToken = server.info.token.accessToken
-        HANetworkingEnvironment.current.log.info("Access token \(revokedToken.hash) was revoked")
-        rejectedAccessTokens.mutate { $0.insert(revokedToken) }
+        let revokedToken = server.info.token
+        HANetworkingEnvironment.current.log.info("Access token \(revokedToken.accessToken.hash) was revoked")
+        rejectedAccessTokens.mutate { $0.insert(revokedToken.accessToken) }
+        // The refresh token is revoked with it, so refreshing is as dead as re-sending the access
+        // token; leaving it out would turn every logout into a run of refusals at the server.
+        rejectedRefreshTokens.mutate { $0.insert(revokedToken.refreshToken) }
         server.update { $0.token.expiration = .distantPast }
     }
 
@@ -161,6 +191,17 @@ public final class TokenManager: @unchecked Sendable {
         Promise<(String, Date)> { seal in
             let tokenInfo = server.info.token
 
+            // An empty access token is `ServerInfo.mirrorPlaceholderToken`: a server recovered from the
+            // GRDB mirror, which deliberately holds no credentials. Signing a request with it only asks
+            // the server to log an invalid authentication, so go to the refresh path, which refuses the
+            // equally empty refresh token and reports that a login is needed.
+            if tokenInfo.accessToken.isEmpty {
+                HANetworkingEnvironment.current.log
+                    .error("Server \(server.identifier.rawValue) has no access token, refusing to sign with it")
+                seal.reject(TokenError.expired)
+                return
+            }
+
             if rejectedAccessTokens.read({ $0.contains(tokenInfo.accessToken) }) {
                 HANetworkingEnvironment.current.log
                     .error("Token \(tokenInfo.accessToken.hash) was rejected by the server, refusing to reuse it")
@@ -191,9 +232,32 @@ public final class TokenManager: @unchecked Sendable {
         }
     }
 
+    /// Why sending this refresh token to `/auth/token` would be pointless, or `nil` while asking the
+    /// server is still the only way to find out.
+    ///
+    /// Both answers mean the same thing to the caller: the user has to log in again, and until they do,
+    /// the quietest thing the app can do at the server is nothing.
+    private func refusalToSendRefreshToken(_ refreshToken: String) -> String? {
+        if refreshToken.isEmpty {
+            return "no refresh token stored"
+        }
+
+        if rejectedRefreshTokens.read({ $0.contains(refreshToken) }) {
+            return "refresh token \(refreshToken.hash) was already refused by the server"
+        }
+
+        return nil
+    }
+
     private func refreshToken() -> Promise<TokenInfo> {
         refreshPromiseCache.queue.sync { [self, server] in
             let tokenInfo = server.info.token
+
+            if let reason = refusalToSendRefreshToken(tokenInfo.refreshToken) {
+                HANetworkingEnvironment.current.log
+                    .error("Not refreshing server \(server.identifier.rawValue): \(reason)")
+                return Promise(error: TokenError.reauthenticationRequired)
+            }
 
             if let refreshPromise = refreshPromiseCache.promise {
                 HANetworkingEnvironment.current.log.info("using cached refreshToken promise")
@@ -205,6 +269,14 @@ public final class TokenManager: @unchecked Sendable {
             }.get { [server] tokenInfo in
                 HANetworkingEnvironment.current.log.info("storing refresh token")
                 server.info.token = tokenInfo
+            }.tap(on: refreshPromiseCache.queue) { [self, tokenInfo] result in
+                // On the cache's own queue, and ahead of the `ensure` that clears it, so the refusal is
+                // recorded before any caller can be handed a cleared cache: one that arrived in between
+                // would otherwise open a second request carrying the token the server just refused.
+                guard case let .rejected(error) = result,
+                      let underlying = error.authenticationAPIError,
+                      underlying.shouldRequireReauthentication else { return }
+                rejectedRefreshTokens.mutate { $0.insert(tokenInfo.refreshToken) }
             }.ensure(on: refreshPromiseCache.queue) { [self] in
                 HANetworkingEnvironment.current.log.info("reset cached refreshToken promise")
                 refreshPromiseCache.promise = nil

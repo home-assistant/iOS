@@ -47,17 +47,6 @@ struct ServerSwitchingSettingsView: View {
                         }
                     }
                 }
-                // Mac has a system-level setting for state restoration
-                if !Current.isCatalyst {
-                    Toggle(isOn: .init(get: {
-                        Current.settingsStore.restoreLastURL
-                    }, set: { newValue in
-                        Current.settingsStore.restoreLastURL = newValue
-                        redrawView()
-                    })) {
-                        Text(L10n.SettingsDetails.General.Restoration.title)
-                    }
-                }
             } footer: {
                 if Current.servers.all.count > 1 {
                     Text(L10n.Settings.ServerSwitching.ByLocation.footer)
@@ -71,7 +60,7 @@ struct ServerSwitchingSettingsView: View {
             }
         }
         .id(redrawHelper)
-        .navigationTitle(L10n.Settings.ServerSwitching.title)
+        .navigationTitle(L10n.Settings.ServerSwitching.AutomaticSwitching.title)
         .onAppear {
             viewModel.onAppear()
         }
@@ -90,19 +79,13 @@ struct ServerSwitchingSettingsView: View {
 }
 
 extension ServerSwitchingSettingsView: SettingsScreenSearchable {
-    /// Only index rows the screen can actually present: the restoration toggle is absent on Catalyst,
-    /// and the by-location toggle only shows with more than one server.
+    /// The screen is only reachable with more than one server, so with fewer it indexes nothing.
     static var settingsSearchEntries: [SettingsSearchEntry] {
-        var entries = [
-            SettingsSearchEntry(L10n.Settings.ServerSwitching.title),
+        guard Current.servers.all.count > 1 else { return [] }
+        return [
+            SettingsSearchEntry(L10n.Settings.ServerSwitching.AutomaticSwitching.title),
             SettingsSearchEntry(L10n.Settings.ServerSwitching.HowItWorks.title),
+            SettingsSearchEntry(L10n.Settings.ServerSwitching.ByLocation.title),
         ]
-        if !Current.isCatalyst {
-            entries.append(SettingsSearchEntry(L10n.SettingsDetails.General.Restoration.title))
-        }
-        if Current.servers.all.count > 1 {
-            entries.append(SettingsSearchEntry(L10n.Settings.ServerSwitching.ByLocation.title))
-        }
-        return entries
     }
 }

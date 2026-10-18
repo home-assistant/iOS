@@ -11,17 +11,20 @@ final class ConnectionSettingsViewModel: ObservableObject {
     // MARK: - Published Properties
 
     @Published var serverName: String = ""
-    @Published var connectionPath: String = ""
+    @Published var activeURLType: ConnectionInfo.URLType?
     @Published var version: String = ""
     @Published var websocketState: HAConnectionState?
     @Published var localPushStatus: String = ""
     @Published var canRetryLocalPush = false
     @Published var loggedInUser: String = ""
+    @Published var profilePicture: UIImage?
     @Published var locationName: String = ""
     @Published var deviceName: String = ""
-    @Published var internalURL: String = ""
-    @Published var externalURL: String = ""
-    @Published var securityLevel: ConnectionSecurityLevel = .mostSecure
+    @Published var internalURL: String?
+    @Published var externalURL: String?
+    /// The address behind the external pill: the remote UI URL while cloud is in use, else the external URL.
+    @Published var externalAddress: String?
+    @Published var isUsingCloud = false
     @Published var locationPrivacy: ServerLocationPrivacy = .never
     @Published var sensorPrivacy: ServerSensorPrivacy = .none
     @Published var showDeleteConfirmation = false
@@ -29,6 +32,18 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
+    @Published var isCertificateImporterPresented = false
+    @Published var isCertificatePasswordPromptPresented = false
+    @Published var isRemoveCertificateConfirmationPresented = false
+    @Published var certificatePassword = ""
+    @Published var pendingCertificateURL: URL?
+    @Published var isSyncing = false
+    @Published var isEditingInternalURL = false
+    @Published var isEditingExternalURL = false
+    @Published var isShowingHowItWorks = false
+    /// The name the alert is editing, with `nameDraft` as its text.
+    @Published var nameBeingEdited: ServerDetailsRowView.EditOption?
+    @Published var nameDraft = ""
 
     // MARK: - Properties
 
@@ -36,6 +51,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     private var tokens: [HACancellable] = []
     private var localPushObserver: HACancellable?
     private var notificationCenterObserver: NSObjectProtocol?
+    private var syncFinishedObserver: NSObjectProtocol?
     private var canRetryLocalPushTask: Task<Void, Never>?
 
     // MARK: - Computed Properties
@@ -52,14 +68,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
         server.info.version <= .updateLocationGPSOptional
     }
 
-    var shouldShowSecurityLevelPicker: Bool {
-        guard let internalURL = server.info.connection.address(for: .internal) else {
-            return false
-        }
-
-        return internalURL.scheme?.lowercased() == "http"
-    }
-
     // MARK: - Initialization
 
     init(server: Server) {
@@ -74,10 +82,61 @@ final class ConnectionSettingsViewModel: ObservableObject {
         if let observer = notificationCenterObserver {
             NotificationCenter.default.removeObserver(observer)
         }
+        if let observer = syncFinishedObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
     func updateAppDatabase() {
+        isSyncing = true
         server.refreshAppDatabase(forceUpdate: true, showProgress: true)
+    }
+
+    // MARK: - Editing
+
+    /// Routes an Edit choice to the alert or sheet that changes it.
+    func edit(_ option: ServerDetailsRowView.EditOption) {
+        switch option {
+        case .locationName:
+            nameDraft = locationName
+            nameBeingEdited = option
+        case .deviceName:
+            nameDraft = deviceName
+            nameBeingEdited = option
+        case .internalURL:
+            isEditingInternalURL = true
+        case .externalURL:
+            isEditingExternalURL = true
+        }
+    }
+
+    /// What the name alert shows while its field is empty: the value the app falls back to.
+    func namePlaceholder(for option: ServerDetailsRowView.EditOption) -> String {
+        switch option {
+        case .locationName:
+            return server.info.remoteName
+        case .deviceName:
+            return Current.device.deviceName()
+        case .internalURL, .externalURL:
+            return ""
+        }
+    }
+
+    func saveNameDraft() {
+        defer { nameBeingEdited = nil }
+        let newName = nameDraft.isEmpty ? nil : nameDraft
+        switch nameBeingEdited {
+        case .locationName:
+            updateLocationName(newName)
+        case .deviceName:
+            updateDeviceName(newName)
+        case .internalURL, .externalURL, nil:
+            break
+        }
+    }
+
+    func cancelNameEdit() {
+        nameBeingEdited = nil
     }
 
     func retryLocalPush() {
@@ -121,6 +180,18 @@ final class ConnectionSettingsViewModel: ObservableObject {
             })
         }
 
+        syncFinishedObserver = NotificationCenter.default.addObserver(
+            forName: .appDatabaseUpdaterDidFinishServer,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            let finishedId = notification.userInfo?[AppDatabaseUpdaterUserInfo.serverIdentifierKey] as? String
+            guard let finishedId, finishedId == self?.server.identifier.rawValue else { return }
+            Task { @MainActor [weak self] in
+                self?.isSyncing = false
+            }
+        }
+
         // Observe local push notifications
         let manager = Current.notificationManager.localPushManager
         localPushObserver = manager.addObserver(for: server) { [weak self] _ in
@@ -133,20 +204,36 @@ final class ConnectionSettingsViewModel: ObservableObject {
         updateFromServerInfo(server.info)
         updateURLs()
         clientCertificate = server.info.connection.clientCertificate
-        Current.api(for: server)?.currentUser { [weak self] user in
+        guard let api = Current.api(for: server) else { return }
+        api.cachedProfilePicture { [weak self] image in
+            Task { @MainActor [weak self] in
+                guard let self, profilePicture == nil else { return }
+                profilePicture = image
+            }
+        }
+        api.currentUser { [weak self] user in
             Task { @MainActor [weak self] in
                 self?.loggedInUser = user?.name ?? ""
+            }
+            guard let user else { return }
+            api.profilePicture(for: user) { [weak self] image in
+                Task { @MainActor [weak self] in
+                    self?.profilePicture = image
+                }
             }
         }
     }
 
     private func updateFromServerInfo(_ info: ServerInfo) {
         serverName = info.name
-        connectionPath = info.connection.activeURLType.description
+        // The stored copy re-evaluates the active URL on save, but observers get the value as written,
+        // so evaluate a copy here to keep the highlighted pill right after an edit.
+        var connection = server.info.connection
+        _ = connection.evaluateActiveURL()
+        activeURLType = connection.activeURLType
         version = info.version.description
         locationName = info.setting(for: .localName) ?? ""
         deviceName = info.setting(for: .overrideDeviceName) ?? ""
-        securityLevel = info.connection.connectionAccessSecurityLevel
         locationPrivacy = info.setting(for: .locationPrivacy)
         sensorPrivacy = info.setting(for: .sensorPrivacy)
         updateURLs()
@@ -154,13 +241,13 @@ final class ConnectionSettingsViewModel: ObservableObject {
     }
 
     private func updateURLs() {
-        internalURL = server.info.connection.address(for: .internal)?.absoluteString ?? "—"
-
-        if server.info.connection.useCloud, server.info.connection.canUseCloud {
-            externalURL = AppConstants.homeAssistantLinkName
-        } else {
-            externalURL = server.info.connection.address(for: .external)?.absoluteString ?? "—"
-        }
+        internalURL = server.info.connection.address(for: .internal)?.absoluteString
+        isUsingCloud = server.info.connection.useCloud && server.info.connection.canUseCloud
+        let externalAddress = server.info.connection.address(for: .external)?.absoluteString
+        self.externalAddress = isUsingCloud
+            ? server.info.connection.address(for: .remoteUI)?.absoluteString
+            : externalAddress
+        externalURL = isUsingCloud ? AppConstants.homeAssistantLinkName : externalAddress
     }
 
     private func updateLocalPushStatus() {
@@ -215,13 +302,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
         deviceName = newName ?? ""
     }
 
-    func updateSecurityLevel(_ level: ConnectionSecurityLevel) {
-        server.update { info in
-            info.connection.connectionAccessSecurityLevel = level
-        }
-        securityLevel = level
-    }
-
     func updateLocationPrivacy(_ privacy: ServerLocationPrivacy) {
         server.info.setSetting(value: privacy, for: .locationPrivacy)
         locationPrivacy = privacy
@@ -237,7 +317,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         Current.api(for: server)?.registerSensors().cauterize()
     }
 
-    func shareServer() -> UIActivityViewController? {
+    func invitationURL() -> URL? {
         guard let invitationServerURL = server.info.connection.invitationURL() else {
             Current.Log.error("Invitation button failed, no invitation URL found for server \(server.identifier)")
             return nil
@@ -249,7 +329,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
             return nil
         }
 
-        return UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
+        return invitationURL
     }
 
     func activateServer() {
@@ -327,6 +407,30 @@ final class ConnectionSettingsViewModel: ObservableObject {
         }
 
         isImportingCertificate = false
+    }
+
+    /// Takes the file picker's result: a chosen file waits for its password, a failure is only logged.
+    func handleCertificatePick(_ result: Swift.Result<[URL], Error>) {
+        switch result {
+        case let .success(urls):
+            guard let url = urls.first else { return }
+            pendingCertificateURL = url
+            isCertificatePasswordPromptPresented = true
+        case let .failure(error):
+            Current.Log.error("Failed to select certificate file: \(error)")
+        }
+    }
+
+    func cancelCertificateImport() {
+        certificatePassword = ""
+        pendingCertificateURL = nil
+    }
+
+    /// Imports the picked file with the entered password, then forgets both.
+    func confirmCertificateImport() async {
+        guard let url = pendingCertificateURL else { return }
+        await importCertificate(from: url, password: certificatePassword)
+        cancelCertificateImport()
     }
 
     /// Remove the current client certificate

@@ -4,7 +4,7 @@ import SwiftUI
 
 struct ConnectionErrorDetailsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var exportLogsArchiveURL: URL?
+    @State private var logsShare: ShareWrapper?
     @StateObject private var connectivityState = ConnectivityCheckState()
 
     private let feedbackGenerator = UINotificationFeedbackGenerator()
@@ -36,14 +36,7 @@ struct ConnectionErrorDetailsView: View {
                     }
                 }
             }
-            .sheet(isPresented: Binding(
-                get: { exportLogsArchiveURL != nil },
-                set: { if !$0 { exportLogsArchiveURL = nil } }
-            ), content: {
-                if let archiveURL = exportLogsArchiveURL {
-                    ShareActivityView(activityItems: [archiveURL])
-                }
-            })
+            .shareSheet(item: $logsShare)
         }
         .navigationViewStyle(.stack)
     }
@@ -290,7 +283,7 @@ struct ConnectionErrorDetailsView: View {
             if Current.isCatalyst, let logsURL = Current.Log.archiveURL() {
                 URLOpener.shared.open(logsURL, options: [:], completionHandler: nil)
             } else if let logsURL = Current.Log.archiveURL() {
-                exportLogsArchiveURL = logsURL
+                logsShare = ShareWrapper(url: logsURL)
                 feedbackGenerator.notificationOccurred(.success)
             }
         }

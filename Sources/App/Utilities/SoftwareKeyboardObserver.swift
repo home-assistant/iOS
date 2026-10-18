@@ -11,14 +11,19 @@ final class SoftwareKeyboardObserver: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(notificationCenter: NotificationCenter = .default, screenHeight: @escaping () -> CGFloat = {
-        UIScreen.main.bounds.height
-    }) {
+    /// Keyboard notifications carry the screen the keyboard appears on as their object, which is also the
+    /// coordinate space the end frame is expressed in. UIKit posts them on the main actor.
+    init(
+        notificationCenter: NotificationCenter = .default,
+        screenHeight: @escaping (Notification) -> CGFloat? = { notification in
+            MainActor.assumeIsolated { (notification.object as? UIScreen)?.bounds.height }
+        }
+    ) {
         notificationCenter.publisher(for: UIResponder.keyboardWillChangeFrameNotification)
             .map { notification in
                 Self.isShown(
                     endFrame: notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-                    screenHeight: screenHeight()
+                    screenHeight: screenHeight(notification)
                 )
             }
             .merge(with: notificationCenter.publisher(for: UIResponder.keyboardWillHideNotification).map { _ in false })
@@ -30,8 +35,8 @@ final class SoftwareKeyboardObserver: ObservableObject {
             .store(in: &cancellables)
     }
 
-    static func isShown(endFrame: CGRect?, screenHeight: CGFloat) -> Bool {
-        guard let endFrame, endFrame.height >= minimumHeight else { return false }
+    static func isShown(endFrame: CGRect?, screenHeight: CGFloat?) -> Bool {
+        guard let endFrame, let screenHeight, endFrame.height >= minimumHeight else { return false }
         return endFrame.minY < screenHeight
     }
 }

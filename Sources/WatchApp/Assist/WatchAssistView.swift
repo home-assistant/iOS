@@ -201,23 +201,16 @@ struct WatchAssistView: View {
     // around it, which would otherwise compete with it for the touch.
     private var micRecording: some View {
         VStack(spacing: DesignSystem.Spaces.one) {
+            if viewModel.recordingSubmission == .release {
+                releaseToSendPill
+                    .transition(.opacity)
+                    .padding(.bottom, DesignSystem.Spaces.two)
+            }
             AssistVoiceOrbView(
                 level: viewModel.audioLevel,
                 size: .watch,
                 accessibilityLabel: L10n.Assist.Button.Listening.title
             )
-            // Laid over the orb rather than stacked above it, so the orb's activity circle never
-            // covers the hint and the orb does not move to make room for it.
-            .overlay(alignment: .top) {
-                if viewModel.recordingSubmission == .release {
-                    releaseToSendPill
-                        // Wider than the orb it sits on, which is all the overlay offers it.
-                        .fixedSize()
-                        .alignmentGuide(.top) { $0[.bottom] + DesignSystem.Spaces.one }
-                        .transition(.opacity)
-                }
-            }
-            // While holding, the pill above the orb is the only hint the screen needs.
             if viewModel.recordingSubmission == .tap {
                 VStack(spacing: .zero) {
                     Text(verbatim: L10n.Watch.Assist.Button.Recording.title)

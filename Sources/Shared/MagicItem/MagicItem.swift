@@ -739,7 +739,8 @@ public extension MagicItem {
     /// Every other platform executes through the existing `HomeAssistantAPI` paths: scripts and scenes
     /// via the webhook API (`CallService`) and entity/lock actions over the WebSocket connection.
     ///
-    /// `currentItemState` is used only for the lock domain, since it can't be toggled.
+    /// `currentItemState` is used for the lock domain, since it can't be toggled, and to pick the
+    /// on or off service for a toggle the way the frontend's `toggleEntity` does.
     ///
     /// `onStep` narrates the run's progress (resolved service call, URL, token stage, request,
     /// TLS challenges) for the watch's verbose execution trace. Ignored on non-watch platforms.
@@ -862,7 +863,7 @@ public extension MagicItem {
             }
         } else {
             // Use domain's main action for all other domains
-            request = .executeMainAction(domain: domain, entityId: entityId)
+            request = .executeMainAction(domain: domain, entityId: entityId, state: state)
         }
 
         if let request, let connection = Current.api(for: server)?.connection {
@@ -1057,7 +1058,7 @@ public extension MagicItem {
                     throw WatchRESTExecutionError.lockStateUnknown
                 }
             } else {
-                guard let action = domain.mainAction else { return nil }
+                guard let action = domain.mainAction(state: currentItemState) else { return nil }
                 return WatchServiceCall(
                     domain: domain.serviceDomain,
                     service: action.rawValue,

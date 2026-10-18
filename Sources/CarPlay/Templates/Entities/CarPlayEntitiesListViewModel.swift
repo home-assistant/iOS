@@ -126,11 +126,9 @@ final class CarPlayEntitiesListViewModel {
 
     func updateStates(entities: HACachedStates) {
         entitiesCachedStates = entities
-        // Avoid computing property several times
-        let sortedEntities = sortedEntities
         var didUpdateItems = false
         entityProviders.forEach { item in
-            guard let updatedEntity = sortedEntities.first(where: { $0.entityId == item.entity.entityId }),
+            guard let updatedEntity = entities[item.entity.entityId],
                   shouldRefreshPresentation(for: item.entity, with: updatedEntity) else { return }
             item.update(serverId: server.identifier.rawValue, entity: updatedEntity)
             didUpdateItems = true

@@ -1,8 +1,8 @@
 <!-- Thank you for submitting a Pull Request and helping to improve Home Assistant. Please complete the following sections to help the processing and review of your changes. Please do not delete anything from this template. -->
 
 ## AI Policy
-<!-- Please read our AI policy before contributing: https://developers.home-assistant.io/docs/ai_policy -->
-- [ ] I have read the [Open Home Foundation AI Policy](https://developers.home-assistant.io/docs/ai_policy).
+<!-- Please read our AI policy before contributing: https://contributors.home-assistant.io/start/ai-policy/ -->
+- [ ] I have read the [Open Home Foundation AI Policy](https://contributors.home-assistant.io/start/ai-policy/).
 
 Select exactly one option that describes AI usage in this contribution:
 

@@ -24,6 +24,8 @@ struct DimmableLightAppEntity: AppEntity, EntityContextRepresentable {
     var areaName: String?
     @Property(title: .init("app_intents.entity.property.device", defaultValue: "Device"))
     var deviceName: String?
+    var parentDeviceName: String?
+    var contextReach: EntityContextReach = .device
     @Property(title: .init("app_intents.entity.property.floor", defaultValue: "Floor"))
     var floorName: String?
     @Property(title: .init("app_intents.entity.property.server", defaultValue: "Server"))
@@ -43,6 +45,8 @@ struct DimmableLightAppEntity: AppEntity, EntityContextRepresentable {
         serverName: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        parentDeviceName: String? = nil,
+        contextReach: EntityContextReach = .device,
         floorName: String? = nil,
         displayString: String,
         iconName: String
@@ -54,6 +58,8 @@ struct DimmableLightAppEntity: AppEntity, EntityContextRepresentable {
         self.displayString = displayString
         self.areaName = areaName
         self.deviceName = deviceName
+        self.parentDeviceName = parentDeviceName
+        self.contextReach = contextReach
         self.floorName = floorName
         self.serverName = serverName
     }

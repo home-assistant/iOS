@@ -11,7 +11,7 @@ struct AppLabsViewTests {
 
         Current.isTestFlight = false
         #expect(!SettingsItem.appLabs.isVisible)
-        #expect(!AppLabsFeature.macNativeSidebar.isEnabled)
+        #expect(!AppLabsFeature.iosNativeTabBar.isEnabled)
 
         Current.isTestFlight = true
         #expect(SettingsItem.appLabs.isVisible)

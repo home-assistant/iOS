@@ -64,7 +64,7 @@ extension WebViewController {
         }
     }
 
-    /// Used by the native macOS sidebar
+    /// Used by the native iOS tab bar
     func openSidebarPath(_ path: String) {
         loadViewIfNeeded()
         navigateThroughFrontend(path: path) { [weak self] success in
@@ -84,19 +84,13 @@ extension WebViewController {
             return
         }
         Current.Log.verbose("Requesting navigation using external bus to path: \(path)")
-        webViewExternalMessageHandler.sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.navigate.rawValue,
+        webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+            command: .navigate,
             payload: [
                 "path": path,
-            ]
-        )).pipe { result in
-            switch result {
-            case .fulfilled:
-                completion(true)
-            case .rejected:
-                completion(false)
-            }
-        }
+            ],
+            completion: completion
+        )
     }
 
     /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`

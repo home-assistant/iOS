@@ -46,6 +46,20 @@ struct SensorRowTests {
         assertLightDarkSnapshots(of: view)
     }
 
+    /// A long state keeps the full width of the row to wrap into, with the badge on its own line
+    /// below it rather than squeezing the state word by word.
+    @MainActor
+    @Test func testForegroundOnlyRowViewWithLongState() async throws {
+        let sensor = Self.cameraMotionSensor()
+        sensor.State = "Motion detected near the front door and the garage"
+        let view = List {
+            Toggle(isOn: .constant(true)) {
+                SensorRow(sensor: sensor, isEnabled: true)
+            }
+        }
+        assertLightDarkSnapshots(of: view)
+    }
+
     /// The kiosk sensors keep reporting a value in the background, it just stops changing — the
     /// same badge, because reading a frozen value from Home Assistant is the same trap.
     @MainActor
@@ -68,6 +82,34 @@ struct SensorRowTests {
                 id: .kioskScreensaver,
                 icon: "mdi:sleep-off",
                 state: false
+            ), isEnabled: true)
+        }
+        assertLightDarkSnapshots(of: view)
+    }
+
+    /// The hinge sensors carry the same badge: nothing reports a hinge to an app that is not the
+    /// one on screen.
+    @MainActor
+    @Test func testHingeForegroundOnlyRowViews() async throws {
+        let view = List {
+            SensorRow(sensor: WebhookSensor(
+                name: "Hinge Angle",
+                uniqueID: WebhookSensorId.hingeAngle.rawValue,
+                icon: "mdi:angle-acute",
+                state: 118.5,
+                unit: "°"
+            ), isEnabled: true)
+            SensorRow(sensor: WebhookSensor(
+                name: "Hinge Status",
+                uniqueID: WebhookSensorId.hingeStatus.rawValue,
+                icon: "mdi:book-open-outline",
+                state: HingeStatus.partiallyOpen.rawValue
+            ), isEnabled: true)
+            SensorRow(sensor: WebhookSensor(
+                name: "Pose",
+                uniqueID: WebhookSensorId.devicePose.rawValue,
+                icon: "mdi:laptop",
+                state: DevicePose.laptop.rawValue
             ), isEnabled: true)
         }
         assertLightDarkSnapshots(of: view)

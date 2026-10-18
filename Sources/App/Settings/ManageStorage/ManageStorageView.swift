@@ -216,7 +216,6 @@ struct ManageStorageView: View {
         ManageStorageView(viewModel: ManageStorageViewModel(
             paths: .rooted(at: URL(fileURLWithPath: NSTemporaryDirectory())),
             isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true,
             measurer: ManageStorageSampleMeasurer(),
             cleaner: ManageStorageSampleCleaner()
         ))

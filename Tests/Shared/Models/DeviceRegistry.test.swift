@@ -77,6 +77,294 @@ struct DeviceRegistryTests {
         #expect(entry.connections == nil)
     }
 
+    @Test("A stripped child entry decodes and keeps its parent")
+    func decodeChildEntry() throws {
+        let data = HAData(value: [
+            "id": "outlet-2",
+            "name": "Outlet 2",
+            "config_entry_id": "entry-1",
+            "labels": [],
+            "parent_device_id": "power-strip",
+        ])
+
+        let entry = try DeviceRegistryEntry(data: data)
+
+        #expect(entry.id == "outlet-2")
+        #expect(entry.parentDeviceId == "power-strip")
+        #expect(entry.configEntryId == "entry-1")
+        #expect(entry.isChildDevice)
+        #expect(entry.connections == nil)
+        #expect(entry.configEntries == nil)
+        #expect(entry.manufacturer == nil)
+    }
+
+    @Test("Child devices inherit their parent's hardware and their own config entry")
+    func resolveChildDevices() throws {
+        let parent = DeviceRegistryEntry(
+            areaId: "kitchen",
+            configurationURL: "http://strip.local",
+            configEntries: ["entry-1"],
+            configEntriesSubentries: ["entry-1": [nil]],
+            connections: [["mac", "aa:bb"]],
+            createdAt: 0,
+            disabledBy: nil,
+            entryType: nil,
+            hwVersion: "1.0",
+            id: "power-strip",
+            identifiers: [["demo", "strip"]],
+            labels: [],
+            manufacturer: "Acme",
+            model: "Strip 4000",
+            modelID: "S4000",
+            modifiedAt: 0,
+            nameByUser: nil,
+            name: "Power strip",
+            primaryConfigEntry: "entry-1",
+            serialNumber: "SN-1",
+            swVersion: "2.0",
+            viaDeviceID: "hub"
+        )
+        let child = DeviceRegistryEntry(
+            areaId: nil,
+            configurationURL: nil,
+            configEntries: nil,
+            configEntriesSubentries: nil,
+            configEntryId: "entry-1",
+            configSubentryId: "sub-1",
+            connections: nil,
+            createdAt: 0,
+            disabledBy: "device",
+            entryType: nil,
+            hwVersion: nil,
+            id: "outlet-2",
+            identifiers: [["demo", "outlet-2"]],
+            labels: [],
+            manufacturer: nil,
+            model: nil,
+            modelID: nil,
+            modifiedAt: 0,
+            nameByUser: nil,
+            name: "Outlet 2",
+            parentDeviceId: "power-strip",
+            primaryConfigEntry: nil,
+            serialNumber: nil,
+            swVersion: nil,
+            viaDeviceID: nil
+        )
+
+        let resolved = AppDeviceRegistry.resolvingChildDevices([parent, child], serverId: "1")
+        let resolvedChild = try #require(resolved.first { $0.deviceId == "outlet-2" })
+
+        #expect(resolvedChild.manufacturer == "Acme")
+        #expect(resolvedChild.model == "Strip 4000")
+        #expect(resolvedChild.modelID == "S4000")
+        #expect(resolvedChild.hwVersion == "1.0")
+        #expect(resolvedChild.swVersion == "2.0")
+        #expect(resolvedChild.serialNumber == "SN-1")
+        #expect(resolvedChild.configurationURL == "http://strip.local")
+        #expect(resolvedChild.configEntries == ["entry-1"])
+        #expect(resolvedChild.configEntriesSubentries == ["entry-1": ["sub-1"]])
+        #expect(resolvedChild.primaryConfigEntry == "entry-1")
+        #expect(resolvedChild.connections == nil)
+        #expect(resolvedChild.viaDeviceID == nil)
+        #expect(resolvedChild.parentDeviceId == "power-strip")
+        #expect(resolvedChild.isChildDevice)
+        #expect(resolvedChild.isDisabled)
+        let resolvedParent = try #require(resolved.first { $0.deviceId == "power-strip" })
+        #expect(resolvedParent.viaDeviceID == "hub")
+        #expect(!resolvedParent.isChildDevice)
+    }
+
+    @Test("A child whose parent is missing keeps what it carries itself")
+    func resolveChildWithoutParent() throws {
+        let child = DeviceRegistryEntry(
+            areaId: "kitchen",
+            configurationURL: nil,
+            configEntries: nil,
+            configEntriesSubentries: nil,
+            configEntryId: "entry-1",
+            configSubentryId: nil,
+            connections: nil,
+            createdAt: 0,
+            disabledBy: nil,
+            entryType: nil,
+            hwVersion: nil,
+            id: "outlet-2",
+            identifiers: nil,
+            labels: [],
+            manufacturer: nil,
+            model: nil,
+            modelID: nil,
+            modifiedAt: 0,
+            nameByUser: nil,
+            name: "Outlet 2",
+            parentDeviceId: "power-strip",
+            primaryConfigEntry: nil,
+            serialNumber: nil,
+            swVersion: nil,
+            viaDeviceID: nil
+        )
+
+        let resolved = AppDeviceRegistry.resolvingChildDevices([child], serverId: "1")
+
+        #expect(resolved.count == 1)
+        #expect(resolved.first?.displayName == "Outlet 2")
+        #expect(resolved.first?.areaId == "kitchen")
+        #expect(resolved.first?.manufacturer == nil)
+    }
+
+    @Test("A blank name does not win over the fields it falls back to")
+    func blankNamesFallThrough() throws {
+        let unnamed = try DeviceRegistryEntry(data: HAData(value: [
+            "id": "8cb42cf3c996f313af723e9f74f8f731",
+            "name": "",
+        ]))
+        #expect(unnamed.resolvedName == nil)
+        #expect(unnamed.displayName == "8cb42cf3c996f313af723e9f74f8f731")
+
+        let modelOnly = try DeviceRegistryEntry(data: HAData(value: [
+            "id": "abc",
+            "name": "   ",
+            "model": "P1 Meter",
+        ]))
+        #expect(modelOnly.resolvedName == "P1 Meter")
+
+        let device = AppDeviceRegistry(serverId: "1", registry: unnamed)
+        #expect(device.resolvedName == nil)
+        #expect(device.displayName == "8cb42cf3c996f313af723e9f74f8f731")
+    }
+
+    @Test("Effective area falls back to the parent's, and only when the child has none")
+    func effectiveAreaId() {
+        let parent = makeDevice(areaId: "kitchen", deviceId: "power-strip")
+        let inheriting = makeDevice(areaId: nil, deviceId: "outlet-1", parentDeviceId: "power-strip")
+        let overriding = makeDevice(areaId: "garage", deviceId: "outlet-2", parentDeviceId: "power-strip")
+        let orphan = makeDevice(areaId: nil, deviceId: "outlet-3", parentDeviceId: "gone")
+        let devicesById = Dictionary(
+            [parent, inheriting, overriding, orphan].map { ($0.deviceId, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
+        #expect(parent.effectiveAreaId(in: devicesById) == "kitchen")
+        #expect(inheriting.effectiveAreaId(in: devicesById) == "kitchen")
+        #expect(overriding.effectiveAreaId(in: devicesById) == "garage")
+        #expect(orphan.effectiveAreaId(in: devicesById) == nil)
+    }
+
+    @Test("A child device names its parent whatever its area")
+    func parentDeviceName() {
+        let parent = makeDevice(areaId: "kitchen", deviceId: "power-strip", nameByUser: "Coffee corner strip")
+        let inheriting = makeDevice(areaId: nil, deviceId: "outlet-1", parentDeviceId: "power-strip")
+        let overriding = makeDevice(areaId: "garage", deviceId: "outlet-2", parentDeviceId: "power-strip")
+        let orphan = makeDevice(areaId: nil, deviceId: "outlet-3", parentDeviceId: "gone")
+        let devicesById = Dictionary(
+            [parent, inheriting, overriding, orphan].map { ($0.deviceId, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
+        #expect(parent.parentDeviceName(in: devicesById) == nil)
+        #expect(inheriting.parentDeviceName(in: devicesById) == "Coffee corner strip")
+        #expect(overriding.parentDeviceName(in: devicesById) == "Coffee corner strip")
+        #expect(orphan.parentDeviceName(in: devicesById) == nil)
+    }
+
+    @Test("The context follows the next name parts the server sends")
+    func contextReachFollowsTheServer() {
+        let inheriting = makeDevice(
+            areaId: nil,
+            deviceId: "outlet-1",
+            parentDeviceId: "power-strip",
+            nextNamePart: "parent_device"
+        )
+        let overriding = makeDevice(
+            areaId: "garage",
+            deviceId: "outlet-2",
+            parentDeviceId: "power-strip",
+            nextNamePart: "area"
+        )
+
+        let throughTheChild = EntityContextReach(entityNextNamePart: "device", entityAreaId: nil, device: inheriting)
+        let stoppedAtTheChild = EntityContextReach(entityNextNamePart: "device", entityAreaId: nil, device: overriding)
+        let stoppedAtTheEntity = EntityContextReach(
+            entityNextNamePart: "area",
+            entityAreaId: "garage",
+            device: inheriting
+        )
+
+        #expect(throughTheChild == .parentDevice)
+        #expect(stoppedAtTheChild == .device)
+        #expect(stoppedAtTheEntity == .area)
+    }
+
+    @Test("A server that predates next_name_part gets the same reach from the area and parent ids")
+    func contextReachWithoutNextNameParts() {
+        let inheriting = makeDevice(areaId: nil, deviceId: "outlet-1", parentDeviceId: "power-strip")
+        let overriding = makeDevice(areaId: "garage", deviceId: "outlet-2", parentDeviceId: "power-strip")
+        let lamp = makeDevice(areaId: nil, deviceId: "lamp")
+
+        #expect(EntityContextReach(entityNextNamePart: nil, entityAreaId: nil, device: inheriting) == .parentDevice)
+        #expect(EntityContextReach(entityNextNamePart: nil, entityAreaId: nil, device: overriding) == .device)
+        #expect(EntityContextReach(entityNextNamePart: nil, entityAreaId: nil, device: lamp) == .device)
+        #expect(EntityContextReach(entityNextNamePart: nil, entityAreaId: "garage", device: inheriting) == .area)
+        #expect(EntityContextReach(entityNextNamePart: nil, entityAreaId: nil, device: nil) == .device)
+    }
+
+    @Test("A next name part the app doesn't know stops the context there")
+    func contextReachStopsAtAnUnknownPart() {
+        let child = makeDevice(areaId: nil, deviceId: "outlet-1", parentDeviceId: "power-strip", nextNamePart: "floor")
+
+        #expect(EntityContextReach(entityNextNamePart: "floor", entityAreaId: nil, device: child) == .area)
+        #expect(EntityContextReach(entityNextNamePart: "device", entityAreaId: nil, device: child) == .device)
+    }
+
+    @Test("Next name parts are decoded from both registries")
+    func decodeNextNameParts() throws {
+        let child = try DeviceRegistryEntry(data: HAData(value: [
+            "id": "outlet-1",
+            "name": "Outlet 1",
+            "parent_device_id": "power-strip",
+            "next_name_part": "parent_device",
+        ]))
+        let entity = try EntityRegistryListForDisplay.Entity(data: HAData(value: [
+            "ei": "switch.outlet_1",
+            "di": "outlet-1",
+            "np": "device",
+        ]))
+
+        #expect(AppDeviceRegistry(serverId: "1", registry: child).nextNamePart == "parent_device")
+        #expect(entity.nextNamePart == "device")
+    }
+
+    @Test("A device tree nests children under a parent that is listed or shares their area")
+    func treeParentIds() {
+        let strip = makeDevice(areaId: "kitchen", deviceId: "power-strip")
+        let inheriting = makeDevice(areaId: nil, deviceId: "outlet-1", parentDeviceId: "power-strip")
+        let sameArea = makeDevice(areaId: "kitchen", deviceId: "outlet-2", parentDeviceId: "power-strip")
+        let elsewhere = makeDevice(areaId: "garage", deviceId: "outlet-3", parentDeviceId: "power-strip")
+        let orphan = makeDevice(areaId: nil, deviceId: "outlet-4", parentDeviceId: "gone")
+        let lamp = makeDevice(areaId: "kitchen", deviceId: "lamp")
+        let devicesById = Dictionary(
+            [strip, inheriting, sameArea, elsewhere, orphan, lamp].map { ($0.deviceId, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
+        #expect(AppDeviceRegistry.treeParentIds(
+            of: ["outlet-1", "outlet-2", "outlet-4", "lamp"],
+            inArea: "kitchen",
+            devicesById: devicesById
+        ) == ["outlet-1": "power-strip", "outlet-2": "power-strip"])
+        #expect(AppDeviceRegistry.treeParentIds(
+            of: ["outlet-3"],
+            inArea: "garage",
+            devicesById: devicesById
+        ).isEmpty)
+        #expect(AppDeviceRegistry.treeParentIds(
+            of: ["outlet-3", "power-strip"],
+            inArea: "garage",
+            devicesById: devicesById
+        ) == ["outlet-3": "power-strip"])
+    }
+
     @Test("A single malformed entry does not fail the whole registry array")
     func decodeArrayWithOneMalformedEntry() throws {
         let data = HAData(value: [
@@ -97,5 +385,41 @@ struct DeviceRegistryTests {
         #expect(entries.count == 2)
         #expect(entries.first?.identifiers == [["hassio", "core"]])
         #expect(entries.last?.identifiers == nil)
+    }
+
+    private func makeDevice(
+        areaId: String?,
+        deviceId: String,
+        parentDeviceId: String? = nil,
+        nameByUser: String? = nil,
+        nextNamePart: String? = nil
+    ) -> AppDeviceRegistry {
+        AppDeviceRegistry(
+            serverId: "1",
+            deviceId: deviceId,
+            areaId: areaId,
+            configurationURL: nil,
+            configEntries: nil,
+            configEntriesSubentries: nil,
+            connections: nil,
+            createdAt: nil,
+            disabledBy: nil,
+            entryType: nil,
+            hwVersion: nil,
+            identifiers: nil,
+            labels: nil,
+            manufacturer: nil,
+            model: nil,
+            modelID: nil,
+            modifiedAt: nil,
+            nameByUser: nameByUser,
+            name: deviceId,
+            nextNamePart: nextNamePart,
+            parentDeviceId: parentDeviceId,
+            primaryConfigEntry: nil,
+            serialNumber: nil,
+            swVersion: nil,
+            viaDeviceID: nil
+        )
     }
 }

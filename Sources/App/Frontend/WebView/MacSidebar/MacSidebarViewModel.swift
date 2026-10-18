@@ -10,8 +10,6 @@ final class MacSidebarViewModel: ObservableObject {
     @Published private(set) var fixedItems: [MacSidebarItem] = []
     /// Panels the user can add back while editing; see `MacSidebarItemsBuilder.hiddenItems`.
     @Published private(set) var hiddenItems: [MacSidebarItem] = []
-    @Published var isEditing = false
-    @Published private(set) var selectedItemId: String?
     @Published private(set) var user: HAResponseCurrentUser?
     @Published private(set) var accentColor: Color = .haPrimary
 
@@ -44,7 +42,6 @@ final class MacSidebarViewModel: ObservableObject {
     private var isAdmin = false
     private var userName: String?
     private var notificationIds: Set<String> = []
-    private var currentPath: String?
     private var tokens: [HACancellable] = []
     private var cancellables = Set<AnyCancellable>()
     private let snapshotStore: MacSidebarSnapshotStore
@@ -56,14 +53,6 @@ final class MacSidebarViewModel: ObservableObject {
     ) {
         self.server = server
         self.snapshotStore = snapshotStore
-
-        overlayState.$currentPath
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] path in
-                self?.currentPath = path
-                self?.updateSelection()
-            }
-            .store(in: &cancellables)
 
         overlayState.$connectionState
             .filter(\.isReadyForDisplay)
@@ -184,24 +173,12 @@ final class MacSidebarViewModel: ObservableObject {
         item.id != defaultPanelPath
     }
 
-    /// Live reorder while dragging: moves `draggedId` to the slot of `targetId` without saving yet.
-    func moveItem(_ draggedId: String, to targetId: String) {
-        guard let from = mainItems.firstIndex(where: { $0.id == draggedId }),
-              let to = mainItems.firstIndex(where: { $0.id == targetId }),
-              from != to else { return }
-        mainItems.move(fromOffsets: IndexSet(integer: from), toOffset: to > from ? to + 1 : to)
-    }
-
-    func commitReorder() {
-        save(effectiveUserData.reordered(to: mainItems.map(\.id)))
-    }
-
     func reorderItems(to order: [String]) {
         let reordered = order.compactMap { id in mainItems.first(where: { $0.id == id }) }
             + mainItems.filter { !order.contains($0.id) }
         guard reordered != mainItems else { return }
         mainItems = reordered
-        commitReorder()
+        save(effectiveUserData.reordered(to: mainItems.map(\.id)))
     }
 
     func hide(itemId: String) {
@@ -212,36 +189,6 @@ final class MacSidebarViewModel: ObservableObject {
     func show(itemId: String) {
         guard hiddenItems.contains(where: { $0.id == itemId }) else { return }
         save(effectiveUserData.showing(itemId, visibleOrder: mainItems.map(\.id)))
-    }
-
-    /// Mirrors the profile page's dashboard picker: only dashboards can be chosen, and the current
-    /// default needs no action.
-    func canSetDefaultDashboard(_ item: MacSidebarItem) -> Bool {
-        item.isDashboard && item.id != defaultPanelPath
-    }
-
-    func setDefaultDashboard(itemId: String) {
-        guard let item = (mainItems + hiddenItems).first(where: { $0.id == itemId }),
-              canSetDefaultDashboard(item) else { return }
-        coreUserData = coreUserData.settingDefaultPanel(itemId)
-        rebuild()
-        guard let connection = Current.api(for: server)?.connection else { return }
-        tokens.append(connection.send(
-            HATypedRequest<HAResponseVoid>.setFrontendUserData(
-                key: FrontendDefaultPanelData.dataKey,
-                value: coreUserData.rawValue
-            )
-        ) { result in
-            if case let .failure(error) = result {
-                Current.Log.error("Failed to save default dashboard: \(error)")
-            }
-        })
-    }
-
-    func resetToDefaults() {
-        legacyPanelOrder = nil
-        legacyHiddenPanels = nil
-        save(FrontendSidebarUserData())
     }
 
     /// The preferences in effect, with the frontend's `localStorage` fallback applied.
@@ -392,20 +339,11 @@ final class MacSidebarViewModel: ObservableObject {
         if self.fixedItems != fixedItems {
             self.fixedItems = fixedItems
         }
-        updateSelection()
         storeSnapshot()
     }
 
     private func updateAccentColor() {
         accentColor = Current.frontendTheme()
             .color(of: FrontendColors.primaryColor.rawValue, for: server.identifier.rawValue) ?? .haPrimary
-    }
-
-    private func updateSelection() {
-        let itemId = MacSidebarItemsBuilder.itemId(forPath: currentPath)
-        let knownIds = Set((mainItems + fixedItems).map(\.id))
-        let selectedItemId = itemId.flatMap { knownIds.contains($0) ? $0 : nil }
-        guard self.selectedItemId != selectedItemId else { return }
-        self.selectedItemId = selectedItemId
     }
 }

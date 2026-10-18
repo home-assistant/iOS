@@ -287,6 +287,63 @@ struct DomainMappingTests {
         }
     }
 
+    @Test func toggleMainActionFollowsTheFrontendsToggleEntity() {
+        #expect(Domain.cover.mainAction(state: "closed") == .openCover)
+        #expect(Domain.cover.mainAction(state: "open") == .closeCover)
+        #expect(Domain.cover.mainAction(state: "opening") == .closeCover)
+        #expect(Domain.cover.mainAction(state: "closing") == .closeCover)
+        #expect(Domain.cover.mainAction(state: "unavailable") == .closeCover)
+        #expect(Domain.valve.mainAction(state: "closed") == .openValve)
+        #expect(Domain.valve.mainAction(state: "open") == .closeValve)
+        #expect(Domain.light.mainAction(state: "off") == .turnOn)
+        #expect(Domain.light.mainAction(state: "on") == .turnOff)
+        #expect(Domain.switch.mainAction(state: "off") == .turnOn)
+        #expect(Domain.fan.mainAction(state: "on") == .turnOff)
+        #expect(Domain.inputBoolean.mainAction(state: "off") == .turnOn)
+        #expect(Domain.humidifier.mainAction(state: "on") == .turnOff)
+        #expect(Domain.group.mainAction(state: "off") == .turnOn)
+        #expect(Domain.group.mainAction(state: "home") == .turnOff)
+    }
+
+    @Test func toggleMainActionWithoutAStateToggles() {
+        for domain in Domain.allCases where domain.mainAction == .toggle {
+            #expect(domain.mainAction(state: "") == .toggle, "\(domain)")
+        }
+    }
+
+    @Test func nonToggleMainActionsIgnoreState() {
+        for domain in Domain.allCases where domain.mainAction != .toggle {
+            for state in ["open", "closed", "on", "off", "locked", ""] {
+                #expect(domain.mainAction(state: state) == domain.mainAction, "\(domain) in \(state)")
+            }
+        }
+    }
+
+    @Test func executeMainActionClosesAnOpenCover() {
+        let request = HATypedRequest<HAResponseVoid>.executeMainAction(
+            domain: .cover,
+            entityId: "cover.garage_door",
+            state: "open"
+        )
+        #expect(request?.request.data["domain"] as? String == "cover")
+        #expect(request?.request.data["service"] as? String == "close_cover")
+    }
+
+    @Test func executeMainActionTurnsAGroupOffThroughHomeAssistant() {
+        let request = HATypedRequest<HAResponseVoid>.executeMainAction(
+            domain: .group,
+            entityId: "group.downstairs",
+            state: "on"
+        )
+        #expect(request?.request.data["domain"] as? String == "homeassistant")
+        #expect(request?.request.data["service"] as? String == "turn_off")
+    }
+
+    @Test func executeMainActionWithoutStateToggles() {
+        let request = HATypedRequest<HAResponseVoid>.executeMainAction(domain: .cover, entityId: "cover.garage_door")
+        #expect(request?.request.data["service"] as? String == "toggle")
+    }
+
     @Test func actionabilityFollowsMainActionWithLockException() {
         for domain in Domain.allCases {
             let expected = domain.mainAction != nil || domain == .lock

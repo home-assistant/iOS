@@ -7,12 +7,26 @@ import SwiftUI
 ///
 /// The angle maths lives in ``HACircularSliderScale`` so it can be tested apart from the drawing.
 public struct HAControlCircularSlider: View {
+    /// Which side of the target the colour fills, the frontend's `ControlCircularSliderMode`.
+    public enum Mode: String, CaseIterable, Sendable {
+        /// From the minimum up to the target: heating.
+        case start
+        /// From the target up to the maximum: cooling.
+        case end
+        /// The whole ring, with no target: a reading with nothing to set.
+        case full
+    }
+
     private let scale: HACircularSliderScale
     private let current: Double?
+    private let mode: Mode
     private let isDisabled: Bool
+    private let isInactive: Bool
+    private let isReadOnly: Bool
     private let diameter: CGFloat
     private let trackColor: Color
     private let activeColor: Color
+    private let highColor: Color?
     /// Names the dial for VoiceOver. Without it the value is announced with no indication of what
     /// it sets — "21" could be the temperature or the humidity.
     private let label: String?
@@ -26,13 +40,18 @@ public struct HAControlCircularSlider: View {
     ///
     /// - Parameters:
     ///   - current: The reading now, marked on the track. Distinct from the target being set.
+    ///   - mode: Which side of the target is coloured.
+    ///   - isInactive: Hides the colour but keeps the target, for an entity that is off.
     ///   - diameter: Taken explicitly for the same reason ``HAGauge``'s is — a ring has no size of
     ///     its own to grow an aspect ratio from.
     public init(
         value: Binding<Double>,
         scale: HACircularSliderScale = HACircularSliderScale(),
         current: Double? = nil,
+        mode: Mode = .start,
         isDisabled: Bool = false,
+        isInactive: Bool = false,
+        isReadOnly: Bool = false,
         diameter: CGFloat = 200,
         trackColor: Color = .haDisabled,
         activeColor: Color = .haPrimary,
@@ -43,23 +62,34 @@ public struct HAControlCircularSlider: View {
         self.isDual = false
         self.scale = scale
         self.current = current
+        self.mode = mode
         self.isDisabled = isDisabled
+        self.isInactive = isInactive
+        self.isReadOnly = isReadOnly
         self.diameter = diameter
         self.trackColor = trackColor
         self.activeColor = activeColor
+        self.highColor = nil
         self.label = label
     }
 
-    /// A dial with a low and a high target, for a thermostat in heat/cool mode.
+    /// A dial with a low and a high target, for a thermostat in heat/cool mode. The low target
+    /// colours up from the minimum and the high one down from the maximum.
+    ///
+    /// - Parameter highColor: The high target's colour (cooling, where the low one is heating).
+    ///   Defaults to `activeColor`.
     public init(
         low: Binding<Double>,
         high: Binding<Double>,
         scale: HACircularSliderScale = HACircularSliderScale(),
         current: Double? = nil,
         isDisabled: Bool = false,
+        isInactive: Bool = false,
+        isReadOnly: Bool = false,
         diameter: CGFloat = 200,
         trackColor: Color = .haDisabled,
         activeColor: Color = .haPrimary,
+        highColor: Color? = nil,
         label: String? = nil
     ) {
         _low = low
@@ -67,48 +97,50 @@ public struct HAControlCircularSlider: View {
         self.isDual = true
         self.scale = scale
         self.current = current
+        self.mode = .start
         self.isDisabled = isDisabled
+        self.isInactive = isInactive
+        self.isReadOnly = isReadOnly
         self.diameter = diameter
         self.trackColor = trackColor
         self.activeColor = activeColor
+        self.highColor = highColor
         self.label = label
     }
 
     /// A trim starts at three o'clock; rotating by this puts the sweep's start at the lower left,
     /// leaving the 90° gap centred at the bottom.
     private static let startAngle: Double = 135
-    private var lineWidth: CGFloat { diameter * 0.12 }
+    /// The frontend draws a 24px stroke on a 320px dial.
+    private var lineWidth: CGFloat { diameter * 24 / 320 }
+    private var dotSize: CGFloat { lineWidth / 3 }
 
     /// The fraction of a full turn the dial covers.
     private var sweepFraction: Double { HACircularSliderScale.sweepDegrees / 360 }
 
+    private var acceptsInput: Bool { !isDisabled && !isReadOnly && mode != .full }
+
     public var body: some View {
         ZStack {
-            ring(from: 0, to: 1, color: trackColor.opacity(0.2))
-            // A single-target dial fills from the start; a dual one fills only between its handles.
-            ring(
-                from: isDual ? scale.percentage(for: low) : 0,
-                to: scale.percentage(for: isDual ? high : low),
-                color: activeColor
-            )
-            if let current {
-                marker(at: scale.percentage(for: current))
+            ring(from: 0, to: 1, color: trackColor.opacity(0.3))
+            if let current, !isCurrentOutOfRange(current) {
+                dot(at: scale.percentage(for: current), color: Color(uiColor: .label).opacity(0.5))
             }
-            // Ring handles at the ends you can drag — checked against the rendered
-            // ha-control-circular-slider, which marks each target with one. Without them the dial
-            // reads as a gauge rather than as something you can take hold of.
-            if isDual {
-                handle(at: scale.percentage(for: low))
+            if !isDisabled {
+                if isDual {
+                    arcs(target: low, mode: .start, color: activeColor)
+                    arcs(target: high, mode: .end, color: highColor ?? activeColor)
+                } else {
+                    arcs(target: low, mode: mode, color: activeColor)
+                }
             }
-            handle(at: scale.percentage(for: isDual ? high : low))
         }
         .frame(width: diameter, height: diameter)
-        .opacity(isDisabled ? 0.5 : 1)
         .contentShape(Circle())
         .gesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { drag in
-                    guard !isDisabled else { return }
+                    guard acceptsInput else { return }
                     setTarget(towards: drag.location)
                 }
         )
@@ -122,9 +154,12 @@ public struct HAControlCircularSlider: View {
         )
         // Without this the dial is announced as a value VoiceOver cannot change — which, for the
         // thermostat and humidifier cards, means the target can be heard but never set.
-        .accessibilityAdjustableAction { direction in
-            guard !isDisabled else { return }
-            adjust(by: direction == .increment ? scale.step : -scale.step)
+        .modify { view in
+            if acceptsInput {
+                view.accessibilityAdjustableAction { direction in
+                    adjust(by: direction == .increment ? scale.step : -scale.step)
+                }
+            }
         }
         // A dual dial has two targets and one adjustable action, so the swipe moves whichever
         // handle these actions have selected. Without them the lower target could be heard but
@@ -134,6 +169,55 @@ public struct HAControlCircularSlider: View {
         }
         .accessibilityAction(named: Text(HADesignSystemEnvironment.current.strings.adjustUpperTarget)) {
             adjustsLowerTarget = false
+        }
+    }
+
+    private func isCurrentOutOfRange(_ current: Double) -> Bool {
+        current < scale.min || current > scale.max
+    }
+
+    /// One target's arcs, as `renderArc` draws them: the side it colours at half strength, the
+    /// stretch between the reading and the target at full strength when the target is ahead of the
+    /// reading, the reading's mark on that stretch, and the handle.
+    @ViewBuilder
+    private func arcs(target: Double, mode: Mode, color: Color) -> some View {
+        let limit = mode == .end ? scale.max : scale.min
+        let reading = current ?? limit
+        let showsActive = switch mode {
+        case .start: reading <= target
+        case .end: target <= reading
+        case .full: false
+        }
+        let targetPercentage = scale.percentage(for: target)
+        let readingPercentage = scale.percentage(for: reading)
+        let colored: (Double, Double) = switch mode {
+        case .full: (0, 1)
+        case .end: (targetPercentage, 1)
+        case .start: (0, targetPercentage)
+        }
+
+        Group {
+            ring(from: colored.0, to: colored.1, color: .haCardBackground)
+            ring(from: colored.0, to: colored.1, color: color.opacity(0.5))
+            if mode != .full {
+                if showsActive {
+                    ring(
+                        from: Swift.min(readingPercentage, targetPercentage),
+                        to: Swift.max(readingPercentage, targetPercentage),
+                        color: color
+                    )
+                } else {
+                    dot(at: targetPercentage, color: color, size: lineWidth)
+                }
+            }
+            if let current, !isCurrentOutOfRange(current), showsActive || mode == .full {
+                dot(at: scale.percentage(for: current), color: .haCardBackground)
+            }
+        }
+        .opacity(isInactive ? 0 : 1)
+
+        if mode != .full {
+            handle(at: targetPercentage, color: color)
         }
     }
 
@@ -193,25 +277,23 @@ public struct HAControlCircularSlider: View {
             .padding(lineWidth / 2)
     }
 
-    /// The current reading, drawn as a small grey dot on the track rather than a handle — it reports
-    /// rather than sets, and the rendered dial keeps it visually quieter than the targets.
-    private func marker(at percentage: Double) -> some View {
+    private func dot(at percentage: Double, color: Color, size: CGFloat? = nil) -> some View {
         Circle()
-            .fill(Color.secondary)
-            .frame(width: lineWidth / 3, height: lineWidth / 3)
+            .fill(color)
+            .frame(width: size ?? dotSize, height: size ?? dotSize)
             .offset(y: -(diameter - lineWidth) / 2)
             .rotationEffect(.degrees(Self.startAngle + 90 + percentage * HACircularSliderScale.sweepDegrees))
     }
 
-    /// A ring in the active colour with the surface showing through, sitting on the arc's end.
-    private func handle(at percentage: Double) -> some View {
+    /// The target: a white disc ringed in the target's colour, sitting on the arc: the frontend's
+    /// `target-border` under `target`.
+    private func handle(at percentage: Double, color: Color) -> some View {
         Circle()
-            .fill(Color.haCardBackground)
-            .overlay(Circle().strokeBorder(activeColor, lineWidth: lineWidth / 3))
+            .fill(.white)
+            .overlay(Circle().strokeBorder(color, lineWidth: lineWidth / 8))
             .frame(width: lineWidth, height: lineWidth)
             .offset(y: -(diameter - lineWidth) / 2)
             .rotationEffect(.degrees(Self.startAngle + 90 + percentage * HACircularSliderScale.sweepDegrees))
-            .opacity(isDisabled ? 0 : 1)
     }
 }
 
@@ -221,6 +303,12 @@ public struct HAControlCircularSlider: View {
             value: .constant(21),
             scale: HACircularSliderScale(min: 7, max: 35, step: 0.5),
             current: 19
+        )
+        HAControlCircularSlider(
+            value: .constant(18),
+            scale: HACircularSliderScale(min: 7, max: 35, step: 0.5),
+            current: 24,
+            mode: .end
         )
         HAControlCircularSlider(value: .constant(60), isDisabled: true)
     }
@@ -232,14 +320,16 @@ public struct HAControlCircularSlider: View {
         low: .constant(18),
         high: .constant(24),
         scale: HACircularSliderScale(min: 7, max: 35, step: 0.5),
-        current: 21
+        current: 21,
+        activeColor: .orange,
+        highColor: .blue
     )
     .padding()
 }
 
 extension HAControlCircularSlider: FrontendComponent {
     public static var frontendComponentName: String { "ha-control-circular-slider" }
-    public static var frontendComponentVersion: String { "2026-08-28" }
+    public static var frontendComponentVersion: String { "2026-10-12" }
 }
 
 #endif

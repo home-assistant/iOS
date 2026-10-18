@@ -30,7 +30,7 @@ final class HomeAssistantViewModel: ObservableObject {
     let overlayState: WebFrontendOverlayState
     let chrome: WebViewChromeState
     let reconnectManager: WebViewReconnectManager
-    /// Feeds the App Labs native macOS sidebar and native iOS tab bar; only started once one of them is on screen.
+    /// Feeds the App Labs native iOS tab bar; only started once it is on screen.
     let sidebar: MacSidebarViewModel
     /// Lays `sidebar` out as tabs for the App Labs native iOS tab bar.
     let tabBar: NativeTabBarViewModel
@@ -300,6 +300,16 @@ final class HomeAssistantViewModel: ObservableObject {
                 self?.updateFullScreenLoaderVisibility(hasEmptyState: emptyState != nil)
             }
             .store(in: &cancellables)
+
+        // The watchdog fires once per load, and in the background or behind Assist it can spend that on a
+        // frontend whose reports are held back or that cannot render. A loader that is still up when the
+        // frontend is back on screen gets another one.
+        overlayState.sceneReturnedFromBackground
+            .merge(with: overlayState.frontendUncovered)
+            .sink { [weak self] in
+                self?.armLoaderWatchdog()
+            }
+            .store(in: &cancellables)
     }
 
     private func handleConnectionStateChange(_ connectionState: FrontEndConnectionState) {
@@ -365,12 +375,11 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     /// The loader only ever comes down on a frontend connection state, and that report can go missing: the
-    /// frontend announces `frontend/loaded` exactly once per page load, external-bus messages that arrive
-    /// while the app is backgrounded are dropped, and a document restored from WebKit's page cache never
-    /// announces itself again (`handleFrontendRestoredFromPageCache` covers that, but only while the frontend
-    /// was connected when the page was cached). The frontend behind the loader is alive in those cases, so
-    /// once the navigation itself has finished, wait a bounded amount of time for a connection state and then
-    /// get out of the user's way rather than covering a working frontend indefinitely.
+    /// frontend announces `frontend/loaded` exactly once per page load, and a document restored from WebKit's
+    /// page cache never announces itself again (`handleFrontendRestoredFromPageCache` covers that, but only
+    /// while the frontend was connected when the page was cached). The frontend behind the loader is alive in
+    /// those cases, so once the navigation itself has finished, wait a bounded amount of time for a connection
+    /// state and then get out of the user's way rather than covering a working frontend indefinitely.
     private func armLoaderWatchdog() {
         guard isFullScreenLoaderMounted else { return }
         let cycleID = loaderCycleID

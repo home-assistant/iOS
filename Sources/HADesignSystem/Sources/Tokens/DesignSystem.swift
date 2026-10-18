@@ -99,6 +99,18 @@ public enum DesignSystem {
         public static let rowMaxWidth: CGFloat = 380
     }
 
+    /// Metrics of the large controls a more-info dialog leads with, from the frontend's
+    /// `state-control-styles.ts` and `state-control-circular-slider-style.ts`.
+    public enum StateControl {
+        public static let thickness: CGFloat = 130
+        public static let length: CGFloat = 320
+        public static let cornerRadius: CGFloat = 36
+        public static let padding: CGFloat = 6
+        public static let iconSize: CGFloat = 24
+        public static let dialDiameter: CGFloat = 300
+        public static let buttonGroupSpacing: CGFloat = 10
+    }
+
     public enum Animation {
         public static let `default`: SwiftUICore.Animation = .easeInOut(duration: 0.3)
         public static let easeInOutFaster: SwiftUICore.Animation = .easeInOut(duration: 0.1)

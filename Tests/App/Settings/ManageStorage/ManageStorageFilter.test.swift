@@ -5,8 +5,7 @@ import Testing
 struct ManageStorageFilterTests {
     private let items = ManageStorageInventory.items(
         paths: .rooted(at: URL(fileURLWithPath: "/tmp/manage-storage-filter")),
-        isCatalyst: false,
-        hasCompletedLegacyStoreMigration: true
+        isCatalyst: false
     )
 
     @Test func anUntouchedFilterIsInactiveAndKeepsEverything() {
