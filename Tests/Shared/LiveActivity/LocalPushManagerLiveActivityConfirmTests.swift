@@ -61,7 +61,20 @@ final class LocalPushManagerLiveActivityConfirmTests: XCTestCase {
 
     private func clearAppGroupState() {
         _ = LiveActivityPendingStart.drainAll()
+        _ = LiveActivityPendingEnd.drainAll()
         _ = LiveActivityLocalPushResult.take(confirmIDs: ["confirm-1", "confirm-2", "confirm-end"])
+        UserDefaults(suiteName: AppConstants.AppGroupID)?
+            .removeObject(forKey: LiveActivityRegistry.reportedTokenTagsKey)
+    }
+
+    /// Records that Core holds a push token for the activity, as the registry does once it runs.
+    private func markActivityRunning(tag: String = "test_tag") {
+        UserDefaults(suiteName: AppConstants.AppGroupID)?
+            .set([tag], forKey: LiveActivityRegistry.reportedTokenTagsKey)
+    }
+
+    private func receiveEnd(confirmID: String? = "confirm-end", tag: String = "test_tag") throws {
+        try receive(message: "clear_notification", data: ["tag": tag], confirmID: confirmID)
     }
 
     private func receiveLiveActivityPush(confirmID: String? = "confirm-1", tag: String? = "test_tag") throws {
@@ -211,6 +224,62 @@ final class LocalPushManagerLiveActivityConfirmTests: XCTestCase {
         try receive(message: "clear_notification", data: ["tag": "test_tag"], confirmID: "confirm-end")
 
         XCTAssertEqual(Set(confirmedIDs), ["confirm-1", "confirm-end"])
+        XCTAssertTrue(manager.liveActivityConfirms.pendingConfirmIDs.isEmpty)
+    }
+
+    func testDefersEndConfirmForRunningActivity() throws {
+        markActivityRunning()
+        try receiveEnd()
+
+        XCTAssertTrue(confirmedIDs.isEmpty)
+        XCTAssertEqual(delegate.received.first?["hass_confirm_id"] as? String, "confirm-end")
+        XCTAssertEqual(manager.liveActivityConfirms.pendingConfirmIDs, ["confirm-end"])
+    }
+
+    func testConfirmsEndWhenAppReportsIt() throws {
+        markActivityRunning()
+        try receiveEnd()
+
+        LiveActivityLocalPushResult.record(.presented, confirmID: "confirm-end")
+        LiveActivityLocalPushResult.postDarwinSignal()
+        waitUntil { !confirmedIDs.isEmpty }
+
+        XCTAssertEqual(confirmedIDs, ["confirm-end"])
+        XCTAssertTrue(manager.liveActivityConfirms.pendingConfirmIDs.isEmpty)
+        XCTAssertEqual(apiConnection.pendingSubscriptions.count, 1, "channel is kept as is")
+    }
+
+    func testReopensChannelWhenAppDoesNotEnd() throws {
+        manager.liveActivityConfirms.replyTimeout = 0.05
+        markActivityRunning()
+        LiveActivityPendingEnd.append(tag: "test_tag", confirmID: "confirm-end")
+        let original = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        try receiveEnd()
+
+        waitUntil { apiConnection.pendingSubscriptions.count == 2 }
+
+        XCTAssertTrue(original.cancellable.wasCancelled)
+        XCTAssertTrue(confirmedIDs.isEmpty)
+        XCTAssertTrue(manager.liveActivityConfirms.pendingConfirmIDs.isEmpty)
+        XCTAssertTrue(LiveActivityPendingEnd.drainAll().isEmpty, "APNs owns the end now")
+    }
+
+    func testEndForRunningActivityConfirmsPendingUpdate() throws {
+        markActivityRunning()
+        try receiveLiveActivityPush()
+        try receiveEnd()
+
+        XCTAssertEqual(confirmedIDs, ["confirm-1"])
+        XCTAssertEqual(manager.liveActivityConfirms.pendingConfirmIDs, ["confirm-end"])
+    }
+
+    func testConfirmsEndImmediatelyForOtherTags() throws {
+        // A clear for a tag without a running activity is an ordinary notification clear.
+        markActivityRunning(tag: "other_tag")
+        try receiveEnd()
+
+        XCTAssertEqual(confirmedIDs, ["confirm-end"])
+        XCTAssertNil(delegate.received.first?["hass_confirm_id"])
         XCTAssertTrue(manager.liveActivityConfirms.pendingConfirmIDs.isEmpty)
     }
 

@@ -3,13 +3,14 @@ import Foundation
 
 /// Extension-side bookkeeping for Live Activity pushes whose receipt confirm waits on the app.
 ///
-/// The PushProvider extension cannot start a Live Activity, and the app can only do so while it is
-/// in the foreground. So a `live_update` push is handed to the app and its confirm is held here
-/// until the app replies through `LiveActivityLocalPushResult`: `presented` confirms the push;
-/// `notPresented`, or no reply within `replyTimeout` (the app is suspended), re-opens the channel
-/// instead. The server tears the old channel down first, which re-sends every unconfirmed push
-/// through APNs, where push-to-start reaches a backgrounded app, and registers the new channel in
-/// the same request, so local push never goes quiet. Main-thread confined.
+/// The PushProvider extension cannot start or end a Live Activity, and the app can only do so while
+/// it runs (a start only in the foreground). So a `live_update` push, or a `clear_notification` for
+/// a running activity, is handed to the app and its confirm is held here until the app replies
+/// through `LiveActivityLocalPushResult`: `presented` confirms the push; `notPresented`, or no reply
+/// within `replyTimeout` (the app is suspended), re-opens the channel instead. The server tears the
+/// old channel down first, which re-sends every unconfirmed push through APNs, where push-to-start
+/// and the activity's own push token reach a backgrounded app, and registers the new channel in the
+/// same request, so local push never goes quiet. Main-thread confined.
 final class LiveActivityLocalPushConfirmTracker {
     /// How long the app gets to reply. A running app answers within milliseconds; silence means it
     /// is suspended. Must stay well under the server's own 10 s confirm timeout.
@@ -71,8 +72,8 @@ final class LiveActivityLocalPushConfirmTracker {
             // A newer push for a tag that is already waiting keeps that tag's deadline, so a stream of
             // updates to a suspended app cannot postpone the fallback forever.
             let deadline = pending.values.first { $0.tag == tag }?.deadline ?? DispatchTime.now() + replyTimeout
-            // The hand-off queue keeps only the newest start per tag, so the app never replies for
-            // an older one; its content is stale either way, so release it now.
+            // The hand-off queues keep only the newest start or end per tag, so the app never
+            // replies for an older one; its content is stale either way, so release it now.
             releaseSuperseded(tag: tag)
             let timeout = DispatchWorkItem { [weak self] in
                 guard let self, pending[confirmID] != nil else { return }
@@ -118,13 +119,14 @@ final class LiveActivityLocalPushConfirmTracker {
     }
 
     /// Re-open the channel. The server re-sends every push still unconfirmed, so all pending
-    /// entries are released and their queued starts dropped: APNs owns them now.
+    /// entries are released and their queued starts and ends dropped: APNs owns them now.
     private func fallBack() {
         for entry in pending.values {
             entry.timeout.cancel()
             if #available(iOS 17.2, *) {
                 LiveActivityPendingStart.remove(tag: entry.tag)
             }
+            LiveActivityPendingEnd.remove(tag: entry.tag)
         }
         pending.removeAll()
         reopenChannel()

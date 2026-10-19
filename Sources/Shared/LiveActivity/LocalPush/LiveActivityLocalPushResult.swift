@@ -1,13 +1,14 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import Foundation
 
-/// The app's reply to a Live Activity start handed off over local push: whether it presented it.
+/// The app's reply to a Live Activity start or end handed off over local push: whether it applied it.
 ///
 /// The extension holds the server's receipt confirm until this arrives (see
-/// `LiveActivityLocalPushConfirmTracker`). `presented` confirms the push; `notPresented` means
-/// ActivityKit refused because the app is in the background, so the extension re-opens the channel
-/// and the server re-sends the push through APNs instead. Mirrors `LiveActivityPendingStart`: the
-/// outcome travels through the App Group store and a payload-less Darwin signal.
+/// `LiveActivityLocalPushConfirmTracker`). `presented` confirms the push (the activity was shown,
+/// or ended); `notPresented` means ActivityKit refused a start because the app is in the
+/// background, so the extension re-opens the channel and the server re-sends the push through APNs
+/// instead. Mirrors `LiveActivityPendingStart`: the outcome travels through the App Group store and
+/// a payload-less Darwin signal.
 enum LiveActivityLocalPushResult {
     enum Outcome: String {
         case presented
