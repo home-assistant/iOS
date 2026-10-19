@@ -171,12 +171,12 @@ public struct RegistrationOwnership {
     }
 
     /// The part of a notification action's name Home Assistant derives from a device `name`, as its `slugify` does:
-    /// lowercased Latin letters and digits, with a comma between digits dropped, as in "1,000", and everything else
-    /// between them collapsed into single underscores.
+    /// lowercased ASCII letters and digits, with other letters written in them, as "ø" is "o" and "ß" is "ss", a
+    /// comma between digits dropped, as in "1,000", and everything else between them collapsed into single
+    /// underscores.
     static func notificationName(_ name: String) -> String {
-        let latin = name.applyingTransform(.toLatin, reverse: false) ?? name
-        let plain = latin.applyingTransform(.stripDiacritics, reverse: false) ?? latin
-        return plain.lowercased()
+        let ascii = name.applyingTransform(StringTransform("Any-Latin; Latin-ASCII"), reverse: false) ?? name
+        return ascii.lowercased()
             .replacingOccurrences(of: #"(?<=\d),(?=\d)"#, with: "", options: .regularExpression)
             .split { !($0.isASCII && ($0.isLetter || $0.isNumber)) }
             .joined(separator: "_")

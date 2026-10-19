@@ -513,6 +513,9 @@ struct RegistrationOwnershipTests {
         #expect(RegistrationOwnership.notificationName("  Phone -- 2 ") == "phone_2")
         #expect(RegistrationOwnership.notificationName("Café Ünïcode") == "cafe_unicode")
         #expect(RegistrationOwnership.notificationName("Phone 1,000, 2") == "phone_1000_2")
+        #expect(RegistrationOwnership.notificationName("Søren") == "soren")
+        #expect(RegistrationOwnership.notificationName("Straße") == "strasse")
+        #expect(RegistrationOwnership.notificationName("Bjørn") == RegistrationOwnership.notificationName("Bjorn"))
     }
 
     /// Home Assistant drops a comma between digits from the name it gives the action, so "Phone 1,2" has the one
