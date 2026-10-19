@@ -86,6 +86,20 @@ final class LiveActivityPendingEndTests: XCTestCase {
         XCTAssertTrue(LiveActivityPendingEnd.drainAll().isEmpty)
     }
 
+    func testHandOff_queuesEndWithPushConfirmID() {
+        LiveActivityPendingEnd.handOff(tag: "tag", payload: ["hass_confirm_id": "confirm-1"])
+
+        XCTAssertEqual(LiveActivityPendingEnd.drainAll(), [.init(tag: "tag", confirmID: "confirm-1")])
+    }
+
+    func testDrainAll_dropsUndecodableQueue() {
+        let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
+        defaults?.set(Data("not json".utf8), forKey: "liveActivityPendingEndRequests")
+
+        XCTAssertTrue(LiveActivityPendingEnd.drainAll().isEmpty)
+        XCTAssertNil(defaults?.data(forKey: "liveActivityPendingEndRequests"))
+    }
+
     func testDrain_endsActivityAndReportsToExtension() {
         LiveActivityPendingEnd.append(tag: "tag", confirmID: "confirm-1")
         LiveActivityPendingEndObserver.drain()

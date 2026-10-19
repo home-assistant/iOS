@@ -51,6 +51,14 @@ enum LiveActivityPendingEnd {
         Current.Log.verbose("LiveActivityPendingEnd: enqueued '\(tag)', pending=\(requests.count)")
     }
 
+    /// Hand an end off from the PushProvider extension to the app: enqueue it with the push's
+    /// confirm id, if any, and wake the app.
+    static func handOff(tag: String, payload: [String: Any]) {
+        Current.Log.verbose("Handing off live activity end for tag \(tag) to the app")
+        append(tag: tag, confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String)
+        postDarwinSignal()
+    }
+
     /// Remove a queued end for `tag` (called when a newer start is enqueued for the same tag).
     static func remove(tag: String) {
         lock.lock()
@@ -119,16 +127,12 @@ enum LiveActivityPendingEnd {
     }
 
     private static func store(_ requests: [Request], to defaults: UserDefaults) {
-        guard !requests.isEmpty else {
+        // Encoding plain strings cannot fail.
+        guard !requests.isEmpty, let data = try? JSONEncoder().encode(requests) else {
             defaults.removeObject(forKey: storeKey)
             return
         }
-        do {
-            let data = try JSONEncoder().encode(requests)
-            defaults.set(data, forKey: storeKey)
-        } catch {
-            Current.Log.error("LiveActivityPendingEnd: failed to encode queue: \(error)")
-        }
+        defaults.set(data, forKey: storeKey)
     }
 }
 #endif

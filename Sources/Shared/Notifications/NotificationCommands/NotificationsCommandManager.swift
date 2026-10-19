@@ -122,12 +122,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *), let tag = payload["tag"] as? String, !tag.isEmpty {
             if Current.isAppExtension {
-                Current.Log.verbose("Handing off live activity end for tag \(tag) to the app")
-                LiveActivityPendingEnd.append(
-                    tag: tag,
-                    confirmID: payload[LocalPushManager.confirmIDUserInfoKey] as? String
-                )
-                LiveActivityPendingEnd.postDarwinSignal()
+                LiveActivityPendingEnd.handOff(tag: tag, payload: payload)
                 return .value(())
             }
             return Promise<Void> { seal in
