@@ -70,6 +70,30 @@ class HomeAssistantAPISensorUpdateRetryTests: XCTestCase {
         XCTAssertEqual(sent, 2)
     }
 
+    /// `WebhookManager` cancels an in-flight `update_sensor_states` when a newer one for the same
+    /// server starts, rejecting it with `.replaced`. When the server answers the newer one first,
+    /// the replaced one's failure arrives after the success that overtook it and owes no retry.
+    func testAReplacedUpdateOvertakenByASuccessDoesNotScheduleARetry() throws {
+        var seals = [Resolver<Void>]()
+        let bothSent = expectation(description: "both updates sent")
+        webhookManager.sendRequestHandler = { _, _, _, seal in
+            seals.append(seal)
+            if seals.count == 2 { bothSent.fulfill() }
+        }
+
+        // Started in this order, the sends reach the webhook manager in this order.
+        let older = api.UpdateSensors(trigger: .Launch)
+        let newer = api.UpdateSensors(trigger: .Periodic)
+        wait(for: [bothSent], timeout: 10)
+
+        seals[1].fulfill(())
+        try hang(newer)
+        seals[0].reject(WebhookError.replaced)
+        XCTAssertThrowsError(try hang(older))
+
+        XCTAssertTrue(scheduled.isEmpty)
+    }
+
     func testASuccessfulUpdateInBetweenCallsTheRetryOff() throws {
         answerSensorUpdates(succeeding: false)
         XCTAssertThrowsError(try hang(api.UpdateSensors(trigger: .Launch)))

@@ -38,6 +38,11 @@ final class SensorUpdateRetry {
         var fullFailedAt: UInt64?
         /// The limited updates that failed, by provider, each with the newest update that failed it.
         var limitedFailed = [ObjectIdentifier: Failed]()
+        /// The newest full update that got through, and the newest limited one per provider. A
+        /// failure older than a success that covers it has been overtaken: Home Assistant already
+        /// holds a newer value, so that failure is not owed a retry.
+        var fullSucceededAt: UInt64 = 0
+        var limitedSucceededAt = [ObjectIdentifier: UInt64]()
         /// Identifies the scheduled run, so a success in the meantime can disown it.
         var pendingToken: UUID?
         /// How many retries have been scheduled since the last time nothing was left to retry.
@@ -51,6 +56,16 @@ final class SensorUpdateRetry {
         /// whose own updates failed.
         var scope: [SensorProvider.Type]? {
             fullFailedAt != nil ? nil : limitedFailed.values.map(\.provider)
+        }
+
+        /// Whether a success newer than the update carried everything the update did: a full
+        /// success covers any update, a limited one only the providers it read.
+        func isCovered(generation: UInt64, limitedTo provider: SensorProvider.Type?) -> Bool {
+            if generation < fullSucceededAt {
+                return true
+            }
+            guard let provider else { return false }
+            return generation < limitedSucceededAt[ObjectIdentifier(provider), default: 0]
         }
     }
 
@@ -77,9 +92,18 @@ final class SensorUpdateRetry {
     }
 
     /// An update reached the server: the failures it supersedes — older, and for the sensors it
-    /// carried — are no longer owed a retry.
+    /// carried — are no longer owed a retry, whether they were noted before this or come in after.
     func noteSuccess(generation: UInt64, limitedTo providers: [SensorProvider.Type]?) {
         let cleared: Bool = state.mutate { state in
+            if let providers {
+                for provider in providers {
+                    let key = ObjectIdentifier(provider)
+                    state.limitedSucceededAt[key] = max(state.limitedSucceededAt[key, default: 0], generation)
+                }
+            } else {
+                state.fullSucceededAt = max(state.fullSucceededAt, generation)
+            }
+
             guard state.hasWork else { return false }
 
             if let providers {
@@ -106,7 +130,12 @@ final class SensorUpdateRetry {
         }
     }
 
-    /// An update didn't reach the server: retry, unless one is already on its way.
+    /// An update didn't reach the server: retry, unless one is already on its way or a newer
+    /// update has carried the same sensors since.
+    ///
+    /// The second case is how an overlapping pair behaves: `WebhookManager` replaces the older
+    /// request with the newer one, and when the server answers the newer one before the older
+    /// one's cancellation is reported, the failure arrives after the success that overtook it.
     func noteFailure(generation: UInt64, limitedTo providers: [SensorProvider.Type]?) {
         guard !Current.isAppExtension else {
             // Nothing outlives the intent an extension was launched for; the app's next update
@@ -116,16 +145,16 @@ final class SensorUpdateRetry {
 
         let scheduled: (token: UUID, delay: TimeInterval)? = state.mutate { state in
             if let providers {
-                for provider in providers {
+                for provider in providers where !state.isCovered(generation: generation, limitedTo: provider) {
                     let key = ObjectIdentifier(provider)
                     let newest = max(state.limitedFailed[key]?.generation ?? 0, generation)
                     state.limitedFailed[key] = Failed(provider: provider, generation: newest)
                 }
-            } else {
+            } else if !state.isCovered(generation: generation, limitedTo: nil) {
                 state.fullFailedAt = max(state.fullFailedAt ?? 0, generation)
             }
 
-            guard state.pendingToken == nil else { return nil }
+            guard state.hasWork, state.pendingToken == nil else { return nil }
             let token = UUID()
             state.pendingToken = token
             let delay = Self.delays[min(state.attempt, Self.delays.count - 1)]

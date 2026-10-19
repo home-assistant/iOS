@@ -1060,7 +1060,13 @@ public class HomeAssistantAPI {
                     case .fulfilled:
                         retry.noteSuccess(generation: generation, limitedTo: limitedTo)
                     case let .rejected(error):
-                        Current.Log.error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        if error.isCancelled {
+                            // Replaced by a newer request for this server; the retry decides.
+                            Current.Log.info("sensor update for \(trigger) to \(server.info.name) was replaced")
+                        } else {
+                            Current.Log
+                                .error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        }
                         retry.noteFailure(generation: generation, limitedTo: limitedTo)
                     }
                 }
