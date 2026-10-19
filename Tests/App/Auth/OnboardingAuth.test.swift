@@ -236,6 +236,58 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(Current.settingsStore.registrationRecord(for: identifier), previous)
     }
 
+    /// The server can have made the registration even though its response was lost, so trying again registers under
+    /// the identity this device was registering with rather than adding another device.
+    func testFailingToRegisterKeepsTheIdentityToRegisterWithNext() throws {
+        let previousVendorID = Current.device.identifierForVendor
+        Current.device.identifierForVendor = { "this-device" }
+        defer { Current.device.identifierForVendor = previousVendorID }
+        instance.uuid = "instance-1"
+        let previous = RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+        )
+        Current.settingsStore.setRegistrationRecord(previous, for: "instance-1")
+        let attempted = RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "this-device")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            Current.settingsStore.updateRegistrationRecord(for: api.server.identifier) { $0.pending = attempted }
+        }
+
+        let result = auth(postRegister: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(
+            Current.settingsStore.registrationRecord(for: "instance-1"),
+            RegistrationRecord(current: previous.current, pending: attempted)
+        )
+    }
+
+    /// The same once the server is saved: the registration made is registered under again.
+    func testFailingAfterRegisteringKeepsTheIdentityRegisteredWith() throws {
+        let previousVendorID = Current.device.identifierForVendor
+        Current.device.identifierForVendor = { "this-device" }
+        defer { Current.device.identifierForVendor = previousVendorID }
+        let existing: Identifier<Server> = "existing-server"
+        Current.servers.add(identifier: existing, serverInfo: with(ServerInfo.fake()) { $0.instanceID = "instance-1" })
+        let previous = RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+        )
+        Current.settingsStore.setRegistrationRecord(previous, for: existing)
+        let registered = RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "this-device")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            let record = RegistrationRecord(current: registered)
+            Current.settingsStore.setRegistrationRecord(record, for: api.server.identifier)
+        }
+
+        let result = auth(postComplete: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(
+            Current.settingsStore.registrationRecord(for: existing),
+            RegistrationRecord(current: previous.current, pending: registered)
+        )
+    }
+
     /// A discovered instance ID settles which server it is, even when another server answers at the same address.
     func testAnExistingServerIsFoundByTheInstanceIDItWasDiscoveredWith() {
         let existing = Server.fake(identifier: "server-from-an-older-install") { $0.instanceID = "instance-1" }

@@ -116,7 +116,15 @@ class OnboardingAuth {
             }.then { server in
                 steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
-                Current.settingsStore.setRegistrationRecord(registrationBeforeOnboarding, for: api.server.identifier)
+                let settings = Current.settingsStore
+                let attempt = settings.registrationRecord(for: api.server.identifier)
+                // An identifier onboarding made up for an address typed in is not used again, so keeps nothing.
+                settings.setRegistrationRecord(
+                    Self.knowsInstance(of: api.server)
+                        ? Self.rollingBack(to: registrationBeforeOnboarding, from: attempt)
+                        : registrationBeforeOnboarding,
+                    for: api.server.identifier
+                )
                 return when(resolved: undoConfigure(api: api, persisted: persisted))
                     .then { _ in Promise<Server>(error: error) }
             }
@@ -325,6 +333,20 @@ class OnboardingAuth {
         return servers.filter { $0.identifier == server.identifier || $0.info.instanceID == server.identifier.rawValue }
     }
 
+    /// `previous`, keeping as the identity to register with next the one this device registered under in `attempt`, or
+    /// was about to: the server can have that registration even though onboarding failed, such as when its response
+    /// was lost, and trying again then registers under it rather than adding another device.
+    private static func rollingBack(
+        to previous: RegistrationRecord,
+        from attempt: RegistrationRecord
+    ) -> RegistrationRecord {
+        guard let vendorID = Current.device.identifierForVendor(), let identity = attempt.pending ?? attempt.current,
+              identity.ownerVendorID == vendorID, identity != previous.current else { return previous }
+        var record = previous
+        record.pending = identity
+        return record
+    }
+
     private func undoConfigure(
         api: HomeAssistantAPI,
         persisted: Persisted?
@@ -356,7 +378,12 @@ class OnboardingAuth {
             } else {
                 Current.servers.remove(identifier: identifier)
             }
-            Current.settingsStore.setRegistrationRecord(persisted.previousRegistration, for: identifier)
+            let settings = Current.settingsStore
+            let attempt = settings.registrationRecord(for: identifier)
+            settings.setRegistrationRecord(
+                Self.rollingBack(to: persisted.previousRegistration, from: attempt),
+                for: identifier
+            )
 
             Current.resetAPICache(for: [identifier])
         }
