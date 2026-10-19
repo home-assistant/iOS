@@ -190,6 +190,8 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
             self.replacedSecurityLevel = nil
         }
         locationPermissionContext = .notRequested
+        // A save that already succeeded must not carry over, so the next save moves on again.
+        storedSSIDSuccessfully = false
         navigateToStep(.localAccess)
     }
 

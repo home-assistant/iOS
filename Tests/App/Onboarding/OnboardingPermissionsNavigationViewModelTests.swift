@@ -403,6 +403,29 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.storedSSIDSuccessfully == false)
     }
 
+    @Test("Going back after a home network save succeeded clears the success")
+    @MainActor
+    func goingBackAfterSaveSuccessClearsIt() async throws {
+        let server = Self.makeLocalOnlyServer(identifier: "save-then-back", securityLevel: .undefined)
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.homeNetwork)
+
+        viewModel.saveHomeNetwork(.init(networkName: "Home", hardwareAddress: nil))
+        // Let the queued success callback run before going back.
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+        #expect(viewModel.storedSSIDSuccessfully)
+
+        viewModel.previousStep()
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(viewModel.storedSSIDSuccessfully == false)
+    }
+
     @Test("Back is only offered on the home network step, in every flow shape", arguments: [
         OnboardingPermissionsNavigationViewModel.StepID.default,
         OnboardingPermissionsNavigationViewModel.StepID.remoteConnectionCompatible,
