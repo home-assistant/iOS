@@ -34,6 +34,30 @@ class OnboardingAuthStepConfigTests: XCTestCase {
         XCTAssertNoThrow(try hang(result))
     }
 
+    func testPerformSendsThroughTheSignedInURL() {
+        _ = step.perform(point: .afterRegister)
+
+        XCTAssertEqual(api.getConfigOverrideURL, URL(string: "http://homeassistant.local:8123"))
+    }
+
+    func testSignedInURLPrefersTheInternalURL() {
+        var connection = ServerInfo.fake().connection
+        connection.set(address: URL(string: "http://192.168.1.10:8123/"), for: .internal)
+        connection.set(address: URL(string: "https://example.com"), for: .external)
+        connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/cloudhook-id")
+        connection.set(address: URL(string: "https://ui.nabu.casa"), for: .remoteUI)
+
+        XCTAssertEqual(OnboardingAuthStepConfig.signedInURL(of: connection), URL(string: "http://192.168.1.10:8123"))
+    }
+
+    func testSignedInURLFallsBackToTheExternalURL() {
+        var connection = ServerInfo.fake().connection
+        connection.set(address: nil, for: .internal)
+        connection.set(address: URL(string: "https://example.com"), for: .external)
+
+        XCTAssertEqual(OnboardingAuthStepConfig.signedInURL(of: connection), URL(string: "https://example.com"))
+    }
+
     func testPerformFailure() {
         let result = step.perform(point: .afterRegister)
 
@@ -51,10 +75,12 @@ private enum TestError: Error {
 
 private class FakeHomeAssistantAPI: HomeAssistantAPI {
     var getConfigResolver: Resolver<Void>?
+    var getConfigOverrideURL: URL?
 
-    override func getConfig() -> Promise<Void> {
+    override func getConfig(overrideURL: URL? = nil) -> Promise<Void> {
         let (promise, resolver) = Promise<Void>.pending()
         getConfigResolver = resolver
+        getConfigOverrideURL = overrideURL
         return promise
     }
 }
