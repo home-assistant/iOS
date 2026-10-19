@@ -349,6 +349,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
         Self.chooseMostSecure(viewModel)
         viewModel.previousStep()
 
+        // Picking less secure moves on whatever the permission answer is; a refusal is the simplest one to drive.
         viewModel.locationPermissionContext = .lessSecureLocalConnection
         let manager = MockCLLocationManager()
         manager.authorizationStatus = .denied
