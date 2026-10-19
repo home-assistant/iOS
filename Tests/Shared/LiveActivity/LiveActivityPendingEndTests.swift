@@ -57,13 +57,32 @@ final class LiveActivityPendingEndTests: XCTestCase {
     }
 
     func testDrainAll_includesTagsQueuedByOlderBuilds() {
-        UserDefaults(suiteName: AppConstants.AppGroupID)?.set(["legacy"], forKey: "liveActivityPendingEndTags")
-        LiveActivityPendingEnd.append(tag: "tag")
+        queueLegacyTags(["legacy"])
+
+        XCTAssertEqual(LiveActivityPendingEnd.drainAll(), [.init(tag: "legacy", confirmID: nil)])
+        XCTAssertTrue(LiveActivityPendingEnd.drainAll().isEmpty)
+    }
+
+    func testAppend_keepsTagsQueuedByOlderBuilds() {
+        queueLegacyTags(["legacy", "tag"])
+        LiveActivityPendingEnd.append(tag: "tag", confirmID: "confirm-1")
 
         XCTAssertEqual(
             LiveActivityPendingEnd.drainAll(),
-            [.init(tag: "legacy", confirmID: nil), .init(tag: "tag", confirmID: nil)]
+            [.init(tag: "legacy", confirmID: nil), .init(tag: "tag", confirmID: "confirm-1")]
         )
+    }
+
+    func testNewerStart_cancelsEndQueuedByOlderBuild() {
+        queueLegacyTags(["tag"])
+        LiveActivityPendingStart.append(LiveActivityPendingStart.Request(
+            tag: "tag",
+            title: "T",
+            serverWebhookId: nil,
+            state: HandlerStartOrUpdateLiveActivity.contentState(from: ["message": "m"]),
+            alert: false
+        ))
+
         XCTAssertTrue(LiveActivityPendingEnd.drainAll().isEmpty)
     }
 
@@ -83,6 +102,10 @@ final class LiveActivityPendingEndTests: XCTestCase {
 
         XCTAssertEqual(mockRegistry.endCalls.map(\.tag), ["tag"])
         XCTAssertTrue(LiveActivityLocalPushResult.take(confirmIDs: ["confirm-1"]).isEmpty)
+    }
+
+    private func queueLegacyTags(_ tags: [String]) {
+        UserDefaults(suiteName: AppConstants.AppGroupID)?.set(tags, forKey: "liveActivityPendingEndTags")
     }
 
     private func waitUntil(_ condition: () -> Bool) {

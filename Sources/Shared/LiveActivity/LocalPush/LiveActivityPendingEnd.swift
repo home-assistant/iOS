@@ -24,8 +24,8 @@ enum LiveActivityPendingEnd {
     }
 
     private static let storeKey = "liveActivityPendingEndRequests"
-    // Bare tags queued by builds before confirm ids were carried; drained so an end queued across
-    // an update still lands.
+    // Bare tags queued by builds before confirm ids were carried; folded into the store above so an
+    // end queued across an update still lands, and a newer start still cancels it.
     private static let legacyStoreKey = "liveActivityPendingEndTags"
     private static let lock = NSLock()
 
@@ -44,6 +44,7 @@ enum LiveActivityPendingEnd {
         lock.lock()
         defer { lock.unlock() }
         guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        migrateLegacyTags(in: defaults)
         var requests = load(from: defaults).filter { $0.tag != tag }
         requests.append(Request(tag: tag, confirmID: confirmID))
         store(requests, to: defaults)
@@ -55,6 +56,7 @@ enum LiveActivityPendingEnd {
         lock.lock()
         defer { lock.unlock() }
         guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return }
+        migrateLegacyTags(in: defaults)
         let requests = load(from: defaults)
         let remaining = requests.filter { $0.tag != tag }
         guard remaining.count != requests.count else { return }
@@ -65,16 +67,15 @@ enum LiveActivityPendingEnd {
         lock.lock()
         defer { lock.unlock() }
         guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [] }
-        let legacy = (defaults.stringArray(forKey: legacyStoreKey) ?? []).map { Request(tag: $0, confirmID: nil) }
-        defaults.removeObject(forKey: legacyStoreKey)
+        migrateLegacyTags(in: defaults)
         let observed = load(from: defaults)
-        guard !observed.isEmpty else { return legacy }
+        guard !observed.isEmpty else { return [] }
         // Subtract only the exact requests we read, so a concurrent extension append — whether a
         // different tag or a newer confirm id for a tag we observed — survives instead of being
         // clobbered (the cross-process queue shares no lock); it drains on the next signal/launch.
         let remaining = load(from: defaults).filter { !observed.contains($0) }
         store(remaining, to: defaults)
-        return legacy + observed
+        return observed
     }
 
     // Payload-less wake; the requests travel via the App Group store above.
@@ -95,6 +96,15 @@ enum LiveActivityPendingEnd {
             charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
         )
         return tag.unicodeScalars.allSatisfy { allowed.contains($0) }
+    }
+
+    private static func migrateLegacyTags(in defaults: UserDefaults) {
+        guard let tags = defaults.stringArray(forKey: legacyStoreKey) else { return }
+        defaults.removeObject(forKey: legacyStoreKey)
+        let requests = load(from: defaults)
+        let queuedTags = Set(requests.map(\.tag))
+        let legacy = tags.filter { !queuedTags.contains($0) }.map { Request(tag: $0, confirmID: nil) }
+        store(requests + legacy, to: defaults)
     }
 
     private static func load(from defaults: UserDefaults) -> [Request] {
