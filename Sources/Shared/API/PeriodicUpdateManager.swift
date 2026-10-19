@@ -48,7 +48,27 @@ public class PeriodicUpdateManager {
         }
     }
 
+    /// Warm connects within this window of any connect start are skipped: macOS posts
+    /// `NSApplicationDidBecomeActiveNotification` twice per activation, about 300 ms apart, and the
+    /// second would repeat the first connect in full. Two seconds covers that gap with room to
+    /// spare and is shorter than any deliberate switch back to the app.
+    static let warmConnectDedupeWindow: TimeInterval = 2
+
+    /// Only touched from the main thread: every caller is a notification observer, the timer, or
+    /// the launch task on the main actor.
+    private var lastConnectStartDate: Date?
+
     public func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
+        let now = Current.date()
+        if reason == .warm, let lastConnectStartDate {
+            let elapsed = now.timeIntervalSince(lastConnectStartDate)
+            if elapsed < Self.warmConnectDedupeWindow {
+                Current.Log.info("skipping warm connect; one started \(String(format: "%.1f", elapsed))s ago")
+                return
+            }
+        }
+        lastConnectStartDate = now
+
         Current.backgroundTask(withName: BackgroundTask.connectApi.rawValue) { _ in
             when(resolved: Current.apis.map { api in
                 api.Connect(reason: reason)
