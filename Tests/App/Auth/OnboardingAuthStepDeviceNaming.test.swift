@@ -431,6 +431,27 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
+    /// The same goes for a server signed in to at an address typed in, which can be that other server.
+    func testSigningInAtAnAddressWithAnIdentifierAnotherServerHasAsAnotherDevicesTakesOneOfItsOwn() throws {
+        let cabin = Server.fake(identifier: "cabin")
+
+        try withServers([cabin]) {
+            let shared = Current.settingsStore.integrationDeviceID
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: shared, ownerVendorID: "other-device")
+            ), for: "cabin")
+            signIn(at: URL(string: "https://cabin.example.com"))
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: shared)]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, shared)
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
     /// Reinstalling the app clears its records but keeps the servers, along with the identifier each registration
     /// was made with, which signing in to a discovered server again keeps.
     func testSigningInAgainAfterAReinstallKeepsTheIdentifierKeptWithTheServer() throws {

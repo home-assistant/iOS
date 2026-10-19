@@ -122,8 +122,9 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     private func reuseRegistrationOfExistingServer(among registeredDevices: [RegisteredDevice]) -> Bool {
         let settings = Current.settingsStore
         let ownership = RegistrationOwnership()
-        let saved = OnboardingAuth.existingServers(reachedBy: api.server, among: Current.servers.all)
-        let candidates = saved.filter { !ownership.belongsToAnotherDevice(settings.registrationIdentity(for: $0)) }
+        let candidates = OnboardingAuth.existingServers(reachedBy: api.server, among: Current.servers.all).filter {
+            !ownership.belongsToAnotherDevice(settings.registrationIdentity(for: $0))
+        }
         let matches = registrations(of: candidates, among: registeredDevices)
 
         // A server saved more than once can share an identity, which is one device on this server either way.
@@ -133,11 +134,6 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
         if let existing = candidates.first {
             adopt(settings.registrationIdentity(for: existing), named: existing.info.setting(for: .overrideDeviceName))
-        } else if saved.count > candidates.count {
-            // Saved with a registration another device owns, such as one waiting to be signed in to again: the
-            // identifier this device registers with otherwise can be the very one that device has here, such as after
-            // keeping another server's registration made it this device's default.
-            registerUnderAnIdentityOfItsOwn()
         }
         return false
     }
@@ -160,9 +156,20 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     /// Registering under an identity another device owns would take over that device's registration, such as when
     /// signing in again to a server a backup brought along before settling it, or while the identifier this device
     /// registers with by default is still the other device's. This device registers under one of its own instead.
+    ///
+    /// Without a registration of its own here, this device registers with its default identifier, which a saved server
+    /// can record as another device's: keeping one server's registration makes the identifier this device's, while
+    /// another server the backup brought can still be the other device's under it, and this server can be that one.
     private func leaveRegistrationOfAnotherDevice() {
-        let identity = Current.settingsStore.registrationIdentity(for: api.server)
-        if RegistrationOwnership().belongsToAnotherDevice(identity) {
+        let settings = Current.settingsStore
+        let ownership = RegistrationOwnership()
+        let identity = settings.registrationIdentity(for: api.server)
+        let isDefault = settings.registrationRecord(for: api.server.identifier) == RegistrationRecord()
+        let isAnotherDevicesElsewhere = isDefault && Current.servers.all.contains { server in
+            let saved = settings.registrationIdentity(for: server)
+            return saved.deviceID == identity.deviceID && ownership.belongsToAnotherDevice(saved)
+        }
+        if ownership.belongsToAnotherDevice(identity) || isAnotherDevicesElsewhere {
             registerUnderAnIdentityOfItsOwn()
         }
     }
