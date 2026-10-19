@@ -14,9 +14,11 @@ struct OnboardingPermissionsNavigationView: View {
     /// their own bar items in it leave the bar as it is.
     private let showsNavigationBarForBackOnly: Bool
 
-    /// The step on screen, which follows the view model one update later so the page being left is
-    /// redrawn with the new direction before it is removed.
+    /// The step on screen and the direction it was reached in. SwiftUI animates a removed view with
+    /// the transition of its last render, so the page being left is first redrawn with the new
+    /// direction and only removed one update later.
     @State private var displayedStepIndex = 0
+    @State private var isAdvancing = true
 
     @Environment(\.layoutDirection) private var layoutDirection
     @Environment(\.dismiss) private var dismiss
@@ -51,6 +53,7 @@ struct OnboardingPermissionsNavigationView: View {
         }
         .animation(DesignSystem.Animation.default, value: displayedStepIndex)
         .onChange(of: viewModel.currentStepIndex) { newValue in
+            isAdvancing = newValue >= displayedStepIndex
             DispatchQueue.main.async {
                 displayedStepIndex = newValue
             }
@@ -197,8 +200,8 @@ struct OnboardingPermissionsNavigationView: View {
 
         // Forward: insert from trailing, remove to leading (push)
         // Backward: insert from leading, remove to trailing (pop)
-        let insertionEdge: Edge = viewModel.isAdvancing ? trailing : leading
-        let removalEdge: Edge = viewModel.isAdvancing ? leading : trailing
+        let insertionEdge: Edge = isAdvancing ? trailing : leading
+        let removalEdge: Edge = isAdvancing ? leading : trailing
 
         return .asymmetric(
             insertion: .move(edge: insertionEdge).combined(with: .opacity),

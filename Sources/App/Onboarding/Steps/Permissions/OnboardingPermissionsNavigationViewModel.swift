@@ -68,9 +68,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
 
     // MARK: - Private Properties
 
-    /// Tracks the previous step index for determining animation direction
-    private var lastStepIndex: Int = 0
-
     private let locationManager = CLLocationManager()
     private let onboardingServer: Server
 
@@ -86,11 +83,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Returns all available steps in the onboarding flow
     let steps: [StepID]
 
-    /// Determines if the user is advancing forward through the steps (for animation purposes)
-    var isAdvancing: Bool {
-        currentStepIndex >= lastStepIndex
-    }
-
     /// Only the home network step offers going back: it is the one step that strands the user, and
     /// the steps before it do not undo what they set.
     var canGoBack: Bool {
@@ -99,6 +91,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
 
     func canGoBack(fromStepAt index: Int) -> Bool {
         steps.indices.contains(index) && steps[index] == .homeNetwork
+            && steps[..<index].contains(.localAccess)
     }
 
     /// Returns the current step based on the current step index
@@ -171,8 +164,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
             Current.impactFeedback.impactOccurred()
         }
 
-        // Update the last step after deciding transition direction
-        lastStepIndex = currentStepIndex
         currentStepIndex = index
     }
 
@@ -331,6 +322,9 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Applies the appropriate configuration based on the location permission context
     /// - Note: Enables sensors for Home Assistant sharing or sets security level for local connections
     private func applyLocationPermissionNeeds() {
+        // Going back clears the request; a late grant must not move the flow on by itself.
+        guard locationPermissionContext != .notRequested else { return }
+
         if locationPermissionContext == .shareWithHomeAssistant {
             // Enable location sensors for sharing with Home Assistant
             enableLocationSensor()
