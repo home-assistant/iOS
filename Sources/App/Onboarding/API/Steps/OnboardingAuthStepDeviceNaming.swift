@@ -122,9 +122,8 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     private func reuseRegistrationOfExistingServer(among registeredDevices: [RegisteredDevice]) -> Bool {
         let settings = Current.settingsStore
         let ownership = RegistrationOwnership()
-        let candidates = OnboardingAuth.existingServers(reachedBy: api.server, among: Current.servers.all).filter {
-            !ownership.belongsToAnotherDevice(settings.registrationIdentity(for: $0))
-        }
+        let saved = OnboardingAuth.existingServers(reachedBy: api.server, among: Current.servers.all)
+        let candidates = saved.filter { !ownership.belongsToAnotherDevice(settings.registrationIdentity(for: $0)) }
         let matches = registrations(of: candidates, among: registeredDevices)
 
         // A server saved more than once can share an identity, which is one device on this server either way.
@@ -134,6 +133,11 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
         if let existing = candidates.first {
             adopt(settings.registrationIdentity(for: existing), named: existing.info.setting(for: .overrideDeviceName))
+        } else if saved.count > candidates.count {
+            // Saved with a registration another device owns, such as one waiting to be signed in to again: the
+            // identifier this device registers with otherwise can be the very one that device has here, such as after
+            // keeping another server's registration made it this device's default.
+            registerUnderAnIdentityOfItsOwn()
         }
         return false
     }
@@ -157,9 +161,16 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     /// signing in again to a server a backup brought along before settling it, or while the identifier this device
     /// registers with by default is still the other device's. This device registers under one of its own instead.
     private func leaveRegistrationOfAnotherDevice() {
+        let identity = Current.settingsStore.registrationIdentity(for: api.server)
+        if RegistrationOwnership().belongsToAnotherDevice(identity) {
+            registerUnderAnIdentityOfItsOwn()
+        }
+    }
+
+    /// Registers this device under a new identity of its own, as registering it anew does.
+    private func registerUnderAnIdentityOfItsOwn() {
+        guard let vendorID = Current.device.identifierForVendor() else { return }
         let settings = Current.settingsStore
-        guard RegistrationOwnership().belongsToAnotherDevice(settings.registrationIdentity(for: api.server)),
-              let vendorID = Current.device.identifierForVendor() else { return }
         settings.updateRegistrationRecord(for: api.server.identifier) { record in
             record.pending = RegistrationIdentity(deviceID: settings.newIntegrationDeviceID(), ownerVendorID: vendorID)
         }

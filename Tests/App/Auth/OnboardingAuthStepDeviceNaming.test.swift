@@ -402,7 +402,32 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
             try respond(result: .success([.init(name: "Other Phone", identifier: "home-device-id")]))
             XCTAssertNoThrow(try hang(result))
 
-            XCTAssertEqual(Current.settingsStore.registrationRecord(for: api.server.identifier), RegistrationRecord())
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, "home-device-id")
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    /// Keeping one server's registration makes the identifier this device registers with by default its own, while
+    /// another server the backup brought can still be the other device's under that same identifier: signing in
+    /// again to that one registers this device under an identity of its own.
+    func testSigningInAgainToAServerAnotherDeviceOwnsTakesNoIdentifierItShares() throws {
+        let cabin = Server.fake(identifier: "cabin") { $0.instanceID = "instance-1" }
+
+        try withServers([cabin]) {
+            let shared = Current.settingsStore.integrationDeviceID
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: shared, ownerVendorID: "other-device")
+            ), for: "cabin")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: shared)]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, shared)
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
         }
     }
 
