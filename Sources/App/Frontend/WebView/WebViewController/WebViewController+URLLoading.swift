@@ -73,6 +73,17 @@ extension WebViewController {
         }
     }
 
+    /// Assist opened from the Action Button or a Control Center control on a cold launch is presented over
+    /// the frontend before the frontend is ever on screen, so the appearance and activation events that
+    /// normally load the page pass while it is covered. Without a check once Assist closes, the stand-by
+    /// loader can stay up over a web view that never loaded, or whose watchdog ran while it was hidden.
+    /// Every step is safe to repeat, so a frontend that loaded fine behind Assist is left as it is.
+    func handleOverlayDismissed() {
+        webViewScriptMessageHandler.deliverDeferredMessages()
+        loadActiveURLIfNeeded()
+        overlayState?.frontendUncovered.send()
+    }
+
     /// How long an in-flight `loadActiveURLIfNeeded()` attempt may run before a new call treats it
     /// as hung and replaces it. Attempts normally finish in well under a second; the worst healthy
     /// case is two sequential network-info fetches (`webviewURL()` plus the kiosk dashboard URL),
