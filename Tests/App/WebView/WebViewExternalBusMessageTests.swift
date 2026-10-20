@@ -96,7 +96,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasAssist",
             "hasAssistSettings",
             "hasCameraPlayer",
-            "hasCameraMicrophoneStream",
+            "webrtc",
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",
@@ -106,5 +106,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
 
         let actualKeys = Set(result.keys)
         XCTAssertEqual(actualKeys, expectedKeys)
+    }
+
+    @MainActor func testConfigResultGroupsWebRTCCapabilities() throws {
+        let webRTC = try XCTUnwrap(WebViewExternalBusMessage.configResult["webrtc"] as? [String: Any])
+
+        XCTAssertEqual(Set(webRTC.keys), ["hasCameraMicrophoneStream"])
+        XCTAssertEqual(webRTC["hasCameraMicrophoneStream"] as? Bool, !Current.isCatalyst)
     }
 }

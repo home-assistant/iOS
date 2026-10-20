@@ -52,7 +52,9 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasAssist": true,
             "hasAssistSettings": true,
             "hasCameraPlayer": !Current.isCatalyst,
-            "hasCameraMicrophoneStream": !Current.isCatalyst,
+            "webrtc": [
+                "hasCameraMicrophoneStream": !Current.isCatalyst,
+            ],
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,

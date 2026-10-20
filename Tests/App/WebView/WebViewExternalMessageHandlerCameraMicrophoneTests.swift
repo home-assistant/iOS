@@ -157,7 +157,9 @@ final class WebViewExternalMessageHandlerCameraMicrophoneTests: XCTestCase {
         }
 
         let result = try XCTUnwrap(reply["result"] as? [String: Any])
-        XCTAssertEqual(result["hasCameraMicrophoneStream"] as? Bool, !Current.isCatalyst)
+        let webRTC = try XCTUnwrap(result["webrtc"] as? [String: Any])
+        XCTAssertNil(result["hasCameraMicrophoneStream"])
+        XCTAssertEqual(webRTC["hasCameraMicrophoneStream"] as? Bool, !Current.isCatalyst)
     }
 
     // MARK: - Helpers
