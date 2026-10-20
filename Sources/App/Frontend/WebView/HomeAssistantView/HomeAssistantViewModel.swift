@@ -132,6 +132,12 @@ final class HomeAssistantViewModel: ObservableObject {
     deinit {
         loaderMinimumDurationTask?.cancel()
         loaderWatchdogTask?.cancel()
+        // A server switch or a closing window drops this model with its controller still in it. Hosted
+        // by a `FrontendView` that controller is retired on dismantle; hosted by the tab bar's slot,
+        // nothing else would.
+        MainActor.assumeIsolated {
+            webViewController?.retireFrontend()
+        }
     }
 
     var webViewIgnoredSafeAreaEdges: Edge.Set {
@@ -202,6 +208,8 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     func resetWebFrontend() {
+        // The tab bar's slot hosts the controller without a `FrontendView`, so nothing else retires it.
+        webViewController?.retireFrontend()
         overlayState.emptyState = nil
         overlayState.showsNoActiveURL = false
         webViewController = nil
@@ -333,11 +341,15 @@ final class HomeAssistantViewModel: ObservableObject {
         loaderMinimumDurationElapsed = false
         overlayState.connectionState = .unknown
         loaderCycleID = cycleID
-        loaderMinimumDurationTask = Task { @MainActor in
+        // Weak, like the two tasks below: holding the model would keep it, and the controller it still
+        // holds, alive past its owner for as long as the sleep runs, and keep `deinit` from cancelling
+        // anything. Nothing touches `self` before the unwrap for the same reason, an implicit use there
+        // captures it strongly regardless.
+        loaderMinimumDurationTask = Task { @MainActor [weak self] in
             try? await Task.sleep(for: Constants.minimumLoaderDuration)
-            guard !Task.isCancelled, loaderCycleID == cycleID else { return }
+            guard let self, !Task.isCancelled, loaderCycleID == cycleID else { return }
             withAnimation(DesignSystem.Animation.default) {
-                loaderMinimumDurationElapsed = true
+                self.loaderMinimumDurationElapsed = true
             }
             updateFullScreenLoaderVisibility()
         }
@@ -366,9 +378,9 @@ final class HomeAssistantViewModel: ObservableObject {
             isFullScreenLoaderVisible = false
         }
 
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
             try? await Task.sleep(for: Constants.loaderFadeOutDuration)
-            guard loaderCycleID == finishingCycleID, !isFullScreenLoaderVisible else { return }
+            guard let self, loaderCycleID == finishingCycleID, !isFullScreenLoaderVisible else { return }
             isFullScreenLoaderMounted = false
             ensureWebViewVisible()
         }
@@ -384,9 +396,10 @@ final class HomeAssistantViewModel: ObservableObject {
         guard isFullScreenLoaderMounted else { return }
         let cycleID = loaderCycleID
         loaderWatchdogTask?.cancel()
-        loaderWatchdogTask = Task { @MainActor in
-            try? await Task.sleep(for: loaderWatchdogTimeout)
-            guard !Task.isCancelled, loaderCycleID == cycleID, isFullScreenLoaderMounted,
+        let timeout = loaderWatchdogTimeout
+        loaderWatchdogTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: timeout)
+            guard let self, !Task.isCancelled, loaderCycleID == cycleID, isFullScreenLoaderMounted,
                   !overlayState.isLoading, overlayState.emptyState == nil,
                   !overlayState.showsNoActiveURL else { return }
             Current.Log.error("Standby loader stuck with no frontend report after loading, checking the page")
