@@ -27,11 +27,12 @@ struct OnboardingPermissionsNavigationView: View {
         onboardingServer: Server,
         steps: [OnboardingPermissionsNavigationViewModel.StepID]? = nil,
         showsNavigationBarForBackOnly: Bool = false,
+        viewModel: OnboardingPermissionsNavigationViewModel? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self
             ._viewModel =
-            .init(wrappedValue: OnboardingPermissionsNavigationViewModel(
+            .init(wrappedValue: viewModel ?? OnboardingPermissionsNavigationViewModel(
                 onboardingServer: onboardingServer,
                 steps: steps
             ))
