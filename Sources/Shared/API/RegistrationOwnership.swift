@@ -186,8 +186,11 @@ public struct RegistrationOwnership {
     }
 
     /// `name`, or the first of "`name` 2", "`name` 3" and on that no `mobile_app` device in `devices` has, other
-    /// than the one registered as `deviceID`, which the registration replaces. Names are compared the way Home
-    /// Assistant names notification actions after them, where "Phone 2" and "phone_2" are the same.
+    /// than the one registered as `deviceID`, which the registration replaces. A `name` that is itself one of these,
+    /// such as "Phone 2" left by registering anew before, counts on from the name it was made from, giving "Phone 3"
+    /// rather than "Phone 2 2"; a name that only looks like one, such as "iPhone 15" where no "iPhone" is taken, is
+    /// kept as it is. Names are compared the way Home Assistant names notification actions after them, where
+    /// "Phone 2" and "phone_2" are the same.
     static func unusedDeviceName(
         _ name: String,
         among devices: [DeviceRegistryEntry],
@@ -199,13 +202,25 @@ public struct RegistrationOwnership {
             return device.name.map(notificationName)
         })
 
+        var base = name
+        if let stripped = nameBeforeNumber(name), taken.contains(notificationName(stripped)) {
+            base = stripped
+        }
+
         var candidate = name
         var number = 1
         while taken.contains(notificationName(candidate)) {
             number += 1
-            candidate = "\(name) \(number)"
+            candidate = "\(base) \(number)"
         }
         return candidate
+    }
+
+    /// "Phone" for "Phone 2"; `nil` for a name that does not end in a number of its own.
+    private static func nameBeforeNumber(_ name: String) -> String? {
+        let parts = name.split(separator: " ", omittingEmptySubsequences: false)
+        guard parts.count > 1, let last = parts.last, !last.isEmpty, last.allSatisfy(\.isNumber) else { return nil }
+        return parts.dropLast().joined(separator: " ")
     }
 
     /// The part of a notification action's name Home Assistant derives from a device `name`, as its `slugify` does:

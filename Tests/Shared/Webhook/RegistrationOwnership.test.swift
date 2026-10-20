@@ -56,6 +56,16 @@ struct RegistrationOwnershipTests {
         }
     }
 
+    /// Counts the registration updates a connect sends.
+    private final class ConnectingAPI: HomeAssistantAPI {
+        private(set) var updatedRegistrations = 0
+
+        override func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
+            updatedRegistrations += 1
+            return Promise(error: RegisterFailure())
+        }
+    }
+
     /// Keeps the registrations with `servers`, sending nothing to them.
     private func keep(_ servers: [Server]) {
         RegistrationOwnership(catchUp: { _ in }).keepRegistrations(of: servers)
@@ -348,6 +358,22 @@ struct RegistrationOwnershipTests {
         }
     }
 
+    /// A connect sends the registration data along with the push token, which would hand the other device's
+    /// notifications to this one; it waits until the registration is settled.
+    @Test func aConnectLeavesAnotherDevicesRegistrationAlone() async {
+        await withDevice { servers in
+            let theirs = addServer(to: servers, ownedBy: Self.otherDevice)
+            let api = ConnectingAPI(server: theirs)
+            api.connection = HAMockConnection()
+
+            await withAPI(api) {
+                api.Connect(reason: .warm).cauterize()
+            }
+
+            #expect(api.updatedRegistrations == 0)
+        }
+    }
+
     @Test func reportsAreHeldBackWhileTheRegistrationIsAnotherDevices() async {
         await withDevice { servers in
             let theirs = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -597,6 +623,23 @@ struct RegistrationOwnershipTests {
         #expect(RegistrationOwnership.unusedDeviceName("tablet", among: devices, replacing: "this") == "tablet 2")
         // Home Assistant names both "Laptop 2" and "Laptop_2" notify.mobile_app_laptop_2.
         #expect(RegistrationOwnership.unusedDeviceName("Laptop", among: devices, replacing: "this") == "Laptop 3")
+    }
+
+    /// Registering anew from a name registering anew gave before counts on from the name that came from, while a
+    /// name that merely ends in a number keeps it.
+    @Test func aNumberedNameCountsOnFromTheNameItCameFrom() throws {
+        let devices = try [
+            Self.device(named: "Phone", registeredAs: "first"),
+            Self.device(named: "Phone 2", registeredAs: "second"),
+            Self.device(named: "iPhone 15", registeredAs: "third"),
+            Self.device(named: "Pixel 8", registeredAs: "fourth"),
+            Self.device(named: "Pixel", registeredAs: "fifth"),
+        ].map { try DeviceRegistryEntry(data: HAData(value: $0)) }
+
+        #expect(RegistrationOwnership.unusedDeviceName("Phone 2", among: devices, replacing: "this") == "Phone 3")
+        #expect(RegistrationOwnership.unusedDeviceName("iPhone 15", among: devices, replacing: "this") == "iPhone 15 2")
+        #expect(RegistrationOwnership.unusedDeviceName("Pixel 8", among: devices, replacing: "this") == "Pixel 2")
+        #expect(RegistrationOwnership.unusedDeviceName("Pixel 8", among: devices, replacing: "fourth") == "Pixel 8")
     }
 
     @Test func namesCompareTheWayHomeAssistantNamesNotificationActions() {
