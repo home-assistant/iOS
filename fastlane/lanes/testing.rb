@@ -102,9 +102,11 @@ lane :test do
   )
 end
 
-desc 'Run the end-to-end onboarding test against a running Home Assistant'
+desc 'Run an end-to-end test against a running Home Assistant'
 lane :e2e do |options|
   url = options[:url] || 'http://localhost:8123'
+  # Each test onboards from the welcome screen, so only one runs per erased simulator.
+  test = options[:test] || 'OnboardingE2ETests'
   username = options[:username] || 'citest'
   password = options[:password] || 'h7jk99&U'
   model = options[:device] || 'iPhone 17'
@@ -136,7 +138,7 @@ lane :e2e do |options|
     scheme: 'Tests-UI',
     # The scheme also holds `HomeAssistantUITests`, the fastlane screenshot flow, which expects
     # notification fixtures this lane does not set up.
-    only_testing: ['Tests-UI/OnboardingE2ETests'],
+    only_testing: ["Tests-UI/#{test}"],
     result_bundle: true,
     skip_package_dependencies_resolution: true,
     skip_detect_devices: true,

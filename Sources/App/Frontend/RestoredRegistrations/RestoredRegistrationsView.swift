@@ -48,10 +48,12 @@ struct RestoredRegistrationsView: View {
                     Text(viewModel.newDeviceTitle)
                 }
                 .buttonStyle(.primaryButton)
+                .accessibilityIdentifier(AccessibilityIdentifier.restoredRegistrationsNewDevice.rawValue)
                 Button(action: viewModel.confirmReplacingOldDevice) {
                     Text(L10n.RestoredRegistrations.replaceDevice)
                 }
                 .buttonStyle(.secondaryButton)
+                .accessibilityIdentifier(AccessibilityIdentifier.restoredRegistrationsReplace.rawValue)
                 .confirmationDialog(
                     L10n.RestoredRegistrations.Replace.title,
                     isPresented: $viewModel.isReplaceConfirmationPresented,

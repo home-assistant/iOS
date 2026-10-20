@@ -38,7 +38,17 @@ bundle exec fastlane e2e
 ```
 
 It takes `url:`, `username:`, `password:` and `device:` options, all defaulting to the fixture above
-and an `iPhone 17`. To check the instance without running the flow:
+and an `iPhone 17`, and `test:` to pick which test runs, defaulting to `OnboardingE2ETests`. Each
+test onboards from the welcome screen, so only one runs per erased simulator.
+`Tests/UI/RestoredDeviceE2ETests.swift` onboards, relaunches the app with
+`-E2E_VENDOR_IDENTIFIER` set to another device's identifier, which is what a backup restored onto new
+hardware looks like to the app, and sets the device up as a new one from the screen that follows:
+
+```bash
+bundle exec fastlane e2e test:RestoredDeviceE2ETests
+```
+
+To check the instance without running the flow:
 
 ```bash
 python3 Tools/home_assistant_e2e_auth.py --url http://localhost:8123 --username citest --password 'h7jk99&U' --timeout 300 --require-component mobile_app
