@@ -331,13 +331,17 @@ final class E2EFlow {
         XCTFail("The \(description) stayed on screen")
     }
 
+    /// Allows whatever the alert asks for. The location alert lists "Allow Once" first, which lasts
+    /// only until the app is next launched, so the lasting "While Using" answer is taken when offered.
     func allowSystemAlert(timeout: TimeInterval, _ description: String) {
         let allow = NSPredicate(format: "label BEGINSWITH[c] 'Allow'")
         guard let button = systemAlertButton(matching: allow, timeout: timeout) else {
             XCTFail("Timed out waiting for the \(description)")
             return
         }
-        button.tap()
+        let whileUsing = NSPredicate(format: "label CONTAINS[c] 'While Using'")
+        let lasting = systemAlertButton(matching: whileUsing, timeout: 1)
+        (lasting ?? button).tap()
     }
 
     /// Answers an alert whichever way it offers, for prompts the flow does not depend on the answer
