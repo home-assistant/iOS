@@ -19,6 +19,8 @@ final class E2EFlow {
     /// variable into the test process with the prefix stripped.
     enum Instance {
         static let url = value(for: "E2E_HOME_ASSISTANT_URL", default: "http://localhost:8123")
+        /// A second instance, for flows that span servers.
+        static let secondURL = value(for: "E2E_HOME_ASSISTANT_SECOND_URL", default: "http://localhost:8124")
         static let username = value(for: "E2E_HOME_ASSISTANT_USERNAME", default: "citest")
         static let password = value(for: "E2E_HOME_ASSISTANT_PASSWORD", default: "h7jk99&U")
 
@@ -71,15 +73,45 @@ final class E2EFlow {
         grantNotificationPermission()
     }
 
+    /// Adds a server at `url` from the native settings: the add-server onboarding, which signs in, names the device
+    /// and asks what the server should receive, then returns to the settings.
+    func addServer(at url: String) {
+        tap(app.buttons[.settingsAddServer], timeout: Timeout.screen, "add server button")
+        tap(app.buttons[.onboardingServersManualEntry], timeout: Timeout.screen, "servers list")
+        let urlField = app.textFields.firstMatch
+        wait(for: urlField, timeout: Timeout.screen, "manual URL entry field")
+        type(url, into: urlField, "manual URL entry field")
+        tap(app.buttons[.onboardingManualEntryConnect], timeout: Timeout.screen, "connect button")
+        logIn(in: webViewShowingLogin(timeout: Timeout.frontend))
+        nameDevice()
+        // The local-only disclaimer, then what an additional server should receive: everything, as the first.
+        tapIfPresent(app.buttons[.onboardingLocalOnlyDisclaimerContinue], timeout: Timeout.screen)
+        if tapIfPresent(app.buttons[.onboardingPrivacyLocationExactOption], timeout: Timeout.screen) {
+            tap(app.buttons[.onboardingPrivacySensorsAllOption], timeout: Timeout.screen, "sensors option")
+            tap(app.buttons[.onboardingPrivacyNext], timeout: Timeout.screen, "privacy next button")
+        }
+        tapIfPresent(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.optional)
+        tapIfPresent(app.buttons[.onboardingHomeNetworkNext], timeout: Timeout.optional)
+        wait(for: app.descendants(matching: .any)[.settingsList], timeout: Timeout.frontend, "settings after adding")
+        pause()
+    }
+
     /// Answers the screen a device restored from another one's backup is shown by setting the device
-    /// up as a new one: signs in again through the login sheet and waits for the frontend to return.
-    func setUpAsNewDevice() {
+    /// up as a new one: signs in again through a login sheet per server, `logins` of them, and waits for the
+    /// frontend to return.
+    func setUpAsNewDevice(logins: Int = 1) {
         tap(
             app.buttons[.restoredRegistrationsNewDevice],
             timeout: Timeout.screen,
             "restored registrations screen"
         )
-        logIn(in: webViewShowingLogin(timeout: Timeout.frontend))
+        // One sheet stays up across the servers: a login page, then the hand-off to the next server, and so on.
+        for index in 0 ..< logins {
+            if index > 0 {
+                tap(app.buttons[.restoredRegistrationsNextContinue], timeout: Timeout.frontend, "next server screen")
+            }
+            logIn(in: webViewShowingLogin(timeout: Timeout.frontend))
+        }
         // The screen closes once every server is registered; the login sheet goes with it.
         waitUntilGone(
             app.buttons[.restoredRegistrationsNewDevice],

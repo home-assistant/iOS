@@ -93,12 +93,13 @@ struct ServersListView: View {
         } label: {
             Label(L10n.Settings.ConnectionSection.addServer, systemSymbol: .plus)
         }
+        .accessibilityIdentifier(AccessibilityIdentifier.settingsAddServer.rawValue)
         #if !targetEnvironment(macCatalyst)
-        .fullScreenCover(isPresented: $showAddServer) {
-            OnboardingNavigationView(onboardingStyle: .secondary)
-        }
+            .fullScreenCover(isPresented: $showAddServer) {
+                OnboardingNavigationView(onboardingStyle: .secondary)
+            }
         #endif
-        .macSettingsSidebarRow()
+            .macSettingsSidebarRow()
     }
 }
 

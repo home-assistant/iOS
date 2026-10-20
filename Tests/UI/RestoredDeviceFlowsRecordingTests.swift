@@ -63,6 +63,17 @@ final class RestoredDeviceFlowsRecordingTests: XCTestCase {
         flow.pause()
     }
 
+    /// With a second server added, the screen lists both and signs in to each in turn.
+    func test6SetsUpTwoServersAsANewDevice() {
+        app.launch()
+        flow.wait(for: app.webViews.firstMatch, timeout: E2EFlow.Timeout.frontend, "frontend")
+        flow.openNativeSettingsFromFrontend()
+        flow.addServer(at: E2EFlow.Instance.secondURL)
+        flow.relaunch(asDevice: device("d"))
+        flow.setUpAsNewDevice(logins: 2)
+        flow.pause()
+    }
+
     func test5RegistersAsANewDeviceFromTheServerSettings() {
         // The device that replaced the old one, so nothing is asked on launch.
         flow.relaunch(asDevice: device("b"))

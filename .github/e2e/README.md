@@ -63,6 +63,13 @@ Tools/record_ui_test.sh "$UDID" Tests-UI/RestoredDeviceFlowsRecordingTests/test1
 Tools/record_ui_test.sh "$UDID" Tests-UI/RestoredDeviceFlowsRecordingTests/test2SetsUpAsANewDevice new-device.mp4
 ```
 
+The two-server flow (`test6SetsUpTwoServersAsANewDevice`) adds a second server first, so it needs a second
+instance at `E2E_HOME_ASSISTANT_SECOND_URL` (default `http://localhost:8124`) that Home Assistant tells apart
+from the first: a copy of the fixture with another `uuid` in `.storage/core.uuid`, its own `location_name` in
+`.storage/core.config`, and `server_port` set to 8124 in the `stable` entry of `.storage/http`. Setting the
+port in `configuration.yaml` instead makes it a pending HTTP config, which Home Assistant reverts five minutes
+later unless confirmed from its UI, and the instance then fails to restart on the port the first one holds.
+
 To check the instance without running the flow:
 
 ```bash
