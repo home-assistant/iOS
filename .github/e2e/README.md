@@ -1,10 +1,12 @@
 # End-to-end tests
 
 The [`E2E` workflow](../workflows/e2e.yml) runs `Tests/UI/OnboardingE2ETests.swift` against a real
-Home Assistant every night, mirroring [home-assistant/android][android-workflow]'s own `e2e`
-workflow. The flow onboards the app from the welcome screen, then drives the frontend into opening
-the app's **native** settings screen, which is what proves the external message bus works end to
-end.
+Home Assistant every night at 05:00 UTC, mirroring [home-assistant/android][android-workflow]'s own
+`e2e` workflow. The flow onboards the app from the welcome screen, then drives the frontend into
+opening the app's **native** settings screen, which is what proves the external message bus works
+end to end. An hour later it runs `Tests/UI/RestoredDeviceE2ETests.swift`, in a job of its own
+because every flow onboards from scratch on an erased simulator. A manual run picks the flow through
+the `test` input.
 
 ## The fixture
 
@@ -72,10 +74,10 @@ for f in $(cd .github/e2e/homeassistant/.storage && ls); do curl -fsS "https://r
 
 ## When a run fails
 
-A failing nightly opens an issue titled "E2E: the nightly onboarding test is failing", labelled
-`automated`, naming the step that failed and linking the run. Later failures are added to that same
-issue as comments, and a closed one is reopened, so a bad week leaves one thread to read rather than
-seven issues. Only the scheduled run reports: a manual dispatch is usually someone working on the
+A failing nightly opens an issue titled "E2E: the nightly `<test>` is failing", one per flow,
+labelled `automated`, naming the step that failed and linking the run. Later failures are added to
+that same issue as comments, and a closed one is reopened, so a bad week leaves one thread to read
+rather than seven issues. Only the scheduled run reports: a manual dispatch is usually someone working on the
 workflow itself. GitHub's own notification for a failing schedule reaches only whoever last edited
 the cron line, which is why this exists.
 
