@@ -54,10 +54,10 @@ struct OnboardingAuthLoginView: View {
                     .accessibilityIdentifier(AccessibilityIdentifier.loginBanner.rawValue)
             }
             LoginWebView(webView: viewModel.webView)
+                // Edge to edge like the frontend web view: WebKit insets the page content for the bars
+                // and any camera or vertical bar (iPhone Duo) itself, so only its background bleeds.
+                .ignoresSafeArea(.container, edges: .all)
         }
-        // Edge to edge like the frontend web view: WebKit insets the page content for the bars
-        // and any camera or vertical bar (iPhone Duo) itself, so only its background bleeds.
-        .ignoresSafeArea(.container, edges: .all)
         .overlay {
             // Shown while the login page loads, and after the OAuth callback while the rest of
             // the auth flow (token exchange, registration) runs before the next screen replaces us.

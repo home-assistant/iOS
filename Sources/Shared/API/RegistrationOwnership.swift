@@ -19,6 +19,9 @@ public struct RegistrationOwnership {
     public typealias CatchUp = (Server) -> Void
     /// The webhook request types that report this device to a server.
     static let reportingRequestTypes: Set<String> = ["update_location", "update_sensor_states", "register_sensor"]
+    /// Posted with a server's identifier as its object once its registration is this device's own, for what
+    /// waited on that, such as the local push subscription.
+    public static let didSettleRegistration = Notification.Name("RegistrationOwnership.didSettleRegistration")
 
     /// How long to wait for the devices a server has: a WebSocket command has no deadline of its own.
     static let deviceListTimeout: TimeInterval = 30
@@ -85,6 +88,9 @@ public struct RegistrationOwnership {
         // Updates are held back while a registration is another device's, so this device's push token and sensors
         // only reach the servers now.
         servers.forEach(catchUp)
+        for server in servers {
+            NotificationCenter.default.post(name: Self.didSettleRegistration, object: server.identifier)
+        }
     }
 
     /// Registers this device with each of `servers` as a new device, each under an identifier of its own. Their
@@ -114,6 +120,7 @@ public struct RegistrationOwnership {
         for server in servers {
             do {
                 try await registerOnce(with: server, ownedBy: vendorID)
+                NotificationCenter.default.post(name: Self.didSettleRegistration, object: server.identifier)
             } catch {
                 Current.Log.error("failed to register with \(server.identifier) as a new device: \(error)")
                 failures[server] = error

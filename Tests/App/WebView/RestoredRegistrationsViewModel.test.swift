@@ -369,6 +369,8 @@ struct RestoredRegistrationsViewModelTests {
             #expect(viewModel.state(of: cabin) == .waiting)
             #expect(!finished)
 
+            // A second tap, before the page replaces the button, changes nothing.
+            next.goOn()
             next.goOn()
             for _ in 0 ..< 200 where !finished {
                 try await Task.sleep(for: .milliseconds(5))

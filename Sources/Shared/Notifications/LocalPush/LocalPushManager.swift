@@ -89,6 +89,7 @@ public class LocalPushManager {
     private var receivedCountAcrossReconnects = 0
     private var pendingTransitionReason: String?
     private var connectionStateToken: NSObjectProtocol?
+    private var settledRegistrationToken: NSObjectProtocol?
     private var tokens = [HACancellable]()
 
     #if os(iOS) && !targetEnvironment(macCatalyst)
@@ -117,6 +118,15 @@ public class LocalPushManager {
         tokens.append(server.observe { [weak self] _ in
             self?.updateSubscription()
         })
+        // Held back while the registration is another device's; subscribes once it is settled.
+        self.settledRegistrationToken = NotificationCenter.default.addObserver(
+            forName: RegistrationOwnership.didSettleRegistration,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self, notification.object as? Identifier<Server> == server.identifier else { return }
+            updateSubscription()
+        }
     }
 
     deinit {
@@ -134,6 +144,10 @@ public class LocalPushManager {
         if let connectionStateToken {
             NotificationCenter.default.removeObserver(connectionStateToken)
             self.connectionStateToken = nil
+        }
+        if let settledRegistrationToken {
+            NotificationCenter.default.removeObserver(settledRegistrationToken)
+            self.settledRegistrationToken = nil
         }
         NotificationCenter.default.removeObserver(self)
     }
@@ -157,6 +171,16 @@ public class LocalPushManager {
     private var subscription: SubscriptionInstance?
 
     private func updateSubscription() {
+        // Subscribing takes the channel over from the device the registration belongs to, so it waits until the
+        // registration is this device's own.
+        guard !RegistrationOwnership().isRegisteredByAnotherDevice(server) else {
+            Current.Log
+                .info("not subscribing to local push for \(server.identifier): its registration is another device's")
+            subscription?.cancel()
+            subscription = nil
+            return
+        }
+
         let webhookID = server.info.connection.webhookID
 
         guard webhookID != subscription?.webhookID else {

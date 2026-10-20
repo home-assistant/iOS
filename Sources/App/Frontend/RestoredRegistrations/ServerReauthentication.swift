@@ -74,10 +74,14 @@ struct ServerReauthentication {
     }
 
     /// Connects to `server` again, with the token just signed in with: a connection already up stays signed in as
-    /// before, which can be another user.
+    /// before, which can be another user. A frontend showing the server reloads for the same reason.
     static func reconnect(to server: Server) {
         guard let api = Current.api(for: server) else { return }
         api.connection.disconnect()
         api.connection.connect()
+        Current.sceneManager.appCoordinator.done { coordinator in
+            guard let frontend = coordinator.frontend, frontend.server.identifier == server.identifier else { return }
+            frontend.refresh()
+        }
     }
 }

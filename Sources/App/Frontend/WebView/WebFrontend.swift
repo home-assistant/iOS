@@ -18,6 +18,8 @@ protocol WebFrontend: AnyObject {
     func open(inline url: URL, avoidUnnecessaryReload: Bool)
     func openPanel(_ url: URL)
     func navigateToRoot()
+    /// Reloads the page, which picks up a token signed in with since.
+    func refresh()
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func presentOverlayController(controller: UIViewController, animated: Bool)
 }

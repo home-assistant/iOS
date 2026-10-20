@@ -195,13 +195,19 @@ final class RestoredRegistrationsViewModel: ObservableObject {
     /// Shows what became of `previous` and that `next`'s login comes next, and waits for the user to go on.
     private func handOff(from previous: Server, to next: Server, position: Int, count: Int) async {
         await withCheckedContinuation { continuation in
+            // The button stays until the page replaces it, so a second tap must not resume again.
+            var resumed = false
             sheet = .nextServer(NextServer(
                 previous: previous,
                 previousState: state(of: previous),
                 next: next,
                 position: position,
                 count: count,
-                goOn: { continuation.resume() }
+                goOn: {
+                    guard !resumed else { return }
+                    resumed = true
+                    continuation.resume()
+                }
             ))
         }
     }
