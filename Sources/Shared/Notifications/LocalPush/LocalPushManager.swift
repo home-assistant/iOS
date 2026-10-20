@@ -293,7 +293,9 @@ public class LocalPushManager {
         let baseContent = event.content(server: server)
         var userInfo = baseContent.userInfo
         let isLiveActivity = Self.isLiveActivityCommand(userInfo)
-        let liveActivityTag = isLiveActivity ? Self.liveActivityTag(in: userInfo) : nil
+        let liveActivityTag = isLiveActivity
+            ? Self.liveActivityTag(in: userInfo)
+            : Self.liveActivityEndTag(in: userInfo)
         let deferredConfirmID = deferrableConfirmID(for: event, liveActivityTag: liveActivityTag)
         if let deferredConfirmID {
             // Rides along with the hand-off so the app can report the outcome of this exact push.
@@ -329,6 +331,14 @@ public class LocalPushManager {
         if Self.isCommand(userInfo) {
             Current.Log.info("local push: handled as command, suppressing banner")
             #if os(iOS) && !targetEnvironment(macCatalyst)
+            if let deferredConfirmID, let liveActivityTag {
+                // The app ends the Live Activity; without its reply the channel is re-opened and the
+                // server re-sends the end through APNs, which reaches the activity by its push token.
+                // Tracking it also confirms a start for the same tag still waiting on the app.
+                Current.Log.info("local push: Live Activity end, confirm deferred to the app")
+                liveActivityConfirms.track(confirmID: deferredConfirmID, tag: liveActivityTag)
+                return
+            }
             if let tag = Self.liveActivityTag(in: userInfo) {
                 // An end for a tag whose start is still waiting on the app makes that start moot.
                 liveActivityConfirms.confirmSuperseded(tag: tag)
@@ -389,10 +399,10 @@ public class LocalPushManager {
         confirmReceipt().cauterize()
     }
 
-    /// The confirm to hold back until the app reports whether it showed the Live Activity, or nil
-    /// when the push should be confirmed right away: only the extension hands off to the app, the
-    /// server can only re-send through APNs when the registration has remote push, and a push
-    /// without a tag never becomes an activity.
+    /// The confirm to hold back until the app reports whether it showed or ended the Live Activity,
+    /// or nil when the push should be confirmed right away: only the extension hands off to the
+    /// app, the server can only re-send through APNs when the registration has remote push, and a
+    /// push without a tag never becomes an activity.
     private func deferrableConfirmID(for event: LocalPushEvent, liveActivityTag: String?) -> String? {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         guard Current.isAppExtension, Current.settingsStore.pushID != nil, liveActivityTag != nil else {
@@ -418,6 +428,22 @@ public class LocalPushManager {
         guard let hadict = userInfo["homeassistant"] as? [String: Any],
               let tag = hadict["tag"] as? String, !tag.isEmpty else { return nil }
         return tag
+    }
+
+    /// The tag of a `clear_notification` that ends a running Live Activity. Only an activity whose
+    /// push token Core holds counts: that is what lets an APNs re-send end it while the app is
+    /// suspended, and it keeps clears of ordinary notifications from waiting on the app.
+    private static func liveActivityEndTag(in userInfo: [AnyHashable: Any]) -> String? {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        guard #available(iOS 17.2, *),
+              let hadict = userInfo["homeassistant"] as? [String: Any],
+              (hadict["command"] as? String) == "clear_notification",
+              let tag = liveActivityTag(in: userInfo),
+              LiveActivityRegistry.hasReportedToken(forTag: tag) else { return nil }
+        return tag
+        #else
+        return nil
+        #endif
     }
 
     private static func isLiveActivityCommand(_ userInfo: [AnyHashable: Any]) -> Bool {
