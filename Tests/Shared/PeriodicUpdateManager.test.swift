@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 @testable import Shared
+import UIKit
 import XCTest
 
 class PeriodicUpdateManagerTests: XCTestCase {
@@ -20,6 +21,7 @@ class PeriodicUpdateManagerTests: XCTestCase {
 
     private var manager: PeriodicUpdateManager!
     private var runner: RecordingBackgroundTaskRunner!
+    private var applicationState: UIApplication.State = .background
 
     override func setUp() {
         super.setUp()
@@ -36,14 +38,25 @@ class PeriodicUpdateManagerTests: XCTestCase {
         Current.servers = FakeServerManager()
         runner = RecordingBackgroundTaskRunner()
         Current.backgroundTask = runner
-        // Reported as backgrounded so the `finally` of a connect, which runs after the test, does
-        // not leave a periodic timer on the run loop for the suites that follow.
-        manager = PeriodicUpdateManager(applicationStateGetter: { .background })
+        // Reported as backgrounded unless a test says otherwise, so the `finally` of a connect,
+        // which runs after the test, does not leave a periodic timer on the run loop for the
+        // suites that follow.
+        applicationState = .background
+        manager = PeriodicUpdateManager(applicationStateGetter: { [unowned self] in applicationState })
     }
 
     override func tearDown() {
+        manager.invalidatePeriodicUpdateTimer()
         manager = nil
         super.tearDown()
+    }
+
+    /// Lets the connects started so far run to their `finally`, which is where a periodic update
+    /// gets scheduled.
+    private func waitForConnectsToFinish() {
+        let finished = expectation(description: "connects finished")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { finished.fulfill() }
+        wait(for: [finished], timeout: 5)
     }
 
     private func setNow(_ date: Date) {
@@ -104,5 +117,36 @@ class PeriodicUpdateManagerTests: XCTestCase {
         manager.connectAPI(reason: .cold)
 
         XCTAssertEqual(connectCount, 2)
+    }
+
+    /// The window is measured on the wall clock. Set back, the clock makes the last connect look
+    /// like it is in the future, which must not read as "just now" and skip every warm connect
+    /// until the clock catches up.
+    func testAWarmConnectAfterTheClockWasSetBackRuns() {
+        manager.connectAPI(reason: .warm)
+        advance(by: -3600)
+        manager.connectAPI(reason: .warm)
+
+        XCTAssertEqual(connectCount, 2)
+    }
+
+    /// On iOS, backgrounding invalidates the periodic update and the next connect's `finally`
+    /// schedules it again. A warm connect skipped for following the last one too closely has no
+    /// `finally`, so it has to schedule the periodic update itself, or the foreground session
+    /// that follows goes without one.
+    func testASkippedWarmConnectStillSchedulesThePeriodicUpdate() {
+        applicationState = .active
+        manager.connectAPI(reason: .periodic)
+        waitForConnectsToFinish()
+        XCTAssertTrue(manager.isPeriodicUpdateScheduled)
+
+        manager.invalidatePeriodicUpdateTimer(forBackground: true)
+        XCTAssertFalse(manager.isPeriodicUpdateScheduled)
+
+        advance(by: 0.3)
+        manager.connectAPI(reason: .warm)
+
+        XCTAssertEqual(connectCount, 1)
+        XCTAssertTrue(manager.isPeriodicUpdateScheduled)
     }
 }

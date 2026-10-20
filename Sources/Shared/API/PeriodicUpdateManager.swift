@@ -27,6 +27,11 @@ public class PeriodicUpdateManager {
         }
     }
 
+    /// Whether the next periodic update is on the run loop. For tests, which cannot see the timer.
+    var isPeriodicUpdateScheduled: Bool {
+        periodicUpdateTimer?.isValid == true
+    }
+
     private func schedulePeriodicUpdateTimer() {
         guard periodicUpdateTimer == nil || periodicUpdateTimer?.isValid == false else {
             return
@@ -61,9 +66,14 @@ public class PeriodicUpdateManager {
     public func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
         let now = Current.date()
         if reason == .warm, let lastConnectStartDate {
+            // A wall-clock reading: a clock set back makes this negative, which is outside the
+            // window rather than inside it, so a stale timestamp never skips more than one connect.
             let elapsed = now.timeIntervalSince(lastConnectStartDate)
-            if elapsed < Self.warmConnectDedupeWindow {
+            if (0 ..< Self.warmConnectDedupeWindow).contains(elapsed) {
                 Current.Log.info("skipping warm connect; one started \(String(format: "%.1f", elapsed))s ago")
+                // The skipped connect would have rescheduled the periodic update in its `finally`;
+                // on iOS backgrounding in between has invalidated it, so put it back here.
+                schedulePeriodicUpdateTimer()
                 return
             }
         }
