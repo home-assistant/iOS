@@ -11,10 +11,12 @@ import PromiseKit
 /// sensors afresh rather than resending what failed, so it never carries a value older than one a
 /// newer run already delivered.
 ///
-/// Every update is numbered when it starts, so a success only stands down the failures it really
-/// supersedes: the ones that started before it, and only for the sensors it carried. An old request
+/// Every update is numbered as its request goes out, so a success only stands down the failures it
+/// really supersedes: the ones sent before it, and only for the sensors it carried. An old request
 /// resolving after a newer one failed doesn't cancel that newer failure's retry, and a Focus-only
-/// update getting through doesn't cancel the retry of a full update that didn't.
+/// update getting through doesn't cancel the retry of a full update that didn't. Sent order rather
+/// than start order, because overlapping runs read their sensors in whatever order their slowest
+/// provider allows: the run that sends last carries the newest values, whenever it started.
 final class SensorUpdateRetry {
     /// How long each attempt waits after the failure before it; the last one repeats until an
     /// update succeeds.
@@ -83,7 +85,8 @@ final class SensorUpdateRetry {
         self.perform = perform
     }
 
-    /// Numbers an update that is starting, so its outcome can be ordered against the others'.
+    /// Numbers an update whose request is about to go out, so its outcome can be ordered against the
+    /// others'.
     func beginUpdate() -> UInt64 {
         state.mutate { state in
             defer { state.nextGeneration += 1 }
