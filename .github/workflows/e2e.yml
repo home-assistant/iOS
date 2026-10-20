@@ -79,7 +79,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83  # v1.328.0
+      - uses: ruby/setup-ruby@a89e929fdc35d88f2b8f20f26452c4adbeb9e371  # v1.330.0
         with:
           ruby-version: .ruby-version
 

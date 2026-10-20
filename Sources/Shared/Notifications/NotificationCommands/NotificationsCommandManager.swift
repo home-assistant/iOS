@@ -116,13 +116,13 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         }
 
         // ActivityKit works only in the app, not the PushProvider extension, so the extension
-        // hands the end off via the App Group queue + a Darwin signal for the app to drain.
+        // hands the end off via the App Group queue + a Darwin signal for the app to drain. The
+        // confirm id, when present, lets the app report back so the extension can have the server
+        // re-send the end through APNs when the app is suspended.
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *), let tag = payload["tag"] as? String, !tag.isEmpty {
             if Current.isAppExtension {
-                Current.Log.verbose("Handing off live activity end for tag \(tag) to the app")
-                LiveActivityPendingEnd.append(tag: tag)
-                LiveActivityPendingEnd.postDarwinSignal()
+                LiveActivityPendingEnd.handOff(tag: tag, payload: payload)
                 return .value(())
             }
             return Promise<Void> { seal in
