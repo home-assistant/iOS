@@ -129,25 +129,26 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
 
         // A server saved more than once can share an identity, which is one device on this server either way.
         if matches.count == 1, let match = matches.first {
-            adopt(match.key, named: match.value.name)
+            adopt(registrationOf: match.value.server, named: match.value.device.name)
             return true
         }
         if let existing = candidates.first {
-            adopt(settings.registrationIdentity(for: existing), named: existing.info.setting(for: .overrideDeviceName))
+            adopt(registrationOf: existing, named: existing.info.setting(for: .overrideDeviceName))
         }
         return false
     }
 
-    /// The identities `servers` are registered with that this server has a device for.
+    /// The identities `servers` are registered with that this server has a device for, with a server registered
+    /// under each.
     private func registrations(
         of servers: [Server],
         among registeredDevices: [RegisteredDevice]
-    ) -> [RegistrationIdentity: RegisteredDevice] {
-        var registrations = [RegistrationIdentity: RegisteredDevice]()
+    ) -> [RegistrationIdentity: (server: Server, device: RegisteredDevice)] {
+        var registrations = [RegistrationIdentity: (server: Server, device: RegisteredDevice)]()
         for server in servers {
             let identity = Current.settingsStore.registrationIdentity(for: server)
             if let device = registeredDevices.first(where: { $0.id == identity.deviceID }) {
-                registrations[identity] = device
+                registrations[identity] = (server, device)
             }
         }
         return registrations
@@ -183,8 +184,17 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
     }
 
-    private func adopt(_ identity: RegistrationIdentity, named name: String?) {
-        Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: identity), for: api.server.identifier)
+    /// Takes on the registration `server` has, under the name it knows this device by. An identity `server` is still
+    /// to register under stays one to register under: until registering under it succeeds, the credentials `server`
+    /// has are for the registration it has, which can be another device's.
+    private func adopt(registrationOf server: Server, named name: String?) {
+        let settings = Current.settingsStore
+        let current = settings.currentRegistrationIdentity(for: server)
+        let next = settings.registrationIdentity(for: server)
+        settings.setRegistrationRecord(
+            RegistrationRecord(current: current, pending: next == current ? nil : next),
+            for: api.server.identifier
+        )
         guard api.server.info.setting(for: .overrideDeviceName) == nil, let name,
               name != api.server.info.mobileAppDeviceName else { return }
         api.server.info.setSetting(value: name, for: .overrideDeviceName)

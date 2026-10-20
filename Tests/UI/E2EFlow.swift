@@ -113,7 +113,7 @@ final class E2EFlow {
         password.typeText("\n")
 
         // Shown only when Home Assistant asks to confirm the redirect back to the app.
-        tapIfPresent(webElement(labelContaining: "authorize"), timeout: Timeout.optional)
+        tapIfPresent(webElement(labelContaining: "authorize", in: webView), timeout: Timeout.optional)
     }
 
     func nameDevice() {
@@ -281,9 +281,10 @@ final class E2EFlow {
         return XCTWaiter().wait(for: [hittable], timeout: timeout) == .completed
     }
 
-    func webElement(labelContaining text: String) -> XCUIElement {
+    /// The element of `webView`, else of the first web view, whose label contains `text`.
+    func webElement(labelContaining text: String, in webView: XCUIElement? = nil) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
-        let webView = app.webViews.firstMatch
+        let webView = webView ?? app.webViews.firstMatch
 
         // Links and buttons first: a row's label usually also matches the static text inside it,
         // and tapping that does not activate the row.

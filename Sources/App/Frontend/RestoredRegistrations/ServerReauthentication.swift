@@ -70,5 +70,14 @@ struct ServerReauthentication {
         present(reauthentication.viewModel)
         defer { present(nil) }
         try await reauthentication.signIn()
+        reconnect(to: server)
+    }
+
+    /// Connects to `server` again, with the token just signed in with: a connection already up stays signed in as
+    /// before, which can be another user.
+    static func reconnect(to server: Server) {
+        guard let api = Current.api(for: server) else { return }
+        api.connection.disconnect()
+        api.connection.connect()
     }
 }

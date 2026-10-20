@@ -342,6 +342,28 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
+    /// Signing in again after registering as a new device failed keeps the identity it was registering under as the
+    /// one to register under: the server's credentials stay the other device's registration's until that succeeds.
+    func testSigningInAgainAfterRegisteringAnewFailedKeepsTheIdentityToRegisterUnder() throws {
+        let home = Server.fake(identifier: "instance-1")
+        let record = RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device"),
+            pending: RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "this-device")
+        )
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(record, for: "instance-1")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "old-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationRecord(for: api.server.identifier), record)
+            XCTAssertTrue(RegistrationOwnership().isRegisteredByAnotherDevice(api.server))
+        }
+    }
+
     /// Until this device settles the registrations a backup brought, the identifier it registers with by default is
     /// the other device's, and a server that has that device gets one of this device's own instead.
     func testSigningInWithAnotherDevicesIdentifierRegistersUnderOneOfItsOwn() throws {

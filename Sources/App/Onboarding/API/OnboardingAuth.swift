@@ -99,6 +99,7 @@ class OnboardingAuth {
                         serverInfo.connection.webhookID = existingInfo.connection.webhookID
                         serverInfo.connection.webhookSecret = existingInfo.connection.webhookSecret
                         serverInfo.connection.cloudhookURL = existingInfo.connection.cloudhookURL
+                        serverInfo.hassDeviceId = existingInfo.hassDeviceId
                         let keys: [ServerSettingKey<String?>] = [
                             .registeredDeviceID,
                             .registeredDeviceName,
@@ -355,13 +356,15 @@ class OnboardingAuth {
     /// The registration `existing` already has, when it is this device's own and `registration`, which onboarding
     /// just made, is under another identity: a server reached by an address typed in is only told apart from the
     /// servers the app has once it is registered with, and the registration it had keeps its Home Assistant device
-    /// and everything that points at it. `nil` when the registration just made is the one to keep.
+    /// and everything that points at it. `nil` when the registration just made is the one to keep, which is also the
+    /// case when `existing` has no webhook to reach its registration with, as after recovering its credentials.
     static func registrationToKeep(
         of existing: Server,
         insteadOf registration: RegistrationRecord
     ) -> RegistrationRecord? {
         let identity = Current.settingsStore.currentRegistrationIdentity(for: existing)
-        guard let vendorID = Current.device.identifierForVendor(), identity.ownerVendorID == vendorID,
+        guard !existing.info.connection.webhookID.isEmpty,
+              let vendorID = Current.device.identifierForVendor(), identity.ownerVendorID == vendorID,
               let made = registration.current, made.deviceID != identity.deviceID else { return nil }
         return RegistrationRecord(current: identity)
     }
