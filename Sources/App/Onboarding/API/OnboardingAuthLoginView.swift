@@ -29,6 +29,7 @@ struct OnboardingAuthLoginView: View {
                             Button(L10n.cancelLabel) {
                                 viewModel.cancel()
                             }
+                            .accessibilityIdentifier(AccessibilityIdentifier.loginCancel.rawValue)
                         }
                     }
             }

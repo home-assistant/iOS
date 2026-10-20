@@ -28,4 +28,7 @@ enum AccessibilityIdentifier: String {
     case settingsList = "settings.list"
     case restoredRegistrationsNewDevice = "restoredRegistrations.newDevice"
     case restoredRegistrationsReplace = "restoredRegistrations.replace"
+    case loginCancel = "login.cancel"
+    case settingsServerRow = "settings.servers.row"
+    case connectionSettingsRegisterAsNewDevice = "connectionSettings.registerAsNewDevice"
 }

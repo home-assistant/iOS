@@ -196,6 +196,7 @@
 		42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C8112FFE4DB2008DAEE5 /* XCGLogger */; };
 		42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000002 /* OnboardingE2ETests.swift */; };
 		42E2E000000000000000000D /* RestoredDeviceE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E000000000000000000C /* RestoredDeviceE2ETests.swift */; };
+		42E2E000000000000000000F /* RestoredDeviceFlowsRecordingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E000000000000000000E /* RestoredDeviceFlowsRecordingTests.swift */; };
 		42E2E000000000000000000B /* E2EFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E000000000000000000A /* E2EFlow.swift */; };
 		42ED095B30033B750051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095A30033B750051FC9B /* Dependencies */; };
 		42ED095D30033B7D0051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095C30033B7D0051FC9B /* Dependencies */; };
@@ -663,6 +664,7 @@
 		42DA0000000000040000AF04 /* AreaTarget.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTarget.test.swift; sourceTree = "<group>"; };
 		42E2E0000000000000000002 /* OnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingE2ETests.swift; sourceTree = "<group>"; };
 		42E2E000000000000000000C /* RestoredDeviceE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoredDeviceE2ETests.swift; sourceTree = "<group>"; };
+		42E2E000000000000000000E /* RestoredDeviceFlowsRecordingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoredDeviceFlowsRecordingTests.swift; sourceTree = "<group>"; };
 		42E2E000000000000000000A /* E2EFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = E2EFlow.swift; sourceTree = "<group>"; };
 		42EDE940300315A50051FC9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42EDE941300315A50051FC9B /* HAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApp.swift; sourceTree = "<group>"; };
@@ -3126,6 +3128,7 @@
 				B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */,
 				42E2E0000000000000000002 /* OnboardingE2ETests.swift */,
 				42E2E000000000000000000C /* RestoredDeviceE2ETests.swift */,
+				42E2E000000000000000000E /* RestoredDeviceFlowsRecordingTests.swift */,
 				42E2E000000000000000000A /* E2EFlow.swift */,
 				42EDBC3A3002FBD90051FC9B /* Resources */,
 				B699339B1E2338960054453D /* SnapshotHelper.swift */,
@@ -4603,6 +4606,7 @@
 			files = (
 				42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */,
 				42E2E000000000000000000D /* RestoredDeviceE2ETests.swift in Sources */,
+				42E2E000000000000000000F /* RestoredDeviceFlowsRecordingTests.swift in Sources */,
 				42E2E000000000000000000B /* E2EFlow.swift in Sources */,
 				B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */,
 				B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */,

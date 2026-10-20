@@ -31,8 +31,26 @@ final class E2EFlow {
     let app: XCUIApplication
     private let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
 
+    /// How long to linger before each tap and after each screen, for recordings meant to be watched rather than
+    /// checked. Zero for the nightly tests.
+    var stepDelay: TimeInterval = 0
+
     init(app: XCUIApplication) {
         self.app = app
+    }
+
+    /// Waits `stepDelay`, so a recording shows the screen before it changes.
+    func pause() {
+        guard stepDelay > 0 else { return }
+        RunLoop.current.run(until: Date().addingTimeInterval(stepDelay))
+    }
+
+    /// Relaunches the app as a device with `vendorID`, which is what a backup restored onto other hardware looks
+    /// like to it: the registrations were made under the identifier of the device the backup came from.
+    func relaunch(asDevice vendorID: String) {
+        app.terminate()
+        app.launchArguments = Self.launchArguments + ["-E2E_VENDOR_IDENTIFIER", vendorID]
+        app.launch()
     }
 
     /// Launch arguments every end-to-end run passes, before any flow-specific ones.
@@ -63,14 +81,87 @@ final class E2EFlow {
         )
         logIn(in: webViewShowingLogin(timeout: Timeout.frontend))
         // The screen closes once every server is registered; the login sheet goes with it.
-        let newDevice = app.buttons[.restoredRegistrationsNewDevice]
-        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: newDevice)
-        XCTAssertEqual(
-            XCTWaiter().wait(for: [gone], timeout: Timeout.frontend),
-            .completed,
-            "The restored registrations screen did not close after registering as a new device"
+        waitUntilGone(
+            app.buttons[.restoredRegistrationsNewDevice],
+            timeout: Timeout.frontend,
+            "restored registrations screen"
         )
         wait(for: app.webViews.firstMatch, timeout: Timeout.frontend, "frontend after registering")
+    }
+
+    /// Answers the same screen by replacing the old device: confirms, and waits for the frontend to return.
+    func replaceOldDevice() {
+        tap(app.buttons[.restoredRegistrationsReplace], timeout: Timeout.screen, "restored registrations screen")
+        tap(confirmationButton(labelContaining: "Replace"), timeout: Timeout.screen, "replace confirmation")
+        waitUntilGone(
+            app.buttons[.restoredRegistrationsReplace],
+            timeout: Timeout.frontend,
+            "restored registrations screen"
+        )
+        wait(for: app.webViews.firstMatch, timeout: Timeout.frontend, "frontend after replacing")
+    }
+
+    /// Starts setting up as a new device, then cancels the login, which leaves the server for the next launch.
+    func cancelSettingUpAsNewDevice() {
+        tap(
+            app.buttons[.restoredRegistrationsNewDevice],
+            timeout: Timeout.screen,
+            "restored registrations screen"
+        )
+        wait(for: webViewShowingLogin(timeout: Timeout.frontend), timeout: Timeout.frontend, "login sheet")
+        tap(app.buttons[.loginCancel], timeout: Timeout.screen, "login cancel button")
+        waitUntilGone(
+            app.buttons[.restoredRegistrationsNewDevice],
+            timeout: Timeout.frontend,
+            "restored registrations screen"
+        )
+    }
+
+    /// From the frontend, opens the native settings, then the first server's settings.
+    func openServerSettingsFromFrontend() {
+        openNativeSettingsFromFrontend()
+        tap(app.descendants(matching: .any)[.settingsServerRow].firstMatch, timeout: Timeout.screen, "server row")
+    }
+
+    /// Registers as a new device from the server's settings: confirms, signs in again, and waits for the row to
+    /// be ready again.
+    func registerAsNewDeviceFromSettings() {
+        let row = app.buttons[.connectionSettingsRegisterAsNewDevice]
+        scrollTo(row, "register as new device row")
+        tap(row, timeout: Timeout.screen, "register as new device row")
+        tap(confirmationButton(labelContaining: "Register"), timeout: Timeout.screen, "register confirmation")
+        logIn(in: webViewShowingLogin(timeout: Timeout.frontend))
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: row)
+        XCTAssertEqual(
+            XCTWaiter().wait(for: [enabled], timeout: Timeout.frontend),
+            .completed,
+            "The register as new device row did not finish"
+        )
+        pause()
+    }
+
+    /// A button of the confirmation dialog on screen, which iOS shows as a sheet, by part of its label.
+    func confirmationButton(labelContaining text: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
+        return app.sheets.firstMatch.buttons.matching(predicate).firstMatch
+    }
+
+    /// Swipes up until `element` can be tapped, for rows further down a list than the screen shows.
+    func scrollTo(_ element: XCUIElement, _ description: String) {
+        for _ in 0 ..< 8 where !(element.exists && element.isHittable) {
+            app.swipeUp()
+        }
+        XCTAssertTrue(element.isHittable, "Could not scroll to the \(description)")
+    }
+
+    func waitUntilGone(_ element: XCUIElement, timeout: TimeInterval, _ description: String) {
+        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: element)
+        XCTAssertEqual(
+            XCTWaiter().wait(for: [gone], timeout: timeout),
+            .completed,
+            "The \(description) stayed on screen"
+        )
+        pause()
     }
 
     // MARK: - Steps
@@ -215,6 +306,7 @@ final class E2EFlow {
 
     func tap(_ element: XCUIElement, timeout: TimeInterval, _ description: String) {
         wait(for: element, timeout: timeout, description)
+        pause()
         element.tap()
     }
 
@@ -233,7 +325,16 @@ final class E2EFlow {
         } while !app.keyboards.element.waitForExistence(timeout: Timeout.optional) && attempts < 3
 
         XCTAssertTrue(app.keyboards.element.exists, "Keyboard never came up for the \(description)")
+        // The keyboard is still sliding in when it first exists; keys pressed before it settles are dropped.
+        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
         element.typeText(text)
+
+        // A web field that still lost characters is cleared and typed into once more.
+        if element.elementType != .secureTextField, (element.value as? String) != text,
+           let typed = element.value as? String, !typed.isEmpty {
+            element.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: typed.count))
+            element.typeText(text)
+        }
     }
 
     @discardableResult

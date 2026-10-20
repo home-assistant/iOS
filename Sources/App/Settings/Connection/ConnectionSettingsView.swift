@@ -313,6 +313,7 @@ struct ConnectionSettingsView: View {
             Button(action: viewModel.confirmRegisteringAsNewDevice) {
                 Text(viewModel.registerAsNewDeviceTitle)
             }
+            .accessibilityIdentifier(AccessibilityIdentifier.connectionSettingsRegisterAsNewDevice.rawValue)
             .disabled(viewModel.isRegisteringAsNewDevice || viewModel.isDeleting)
             .confirmationDialog(
                 L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,

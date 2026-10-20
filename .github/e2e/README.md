@@ -50,6 +50,19 @@ hardware looks like to the app, and sets the device up as a new one from the scr
 bundle exec fastlane e2e test:RestoredDeviceE2ETests
 ```
 
+`Tests/UI/RestoredDeviceFlowsRecordingTests.swift` holds the same flows paced for watching, one per test
+and each picking up where the one before left off, for recordings rather than the nightly:
+`Tools/record_ui_test.sh` runs one of them with `test-without-building`, exports the screen recording XCTest
+keeps in the result bundle, and re-encodes it at 30 fps. The device names it relaunches as are unique per
+run through `TEST_RUNNER_E2E_RUN_ID`, so a simulator that already ran them can run them again.
+
+```bash
+xcodebuild build-for-testing -project HomeAssistant.xcodeproj -scheme Tests-UI -destination "platform=iOS Simulator,id=$UDID" -derivedDataPath build/DerivedData
+export TEST_RUNNER_E2E_RUN_ID=$(date +%H%M)
+Tools/record_ui_test.sh "$UDID" Tests-UI/RestoredDeviceFlowsRecordingTests/test1Onboards onboarding.mp4
+Tools/record_ui_test.sh "$UDID" Tests-UI/RestoredDeviceFlowsRecordingTests/test2SetsUpAsANewDevice new-device.mp4
+```
+
 To check the instance without running the flow:
 
 ```bash
