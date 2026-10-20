@@ -409,8 +409,62 @@ public class SensorContainer {
         }
     }
 
+    /// Live signals arrive in clumps: a Mac app switch fires the frontmost-app signaler twice within
+    /// a millisecond, and a CoreAudio device starting fires its listeners several times within a
+    /// second. Each signal that reaches the observers is a full provider read and a webhook per
+    /// server, so the first signal opens a fixed window and everything inside it becomes one
+    /// notification. A sensor reports up to this much later than it did.
+    static let signalCoalescingInterval: TimeInterval = 1
+
+    /// Runs the block on the main queue after the delay, holding a background task meanwhile so a
+    /// signal from a short background wake on iOS still goes out before the app suspends. Main,
+    /// because that is where the signalers used to call observers from. Replaceable in tests, which
+    /// shouldn't spend a second per case.
+    var scheduleCoalescedSignal: (TimeInterval, @escaping () -> Void) -> Void = { delay, block in
+        Current.backgroundTask(withName: BackgroundTask.coalescedSensorSignal.rawValue) { _ -> Promise<Void> in
+            Promise { seal in
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    block()
+                    seal.fulfill(())
+                }
+            }
+        }.cauterize()
+    }
+
+    /// The signals of the open window, if one is open: how many, and the provider that opened it.
+    private struct PendingSignals {
+        var count = 0
+        var first: SensorProvider.Type?
+    }
+
+    /// Signals arrive on whatever thread the system delivers them on.
+    private let pendingSignals = HAProtected<PendingSignals>(value: PendingSignals())
+
     private func updateSignaled(from type: SensorProvider.Type) {
-        Current.Log.info("live update triggering from \(type)")
+        let opensWindow: Bool = pendingSignals.mutate { pending in
+            pending.count += 1
+            guard pending.first == nil else { return false }
+            pending.first = type
+            return true
+        }
+        guard opensWindow else { return }
+
+        // `Current.sensors` lives as long as the process; weak for the tests, which build one per case.
+        scheduleCoalescedSignal(Self.signalCoalescingInterval) { [weak self] in
+            self?.flushCoalescedSignal()
+        }
+    }
+
+    /// Closes the window: its signals become one notification, and the next signal opens a new one.
+    private func flushCoalescedSignal() {
+        // Reset first, so a signal arriving while observers run opens its own window instead of
+        // being swallowed.
+        let pending = pendingSignals.mutate { pending -> PendingSignals in
+            defer { pending = PendingSignals() }
+            return pending
+        }
+        let first = pending.first.map { String(describing: $0) } ?? "unknown"
+        Current.Log.info("live update triggering from \(first), \(pending.count) signal(s) in the window")
         notifySignal(reason: .signal)
     }
 }
