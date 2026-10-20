@@ -217,15 +217,22 @@ public final class LiveActivityPendingEndObserver {
     }
 
     public static func drain() {
-        let tags = LiveActivityPendingEnd.drainAll()
-        guard !tags.isEmpty else { return }
-        Current.Log.verbose("LiveActivityPendingEnd: draining \(tags.count) tag(s) in app")
+        let requests = LiveActivityPendingEnd.drainAll()
+        guard !requests.isEmpty else { return }
+        Current.Log.verbose("LiveActivityPendingEnd: draining \(requests.count) tag(s) in app")
         // Background task so the async dismissal finishes even when backgrounded.
         _ = Current.backgroundTask(withName: "live-activity-pending-end") { _ in
             Promise<Void> { seal in
                 Task {
-                    for tag in tags {
-                        await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
+                    for request in requests {
+                        await Current.liveActivityRegistry?.end(tag: request.tag, dismissalPolicy: .immediate)
+                        // Ending works in the background too, so a running app always applies it.
+                        if let confirmID = request.confirmID {
+                            LiveActivityLocalPushResult.record(.presented, confirmID: confirmID)
+                        }
+                    }
+                    if requests.contains(where: { $0.confirmID != nil }) {
+                        LiveActivityLocalPushResult.postDarwinSignal()
                     }
                     DispatchQueue.main.async { seal.fulfill(()) }
                 }
