@@ -60,6 +60,9 @@ struct ConnectionSettingsView: View {
         .sheet(isPresented: $viewModel.isEditingExternalURL) {
             ServerURLEditorSheet(viewModel: viewModel, urlType: .external, transitionNamespace: urlTransitionNamespace)
         }
+        .sheet(item: $viewModel.login) { login in
+            OnboardingAuthLoginView(viewModel: login, style: .modal)
+        }
         .sheet(isPresented: $viewModel.isShowingHowItWorks) {
             ServerHowItWorksSheet(viewModel: viewModel)
         }
@@ -322,7 +325,7 @@ struct ConnectionSettingsView: View {
                 )
                 Button(L10n.cancelLabel, role: .cancel) {}
             } message: {
-                Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.message)
+                Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.signInMessage)
             }
             .alert(
                 L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,

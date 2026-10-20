@@ -72,7 +72,8 @@ class OnboardingAuth {
                     fallback: api.server.identifier,
                     existingServers: Current.servers.all
                 )
-                let existingInfo = Current.servers.server(for: identifier)?.info
+                let existing = Current.servers.server(for: identifier)
+                let existingInfo = existing?.info
                 let settings = Current.settingsStore
                 persisted = Persisted(
                     identifier: identifier,
@@ -82,20 +83,38 @@ class OnboardingAuth {
                         : settings.registrationRecord(for: identifier)
                 )
 
-                // The registration belongs to the server as it is persisted.
-                if identifier != api.server.identifier {
-                    let registration = settings.registrationRecord(for: api.server.identifier)
-                    settings.setRegistrationRecord(registration, for: identifier)
-                    settings.setRegistrationRecord(registrationBeforeOnboarding, for: api.server.identifier)
-                }
-
                 // Re-authenticating a server the app already has is not a new server, and the
                 // privacy step is not shown for it, so it keeps the choices it already carries
                 // instead of the holdback above (or a default) overwriting them.
                 var serverInfo = api.server.info
-                if let existingInfo {
+                var registration = settings.registrationRecord(for: api.server.identifier)
+                if let existing, let existingInfo {
                     serverInfo.setSetting(value: existingInfo.setting(for: .sensorPrivacy), for: .sensorPrivacy)
                     serverInfo.setSetting(value: existingInfo.setting(for: .locationPrivacy), for: .locationPrivacy)
+
+                    if let kept = Self.registrationToKeep(of: existing, insteadOf: registration) {
+                        Current.Log.info(
+                            "keeping the registration \(existing.identifier) has; the one just made is left behind"
+                        )
+                        serverInfo.connection.webhookID = existingInfo.connection.webhookID
+                        serverInfo.connection.webhookSecret = existingInfo.connection.webhookSecret
+                        serverInfo.connection.cloudhookURL = existingInfo.connection.cloudhookURL
+                        let keys: [ServerSettingKey<String?>] = [
+                            .registeredDeviceID,
+                            .registeredDeviceName,
+                            .overrideDeviceName,
+                        ]
+                        for key in keys {
+                            serverInfo.setSetting(value: existingInfo.setting(for: key), for: key)
+                        }
+                        registration = kept
+                    }
+                }
+
+                // The registration belongs to the server as it is persisted.
+                settings.setRegistrationRecord(registration, for: identifier)
+                if identifier != api.server.identifier {
+                    settings.setRegistrationRecord(registrationBeforeOnboarding, for: api.server.identifier)
                 }
 
                 // actually persists to outside-onboarding
@@ -331,6 +350,20 @@ class OnboardingAuth {
     static func existingServers(reachedBy server: Server, among servers: [Server]) -> [Server] {
         guard knowsInstance(of: server) else { return [] }
         return servers.filter { $0.identifier == server.identifier || $0.info.instanceID == server.identifier.rawValue }
+    }
+
+    /// The registration `existing` already has, when it is this device's own and `registration`, which onboarding
+    /// just made, is under another identity: a server reached by an address typed in is only told apart from the
+    /// servers the app has once it is registered with, and the registration it had keeps its Home Assistant device
+    /// and everything that points at it. `nil` when the registration just made is the one to keep.
+    static func registrationToKeep(
+        of existing: Server,
+        insteadOf registration: RegistrationRecord
+    ) -> RegistrationRecord? {
+        let identity = Current.settingsStore.currentRegistrationIdentity(for: existing)
+        guard let vendorID = Current.device.identifierForVendor(), identity.ownerVendorID == vendorID,
+              let made = registration.current, made.deviceID != identity.deviceID else { return nil }
+        return RegistrationRecord(current: identity)
     }
 
     /// `previous`, keeping as the identity to register with next the one this device registered under in `attempt`, or

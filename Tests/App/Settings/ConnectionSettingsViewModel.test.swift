@@ -1,5 +1,6 @@
 import Foundation
 @testable import HomeAssistant
+import PromiseKit
 @testable import Shared
 import Testing
 
@@ -267,14 +268,20 @@ struct ConnectionSettingsViewModelTests {
                 var registered = [Server]()
                 var titlesWhileRegistering = [String]()
                 var viewModel: ConnectionSettingsViewModel!
-                viewModel = ConnectionSettingsViewModel(server: server, ownership: RegistrationOwnership(register: {
-                    titlesWhileRegistering.append(viewModel.registerAsNewDeviceTitle)
-                    registered.append($0)
-                }))
+                var signedIn = [Server]()
+                viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: {
+                        titlesWhileRegistering.append(viewModel.registerAsNewDeviceTitle)
+                        registered.append($0)
+                    }),
+                    signIn: { server, _ in signedIn.append(server) }
+                )
                 #expect(viewModel.registerAsNewDeviceTitle == L10n.Settings.ConnectionSection.RegisterAsNewDevice.title)
 
                 await viewModel.registerAsNewDevice()
 
+                #expect(signedIn == [server])
                 #expect(registered == [server])
                 #expect(titlesWhileRegistering == [L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress])
                 #expect(viewModel.registerAsNewDeviceError == nil)
@@ -291,7 +298,8 @@ struct ConnectionSettingsViewModelTests {
                 var registered = [Server]()
                 let viewModel = ConnectionSettingsViewModel(
                     server: server,
-                    ownership: RegistrationOwnership(register: { registered.append($0) })
+                    ownership: RegistrationOwnership(register: { registered.append($0) }),
+                    signIn: { _, _ in }
                 )
 
                 // Asking first registers nothing.
@@ -317,7 +325,8 @@ struct ConnectionSettingsViewModelTests {
                     server: server,
                     ownership: RegistrationOwnership(register: { server in
                         throw ServerConnectionError.noActiveURL(server.info.name)
-                    })
+                    }),
+                    signIn: { _, _ in }
                 )
 
                 await viewModel.registerAsNewDevice()
@@ -325,6 +334,73 @@ struct ConnectionSettingsViewModelTests {
                 #expect(viewModel.registerAsNewDeviceError is ServerConnectionError)
                 #expect(viewModel.isShowingRegisterAsNewDeviceError)
                 #expect(!viewModel.isRegisteringAsNewDevice)
+            }
+        }
+    }
+
+    @Test func theLoginPageIsShownWhileSigningInAndTakenDownAfter() async throws {
+        try await withTestWorld {
+            try await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                let authDetails = try OnboardingAuthDetails(baseURL: URL(string: "http://internal.example.com:8123")!)
+                let login = OnboardingAuthLoginViewModel(authDetails: authDetails)
+                var shownWhileSigningIn: OnboardingAuthLoginViewModel?
+                var viewModel: ConnectionSettingsViewModel!
+                viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { _ in }),
+                    signIn: { _, present in
+                        present(login)
+                        shownWhileSigningIn = viewModel.login
+                        present(nil)
+                    }
+                )
+
+                await viewModel.registerAsNewDevice()
+
+                #expect(shownWhileSigningIn === login)
+                #expect(viewModel.login == nil)
+            }
+        }
+    }
+
+    @Test func cancellingTheLoginRegistersNothingAndReportsNothing() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                var registered = [Server]()
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { registered.append($0) }),
+                    signIn: { _, _ in throw PMKError.cancelled }
+                )
+
+                await viewModel.registerAsNewDevice()
+
+                #expect(registered.isEmpty)
+                #expect(viewModel.registerAsNewDeviceError == nil)
+                #expect(!viewModel.isShowingRegisterAsNewDeviceError)
+                #expect(!viewModel.isRegisteringAsNewDevice)
+            }
+        }
+    }
+
+    @Test func failingToSignInRegistersNothingAndReportsTheFailure() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                var registered = [Server]()
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { registered.append($0) }),
+                    signIn: { server, _ in throw ServerConnectionError.noActiveURL(server.info.name) }
+                )
+
+                await viewModel.registerAsNewDevice()
+
+                #expect(registered.isEmpty)
+                #expect(viewModel.registerAsNewDeviceError is ServerConnectionError)
+                #expect(viewModel.isShowingRegisterAsNewDeviceError)
             }
         }
     }

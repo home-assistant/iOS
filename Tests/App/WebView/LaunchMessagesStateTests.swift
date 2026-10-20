@@ -59,8 +59,8 @@ final class LaunchMessagesStateTests: XCTestCase {
 
             sut.restoredRegistrationsViewModel(
                 for: [server],
-                ownership: RegistrationOwnership(updateRegistration: { _ in })
-            ).keepRegistrations()
+                ownership: RegistrationOwnership(catchUp: { _ in })
+            ).replaceOldDevice()
 
             XCTAssertNil(sut.presented)
         }

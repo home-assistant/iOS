@@ -15,6 +15,23 @@ struct RegistrationOwnershipTests {
 
     private struct RegisterFailure: Error {}
 
+    /// Holds whoever waits on it until opened.
+    private actor AsyncGate {
+        private var isOpen = false
+        private var waiters = [CheckedContinuation<Void, Never>]()
+
+        func wait() async {
+            guard !isOpen else { return }
+            await withCheckedContinuation { waiters.append($0) }
+        }
+
+        func open() {
+            isOpen = true
+            waiters.forEach { $0.resume() }
+            waiters.removeAll()
+        }
+    }
+
     /// Stands in for the server: answers the registration and the reconnect that follows it.
     private final class RegisteringAPI: HomeAssistantAPI {
         var registerResult: Promise<Void> = .value(())
@@ -41,7 +58,7 @@ struct RegistrationOwnershipTests {
 
     /// Keeps the registrations with `servers`, sending nothing to them.
     private func keep(_ servers: [Server]) {
-        RegistrationOwnership(updateRegistration: { _ in }).keepRegistrations(of: servers)
+        RegistrationOwnership(catchUp: { _ in }).keepRegistrations(of: servers)
     }
 
     /// Runs `body` with `api` answering for its server.
@@ -260,7 +277,8 @@ struct RegistrationOwnershipTests {
     }
 
     /// Updates are held back while a registration is another device's, so keeping it sends this device's push token.
-    @Test func keepingARegistrationSendsThisDevicesRegistrationData() async {
+    /// A warm connect sends the registration data, then the sensors, which were held back until now.
+    @Test func keepingARegistrationCatchesItUpWithThisDevice() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
             let api = RegisteringAPI(server: server)
@@ -269,7 +287,80 @@ struct RegistrationOwnershipTests {
                 RegistrationOwnership().keepRegistrations(of: [server])
             }
 
-            #expect(api.updatedRegistrations == 1)
+            #expect(api.connectReasons == [.warm])
+            #expect(api.updatedRegistrations == 0)
+        }
+    }
+
+    /// Two attempts for one server at the same time, such as from two settings windows, share one registration.
+    @Test func registeringAnewTwiceAtOnceRegistersOnce() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let gate = AsyncGate()
+            var registrations = 0
+            let ownership = RegistrationOwnership(register: { _ in
+                registrations += 1
+                await gate.wait()
+            })
+
+            async let first = ownership.registerAsNewDevice([server])
+            async let second = ownership.registerAsNewDevice([server])
+            try? await Task.sleep(for: .milliseconds(50))
+            await gate.open()
+            let failures = await [first, second]
+
+            let noneFailed = failures.allSatisfy(\.isEmpty)
+            #expect(registrations == 1)
+            #expect(noneFailed)
+        }
+    }
+
+    @Test func aFailureIsSharedByTheAttemptsThatJoinedIt() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            let gate = AsyncGate()
+            let ownership = RegistrationOwnership(register: { _ in
+                await gate.wait()
+                throw RegisterFailure()
+            })
+
+            async let first = ownership.registerAsNewDevice([server])
+            async let second = ownership.registerAsNewDevice([server])
+            try? await Task.sleep(for: .milliseconds(50))
+            await gate.open()
+            let failures = await [first, second]
+
+            let bothFailed = failures.allSatisfy { $0[server] is RegisterFailure }
+            #expect(bothFailed)
+        }
+    }
+
+    @Test func anAttemptThatFinishedDoesNotStandInForTheNext() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            var registrations = 0
+            let ownership = RegistrationOwnership(register: { _ in registrations += 1 })
+
+            _ = await ownership.registerAsNewDevice([server])
+            _ = await ownership.registerAsNewDevice([server])
+
+            #expect(registrations == 2)
+        }
+    }
+
+    @Test func reportsAreHeldBackWhileTheRegistrationIsAnotherDevices() async {
+        await withDevice { servers in
+            let theirs = addServer(to: servers, ownedBy: Self.otherDevice)
+            let mine = addServer(to: servers, ownedBy: Self.thisDevice)
+            let ownership = RegistrationOwnership()
+
+            for type in ["update_location", "update_sensor_states", "register_sensor"] {
+                #expect(ownership.holdsBack(WebhookRequest(type: type, data: [:]), to: theirs))
+                #expect(!ownership.holdsBack(WebhookRequest(type: type, data: [:]), to: mine))
+            }
+            for type in ["call_service", "fire_event", "get_config", "render_template", "update_registration"] {
+                #expect(!ownership.holdsBack(WebhookRequest(type: type, data: [:]), to: theirs))
+            }
         }
     }
 
@@ -364,7 +455,7 @@ struct RegistrationOwnershipTests {
             answerDevices(on: api)
 
             await withAPI(api) {
-                let failures = await RegistrationOwnership(updateRegistration: { _ in }).registerAsNewDevice([server])
+                let failures = await RegistrationOwnership(catchUp: { _ in }).registerAsNewDevice([server])
                 #expect(failures.isEmpty)
             }
 

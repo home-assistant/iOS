@@ -14,8 +14,11 @@ import PromiseKit
 public struct RegistrationOwnership {
     /// Registers this device with a server from scratch, under `SettingsStore.registrationIdentity(for:)`.
     public typealias Register = (Server) async throws -> Void
-    /// Sends this device's registration data, such as its push token, to a server.
-    public typealias UpdateRegistration = (Server) -> Void
+    /// Brings a registration up to date with this device: its registration data, such as its push token, and its
+    /// sensors.
+    public typealias CatchUp = (Server) -> Void
+    /// The webhook request types that report this device to a server.
+    static let reportingRequestTypes: Set<String> = ["update_location", "update_sensor_states", "register_sensor"]
 
     /// How long to wait for the devices a server has: a WebSocket command has no deadline of its own.
     static let deviceListTimeout: TimeInterval = 30
@@ -23,15 +26,19 @@ public struct RegistrationOwnership {
     /// sensor updates that fall back to a background session while the network is down. Non-private for tests.
     static var reconnectTimeout: TimeInterval = 30
 
+    private static let inFlightLock = NSLock()
+    /// The registration under way with each server, for a second attempt to join rather than start another.
+    private static var inFlight = [Identifier<Server>: Task<Void, Error>]()
+
     private let register: Register
-    private let updateRegistration: UpdateRegistration
+    private let catchUp: CatchUp
 
     public init(
         register: @escaping Register = RegistrationOwnership.registerWithServer(_:),
-        updateRegistration: @escaping UpdateRegistration = RegistrationOwnership.updateRegistrationWithServer(_:)
+        catchUp: @escaping CatchUp = RegistrationOwnership.catchUpWithServer(_:)
     ) {
         self.register = register
-        self.updateRegistration = updateRegistration
+        self.catchUp = catchUp
     }
 
     /// The servers whose registration belongs to another device. Always empty on the Mac, which keeps the identifier
@@ -46,6 +53,12 @@ public struct RegistrationOwnership {
     public func isRegisteredByAnotherDevice(_ server: Server) -> Bool {
         !server.info.requiresReauthenticationAfterMirrorRestore
             && belongsToAnotherDevice(Current.settingsStore.currentRegistrationIdentity(for: server))
+    }
+
+    /// Whether `request` to `server` is held back: it reports this device, and the registration it would reach is
+    /// another device's, so what it reports would land on that device until the user settles the registration.
+    public func holdsBack(_ request: WebhookRequest, to server: Server) -> Bool {
+        Self.reportingRequestTypes.contains(request.type) && isRegisteredByAnotherDevice(server)
     }
 
     /// Whether `identity` is another device's, so registering under it would take over that device's registration.
@@ -69,9 +82,9 @@ public struct RegistrationOwnership {
             }
         }
         settings.takeOverIntegrationDeviceID(for: vendorID)
-        // Updates are held back while a registration is another device's, so this device's push token only reaches
-        // the servers now.
-        servers.forEach(updateRegistration)
+        // Updates are held back while a registration is another device's, so this device's push token and sensors
+        // only reach the servers now.
+        servers.forEach(catchUp)
     }
 
     /// Registers this device with each of `servers` as a new device, each under an identifier of its own. Their
@@ -99,24 +112,48 @@ public struct RegistrationOwnership {
 
         var failures = [Server: Error]()
         for server in servers {
-            settings.updateRegistrationRecord(for: server.identifier) { record in
-                // An earlier attempt's identity is reused: the server may have registered it before the response
-                // was lost, and registering it again replaces that registration rather than adding another.
-                guard record.pending?.ownerVendorID != vendorID else { return }
-                record.pending = RegistrationIdentity(
-                    deviceID: settings.newIntegrationDeviceID(),
-                    ownerVendorID: vendorID
-                )
-            }
-
             do {
-                try await register(server)
+                try await registerOnce(with: server, ownedBy: vendorID)
             } catch {
                 Current.Log.error("failed to register with \(server.identifier) as a new device: \(error)")
                 failures[server] = error
             }
         }
         return failures
+    }
+
+    /// Registers with `server` as a new device, or joins the attempt already under way with it, so the identity, the
+    /// request and what the response is kept as happen once however many times it is asked for at the same time.
+    private func registerOnce(with server: Server, ownedBy vendorID: String) async throws {
+        let task = Self.inFlightLock.withLock { () -> Task<Void, Error> in
+            if let running = Self.inFlight[server.identifier] {
+                return running
+            }
+            let register = register
+            let task = Task {
+                Current.settingsStore.updateRegistrationRecord(for: server.identifier) { record in
+                    // An earlier attempt's identity is reused: the server may have registered it before the
+                    // response was lost, and registering it again replaces that registration rather than adding
+                    // another.
+                    guard record.pending?.ownerVendorID != vendorID else { return }
+                    record.pending = RegistrationIdentity(
+                        deviceID: Current.settingsStore.newIntegrationDeviceID(),
+                        ownerVendorID: vendorID
+                    )
+                }
+                try await register(server)
+            }
+            Self.inFlight[server.identifier] = task
+            return task
+        }
+        defer {
+            Self.inFlightLock.withLock {
+                if Self.inFlight[server.identifier] == task {
+                    Self.inFlight[server.identifier] = nil
+                }
+            }
+        }
+        try await task.value
     }
 
     /// Registers with `server` and brings the new registration up to date: its sensors, the device `get_config`
@@ -142,9 +179,10 @@ public struct RegistrationOwnership {
         }
     }
 
-    /// Sends this device's registration data to `server`. A failure is retried on the next connect.
-    public static func updateRegistrationWithServer(_ server: Server) {
-        Current.api(for: server)?.updateRegistration().cauterize()
+    /// Brings the registration with `server` up to date with this device, as a connect does: its registration data,
+    /// then its sensors. A failure is retried on the next connect.
+    public static func catchUpWithServer(_ server: Server) {
+        Current.api(for: server)?.Connect(reason: .warm).cauterize()
     }
 
     /// `name`, or the first of "`name` 2", "`name` 3" and on that no `mobile_app` device in `devices` has, other

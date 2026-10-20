@@ -444,6 +444,80 @@ class WebhookManagerTests: XCTestCase {
         }
     }
 
+    /// Runs `body` with `server`'s registration recorded as another device's.
+    private func withRegistrationOfAnotherDevice(_ server: Server, _ body: () throws -> Void) rethrows {
+        let prefs = Current.settingsStore.prefs
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationRecordsKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        let previousVendorID = Current.device.identifierForVendor
+        let previousIsCatalyst = Current.isCatalyst
+        defer {
+            Current.device.identifierForVendor = previousVendorID
+            Current.isCatalyst = previousIsCatalyst
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+        Current.device.identifierForVendor = { "this-device" }
+        Current.isCatalyst = false
+        keys.forEach(prefs.removeObject(forKey:))
+        Current.settingsStore.setRegistrationRecord(
+            RegistrationRecord(current: RegistrationIdentity(deviceID: "device-id", ownerVendorID: "other-device")),
+            for: server.identifier
+        )
+        try body()
+    }
+
+    func testReportsAreHeldBackWhileTheRegistrationIsAnotherDevices() throws {
+        try withRegistrationOfAnotherDevice(api1.server) {
+            for type in ["update_location", "update_sensor_states", "register_sensor"] {
+                let request = WebhookRequest(type: type, data: ["json": true])
+                for promise in [
+                    manager.send(server: api1.server, request: request),
+                    manager.sendPassive(server: api1.server, request: request),
+                ] {
+                    XCTAssertThrowsError(try hang(promise), type) { error in
+                        XCTAssertEqual(error as? RegistrationOwnershipError, .registeredByAnotherDevice)
+                    }
+                }
+            }
+        }
+    }
+
+    func testOtherRequestsStillGoOutWhileTheRegistrationIsAnotherDevices() throws {
+        let expectedRequest = WebhookRequest(type: "call_service", data: ["json": true])
+
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        try withRegistrationOfAnotherDevice(api1.server) {
+            XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+        }
+    }
+
+    func testReportsToAServerThisDeviceRegisteredWithGoOut() throws {
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        stub(condition: { [webhookURL2] req in req.url == webhookURL2 }, response: { [api2] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api2!.server)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        try withRegistrationOfAnotherDevice(api1.server) {
+            Current.settingsStore.setRegistrationRecord(
+                RegistrationRecord(current: RegistrationIdentity(deviceID: "mine", ownerVendorID: "this-device")),
+                for: api2.server.identifier
+            )
+            XCTAssertNoThrow(try hang(manager.send(server: api2.server, request: expectedRequest)))
+        }
+    }
+
     func testSendingUnregisteredIdentifierErrors() {
         let promise1 = manager.send(
             identifier: .init(rawValue: "unregistered"),

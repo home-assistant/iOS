@@ -1,8 +1,8 @@
 import Shared
 import SwiftUI
 
-/// Asks a device restored from another one's backup what to do with the registrations it carries: register itself
-/// with those servers as a new device, or keep them because it replaced the other device.
+/// Explains to a device restored from another one's backup that it still counts as that device in Home Assistant,
+/// and lets it sign in and register as a new device, or replace the other device and keep its registrations.
 struct RestoredRegistrationsView: View {
     @StateObject private var viewModel: RestoredRegistrationsViewModel
 
@@ -23,10 +23,14 @@ struct RestoredRegistrationsView: View {
                     Text(L10n.RestoredRegistrations.title)
                         .font(DesignSystem.Font.title2.bold())
                         .multilineTextAlignment(.center)
-                    Text(L10n.RestoredRegistrations.body)
+                    Text(L10n.RestoredRegistrations.explanation)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                     Text(L10n.RestoredRegistrations.servers(viewModel.serverNames))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Text(L10n.RestoredRegistrations.choices)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -40,14 +44,24 @@ struct RestoredRegistrationsView: View {
                 .frame(maxWidth: .infinity)
             }
             VStack(spacing: DesignSystem.Spaces.one) {
-                Button(action: viewModel.startRegistration) {
-                    Text(viewModel.registerTitle)
+                Button(action: viewModel.startSettingUpAsNewDevice) {
+                    Text(viewModel.newDeviceTitle)
                 }
                 .buttonStyle(.primaryButton)
-                Button(action: viewModel.keepRegistrations) {
-                    Text(L10n.RestoredRegistrations.keep)
+                Button(action: viewModel.confirmReplacingOldDevice) {
+                    Text(L10n.RestoredRegistrations.replaceDevice)
                 }
                 .buttonStyle(.secondaryButton)
+                .confirmationDialog(
+                    L10n.RestoredRegistrations.Replace.title,
+                    isPresented: $viewModel.isReplaceConfirmationPresented,
+                    titleVisibility: .visible
+                ) {
+                    Button(L10n.RestoredRegistrations.Replace.confirm, action: viewModel.replaceOldDevice)
+                    Button(L10n.cancelLabel, role: .cancel) {}
+                } message: {
+                    Text(L10n.RestoredRegistrations.Replace.message)
+                }
             }
             .disabled(viewModel.isRegistering)
         }
@@ -55,6 +69,9 @@ struct RestoredRegistrationsView: View {
         .padding(.top, DesignSystem.Spaces.four)
         .padding(.bottom, DesignSystem.Spaces.one)
         .interactiveDismissDisabled(viewModel.isRegistering)
+        .sheet(item: $viewModel.login) { login in
+            OnboardingAuthLoginView(viewModel: login, style: .modal)
+        }
     }
 }
 
