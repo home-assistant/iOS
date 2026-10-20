@@ -288,11 +288,10 @@ final class E2EFlow {
     }
 
     func openNativeSettingsFromFrontend() {
-        // Deliberately runs in the same session that just onboarded: that is the case the settings stack
-        // used to crash in. It was nested inside onboarding's own `NavigationStack`, and SwiftUI raised an
-        // unexpected error from `NavigationColumnState.boundPathChange` as soon as
-        // `AppSettingsPresenter.pushPath` gained its first element (and, on iOS 16, at the very first
-        // layout). The stack now wraps only the frontend, so nothing is nested and no relaunch is needed.
+        // Deliberately runs in the same session that just onboarded: that is the case app Settings used to
+        // crash in, when the stack it was pushed onto was nested inside onboarding's own `NavigationStack`
+        // and SwiftUI raised an unexpected error from `NavigationColumnState.boundPathChange`. Settings is
+        // a sheet with its own stack now, so nothing is nested and no relaunch is needed.
 
         // The toggle reports a successful tap even when the page swallows it, so the sidebar opening
         // is the only thing worth believing.
