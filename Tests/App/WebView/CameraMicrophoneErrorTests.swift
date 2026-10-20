@@ -4,12 +4,13 @@ import XCTest
 
 final class CameraMicrophoneErrorTests: XCTestCase {
     func testEveryErrorHasTheCodeTheFrontendMatchesOn() {
-        XCTAssertEqual(CameraMicrophoneError.microphoneDenied.code, "microphone_denied")
-        XCTAssertEqual(CameraMicrophoneError.serverUnavailable.code, "server_unavailable")
-        XCTAssertEqual(CameraMicrophoneError.signalingFailed(nil).code, "signaling_failed")
-        XCTAssertEqual(CameraMicrophoneError.connectionFailed.code, "connection_failed")
-        XCTAssertEqual(CameraMicrophoneError.timedOut.code, "timeout")
-        XCTAssertEqual(CameraMicrophoneError.interrupted.code, "interrupted")
+        XCTAssertEqual(CameraMicrophoneError.microphoneDenied.code, .microphoneDenied)
+        XCTAssertEqual(CameraMicrophoneError.serverUnavailable.code, .serverUnavailable)
+        XCTAssertEqual(CameraMicrophoneError.signalingFailed(nil).code, .signalingFailed)
+        XCTAssertEqual(CameraMicrophoneError.signalingFailed("Camera offline").code, .signalingFailed)
+        XCTAssertEqual(CameraMicrophoneError.connectionFailed.code, .connectionFailed)
+        XCTAssertEqual(CameraMicrophoneError.timedOut.code, .timedOut)
+        XCTAssertEqual(CameraMicrophoneError.interrupted.code, .interrupted)
     }
 
     func testEveryErrorHasAMessage() {

@@ -9,14 +9,14 @@ enum CameraMicrophoneError: Error, Equatable {
     case timedOut
     case interrupted
 
-    var code: String {
+    var code: WebRTCStreamErrorCode {
         switch self {
-        case .microphoneDenied: return "microphone_denied"
-        case .serverUnavailable: return "server_unavailable"
-        case .signalingFailed: return "signaling_failed"
-        case .connectionFailed: return "connection_failed"
-        case .timedOut: return "timeout"
-        case .interrupted: return "interrupted"
+        case .microphoneDenied: return .microphoneDenied
+        case .serverUnavailable: return .serverUnavailable
+        case .signalingFailed: return .signalingFailed
+        case .connectionFailed: return .connectionFailed
+        case .timedOut: return .timedOut
+        case .interrupted: return .interrupted
         }
     }
 

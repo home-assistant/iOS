@@ -255,7 +255,7 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         let wasConnected = state == .connected
         state = .ended
         tearDown()
-        Current.Log.info("Camera microphone for \(cameraEntityId) ended: \(error.code)")
+        Current.Log.info("Camera microphone for \(cameraEntityId) ended: \(error.code.rawValue)")
         if let startCompletion {
             self.startCompletion = nil
             startCompletion(.failure(error))

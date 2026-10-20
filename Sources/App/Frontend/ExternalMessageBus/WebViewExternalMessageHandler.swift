@@ -748,7 +748,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             Current.Log.error("Received webrtc/stream/start with an unsupported stream_type! \(incomingMessage)")
             sendExternalBus(message: .init(
                 id: messageId,
-                errorCode: "unsupported_stream_type",
+                errorCode: WebRTCStreamErrorCode.unsupportedStreamType.rawValue,
                 errorMessage: "Unsupported stream_type: \(streamType ?? "none")"
             ))
             return
@@ -757,7 +757,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             Current.Log.error("Received webrtc/stream/start but entity_id was not string! \(incomingMessage)")
             sendExternalBus(message: .init(
                 id: messageId,
-                errorCode: "invalid_payload",
+                errorCode: WebRTCStreamErrorCode.invalidPayload.rawValue,
                 errorMessage: "entity_id is required"
             ))
             return
@@ -769,7 +769,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case let .failure(error):
                 self?.sendExternalBus(message: .init(
                     id: messageId,
-                    errorCode: error.code,
+                    errorCode: error.code.rawValue,
                     errorMessage: error.message
                 ))
             }
