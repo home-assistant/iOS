@@ -76,7 +76,8 @@ struct ContainerView: View {
                         onDismiss: { viewModel.fullScreenCover = nil }
                     )
                     .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
+                        // Trailing, so it stays clear of the back button on the home network step
+                        ToolbarItem(placement: .topBarTrailing) {
                             CloseButton { viewModel.fullScreenCover = nil }
                         }
                     }
