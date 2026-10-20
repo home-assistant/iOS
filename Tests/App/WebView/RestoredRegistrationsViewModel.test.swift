@@ -78,6 +78,23 @@ struct RestoredRegistrationsViewModelTests {
         var count = 0
     }
 
+    /// Sets up as a new device, going on at every hand-off between servers as a user tapping Continue would.
+    private func setUpGoingOn(_ viewModel: RestoredRegistrationsViewModel) async {
+        var finished = false
+        var resumed = Set<Int>()
+        Task { @MainActor in
+            await viewModel.setUpAsNewDevice()
+            finished = true
+        }
+        while !finished {
+            if let next = viewModel.nextServer, !resumed.contains(next.position) {
+                resumed.insert(next.position)
+                next.goOn()
+            }
+            try? await Task.sleep(for: .milliseconds(5))
+        }
+    }
+
     /// Lays the prompt out in a window of its own, which is what makes SwiftUI evaluate its body.
     private func render(_ viewModel: RestoredRegistrationsViewModel) {
         let controller = UIHostingController(rootView: RestoredRegistrationsView(viewModel: viewModel))
@@ -120,12 +137,12 @@ struct RestoredRegistrationsViewModelTests {
             )
             #expect(viewModel.newDeviceTitle == L10n.RestoredRegistrations.newDevice)
 
-            await viewModel.setUpAsNewDevice()
+            await setUpGoingOn(viewModel)
 
             #expect(steps == ["sign in Home", "register Home", "sign in Cabin", "register Cabin"])
             #expect(titlesWhileRegistering == Array(repeating: L10n.RestoredRegistrations.settingUp, count: 2))
             #expect(finished.count == 1)
-            #expect(viewModel.failureMessage == nil)
+            #expect(restored.map(viewModel.state(of:)) == [.done, .done])
             #expect(!viewModel.isRegistering)
             #expect(viewModel.login == nil)
         }
@@ -136,7 +153,8 @@ struct RestoredRegistrationsViewModelTests {
             let server = addServer(named: "Home", to: servers)
             let authDetails = try OnboardingAuthDetails(baseURL: URL(string: "http://homeassistant.local:8123")!)
             let login = OnboardingAuthLoginViewModel(authDetails: authDetails)
-            var shownWhileSigningIn: OnboardingAuthLoginViewModel?
+            var shownWhileSigningIn: RestoredRegistrationsViewModel.Login?
+            var stateWhileSigningIn: RestoredRegistrationsViewModel.SetupState?
             var viewModel: RestoredRegistrationsViewModel!
             viewModel = RestoredRegistrationsViewModel(
                 servers: [server],
@@ -144,6 +162,7 @@ struct RestoredRegistrationsViewModelTests {
                 signIn: { _, present in
                     present(login)
                     shownWhileSigningIn = viewModel.login
+                    stateWhileSigningIn = viewModel.state(of: server)
                     present(nil)
                 },
                 onFinished: {}
@@ -151,7 +170,11 @@ struct RestoredRegistrationsViewModelTests {
 
             await viewModel.setUpAsNewDevice()
 
-            #expect(shownWhileSigningIn === login)
+            #expect(shownWhileSigningIn?.viewModel === login)
+            #expect(shownWhileSigningIn?.server == server)
+            #expect(shownWhileSigningIn?.position == 1)
+            #expect(shownWhileSigningIn?.count == 1)
+            #expect(stateWhileSigningIn == .signingIn)
             #expect(viewModel.login == nil)
         }
     }
@@ -175,39 +198,44 @@ struct RestoredRegistrationsViewModelTests {
         }
     }
 
-    /// A login the user cancels is left for the next launch, and the servers after it are still gone through.
-    @Test func cancellingALoginSkipsThatServerAndGoesOnToTheNext() async {
+    /// Setting up is one decision for every server: cancelling a login ends the run, and that server and the ones
+    /// after it are asked about again on the next launch.
+    @Test func cancellingALoginEndsTheRunAndLeavesTheRestForTheNextLaunch() async {
         await withRestoredDevice { servers in
             let home = addServer(named: "Home", to: servers)
             let cabin = addServer(named: "Cabin", to: servers)
+            let lake = addServer(named: "Lake", to: servers)
             let finished = FinishCounter()
             var registered = [Server]()
+            var signedIn = [Server]()
             let viewModel = RestoredRegistrationsViewModel(
-                servers: [home, cabin],
+                servers: [home, cabin, lake],
                 ownership: RegistrationOwnership(register: { server in
                     registered.append(server)
-                    // What the server's answer leaves behind: the registration is now the pending identity's.
                     Current.settingsStore.updateRegistrationRecord(for: server.identifier) { record in
                         record.current = record.pending
                         record.pending = nil
                     }
                 }),
                 signIn: { server, _ in
-                    if server == home {
+                    signedIn.append(server)
+                    if server == cabin {
                         throw PMKError.cancelled
                     }
                 },
                 onFinished: { finished.count += 1 }
             )
 
-            await viewModel.setUpAsNewDevice()
+            await setUpGoingOn(viewModel)
 
-            #expect(registered == [cabin])
-            #expect(viewModel.servers == [home])
-            #expect(viewModel.failureMessage == nil)
-            // Nothing failed, so the screen closes; the skipped server is asked about again on the next launch.
+            #expect(signedIn == [home, cabin])
+            #expect(registered == [home])
+            #expect(viewModel.state(of: home) == .done)
+            #expect(viewModel.state(of: cabin) == .skipped)
+            #expect(viewModel.state(of: lake) == .skipped)
+            // Nothing failed, so the screen closes; the next launch asks about the two left.
             #expect(finished.count == 1)
-            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [home])
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [cabin, lake])
         }
     }
 
@@ -232,14 +260,122 @@ struct RestoredRegistrationsViewModelTests {
                 onFinished: { finished.count += 1 }
             )
 
-            await viewModel.setUpAsNewDevice()
+            await setUpGoingOn(viewModel)
 
-            #expect(viewModel.servers == [cabin, lake])
-            #expect(viewModel.failureMessage == L10n.RestoredRegistrations.failure(viewModel.serverNames))
+            #expect(viewModel.state(of: home) == .done)
+            #expect(viewModel.state(of: cabin) == .failed(RegisterFailure().localizedDescription))
+            #expect(viewModel.state(of: lake) == .failed(SignInFailure().localizedDescription))
+            #expect(viewModel.hasFailures)
+            #expect(viewModel.newDeviceTitle == L10n.RestoredRegistrations.tryAgain)
             #expect(finished.count == 0)
             #expect(!viewModel.isRegistering)
-            // The screen stays up, now naming the servers to try again with.
+            // The screen stays up, showing where each server stands.
             render(viewModel)
+        }
+    }
+
+    /// Trying again goes through the servers that are not set up yet, and leaves the ones that are alone.
+    @Test func tryingAgainOnlyRetriesWhatIsNotSetUp() async {
+        await withRestoredDevice { servers in
+            let home = addServer(named: "Home", to: servers)
+            let cabin = addServer(named: "Cabin", to: servers)
+            let finished = FinishCounter()
+            var failCabin = true
+            var registered = [Server]()
+            let viewModel = RestoredRegistrationsViewModel(
+                servers: [home, cabin],
+                ownership: RegistrationOwnership(register: { server in
+                    registered.append(server)
+                    if server == cabin, failCabin {
+                        throw RegisterFailure()
+                    }
+                }),
+                signIn: { _, _ in },
+                onFinished: { finished.count += 1 }
+            )
+
+            await setUpGoingOn(viewModel)
+            #expect(finished.count == 0)
+
+            failCabin = false
+            await setUpGoingOn(viewModel)
+
+            #expect(registered == [home, cabin, cabin])
+            #expect(viewModel.state(of: home) == .done)
+            #expect(viewModel.state(of: cabin) == .done)
+            #expect(finished.count == 1)
+        }
+    }
+
+    /// The login page says which server it is for and where it stands in the run.
+    @Test func eachLoginIsNumberedAmongTheServersBeingSetUp() async {
+        await withRestoredDevice { servers in
+            let home = addServer(named: "Home", to: servers)
+            let cabin = addServer(named: "Cabin", to: servers)
+            var logins = [String]()
+            var viewModel: RestoredRegistrationsViewModel!
+            viewModel = RestoredRegistrationsViewModel(
+                servers: [home, cabin],
+                ownership: RegistrationOwnership(register: { _ in }),
+                signIn: { server, present in
+                    let authDetails =
+                        try OnboardingAuthDetails(baseURL: URL(string: "http://homeassistant.local:8123")!)
+                    present(OnboardingAuthLoginViewModel(authDetails: authDetails))
+                    if let login = viewModel.login {
+                        logins.append("\(login.server.info.name) \(login.position)/\(login.count)")
+                    }
+                    _ = server
+                    present(nil)
+                },
+                onFinished: {}
+            )
+
+            await setUpGoingOn(viewModel)
+
+            #expect(logins == ["Home 1/2", "Cabin 2/2"])
+        }
+    }
+
+    /// Between two servers the sheet hands off: it says what became of the one just finished and which one's login
+    /// comes next, and waits for the user before opening it.
+    @Test func theHandOffBetweenServersWaitsForTheUser() async throws {
+        try await withRestoredDevice { servers in
+            let home = addServer(named: "Home", to: servers)
+            let cabin = addServer(named: "Cabin", to: servers)
+            var signedIn = [Server]()
+            let viewModel = RestoredRegistrationsViewModel(
+                servers: [home, cabin],
+                ownership: RegistrationOwnership(register: { _ in }),
+                signIn: { server, _ in signedIn.append(server) },
+                onFinished: {}
+            )
+
+            var finished = false
+            Task { @MainActor in
+                await viewModel.setUpAsNewDevice()
+                finished = true
+            }
+            for _ in 0 ..< 200 where viewModel.nextServer == nil {
+                try await Task.sleep(for: .milliseconds(5))
+            }
+            let next = try #require(viewModel.nextServer)
+
+            #expect(next.previous == home)
+            #expect(next.previousState == .done)
+            #expect(next.next == cabin)
+            #expect(next.position == 2)
+            #expect(next.count == 2)
+            #expect(signedIn == [home])
+            #expect(viewModel.state(of: cabin) == .waiting)
+            #expect(!finished)
+
+            next.goOn()
+            for _ in 0 ..< 200 where !finished {
+                try await Task.sleep(for: .milliseconds(5))
+            }
+            #expect(signedIn == [home, cabin])
+            #expect(viewModel.state(of: cabin) == .done)
+            #expect(viewModel.sheet == nil)
         }
     }
 

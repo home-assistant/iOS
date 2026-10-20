@@ -61,7 +61,11 @@ struct ConnectionSettingsView: View {
             ServerURLEditorSheet(viewModel: viewModel, urlType: .external, transitionNamespace: urlTransitionNamespace)
         }
         .sheet(item: $viewModel.login) { login in
-            OnboardingAuthLoginView(viewModel: login, style: .modal)
+            OnboardingAuthLoginView(
+                viewModel: login,
+                style: .modal,
+                title: L10n.RestoredRegistrations.Login.title(viewModel.server.info.name)
+            )
         }
         .sheet(isPresented: $viewModel.isShowingHowItWorks) {
             ServerHowItWorksSheet(viewModel: viewModel)
@@ -114,6 +118,14 @@ struct ConnectionSettingsView: View {
         }
         .onDisappear {
             onDismiss?()
+        }
+        .alert(
+            L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
+            isPresented: $viewModel.isShowingRegisterAsNewDeviceError
+        ) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            Text(viewModel.registerAsNewDeviceError?.localizedDescription ?? "")
         }
         .alert(
             L10n.Settings.ConnectionSection.DeleteServer.title,
@@ -327,14 +339,6 @@ struct ConnectionSettingsView: View {
                 Button(L10n.cancelLabel, role: .cancel) {}
             } message: {
                 Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.signInMessage)
-            }
-            .alert(
-                L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
-                isPresented: $viewModel.isShowingRegisterAsNewDeviceError
-            ) {
-                Button(L10n.okLabel, role: .cancel) {}
-            } message: {
-                Text(viewModel.registerAsNewDeviceError?.localizedDescription ?? "")
             }
         } footer: {
             Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.footer)

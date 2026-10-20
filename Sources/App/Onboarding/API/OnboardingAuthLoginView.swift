@@ -14,6 +14,10 @@ struct OnboardingAuthLoginView: View {
 
     @ObservedObject var viewModel: OnboardingAuthLoginViewModel
     var style: Style = .pushed
+    /// Shown instead of the server's host, for a login that is one of several: which server this is.
+    var title: String?
+    /// A line above the page, such as where this login stands in a run of them.
+    var banner: String?
 
     var body: some View {
         switch style {
@@ -39,40 +43,51 @@ struct OnboardingAuthLoginView: View {
     }
 
     private var content: some View {
-        LoginWebView(webView: viewModel.webView)
-            // Edge to edge like the frontend web view: WebKit insets the page content for the bars
-            // and any camera or vertical bar (iPhone Duo) itself, so only its background bleeds.
-            .ignoresSafeArea(.container, edges: .all)
-            .overlay {
-                // Shown while the login page loads, and after the OAuth callback while the rest of
-                // the auth flow (token exchange, registration) runs before the next screen replaces us.
-                if viewModel.isLoading || viewModel.didCompleteLogin {
-                    ZStack {
-                        Color(uiColor: .systemBackground)
-                            .opacity(0.8)
-                            .ignoresSafeArea()
-                        HAProgressView()
-                    }
+        VStack(spacing: 0) {
+            if let banner {
+                Text(banner)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, DesignSystem.Spaces.one)
+                    .background(.bar)
+                    .accessibilityIdentifier(AccessibilityIdentifier.loginBanner.rawValue)
+            }
+            LoginWebView(webView: viewModel.webView)
+        }
+        // Edge to edge like the frontend web view: WebKit insets the page content for the bars
+        // and any camera or vertical bar (iPhone Duo) itself, so only its background bleeds.
+        .ignoresSafeArea(.container, edges: .all)
+        .overlay {
+            // Shown while the login page loads, and after the OAuth callback while the rest of
+            // the auth flow (token exchange, registration) runs before the next screen replaces us.
+            if viewModel.isLoading || viewModel.didCompleteLogin {
+                ZStack {
+                    Color(uiColor: .systemBackground)
+                        .opacity(0.8)
+                        .ignoresSafeArea()
+                    HAProgressView()
                 }
             }
-            .navigationTitle(viewModel.authDetails.url.host ?? "")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.refresh()
-                    } label: {
-                        Image(systemSymbol: .arrowClockwise)
-                    }
+        }
+        .navigationTitle(title ?? viewModel.authDetails.url.host ?? "")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.refresh()
+                } label: {
+                    Image(systemSymbol: .arrowClockwise)
                 }
             }
-            .onAppear {
-                viewModel.startIfNeeded()
-            }
-            .onDisappear {
-                viewModel.cancelIfUnresolved()
-            }
+        }
+        .onAppear {
+            viewModel.startIfNeeded()
+        }
+        .onDisappear {
+            viewModel.cancelIfUnresolved()
+        }
     }
 
     /// Hosts the view model's `WKWebView`; all WebKit behavior lives on the view model.
