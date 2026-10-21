@@ -86,7 +86,7 @@ enum ManageStorageItemID: String, CaseIterable, Identifiable {
         case .appPreferences:
             return L10n.Settings.Debugging.ManageStorage.Item.AppPreferences.explanation
         case .legacyRealmStore:
-            return L10n.Settings.Debugging.ManageStorage.Item.LegacyRealmStore.explanation
+            return L10n.Settings.Debugging.ManageStorage.Item.LegacyRealmStore.leftoverExplanation
         case .notificationSounds:
             return L10n.Settings.Debugging.ManageStorage.Item.NotificationSounds.explanation
         case .cachedEntities:

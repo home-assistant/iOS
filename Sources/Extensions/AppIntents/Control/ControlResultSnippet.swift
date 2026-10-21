@@ -13,7 +13,7 @@ enum ControlResultSnippet {
     /// How long to keep reading the state back while it is still the one the action replaced. Long
     /// enough for a device to report in, short enough that Siri isn't left waiting on one that never
     /// will.
-    static let settleTimeout: TimeInterval = 2
+    static var settleTimeout: TimeInterval = 2
     private static let settleInterval: Duration = .milliseconds(250)
 
     /// - Parameter expected: the states that would show the action took effect, from

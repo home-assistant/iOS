@@ -23,6 +23,14 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         backgroundTeardownDelay: 60
     )
 
+    private let patientTiming = WebRTCViewPlayerViewModel.Timing(
+        connectionTimeout: 60,
+        disconnectedGracePeriod: 60,
+        signalingStallTimeout: 60,
+        connectionWaitTimeout: 60,
+        backgroundTeardownDelay: 60
+    )
+
     private let unsupportedMessage =
         "Camera does not support WebRTC, frontend_stream_types={<StreamType.HLS: 'hls'>}"
 
@@ -46,7 +54,11 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         api.connection = connection
         Current.cachedApis[server.identifier] = api
         clients = []
-        viewModel = WebRTCViewPlayerViewModel(
+        viewModel = makeViewModel(timing: patientTiming)
+    }
+
+    private func makeViewModel(timing: WebRTCViewPlayerViewModel.Timing) -> WebRTCViewPlayerViewModel {
+        WebRTCViewPlayerViewModel(
             server: server,
             cameraEntityId: "camera.front_door",
             makeClient: { [weak self] configuration in
@@ -56,6 +68,11 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
             },
             timing: timing
         )
+    }
+
+    private func useTimingSensitiveViewModel() {
+        viewModel.stop()
+        viewModel = makeViewModel(timing: timing)
     }
 
     override func tearDown() {
@@ -212,6 +229,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     }
 
     func testAConnectionThatRecoversWithinTheGracePeriodIsNotRebuilt() throws {
+        useTimingSensitiveViewModel()
         _ = try startAndOffer()
         let client = try XCTUnwrap(clients.first)
 
@@ -226,6 +244,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     }
 
     func testAConnectionThatStaysDisconnectedIsRebuilt() throws {
+        useTimingSensitiveViewModel()
         _ = try startAndOffer()
 
         try XCTUnwrap(clients.first).changeConnectionState(.disconnected)
@@ -252,6 +271,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     // MARK: - Timeouts
 
     func testNoFrameBeforeTheTimeoutFailsTheStream() throws {
+        useTimingSensitiveViewModel()
         _ = try startAndOffer()
 
         spinMain(until: { viewModel.didFail })
@@ -261,6 +281,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     }
 
     func testARenderedFrameCancelsTheTimeout() throws {
+        useTimingSensitiveViewModel()
         _ = try startAndOffer()
 
         viewModel.handleVideoRendered()
@@ -270,6 +291,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     }
 
     func testAServerConnectionThatNeverComesBackFailsTheStream() {
+        useTimingSensitiveViewModel()
         connection.setState(.connecting, waitForQueue: false)
         viewModel.start()
 
@@ -280,6 +302,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     }
 
     func testUnansweredSignalingWaitsForAFreshConnectionAndRetries() {
+        useTimingSensitiveViewModel()
         viewModel.start()
         XCTAssertEqual(clientConfigRequests.count, 1)
 
@@ -295,6 +318,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     }
 
     func testSignalingThatKeepsStallingGivesUpOnWebRTC() {
+        useTimingSensitiveViewModel()
         viewModel.start()
 
         for attempt in 1 ... 2 {

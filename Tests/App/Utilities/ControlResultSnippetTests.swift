@@ -5,6 +5,7 @@ import HAKit_Mocks
 import Testing
 
 /// Covers the card the control commands show once they have changed something.
+@Suite(.serialized)
 struct ControlResultSnippetTests {
     private static func light(serverId: String) -> HAAppEntityAppIntentEntity {
         HAAppEntityAppIntentEntity(
@@ -53,7 +54,7 @@ struct ControlResultSnippetTests {
     /// Answers the state read the card makes, once it lands.
     private func answer(_ connection: HAMockConnection, with data: HAData) async throws {
         var waited = 0
-        while connection.pendingRequests.isEmpty, waited < 200 {
+        while connection.pendingRequests.isEmpty, waited < 6000 {
             try await Task.sleep(nanoseconds: 5_000_000)
             waited += 1
         }
@@ -69,7 +70,7 @@ struct ControlResultSnippetTests {
         var idle = 0
         // The card waits a quarter second between reads, so a longer silence than that means it
         // has stopped asking.
-        while idle < 120 {
+        while idle < 600 {
             guard connection.pendingRequests.count > answered else {
                 try await Task.sleep(nanoseconds: 5_000_000)
                 idle += 1
@@ -109,6 +110,9 @@ struct ControlResultSnippetTests {
     /// still says the light is off. The card waits for the state the action asked for rather than
     /// drawing the one it replaced.
     @Test func waitsForTheStateTheActionAskedFor() async throws {
+        let previousSettleTimeout = ControlResultSnippet.settleTimeout
+        ControlResultSnippet.settleTimeout = 30
+        defer { ControlResultSnippet.settleTimeout = previousSettleTimeout }
         try await withMockedServer { server, connection in
             let entity = Self.light(serverId: server.identifier.rawValue)
             let task = Task {

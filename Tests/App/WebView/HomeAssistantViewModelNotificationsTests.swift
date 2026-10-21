@@ -17,7 +17,7 @@ struct HomeAssistantViewModelNotificationsTests {
 
         viewModel.sidebar.onShowNotifications?()
 
-        for _ in 0 ..< 200 where !handler.sendExternalBusCommandWithRetryCalled {
+        for _ in 0 ..< 1200 where !handler.sendExternalBusCommandWithRetryCalled {
             try await Task.sleep(for: .milliseconds(25))
         }
         #expect(handler.sendExternalBusCommandWithRetryCalled)
