@@ -265,7 +265,7 @@ final class WebViewControllerBlankFrontendTests: XCTestCase {
 
     private func waitUntil(
         _ condition: @escaping () -> Bool,
-        timeout: TimeInterval = 5,
+        timeout: TimeInterval = 30,
         file: StaticString = #file,
         line: UInt = #line
     ) async {

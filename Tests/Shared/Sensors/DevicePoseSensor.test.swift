@@ -95,7 +95,8 @@ class DevicePoseSensorTests: XCTestCase {
         Current.hinge.setState(HingeState(angleDegrees: 0, status: .closed))
         Current.hinge.setState(HingeState(angleDegrees: 2, status: .closed))
 
-        waitForMainQueue()
+        let signalled = expectation(for: NSPredicate { _, _ in signalCount == 1 }, evaluatedWith: nil)
+        wait(for: [signalled], timeout: 10)
         XCTAssertEqual(signalCount, 1)
         signaler.stopObserving()
     }
