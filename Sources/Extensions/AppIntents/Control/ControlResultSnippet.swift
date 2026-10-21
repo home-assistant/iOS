@@ -13,7 +13,7 @@ enum ControlResultSnippet {
     /// How long to keep reading the state back while it is still the one the action replaced. Long
     /// enough for a device to report in, short enough that Siri isn't left waiting on one that never
     /// will.
-    static var settleTimeout: TimeInterval = 2
+    static let settleTimeout: TimeInterval = 2
     private static let settleInterval: Duration = .milliseconds(250)
 
     /// - Parameter expected: the states that would show the action took effect, from
@@ -23,13 +23,15 @@ enum ControlResultSnippet {
         of context: some EntityContextRepresentable,
         serverId: String,
         iconName: String,
-        settlingOn expected: [String] = []
+        settlingOn expected: [String] = [],
+        settleTimeout: TimeInterval = Self.settleTimeout
     ) async -> HAEntityStateAppEntity? {
         guard let server = Current.servers.server(for: .init(rawValue: serverId)),
               let liveState = await settledState(
                   of: context.entityId,
                   on: server,
-                  expecting: expected
+                  expecting: expected,
+                  settleTimeout: settleTimeout
               ) else {
             // The command already succeeded; failing to read the state back is not worth failing it,
             // so the spoken sentence stands on its own and no card is shown.
@@ -53,7 +55,8 @@ enum ControlResultSnippet {
     private static func settledState(
         of entityId: String,
         on server: Server,
-        expecting expected: [String]
+        expecting expected: [String],
+        settleTimeout: TimeInterval
     ) async -> HAEntity? {
         let deadline = Date().addingTimeInterval(settleTimeout)
         var latest: HAEntity?

@@ -110,9 +110,6 @@ struct ControlResultSnippetTests {
     /// still says the light is off. The card waits for the state the action asked for rather than
     /// drawing the one it replaced.
     @Test func waitsForTheStateTheActionAskedFor() async throws {
-        let previousSettleTimeout = ControlResultSnippet.settleTimeout
-        ControlResultSnippet.settleTimeout = 30
-        defer { ControlResultSnippet.settleTimeout = previousSettleTimeout }
         try await withMockedServer { server, connection in
             let entity = Self.light(serverId: server.identifier.rawValue)
             let task = Task {
@@ -120,7 +117,8 @@ struct ControlResultSnippetTests {
                     of: entity,
                     serverId: entity.serverId,
                     iconName: entity.iconName,
-                    settlingOn: ["on"]
+                    settlingOn: ["on"],
+                    settleTimeout: 30
                 )
             }
             try await answerReads(connection, with: ["off", "on"])
