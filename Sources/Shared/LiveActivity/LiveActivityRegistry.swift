@@ -634,7 +634,14 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
 
     /// Tags we currently hold a per-activity push token for in Core. Persisted across launches
     /// so `reattach()` can release tokens for activities that ended while the app wasn't running.
-    private static let reportedTokenTagsKey = "liveActivityReportedTokenTags"
+    static let reportedTokenTagsKey = "liveActivityReportedTokenTags"
+
+    /// Whether Core holds a push token for the Live Activity with `tag`, so an end it re-sends
+    /// through APNs reaches the activity while the app is suspended. Readable from the extensions.
+    static func hasReportedToken(forTag tag: String) -> Bool {
+        let defaults = UserDefaults(suiteName: AppConstants.AppGroupID)
+        return defaults?.stringArray(forKey: reportedTokenTagsKey)?.contains(tag) == true
+    }
 
     private func reportedTokenTags() -> Set<String> {
         guard let defaults = UserDefaults(suiteName: AppConstants.AppGroupID) else { return [] }

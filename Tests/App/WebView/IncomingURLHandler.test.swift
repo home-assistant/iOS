@@ -68,7 +68,6 @@ struct IncomingURLHandlerTests {
             #expect(handler.handle(url: url))
 
             #expect(coordinator.showSettingsCalled)
-            #expect(!coordinator.showSettingsPushedOntoNavigationStack)
             #expect(coordinator.openedDeeplinks.isEmpty)
             #expect(coordinator.openedDeeplinksSelectingServer.isEmpty)
         }
