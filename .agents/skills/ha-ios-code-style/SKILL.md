@@ -1,6 +1,6 @@
 ---
 name: ha-ios-code-style
-description: Swift code style, linting, logging, assets, and idioms for Home Assistant iOS. Use when writing or formatting Swift, running SwiftFormat/SwiftLint, referencing SF Symbols or Material Design icons, logging, or using the with() helper.
+description: Swift code style, linting, logging, assets, and idioms for Home Assistant iOS. Use when writing or formatting Swift, declaring an enum that is Codable, Decodable, Encodable, or decoded from HAData, running SwiftFormat/SwiftLint, referencing SF Symbols or Material Design icons, logging, or using the with() helper.
 ---
 
 # Code Style, Linting, Logging & Assets
@@ -48,6 +48,46 @@ Image(systemName: "house")
 // ✅ Correct
 Image(systemSymbol: .house)
 ```
+
+## Serialized Enums Need an `unknown` Case
+
+Every `enum` that is `Codable`, `Decodable`, or `Encodable`, or that is read out of `HAData` (a `HADataDecodable` model, or a field decoded from one), declares a case named `unknown` and decodes any unmapped value into it. Home Assistant core, the frontend, and newer app builds (via iCloud restore, the Watch mirror, or configuration transfer) add values this build has never seen, and one unmapped string must never fail the whole payload. This applies to new enums and to any existing enum you make serializable.
+
+`RawRepresentable` enums get a synthesized `init(from:)` that throws on an unknown raw value, so override it:
+
+```swift
+// ✅ Correct: unmapped values land in `.unknown`
+public enum AssistEvent: String, Codable {
+    case runStart = "run-start"
+    case runEnd = "run-end"
+    case unknown
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = AssistEvent(rawValue: rawValue) ?? .unknown
+    }
+}
+
+// ❌ Wrong: relies on the synthesized initializer, so a new server value throws
+public enum AssistEvent: String, Codable {
+    case runStart = "run-start"
+    case runEnd = "run-end"
+}
+```
+
+For a `HADataDecodable` model, map the field the same way rather than letting the decode throw:
+
+```swift
+public init(data: HAData) throws {
+    self.status = Status(rawValue: try data.decode("status")) ?? .unknown
+}
+```
+
+- Name the case exactly `unknown`, so the fallback reads the same everywhere.
+- Handle `.unknown` deliberately in every `switch` (hide the row, show a placeholder, skip the action). Do not reach it through a `default:` that silently treats it as something else.
+- Keep encoding honest: `.unknown` has a raw value of `"unknown"`, so do not send it back to the server as if it were a real value. Where a model round-trips, keep the original string alongside the enum or skip the field on encode.
+- `AppEnum` types used by App Intents follow the same rule when they are also persisted or decoded from the server.
 
 ## Logging
 
