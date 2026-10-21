@@ -11,4 +11,15 @@ enum OnboardingServerIdentity: Equatable {
     /// server set up from another one's backup looks like. Only the user can tell the two apart;
     /// `separateIdentifier` is what the new server is stored under when they are kept apart.
     case ambiguous(existing: Server, separateIdentifier: Identifier<Server>)
+
+    /// The identifier the server is stored under when nobody was asked, which keeps an ambiguous
+    /// server apart: that never costs the user a server.
+    var storedIdentifier: Identifier<Server> {
+        switch self {
+        case let .existing(identifier), let .new(identifier):
+            return identifier
+        case let .ambiguous(_, separateIdentifier):
+            return separateIdentifier
+        }
+    }
 }

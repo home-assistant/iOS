@@ -62,13 +62,14 @@ final class OnboardingAuthStepServerIdentityTests: XCTestCase {
         XCTAssertEqual(OnboardingAuthStepServerIdentity.supportedPoints, [.afterRegister])
     }
 
+    /// A previous attempt's answer never carries over to the next server.
     func testNothingIsAskedWithoutAConflict() throws {
-        presenter.serverIdentityDecision = .replace
+        presenter.resolvedServerIdentifier = "from-an-earlier-attempt"
 
         try hang(step.perform(point: .afterRegister))
 
         XCTAssertNil(presenter.serverIdentityRequest)
-        XCTAssertNil(presenter.serverIdentityDecision)
+        XCTAssertNil(presenter.resolvedServerIdentifier)
     }
 
     func testNothingIsAskedForTheSameServer() throws {
@@ -77,7 +78,7 @@ final class OnboardingAuthStepServerIdentityTests: XCTestCase {
         try hang(step.perform(point: .afterRegister))
 
         XCTAssertNil(presenter.serverIdentityRequest)
-        XCTAssertNil(presenter.serverIdentityDecision)
+        XCTAssertNil(presenter.resolvedServerIdentifier)
     }
 
     func testAsksAboutBothServersAndKeepsTheSeparateAnswer() throws {
@@ -100,7 +101,7 @@ final class OnboardingAuthStepServerIdentityTests: XCTestCase {
             request.existingServer,
             ServerIdentityConflictingServer(name: "Home", address: "http://homeassistant.local:8123")
         )
-        XCTAssertEqual(presenter.serverIdentityDecision, .separate)
+        XCTAssertEqual(presenter.resolvedServerIdentifier, "onboarding-server")
         XCTAssertNil(presenter.serverIdentityRequest)
     }
 
@@ -111,7 +112,7 @@ final class OnboardingAuthStepServerIdentityTests: XCTestCase {
         try hang(step.perform(point: .afterRegister))
         wait(for: [answered], timeout: 10.0)
 
-        XCTAssertEqual(presenter.serverIdentityDecision, .replace)
+        XCTAssertEqual(presenter.resolvedServerIdentifier, "existing-server")
     }
 
     func testCancellingRejectsTheStep() {
@@ -125,7 +126,7 @@ final class OnboardingAuthStepServerIdentityTests: XCTestCase {
         }
         wait(for: [answered], timeout: 10.0)
 
-        XCTAssertNil(presenter.serverIdentityDecision)
+        XCTAssertNil(presenter.resolvedServerIdentifier)
         XCTAssertNil(presenter.serverIdentityRequest)
     }
 
@@ -154,6 +155,6 @@ final class OnboardingAuthStepServerIdentityTests: XCTestCase {
 
         XCTAssertNil(presenter.serverIdentityRequest)
         XCTAssertEqual(presenter.path, [.serversList])
-        XCTAssertEqual(presenter.serverIdentityDecision, .separate)
+        XCTAssertEqual(presenter.resolvedServerIdentifier, "onboarding-server")
     }
 }

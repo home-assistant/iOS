@@ -18,9 +18,9 @@ final class OnboardingAuthPresenter: ObservableObject {
     /// instance ID the app already has at an address it does not. Shown as a sheet; Mac Catalyst
     /// pushes it onto `path` instead.
     @Published var serverIdentityRequest: OnboardingServerIdentityRequest?
-    /// The answer to that question, read by `OnboardingAuth` when it persists the server. `nil`
-    /// while it has not been asked.
-    var serverIdentityDecision: OnboardingServerIdentityRequest.Decision?
+    /// The identifier the answer to that question stores the server under, read by `OnboardingAuth`
+    /// when it persists the server. `nil` while it has not been asked.
+    var resolvedServerIdentifier: Identifier<Server>?
     /// iOS only. While true, the client-certificate sheet is held back. Screens that present their
     /// own sheet (manual URL entry) set this so the prompt is only shown after their sheet fully
     /// dismissed — presenting both at once can leave the prompt stranded behind the other sheet.

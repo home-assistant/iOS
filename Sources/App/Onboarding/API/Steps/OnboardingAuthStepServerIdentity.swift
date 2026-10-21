@@ -19,7 +19,7 @@ struct OnboardingAuthStepServerIdentity: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        presenter.serverIdentityDecision = nil
+        presenter.resolvedServerIdentifier = nil
 
         let identity = OnboardingAuth.serverIdentity(
             for: api.server.info,
@@ -27,7 +27,7 @@ struct OnboardingAuthStepServerIdentity: OnboardingAuthPostStep {
             existingServers: Current.servers.all
         )
 
-        guard case let .ambiguous(existing, _) = identity else {
+        guard case let .ambiguous(existing, separateIdentifier) = identity else {
             return .value(())
         }
 
@@ -38,7 +38,9 @@ struct OnboardingAuthStepServerIdentity: OnboardingAuthPostStep {
                 newServer: ServerIdentityConflictingServer(info: api.server.info),
                 existingServer: ServerIdentityConflictingServer(info: existing.info),
                 onDecision: { decision in
-                    presenter.serverIdentityDecision = decision
+                    presenter.resolvedServerIdentifier = decision == .replace
+                        ? existing.identifier
+                        : separateIdentifier
                     presenter.dismissServerIdentityRequest()
                     seal.fulfill(())
                 },
