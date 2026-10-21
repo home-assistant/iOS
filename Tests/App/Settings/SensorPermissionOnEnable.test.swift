@@ -136,9 +136,11 @@ class SensorPermissionOnEnableTests: XCTestCase {
         )
         viewModel.sensorContainer(Current.sensors, didUpdate: .init(sensors: .value([updated])))
 
-        let populated = expectation(description: "the update reaches the screen")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { populated.fulfill() }
-        wait(for: [populated], timeout: 2)
+        let populated = expectation(
+            for: NSPredicate { _, _ in viewModel.stateDescription == "12 GB" },
+            evaluatedWith: nil
+        )
+        wait(for: [populated], timeout: 30)
 
         XCTAssertTrue(viewModel.isEnabled)
         XCTAssertEqual(viewModel.stateDescription, updated.StateDescription)

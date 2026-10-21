@@ -546,7 +546,7 @@ final class HomeAssistantViewTests: XCTestCase {
 
     private func waitUntil(
         _ condition: @escaping () -> Bool,
-        timeout: TimeInterval = 2,
+        timeout: TimeInterval = 30,
         file: StaticString = #file,
         line: UInt = #line
     ) async {

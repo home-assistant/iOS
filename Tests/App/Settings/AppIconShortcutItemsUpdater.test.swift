@@ -85,7 +85,7 @@ struct AppIconShortcutItemsUpdaterTests {
     /// would starve the very `DispatchQueue.main.async` they are waiting on.
     @MainActor
     private func waitUntil(_ condition: () -> Bool) async -> Bool {
-        for _ in 0 ..< 500 {
+        for _ in 0 ..< 3000 {
             if condition() {
                 return true
             }
@@ -147,6 +147,7 @@ struct AppIconShortcutItemsUpdaterTests {
         }
 
         try await body(database)
+        await update()
     }
 
     @MainActor

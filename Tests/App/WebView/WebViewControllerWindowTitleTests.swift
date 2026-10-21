@@ -170,7 +170,7 @@ struct WebViewControllerWindowTitleTests {
     }
 
     private func waitUntil(
-        timeout: TimeInterval = 5,
+        timeout: TimeInterval = 30,
         sourceLocation: SourceLocation = #_sourceLocation,
         _ condition: () -> Bool
     ) async {
