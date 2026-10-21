@@ -51,6 +51,8 @@ final class HomeAssistantViewModel: ObservableObject {
 
     /// Overridable so tests can exercise the watchdog without waiting out the real timeout.
     var loaderWatchdogTimeout = Constants.loaderWatchdogTimeout
+    /// Overridable for the same reason, the first cycle starts in `init` and takes the real value.
+    var loaderMinimumDuration = Constants.minimumLoaderDuration
 
     // The standby loader remains mounted until both the minimum duration has elapsed and the frontend reconnects.
     // Empty-state content waits for the same minimum duration so transient reload failures don't flash immediately.
@@ -345,8 +347,9 @@ final class HomeAssistantViewModel: ObservableObject {
         // holds, alive past its owner for as long as the sleep runs, and keep `deinit` from cancelling
         // anything. Nothing touches `self` before the unwrap for the same reason, an implicit use there
         // captures it strongly regardless.
+        let minimumDuration = loaderMinimumDuration
         loaderMinimumDurationTask = Task { @MainActor [weak self] in
-            try? await Task.sleep(for: Constants.minimumLoaderDuration)
+            try? await Task.sleep(for: minimumDuration)
             guard let self, !Task.isCancelled, loaderCycleID == cycleID else { return }
             withAnimation(DesignSystem.Animation.default) {
                 self.loaderMinimumDurationElapsed = true
