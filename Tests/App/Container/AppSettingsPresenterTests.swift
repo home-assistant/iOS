@@ -55,42 +55,4 @@ final class AppSettingsPresenterTests: XCTestCase {
         XCTAssertEqual(coordinator.activatedServers.map(\.identifier), [server.identifier])
         XCTAssertFalse(presenter.isSheetPresented)
     }
-
-    func testPushingSettingsPutsItAtTheRootOfThePushPath() {
-        presenter.isPushPresented = true
-
-        XCTAssertEqual(presenter.pushPath.count, 1)
-        XCTAssertTrue(presenter.isPushPresented)
-    }
-
-    func testPushingSettingsAgainWhileItIsOpenDoesNotStackAnotherCopy() {
-        presenter.isPushPresented = true
-        presenter.pushPath.append(SettingsItem.liveActivities)
-
-        presenter.isPushPresented = true
-
-        // The screen Settings pushed stays put: re-asking for Settings can't push a second one over it.
-        XCTAssertEqual(presenter.pushPath.count, 2)
-    }
-
-    func testClosingSettingsAlsoPopsTheScreensItPushed() {
-        presenter.isPushPresented = true
-        presenter.pushPath.append(SettingsItem.liveActivities)
-
-        presenter.isPushPresented = false
-
-        XCTAssertTrue(presenter.pushPath.isEmpty)
-        XCTAssertFalse(presenter.isPushPresented)
-    }
-
-    func testPushPresentedFollowsThePathWhenTheUserNavigatesBack() {
-        presenter.isPushPresented = true
-        presenter.pushPath.append(SettingsItem.liveActivities)
-
-        // Two pops, as the navigation stack would report them for two taps on Back.
-        presenter.pushPath.removeLast()
-        XCTAssertTrue(presenter.isPushPresented)
-        presenter.pushPath.removeLast()
-        XCTAssertFalse(presenter.isPushPresented)
-    }
 }

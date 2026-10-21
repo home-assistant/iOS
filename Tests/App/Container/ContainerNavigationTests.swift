@@ -4,10 +4,11 @@ import SwiftUI
 import UIKit
 import XCTest
 
-/// The container hosts the frontend inside the navigation stack app Settings is pushed onto, and hosts
-/// onboarding — which runs a `NavigationStack` of its own — outside it. Nesting the two made SwiftUI
-/// force-try a comparison of their differently-typed paths and raise an unexpected error: on a push for
-/// iOS 17 and later, and on the app's very first layout on iOS 16.
+/// The container hosts onboarding — which runs a `NavigationStack` of its own — and the frontend without
+/// adding a navigation container of its own around either. Nesting a second stack around onboarding made
+/// SwiftUI force-try a comparison of their differently-typed paths and raise an unexpected error, and on
+/// iOS 27.1 a navigation container around the frontend makes UIKit reserve iPhone Duo's vertical bar: an
+/// 84 pt safe-area strip the frontend never fills, on the outer edge of its Split View pane.
 @MainActor
 final class ContainerNavigationTests: XCTestCase {
     private var previousServers: ServerManager!
@@ -30,7 +31,7 @@ final class ContainerNavigationTests: XCTestCase {
         super.tearDown()
     }
 
-    func testOnboardingIsHostedOutsideTheSettingsNavigationStack() {
+    func testOnboardingBringsTheOnlyNavigationStack() {
         Current.servers = FakeServerManager(initial: 0)
 
         let window = hostContainer()
@@ -42,33 +43,16 @@ final class ContainerNavigationTests: XCTestCase {
         )
     }
 
-    func testFrontendHostsSettingsPushesWithoutNestingNavigationStacks() {
+    func testFrontendIsHostedWithoutANavigationContainer() {
         Current.servers = FakeServerManager(initial: 1)
 
         let window = hostContainer()
 
-        XCTAssertLessThanOrEqual(
+        XCTAssertEqual(
             navigationControllerCount(under: window.rootViewController),
-            1,
-            "The frontend is shown inside the one stack Settings is pushed onto"
+            0,
+            "A navigation container around the frontend reserves iPhone Duo's vertical bar for a bar it never shows"
         )
-
-        // What the frontend's external bus asks for, and what used to crash on the way in.
-        presenter.isPushPresented = true
-        settle(window)
-
-        XCTAssertEqual(presenter.pushPath.count, 1)
-
-        // Settings pushes its own screens onto the same path, as `AppSettingsPushRoute.item`.
-        presenter.pushPath.append(AppSettingsPushRoute.item(.help))
-        settle(window)
-
-        XCTAssertEqual(presenter.pushPath.count, 2)
-
-        presenter.isPushPresented = false
-        settle(window)
-
-        XCTAssertTrue(presenter.pushPath.isEmpty)
     }
 
     // MARK: - Helpers
