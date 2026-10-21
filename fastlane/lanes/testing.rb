@@ -59,6 +59,13 @@ lane :update_dsyms do
   FileUtils.rm_r directory
 end
 
+# A test that stops making progress used to burn the whole job and the cancelled run named nothing.
+# The per-test allowance fails it instead, with a spindump of where it sat, and lets the rest of
+# the run finish; the slowest snapshot suites take about a minute and a half.
+def test_timeout_xcargs
+  '-test-timeouts-enabled YES -default-test-execution-time-allowance 600'
+end
+
 desc 'Run tests'
 lane :test do
   run_tests(
@@ -70,7 +77,10 @@ lane :test do
     # Run only the `test` action: `build test` compiles every SPM target twice
     # because the plain `build` action disables testability for packages.
     skip_build: true,
-    xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
+    xcargs: "COMPILER_INDEX_STORE_ENABLE=NO #{test_timeout_xcargs}",
+    # A failed test is run again before it counts: the shared runner is loaded enough that a wait
+    # generous on a Mac still lands late. A deterministic failure fails every attempt the same way.
+    number_of_retries: 2,
     destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
   )
 
@@ -108,7 +118,8 @@ lane :test do
       skip_package_dependencies_resolution: true,
       skip_detect_devices: true,
       skip_build: true,
-      xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
+      xcargs: "COMPILER_INDEX_STORE_ENABLE=NO #{test_timeout_xcargs}",
+      number_of_retries: 1,
       destination: watch_destination
     )
   end

@@ -551,7 +551,9 @@ public class AppEnvironment {
 
     public var isPerformingSingleShotLocationQuery = false
 
-    public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
+    public var backgroundTask: HomeAssistantBackgroundTaskRunner = AppEnvironment.processIsRunningTests
+        ? ImmediateBackgroundTaskRunner()
+        : ProcessInfoBackgroundTaskRunner()
 
     /// Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = {
@@ -617,8 +619,10 @@ public class AppEnvironment {
     }
 
     public var isRunningTests: Bool {
-        NSClassFromString("XCTest") != nil
+        Self.processIsRunningTests
     }
+
+    private static let processIsRunningTests = NSClassFromString("XCTest") != nil
 
     public var isBackgroundRequestsImmediate = {
         #if os(watchOS)

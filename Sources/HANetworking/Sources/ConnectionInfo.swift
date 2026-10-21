@@ -48,6 +48,12 @@ public struct ConnectionInfo: Codable, Equatable {
         [externalURL, internalURL, remoteUIURL].compactMap(\.self)
     }
 
+    /// Every `host:port` this server is configured at, the scheme left out: a server reached over
+    /// `https` where another description of it has `http` is still the same server.
+    public var hostAndPortIdentities: Set<String> {
+        URL.hostAndPortIdentities(of: [internalURL, externalURL])
+    }
+
     public var hasNonHTTPSURLOptions: Bool {
         configuredURLs.contains { $0.scheme?.lowercased() != "https" }
     }

@@ -53,6 +53,12 @@ public extension URL {
         return "\(host):\(port)"
     }
 
+    /// The distinct `host:port` pairs the URLs address, as `hostAndPortIdentity` describes them.
+    /// Two descriptions of a server whose sets intersect reach the same socket somewhere.
+    static func hostAndPortIdentities(of urls: [URL?]) -> Set<String> {
+        Set(urls.compactMap { $0?.hostAndPortIdentity })
+    }
+
     func sanitized() -> URL {
         guard path.hasSuffix("/"),
               var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {

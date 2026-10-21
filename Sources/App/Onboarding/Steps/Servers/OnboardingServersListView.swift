@@ -392,7 +392,7 @@ struct OnboardingServersListView: View {
 
     @ViewBuilder
     private var list: some View {
-        ForEach(viewModel.discoveredInstances, id: \.uuid) { instance in
+        ForEach(viewModel.discoveredInstances, id: \.discoveryKey) { instance in
             serverRow(instance: instance)
         }
         .disabled(viewModel.currentlyInstanceLoading != nil)
