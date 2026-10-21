@@ -220,6 +220,153 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)))
     }
 
+    func testSendingEphemeralFallsBackToActiveURLWhenCloudhookIsNotFound() throws {
+        try assertSendingEphemeralFallsBackToActiveURL(whenCloudhookAnswers: 404)
+    }
+
+    func testSendingEphemeralFallsBackToActiveURLWhenCloudhookIsUnavailable() throws {
+        try assertSendingEphemeralFallsBackToActiveURL(whenCloudhookAnswers: 503)
+    }
+
+    private func assertSendingEphemeralFallsBackToActiveURL(
+        whenCloudhookAnswers statusCode: Int32,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection.cloudhookURL = cloudhookURL
+        useNetworkAwayFromHome()
+
+        var cloudhookRequests = 0
+        stub(condition: { req in req.url == cloudhookURL }, response: { _ in
+            cloudhookRequests += 1
+            return HTTPStubsResponse(data: Data(), statusCode: statusCode, headers: [:])
+        })
+
+        // Without the cloudhook the webhook goes to the active URL, which is where the fallback goes.
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
+            return HTTPStubsResponse(data: #""result""#.data(using: .utf8)!, statusCode: 200, headers: [:])
+        })
+
+        XCTAssertEqual(
+            try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)),
+            "result",
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(cloudhookRequests, 1, file: file, line: line)
+    }
+
+    func testSendingEphemeralKeepsCloudhookErrorWhenFallbackFails() throws {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection.cloudhookURL = cloudhookURL
+        useNetworkAwayFromHome()
+
+        stub(condition: { req in req.url == cloudhookURL }, response: { _ in
+            HTTPStubsResponse(data: Data(), statusCode: 404, headers: [:])
+        })
+
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+            HTTPStubsResponse(data: Data(), statusCode: 500, headers: [:])
+        })
+
+        let promise: Promise<Any> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(404))
+        }
+    }
+
+    func testSendingEphemeralDoesNotFallBackForOtherCloudhookErrors() throws {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection.cloudhookURL = cloudhookURL
+        useNetworkAwayFromHome()
+
+        stub(condition: { req in req.url == cloudhookURL }, response: { _ in
+            HTTPStubsResponse(data: Data(), statusCode: 500, headers: [:])
+        })
+
+        var activeURLRequests = 0
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+            activeURLRequests += 1
+            return HTTPStubsResponse(jsonObject: [:], statusCode: 200, headers: [:])
+        })
+
+        let promise: Promise<Any> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(500))
+        }
+        XCTAssertEqual(activeURLRequests, 0)
+    }
+
+    /// Off the server's home Wi-Fi, so a cloudhook is what the webhook goes to.
+    private func useNetworkAwayFromHome() {
+        let connectivity = Current.connectivity
+        let previousCurrentNetworkState = connectivity.currentNetworkState
+        let previousLastKnownNetworkState = connectivity.lastKnownNetworkState
+        let previousRefreshNetworkInformation = connectivity.refreshNetworkInformation
+
+        connectivity.currentNetworkState = { NetworkState(ssid: "Elsewhere") }
+        connectivity.lastKnownNetworkState = { NetworkState(ssid: "Elsewhere") }
+        connectivity.refreshNetworkInformation = {}
+
+        addTeardownBlock {
+            connectivity.currentNetworkState = previousCurrentNetworkState
+            connectivity.lastKnownNetworkState = previousLastKnownNetworkState
+            connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        }
+    }
+
+    func testSendingEphemeralKeepsCloudhookErrorWithoutAnActiveURL() throws {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection = ConnectionInfo(
+            externalURL: nil,
+            internalURL: nil,
+            cloudhookURL: cloudhookURL,
+            remoteUIURL: nil,
+            webhookID: "given_id",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+        useNetworkAwayFromHome()
+
+        var cloudhookRequests = 0
+        stub(condition: { req in req.url == cloudhookURL }, response: { _ in
+            cloudhookRequests += 1
+            return HTTPStubsResponse(data: Data(), statusCode: 404, headers: [:])
+        })
+
+        let promise: Promise<Any> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(404))
+        }
+        XCTAssertEqual(cloudhookRequests, 1)
+    }
+
+    func testSendingEphemeralDoesNotFallBackWhenNotSentToCloudhook() {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        var requests = 0
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+            requests += 1
+            return HTTPStubsResponse(data: Data(), statusCode: 404, headers: [:])
+        })
+
+        let promise: Promise<Any> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(404))
+        }
+        XCTAssertEqual(requests, 1)
+    }
+
     func testSendingEphemeralExpectingString() throws {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 

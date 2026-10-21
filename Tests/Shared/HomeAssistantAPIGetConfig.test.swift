@@ -39,6 +39,16 @@ final class HomeAssistantAPIGetConfigTests: XCTestCase {
         XCTAssertEqual(server.info.version, Version(major: 2026, minor: 9, patch: 3))
     }
 
+    func testSendsThroughTheGivenURL() throws {
+        let api = HomeAssistantAPI(server: ServerFixture.standard)
+        let overrideURL = try XCTUnwrap(URL(string: "http://192.168.1.10:8123"))
+        webhookManager.sendEphemeralHandler = { _, _ in ["version": "2026.9.3", "location_name": "Casa"] }
+
+        try hang(api.getConfig(overrideURL: overrideURL))
+
+        XCTAssertEqual(webhookManager.sentEphemeralOverrideURLs, [overrideURL])
+    }
+
     func testKeepsTheStoredInstanceIDWhenTheServerDoesNotReportOne() throws {
         let server = ServerFixture.standard
         server.update { $0.instanceID = "instance-1" }
