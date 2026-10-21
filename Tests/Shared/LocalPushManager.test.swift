@@ -118,7 +118,6 @@ class LocalPushManagerTests: XCTestCase {
     }
 
     /// Subscribing takes the channel over from the device the registration belongs to, so a restored device waits
-    /// until the registration is settled.
     func testNoSubscriptionWhileTheRegistrationIsAnotherDevices() throws {
         let prefs = Current.settingsStore.prefs
         let keys = [

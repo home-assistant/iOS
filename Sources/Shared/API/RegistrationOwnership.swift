@@ -3,34 +3,19 @@ import HAKit
 import HAKit_PromiseKit
 import PromiseKit
 
-/// Settles the `mobile_app` registrations a device only has because it was set up from a backup of another one.
-///
-/// A backup carries every server along with its registration, so the restored device reports to Home Assistant as
-/// the device the backup came from. While both are in use, their sensors, location and notifications land on one
-/// Home Assistant device, and logging in again on either replaces the registration the other one relies on. Each
-/// registration belongs to the device whose identifier it was made with, which lets the restored device tell. The
-/// user then decides: this device took over from the other one and keeps the registrations, or it registers itself
-/// as a new device and leaves them to the other one.
+/// Settles the registrations a device carries from a backup of another device: each belongs to the device whose
+/// vendor identifier it was made with, and the user either keeps them or registers anew.
 public struct RegistrationOwnership {
-    /// Registers this device with a server from scratch, under `SettingsStore.registrationIdentity(for:)`.
     public typealias Register = (Server) async throws -> Void
-    /// Brings a registration up to date with this device: its registration data, such as its push token, and its
-    /// sensors.
     public typealias CatchUp = (Server) -> Void
-    /// The webhook request types that report this device to a server.
     static let reportingRequestTypes: Set<String> = ["update_location", "update_sensor_states", "register_sensor"]
-    /// Posted with a server's identifier as its object once its registration is this device's own, for what
-    /// waited on that, such as the local push subscription.
     public static let didSettleRegistration = Notification.Name("RegistrationOwnership.didSettleRegistration")
 
-    /// How long to wait for the devices a server has: a WebSocket command has no deadline of its own.
     static let deviceListTimeout: TimeInterval = 30
-    /// How long to wait for a new registration to catch up before leaving it to carry on in the background, such as
-    /// sensor updates that fall back to a background session while the network is down. Non-private for tests.
+    /// Non-private for tests.
     static var reconnectTimeout: TimeInterval = 30
 
     private static let inFlightLock = NSLock()
-    /// The registration under way with each server, for a second attempt to join rather than start another.
     private static var inFlight = [Identifier<Server>: Task<Void, Error>]()
 
     private let register: Register
@@ -44,36 +29,24 @@ public struct RegistrationOwnership {
         self.catchUp = catchUp
     }
 
-    /// The servers whose registration belongs to another device. Always empty on the Mac, which keeps the identifier
-    /// it registered with under Mac Catalyst on purpose, and while the device has no vendor identifier to compare.
-    /// A server waiting to be signed in to again after a recovery is left out until it can be registered with.
     public func serversRegisteredByAnotherDevice() -> [Server] {
         Current.servers.all.filter(isRegisteredByAnotherDevice)
     }
 
-    /// Whether the registration with `server` belongs to another device, as `serversRegisteredByAnotherDevice()`
-    /// tells.
     public func isRegisteredByAnotherDevice(_ server: Server) -> Bool {
         !server.info.requiresReauthenticationAfterMirrorRestore
             && belongsToAnotherDevice(Current.settingsStore.currentRegistrationIdentity(for: server))
     }
 
-    /// Whether `request` to `server` is held back: it reports this device, and the registration it would reach is
-    /// another device's, so what it reports would land on that device until the user settles the registration.
     public func holdsBack(_ request: WebhookRequest, to server: Server) -> Bool {
         Self.reportingRequestTypes.contains(request.type) && isRegisteredByAnotherDevice(server)
     }
 
-    /// Whether `identity` is another device's, so registering under it would take over that device's registration.
-    /// Never on the Mac, nor while the device has no vendor identifier to compare.
     public func belongsToAnotherDevice(_ identity: RegistrationIdentity) -> Bool {
         guard !Current.isCatalyst, let vendorID = Current.device.identifierForVendor() else { return false }
         return identity.ownerVendorID != nil && identity.ownerVendorID != vendorID
     }
 
-    /// Makes the registrations with `servers` this device's own, for when it replaced the device they came from, and
-    /// with them the identifier it registers with from now on: logging in to one of these servers again then keeps
-    /// its Home Assistant device instead of adding another.
     public func keepRegistrations(of servers: [Server]) {
         guard let vendorID = Current.device.identifierForVendor() else { return }
         let settings = Current.settingsStore
@@ -85,17 +58,12 @@ public struct RegistrationOwnership {
             }
         }
         settings.takeOverIntegrationDeviceID(for: vendorID)
-        // Updates are held back while a registration is another device's, so this device's push token and sensors
-        // only reach the servers now.
         servers.forEach(catchUp)
         for server in servers {
             NotificationCenter.default.post(name: Self.didSettleRegistration, object: server.identifier)
         }
     }
 
-    /// Registers this device with each of `servers` as a new device, each under an identifier of its own. Their
-    /// current registrations stay as they are on the servers, for whichever device still uses them. Returns the
-    /// servers it could not register with, which keep the registration they had.
     public func registerAsNewDevice(_ servers: [Server]) async -> [Server: Error] {
         guard let vendorID = Current.device.identifierForVendor() else {
             return Dictionary(uniqueKeysWithValues: servers.map {
@@ -104,15 +72,11 @@ public struct RegistrationOwnership {
         }
 
         let settings = Current.settingsStore
-        // Registrations made with the default identifier are left to the device that shares it, so this device takes
-        // a new default for whatever it registers with from here on.
         let leavesDefaultIdentifier = servers.contains {
             settings.currentRegistrationIdentity(for: $0).deviceID == settings.integrationDeviceID
         }
         recordIdentities()
         if leavesDefaultIdentifier || settings.integrationDeviceIDOwnerVendorID != vendorID {
-            // Every registration has its identity recorded by now, so this changes none of them, only what this
-            // device registers with from here on, such as a server it is added to later.
             settings.adoptNewIntegrationDeviceID(ownedBy: vendorID)
         }
 
@@ -129,8 +93,6 @@ public struct RegistrationOwnership {
         return failures
     }
 
-    /// Registers with `server` as a new device, or joins the attempt already under way with it, so the identity, the
-    /// request and what the response is kept as happen once however many times it is asked for at the same time.
     private func registerOnce(with server: Server, ownedBy vendorID: String) async throws {
         let task = Self.inFlightLock.withLock { () -> Task<Void, Error> in
             if let running = Self.inFlight[server.identifier] {
@@ -139,9 +101,7 @@ public struct RegistrationOwnership {
             let register = register
             let task = Task {
                 Current.settingsStore.updateRegistrationRecord(for: server.identifier) { record in
-                    // An earlier attempt's identity is reused: the server may have registered it before the
-                    // response was lost, and registering it again replaces that registration rather than adding
-                    // another.
+                    // Reused across attempts: the server may have registered it before the response was lost.
                     guard record.pending?.ownerVendorID != vendorID else { return }
                     record.pending = RegistrationIdentity(
                         deviceID: Current.settingsStore.newIntegrationDeviceID(),
@@ -163,41 +123,28 @@ public struct RegistrationOwnership {
         try await task.value
     }
 
-    /// Registers with `server` and brings the new registration up to date: its sensors, the device `get_config`
-    /// reports, and their current states.
     @MainActor
     public static func registerWithServer(_ server: Server) async throws {
         guard let api = Current.api(for: server) else {
             throw ServerConnectionError.noActiveURL(server.info.name)
         }
 
-        // Notifications reach a device through an action named after it, so the new registration can't take the
-        // name of one it leaves on the server.
+        // Notification actions are named after devices, so the name must be unique on the server.
         let name = try await unusedDeviceName(for: server, on: api)
         try await api.register(deviceName: name).asyncValue()
 
-        // The new registration has none of the sensors the previous one had.
         SensorRegistrationVersionStore.forgetRegistration(for: server.identifier)
         do {
             try await api.Connect(reason: .warm).asyncValue(timeout: reconnectTimeout)
         } catch {
-            // The registration is in place; whatever did not catch up is retried on the next connect.
             Current.Log.error("registered with \(server.identifier) as a new device, but failed to connect: \(error)")
         }
     }
 
-    /// Brings the registration with `server` up to date with this device, as a connect does: its registration data,
-    /// then its sensors. A failure is retried on the next connect.
     public static func catchUpWithServer(_ server: Server) {
         Current.api(for: server)?.Connect(reason: .warm).cauterize()
     }
 
-    /// `name`, or the first of "`name` 2", "`name` 3" and on that no `mobile_app` device in `devices` has, other
-    /// than the one registered as `deviceID`, which the registration replaces. A `name` that is itself one of these,
-    /// such as "Phone 2" left by registering anew before, counts on from the name it was made from, giving "Phone 3"
-    /// rather than "Phone 2 2"; a name that only looks like one, such as "iPhone 15" where no "iPhone" is taken, is
-    /// kept as it is. Names are compared the way Home Assistant names notification actions after them, where
-    /// "Phone 2" and "phone_2" are the same.
     static func unusedDeviceName(
         _ name: String,
         among devices: [DeviceRegistryEntry],
@@ -223,17 +170,12 @@ public struct RegistrationOwnership {
         return candidate
     }
 
-    /// "Phone" for "Phone 2"; `nil` for a name that does not end in a number of its own.
     private static func nameBeforeNumber(_ name: String) -> String? {
         let parts = name.split(separator: " ", omittingEmptySubsequences: false)
         guard parts.count > 1, let last = parts.last, !last.isEmpty, last.allSatisfy(\.isNumber) else { return nil }
         return parts.dropLast().joined(separator: " ")
     }
 
-    /// The part of a notification action's name Home Assistant derives from a device `name`, as its `slugify` does:
-    /// lowercased ASCII letters and digits, with other letters written in them, as "ø" is "o" and "ß" is "ss", a
-    /// comma between digits dropped, as in "1,000", and everything else between them collapsed into single
-    /// underscores.
     static func notificationName(_ name: String) -> String {
         let ascii = name.applyingTransform(StringTransform("Any-Latin; Latin-ASCII"), reverse: false) ?? name
         return ascii.lowercased()
@@ -260,8 +202,6 @@ public struct RegistrationOwnership {
         )
     }
 
-    /// Records the identity of each registration this installation has no record of, which until now follows
-    /// `integrationDeviceID` and its owner, before either changes.
     private func recordIdentities() {
         let settings = Current.settingsStore
         for server in Current.servers.all {

@@ -1,9 +1,6 @@
 import Foundation
 import Shared
 
-/// Queues the launch messages (registrations restored from another device, What's-New, then TestFlight) that
-/// `HomeAssistantView` presents over the web frontend. Owned by the web view screen so the sheets can never appear
-/// over onboarding — they only exist once a server's frontend is on screen.
 @MainActor
 final class LaunchMessagesState: ObservableObject {
     enum Message: Identifiable {
@@ -36,9 +33,7 @@ final class LaunchMessagesState: ObservableObject {
         showNext()
     }
 
-    /// The launch messages that apply now, in the order they show. Registrations restored from another device come
-    /// first: until they are settled, what this device reports lands on that device in Home Assistant. Asked again on
-    /// every launch until answered. Non-private for tests.
+    /// Non-private for tests.
     static func messagesToShow() -> [Message] {
         var queue: [Message] = []
         let restoredServers = RegistrationOwnership().serversRegisteredByAnotherDevice()
@@ -54,7 +49,6 @@ final class LaunchMessagesState: ObservableObject {
         return queue
     }
 
-    /// The prompt for registrations restored from another device, closing itself once they are settled.
     func restoredRegistrationsViewModel(
         for servers: [Server],
         ownership: RegistrationOwnership = RegistrationOwnership()

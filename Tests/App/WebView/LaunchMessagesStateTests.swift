@@ -27,7 +27,6 @@ final class LaunchMessagesStateTests: XCTestCase {
         XCTAssertTrue(sut.pending.isEmpty)
     }
 
-    /// Settling registrations a backup brought from another device comes before any other launch message.
     func testRegistrationsOfAnotherDeviceComeFirst() {
         withRegistrationIdentifier(from: "other-device") { servers in
             let server = servers.addFake()
@@ -38,7 +37,6 @@ final class LaunchMessagesStateTests: XCTestCase {
                 return
             }
             XCTAssertEqual(restored, [server])
-            // The test below looks for the prompt by this id.
             XCTAssertEqual(messages.first?.id, "restoredRegistrations")
         }
     }
@@ -66,7 +64,6 @@ final class LaunchMessagesStateTests: XCTestCase {
         }
     }
 
-    /// Runs `body` on "this-device", whose stored registration identifier came from `owner`.
     private func withRegistrationIdentifier(
         from owner: String,
         _ body: (FakeServerManager) throws -> Void

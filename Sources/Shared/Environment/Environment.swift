@@ -119,9 +119,7 @@ public class AppEnvironment {
             }
         }
 
-        // The end-to-end tests relaunch the app as a device restored from another one's backup: the
-        // registrations were made under this simulator's vendor identifier, and the app now reports
-        // a different one. Only honored in the configuration those tests run in.
+        // Lets the end-to-end tests relaunch as another device; only honored in their configuration.
         if isFastlaneSnapshot,
            let vendorID = UserDefaults(suiteName: AppConstants.AppGroupID)!.string(forKey: "E2E_VENDOR_IDENTIFIER"),
            !vendorID.isEmpty {

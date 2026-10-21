@@ -49,7 +49,6 @@ struct SettingsStoreIntegrationDeviceIDTests {
         }
     }
 
-    /// A backup carries the stored identifier to another device, where it still names the device it came from.
     @Test func theIdentifierBelongsToTheDeviceItCameFrom() {
         withVendorIdentifier({ "first-vendor-id" }) {
             _ = Current.settingsStore.integrationDeviceID
@@ -116,7 +115,6 @@ struct SettingsStoreIntegrationDeviceIDTests {
         }
     }
 
-    /// Registering as a new device is retried with the identity it started with until the server confirms it.
     @Test func anIdentityBeingRegisteredIsTheOneRegisteredWith() {
         withVendorIdentifier({ "first-vendor-id" }) {
             let pending = RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "first-vendor-id")
@@ -129,7 +127,6 @@ struct SettingsStoreIntegrationDeviceIDTests {
         }
     }
 
-    /// A backup carries over an attempt the device it came from started, which is that device's to finish.
     @Test func anIdentityAnotherDeviceIsRegisteringIsNotRegisteredWith() {
         withVendorIdentifier({ "restored-vendor-id" }) {
             let current = RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "first-vendor-id")
@@ -142,8 +139,6 @@ struct SettingsStoreIntegrationDeviceIDTests {
         }
     }
 
-    /// The identifier kept with the server outlives the app's own records, which reinstalling it clears, and the
-    /// registration is then this installation's.
     @Test func theIdentifierKeptWithTheServerStandsInForAMissingRecord() {
         withVendorIdentifier({ "first-vendor-id" }) {
             let server = Server.fake(identifier: "home") {

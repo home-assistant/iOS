@@ -110,15 +110,6 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
     }
 
-    /// Signing in again to a server the app already has keeps the device it has there, under the identity it was
-    /// registered with and the name the server knows it by, rather than adding a device. Returns whether that device
-    /// is there to take over, which needs no name checked.
-    ///
-    /// Only a server discovered with its instance ID is known to be one the app has before registering: taking a
-    /// device for a server it isn't, such as another home answering at the same address, would take over the
-    /// registration another device has there. A server known by its instance ID keeps its identity even where its
-    /// device is gone, such as after restoring an older backup of Home Assistant: it is registered again under that
-    /// identity. A registration another device owns is left to it either way.
     private func reuseRegistrationOfExistingServer(among registeredDevices: [RegisteredDevice]) -> Bool {
         let settings = Current.settingsStore
         let ownership = RegistrationOwnership()
@@ -127,7 +118,6 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
         let matches = registrations(of: candidates, among: registeredDevices)
 
-        // A server saved more than once can share an identity, which is one device on this server either way.
         if matches.count == 1, let match = matches.first {
             adopt(registrationOf: match.value.server, named: match.value.device.name)
             return true
@@ -138,8 +128,6 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         return false
     }
 
-    /// The identities `servers` are registered with that this server has a device for, with a server registered
-    /// under each.
     private func registrations(
         of servers: [Server],
         among registeredDevices: [RegisteredDevice]
@@ -154,13 +142,6 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         return registrations
     }
 
-    /// Registering under an identity another device owns would take over that device's registration, such as when
-    /// signing in again to a server a backup brought along before settling it, or while the identifier this device
-    /// registers with by default is still the other device's. This device registers under one of its own instead.
-    ///
-    /// Without a registration of its own here, this device registers with its default identifier, which a saved server
-    /// can record as another device's: keeping one server's registration makes the identifier this device's, while
-    /// another server the backup brought can still be the other device's under it, and this server can be that one.
     private func leaveRegistrationOfAnotherDevice() {
         let settings = Current.settingsStore
         let ownership = RegistrationOwnership()
@@ -175,7 +156,6 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
     }
 
-    /// Registers this device under a new identity of its own, as registering it anew does.
     private func registerUnderAnIdentityOfItsOwn() {
         guard let vendorID = Current.device.identifierForVendor() else { return }
         let settings = Current.settingsStore
@@ -184,9 +164,6 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
         }
     }
 
-    /// Takes on the registration `server` has, under the name it knows this device by. An identity `server` is still
-    /// to register under stays one to register under: until registering under it succeeds, the credentials `server`
-    /// has are for the registration it has, which can be another device's.
     private func adopt(registrationOf server: Server, named name: String?) {
         let settings = Current.settingsStore
         let current = settings.currentRegistrationIdentity(for: server)

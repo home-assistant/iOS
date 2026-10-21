@@ -6,7 +6,6 @@ import SwiftUI
 import Testing
 
 struct RestoredRegistrationsViewTests {
-    /// The prompt is sheet content, so it is rendered at a sheet's height rather than full screen.
     @MainActor @Test func promptSnapshot() async throws {
         guard #available(iOS 18.0, *) else { return }
 
@@ -24,7 +23,6 @@ struct RestoredRegistrationsViewTests {
         )
     }
 
-    /// With many servers the rows scroll while the choices stay put, and a running count says how far along it is.
     @MainActor @Test func manyServersSnapshot() async throws {
         guard #available(iOS 18.0, *) else { return }
 

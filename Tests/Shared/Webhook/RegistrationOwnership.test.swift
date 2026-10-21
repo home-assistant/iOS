@@ -5,8 +5,6 @@ import PromiseKit
 @testable import Shared
 import Testing
 
-/// A device restored from another one's backup carries that device's registrations; these cover telling them apart
-/// and settling them.
 // Serialized: the tests swap `Current` and the app group's stored registration identifier.
 @Suite(.serialized)
 struct RegistrationOwnershipTests {
@@ -15,7 +13,6 @@ struct RegistrationOwnershipTests {
 
     private struct RegisterFailure: Error {}
 
-    /// Holds whoever waits on it until opened.
     private actor AsyncGate {
         private var isOpen = false
         private var waiters = [CheckedContinuation<Void, Never>]()
@@ -32,7 +29,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// Stands in for the server: answers the registration and the reconnect that follows it.
     private final class RegisteringAPI: HomeAssistantAPI {
         var registerResult: Promise<Void> = .value(())
         var connectResult: Promise<Void> = .value(())
@@ -56,7 +52,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// Counts the registration updates a connect sends.
     private final class ConnectingAPI: HomeAssistantAPI {
         private(set) var updatedRegistrations = 0
 
@@ -66,12 +61,10 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// Keeps the registrations with `servers`, sending nothing to them.
     private func keep(_ servers: [Server]) {
         RegistrationOwnership(catchUp: { _ in }).keepRegistrations(of: servers)
     }
 
-    /// Runs `body` with `api` answering for its server.
     private func withAPI(_ api: HomeAssistantAPI, _ body: () async throws -> Void) async rethrows {
         let previousAPIs = Current.cachedApis
         defer { Current.cachedApis = previousAPIs }
@@ -79,7 +72,6 @@ struct RegistrationOwnershipTests {
         try await body()
     }
 
-    /// Runs `body` on a device with `vendorID`, whose stored registration identifier came from `identifierOwner`.
     private func withDevice<T>(
         vendorID: String? = RegistrationOwnershipTests.thisDevice,
         identifierOwner: String = RegistrationOwnershipTests.otherDevice,
@@ -113,7 +105,6 @@ struct RegistrationOwnershipTests {
         return try await body(servers)
     }
 
-    /// Adds a server whose registration was recorded as `owner`'s, or predates owners being recorded when `nil`.
     @discardableResult
     private func addServer(
         to servers: FakeServerManager,
@@ -131,7 +122,6 @@ struct RegistrationOwnershipTests {
         return server
     }
 
-    /// Stands in for the server's WebSocket on `api`, answering the devices it is asked for with `devices`.
     @discardableResult
     private func answerDevices(
         on api: HomeAssistantAPI,
@@ -145,7 +135,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// The request is sent from a task of its own, so give it a moment to arrive rather than assuming it is there.
     private func waitForRequest(on connection: HAMockConnection) async -> Bool {
         let deadline = Date().addingTimeInterval(5)
         while connection.pendingRequests.isEmpty, Date() < deadline {
@@ -169,7 +158,6 @@ struct RegistrationOwnershipTests {
             let others = addServer(to: servers, ownedBy: Self.otherDevice)
             addServer(to: servers, ownedBy: Self.thisDevice)
             addServer(to: servers, ownedBy: Self.otherDevice) { info in
-                // Waiting to be signed in to again after a recovery, so it can't be registered with yet.
                 info.token = ServerInfo.mirrorPlaceholderToken
             }
 
@@ -243,17 +231,12 @@ struct RegistrationOwnershipTests {
             #expect(registeredWith.values.allSatisfy {
                 $0.ownerVendorID == Self.thisDevice && $0.deviceID != previousIdentity.deviceID
             })
-            // Not registered anew, so it keeps the identity it was made with, which is the other device's.
             #expect(Current.settingsStore.registrationIdentity(for: left) == previousIdentity)
-            // What this device registers with from now on, such as a server it is added to later, is its own.
             #expect(Current.settingsStore.integrationDeviceID != previousIdentity.deviceID)
             #expect(Current.settingsStore.integrationDeviceIDOwnerVendorID == Self.thisDevice)
         }
     }
 
-    /// Registering under the identifier the current registration was made with would replace it on the server,
-    /// taking it away from any other device using it. That registration is left to the device that shares the default
-    /// identifier, so this one takes a new default too, while the other servers keep the identity they have.
     @Test func registeringAnewOnTheDeviceThatMadeTheRegistrationLeavesItsIdentifierBehind() async {
         await withDevice(identifierOwner: Self.thisDevice) { servers in
             let server = addServer(to: servers, ownedBy: Self.thisDevice)
@@ -270,8 +253,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// A server registered as a new device before keeps that registration's identifier out of the default, which
-    /// stays as it is.
     @Test func registeringAnewAgainKeepsTheDefaultIdentifier() async {
         await withDevice(identifierOwner: Self.thisDevice) { servers in
             let server = addServer(to: servers, ownedBy: Self.thisDevice)
@@ -286,8 +267,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// Updates are held back while a registration is another device's, so keeping it sends this device's push token.
-    /// A warm connect sends the registration data, then the sensors, which were held back until now.
     @Test func keepingARegistrationCatchesItUpWithThisDevice() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -302,7 +281,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// Two attempts for one server at the same time, such as from two settings windows, share one registration.
     @Test func registeringAnewTwiceAtOnceRegistersOnce() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -358,8 +336,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// A connect sends the registration data along with the push token, which would hand the other device's
-    /// notifications to this one; it waits until the registration is settled.
     @Test func aConnectLeavesAnotherDevicesRegistrationAlone() async {
         await withDevice { servers in
             let theirs = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -390,8 +366,7 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// The server may have made the registration before its response was lost, so trying again registers the same
-    /// identity, which replaces that registration rather than leaving it behind.
+    /// The server may have made the registration before its response was lost.
     @Test func registeringAnewAgainReusesTheIdentityOfTheAttemptBefore() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -409,7 +384,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// An attempt the device the backup came from started is that device's to finish.
     @Test func registeringAnewDoesNotReuseAnAttemptAnotherDeviceStarted() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -473,7 +447,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// Unless told otherwise, registering anew is done with the server itself.
     @Test func registeringAnewRegistersWithTheServerByDefault() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -503,7 +476,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// A reconnect that fails leaves the new registration in place, to catch up on the next connect.
     @Test func registeringWithAServerCatchesTheNewRegistrationUp() async throws {
         try await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice)
@@ -518,13 +490,10 @@ struct RegistrationOwnershipTests {
 
             #expect(api.connectReasons == [.warm])
             #expect(api.registeredNames == [server.info.mobileAppDeviceName])
-            // The new registration has none of the old one's sensors, so the next connect registers them.
             #expect(SensorRegistrationVersionStore.needsRegistration(for: server.identifier))
         }
     }
 
-    /// A reconnect that doesn't finish, such as while the network is down, leaves the new registration to catch up
-    /// in the background rather than keeping the prompt and the other servers waiting.
     @Test func registeringWithAServerStopsWaitingForAReconnectThatDoesNotFinish() async throws {
         let previousTimeout = RegistrationOwnership.reconnectTimeout
         RegistrationOwnership.reconnectTimeout = 0.1
@@ -565,8 +534,7 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// Notifications reach a device through an action named after it, so the new registration takes a name none of
-    /// the server's other devices has, such as the one it leaves there.
+    /// Notification actions are named after devices, so the name must be unique on the server.
     @Test func registeringWithAServerTakesANameNoOtherDeviceThereHas() async throws {
         try await withDevice { servers in
             let server = addServer(to: servers, ownedBy: Self.otherDevice) { info in
@@ -617,16 +585,12 @@ struct RegistrationOwnershipTests {
             Self.device(named: "Laptop", registeredAs: "yet-another"),
         ].map { try DeviceRegistryEntry(data: HAData(value: $0)) }
 
-        // Only another `mobile_app` registration takes a name, and the one being replaced is this device's own.
         #expect(RegistrationOwnership.unusedDeviceName("Phone", among: devices, replacing: "this") == "Phone")
         #expect(RegistrationOwnership.unusedDeviceName("Phone 2", among: devices, replacing: "this") == "Phone 2")
         #expect(RegistrationOwnership.unusedDeviceName("tablet", among: devices, replacing: "this") == "tablet 2")
-        // Home Assistant names both "Laptop 2" and "Laptop_2" notify.mobile_app_laptop_2.
         #expect(RegistrationOwnership.unusedDeviceName("Laptop", among: devices, replacing: "this") == "Laptop 3")
     }
 
-    /// Registering anew from a name registering anew gave before counts on from the name that came from, while a
-    /// name that merely ends in a number keeps it.
     @Test func aNumberedNameCountsOnFromTheNameItCameFrom() throws {
         let devices = try [
             Self.device(named: "Phone", registeredAs: "first"),
@@ -652,8 +616,6 @@ struct RegistrationOwnershipTests {
         #expect(RegistrationOwnership.notificationName("Bjørn") == RegistrationOwnership.notificationName("Bjorn"))
     }
 
-    /// Home Assistant drops a comma between digits from the name it gives the action, so "Phone 1,2" has the one
-    /// "Phone 12" would, and the number added to tell a new name apart is compared the same way.
     @Test func aCommaBetweenDigitsDoesNotTellNamesApart() throws {
         let devices = try [
             Self.device(named: "Phone 1000", registeredAs: "other"),
@@ -666,8 +628,6 @@ struct RegistrationOwnershipTests {
         #expect(name("Phone 1,2") == "Phone 1,2 3")
     }
 
-    /// Reinstalling the app clears its own records but keeps the servers, along with the identifier each one's
-    /// registration was made with: the registration is still this device's, under the identifier it has.
     @Test func aRegistrationKeepsTheIdentifierKeptWithTheServerAfterAReinstall() async {
         await withDevice(identifierOwner: Self.thisDevice) { servers in
             let server = addServer(to: servers, ownedBy: nil) { info in
@@ -679,8 +639,6 @@ struct RegistrationOwnershipTests {
         }
     }
 
-    /// Keeping a registration made before identities were kept with the server keeps its identifier with the server
-    /// too, so reinstalling the app, which clears the records and the identifier, doesn't lose it.
     @Test func keepingARegistrationKeepsItsIdentifierWithTheServer() async {
         await withDevice { servers in
             let server = addServer(to: servers, ownedBy: nil)

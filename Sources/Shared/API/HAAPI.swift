@@ -602,8 +602,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    /// Registers with the server, as `deviceName` when given. The name is only kept once the server has the
-    /// registration: until then, whichever registration the server already has goes on using the current one.
     public func register(deviceName: String? = nil) -> Promise<Void> {
         let identity = Current.settingsStore.registrationIdentity(for: server)
 
@@ -643,9 +641,6 @@ public class HomeAssistantAPI {
     }
 
     public func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
-        // Updating a registration another device owns hands it this device's push token, so that device's
-        // notifications keep reaching this one even after it registers on its own. It waits until this device
-        // settles it.
         guard !RegistrationOwnership().isRegisteredByAnotherDevice(server) else {
             return Promise(error: RegistrationOwnershipError.registeredByAnotherDevice)
         }
@@ -880,7 +875,6 @@ public class HomeAssistantAPI {
         var eventData: [String: String] = sharedEventDeviceInfo
         eventData["tag_id"] = tagPath
         if server.info.version < .tagWebhookAvailable {
-            // The device the server knows this one as, not one it is still being registered as.
             eventData["device_id"] = Current.settingsStore.currentRegistrationIdentity(for: server).deviceID
         }
         return (eventType: "tag_scanned", eventData: eventData)

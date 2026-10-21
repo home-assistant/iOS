@@ -6,8 +6,6 @@ import SwiftUI
 import Testing
 import UIKit
 
-/// The launch screen for a device restored from another one's backup: signing in and registering anew, skipping and
-/// retrying what did not go through, or replacing the other device.
 // Serialized: the tests swap `Current` and the app group's stored registration identifier.
 @Suite(.serialized)
 @MainActor
@@ -15,12 +13,10 @@ struct RestoredRegistrationsViewModelTests {
     private struct RegisterFailure: Error {}
     private struct SignInFailure: Error {}
 
-    /// A sign-in that presents a login page for `server` and resolves right away.
     private static func signIn(_ signedIn: @escaping (Server) -> Void) -> ServerReauthentication.SignIn {
         { server, _ in signedIn(server) }
     }
 
-    /// Runs `body` on "this-device", carrying a registration identifier from "other-device".
     private func withRestoredDevice(_ body: (FakeServerManager) async throws -> Void) async rethrows {
         let prefs = Current.settingsStore.prefs
         let previousServers = Current.servers
@@ -50,7 +46,6 @@ struct RestoredRegistrationsViewModelTests {
         try await body(servers)
     }
 
-    /// A server without any URL, so the update sent after registering has nowhere to go.
     private func addServer(named name: String, to servers: FakeServerManager) -> Server {
         let info = ServerInfo(
             name: name,
@@ -73,12 +68,10 @@ struct RestoredRegistrationsViewModelTests {
         return servers.add(identifier: .init(rawValue: name), serverInfo: info)
     }
 
-    /// Counts how often the prompt asked to be closed.
     private final class FinishCounter {
         var count = 0
     }
 
-    /// Sets up as a new device, going on at every hand-off between servers as a user tapping Continue would.
     private func setUpGoingOn(_ viewModel: RestoredRegistrationsViewModel) async {
         var finished = false
         var resumed = Set<Int>()
@@ -95,7 +88,6 @@ struct RestoredRegistrationsViewModelTests {
         }
     }
 
-    /// Lays the prompt out in a window of its own, which is what makes SwiftUI evaluate its body.
     private func render(_ viewModel: RestoredRegistrationsViewModel) {
         let controller = UIHostingController(rootView: RestoredRegistrationsView(viewModel: viewModel))
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 640))
@@ -198,8 +190,6 @@ struct RestoredRegistrationsViewModelTests {
         }
     }
 
-    /// Setting up is one decision for every server: cancelling a login ends the run, and that server and the ones
-    /// after it are asked about again on the next launch.
     @Test func cancellingALoginEndsTheRunAndLeavesTheRestForTheNextLaunch() async {
         await withRestoredDevice { servers in
             let home = addServer(named: "Home", to: servers)
@@ -233,7 +223,6 @@ struct RestoredRegistrationsViewModelTests {
             #expect(viewModel.state(of: home) == .done)
             #expect(viewModel.state(of: cabin) == .skipped)
             #expect(viewModel.state(of: lake) == .skipped)
-            // Nothing failed, so the screen closes; the next launch asks about the two left.
             #expect(finished.count == 1)
             #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [cabin, lake])
         }
@@ -269,12 +258,10 @@ struct RestoredRegistrationsViewModelTests {
             #expect(viewModel.newDeviceTitle == L10n.RestoredRegistrations.tryAgain)
             #expect(finished.count == 0)
             #expect(!viewModel.isRegistering)
-            // The screen stays up, showing where each server stands.
             render(viewModel)
         }
     }
 
-    /// Trying again goes through the servers that are not set up yet, and leaves the ones that are alone.
     @Test func tryingAgainOnlyRetriesWhatIsNotSetUp() async {
         await withRestoredDevice { servers in
             let home = addServer(named: "Home", to: servers)
@@ -307,7 +294,6 @@ struct RestoredRegistrationsViewModelTests {
         }
     }
 
-    /// The login page says which server it is for and where it stands in the run.
     @Test func eachLoginIsNumberedAmongTheServersBeingSetUp() async {
         await withRestoredDevice { servers in
             let home = addServer(named: "Home", to: servers)
@@ -336,8 +322,6 @@ struct RestoredRegistrationsViewModelTests {
         }
     }
 
-    /// Between two servers the sheet hands off: it says what became of the one just finished and which one's login
-    /// comes next, and waits for the user before opening it.
     @Test func theHandOffBetweenServersWaitsForTheUser() async throws {
         try await withRestoredDevice { servers in
             let home = addServer(named: "Home", to: servers)
@@ -369,7 +353,6 @@ struct RestoredRegistrationsViewModelTests {
             #expect(viewModel.state(of: cabin) == .waiting)
             #expect(!finished)
 
-            // A second tap, before the page replaces the button, changes nothing.
             next.goOn()
             next.goOn()
             for _ in 0 ..< 200 where !finished {

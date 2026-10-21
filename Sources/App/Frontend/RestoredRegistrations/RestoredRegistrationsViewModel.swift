@@ -2,18 +2,15 @@ import Foundation
 import PromiseKit
 import Shared
 
-/// Drives the screen for the servers this device is registered with as another device, which it carries from the
-/// backup it was restored from: it signs in to each again and registers as a new device, or replaces the other
-/// device and keeps its registrations.
 @MainActor
+/// Drives the screen shown to a device restored from another device's backup.
 final class RestoredRegistrationsViewModel: ObservableObject {
-    /// Where a server is in being set up as a new device.
     enum SetupState: Equatable {
         case waiting
         case signingIn
         case registering
         case done
-        /// Left for the next launch: the user backed out of the run before this server's turn.
+        /// Left for the next launch.
         case skipped
         case failed(String)
 
@@ -33,7 +30,6 @@ final class RestoredRegistrationsViewModel: ObservableObject {
         }
     }
 
-    /// The server a login page is up for, and its place in the run.
     struct Login: Identifiable {
         let viewModel: OnboardingAuthLoginViewModel
         let server: Server
@@ -43,8 +39,6 @@ final class RestoredRegistrationsViewModel: ObservableObject {
         var id: ObjectIdentifier { ObjectIdentifier(viewModel) }
     }
 
-    /// The hand-off between two servers of a run: what became of the one just finished and which one is next, so
-    /// a login page never opens for a server the user did not see coming.
     struct NextServer {
         let previous: Server
         let previousState: SetupState
@@ -54,18 +48,16 @@ final class RestoredRegistrationsViewModel: ObservableObject {
         let goOn: () -> Void
     }
 
-    /// What the sheet shows during a run: a server's login page, or the hand-off to the next one.
     enum SheetContent {
         case login(Login)
         case nextServer(NextServer)
     }
 
-    /// The servers still registered as another device, in the order they are set up.
     @Published private(set) var servers: [Server]
     @Published private(set) var states: [Identifier<Server>: SetupState]
     @Published private(set) var isRegistering = false
-    /// What the one sheet of a run shows. It stays up across the servers and swaps its content: taking it down
-    /// and putting the next one up takes this screen, a sheet itself, down with it.
+    /// One sheet for the whole run: taking it down and putting the next one up takes this screen, a sheet itself,
+    /// down with it.
     @Published var sheet: SheetContent?
 
     var login: Login? {
@@ -87,7 +79,6 @@ final class RestoredRegistrationsViewModel: ObservableObject {
 
     private let ownership: RegistrationOwnership
     private let signIn: ServerReauthentication.SignIn
-    /// Called once every server is settled or left for the next launch, which closes the screen.
     private let onFinished: () -> Void
 
     init(
@@ -111,17 +102,14 @@ final class RestoredRegistrationsViewModel: ObservableObject {
         states[server.identifier] ?? .waiting
     }
 
-    /// How many servers are set up as a new device, for the running count shown with many of them.
     var doneCount: Int {
         states.values.filter { $0 == .done }.count
     }
 
-    /// Whether anything has happened yet, which is when the running count says something.
     var hasStarted: Bool {
         states.values.contains { $0 != .waiting }
     }
 
-    /// Whether an earlier attempt left servers to try again, which is what the button offers then.
     var hasFailures: Bool {
         states.values.contains { if case .failed = $0 { return true } else { return false } }
     }
@@ -139,10 +127,6 @@ final class RestoredRegistrationsViewModel: ObservableObject {
         }
     }
 
-    /// Signs in to each server in turn and registers with it as a new device, showing where each one stands. It is
-    /// one decision for all of them: cancelling a login ends the run, and that server and the ones after it are
-    /// asked about again on the next launch. A server that could not be set up stays on screen to try again, and
-    /// the ones already set up are left alone.
     func setUpAsNewDevice() async {
         isRegistering = true
         defer { isRegistering = false }
@@ -152,8 +136,6 @@ final class RestoredRegistrationsViewModel: ObservableObject {
             states[server.identifier] = .waiting
         }
 
-        // One login sheet stays up for the whole run and shows each server's page in turn: taking it down and
-        // putting the next one up takes this screen, a sheet itself, down with it.
         defer { sheet = nil }
         for (index, server) in remaining.enumerated() {
             if index > 0 {
@@ -192,7 +174,6 @@ final class RestoredRegistrationsViewModel: ObservableObject {
         }
     }
 
-    /// Shows what became of `previous` and that `next`'s login comes next, and waits for the user to go on.
     private func handOff(from previous: Server, to next: Server, position: Int, count: Int) async {
         await withCheckedContinuation { continuation in
             // The button stays until the page replaces it, so a second tap must not resume again.

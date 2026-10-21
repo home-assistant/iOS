@@ -1,11 +1,8 @@
 import Foundation
 
-/// What a `mobile_app` registration is made with: the identifier Home Assistant knows the device by, which makes a
-/// registration under one it already has replace that registration rather than add a device, and the device the
-/// registration belongs to.
+/// A device identifier together with the vendor identifier of the device that registered with it.
 public struct RegistrationIdentity: Codable, Hashable {
     public var deviceID: String
-    /// The vendor identifier of the device the registration belongs to, when there was one to record.
     public var ownerVendorID: String?
 
     public init(deviceID: String, ownerVendorID: String?) {

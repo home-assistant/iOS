@@ -421,8 +421,6 @@ public class WebhookManager: NSObject {
         return promise
     }
 
-    /// The failure for a request that reports this device to a server whose registration is another device's, which
-    /// waits until the user settles that registration rather than landing on that device.
     private func heldBack(_ request: WebhookRequest, to server: Server) -> Promise<Void>? {
         guard RegistrationOwnership().holdsBack(request, to: server) else { return nil }
         Current.Log.info("holding back \(request.type) to \(server.identifier): its registration is another device's")

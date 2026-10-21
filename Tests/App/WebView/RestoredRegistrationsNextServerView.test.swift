@@ -6,7 +6,6 @@ import SwiftUI
 import Testing
 
 struct RestoredRegistrationsNextServerViewTests {
-    /// The hand-off between two servers, rendered at a sheet's height like the screen it is shown over.
     @MainActor @Test func handOffSnapshot() async throws {
         guard #available(iOS 18.0, *) else { return }
 

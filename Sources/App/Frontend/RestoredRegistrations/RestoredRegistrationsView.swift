@@ -2,8 +2,6 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// Explains to a device restored from another one's backup that it still counts as that device in Home Assistant,
-/// and lets it sign in and register as a new device, or replace the other device and keep its registrations.
 struct RestoredRegistrationsView: View {
     @StateObject private var viewModel: RestoredRegistrationsViewModel
 
@@ -13,8 +11,6 @@ struct RestoredRegistrationsView: View {
 
     var body: some View {
         VStack(spacing: DesignSystem.Spaces.three) {
-            // The text scrolls rather than pushing the buttons out of reach at large type sizes, and with many
-            // servers the list follows the one being signed in to.
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(spacing: DesignSystem.Spaces.three) {

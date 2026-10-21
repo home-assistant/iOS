@@ -20,7 +20,6 @@ struct ServerReauthenticationTests {
         "token_type": "Bearer",
     ]
 
-    /// Answers the token endpoint with `status`, and the `tokenResponse` when it succeeds.
     private func withTokenEndpoint(answering status: Int32 = 200, _ body: () async throws -> Void) async rethrows {
         stub(condition: isPath("/auth/token")) { _ in
             HTTPStubsResponse(jsonObject: Self.tokenResponse, statusCode: status, headers: nil)
@@ -29,8 +28,6 @@ struct ServerReauthenticationTests {
         try await body()
     }
 
-    /// What the login page does when Home Assistant sends it back to the app with `code`, after being redirected
-    /// to `redirectedTo` when given.
     private func completeLogin(on viewModel: OnboardingAuthLoginViewModel, code: String, redirectedTo: URL? = nil) {
         if let redirectedTo {
             viewModel.webView(
@@ -84,7 +81,6 @@ struct ServerReauthenticationTests {
         #expect(server.info.connection.address(for: .external) == URL(string: "http://homeassistant.local:8123"))
     }
 
-    /// A login the server redirected to another port of the same host is exchanged there, and the address kept.
     @Test func signingInKeepsTheAddressTheLoginEndedOn() async throws {
         let server = Server.fake(identifier: "redirected")
 
@@ -150,7 +146,6 @@ struct ServerReauthenticationTests {
     }
 
     /// A connection already up stays signed in as before, which can be another user, so signing in again connects
-    /// anew with the token just signed in with.
     @Test func reconnectingAsksForTheTokenAgain() {
         let server = Server.fake(identifier: "server-signed-in-to-again")
         var tokensFetched = 0

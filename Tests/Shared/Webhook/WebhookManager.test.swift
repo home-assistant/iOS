@@ -591,7 +591,6 @@ class WebhookManagerTests: XCTestCase {
         }
     }
 
-    /// Runs `body` with `server`'s registration recorded as another device's.
     private func withRegistrationOfAnotherDevice(_ server: Server, _ body: () throws -> Void) rethrows {
         let prefs = Current.settingsStore.prefs
         let keys = [

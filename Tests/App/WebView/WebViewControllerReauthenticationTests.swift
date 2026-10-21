@@ -6,8 +6,6 @@ import SwiftUI
 import UIKit
 import XCTest
 
-/// Signing in again from the frontend's empty state: the login page over the web view, taken down when cancelled,
-/// and the failure shown when the server refuses the token.
 @MainActor
 final class WebViewControllerReauthenticationTests: XCTestCase {
     private var previousWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol!

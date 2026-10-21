@@ -233,7 +233,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         XCTAssertFalse(request.isSaving)
     }
 
-    /// Signing in again to a server the app already has keeps the device it has there, with the name it was given.
     func testSigningInAgainKeepsTheDeviceTheServerHas() throws {
         let home = Server.fake(identifier: "home") {
             $0.instanceID = "instance-1"
@@ -254,9 +253,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// Servers saved at the address typed in can be any of the homes answering there, and an identifier one of them
-    /// is registered with can be another device's on this one: here Home registered anew and left `cabin-device-id`
-    /// to the other device, which is all Home has after being restored to an older backup. Neither is taken.
     func testSigningInAtAnAddressSavedServersShareTakesNoneOfTheirDevices() throws {
         let address = URL(string: "http://homeassistant.local:8123")
         let home = Server.fake(identifier: "home") { $0.connection.set(address: address, for: .internal) }
@@ -279,8 +275,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// An identifier another saved server is registered with can be another device's on this server, such as the one
-    /// this device left there when it registered as a new device, so only this server's own identity is kept.
     func testSigningInAgainKeepsThisServersIdentityOverOneAnotherServerHas() throws {
         let home = Server.fake(identifier: "instance-1")
         let cabin = Server.fake(identifier: "cabin")
@@ -301,8 +295,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// Signing in again to a server whose registration a backup brought from another device, before settling it,
-    /// registers this device under an identity of its own rather than taking over the other device's.
     func testSigningInAgainToAServerAnotherDeviceIsRegisteredWithRegistersAnew() throws {
         let home = Server.fake(identifier: "instance-1")
 
@@ -322,7 +314,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// The same, for a server saved under another identifier than the instance ID it is discovered by.
     func testSigningInAgainToADiscoveredServerAnotherDeviceIsRegisteredWithLeavesItsIdentity() throws {
         let home = Server.fake(identifier: "home") { $0.instanceID = "instance-1" }
 
@@ -342,8 +333,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// Signing in again after registering as a new device failed keeps the identity it was registering under as the
-    /// one to register under: the server's credentials stay the other device's registration's until that succeeds.
     func testSigningInAgainAfterRegisteringAnewFailedKeepsTheIdentityToRegisterUnder() throws {
         let home = Server.fake(identifier: "instance-1")
         let record = RegistrationRecord(
@@ -364,8 +353,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// Until this device settles the registrations a backup brought, the identifier it registers with by default is
-    /// the other device's, and a server that has that device gets one of this device's own instead.
     func testSigningInWithAnotherDevicesIdentifierRegistersUnderOneOfItsOwn() throws {
         try withServers([]) {
             Current.settingsStore.prefs.set("other-device", forKey: SettingsStore.integrationDeviceIDKey)
@@ -382,8 +369,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// A server saved more than once can be registered under one identity, such as an older entry kept next to the
-    /// one saved under its instance ID: signing in again keeps it, under the name this server knows it by.
     func testSigningInAgainKeepsAnIdentityTheServersEntriesShare() throws {
         let home = Server.fake(identifier: "instance-1") { $0.setSetting(value: "Phone", for: .overrideDeviceName) }
         let olderEntry = Server.fake(identifier: "older-entry") {
@@ -406,8 +391,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// A server waiting to be signed in to again after its credentials were recovered is no exception: a registration
-    /// another device owns is left to it.
     func testSigningInAgainAfterARecoveryLeavesARegistrationAnotherDeviceOwns() throws {
         let home = Server.fake(identifier: "home") {
             $0.instanceID = "instance-1"
@@ -430,9 +413,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// Keeping one server's registration makes the identifier this device registers with by default its own, while
-    /// another server the backup brought can still be the other device's under that same identifier: signing in
-    /// again to that one registers this device under an identity of its own.
     func testSigningInAgainToAServerAnotherDeviceOwnsTakesNoIdentifierItShares() throws {
         let cabin = Server.fake(identifier: "cabin") { $0.instanceID = "instance-1" }
 
@@ -453,7 +433,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// The same goes for a server signed in to at an address typed in, which can be that other server.
     func testSigningInAtAnAddressWithAnIdentifierAnotherServerHasAsAnotherDevicesTakesOneOfItsOwn() throws {
         let cabin = Server.fake(identifier: "cabin")
 
@@ -474,8 +453,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// Reinstalling the app clears its records but keeps the servers, along with the identifier each registration
-    /// was made with, which signing in to a discovered server again keeps.
     func testSigningInAgainAfterAReinstallKeepsTheIdentifierKeptWithTheServer() throws {
         let home = Server.fake(identifier: "instance-1") {
             $0.setSetting(value: "home-device-id", for: .registeredDeviceID)
@@ -494,8 +471,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// A server known by its instance ID keeps its identity even where Home Assistant no longer has its device, such
-    /// as after restoring an older backup of it.
     func testSigningInToAKnownServerWithoutItsDeviceKeepsItsIdentity() throws {
         let home = Server.fake(identifier: "server-from-an-older-install") { $0.instanceID = "instance-1" }
         let identity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
@@ -517,8 +492,6 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
-    /// Runs `body` on the device `"this-device"`, with `servers` as the servers the app has, and no registration
-    /// records or stored registration identifier.
     private func withServers(_ servers: [Server], _ body: () throws -> Void) rethrows {
         let previousServers = Current.servers
         let previousVendorID = Current.device.identifierForVendor
@@ -550,14 +523,12 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         try body()
     }
 
-    /// Signs in to the server discovered with the instance ID `instance`.
     private func discover(instance: String) {
         api = HomeAssistantAPI(server: .fake(identifier: .init(rawValue: instance)))
         api.connection = connection
         step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
     }
 
-    /// Signs in to the server at `address`, typed in rather than discovered.
     private func signIn(at address: URL?) {
         let typedIn = Identifier<Server>(rawValue: DiscoveredHomeAssistant.autogeneratedUUIDPrefix + "typed-in")
         api = HomeAssistantAPI(server: .fake(identifier: typedIn) {

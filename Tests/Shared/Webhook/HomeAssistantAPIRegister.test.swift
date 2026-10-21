@@ -4,7 +4,6 @@ import OHHTTPStubsSwift
 @testable import Shared
 import XCTest
 
-/// What registering with a server records about the registration it makes.
 final class HomeAssistantAPIRegisterTests: XCTestCase {
     private let keys = [
         SettingsStore.integrationDeviceIDKey,
@@ -33,13 +32,11 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         super.tearDown()
     }
 
-    /// Answers the registration with `statusCode`, keeping the `device_id` it was made with.
     private func stubRegistration(statusCode: Int32 = 201) -> () -> String? {
         let body = stubRegistrationBody(statusCode: statusCode)
         return { body()?["device_id"] as? String }
     }
 
-    /// Answers the registration with `statusCode`, keeping what it was made with.
     private func stubRegistrationBody(statusCode: Int32 = 201) -> () -> [String: Any]? {
         var registration: [String: Any]?
         stub(condition: isMethodPOST() && isPath("/api/mobile_app/registrations")) { request in
@@ -54,8 +51,6 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         return { registration }
     }
 
-    /// A device restored from another one's backup registers under that device's identifier until it is told
-    /// otherwise, so the registration it makes is recorded as that device's.
     func testRegistrationBelongsToTheOwnerOfTheIdentifierItWasMadeWith() async throws {
         Current.settingsStore.prefs.set("other-device", forKey: SettingsStore.integrationDeviceIDKey)
         let registeredDeviceID = stubRegistration()
@@ -71,8 +66,6 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         XCTAssertEqual(Current.settingsStore.registrationRecord(for: server.identifier).current, identity)
     }
 
-    /// Registering again, such as when the server lost the registration, keeps the device it had there, whatever
-    /// this device registers other servers with.
     func testRegisteringAgainKeepsTheIdentityTheRegistrationHas() async throws {
         let registeredDeviceID = stubRegistration()
         let server = Server.fake()
@@ -103,8 +96,6 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         XCTAssertEqual(server.info.setting(for: .registeredDeviceID), "new-device-id")
     }
 
-    /// A backup carries over an attempt to register as a new device that the device it came from started. Getting a
-    /// lost registration back must not finish that attempt on this device's behalf.
     func testRegisteringAgainLeavesAnAttemptAnotherDeviceStarted() async throws {
         let registeredDeviceID = stubRegistration()
         let server = Server.fake()
@@ -120,8 +111,6 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         XCTAssertEqual(Current.settingsStore.registrationRecord(for: server.identifier).pending, pending)
     }
 
-    /// Reinstalling the app clears its own records but keeps the servers, so the identifier kept with the server is
-    /// what getting a lost registration back uses, rather than one that adds a device.
     func testTheIdentifierKeptWithTheServerOutlivesTheAppsRecords() async throws {
         let registeredDeviceID = stubRegistration()
         let server = Server.fake { $0.setSetting(value: "cabin-device-id", for: .registeredDeviceID) }
@@ -138,8 +127,6 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         )
     }
 
-    /// The name only becomes the device's once the server has the registration: until then, the registration the
-    /// server already has goes on hearing the old one.
     func testANameToRegisterWithIsKeptOnlyOnceTheServerHasTheRegistration() async throws {
         let failedRegistration = stubRegistrationBody(statusCode: 500)
         let server = Server.fake { $0.setSetting(value: "Phone", for: .overrideDeviceName) }
@@ -161,8 +148,6 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         XCTAssertEqual(server.info.setting(for: .registeredDeviceName), "Phone 2")
     }
 
-    /// A registration another device owns is left as it is until this device settles it: updating it would hand
-    /// that device's notifications to this one.
     func testARegistrationAnotherDeviceOwnsIsNotUpdated() async {
         let previousIsCatalyst = Current.isCatalyst
         Current.isCatalyst = false
@@ -180,7 +165,6 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         }
     }
 
-    /// A registration this device owns is updated as before, and keeps the name the server now has for it.
     func testARegistrationThisDeviceOwnsIsUpdated() async throws {
         let previousWebhooks = Current.webhooks
         let webhooks = FakeWebhookManager()
@@ -202,8 +186,6 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         XCTAssertEqual(server.info.setting(for: .registeredDeviceName), "Phone")
     }
 
-    /// Older servers learn which device scanned a tag from the event itself, so it names the device the server knows
-    /// this one as, never one it is still being registered as.
     func testTagEventsOnOlderServersNameTheDeviceTheServerKnows() {
         let server = Server.fake { $0.version = Version(minor: 113) }
         let api = HomeAssistantAPI(server: server)

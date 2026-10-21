@@ -118,7 +118,6 @@ public class LocalPushManager {
         tokens.append(server.observe { [weak self] _ in
             self?.updateSubscription()
         })
-        // Held back while the registration is another device's; subscribes once it is settled.
         self.settledRegistrationToken = NotificationCenter.default.addObserver(
             forName: RegistrationOwnership.didSettleRegistration,
             object: nil,
@@ -171,8 +170,7 @@ public class LocalPushManager {
     private var subscription: SubscriptionInstance?
 
     private func updateSubscription() {
-        // Subscribing takes the channel over from the device the registration belongs to, so it waits until the
-        // registration is this device's own.
+        // Subscribing takes the channel over from the registration's device, so it waits until it is this device's.
         guard !RegistrationOwnership().isRegisteredByAnotherDevice(server) else {
             Current.Log
                 .info("not subscribing to local push for \(server.identifier): its registration is another device's")

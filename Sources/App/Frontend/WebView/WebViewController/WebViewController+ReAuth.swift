@@ -74,7 +74,6 @@ extension WebViewController {
         }
     }
 
-    /// The new token is stored with the server; this reconnects and reloads the frontend with it.
     private func handleReauthenticated() {
         didLogOut = false
         connectionState = .unknown

@@ -33,7 +33,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var isRegisteringAsNewDevice = false
     @Published var registerAsNewDeviceError: Error?
     @Published var isShowingRegisterAsNewDeviceError = false
-    /// The login page of this server while registering as a new device signs in to it again.
     @Published var login: OnboardingAuthLoginViewModel?
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
@@ -372,7 +371,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
             : L10n.Settings.ConnectionSection.RegisterAsNewDevice.title
     }
 
-    /// Asks before registering, since the current registration is left behind on the server.
     func confirmRegisteringAsNewDevice() {
         isRegisterAsNewDeviceConfirmationPresented = true
     }
@@ -383,9 +381,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
         }
     }
 
-    /// Signs in to the server again and gives this device a registration of its own with it. The current one stays
-    /// on the server for any other device still using it, such as one restored from a backup of this device. A login
-    /// the user cancels changes nothing.
     func registerAsNewDevice() async {
         isRegisteringAsNewDevice = true
         defer { isRegisteringAsNewDevice = false }

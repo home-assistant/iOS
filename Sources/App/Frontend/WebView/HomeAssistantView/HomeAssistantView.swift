@@ -8,8 +8,6 @@ struct HomeAssistantView: View, WebFrontendView {
     }
 
     @StateObject private var viewModel: HomeAssistantViewModel
-    /// Launch sheets (restored registrations, What's-New, TestFlight) are owned here so they can only ever present
-    /// over the web frontend, never over onboarding.
     @StateObject private var launchMessages = LaunchMessagesState()
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
 

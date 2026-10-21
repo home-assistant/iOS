@@ -1,17 +1,10 @@
 import XCTest
 
-/// Drives the app through the screens the end-to-end tests share, against a real Home Assistant:
-/// onboarding from the welcome screen, the web login, and what follows on the frontend.
-///
-/// Instantiated by each test over its own launched `XCUIApplication`, so the steps can be combined
-/// into flows that start the same way and diverge after, such as onboarding followed by a relaunch.
+/// The steps the end-to-end tests share, driven against a Home Assistant started from `.github/e2e`.
 final class E2EFlow {
     enum Timeout {
-        /// Native screens, which either appear promptly or never will.
         static let screen: TimeInterval = 30
-        /// Anything behind a round trip to Home Assistant, including the first paint of the frontend.
         static let frontend: TimeInterval = 120
-        /// Prompts that are allowed not to appear at all.
         static let optional: TimeInterval = 10
     }
 
@@ -19,7 +12,6 @@ final class E2EFlow {
     /// variable into the test process with the prefix stripped.
     enum Instance {
         static let url = value(for: "E2E_HOME_ASSISTANT_URL", default: "http://localhost:8123")
-        /// A second instance, for flows that span servers.
         static let secondURL = value(for: "E2E_HOME_ASSISTANT_SECOND_URL", default: "http://localhost:8124")
         static let username = value(for: "E2E_HOME_ASSISTANT_USERNAME", default: "citest")
         static let password = value(for: "E2E_HOME_ASSISTANT_PASSWORD", default: "h7jk99&U")
@@ -33,30 +25,23 @@ final class E2EFlow {
     let app: XCUIApplication
     private let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
 
-    /// How long to linger before each tap and after each screen, for recordings meant to be watched rather than
-    /// checked. Zero for the nightly tests.
     var stepDelay: TimeInterval = 0
 
     init(app: XCUIApplication) {
         self.app = app
     }
 
-    /// Waits `stepDelay`, so a recording shows the screen before it changes.
     func pause() {
         guard stepDelay > 0 else { return }
         RunLoop.current.run(until: Date().addingTimeInterval(stepDelay))
     }
 
-    /// Relaunches the app as a device with `vendorID`, which is what a backup restored onto other hardware looks
-    /// like to it: the registrations were made under the identifier of the device the backup came from.
     func relaunch(asDevice vendorID: String) {
         app.terminate()
         app.launchArguments = Self.launchArguments + ["-E2E_VENDOR_IDENTIFIER", vendorID]
         app.launch()
     }
 
-    /// Launch arguments every end-to-end run passes, before any flow-specific ones.
-    ///
     /// Onboards with the release client ID rather than the debug one. Home Assistant allows the
     /// release iOS callback offline, but has to fetch `https://home-assistant.io/iOS/dev-auth` to
     /// allow the debug one, and it reads only the first 10 KB of that page, which no longer reaches
@@ -64,7 +49,6 @@ final class E2EFlow {
     /// flow could never log in.
     static let launchArguments = ["-FASTLANE_SNAPSHOT", "YES"]
 
-    /// Onboards from the welcome screen to the frontend, with every permission prompt answered.
     func onboard() {
         connectToInstance()
         logIn()
@@ -73,8 +57,6 @@ final class E2EFlow {
         grantNotificationPermission()
     }
 
-    /// Adds a server at `url` from the native settings: the add-server onboarding, which signs in, names the device
-    /// and asks what the server should receive, then returns to the settings.
     func addServer(at url: String) {
         tap(app.buttons[.settingsAddServer], timeout: Timeout.screen, "add server button")
         tap(app.buttons[.onboardingServersManualEntry], timeout: Timeout.screen, "servers list")
@@ -84,7 +66,6 @@ final class E2EFlow {
         tap(app.buttons[.onboardingManualEntryConnect], timeout: Timeout.screen, "connect button")
         logIn(in: webViewShowingLogin(timeout: Timeout.frontend))
         nameDevice()
-        // The local-only disclaimer, then what an additional server should receive: everything, as the first.
         tapIfPresent(app.buttons[.onboardingLocalOnlyDisclaimerContinue], timeout: Timeout.screen)
         if tapIfPresent(app.buttons[.onboardingPrivacyLocationExactOption], timeout: Timeout.screen) {
             tap(app.buttons[.onboardingPrivacySensorsAllOption], timeout: Timeout.screen, "sensors option")
@@ -96,23 +77,18 @@ final class E2EFlow {
         pause()
     }
 
-    /// Answers the screen a device restored from another one's backup is shown by setting the device
-    /// up as a new one: signs in again through a login sheet per server, `logins` of them, and waits for the
-    /// frontend to return.
     func setUpAsNewDevice(logins: Int = 1) {
         tap(
             app.buttons[.restoredRegistrationsNewDevice],
             timeout: Timeout.screen,
             "restored registrations screen"
         )
-        // One sheet stays up across the servers: a login page, then the hand-off to the next server, and so on.
         for index in 0 ..< logins {
             if index > 0 {
                 tap(app.buttons[.restoredRegistrationsNextContinue], timeout: Timeout.frontend, "next server screen")
             }
             logIn(in: webViewShowingLogin(timeout: Timeout.frontend))
         }
-        // The screen closes once every server is registered; the login sheet goes with it.
         waitUntilGone(
             app.buttons[.restoredRegistrationsNewDevice],
             timeout: Timeout.frontend,
@@ -121,7 +97,6 @@ final class E2EFlow {
         wait(for: app.webViews.firstMatch, timeout: Timeout.frontend, "frontend after registering")
     }
 
-    /// Answers the same screen by replacing the old device: confirms, and waits for the frontend to return.
     func replaceOldDevice() {
         tap(app.buttons[.restoredRegistrationsReplace], timeout: Timeout.screen, "restored registrations screen")
         tap(confirmationButton(labelContaining: "Replace"), timeout: Timeout.screen, "replace confirmation")
@@ -133,7 +108,6 @@ final class E2EFlow {
         wait(for: app.webViews.firstMatch, timeout: Timeout.frontend, "frontend after replacing")
     }
 
-    /// Starts setting up as a new device, then cancels the login, which leaves the server for the next launch.
     func cancelSettingUpAsNewDevice() {
         tap(
             app.buttons[.restoredRegistrationsNewDevice],
@@ -149,14 +123,11 @@ final class E2EFlow {
         )
     }
 
-    /// From the frontend, opens the native settings, then the first server's settings.
     func openServerSettingsFromFrontend() {
         openNativeSettingsFromFrontend()
         tap(app.descendants(matching: .any)[.settingsServerRow].firstMatch, timeout: Timeout.screen, "server row")
     }
 
-    /// Registers as a new device from the server's settings: confirms, signs in again, and waits for the row to
-    /// be ready again.
     func registerAsNewDeviceFromSettings() {
         let row = app.buttons[.connectionSettingsRegisterAsNewDevice]
         scrollTo(row, "register as new device row")
@@ -172,13 +143,11 @@ final class E2EFlow {
         pause()
     }
 
-    /// A button of the confirmation dialog on screen, which iOS shows as a sheet, by part of its label.
     func confirmationButton(labelContaining text: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
         return app.sheets.firstMatch.buttons.matching(predicate).firstMatch
     }
 
-    /// Swipes up until `element` can be tapped, for rows further down a list than the screen shows.
     func scrollTo(_ element: XCUIElement, _ description: String) {
         for _ in 0 ..< 8 where !(element.exists && element.isHittable) {
             app.swipeUp()
@@ -209,13 +178,10 @@ final class E2EFlow {
         tap(app.buttons[.onboardingManualEntryConnect], timeout: Timeout.screen, "connect button")
     }
 
-    /// Logs in through `loginWebView`, or the first web view when none is given, as during onboarding.
     func logIn(in loginWebView: XCUIElement? = nil) {
         let webView = loginWebView ?? app.webViews.firstMatch
         wait(for: webView, timeout: Timeout.frontend, "login web view")
 
-        // Both fields are checked after typing: text aimed at a web view field lands wherever the
-        // keyboard happens to be focused, and a miss otherwise surfaces only as a rejected login.
         let username = webView.textFields.firstMatch
         wait(for: username, timeout: Timeout.frontend, "username field")
         type(Instance.username, into: username, "username field")
@@ -224,18 +190,15 @@ final class E2EFlow {
         let password = webView.secureTextFields.firstMatch
         wait(for: password, timeout: Timeout.frontend, "password field")
         type(Instance.password, into: password, "password field")
-        // Secure fields report one bullet per character rather than the text itself.
         XCTAssertEqual(
             (password.value as? String)?.count,
             Instance.password.count,
             "Password field did not receive the whole password"
         )
 
-        // Submitting from the field avoids matching the login button, whose label the frontend
-        // renders inside a shadow root.
+        // Return submits the form; its button renders inside a shadow root and cannot be tapped.
         password.typeText("\n")
 
-        // Shown only when Home Assistant asks to confirm the redirect back to the app.
         tapIfPresent(webElement(labelContaining: "authorize", in: webView), timeout: Timeout.optional)
     }
 
@@ -254,9 +217,8 @@ final class E2EFlow {
         tap(app.buttons[.onboardingLocationShare], timeout: Timeout.screen, "location permission screen")
         allowSystemAlert(timeout: Timeout.screen, "location permission alert")
 
-        // Granting "while using" makes the app ask for "always" on top of it, which iOS raises as a
-        // second alert over the next screen. The flow has already moved on by then so either answer
-        // will do, but it has to be cleared before anything below it can be tapped.
+        // Some iOS versions follow the location alert with a second one over the next screen; either
+        // answer will do, but it has to be cleared before anything below it can be tapped.
         answerSystemAlertIfPresent(timeout: Timeout.optional)
 
         // The secure level is what keeps the home network step in the flow: the less secure one
@@ -266,10 +228,8 @@ final class E2EFlow {
             timeout: Timeout.screen,
             "most secure local access option"
         )
-        // No alert follows: location is already granted, so this step has nothing left to ask.
         tap(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen, "local access next button")
 
-        // The home network step is the one the user can leave again to change the choice.
         tap(app.buttons[.onboardingHomeNetworkBack], timeout: Timeout.screen, "home network back button")
         tap(
             app.buttons[.onboardingLocalAccessSecureOption],
@@ -297,13 +257,8 @@ final class E2EFlow {
     }
 
     func openNativeSettingsFromFrontend() {
-        // Deliberately runs in the same session that just onboarded: that is the case app Settings used to
-        // crash in, when the stack it was pushed onto was nested inside onboarding's own `NavigationStack`
-        // and SwiftUI raised an unexpected error from `NavigationColumnState.boundPathChange`. Settings is
-        // a sheet with its own stack now, so nothing is nested and no relaunch is needed.
-
         // The toggle reports a successful tap even when the page swallows it, so the sidebar opening
-        // is the only thing worth believing.
+        // is what confirms it landed.
         tapWebElement(
             labelContaining: "sidebar toggle",
             until: webElement(labelContaining: "settings"),
@@ -312,8 +267,6 @@ final class E2EFlow {
         )
         tapWebElement(labelContaining: "settings", timeout: Timeout.frontend, "frontend sidebar settings entry")
 
-        // The app's own settings screen is opened by the frontend over the external message bus, so
-        // reaching it proves the bus is wired up in both directions.
         tapWebElement(labelContaining: "companion app", timeout: Timeout.frontend, "companion app row")
         wait(
             for: app.descendants(matching: .any)[.settingsList],
@@ -322,8 +275,6 @@ final class E2EFlow {
         )
     }
 
-    /// The web view with a login form on it. A sheet opens the login over the frontend, whose own
-    /// web view stays in the hierarchy ahead of it, so the first web view is not the one to type into.
     func webViewShowingLogin(timeout: TimeInterval) -> XCUIElement {
         let deadline = Date().addingTimeInterval(timeout)
         repeat {
@@ -351,7 +302,6 @@ final class E2EFlow {
     }
 
     /// Types into a field, waiting for it to actually take keyboard focus first.
-    ///
     /// A tap on a web view field does not focus it synchronously: the page has to handle the touch
     /// and move focus itself. Typing before that fails outright with "Neither element nor any
     /// descendant has keyboard focus", so the tap is repeated until the keyboard is up.
@@ -384,15 +334,8 @@ final class E2EFlow {
         return true
     }
 
-    /// An element of the frontend, matched on part of its accessibility label.
-    ///
-    /// The frontend's own copy is the only handle here, so matching stays loose: a sidebar entry
-    /// carries a badge when there are pending updates or repairs, and an exact label would miss it.
-    /// Taps a web element until whatever it opens is actually on screen.
-    ///
-    /// A tap aimed at the frontend is swallowed while the page is still settling, and the element
-    /// stays exactly where it was rather than reporting anything, so the tap has to be repeated
-    /// until its effect shows up.
+    /// Taps a frontend element, repeating until `target` appears: a tap is swallowed while the page is
+    /// still settling. Matched by substring because labels carry badges when there are pending updates.
     func tapWebElement(
         labelContaining text: String,
         until target: XCUIElement,
@@ -422,7 +365,6 @@ final class E2EFlow {
         return XCTWaiter().wait(for: [hittable], timeout: timeout) == .completed
     }
 
-    /// The element of `webView`, else of the first web view, whose label contains `text`.
     func webElement(labelContaining text: String, in webView: XCUIElement? = nil) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
         let webView = webView ?? app.webViews.firstMatch
@@ -439,8 +381,6 @@ final class E2EFlow {
         return webView.descendants(matching: .any).matching(predicate).firstMatch
     }
 
-    /// Taps an element of the frontend, scrolling it into reach first when the page is long enough
-    /// to render it below the fold.
     func tapWebElement(labelContaining text: String, timeout: TimeInterval, _ description: String) {
         let element = webElement(labelContaining: text)
         wait(for: element, timeout: timeout, description)
@@ -454,11 +394,8 @@ final class E2EFlow {
         element.tap()
     }
 
-    /// Taps a control until the screen carrying it goes away.
-    ///
-    /// `waitForExistence` returns on the first frame of a presentation, where the tap lands on the
-    /// backdrop behind the still-moving screen and is swallowed. The tap reports success either way,
-    /// so the only reliable signal is the screen actually leaving.
+    /// Taps until the element is gone: `waitForExistence` returns on the first frame of a presentation,
+    /// where the tap lands on the backdrop behind the still-moving screen and is swallowed.
     func dismiss(_ element: XCUIElement, _ description: String) {
         for _ in 0 ..< 3 {
             guard element.exists else { return }
@@ -486,8 +423,6 @@ final class E2EFlow {
         (lasting ?? button).tap()
     }
 
-    /// Answers an alert whichever way it offers, for prompts the flow does not depend on the answer
-    /// to and which only have to be off the screen.
     @discardableResult
     func answerSystemAlertIfPresent(timeout: TimeInterval) -> Bool {
         guard let button = systemAlertButton(matching: NSPredicate(value: true), timeout: timeout) else {
@@ -503,15 +438,13 @@ final class E2EFlow {
             return hosted
         }
 
-        // Not every iOS version presents these out of SpringBoard. An alert shown in-app has been
-        // up since the wait above began, so this only needs long enough to resolve, not to wait for
-        // it a second time.
+        // Not every iOS version presents these out of SpringBoard; an in-app alert has been up since
+        // the wait above began, so this only needs long enough to resolve.
         let inApp = app.alerts.firstMatch.buttons.matching(predicate).firstMatch
         return inApp.waitForExistence(timeout: Timeout.optional) ? inApp : nil
     }
 }
 
-/// Looks elements up by the identifiers the app compiles in, for every end-to-end test.
 extension XCUIElementQuery {
     subscript(identifier: AccessibilityIdentifier) -> XCUIElement {
         self[identifier.rawValue]

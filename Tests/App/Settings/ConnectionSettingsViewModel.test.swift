@@ -241,7 +241,6 @@ struct ConnectionSettingsViewModelTests {
         }
     }
 
-    /// Registering anew changes the app group's stored registration identifier, which the other tests share.
     private func withRegistrationIdentifierRestored(_ body: () async throws -> Void) async rethrows {
         let prefs = Current.settingsStore.prefs
         let previousVendorID = Current.device.identifierForVendor
@@ -302,7 +301,6 @@ struct ConnectionSettingsViewModelTests {
                     signIn: { _, _ in }
                 )
 
-                // Asking first registers nothing.
                 viewModel.confirmRegisteringAsNewDevice()
                 #expect(viewModel.isRegisterAsNewDeviceConfirmationPresented)
                 #expect(registered.isEmpty)

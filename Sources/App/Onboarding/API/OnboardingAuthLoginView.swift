@@ -14,9 +14,7 @@ struct OnboardingAuthLoginView: View {
 
     @ObservedObject var viewModel: OnboardingAuthLoginViewModel
     var style: Style = .pushed
-    /// Shown instead of the server's host, for a login that is one of several: which server this is.
     var title: String?
-    /// A line above the page, such as where this login stands in a run of them.
     var banner: String?
 
     var body: some View {
@@ -59,8 +57,6 @@ struct OnboardingAuthLoginView: View {
                 .ignoresSafeArea(.container, edges: .all)
         }
         .overlay {
-            // Shown while the login page loads, and after the OAuth callback while the rest of
-            // the auth flow (token exchange, registration) runs before the next screen replaces us.
             if viewModel.isLoading || viewModel.didCompleteLogin {
                 ZStack {
                     Color(uiColor: .systemBackground)

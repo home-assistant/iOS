@@ -2,8 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The hand-off between two servers while setting a restored device up as a new one: what became of the server
-/// just finished, and which server's login opens next, so the next page is never a surprise.
+/// Shown in the sign-in sheet between two servers, so the next login page is announced.
 struct RestoredRegistrationsNextServerView: View {
     let next: RestoredRegistrationsViewModel.NextServer
 

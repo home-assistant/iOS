@@ -34,7 +34,6 @@ public class SettingsStore {
         Self.integrationDeviceID(from: persistedIntegrationDeviceID ?? deviceID)
     }
 
-    /// An identifier no registration has used yet, in the form `integrationDeviceID` takes.
     public func newIntegrationDeviceID() -> String {
         Self.integrationDeviceID(from: UUID().uuidString)
     }
@@ -72,19 +71,14 @@ public class SettingsStore {
 
     static let integrationDeviceIDOwnerKey = "integrationDeviceIDOwner"
 
-    /// The vendor identifier of the device `integrationDeviceID` belongs to. An identifier taken from the vendor
-    /// identifier belongs to the device that gave it, otherwise the owner is recorded next to it. Both live in the
-    /// app group, which a backup carries onto another device, so there they still name the device it came from.
     public var integrationDeviceIDOwnerVendorID: String? {
         prefs.string(forKey: Self.integrationDeviceIDOwnerKey) ?? persistedIntegrationDeviceID
     }
 
-    /// Records that `integrationDeviceID` now belongs to the device with `vendorID`, wherever it came from.
     public func takeOverIntegrationDeviceID(for vendorID: String) {
         prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
     }
 
-    /// Replaces `integrationDeviceID` with one no registration has used yet, owned by the device with `vendorID`.
     /// Home Assistant replaces a `mobile_app` registration whose app and device identifiers match an existing one,
     /// so only a fresh identifier makes the next registration a new device rather than taking over an existing one.
     public func adoptNewIntegrationDeviceID(ownedBy vendorID: String) {
@@ -92,8 +86,6 @@ public class SettingsStore {
         prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
     }
 
-    /// `integrationDeviceID` and its owner: what a registration is made with when its server has no identity of its
-    /// own recorded.
     public var integrationDeviceIdentity: RegistrationIdentity {
         RegistrationIdentity(deviceID: integrationDeviceID, ownerVendorID: integrationDeviceIDOwnerVendorID)
     }
@@ -101,16 +93,12 @@ public class SettingsStore {
     static let registrationRecordsKey = "registrationRecords"
     private static let registrationRecordsLock = NSLock()
 
-    /// What is kept about the registration with `server`. Kept in the app group next to `integrationDeviceID`
-    /// rather than with the server in the Keychain, which outlives reinstalling the app: the reinstalled app's own
+    /// Kept in the app group rather than the Keychain, which outlives a reinstall: the reinstalled app's own
     /// registrations would otherwise look like another device's.
     public func registrationRecord(for server: Identifier<Server>) -> RegistrationRecord {
         registrationRecords[server.rawValue] ?? RegistrationRecord()
     }
 
-    /// The identity the registration with `server` was made with: as recorded, else the identifier kept with the
-    /// server, which outlives the record when the app is reinstalled, else `integrationDeviceID` for a registration
-    /// made before either was kept.
     public func currentRegistrationIdentity(for server: Server) -> RegistrationIdentity {
         if let current = registrationRecord(for: server.identifier).current {
             return current
@@ -121,9 +109,6 @@ public class SettingsStore {
         return RegistrationIdentity(deviceID: deviceID, ownerVendorID: integrationDeviceIDOwnerVendorID)
     }
 
-    /// The identity the next registration with `server` is made with: the one this device is registering it as a
-    /// new device with, else the one its registration has, so registering again keeps its device. An attempt another
-    /// device started, which a backup carries over, is that device's to finish.
     public func registrationIdentity(for server: Server) -> RegistrationIdentity {
         if let pending = registrationRecord(for: server.identifier).pending,
            pending.ownerVendorID == Current.device.identifierForVendor() {

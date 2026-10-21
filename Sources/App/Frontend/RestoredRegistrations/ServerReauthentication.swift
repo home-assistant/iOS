@@ -2,13 +2,10 @@ import Foundation
 import PromiseKit
 import Shared
 
-/// Signs in to a server the app already has, again: the login page comes back with a code, which is exchanged for a
-/// token that replaces the one kept with the server. The registration is left as it is.
 @MainActor
+/// Signs in to a server the app already has, again, replacing its token and leaving its registration as it is.
 struct ServerReauthentication {
-    /// Shows the login page while given one, and takes it down when given `nil`.
     typealias Presenter = (OnboardingAuthLoginViewModel?) -> Void
-    /// Signs in to a server again through the login page the presenter shows.
     typealias SignIn = (Server, @escaping Presenter) async throws -> Void
 
     let server: Server
@@ -32,16 +29,12 @@ struct ServerReauthentication {
         self.viewModel = OnboardingAuthLoginViewModel(authDetails: authDetails)
     }
 
-    /// The address to sign in through: the one in use when it can be signed in through, else the preferred one.
     static func loginURLType(for server: Server) -> ConnectionInfo.URLType? {
         let connection = server.info.connection
         let available = connection.availableAuthenticationURLTypes
         return available.contains(connection.activeURLType) ? connection.activeURLType : available.first
     }
 
-    /// Waits for the login page to come back with a code, then stores the token it is exchanged for with the server,
-    /// along with the address the login ended on when the server redirected it. Throws `PMKError.cancelled` when the
-    /// user cancels the login.
     func signIn() async throws {
         let result = try await viewModel.resultPromise.asyncValue()
         let correctedURL = result.resolvedURL?.sameHostRedirectBaseURL(from: baseURL)
@@ -61,7 +54,6 @@ struct ServerReauthentication {
         Current.Log.info("Re-authenticated with \(server.identifier)")
     }
 
-    /// Signs in to `server` again through the login page `present` shows, taking it down once done.
     static func signIn(to server: Server, presenting present: @escaping Presenter) async throws {
         guard let urlType = loginURLType(for: server) else {
             throw ServerConnectionError.noActiveURL(server.info.name)
