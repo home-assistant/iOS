@@ -14,6 +14,13 @@ final class OnboardingAuthPresenter: ObservableObject {
     /// A client-certificate (mTLS) import prompt shown as a sheet. iOS only — Mac Catalyst pushes
     /// the import step onto `path` instead.
     @Published var clientCertificateRequest: OnboardingClientCertificateRequest?
+    /// The question `OnboardingAuthStepServerIdentity` asks when the server being added reports an
+    /// instance ID the app already has at an address it does not. Shown as a sheet; Mac Catalyst
+    /// pushes it onto `path` instead.
+    @Published var serverIdentityRequest: OnboardingServerIdentityRequest?
+    /// The answer to that question, read by `OnboardingAuth` when it persists the server. `nil`
+    /// while it has not been asked.
+    var serverIdentityDecision: OnboardingServerIdentityRequest.Decision?
     /// iOS only. While true, the client-certificate sheet is held back. Screens that present their
     /// own sheet (manual URL entry) set this so the prompt is only shown after their sheet fully
     /// dismissed — presenting both at once can leave the prompt stranded behind the other sheet.
@@ -79,6 +86,32 @@ final class OnboardingAuthPresenter: ObservableObject {
                 }
             } else {
                 self.clientCertificateRequest = nil
+            }
+        }
+    }
+
+    /// Mac Catalyst pushes the question as a page for the same reason as the certificate import.
+    func present(serverIdentityRequest request: OnboardingServerIdentityRequest) {
+        onMain {
+            if Current.isCatalyst {
+                self.path.append(.serverIdentity(request))
+            } else {
+                self.serverIdentityRequest = request
+            }
+        }
+    }
+
+    func dismissServerIdentityRequest() {
+        onMain {
+            if Current.isCatalyst {
+                self.withoutAnimation {
+                    self.path.removeAll { destination in
+                        if case .serverIdentity = destination { return true }
+                        return false
+                    }
+                }
+            } else {
+                self.serverIdentityRequest = nil
             }
         }
     }

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import HAKit
 @testable import HomeAssistant
@@ -9,6 +10,8 @@ class OnboardingAuthTests: XCTestCase {
     private var auth: OnboardingAuth!
     private var instance: DiscoveredHomeAssistant!
     private var previousCurrentNetworkState: (() async -> NetworkState)!
+    private var presenter: OnboardingAuthPresenter!
+    private var cancellables = Set<AnyCancellable>()
 
     override func setUp() {
         super.setUp()
@@ -17,6 +20,8 @@ class OnboardingAuthTests: XCTestCase {
         previousCurrentNetworkState = Current.connectivity.currentNetworkState
 
         Current.servers = FakeServerManager()
+        presenter = OnboardingAuthPresenter()
+        cancellables.removeAll()
 
         var instance = DiscoveredHomeAssistant(manualURL: URL(string: "https://external.homeassistant:8123")!)
         instance.internalURL = URL(string: "https://internal.homeassistant:8123")!
@@ -26,6 +31,8 @@ class OnboardingAuthTests: XCTestCase {
     override func tearDown() {
         Current.connectivity.currentNetworkState = previousCurrentNetworkState
         FakeOnboardingAuthPostStepBeforeRegister1.onPerform = nil
+        FakeOnboardingAuthPostStepAfterRegister1.onPerform = nil
+        cancellables.removeAll()
 
         super.tearDown()
     }
@@ -116,47 +123,191 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertTrue(Current.servers.all.isEmpty)
     }
 
-    func testServerIdentifierUsesReportedInstanceID() {
+    func testServerIdentityUsesReportedInstanceID() {
         let info = with(ServerInfo.fake()) { $0.instanceID = "instance-1" }
 
-        let identifier = OnboardingAuth.serverIdentifier(
+        let identity = OnboardingAuth.serverIdentity(
             for: info,
             fallback: "fallback-identifier",
             existingServers: []
         )
 
-        XCTAssertEqual(identifier, "instance-1")
+        XCTAssertEqual(identity, .new("instance-1"))
     }
 
-    func testServerIdentifierFallsBackWhenNoInstanceIDIsReported() {
+    func testServerIdentityFallsBackWhenNoInstanceIDIsReported() {
         let unreported = ServerInfo.fake()
         let empty = with(ServerInfo.fake()) { $0.instanceID = "" }
 
         XCTAssertEqual(
-            OnboardingAuth.serverIdentifier(for: unreported, fallback: "fallback-identifier", existingServers: []),
-            "fallback-identifier"
+            OnboardingAuth.serverIdentity(for: unreported, fallback: "fallback-identifier", existingServers: []),
+            .new("fallback-identifier")
         )
         XCTAssertEqual(
-            OnboardingAuth.serverIdentifier(for: empty, fallback: "fallback-identifier", existingServers: []),
-            "fallback-identifier"
+            OnboardingAuth.serverIdentity(for: empty, fallback: "fallback-identifier", existingServers: []),
+            .new("fallback-identifier")
         )
     }
 
     /// Re-onboarding a server the app already has must not rename it: widgets, shortcuts and Siri
     /// configurations hold the existing identifier in stores this app cannot rewrite.
-    func testServerIdentifierKeepsTheIdentifierOfAServerWithTheSameInstanceID() {
+    func testServerIdentityKeepsTheIdentifierOfTheSameInstanceAtTheSameAddress() {
         let existing = Server.fake(identifier: "server-from-an-older-install") {
             $0.instanceID = "instance-1"
         }
         let info = with(ServerInfo.fake()) { $0.instanceID = "instance-1" }
 
-        let identifier = OnboardingAuth.serverIdentifier(
+        let identity = OnboardingAuth.serverIdentity(
             for: info,
             fallback: "fallback-identifier",
             existingServers: [existing]
         )
 
-        XCTAssertEqual(identifier, "server-from-an-older-install")
+        XCTAssertEqual(identity, .existing("server-from-an-older-install"))
+    }
+
+    /// The scheme does not tell two servers apart: reaching the same socket over `https` where the
+    /// stored server has `http` is still that server.
+    func testServerIdentityMatchesTheSameHostAndPortOnAnotherScheme() {
+        let existing = Server.fake(identifier: "existing", initial: info(
+            instanceID: "instance-1",
+            internalURL: URL(string: "http://homeassistant.local:8123")
+        ))
+        let onboarded = info(instanceID: "instance-1", internalURL: URL(string: "https://homeassistant.local:8123"))
+
+        XCTAssertEqual(
+            OnboardingAuth.serverIdentity(for: onboarded, fallback: "fallback", existingServers: [existing]),
+            .existing("existing")
+        )
+    }
+
+    /// A server set up from another one's backup reports that one's ID from somewhere else entirely,
+    /// so the ID alone is not enough to call them the same.
+    func testServerIdentityIsAmbiguousForTheSameInstanceIDAtAnotherAddress() {
+        let existing = Server.fake(identifier: "fbd295e9", initial: info(
+            instanceID: "fbd295e9",
+            internalURL: URL(string: "http://homeassistant.local:8123")
+        ))
+        let onboarded = info(instanceID: "fbd295e9", externalURL: URL(string: "http://chalet.duckdns.org:8123"))
+
+        XCTAssertEqual(
+            OnboardingAuth.serverIdentity(for: onboarded, fallback: "autogenerated-1", existingServers: [existing]),
+            .ambiguous(existing: existing, separateIdentifier: "autogenerated-1")
+        )
+    }
+
+    /// Kept apart, the new server must never land on an identifier another server already uses.
+    func testServerIdentityMintsASeparateIdentifierWhenTheFallbackIsTaken() throws {
+        let existing = Server.fake(identifier: "taken", initial: info(
+            instanceID: "instance-1",
+            internalURL: URL(string: "http://homeassistant.local:8123")
+        ))
+        let onboarded = info(instanceID: "instance-1", internalURL: URL(string: "http://elsewhere.local:8123"))
+
+        let identity = OnboardingAuth.serverIdentity(for: onboarded, fallback: "taken", existingServers: [existing])
+
+        guard case let .ambiguous(match, separateIdentifier) = identity else {
+            return XCTFail("expected an ambiguous identity, got \(identity)")
+        }
+        XCTAssertEqual(match, existing)
+        XCTAssertNotEqual(separateIdentifier, "taken")
+        XCTAssertNotEqual(separateIdentifier, "instance-1")
+    }
+
+    /// A server the app knows by address that now reports an ID nobody has regenerated its ID, and
+    /// is updated in place rather than added a second time.
+    func testServerIdentityAdoptsANewInstanceIDAtAKnownAddress() {
+        let existing = Server.fake(identifier: "existing", initial: info(
+            instanceID: "old-instance",
+            internalURL: URL(string: "http://homeassistant.local:8123")
+        ))
+        let onboarded = info(instanceID: "new-instance", internalURL: URL(string: "http://homeassistant.local:8123"))
+
+        XCTAssertEqual(
+            OnboardingAuth.serverIdentity(for: onboarded, fallback: "fallback", existingServers: [existing]),
+            .existing("existing")
+        )
+    }
+
+    /// An instance ID that happens to be the identifier of an unrelated server is not reused.
+    func testServerIdentityAvoidsAnInstanceIDAnotherServerIsStoredUnder() {
+        let unrelated = Server.fake(identifier: "instance-1", initial: info(
+            instanceID: "other-instance",
+            internalURL: URL(string: "http://other.local:8123")
+        ))
+        let onboarded = info(instanceID: "instance-1", internalURL: URL(string: "http://homeassistant.local:8123"))
+
+        XCTAssertEqual(
+            OnboardingAuth.serverIdentity(for: onboarded, fallback: "fallback", existingServers: [unrelated]),
+            .new("fallback")
+        )
+    }
+
+    func testSameInstanceIDAtAnotherAddressAsksAndAddsASeparateServer() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let existing = addExistingServer(instanceID: "fbd295e9")
+        let prompt = answerServerIdentity { $0.addAsSeparateServer() }
+        reportInstanceID("fbd295e9")
+
+        let server = try hang(authWithServerIdentityStep())
+        wait(for: [prompt], timeout: 10.0)
+
+        XCTAssertEqual(Current.servers.all.count, 2)
+        XCTAssertNotEqual(server.identifier, existing.identifier)
+        XCTAssertEqual(server.identifier.rawValue, instance.uuid)
+        XCTAssertEqual(server.info.instanceID, "fbd295e9")
+        XCTAssertEqual(Current.servers.server(for: existing.identifier)?.info, existing.info)
+    }
+
+    func testSameInstanceIDAtAnotherAddressAsksAndReplacesTheExistingServer() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let existing = addExistingServer(instanceID: "fbd295e9")
+        let prompt = answerServerIdentity { $0.replaceExistingServer() }
+        reportInstanceID("fbd295e9")
+
+        let server = try hang(authWithServerIdentityStep())
+        wait(for: [prompt], timeout: 10.0)
+
+        XCTAssertEqual(Current.servers.all.count, 1)
+        XCTAssertEqual(server.identifier, existing.identifier)
+        XCTAssertEqual(server.info.connection.address(for: .internal), instance.internalURL)
+    }
+
+    func testSameInstanceIDAtAnotherAddressCancelledKeepsTheExistingServerUntouched() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let existing = addExistingServer(instanceID: "fbd295e9")
+        let existingInfo = existing.info
+        let prompt = answerServerIdentity { $0.cancel() }
+        reportInstanceID("fbd295e9")
+
+        XCTAssertThrowsError(try hang(authWithServerIdentityStep())) { error in
+            guard case PMKError.cancelled = error else {
+                return XCTFail("expected a cancellation, got \(error)")
+            }
+        }
+        wait(for: [prompt], timeout: 10.0)
+
+        XCTAssertEqual(Current.servers.all.map(\.identifier), [existing.identifier])
+        XCTAssertEqual(Current.servers.server(for: existing.identifier)?.info, existingInfo)
+    }
+
+    func testSameInstanceIDAtTheSameHostOnAnotherSchemeUpdatesInPlaceWithoutAsking() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let existing = addExistingServer(
+            instanceID: "instance-1",
+            internalURL: URL(string: "http://internal.homeassistant:8123")
+        )
+        presenter.$serverIdentityRequest
+            .compactMap { $0 }
+            .sink { _ in XCTFail("the same server must not be asked about") }
+            .store(in: &cancellables)
+        reportInstanceID("instance-1")
+
+        let server = try hang(authWithServerIdentityStep())
+
+        XCTAssertEqual(Current.servers.all.count, 1)
+        XCTAssertEqual(server.identifier, existing.identifier)
+        XCTAssertEqual(server.info.connection.address(for: .internal), instance.internalURL)
     }
 
     func testFailureAfterOverwritingAnExistingServerRestoresIt() throws {
@@ -561,6 +712,52 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertNoThrow(try hang(result))
     }
 
+    private func info(instanceID: String?, internalURL: URL? = nil, externalURL: URL? = nil) -> ServerInfo {
+        with(ServerInfo.fake()) {
+            $0.instanceID = instanceID
+            $0.connection.set(address: internalURL, for: .internal)
+            $0.connection.set(address: externalURL, for: .external)
+        }
+    }
+
+    @discardableResult
+    private func addExistingServer(
+        instanceID: String,
+        internalURL: URL? = URL(string: "http://homeassistant.local:8123")
+    ) -> Server {
+        Current.servers.add(
+            identifier: "existing-server",
+            serverInfo: info(instanceID: instanceID, internalURL: internalURL)
+        )
+    }
+
+    /// Stands in for `get_config`, which is what fills in the instance ID during `.afterRegister`.
+    private func reportInstanceID(_ instanceID: String) {
+        FakeOnboardingAuthPostStepAfterRegister1.onPerform = { api in
+            api.server.info.instanceID = instanceID
+        }
+    }
+
+    private func answerServerIdentity(_ answer: @escaping (OnboardingServerIdentityRequest) -> Void)
+        -> XCTestExpectation {
+        let expectation = expectation(description: "server identity prompt")
+        presenter.$serverIdentityRequest
+            .compactMap { $0 }
+            .first()
+            .sink { request in
+                DispatchQueue.main.async {
+                    answer(request)
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        return expectation
+    }
+
+    private func authWithServerIdentityStep() -> Promise<Server> {
+        auth(extraPostSteps: [OnboardingAuthStepServerIdentity.self])
+    }
+
     private func auth(
         includeInternal: Bool = true,
         includeExternal: Bool = true,
@@ -575,7 +772,8 @@ class OnboardingAuthTests: XCTestCase {
         postBeforeRegister: [Promise<Void>] = [.value(()), .value(()), .value(())],
         postRegister: [Promise<Void>] = [.value(()), .value(()), .value(())],
         postAfterRegister: [Promise<Void>] = [.value(()), .value(()), .value(())],
-        postComplete: [Promise<Void>] = [.value(()), .value(()), .value(())]
+        postComplete: [Promise<Void>] = [.value(()), .value(()), .value(())],
+        extraPostSteps: [OnboardingAuthPostStep.Type] = []
     ) -> Promise<Server> {
         var preSteps: [OnboardingAuthPreStep.Type] = []
         var postSteps: [OnboardingAuthPostStep.Type] = []
@@ -627,7 +825,7 @@ class OnboardingAuthTests: XCTestCase {
         ], given: postComplete)
 
         auth.preSteps = preSteps
-        auth.postSteps = postSteps
+        auth.postSteps = postSteps + extraPostSteps
 
         var expectedDetails: [OnboardingAuthDetails] = []
         var loginResults: [Promise<OnboardingAuthLoginResult>] = []
@@ -651,7 +849,7 @@ class OnboardingAuthTests: XCTestCase {
             expectedCode: internalLoginResult.value?.code ?? externalLoginResult.value?.code
         )
 
-        return auth.authenticate(to: instance, presenter: OnboardingAuthPresenter())
+        return auth.authenticate(to: instance, presenter: presenter)
     }
 }
 
@@ -872,8 +1070,10 @@ class FakeOnboardingAuthPostStepAfterRegister1: FakeOnboardingAuthPostStepAfterR
 
     static var wasInvokedPromise: Guarantee<Void>?
     static var wasInvokedResolver: ((()) -> Void)?
+    static var onPerform: ((HomeAssistantAPI) -> Void)?
     override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         Self.wasInvoked = true
+        Self.onPerform?(api)
         return Self.result
     }
 }

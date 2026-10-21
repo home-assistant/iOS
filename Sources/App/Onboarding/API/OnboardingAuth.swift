@@ -14,6 +14,7 @@ class OnboardingAuth {
     var postSteps: [OnboardingAuthPostStep.Type] = [
         OnboardingAuthStepDeviceNaming.self,
         OnboardingAuthStepConfig.self,
+        OnboardingAuthStepServerIdentity.self,
         OnboardingAuthStepSensors.self,
         OnboardingAuthStepModels.self,
         OnboardingAuthStepRegister.self,
@@ -57,11 +58,22 @@ class OnboardingAuth {
             }.map { () -> Server in
                 // `get_config` ran in `.afterRegister`, so by now the server reports its own
                 // instance ID and the identifier can be the one every onboarding route agrees on.
-                let identifier = Self.serverIdentifier(
+                let identity = Self.serverIdentity(
                     for: api.server.info,
                     fallback: api.server.identifier,
                     existingServers: Current.servers.all
                 )
+                let identifier: Identifier<Server>
+                switch identity {
+                case let .existing(existing), let .new(existing):
+                    identifier = existing
+                case let .ambiguous(existing, separateIdentifier):
+                    // `OnboardingAuthStepServerIdentity` asked and left the answer on the presenter.
+                    // Without one the new server is kept apart, which never costs the user a server.
+                    identifier = presenter.serverIdentityDecision == .replace
+                        ? existing.identifier
+                        : separateIdentifier
+                }
                 let existingInfo = Current.servers.server(for: identifier)?.info
                 persisted = (identifier, existingInfo)
 
@@ -265,25 +277,61 @@ class OnboardingAuth {
         }
     }
 
-    /// The identifier an onboarded server is stored under: the identifier of a server already
-    /// reporting this instance ID, else the instance ID itself, else the fallback onboarding
-    /// started with. Keeping an existing server's identifier matters because widgets, shortcuts
-    /// and Siri configurations hold that string in stores this app cannot rewrite, so re-onboarding
-    /// a server the app already has updates it in place rather than renaming it.
-    static func serverIdentifier(
+    /// Where an onboarded server belongs among the servers the app already has, and so which
+    /// identifier it is stored under. Keeping an existing server's identifier matters because
+    /// widgets, shortcuts and Siri configurations hold that string in stores this app cannot
+    /// rewrite, so re-onboarding a server the app already has updates it in place rather than
+    /// renaming it.
+    ///
+    /// The instance ID is evidence of that rather than proof: a server set up from another one's
+    /// backup reports the other's ID. So the ID has to agree with the addresses. An existing server
+    /// with the same ID that also answers at one of the same `host:port`s is the same server; one
+    /// that answers somewhere else entirely is `ambiguous`, and the user says which it is. A server
+    /// at a known address reporting an ID nobody has is one that regenerated its ID, and is updated
+    /// in place. Anything else is new, stored under its instance ID when no existing server already
+    /// uses that string as its identifier, else under the fallback onboarding started with.
+    static func serverIdentity(
         for serverInfo: ServerInfo,
         fallback: Identifier<Server>,
         existingServers: [Server]
-    ) -> Identifier<Server> {
+    ) -> OnboardingServerIdentity {
+        let addresses = serverInfo.connection.hostAndPortIdentities
+        func sharesAnAddress(_ server: Server) -> Bool {
+            !server.info.connection.hostAndPortIdentities.isDisjoint(with: addresses)
+        }
+
         guard let instanceID = serverInfo.instanceID, !instanceID.isEmpty else {
-            return fallback
+            return .new(fallback)
         }
 
-        if let existing = existingServers.first(where: { $0.info.instanceID == instanceID }) {
-            return existing.identifier
+        let sameInstanceID = existingServers.filter { $0.info.instanceID == instanceID }
+        if let sameServer = sameInstanceID.first(where: sharesAnAddress) {
+            return .existing(sameServer.identifier)
+        }
+        if let clone = sameInstanceID.first {
+            return .ambiguous(
+                existing: clone,
+                separateIdentifier: unusedIdentifier(preferring: [fallback], among: existingServers)
+            )
         }
 
-        return Identifier<Server>(rawValue: instanceID)
+        if let sameAddress = existingServers.first(where: sharesAnAddress) {
+            return .existing(sameAddress.identifier)
+        }
+
+        return .new(unusedIdentifier(
+            preferring: [Identifier<Server>(rawValue: instanceID), fallback],
+            among: existingServers
+        ))
+    }
+
+    /// The first of `candidates` no existing server is stored under, else a freshly minted one.
+    private static func unusedIdentifier(
+        preferring candidates: [Identifier<Server>],
+        among existingServers: [Server]
+    ) -> Identifier<Server> {
+        let taken = Set(existingServers.map(\.identifier))
+        return candidates.first { !taken.contains($0) } ?? Identifier<Server>(rawValue: UUID().uuidString)
     }
 
     private func undoConfigure(
