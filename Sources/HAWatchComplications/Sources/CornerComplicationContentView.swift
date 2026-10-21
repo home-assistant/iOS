@@ -33,10 +33,30 @@ public struct CornerComplicationContentView: View {
     private let arcLineWidth: CGFloat = 6
     private let arcTrackOpacity: CGFloat = 0.28
     private let nameTextOpacity: CGFloat = 0.7
+    /// Share of the arc the bezel text takes ahead of the progress bar, and the gap before the bar.
+    private let bezelTextShare: Double = 0.45
+    private let bezelTextGapShare: Double = 0.06
 
     private var showsIcon: Bool { model.iconImage != nil }
     private var showsName: Bool { model.showsName && !model.title.isEmpty }
     private var showsValue: Bool { model.showsValue && !model.valueText.isEmpty }
+
+    /// The watch lays a `ProgressView` bezel label out on the bar's own line, ahead of it, leaving the
+    /// corner a single element — so progress mode mirrors that instead of stacking the text.
+    private var usesBezelLine: Bool { model.gaugeDisplay == .progress && model.fraction != nil }
+    private var stackShowsName: Bool { usesBezelLine ? !showsIcon && !showsValue && showsName : showsName }
+    private var stackShowsValue: Bool { usesBezelLine ? !showsIcon && showsValue : showsValue }
+
+    /// Same pick as the watch's arc text: whatever the corner isn't already showing.
+    private var bezelText: String? {
+        guard usesBezelLine else { return nil }
+        if showsIcon {
+            if showsValue { return model.valueText }
+            return showsName ? model.title : nil
+        }
+        guard showsValue, showsName, model.title != model.valueText else { return nil }
+        return model.title
+    }
 
     /// The value's line: the flat (legacy outer-text) variant is set larger than the curved one.
     private var valueHeight: CGFloat { model.curvesText ? curvedValueHeight : flatValueHeight }
@@ -50,16 +70,17 @@ public struct CornerComplicationContentView: View {
     private var stackContentHeight: CGFloat {
         var heights: [CGFloat] = []
         if showsIcon { heights.append(iconSize) }
-        if showsName { heights.append(nameHeight) }
-        if showsValue { heights.append(valueHeight) }
+        if stackShowsName { heights.append(nameHeight) }
+        if stackShowsValue { heights.append(valueHeight) }
         guard !heights.isEmpty else { return 0 }
         return heights.reduce(0, +) + CGFloat(heights.count - 1) * stackSpacing
     }
 
     /// The gauge is the innermost element, riding just below whatever the stack shows.
     private var gaugeRadius: CGFloat { arcCenter.y - (stackTop + stackContentHeight + gaugeInset) }
-    /// Half the sweep (degrees), sized for a roughly constant ~55pt arc whatever the radius.
-    private var halfSpan: Double { min(32, 27.5 / gaugeRadius * 180 / .pi) }
+    /// Half the sweep (degrees), sized for a roughly constant ~55pt arc whatever the radius — longer when
+    /// the bezel text shares it, since the watch hands that line the whole bezel.
+    private var halfSpan: Double { min(32, (bezelText == nil ? 27.5 : 40) / gaugeRadius * 180 / .pi) }
     private var startAngle: Double { -90 - halfSpan }
     private var endAngle: Double { -90 + halfSpan }
     private var currentAngle: Double {
@@ -67,8 +88,19 @@ public struct CornerComplicationContentView: View {
         return startAngle + (endAngle - startAngle) * fraction
     }
 
-    private var gaugeMarkerPoint: CGPoint {
-        let radians = currentAngle * .pi / 180
+    /// Where the progress bar begins: after the bezel text when it shares the line.
+    private var barStartAngle: Double {
+        guard bezelText != nil else { return startAngle }
+        return startAngle + (endAngle - startAngle) * (bezelTextShare + bezelTextGapShare)
+    }
+
+    private var bezelTextEndAngle: Double { startAngle + (endAngle - startAngle) * bezelTextShare }
+    private var bezelTextWidth: CGFloat { gaugeRadius * CGFloat((bezelTextEndAngle - startAngle) * .pi / 180) }
+
+    private var gaugeMarkerPoint: CGPoint { arcPoint(at: currentAngle) }
+
+    private func arcPoint(at angle: Double) -> CGPoint {
+        let radians = angle * .pi / 180
         return CGPoint(
             x: arcCenter.x + CGFloat(cos(radians)) * gaugeRadius,
             y: arcCenter.y + CGFloat(sin(radians)) * gaugeRadius
@@ -83,7 +115,7 @@ public struct CornerComplicationContentView: View {
                     path.addArc(
                         center: arcCenter,
                         radius: gaugeRadius,
-                        startAngle: .degrees(startAngle),
+                        startAngle: .degrees(model.gaugeDisplay == .progress ? barStartAngle : startAngle),
                         endAngle: .degrees(endAngle),
                         clockwise: false
                     )
@@ -99,12 +131,27 @@ public struct CornerComplicationContentView: View {
                         path.addArc(
                             center: arcCenter,
                             radius: gaugeRadius,
-                            startAngle: .degrees(startAngle),
-                            endAngle: .degrees(startAngle + (endAngle - startAngle) * fraction),
+                            startAngle: .degrees(barStartAngle),
+                            endAngle: .degrees(barStartAngle + (endAngle - barStartAngle) * fraction),
                             clockwise: false
                         )
                     }
                     .stroke(model.tint, style: StrokeStyle(lineWidth: arcLineWidth, lineCap: .round))
+
+                    if let bezelText {
+                        let midAngle = (startAngle + bezelTextEndAngle) / 2
+                        // Truncated rather than scaled, the way the watch cuts the label to fit ahead
+                        // of the bar.
+                        Text(bezelText)
+                            .font(.system(size: 9, weight: .semibold))
+                            .textCase(.uppercase)
+                            .foregroundStyle(textColor)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .frame(width: bezelTextWidth)
+                            .rotationEffect(.degrees(midAngle + 90))
+                            .position(arcPoint(at: midAngle))
+                    }
                 case .gauge:
                     Circle()
                         .fill(model.tint)
@@ -134,7 +181,7 @@ public struct CornerComplicationContentView: View {
                         // widget's un-curved icon.
                         .rotationEffect(.degrees(-45))
                 }
-                if showsName {
+                if stackShowsName {
                     Text(model.title)
                         .font(.system(size: 9, weight: .medium))
                         .foregroundStyle(textColor.opacity(nameTextOpacity))
@@ -143,7 +190,7 @@ public struct CornerComplicationContentView: View {
                         // Bound the width so long text scales down instead of clipping off the edge.
                         .frame(maxWidth: maxTextWidth)
                 }
-                if showsValue {
+                if stackShowsValue {
                     Text(model.valueText)
                         .font(valueFont)
                         .foregroundStyle(textColor)

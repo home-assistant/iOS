@@ -279,7 +279,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     func showSettingsViewController() {
         // Through the web view the message came from, so Settings opens in that window and no other.
-        webViewController?.showSettingsViewController(pushOntoNavigationStack: true)
+        webViewController?.showSettingsViewController()
     }
 
     @MainActor

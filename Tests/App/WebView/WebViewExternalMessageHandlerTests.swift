@@ -39,7 +39,6 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         sut.handleExternalMessage(dictionary)
 
         XCTAssertTrue(mockWebViewController.showSettingsCalled)
-        XCTAssertTrue(mockWebViewController.showSettingsPushedOntoNavigationStack)
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {

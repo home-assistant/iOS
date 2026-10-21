@@ -9,6 +9,8 @@ class SensorContainerTests: XCTestCase {
     private var container: SensorContainer!
     private var server1: Server!
     private var server2: Server!
+    /// The flushes the container asked to run later, instead of a real timer the test would wait for.
+    private var scheduledFlushes: [(delay: TimeInterval, block: () -> Void)] = []
 
     private enum TestError: Error {
         case anyError
@@ -25,6 +27,10 @@ class SensorContainerTests: XCTestCase {
         SensorEnablementStore.resetForTesting()
         observer = MockSensorObserver()
         container = SensorContainer()
+        scheduledFlushes = []
+        container.scheduleCoalescedSignal = { [weak self] delay, block in
+            self?.scheduledFlushes.append((delay, block))
+        }
     }
 
     override func tearDown() {
@@ -238,30 +244,94 @@ class SensorContainerTests: XCTestCase {
     }
 
     func testDependenciesInformsUpdate() throws {
-        container.register(provider: MockSensorProvider.self)
-        container.register(observer: observer)
-
-        MockSensorProvider.returnedPromises = [
-            .value([]),
-        ]
-
-        let promise = container.sensors(reason: .trigger("unit-test"), server: server1)
-        _ = try hang(Promise(promise))
-
-        guard let lastCreated = MockSensorProvider.lastCreated else {
-            XCTFail("expected a provider to have been created")
-            return
-        }
-
+        let signaler = try liveSignaler()
         XCTAssertEqual(observer.updateSignalCount, 0)
 
-        let info: MockUpdateSignaler = lastCreated
-            .request
-            .dependencies
-            .updateSignaler(for: lastCreated)
-        info.signal()
+        signaler.signal()
+
+        // The signal opens a window and observers hear about it once the window closes.
+        XCTAssertEqual(observer.updateSignalCount, 0)
+        XCTAssertEqual(scheduledFlushes.map(\.delay), [SensorContainer.signalCoalescingInterval])
+
+        fireScheduledFlushes()
 
         XCTAssertEqual(observer.updateSignalCount, 1)
+    }
+
+    /// A Mac app switch fires the frontmost-app signaler twice within a millisecond, and each signal
+    /// that reaches the observers is a full provider read plus a webhook per server.
+    func testSignalsWithinTheWindowBecomeOneNotification() throws {
+        let signaler = try liveSignaler()
+
+        signaler.signal()
+        signaler.signal()
+        signaler.signal()
+
+        XCTAssertEqual(scheduledFlushes.count, 1)
+        fireScheduledFlushes()
+
+        XCTAssertEqual(observer.updateSignalCount, 1)
+    }
+
+    func testSignalAfterWindowClosesOpensNewWindow() throws {
+        let signaler = try liveSignaler()
+
+        signaler.signal()
+        fireScheduledFlushes()
+        XCTAssertEqual(observer.updateSignalCount, 1)
+
+        signaler.signal()
+        XCTAssertEqual(scheduledFlushes.count, 2)
+        XCTAssertEqual(observer.updateSignalCount, 1)
+
+        fireScheduledFlushes()
+        XCTAssertEqual(observer.updateSignalCount, 2)
+    }
+
+    /// Enabling or disabling a sensor is a user action, and the registration it needs must not sit
+    /// behind the window meant for clumps of device events.
+    func testSettingsChangesAreNotHeldBackByTheWindow() {
+        container.register(observer: observer)
+        let uniqueID = WebhookSensorId.storage.rawValue
+        let wasEnabled = container.isEnabledForAnyServer(uniqueID: uniqueID)
+
+        container.setEnabledForAllServers(!wasEnabled, forUniqueID: uniqueID)
+
+        XCTAssertEqual(observer.updateSignalCount, 1)
+        XCTAssertTrue(scheduledFlushes.isEmpty)
+    }
+
+    /// The real scheduler delivers on the main queue, where the signalers used to call observers
+    /// from, and holds a background task across the wait so a short background wake on iOS doesn't
+    /// suspend the app before the signal goes out.
+    func testTheDefaultSchedulerRunsOnMainHoldingABackgroundTask() {
+        let runner = RecordingBackgroundTaskRunner()
+        let previousRunner = Current.backgroundTask
+        Current.backgroundTask = runner
+        addTeardownBlock { Current.backgroundTask = previousRunner }
+
+        let ran = expectation(description: "scheduled block ran")
+        SensorContainer().scheduleCoalescedSignal(0.05) {
+            XCTAssertTrue(Thread.isMainThread)
+            ran.fulfill()
+        }
+        wait(for: [ran], timeout: 5)
+
+        XCTAssertEqual(runner.names, [BackgroundTask.coalescedSensorSignal.rawValue])
+    }
+
+    /// `Current.sensors` lives as long as the process, so this mostly covers the test suite, where
+    /// every case builds its own container and a flush left over from the previous one must not
+    /// reach it.
+    func testFlushAfterContainerIsGoneDoesNothing() throws {
+        let signaler = try liveSignaler()
+        signaler.signal()
+        let flush = try XCTUnwrap(scheduledFlushes.first).block
+
+        container = nil
+        flush()
+
+        XCTAssertEqual(observer.updateSignalCount, 0)
     }
 
     func testCachingSensorValues() throws {
@@ -547,6 +617,44 @@ class SensorContainerTests: XCTestCase {
         )
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.sensors.map(\.UniqueID)), Set(["included"]))
+    }
+
+    /// The live signaler of a provider the container has read once, wired to the observer.
+    private func liveSignaler() throws -> MockUpdateSignaler {
+        container.register(provider: MockSensorProvider.self)
+        container.register(observer: observer)
+        MockSensorProvider.returnedPromises = [.value([])]
+
+        _ = try hang(Promise(container.sensors(reason: .trigger("unit-test"), server: server1)))
+
+        let provider = try XCTUnwrap(MockSensorProvider.lastCreated)
+        return provider.request.dependencies.updateSignaler(for: provider)
+    }
+
+    private var firedFlushCount = 0
+
+    /// Runs every scheduled block that hasn't run yet, keeping the history so a test can count what
+    /// was scheduled over its whole life.
+    private func fireScheduledFlushes() {
+        let pending = scheduledFlushes[firedFlushCount...]
+        firedFlushCount = scheduledFlushes.count
+        for scheduled in pending {
+            scheduled.block()
+        }
+    }
+
+    /// Records what was asked of it instead of touching `ProcessInfo`.
+    private final class RecordingBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        var names = [String]()
+
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            requiringAssertion: Bool,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            names.append(name)
+            return wrapping(nil)
+        }
     }
 }
 

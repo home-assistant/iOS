@@ -41,7 +41,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func refresh()
     func refreshIfDisconnected()
     func load(request: URLRequest)
-    func showSettingsViewController(pushOntoNavigationStack: Bool)
+    func showSettingsViewController()
     func openDebug()
     func goBack()
     func goForward()
@@ -65,9 +65,5 @@ protocol WebViewControllerProtocol: AnyObject {
 extension WebViewControllerProtocol {
     func styleUI(publishesThemedStatusBar: Bool) {
         styleUI()
-    }
-
-    func showSettingsViewController() {
-        showSettingsViewController(pushOntoNavigationStack: false)
     }
 }
