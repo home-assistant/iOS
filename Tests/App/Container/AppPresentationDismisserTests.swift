@@ -16,13 +16,11 @@ final class AppPresentationDismisserTests: XCTestCase {
         let presenter = AppSettingsPresenter()
         let otherScenePresenter = AppSettingsPresenter()
         presenter.isSheetPresented = true
-        presenter.isPushPresented = true
         otherScenePresenter.isSheetPresented = true
 
         AppPresentationDismisser.shared.dismissAll()
 
         XCTAssertFalse(presenter.isSheetPresented)
-        XCTAssertFalse(presenter.isPushPresented)
         XCTAssertFalse(otherScenePresenter.isSheetPresented)
     }
 

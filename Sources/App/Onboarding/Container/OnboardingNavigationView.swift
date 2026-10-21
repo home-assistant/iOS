@@ -98,10 +98,10 @@ struct OnboardingNavigationView: View {
         case let .permissions(server):
             OnboardingPermissionsNavigationView(
                 onboardingServer: server,
+                showsNavigationBarForBackOnly: true,
                 onDismiss: { finishFlow() }
             )
             .navigationBarBackButtonHidden(true)
-            .toolbar(.hidden, for: .navigationBar)
         case let .clientCertificate(request):
             // Mac Catalyst only; the user resolves the step through the page's own buttons.
             ClientCertificateOnboardingView(

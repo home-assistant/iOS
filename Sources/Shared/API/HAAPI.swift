@@ -486,10 +486,13 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func getConfig() -> Promise<Void> {
+    /// - Parameter overrideURL: a base URL to reach the webhook through instead of the one the
+    ///   connection would pick, for callers that already know which URL reaches the server.
+    public func getConfig(overrideURL: URL? = nil) -> Promise<Void> {
         let promise: Promise<ConfigResponse> = Current.webhooks.sendEphemeral(
             server: server,
-            request: .init(type: "get_config", data: [:])
+            request: .init(type: "get_config", data: [:]),
+            overrideURL: overrideURL
         )
 
         return promise.done { [self] config in
