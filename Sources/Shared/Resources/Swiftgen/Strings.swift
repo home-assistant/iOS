@@ -4804,6 +4804,8 @@ public enum L10n {
       public static var allow: String { return L10n.tr("Localizable", "onboarding.permissions.allow") }
       /// Done
       public static var allowed: String { return L10n.tr("Localizable", "onboarding.permissions.allowed") }
+      /// Back
+      public static var back: String { return L10n.tr("Localizable", "onboarding.permissions.back") }
       /// You can change this permission later in Settings
       public static var changeLaterNote: String { return L10n.tr("Localizable", "onboarding.permissions.change_later_note") }
       public enum Focus {

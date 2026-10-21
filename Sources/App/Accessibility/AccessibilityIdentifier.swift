@@ -23,6 +23,7 @@ enum AccessibilityIdentifier: String {
     case onboardingLocalAccessLessSecureOption = "onboarding.localAccess.option.lessSecure"
     case onboardingLocalAccessNext = "onboarding.localAccess.next"
     case onboardingHomeNetworkNext = "onboarding.homeNetwork.next"
+    case onboardingHomeNetworkBack = "onboarding.homeNetwork.back"
     case notificationPermissionRequestPrimary = "notificationPermission.request.primary"
     case notificationPermissionRequestSecondary = "notificationPermission.request.secondary"
     case settingsList = "settings.list"
