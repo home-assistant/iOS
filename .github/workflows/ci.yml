@@ -156,7 +156,9 @@ jobs:
       # and retries ejecting disks by a guessed BSD name, which can unmount the usable copy mid-run:
       # the watch tests then fail with "runtime path not found" or hang connecting to the simulator
       # (actions/runner-images#14946). Deleting the unusable copy first, before anything else starts
-      # CoreSimulator, leaves nothing to re-register. Remove this step once the image is fixed.
+      # CoreSimulator, leaves nothing to re-register. When the daemon takes the usable copy down
+      # anyway, the test lane mounts it again before the watch tests (Tools/EnsureSimulatorRuntime.sh).
+      # Remove this step once the image is fixed.
       - name: Remove unusable simulator runtimes
         run: |
           xcrun simctl runtime list
