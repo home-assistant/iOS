@@ -47,6 +47,10 @@ struct CornerComplicationSnapshotTests {
             ("name-only-gauge", .sample(icon: false, showValue: false)),
             ("icon-gauge", .sample(showValue: false, title: nil)),
             ("icon-only", .sample(showValue: false, title: nil, fraction: nil)),
+            // Progress mode moves whatever the corner isn't showing onto the bar's line, as the watch does.
+            ("icon-name-progress", .sample(showValue: false, gaugeDisplay: .progress)),
+            ("icon-progress", .sample(showValue: false, title: nil, gaugeDisplay: .progress)),
+            ("name-only-progress", .sample(icon: false, showValue: false, gaugeDisplay: .progress)),
             ("zero-fraction", .sample(value: "0%", fraction: 0)),
             ("zero-fraction-progress", .sample(value: "0%", fraction: 0, gaugeDisplay: .progress)),
             ("full-fraction", .sample(value: "100%", fraction: 1)),

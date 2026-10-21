@@ -1504,7 +1504,6 @@ final class WebViewControllerTests: XCTestCase {
         sut.showSettingsViewController()
 
         wait(for: [settingsShown], timeout: 5)
-        XCTAssertFalse(sceneCoordinator.showSettingsPushedOntoNavigationStack)
         XCTAssertFalse(otherWindowCoordinator.showSettingsCalled)
     }
 
@@ -1516,10 +1515,9 @@ final class WebViewControllerTests: XCTestCase {
         let settingsShown = expectation(description: "showSettings called")
         coordinator.onShowSettings = { settingsShown.fulfill() }
 
-        sut.showSettingsViewController(pushOntoNavigationStack: true)
+        sut.showSettingsViewController()
 
         wait(for: [settingsShown], timeout: 5)
-        XCTAssertTrue(coordinator.showSettingsPushedOntoNavigationStack)
     }
 
     private func makeSUT(server: Server = .fake()) -> WebViewController {
