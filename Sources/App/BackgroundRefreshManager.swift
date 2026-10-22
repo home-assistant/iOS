@@ -5,7 +5,7 @@ import Shared
 import UIKit
 
 enum BackgroundRefreshManager {
-    static let taskIdentifier = "io.home-assistant.backgroundfetch"
+    static let taskIdentifier = AppConstants.backgroundTaskIdentifier(suffix: "backgroundfetch")
 
     private static let earliestBeginInterval: TimeInterval = 15 * 60
 

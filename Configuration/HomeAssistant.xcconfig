@@ -1,15 +1,14 @@
 VERSIONING_SYSTEM = apple-generic
 #include "Version.xcconfig"
 
-DEVELOPMENT_TEAM = GUYFAK8DC6
-BUNDLE_ID_PREFIX = io.home-assistant.app
-APP_DISPLAY_NAME = Home Assistant OHF
-APP_BUNDLE_ID = ${BUNDLE_ID_PREFIX}${BUNDLE_ID_SUFFIX}
-ENABLE_CRITICAL_ALERTS_GUYFAK8DC6 = 0
-ENABLE_PUSH_PROVIDER_GUYFAK8DC6 = 0
-ENABLE_DEVICE_NAME_GUYFAK8DC6 = 0
-ENABLE_THREAD_NETWORK_CREDENTIALS_GUYFAK8DC6 = 0
-ENABLE_CARPLAY_GUYFAK8DC6 = 1
+// The Apple account the build is signed with and identified by. Account.xcconfig selects the
+// committed default; Account.local.xcconfig (ignored by git) selects another one for this checkout.
+#include "Account.xcconfig"
+#include? "Account.local.xcconfig"
+
+APP_DISPLAY_NAME = $(APP_DISPLAY_NAME_BASE)
+APP_BUNDLE_ID = $(APP_BUNDLE_ID_BASE)$(BUNDLE_ID_SUFFIX)
+MIGRATION_URL_HANDLER = $(MIGRATION_URL_HANDLER_BASE)
 
 // cascades down
 PRODUCT_BUNDLE_IDENTIFIER = ${APP_BUNDLE_ID}${PROVISIONING_SUFFIX}

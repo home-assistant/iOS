@@ -10,6 +10,7 @@ private_lane :setup do
   itc_team_id = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
   ENV['FASTLANE_ITC_TEAM_ID'] = itc_team_id unless itc_team_id.to_s.empty?
   ENV['FASTLANE_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
+  ENV['HOMEASSISTANT_APP_IDENTIFIER'] = account_app_identifier
 
   ENV['DELIVER_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
   ENV['FL_NOTARIZE_ASC_PROVIDER'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)

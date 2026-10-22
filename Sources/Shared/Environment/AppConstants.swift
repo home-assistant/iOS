@@ -100,6 +100,11 @@ public enum AppConstants {
         return removeBundleSuffix
     }
 
+    public static func backgroundTaskIdentifier(suffix: String) -> String {
+        let permitted = Bundle.main.object(forInfoDictionaryKey: "BGTaskSchedulerPermittedIdentifiers") as? [String]
+        return permitted?.first { $0.hasSuffix(".\(suffix)") } ?? "\(BundleID).\(suffix)"
+    }
+
     public static var deeplinkURL: URL {
         switch Current.appConfiguration {
         case .debug:

@@ -3612,6 +3612,7 @@
 				B657A8E31CA646EB00121384 /* Frameworks */,
 				42886D1E2FFE61FB004EB33B /* ShellScript */,
 				B657A8E41CA646EB00121384 /* Resources */,
+				42AC0000000000000000F1AE /* Copy Firebase Configuration */,
 				B6AAD7AC1D827DD40090B220 /* Embed Foundation Extensions */,
 				B6CC5DA62159D10F00833E5D /* Embed Watch Content */,
 				11DE9FBD25B6184E0081C0ED /* Embed Mac Launcher */,
@@ -4044,7 +4045,6 @@
 					};
 					B627CB061D83C87B0057173E = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = GUYFAK8DC6;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -4103,14 +4103,12 @@
 					};
 					B657A9061CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = GUYFAK8DC6;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						TestTargetID = B657A8E51CA646EB00121384;
 					};
 					B66C58A4215086F0004AB261 = {
 						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = GUYFAK8DC6;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -4127,13 +4125,11 @@
 					};
 					B67CE82322200D420034C1D0 = {
 						CreatedOnToolsVersion = 10.1;
-						DevelopmentTeam = GUYFAK8DC6;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					B6AAD7A01D827DD40090B220 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = GUYFAK8DC6;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -4150,7 +4146,6 @@
 					};
 					B6CC5D812159D10D00833E5D = {
 						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = GUYFAK8DC6;
 						LastSwiftMigration = 1530;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -4161,13 +4156,11 @@
 					};
 					D03D891620E0A85200D4F28D = {
 						CreatedOnToolsVersion = 9.4.1;
-						DevelopmentTeam = GUYFAK8DC6;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					D03D894120E0BC1800D4F28D = {
 						CreatedOnToolsVersion = 9.4.1;
-						DevelopmentTeam = GUYFAK8DC6;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
@@ -4548,6 +4541,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Skip SwiftLint if flag is set in Build settings \"user-defined settings\"\nif [ \"${DISABLE_SWIFTLINT}\" = \"1\" ]; then\n  echo \"SwiftLint skipped because DISABLE_SWIFTLINT=1\"\n  exit 0\nfi\n\n\"${SRCROOT}/Tools/build_tool\" swiftlint --strict --config \"${SRCROOT}/.swiftlint.yml\"\n";
+		};
+		42AC0000000000000000F1AE /* Copy Firebase Configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/$(GOOGLE_SERVICE_INFO_DIR)/GoogleService-Info-Debug.plist",
+				"$(SRCROOT)/$(GOOGLE_SERVICE_INFO_DIR)/GoogleService-Info-Release.plist",
+			);
+			name = "Copy Firebase Configuration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info-Debug.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info-Release.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/bin/sh -e";
+			shellScript = "exec Configuration/Scripts/copy_firebase_configuration.sh\n";
+			showEnvVarsInLog = 0;
 		};
 		9C08D123229F187E001B4F73 /* Enable Special Entitlements */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5387,7 +5403,6 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = GUYFAK8DC6;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -5463,7 +5478,6 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = GUYFAK8DC6;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -5658,7 +5672,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = GUYFAK8DC6;
 			};
 			name = Debug;
 		};
@@ -5666,7 +5679,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = GUYFAK8DC6;
 			};
 			name = Release;
 		};
@@ -5686,7 +5698,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MIGRATION_URL_HANDLER = "homeassistant-ohf-dev";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -5724,7 +5735,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MIGRATION_URL_HANDLER = "homeassistant-ohf";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

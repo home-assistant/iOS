@@ -91,3 +91,4 @@ vendor/bundle
 
 # Local SPM package transient files
 Sources/HADesignSystem/Package.resolved
+Configuration/Account.local.xcconfig

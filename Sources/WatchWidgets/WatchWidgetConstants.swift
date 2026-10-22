@@ -3,7 +3,6 @@ import WidgetKit
 
 enum WatchWidgetConstants {
     static let appName = "Home Assistant"
-    static let defaultBundleID = "io.home-assistant.app.watchkitapp.WatchWidgets"
     static let defaultsKey = "watchWidgetComplicationSnapshots"
     /// App-group defaults key for the developer option that posts local notifications when a
     /// complication reload (self fetch) starts and finishes. Written by the watch app's developer
@@ -83,7 +82,7 @@ enum WatchWidgetConstants {
     ]
 
     private static var widgetBundleID: String {
-        Bundle.main.bundleIdentifier ?? defaultBundleID
+        Bundle.main.bundleIdentifier ?? ""
     }
 
     enum Layout {
