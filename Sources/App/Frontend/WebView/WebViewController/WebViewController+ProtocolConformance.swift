@@ -12,11 +12,14 @@ extension WebViewController: WebViewControllerProtocol {
         webView.canGoForward
     }
 
+    // The blank page a retired controller sits on keeps the frontend in its history, so both refuse too.
     @objc func goBack() {
+        guard !isRetired else { return }
         webView.goBack()
     }
 
     @objc func goForward() {
+        guard !isRetired else { return }
         webView.goForward()
     }
 
@@ -155,6 +158,12 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func load(request: URLRequest) {
+        // Every load of a server URL ends up here, so a retired controller refuses once rather than in
+        // each caller; `reload()` is the one other way back into the page and refuses on its own.
+        guard !isRetired else {
+            Current.Log.info("not loading \(request.url?.absoluteString ?? "nil"), retired")
+            return
+        }
         Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
         webView.load(request)
     }

@@ -256,14 +256,18 @@ jobs:
       # exit nonzero on their own, so the action needs the same treatment.
       - name: Build coverage report
         continue-on-error: true
+        timeout-minutes: 10
         run: >-
           python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult
           --lcov fastlane/test_output/coverage.lcov
           --summary "$GITHUB_STEP_SUMMARY"
 
+      # The uploader has hung on a run that was otherwise green, and `continue-on-error` only covers
+      # a failure: a step that never ends still eats the job's remaining time, so bound it.
       - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
         name: "Upload Code Coverage"
         continue-on-error: true
+        timeout-minutes: 10
         with:
           files: fastlane/test_output/coverage.lcov
           disable_search: true
@@ -298,16 +302,16 @@ jobs:
 
   # A pull request has to test the code it brings: at least 90% of the lines it adds
   # or changes, and that the unit tests are able to run at all, must actually be run
-  # by them. Falling short is a changes-requested review rather than only a red check,
-  # so the reason lands where the discussion is. The review is dismissed automatically
-  # as soon as a push clears the bar, and a maintainer can dismiss it to land a change
-  # whose new code genuinely cannot be unit tested.
+  # by them. This job measures the number and fails below the bar; the result is
+  # uploaded for the "Patch coverage review" workflow, which runs with a token that
+  # can write to the pull request even when the change comes from a fork, and turns
+  # the shortfall into a changes-requested review where the discussion is.
   patch-coverage:
     name: Patch coverage
     needs: test
     # Runs even when the tests failed, which leaves no tracefile behind: the job has
-    # nothing to measure then, and its own cleanup below is what keeps a request from
-    # an earlier run from outliving the coverage it was about.
+    # nothing to measure then, uploads a result without a number, and the review
+    # workflow reads that as a run with nothing to hold against the pull request.
     if: >-
       !cancelled() &&
       github.event_name == 'pull_request'
@@ -315,7 +319,6 @@ jobs:
     permissions:
       actions: read
       contents: read
-      pull-requests: write
     env:
       COVERAGE_THRESHOLD: "90"
     steps:
@@ -333,9 +336,9 @@ jobs:
 
       # Coverage that could not be measured must not block: when the conversion or the
       # artifact is missing, this step is skipped and sets no output, which leaves the
-      # gate reporting nothing and dismisses any request an earlier run left behind,
-      # rather than blocking on a number nobody can act on. The step itself is
-      # `continue-on-error` because the script exits nonzero to report the shortfall.
+      # gate reporting nothing, rather than blocking on a number nobody can act on. The
+      # step itself is `continue-on-error` because the script exits nonzero to report
+      # the shortfall.
       - name: Measure patch coverage
         id: coverage
         if: steps.tracefile.outcome == 'success'
@@ -350,105 +353,30 @@ jobs:
             --summary "$GITHUB_STEP_SUMMARY" \
             --github-output "$GITHUB_OUTPUT"
 
-      # Only same-repository pull requests: a fork's token cannot review, and the run
-      # would fail on the API call instead of on the coverage it is reporting.
-      - name: Request changes below the threshold
-        if: >-
-          steps.coverage.outputs.passed == 'false' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+      # The review workflow runs with write access and must not trust anything this
+      # run produced beyond these values, so only they are handed over. The pull
+      # request number names which of the pull requests sharing this head commit the
+      # coverage was measured for, since each is diffed against its own base. The
+      # result is uploaded even without a number, under a name scoped to this attempt,
+      # so a rerun never reads what an earlier attempt of the same run left behind.
+      - name: Record the result for the review workflow
         env:
+          PULL_REQUEST: ${{ github.event.pull_request.number }}
+          PASSED: ${{ steps.coverage.outputs.passed }}
           COVERAGE: ${{ steps.coverage.outputs.coverage }}
           COVERED: ${{ steps.coverage.outputs.covered }}
           CHANGED: ${{ steps.coverage.outputs.changed }}
+        run: |
+          mkdir -p patch-coverage
+          printf 'pull_request=%s\npassed=%s\ncoverage=%s\ncovered=%s\nchanged=%s\nthreshold=%s\n' \
+            "$PULL_REQUEST" "$PASSED" "$COVERAGE" "$COVERED" "$CHANGED" "$COVERAGE_THRESHOLD" \
+            > patch-coverage/result.env
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        name: "Upload Patch Coverage Result"
         with:
-          script: |
-            const { owner, repo } = context.repo
-            const pull_number = context.payload.pull_request.number
-            const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`
-            const threshold = process.env.COVERAGE_THRESHOLD
-
-            // Marks the review as this job's, so the dismissal below leaves other bots alone.
-            const marker = '<!-- patch-coverage -->'
-
-            const body = [
-              marker,
-              `### Test coverage of this pull request is below ${threshold}%`,
-              '',
-              `The unit tests run **${process.env.COVERAGE}%** of the lines this pull request`,
-              `adds or changes (${process.env.COVERED} of ${process.env.CHANGED} coverable lines).`,
-              '',
-              'The per-file breakdown, and the changed lines no test runs, are in the',
-              `[job summary](${run}). Adding tests for those lines and pushing dismisses this`,
-              'review automatically.',
-              '',
-              'Lines that carry no executable code, and files the unit test targets do not',
-              'build, are not counted. If the new code genuinely cannot be unit tested, a',
-              'maintainer can dismiss this review.',
-            ].join('\n')
-
-            // A push that leaves coverage exactly where it was would otherwise stack an
-            // identical review on every run, so repeat the request only when it changed.
-            const reviews = await github.paginate(github.rest.pulls.listReviews, {
-              owner,
-              repo,
-              pull_number,
-              per_page: 100,
-            })
-            const outstanding = reviews.findLast(
-              (review) => review.state === 'CHANGES_REQUESTED' && (review.body || '').includes(marker),
-            )
-
-            if (outstanding && outstanding.body === body) {
-              core.info('The outstanding coverage review already says this, leaving it alone')
-              return
-            }
-
-            await github.rest.pulls.createReview({ owner, repo, pull_number, event: 'REQUEST_CHANGES', body })
-            core.info(`Requested changes: patch coverage ${process.env.COVERAGE}% is below ${threshold}%`)
-
-      # Runs whether coverage met the bar or could not be measured at all, so a
-      # request from an earlier run is never left blocking a pull request whose
-      # coverage this run has no number for.
-      - name: Dismiss an outstanding coverage review
-        if: >-
-          steps.coverage.outputs.passed != 'false' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
-        env:
-          COVERAGE: ${{ steps.coverage.outputs.coverage }}
-        with:
-          script: |
-            const { owner, repo } = context.repo
-            const pull_number = context.payload.pull_request.number
-
-            const reviews = await github.paginate(github.rest.pulls.listReviews, {
-              owner,
-              repo,
-              pull_number,
-              per_page: 100,
-            })
-            const marker = '<!-- patch-coverage -->'
-            const outstanding = reviews.filter(
-              (review) => review.state === 'CHANGES_REQUESTED' && (review.body || '').includes(marker),
-            )
-
-            const coverage = process.env.COVERAGE
-            const message = coverage
-              ? `Patch coverage is now ${coverage}%, at or above the ` +
-                `${process.env.COVERAGE_THRESHOLD}% threshold.`
-              : 'Patch coverage could not be measured on this run, so the gate no longer applies.'
-
-            for (const review of outstanding) {
-              try {
-                await github.rest.pulls.dismissReview({ owner, repo, pull_number, review_id: review.id, message })
-                core.info(`Dismissed review ${review.id}`)
-              } catch (error) {
-                // A request nobody can dismiss blocks the pull request for good, so say
-                // so loudly enough that a maintainer can dismiss it by hand.
-                core.warning(`Could not dismiss review ${review.id}, dismiss it by hand: ${error.message}`)
-              }
-            }
+          name: patch-coverage-${{ github.run_attempt }}
+          path: patch-coverage/result.env
 
       - name: Fail below the threshold
         if: steps.coverage.outputs.passed == 'false'

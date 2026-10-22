@@ -4819,6 +4819,8 @@ public enum L10n {
       public static var allow: String { return L10n.tr("Localizable", "onboarding.permissions.allow") }
       /// Done
       public static var allowed: String { return L10n.tr("Localizable", "onboarding.permissions.allowed") }
+      /// Back
+      public static var back: String { return L10n.tr("Localizable", "onboarding.permissions.back") }
       /// You can change this permission later in Settings
       public static var changeLaterNote: String { return L10n.tr("Localizable", "onboarding.permissions.change_later_note") }
       public enum Focus {
@@ -4923,6 +4925,22 @@ public enum L10n {
           }
         }
       }
+    }
+    public enum ServerIdentity {
+      /// Add as a separate server
+      public static var addSeparate: String { return L10n.tr("Localizable", "onboarding.server_identity.add_separate") }
+      /// %1$@ reports the same ID as %2$@ but is at a different address.
+      public static func body(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.server_identity.body", String(describing: p1), String(describing: p2))
+      }
+      /// Replace %1$@
+      public static func replace(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.server_identity.replace", String(describing: p1))
+      }
+      /// Is this the same server?
+      public static var title: String { return L10n.tr("Localizable", "onboarding.server_identity.title") }
+      /// Why am I seeing this?
+      public static var why: String { return L10n.tr("Localizable", "onboarding.server_identity.why") }
     }
     public enum ServerImport {
       /// Hang tight, we’re rounding up your servers.
@@ -5237,6 +5255,35 @@ public enum L10n {
     }
   }
 
+  public enum ServerIdentity {
+    public enum About {
+      /// About server identity
+      public static var title: String { return L10n.tr("Localizable", "server_identity.about.title") }
+      public enum Conflicting {
+        /// Servers sharing an ID
+        public static var header: String { return L10n.tr("Localizable", "server_identity.about.conflicting.header") }
+      }
+      public enum Fix {
+        /// Give one of the servers a new ID. On the same network Home Assistant offers this in Settings › Repairs. Otherwise remove the file .storage/core.uuid on one server and restart it. Data and configuration are not affected.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.fix.body") }
+        /// How to fix it
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.fix.title") }
+      }
+      public enum OneEntry {
+        /// Each server reports its own ID, and the app uses it to recognize a server that is already added. Adding the same server twice updates the existing entry rather than creating a second one.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.one_entry.body") }
+        /// One server, one entry
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.one_entry.title") }
+      }
+      public enum SameId {
+        /// A server set up from a backup of another one carries the same ID. The app cannot tell them apart by ID alone, so it asks which situation applies.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.same_id.body") }
+        /// Two servers with the same ID
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.same_id.title") }
+      }
+    }
+  }
+
   public enum ServersSelection {
     /// Servers
     public static var title: String { return L10n.tr("Localizable", "servers_selection.title") }
@@ -5340,6 +5387,8 @@ public enum L10n {
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Drag to reorder your servers. The one at the top is used as the default server.
       public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
+      /// Two servers share the same ID
+      public static var sharedInstanceIdWarning: String { return L10n.tr("Localizable", "settings.connection_section.shared_instance_id_warning") }
       /// Sync
       public static var syncServer: String { return L10n.tr("Localizable", "settings.connection_section.sync_server") }
       /// Troubleshooting
@@ -6254,8 +6303,10 @@ public enum L10n {
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.frontend_asset_cache.title") }
           }
           public enum LegacyRealmStore {
-            /// Leftover data from an older version of the app. Nothing uses it anymore.
+            /// The old store zones, notification categories and complications are imported from. It is only kept until that import has run.
             public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.explanation") }
+            /// Leftover data from an older version of the app. Nothing uses it anymore.
+            public static var leftoverExplanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.leftover_explanation") }
             /// Legacy database
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.title") }
           }
@@ -6353,10 +6404,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.sort.title") }
         }
         public enum Summary {
-          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.
+          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, files you added yourself, and anything still waiting to be imported. Everything else is a copy the app makes again when it needs it.
           public static var footer: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.footer") }
           /// Protected items
           public static var protected: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.protected") }
+          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.
+          public static var protectedFooter: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.protected_footer") }
           /// Can be freed
           public static var reclaimable: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.reclaimable") }
           /// Total used
@@ -6382,6 +6435,10 @@ public enum L10n {
       public enum ReceiveDebugNotifications {
         /// Receive debug notifications
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.receive_debug_notifications.title") }
+      }
+      public enum RegionEnterMaximumFuzzDistance {
+        /// Zone enter accuracy fuzz limit
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.region_enter_maximum_fuzz_distance.title") }
       }
       public enum ResetApp {
         /// Delete all app data?

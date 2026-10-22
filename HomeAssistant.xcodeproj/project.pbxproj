@@ -95,6 +95,7 @@
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */; };
 		426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */; };
+		42B7A1D1310A00000000A001 /* PeriodicUpdateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7A1D0310A00000000A001 /* PeriodicUpdateManager.test.swift */; };
 		426A2EFB30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */; };
 		426A2EFD30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */; };
 		426A2F013059752700006022 /* ManualUpdateFullAccuracy.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */; };
@@ -627,6 +628,7 @@
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspension.test.swift; sourceTree = "<group>"; };
+		42B7A1D0310A00000000A001 /* PeriodicUpdateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodicUpdateManager.test.swift; sourceTree = "<group>"; };
 		426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspensionProtectedWork.test.swift; sourceTree = "<group>"; };
 		426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelsUpdaterSaveInDatabase.test.swift; sourceTree = "<group>"; };
 		426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualUpdateFullAccuracy.test.swift; sourceTree = "<group>"; };
@@ -1353,6 +1355,8 @@
 				API/OnboardingConnectionErrorContext.swift,
 				API/OnboardingDestination.swift,
 				API/OnboardingDeviceNameRequest.swift,
+				API/OnboardingServerIdentity.swift,
+				API/OnboardingServerIdentityRequest.swift,
 				API/Steps/OnboardingAuthStepConfig.swift,
 				API/Steps/OnboardingAuthStepConnectivity.swift,
 				API/Steps/OnboardingAuthStepDeviceNaming.swift,
@@ -1360,6 +1364,7 @@
 				API/Steps/OnboardingAuthStepNotify.swift,
 				API/Steps/OnboardingAuthStepRegister.swift,
 				API/Steps/OnboardingAuthStepSensors.swift,
+				API/Steps/OnboardingAuthStepServerIdentity.swift,
 				Container/OnboardingNavigationView.swift,
 				Container/OnboardingNavigationViewModel.swift,
 				Steps/DeviceName/DeviceNameView.swift,
@@ -1375,6 +1380,10 @@
 				Steps/Permissions/Steps/Location/LocationPermissionView.swift,
 				Steps/Permissions/Steps/Privacy/OnboardingPrivacyView.swift,
 				Steps/Permissions/Steps/Privacy/OnboardingPrivacyViewModel.swift,
+				Steps/ServerIdentity/OnboardingServerIdentitySheet.swift,
+				Steps/ServerIdentity/OnboardingServerIdentityView.swift,
+				Steps/ServerIdentity/ServerIdentityConflictingServer.swift,
+				Steps/ServerIdentity/ServerIdentityExplanationView.swift,
 				Steps/Servers/ManualURLEntry/ManualURLEntryView.swift,
 				Steps/Servers/OnboardingScanningInstanceRow.swift,
 				Steps/Servers/OnboardingServersListView.swift,
@@ -3255,6 +3264,7 @@
 				42164BB8301320720077A903 /* ComplicationFormula.test.swift */,
 				424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */,
 				426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */,
+				42B7A1D0310A00000000A001 /* PeriodicUpdateManager.test.swift */,
 				426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */,
 				426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */,
 				426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */,
@@ -4688,6 +4698,7 @@
 				11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */,
 				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
 				426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */,
+				42B7A1D1310A00000000A001 /* PeriodicUpdateManager.test.swift in Sources */,
 				42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */,
 				42A7F1012FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,

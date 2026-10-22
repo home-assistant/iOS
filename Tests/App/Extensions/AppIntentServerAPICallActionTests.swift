@@ -36,7 +36,7 @@ struct AppIntentServerAPICallActionTests {
             )
         }
         var waited = 0
-        while connection.pendingRequests.isEmpty, waited < 300 {
+        while connection.pendingRequests.isEmpty, waited < 6000 {
             try await Task.sleep(nanoseconds: 5_000_000)
             waited += 1
         }

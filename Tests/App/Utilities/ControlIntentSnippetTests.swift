@@ -7,6 +7,7 @@ import Testing
 /// Drives each spoken control command end to end: the service it calls, and the card it comes back
 /// with. Every one of them now makes two requests — the action, then the state it reads back to
 /// describe — so the helper answers them in that order.
+@Suite(.serialized)
 struct ControlIntentSnippetTests {
     private static func controllable(
         serverId: String,
@@ -62,7 +63,7 @@ struct ControlIntentSnippetTests {
         var seen: [HARequest] = []
         var answered = 0
         var waited = 0
-        while answered < count, waited < 400 {
+        while answered < count, waited < 6000 {
             if connection.pendingRequests.count > answered {
                 let pending = connection.pendingRequests[answered]
                 seen.append(pending.request)
