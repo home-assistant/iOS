@@ -8,8 +8,6 @@ struct AppMigrationImportView: View {
     let retryAction: () -> Void
     let cancelAction: () -> Void
 
-    @State private var showsManualConfirmation = false
-
     var body: some View {
         switch state {
         case .openingPreviousApp:
@@ -44,21 +42,17 @@ struct AppMigrationImportView: View {
                 primaryAction: retryAction,
                 primaryActionIdentifier: AccessibilityIdentifier.migrationImportRetry.rawValue,
                 secondaryActionTitle: L10n.AppMigration.Import.Failed.manualButton,
-                secondaryAction: { showsManualConfirmation = true },
-                secondaryActionIdentifier: AccessibilityIdentifier.migrationImportManual.rawValue
+                secondaryAction: cancelAction,
+                secondaryActionIdentifier: AccessibilityIdentifier.migrationImportManual.rawValue,
+                secondaryActionConfirmation: BaseOnboardingConfirmation(
+                    title: L10n.AppMigration.Import.Failed.ManualConfirmation.title,
+                    message: L10n.AppMigration.Import.Failed.ManualConfirmation.body,
+                    confirmTitle: L10n.AppMigration.Import.Failed.ManualConfirmation.confirmButton,
+                    confirmRole: .destructive,
+                    confirmIdentifier: AccessibilityIdentifier.migrationImportManualConfirm.rawValue,
+                    action: cancelAction
+                )
             )
-            .alert(
-                L10n.AppMigration.Import.Failed.ManualConfirmation.title,
-                isPresented: $showsManualConfirmation
-            ) {
-                Button(L10n.AppMigration.Import.Failed.ManualConfirmation.confirmButton, role: .destructive) {
-                    cancelAction()
-                }
-                .accessibilityIdentifier(AccessibilityIdentifier.migrationImportManualConfirm.rawValue)
-                Button(L10n.cancelLabel, role: .cancel) {}
-            } message: {
-                Text(L10n.AppMigration.Import.Failed.ManualConfirmation.body)
-            }
             .onAppear {
                 AppMigrationHaptics.error()
             }

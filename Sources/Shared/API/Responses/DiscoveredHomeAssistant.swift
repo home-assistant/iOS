@@ -60,6 +60,12 @@ public struct DiscoveredHomeAssistant: ImmutableMappable, Equatable {
         }
     }
 
+    /// What tells one discovered instance from another in a list. Two instances set up from the same
+    /// backup advertise the same `uuid`, so the addresses they answer at are part of it.
+    public var discoveryKey: String {
+        ([uuid ?? ""] + hostAndPortIdentities.sorted()).joined(separator: "|")
+    }
+
     /// Whether `uuid` is Home Assistant's own instance ID rather than a placeholder minted here.
     public var hasHomeAssistantInstanceID: Bool {
         guard let uuid, !uuid.isEmpty else { return false }
@@ -91,7 +97,6 @@ public struct DiscoveredHomeAssistant: ImmutableMappable, Equatable {
     /// it: a user reaching the same socket over `https` that mDNS advertised over `http` (or the
     /// other way around) is still the same Home Assistant.
     private var hostAndPortIdentities: Set<String> {
-        let urls: [URL?] = [internalURL, externalURL, internalOrExternalURL]
-        return Set(urls.compactMap { $0?.hostAndPortIdentity })
+        URL.hostAndPortIdentities(of: [internalURL, externalURL, internalOrExternalURL])
     }
 }

@@ -58,7 +58,7 @@ struct ManageStorageView: View {
                         .monospacedDigit()
                 }
             } footer: {
-                Text(L10n.Settings.Debugging.ManageStorage.Summary.footer)
+                Text(L10n.Settings.Debugging.ManageStorage.Summary.protectedFooter)
             }
 
             if viewModel.sections.isEmpty {

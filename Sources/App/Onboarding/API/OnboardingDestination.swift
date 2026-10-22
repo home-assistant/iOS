@@ -16,12 +16,14 @@ enum OnboardingDestination: Hashable {
     case connectionError(OnboardingConnectionErrorContext)
     /// The transfer from the previous Home Assistant app, offered while both apps are installed.
     case migration
+    /// The same-instance-ID question. Only used on Mac Catalyst; iOS presents it as a sheet.
+    case serverIdentity(OnboardingServerIdentityRequest)
 
     /// Whether this page belongs to the auth flow (everything after the user picked a server).
     var isAuthFlowStep: Bool {
         switch self {
         case .serversList, .connectionError, .migration: return false
-        case .login, .deviceName, .permissions, .clientCertificate: return true
+        case .login, .deviceName, .permissions, .clientCertificate, .serverIdentity: return true
         }
     }
 
@@ -39,6 +41,8 @@ enum OnboardingDestination: Hashable {
             return lhsRequest === rhsRequest
         case let (.connectionError(lhsContext), .connectionError(rhsContext)):
             return lhsContext === rhsContext
+        case let (.serverIdentity(lhsRequest), .serverIdentity(rhsRequest)):
+            return lhsRequest === rhsRequest
         default:
             return false
         }
@@ -65,6 +69,9 @@ enum OnboardingDestination: Hashable {
             hasher.combine(ObjectIdentifier(context))
         case .migration:
             hasher.combine(6)
+        case let .serverIdentity(request):
+            hasher.combine(7)
+            hasher.combine(ObjectIdentifier(request))
         }
     }
 }

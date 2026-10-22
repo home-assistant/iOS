@@ -1,0 +1,3 @@
+// Picks the Apple account ("flavor") this checkout builds for. Switch it by pointing this include at
+// another file in Accounts/, or leave it alone and create Account.local.xcconfig (ignored by git).
+#include "Accounts/nabu-casa.xcconfig"

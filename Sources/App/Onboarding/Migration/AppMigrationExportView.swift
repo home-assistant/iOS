@@ -13,8 +13,6 @@ struct AppMigrationExportView: View {
     /// The erased screen draws its checkmark on; snapshots want it already drawn.
     var animatesErasedCheckmark = true
 
-    @State private var showsTransferAgainConfirmation = false
-
     var body: some View {
         switch state {
         case .preparing:
@@ -60,10 +58,16 @@ struct AppMigrationExportView: View {
     private var afterHandoff: some View {
         BaseOnboardingView(
             illustration: {
-                CheckmarkDrawOnView(size: 96, tint: .haSuccessColor, animated: state == .erased && animatesErasedCheckmark)
-                    .padding(.top, DesignSystem.Spaces.two)
+                CheckmarkDrawOnView(
+                    size: 96,
+                    tint: .haSuccessColor,
+                    animated: state == .erased && animatesErasedCheckmark
+                )
+                .padding(.top, DesignSystem.Spaces.two)
             },
-            title: state == .erased ? L10n.AppMigration.Export.Erased.title : L10n.AppMigration.Export.HandedOff.title,
+            title: state == .erased
+                ? L10n.AppMigration.Export.Erased.title
+                : L10n.AppMigration.Export.HandedOff.title,
             primaryDescription: state == .erased
                 ? L10n.AppMigration.Export.Erased.body
                 : L10n.AppMigration.Export.HandedOff.verifyBody,
@@ -71,24 +75,18 @@ struct AppMigrationExportView: View {
             primaryAction: openNewAppAction,
             primaryActionIdentifier: AccessibilityIdentifier.migrationExportOpenNewApp.rawValue,
             secondaryActionTitle: state == .erased ? nil : L10n.AppMigration.Export.HandedOff.transferAgainButton,
-            secondaryAction: {
-                AppMigrationHaptics.tap()
-                showsTransferAgainConfirmation = true
-            },
-            secondaryActionIdentifier: AccessibilityIdentifier.migrationExportTransferAgain.rawValue
+            secondaryAction: {},
+            secondaryActionIdentifier: AccessibilityIdentifier.migrationExportTransferAgain.rawValue,
+            secondaryActionConfirmation: BaseOnboardingConfirmation(
+                title: L10n.AppMigration.Export.TransferAgainConfirmation.title,
+                message: L10n.AppMigration.Export.TransferAgainConfirmation.resetBody,
+                confirmTitle: L10n.AppMigration.Export.TransferAgainConfirmation.confirmButton,
+                action: {
+                    AppMigrationHaptics.warning()
+                    transferAgainAction()
+                }
+            )
         )
-        .confirmationDialog(
-            L10n.AppMigration.Export.TransferAgainConfirmation.title,
-            isPresented: $showsTransferAgainConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button(L10n.AppMigration.Export.TransferAgainConfirmation.confirmButton) {
-                AppMigrationHaptics.warning()
-                transferAgainAction()
-            }
-        } message: {
-            Text(L10n.AppMigration.Export.TransferAgainConfirmation.resetBody)
-        }
         .onAppear {
             AppMigrationHaptics.success()
         }

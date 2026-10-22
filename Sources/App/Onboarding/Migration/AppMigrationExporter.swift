@@ -65,28 +65,25 @@ struct AppMigrationExporter {
         return try PropertyListSerialization.data(fromPropertyList: domain, format: .binary, options: 0)
     }
 
-    private func clientCertificates() -> [AppMigrationPayload.ClientCertificateItem] {
+    /// A server's identity that cannot be exported fails the whole transfer: the new app would have
+    /// the server without a way to authenticate, and the user would be offered to erase the only
+    /// copy of the key.
+    private func clientCertificates() throws -> [AppMigrationPayload.ClientCertificateItem] {
         let manager = ClientCertificateManager.shared
         var seen = Set<String>()
-        return Current.servers.all.compactMap { server in
+        return try Current.servers.all.compactMap { server in
             guard let certificate = server.info.connection.clientCertificate,
                   seen.insert(certificate.keychainIdentifier).inserted else { return nil }
             if let transfer = manager.transferMaterial(for: certificate.keychainIdentifier) {
                 return .init(keychainIdentifier: certificate.keychainIdentifier, transfer: transfer, identity: nil)
             }
-            do {
-                let identity = try manager.exportIdentity(for: certificate.keychainIdentifier)
-                return .init(keychainIdentifier: certificate.keychainIdentifier, transfer: nil, identity: identity)
-            } catch {
-                Current.Log
-                    .error("App migration export: client certificate \(certificate.displayName) left behind: \(error)")
-                return nil
-            }
+            let identity = try manager.exportIdentity(for: certificate.keychainIdentifier)
+            return .init(keychainIdentifier: certificate.keychainIdentifier, transfer: nil, identity: identity)
         }
     }
 
     private func keychainItems() -> [AppMigrationPayload.KeychainItem] {
-        AppMigrationKeychainStore.allCases.flatMap { store -> [AppMigrationPayload.KeychainItem] in
+        AppMigrationKeychainStore.transferred.flatMap { store -> [AppMigrationPayload.KeychainItem] in
             let keychain = Keychain(service: store.service)
             return keychain.allKeys().compactMap { key in
                 guard let data = try? keychain.getData(key) else { return nil }

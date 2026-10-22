@@ -3190,30 +3190,9 @@ Aunque ninguna URL se considera segura, los datos de este servidor no se sincron
 "web_view.server_selection.title" = "Elige un servidor";
 "web_view.unique_server_selection.title" = "Elije un servidor";
 "webrtc_player.known_issues.title" = "Problemas conocidos";
-"whats_new.app_support_update.item_body" = "Esta es la última actualización para iOS 15, watchOS 8 y macOS 11 o versiones anteriores. Toca para saber más.";
-"whats_new.app_support_update.item_title" = "La compatibilidad con iOS 15, watchOS 8 y macOS 11 llegará a su fin";
 "whats_new.app_support_update.title" = "Actualización de compatibilidad de la app";
-"whats_new.energy_widget.article_body" = "El nuevo widget **Energía** te permite ver tu panel de control de energía en la pantalla de inicio y en la pantalla de bloqueo.\
-\
-**Qué muestra**\
-Red eléctrica, energía solar, batería y gas para el periodo que elijas: hoy, ayer, esta semana o este mes. Elige la fuente que quieras que aparezca en primer lugar o deja que el widget lo decida. Los tamaños pequeño y de pantalla de bloqueo muestran el consumo en tiempo real cuando tienes sensores de energía configurados, mientras que los tamaños más anchos muestran los totales del periodo para cada fuente.\
-\
-**Cómo añadirlo**\
-Mantén pulsada la pantalla de inicio, pulsa el botón de añadir en la esquina superior, busca «Home Assistant» y elige «Energía». Para la pantalla de bloqueo, manténla pulsada, pulsa «Personalizar» y añade el widget desde allí. Es necesario tener un panel de control de energía configurado en Home Assistant.";
-"whats_new.energy_widget.item_body" = "Comprueba de un vistazo cuánta energía consume, produce y almacena tu hogar en la pantalla de inicio y en la pantalla de bloqueo. Toca para obtener más información.";
-"whats_new.energy_widget.item_title" = "Widget de energía";
-"whats_new.energy_widget.mac.article_body" = "El nuevo widget **Energía** coloca tu panel de control de energía en tu escritorio.\
-\
-**Lo que muestra**\
-Red eléctrica, energía solar, baterías y gas para el periodo que elijas: hoy, ayer, esta semana o este mes. Selecciona la fuente que se muestra primero o deja que el sistema decida. El tamaño pequeño muestra la energía en tiempo real cuando tienes sensores de potencia configurados, y los tamaños más grandes muestran los totales del periodo para cada fuente.\
-\
-**Cómo añadirlo**\
-Haz clic derecho en el escritorio, selecciona Editar widgets, busca Home Assistant y elige Energía. Necesitas tener un panel de control de energía configurado en Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "Comprueba de un vistazo en tu ordenador cuánta energía consume, produce y almacena tu hogar. Toca aquí para obtener más información.";
 "whats_new.item.opens_article_hint" = "Abre un artículo";
 "whats_new.item.opens_link_hint" = "Abre un enlace";
-"whats_new.live_activities.item_body" = "Sigue un temporizador, un aparato en funcionamiento o cualquier otra actividad en curso desde la pantalla de bloqueo y la Dynamic Island. Toca aquí para saber cómo se activa una notificación.";
-"whats_new.live_activities.item_title" = "Actividades en directo";
 "whats_new.title" = "Novedades de la aplicación Companion";
 "whats_new.version_format" = "Versión %@";
 "widgets.action.name.activate" = "Activar";

@@ -132,6 +132,15 @@ final class E2EDriver {
         // No alert follows: location is already granted, so this step has nothing left to ask.
         tap(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen, "local access next button")
 
+        // The home network step is the one the user can leave again to change the choice.
+        tap(app.buttons[.onboardingHomeNetworkBack], timeout: Timeout.screen, "home network back button")
+        tap(
+            app.buttons[.onboardingLocalAccessSecureOption],
+            timeout: Timeout.screen,
+            "most secure local access option after going back"
+        )
+        tap(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen, "local access next button again")
+
         // Prefilled from the network the device reports, which is always "Simulator" here, so the
         // name only has to be accepted. Leaving it empty would stall the flow on a validation alert.
         tap(app.buttons[.onboardingHomeNetworkNext], timeout: Timeout.screen, "home network screen")
@@ -390,12 +399,21 @@ final class E2EDriver {
         }
         XCTAssertTrue(apps.waitForExistence(timeout: Timeout.screen), "Settings never listed the Apps row")
         apps.tap()
+        // The list itself exposes no rows to the test, only the search results do, and Spotlight takes
+        // a while to index a freshly installed app, so the search is retried until the row shows up.
         let search = settings.searchFields.firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: Timeout.screen), "Settings has no app search field")
-        search.tap()
-        search.typeText(appName)
         let row = settings.staticTexts[appName].firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: Timeout.screen), "Settings did not find \(appName)")
+        var attempts = 0
+        repeat {
+            search.tap()
+            if let current = search.value as? String, !current.isEmpty, current != "Search Apps" {
+                search.buttons["Clear text"].firstMatch.tap()
+            }
+            search.typeText(appName)
+            attempts += 1
+        } while !row.waitForExistence(timeout: Timeout.optional) && attempts < 8
+        XCTAssertTrue(row.exists, "Settings did not find \(appName)")
         row.tap()
         let paste = settings.staticTexts["Paste from Other Apps"].firstMatch
         XCTAssertTrue(paste.waitForExistence(timeout: Timeout.screen), "No paste setting for \(appName)")

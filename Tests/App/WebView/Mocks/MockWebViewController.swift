@@ -46,6 +46,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var showLoggedOutStateCalled = false
     var showLoggedOutStateExpectation: XCTestExpectation?
     var openInBrowserCalled = false
+    var handleOverlayDismissedCallCount = 0
 
     init() {
         self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
@@ -53,15 +54,13 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     var presentationWindow: UIWindow?
     private(set) var showSettingsCalled = false
-    private(set) var showSettingsPushedOntoNavigationStack = false
 
     func load(request: URLRequest) {
         // Simulate loading a request
     }
 
-    func showSettingsViewController(pushOntoNavigationStack: Bool) {
+    func showSettingsViewController() {
         showSettingsCalled = true
-        showSettingsPushedOntoNavigationStack = pushOntoNavigationStack
     }
 
     func openDebug() {
@@ -156,6 +155,10 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func refresh() {
         refreshCalled = true
+    }
+
+    func handleOverlayDismissed() {
+        handleOverlayDismissedCallCount += 1
     }
 
     func refreshIfDisconnected() {

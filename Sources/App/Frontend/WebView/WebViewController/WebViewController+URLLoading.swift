@@ -73,6 +73,17 @@ extension WebViewController {
         }
     }
 
+    /// Assist opened from the Action Button or a Control Center control on a cold launch is presented over
+    /// the frontend before the frontend is ever on screen, so the appearance and activation events that
+    /// normally load the page pass while it is covered. Without a check once Assist closes, the stand-by
+    /// loader can stay up over a web view that never loaded, or whose watchdog ran while it was hidden.
+    /// Every step is safe to repeat, so a frontend that loaded fine behind Assist is left as it is.
+    func handleOverlayDismissed() {
+        webViewScriptMessageHandler.deliverDeferredMessages()
+        loadActiveURLIfNeeded()
+        overlayState?.frontendUncovered.send()
+    }
+
     /// How long an in-flight `loadActiveURLIfNeeded()` attempt may run before a new call treats it
     /// as hung and replaces it. Attempts normally finish in well under a second; the worst healthy
     /// case is two sequential network-info fetches (`webviewURL()` plus the kiosk dashboard URL),
@@ -83,6 +94,11 @@ extension WebViewController {
     @objc func loadActiveURLIfNeeded() {
         guard webView != nil else {
             Current.Log.info("not loading, web view not built yet")
+            return
+        }
+
+        guard !isRetired else {
+            Current.Log.info("not loading, retired")
             return
         }
 
@@ -118,8 +134,14 @@ extension WebViewController {
     }
 
     private func continueLoadingActiveURLIfNeeded() {
-        // Re-checked because the cache-clean check above is asynchronous: a log out landing while it
-        // was in flight would otherwise navigate back into the server from this completion.
+        // Re-checked because the cache-clean check above is asynchronous: a log out or a retirement
+        // landing while it was in flight would otherwise navigate back into the server from this
+        // completion.
+        guard !isRetired else {
+            Current.Log.info("not loading, retired")
+            return
+        }
+
         guard !didLogOut else {
             Current.Log.info("not loading, logged out of \(server.identifier.rawValue)")
             return

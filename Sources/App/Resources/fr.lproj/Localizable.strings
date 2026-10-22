@@ -3190,31 +3190,9 @@ Tant qu'aucune URL n'est considérée comme sûre, les données de ce serveur ne
 "web_view.server_selection.title" = "Choisir un serveur";
 "web_view.unique_server_selection.title" = "Choisir un serveur";
 "webrtc_player.known_issues.title" = "Problèmes connus";
-"whats_new.app_support_update.item_body" = "Il s'agit de la dernière mise à jour pour iOS 15, watchOS 8 et macOS 11 et versions antérieures. Appuyez pour en savoir plus.";
-"whats_new.app_support_update.item_title" = "La prise en charge d'iOS 15, watchOS 8 et macOS 11 prendra fin";
 "whats_new.app_support_update.title" = "Mise à jour de la prise en charge de l'app";
-"whats_new.energy_widget.article_body" = "Le nouveau widget **Énergie** affiche votre tableau de bord d'énergie sur votre écran d'accueil et votre écran verrouillé.\
-​\
-**Ce qu'il affiche**\
-Le réseau, le solaire, la batterie et le gaz pour la période de votre choix : aujourd'hui, hier, cette semaine ou ce mois-ci. Choisissez la source affichée en premier ou laissez-le décider. Le petit format indique la puissance en temps réel si des capteurs de puissance sont configurés, tandis que les formats plus larges détaillent les totaux de la période pour chaque source.\
-​\
-**Comment l'ajouter**\
-Maintenez le doigt appuyé sur votre écran d'accueil, touchez le bouton d'ajout dans le coin supérieur, recherchez Home Assistant, puis sélectionnez Énergie. Pour l'écran verrouillé, maintenez le doigt appuyé dessus, touchez Personnaliser, puis ajoutez-y le widget. Un tableau de bord d'énergie doit préalablement être configuré dans Home Assistant.";
-"whats_new.energy_widget.item_body" = "Consultez en un coup d'œil l'énergie que votre maison consomme, produit et stocke sur votre écran d'accueil et votre écran verrouillé. Appuyez pour en savoir plus.";
-"whats_new.energy_widget.item_title" = "Widget Énergie";
-"whats_new.energy_widget.mac.article_body" = "Le nouveau widget **Énergie** affiche votre tableau de bord d'énergie directement sur votre bureau.\
-\
-**Ce qu'il affiche**\
-Le réseau, le solaire, la batterie et le gaz pour la période de votre choix : aujourd'hui, hier, cette semaine ou ce mois-ci. Choisissez la source affichée en premier ou laissez-le décider. Le petit format indique la puissance en temps réel si des capteurs de puissance sont configurés, tandis que les formats plus larges détaillent les totaux de la période pour chaque source.\
-\
-**Comment l'ajouter**\
-Faites un clic droit sur votre bureau, choisissez « Modifier les widgets », recherchez Home Assistant, puis sélectionnez Énergie. Un tableau de bord d'énergie doit préalablement être configuré dans Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "Consultez en un coup d'œil l'énergie que votre maison consomme, produit et stocke.\
-Appuyez pour en savoir plus.";
 "whats_new.item.opens_article_hint" = "Ouvre un article";
 "whats_new.item.opens_link_hint" = "Ouvre un lien";
-"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
-"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "Nouveautés de l'app Companion";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Activate";

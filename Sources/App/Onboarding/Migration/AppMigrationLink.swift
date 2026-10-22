@@ -26,9 +26,10 @@ enum AppMigrationLink: Equatable {
     init?(url: URL) {
         guard url.host?.lowercased() == Self.host,
               let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
-        let query = Dictionary(uniqueKeysWithValues: (components.queryItems ?? []).compactMap { item in
-            item.value.map { (item.name, $0) }
-        })
+        var query: [String: String] = [:]
+        for item in components.queryItems ?? [] {
+            guard let value = item.value, query.updateValue(value, forKey: item.name) == nil else { return nil }
+        }
         guard let sessionID = query["session"].flatMap(UUID.init(uuidString:)) else { return nil }
         switch components.path {
         case "/request":

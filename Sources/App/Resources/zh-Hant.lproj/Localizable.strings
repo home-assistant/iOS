@@ -3190,30 +3190,9 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "web_view.server_selection.title" = "選擇伺服器";
 "web_view.unique_server_selection.title" = "選擇伺服器";
 "webrtc_player.known_issues.title" = "已知問題";
-"whats_new.app_support_update.item_body" = "這是針對 iOS 15、watchOS 8 及 macOS 11 和更早版本的最後一次更新。點選以閱讀更詳細內容。";
-"whats_new.app_support_update.item_title" = "針對 iOS 15、watchOS 8 和 macOS 11 的支援即將終止";
 "whats_new.app_support_update.title" = "應用程式支援更新";
-"whats_new.energy_widget.article_body" = "全新的**能源**小工具，可將能源儀表板顯示於主畫面與鎖定畫面上。\
-\
-**顯示內容**\
-依選擇的時段——今天、昨天、本週或本月——顯示電網、太陽能、電池及瓦斯的數據。可以選擇優先顯示的來源，或讓系統自動決定。小尺寸與鎖定畫面會在設定了電力感測器的情況下顯示即時用電量，較寬的尺寸則會列出該時段內所有來源的總計數據。\
-\
-**新增方式**\
-長按主畫面，點選右上角的新增按鈕，搜尋 Home Assistant，然後選擇能源。若要新增至鎖定畫面，請長按鎖定畫面，點選自訂，再於該處新增小工具。使用前需先在 Home Assistant 中設定好能源儀表板。";
-"whats_new.energy_widget.item_body" = "在主畫面與鎖定畫面上即可一目了然地查看家的能源消耗、生產和儲存情況。點擊了解更多。";
-"whats_new.energy_widget.item_title" = "能源小工具";
-"whats_new.energy_widget.mac.article_body" = "全新的**能源**小工具，可將能源儀表板顯示於桌面上。\
-\
-**顯示內容**\
-依選擇的時段——今天、昨天、本週或本月——顯示電網、太陽能、電池及瓦斯的數據。可以選擇優先顯示的來源，或讓系統自動決定。小尺寸會在設定了電力感測器的情況下顯示即時用電量，較寬的尺寸則會列出該時段內所有來源的總計數據。\
-\
-**新增方式**\
-在桌面上按右鍵，選擇編輯小工具，搜尋 Home Assistant，然後選擇能源。使用前需先在 Home Assistant 中設定好能源儀表板。";
-"whats_new.energy_widget.mac.item_body" = "在電腦上即可一目了然地查看家的能源消耗、生產和儲存情況。點擊了解更多。";
 "whats_new.item.opens_article_hint" = "開啟文章";
 "whats_new.item.opens_link_hint" = "開啟連結";
-"whats_new.live_activities.item_body" = "從鎖定畫面和靈動島追蹤計時器、正在運作的應用程式或任何進行中的事項。點一下以了解通知如何啟動一個。";
-"whats_new.live_activities.item_title" = "即時動態";
 "whats_new.title" = "Companion App 新增功能";
 "whats_new.version_format" = "%@ 版";
 "widgets.action.name.activate" = "啟用";

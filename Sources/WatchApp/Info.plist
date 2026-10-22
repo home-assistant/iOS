@@ -62,6 +62,6 @@
 		<string>self-care</string>
 	</array>
 	<key>WKCompanionAppBundleIdentifier</key>
-	<string>$(BUNDLE_ID_PREFIX).HomeAssistant$(BUNDLE_ID_SUFFIX)</string>
+	<string>$(APP_BUNDLE_ID)</string>
 </dict>
 </plist>

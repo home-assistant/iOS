@@ -337,7 +337,14 @@ public class HomeAssistantAPI {
 
     /// Set while the app hands its setup to another app: nothing may open a websocket or refresh a
     /// registration until it is cleared.
-    public static var connectionsSuspended = false
+    private static var connectionsSuspendedInProcess = false
+
+    /// Set by the app during the hand-off; every process of the app also honours the hand-off phase
+    /// persisted in the app group, so a widget or intent cannot reconnect once the setup has moved.
+    public static var connectionsSuspended: Bool {
+        get { connectionsSuspendedInProcess || AppMigrationHandoff.isActive }
+        set { connectionsSuspendedInProcess = newValue }
+    }
 
     public func connectWebSocketIfNeeded() {
         guard !Self.connectionsSuspended else {
@@ -499,10 +506,13 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func getConfig() -> Promise<Void> {
+    /// - Parameter overrideURL: a base URL to reach the webhook through instead of the one the
+    ///   connection would pick, for callers that already know which URL reaches the server.
+    public func getConfig(overrideURL: URL? = nil) -> Promise<Void> {
         let promise: Promise<ConfigResponse> = Current.webhooks.sendEphemeral(
             server: server,
-            request: .init(type: "get_config", data: [:])
+            request: .init(type: "get_config", data: [:]),
+            overrideURL: overrideURL
         )
 
         return promise.done { [self] config in
@@ -1043,7 +1053,6 @@ public class HomeAssistantAPI {
         location: CLLocation? = nil
     ) -> Promise<Void> {
         let retry = sensorUpdateRetry
-        let generation = retry.beginUpdate()
 
         return firstly {
             Current.sensors.sensors(
@@ -1064,6 +1073,10 @@ public class HomeAssistantAPI {
                 Current.Log.info("skipping network request for unchanged sensor update")
                 return .value(())
             } else {
+                // Numbered as the payload goes out rather than when the run started: an overlapping
+                // run that started earlier but read later carries the newer values, and the webhook
+                // manager replaces requests in this order too.
+                let generation = retry.beginUpdate()
                 return Current.webhooks.send(
                     identifier: .updateSensors,
                     server: server,
@@ -1073,7 +1086,13 @@ public class HomeAssistantAPI {
                     case .fulfilled:
                         retry.noteSuccess(generation: generation, limitedTo: limitedTo)
                     case let .rejected(error):
-                        Current.Log.error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        if error.isCancelled {
+                            // Replaced by a newer request for this server; the retry decides.
+                            Current.Log.info("sensor update for \(trigger) to \(server.info.name) was replaced")
+                        } else {
+                            Current.Log
+                                .error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        }
                         retry.noteFailure(generation: generation, limitedTo: limitedTo)
                     }
                 }

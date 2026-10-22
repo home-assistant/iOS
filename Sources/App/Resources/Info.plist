@@ -217,9 +217,11 @@
 	</dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>io.robbie.homeassistant.backgroundfetch</string>
-		<string>io.robbie.homeassistant.reminderssync</string>
+		<string>$(BACKGROUND_TASK_ID_PREFIX).backgroundfetch</string>
+		<string>$(BACKGROUND_TASK_ID_PREFIX).reminderssync</string>
 	</array>
+	<key>HACrashReportingBundleIDPrefix</key>
+	<string>$(CRASH_REPORTING_BUNDLE_ID_PREFIX)</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

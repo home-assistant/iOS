@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83  # v1.328.0
+      - uses: ruby/setup-ruby@a89e929fdc35d88f2b8f20f26452c4adbeb9e371  # v1.330.0
         with:
           ruby-version: .ruby-version
           bundler-cache: true
@@ -150,7 +150,25 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83  # v1.328.0
+
+      # The xcode-27 image registers the watchOS 27.0 runtime twice, once "Unusable - Cryptex Mount
+      # Preferred". About 20 seconds after CoreSimulator first starts, simdiskimaged re-registers it
+      # and retries ejecting disks by a guessed BSD name, which can unmount the usable copy mid-run:
+      # the watch tests then fail with "runtime path not found" or hang connecting to the simulator
+      # (actions/runner-images#14946). Deleting the unusable copy first, before anything else starts
+      # CoreSimulator, leaves nothing to re-register. When the daemon takes the usable copy down
+      # anyway, the test lane mounts it again before the watch tests (Tools/EnsureSimulatorRuntime.sh).
+      # Remove this step once the image is fixed.
+      - name: Remove unusable simulator runtimes
+        run: |
+          xcrun simctl runtime list
+          for id in $(xcrun simctl runtime list | grep '(Unusable' \
+            | grep -oE '[0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12}'); do
+            xcrun simctl runtime delete "$id" || echo "::warning::Could not delete simulator runtime $id"
+          done
+          xcrun simctl runtime list
+
+      - uses: ruby/setup-ruby@a89e929fdc35d88f2b8f20f26452c4adbeb9e371  # v1.330.0
         with:
           ruby-version: .ruby-version
 
@@ -238,14 +256,18 @@ jobs:
       # exit nonzero on their own, so the action needs the same treatment.
       - name: Build coverage report
         continue-on-error: true
+        timeout-minutes: 10
         run: >-
           python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult
           --lcov fastlane/test_output/coverage.lcov
           --summary "$GITHUB_STEP_SUMMARY"
 
+      # The uploader has hung on a run that was otherwise green, and `continue-on-error` only covers
+      # a failure: a step that never ends still eats the job's remaining time, so bound it.
       - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
         name: "Upload Code Coverage"
         continue-on-error: true
+        timeout-minutes: 10
         with:
           files: fastlane/test_output/coverage.lcov
           disable_search: true

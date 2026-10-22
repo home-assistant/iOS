@@ -62,6 +62,10 @@ extension WebViewController {
     }
 
     func handleContentProcessTermination() {
+        guard !isRetired else {
+            Current.Log.info("Web content process terminated behind a retired frontend, leaving it alone")
+            return
+        }
         guard overlayState?.showsNoActiveURL != true else {
             Current.Log.error("Web content process terminated behind the no-active-URL state, leaving it alone")
             return

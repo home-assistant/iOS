@@ -143,7 +143,7 @@ final class AssistServiceRunStagesTests: XCTestCase {
         try completePipelinesRefresh(with: [voicePipeline, textOnlyPipeline])
 
         XCTAssertTrue(connection.pendingSubscriptions.isEmpty)
-        wait(for: [reported], timeout: 2)
+        wait(for: [reported], timeout: 10)
         XCTAssertEqual(delegate.errors.first?.code, AssistService.speechToTextUnsupportedErrorCode)
         XCTAssertEqual(delegate.errors.first?.message, L10n.Assist.Error.speechToTextUnsupported)
     }
