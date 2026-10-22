@@ -256,14 +256,18 @@ jobs:
       # exit nonzero on their own, so the action needs the same treatment.
       - name: Build coverage report
         continue-on-error: true
+        timeout-minutes: 10
         run: >-
           python3 Tools/xccov_to_lcov.py fastlane/test_output/Tests-Unit.xcresult
           --lcov fastlane/test_output/coverage.lcov
           --summary "$GITHUB_STEP_SUMMARY"
 
+      # The uploader has hung on a run that was otherwise green, and `continue-on-error` only covers
+      # a failure: a step that never ends still eats the job's remaining time, so bound it.
       - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
         name: "Upload Code Coverage"
         continue-on-error: true
+        timeout-minutes: 10
         with:
           files: fastlane/test_output/coverage.lcov
           disable_search: true

@@ -994,6 +994,39 @@ class ConnectionInfoTests: XCTestCase {
         isOnInternalNetwork = await info.isOnInternalNetwork()
         XCTAssertFalse(isOnInternalNetwork)
     }
+
+    func testHostAndPortIdentitiesCoverInternalAndExternalButNotRemoteUI() {
+        var info = ConnectionInfo(
+            externalURL: URL(string: "https://home.example.com"),
+            internalURL: URL(string: "http://HomeAssistant.local:8123/lovelace"),
+            cloudhookURL: nil,
+            remoteUIURL: URL(string: "https://remote.ui.nabu.casa"),
+            webhookID: "webhook",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+
+        XCTAssertEqual(info.hostAndPortIdentities, ["homeassistant.local:8123", "home.example.com:443"])
+
+        info.set(address: nil, for: .external)
+        info.set(address: nil, for: .internal)
+        XCTAssertTrue(info.hostAndPortIdentities.isEmpty)
+    }
+
+    func testHostAndPortIdentitiesOfURLsDropDuplicatesAndMissingHosts() {
+        let identities = URL.hostAndPortIdentities(of: [
+            URL(string: "http://homeassistant.local:8123"),
+            URL(string: "https://homeassistant.local:8123/auth"),
+            URL(string: "file:///tmp/nothing"),
+            nil,
+        ])
+
+        XCTAssertEqual(identities, ["homeassistant.local:8123"])
+    }
 }
 
 private extension ConnectionInfo {

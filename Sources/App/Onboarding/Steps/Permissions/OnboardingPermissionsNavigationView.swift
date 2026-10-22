@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -9,6 +10,15 @@ struct OnboardingPermissionsNavigationView: View {
 
     let onboardingServer: Server
     private let onDismiss: (() -> Void)?
+    /// Whether the navigation bar is only shown while there is a back button in it. Hosts that keep
+    /// their own bar items in it leave the bar as it is.
+    private let showsNavigationBarForBackOnly: Bool
+
+    /// The step on screen and the direction it was reached in. SwiftUI animates a removed view with
+    /// the transition of its last render, so the page being left is first redrawn with the new
+    /// direction and only removed one update later.
+    @State private var displayedStepIndex = 0
+    @State private var isAdvancing = true
 
     @Environment(\.layoutDirection) private var layoutDirection
     @Environment(\.dismiss) private var dismiss
@@ -16,30 +26,62 @@ struct OnboardingPermissionsNavigationView: View {
     init(
         onboardingServer: Server,
         steps: [OnboardingPermissionsNavigationViewModel.StepID]? = nil,
+        showsNavigationBarForBackOnly: Bool = false,
+        viewModel: OnboardingPermissionsNavigationViewModel? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self
             ._viewModel =
-            .init(wrappedValue: OnboardingPermissionsNavigationViewModel(
+            .init(wrappedValue: viewModel ?? OnboardingPermissionsNavigationViewModel(
                 onboardingServer: onboardingServer,
                 steps: steps
             ))
         self.onboardingServer = onboardingServer
+        self.showsNavigationBarForBackOnly = showsNavigationBarForBackOnly
         self.onDismiss = onDismiss
     }
 
     var body: some View {
         ZStack {
             ForEach(Array(viewModel.steps.enumerated()), id: \.element) { index, stepId in
-                if index == viewModel.currentStepIndex {
+                if index == displayedStepIndex {
                     stepView(for: stepId)
-                        .transition(pushTransition)
+                        .transition(pushTransition(for: stepId))
                         .id(stepId)
                         .zIndex(Double(index))
                 }
             }
         }
-        .animation(DesignSystem.Animation.default, value: viewModel.currentStepIndex)
+        .animation(DesignSystem.Animation.default, value: displayedStepIndex)
+        .onChange(of: viewModel.currentStepIndex) { newValue in
+            isAdvancing = newValue >= displayedStepIndex
+            DispatchQueue.main.async {
+                displayedStepIndex = newValue
+            }
+        }
+        .toolbar {
+            if showsBackButton {
+                ToolbarItem(placement: .navigation) {
+                    Button {
+                        viewModel.previousStep()
+                    } label: {
+                        Label(L10n.Onboarding.Permissions.back, systemSymbol: .chevronBackward)
+                    }
+                    .accessibilityIdentifier(AccessibilityIdentifier.onboardingHomeNetworkBack.rawValue)
+                }
+            }
+        }
+        .toolbar(navigationBarVisibility, for: .navigationBar)
+    }
+
+    private var navigationBarVisibility: Visibility {
+        guard showsNavigationBarForBackOnly else { return .automatic }
+        return showsBackButton ? .visible : .hidden
+    }
+
+    /// Follows the step on screen, so the bar changes together with the page instead of ahead of it.
+    private var showsBackButton: Bool {
+        viewModel.canGoBack(fromStepAt: displayedStepIndex)
     }
 
     @ViewBuilder
@@ -147,9 +189,9 @@ struct OnboardingPermissionsNavigationView: View {
 
     // Mimics UINavigationController push/pop animation
 
-    private var pushTransition: AnyTransition {
+    private func pushTransition(for stepId: OnboardingPermissionsNavigationViewModel.StepID) -> AnyTransition {
         // Special handling for completion screen - always fade out
-        if viewModel.currentStepIndex == viewModel.steps.count - 1, viewModel.currentStep == .completion {
+        if stepId == .completion {
             return .opacity
         }
 
@@ -159,8 +201,8 @@ struct OnboardingPermissionsNavigationView: View {
 
         // Forward: insert from trailing, remove to leading (push)
         // Backward: insert from leading, remove to trailing (pop)
-        let insertionEdge: Edge = viewModel.isAdvancing ? trailing : leading
-        let removalEdge: Edge = viewModel.isAdvancing ? leading : trailing
+        let insertionEdge: Edge = isAdvancing ? trailing : leading
+        let removalEdge: Edge = isAdvancing ? leading : trailing
 
         return .asymmetric(
             insertion: .move(edge: insertionEdge).combined(with: .opacity),
