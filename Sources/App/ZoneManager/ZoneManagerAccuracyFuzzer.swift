@@ -37,13 +37,30 @@ extension Sequence<ZoneManagerAccuracyFuzzer> {
 
 /// if we're getting a region monitoring event saying that we're inside, but we're not from GPS perspective
 struct ZoneManagerAccuracyFuzzerRegionEnter: ZoneManagerAccuracyFuzzer {
+    /// How far outside the region a fix may be and still have its accuracy widened to reach it.
+    ///
+    /// Region monitoring without Wi-Fi falls back to cell positioning and reports "inside" for every
+    /// region within roughly a kilometre, so a fix much farther out than GPS error is evidence the
+    /// region event is wrong, not that the fix is. Widening the accuracy anyway makes core put the
+    /// device in every zone the widened circle touches.
+    static let maximumDistance: CLLocationDistance = 100
+
     func fuzz(for location: CLLocation, for event: ZoneManagerEvent) -> ZoneManagerAccuracyFuzzerChange? {
         guard case let .region(region as CLCircularRegion, .inside) = event.eventType,
               !region.containsWithAccuracy(location) else {
             return nil
         }
 
-        return .accuracy(region.distanceWithAccuracy(from: location))
+        let distance = region.distanceWithAccuracy(from: location)
+
+        guard distance <= Self.maximumDistance else {
+            Current.Log.info(
+                "not fuzzing accuracy for \(region.identifier): fix is \(distance)m outside the region"
+            )
+            return nil
+        }
+
+        return .accuracy(distance)
     }
 }
 
