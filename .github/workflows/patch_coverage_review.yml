@@ -1,0 +1,162 @@
+# Posts the verdict of the CI "Patch coverage" job on the pull request it measured.
+#
+# The CI run itself cannot do this: a pull request from a fork runs with a read-only
+# token, so a review it tried to submit would fail on the API call. A `workflow_run`
+# workflow runs in this repository with its own token, whatever the pull request's
+# origin. It only ever runs the copy of this file on the default branch, and the only
+# thing it takes from the CI run is the handful of numbers the job uploaded, which are
+# checked before they are repeated.
+name: Patch coverage review
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: >-
+    patch-coverage-review-${{ github.event.workflow_run.head_repository.full_name
+    }}-${{ github.event.workflow_run.head_branch }}
+
+jobs:
+  review:
+    name: Review patch coverage
+    # A cancelled CI run was superseded by a newer push, whose own run reports instead.
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    env:
+      PATCH_COVERAGE_DIR: patch-coverage
+    steps:
+      # Missing when the CI run had no coverage to measure: the tests or the conversion
+      # failed, or the change touched nothing coverable. That is a run with no number
+      # to hold against the pull request, so any earlier request is dismissed below.
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        name: "Download Patch Coverage Result"
+        id: result
+        continue-on-error: true
+        with:
+          name: patch-coverage
+          path: patch-coverage
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Request or dismiss a coverage review
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          RESULT_AVAILABLE: ${{ steps.result.outcome }}
+        with:
+          script: |
+            const fs = require('fs')
+            const path = require('path')
+
+            const { owner, repo } = context.repo
+            const run = context.payload.workflow_run
+
+            // The run's payload names no pull request for a fork, so the pull request
+            // is looked up by the branch the run was for, and only counts when its
+            // head is still the commit that run tested.
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              state: 'open',
+              head: `${run.head_repository.owner.login}:${run.head_branch}`,
+              per_page: 100,
+            })
+            const pull = pulls.find((candidate) => candidate.head.sha === run.head_sha)
+            if (!pull) {
+              core.info(`No open pull request has ${run.head_sha} at its head, nothing to review`)
+              return
+            }
+            const pull_number = pull.number
+
+            // The uploaded numbers are the only thing taken from the run, and they are
+            // repeated in a review this repository's bot signs, so anything that is not
+            // the plain numbers the job writes is treated as no result at all.
+            let result = null
+            if (process.env.RESULT_AVAILABLE === 'success') {
+              const file = path.join(process.env.PATCH_COVERAGE_DIR, 'result.env')
+              const fields = Object.fromEntries(
+                fs.readFileSync(file, 'utf8')
+                  .split('\n')
+                  .filter((line) => line.includes('='))
+                  .map((line) => line.split('=', 2)),
+              )
+              const number = /^\d+(\.\d+)?$/
+              const valid =
+                ['true', 'false'].includes(fields.passed) &&
+                [fields.coverage, fields.covered, fields.changed, fields.threshold].every(
+                  (value) => number.test(value || ''),
+                )
+              if (valid) {
+                result = fields
+              } else {
+                core.warning('The patch coverage result is not in the expected form, treating it as missing')
+              }
+            }
+
+            // Marks the review as this workflow's, so the dismissal leaves other bots alone.
+            const marker = '<!-- patch-coverage -->'
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner,
+              repo,
+              pull_number,
+              per_page: 100,
+            })
+            const outstanding = reviews.filter(
+              (review) => review.state === 'CHANGES_REQUESTED' && (review.body || '').includes(marker),
+            )
+
+            if (result && result.passed === 'false') {
+              const body = [
+                marker,
+                `### Test coverage of this pull request is below ${result.threshold}%`,
+                '',
+                `The unit tests run **${result.coverage}%** of the lines this pull request`,
+                `adds or changes (${result.covered} of ${result.changed} coverable lines).`,
+                '',
+                'The per-file breakdown, and the changed lines no test runs, are in the',
+                `[job summary](${run.html_url}). Adding tests for those lines and pushing dismisses this`,
+                'review automatically.',
+                '',
+                'Lines that carry no executable code, and files the unit test targets do not',
+                'build, are not counted. If the new code genuinely cannot be unit tested, a',
+                'maintainer can dismiss this review.',
+              ].join('\n')
+
+              // A push that leaves coverage exactly where it was would otherwise stack an
+              // identical review on every run, so repeat the request only when it changed.
+              const latest = outstanding[outstanding.length - 1]
+              if (latest && latest.body === body) {
+                core.info('The outstanding coverage review already says this, leaving it alone')
+                return
+              }
+
+              await github.rest.pulls.createReview({ owner, repo, pull_number, event: 'REQUEST_CHANGES', body })
+              core.info(`Requested changes: patch coverage ${result.coverage}% is below ${result.threshold}%`)
+              return
+            }
+
+            // Coverage met the bar, or could not be measured at all: a request from an
+            // earlier run must never be left blocking a pull request whose coverage this
+            // run has no number for.
+            const message = result
+              ? `Patch coverage is now ${result.coverage}%, at or above the ${result.threshold}% threshold.`
+              : 'Patch coverage could not be measured on this run, so the gate no longer applies.'
+
+            for (const review of outstanding) {
+              try {
+                await github.rest.pulls.dismissReview({ owner, repo, pull_number, review_id: review.id, message })
+                core.info(`Dismissed review ${review.id}`)
+              } catch (error) {
+                // A request nobody can dismiss blocks the pull request for good, so say
+                // so loudly enough that a maintainer can dismiss it by hand.
+                core.warning(`Could not dismiss review ${review.id}, dismiss it by hand: ${error.message}`)
+              }
+            }

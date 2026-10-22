@@ -92,6 +92,13 @@ Codecov statuses in `codecov.yaml`. Below 90%, the job fails and `github-actions
 submits a **changes-requested review** naming the shortfall; the per-file breakdown and the
 list of changed lines no test runs are in the run's job summary.
 
+The review is not posted by the CI run itself: a pull request from a fork runs with a
+read-only token. The job uploads its numbers as the `patch-coverage` artifact, and the
+separate `Patch coverage review` workflow (`.github/workflows/patch_coverage_review.yml`),
+triggered by `workflow_run` when CI completes, requests or dismisses the review with a token
+that can write to any pull request. Like every `workflow_run` workflow, it runs the copy on
+`main`, so a change to it only takes effect once merged.
+
 `Tools/diff_coverage.py` computes the number from the LCOV tracefile that
 `Tools/xccov_to_lcov.py` writes out of the test run's `.xcresult`, and the same script
 reproduces the CI verdict locally:
