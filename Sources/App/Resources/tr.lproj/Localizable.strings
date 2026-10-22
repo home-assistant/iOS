@@ -3071,30 +3071,9 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "web_view.server_selection.title" = "Sunucu seç";
 "web_view.unique_server_selection.title" = "Bir sunucu seçin";
 "webrtc_player.known_issues.title" = "Bilinen Sorunlar";
-"whats_new.app_support_update.item_body" = "Bu, iOS 15, watchOS 8 ve macOS 11 ve önceki sürümler için son güncellemedir. Daha fazla bilgi için dokunun.";
-"whats_new.app_support_update.item_title" = "iOS 15, watchOS 8 ve macOS 11 desteği sona erecek";
 "whats_new.app_support_update.title" = "Uygulama desteği güncellemesi";
-"whats_new.energy_widget.article_body" = "Yeni **Enerji** araç takımı, enerji kontrol panelinizi Ana Ekranınıza ve Kilit Ekranınıza getirir.\
-\
-**Neler gösterir**\
-Seçtiğiniz dönem için şebeke, güneş enerjisi, pil ve gaz verilerini gösterir: bugün, dün, bu hafta veya bu ay. Ön planda gösterilecek kaynağı seçin veya widget'ın karar vermesine izin verin. Küçük ve Kilit Ekranı boyutları, güç sensörleriniz kurulu olduğunda canlı güç değerlerini gösterir; daha geniş boyutlar ise her kaynak için döneme ait toplam değerleri gösterir.\
-\
-**Nasıl eklenir**\
-Ana Ekranınıza dokunup basılı tutun, üst köşedeki ekle düğmesine dokunun, Home Assistant'ı arayın ve **Enerji**'yi seçin. Kilit Ekranı için ise Kilit Ekranına dokunup basılı tutun, **Özelleştir**'e dokunun ve araç takımını buradan ekleyin. Home Assistant'ta yapılandırılmış bir enerji panosu gereklidir.";
-"whats_new.energy_widget.item_body" = "Ana Ekranınızda ve Kilit Ekranınızda evinizin ne kadar enerji tükettiğini, ürettiğini ve depoladığını bir bakışta görün. Daha fazla bilgi edinmek için dokunun.";
-"whats_new.energy_widget.item_title" = "Enerji araç takımı";
-"whats_new.energy_widget.mac.article_body" = "Yeni **Enerji** araç takımı, enerji gösterge panelinizi masaüstünüze getirir.\
-\
-**Neleri gösterir**\
-Seçtiğiniz dönem için şebeke, güneş enerjisi, pil ve gaz verilerini gösterir: bugün, dün, bu hafta veya bu ay. En üstte gösterilecek kaynağı seçin ya da seçimi widget’a bırakın. Küçük boyutta, güç sensörleriniz kurulu olduğunda anlık güç tüketimini gösterir; daha geniş boyutlarda ise her kaynak için ilgili dönemin toplam değerlerini gösterir.\
-\
-**Nasıl eklenir**\
-Masaüstünüze sağ tıklayın, Araç Takımlarını Düzenle'yi seçin, Home Assistant'ı arayın ve Enerji'yi seçin. Bunun için Home Assistant'ta yapılandırılmış bir enerji kontrol paneli gerekir.";
-"whats_new.energy_widget.mac.item_body" = "Masaüstünüzden evinizin ne kadar enerji tükettiğini, ürettiğini ve depoladığını bir bakışta görün. Daha fazla bilgi edinmek için dokunun.";
 "whats_new.item.opens_article_hint" = "Bir makaleyi açar";
 "whats_new.item.opens_link_hint" = "Bir bağlantıyı açar";
-"whats_new.live_activities.item_body" = "Kilit Ekranından ve Dinamik Ada'dan bir zamanlayıcıyı, çalışan bir cihazı veya devam eden herhangi bir işlemi takip edin. Bir bildirimin bunu nasıl başlattığını öğrenmek için dokunun.";
-"whats_new.live_activities.item_title" = "Canlı Etkinlikler";
 "whats_new.title" = "Yardımcı Uygulamada Yenilikler Neler?";
 "whats_new.version_format" = "Sürüm %@";
 "widgets.action.name.activate" = "Etkinleştir";

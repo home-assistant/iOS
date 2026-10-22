@@ -3071,30 +3071,9 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "web_view.server_selection.title" = "Server kiezen";
 "web_view.unique_server_selection.title" = "Kies één server";
 "webrtc_player.known_issues.title" = "Bekende problemen";
-"whats_new.app_support_update.item_body" = "Dit is de laatste update voor iOS 15, watchOS 8 en macOS 11 en eerdere versies. Tik hier om meer te lezen.";
-"whats_new.app_support_update.item_title" = "De ondersteuning voor iOS 15, watchOS 8 en macOS 11 wordt beëindigd";
 "whats_new.app_support_update.title" = "Update over app-ondersteuning";
-"whats_new.energy_widget.article_body" = "Met de nieuwe **Energie-widget** verschijnt je energiedashboard op je startscherm en vergrendelingsscherm.\
-\
-**Wat je te zien krijgt**\
-Netstroom, zonne-energie, accu en gas voor de periode die je kiest: vandaag, gisteren, deze week of deze maand. Kies zelf welke bron bovenaan staat, of laat de widget dat bepalen. De kleine en vergrendelingsschermformaten tonen het actuele stroomverbruik als je stroomsensoren hebt ingesteld, en de bredere formaten geven de totalen van de periode weer voor elke bron.\
-\
-**Hoe voeg je het toe**\
-Houd je startscherm ingedrukt, tik op de knop ‘Toevoegen’ in de bovenhoek, zoek naar Home Assistant en kies ‘Energie’. Voor het vergrendelingsscherm houd je dit ingedrukt, tik je op ‘Aanpassen’ en voeg je de widget daar toe. Hiervoor moet er een energiedashboard zijn geconfigureerd in Home Assistant.";
-"whats_new.energy_widget.item_body" = "Zie in één oogopslag op je startscherm en vergrendelingsscherm hoeveel energie je huis verbruikt, opwekt en opslaat. Tik voor meer informatie.";
-"whats_new.energy_widget.item_title" = "Energie-widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "Zie in één oogopslag op je bureaublad hoeveel energie je huis verbruikt, opwekt en opslaat. Tik voor meer informatie.";
 "whats_new.item.opens_article_hint" = "Opent een artikel";
 "whats_new.item.opens_link_hint" = "Opent een link";
-"whats_new.live_activities.item_body" = "Volg een timer, een apparaat dat draait of iets anders dat bezig is vanaf je vergrendelscherm en het Dynamische Eiland. Tik om te zien hoe een melding er een start.";
-"whats_new.live_activities.item_title" = "Live activiteiten";
 "whats_new.title" = "Nieuw in de Companion-app";
 "whats_new.version_format" = "Versie %@";
 "widgets.action.name.activate" = "Activeren";

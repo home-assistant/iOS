@@ -3072,30 +3072,9 @@ Solange keine URL als sicher gilt, werden die Daten dieses Servers nicht mit der
 "web_view.server_selection.title" = "Server auswählen";
 "web_view.unique_server_selection.title" = "Wähle einen Server";
 "webrtc_player.known_issues.title" = "Bekannte Probleme";
-"whats_new.app_support_update.item_body" = "Dies ist das letzte Update für iOS 15, watchOS 8 und macOS 11 und ältere Versionen. Tippe hier, um mehr zu erfahren.";
-"whats_new.app_support_update.item_title" = "Die Unterstützung für iOS 15, watchOS 8 und macOS 11 wird eingestellt";
 "whats_new.app_support_update.title" = "App-Support-Update";
-"whats_new.energy_widget.article_body" = "Das neue **Energie**-Widget bringt dein Energie-Dashboard auf deinen Start- und Sperrbildschirm.\
-\
-**Was es anzeigt**\
-Netz, PV, Akku und Gas für den von dir gewählten Zeitraum: heute, gestern, diese Woche oder diesen Monat. Wähle die Quelle, die an erster Stelle stehen soll, oder lass das Widget entscheiden. Die kleinen Widgets und die Widgets für den Sperrbildschirm zeigen die aktuellen Leistungswerte an, wenn du Leitungssensoren eingerichtet hast, während die breiteren Widgets die Gesamtsummen des Zeitraums für jede Quelle anzeigen.\
-\
-**So fügst du es hinzu**\
-Halte deinen Startbildschirm gedrückt, tippe auf den Knopf „Hinzufügen“ in der oberen Ecke, suche nach „Home Assistant“ und wähle „Energie“ aus. Für den Sperrbildschirm halte diesen gedrückt, tippe auf „Anpassen“ und füge das Widget dort hinzu. Dazu muss in Home Assistant ein Energie-Dashboard konfiguriert sein.";
-"whats_new.energy_widget.item_body" = "Sieh auf einen Blick auf deinem Start- und Sperrbildschirm, wie viel Energie dein Zuhause verbraucht, erzeugt und speichert. Tippe hier, um mehr zu erfahren.";
-"whats_new.energy_widget.item_title" = "Energie-Widget";
-"whats_new.energy_widget.mac.article_body" = "Das neue **Energie**-Widget bringt dein Energie-Dashboard auf deinen Schreibtisch.\
-\
-**Was es anzeigt**\
-Netz, PV, Akku und Gas für den von dir gewählten Zeitraum: heute, gestern, diese Woche oder diesen Monat. Wähle die Quelle, die an erster Stelle stehen soll, oder lass das Widget entscheiden. Die kleine Variante zeigt die aktuellen Leistungswerte an, wenn du Leistungssensoren eingerichtet hast, und die größeren Varianten zeigen die Gesamtwerte des Zeitraums für jede Quelle an.\
-\
-**So fügst du es hinzu**\
-Klicke mit der rechten Maustaste auf deinen Schreibtisch, wähle „Widgets bearbeiten“, suche nach „Home Assistant“ und wähle „Energie“. Dazu muss in Home Assistant ein Energie-Dashboard konfiguriert sein.";
-"whats_new.energy_widget.mac.item_body" = "Sieh auf einen Blick auf deinem Schreibtisch, wie viel Energie dein Zuhause verbraucht, erzeugt und speichert. Tippe hier, um mehr zu erfahren.";
 "whats_new.item.opens_article_hint" = "Öffnet einen Artikel";
 "whats_new.item.opens_link_hint" = "Öffnet einen Link";
-"whats_new.live_activities.item_body" = "Verfolge einen Timer, ein laufendes Gerät oder einen laufenden Vorgang direkt auf deinem Sperrbildschirm und im Dynamic Island. Tippe hier, um zu erfahren, wie eine Benachrichtigung einen solchen Vorgang auslöst.";
-"whats_new.live_activities.item_title" = "Live-Aktivitäten";
 "whats_new.title" = "Neues in der Companion-App";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Aktivieren";
