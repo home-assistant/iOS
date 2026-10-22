@@ -1,4 +1,3 @@
-import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -11,6 +10,8 @@ struct AppMigrationExportView: View {
     let openNewAppAction: () -> Void
     let transferAgainAction: () -> Void
     let cancelAction: () -> Void
+    /// The erased screen draws its checkmark on; snapshots want it already drawn.
+    var animatesErasedCheckmark = true
 
     @State private var showsTransferAgainConfirmation = false
 
@@ -18,19 +19,38 @@ struct AppMigrationExportView: View {
         switch state {
         case .preparing:
             AppMigrationProgressView(script: .export)
-        case .idle, .failed:
+        case .idle:
             AppMigrationOverviewView(
                 subtitle: L10n.AppMigration.Export.body,
                 serversCaption: summary.serversDescription,
-                failure: failureMessage,
-                actions: .transfer(state: progressButtonState, transfer: transferAction, later: cancelAction)
+                actions: .transfer(state: .idle, transfer: transferAction, later: cancelAction)
             )
             .onAppear {
-                if state == .idle {
-                    AppMigrationHaptics.warning()
-                } else {
-                    AppMigrationHaptics.error()
+                AppMigrationHaptics.warning()
+            }
+        case let .failed(message):
+            BaseOnboardingView(
+                illustration: {
+                    MaterialDesignIconsImage(icon: .alertCircleOutlineIcon, size: 96)
+                        .foregroundStyle(.haErrorColor)
+                        .padding(.top, DesignSystem.Spaces.two)
+                },
+                title: L10n.AppMigration.Export.Failed.title,
+                primaryDescription: message,
+                primaryActionTitle: L10n.AppMigration.Export.Failed.retryButton,
+                primaryAction: {
+                    AppMigrationHaptics.tap()
+                    transferAction()
+                },
+                primaryActionIdentifier: AccessibilityIdentifier.migrationExportTransfer.rawValue,
+                secondaryActionTitle: L10n.AppMigration.Export.laterButton,
+                secondaryAction: {
+                    AppMigrationHaptics.tap()
+                    cancelAction()
                 }
+            )
+            .onAppear {
+                AppMigrationHaptics.error()
             }
         case .handedOff, .erased:
             afterHandoff
@@ -40,8 +60,7 @@ struct AppMigrationExportView: View {
     private var afterHandoff: some View {
         BaseOnboardingView(
             illustration: {
-                MaterialDesignIconsImage(icon: .checkCircleOutlineIcon, size: 96)
-                    .foregroundStyle(.haSuccessColor)
+                CheckmarkDrawOnView(size: 96, tint: .haSuccessColor, animated: state == .erased && animatesErasedCheckmark)
                     .padding(.top, DesignSystem.Spaces.two)
             },
             title: state == .erased ? L10n.AppMigration.Export.Erased.title : L10n.AppMigration.Export.HandedOff.title,
@@ -72,21 +91,6 @@ struct AppMigrationExportView: View {
         }
         .onAppear {
             AppMigrationHaptics.success()
-        }
-    }
-
-    private var failureMessage: String? {
-        if case let .failed(message) = state {
-            return message
-        }
-        return nil
-    }
-
-    private var progressButtonState: HAProgressButtonState {
-        switch state {
-        case .idle, .handedOff, .erased: .idle
-        case .preparing: .inProgress
-        case .failed: .failure
         }
     }
 }

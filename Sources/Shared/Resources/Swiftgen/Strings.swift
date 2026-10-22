@@ -1271,16 +1271,16 @@ public enum L10n {
 
   public enum AppMigration {
     public enum Announcement {
-      /// Home Assistant is moving to a new app on the App Store. Transfer your servers and settings to it in a few seconds. Everything stays on this device.
+      /// Home Assistant is moving to the Open Home Foundation app on the App Store. Transfer your servers and settings to it in a few seconds. Everything stays on this device.
       public static var body: String { return L10n.tr("Localizable", "app_migration.announcement.body") }
       /// Not now
       public static var laterButton: String { return L10n.tr("Localizable", "app_migration.announcement.later_button") }
-      /// Home Assistant has a new app
+      /// Home Assistant has moved to the Open Home Foundation
       public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.title") }
-      /// Transfer to the new app
+      /// Transfer to the Open Home Foundation app
       public static var transferButton: String { return L10n.tr("Localizable", "app_migration.announcement.transfer_button") }
       public enum FollowUp {
-        /// Permissions, Home Screen widgets, Apple Watch and Shortcuts are set up again in the new app.
+        /// Permissions, Home Screen widgets, Apple Watch and Shortcuts are set up again in the Open Home Foundation app.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.announcement.follow_up.explanation") }
         /// A few things to set up again
         public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.follow_up.title") }
@@ -1288,7 +1288,7 @@ public enum L10n {
       public enum NewApp {
         /// The app is now published by the Open Home Foundation. This app will stop receiving updates.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.announcement.new_app.explanation") }
-        /// A new app, the same Home Assistant
+        /// A different app, the same Home Assistant
         public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.new_app.title") }
       }
       public enum Section {
@@ -1305,12 +1305,14 @@ public enum L10n {
     public enum Complete {
       /// Your setup is now in this app and you are signed in.
       public static var body: String { return L10n.tr("Localizable", "app_migration.complete.body") }
-      /// Your settings are now in this app. The previous app had no servers to sign in to.
+      /// Your settings are now in this app. Your existing app had no servers to sign in to.
       public static var bodyNoServers: String { return L10n.tr("Localizable", "app_migration.complete.body_no_servers") }
       /// Continue
       public static var continueButton: String { return L10n.tr("Localizable", "app_migration.complete.continue_button") }
-      /// Erase the previous app
+      /// Erase your existing app
       public static var eraseButton: String { return L10n.tr("Localizable", "app_migration.complete.erase_button") }
+      /// Keep it for now
+      public static var keepPreviousAppButton: String { return L10n.tr("Localizable", "app_migration.complete.keep_previous_app_button") }
       /// 1 server transferred
       public static var serverSingle: String { return L10n.tr("Localizable", "app_migration.complete.server_single") }
       /// %d servers transferred
@@ -1322,7 +1324,7 @@ public enum L10n {
       public enum Erased {
         /// It holds nothing any more. Delete it from your Home Screen when you like.
         public static var body: String { return L10n.tr("Localizable", "app_migration.complete.erased.body") }
-        /// Previous app erased
+        /// Existing app erased
         public static var title: String { return L10n.tr("Localizable", "app_migration.complete.erased.title") }
       }
       public enum Section {
@@ -1331,36 +1333,36 @@ public enum L10n {
       }
     }
     public enum Error {
-      /// The previous app cancelled the transfer.
+      /// Your existing app cancelled the transfer.
       public static var declined: String { return L10n.tr("Localizable", "app_migration.error.declined") }
       /// The transfer could not be read. Try again.
       public static var invalidPayload: String { return L10n.tr("Localizable", "app_migration.error.invalid_payload") }
-      /// The new Home Assistant app could not be opened.
+      /// The Open Home Foundation app could not be opened.
       public static var newAppUnavailable: String { return L10n.tr("Localizable", "app_migration.error.new_app_unavailable") }
-      /// Nothing was received from the previous app.
+      /// Nothing was received from your existing app.
       public static var noPayload: String { return L10n.tr("Localizable", "app_migration.error.no_payload") }
-      /// Nothing was received from the previous app. If iOS asked to allow a paste, choose Allow Paste and try again.
+      /// Nothing was received from your existing app. If iOS asked to allow a paste, choose Allow Paste and try again.
       public static var noPayloadAllowPaste: String { return L10n.tr("Localizable", "app_migration.error.no_payload_allow_paste") }
-      /// The previous app has already been erased, so there is nothing left to transfer. Set this app up from scratch.
+      /// Your existing app has already been erased, so there is nothing left to transfer. Set this app up from scratch.
       public static var previousAppErased: String { return L10n.tr("Localizable", "app_migration.error.previous_app_erased") }
-      /// The previous Home Assistant app could not be opened.
+      /// Your existing Home Assistant app could not be opened.
       public static var previousAppUnavailable: String { return L10n.tr("Localizable", "app_migration.error.previous_app_unavailable") }
-      /// Update the previous Home Assistant app before transferring.
+      /// Update your existing Home Assistant app before transferring.
       public static var unsupportedVersion: String { return L10n.tr("Localizable", "app_migration.error.unsupported_version") }
       /// The transfer did not match the request from this app.
       public static var wrongSession: String { return L10n.tr("Localizable", "app_migration.error.wrong_session") }
     }
     public enum Export {
-      /// The new app is asking to receive your setup. Nothing leaves this device.
+      /// The Open Home Foundation app is asking to receive your setup. Nothing leaves this device.
       public static var body: String { return L10n.tr("Localizable", "app_migration.export.body") }
       /// Do it later
       public static var laterButton: String { return L10n.tr("Localizable", "app_migration.export.later_button") }
-      /// Transfer to the new Home Assistant app
+      /// Transfer to the Open Home Foundation app
       public static var title: String { return L10n.tr("Localizable", "app_migration.export.title") }
       /// Transfer
       public static var transferButton: String { return L10n.tr("Localizable", "app_migration.export.transfer_button") }
       public enum Erased {
-        /// Your setup lives in the new app now. You can delete this app from your Home Screen.
+        /// Your setup lives in the Open Home Foundation app now. You can delete this app from your Home Screen.
         public static var body: String { return L10n.tr("Localizable", "app_migration.export.erased.body") }
         /// This app is now empty
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.erased.title") }
@@ -1368,17 +1370,17 @@ public enum L10n {
       public enum Failed {
         /// Try again
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.export.failed.retry_button") }
-        /// The new app could not receive the transfer
+        /// The Open Home Foundation app could not receive the transfer
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.failed.title") }
       }
       public enum HandedOff {
-        /// Open the new app
+        /// Go to the Open Home Foundation app
         public static var openButton: String { return L10n.tr("Localizable", "app_migration.export.handed_off.open_button") }
         /// Transfer sent
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.handed_off.title") }
         /// Transfer again
         public static var transferAgainButton: String { return L10n.tr("Localizable", "app_migration.export.handed_off.transfer_again_button") }
-        /// Open the new app and check that your servers and settings are there. When everything works, delete this app from your Home Screen.
+        /// Go to the Open Home Foundation app and check that your servers and settings are there. When everything works, delete this app from your Home Screen.
         public static var verifyBody: String { return L10n.tr("Localizable", "app_migration.export.handed_off.verify_body") }
       }
       public enum Section {
@@ -1388,7 +1390,7 @@ public enum L10n {
       public enum TransferAgainConfirmation {
         /// Transfer again
         public static var confirmButton: String { return L10n.tr("Localizable", "app_migration.export.transfer_again_confirmation.confirm_button") }
-        /// Everything already transferred to the new app is removed there, and this app sends your setup once more.
+        /// Everything already transferred to the Open Home Foundation app is removed there, and this app sends your setup once more.
         public static var resetBody: String { return L10n.tr("Localizable", "app_migration.export.transfer_again_confirmation.reset_body") }
         /// Transfer again?
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.transfer_again_confirmation.title") }
@@ -1398,12 +1400,12 @@ public enum L10n {
       public enum DeletePreviousApp {
         /// Remove it once everything works here.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.delete_previous_app.explanation") }
-        /// Delete the previous app
+        /// Delete your existing app
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.delete_previous_app.title") }
       }
       public enum HomeScreenWidgets {
-        /// Add them again from the new app.
-        public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.home_screen_widgets.explanation") }
+        /// Add them to your Home Screen again. What they show comes with you.
+        public static var placeExplanation: String { return L10n.tr("Localizable", "app_migration.follow_up.home_screen_widgets.place_explanation") }
         /// Home Screen widgets
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.home_screen_widgets.title") }
       }
@@ -1414,14 +1416,14 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.permissions.title") }
       }
       public enum Shortcuts {
-        /// Recreate Shortcuts that used the old app.
+        /// Recreate Shortcuts that used your existing app.
         public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.shortcuts.explanation") }
         /// Siri and Shortcuts
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.shortcuts.title") }
       }
       public enum WatchApp {
-        /// Install it and pick complications again.
-        public static var explanation: String { return L10n.tr("Localizable", "app_migration.follow_up.watch_app.explanation") }
+        /// Install it on your watch and add complications to your watch faces again. What they show comes with you.
+        public static var reinstallExplanation: String { return L10n.tr("Localizable", "app_migration.follow_up.watch_app.reinstall_explanation") }
         /// Apple Watch app
         public static var title: String { return L10n.tr("Localizable", "app_migration.follow_up.watch_app.title") }
       }
@@ -1429,18 +1431,18 @@ public enum L10n {
     public enum GetNewApp {
       /// Back
       public static var backButton: String { return L10n.tr("Localizable", "app_migration.get_new_app.back_button") }
-      /// Install the new Home Assistant app from the App Store, then come back here. The transfer starts as soon as the new app is on this device.
+      /// Install the Open Home Foundation app from the App Store, then come back here. The transfer starts as soon as it is on this device.
       public static var body: String { return L10n.tr("Localizable", "app_migration.get_new_app.body") }
       /// I have installed it
       public static var installedButton: String { return L10n.tr("Localizable", "app_migration.get_new_app.installed_button") }
-      /// Get the new app
+      /// Get the Open Home Foundation app
       public static var storeButton: String { return L10n.tr("Localizable", "app_migration.get_new_app.store_button") }
-      /// Get the new app first
+      /// Get the Open Home Foundation app first
       public static var title: String { return L10n.tr("Localizable", "app_migration.get_new_app.title") }
       public enum NotFound {
         /// Install it from the App Store and open this screen again.
         public static var body: String { return L10n.tr("Localizable", "app_migration.get_new_app.not_found.body") }
-        /// The new app is not on this device yet
+        /// The Open Home Foundation app is not on this device yet
         public static var title: String { return L10n.tr("Localizable", "app_migration.get_new_app.not_found.title") }
       }
     }
@@ -1454,26 +1456,34 @@ public enum L10n {
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.import.failed.retry_button") }
         /// The transfer did not complete
         public static var title: String { return L10n.tr("Localizable", "app_migration.import.failed.title") }
+        public enum ManualConfirmation {
+          /// Your setup stays in your existing app and is not transferred. Once this app is set up, delete your existing app from your Home Screen.
+          public static var body: String { return L10n.tr("Localizable", "app_migration.import.failed.manual_confirmation.body") }
+          /// Set up manually
+          public static var confirmButton: String { return L10n.tr("Localizable", "app_migration.import.failed.manual_confirmation.confirm_button") }
+          /// Set up this app from scratch?
+          public static var title: String { return L10n.tr("Localizable", "app_migration.import.failed.manual_confirmation.title") }
+        }
       }
       public enum OpenCheck {
-        /// This app asked iOS to open the previous Home Assistant app so it can send your setup. If it did not open, ask again.
+        /// This app asked iOS to open your existing Home Assistant app so it can send your setup. If it did not open, ask again.
         public static var body: String { return L10n.tr("Localizable", "app_migration.import.open_check.body") }
-        /// Open the previous app
+        /// Open your existing app
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.import.open_check.retry_button") }
-        /// Did the previous app open?
+        /// Did your existing app open?
         public static var title: String { return L10n.tr("Localizable", "app_migration.import.open_check.title") }
       }
       public enum Waiting {
-        /// Confirm the transfer in the previous Home Assistant app. You will be brought back here automatically.
+        /// Confirm the transfer in your existing Home Assistant app. You will be brought back here automatically.
         public static var body: String { return L10n.tr("Localizable", "app_migration.import.waiting.body") }
-        /// Open the previous app
+        /// Open your existing app
         public static var openButton: String { return L10n.tr("Localizable", "app_migration.import.waiting.open_button") }
-        /// Waiting for the previous app
+        /// Waiting for your existing app
         public static var title: String { return L10n.tr("Localizable", "app_migration.import.waiting.title") }
       }
     }
     public enum Intro {
-      /// Home Assistant has moved to a new app. Bring your servers and settings over from the previous app in a few seconds. Everything stays on this device.
+      /// Home Assistant has moved to the Open Home Foundation. Bring your servers and settings over from your existing app in a few seconds. Everything stays on this device.
       public static var body: String { return L10n.tr("Localizable", "app_migration.intro.body") }
       /// Continue
       public static var continueButton: String { return L10n.tr("Localizable", "app_migration.intro.continue_button") }
@@ -1489,11 +1499,11 @@ public enum L10n {
         /// App settings
         public static var title: String { return L10n.tr("Localizable", "app_migration.item.app_settings.title") }
       }
-      public enum CompanionSetup {
-        /// Configured items and complications.
-        public static var explanation: String { return L10n.tr("Localizable", "app_migration.item.companion_setup.explanation") }
-        /// Watch, CarPlay and widget setup
-        public static var title: String { return L10n.tr("Localizable", "app_migration.item.companion_setup.title") }
+      public enum CompanionChoices {
+        /// Which entities and actions your Watch, CarPlay and widgets show.
+        public static var explanation: String { return L10n.tr("Localizable", "app_migration.item.companion_choices.explanation") }
+        /// Watch, CarPlay and widget choices
+        public static var title: String { return L10n.tr("Localizable", "app_migration.item.companion_choices.title") }
       }
       public enum NfcTags {
         /// Approved tags and icon quick actions.
@@ -1515,10 +1525,10 @@ public enum L10n {
       }
     }
     public enum NoServers {
-      /// This app no longer connects to a Home Assistant server. Install the new Home Assistant app from the App Store and set up your home there.
-      public static var body: String { return L10n.tr("Localizable", "app_migration.no_servers.body") }
-      /// Home Assistant has a new app
-      public static var title: String { return L10n.tr("Localizable", "app_migration.no_servers.title") }
+      /// The Home Assistant app is now published by the Open Home Foundation. This app no longer connects to a Home Assistant server. Install the Open Home Foundation app from the App Store and set up your home there.
+      public static var movedBody: String { return L10n.tr("Localizable", "app_migration.no_servers.moved_body") }
+      /// Home Assistant has moved to the Open Home Foundation
+      public static var movedTitle: String { return L10n.tr("Localizable", "app_migration.no_servers.moved_title") }
     }
     public enum Overview {
       /// Start transfer
@@ -1526,13 +1536,15 @@ public enum L10n {
       /// What moves over
       public static var title: String { return L10n.tr("Localizable", "app_migration.overview.title") }
       public enum PasteNotice {
-        /// Your setup is handed over through a protected paste. When the new app opens, iOS asks whether it may paste from the previous app. Choose Allow Paste, otherwise nothing is transferred.
+        /// Your setup is handed over through a protected paste. When the Open Home Foundation app opens, iOS asks whether it may paste from your existing app. Choose Allow Paste, otherwise nothing is transferred.
         public static var body: String { return L10n.tr("Localizable", "app_migration.overview.paste_notice.body") }
+        /// Continue
+        public static var continueButton: String { return L10n.tr("Localizable", "app_migration.overview.paste_notice.continue_button") }
         /// Allow the paste when iOS asks
         public static var title: String { return L10n.tr("Localizable", "app_migration.overview.paste_notice.title") }
       }
       public enum Section {
-        /// Set up again in the new app
+        /// Set up again in the Open Home Foundation app
         public static var followUp: String { return L10n.tr("Localizable", "app_migration.overview.section.follow_up") }
         /// Comes with you
         public static var moves: String { return L10n.tr("Localizable", "app_migration.overview.section.moves") }
@@ -1543,7 +1555,7 @@ public enum L10n {
       public static var allowAllButton: String { return L10n.tr("Localizable", "app_migration.permissions.allow_all_button") }
       /// Allow
       public static var allowButton: String { return L10n.tr("Localizable", "app_migration.permissions.allow_button") }
-      /// iOS treats this as a brand new app, so what you allowed in the previous app has to be allowed here once more.
+      /// iOS treats this as a brand new app, so what you allowed in your existing app has to be allowed here once more.
       public static var body: String { return L10n.tr("Localizable", "app_migration.permissions.body") }
       /// Continue
       public static var continueButton: String { return L10n.tr("Localizable", "app_migration.permissions.continue_button") }
@@ -1554,7 +1566,7 @@ public enum L10n {
       /// Allow permissions again
       public static var title: String { return L10n.tr("Localizable", "app_migration.permissions.title") }
       public enum Section {
-        /// Allowed in the previous app
+        /// Allowed in your existing app
         public static var previousApp: String { return L10n.tr("Localizable", "app_migration.permissions.section.previous_app") }
       }
     }
@@ -1564,7 +1576,7 @@ public enum L10n {
       public enum Export {
         /// Copying your settings…
         public static var copying: String { return L10n.tr("Localizable", "app_migration.progress.export.copying") }
-        /// Handing over to the new app…
+        /// Handing over to the Open Home Foundation app…
         public static var handingOver: String { return L10n.tr("Localizable", "app_migration.progress.export.handing_over") }
         /// Packaging your servers and sign-ins…
         public static var packaging: String { return L10n.tr("Localizable", "app_migration.progress.export.packaging") }
@@ -5281,17 +5293,17 @@ public enum L10n {
       public static func title(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
       }
-      /// Transfer from the previous app
+      /// Transfer from your existing app
       public static var transferButton: String { return L10n.tr("Localizable", "onboarding.welcome.transfer_button") }
       public enum Logo {
         /// Home Assistant logo
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "onboarding.welcome.logo.accessibility_label") }
       }
       public enum TransferNotice {
-        /// Already using the previous Home Assistant app on this device? Bring your setup over instead of setting up again.
-        public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.transfer_notice.body") }
         /// Transfer your setup
         public static var link: String { return L10n.tr("Localizable", "onboarding.welcome.transfer_notice.link") }
+        /// Home Assistant companion app has moved to Open Home Foundation. Bring all your app data with you during this transition.
+        public static var movedBody: String { return L10n.tr("Localizable", "onboarding.welcome.transfer_notice.moved_body") }
       }
       public enum Updated {
         /// Access your Home Assistant server on the go. 
@@ -7171,7 +7183,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings.test_flight_communication.title") }
     }
     public enum TransferToNewApp {
-      /// Transfer to the new app
+      /// Transfer to the Open Home Foundation app
       public static var title: String { return L10n.tr("Localizable", "settings.transfer_to_new_app.title") }
     }
     public enum VoiceToolsServer {

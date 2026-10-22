@@ -6,7 +6,7 @@ import Testing
 
 /// Every screen of the transfer, on both sides of the handoff, in every state it can land in.
 struct AppMigrationScreensTests {
-    private static let failure = "The previous app sent an incomplete transfer."
+    private static let failure = "Your existing app sent an incomplete transfer."
 
     // MARK: - New app
 
@@ -108,7 +108,7 @@ struct AppMigrationScreensTests {
 
     @MainActor @Test func exportFailed() {
         assertLightDarkSnapshots(
-            of: exportView(.failed(message: "The new app is not installed on this device.")),
+            of: exportView(.failed(message: "The Open Home Foundation app is not installed on this device.")),
             named: "old-04-failed"
         )
     }
@@ -126,7 +126,8 @@ struct AppMigrationScreensTests {
             transferAction: {},
             openNewAppAction: {},
             transferAgainAction: {},
-            cancelAction: {}
+            cancelAction: {},
+            animatesErasedCheckmark: false
         )
     }
 }

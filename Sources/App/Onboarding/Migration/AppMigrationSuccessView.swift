@@ -1,12 +1,12 @@
 import Shared
 import SwiftUI
 
-/// The moment the setup has landed: a checkmark draws itself on in the middle of an empty screen,
-/// then glides up into the illustration slot as the completion details fade in around it.
+/// The moment the setup has landed: the checkmark the progress screen drew sits in the middle of an
+/// empty screen, then glides up into the illustration slot as the completion details fade in around it.
 struct AppMigrationSuccessView: View {
     static let checkmarkID = "app-migration-checkmark"
     static let centeredSize: CGFloat = 150
-    static let revealDelay: TimeInterval = 1.6
+    static let revealDelay: TimeInterval = 0.8
     static let revealAnimation = Animation.spring(response: 0.6, dampingFraction: 0.85)
 
     let summary: AppMigrationSummary
@@ -36,7 +36,7 @@ struct AppMigrationSuccessView: View {
                     .matchedGeometryEffect(id: Self.checkmarkID, in: namespace)
             }
             if !isSettled {
-                CheckmarkDrawOnView(size: Self.centeredSize, tint: .haSuccessColor)
+                CheckmarkDrawOnView(size: Self.centeredSize, tint: .haSuccessColor, animated: false)
                     .matchedGeometryEffect(id: Self.checkmarkID, in: namespace, isSource: false)
             }
         }

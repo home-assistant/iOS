@@ -3,7 +3,9 @@ import SFSafeSymbols
 import SwiftUI
 
 /// A compact header that names the card below it: a headline on a translucent capsule, set in from
-/// the card's leading edge. An optional symbol and tint let the header carry meaning (what comes
+/// the card's leading edge. The material is drawn in the capsule shape rather than clipped to it: a
+/// title long enough to wrap vanishes inside a clipped material background. An optional symbol and tint let the header
+/// carry meaning (what comes
 /// along, what needs doing again) without a full-width strip.
 ///
 /// Frontend counterpart: none. The frontend labels groups with `ha-section-title`, a full-width bar;
@@ -33,8 +35,7 @@ public struct HASectionPill: View {
         .foregroundStyle(tint)
         .padding(.vertical, DesignSystem.Spaces.one)
         .padding(.horizontal, DesignSystem.Spaces.two)
-        .background(.regularMaterial)
-        .clipShape(Capsule())
+        .background(.regularMaterial, in: Capsule())
         .padding(.leading, DesignSystem.Spaces.one)
         .accessibilityAddTraits(.isHeader)
     }
