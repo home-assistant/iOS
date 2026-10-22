@@ -14,6 +14,7 @@ struct AppMigrationImporter {
         try restoreDatabase(payload.database)
         try restoreDefaults(payload.appGroupDefaults)
         restoreKeychain(payload.keychainItems.filter { $0.store != .servers })
+        restoreClientCertificates(payload.clientCertificates ?? [])
         let serverNames = try restoreServers(payload.keychainItems.filter { $0.store == .servers })
         return AppMigrationSummary(
             serverNames: serverNames,
@@ -46,6 +47,22 @@ struct AppMigrationImporter {
     private func restoreKeychain(_ items: [AppMigrationPayload.KeychainItem]) {
         for item in items {
             try? Keychain(service: item.store.service).set(item.data, key: item.key)
+        }
+    }
+
+    private func restoreClientCertificates(_ items: [AppMigrationPayload.ClientCertificateItem]) {
+        let manager = ClientCertificateManager.shared
+        for item in items {
+            do {
+                if let transfer = item.transfer {
+                    try manager.importTransferMaterial(transfer)
+                } else if let identity = item.identity {
+                    try manager.importIdentity(identity)
+                }
+            } catch {
+                Current.Log
+                    .error("App migration import: client certificate \(item.keychainIdentifier) failed: \(error)")
+            }
         }
     }
 
