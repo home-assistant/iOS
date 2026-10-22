@@ -390,12 +390,21 @@ final class E2EDriver {
         }
         XCTAssertTrue(apps.waitForExistence(timeout: Timeout.screen), "Settings never listed the Apps row")
         apps.tap()
+        // The list itself exposes no rows to the test, only the search results do, and Spotlight takes
+        // a while to index a freshly installed app, so the search is retried until the row shows up.
         let search = settings.searchFields.firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: Timeout.screen), "Settings has no app search field")
-        search.tap()
-        search.typeText(appName)
         let row = settings.staticTexts[appName].firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: Timeout.screen), "Settings did not find \(appName)")
+        var attempts = 0
+        repeat {
+            search.tap()
+            if let current = search.value as? String, !current.isEmpty, current != "Search Apps" {
+                search.buttons["Clear text"].firstMatch.tap()
+            }
+            search.typeText(appName)
+            attempts += 1
+        } while !row.waitForExistence(timeout: Timeout.optional) && attempts < 8
+        XCTAssertTrue(row.exists, "Settings did not find \(appName)")
         row.tap()
         let paste = settings.staticTexts["Paste from Other Apps"].firstMatch
         XCTAssertTrue(paste.waitForExistence(timeout: Timeout.screen), "No paste setting for \(appName)")
