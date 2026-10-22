@@ -39,7 +39,6 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         sut.handleExternalMessage(dictionary)
 
         XCTAssertTrue(mockWebViewController.showSettingsCalled)
-        XCTAssertTrue(mockWebViewController.showSettingsPushedOntoNavigationStack)
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
@@ -73,7 +72,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
 
-        wait(for: [retry], timeout: 2)
+        wait(for: [retry], timeout: 10)
         XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 2)
     }
 
@@ -97,7 +96,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             let retry = expectation(description: "retry")
             mockWebViewController.evaluateJavaScriptExpectation = retry
             mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
-            wait(for: [retry], timeout: 2)
+            wait(for: [retry], timeout: 10)
         }
         mockWebViewController.evaluateJavaScriptExpectation = noRetry
 

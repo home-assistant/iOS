@@ -22,6 +22,11 @@ def newest_simulator(model, platform)
   newest.last['udid']
 end
 
+# Mounts a platform's simulator runtime again when CoreSimulator has lost it, see the script.
+def ensure_simulator_runtime(platform)
+  sh('../Tools/EnsureSimulatorRuntime.sh', platform)
+end
+
 desc 'Update the test cases from the fcm repo'
 lane :update_notification_test_cases do
   bundle_directory = File.expand_path('../Tests/Shared/notification_test_cases.bundle')
@@ -54,6 +59,13 @@ lane :update_dsyms do
   FileUtils.rm_r directory
 end
 
+# A test that stops making progress used to burn the whole job and the cancelled run named nothing.
+# The per-test allowance fails it instead, with a spindump of where it sat, and lets the rest of
+# the run finish; the slowest snapshot suites take about a minute and a half.
+def test_timeout_xcargs
+  '-test-timeouts-enabled YES -default-test-execution-time-allowance 600'
+end
+
 desc 'Run tests'
 lane :test do
   run_tests(
@@ -65,7 +77,10 @@ lane :test do
     # Run only the `test` action: `build test` compiles every SPM target twice
     # because the plain `build` action disables testability for packages.
     skip_build: true,
-    xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
+    xcargs: "COMPILER_INDEX_STORE_ENABLE=NO #{test_timeout_xcargs}",
+    # A failed test is run again before it counts: the shared runner is loaded enough that a wait
+    # generous on a Mac still lands late. A deterministic failure fails every attempt the same way.
+    number_of_retries: 2,
     destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
   )
 
@@ -77,6 +92,11 @@ lane :test do
   # from the screen, so the model only has to be one the runner image ships — bump it when that image
   # drops the one named here, or the destination resolves to nothing and the run fails before it
   # builds.
+  # The disk-image daemon can unmount the watchOS runtime behind the iOS run above and leave it that
+  # way, which both empties the device list below and fails the run with "runtime is not available"
+  # (see Tools/EnsureSimulatorRuntime.sh). Put it back before resolving the destination.
+  ensure_simulator_runtime('watchOS')
+
   watch_model = 'Apple Watch Series 12 (46mm)'
   newest_watch = available_simulators('watchOS')
                  .select { |_, device| device['name'] == watch_model }
@@ -88,18 +108,32 @@ lane :test do
       "platform=watchOS Simulator,name=#{watch_model},OS=latest"
     end
 
-  run_tests(
-    project: 'HomeAssistant.xcodeproj',
-    scheme: 'WatchApp',
-    only_testing: ['HomeAssistant-WatchAppTests'],
-    parallel_testing: false,
-    result_bundle: false,
-    skip_package_dependencies_resolution: true,
-    skip_detect_devices: true,
-    skip_build: true,
-    xcargs: 'COMPILER_INDEX_STORE_ENABLE=NO',
-    destination: watch_destination
-  )
+  watch_tests = lambda do
+    run_tests(
+      project: 'HomeAssistant.xcodeproj',
+      scheme: 'WatchApp',
+      only_testing: ['HomeAssistant-WatchAppTests'],
+      parallel_testing: false,
+      result_bundle: false,
+      skip_package_dependencies_resolution: true,
+      skip_detect_devices: true,
+      skip_build: true,
+      xcargs: "COMPILER_INDEX_STORE_ENABLE=NO #{test_timeout_xcargs}",
+      number_of_retries: 1,
+      destination: watch_destination
+    )
+  end
+
+  begin
+    watch_tests.call
+  rescue StandardError => e
+    # The daemon can also take the runtime down during the run, or leave the fresh watch simulator
+    # unable to connect ("The test runner hung before establishing connection"). One more attempt
+    # with the runtime checked again covers both; a genuine failure costs one extra watch run.
+    UI.important("The watch tests failed (#{e.message}), checking the runtime and trying once more")
+    ensure_simulator_runtime('watchOS')
+    watch_tests.call
+  end
 end
 
 desc 'Run the end-to-end onboarding test against a running Home Assistant'

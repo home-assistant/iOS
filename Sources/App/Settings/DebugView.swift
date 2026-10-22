@@ -680,7 +680,6 @@ struct DebugView: View {
 
     private func dismissSettingsAfterReset() {
         appSettingsPresenter?.isSheetPresented = false
-        appSettingsPresenter?.isPushPresented = false
         dismiss()
     }
 

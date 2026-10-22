@@ -75,6 +75,22 @@ struct ServersListView: View {
             observer.moveServers(from: source, to: destination)
         }
 
+        if !observer.serversSharingAnInstanceID.isEmpty {
+            NavigationLink(destination: ServerIdentityExplanationView(
+                conflictingServers: observer
+                    .serverIdentityConflicts
+            )) {
+                Label {
+                    Text(L10n.Settings.ConnectionSection.sharedInstanceIdWarning)
+                } icon: {
+                    Image(systemSymbol: .exclamationmarkTriangleFill)
+                        .foregroundStyle(.orange)
+                }
+            }
+            .tag(MacSettingsSidebarSelection.serverIdentity)
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverIdentity)
+        }
+
         if observer.servers.count > 1 {
             NavigationLink(destination: ServerSwitchingSettingsView()) {
                 Label(L10n.Settings.ServerSwitching.AutomaticSwitching.title, systemSymbol: .location)

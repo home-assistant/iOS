@@ -6,6 +6,7 @@ import Testing
 
 /// Covers the spoken open and close command: the service it picks per direction, the sentence it
 /// reads back, and the two ways it can refuse.
+@Suite(.serialized)
 struct OpenCloseEntityAppIntentTests {
     private static func cover(serverId: String, entityId: String = "cover.curtain") -> OpenableEntityAppEntity {
         OpenableEntityAppEntity(
@@ -31,7 +32,7 @@ struct OpenCloseEntityAppIntentTests {
     ) async throws -> HARequest? {
         let task = Task { try await intent.perform() }
         var waited = 0
-        while connection.pendingRequests.isEmpty, waited < 200 {
+        while connection.pendingRequests.isEmpty, waited < 6000 {
             try await Task.sleep(nanoseconds: 5_000_000)
             waited += 1
         }

@@ -52,7 +52,7 @@ protocol AppCoordinator: AnyObject {
     var window: UIWindow? { get }
     func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?)
     func show(alert: ServerAlert)
-    func showSettings(pushOntoNavigationStack: Bool)
+    func showSettings()
     func showAssistSettings()
     func showDownloadManager(_ viewModel: DownloadManagerViewModel)
     func showOnboardingPermissions(server: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID])
@@ -91,10 +91,6 @@ protocol AppCoordinator: AnyObject {
 extension AppCoordinator {
     func present(_ viewController: UIViewController) {
         present(viewController, animated: true, completion: nil)
-    }
-
-    func showSettings() {
-        showSettings(pushOntoNavigationStack: false)
     }
 
     /// The picker as every entry point but the stand-by pill wants it: sliding up, not zooming.
