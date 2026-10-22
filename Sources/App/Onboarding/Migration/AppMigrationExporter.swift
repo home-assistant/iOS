@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 import HAModels
+import HANetworking
 import KeychainAccess
 import Shared
 
@@ -34,7 +35,8 @@ struct AppMigrationExporter {
             database: databaseSnapshot(),
             appGroupDefaults: defaultsSnapshot(),
             keychainItems: keychainItems(),
-            grantedPermissions: grantedPermissions.map(\.rawValue)
+            grantedPermissions: grantedPermissions.map(\.rawValue),
+            clientCertificates: clientCertificates()
         )
     }
 
@@ -61,6 +63,26 @@ struct AppMigrationExporter {
             domain.removeValue(forKey: key)
         }
         return try PropertyListSerialization.data(fromPropertyList: domain, format: .binary, options: 0)
+    }
+
+    private func clientCertificates() -> [AppMigrationPayload.ClientCertificateItem] {
+        let manager = ClientCertificateManager.shared
+        var seen = Set<String>()
+        return Current.servers.all.compactMap { server in
+            guard let certificate = server.info.connection.clientCertificate,
+                  seen.insert(certificate.keychainIdentifier).inserted else { return nil }
+            if let transfer = manager.transferMaterial(for: certificate.keychainIdentifier) {
+                return .init(keychainIdentifier: certificate.keychainIdentifier, transfer: transfer, identity: nil)
+            }
+            do {
+                let identity = try manager.exportIdentity(for: certificate.keychainIdentifier)
+                return .init(keychainIdentifier: certificate.keychainIdentifier, transfer: nil, identity: identity)
+            } catch {
+                Current.Log
+                    .error("App migration export: client certificate \(certificate.displayName) left behind: \(error)")
+                return nil
+            }
+        }
     }
 
     private func keychainItems() -> [AppMigrationPayload.KeychainItem] {

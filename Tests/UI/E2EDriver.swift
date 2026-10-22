@@ -31,6 +31,7 @@ final class E2EDriver {
     /// The two builds that take part in the transfer, both installed on the simulator.
     static let previousAppBundleID = "io.robbie.HomeAssistant.dev"
     static let newAppBundleID = "io.home-assistant.app.dev"
+    static let newAppDisplayName = "Home Assistant OHF Δ"
 
     let app: XCUIApplication
     private unowned let testCase: XCTestCase
@@ -369,10 +370,53 @@ final class E2EDriver {
 
     /// Confirms the "X wants to open Y" prompt iOS raises for some cross-app URL scheme opens; nothing
     /// to do when the hop went through without one.
+    enum PastePermission: String {
+        case ask = "Ask"
+        case deny = "Deny"
+        case allow = "Allow"
+    }
+
+    /// iOS keeps a per-app "Paste from Other Apps" choice. Setting it through the Settings app lets a
+    /// test decide the outcome of the pasteboard read without the prompt, which the Xcode 27.2
+    /// simulators cannot show at all.
+    func setPastePermission(_ choice: PastePermission, appName: String) {
+        let settings = XCUIApplication(bundleIdentifier: "com.apple.Preferences")
+        settings.launch()
+        let apps = settings.staticTexts["Apps"].firstMatch
+        var swipes = 0
+        while !apps.isHittable, swipes < 8 {
+            settings.swipeUp()
+            swipes += 1
+        }
+        XCTAssertTrue(apps.waitForExistence(timeout: Timeout.screen), "Settings never listed the Apps row")
+        apps.tap()
+        let search = settings.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: Timeout.screen), "Settings has no app search field")
+        search.tap()
+        search.typeText(appName)
+        let row = settings.staticTexts[appName].firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: Timeout.screen), "Settings did not find \(appName)")
+        row.tap()
+        let paste = settings.staticTexts["Paste from Other Apps"].firstMatch
+        XCTAssertTrue(paste.waitForExistence(timeout: Timeout.screen), "No paste setting for \(appName)")
+        paste.tap()
+        let option = settings.staticTexts[choice.rawValue].firstMatch
+        XCTAssertTrue(option.waitForExistence(timeout: Timeout.screen), "No \(choice.rawValue) option")
+        option.tap()
+        settings.terminate()
+    }
+
+    /// Both sides warn about the paste prompt before they start; the warning is an alert on the button.
+    func confirmPasteNotice() {
+        tap(app.buttons[.migrationPasteNoticeContinue].firstMatch, timeout: Timeout.screen, "paste notice")
+    }
+
+    /// The prompt only comes up once the sending side has played its progress script out, so this
+    /// waits a full screen timeout rather than the short one for prompts that may never appear.
     @discardableResult
     func confirmOpeningOtherAppIfAsked() -> Bool {
         let open = NSPredicate(format: "label == 'Open'")
-        guard let button = systemAlertButton(matching: open, timeout: Timeout.optional) else {
+        guard let button = systemAlertButton(matching: open, timeout: Timeout.screen) else {
             return false
         }
         button.tap()
@@ -387,15 +431,10 @@ final class E2EDriver {
     /// so the whole SpringBoard tree is searched for the button.
     /// Refuses the pasteboard read instead, the way a wary user would; nothing to do when no alert comes up.
     @discardableResult
-    /// Both sides warn about the paste prompt before they start; the warning is an alert on the button.
-    func confirmPasteNotice() {
-        tap(app.buttons[.migrationPasteNoticeContinue], timeout: Timeout.screen, "paste notice")
-    }
-
     func denyPasteIfAsked() -> Bool {
         let deny = NSPredicate(format: "label == 'Don’t Allow Paste' OR label == \"Don't Allow Paste\"")
-        let button = springboard.descendants(matching: .any).matching(deny).firstMatch
-        guard button.waitForExistence(timeout: Timeout.screen) else {
+        let button = springboard.buttons.matching(deny).firstMatch
+        guard button.waitForExistence(timeout: Timeout.optional) else {
             return false
         }
         button.tap()
@@ -405,8 +444,8 @@ final class E2EDriver {
     @discardableResult
     func allowPasteIfAsked() -> Bool {
         let allow = NSPredicate(format: "label == 'Allow Paste'")
-        let button = springboard.descendants(matching: .any).matching(allow).firstMatch
-        guard button.waitForExistence(timeout: Timeout.screen) else {
+        let button = springboard.buttons.matching(allow).firstMatch
+        guard button.waitForExistence(timeout: Timeout.optional) else {
             return false
         }
         button.tap()
