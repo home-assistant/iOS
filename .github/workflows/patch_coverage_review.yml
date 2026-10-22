@@ -34,15 +34,15 @@ jobs:
     env:
       PATCH_COVERAGE_DIR: patch-coverage
     steps:
-      # Missing when the CI run had no coverage to measure: the tests or the conversion
-      # failed, or the change touched nothing coverable. That is a run with no number
-      # to hold against the pull request, so any earlier request is dismissed below.
+      # Missing only when the CI run never reached its patch coverage job, which then
+      # has nothing to say about any pull request. The name is scoped to the attempt
+      # that just completed, so a rerun never reads an earlier attempt's result.
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
         name: "Download Patch Coverage Result"
         id: result
         continue-on-error: true
         with:
-          name: patch-coverage
+          name: patch-coverage-${{ github.event.workflow_run.run_attempt }}
           path: patch-coverage
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -59,35 +59,45 @@ jobs:
             const { owner, repo } = context.repo
             const run = context.payload.workflow_run
 
-            // The run's payload names no pull request for a fork, so the pull request
-            // is looked up by the branch the run was for, and only counts when its
-            // head is still the commit that run tested.
-            const pulls = await github.paginate(github.rest.pulls.list, {
-              owner,
-              repo,
-              state: 'open',
-              head: `${run.head_repository.owner.login}:${run.head_branch}`,
-              per_page: 100,
-            })
-            const pull = pulls.find((candidate) => candidate.head.sha === run.head_sha)
-            if (!pull) {
-              core.info(`No open pull request has ${run.head_sha} at its head, nothing to review`)
+            if (process.env.RESULT_AVAILABLE !== 'success') {
+              core.info('The CI run left no patch coverage result, nothing to review')
               return
             }
-            const pull_number = pull.number
 
-            // The uploaded numbers are the only thing taken from the run, and they are
-            // repeated in a review this repository's bot signs, so anything that is not
-            // the plain numbers the job writes is treated as no result at all.
+            // The uploaded values are the only thing taken from the run, and the
+            // numbers are repeated in a review this repository's bot signs, so anything
+            // that is not in the plain form the job writes is treated as no result.
+            const file = path.join(process.env.PATCH_COVERAGE_DIR, 'result.env')
+            const fields = Object.fromEntries(
+              fs.readFileSync(file, 'utf8')
+                .split('\n')
+                .filter((line) => line.includes('='))
+                .map((line) => line.split('=', 2)),
+            )
+
+            // The run's payload names no pull request for a fork, so the job records
+            // which pull request it measured: the same head commit can be open against
+            // more than one base, each diffed on its own. The recorded number only
+            // counts when that pull request is still open on the commit the run tested.
+            if (!/^\d+$/.test(fields.pull_request || '')) {
+              core.warning('The patch coverage result names no pull request, nothing to review')
+              return
+            }
+            const pull_number = Number(fields.pull_request)
+            const { data: pull } = await github.rest.pulls.get({ owner, repo, pull_number })
+            if (
+              pull.state !== 'open' ||
+              pull.head.sha !== run.head_sha ||
+              pull.head.repo?.full_name !== run.head_repository.full_name
+            ) {
+              core.info(`Pull request ${pull_number} is no longer open at ${run.head_sha}, nothing to review`)
+              return
+            }
+
+            // Without a number the run measured nothing: the tests or the conversion
+            // failed, or the change touched nothing coverable.
             let result = null
-            if (process.env.RESULT_AVAILABLE === 'success') {
-              const file = path.join(process.env.PATCH_COVERAGE_DIR, 'result.env')
-              const fields = Object.fromEntries(
-                fs.readFileSync(file, 'utf8')
-                  .split('\n')
-                  .filter((line) => line.includes('='))
-                  .map((line) => line.split('=', 2)),
-              )
+            if (fields.passed) {
               const number = /^\d+(\.\d+)?$/
               const valid =
                 ['true', 'false'].includes(fields.passed) &&

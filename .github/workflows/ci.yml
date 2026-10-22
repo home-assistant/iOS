@@ -310,8 +310,8 @@ jobs:
     name: Patch coverage
     needs: test
     # Runs even when the tests failed, which leaves no tracefile behind: the job has
-    # nothing to measure then, uploads no result, and the review workflow reads that
-    # as a run with no number to hold against the pull request.
+    # nothing to measure then, uploads a result without a number, and the review
+    # workflow reads that as a run with nothing to hold against the pull request.
     if: >-
       !cancelled() &&
       github.event_name == 'pull_request'
@@ -354,25 +354,28 @@ jobs:
             --github-output "$GITHUB_OUTPUT"
 
       # The review workflow runs with write access and must not trust anything this
-      # run produced beyond these numbers, so only they are handed over.
+      # run produced beyond these values, so only they are handed over. The pull
+      # request number names which of the pull requests sharing this head commit the
+      # coverage was measured for, since each is diffed against its own base. The
+      # result is uploaded even without a number, under a name scoped to this attempt,
+      # so a rerun never reads what an earlier attempt of the same run left behind.
       - name: Record the result for the review workflow
-        if: steps.coverage.outputs.passed != ''
         env:
+          PULL_REQUEST: ${{ github.event.pull_request.number }}
           PASSED: ${{ steps.coverage.outputs.passed }}
           COVERAGE: ${{ steps.coverage.outputs.coverage }}
           COVERED: ${{ steps.coverage.outputs.covered }}
           CHANGED: ${{ steps.coverage.outputs.changed }}
         run: |
           mkdir -p patch-coverage
-          printf 'passed=%s\ncoverage=%s\ncovered=%s\nchanged=%s\nthreshold=%s\n' \
-            "$PASSED" "$COVERAGE" "$COVERED" "$CHANGED" "$COVERAGE_THRESHOLD" \
+          printf 'pull_request=%s\npassed=%s\ncoverage=%s\ncovered=%s\nchanged=%s\nthreshold=%s\n' \
+            "$PULL_REQUEST" "$PASSED" "$COVERAGE" "$COVERED" "$CHANGED" "$COVERAGE_THRESHOLD" \
             > patch-coverage/result.env
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         name: "Upload Patch Coverage Result"
-        if: steps.coverage.outputs.passed != ''
         with:
-          name: patch-coverage
+          name: patch-coverage-${{ github.run_attempt }}
           path: patch-coverage/result.env
 
       - name: Fail below the threshold

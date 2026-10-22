@@ -93,7 +93,8 @@ submits a **changes-requested review** naming the shortfall; the per-file breakd
 list of changed lines no test runs are in the run's job summary.
 
 The review is not posted by the CI run itself: a pull request from a fork runs with a
-read-only token. The job uploads its numbers as the `patch-coverage` artifact, and the
+read-only token. The job uploads its numbers and the pull request number as the
+`patch-coverage-<attempt>` artifact, and the
 separate `Patch coverage review` workflow (`.github/workflows/patch_coverage_review.yml`),
 triggered by `workflow_run` when CI completes, requests or dismisses the review with a token
 that can write to any pull request. Like every `workflow_run` workflow, it runs the copy on
