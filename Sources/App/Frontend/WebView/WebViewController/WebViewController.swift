@@ -71,6 +71,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// asks for a log in rather than reporting an expired session, until re-authentication succeeds.
     var didLogOut = false
 
+    /// Set once `retireFrontend()` has taken the page down; every load is refused from then on.
+    var isRetired = false
+
     /// Set when a load failed because of the client certificate (mTLS): the server asked for one the
     /// device does not have, or refused the one it has. No retry fixes that, so the empty state asks for a
     /// certificate import instead. Cleared once the frontend loads or the empty state goes away.

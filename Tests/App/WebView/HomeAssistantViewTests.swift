@@ -96,6 +96,26 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertFalse(sut.loaderMinimumDurationElapsed)
     }
 
+    /// The loader holds for its minimum duration whatever the frontend reports in the meantime, and comes
+    /// down on its own once that has elapsed.
+    func testTheLoaderComesDownOnItsOwnOnceItsMinimumDurationHasElapsed() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderMinimumDuration = .milliseconds(20)
+        overlayState.isLoading = true
+        overlayState.connectionState = .loaded
+        XCTAssertFalse(sut.loaderMinimumDurationElapsed)
+        XCTAssertTrue(sut.isFullScreenLoaderVisible)
+
+        await waitUntil { sut.loaderMinimumDurationElapsed }
+
+        XCTAssertFalse(sut.isFullScreenLoaderVisible)
+        await waitUntil { !sut.isFullScreenLoaderMounted }
+    }
+
     func testStandByViewIsVisibleWhileTheLoaderIsUp() {
         let sut = HomeAssistantViewModel(server: Server.fake())
 

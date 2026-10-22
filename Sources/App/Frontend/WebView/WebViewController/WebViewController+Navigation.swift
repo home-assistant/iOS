@@ -95,6 +95,10 @@ extension WebViewController {
 
     /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`
     func reload() {
+        guard !isRetired else {
+            Current.Log.info("not reloading, retired")
+            return
+        }
         Current.Log.verbose("Reload webView requested")
         markDisconnectedForHardReload()
         webView.reload()
