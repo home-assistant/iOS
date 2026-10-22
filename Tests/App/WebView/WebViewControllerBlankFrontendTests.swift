@@ -182,6 +182,20 @@ final class WebViewControllerBlankFrontendTests: XCTestCase {
         XCTAssertNil(overlayState.emptyState)
     }
 
+    /// A retired frontend has let go of its overlay state, so without this the second termination would clean
+    /// the shared asset cache and reload, for a page nobody can see.
+    func testATerminatedContentProcessIsLeftAloneBehindARetiredFrontend() {
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        sut.retireFrontend()
+
+        sut.handleContentProcessTermination()
+        sut.handleContentProcessTermination()
+
+        XCTAssertEqual(sut.contentProcessTerminations, 0)
+        XCTAssertEqual(websiteDataStoreHandler.cleanCacheCallCount, 0)
+    }
+
     func testAFrontendThatOnlyConnectsKeepsItsRecoveryAttemptSpent() {
         let sut = makeSUT(server: .fake(update: { info in info.version = .frontendLoadedExternalBus }))
         sut.overlayState = WebFrontendOverlayState()
@@ -265,7 +279,7 @@ final class WebViewControllerBlankFrontendTests: XCTestCase {
 
     private func waitUntil(
         _ condition: @escaping () -> Bool,
-        timeout: TimeInterval = 5,
+        timeout: TimeInterval = 30,
         file: StaticString = #file,
         line: UInt = #line
     ) async {

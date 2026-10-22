@@ -13,8 +13,8 @@ struct AppMigrationImporter {
         }
         try restoreDatabase(payload.database)
         try restoreDefaults(payload.appGroupDefaults)
-        restoreKeychain(payload.keychainItems.filter { $0.store != .servers })
-        restoreClientCertificates(payload.clientCertificates ?? [])
+        try restoreKeychain(payload.keychainItems.filter { $0.store != .servers && $0.store != .unknown })
+        try restoreClientCertificates(payload.clientCertificates ?? [])
         let serverNames = try restoreServers(payload.keychainItems.filter { $0.store == .servers })
         return AppMigrationSummary(
             serverNames: serverNames,
@@ -44,24 +44,21 @@ struct AppMigrationImporter {
         defaults.setPersistentDomain(merged, forName: AppConstants.AppGroupID)
     }
 
-    private func restoreKeychain(_ items: [AppMigrationPayload.KeychainItem]) {
+    /// A keychain item that cannot be written fails the import: a transfer reported as complete must
+    /// not have left the device identity or a server behind.
+    private func restoreKeychain(_ items: [AppMigrationPayload.KeychainItem]) throws {
         for item in items {
-            try? Keychain(service: item.store.service).set(item.data, key: item.key)
+            try Keychain(service: item.store.service).set(item.data, key: item.key)
         }
     }
 
-    private func restoreClientCertificates(_ items: [AppMigrationPayload.ClientCertificateItem]) {
+    private func restoreClientCertificates(_ items: [AppMigrationPayload.ClientCertificateItem]) throws {
         let manager = ClientCertificateManager.shared
         for item in items {
-            do {
-                if let transfer = item.transfer {
-                    try manager.importTransferMaterial(transfer)
-                } else if let identity = item.identity {
-                    try manager.importIdentity(identity)
-                }
-            } catch {
-                Current.Log
-                    .error("App migration import: client certificate \(item.keychainIdentifier) failed: \(error)")
+            if let transfer = item.transfer {
+                try manager.importTransferMaterial(transfer)
+            } else if let identity = item.identity {
+                try manager.importIdentity(identity)
             }
         }
     }

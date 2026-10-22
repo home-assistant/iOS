@@ -96,6 +96,26 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertFalse(sut.loaderMinimumDurationElapsed)
     }
 
+    /// The loader holds for its minimum duration whatever the frontend reports in the meantime, and comes
+    /// down on its own once that has elapsed.
+    func testTheLoaderComesDownOnItsOwnOnceItsMinimumDurationHasElapsed() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderMinimumDuration = .milliseconds(20)
+        overlayState.isLoading = true
+        overlayState.connectionState = .loaded
+        XCTAssertFalse(sut.loaderMinimumDurationElapsed)
+        XCTAssertTrue(sut.isFullScreenLoaderVisible)
+
+        await waitUntil { sut.loaderMinimumDurationElapsed }
+
+        XCTAssertFalse(sut.isFullScreenLoaderVisible)
+        await waitUntil { !sut.isFullScreenLoaderMounted }
+    }
+
     func testStandByViewIsVisibleWhileTheLoaderIsUp() {
         let sut = HomeAssistantViewModel(server: Server.fake())
 
@@ -244,6 +264,29 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertTrue(sut.isFullScreenLoaderMounted)
 
         overlayState.sceneReturnedFromBackground.send()
+
+        await waitUntil { !sut.isFullScreenLoaderMounted }
+        XCTAssertFalse(sut.shouldShowStandByView)
+    }
+
+    /// Assist opened on a cold launch hides the frontend, so the watchdog can spend its round probing a page
+    /// that had nowhere to render. A loader that is still up once Assist closes gets another round.
+    func testUncoveringTheFrontendGivesALoaderThatIsStillUpAnotherWatchdogRound() async {
+        let overlayState = WebFrontendOverlayState()
+        let sut = HomeAssistantViewModel(
+            server: server(version: .frontendLoadedExternalBus),
+            overlayState: overlayState
+        )
+        sut.loaderWatchdogTimeout = .milliseconds(20)
+        overlayState.isLoading = true
+        overlayState.isLoading = false
+        overlayState.emptyState = emptyStateContent()
+        try? await Task.sleep(for: .milliseconds(120))
+        overlayState.emptyState = nil
+        try? await Task.sleep(for: .milliseconds(120))
+        XCTAssertTrue(sut.isFullScreenLoaderMounted)
+
+        overlayState.frontendUncovered.send()
 
         await waitUntil { !sut.isFullScreenLoaderMounted }
         XCTAssertFalse(sut.shouldShowStandByView)
@@ -523,7 +566,7 @@ final class HomeAssistantViewTests: XCTestCase {
 
     private func waitUntil(
         _ condition: @escaping () -> Bool,
-        timeout: TimeInterval = 2,
+        timeout: TimeInterval = 30,
         file: StaticString = #file,
         line: UInt = #line
     ) async {

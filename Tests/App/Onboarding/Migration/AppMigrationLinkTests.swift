@@ -9,6 +9,23 @@ import Testing
 struct AppMigrationLinkTests {
     private let session = AppMigrationSession.make()
 
+    @Test func aRepeatedQueryParameterIsRejectedInsteadOfTrapping() {
+        let url =
+            URL(
+                string: "homeassistant-ohf://migration/erase?session=\(session.id.uuidString)&session=\(UUID().uuidString)"
+            )!
+        #expect(AppMigrationLink(url: url) == nil)
+    }
+
+    @Test func anUnknownKeychainStoreDecodesWithoutRejectingThePayload() throws {
+        let item = try JSONDecoder().decode(
+            AppMigrationPayload.KeychainItem.self,
+            from: Data(#"{"store":"future-store","key":"k","data":""}"#.utf8)
+        )
+        #expect(item.store == .unknown)
+        #expect(!AppMigrationKeychainStore.transferred.contains(.unknown))
+    }
+
     @Test func everyLinkRoundTripsThroughItsURL() {
         let links: [AppMigrationLink] = [
             .request(session),

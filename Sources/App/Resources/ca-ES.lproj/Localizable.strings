@@ -327,121 +327,6 @@
 "app_intents.update_sensors.title" = "Update sensors";
 "app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
 "app_intents.watch_assist.title" = "Assist";
-"app_migration.announcement.body" = "Home Assistant es trasllada a l'app d'Open Home Foundation a l'App Store. Transfereix-hi els teus servidors i ajustos en uns segons. Tot es queda en aquest dispositiu.";
-"app_migration.announcement.follow_up.explanation" = "Els permisos, els ginys de la pantalla d'inici, l'Apple Watch i Shortcuts es tornen a configurar a l'app d'Open Home Foundation.";
-"app_migration.announcement.follow_up.title" = "Algunes coses per tornar a configurar";
-"app_migration.announcement.later_button" = "Ara no";
-"app_migration.announcement.new_app.explanation" = "Ara l'app la publica Open Home Foundation. Aquesta app deixarà de rebre actualitzacions.";
-"app_migration.announcement.new_app.title" = "Una altra app, el mateix Home Assistant";
-"app_migration.announcement.section.what_changes" = "Què vol dir això";
-"app_migration.announcement.setup_moves.explanation" = "Els servidors, els inicis de sessió, els ajustos i la configuració del Watch, CarPlay i els ginys vénen amb tu.";
-"app_migration.announcement.setup_moves.title" = "La teva configuració ve amb tu";
-"app_migration.announcement.title" = "Home Assistant s'ha traslladat a Open Home Foundation";
-"app_migration.announcement.transfer_button" = "Transferir a l'app d'Open Home Foundation";
-"app_migration.complete.body" = "La teva configuració ja és en aquesta app i has iniciat la sessió.";
-"app_migration.complete.body_no_servers" = "Els teus ajustos ja són en aquesta app. La teva app actual no tenia cap servidor on iniciar la sessió.";
-"app_migration.complete.continue_button" = "Continuar";
-"app_migration.complete.erase_button" = "Buidar la teva app actual";
-"app_migration.complete.erased.body" = "Ja no conté res. Elimina-la de la pantalla d'inici quan vulguis.";
-"app_migration.complete.erased.title" = "App actual buidada";
-"app_migration.complete.keep_previous_app_button" = "Conservar-la de moment";
-"app_migration.complete.section.next_steps" = "Passos següents";
-"app_migration.complete.server_single" = "1 servidor transferit";
-"app_migration.complete.servers_transferred" = "%d servidors transferits";
-"app_migration.complete.title" = "Transferència completada";
-"app_migration.error.declined" = "La teva app actual ha cancel·lat la transferència.";
-"app_migration.error.invalid_payload" = "No s'ha pogut llegir la transferència. Torna-ho a provar.";
-"app_migration.error.new_app_unavailable" = "No s'ha pogut obrir l'app d'Open Home Foundation.";
-"app_migration.error.no_payload" = "No s'ha rebut res de la teva app actual.";
-"app_migration.error.no_payload_allow_paste" = "No s'ha rebut res de la teva app actual. Si iOS ha demanat permís per enganxar, tria «Permet enganxar» i torna-ho a provar.";
-"app_migration.error.previous_app_erased" = "La teva app actual ja s'ha buidat, així que no queda res per transferir. Configura aquesta app des de zero.";
-"app_migration.error.previous_app_unavailable" = "No s'ha pogut obrir la teva app actual de Home Assistant.";
-"app_migration.error.unsupported_version" = "Actualitza la teva app actual de Home Assistant abans de transferir.";
-"app_migration.error.wrong_session" = "La transferència no coincideix amb la sol·licitud d'aquesta app.";
-"app_migration.export.body" = "L'app d'Open Home Foundation demana rebre la teva configuració. Res no surt d'aquest dispositiu.";
-"app_migration.export.erased.body" = "La teva configuració ara viu a l'app d'Open Home Foundation. Pots eliminar aquesta app de la pantalla d'inici.";
-"app_migration.export.erased.title" = "Aquesta app ara és buida";
-"app_migration.export.failed.retry_button" = "Tornar-ho a provar";
-"app_migration.export.failed.title" = "L'app d'Open Home Foundation no ha pogut rebre la transferència";
-"app_migration.export.handed_off.open_button" = "Anar a l'app d'Open Home Foundation";
-"app_migration.export.handed_off.title" = "Transferència enviada";
-"app_migration.export.handed_off.transfer_again_button" = "Tornar a transferir";
-"app_migration.export.handed_off.verify_body" = "Ves a l'app d'Open Home Foundation i comprova que hi són els teus servidors i ajustos. Quan tot funcioni, elimina aquesta app de la pantalla d'inici.";
-"app_migration.export.later_button" = "Fer-ho més tard";
-"app_migration.export.section.includes" = "Aquesta transferència inclou";
-"app_migration.export.title" = "Transferir a l'app d'Open Home Foundation";
-"app_migration.export.transfer_again_confirmation.confirm_button" = "Tornar a transferir";
-"app_migration.export.transfer_again_confirmation.reset_body" = "Tot el que ja s'ha transferit a l'app d'Open Home Foundation s'hi elimina, i aquesta app torna a enviar la teva configuració.";
-"app_migration.export.transfer_again_confirmation.title" = "Tornar a transferir?";
-"app_migration.export.transfer_button" = "Transferir";
-"app_migration.follow_up.delete_previous_app.explanation" = "Elimina-la quan tot funcioni aquí.";
-"app_migration.follow_up.delete_previous_app.title" = "Eliminar la teva app actual";
-"app_migration.follow_up.home_screen_widgets.place_explanation" = "Torna a afegir-los a la pantalla d'inici. El que mostren ve amb tu.";
-"app_migration.follow_up.home_screen_widgets.title" = "Ginys de la pantalla d'inici";
-"app_migration.follow_up.permissions.explanation" = "Accés a la ubicació, les notificacions i la càmera.";
-"app_migration.follow_up.permissions.title" = "Permisos";
-"app_migration.follow_up.shortcuts.explanation" = "Torna a crear les dreceres de Shortcuts que feien servir la teva app actual.";
-"app_migration.follow_up.shortcuts.title" = "Siri i Shortcuts";
-"app_migration.follow_up.watch_app.reinstall_explanation" = "Instal·la-la al teu rellotge i torna a afegir les complicacions a les esferes. El que mostren ve amb tu.";
-"app_migration.follow_up.watch_app.title" = "App de l'Apple Watch";
-"app_migration.get_new_app.back_button" = "Enrere";
-"app_migration.get_new_app.body" = "Instal·la l'app d'Open Home Foundation des de l'App Store i torna aquí. La transferència comença tan bon punt sigui en aquest dispositiu.";
-"app_migration.get_new_app.installed_button" = "Ja l'he instal·lada";
-"app_migration.get_new_app.not_found.body" = "Instal·la-la des de l'App Store i torna a obrir aquesta pantalla.";
-"app_migration.get_new_app.not_found.title" = "L'app d'Open Home Foundation encara no és en aquest dispositiu";
-"app_migration.get_new_app.store_button" = "Obtenir l'app d'Open Home Foundation";
-"app_migration.get_new_app.title" = "Primer, obtén l'app d'Open Home Foundation";
-"app_migration.import.cancel_button" = "Cancel·lar";
-"app_migration.import.failed.manual_button" = "Configurar manualment";
-"app_migration.import.failed.manual_confirmation.body" = "La teva configuració es queda a la teva app actual i no es transfereix. Quan aquesta app estigui configurada, elimina la teva app actual de la pantalla d'inici.";
-"app_migration.import.failed.manual_confirmation.confirm_button" = "Configurar manualment";
-"app_migration.import.failed.manual_confirmation.title" = "Configurar aquesta app des de zero?";
-"app_migration.import.failed.retry_button" = "Tornar-ho a provar";
-"app_migration.import.failed.title" = "La transferència no s'ha completat";
-"app_migration.import.open_check.body" = "Aquesta app ha demanat a iOS que obri la teva app actual de Home Assistant perquè pugui enviar la teva configuració. Si no s'ha obert, torna-ho a demanar.";
-"app_migration.import.open_check.retry_button" = "Obrir la teva app actual";
-"app_migration.import.open_check.title" = "S'ha obert la teva app actual?";
-"app_migration.import.waiting.body" = "Confirma la transferència a la teva app actual de Home Assistant. Tornaràs aquí automàticament.";
-"app_migration.import.waiting.open_button" = "Obrir la teva app actual";
-"app_migration.import.waiting.title" = "Esperant la teva app actual";
-"app_migration.intro.body" = "Home Assistant s'ha traslladat a Open Home Foundation. Porta els teus servidors i ajustos des de la teva app actual en uns segons. Tot es queda en aquest dispositiu.";
-"app_migration.intro.continue_button" = "Continuar";
-"app_migration.intro.skip_button" = "Ara no";
-"app_migration.intro.title" = "Transfereix la teva configuració";
-"app_migration.item.app_settings.explanation" = "Privacitat, ubicació, aparença, gestos.";
-"app_migration.item.app_settings.title" = "Ajustos de l'app";
-"app_migration.item.companion_choices.explanation" = "Quines entitats i accions mostren el teu Watch, CarPlay i els ginys.";
-"app_migration.item.companion_choices.title" = "Selecció del Watch, CarPlay i ginys";
-"app_migration.item.nfc_tags.explanation" = "Etiquetes aprovades i accions ràpides de la icona.";
-"app_migration.item.nfc_tags.title" = "Etiquetes NFC i accions ràpides";
-"app_migration.item.notifications.explanation" = "Categories amb accions i accions de posposar.";
-"app_migration.item.notifications.title" = "Categories de notificació";
-"app_migration.item.servers.explanation" = "Mantén la sessió iniciada a tots els servidors.";
-"app_migration.item.servers.title" = "Servidors i inicis de sessió";
-"app_migration.no_servers.moved_body" = "Ara l'app de Home Assistant la publica Open Home Foundation. Aquesta app ja no es connecta a cap servidor de Home Assistant. Instal·la l'app d'Open Home Foundation des de l'App Store i configura-hi la teva llar.";
-"app_migration.no_servers.moved_title" = "Home Assistant s'ha traslladat a Open Home Foundation";
-"app_migration.overview.paste_notice.body" = "La teva configuració es lliura mitjançant un enganxament protegit. Quan s'obri l'app d'Open Home Foundation, iOS preguntarà si pot enganxar des de la teva app actual. Tria «Permet enganxar»; si no, no es transferirà res.";
-"app_migration.overview.paste_notice.continue_button" = "Continuar";
-"app_migration.overview.paste_notice.title" = "Permet enganxar quan iOS ho demani";
-"app_migration.overview.section.follow_up" = "Tornar a configurar a l'app d'Open Home Foundation";
-"app_migration.overview.section.moves" = "Ve amb tu";
-"app_migration.overview.start_button" = "Iniciar la transferència";
-"app_migration.overview.title" = "Què es trasllada";
-"app_migration.permissions.allow_all_button" = "Permetre-ho tot";
-"app_migration.permissions.allow_button" = "Permetre";
-"app_migration.permissions.body" = "iOS tracta aquesta app com si fos nova, així que el que vas permetre a la teva app actual s'ha de tornar a permetre aquí.";
-"app_migration.permissions.continue_button" = "Continuar";
-"app_migration.permissions.section.previous_app" = "Permès a la teva app actual";
-"app_migration.permissions.settings_button" = "Ajustos";
-"app_migration.permissions.skip_button" = "Ara no";
-"app_migration.permissions.title" = "Tornar a permetre els permisos";
-"app_migration.progress.export.copying" = "S'estan copiant els teus ajustos…";
-"app_migration.progress.export.handing_over" = "S'està lliurant a l'app d'Open Home Foundation…";
-"app_migration.progress.export.packaging" = "S'estan empaquetant els teus servidors i inicis de sessió…";
-"app_migration.progress.footnote" = "Això triga uns segons. Res no surt d'aquest dispositiu.";
-"app_migration.progress.import.applying" = "S'estan aplicant els teus ajustos…";
-"app_migration.progress.import.receiving" = "S'està rebent la teva configuració…";
-"app_migration.progress.import.restoring" = "S'estan restaurant els servidors i inicis de sessió…";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -1589,9 +1474,6 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
 \
 Home Assistant is open source, advocates for privacy and runs locally in your home.";
-"onboarding.welcome.transfer_button" = "Transferir des de la teva app actual";
-"onboarding.welcome.transfer_notice.link" = "Transfereix la teva configuració";
-"onboarding.welcome.transfer_notice.moved_body" = "L'app complementària de Home Assistant s'ha traslladat a Open Home Foundation. Emporta't totes les dades de la teva app en aquesta transició.";
 "onboarding.welcome.updated.secondary_button" = "Learn more";
 "open_label" = "Obrir";
 "permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
@@ -2186,7 +2068,6 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.status_section.version_row.title" = "Versió";
 "settings.template_edit.title" = "Editar plantilla";
 "settings.test_flight_communication.title" = "Beta Tester Updates";
-"settings.transfer_to_new_app.title" = "Transferir a l'app d'Open Home Foundation";
 "settings.voice_tools_server.body" = "Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.";
 "settings.voice_tools_server.enabled_footer" = "In Home Assistant, add the Wyoming integration and point it at this device, or accept it when it is discovered on your network.\
 \
@@ -3190,30 +3071,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "webrtc_player.known_issues.title" = "Known Issues";
-"whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
-"whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
 "whats_new.app_support_update.title" = "App support update";
-"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
-"whats_new.energy_widget.item_title" = "Energy widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
-"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
-"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Activate";

@@ -327,121 +327,6 @@
 "app_intents.update_sensors.title" = "Uppdatera sensorer";
 "app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
 "app_intents.watch_assist.title" = "Assist";
-"app_migration.announcement.body" = "Home Assistant flyttar till Open Home Foundation-appen på App Store. För över dina servrar och inställningar till den på några sekunder. Allt stannar på den här enheten.";
-"app_migration.announcement.follow_up.explanation" = "Behörigheter, widgetar på hemskärmen, Apple Watch och Shortcuts ställs in igen i Open Home Foundation-appen.";
-"app_migration.announcement.follow_up.title" = "Några saker att ställa in igen";
-"app_migration.announcement.later_button" = "Inte nu";
-"app_migration.announcement.new_app.explanation" = "Appen ges nu ut av Open Home Foundation. Den här appen får inga fler uppdateringar.";
-"app_migration.announcement.new_app.title" = "En annan app, samma Home Assistant";
-"app_migration.announcement.section.what_changes" = "Vad det här innebär";
-"app_migration.announcement.setup_moves.explanation" = "Servrar, inloggningar, inställningar och dina val för Watch, CarPlay och widgetar följer med dig.";
-"app_migration.announcement.setup_moves.title" = "Din konfiguration följer med dig";
-"app_migration.announcement.title" = "Home Assistant har flyttat till Open Home Foundation";
-"app_migration.announcement.transfer_button" = "För över till Open Home Foundation-appen";
-"app_migration.complete.body" = "Din konfiguration finns nu i den här appen och du är inloggad.";
-"app_migration.complete.body_no_servers" = "Dina inställningar finns nu i den här appen. Din befintliga app hade inga servrar att logga in på.";
-"app_migration.complete.continue_button" = "Fortsätt";
-"app_migration.complete.erase_button" = "Radera din befintliga app";
-"app_migration.complete.erased.body" = "Den innehåller inget längre. Ta bort den från hemskärmen när du vill.";
-"app_migration.complete.erased.title" = "Befintlig app raderad";
-"app_migration.complete.keep_previous_app_button" = "Behåll den tills vidare";
-"app_migration.complete.section.next_steps" = "Nästa steg";
-"app_migration.complete.server_single" = "1 server överförd";
-"app_migration.complete.servers_transferred" = "%d servrar överförda";
-"app_migration.complete.title" = "Överföringen är klar";
-"app_migration.error.declined" = "Din befintliga app avbröt överföringen.";
-"app_migration.error.invalid_payload" = "Överföringen kunde inte läsas. Försök igen.";
-"app_migration.error.new_app_unavailable" = "Open Home Foundation-appen kunde inte öppnas.";
-"app_migration.error.no_payload" = "Inget togs emot från din befintliga app.";
-"app_migration.error.no_payload_allow_paste" = "Inget togs emot från din befintliga app. Om iOS frågade om att tillåta inklistring väljer du Tillåt inklistring och försöker igen.";
-"app_migration.error.previous_app_erased" = "Din befintliga app har redan raderats, så det finns inget kvar att föra över. Ställ in den här appen från början.";
-"app_migration.error.previous_app_unavailable" = "Din befintliga Home Assistant-app kunde inte öppnas.";
-"app_migration.error.unsupported_version" = "Uppdatera din befintliga Home Assistant-app innan du för över.";
-"app_migration.error.wrong_session" = "Överföringen matchade inte begäran från den här appen.";
-"app_migration.export.body" = "Open Home Foundation-appen ber om att få ta emot din konfiguration. Inget lämnar den här enheten.";
-"app_migration.export.erased.body" = "Din konfiguration finns nu i Open Home Foundation-appen. Du kan ta bort den här appen från hemskärmen.";
-"app_migration.export.erased.title" = "Den här appen är nu tom";
-"app_migration.export.failed.retry_button" = "Försök igen";
-"app_migration.export.failed.title" = "Open Home Foundation-appen kunde inte ta emot överföringen";
-"app_migration.export.handed_off.open_button" = "Gå till Open Home Foundation-appen";
-"app_migration.export.handed_off.title" = "Överföring skickad";
-"app_migration.export.handed_off.transfer_again_button" = "För över igen";
-"app_migration.export.handed_off.verify_body" = "Gå till Open Home Foundation-appen och kontrollera att dina servrar och inställningar finns där. När allt fungerar tar du bort den här appen från hemskärmen.";
-"app_migration.export.later_button" = "Gör det senare";
-"app_migration.export.section.includes" = "Överföringen omfattar";
-"app_migration.export.title" = "För över till Open Home Foundation-appen";
-"app_migration.export.transfer_again_confirmation.confirm_button" = "För över igen";
-"app_migration.export.transfer_again_confirmation.reset_body" = "Allt som redan förts över till Open Home Foundation-appen tas bort där, och den här appen skickar din konfiguration en gång till.";
-"app_migration.export.transfer_again_confirmation.title" = "För över igen?";
-"app_migration.export.transfer_button" = "För över";
-"app_migration.follow_up.delete_previous_app.explanation" = "Ta bort den när allt fungerar här.";
-"app_migration.follow_up.delete_previous_app.title" = "Ta bort din befintliga app";
-"app_migration.follow_up.home_screen_widgets.place_explanation" = "Lägg till dem på hemskärmen igen. Det de visar följer med dig.";
-"app_migration.follow_up.home_screen_widgets.title" = "Widgetar på hemskärmen";
-"app_migration.follow_up.permissions.explanation" = "Åtkomst till plats, notiser och kamera.";
-"app_migration.follow_up.permissions.title" = "Behörigheter";
-"app_migration.follow_up.shortcuts.explanation" = "Skapa om de Shortcuts som använde din befintliga app.";
-"app_migration.follow_up.shortcuts.title" = "Siri och Shortcuts";
-"app_migration.follow_up.watch_app.reinstall_explanation" = "Installera den på din klocka och lägg till komplikationer på urtavlorna igen. Det de visar följer med dig.";
-"app_migration.follow_up.watch_app.title" = "Apple Watch-appen";
-"app_migration.get_new_app.back_button" = "Tillbaka";
-"app_migration.get_new_app.body" = "Installera Open Home Foundation-appen från App Store och kom sedan tillbaka hit. Överföringen startar så snart den finns på den här enheten.";
-"app_migration.get_new_app.installed_button" = "Jag har installerat den";
-"app_migration.get_new_app.not_found.body" = "Installera den från App Store och öppna den här skärmen igen.";
-"app_migration.get_new_app.not_found.title" = "Open Home Foundation-appen finns inte på den här enheten än";
-"app_migration.get_new_app.store_button" = "Hämta Open Home Foundation-appen";
-"app_migration.get_new_app.title" = "Hämta Open Home Foundation-appen först";
-"app_migration.import.cancel_button" = "Avbryt";
-"app_migration.import.failed.manual_button" = "Ställ in manuellt";
-"app_migration.import.failed.manual_confirmation.body" = "Din konfiguration stannar i din befintliga app och förs inte över. När den här appen är inställd tar du bort din befintliga app från hemskärmen.";
-"app_migration.import.failed.manual_confirmation.confirm_button" = "Ställ in manuellt";
-"app_migration.import.failed.manual_confirmation.title" = "Ställa in den här appen från början?";
-"app_migration.import.failed.retry_button" = "Försök igen";
-"app_migration.import.failed.title" = "Överföringen slutfördes inte";
-"app_migration.import.open_check.body" = "Den här appen bad iOS öppna din befintliga Home Assistant-app så att den kan skicka din konfiguration. Om den inte öppnades kan du be igen.";
-"app_migration.import.open_check.retry_button" = "Öppna din befintliga app";
-"app_migration.import.open_check.title" = "Öppnades din befintliga app?";
-"app_migration.import.waiting.body" = "Bekräfta överföringen i din befintliga Home Assistant-app. Du kommer automatiskt tillbaka hit.";
-"app_migration.import.waiting.open_button" = "Öppna din befintliga app";
-"app_migration.import.waiting.title" = "Väntar på din befintliga app";
-"app_migration.intro.body" = "Home Assistant har flyttat till Open Home Foundation. Ta med dina servrar och inställningar från din befintliga app på några sekunder. Allt stannar på den här enheten.";
-"app_migration.intro.continue_button" = "Fortsätt";
-"app_migration.intro.skip_button" = "Inte nu";
-"app_migration.intro.title" = "För över din konfiguration";
-"app_migration.item.app_settings.explanation" = "Integritet, plats, utseende, gester.";
-"app_migration.item.app_settings.title" = "Appinställningar";
-"app_migration.item.companion_choices.explanation" = "Vilka entiteter och åtgärder din Watch, CarPlay och dina widgetar visar.";
-"app_migration.item.companion_choices.title" = "Val för Watch, CarPlay och widgetar";
-"app_migration.item.nfc_tags.explanation" = "Godkända taggar och snabbåtgärder för ikonen.";
-"app_migration.item.nfc_tags.title" = "NFC-taggar och snabbåtgärder";
-"app_migration.item.notifications.explanation" = "Kategorier med åtgärder och snooze-åtgärder.";
-"app_migration.item.notifications.title" = "Notiskategorier";
-"app_migration.item.servers.explanation" = "Förbli inloggad på varje server.";
-"app_migration.item.servers.title" = "Servrar och inloggningar";
-"app_migration.no_servers.moved_body" = "Home Assistant-appen ges nu ut av Open Home Foundation. Den här appen ansluter inte längre till någon Home Assistant-server. Installera Open Home Foundation-appen från App Store och ställ in ditt hem där.";
-"app_migration.no_servers.moved_title" = "Home Assistant har flyttat till Open Home Foundation";
-"app_migration.overview.paste_notice.body" = "Din konfiguration lämnas över via en skyddad inklistring. När Open Home Foundation-appen öppnas frågar iOS om den får klistra in från din befintliga app. Välj Tillåt inklistring, annars förs inget över.";
-"app_migration.overview.paste_notice.continue_button" = "Fortsätt";
-"app_migration.overview.paste_notice.title" = "Tillåt inklistringen när iOS frågar";
-"app_migration.overview.section.follow_up" = "Ställ in igen i Open Home Foundation-appen";
-"app_migration.overview.section.moves" = "Följer med dig";
-"app_migration.overview.start_button" = "Starta överföringen";
-"app_migration.overview.title" = "Vad som följer med";
-"app_migration.permissions.allow_all_button" = "Tillåt alla";
-"app_migration.permissions.allow_button" = "Tillåt";
-"app_migration.permissions.body" = "iOS ser det här som en helt ny app, så det du tillät i din befintliga app måste tillåtas här en gång till.";
-"app_migration.permissions.continue_button" = "Fortsätt";
-"app_migration.permissions.section.previous_app" = "Tillåtet i din befintliga app";
-"app_migration.permissions.settings_button" = "Inställningar";
-"app_migration.permissions.skip_button" = "Inte nu";
-"app_migration.permissions.title" = "Tillåt behörigheter igen";
-"app_migration.progress.export.copying" = "Kopierar dina inställningar…";
-"app_migration.progress.export.handing_over" = "Lämnar över till Open Home Foundation-appen…";
-"app_migration.progress.export.packaging" = "Paketerar dina servrar och inloggningar…";
-"app_migration.progress.footnote" = "Det tar några sekunder. Inget lämnar den här enheten.";
-"app_migration.progress.import.applying" = "Tillämpar dina inställningar…";
-"app_migration.progress.import.receiving" = "Tar emot din konfiguration…";
-"app_migration.progress.import.restoring" = "Återställer servrar och inloggningar…";
 "app_shortcuts.activate_scene.title" = "Aktivera scen";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Stäng";
@@ -1584,9 +1469,6 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "onboarding.welcome.updated.body" = "Få åtkomst till din Home Assistant-server när du är på språng. \
 \
 Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i ditt hem.";
-"onboarding.welcome.transfer_button" = "För över från din befintliga app";
-"onboarding.welcome.transfer_notice.link" = "För över din konfiguration";
-"onboarding.welcome.transfer_notice.moved_body" = "Home Assistant-appen har flyttat till Open Home Foundation. Ta med all din appdata under övergången.";
 "onboarding.welcome.updated.secondary_button" = "Läs mer";
 "open_label" = "Öppen";
 "permission.notification.body" = "Tillåt aviseringar och få reda på vad som händer i ditt hem, från upptäckt av läckage till dörrar som är öppna. Du har full kontroll över vad som meddelas till dig.";
@@ -2181,7 +2063,6 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Redigera mall";
 "settings.test_flight_communication.title" = "Uppdateringar för betatestare";
-"settings.transfer_to_new_app.title" = "För över till Open Home Foundation-appen";
 "settings.voice_tools_server.body" = "Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.";
 "settings.voice_tools_server.enabled_footer" = "I Home Assistant lägger du till Wyoming-integrationen och kopplar den till den här enheten, eller godkänner den när den upptäcks i ditt nätverk.\
 \
@@ -3185,30 +3066,9 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "web_view.server_selection.title" = "Välj server";
 "web_view.unique_server_selection.title" = "Välj en server";
 "webrtc_player.known_issues.title" = "Kända problem";
-"whats_new.app_support_update.item_body" = "Detta är den sista uppdateringen för iOS 15, watchOS 8 och macOS 11 samt tidigare versioner. Tryck här för att läsa mer.";
-"whats_new.app_support_update.item_title" = "Stöd för iOS 15, Watch OS 8 och macOS 11 upphör";
 "whats_new.app_support_update.title" = "Uppdatering av app-support";
-"whats_new.energy_widget.article_body" = "Den nya **Energi**-widgeten placerar din energikontrollpanel på startskärmen och låsskärmen.\
-\
-**Vad den visar**\
-Elnät, solenergi, batteri och gas för den period du väljer: idag, igår, den här veckan eller den här månaden. Välj vilken källa som ska visas först, eller låt widgeten bestämma själv. De små storlekarna och storlekarna för låsskärmen visar strömförbrukningen i realtid när du har strömsensorer konfigurerade, och de bredare storlekarna visar periodens totalsummor för varje källa.\
-\
-**Så här lägger du till den**\
-Håll ned på startskärmen, tryck på lägg till-knappen i det övre hörnet, sök efter Home Assistant och välj Energi. För låsskärmen håller du ned på den, trycker på Anpassa och lägger till widgeten där. Det krävs att en kontrollpanel för energi är konfigurerad i Home Assistant.";
-"whats_new.energy_widget.item_body" = "Se med ett ögonkast på startskärmen och låsskärmen hur mycket energi ditt hem förbrukar, producerar och lagrar. Tryck för att läsa mer.";
-"whats_new.energy_widget.item_title" = "Energiwidget";
-"whats_new.energy_widget.mac.article_body" = "Den nya **Energi**-widgeten visar din energikontrollpanel direkt på skrivbordet.\
-\
-**Vad den visar**\
-Elnät, solenergi, batteri och gas för den period du väljer: idag, igår, den här veckan eller den här månaden. Välj vilken källa som ska visas först, eller låt widgeten bestämma själv. Den lilla storleken visar strömförbrukningen i realtid när du har strömsensorer installerade, och de bredare storlekarna visar periodens totalsiffror för varje källa.\
-\
-**Så här lägger du till den**\
-Högerklicka på skrivbordet, välj Redigera widgetar, sök efter Home Assistant och välj Energi. Det krävs att en energidashboard är konfigurerad i Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "Se med ett ögonkast på din datorskärm hur mycket energi ditt hem förbrukar, producerar och lagrar. Tryck för att läsa mer.";
 "whats_new.item.opens_article_hint" = "Öppnar en artikel";
 "whats_new.item.opens_link_hint" = "Öppnar en länk";
-"whats_new.live_activities.item_body" = "Följ en timer, en apparat som är igång eller något annat som pågår direkt från låsskärmen och Dynamic Island. Tryck här för att se hur en notis startar en sådan.";
-"whats_new.live_activities.item_title" = "Live-aktiviteter";
 "whats_new.title" = "Vad är nytt i Companion-appen?";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Aktivera";

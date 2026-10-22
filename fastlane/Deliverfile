@@ -1,3 +1,2 @@
-app_identifier 'io.home-assistant.app'
 username ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
 automatic_release false

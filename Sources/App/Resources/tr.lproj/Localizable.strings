@@ -327,121 +327,6 @@
 "app_intents.update_sensors.title" = "Sensörleri güncelle";
 "app_intents.watch_assist.description" = "Saat için yapılandırılmış işlem hattını kullanarak Assist uygulamasını açar";
 "app_intents.watch_assist.title" = "Yardımcı";
-"app_migration.announcement.body" = "Home Assistant, App Store'daki Open Home Foundation uygulamasına taşınıyor. Sunucularınızı ve ayarlarınızı birkaç saniyede ona aktarın. Her şey bu cihazda kalır.";
-"app_migration.announcement.follow_up.explanation" = "İzinler, Ana Ekran widget'ları, Apple Watch ve Shortcuts, Open Home Foundation uygulamasında yeniden ayarlanır.";
-"app_migration.announcement.follow_up.title" = "Yeniden ayarlanacak birkaç şey";
-"app_migration.announcement.later_button" = "Şimdi değil";
-"app_migration.announcement.new_app.explanation" = "Uygulama artık Open Home Foundation tarafından yayımlanıyor. Bu uygulama artık güncelleme almayacak.";
-"app_migration.announcement.new_app.title" = "Farklı bir uygulama, aynı Home Assistant";
-"app_migration.announcement.section.what_changes" = "Bu ne anlama geliyor";
-"app_migration.announcement.setup_moves.explanation" = "Sunucular, oturumlar, ayarlar ve Watch, CarPlay ile widget kurulumunuz sizinle gelir.";
-"app_migration.announcement.setup_moves.title" = "Kurulumunuz sizinle taşınır";
-"app_migration.announcement.title" = "Home Assistant, Open Home Foundation'a taşındı";
-"app_migration.announcement.transfer_button" = "Open Home Foundation uygulamasına aktar";
-"app_migration.complete.body" = "Kurulumunuz artık bu uygulamada ve oturumunuz açık.";
-"app_migration.complete.body_no_servers" = "Ayarlarınız artık bu uygulamada. Mevcut uygulamanızda oturum açılacak sunucu yoktu.";
-"app_migration.complete.continue_button" = "Devam";
-"app_migration.complete.erase_button" = "Mevcut uygulamayı sil";
-"app_migration.complete.erased.body" = "Artık içinde hiçbir şey yok. İstediğiniz zaman Ana Ekran'dan kaldırabilirsiniz.";
-"app_migration.complete.erased.title" = "Mevcut uygulama silindi";
-"app_migration.complete.keep_previous_app_button" = "Şimdilik tut";
-"app_migration.complete.section.next_steps" = "Sonraki adımlar";
-"app_migration.complete.server_single" = "1 sunucu aktarıldı";
-"app_migration.complete.servers_transferred" = "%d sunucu aktarıldı";
-"app_migration.complete.title" = "Aktarım tamamlandı";
-"app_migration.error.declined" = "Mevcut uygulamanız aktarımı iptal etti.";
-"app_migration.error.invalid_payload" = "Aktarım okunamadı. Yeniden deneyin.";
-"app_migration.error.new_app_unavailable" = "Open Home Foundation uygulaması açılamadı.";
-"app_migration.error.no_payload" = "Mevcut uygulamanızdan hiçbir şey alınmadı.";
-"app_migration.error.no_payload_allow_paste" = "Mevcut uygulamanızdan hiçbir şey alınmadı. iOS yapıştırma izni istediyse Yapıştırmaya İzin Ver'i seçip yeniden deneyin.";
-"app_migration.error.previous_app_erased" = "Mevcut uygulamanız zaten silinmiş, bu yüzden aktarılacak bir şey kalmadı. Bu uygulamayı sıfırdan kurun.";
-"app_migration.error.previous_app_unavailable" = "Mevcut Home Assistant uygulamanız açılamadı.";
-"app_migration.error.unsupported_version" = "Aktarmadan önce mevcut Home Assistant uygulamanızı güncelleyin.";
-"app_migration.error.wrong_session" = "Aktarım, bu uygulamanın isteğiyle eşleşmedi.";
-"app_migration.export.body" = "Open Home Foundation uygulaması kurulumunuzu almak istiyor. Hiçbir şey bu cihazdan çıkmaz.";
-"app_migration.export.erased.body" = "Kurulumunuz artık Open Home Foundation uygulamasında. Bu uygulamayı Ana Ekran'dan kaldırabilirsiniz.";
-"app_migration.export.erased.title" = "Bu uygulama artık boş";
-"app_migration.export.failed.retry_button" = "Yeniden dene";
-"app_migration.export.failed.title" = "Open Home Foundation uygulaması aktarımı alamadı";
-"app_migration.export.handed_off.open_button" = "Open Home Foundation uygulamasına git";
-"app_migration.export.handed_off.title" = "Aktarım gönderildi";
-"app_migration.export.handed_off.transfer_again_button" = "Yeniden aktar";
-"app_migration.export.handed_off.verify_body" = "Open Home Foundation uygulamasına gidin ve sunucularınızla ayarlarınızın orada olduğunu kontrol edin. Her şey çalışınca bu uygulamayı Ana Ekran'dan kaldırın.";
-"app_migration.export.later_button" = "Daha sonra yap";
-"app_migration.export.section.includes" = "Bu aktarım şunları içerir";
-"app_migration.export.title" = "Open Home Foundation uygulamasına aktar";
-"app_migration.export.transfer_again_confirmation.confirm_button" = "Yeniden aktar";
-"app_migration.export.transfer_again_confirmation.reset_body" = "Open Home Foundation uygulamasına zaten aktarılan her şey orada kaldırılır ve bu uygulama kurulumunuzu bir kez daha gönderir.";
-"app_migration.export.transfer_again_confirmation.title" = "Yeniden aktarılsın mı?";
-"app_migration.export.transfer_button" = "Aktar";
-"app_migration.follow_up.delete_previous_app.explanation" = "Burada her şey çalışınca kaldırın.";
-"app_migration.follow_up.delete_previous_app.title" = "Mevcut uygulamanızı silin";
-"app_migration.follow_up.home_screen_widgets.place_explanation" = "Ana Ekran'a yeniden ekleyin. Gösterdikleri sizinle gelir.";
-"app_migration.follow_up.home_screen_widgets.title" = "Ana Ekran widget'ları";
-"app_migration.follow_up.permissions.explanation" = "Konum, bildirim ve kamera erişimi.";
-"app_migration.follow_up.permissions.title" = "İzinler";
-"app_migration.follow_up.shortcuts.explanation" = "Mevcut uygulamanızı kullanan Shortcuts kestirmelerini yeniden oluşturun.";
-"app_migration.follow_up.shortcuts.title" = "Siri ve Shortcuts";
-"app_migration.follow_up.watch_app.reinstall_explanation" = "Saatinize yükleyin ve komplikasyonları saat kadranlarınıza yeniden ekleyin. Gösterdikleri sizinle gelir.";
-"app_migration.follow_up.watch_app.title" = "Apple Watch uygulaması";
-"app_migration.get_new_app.back_button" = "Geri";
-"app_migration.get_new_app.body" = "Open Home Foundation uygulamasını App Store'dan yükleyin, sonra buraya geri dönün. Aktarım, uygulama bu cihaza gelir gelmez başlar.";
-"app_migration.get_new_app.installed_button" = "Yükledim";
-"app_migration.get_new_app.not_found.body" = "App Store'dan yükleyin ve bu ekranı yeniden açın.";
-"app_migration.get_new_app.not_found.title" = "Open Home Foundation uygulaması henüz bu cihazda yok";
-"app_migration.get_new_app.store_button" = "Open Home Foundation uygulamasını edinin";
-"app_migration.get_new_app.title" = "Önce Open Home Foundation uygulamasını edinin";
-"app_migration.import.cancel_button" = "Vazgeç";
-"app_migration.import.failed.manual_button" = "Elle kur";
-"app_migration.import.failed.manual_confirmation.body" = "Kurulumunuz mevcut uygulamanızda kalır ve aktarılmaz. Bu uygulama kurulduktan sonra mevcut uygulamanızı Ana Ekran'dan kaldırın.";
-"app_migration.import.failed.manual_confirmation.confirm_button" = "Elle kur";
-"app_migration.import.failed.manual_confirmation.title" = "Bu uygulama sıfırdan kurulsun mu?";
-"app_migration.import.failed.retry_button" = "Yeniden dene";
-"app_migration.import.failed.title" = "Aktarım tamamlanmadı";
-"app_migration.import.open_check.body" = "Bu uygulama, kurulumunuzu gönderebilmesi için iOS'tan mevcut Home Assistant uygulamanızı açmasını istedi. Açılmadıysa yeniden isteyin.";
-"app_migration.import.open_check.retry_button" = "Mevcut uygulamanızı açın";
-"app_migration.import.open_check.title" = "Mevcut uygulamanız açıldı mı?";
-"app_migration.import.waiting.body" = "Aktarımı mevcut Home Assistant uygulamanızda onaylayın. Otomatik olarak buraya geri getirileceksiniz.";
-"app_migration.import.waiting.open_button" = "Mevcut uygulamanızı açın";
-"app_migration.import.waiting.title" = "Mevcut uygulamanız bekleniyor";
-"app_migration.intro.body" = "Home Assistant, Open Home Foundation'a taşındı. Sunucularınızı ve ayarlarınızı mevcut uygulamanızdan birkaç saniyede getirin. Her şey bu cihazda kalır.";
-"app_migration.intro.continue_button" = "Devam";
-"app_migration.intro.skip_button" = "Şimdi değil";
-"app_migration.intro.title" = "Kurulumunuzu aktarın";
-"app_migration.item.app_settings.explanation" = "Gizlilik, konum, görünüm, hareketler.";
-"app_migration.item.app_settings.title" = "Uygulama ayarları";
-"app_migration.item.companion_choices.explanation" = "Watch, CarPlay ve widget'larınızın hangi varlıkları ve eylemleri gösterdiği.";
-"app_migration.item.companion_choices.title" = "Watch, CarPlay ve widget seçimleri";
-"app_migration.item.nfc_tags.explanation" = "Onaylanmış etiketler ve simge hızlı eylemleri.";
-"app_migration.item.nfc_tags.title" = "NFC etiketleri ve hızlı eylemler";
-"app_migration.item.notifications.explanation" = "Eylem içeren kategoriler ve erteleme eylemleri.";
-"app_migration.item.notifications.title" = "Bildirim kategorileri";
-"app_migration.item.servers.explanation" = "Her sunucuda oturumunuz açık kalır.";
-"app_migration.item.servers.title" = "Sunucular ve oturumlar";
-"app_migration.no_servers.moved_body" = "Home Assistant uygulaması artık Open Home Foundation tarafından yayımlanıyor. Bu uygulama artık bir Home Assistant sunucusuna bağlanmıyor. Open Home Foundation uygulamasını App Store'dan yükleyin ve evinizi orada kurun.";
-"app_migration.no_servers.moved_title" = "Home Assistant, Open Home Foundation'a taşındı";
-"app_migration.overview.paste_notice.body" = "Kurulumunuz korumalı bir yapıştırma ile devredilir. Open Home Foundation uygulaması açıldığında iOS, mevcut uygulamanızdan yapıştırmaya izin verilip verilmeyeceğini sorar. Yapıştırmaya İzin Ver'i seçin, yoksa hiçbir şey aktarılmaz.";
-"app_migration.overview.paste_notice.continue_button" = "Devam";
-"app_migration.overview.paste_notice.title" = "iOS sorduğunda yapıştırmaya izin verin";
-"app_migration.overview.section.follow_up" = "Open Home Foundation uygulamasında yeniden ayarlanır";
-"app_migration.overview.section.moves" = "Sizinle gelir";
-"app_migration.overview.start_button" = "Aktarımı başlat";
-"app_migration.overview.title" = "Neler taşınır";
-"app_migration.permissions.allow_all_button" = "Tümüne izin ver";
-"app_migration.permissions.allow_button" = "İzin ver";
-"app_migration.permissions.body" = "iOS bunu yepyeni bir uygulama olarak görür, bu yüzden mevcut uygulamanızda verdiğiniz izinlerin burada bir kez daha verilmesi gerekir.";
-"app_migration.permissions.continue_button" = "Devam";
-"app_migration.permissions.section.previous_app" = "Mevcut uygulamanızda izin verilenler";
-"app_migration.permissions.settings_button" = "Ayarlar";
-"app_migration.permissions.skip_button" = "Şimdi değil";
-"app_migration.permissions.title" = "İzinleri yeniden verin";
-"app_migration.progress.export.copying" = "Ayarlarınız kopyalanıyor…";
-"app_migration.progress.export.handing_over" = "Open Home Foundation uygulamasına devrediliyor…";
-"app_migration.progress.export.packaging" = "Sunucularınız ve oturumlarınız paketleniyor…";
-"app_migration.progress.footnote" = "Bu birkaç saniye sürer. Hiçbir şey bu cihazdan çıkmaz.";
-"app_migration.progress.import.applying" = "Ayarlarınız uygulanıyor…";
-"app_migration.progress.import.receiving" = "Kurulumunuz alınıyor…";
-"app_migration.progress.import.restoring" = "Sunucular ve oturumlar geri yükleniyor…";
 "app_shortcuts.activate_scene.title" = "Sahneyi Etkinleştir";
 "app_shortcuts.ask_assist.title" = "Asistana Sor";
 "app_shortcuts.close.title" = "Kapat";
@@ -1589,9 +1474,6 @@
 "onboarding.welcome.updated.body" = "Hareket halindeyken Ev Asistanı sunucunuza erişin. \
 \
 Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak çalışır.";
-"onboarding.welcome.transfer_button" = "Mevcut uygulamanızdan aktarın";
-"onboarding.welcome.transfer_notice.link" = "Kurulumunuzu aktarın";
-"onboarding.welcome.transfer_notice.moved_body" = "Home Assistant yardımcı uygulaması Open Home Foundation'a taşındı. Bu geçişte tüm uygulama verilerinizi yanınıza alın.";
 "onboarding.welcome.updated.secondary_button" = "Daha fazla bilgi edin";
 "open_label" = "Açık";
 "permission.notification.body" = "Bildirimleri etkinleştirin ve evinizde neler olup bittiğini öğrenin; sızıntıları tespit etmekten açık bırakılan kapılara kadar, size ne söylediği konusunda tam kontrole sahip olun.";
@@ -2186,7 +2068,6 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.status_section.version_row.title" = "Sürüm";
 "settings.template_edit.title" = "Şablonu Düzenle";
 "settings.test_flight_communication.title" = "Beta Test Kullanıcısı Güncellemeleri";
-"settings.transfer_to_new_app.title" = "Open Home Foundation uygulamasına aktar";
 "settings.voice_tools_server.body" = "Home Assistant, bu cihazı konuşmayı metne ve metni konuşmaya dönüştürmek için kullanabilir; böylece ses işleme süreci, halihazırda sahip olduğunuz donanım üzerinde çalışır.";
 "settings.voice_tools_server.enabled_footer" = "Home Assistant'ta Wyoming entegrasyonunu ekleyin ve bu cihaza yönlendirin ya da cihaz ağınızda tespit edildiğinde bunu kabul edin.\
 \
@@ -3190,30 +3071,9 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "web_view.server_selection.title" = "Sunucu seç";
 "web_view.unique_server_selection.title" = "Bir sunucu seçin";
 "webrtc_player.known_issues.title" = "Bilinen Sorunlar";
-"whats_new.app_support_update.item_body" = "Bu, iOS 15, watchOS 8 ve macOS 11 ve önceki sürümler için son güncellemedir. Daha fazla bilgi için dokunun.";
-"whats_new.app_support_update.item_title" = "iOS 15, watchOS 8 ve macOS 11 desteği sona erecek";
 "whats_new.app_support_update.title" = "Uygulama desteği güncellemesi";
-"whats_new.energy_widget.article_body" = "Yeni **Enerji** araç takımı, enerji kontrol panelinizi Ana Ekranınıza ve Kilit Ekranınıza getirir.\
-\
-**Neler gösterir**\
-Seçtiğiniz dönem için şebeke, güneş enerjisi, pil ve gaz verilerini gösterir: bugün, dün, bu hafta veya bu ay. Ön planda gösterilecek kaynağı seçin veya widget'ın karar vermesine izin verin. Küçük ve Kilit Ekranı boyutları, güç sensörleriniz kurulu olduğunda canlı güç değerlerini gösterir; daha geniş boyutlar ise her kaynak için döneme ait toplam değerleri gösterir.\
-\
-**Nasıl eklenir**\
-Ana Ekranınıza dokunup basılı tutun, üst köşedeki ekle düğmesine dokunun, Home Assistant'ı arayın ve **Enerji**'yi seçin. Kilit Ekranı için ise Kilit Ekranına dokunup basılı tutun, **Özelleştir**'e dokunun ve araç takımını buradan ekleyin. Home Assistant'ta yapılandırılmış bir enerji panosu gereklidir.";
-"whats_new.energy_widget.item_body" = "Ana Ekranınızda ve Kilit Ekranınızda evinizin ne kadar enerji tükettiğini, ürettiğini ve depoladığını bir bakışta görün. Daha fazla bilgi edinmek için dokunun.";
-"whats_new.energy_widget.item_title" = "Enerji araç takımı";
-"whats_new.energy_widget.mac.article_body" = "Yeni **Enerji** araç takımı, enerji gösterge panelinizi masaüstünüze getirir.\
-\
-**Neleri gösterir**\
-Seçtiğiniz dönem için şebeke, güneş enerjisi, pil ve gaz verilerini gösterir: bugün, dün, bu hafta veya bu ay. En üstte gösterilecek kaynağı seçin ya da seçimi widget’a bırakın. Küçük boyutta, güç sensörleriniz kurulu olduğunda anlık güç tüketimini gösterir; daha geniş boyutlarda ise her kaynak için ilgili dönemin toplam değerlerini gösterir.\
-\
-**Nasıl eklenir**\
-Masaüstünüze sağ tıklayın, Araç Takımlarını Düzenle'yi seçin, Home Assistant'ı arayın ve Enerji'yi seçin. Bunun için Home Assistant'ta yapılandırılmış bir enerji kontrol paneli gerekir.";
-"whats_new.energy_widget.mac.item_body" = "Masaüstünüzden evinizin ne kadar enerji tükettiğini, ürettiğini ve depoladığını bir bakışta görün. Daha fazla bilgi edinmek için dokunun.";
 "whats_new.item.opens_article_hint" = "Bir makaleyi açar";
 "whats_new.item.opens_link_hint" = "Bir bağlantıyı açar";
-"whats_new.live_activities.item_body" = "Kilit Ekranından ve Dinamik Ada'dan bir zamanlayıcıyı, çalışan bir cihazı veya devam eden herhangi bir işlemi takip edin. Bir bildirimin bunu nasıl başlattığını öğrenmek için dokunun.";
-"whats_new.live_activities.item_title" = "Canlı Etkinlikler";
 "whats_new.title" = "Yardımcı Uygulamada Yenilikler Neler?";
 "whats_new.version_format" = "Sürüm %@";
 "widgets.action.name.activate" = "Etkinleştir";

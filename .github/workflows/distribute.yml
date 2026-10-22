@@ -2,11 +2,25 @@ name: Distribute
 
 on:
   workflow_dispatch:
+    inputs:
+      account:
+        description: Apple account the build is signed with and uploaded to
+        type: choice
+        options:
+          - ohf
+          - nabu-casa
+        default: ohf
   push:
     branches:
       - main
 
 env:
+  # Pushes to main always build the Open Home Foundation app; a manual run can pick the other account.
+  # Its secrets are the OHF_* set; the Nabu Casa ones carry no prefix. Each secret below is picked
+  # with an explicit conditional rather than an indexed lookup, so the runner only ever receives the
+  # ones named here.
+  ACCOUNT: ${{ inputs.account || 'ohf' }}
+  NABU_CASA: ${{ inputs.account == 'nabu-casa' }}
   DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
@@ -26,7 +40,7 @@ jobs:
         kind: [mac, ios]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83  # v1.328.0
+      - uses: ruby/setup-ruby@a89e929fdc35d88f2b8f20f26452c4adbeb9e371  # v1.330.0
         with:
           ruby-version: .ruby-version
       - name: Install Gems
@@ -57,20 +71,50 @@ jobs:
           echo "which resolves to $(cd "$DEVELOPER_DIR" && pwd -P)"
           xcodebuild -version
 
-      - name: Build ${{ matrix.kind }}
+      - name: Select the ${{ env.ACCOUNT }} account
+        run: |
+          set -euo pipefail
+          if [ ! -f "Configuration/Accounts/${ACCOUNT}.xcconfig" ]; then
+            echo "::error title=Unknown account::Configuration/Accounts/${ACCOUNT}.xcconfig does not exist."
+            exit 1
+          fi
+          printf '#include "Accounts/%s.xcconfig"\n' "$ACCOUNT" > Configuration/Account.local.xcconfig
+          cat Configuration/Account.local.xcconfig
+
+      - name: Build ${{ matrix.kind }} for ${{ env.ACCOUNT }}
         run: |
           bundle exec fastlane ${{ matrix.kind }} build
         env:
-          P12_KEY_DISTRIBUTION: ${{ secrets.OHF_P12_KEY_DISTRIBUTION }}
-          P12_VALUE_DISTRIBUTION: ${{ secrets.OHF_P12_VALUE_DISTRIBUTION }}
-          P12_KEY_MAC_DEVELOPER_ID: ${{ secrets.OHF_P12_KEY_MAC_DEVELOPER_ID }}
-          P12_KEY_MAC_DEVELOPER_INSTALLER: ${{ secrets.OHF_P12_KEY_MAC_DEVELOPER_INSTALLER }}
-          P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.OHF_P12_VALUE_MAC_DEVELOPER_ID }}
-          P12_VALUE_MAC_DEVELOPER_INSTALLER: ${{ secrets.OHF_P12_VALUE_MAC_DEVELOPER_INSTALLER }}
-          HOMEASSISTANT_APPLE_ID: ${{ secrets.OHF_HOMEASSISTANT_APPLE_ID }}
-          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets.OHF_HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
-          HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID: ${{ secrets.OHF_HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID }}
-          HOMEASSISTANT_TEAM_ID: ${{ secrets.OHF_HOMEASSISTANT_TEAM_ID }}
+          P12_KEY_DISTRIBUTION: >-
+            ${{ env.NABU_CASA == 'true' && secrets.P12_KEY_DISTRIBUTION
+            || secrets.OHF_P12_KEY_DISTRIBUTION }}
+          P12_VALUE_DISTRIBUTION: >-
+            ${{ env.NABU_CASA == 'true' && secrets.P12_VALUE_DISTRIBUTION
+            || secrets.OHF_P12_VALUE_DISTRIBUTION }}
+          P12_KEY_MAC_DEVELOPER_ID: >-
+            ${{ env.NABU_CASA == 'true' && secrets.P12_KEY_MAC_DEVELOPER_ID
+            || secrets.OHF_P12_KEY_MAC_DEVELOPER_ID }}
+          P12_KEY_MAC_DEVELOPER_INSTALLER: >-
+            ${{ env.NABU_CASA == 'true' && secrets.P12_KEY_MAC_DEVELOPER_INSTALLER
+            || secrets.OHF_P12_KEY_MAC_DEVELOPER_INSTALLER }}
+          P12_VALUE_MAC_DEVELOPER_ID: >-
+            ${{ env.NABU_CASA == 'true' && secrets.P12_VALUE_MAC_DEVELOPER_ID
+            || secrets.OHF_P12_VALUE_MAC_DEVELOPER_ID }}
+          P12_VALUE_MAC_DEVELOPER_INSTALLER: >-
+            ${{ env.NABU_CASA == 'true' && secrets.P12_VALUE_MAC_DEVELOPER_INSTALLER
+            || secrets.OHF_P12_VALUE_MAC_DEVELOPER_INSTALLER }}
+          HOMEASSISTANT_APPLE_ID: >-
+            ${{ env.NABU_CASA == 'true' && secrets.HOMEASSISTANT_APPLE_ID
+            || secrets.OHF_HOMEASSISTANT_APPLE_ID }}
+          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: >-
+            ${{ env.NABU_CASA == 'true' && secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD
+            || secrets.OHF_HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
+          HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID: >-
+            ${{ env.NABU_CASA == 'true' && secrets.HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID
+            || secrets.OHF_HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID }}
+          HOMEASSISTANT_TEAM_ID: >-
+            ${{ env.NABU_CASA == 'true' && secrets.HOMEASSISTANT_TEAM_ID
+            || secrets.OHF_HOMEASSISTANT_TEAM_ID }}
           EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
           EMERGE_REPO_NAME: ${{ github.repository }}
           EMERGE_SHA: ${{ github.sha }}

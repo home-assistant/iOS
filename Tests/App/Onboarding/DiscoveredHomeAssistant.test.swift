@@ -251,4 +251,54 @@ struct DiscoveredHomeAssistantTests {
         #expect(discovered.internalOrExternalURL == URL(string: "http://homeassistant.local:8123")!)
         #expect(discovered.locationName == "Test Home")
     }
+
+    // MARK: - Discovery Key Tests
+
+    /// Two instances set up from one backup advertise the same `uuid`; the list must still keep a
+    /// row for each of them.
+    @Test("Cloned instances at different addresses get different discovery keys")
+    func clonedInstancesHaveDistinctDiscoveryKeys() async throws {
+        let house = try DiscoveredHomeAssistant(
+            JSON: ["uuid": "cloned-instance", "internal_url": "http://192.168.1.100:8123", "location_name": "House"],
+            context: nil
+        )
+        let cottage = try DiscoveredHomeAssistant(
+            JSON: ["uuid": "cloned-instance", "internal_url": "http://192.168.1.101:8123", "location_name": "Cottage"],
+            context: nil
+        )
+
+        #expect(house.discoveryKey != cottage.discoveryKey)
+        #expect(house.discoveryKey == "cloned-instance|192.168.1.100:8123")
+    }
+
+    @Test("The same instance keeps its discovery key across schemes")
+    func sameInstanceKeepsItsDiscoveryKey() async throws {
+        let plain = try DiscoveredHomeAssistant(
+            JSON: ["uuid": "instance", "internal_url": "http://homeassistant.local:8123", "location_name": "Home"],
+            context: nil
+        )
+        let secure = try DiscoveredHomeAssistant(
+            JSON: ["uuid": "instance", "internal_url": "https://homeassistant.local:8123", "location_name": "Home"],
+            context: nil
+        )
+
+        #expect(plain.discoveryKey == secure.discoveryKey)
+    }
+
+    /// With several instances on the network, the one answering at the typed address is the one
+    /// whose instance ID is adopted, never a neighbour's.
+    @Test("Adoption picks the instance at the same address among several")
+    func adoptionPicksTheInstanceAtTheSameAddress() async throws {
+        let first = try DiscoveredHomeAssistant(
+            JSON: ["uuid": "first-instance", "internal_url": "http://192.168.1.100:8123", "location_name": "Home"],
+            context: nil
+        )
+        let second = try DiscoveredHomeAssistant(
+            JSON: ["uuid": "second-instance", "internal_url": "http://192.168.1.100:8124", "location_name": "Home"],
+            context: nil
+        )
+        let manual = DiscoveredHomeAssistant(manualURL: URL(string: "http://192.168.1.100:8124")!)
+
+        #expect(manual.adoptingInstanceID(from: [first, second]).uuid == "second-instance")
+    }
 }

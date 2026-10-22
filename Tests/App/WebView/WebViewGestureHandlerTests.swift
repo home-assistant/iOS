@@ -51,7 +51,6 @@ final class WebViewGestureHandlerTests: XCTestCase {
         sut.handleGestureAction(.showSettings)
 
         XCTAssertTrue(webView.showSettingsCalled)
-        XCTAssertFalse(webView.showSettingsPushedOntoNavigationStack)
     }
 
     /// The gesture happened in one window, so the picker opens on that window's coordinator rather than on

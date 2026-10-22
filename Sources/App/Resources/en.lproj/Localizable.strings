@@ -1531,6 +1531,7 @@ Remote when you're ready.";
 "onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
 "onboarding.permissions.allow" = "Allow";
 "onboarding.permissions.allowed" = "Done";
+"onboarding.permissions.back" = "Back";
 "onboarding.permissions.change_later_note" = "You can change this permission later in Settings";
 "onboarding.permissions.focus.bullet.automations" = "Focus-based automations";
 "onboarding.permissions.focus.bullet.instant" = "Instant updates when status changes";
@@ -1567,6 +1568,11 @@ Remote when you're ready.";
 "onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.title" = "Scanning for Servers";
+"onboarding.server_identity.add_separate" = "Add as a separate server";
+"onboarding.server_identity.body" = "%1$@ reports the same ID as %2$@ but is at a different address.";
+"onboarding.server_identity.replace" = "Replace %1$@";
+"onboarding.server_identity.title" = "Is this the same server?";
+"onboarding.server_identity.why" = "Why am I seeing this?";
 "onboarding.server_import.message" = "Hang tight, we’re rounding up your servers.";
 "onboarding.server_import.reauthenticate.continue_button" = "Continue";
 "onboarding.server_import.reauthenticate.errors_cancelled" = "Sign in was cancelled.";
@@ -1678,6 +1684,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "sensors.camera_stream.setting.stream_port" = "Stream port";
 "sensors.camera_stream.setting.username" = "Username";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
+"server_identity.about.conflicting.header" = "Servers sharing an ID";
+"server_identity.about.fix.body" = "Give one of the servers a new ID. On the same network Home Assistant offers this in Settings › Repairs. Otherwise remove the file .storage/core.uuid on one server and restart it. Data and configuration are not affected.";
+"server_identity.about.fix.title" = "How to fix it";
+"server_identity.about.one_entry.body" = "Each server reports its own ID, and the app uses it to recognize a server that is already added. Adding the same server twice updates the existing entry rather than creating a second one.";
+"server_identity.about.one_entry.title" = "One server, one entry";
+"server_identity.about.same_id.body" = "A server set up from a backup of another one carries the same ID. The app cannot tell them apart by ID alone, so it asks which situation applies.";
+"server_identity.about.same_id.title" = "Two servers with the same ID";
+"server_identity.about.title" = "About server identity";
 "servers_selection.title" = "Servers";
 "settings.app_icon_shortcuts.add_item.title" = "Add item";
 "settings.app_icon_shortcuts.duplicate_error" = "This item is already in your shortcuts.";
@@ -1787,6 +1801,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.servers" = "Servers";
 "settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.servers_reorder_footer" = "Drag to reorder your servers. The one at the top is used as the default server.";
+"settings.connection_section.shared_instance_id_warning" = "Two servers share the same ID";
 "settings.connection_section.sync_server" = "Sync";
 "settings.connection_section.troubleshooting" = "Troubleshooting";
 "settings.connection_section.update_database.finished" = "Server information updated";
@@ -2013,7 +2028,8 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.manage_storage.item.downloads.title" = "Downloads";
 "settings.debugging.manage_storage.item.frontend_asset_cache.explanation" = "Scripts, styles and images the web view stored for the frontend. They download again on the next load.";
 "settings.debugging.manage_storage.item.frontend_asset_cache.title" = "Frontend asset cache";
-"settings.debugging.manage_storage.item.legacy_realm_store.explanation" = "Leftover data from an older version of the app. Nothing uses it anymore.";
+"settings.debugging.manage_storage.item.legacy_realm_store.explanation" = "The old store zones, notification categories and complications are imported from. It is only kept until that import has run.";
+"settings.debugging.manage_storage.item.legacy_realm_store.leftover_explanation" = "Leftover data from an older version of the app. Nothing uses it anymore.";
 "settings.debugging.manage_storage.item.legacy_realm_store.title" = "Legacy database";
 "settings.debugging.manage_storage.item.location_history.explanation" = "Recorded location updates and their errors, shown on the location history screen.";
 "settings.debugging.manage_storage.item.location_history.title" = "Location history";
@@ -2045,8 +2061,9 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.manage_storage.sort.smallest_first" = "Smallest first";
 "settings.debugging.manage_storage.sort.title" = "Sort";
 "settings.debugging.manage_storage.subtitle" = "See what this app is storing on your device, and clear out anything it can rebuild.";
-"settings.debugging.manage_storage.summary.footer" = "Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.";
+"settings.debugging.manage_storage.summary.footer" = "Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, files you added yourself, and anything still waiting to be imported. Everything else is a copy the app makes again when it needs it.";
 "settings.debugging.manage_storage.summary.protected" = "Protected items";
+"settings.debugging.manage_storage.summary.protected_footer" = "Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.";
 "settings.debugging.manage_storage.summary.reclaimable" = "Can be freed";
 "settings.debugging.manage_storage.summary.total" = "Total used";
 "settings.debugging.manage_storage.title" = "Manage Storage";
@@ -3213,30 +3230,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "webrtc_player.known_issues.title" = "Known Issues";
-"whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
-"whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
 "whats_new.app_support_update.title" = "App support update";
-"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
-"whats_new.energy_widget.item_title" = "Energy widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
-"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
-"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Activate";

@@ -1,0 +1,34 @@
+// Open Home Foundation Apple account.
+// Everything that differs between the Apple accounts the app can be built for lives in this folder;
+// HomeAssistant.xcconfig derives the rest from these values.
+
+DEVELOPMENT_TEAM = GUYFAK8DC6
+BUNDLE_ID_PREFIX = io.home-assistant.app
+APP_BUNDLE_ID_BASE = $(BUNDLE_ID_PREFIX)
+APP_GROUP_ID_BASE = group.io.home-assistant.app
+APP_DISPLAY_NAME_BASE = Home Assistant OHF
+MIGRATION_URL_HANDLER_BASE = homeassistant-ohf
+BACKGROUND_TASK_ID_PREFIX = io.home-assistant
+CRASH_REPORTING_BUNDLE_ID_PREFIX = io.home-assistant.
+
+ENABLE_CRITICAL_ALERTS_GUYFAK8DC6 = 0
+ENABLE_PUSH_PROVIDER_GUYFAK8DC6 = 0
+ENABLE_DEVICE_NAME_GUYFAK8DC6 = 0
+ENABLE_THREAD_NETWORK_CREDENTIALS_GUYFAK8DC6 = 0
+ENABLE_CARPLAY_GUYFAK8DC6 = 1
+
+// Release (App Store / Developer ID) profiles, named "<prefix> - <target>"
+APP_STORE_PROFILE_PREFIX = Home Assistant App Store
+MAC_DEV_ID_PROFILE_PREFIX = Home Assistant Mac Dev ID
+
+// Debug profiles for targets that need manual signing on device
+CODE_SIGN_STYLE_GUYFAK8DC6_App = Manual
+CODE_SIGN_STYLE_GUYFAK8DC6_Extensions_PushProvider = Manual
+PROVISIONING_PROFILE_SPECIFIER_GUYFAK8DC6_App = Local Developer: Home Assistant Main App
+PROVISIONING_PROFILE_SPECIFIER_GUYFAK8DC6_Extensions_PushProvider = Local Developer: Home Assistant Push Provider
+CODE_SIGN_STYLE_MAC_GUYFAK8DC6_App = Manual
+PROVISIONING_PROFILE_SPECIFIER_MAC_GUYFAK8DC6_App = Local Developer: Home Assistant Mac Main App
+
+// Account-specific files, relative to the repository root
+PROVISIONING_PROFILES_DIR = Configuration/Provisioning/ohf
+GOOGLE_SERVICE_INFO_DIR = Configuration/Firebase/ohf

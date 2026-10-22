@@ -327,121 +327,6 @@
 "app_intents.update_sensors.title" = "Update sensors";
 "app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
 "app_intents.watch_assist.title" = "Assist";
-"app_migration.announcement.body" = "Home Assistant App Store-ലെ Open Home Foundation ആപ്പിലേക്ക് മാറുകയാണ്. നിങ്ങളുടെ സെർവറുകളും ക്രമീകരണങ്ങളും ഏതാനും സെക്കൻഡുകൾക്കുള്ളിൽ അതിലേക്ക് കൈമാറുക. എല്ലാം ഈ ഉപകരണത്തിൽ തന്നെ നിലനിൽക്കും.";
-"app_migration.announcement.follow_up.explanation" = "അനുമതികൾ, ഹോം സ്ക്രീൻ വിജറ്റുകൾ, Apple Watch, Shortcuts എന്നിവ Open Home Foundation ആപ്പിൽ വീണ്ടും സജ്ജമാക്കണം.";
-"app_migration.announcement.follow_up.title" = "വീണ്ടും സജ്ജമാക്കേണ്ട ചില കാര്യങ്ങൾ";
-"app_migration.announcement.later_button" = "ഇപ്പോൾ വേണ്ട";
-"app_migration.announcement.new_app.explanation" = "ആപ്പ് ഇപ്പോൾ Open Home Foundation ആണ് പ്രസിദ്ധീകരിക്കുന്നത്. ഈ ആപ്പിന് ഇനി അപ്‌ഡേറ്റുകൾ ലഭിക്കില്ല.";
-"app_migration.announcement.new_app.title" = "വ്യത്യസ്ത ആപ്പ്, അതേ Home Assistant";
-"app_migration.announcement.section.what_changes" = "ഇതിന്റെ അർത്ഥം";
-"app_migration.announcement.setup_moves.explanation" = "സെർവറുകൾ, സൈൻ-ഇന്നുകൾ, ക്രമീകരണങ്ങൾ, കൂടാതെ നിങ്ങളുടെ Watch, CarPlay, വിജറ്റ് സജ്ജീകരണവും നിങ്ങളോടൊപ്പം വരും.";
-"app_migration.announcement.setup_moves.title" = "നിങ്ങളുടെ സജ്ജീകരണം നിങ്ങളോടൊപ്പം വരും";
-"app_migration.announcement.title" = "Home Assistant Open Home Foundation-ലേക്ക് മാറി";
-"app_migration.announcement.transfer_button" = "Open Home Foundation ആപ്പിലേക്ക് കൈമാറുക";
-"app_migration.complete.body" = "നിങ്ങളുടെ സജ്ജീകരണം ഇപ്പോൾ ഈ ആപ്പിലുണ്ട്, നിങ്ങൾ സൈൻ ഇൻ ചെയ്തിട്ടുമുണ്ട്.";
-"app_migration.complete.body_no_servers" = "നിങ്ങളുടെ ക്രമീകരണങ്ങൾ ഇപ്പോൾ ഈ ആപ്പിലുണ്ട്. നിങ്ങളുടെ നിലവിലുള്ള ആപ്പിൽ സൈൻ ഇൻ ചെയ്യാൻ സെർവറുകളൊന്നും ഉണ്ടായിരുന്നില്ല.";
-"app_migration.complete.continue_button" = "തുടരുക";
-"app_migration.complete.erase_button" = "നിലവിലുള്ള ആപ്പ് മായ്ക്കുക";
-"app_migration.complete.erased.body" = "അതിൽ ഇനി ഒന്നുമില്ല. ഇഷ്ടമുള്ളപ്പോൾ ഹോം സ്ക്രീനിൽ നിന്ന് അത് ഇല്ലാതാക്കുക.";
-"app_migration.complete.erased.title" = "നിലവിലുള്ള ആപ്പ് മായ്ച്ചു";
-"app_migration.complete.keep_previous_app_button" = "തൽക്കാലം നിലനിർത്തുക";
-"app_migration.complete.section.next_steps" = "അടുത്ത ഘട്ടങ്ങൾ";
-"app_migration.complete.server_single" = "1 സെർവർ കൈമാറി";
-"app_migration.complete.servers_transferred" = "%d സെർവറുകൾ കൈമാറി";
-"app_migration.complete.title" = "കൈമാറ്റം പൂർത്തിയായി";
-"app_migration.error.declined" = "നിങ്ങളുടെ നിലവിലുള്ള ആപ്പ് കൈമാറ്റം റദ്ദാക്കി.";
-"app_migration.error.invalid_payload" = "കൈമാറ്റം വായിക്കാനായില്ല. വീണ്ടും ശ്രമിക്കുക.";
-"app_migration.error.new_app_unavailable" = "Open Home Foundation ആപ്പ് തുറക്കാനായില്ല.";
-"app_migration.error.no_payload" = "നിങ്ങളുടെ നിലവിലുള്ള ആപ്പിൽ നിന്ന് ഒന്നും ലഭിച്ചില്ല.";
-"app_migration.error.no_payload_allow_paste" = "നിങ്ങളുടെ നിലവിലുള്ള ആപ്പിൽ നിന്ന് ഒന്നും ലഭിച്ചില്ല. പേസ്റ്റ് അനുവദിക്കണോ എന്ന് iOS ചോദിച്ചെങ്കിൽ, Allow Paste തിരഞ്ഞെടുത്ത് വീണ്ടും ശ്രമിക്കുക.";
-"app_migration.error.previous_app_erased" = "നിങ്ങളുടെ നിലവിലുള്ള ആപ്പ് ഇതിനകം മായ്ച്ചിരിക്കുന്നതിനാൽ കൈമാറാൻ ഒന്നും ബാക്കിയില്ല. ഈ ആപ്പ് തുടക്കം മുതൽ സജ്ജമാക്കുക.";
-"app_migration.error.previous_app_unavailable" = "നിങ്ങളുടെ നിലവിലുള്ള Home Assistant ആപ്പ് തുറക്കാനായില്ല.";
-"app_migration.error.unsupported_version" = "കൈമാറുന്നതിന് മുമ്പ് നിങ്ങളുടെ നിലവിലുള്ള Home Assistant ആപ്പ് അപ്‌ഡേറ്റ് ചെയ്യുക.";
-"app_migration.error.wrong_session" = "കൈമാറ്റം ഈ ആപ്പിൽ നിന്നുള്ള അഭ്യർത്ഥനയുമായി പൊരുത്തപ്പെട്ടില്ല.";
-"app_migration.export.body" = "Open Home Foundation ആപ്പ് നിങ്ങളുടെ സജ്ജീകരണം സ്വീകരിക്കാൻ ആവശ്യപ്പെടുന്നു. ഒന്നും ഈ ഉപകരണത്തിന് പുറത്തേക്ക് പോകില്ല.";
-"app_migration.export.erased.body" = "നിങ്ങളുടെ സജ്ജീകരണം ഇപ്പോൾ Open Home Foundation ആപ്പിലാണ്. ഈ ആപ്പ് ഹോം സ്ക്രീനിൽ നിന്ന് ഇല്ലാതാക്കാം.";
-"app_migration.export.erased.title" = "ഈ ആപ്പ് ഇപ്പോൾ ശൂന്യമാണ്";
-"app_migration.export.failed.retry_button" = "വീണ്ടും ശ്രമിക്കുക";
-"app_migration.export.failed.title" = "Open Home Foundation ആപ്പിന് കൈമാറ്റം സ്വീകരിക്കാനായില്ല";
-"app_migration.export.handed_off.open_button" = "Open Home Foundation ആപ്പിലേക്ക് പോകുക";
-"app_migration.export.handed_off.title" = "കൈമാറ്റം അയച്ചു";
-"app_migration.export.handed_off.transfer_again_button" = "വീണ്ടും കൈമാറുക";
-"app_migration.export.handed_off.verify_body" = "Open Home Foundation ആപ്പിലേക്ക് പോയി നിങ്ങളുടെ സെർവറുകളും ക്രമീകരണങ്ങളും അവിടെയുണ്ടെന്ന് ഉറപ്പാക്കുക. എല്ലാം പ്രവർത്തിക്കുമ്പോൾ, ഈ ആപ്പ് ഹോം സ്ക്രീനിൽ നിന്ന് ഇല്ലാതാക്കുക.";
-"app_migration.export.later_button" = "പിന്നീട് ചെയ്യാം";
-"app_migration.export.section.includes" = "ഈ കൈമാറ്റത്തിൽ ഉൾപ്പെടുന്നവ";
-"app_migration.export.title" = "Open Home Foundation ആപ്പിലേക്ക് കൈമാറുക";
-"app_migration.export.transfer_again_confirmation.confirm_button" = "വീണ്ടും കൈമാറുക";
-"app_migration.export.transfer_again_confirmation.reset_body" = "Open Home Foundation ആപ്പിലേക്ക് ഇതിനകം കൈമാറിയതെല്ലാം അവിടെ നിന്ന് നീക്കം ചെയ്യപ്പെടും, ഈ ആപ്പ് നിങ്ങളുടെ സജ്ജീകരണം ഒരിക്കൽ കൂടി അയയ്ക്കും.";
-"app_migration.export.transfer_again_confirmation.title" = "വീണ്ടും കൈമാറണോ?";
-"app_migration.export.transfer_button" = "കൈമാറുക";
-"app_migration.follow_up.delete_previous_app.explanation" = "ഇവിടെ എല്ലാം പ്രവർത്തിച്ചു കഴിഞ്ഞാൽ അത് നീക്കം ചെയ്യുക.";
-"app_migration.follow_up.delete_previous_app.title" = "നിലവിലുള്ള ആപ്പ് ഇല്ലാതാക്കുക";
-"app_migration.follow_up.home_screen_widgets.place_explanation" = "അവ ഹോം സ്ക്രീനിൽ വീണ്ടും ചേർക്കുക. അവ കാണിക്കുന്നത് നിങ്ങളോടൊപ്പം വരും.";
-"app_migration.follow_up.home_screen_widgets.title" = "ഹോം സ്ക്രീൻ വിജറ്റുകൾ";
-"app_migration.follow_up.permissions.explanation" = "ലൊക്കേഷൻ, അറിയിപ്പുകൾ, ക്യാമറ ആക്സസ്.";
-"app_migration.follow_up.permissions.title" = "അനുമതികൾ";
-"app_migration.follow_up.shortcuts.explanation" = "നിങ്ങളുടെ നിലവിലുള്ള ആപ്പ് ഉപയോഗിച്ചിരുന്ന Shortcuts വീണ്ടും സൃഷ്ടിക്കുക.";
-"app_migration.follow_up.shortcuts.title" = "Siri-യും Shortcuts-ഉം";
-"app_migration.follow_up.watch_app.reinstall_explanation" = "നിങ്ങളുടെ വാച്ചിൽ ഇൻസ്റ്റാൾ ചെയ്ത് വാച്ച് ഫേസുകളിൽ കോംപ്ലിക്കേഷനുകൾ വീണ്ടും ചേർക്കുക. അവ കാണിക്കുന്നത് നിങ്ങളോടൊപ്പം വരും.";
-"app_migration.follow_up.watch_app.title" = "Apple Watch ആപ്പ്";
-"app_migration.get_new_app.back_button" = "പിന്നോട്ട്";
-"app_migration.get_new_app.body" = "App Store-ൽ നിന്ന് Open Home Foundation ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്ത ശേഷം ഇവിടേക്ക് തിരികെ വരിക. അത് ഈ ഉപകരണത്തിൽ എത്തിയാലുടൻ കൈമാറ്റം ആരംഭിക്കും.";
-"app_migration.get_new_app.installed_button" = "ഞാൻ ഇൻസ്റ്റാൾ ചെയ്തു";
-"app_migration.get_new_app.not_found.body" = "App Store-ൽ നിന്ന് ഇൻസ്റ്റാൾ ചെയ്ത ശേഷം ഈ സ്ക്രീൻ വീണ്ടും തുറക്കുക.";
-"app_migration.get_new_app.not_found.title" = "Open Home Foundation ആപ്പ് ഇതുവരെ ഈ ഉപകരണത്തിൽ ഇല്ല";
-"app_migration.get_new_app.store_button" = "Open Home Foundation ആപ്പ് നേടുക";
-"app_migration.get_new_app.title" = "ആദ്യം Open Home Foundation ആപ്പ് നേടുക";
-"app_migration.import.cancel_button" = "റദ്ദാക്കുക";
-"app_migration.import.failed.manual_button" = "സ്വയം സജ്ജമാക്കുക";
-"app_migration.import.failed.manual_confirmation.body" = "നിങ്ങളുടെ സജ്ജീകരണം നിലവിലുള്ള ആപ്പിൽ തന്നെ നിലനിൽക്കും, കൈമാറപ്പെടില്ല. ഈ ആപ്പ് സജ്ജമാക്കിക്കഴിഞ്ഞാൽ, നിലവിലുള്ള ആപ്പ് ഹോം സ്ക്രീനിൽ നിന്ന് ഇല്ലാതാക്കുക.";
-"app_migration.import.failed.manual_confirmation.confirm_button" = "സ്വയം സജ്ജമാക്കുക";
-"app_migration.import.failed.manual_confirmation.title" = "ഈ ആപ്പ് തുടക്കം മുതൽ സജ്ജമാക്കണോ?";
-"app_migration.import.failed.retry_button" = "വീണ്ടും ശ്രമിക്കുക";
-"app_migration.import.failed.title" = "കൈമാറ്റം പൂർത്തിയായില്ല";
-"app_migration.import.open_check.body" = "നിങ്ങളുടെ സജ്ജീകരണം അയയ്ക്കാനായി നിലവിലുള്ള Home Assistant ആപ്പ് തുറക്കാൻ ഈ ആപ്പ് iOS-നോട് ആവശ്യപ്പെട്ടു. അത് തുറന്നില്ലെങ്കിൽ, വീണ്ടും ആവശ്യപ്പെടുക.";
-"app_migration.import.open_check.retry_button" = "നിലവിലുള്ള ആപ്പ് തുറക്കുക";
-"app_migration.import.open_check.title" = "നിങ്ങളുടെ നിലവിലുള്ള ആപ്പ് തുറന്നോ?";
-"app_migration.import.waiting.body" = "നിങ്ങളുടെ നിലവിലുള്ള Home Assistant ആപ്പിൽ കൈമാറ്റം സ്ഥിരീകരിക്കുക. നിങ്ങളെ സ്വയമേവ ഇവിടേക്ക് തിരികെ കൊണ്ടുവരും.";
-"app_migration.import.waiting.open_button" = "നിലവിലുള്ള ആപ്പ് തുറക്കുക";
-"app_migration.import.waiting.title" = "നിങ്ങളുടെ നിലവിലുള്ള ആപ്പിനായി കാത്തിരിക്കുന്നു";
-"app_migration.intro.body" = "Home Assistant Open Home Foundation-ലേക്ക് മാറി. നിങ്ങളുടെ നിലവിലുള്ള ആപ്പിൽ നിന്ന് സെർവറുകളും ക്രമീകരണങ്ങളും ഏതാനും സെക്കൻഡുകൾക്കുള്ളിൽ കൊണ്ടുവരിക. എല്ലാം ഈ ഉപകരണത്തിൽ തന്നെ നിലനിൽക്കും.";
-"app_migration.intro.continue_button" = "തുടരുക";
-"app_migration.intro.skip_button" = "ഇപ്പോൾ വേണ്ട";
-"app_migration.intro.title" = "നിങ്ങളുടെ സജ്ജീകരണം കൈമാറുക";
-"app_migration.item.app_settings.explanation" = "സ്വകാര്യത, ലൊക്കേഷൻ, രൂപഭാവം, ജെസ്ചറുകൾ.";
-"app_migration.item.app_settings.title" = "ആപ്പ് ക്രമീകരണങ്ങൾ";
-"app_migration.item.companion_choices.explanation" = "നിങ്ങളുടെ Watch, CarPlay, വിജറ്റുകൾ എന്നിവ ഏതൊക്കെ എന്റിറ്റികളും പ്രവർത്തനങ്ങളും കാണിക്കുന്നു.";
-"app_migration.item.companion_choices.title" = "Watch, CarPlay, വിജറ്റ് തിരഞ്ഞെടുപ്പുകൾ";
-"app_migration.item.nfc_tags.explanation" = "അംഗീകരിച്ച ടാഗുകളും ഐക്കൺ ക്വിക്ക് ആക്ഷനുകളും.";
-"app_migration.item.nfc_tags.title" = "NFC ടാഗുകളും ക്വിക്ക് ആക്ഷനുകളും";
-"app_migration.item.notifications.explanation" = "ആക്ഷൻ ചെയ്യാവുന്ന വിഭാഗങ്ങളും സ്നൂസ് ആക്ഷനുകളും.";
-"app_migration.item.notifications.title" = "അറിയിപ്പ് വിഭാഗങ്ങൾ";
-"app_migration.item.servers.explanation" = "എല്ലാ സെർവറിലും സൈൻ ഇൻ ചെയ്ത നിലയിൽ തുടരുക.";
-"app_migration.item.servers.title" = "സെർവറുകളും സൈൻ-ഇന്നുകളും";
-"app_migration.no_servers.moved_body" = "Home Assistant ആപ്പ് ഇപ്പോൾ Open Home Foundation ആണ് പ്രസിദ്ധീകരിക്കുന്നത്. ഈ ആപ്പ് ഇനി Home Assistant സെർവറിലേക്ക് കണക്റ്റ് ചെയ്യില്ല. App Store-ൽ നിന്ന് Open Home Foundation ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്ത് നിങ്ങളുടെ ഹോം അവിടെ സജ്ജമാക്കുക.";
-"app_migration.no_servers.moved_title" = "Home Assistant Open Home Foundation-ലേക്ക് മാറി";
-"app_migration.overview.paste_notice.body" = "നിങ്ങളുടെ സജ്ജീകരണം ഒരു സുരക്ഷിത പേസ്റ്റ് വഴിയാണ് കൈമാറുന്നത്. Open Home Foundation ആപ്പ് തുറക്കുമ്പോൾ, നിലവിലുള്ള ആപ്പിൽ നിന്ന് പേസ്റ്റ് ചെയ്യാമോ എന്ന് iOS ചോദിക്കും. Allow Paste തിരഞ്ഞെടുക്കുക, അല്ലെങ്കിൽ ഒന്നും കൈമാറപ്പെടില്ല.";
-"app_migration.overview.paste_notice.continue_button" = "തുടരുക";
-"app_migration.overview.paste_notice.title" = "iOS ചോദിക്കുമ്പോൾ പേസ്റ്റ് അനുവദിക്കുക";
-"app_migration.overview.section.follow_up" = "Open Home Foundation ആപ്പിൽ വീണ്ടും സജ്ജമാക്കുക";
-"app_migration.overview.section.moves" = "നിങ്ങളോടൊപ്പം വരുന്നവ";
-"app_migration.overview.start_button" = "കൈമാറ്റം ആരംഭിക്കുക";
-"app_migration.overview.title" = "എന്തൊക്കെ കൈമാറപ്പെടും";
-"app_migration.permissions.allow_all_button" = "എല്ലാം അനുവദിക്കുക";
-"app_migration.permissions.allow_button" = "അനുവദിക്കുക";
-"app_migration.permissions.body" = "iOS ഇതിനെ തികച്ചും പുതിയ ആപ്പായി കണക്കാക്കുന്നതിനാൽ, നിലവിലുള്ള ആപ്പിൽ നിങ്ങൾ അനുവദിച്ചത് ഇവിടെ ഒരിക്കൽ കൂടി അനുവദിക്കണം.";
-"app_migration.permissions.continue_button" = "തുടരുക";
-"app_migration.permissions.section.previous_app" = "നിലവിലുള്ള ആപ്പിൽ അനുവദിച്ചവ";
-"app_migration.permissions.settings_button" = "ക്രമീകരണങ്ങൾ";
-"app_migration.permissions.skip_button" = "ഇപ്പോൾ വേണ്ട";
-"app_migration.permissions.title" = "അനുമതികൾ വീണ്ടും അനുവദിക്കുക";
-"app_migration.progress.export.copying" = "നിങ്ങളുടെ ക്രമീകരണങ്ങൾ പകർത്തുന്നു…";
-"app_migration.progress.export.handing_over" = "Open Home Foundation ആപ്പിലേക്ക് കൈമാറുന്നു…";
-"app_migration.progress.export.packaging" = "നിങ്ങളുടെ സെർവറുകളും സൈൻ-ഇന്നുകളും പാക്ക് ചെയ്യുന്നു…";
-"app_migration.progress.footnote" = "ഇതിന് ഏതാനും സെക്കൻഡുകൾ എടുക്കും. ഒന്നും ഈ ഉപകരണത്തിന് പുറത്തേക്ക് പോകില്ല.";
-"app_migration.progress.import.applying" = "നിങ്ങളുടെ ക്രമീകരണങ്ങൾ പ്രയോഗിക്കുന്നു…";
-"app_migration.progress.import.receiving" = "നിങ്ങളുടെ സജ്ജീകരണം സ്വീകരിക്കുന്നു…";
-"app_migration.progress.import.restoring" = "സെർവറുകളും സൈൻ-ഇന്നുകളും പുനഃസ്ഥാപിക്കുന്നു…";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -1589,9 +1474,6 @@ Remote when you're ready.";
 "onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
 \
 Home Assistant is open source, advocates for privacy and runs locally in your home.";
-"onboarding.welcome.transfer_button" = "നിലവിലുള്ള ആപ്പിൽ നിന്ന് കൈമാറുക";
-"onboarding.welcome.transfer_notice.link" = "നിങ്ങളുടെ സജ്ജീകരണം കൈമാറുക";
-"onboarding.welcome.transfer_notice.moved_body" = "Home Assistant കമ്പാനിയൻ ആപ്പ് Open Home Foundation-ലേക്ക് മാറി. ഈ മാറ്റത്തിനിടയിൽ നിങ്ങളുടെ എല്ലാ ആപ്പ് ഡാറ്റയും നിങ്ങളോടൊപ്പം കൊണ്ടുവരിക.";
 "onboarding.welcome.updated.secondary_button" = "Learn more";
 "open_label" = "Open";
 "permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
@@ -2186,7 +2068,6 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.status_section.version_row.title" = "പതിപ്പ്";
 "settings.template_edit.title" = "ടെംപ്ലേറ്റ് എഡിറ്റ് ചെയ്യുക";
 "settings.test_flight_communication.title" = "Beta Tester Updates";
-"settings.transfer_to_new_app.title" = "Open Home Foundation ആപ്പിലേക്ക് കൈമാറുക";
 "settings.voice_tools_server.body" = "Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.";
 "settings.voice_tools_server.enabled_footer" = "In Home Assistant, add the Wyoming integration and point it at this device, or accept it when it is discovered on your network.\
 \
@@ -3190,30 +3071,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "webrtc_player.known_issues.title" = "Known Issues";
-"whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
-"whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
 "whats_new.app_support_update.title" = "App support update";
-"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
-"whats_new.energy_widget.item_title" = "Energy widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
-"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
-"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "What's New in The Companion App";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Activate";

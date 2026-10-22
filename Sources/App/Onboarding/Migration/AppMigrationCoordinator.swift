@@ -190,17 +190,15 @@ final class AppMigrationCoordinator: ObservableObject {
             importState = .failed(message: AppMigrationError.wrongSession.localizedDescription)
             return
         }
-        if !Current.servers.all.isEmpty {
-            wipeLocalData()
-            Current.onboardingObservation.needed(.logout)
-        }
         self.session = session
         AppMigrationSessionStore.save(session)
         completedSummary = nil
-        receivePayload(sessionID: sessionID)
+        receivePayload(sessionID: sessionID, replacingExistingSetup: true)
     }
 
-    private func receivePayload(sessionID: UUID) {
+    /// Whatever this app already holds only gives way once the payload has been opened and matched
+    /// to the session: a stray link must not be able to wipe a configured app.
+    private func receivePayload(sessionID: UUID, replacingExistingSetup: Bool = false) {
         guard let session = currentSession(), session.id == sessionID else {
             importState = .failed(message: AppMigrationError.wrongSession.localizedDescription)
             return
@@ -219,6 +217,10 @@ final class AppMigrationCoordinator: ObservableObject {
                     return try JSONDecoder().decode(AppMigrationPayload.self, from: data)
                 }.value
                 guard payload.sessionID == sessionID else { throw AppMigrationError.wrongSession }
+                if replacingExistingSetup, !Current.servers.all.isEmpty {
+                    wipeLocalData()
+                    Current.onboardingObservation.needed(.logout)
+                }
                 importState = .applying
                 Current.Log.info("App migration import: applying \(payload.database.count) database bytes")
                 let summary = try await Task.detached {

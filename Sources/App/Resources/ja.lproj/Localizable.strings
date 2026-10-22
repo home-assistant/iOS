@@ -327,121 +327,6 @@
 "app_intents.update_sensors.title" = "センサーを更新";
 "app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
 "app_intents.watch_assist.title" = "Assist";
-"app_migration.announcement.body" = "Home Assistant は App Store の Open Home Foundation アプリに移行します。サーバーと設定を数秒で転送できます。すべてはこのデバイス内に留まります。";
-"app_migration.announcement.follow_up.explanation" = "権限、ホーム画面ウィジェット、Apple Watch、Shortcuts は Open Home Foundation アプリで再設定が必要です。";
-"app_migration.announcement.follow_up.title" = "再設定が必要なもの";
-"app_migration.announcement.later_button" = "後で";
-"app_migration.announcement.new_app.explanation" = "アプリは現在 Open Home Foundation から公開されています。このアプリはアップデートを受け取らなくなります。";
-"app_migration.announcement.new_app.title" = "別のアプリ、同じ Home Assistant";
-"app_migration.announcement.section.what_changes" = "何が変わるか";
-"app_migration.announcement.setup_moves.explanation" = "サーバー、サインイン、設定、そして Watch、CarPlay、ウィジェットの設定が一緒に移行されます。";
-"app_migration.announcement.setup_moves.title" = "設定も一緒に移行";
-"app_migration.announcement.title" = "Home Assistant は Open Home Foundation に移行しました";
-"app_migration.announcement.transfer_button" = "Open Home Foundation アプリへ転送";
-"app_migration.complete.body" = "設定はこのアプリに移行され、サインイン済みです。";
-"app_migration.complete.body_no_servers" = "設定はこのアプリに移行されました。既存のアプリにはサインインするサーバーがありませんでした。";
-"app_migration.complete.continue_button" = "続ける";
-"app_migration.complete.erase_button" = "既存のアプリを消去";
-"app_migration.complete.erased.body" = "既存のアプリには何も残っていません。いつでもホーム画面から削除できます。";
-"app_migration.complete.erased.title" = "既存のアプリを消去しました";
-"app_migration.complete.keep_previous_app_button" = "今は残す";
-"app_migration.complete.section.next_steps" = "次のステップ";
-"app_migration.complete.server_single" = "1 台のサーバーを転送しました";
-"app_migration.complete.servers_transferred" = "%d 台のサーバーを転送しました";
-"app_migration.complete.title" = "転送完了";
-"app_migration.error.declined" = "既存のアプリが転送をキャンセルしました。";
-"app_migration.error.invalid_payload" = "転送内容を読み取れませんでした。もう一度お試しください。";
-"app_migration.error.new_app_unavailable" = "Open Home Foundation アプリを開けませんでした。";
-"app_migration.error.no_payload" = "既存のアプリから何も受信されませんでした。";
-"app_migration.error.no_payload_allow_paste" = "既存のアプリから何も受信されませんでした。iOS がペーストの許可を求めた場合は「ペーストを許可」を選んで、もう一度お試しください。";
-"app_migration.error.previous_app_erased" = "既存のアプリはすでに消去されているため、転送するものがありません。このアプリを最初から設定してください。";
-"app_migration.error.previous_app_unavailable" = "既存の Home Assistant アプリを開けませんでした。";
-"app_migration.error.unsupported_version" = "転送する前に既存の Home Assistant アプリをアップデートしてください。";
-"app_migration.error.wrong_session" = "転送内容がこのアプリからのリクエストと一致しませんでした。";
-"app_migration.export.body" = "Open Home Foundation アプリが設定の受け取りを求めています。データがこのデバイスの外に出ることはありません。";
-"app_migration.export.erased.body" = "設定は Open Home Foundation アプリに移行されました。このアプリはホーム画面から削除できます。";
-"app_migration.export.erased.title" = "このアプリは空になりました";
-"app_migration.export.failed.retry_button" = "再試行";
-"app_migration.export.failed.title" = "Open Home Foundation アプリが転送を受け取れませんでした";
-"app_migration.export.handed_off.open_button" = "Open Home Foundation アプリへ移動";
-"app_migration.export.handed_off.title" = "転送を送信しました";
-"app_migration.export.handed_off.transfer_again_button" = "もう一度転送";
-"app_migration.export.handed_off.verify_body" = "Open Home Foundation アプリを開いて、サーバーと設定が揃っているか確認してください。すべて問題なく動作したら、このアプリをホーム画面から削除してください。";
-"app_migration.export.later_button" = "後で行う";
-"app_migration.export.section.includes" = "この転送に含まれるもの";
-"app_migration.export.title" = "Open Home Foundation アプリへ転送";
-"app_migration.export.transfer_again_confirmation.confirm_button" = "もう一度転送";
-"app_migration.export.transfer_again_confirmation.reset_body" = "Open Home Foundation アプリにすでに転送済みの内容はそちらで削除され、このアプリから設定がもう一度送信されます。";
-"app_migration.export.transfer_again_confirmation.title" = "もう一度転送しますか？";
-"app_migration.export.transfer_button" = "転送";
-"app_migration.follow_up.delete_previous_app.explanation" = "こちらですべて動作したら削除してください。";
-"app_migration.follow_up.delete_previous_app.title" = "既存のアプリを削除";
-"app_migration.follow_up.home_screen_widgets.place_explanation" = "ホーム画面にもう一度追加してください。表示内容は引き継がれます。";
-"app_migration.follow_up.home_screen_widgets.title" = "ホーム画面ウィジェット";
-"app_migration.follow_up.permissions.explanation" = "位置情報、通知、カメラへのアクセス。";
-"app_migration.follow_up.permissions.title" = "権限";
-"app_migration.follow_up.shortcuts.explanation" = "既存のアプリを使っていた Shortcuts を作り直してください。";
-"app_migration.follow_up.shortcuts.title" = "Siri と Shortcuts";
-"app_migration.follow_up.watch_app.reinstall_explanation" = "Watch にインストールし、文字盤にコンプリケーションをもう一度追加してください。表示内容は引き継がれます。";
-"app_migration.follow_up.watch_app.title" = "Apple Watch アプリ";
-"app_migration.get_new_app.back_button" = "戻る";
-"app_migration.get_new_app.body" = "App Store から Open Home Foundation アプリをインストールして、ここに戻ってきてください。このデバイスにインストールされ次第、転送が始まります。";
-"app_migration.get_new_app.installed_button" = "インストールしました";
-"app_migration.get_new_app.not_found.body" = "App Store からインストールして、この画面をもう一度開いてください。";
-"app_migration.get_new_app.not_found.title" = "Open Home Foundation アプリはまだこのデバイスにありません";
-"app_migration.get_new_app.store_button" = "Open Home Foundation アプリを入手";
-"app_migration.get_new_app.title" = "まず Open Home Foundation アプリを入手";
-"app_migration.import.cancel_button" = "キャンセル";
-"app_migration.import.failed.manual_button" = "手動で設定";
-"app_migration.import.failed.manual_confirmation.body" = "設定は既存のアプリに残り、転送されません。このアプリの設定が終わったら、既存のアプリをホーム画面から削除してください。";
-"app_migration.import.failed.manual_confirmation.confirm_button" = "手動で設定";
-"app_migration.import.failed.manual_confirmation.title" = "このアプリを最初から設定しますか？";
-"app_migration.import.failed.retry_button" = "再試行";
-"app_migration.import.failed.title" = "転送が完了しませんでした";
-"app_migration.import.open_check.body" = "設定を送信してもらうため、このアプリは iOS に既存の Home Assistant アプリを開くよう要求しました。開かなかった場合は、もう一度要求してください。";
-"app_migration.import.open_check.retry_button" = "既存のアプリを開く";
-"app_migration.import.open_check.title" = "既存のアプリは開きましたか？";
-"app_migration.import.waiting.body" = "既存の Home Assistant アプリで転送を確認してください。自動的にここに戻ります。";
-"app_migration.import.waiting.open_button" = "既存のアプリを開く";
-"app_migration.import.waiting.title" = "既存のアプリを待っています";
-"app_migration.intro.body" = "Home Assistant は Open Home Foundation に移行しました。既存のアプリからサーバーと設定を数秒で引き継げます。すべてはこのデバイス内に留まります。";
-"app_migration.intro.continue_button" = "続ける";
-"app_migration.intro.skip_button" = "後で";
-"app_migration.intro.title" = "設定を転送";
-"app_migration.item.app_settings.explanation" = "プライバシー、位置情報、外観、ジェスチャ。";
-"app_migration.item.app_settings.title" = "アプリ設定";
-"app_migration.item.companion_choices.explanation" = "Watch、CarPlay、ウィジェットに表示するエンティティとアクション。";
-"app_migration.item.companion_choices.title" = "Watch、CarPlay、ウィジェットの選択内容";
-"app_migration.item.nfc_tags.explanation" = "承認済みのタグとアイコンのクイックアクション。";
-"app_migration.item.nfc_tags.title" = "NFC タグとクイックアクション";
-"app_migration.item.notifications.explanation" = "アクション付きカテゴリとスヌーズアクション。";
-"app_migration.item.notifications.title" = "通知カテゴリ";
-"app_migration.item.servers.explanation" = "すべてのサーバーにサインインしたままにします。";
-"app_migration.item.servers.title" = "サーバーとサインイン";
-"app_migration.no_servers.moved_body" = "Home Assistant アプリは現在 Open Home Foundation から公開されています。このアプリは Home Assistant サーバーに接続できなくなりました。App Store から Open Home Foundation アプリをインストールして、そちらでホームを設定してください。";
-"app_migration.no_servers.moved_title" = "Home Assistant は Open Home Foundation に移行しました";
-"app_migration.overview.paste_notice.body" = "設定は保護されたペーストで受け渡されます。Open Home Foundation アプリが開くと、iOS が既存のアプリからペーストしてよいか確認します。「ペーストを許可」を選んでください。選ばないと何も転送されません。";
-"app_migration.overview.paste_notice.continue_button" = "続ける";
-"app_migration.overview.paste_notice.title" = "iOS に確認されたらペーストを許可してください";
-"app_migration.overview.section.follow_up" = "Open Home Foundation アプリで再設定";
-"app_migration.overview.section.moves" = "引き継がれるもの";
-"app_migration.overview.start_button" = "転送を開始";
-"app_migration.overview.title" = "移行される内容";
-"app_migration.permissions.allow_all_button" = "すべて許可";
-"app_migration.permissions.allow_button" = "許可";
-"app_migration.permissions.body" = "iOS はこれをまったく新しいアプリとして扱うため、既存のアプリで許可した内容をここでもう一度許可する必要があります。";
-"app_migration.permissions.continue_button" = "続ける";
-"app_migration.permissions.section.previous_app" = "既存のアプリで許可済み";
-"app_migration.permissions.settings_button" = "設定";
-"app_migration.permissions.skip_button" = "後で";
-"app_migration.permissions.title" = "権限をもう一度許可";
-"app_migration.progress.export.copying" = "設定をコピー中…";
-"app_migration.progress.export.handing_over" = "Open Home Foundation アプリへ引き渡し中…";
-"app_migration.progress.export.packaging" = "サーバーとサインインをまとめています…";
-"app_migration.progress.footnote" = "数秒かかります。データがこのデバイスの外に出ることはありません。";
-"app_migration.progress.import.applying" = "設定を適用中…";
-"app_migration.progress.import.receiving" = "設定を受信中…";
-"app_migration.progress.import.restoring" = "サーバーとサインインを復元中…";
 "app_shortcuts.activate_scene.title" = "Activate Scene";
 "app_shortcuts.ask_assist.title" = "Ask Assist";
 "app_shortcuts.close.title" = "Close";
@@ -1588,9 +1473,6 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "onboarding.welcome.updated.body" = "外出先からHome Assistantサーバーにアクセスできます。 \
 \
 Home Assistantはオープンソースで、プライバシーを擁護し、あなたの家でローカルに動作します。";
-"onboarding.welcome.transfer_button" = "既存のアプリから転送";
-"onboarding.welcome.transfer_notice.link" = "設定を転送";
-"onboarding.welcome.transfer_notice.moved_body" = "Home Assistant コンパニオンアプリは Open Home Foundation に移行しました。この移行に合わせてアプリのデータをすべて引き継げます。";
 "onboarding.welcome.updated.secondary_button" = "もっと詳しく知る";
 "open_label" = "オープン";
 "permission.notification.body" = "通知を有効にすると、水漏れの検出からドアの開け放しまで、自宅で何が起こっているかを把握でき、通知内容を完全に制御できます。";
@@ -2185,7 +2067,6 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.status_section.version_row.title" = "バージョン";
 "settings.template_edit.title" = "テンプレートの編集";
 "settings.test_flight_communication.title" = "ベータテスター向けアップデート";
-"settings.transfer_to_new_app.title" = "Open Home Foundation アプリへ転送";
 "settings.voice_tools_server.body" = "Home Assistant can use this device to turn speech into text and text into speech, so a voice pipeline runs on hardware you already own.";
 "settings.voice_tools_server.enabled_footer" = "In Home Assistant, add the Wyoming integration and point it at this device, or accept it when it is discovered on your network.\
 \
@@ -3189,30 +3070,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.server_selection.title" = "サーバーの選択";
 "web_view.unique_server_selection.title" = "サーバーを1つ選択";
 "webrtc_player.known_issues.title" = "既知の問題";
-"whats_new.app_support_update.item_body" = "This is the last update for iOS 15, watchOS 8, and macOS 11 and earlier. Tap to read more.";
-"whats_new.app_support_update.item_title" = "Support for iOS 15, watch OS 8, and macOS 11 will end";
 "whats_new.app_support_update.title" = "App support update";
-"whats_new.energy_widget.article_body" = "The new **Energy** widget puts your energy dashboard on your Home Screen and Lock Screen.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small and Lock Screen sizes show live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Touch and hold your Home Screen, tap the add button in the top corner, search for Home Assistant, and choose Energy. For the Lock Screen, touch and hold it, tap Customize, and add the widget there. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.item_body" = "See how much energy your home is using, producing, and storing at a glance on your Home Screen and Lock Screen. Tap to learn more.";
-"whats_new.energy_widget.item_title" = "Energy widget";
-"whats_new.energy_widget.mac.article_body" = "The new **Energy** widget puts your energy dashboard on your desktop.\
-\
-**What it shows**\
-Grid, solar, battery, and gas for the period you pick: today, yesterday, this week, or this month. Choose the source it leads with, or let it decide. The small size shows live power when you have power sensors set up, and the wider sizes lay out the period's totals for every source.\
-\
-**How to add it**\
-Right-click your desktop, choose Edit Widgets, search for Home Assistant, and choose Energy. It needs an energy dashboard configured in Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "See how much energy your home is using, producing, and storing at a glance on your desktop. Tap to learn more.";
 "whats_new.item.opens_article_hint" = "Opens an article";
 "whats_new.item.opens_link_hint" = "Opens a link";
-"whats_new.live_activities.item_body" = "Follow a timer, a running appliance, or anything in progress from your Lock Screen and the Dynamic Island. Tap to learn how a notification starts one.";
-"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "コンパニオンアプリの新機能";
 "whats_new.version_format" = "バージョン %@";
 "widgets.action.name.activate" = "Activate";

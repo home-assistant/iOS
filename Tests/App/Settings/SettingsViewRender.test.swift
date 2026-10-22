@@ -47,6 +47,30 @@ struct SettingsViewRenderTests {
         }
     }
 
+    /// The Mac sidebar's warning row opens the explanation in the detail column, listing the
+    /// servers that report the same instance ID.
+    @Test func rendersTheServerIdentityDetailOnMac() {
+        let previousCatalyst = Current.isCatalyst
+        let previousServers = Current.servers
+        defer {
+            Current.isCatalyst = previousCatalyst
+            Current.servers = previousServers
+        }
+        let servers = FakeServerManager()
+        for (identifier, name) in [("home", "Home"), ("chalet", "Chalet")] {
+            servers.add(identifier: .init(rawValue: identifier), serverInfo: with(ServerInfo.fake()) {
+                $0.remoteName = name
+                $0.instanceID = "shared-instance"
+            })
+        }
+        Current.servers = servers
+        Current.isCatalyst = true
+
+        render(SettingsView(macSidebarSelection: .serverIdentity))
+
+        #expect(ServersObserver().serverIdentityConflicts.map { $0.map(\.name) } == [["Home", "Chalet"]])
+    }
+
     /// Without TestFlight the App Labs section drops out entirely, so the list falls back to the
     /// headed sections alone.
     @Test func rendersTheListWithoutAppLabs() {

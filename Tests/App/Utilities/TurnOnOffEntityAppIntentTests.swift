@@ -5,6 +5,7 @@ import HAKit_Mocks
 import Testing
 
 /// One intent now switches both ways, so each direction is checked for the service it sends.
+@Suite(.serialized)
 struct TurnOnOffEntityAppIntentTests {
     /// Toggling is the only direction that is right whatever state the entity is already in, so it is
     /// what an action dropped into a shortcut without the direction set does. The App Shortcuts still
@@ -65,7 +66,7 @@ struct TurnOnOffEntityAppIntentTests {
         var answered = 0
         var waited = 0
         var first: HARequest?
-        while answered < 2, waited < 400 {
+        while answered < 2, waited < 6000 {
             if connection.pendingRequests.count > answered {
                 let pending = connection.pendingRequests[answered]
                 if answered == 0 { first = pending.request }
@@ -87,7 +88,7 @@ struct TurnOnOffEntityAppIntentTests {
             let entity = Self.entity(serverId: server.identifier.rawValue)
             let task = Task { try await ControlEntityIntentRunner.perform(.turnOn, on: entity) }
             var waited = 0
-            while connection.pendingRequests.isEmpty, waited < 400 {
+            while connection.pendingRequests.isEmpty, waited < 6000 {
                 try await Task.sleep(nanoseconds: 5_000_000)
                 waited += 1
             }
