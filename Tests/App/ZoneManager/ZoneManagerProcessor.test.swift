@@ -62,6 +62,7 @@ class ZoneManagerProcessorTests: XCTestCase {
 
     override func tearDown() {
         Current.database = previousDatabase
+        Current.settingsStore.regionEnterMaximumFuzzDistance = SettingsStore.defaultRegionEnterMaximumFuzzDistance
 
         super.tearDown()
     }
@@ -603,6 +604,119 @@ class ZoneManagerProcessorTests: XCTestCase {
             }
         } else {
             XCTFail("no state but one was expected")
+        }
+    }
+
+    func testRegionEnterFarOutsideLocationIsNotFuzzed() throws {
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = false
+        })
+        let event = ZoneManagerEvent(
+            eventType: .region(circularRegion, .inside),
+            associatedZone: circularRegionZone
+        )
+        let promise = processor.perform(event: event)
+
+        let expectation = expectation(description: "promise")
+        promise.ensure {
+            expectation.fulfill()
+        }.cauterize()
+
+        let oneShotLocation = { () -> CLLocation in
+            let distance = circularRegion.radius + Current.settingsStore.regionEnterMaximumFuzzDistance + 500
+            let coordinate = circularRegion.center.moving(
+                distance: .init(value: distance, unit: .meters),
+                direction: .init(value: 80, unit: .degrees)
+            )
+            return CLLocation(
+                coordinate: coordinate,
+                altitude: 0,
+                horizontalAccuracy: 20,
+                verticalAccuracy: 0,
+                timestamp: Date()
+            )
+        }()
+
+        XCTAssertFalse(circularRegion.contains(oneShotLocation.coordinate))
+
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation], timeout: 10.0)
+
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+
+            if let sentLocation = api.submitLocationInvocation?.location {
+                XCTAssertEqual(sentLocation.coordinate.latitude, oneShotLocation.coordinate.latitude)
+                XCTAssertEqual(sentLocation.coordinate.longitude, oneShotLocation.coordinate.longitude)
+                XCTAssertEqual(sentLocation.horizontalAccuracy, oneShotLocation.horizontalAccuracy)
+
+                let regionWithAccuracy = CLCircularRegion(
+                    center: circularRegion.center,
+                    radius: circularRegion.radius + sentLocation.horizontalAccuracy,
+                    identifier: ""
+                )
+
+                XCTAssertFalse(regionWithAccuracy.contains(sentLocation.coordinate))
+            } else {
+                XCTFail("didn't send a location")
+            }
+        }
+    }
+
+    func testRegionEnterFarOutsideLocationIsFuzzedWithinRaisedLimit() throws {
+        Current.settingsStore.regionEnterMaximumFuzzDistance = 2000
+        XCTAssertEqual(Current.settingsStore.regionEnterMaximumFuzzDistance, 2000)
+
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = false
+        })
+        let event = ZoneManagerEvent(
+            eventType: .region(circularRegion, .inside),
+            associatedZone: circularRegionZone
+        )
+        let promise = processor.perform(event: event)
+
+        let expectation = expectation(description: "promise")
+        promise.ensure {
+            expectation.fulfill()
+        }.cauterize()
+
+        let oneShotLocation = { () -> CLLocation in
+            let distance = circularRegion.radius + SettingsStore.defaultRegionEnterMaximumFuzzDistance + 500
+            let coordinate = circularRegion.center.moving(
+                distance: .init(value: distance, unit: .meters),
+                direction: .init(value: 80, unit: .degrees)
+            )
+            return CLLocation(
+                coordinate: coordinate,
+                altitude: 0,
+                horizontalAccuracy: 20,
+                verticalAccuracy: 0,
+                timestamp: Date()
+            )
+        }()
+
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation], timeout: 10.0)
+
+        for api in apis {
+            if let sentLocation = api.submitLocationInvocation?.location {
+                XCTAssertGreaterThan(sentLocation.horizontalAccuracy, oneShotLocation.horizontalAccuracy)
+
+                let regionWithAccuracy = CLCircularRegion(
+                    center: circularRegion.center,
+                    radius: circularRegion.radius + sentLocation.horizontalAccuracy,
+                    identifier: ""
+                )
+
+                XCTAssertTrue(regionWithAccuracy.contains(sentLocation.coordinate))
+            } else {
+                XCTFail("didn't send a location")
+            }
         }
     }
 
