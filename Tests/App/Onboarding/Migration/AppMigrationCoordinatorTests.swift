@@ -29,13 +29,14 @@ struct AppMigrationCoordinatorTests {
         role: AppMigrationRole,
         opener: Opener,
         canOpen: Bool = true,
+        pacing: TimeInterval = 0,
         releasedPush: (() -> Void)? = nil
     ) -> AppMigrationCoordinator {
         var dependencies = AppMigrationCoordinatorDependencies()
         dependencies.role = role
         dependencies.canOpen = { _ in canOpen }
         dependencies.open = { await opener.open($0) }
-        dependencies.pacing = 0
+        dependencies.pacing = pacing
         dependencies.erasedReadDuration = 0
         dependencies.adoptPushRegistration = {}
         dependencies.releasePushRegistration = { releasedPush?() }
@@ -259,7 +260,7 @@ struct AppMigrationCoordinatorTests {
         defer { reset() }
         let opener = Opener()
         opener.answer = { _ in false }
-        let previousApp = Self.make(role: .previousApp, opener: opener, canOpen: false)
+        let previousApp = Self.make(role: .previousApp, opener: opener, canOpen: false, pacing: 0.2)
         #expect(!previousApp.beginTransferFromThisApp())
         #expect(previousApp.handle(url: AppMigrationLink.request(.make()).url(to: .previousApp)))
 

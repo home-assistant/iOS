@@ -70,7 +70,7 @@ struct AppMigrationGetNewAppView: View {
         }
     }
 
-    private func startTransferIfInstalled(reportMissing: Bool) {
+    func startTransferIfInstalled(reportMissing: Bool) {
         if coordinator.beginTransferFromThisApp() {
             transferStartedAction()
         } else if reportMissing {

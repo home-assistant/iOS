@@ -151,6 +151,13 @@ struct AppMigrationScreensTests {
         )
     }
 
+    @MainActor @Test func flowShowsThePermissionsItStillHasToAsk() {
+        assertLightDarkSnapshots(
+            of: AppMigrationFlowView(permissionsToAllow: [.location, .notification], skipAction: {}, finishAction: {}),
+            named: "new-00d-flow-permissions"
+        )
+    }
+
     @MainActor @Test func exportContainerShowsTheRequestThePreviousAppReceived() {
         AppMigrationHandoffStore.save(nil)
         defer { AppMigrationHandoffStore.save(nil) }

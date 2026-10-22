@@ -60,34 +60,38 @@ struct AppMigrationCompleteView: View {
             },
             primaryActionTitle: showsNextSteps ? L10n.AppMigration.Complete.continueButton : L10n.AppMigration.Complete
                 .eraseButton,
-            primaryAction: {
-                if showsNextSteps {
-                    AppMigrationHaptics.tap()
-                    continueAction()
-                } else {
-                    AppMigrationHaptics.warning()
-                    eraseAction?()
-                }
-            },
+            primaryAction: primaryTapped,
             primaryActionIdentifier: showsNextSteps
                 ? AccessibilityIdentifier.migrationCompleteContinue.rawValue
                 : AccessibilityIdentifier.migrationCompleteErase.rawValue,
             secondaryActionTitle: secondaryActionTitle,
-            secondaryAction: {
-                if showsNextSteps {
-                    AppMigrationHaptics.warning()
-                    eraseAction?()
-                } else {
-                    AppMigrationHaptics.tap()
-                    withAnimation(DesignSystem.Animation.default) {
-                        keepsPreviousApp = true
-                    }
-                }
-            },
+            secondaryAction: secondaryTapped,
             secondaryActionIdentifier: showsNextSteps
                 ? AccessibilityIdentifier.migrationCompleteErase.rawValue
                 : AccessibilityIdentifier.migrationCompleteKeep.rawValue
         )
+    }
+
+    func primaryTapped() {
+        if showsNextSteps {
+            AppMigrationHaptics.tap()
+            continueAction()
+        } else {
+            AppMigrationHaptics.warning()
+            eraseAction?()
+        }
+    }
+
+    func secondaryTapped() {
+        if showsNextSteps {
+            AppMigrationHaptics.warning()
+            eraseAction?()
+        } else {
+            AppMigrationHaptics.tap()
+            withAnimation(DesignSystem.Animation.default) {
+                keepsPreviousApp = true
+            }
+        }
     }
 
     private var secondaryActionTitle: String? {

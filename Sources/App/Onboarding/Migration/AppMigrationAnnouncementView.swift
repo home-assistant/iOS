@@ -64,24 +64,28 @@ struct AppMigrationAnnouncementView: View {
                 .padding(.top, DesignSystem.Spaces.two)
             },
             primaryActionTitle: L10n.AppMigration.Announcement.transferButton,
-            primaryAction: {
-                AppMigrationHaptics.tap()
-                if coordinator.beginTransferFromThisApp() {
-                    dismiss()
-                } else {
-                    withAnimation(DesignSystem.Animation.default) {
-                        showsGetNewApp = true
-                    }
-                }
-            },
+            primaryAction: startTransfer,
             primaryActionIdentifier: AccessibilityIdentifier.migrationAnnouncementTransfer.rawValue,
             secondaryActionTitle: L10n.AppMigration.Announcement.laterButton,
-            secondaryAction: {
-                AppMigrationHaptics.tap()
-                dismiss()
-            },
+            secondaryAction: postpone,
             secondaryActionIdentifier: AccessibilityIdentifier.migrationAnnouncementLater.rawValue
         )
+    }
+
+    func startTransfer() {
+        AppMigrationHaptics.tap()
+        if coordinator.beginTransferFromThisApp() {
+            dismiss()
+        } else {
+            withAnimation(DesignSystem.Animation.default) {
+                showsGetNewApp = true
+            }
+        }
+    }
+
+    func postpone() {
+        AppMigrationHaptics.tap()
+        dismiss()
     }
 }
 

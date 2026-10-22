@@ -20,22 +20,24 @@ struct AppMigrationNoServersView: View {
             primaryActionTitle: coordinator.isNewAppInstalled
                 ? L10n.AppMigration.Export.HandedOff.openButton
                 : L10n.AppMigration.GetNewApp.storeButton,
-            primaryAction: {
-                AppMigrationHaptics.tap()
-                if coordinator.isNewAppInstalled {
-                    coordinator.openNewApp()
-                } else {
-                    #if targetEnvironment(macCatalyst)
-                    URLOpener.shared.open(AppMigrationAnnouncement.newAppStoreURL, options: [:], completionHandler: nil)
-                    #else
-                    isStoreOverlayPresented = true
-                    #endif
-                }
-            },
+            primaryAction: primaryTapped,
             primaryActionIdentifier: AccessibilityIdentifier.migrationNoServersPrimary.rawValue
         )
         .appStoreOverlay(isPresented: $isStoreOverlayPresented) {
             SKOverlay.AppConfiguration(appIdentifier: AppMigrationAnnouncement.newAppStoreID, position: .bottom)
+        }
+    }
+
+    func primaryTapped() {
+        AppMigrationHaptics.tap()
+        if coordinator.isNewAppInstalled {
+            coordinator.openNewApp()
+        } else {
+            #if targetEnvironment(macCatalyst)
+            URLOpener.shared.open(AppMigrationAnnouncement.newAppStoreURL, options: [:], completionHandler: nil)
+            #else
+            isStoreOverlayPresented = true
+            #endif
         }
     }
 }
