@@ -3,7 +3,53 @@ import HealthKit
 @testable import Shared
 import XCTest
 
+/// A summary of a chosen day. HealthKit derives the day itself and offers no way to set it.
+private final class DatedActivitySummary: HKActivitySummary {
+    var day = DateComponents()
+
+    override func dateComponents(for calendar: Calendar) -> DateComponents {
+        day
+    }
+}
+
 class HealthKitActivityRingTests: XCTestCase {
+    private var calendar: Calendar!
+    private var originalCalendar: (() -> Calendar)!
+    private var originalHealthKitService: HealthKitService!
+    private var requestedDays: (start: DateComponents, end: DateComponents)?
+
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = try XCTUnwrap(TimeZone(identifier: "UTC"))
+        calendar = utc
+        originalCalendar = Current.calendar
+        originalHealthKitService = Current.healthKitService
+        Current.calendar = { utc }
+    }
+
+    override func tearDown() {
+        Current.calendar = originalCalendar
+        Current.healthKitService = originalHealthKitService
+        originalCalendar = nil
+        originalHealthKitService = nil
+        requestedDays = nil
+        calendar = nil
+        super.tearDown()
+    }
+
+    private func day(_ day: Int) -> DateComponents {
+        DateComponents(calendar: calendar, era: 1, year: 2026, month: 3, day: day)
+    }
+
+    private func summary(on day: DateComponents, moveGoal: Double) -> HKActivitySummary {
+        let summary = DatedActivitySummary()
+        summary.day = day
+        summary.activityMoveMode = .activeEnergy
+        summary.activeEnergyBurnedGoal = HKQuantity(unit: .kilocalorie(), doubleValue: moveGoal)
+        return summary
+    }
+
     private func summary(
         move: Double = 420,
         moveGoal: Double = 600,
@@ -145,6 +191,64 @@ class HealthKitActivityRingTests: XCTestCase {
                 HKObjectType.activitySummaryType().identifier,
             ]
         )
+    }
+
+    func testOnlySampleTypesAreObserved() throws {
+        let steps = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_steps"))
+        let sleepDuration = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_sleep_duration"))
+        // What a catalog typo looks like: the summary type is read, but it isn't a sample type.
+        let typo = HealthKitMetric(
+            uniqueID: "health_typo",
+            identifier: HealthKitActivitySummaryField.identifier,
+            name: "Typo",
+            icon: "mdi:bug",
+            unit: nil,
+            queryUnit: .count,
+            aggregation: .mostRecent,
+            category: .activity
+        )
+
+        XCTAssertEqual(
+            HealthKitService.observableTypes(for: [steps, sleepDuration]).map(\.identifier),
+            [HKQuantityTypeIdentifier.stepCount.rawValue, HKCategoryTypeIdentifier.sleepAnalysis.rawValue]
+        )
+        XCTAssertTrue(HealthKitService.observableTypes(for: [typo]).isEmpty)
+        XCTAssertTrue(HealthKitService.readTypes(for: [typo]).isEmpty)
+    }
+
+    func testLatestSummaryIsPickedWhateverOrderHealthKitUses() {
+        let older = summary(on: day(9), moveGoal: 500)
+        let newer = summary(on: day(10), moveGoal: 610)
+
+        XCTAssertIdentical(HealthKitService.latestActivitySummary(in: [older, newer], calendar: calendar), newer)
+        XCTAssertIdentical(HealthKitService.latestActivitySummary(in: [newer, older], calendar: calendar), newer)
+        XCTAssertNil(HealthKitService.latestActivitySummary(in: [], calendar: calendar))
+    }
+
+    func testGoalIsReadFromTheLatestSummaryOfTheWindow() async throws {
+        let moveGoal = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_active_energy_burned_goal"))
+        let start = try XCTUnwrap(calendar.date(from: day(4)))
+        let end = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 3, day: 10, hour: 17)))
+        Current.healthKitService.activitySummaries = { [self] start, end in
+            requestedDays = (start, end)
+            return [summary(on: day(9), moveGoal: 500), summary(on: day(10), moveGoal: 610)]
+        }
+
+        let value = try await Current.healthKitService.queryValue(moveGoal, start, end)
+
+        XCTAssertEqual(value, 610)
+        // The query spans the local calendar days of the window, not its instants.
+        XCTAssertEqual(requestedDays?.start, day(4))
+        XCTAssertEqual(requestedDays?.end, day(10))
+    }
+
+    func testGoalIsUnavailableWhenNoDayOfTheWindowHasASummary() async throws {
+        let moveGoal = try XCTUnwrap(HealthKitMetric.metric(uniqueID: "health_active_energy_burned_goal"))
+        Current.healthKitService.activitySummaries = { _, _ in [] }
+
+        let value = try await Current.healthKitService.queryValue(moveGoal, Date(), Date())
+
+        XCTAssertNil(value)
     }
 
     func testActivitySummaryDayIsTheLocalCalendarDay() throws {

@@ -78,12 +78,12 @@ public struct HealthKitService {
                 return nil
             }
             let calendar = Current.calendar()
-            let summary = try await HealthKitService.latestActivitySummary(
-                from: HealthKitService.activitySummaryDay(containing: start, calendar: calendar),
-                to: HealthKitService.activitySummaryDay(containing: end, calendar: calendar),
-                calendar: calendar
+            let summaries = try await Current.healthKitService.activitySummaries(
+                HealthKitService.activitySummaryDay(containing: start, calendar: calendar),
+                HealthKitService.activitySummaryDay(containing: end, calendar: calendar)
             )
-            return summary.flatMap { field.value(in: $0, unit: unit) }
+            return HealthKitService.latestActivitySummary(in: summaries, calendar: calendar)
+                .flatMap { field.value(in: $0, unit: unit) }
         case let .sleep(stages):
             guard let categoryType = HealthKitService.sampleType(for: metric) as? HKCategoryType else {
                 return nil
@@ -119,6 +119,24 @@ public struct HealthKitService {
             to: HealthKitService.observableTypes(for: metrics),
             onChange: onChange
         )
+    }
+
+    /// The activity summaries of the local calendar days from `start` to `end`, inclusive, in whatever
+    /// order HealthKit returns them. Internal so the tests can answer it without a HealthKit store.
+    var activitySummaries: (_ start: DateComponents, _ end: DateComponents) async throws -> [HKActivitySummary] = {
+        start, end in
+        try await withCheckedThrowingContinuation { continuation in
+            let query = HKActivitySummaryQuery(
+                predicate: HKQuery.predicate(forActivitySummariesBetweenStart: start, end: end)
+            ) { _, summaries, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: summaries ?? [])
+                }
+            }
+            healthStore.execute(query)
+        }
     }
 
     public init() {}
@@ -180,27 +198,10 @@ public struct HealthKitService {
         return day
     }
 
-    /// The most recent summary between the two days, inclusive, or `nil` when none of them has one.
-    private static func latestActivitySummary(
-        from start: DateComponents,
-        to end: DateComponents,
-        calendar: Calendar
-    ) async throws -> HKActivitySummary? {
-        let summaries: [HKActivitySummary] = try await withCheckedThrowingContinuation { continuation in
-            let query = HKActivitySummaryQuery(
-                predicate: HKQuery.predicate(forActivitySummariesBetweenStart: start, end: end)
-            ) { _, summaries, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: summaries ?? [])
-                }
-            }
-            healthStore.execute(query)
-        }
-
-        // The order HealthKit returns them in isn't documented.
-        return summaries.max { lhs, rhs in
+    /// The summary of the most recent day, or `nil` when there is none. The order HealthKit returns
+    /// summaries in isn't documented. Internal for the tests.
+    static func latestActivitySummary(in summaries: [HKActivitySummary], calendar: Calendar) -> HKActivitySummary? {
+        summaries.max { lhs, rhs in
             let lhsDate = calendar.date(from: lhs.dateComponents(for: calendar)) ?? .distantPast
             let rhsDate = calendar.date(from: rhs.dateComponents(for: calendar)) ?? .distantPast
             return lhsDate < rhsDate
