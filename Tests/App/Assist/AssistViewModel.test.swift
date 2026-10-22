@@ -728,6 +728,24 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertEqual(sut.chatItems.last?.itemType, .error)
     }
 
+    /// A recorder that fails has stopped for good, so the run it was feeding is abandoned rather than
+    /// left waiting for audio, and nothing more is sent to it.
+    @MainActor
+    func testRecordingFailureCancelsRunAndStopsSendingAudio() async {
+        sut.didReceiveGreenLightForAudioInput()
+
+        sut.didFailToRecord(error: AudioRecorderError.captureDeviceUnavailable)
+        let deadline = Date().addingTimeInterval(2)
+        while !mockAssistService.cancelRunCalled, Date() < deadline {
+            await Task.yield()
+        }
+        sut.didOutputSample(data: Data([0x01]))
+
+        XCTAssertTrue(mockAssistService.cancelRunCalled)
+        XCTAssertFalse(sut.canSendAudioData)
+        XCTAssertFalse(mockAssistService.sendAudioDataCalled)
+    }
+
     /// The stop is scheduled onto the main actor, so it lands a turn after the error arrives.
     @MainActor
     private func waitUntilNotRecording(timeout: TimeInterval = 2) async {

@@ -501,6 +501,13 @@ final class AssistViewModel: NSObject, ObservableObject {
 extension AssistViewModel: AudioRecorderDelegate {
     func didFailToRecord(error: any Error) {
         showError(message: error.localizedDescription)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // The recorder has stopped, so no more audio will reach the run. Abandon it rather than
+            // leave the server waiting for the rest.
+            canSendAudioData = false
+            assistService.cancelRun()
+        }
     }
 
     func didOutputSample(data: Data) {
