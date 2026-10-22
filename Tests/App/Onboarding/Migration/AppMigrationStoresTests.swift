@@ -65,6 +65,19 @@ struct AppMigrationStoresTests {
         )
     }
 
+    @Test func everyPermissionOpensASettingsDestination() {
+        var destinations: Set<String> = []
+        for permission in SensorPermission.allCases {
+            destinations.insert(String(describing: permission.settingsDestination))
+        }
+        #expect(destinations.count == SensorPermission.allCases.count)
+    }
+
+    @Test func backgroundTaskIdentifiersComeFromTheBundle() {
+        #expect(AppConstants.backgroundTaskIdentifier(suffix: "backgroundfetch").hasSuffix(".backgroundfetch"))
+        #expect(AppConstants.backgroundTaskIdentifier(suffix: "nothing") == "\(AppConstants.BundleID).nothing")
+    }
+
     @Test func theDeclineReasonSurvivesItsLink() {
         let id = UUID()
         let url = AppMigrationLink.declined(sessionID: id, reason: .previousAppErased).url(to: .newApp)

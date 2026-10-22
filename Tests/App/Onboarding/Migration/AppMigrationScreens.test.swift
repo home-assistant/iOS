@@ -80,6 +80,20 @@ struct AppMigrationScreensTests {
         assertLightDarkSnapshots(of: AppMigrationAnnouncementView(onViewed: {}), named: "old-00-announcement")
     }
 
+    @MainActor @Test func announcementSlidesToTheStoreStep() {
+        assertLightDarkSnapshots(
+            of: AppMigrationAnnouncementView(showsGetNewApp: true, onViewed: {}),
+            named: "old-00a-announcement-store"
+        )
+    }
+
+    @MainActor @Test func getNewAppReportsItIsNotInstalledYet() {
+        assertLightDarkSnapshots(
+            of: AppMigrationGetNewAppView(notFoundYet: true, backAction: {}, transferStartedAction: {}),
+            named: "old-00b2-get-new-app-not-found"
+        )
+    }
+
     @MainActor @Test func getNewApp() {
         assertLightDarkSnapshots(
             of: AppMigrationGetNewAppView(backAction: {}, transferStartedAction: {}),

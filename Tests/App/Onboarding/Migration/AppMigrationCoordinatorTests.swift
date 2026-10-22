@@ -1,7 +1,9 @@
 import Foundation
+import HANetworking
 @testable import HomeAssistant
 import Security
 @testable import Shared
+import SnapshotTesting
 import Testing
 
 /// Both sides of the hand-off driven in one process: the links one coordinator asks iOS to open are
@@ -248,7 +250,16 @@ struct AppMigrationCoordinatorTests {
         reset()
         defer { reset() }
         let previousServers = Current.servers
-        Current.servers = FakeServerManager(initial: 2)
+        let certificate = try ClientCertificateManager.shared.importP12(
+            data: TestClientCertificateBundle.data,
+            password: TestClientCertificateBundle.password,
+            identifier: "round-trip"
+        )
+        let servers = FakeServerManager(initial: 1)
+        var secured = ServerInfo.fake()
+        secured.connection.clientCertificate = certificate
+        servers.add(identifier: .init(rawValue: UUID().uuidString), serverInfo: secured)
+        Current.servers = servers
         defer { Current.servers = previousServers }
         let serversService = AppMigrationKeychainStore.servers.service
         for server in Current.servers.all {
@@ -286,6 +297,11 @@ struct AppMigrationCoordinatorTests {
         previousApp.transfer()
         await expectEventually { newApp.completedSummary != nil }
         #expect(newApp.completedSummary?.serverNames.count == 2)
+        #expect(ClientCertificateManager.shared.hasIdentity(for: certificate))
+        assertLightDarkSnapshots(
+            of: AppMigrationFlowView(coordinator: newApp, skipAction: {}, finishAction: {}),
+            named: "new-00c-flow-success"
+        )
         #expect(newApp.importState == nil)
         #expect(newApp.keepsScreenOn)
         #expect(previousApp.exportState == .handedOff)

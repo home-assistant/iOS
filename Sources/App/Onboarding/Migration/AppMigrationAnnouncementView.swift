@@ -8,7 +8,7 @@ import SwiftUI
 struct AppMigrationAnnouncementView: View {
     @ObservedObject var coordinator: AppMigrationCoordinator = .shared
     @Environment(\.dismiss) private var dismiss
-    @State private var showsGetNewApp = false
+    @State var showsGetNewApp = false
     @State private var didRecordView = false
     let onViewed: () -> Void
 

@@ -9,7 +9,7 @@ import SwiftUI
 struct AppMigrationGetNewAppView: View {
     @ObservedObject var coordinator: AppMigrationCoordinator = .shared
     @Environment(\.scenePhase) private var scenePhase
-    @State private var notFoundYet = false
+    @State var notFoundYet = false
     @State private var isStoreOverlayPresented = false
     let backAction: () -> Void
     let transferStartedAction: () -> Void
