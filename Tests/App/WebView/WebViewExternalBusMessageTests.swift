@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import Shared
 import XCTest
 
 final class WebViewExternalBusMessageTests: XCTestCase {
