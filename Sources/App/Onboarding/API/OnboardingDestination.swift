@@ -14,12 +14,14 @@ enum OnboardingDestination: Hashable {
     case clientCertificate(OnboardingClientCertificateRequest)
     /// The connection-error details. Only used on Mac Catalyst, for the same reason as above.
     case connectionError(OnboardingConnectionErrorContext)
+    /// The same-instance-ID question. Only used on Mac Catalyst; iOS presents it as a sheet.
+    case serverIdentity(OnboardingServerIdentityRequest)
 
     /// Whether this page belongs to the auth flow (everything after the user picked a server).
     var isAuthFlowStep: Bool {
         switch self {
         case .serversList, .connectionError: return false
-        case .login, .deviceName, .permissions, .clientCertificate: return true
+        case .login, .deviceName, .permissions, .clientCertificate, .serverIdentity: return true
         }
     }
 
@@ -37,6 +39,8 @@ enum OnboardingDestination: Hashable {
             return lhsRequest === rhsRequest
         case let (.connectionError(lhsContext), .connectionError(rhsContext)):
             return lhsContext === rhsContext
+        case let (.serverIdentity(lhsRequest), .serverIdentity(rhsRequest)):
+            return lhsRequest === rhsRequest
         default:
             return false
         }
@@ -61,6 +65,9 @@ enum OnboardingDestination: Hashable {
         case let .connectionError(context):
             hasher.combine(5)
             hasher.combine(ObjectIdentifier(context))
+        case let .serverIdentity(request):
+            hasher.combine(6)
+            hasher.combine(ObjectIdentifier(request))
         }
     }
 }

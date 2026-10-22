@@ -7,7 +7,7 @@ struct SettingsView: View {
         static let macSidebarBottomPadding: CGFloat = DesignSystem.Spaces.three
     }
 
-    @State private var macSidebarSelection: MacSettingsSidebarSelection? = .item(.general)
+    @State private var macSidebarSelection: MacSettingsSidebarSelection?
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
     @State private var testFlightMessage: TestFlightMessage?
@@ -16,6 +16,10 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
     @StateObject private var serversObserver = ServersObserver()
+
+    init(macSidebarSelection: MacSettingsSidebarSelection? = .item(.general)) {
+        self._macSidebarSelection = State(initialValue: macSidebarSelection)
+    }
 
     var body: some View {
         Group {
@@ -56,6 +60,8 @@ struct SettingsView: View {
             }
         case .serverSwitching:
             ServerSwitchingSettingsView()
+        case .serverIdentity:
+            ServerIdentityExplanationView(conflictingServers: serversObserver.serverIdentityConflicts)
         case nil:
             macOSPlaceholder
         }

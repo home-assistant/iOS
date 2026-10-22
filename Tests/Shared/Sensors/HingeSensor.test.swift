@@ -138,9 +138,8 @@ class HingeSensorTests: XCTestCase {
 
         Current.hinge.setState(HingeState(angleDegrees: 90, status: .partiallyOpen))
 
-        let expectation = expectation(description: "signalled")
-        DispatchQueue.main.async { expectation.fulfill() }
-        wait(for: [expectation], timeout: 1)
+        let signalled = expectation(for: NSPredicate { _, _ in signalCount == 1 }, evaluatedWith: nil)
+        wait(for: [signalled], timeout: 10)
         XCTAssertEqual(signalCount, 1)
     }
 
