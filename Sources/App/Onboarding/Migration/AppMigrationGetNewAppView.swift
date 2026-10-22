@@ -7,7 +7,7 @@ import SwiftUI
 /// in an overlay so the install happens without leaving this app, then pick the transfer up as soon
 /// as the new app is found on the device.
 struct AppMigrationGetNewAppView: View {
-    @ObservedObject private var coordinator = AppMigrationCoordinator.shared
+    @ObservedObject var coordinator: AppMigrationCoordinator = .shared
     @Environment(\.scenePhase) private var scenePhase
     @State private var notFoundYet = false
     @State private var isStoreOverlayPresented = false

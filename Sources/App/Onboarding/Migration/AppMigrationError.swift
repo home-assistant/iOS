@@ -1,7 +1,7 @@
 import Foundation
 import Shared
 
-enum AppMigrationError: LocalizedError {
+enum AppMigrationError: LocalizedError, CaseIterable {
     case declined
     case noPayload
     case wrongSession

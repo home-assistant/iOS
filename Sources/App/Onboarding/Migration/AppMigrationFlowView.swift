@@ -4,7 +4,7 @@ import SwiftUI
 /// The new app's transfer step inside onboarding: intro, overview, then whatever the coordinator is
 /// doing until the setup has been applied.
 struct AppMigrationFlowView: View {
-    @ObservedObject private var coordinator = AppMigrationCoordinator.shared
+    @ObservedObject var coordinator: AppMigrationCoordinator = .shared
     @State private var showsOverview = false
     @State private var permissionsToAllow: [SensorPermission]?
     let skipAction: () -> Void

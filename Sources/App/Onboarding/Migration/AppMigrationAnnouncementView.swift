@@ -6,7 +6,7 @@ import SwiftUI
 /// is not on the device yet. The App Store step slides in instead of being pushed: a navigation bar,
 /// even hidden, would set this screen's icon lower than the other transfer screens.
 struct AppMigrationAnnouncementView: View {
-    @ObservedObject private var coordinator = AppMigrationCoordinator.shared
+    @ObservedObject var coordinator: AppMigrationCoordinator = .shared
     @Environment(\.dismiss) private var dismiss
     @State private var showsGetNewApp = false
     @State private var didRecordView = false

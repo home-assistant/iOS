@@ -5,7 +5,7 @@ import SwiftUI
 /// The previous app with nothing set up: it no longer connects to a Home Assistant server, so instead
 /// of onboarding it points at the new app, opening it when it is installed and the App Store otherwise.
 struct AppMigrationNoServersView: View {
-    @ObservedObject private var coordinator = AppMigrationCoordinator.shared
+    @ObservedObject var coordinator: AppMigrationCoordinator = .shared
     @State private var isStoreOverlayPresented = false
 
     var body: some View {

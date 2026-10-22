@@ -1396,6 +1396,7 @@
 				Migration/AppMigrationItemRow.swift,
 				Migration/AppMigrationKeychainStore.swift,
 				Migration/AppMigrationLink.swift,
+				Migration/AppMigrationCoordinatorDependencies.swift,
 				Migration/AppMigrationNoServersView.swift,
 				Migration/AppMigrationOverviewView.swift,
 				Migration/AppMigrationPasteboard.swift,
