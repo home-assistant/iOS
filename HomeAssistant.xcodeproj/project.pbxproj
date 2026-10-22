@@ -65,6 +65,7 @@
 		11B92913266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		11B92A5B266F17AA00786588 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */; };
+		9961D993FC5EE2C107101A93 /* LocalizedStringResource+Verbatim.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B34F1ED79C55F60DBD84444 /* LocalizedStringResource+Verbatim.test.swift */; };
 		11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98CC249E637300B05222 /* Version+HA.test.swift */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DE9FBE25B6186E0081C0ED /* Home Assistant Launcher.app in Embed Mac Launcher */ = {isa = PBXBuildFile; fileRef = 11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -611,6 +612,7 @@
 		11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-PushProvider.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11B9290A266F145000786588 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
+		0B34F1ED79C55F60DBD84444 /* LocalizedStringResource+Verbatim.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringResource+Verbatim.test.swift"; sourceTree = "<group>"; };
 		11CB98CC249E637300B05222 /* Version+HA.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.test.swift"; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3228,6 +3230,7 @@
 				9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */,
 				11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */,
 				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
+				0B34F1ED79C55F60DBD84444 /* LocalizedStringResource+Verbatim.test.swift */,
 				1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */,
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
 				110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */,
@@ -4701,6 +4704,7 @@
 				42164BB9301320720077A903 /* ComplicationFormula.test.swift in Sources */,
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
+				9961D993FC5EE2C107101A93 /* LocalizedStringResource+Verbatim.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
 				426A2EFD30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */,
