@@ -198,7 +198,6 @@ class SensorUpdateRetryTests: XCTestCase {
         XCTAssertEqual(runner.names.count, 1)
     }
 
-    /// The default scheduler decides by the delay alone.
     /// `WebhookManager` replaces an in-flight update with a newer one for the same server, and a
     /// fast server can answer the newer one before the older one's cancellation is reported. The
     /// late failure is already overtaken, so retrying it would read every sensor for nothing.
@@ -245,6 +244,7 @@ class SensorUpdateRetryTests: XCTestCase {
         XCTAssertEqual(providerNames(performed[0]), names([BatterySensor.self]))
     }
 
+    /// The default scheduler decides by the delay alone.
     func testTheDefaultScheduleHoldsOnlyShortDelays() {
         let runner = RecordingBackgroundTaskRunner()
         let previousRunner = Current.backgroundTask
