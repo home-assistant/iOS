@@ -33,7 +33,7 @@ class IncomingURLHandler {
     // swiftlint:disable cyclomatic_complexity
     @discardableResult
     func handle(url: URL) -> Bool {
-        Current.Log.verbose("Received URL: \(url)")
+        Current.Log.verbose("Received URL: \(LogRedaction.redact(url))")
         var serviceData: [String: String] = [:]
         if let queryItems = url.queryItems {
             serviceData = queryItems

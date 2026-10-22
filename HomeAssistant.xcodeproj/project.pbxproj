@@ -1433,6 +1433,7 @@
 				Steps/Servers/OnboardingServersListViewModel.swift,
 				Steps/Welcome/InvitationView.swift,
 				Steps/Welcome/OnboardingWelcomeView.swift,
+				Views/BaseOnboardingConfirmation.swift,
 				Views/BaseOnboardingView.swift,
 				Views/BaseOnboardingViewModifiers.swift,
 				Views/CheckmarkDrawOnView.swift,

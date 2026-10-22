@@ -337,7 +337,14 @@ public class HomeAssistantAPI {
 
     /// Set while the app hands its setup to another app: nothing may open a websocket or refresh a
     /// registration until it is cleared.
-    public static var connectionsSuspended = false
+    private static var connectionsSuspendedInProcess = false
+
+    /// Set by the app during the hand-off; every process of the app also honours the hand-off phase
+    /// persisted in the app group, so a widget or intent cannot reconnect once the setup has moved.
+    public static var connectionsSuspended: Bool {
+        get { connectionsSuspendedInProcess || AppMigrationHandoff.isActive }
+        set { connectionsSuspendedInProcess = newValue }
+    }
 
     public func connectWebSocketIfNeeded() {
         guard !Self.connectionsSuspended else {

@@ -8,6 +8,17 @@ enum AppMigrationKeychainStore: String, Codable, CaseIterable {
     case app
     case deviceUID
     case watchRegistration
+    /// A store this build does not know, from a newer payload; skipped on both sides.
+    case unknown
+
+    static var transferred: [Self] {
+        allCases.filter { $0 != .unknown }
+    }
+
+    init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode(String.self)
+        self = Self(rawValue: raw) ?? .unknown
+    }
 
     var service: String {
         switch self {
@@ -15,6 +26,7 @@ enum AppMigrationKeychainStore: String, Codable, CaseIterable {
         case .app: AppConstants.BundleID
         case .deviceUID: "deviceUID"
         case .watchRegistration: "\(AppConstants.BundleID).watch-device-registration"
+        case .unknown: ""
         }
     }
 }

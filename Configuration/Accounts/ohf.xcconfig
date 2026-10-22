@@ -5,6 +5,7 @@
 DEVELOPMENT_TEAM = GUYFAK8DC6
 BUNDLE_ID_PREFIX = io.home-assistant.app
 APP_BUNDLE_ID_BASE = $(BUNDLE_ID_PREFIX)
+APP_GROUP_ID_BASE = group.io.home-assistant.app
 APP_DISPLAY_NAME_BASE = Home Assistant OHF
 MIGRATION_URL_HANDLER_BASE = homeassistant-ohf
 BACKGROUND_TASK_ID_PREFIX = io.home-assistant

@@ -5,6 +5,7 @@
 DEVELOPMENT_TEAM = QMQYCKL255
 BUNDLE_ID_PREFIX = io.robbie
 APP_BUNDLE_ID_BASE = $(BUNDLE_ID_PREFIX).HomeAssistant
+APP_GROUP_ID_BASE = group.io.robbie.homeassistant
 APP_DISPLAY_NAME_BASE = Home Assistant NC
 MIGRATION_URL_HANDLER_BASE = homeassistant-nc
 BACKGROUND_TASK_ID_PREFIX = io.robbie.homeassistant

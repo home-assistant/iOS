@@ -8,6 +8,8 @@ VERSIONING_SYSTEM = apple-generic
 
 APP_DISPLAY_NAME = $(APP_DISPLAY_NAME_BASE)
 APP_BUNDLE_ID = $(APP_BUNDLE_ID_BASE)$(BUNDLE_ID_SUFFIX)
+// The app group is always lowercase, matching AppConstants.AppGroupID at runtime
+APP_GROUP_ID = $(APP_GROUP_ID_BASE)$(BUNDLE_ID_SUFFIX)
 MIGRATION_URL_HANDLER = $(MIGRATION_URL_HANDLER_BASE)
 
 // cascades down

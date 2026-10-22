@@ -17,18 +17,39 @@ enum AppMigrationGrantedPermissions {
     static let budget: Duration = .seconds(3)
 
     static func current() async -> [SensorPermission] {
-        await withTaskGroup(of: [SensorPermission]?.self) { group in
-            group.addTask { await snapshot() }
-            group.addTask {
+        let outcome = await withCheckedContinuation { (continuation: CheckedContinuation<[SensorPermission]?, Never>) in
+            let gate = Gate(continuation)
+            Task.detached {
+                await gate.resume(with: snapshot())
+            }
+            Task {
                 try? await Task.sleep(for: budget)
-                return nil
+                if gate.resume(with: nil) {
+                    Current.Log.error("Permission snapshot did not finish within \(budget); transferring without it")
+                }
             }
-            let first = await group.next() ?? nil
-            group.cancelAll()
-            if first == nil {
-                Current.Log.error("Permission snapshot did not finish within \(budget); transferring without it")
-            }
-            return first ?? []
+        }
+        return outcome ?? []
+    }
+
+    /// Resumes the continuation for whichever side finishes first; the loser's result is dropped, so
+    /// a blocked system read never holds the transfer past the budget.
+    private final class Gate: @unchecked Sendable {
+        private let lock = NSLock()
+        private var continuation: CheckedContinuation<[SensorPermission]?, Never>?
+
+        init(_ continuation: CheckedContinuation<[SensorPermission]?, Never>) {
+            self.continuation = continuation
+        }
+
+        @discardableResult
+        func resume(with value: [SensorPermission]?) -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            guard let continuation else { return false }
+            self.continuation = nil
+            continuation.resume(returning: value)
+            return true
         }
     }
 

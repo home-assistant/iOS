@@ -4,7 +4,7 @@ import Shared
 /// Persists the previous app's handoff phase in the app-group defaults, so a relaunch lands on the
 /// transfer screen instead of reconnecting. Readable without the main actor, for launch-time checks.
 enum AppMigrationHandoffStore {
-    private static let phaseKey = "appMigrationHandoffPhase"
+    private static let phaseKey = AppMigrationHandoff.phaseDefaultsKey
     private static let sessionIDKey = "appMigrationHandoffSessionID"
     private static let sessionKeyKey = "appMigrationHandoffSessionKey"
     private static let startedHereKey = "appMigrationHandoffStartedHere"
