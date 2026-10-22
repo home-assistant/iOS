@@ -6421,6 +6421,10 @@ public enum L10n {
         /// Receive debug notifications
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.receive_debug_notifications.title") }
       }
+      public enum RegionEnterMaximumFuzzDistance {
+        /// Zone enter accuracy fuzz limit
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.region_enter_maximum_fuzz_distance.title") }
+      }
       public enum ResetApp {
         /// Delete all app data?
         public static var alertTitle: String { return L10n.tr("Localizable", "settings.debugging.reset_app.alert_title") }

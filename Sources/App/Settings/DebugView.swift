@@ -526,6 +526,18 @@ struct DebugView: View {
             }
             .pickerStyle(.menu)
 
+            Picker(selection: Binding(
+                get: { Current.settingsStore.regionEnterMaximumFuzzDistance },
+                set: { Current.settingsStore.regionEnterMaximumFuzzDistance = $0 }
+            )) {
+                ForEach([50.0, 100.0, 250.0, 500.0, 1000.0, 2000.0], id: \.self) { metres in
+                    Text(verbatim: "\(Int(metres))m").tag(metres)
+                }
+            } label: {
+                Text(L10n.Settings.Debugging.RegionEnterMaximumFuzzDistance.title)
+            }
+            .pickerStyle(.menu)
+
         } header: {
             Text(verbatim: L10n.Settings.Developer.header)
         } footer: {

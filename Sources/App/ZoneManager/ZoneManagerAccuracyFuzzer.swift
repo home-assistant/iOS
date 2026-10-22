@@ -44,7 +44,10 @@ struct ZoneManagerAccuracyFuzzerRegionEnter: ZoneManagerAccuracyFuzzer {
     /// Widening that fix by the full distance sends a gps_accuracy of up to 1.5 km, and core derives
     /// in_zones from that radius, so the device shows up in every zone it covers. A fix much farther out
     /// than GPS error is evidence the region event is wrong, not the fix, so it is sent unchanged.
-    static let maximumDistance: CLLocationDistance = 100
+    /// Defaults to `SettingsStore.defaultRegionEnterMaximumFuzzDistance` and is tunable in Debug settings.
+    var maximumDistance: CLLocationDistance {
+        Current.settingsStore.regionEnterMaximumFuzzDistance
+    }
 
     func fuzz(for location: CLLocation, for event: ZoneManagerEvent) -> ZoneManagerAccuracyFuzzerChange? {
         guard case let .region(region as CLCircularRegion, .inside) = event.eventType,
@@ -54,7 +57,7 @@ struct ZoneManagerAccuracyFuzzerRegionEnter: ZoneManagerAccuracyFuzzer {
 
         let distance = region.distanceWithAccuracy(from: location)
 
-        guard distance <= Self.maximumDistance else {
+        guard distance <= maximumDistance else {
             Current.Log.info(
                 "not fuzzing accuracy for \(region.identifier): fix is \(distance)m outside the region"
             )
