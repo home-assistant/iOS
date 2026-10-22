@@ -16,9 +16,11 @@ on:
 
 env:
   # Pushes to main always build the Open Home Foundation app; a manual run can pick the other account.
-  # Its secrets are the OHF_* set; the Nabu Casa ones carry no prefix.
+  # Its secrets are the OHF_* set; the Nabu Casa ones carry no prefix. Each secret below is picked
+  # with an explicit conditional rather than an indexed lookup, so the runner only ever receives the
+  # ones named here.
   ACCOUNT: ${{ inputs.account || 'ohf' }}
-  SECRET_PREFIX: ${{ (inputs.account || 'ohf') == 'ohf' && 'OHF_' || '' }}
+  NABU_CASA: ${{ inputs.account == 'nabu-casa' }}
   DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
@@ -83,16 +85,16 @@ jobs:
         run: |
           bundle exec fastlane ${{ matrix.kind }} build
         env:
-          P12_KEY_DISTRIBUTION: ${{ secrets[format('{0}P12_KEY_DISTRIBUTION', env.SECRET_PREFIX)] }}
-          P12_VALUE_DISTRIBUTION: ${{ secrets[format('{0}P12_VALUE_DISTRIBUTION', env.SECRET_PREFIX)] }}
-          P12_KEY_MAC_DEVELOPER_ID: ${{ secrets[format('{0}P12_KEY_MAC_DEVELOPER_ID', env.SECRET_PREFIX)] }}
-          P12_KEY_MAC_DEVELOPER_INSTALLER: ${{ secrets[format('{0}P12_KEY_MAC_DEVELOPER_INSTALLER', env.SECRET_PREFIX)] }}
-          P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets[format('{0}P12_VALUE_MAC_DEVELOPER_ID', env.SECRET_PREFIX)] }}
-          P12_VALUE_MAC_DEVELOPER_INSTALLER: ${{ secrets[format('{0}P12_VALUE_MAC_DEVELOPER_INSTALLER', env.SECRET_PREFIX)] }}
-          HOMEASSISTANT_APPLE_ID: ${{ secrets[format('{0}HOMEASSISTANT_APPLE_ID', env.SECRET_PREFIX)] }}
-          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets[format('{0}HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', env.SECRET_PREFIX)] }}
-          HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID: ${{ secrets[format('{0}HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', env.SECRET_PREFIX)] }}
-          HOMEASSISTANT_TEAM_ID: ${{ secrets[format('{0}HOMEASSISTANT_TEAM_ID', env.SECRET_PREFIX)] }}
+          P12_KEY_DISTRIBUTION: ${{ env.NABU_CASA == 'true' && secrets.P12_KEY_DISTRIBUTION || secrets.OHF_P12_KEY_DISTRIBUTION }}
+          P12_VALUE_DISTRIBUTION: ${{ env.NABU_CASA == 'true' && secrets.P12_VALUE_DISTRIBUTION || secrets.OHF_P12_VALUE_DISTRIBUTION }}
+          P12_KEY_MAC_DEVELOPER_ID: ${{ env.NABU_CASA == 'true' && secrets.P12_KEY_MAC_DEVELOPER_ID || secrets.OHF_P12_KEY_MAC_DEVELOPER_ID }}
+          P12_KEY_MAC_DEVELOPER_INSTALLER: ${{ env.NABU_CASA == 'true' && secrets.P12_KEY_MAC_DEVELOPER_INSTALLER || secrets.OHF_P12_KEY_MAC_DEVELOPER_INSTALLER }}
+          P12_VALUE_MAC_DEVELOPER_ID: ${{ env.NABU_CASA == 'true' && secrets.P12_VALUE_MAC_DEVELOPER_ID || secrets.OHF_P12_VALUE_MAC_DEVELOPER_ID }}
+          P12_VALUE_MAC_DEVELOPER_INSTALLER: ${{ env.NABU_CASA == 'true' && secrets.P12_VALUE_MAC_DEVELOPER_INSTALLER || secrets.OHF_P12_VALUE_MAC_DEVELOPER_INSTALLER }}
+          HOMEASSISTANT_APPLE_ID: ${{ env.NABU_CASA == 'true' && secrets.HOMEASSISTANT_APPLE_ID || secrets.OHF_HOMEASSISTANT_APPLE_ID }}
+          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ env.NABU_CASA == 'true' && secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD || secrets.OHF_HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
+          HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID: ${{ env.NABU_CASA == 'true' && secrets.HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID || secrets.OHF_HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID }}
+          HOMEASSISTANT_TEAM_ID: ${{ env.NABU_CASA == 'true' && secrets.HOMEASSISTANT_TEAM_ID || secrets.OHF_HOMEASSISTANT_TEAM_ID }}
           EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
           EMERGE_REPO_NAME: ${{ github.repository }}
           EMERGE_SHA: ${{ github.sha }}
