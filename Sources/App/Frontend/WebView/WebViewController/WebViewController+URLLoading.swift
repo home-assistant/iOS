@@ -97,6 +97,11 @@ extension WebViewController {
             return
         }
 
+        guard !isRetired else {
+            Current.Log.info("not loading, retired")
+            return
+        }
+
         // After a log out the web view deliberately sits on a blank page behind the logged-out empty
         // state, which every caller here would read as "wrong URL loaded" and correct by navigating
         // back into the server -- taking the empty state down and re-authenticating the frontend with
@@ -129,8 +134,14 @@ extension WebViewController {
     }
 
     private func continueLoadingActiveURLIfNeeded() {
-        // Re-checked because the cache-clean check above is asynchronous: a log out landing while it
-        // was in flight would otherwise navigate back into the server from this completion.
+        // Re-checked because the cache-clean check above is asynchronous: a log out or a retirement
+        // landing while it was in flight would otherwise navigate back into the server from this
+        // completion.
+        guard !isRetired else {
+            Current.Log.info("not loading, retired")
+            return
+        }
+
         guard !didLogOut else {
             Current.Log.info("not loading, logged out of \(server.identifier.rawValue)")
             return

@@ -1033,7 +1033,6 @@ public class HomeAssistantAPI {
         location: CLLocation? = nil
     ) -> Promise<Void> {
         let retry = sensorUpdateRetry
-        let generation = retry.beginUpdate()
 
         return firstly {
             Current.sensors.sensors(
@@ -1054,6 +1053,10 @@ public class HomeAssistantAPI {
                 Current.Log.info("skipping network request for unchanged sensor update")
                 return .value(())
             } else {
+                // Numbered as the payload goes out rather than when the run started: an overlapping
+                // run that started earlier but read later carries the newer values, and the webhook
+                // manager replaces requests in this order too.
+                let generation = retry.beginUpdate()
                 return Current.webhooks.send(
                     identifier: .updateSensors,
                     server: server,
@@ -1063,7 +1066,13 @@ public class HomeAssistantAPI {
                     case .fulfilled:
                         retry.noteSuccess(generation: generation, limitedTo: limitedTo)
                     case let .rejected(error):
-                        Current.Log.error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        if error.isCancelled {
+                            // Replaced by a newer request for this server; the retry decides.
+                            Current.Log.info("sensor update for \(trigger) to \(server.info.name) was replaced")
+                        } else {
+                            Current.Log
+                                .error("sensor update for \(trigger) failed to reach \(server.info.name): \(error)")
+                        }
                         retry.noteFailure(generation: generation, limitedTo: limitedTo)
                     }
                 }
