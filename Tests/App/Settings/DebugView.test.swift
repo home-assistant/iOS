@@ -27,4 +27,20 @@ struct DebugViewTests {
         binding.wrappedValue = false
         #expect(!binding.wrappedValue)
     }
+
+    @Test func theRegionEnterFuzzDistancePickerReadsAndWritesThePreference() {
+        let original = Current.settingsStore.regionEnterMaximumFuzzDistance
+        defer { Current.settingsStore.regionEnterMaximumFuzzDistance = original }
+
+        let binding = DebugView.regionEnterMaximumFuzzDistanceBinding
+        binding.wrappedValue = 500
+        #expect(Current.settingsStore.regionEnterMaximumFuzzDistance == 500)
+        #expect(binding.wrappedValue == 500)
+
+        #expect(DebugView.regionEnterMaximumFuzzDistanceOptions.contains(
+            SettingsStore.defaultRegionEnterMaximumFuzzDistance
+        ))
+        _ = DebugView.regionEnterMaximumFuzzDistanceRow(250)
+        _ = DebugView.regionEnterMaximumFuzzDistanceRows()
+    }
 }
