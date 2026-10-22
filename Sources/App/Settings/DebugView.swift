@@ -1,3 +1,4 @@
+import CoreLocation
 import PromiseKit
 import SFSafeSymbols
 import Shared
@@ -348,6 +349,23 @@ struct DebugView: View {
         )
     }
 
+    static let regionEnterMaximumFuzzDistanceOptions: [CLLocationDistance] = [50, 100, 250, 500, 1000, 2000]
+
+    static var regionEnterMaximumFuzzDistanceBinding: Binding<CLLocationDistance> {
+        .init(
+            get: { Current.settingsStore.regionEnterMaximumFuzzDistance },
+            set: { Current.settingsStore.regionEnterMaximumFuzzDistance = $0 }
+        )
+    }
+
+    static func regionEnterMaximumFuzzDistanceRow(_ metres: CLLocationDistance) -> some View {
+        Text(verbatim: "\(Int(metres))m").tag(metres)
+    }
+
+    static func regionEnterMaximumFuzzDistanceRows() -> some View {
+        ForEach(regionEnterMaximumFuzzDistanceOptions, id: \.self, content: regionEnterMaximumFuzzDistanceRow)
+    }
+
     var developerSection: some View {
         Section {
             NavigationLink {
@@ -503,6 +521,12 @@ struct DebugView: View {
             Toggle(isOn: Self.notifyOnLocalPushStateChangesBinding) {
                 Text(L10n.Settings.Debugging.NotifyLocalPushStateChanges.title)
             }
+
+            Picker(
+                L10n.Settings.Debugging.RegionEnterMaximumFuzzDistance.title,
+                selection: Self.regionEnterMaximumFuzzDistanceBinding,
+                content: Self.regionEnterMaximumFuzzDistanceRows
+            ).pickerStyle(.menu)
 
             if !Current.isCatalyst, horizontalSizeClass == .compact {
                 Toggle(isOn: .init(get: {
