@@ -54,7 +54,11 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     /// queue also keeps a stop from overtaking the start it belongs to.
     private let sessionQueue = DispatchQueue(label: "assist-audio-recorder-session", qos: .userInitiated)
 
-    override init() {
+    /// Looks up the microphone to record from; tests pass one that finds none.
+    private let captureDevice: () -> AVCaptureDevice?
+
+    init(captureDevice: @escaping () -> AVCaptureDevice? = { AVCaptureDevice.default(for: .audio) }) {
+        self.captureDevice = captureDevice
         super.init()
         registerForRecordingNotifications()
     }
@@ -85,20 +89,26 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
         }
     }
 
-    /// Reset stream conversion before connecting a new capture output.
-    func prepareAudioConversion() {
+    /// A capture output for a new recording: conversion starts afresh, and buffers arrive in order on the
+    /// serial sample queue.
+    func makeAudioOutput() -> AVCaptureAudioDataOutput {
+        // Session preferences do not guarantee the capture device's rate or channel count.
+        // Every buffer is converted before sending, so advertise the converted format.
         audioSampleRate = AssistAudioConverter.sampleRate
         sampleQueue.sync {
             audioConverter = AssistAudioConverter()
             lastLevelEmission = .zero
         }
+        let audioOutput = AVCaptureAudioDataOutput()
+        audioOutput.setSampleBufferDelegate(self, queue: sampleQueue)
+        return audioOutput
     }
 
     private func setupAudioRecorder() {
         captureSession = nil
         audioSampleRate = nil
         let audioSession = AVAudioSession.sharedInstance()
-        guard let captureDevice = AVCaptureDevice.default(for: .audio) else {
+        guard let captureDevice = captureDevice() else {
             Current.Log.error("Failed to get capture device to record audio for Assist")
             delegate?.didFailToRecord(error: AudioRecorderError.captureDeviceUnavailable)
             return
@@ -108,7 +118,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
             if managesAudioSession {
                 try audioSession.setActive(false)
                 try audioSession.setCategory(.record, mode: .default)
-                try audioSession.setPreferredSampleRate(AssistAudioConverter.sampleRate)
+                try audioSession.setPreferredSampleRate(16000.0)
                 try audioSession.setActive(true)
             }
             let audioInput = try AVCaptureDeviceInput(device: captureDevice)
@@ -116,14 +126,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
             captureSession = AVCaptureSession()
             captureSession?.automaticallyConfiguresApplicationAudioSession = false
             captureSession?.addInput(audioInput)
-
-            // Session preferences do not guarantee the capture device's rate or channel count.
-            // Every buffer is converted before sending, so advertise the converted format.
-            prepareAudioConversion()
-
-            let audioOutput = AVCaptureAudioDataOutput()
-            audioOutput.setSampleBufferDelegate(self, queue: sampleQueue)
-            captureSession?.addOutput(audioOutput)
+            captureSession?.addOutput(makeAudioOutput())
         } catch {
             Current.Log.error("Error starting audio streaming: \(error.localizedDescription)")
             delegate?.didFailToRecord(error: error)
