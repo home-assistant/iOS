@@ -358,8 +358,12 @@ struct DebugView: View {
         )
     }
 
-    static func regionEnterMaximumFuzzDistanceLabel(_ metres: CLLocationDistance) -> String {
-        "\(Int(metres))m"
+    static func regionEnterMaximumFuzzDistanceRow(_ metres: CLLocationDistance) -> some View {
+        Text(verbatim: "\(Int(metres))m").tag(metres)
+    }
+
+    static func regionEnterMaximumFuzzDistanceRows() -> some View {
+        ForEach(regionEnterMaximumFuzzDistanceOptions, id: \.self, content: regionEnterMaximumFuzzDistanceRow)
     }
 
     var developerSection: some View {
@@ -518,6 +522,12 @@ struct DebugView: View {
                 Text(L10n.Settings.Debugging.NotifyLocalPushStateChanges.title)
             }
 
+            Picker(
+                L10n.Settings.Debugging.RegionEnterMaximumFuzzDistance.title,
+                selection: Self.regionEnterMaximumFuzzDistanceBinding,
+                content: Self.regionEnterMaximumFuzzDistanceRows
+            ).pickerStyle(.menu)
+
             if !Current.isCatalyst, horizontalSizeClass == .compact {
                 Toggle(isOn: .init(get: {
                     Current.settingsStore.webViewAlwaysBelowStatusBar
@@ -537,15 +547,6 @@ struct DebugView: View {
                 }
             } label: {
                 Text(L10n.Settings.Debugging.WebViewEmptyStateTimeout.title)
-            }
-            .pickerStyle(.menu)
-
-            Picker(selection: Self.regionEnterMaximumFuzzDistanceBinding) {
-                ForEach(Self.regionEnterMaximumFuzzDistanceOptions, id: \.self) { metres in
-                    Text(verbatim: Self.regionEnterMaximumFuzzDistanceLabel(metres)).tag(metres)
-                }
-            } label: {
-                Text(L10n.Settings.Debugging.RegionEnterMaximumFuzzDistance.title)
             }
             .pickerStyle(.menu)
 

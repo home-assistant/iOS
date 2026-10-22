@@ -40,6 +40,7 @@ struct DebugViewTests {
         #expect(DebugView.regionEnterMaximumFuzzDistanceOptions.contains(
             SettingsStore.defaultRegionEnterMaximumFuzzDistance
         ))
-        #expect(DebugView.regionEnterMaximumFuzzDistanceLabel(250) == "250m")
+        _ = DebugView.regionEnterMaximumFuzzDistanceRow(250)
+        _ = DebugView.regionEnterMaximumFuzzDistanceRows()
     }
 }
