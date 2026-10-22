@@ -1,3 +1,4 @@
+import CoreLocation
 import PromiseKit
 import SFSafeSymbols
 import Shared
@@ -348,6 +349,19 @@ struct DebugView: View {
         )
     }
 
+    static let regionEnterMaximumFuzzDistanceOptions: [CLLocationDistance] = [50, 100, 250, 500, 1000, 2000]
+
+    static var regionEnterMaximumFuzzDistanceBinding: Binding<CLLocationDistance> {
+        .init(
+            get: { Current.settingsStore.regionEnterMaximumFuzzDistance },
+            set: { Current.settingsStore.regionEnterMaximumFuzzDistance = $0 }
+        )
+    }
+
+    static func regionEnterMaximumFuzzDistanceLabel(_ metres: CLLocationDistance) -> String {
+        "\(Int(metres))m"
+    }
+
     var developerSection: some View {
         Section {
             NavigationLink {
@@ -526,12 +540,9 @@ struct DebugView: View {
             }
             .pickerStyle(.menu)
 
-            Picker(selection: Binding(
-                get: { Current.settingsStore.regionEnterMaximumFuzzDistance },
-                set: { Current.settingsStore.regionEnterMaximumFuzzDistance = $0 }
-            )) {
-                ForEach([50.0, 100.0, 250.0, 500.0, 1000.0, 2000.0], id: \.self) { metres in
-                    Text(verbatim: "\(Int(metres))m").tag(metres)
+            Picker(selection: Self.regionEnterMaximumFuzzDistanceBinding) {
+                ForEach(Self.regionEnterMaximumFuzzDistanceOptions, id: \.self) { metres in
+                    Text(verbatim: Self.regionEnterMaximumFuzzDistanceLabel(metres)).tag(metres)
                 }
             } label: {
                 Text(L10n.Settings.Debugging.RegionEnterMaximumFuzzDistance.title)
