@@ -5705,7 +5705,6 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				DISABLE_SWIFTLINT = 1;
 				ENV_URL_HANDLER = "homeassistant-dev";
-				MIGRATION_URL_HANDLER = "homeassistant-nc-dev";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5743,7 +5742,6 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				DISABLE_SWIFTLINT = 1;
 				ENV_URL_HANDLER = homeassistant;
-				MIGRATION_URL_HANDLER = "homeassistant-nc";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
