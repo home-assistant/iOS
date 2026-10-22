@@ -1388,6 +1388,8 @@ public enum L10n {
       }
     }
     public enum Error {
+      /// Couldn't read audio from the microphone. Try again, or use a different microphone.
+      public static var audioConversion: String { return L10n.tr("Localizable", "assist.error.audio_conversion") }
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
       /// This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.

@@ -24,7 +24,6 @@ extension AudioRecorderDelegate {
 }
 
 enum AudioRecorderError: Error {
-    case invalidSampleRate
     case captureDeviceUnavailable
 }
 
@@ -46,6 +45,8 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     private var captureSession: AVCaptureSession?
     /// Only ever read and written on the sample buffer delegate's own queue.
     private var lastLevelEmission: TimeInterval = .zero
+    private var audioConverter: AssistAudioConverter?
+    private let sampleQueue = DispatchQueue(label: "assist-audio-recorder-samples", qos: .userInteractive)
 
     /// Everything that touches the capture session runs here. Configuring one blocks: `init` alone
     /// makes a synchronous XPC call to LaunchServices, and `startRunning`/`stopRunning` wait on the
@@ -84,7 +85,18 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
         }
     }
 
+    /// Reset stream conversion before connecting a new capture output.
+    func prepareAudioConversion() {
+        audioSampleRate = AssistAudioConverter.sampleRate
+        sampleQueue.sync {
+            audioConverter = AssistAudioConverter()
+            lastLevelEmission = .zero
+        }
+    }
+
     private func setupAudioRecorder() {
+        captureSession = nil
+        audioSampleRate = nil
         let audioSession = AVAudioSession.sharedInstance()
         guard let captureDevice = AVCaptureDevice.default(for: .audio) else {
             Current.Log.error("Failed to get capture device to record audio for Assist")
@@ -96,8 +108,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
             if managesAudioSession {
                 try audioSession.setActive(false)
                 try audioSession.setCategory(.record, mode: .default)
-                try audioSession.setPreferredOutputNumberOfChannels(1)
-                try audioSession.setPreferredSampleRate(16000.0)
+                try audioSession.setPreferredSampleRate(AssistAudioConverter.sampleRate)
                 try audioSession.setActive(true)
             }
             let audioInput = try AVCaptureDeviceInput(device: captureDevice)
@@ -106,15 +117,12 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
             captureSession?.automaticallyConfiguresApplicationAudioSession = false
             captureSession?.addInput(audioInput)
 
-            Current.Log.info("Audio sample rate: \(audioSession.sampleRate)")
-            if audioSession.sampleRate == 0 {
-                throw AudioRecorderError.invalidSampleRate
-            } else {
-                audioSampleRate = audioSession.sampleRate
-            }
+            // Session preferences do not guarantee the capture device's rate or channel count.
+            // Every buffer is converted before sending, so advertise the converted format.
+            prepareAudioConversion()
 
             let audioOutput = AVCaptureAudioDataOutput()
-            audioOutput.setSampleBufferDelegate(self, queue: DispatchQueue.global(qos: .userInteractive))
+            audioOutput.setSampleBufferDelegate(self, queue: sampleQueue)
             captureSession?.addOutput(audioOutput)
         } catch {
             Current.Log.error("Error starting audio streaming: \(error.localizedDescription)")
@@ -158,8 +166,16 @@ extension AudioRecorder: AVCaptureAudioDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard let data = sampleBuffer.audioSamples() else {
-            Current.Log.error("Failed to extract audio samples from CMSampleBuffer")
+        guard let audioConverter else { return }
+        let data: Data
+        do {
+            data = try audioConverter.convert(sampleBuffer)
+        } catch {
+            // Never forward bytes in an unknown format after conversion fails.
+            self.audioConverter = nil
+            Current.Log.error("Failed to convert Assist audio: \(String(describing: error))")
+            delegate?.didFailToRecord(error: error)
+            stopRecording()
             return
         }
 
@@ -172,6 +188,8 @@ extension AudioRecorder: AVCaptureAudioDataOutputSampleBufferDelegate {
             delegate?.didUpdateAudioLevel(level)
         }
 
-        delegate?.didOutputSample(data: data)
+        if !data.isEmpty {
+            delegate?.didOutputSample(data: data)
+        }
     }
 }
