@@ -78,6 +78,23 @@ struct AppMigrationStoresTests {
         #expect(AppConstants.backgroundTaskIdentifier(suffix: "nothing") == "\(AppConstants.BundleID).nothing")
     }
 
+    @MainActor @Test func theLiveDependenciesAskIOSAboutTheOtherApp() async {
+        let dependencies = AppMigrationCoordinatorDependencies()
+        let nowhere = URL(string: "ha-migration-test-nowhere://migration")!
+        #expect(!dependencies.canOpen(nowhere))
+        let opened = await dependencies.open(nowhere)
+        #expect(!opened)
+        #expect(dependencies.pacing == AppMigrationProgressScript.totalDuration)
+        dependencies.refreshLocalPushManagers()
+    }
+
+    @MainActor @Test func onlyPermissionsStillWorthAskingSurviveTheFilter() {
+        let pending = AppMigrationFlowView.permissionsStillToAsk(from: [.notification, .location, .camera])
+        #expect(pending.contains(.notification))
+        #expect(Set(pending).isSubset(of: [.notification, .location, .camera]))
+        #expect(AppMigrationFlowView.permissionsStillToAsk(from: []).isEmpty)
+    }
+
     @Test func theDeclineReasonSurvivesItsLink() {
         let id = UUID()
         let url = AppMigrationLink.declined(sessionID: id, reason: .previousAppErased).url(to: .newApp)

@@ -168,9 +168,61 @@ struct AppMigrationCoordinatorTests {
         newApp.cancelImport()
     }
 
+    @Test func anEmptyOrUnreadablePayloadFailsTheImport() async throws {
+        reset()
+        defer { reset() }
+        let opener = Opener()
+        let newApp = Self.make(role: .newApp, opener: opener)
+        newApp.startImport()
+        let session = try #require(AppMigrationSessionStore.load())
+
+        AppMigrationPasteboard.clear()
+        #expect(newApp.handle(url: AppMigrationLink.payloadReady(sessionID: session.id, key: nil).url(to: .newApp)))
+        #expect(newApp.importState == .failed(message: AppMigrationError.noPayload.localizedDescription))
+
+        AppMigrationPasteboard.write(Data("not a sealed payload".utf8))
+        #expect(newApp.handle(url: AppMigrationLink.payloadReady(sessionID: session.id, key: nil).url(to: .newApp)))
+        #expect(newApp.importState == .receiving)
+        await expectEventually {
+            if case .failed = newApp.importState { return true }
+            return false
+        }
+        #expect(AppMigrationPasteboard.take() == nil)
+        newApp.cancelImport()
+    }
+
+    @Test func anIdentityThatCannotBeExportedFailsTheTransfer() async {
+        reset()
+        defer { reset() }
+        let previousServers = Current.servers
+        let servers = FakeServerManager()
+        var secured = ServerInfo.fake()
+        secured.connection.clientCertificate = ClientCertificate(
+            keychainIdentifier: "missing-identity",
+            displayName: "Gone"
+        )
+        servers.add(identifier: .init(rawValue: UUID().uuidString), serverInfo: secured)
+        Current.servers = servers
+        defer { Current.servers = previousServers }
+
+        let opener = Opener()
+        let previousApp = Self.make(role: .previousApp, opener: opener)
+        #expect(previousApp.beginTransferFromThisApp())
+        previousApp.transfer()
+        await expectEventually {
+            if case .failed = previousApp.exportState { return true }
+            return false
+        }
+        #expect(opener.opened.isEmpty)
+        previousApp.declineExport()
+    }
+
     @Test func thePreviousAppTakesOverOnRequestAndHandsBackWhenDeclined() async {
         reset()
         defer { reset() }
+        let previousServers = Current.servers
+        Current.servers = FakeServerManager(initial: 1)
+        defer { Current.servers = previousServers }
         let opener = Opener()
         var released = 0
         let previousApp = Self.make(role: .previousApp, opener: opener, releasedPush: { released += 1 })
