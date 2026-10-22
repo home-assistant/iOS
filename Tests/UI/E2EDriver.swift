@@ -387,6 +387,11 @@ final class E2EDriver {
     /// so the whole SpringBoard tree is searched for the button.
     /// Refuses the pasteboard read instead, the way a wary user would; nothing to do when no alert comes up.
     @discardableResult
+    /// Both sides warn about the paste prompt before they start; the warning is an alert on the button.
+    func confirmPasteNotice() {
+        tap(app.buttons[.migrationPasteNoticeContinue], timeout: Timeout.screen, "paste notice")
+    }
+
     func denyPasteIfAsked() -> Bool {
         let deny = NSPredicate(format: "label == 'Don’t Allow Paste' OR label == \"Don't Allow Paste\"")
         let button = springboard.descendants(matching: .any).matching(deny).firstMatch

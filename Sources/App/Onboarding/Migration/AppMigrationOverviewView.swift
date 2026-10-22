@@ -16,18 +16,17 @@ struct AppMigrationOverviewView: View {
     var subtitle: String?
     /// Replaces the generic servers caption with the real count.
     var serversCaption: String?
-    /// Why the last attempt did not go through, shown above the lists.
-    var failure: String?
     let actions: Actions
+
+    @State private var showsPasteNotice = false
 
     init(startAction: @escaping () -> Void) {
         self.init(actions: .startTransfer(startAction))
     }
 
-    init(subtitle: String? = nil, serversCaption: String? = nil, failure: String? = nil, actions: Actions) {
+    init(subtitle: String? = nil, serversCaption: String? = nil, actions: Actions) {
         self.subtitle = subtitle
         self.serversCaption = serversCaption
-        self.failure = failure
         self.actions = actions
     }
 
@@ -47,20 +46,6 @@ struct AppMigrationOverviewView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                         .multilineTextAlignment(.center)
                         .padding(.bottom, DesignSystem.Spaces.half)
-                }
-
-                if let failure {
-                    HAAlertView(title: L10n.AppMigration.Export.Failed.title, alertType: .error) {
-                        Text(failure)
-                    } action: {
-                        EmptyView()
-                    }
-                }
-
-                HAAlertView(title: L10n.AppMigration.Overview.PasteNotice.title, alertType: .info) {
-                    Text(L10n.AppMigration.Overview.PasteNotice.body)
-                } action: {
-                    EmptyView()
                 }
 
                 HASectionPill(
@@ -106,11 +91,15 @@ struct AppMigrationOverviewView: View {
             VStack(spacing: DesignSystem.Spaces.one) {
                 switch actions {
                 case let .startTransfer(start):
-                    Button(action: start) {
+                    Button {
+                        AppMigrationHaptics.tap()
+                        showsPasteNotice = true
+                    } label: {
                         Text(L10n.AppMigration.Overview.startButton)
                     }
                     .buttonStyle(.primaryButton)
                     .accessibilityIdentifier(AccessibilityIdentifier.migrationOverviewStart.rawValue)
+                    .pasteNoticeAlert(isPresented: $showsPasteNotice, proceed: start)
                 case let .transfer(state, transfer, later):
                     HAProgressButton(
                         L10n.AppMigration.Export.transferButton,
@@ -118,10 +107,11 @@ struct AppMigrationOverviewView: View {
                         state: state,
                         action: {
                             AppMigrationHaptics.tap()
-                            transfer()
+                            showsPasteNotice = true
                         }
                     )
                     .accessibilityIdentifier(AccessibilityIdentifier.migrationExportTransfer.rawValue)
+                    .pasteNoticeAlert(isPresented: $showsPasteNotice, proceed: transfer)
                     Button {
                         AppMigrationHaptics.tap()
                         later()
@@ -138,6 +128,22 @@ struct AppMigrationOverviewView: View {
             .background(Color(uiColor: .systemBackground).opacity(0.95))
         }
         .background(Color(uiColor: .systemBackground))
+    }
+}
+
+private extension View {
+    /// The hand-off goes through a protected paste, so iOS asks the receiving app whether it may read
+    /// it; the user has to know to allow it before either side starts.
+    func pasteNoticeAlert(isPresented: Binding<Bool>, proceed: @escaping () -> Void) -> some View {
+        alert(L10n.AppMigration.Overview.PasteNotice.title, isPresented: isPresented) {
+            Button(L10n.AppMigration.Overview.PasteNotice.continueButton) {
+                proceed()
+            }
+            .accessibilityIdentifier(AccessibilityIdentifier.migrationPasteNoticeContinue.rawValue)
+            Button(L10n.cancelLabel, role: .cancel) {}
+        } message: {
+            Text(L10n.AppMigration.Overview.PasteNotice.body)
+        }
     }
 }
 

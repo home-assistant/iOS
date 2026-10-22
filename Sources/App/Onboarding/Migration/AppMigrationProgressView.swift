@@ -8,11 +8,21 @@ struct AppMigrationProgressView: View {
 
     @State private var progress: Double = 0
     @State private var stageIndex = 0
+    @State private var isComplete = false
 
     var body: some View {
         VStack(spacing: DesignSystem.Spaces.three) {
             Spacer()
-            HAProgressRing(value: progress, size: .large)
+            ZStack {
+                if isComplete {
+                    CheckmarkDrawOnView(size: HAProgressRing.Size.large.rawValue, tint: .haSuccessColor)
+                        .transition(.scale.combined(with: .opacity))
+                } else {
+                    HAProgressRing(value: progress, size: .large)
+                        .transition(.opacity)
+                }
+            }
+            .frame(height: HAProgressRing.Size.large.rawValue)
             VStack(spacing: DesignSystem.Spaces.one) {
                 Text(script.stages[stageIndex])
                     .font(DesignSystem.Font.title2.bold())
@@ -41,6 +51,10 @@ struct AppMigrationProgressView: View {
                     stageIndex = index
                 }
                 AppMigrationHaptics.stage()
+            }
+            try? await Task.sleep(for: .seconds(stageDuration))
+            withAnimation(DesignSystem.Animation.default) {
+                isComplete = true
             }
         }
     }

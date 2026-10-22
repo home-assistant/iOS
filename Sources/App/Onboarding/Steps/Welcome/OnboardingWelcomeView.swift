@@ -99,7 +99,7 @@ struct OnboardingWelcomeView: View {
                 .multilineTextAlignment(.center)
             if let transferAction {
                 HAAlertView(alertType: .warning, narrow: true) {
-                    Text(verbatim: L10n.Onboarding.Welcome.TransferNotice.body)
+                    Text(verbatim: L10n.Onboarding.Welcome.TransferNotice.movedBody)
                 } action: {
                     Button(L10n.Onboarding.Welcome.TransferNotice.link, action: transferAction)
                         .font(DesignSystem.Font.body.bold())

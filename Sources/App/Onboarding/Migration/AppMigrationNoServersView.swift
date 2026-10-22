@@ -15,8 +15,8 @@ struct AppMigrationNoServersView: View {
                     .foregroundStyle(.haPrimary)
                     .padding(.top, DesignSystem.Spaces.two)
             },
-            title: L10n.AppMigration.NoServers.title,
-            primaryDescription: L10n.AppMigration.NoServers.body,
+            title: L10n.AppMigration.NoServers.movedTitle,
+            primaryDescription: L10n.AppMigration.NoServers.movedBody,
             primaryActionTitle: coordinator.isNewAppInstalled
                 ? L10n.AppMigration.Export.HandedOff.openButton
                 : L10n.AppMigration.GetNewApp.storeButton,

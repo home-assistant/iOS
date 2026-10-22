@@ -41,8 +41,8 @@ enum AppMigrationFollowUpItem: CaseIterable, Identifiable {
 
     var explanation: String {
         switch self {
-        case .homeScreenWidgets: L10n.AppMigration.FollowUp.HomeScreenWidgets.explanation
-        case .watchApp: L10n.AppMigration.FollowUp.WatchApp.explanation
+        case .homeScreenWidgets: L10n.AppMigration.FollowUp.HomeScreenWidgets.placeExplanation
+        case .watchApp: L10n.AppMigration.FollowUp.WatchApp.reinstallExplanation
         case .permissions: L10n.AppMigration.FollowUp.Permissions.explanation
         case .shortcuts: L10n.AppMigration.FollowUp.Shortcuts.explanation
         case .deletePreviousApp: L10n.AppMigration.FollowUp.DeletePreviousApp.explanation

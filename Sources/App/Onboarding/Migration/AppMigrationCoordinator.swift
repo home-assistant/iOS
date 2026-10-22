@@ -326,7 +326,10 @@ final class AppMigrationCoordinator: ObservableObject {
         refreshLocalPushManagers()
         exportState = .erased
         setHandoffPhase(.erased(sessionID: sessionID))
-        Task { _ = await open(AppMigrationLink.erased(sessionID: sessionID).url(to: .newApp)) }
+        Task {
+            try? await Task.sleep(for: .seconds(AppMigrationProgressScript.erasedReadDuration))
+            _ = await open(AppMigrationLink.erased(sessionID: sessionID).url(to: .newApp))
+        }
     }
 
     /// The local push extension reads its servers from the managers it was configured with, so they
@@ -430,7 +433,7 @@ final class AppMigrationCoordinator: ObservableObject {
     /// The work finishes well inside the progress script, so each side holds until the script has
     /// played out and the user has read what moved.
     private func pace(from start: Date) async {
-        let remaining = AppMigrationProgressScript.duration - Current.date().timeIntervalSince(start)
+        let remaining = AppMigrationProgressScript.totalDuration - Current.date().timeIntervalSince(start)
         guard remaining > 0 else { return }
         try? await Task.sleep(for: .seconds(remaining))
     }

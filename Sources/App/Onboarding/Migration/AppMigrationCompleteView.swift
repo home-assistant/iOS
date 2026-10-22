@@ -16,6 +16,19 @@ struct AppMigrationCompleteView: View {
     var eraseAction: (() -> Void)?
     let continueAction: () -> Void
 
+    /// Set when the user chose to keep the previous app for now; the next steps show from then on.
+    @State private var keepsPreviousApp = false
+
+    /// Erasing the previous app comes first; the next steps only once it is gone, kept on purpose, or
+    /// not installed.
+    private var showsNextSteps: Bool {
+        previousAppErased || keepsPreviousApp || eraseAction == nil
+    }
+
+    private var offersErase: Bool {
+        eraseAction != nil && !previousAppErased
+    }
+
     var body: some View {
         BaseOnboardingView(
             illustration: {
@@ -41,37 +54,66 @@ struct AppMigrationCompleteView: View {
                     }
                     .padding(.top, DesignSystem.Spaces.two)
                 }
-                VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                    HASectionPill(L10n.AppMigration.Complete.Section.nextSteps)
-                    CardView(cornerRadius: DesignSystem.CornerRadius.two) {
-                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                            ForEach(AppMigrationFollowUpItem.allCases) { item in
-                                AppMigrationItemRow(
-                                    icon: item.icon,
-                                    tint: .secondary,
-                                    title: item.title,
-                                    caption: item.explanation
-                                )
-                            }
-                        }
+                if showsNextSteps {
+                    nextSteps
+                }
+            },
+            primaryActionTitle: showsNextSteps ? L10n.AppMigration.Complete.continueButton : L10n.AppMigration.Complete
+                .eraseButton,
+            primaryAction: {
+                if showsNextSteps {
+                    AppMigrationHaptics.tap()
+                    continueAction()
+                } else {
+                    AppMigrationHaptics.warning()
+                    eraseAction?()
+                }
+            },
+            primaryActionIdentifier: showsNextSteps
+                ? AccessibilityIdentifier.migrationCompleteContinue.rawValue
+                : AccessibilityIdentifier.migrationCompleteErase.rawValue,
+            secondaryActionTitle: secondaryActionTitle,
+            secondaryAction: {
+                if showsNextSteps {
+                    AppMigrationHaptics.warning()
+                    eraseAction?()
+                } else {
+                    AppMigrationHaptics.tap()
+                    withAnimation(DesignSystem.Animation.default) {
+                        keepsPreviousApp = true
                     }
                 }
-                .padding(.top, DesignSystem.Spaces.two)
             },
-            primaryActionTitle: L10n.AppMigration.Complete.continueButton,
-            primaryAction: {
-                AppMigrationHaptics.tap()
-                continueAction()
-            },
-            primaryActionIdentifier: AccessibilityIdentifier.migrationCompleteContinue.rawValue,
-            secondaryActionTitle: eraseAction == nil || previousAppErased ? nil : L10n.AppMigration.Complete
-                .eraseButton,
-            secondaryAction: {
-                AppMigrationHaptics.warning()
-                eraseAction?()
-            },
-            secondaryActionIdentifier: AccessibilityIdentifier.migrationCompleteErase.rawValue
+            secondaryActionIdentifier: showsNextSteps
+                ? AccessibilityIdentifier.migrationCompleteErase.rawValue
+                : AccessibilityIdentifier.migrationCompleteKeep.rawValue
         )
+    }
+
+    private var secondaryActionTitle: String? {
+        if showsNextSteps {
+            return offersErase ? L10n.AppMigration.Complete.eraseButton : nil
+        }
+        return L10n.AppMigration.Complete.keepPreviousAppButton
+    }
+
+    private var nextSteps: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
+            HASectionPill(L10n.AppMigration.Complete.Section.nextSteps)
+            CardView(cornerRadius: DesignSystem.CornerRadius.two) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
+                    ForEach(AppMigrationFollowUpItem.allCases) { item in
+                        AppMigrationItemRow(
+                            icon: item.icon,
+                            tint: .secondary,
+                            title: item.title,
+                            caption: item.explanation
+                        )
+                    }
+                }
+            }
+        }
+        .padding(.top, DesignSystem.Spaces.two)
     }
 }
 

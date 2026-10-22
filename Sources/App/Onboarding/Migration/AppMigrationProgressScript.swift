@@ -8,6 +8,11 @@ enum AppMigrationProgressScript {
     case `import`
 
     static let duration: TimeInterval = 8
+    /// Once the ring is full a checkmark draws on and settles; neither side moves on before it has.
+    static let completionDuration: TimeInterval = 1.6
+    /// How long the previous app shows that it emptied itself before sending the user back.
+    static let erasedReadDuration: TimeInterval = 3
+    static var totalDuration: TimeInterval { duration + completionDuration }
 
     var stages: [String] {
         switch self {

@@ -5,7 +5,7 @@ import Shared
 enum AppMigrationTransferredItem: CaseIterable, Identifiable {
     case servers
     case appSettings
-    case companionSetup
+    case companionChoices
     case notifications
     case nfcTags
 
@@ -17,7 +17,7 @@ enum AppMigrationTransferredItem: CaseIterable, Identifiable {
         switch self {
         case .servers: .serverNetworkIcon
         case .appSettings: .tuneIcon
-        case .companionSetup: .watchVariantIcon
+        case .companionChoices: .watchVariantIcon
         case .notifications: .bellOutlineIcon
         case .nfcTags: .nfcVariantIcon
         }
@@ -27,7 +27,7 @@ enum AppMigrationTransferredItem: CaseIterable, Identifiable {
         switch self {
         case .servers: L10n.AppMigration.Item.Servers.title
         case .appSettings: L10n.AppMigration.Item.AppSettings.title
-        case .companionSetup: L10n.AppMigration.Item.CompanionSetup.title
+        case .companionChoices: L10n.AppMigration.Item.CompanionChoices.title
         case .notifications: L10n.AppMigration.Item.Notifications.title
         case .nfcTags: L10n.AppMigration.Item.NfcTags.title
         }
@@ -37,7 +37,7 @@ enum AppMigrationTransferredItem: CaseIterable, Identifiable {
         switch self {
         case .servers: L10n.AppMigration.Item.Servers.explanation
         case .appSettings: L10n.AppMigration.Item.AppSettings.explanation
-        case .companionSetup: L10n.AppMigration.Item.CompanionSetup.explanation
+        case .companionChoices: L10n.AppMigration.Item.CompanionChoices.explanation
         case .notifications: L10n.AppMigration.Item.Notifications.explanation
         case .nfcTags: L10n.AppMigration.Item.NfcTags.explanation
         }
