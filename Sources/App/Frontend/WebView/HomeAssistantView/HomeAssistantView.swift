@@ -12,6 +12,7 @@ struct HomeAssistantView: View, WebFrontendView {
     /// frontend, never over onboarding.
     @StateObject private var launchMessages = LaunchMessagesState()
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
+    @ObservedObject private var appLabs = Current.appLabs
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Owned by `ConditionalContainerView`, which presents the picker the stand-by view zooms into.
@@ -63,6 +64,10 @@ struct HomeAssistantView: View, WebFrontendView {
             // The frontend reads the `hasSidebar` external config once per page load, so a fresh web
             // view is what applies the new value. Reloading in place keeps the fade/loader state
             // consistent, unlike swapping the frontend's structural identity.
+            viewModel.resetWebFrontend()
+        }
+        .onChange(of: AppLabsFeature.nativeMoreInfo.isEnabled(in: appLabs.enabledFeatureIds)) { _ in
+            // `hasNativeModal` is read from the external config once per page load as well.
             viewModel.resetWebFrontend()
         }
     }

@@ -44,9 +44,13 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.sidebarShow.rawValue, "sidebar/show")
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoOpened.rawValue, "more_info/opened")
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
+        XCTAssertEqual(WebViewExternalBusMessage.modalOpen.rawValue, "modal/open")
+        XCTAssertEqual(WebViewExternalBusMessage.modalClose.rawValue, "modal/close")
+        XCTAssertEqual(WebViewExternalBusMessage.modalNavigate.rawValue, "modal/navigate")
+        XCTAssertEqual(WebViewExternalBusMessage.modalUpdate.rawValue, "modal/update")
         XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 29)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 33)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -73,15 +77,16 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.modalAction.rawValue, "modal/action")
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 10)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 11)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {
         let result = WebViewExternalBusMessage.configResult
 
         // Expected keys currently defined in WebViewExternalBusMessage.configResult
-        let expectedKeys: Set<String> = [
+        let expectedKeys: Set = [
             "hasSettingsScreen",
             "hasSidebar",
             "canWriteTag",
