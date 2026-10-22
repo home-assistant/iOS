@@ -8,9 +8,10 @@ import Foundation
 /// calls `startOrUpdate`. Mirrors `LiveActivityPendingEnd`. The persisted queue is the durable
 /// path — Darwin does not wake a suspended app, so the app also drains at launch/foreground.
 ///
-/// ⚠️ A start delivered via local push while the app is suspended therefore only materializes
-/// when the app is next active — not in real time. Real-time background starts require APNs
-/// push-to-start, which the registry already supports.
+/// A start the app cannot show right away (it is suspended, or in the background where ActivityKit
+/// refuses) is not lost: the extension holds the server's receipt confirm until the app replies
+/// through `LiveActivityLocalPushResult`, and re-opens the channel otherwise so the server re-sends
+/// the push through APNs push-to-start, which does reach a backgrounded app.
 @available(iOS 17.2, *)
 enum LiveActivityPendingStart {
     /// A serialized start/update request mirroring the arguments of `startOrUpdate`.
@@ -20,13 +21,16 @@ enum LiveActivityPendingStart {
         let serverWebhookId: String?
         let state: HALiveActivityAttributes.ContentState
         let relevanceScore: Double?
+        /// Local-push receipt confirm the extension is holding until the app reports whether it
+        /// presented this request (see `LiveActivityLocalPushResult`); nil for APNs deliveries.
+        let confirmID: String?
         /// Whether a non-silent update should fire an ActivityKit alert (sound + haptic). Decoded
         /// with a default so a queue serialized by an older build still drains.
         let alert: Bool
 
         // Declared explicitly: providing both init(from:) and encode(to:) opts out of synthesis.
         private enum CodingKeys: String, CodingKey {
-            case tag, title, serverWebhookId, state, relevanceScore, alert
+            case tag, title, serverWebhookId, state, relevanceScore, confirmID, alert
         }
 
         init(
@@ -35,6 +39,7 @@ enum LiveActivityPendingStart {
             serverWebhookId: String?,
             state: HALiveActivityAttributes.ContentState,
             relevanceScore: Double? = nil,
+            confirmID: String? = nil,
             alert: Bool
         ) {
             self.tag = tag
@@ -42,6 +47,7 @@ enum LiveActivityPendingStart {
             self.serverWebhookId = serverWebhookId
             self.state = state
             self.relevanceScore = relevanceScore
+            self.confirmID = confirmID
             self.alert = alert
         }
 
@@ -52,6 +58,7 @@ enum LiveActivityPendingStart {
             self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
             self.state = try container.decode(HALiveActivityAttributes.ContentState.self, forKey: .state)
             self.relevanceScore = try container.decodeIfPresent(Double.self, forKey: .relevanceScore)
+            self.confirmID = try container.decodeIfPresent(String.self, forKey: .confirmID)
             self.alert = try container.decodeIfPresent(Bool.self, forKey: .alert) ?? true
         }
 
@@ -62,6 +69,7 @@ enum LiveActivityPendingStart {
             try container.encodeIfPresent(serverWebhookId, forKey: .serverWebhookId)
             try container.encode(state, forKey: .state)
             try container.encodeIfPresent(relevanceScore, forKey: .relevanceScore)
+            try container.encodeIfPresent(confirmID, forKey: .confirmID)
             try container.encode(alert, forKey: .alert)
         }
 
@@ -73,6 +81,7 @@ enum LiveActivityPendingStart {
                 serverWebhookId: serverWebhookId,
                 state: state,
                 relevanceScore: inherited,
+                confirmID: confirmID,
                 alert: alert
             )
         }
@@ -208,15 +217,22 @@ public final class LiveActivityPendingEndObserver {
     }
 
     public static func drain() {
-        let tags = LiveActivityPendingEnd.drainAll()
-        guard !tags.isEmpty else { return }
-        Current.Log.verbose("LiveActivityPendingEnd: draining \(tags.count) tag(s) in app")
+        let requests = LiveActivityPendingEnd.drainAll()
+        guard !requests.isEmpty else { return }
+        Current.Log.verbose("LiveActivityPendingEnd: draining \(requests.count) tag(s) in app")
         // Background task so the async dismissal finishes even when backgrounded.
         _ = Current.backgroundTask(withName: "live-activity-pending-end") { _ in
             Promise<Void> { seal in
                 Task {
-                    for tag in tags {
-                        await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
+                    for request in requests {
+                        await Current.liveActivityRegistry?.end(tag: request.tag, dismissalPolicy: .immediate)
+                        // Ending works in the background too, so a running app always applies it.
+                        if let confirmID = request.confirmID {
+                            LiveActivityLocalPushResult.record(.presented, confirmID: confirmID)
+                        }
+                    }
+                    if requests.contains(where: { $0.confirmID != nil }) {
+                        LiveActivityLocalPushResult.postDarwinSignal()
                     }
                     DispatchQueue.main.async { seal.fulfill(()) }
                 }
@@ -269,24 +285,37 @@ public final class LiveActivityPendingStartObserver {
             Promise<Void> { seal in
                 Task {
                     for request in requests {
-                        do {
-                            _ = try await Current.liveActivityRegistry?.startOrUpdate(
-                                tag: request.tag,
-                                title: request.title,
-                                serverWebhookId: request.serverWebhookId,
-                                state: request.state,
-                                relevanceScore: request.relevanceScore,
-                                alert: request.alert
-                            )
-                        } catch {
-                            Current.Log.error(
-                                "LiveActivityPendingStart: startOrUpdate failed for tag \(request.tag): \(error)"
+                        let presented = await startOrUpdate(request)
+                        // Tell the extension whether to confirm the push or have it re-sent via APNs.
+                        if let confirmID = request.confirmID {
+                            LiveActivityLocalPushResult.record(
+                                presented ? .presented : .notPresented,
+                                confirmID: confirmID
                             )
                         }
+                    }
+                    if requests.contains(where: { $0.confirmID != nil }) {
+                        LiveActivityLocalPushResult.postDarwinSignal()
                     }
                     DispatchQueue.main.async { seal.fulfill(()) }
                 }
             }
+        }
+    }
+
+    private static func startOrUpdate(_ request: LiveActivityPendingStart.Request) async -> Bool {
+        do {
+            return try await Current.liveActivityRegistry?.startOrUpdate(
+                tag: request.tag,
+                title: request.title,
+                serverWebhookId: request.serverWebhookId,
+                state: request.state,
+                relevanceScore: request.relevanceScore,
+                alert: request.alert
+            ) ?? false
+        } catch {
+            Current.Log.error("LiveActivityPendingStart: startOrUpdate failed for tag \(request.tag): \(error)")
+            return false
         }
     }
 }

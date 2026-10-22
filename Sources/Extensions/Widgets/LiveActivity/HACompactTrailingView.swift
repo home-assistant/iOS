@@ -27,6 +27,7 @@ struct HACompactTrailingView: View {
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
+                .multilineTextAlignment(.trailing)
                 .frame(width: Self.compactTrailingTimerWidth)
         } else if let critical = state.criticalText {
             Text(critical)

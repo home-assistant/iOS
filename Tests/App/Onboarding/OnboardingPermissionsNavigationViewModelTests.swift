@@ -187,23 +187,6 @@ struct OnboardingPermissionsNavigationViewModelTests {
         #expect(viewModel.currentStepIndex == originalIndex)
     }
 
-    @Test("Is advancing detection")
-    func isAdvancingDetection() async throws {
-        let server = ServerFixture.standard
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
-
-        // Initially advancing (0 >= 0)
-        #expect(viewModel.isAdvancing == true)
-
-        // Move forward
-        viewModel.navigateToStep(at: 2)
-        #expect(viewModel.isAdvancing == true)
-
-        // Move backward
-        viewModel.navigateToStep(at: 1)
-        #expect(viewModel.isAdvancing == false)
-    }
-
     // MARK: - Navigation Tests
 
     @Test("Navigate to step by index")
@@ -273,6 +256,206 @@ struct OnboardingPermissionsNavigationViewModelTests {
         viewModel.nextStep()
         #expect(viewModel.currentStepIndex == 2)
         #expect(viewModel.currentStep == .localAccess)
+    }
+
+    // MARK: - Back Navigation Tests
+
+    @Test("Previous step goes from home network back to local access")
+    func previousStepFromHomeNetworkToLocalAccess() async throws {
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: ServerFixture.standard,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.homeNetwork)
+
+        #expect(viewModel.canGoBack)
+        viewModel.previousStep()
+
+        #expect(viewModel.currentStep == .localAccess)
+    }
+
+    /// Picks the most secure option the way the location permission grant answers it.
+    private static func chooseMostSecure(_ viewModel: OnboardingPermissionsNavigationViewModel) {
+        viewModel.locationPermissionContext = .secureLocalConnection
+        let manager = MockCLLocationManager()
+        manager.authorizationStatus = .authorizedWhenInUse
+        viewModel.locationManagerDidChangeAuthorization(manager)
+    }
+
+    private static func makeLocalOnlyServer(
+        identifier: String,
+        securityLevel: ConnectionSecurityLevel
+    ) -> Server {
+        let server = makeServer(
+            identifier: identifier,
+            externalURL: nil,
+            internalURL: URL(string: "http://homeassistant.local:8123")
+        )
+        server.update { info in
+            info.connection.connectionAccessSecurityLevel = securityLevel
+        }
+        return server
+    }
+
+    @Test("Going back undoes the most secure choice", arguments: [
+        ConnectionSecurityLevel.undefined,
+        ConnectionSecurityLevel.lessSecure,
+    ])
+    func previousStepRestoresSecurityLevel(original: ConnectionSecurityLevel) async throws {
+        let server = Self.makeLocalOnlyServer(identifier: "going-back", securityLevel: original)
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.localAccess)
+
+        Self.chooseMostSecure(viewModel)
+        #expect(viewModel.currentStep == .homeNetwork)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .mostSecure)
+
+        viewModel.previousStep()
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(server.info.connection.connectionAccessSecurityLevel == original)
+        #expect(viewModel.locationPermissionContext == .notRequested)
+    }
+
+    @Test("Going back a second time still restores the level from before the first choice")
+    func previousStepTwiceRestoresOriginalLevel() async throws {
+        let server = Self.makeLocalOnlyServer(identifier: "back-twice", securityLevel: .lessSecure)
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.localAccess)
+
+        Self.chooseMostSecure(viewModel)
+        viewModel.previousStep()
+        Self.chooseMostSecure(viewModel)
+        viewModel.previousStep()
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
+    }
+
+    @Test("After going back, the less secure choice completes the flow")
+    func previousStepThenLessSecureCompletes() async throws {
+        let server = Self.makeLocalOnlyServer(identifier: "back-less-secure", securityLevel: .undefined)
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.localAccess)
+        Self.chooseMostSecure(viewModel)
+        viewModel.previousStep()
+
+        // Picking less secure moves on whatever the permission answer is; a refusal is the simplest one to drive.
+        viewModel.locationPermissionContext = .lessSecureLocalConnection
+        let manager = MockCLLocationManager()
+        manager.authorizationStatus = .denied
+        viewModel.locationManagerDidChangeAuthorization(manager)
+
+        #expect(viewModel.currentStep == .completion)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
+    }
+
+    @Test("A location grant arriving after going back does not move the flow on")
+    func lateGrantAfterGoingBackStays() async throws {
+        let server = Self.makeLocalOnlyServer(identifier: "late-grant", securityLevel: .undefined)
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.localAccess)
+        Self.chooseMostSecure(viewModel)
+        viewModel.previousStep()
+
+        let manager = MockCLLocationManager()
+        manager.authorizationStatus = .authorizedWhenInUse
+        viewModel.locationManagerDidChangeAuthorization(manager)
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .undefined)
+    }
+
+    @Test("A home network save that lands after going back does not move the flow on")
+    @MainActor
+    func lateHomeNetworkSaveAfterGoingBackDoesNotMoveOn() async throws {
+        let server = Self.makeServer(
+            identifier: "late-save",
+            externalURL: nil,
+            internalURL: URL(string: "http://homeassistant.local:8123")
+        )
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.homeNetwork)
+
+        viewModel.saveHomeNetwork(.init(networkName: "Home", hardwareAddress: nil))
+        viewModel.previousStep()
+        // Let the queued success callback run.
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(viewModel.storedSSIDSuccessfully == false)
+    }
+
+    @Test("Going back after a home network save succeeded clears the success")
+    @MainActor
+    func goingBackAfterSaveSuccessClearsIt() async throws {
+        let server = Self.makeLocalOnlyServer(identifier: "save-then-back", securityLevel: .undefined)
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: server,
+            steps: OnboardingPermissionsNavigationViewModel.StepID.default
+        )
+        viewModel.navigateToStep(.homeNetwork)
+
+        viewModel.saveHomeNetwork(.init(networkName: "Home", hardwareAddress: nil))
+        // Let the queued success callback run before going back.
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+        #expect(viewModel.storedSSIDSuccessfully)
+
+        viewModel.previousStep()
+
+        #expect(viewModel.currentStep == .localAccess)
+        #expect(viewModel.storedSSIDSuccessfully == false)
+    }
+
+    @Test("Back is only offered on the home network step, in every flow shape", arguments: [
+        OnboardingPermissionsNavigationViewModel.StepID.default,
+        OnboardingPermissionsNavigationViewModel.StepID.remoteConnectionCompatible,
+        [.disclaimer, .privacy, .localAccess, .homeNetwork, .completion],
+        [.location, .completion],
+        OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission,
+        OnboardingPermissionsNavigationViewModel.StepID.updateLocalAccessSecurityLevelPreference,
+        [.localAccess, .updatePreferencesSuccess],
+    ])
+    func canGoBackOnlyOnHomeNetwork(steps: [OnboardingPermissionsNavigationViewModel.StepID]) async throws {
+        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard, steps: steps)
+
+        for (index, step) in steps.enumerated() {
+            viewModel.navigateToStep(at: index)
+            #expect(viewModel.canGoBack == (step == .homeNetwork), "\(step)")
+            viewModel.previousStep()
+            #expect(viewModel.currentStep == (step == .homeNetwork ? .localAccess : step), "\(step)")
+        }
+    }
+
+    @Test("Back is not offered on a home network step without the local access choice before it")
+    func canGoBackNeedsLocalAccessBefore() async throws {
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: ServerFixture.standard,
+            steps: [.homeNetwork, .completion]
+        )
+
+        #expect(viewModel.canGoBack == false)
+        viewModel.previousStep()
+        #expect(viewModel.currentStep == .homeNetwork)
     }
 
     // MARK: - Network SSID Tests

@@ -120,9 +120,6 @@ struct ConditionalContainerView: View {
         .onChange(of: appSettings.isSheetPresented) { isPresented in
             refreshWebViewIfSettingsClosed(isPresented)
         }
-        .onChange(of: appSettings.isPushPresented) { isPresented in
-            refreshWebViewIfSettingsClosed(isPresented)
-        }
         // Settings itself is cleared by the presenter's own `AppPresentationDismisser` subscription; the
         // kiosk settings sheet is view state, so it opts in here.
         .dismissesOnAppNavigation { showKioskSettings = false }

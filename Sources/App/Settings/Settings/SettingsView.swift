@@ -7,9 +7,7 @@ struct SettingsView: View {
         static let macSidebarBottomPadding: CGFloat = DesignSystem.Spaces.three
     }
 
-    var embedInOwnNavigation: Bool = true
-
-    @State private var macSidebarSelection: MacSettingsSidebarSelection? = .item(.general)
+    @State private var macSidebarSelection: MacSettingsSidebarSelection?
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
     @State private var showsMigrationAnnouncement = false
@@ -19,6 +17,10 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
     @StateObject private var serversObserver = ServersObserver()
+
+    init(macSidebarSelection: MacSettingsSidebarSelection? = .item(.general)) {
+        self._macSidebarSelection = State(initialValue: macSidebarSelection)
+    }
 
     var body: some View {
         Group {
@@ -58,6 +60,8 @@ struct SettingsView: View {
             }
         case .serverSwitching:
             ServerSwitchingSettingsView()
+        case .serverIdentity:
+            ServerIdentityExplanationView(conflictingServers: serversObserver.serverIdentityConflicts)
         case nil:
             macOSPlaceholder
         }
@@ -111,20 +115,12 @@ struct SettingsView: View {
 
     // MARK: - iOS List View
 
-    /// When pushed onto the container's stack (`embedInOwnNavigation == false`) items are pushed as
-    /// `AppSettingsPushRoute.item` instead, resolved by `ContainerView`: that path must stay
-    /// single-typed or SwiftUI's path diffing can fatally error comparing elements of different types.
-    @ViewBuilder
     private var iOSView: some View {
-        if embedInOwnNavigation {
-            NavigationStack {
-                iOSListContent
-                    .navigationDestination(for: SettingsItem.self) { item in
-                        item.destinationView
-                    }
-            }
-        } else {
+        NavigationStack {
             iOSListContent
+                .navigationDestination(for: SettingsItem.self) { item in
+                    item.destinationView
+                }
         }
     }
 
@@ -212,7 +208,7 @@ struct SettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                if embedInOwnNavigation, !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
+                if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
                     CloseButton {
                         dismiss()
                     }
@@ -436,16 +432,11 @@ struct SettingsView: View {
             }
             .tag(MacSettingsSidebarSelection.item(item))
             .macSettingsSidebarRow(isSelected: macSidebarSelection == .item(item))
-        } else if embedInOwnNavigation {
+        } else {
             // Value-based, resolved by `navigationDestination(for:)` in `iOSView`, so
             // `item.destinationView` — and every destination's stored properties with it — is only
             // constructed on navigation instead of for every row on every list evaluation.
             NavigationLink(value: item) {
-                settingsItemLabel(item, subtitle: subtitle)
-            }
-        } else {
-            // Pushed onto the container's stack, whose path must stay `AppSettingsPushRoute`-typed.
-            NavigationLink(value: AppSettingsPushRoute.item(item)) {
                 settingsItemLabel(item, subtitle: subtitle)
             }
         }

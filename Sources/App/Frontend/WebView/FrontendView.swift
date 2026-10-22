@@ -41,6 +41,11 @@ struct FrontendView: UIViewControllerRepresentable {
         // No-op: a server change recreates this view (keyed by server in `ContainerView`), never updates it.
     }
 
+    /// SwiftUI is done with the controller; whatever else still holds it, its frontend must not run on.
+    static func dismantleUIViewController(_ webViewController: WebViewController, coordinator: ()) {
+        webViewController.retireFrontend()
+    }
+
     /// Non-private for tests.
     func makeWebViewController() -> WebViewController {
         let controller = WebViewController(server: server)

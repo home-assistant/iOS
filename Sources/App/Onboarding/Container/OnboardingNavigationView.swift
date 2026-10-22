@@ -29,15 +29,21 @@ enum OnboardingNavigation {
 /// are real pushes.
 struct OnboardingNavigationView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject var viewModel = OnboardingNavigationViewModel()
-    @StateObject private var presenter = OnboardingAuthPresenter()
+    @StateObject public var viewModel = OnboardingNavigationViewModel()
+    @StateObject private var presenter: OnboardingAuthPresenter
     @ObservedObject private var migrationCoordinator = AppMigrationCoordinator.shared
 
     let onboardingStyle: OnboardingStyle
     private let prefillURL: URL?
     private let shouldDismissOnSuccess: Bool
 
-    init(onboardingStyle: OnboardingStyle, prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false) {
+    init(
+        onboardingStyle: OnboardingStyle,
+        prefillURL: URL? = nil,
+        shouldDismissOnSuccess: Bool = false,
+        presenter: @autoclosure @escaping () -> OnboardingAuthPresenter = OnboardingAuthPresenter()
+    ) {
+        self._presenter = StateObject(wrappedValue: presenter())
         self.onboardingStyle = onboardingStyle
         self.prefillURL = prefillURL
         self.shouldDismissOnSuccess = shouldDismissOnSuccess
@@ -67,6 +73,7 @@ struct OnboardingNavigationView: View {
         .sheet(item: clientCertificateSheetItem) { request in
             clientCertificateSheet(request: request)
         }
+        .sheet(item: $presenter.serverIdentityRequest, content: OnboardingServerIdentitySheet.init)
         .onChange(of: viewModel.shouldDismiss) { newValue in
             if newValue {
                 closeOnboarding()
@@ -122,10 +129,10 @@ struct OnboardingNavigationView: View {
         case let .permissions(server):
             OnboardingPermissionsNavigationView(
                 onboardingServer: server,
+                showsNavigationBarForBackOnly: true,
                 onDismiss: { finishFlow() }
             )
             .navigationBarBackButtonHidden(true)
-            .toolbar(.hidden, for: .navigationBar)
         case let .clientCertificate(request):
             // Mac Catalyst only; the user resolves the step through the page's own buttons.
             ClientCertificateOnboardingView(
@@ -150,6 +157,10 @@ struct OnboardingNavigationView: View {
                 skipAction: { presenter.popToRoot() },
                 finishAction: { finishFlow() }
             )
+        case let .serverIdentity(request):
+            // Mac Catalyst only; the user resolves the step through the page's own buttons.
+            OnboardingServerIdentityView(request: request)
+                .navigationBarBackButtonHidden(true)
         }
     }
 

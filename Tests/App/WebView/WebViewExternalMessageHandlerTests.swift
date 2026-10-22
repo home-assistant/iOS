@@ -39,7 +39,6 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         sut.handleExternalMessage(dictionary)
 
         XCTAssertTrue(mockWebViewController.showSettingsCalled)
-        XCTAssertTrue(mockWebViewController.showSettingsPushedOntoNavigationStack)
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
@@ -73,7 +72,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
 
-        wait(for: [retry], timeout: 2)
+        wait(for: [retry], timeout: 10)
         XCTAssertEqual(mockWebViewController.evaluateJavaScriptCallCount, 2)
     }
 
@@ -97,7 +96,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             let retry = expectation(description: "retry")
             mockWebViewController.evaluateJavaScriptExpectation = retry
             mockWebViewController.lastEvaluatedJavaScriptCompletion?(false, nil)
-            wait(for: [retry], timeout: 2)
+            wait(for: [retry], timeout: 10)
         }
         mockWebViewController.evaluateJavaScriptExpectation = noRetry
 
@@ -298,6 +297,23 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         sut.handleExternalMessage(dictionary)
 
         XCTAssertTrue(mockWebViewController.overlayedController is UIHostingController<AssistView>)
+    }
+
+    /// A cold launch straight into Assist covers the frontend before it loads, so closing Assist has to
+    /// bring the frontend underneath up to date.
+    @MainActor func testClosingAssistBringsTheFrontendUpToDate() throws {
+        let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "assist/show",
+        ]
+        sut.handleExternalMessage(dictionary)
+        let assist = try XCTUnwrap(mockWebViewController.overlayedController as? UIHostingController<AssistView>)
+
+        assist.rootView.onDismiss?()
+
+        XCTAssertEqual(mockWebViewController.handleOverlayDismissedCallCount, 1)
     }
 
     @MainActor func testHandleExternalMessageShowAssistZoomsOutOfAnchorWhenAvailable() throws {

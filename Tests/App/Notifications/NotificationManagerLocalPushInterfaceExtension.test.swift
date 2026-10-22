@@ -39,6 +39,17 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
         wait(for: [settled], timeout: seconds + 10)
     }
 
+    private func waitUntil(
+        timeout: TimeInterval = 30,
+        file: StaticString = #filePath,
+        line: UInt = #line,
+        _ condition: @escaping () -> Bool
+    ) {
+        let met = expectation(for: NSPredicate { _, _ in condition() }, evaluatedWith: nil)
+        wait(for: [met], timeout: timeout)
+        XCTAssertTrue(condition(), "condition not met within \(timeout)s", file: file, line: line)
+    }
+
     private func assertDisabled(
         _ status: NotificationManagerLocalPushStatus,
         file: StaticString = #filePath,
@@ -131,7 +142,7 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
             completion(loads == 1 ? [] : [saved], nil)
         })
 
-        wait(seconds: 1.5)
+        waitUntil { loads == 2 }
 
         XCTAssertEqual(loads, 2)
         assertDisabled(interface.status(for: server))
@@ -146,7 +157,7 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
                 completion([stale], nil)
             })
 
-        wait(seconds: 1.5)
+        waitUntil { loads == 2 }
 
         XCTAssertEqual(loads, 2)
         assertDisabled(interface.status(for: server))
@@ -168,7 +179,7 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
         XCTAssertEqual(loads, 1)
 
         interface.retryLocalPush(for: server, reason: .manual)
-        wait(seconds: 2)
+        waitUntil { loads == 3 }
 
         XCTAssertEqual(loads, 3)
         assertDisabled(interface.status(for: server))
