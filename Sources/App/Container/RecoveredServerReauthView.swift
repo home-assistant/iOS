@@ -5,93 +5,45 @@ import SwiftUI
 /// The recovered-server re-auth screen; presents the OAuth login web view as a sheet and feeds its
 /// result into `OnboardingStateObservable`'s re-authentication.
 struct RecoveredServerReauthView: View {
-    let server: Server
-    let state: OnboardingStateObservable
+    @StateObject private var viewModel: RecoveredServerReauthViewModel
 
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
-    @State private var loginViewModel: OnboardingAuthLoginViewModel?
-    @State private var clientCertificateRequest: OnboardingClientCertificateRequest?
+    init(server: Server, state: OnboardingStateObservable) {
+        self.init(viewModel: RecoveredServerReauthViewModel(server: server, state: state))
+    }
+
+    init(viewModel: RecoveredServerReauthViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationStack {
             content
                 .toolbar(.hidden, for: .navigationBar)
-                .navigationDestination(isPresented: catalystCertificateImportPresented) {
-                    if let request = clientCertificateRequest {
-                        certificateImport(for: request)
-                            .navigationBarBackButtonHidden(true)
-                    }
-                }
+                .navigationDestination(isPresented: viewModel.certificateImportPageBinding) { certificateImportPage }
         }
     }
 
-    private var catalystCertificateImportPresented: Binding<Bool> {
-        Binding(
-            get: { Current.isCatalyst && clientCertificateRequest != nil },
-            set: { if !$0 { clientCertificateRequest?.cancel() } }
-        )
-    }
-
-    private var iOSCertificateImportRequest: Binding<OnboardingClientCertificateRequest?> {
-        Binding(
-            get: { Current.isCatalyst ? nil : clientCertificateRequest },
-            set: { if $0 == nil { clientCertificateRequest?.cancel() } }
-        )
-    }
-
-    private func certificateImport(for request: OnboardingClientCertificateRequest) -> some View {
-        ClientCertificateOnboardingView(
-            onImport: { request.complete(with: $0) },
-            onCancel: { request.cancel() }
-        )
+    @ViewBuilder
+    private var certificateImportPage: some View {
+        if let request = viewModel.clientCertificateRequest {
+            RecoveredServerClientCertificateImportView(request: request, asSheet: false)
+        }
     }
 
     private var content: some View {
         WebViewEmptyStateView(
             style: .recoveredServerNeedingReauthentication,
-            server: server,
-            availableReauthURLTypes: state.availableReauthURLTypes(for: server),
+            server: viewModel.server,
+            availableReauthURLTypes: viewModel.availableReauthURLTypes,
             settingsAction: { appSettingsPresenter?.presentSettings() },
-            recoveredServerReauthAction: { urlType, completion in
-                state.performRecoveredServerReauthentication(
-                    for: server,
-                    using: urlType,
-                    login: { authDetails in
-                        let viewModel = OnboardingAuthLoginViewModel(authDetails: authDetails)
-                        loginViewModel = viewModel
-                        return viewModel.resultPromise.ensure {
-                            loginViewModel = nil
-                        }
-                    },
-                    importClientCertificate: {
-                        Promise { seal in
-                            clientCertificateRequest = OnboardingClientCertificateRequest(
-                                onImport: { certificate in
-                                    clientCertificateRequest = nil
-                                    seal.fulfill(certificate)
-                                },
-                                onCancel: {
-                                    clientCertificateRequest = nil
-                                    seal.reject(PMKError.cancelled)
-                                }
-                            )
-                        }
-                    },
-                    completion: completion
-                )
-            },
-            serverSelectionAction: { state.handleRecoveredServerSelection($0) }
+            recoveredServerReauthAction: { viewModel.reauthenticate(using: $0, completion: $1) },
+            serverSelectionAction: { viewModel.selectServer($0) }
         )
-        .sheet(item: $loginViewModel) { viewModel in
-            OnboardingAuthLoginView(viewModel: viewModel, style: .modal)
-        }
-        .sheet(item: iOSCertificateImportRequest) { request in
-            NavigationView {
-                certificateImport(for: request)
-            }
-            .navigationViewStyle(.stack)
-            .presentationDetents([.medium])
+        .sheet(item: $viewModel.loginViewModel) { OnboardingAuthLoginView(viewModel: $0, style: .modal) }
+        .sheet(item: viewModel.certificateImportSheetBinding) {
+            RecoveredServerClientCertificateImportView(request: $0, asSheet: true)
         }
     }
 }
