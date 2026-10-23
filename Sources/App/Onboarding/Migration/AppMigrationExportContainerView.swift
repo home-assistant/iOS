@@ -3,7 +3,7 @@ import SwiftUI
 
 /// The previous app's only screen from the moment the new app asks for the setup.
 struct AppMigrationExportContainerView: View {
-    @ObservedObject private var coordinator = AppMigrationCoordinator.shared
+    @ObservedObject var coordinator: AppMigrationCoordinator = .shared
 
     var body: some View {
         AppMigrationExportView(

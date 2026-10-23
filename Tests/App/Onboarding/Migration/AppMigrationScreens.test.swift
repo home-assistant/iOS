@@ -3,6 +3,7 @@ import Shared
 import SnapshotTesting
 import SwiftUI
 import Testing
+import UIKit
 
 /// Every screen of the transfer, on both sides of the handoff, in every state it can land in.
 struct AppMigrationScreensTests {
@@ -79,6 +80,20 @@ struct AppMigrationScreensTests {
         assertLightDarkSnapshots(of: AppMigrationAnnouncementView(onViewed: {}), named: "old-00-announcement")
     }
 
+    @MainActor @Test func announcementSlidesToTheStoreStep() {
+        assertLightDarkSnapshots(
+            of: AppMigrationAnnouncementView(showsGetNewApp: true, onViewed: {}),
+            named: "old-00a-announcement-store"
+        )
+    }
+
+    @MainActor @Test func getNewAppReportsItIsNotInstalledYet() {
+        assertLightDarkSnapshots(
+            of: AppMigrationGetNewAppView(notFoundYet: true, backAction: {}, transferStartedAction: {}),
+            named: "old-00b2-get-new-app-not-found"
+        )
+    }
+
     @MainActor @Test func getNewApp() {
         assertLightDarkSnapshots(
             of: AppMigrationGetNewAppView(backAction: {}, transferStartedAction: {}),
@@ -111,6 +126,85 @@ struct AppMigrationScreensTests {
             of: exportView(.failed(message: "The Open Home Foundation app is not installed on this device.")),
             named: "old-04-failed"
         )
+    }
+
+    // MARK: - Containers
+
+    @MainActor @Test func flowStartsWithTheIntroAndThenAsksThePreviousApp() async {
+        var dependencies = AppMigrationCoordinatorDependencies()
+        dependencies.role = .newApp
+        dependencies.open = { _ in true }
+        dependencies.canOpen = { _ in true }
+        let coordinator = AppMigrationCoordinator(dependencies: dependencies)
+        defer {
+            coordinator.cancelImport()
+            AppMigrationSessionStore.clear()
+        }
+        assertLightDarkSnapshots(
+            of: AppMigrationFlowView(coordinator: coordinator, skipAction: {}, finishAction: {}),
+            named: "new-00-flow-intro"
+        )
+        coordinator.startImport()
+        assertLightDarkSnapshots(
+            of: AppMigrationFlowView(coordinator: coordinator, skipAction: {}, finishAction: {}),
+            named: "new-00b-flow-open-check"
+        )
+    }
+
+    @MainActor @Test func flowShowsThePermissionsItStillHasToAsk() {
+        assertLightDarkSnapshots(
+            of: AppMigrationFlowView(permissionsToAllow: [.location, .notification], skipAction: {}, finishAction: {}),
+            named: "new-00d-flow-permissions"
+        )
+    }
+
+    @MainActor @Test func exportContainerShowsTheRequestThePreviousAppReceived() {
+        AppMigrationHandoffStore.save(nil)
+        defer { AppMigrationHandoffStore.save(nil) }
+        var dependencies = AppMigrationCoordinatorDependencies()
+        dependencies.role = .previousApp
+        dependencies.open = { _ in true }
+        dependencies.refreshLocalPushManagers = {}
+        let coordinator = AppMigrationCoordinator(dependencies: dependencies)
+        coordinator.handle(url: AppMigrationLink.request(.make()).url(to: .previousApp))
+        defer { coordinator.declineExport() }
+        assertLightDarkSnapshots(
+            of: AppMigrationExportContainerView(coordinator: coordinator),
+            named: "old-01b-export-container"
+        )
+    }
+
+    @MainActor @Test func thePreviousAppRootsRefuseToOnboard() {
+        AppMigrationRole.override = .previousApp
+        defer { AppMigrationRole.override = nil }
+        assertLightDarkSnapshots(
+            of: OnboardingNavigationView(onboardingStyle: .required),
+            named: "old-00d-root-required"
+        )
+        assertLightDarkSnapshots(
+            of: OnboardingNavigationView(onboardingStyle: .secondary),
+            named: "old-00e-root-secondary"
+        )
+    }
+
+    @MainActor @Test func successRevealsTheCompletionDetails() async throws {
+        let controller = UIHostingController(rootView: AppMigrationSuccessView(summary: .preview, continueAction: {}))
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        try await Task.sleep(for: .seconds(AppMigrationSuccessView.revealDelay + 1))
+        assertLightDarkSnapshots(of: controller.rootView, named: "new-06b-success-revealed")
+        window.isHidden = true
+    }
+
+    @MainActor @Test func migrationLinksReachTheCoordinatorThroughTheURLHandler() {
+        defer { AppMigrationSessionStore.clearCompleted() }
+        let completed = UUID()
+        AppMigrationSessionStore.saveCompleted(completed)
+        let handler = IncomingURLHandler(coordinator: MockAppCoordinator())
+        #expect(handler.handle(url: AppMigrationLink.erased(sessionID: completed).url(to: .newApp)))
+        #expect(!handler.handle(url: AppMigrationLink.erased(sessionID: UUID()).url(to: .newApp)))
+        AppMigrationCoordinator.shared.finishImport()
     }
 
     // MARK: - Helpers

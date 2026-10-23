@@ -1277,7 +1277,7 @@ public enum L10n {
       public static var laterButton: String { return L10n.tr("Localizable", "app_migration.announcement.later_button") }
       /// Home Assistant has moved to the Open Home Foundation
       public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.title") }
-      /// Transfer to the Open Home Foundation app
+      /// Transfer
       public static var transferButton: String { return L10n.tr("Localizable", "app_migration.announcement.transfer_button") }
       public enum FollowUp {
         /// Permissions, Home Screen widgets, Apple Watch and Shortcuts are set up again in the Open Home Foundation app.
@@ -1309,7 +1309,7 @@ public enum L10n {
       public static var bodyNoServers: String { return L10n.tr("Localizable", "app_migration.complete.body_no_servers") }
       /// Continue
       public static var continueButton: String { return L10n.tr("Localizable", "app_migration.complete.continue_button") }
-      /// Erase your existing app
+      /// Erase existing app
       public static var eraseButton: String { return L10n.tr("Localizable", "app_migration.complete.erase_button") }
       /// Keep it for now
       public static var keepPreviousAppButton: String { return L10n.tr("Localizable", "app_migration.complete.keep_previous_app_button") }
@@ -1374,7 +1374,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.failed.title") }
       }
       public enum HandedOff {
-        /// Go to the Open Home Foundation app
+        /// Open the app
         public static var openButton: String { return L10n.tr("Localizable", "app_migration.export.handed_off.open_button") }
         /// Transfer sent
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.handed_off.title") }
@@ -1435,7 +1435,7 @@ public enum L10n {
       public static var body: String { return L10n.tr("Localizable", "app_migration.get_new_app.body") }
       /// I have installed it
       public static var installedButton: String { return L10n.tr("Localizable", "app_migration.get_new_app.installed_button") }
-      /// Get the Open Home Foundation app
+      /// Get the app
       public static var storeButton: String { return L10n.tr("Localizable", "app_migration.get_new_app.store_button") }
       /// Get the Open Home Foundation app first
       public static var title: String { return L10n.tr("Localizable", "app_migration.get_new_app.title") }
@@ -1468,7 +1468,7 @@ public enum L10n {
       public enum OpenCheck {
         /// This app asked iOS to open your existing Home Assistant app so it can send your setup. If it did not open, ask again.
         public static var body: String { return L10n.tr("Localizable", "app_migration.import.open_check.body") }
-        /// Open your existing app
+        /// Open again
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.import.open_check.retry_button") }
         /// Did your existing app open?
         public static var title: String { return L10n.tr("Localizable", "app_migration.import.open_check.title") }
@@ -1889,6 +1889,21 @@ public enum L10n {
       public static var message: String { return L10n.tr("Localizable", "camera_list.unavailable.message") }
       /// Not Available on Mac
       public static var title: String { return L10n.tr("Localizable", "camera_list.unavailable.title") }
+    }
+  }
+
+  public enum CameraMicrophone {
+    public enum Errors {
+      /// Unable to connect the microphone to the camera
+      public static var connectionFailed: String { return L10n.tr("Localizable", "camera_microphone.errors.connection_failed") }
+      /// The microphone stream was stopped
+      public static var interrupted: String { return L10n.tr("Localizable", "camera_microphone.errors.interrupted") }
+      /// Microphone access is needed to talk through the camera. You can allow it in Settings.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_microphone.errors.microphone_denied") }
+      /// The camera could not start the microphone stream
+      public static var signalingFailed: String { return L10n.tr("Localizable", "camera_microphone.errors.signaling_failed") }
+      /// The camera took too long to respond
+      public static var timedOut: String { return L10n.tr("Localizable", "camera_microphone.errors.timed_out") }
     }
   }
 
@@ -6751,6 +6766,10 @@ public enum L10n {
       public enum ReceiveDebugNotifications {
         /// Receive debug notifications
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.receive_debug_notifications.title") }
+      }
+      public enum RegionEnterMaximumFuzzDistance {
+        /// Zone enter accuracy fuzz limit
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.region_enter_maximum_fuzz_distance.title") }
       }
       public enum ResetApp {
         /// Delete all app data?

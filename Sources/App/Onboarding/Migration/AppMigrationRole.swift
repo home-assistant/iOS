@@ -7,8 +7,11 @@ enum AppMigrationRole: Equatable {
     case previousApp
     case newApp
 
+    /// Set by tests to render the other app's screens in this build.
+    static var override: AppMigrationRole?
+
     static var current: AppMigrationRole {
-        AppConstants.BundleID.hasPrefix("io.robbie.") ? .previousApp : .newApp
+        override ?? (AppConstants.BundleID.hasPrefix("io.robbie.") ? .previousApp : .newApp)
     }
 
     var peer: AppMigrationRole {

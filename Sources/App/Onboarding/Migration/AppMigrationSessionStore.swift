@@ -32,6 +32,10 @@ enum AppMigrationSessionStore {
         try? AppConstants.Keychain.set(sessionID.uuidString, key: completedKey)
     }
 
+    static func clearCompleted() {
+        try? AppConstants.Keychain.remove(completedKey)
+    }
+
     static func loadCompleted() -> UUID? {
         (try? AppConstants.Keychain.getString(completedKey))?.flatMap(UUID.init(uuidString:))
     }
