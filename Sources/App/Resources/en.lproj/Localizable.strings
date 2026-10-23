@@ -328,15 +328,8 @@
 "app_intents.watch_assist.description" = "Opens Assist using the pipeline configured for the watch";
 "app_intents.watch_assist.title" = "Assist";
 "app_migration.announcement.body" = "Home Assistant is moving to the Open Home Foundation app on the App Store. Transfer your servers and settings to it in a few seconds. Everything stays on this device.";
-"app_migration.announcement.follow_up.explanation" = "Permissions, Home Screen widgets, Apple Watch and Shortcuts are set up again in the Open Home Foundation app.";
-"app_migration.announcement.follow_up.title" = "A few things to set up again";
 "app_migration.announcement.later_button" = "Not now";
-"app_migration.announcement.new_app.explanation" = "The app is now published by the Open Home Foundation. This app will stop receiving updates.";
-"app_migration.announcement.new_app.title" = "A different app, the same Home Assistant";
-"app_migration.announcement.section.what_changes" = "What this means";
-"app_migration.announcement.setup_moves.explanation" = "Servers, sign-ins, settings, and your Watch, CarPlay and widget setup come with you.";
-"app_migration.announcement.setup_moves.title" = "Your setup moves with you";
-"app_migration.announcement.title" = "Home Assistant has moved to the Open Home Foundation";
+"app_migration.announcement.title" = "Home Assistant has moved";
 "app_migration.announcement.transfer_button" = "Transfer";
 "app_migration.get_new_app.back_button" = "Back";
 "app_migration.get_new_app.body" = "Install the Open Home Foundation app from the App Store, then come back here. The transfer starts as soon as it is on this device.";
@@ -367,6 +360,7 @@
 "app_migration.error.wrong_session" = "The transfer did not match the request from this app.";
 "app_migration.export.body" = "The Open Home Foundation app is asking to receive your setup. Nothing leaves this device.";
 "app_migration.export.erased.body" = "Your setup lives in the Open Home Foundation app now. You can delete this app from your Home Screen.";
+"app_migration.export.erased.open_button" = "Open the new app";
 "app_migration.export.erased.title" = "This app is now empty";
 "app_migration.export.later_button" = "Do it later";
 "app_migration.export.failed.retry_button" = "Try again";
@@ -400,7 +394,7 @@
 "app_migration.import.failed.title" = "The transfer did not complete";
 "app_migration.import.open_check.body" = "This app asked iOS to open your existing Home Assistant app so it can send your setup. If it did not open, ask again.";
 "app_migration.import.open_check.retry_button" = "Open again";
-"app_migration.import.open_check.title" = "Did your existing app open?";
+"app_migration.import.open_check.title" = "Did the old app open?";
 "app_migration.import.waiting.body" = "Confirm the transfer in your existing Home Assistant app. You will be brought back here automatically.";
 "app_migration.import.waiting.open_button" = "Open your existing app";
 "app_migration.import.waiting.title" = "Waiting for your existing app";
@@ -420,7 +414,7 @@
 "app_migration.item.servers.title" = "Servers and sign-ins";
 "app_migration.no_servers.moved_body" = "The Home Assistant app is now published by the Open Home Foundation. This app no longer connects to a Home Assistant server. Install the Open Home Foundation app from the App Store and set up your home there.";
 "app_migration.no_servers.moved_title" = "Home Assistant has moved to the Open Home Foundation";
-"app_migration.overview.section.follow_up" = "Set up again in the Open Home Foundation app";
+"app_migration.overview.section.follow_up" = "Set up again manually";
 "app_migration.overview.section.moves" = "Comes with you";
 "app_migration.overview.start_button" = "Start transfer";
 "app_migration.overview.title" = "What moves over";
@@ -1602,7 +1596,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "onboarding.welcome.transfer_button" = "Transfer from your existing app";
-"onboarding.welcome.transfer_notice.moved_body" = "Home Assistant companion app has moved to Open Home Foundation. Bring all your app data with you during this transition.";
+"onboarding.welcome.transfer_notice.moved_body" = "Home Assistant has moved to a new App Store listing. Install it to keep getting updates. Your data will come with you.";
 "onboarding.welcome.transfer_notice.link" = "Transfer your setup";
 "onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
 \

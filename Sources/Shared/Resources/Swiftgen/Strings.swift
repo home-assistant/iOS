@@ -1275,32 +1275,10 @@ public enum L10n {
       public static var body: String { return L10n.tr("Localizable", "app_migration.announcement.body") }
       /// Not now
       public static var laterButton: String { return L10n.tr("Localizable", "app_migration.announcement.later_button") }
-      /// Home Assistant has moved to the Open Home Foundation
+      /// Home Assistant has moved
       public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.title") }
       /// Transfer
       public static var transferButton: String { return L10n.tr("Localizable", "app_migration.announcement.transfer_button") }
-      public enum FollowUp {
-        /// Permissions, Home Screen widgets, Apple Watch and Shortcuts are set up again in the Open Home Foundation app.
-        public static var explanation: String { return L10n.tr("Localizable", "app_migration.announcement.follow_up.explanation") }
-        /// A few things to set up again
-        public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.follow_up.title") }
-      }
-      public enum NewApp {
-        /// The app is now published by the Open Home Foundation. This app will stop receiving updates.
-        public static var explanation: String { return L10n.tr("Localizable", "app_migration.announcement.new_app.explanation") }
-        /// A different app, the same Home Assistant
-        public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.new_app.title") }
-      }
-      public enum Section {
-        /// What this means
-        public static var whatChanges: String { return L10n.tr("Localizable", "app_migration.announcement.section.what_changes") }
-      }
-      public enum SetupMoves {
-        /// Servers, sign-ins, settings, and your Watch, CarPlay and widget setup come with you.
-        public static var explanation: String { return L10n.tr("Localizable", "app_migration.announcement.setup_moves.explanation") }
-        /// Your setup moves with you
-        public static var title: String { return L10n.tr("Localizable", "app_migration.announcement.setup_moves.title") }
-      }
     }
     public enum Complete {
       /// Your setup is now in this app and you are signed in.
@@ -1364,6 +1342,8 @@ public enum L10n {
       public enum Erased {
         /// Your setup lives in the Open Home Foundation app now. You can delete this app from your Home Screen.
         public static var body: String { return L10n.tr("Localizable", "app_migration.export.erased.body") }
+        /// Open the new app
+        public static var openButton: String { return L10n.tr("Localizable", "app_migration.export.erased.open_button") }
         /// This app is now empty
         public static var title: String { return L10n.tr("Localizable", "app_migration.export.erased.title") }
       }
@@ -1470,7 +1450,7 @@ public enum L10n {
         public static var body: String { return L10n.tr("Localizable", "app_migration.import.open_check.body") }
         /// Open again
         public static var retryButton: String { return L10n.tr("Localizable", "app_migration.import.open_check.retry_button") }
-        /// Did your existing app open?
+        /// Did the old app open?
         public static var title: String { return L10n.tr("Localizable", "app_migration.import.open_check.title") }
       }
       public enum Waiting {
@@ -1544,7 +1524,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_migration.overview.paste_notice.title") }
       }
       public enum Section {
-        /// Set up again in the Open Home Foundation app
+        /// Set up again manually
         public static var followUp: String { return L10n.tr("Localizable", "app_migration.overview.section.follow_up") }
         /// Comes with you
         public static var moves: String { return L10n.tr("Localizable", "app_migration.overview.section.moves") }
@@ -5335,7 +5315,7 @@ public enum L10n {
       public enum TransferNotice {
         /// Transfer your setup
         public static var link: String { return L10n.tr("Localizable", "onboarding.welcome.transfer_notice.link") }
-        /// Home Assistant companion app has moved to Open Home Foundation. Bring all your app data with you during this transition.
+        /// Home Assistant has moved to a new App Store listing. Install it to keep getting updates. Your data will come with you.
         public static var movedBody: String { return L10n.tr("Localizable", "onboarding.welcome.transfer_notice.moved_body") }
       }
       public enum Updated {
