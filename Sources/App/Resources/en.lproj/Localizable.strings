@@ -792,10 +792,10 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC stream unavailable";
 "extensions.notification_content.error_state.hide_details" = "Hide details";
-"extensions.notification_content.error_state.message" = "The camera could not be reached. Check that it is online and try again.";
+"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
 "extensions.notification_content.error_state.retry" = "Try again";
 "extensions.notification_content.error_state.show_details" = "Show details";
-"extensions.notification_content.error_state.title" = "Video unavailable";
+"extensions.notification_content.error_state.title" = "Media unavailable";
 "flight_greetings.empty_state.body" = "You're currently disconnected. Your home will be waiting when you land.";
 "flight_greetings.empty_state.configure_hint" = "Configure flight greetings in Settings";
 "flight_greetings.empty_state.title" = "Have a nice flight";
