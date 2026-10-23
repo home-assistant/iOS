@@ -1625,7 +1625,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.cloudhook.footer" = "Trate esta URL como confidencial. Qualquer pessoa que a tenha pode enviar solicitações para o webhook deste aplicativo móvel.";
 "settings.connection_section.cloudhook.status.not_configured" = "Não configurado";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Conectado por";
 "settings.connection_section.connection_access_security_level.footer" = "Protege sua URL interna quando você não está em casa.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Menos seguro";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Mais seguro";
@@ -1666,7 +1665,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.location_send_type.setting.never" = "Nunca";
 "settings.connection_section.location_send_type.setting.zone_only" = "Somente zona";
 "settings.connection_section.location_send_type.title" = "Localização enviada";
-"settings.connection_section.logged_in_as" = "Logado como";
 "settings.connection_section.make_default" = "Tornar padrão";
 "settings.connection_section.network_detection_permission.allow" = "Permitir";
 "settings.connection_section.network_detection_permission.message" = "Detectar sua rede doméstica significa ler o nome da rede Wi-Fi, que o iOS só compartilha com aplicativos que têm acesso à localização. A chave Localização Exata é o que torna o nome legível, inclusive enquanto você está usando o aplicativo. A opção Sempre é necessária além dela para continuar lendo o nome enquanto o aplicativo está em segundo plano, para sensores e notificações. Toque aqui para alterar suas configurações.";

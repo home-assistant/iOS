@@ -1625,7 +1625,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.cloudhook.footer" = "Beschouw deze URL als vertrouwelijk. Iedereen die deze URL heeft, kan verzoeken naar deze webhook van de mobiele app sturen.";
 "settings.connection_section.cloudhook.status.not_configured" = "Niet geconfigureerd";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Verbonden via";
 "settings.connection_section.connection_access_security_level.footer" = "Protects your internal URL when you are not at home.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Minder veilig";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Meest veilig";
@@ -1666,7 +1665,6 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.location_send_type.setting.never" = "Nooit";
 "settings.connection_section.location_send_type.setting.zone_only" = "Alleen zone";
 "settings.connection_section.location_send_type.title" = "Locatie doorgeven";
-"settings.connection_section.logged_in_as" = "Ingelogd als";
 "settings.connection_section.make_default" = "Als standaard instellen";
 "settings.connection_section.network_detection_permission.allow" = "Sta toe";
 "settings.connection_section.network_detection_permission.message" = "Om je thuisnetwerk te detecteren, moet de wifi-naam ervan worden gelezen. iOS deelt deze naam alleen met apps die toegang hebben tot je locatie. Alleen de optie ‘Nauwkeurige locatie’ zorgt ervoor dat de naam uitgelezen kan worden, ook terwijl je de app gebruikt. Daarnaast is de optie ‘Altijd’ nodig om de naam te kunnen blijven lezen als de app op de achtergrond draait, en voor sensorupdates en notificaties. Tik hier om je instellingen te wijzigen.";

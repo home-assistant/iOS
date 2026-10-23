@@ -1625,7 +1625,6 @@ Home Assistant es un software de código abierto, defiende la privacidad y se ej
 "settings.connection_section.cloudhook.footer" = "Considera esta URL como información confidencial. Cualquier persona que la tenga puede enviar solicitudes al webhook de esta aplicación móvil.";
 "settings.connection_section.cloudhook.status.not_configured" = "No configurado";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Conectado a través de";
 "settings.connection_section.connection_access_security_level.footer" = "Protege tu URL interna cuando no estás en casa.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Menos segura";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "La más segura";
@@ -1666,7 +1665,6 @@ Home Assistant es un software de código abierto, defiende la privacidad y se ej
 "settings.connection_section.location_send_type.setting.never" = "Nunca";
 "settings.connection_section.location_send_type.setting.zone_only" = "Solo de zona";
 "settings.connection_section.location_send_type.title" = "Ubicación enviada";
-"settings.connection_section.logged_in_as" = "Sesión iniciada como";
 "settings.connection_section.make_default" = "Establecer como predeterminado";
 "settings.connection_section.network_detection_permission.allow" = "Permitir";
 "settings.connection_section.network_detection_permission.message" = "Detectar tu red doméstica implica leer el nombre de su red Wi-Fi, información que iOS solo comparte con las aplicaciones que tienen acceso a la ubicación. La opción Ubicación precisa es lo que permite leer el nombre, incluso mientras estás utilizando la aplicación. Además, es necesario activar la opción Siempre para que se siga leyendo el nombre mientras la aplicación está en segundo plano, para los sensores y las notificaciones. Pulsa aquí para cambiar la configuración.";

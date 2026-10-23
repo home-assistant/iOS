@@ -5361,16 +5361,12 @@ public enum L10n {
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
       public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
-      /// Connected via
-      public static var connectingVia: String { return L10n.tr("Localizable", "settings.connection_section.connecting_via") }
       /// Details
       public static var details: String { return L10n.tr("Localizable", "settings.connection_section.details") }
       /// Connection
       public static var header: String { return L10n.tr("Localizable", "settings.connection_section.header") }
       /// Directly connect to the Home Assistant server for push notifications when on internal SSIDs.
       public static var localPushDescription: String { return L10n.tr("Localizable", "settings.connection_section.local_push_description") }
-      /// Logged in as
-      public static var loggedInAs: String { return L10n.tr("Localizable", "settings.connection_section.logged_in_as") }
       /// Make default
       public static var makeDefault: String { return L10n.tr("Localizable", "settings.connection_section.make_default") }
       /// Open

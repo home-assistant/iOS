@@ -1625,7 +1625,6 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings.connection_section.cloudhook.footer" = "Considérez cette URL comme sensible. Toute personne la possédant peut envoyer des requêtes à ce webhook de l'app mobile.";
 "settings.connection_section.cloudhook.status.not_configured" = "Non configuré";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Connexion via";
 "settings.connection_section.connection_access_security_level.footer" = "Protects your internal URL when you are not at home.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Moins sécurisé";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Le plus sécurisé";
@@ -1666,7 +1665,6 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings.connection_section.location_send_type.setting.never" = "Jamais";
 "settings.connection_section.location_send_type.setting.zone_only" = "Zone uniquement";
 "settings.connection_section.location_send_type.title" = "Emplacement envoyé";
-"settings.connection_section.logged_in_as" = "Connecté en tant que";
 "settings.connection_section.make_default" = "Définir par défaut";
 "settings.connection_section.network_detection_permission.allow" = "Allow";
 "settings.connection_section.network_detection_permission.message" = "La détection de votre réseau domestique nécessite la lecture de son nom Wi-Fi, qu'iOS ne partage qu'avec les applications disposant d'un accès à la localisation. Le commutateur « Position exacte » est ce qui permet de rendre ce nom lisible, y compris lorsque vous utilisez l'application. L'option « Toujours » est nécessaire en plus pour continuer à lire le nom lorsque l'application est en arrière-plan, pour les capteurs et les notifications. Touchez ici pour modifier vos paramètres.";
