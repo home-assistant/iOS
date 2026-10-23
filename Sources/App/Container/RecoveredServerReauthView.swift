@@ -14,6 +14,40 @@ struct RecoveredServerReauthView: View {
     @State private var clientCertificateRequest: OnboardingClientCertificateRequest?
 
     var body: some View {
+        NavigationStack {
+            content
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(isPresented: catalystCertificateImportPresented) {
+                    if let request = clientCertificateRequest {
+                        certificateImport(for: request)
+                            .navigationBarBackButtonHidden(true)
+                    }
+                }
+        }
+    }
+
+    private var catalystCertificateImportPresented: Binding<Bool> {
+        Binding(
+            get: { Current.isCatalyst && clientCertificateRequest != nil },
+            set: { if !$0 { clientCertificateRequest?.cancel() } }
+        )
+    }
+
+    private var iOSCertificateImportRequest: Binding<OnboardingClientCertificateRequest?> {
+        Binding(
+            get: { Current.isCatalyst ? nil : clientCertificateRequest },
+            set: { if $0 == nil { clientCertificateRequest?.cancel() } }
+        )
+    }
+
+    private func certificateImport(for request: OnboardingClientCertificateRequest) -> some View {
+        ClientCertificateOnboardingView(
+            onImport: { request.complete(with: $0) },
+            onCancel: { request.cancel() }
+        )
+    }
+
+    private var content: some View {
         WebViewEmptyStateView(
             style: .recoveredServerNeedingReauthentication,
             server: server,
@@ -52,18 +86,12 @@ struct RecoveredServerReauthView: View {
         .sheet(item: $loginViewModel) { viewModel in
             OnboardingAuthLoginView(viewModel: viewModel, style: .modal)
         }
-        .sheet(item: $clientCertificateRequest) { request in
+        .sheet(item: iOSCertificateImportRequest) { request in
             NavigationView {
-                ClientCertificateOnboardingView(
-                    onImport: { request.complete(with: $0) },
-                    onCancel: { request.cancel() }
-                )
+                certificateImport(for: request)
             }
             .navigationViewStyle(.stack)
             .presentationDetents([.medium])
-            .onDisappear {
-                request.cancel()
-            }
         }
     }
 }

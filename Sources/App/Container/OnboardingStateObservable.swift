@@ -175,7 +175,7 @@ final class OnboardingStateObservable: ObservableObject {
                 }
                 completion(.success(()))
                 self?.showWebView(for: server)
-            }.catch { error in
+            }.catch(policy: .allErrors) { error in
                 if let pmkError = error as? PMKError, pmkError.isCancelled {
                     completion(.failure(RecoveredServerReauthenticationError.cancelled))
                     return
