@@ -247,7 +247,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         self.externalAddress = isUsingCloud
             ? server.info.connection.address(for: .remoteUI)?.absoluteString
             : externalAddress
-        externalURL = isUsingCloud ? L10n.Settings.ConnectionSection.HomeAssistantCloud.title : externalAddress
+        externalURL = isUsingCloud ? AppConstants.homeAssistantLinkName : externalAddress
     }
 
     private func updateLocalPushStatus() {

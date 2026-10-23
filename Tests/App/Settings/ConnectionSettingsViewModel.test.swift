@@ -85,7 +85,7 @@ struct ConnectionSettingsViewModelTests {
             let viewModel = ConnectionSettingsViewModel(server: server)
 
             #expect(viewModel.isUsingCloud)
-            #expect(viewModel.externalURL == L10n.Settings.ConnectionSection.HomeAssistantCloud.title)
+            #expect(viewModel.externalURL == AppConstants.homeAssistantLinkName)
             #expect(viewModel.externalAddress == "https://example.ui.nabu.casa")
             #expect(viewModel.activeURLType == .remoteUI)
         }

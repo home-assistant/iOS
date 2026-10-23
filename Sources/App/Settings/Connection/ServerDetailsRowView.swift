@@ -286,7 +286,7 @@ extension ServerDetailsRowView {
         let usesCloud = connection.useCloud && connection.canUseCloud
         let internalURL = connection.address(for: .internal)?.absoluteString
         let externalURL = usesCloud
-            ? L10n.Settings.ConnectionSection.HomeAssistantCloud.title
+            ? AppConstants.homeAssistantLinkName
             : connection.address(for: .external)?.absoluteString
         return [
             .init(
