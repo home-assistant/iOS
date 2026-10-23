@@ -11,6 +11,7 @@ struct RecoveredServerReauthView: View {
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
     @State private var loginViewModel: OnboardingAuthLoginViewModel?
+    @State private var clientCertificateRequest: OnboardingClientCertificateRequest?
 
     var body: some View {
         WebViewEmptyStateView(
@@ -29,6 +30,20 @@ struct RecoveredServerReauthView: View {
                             loginViewModel = nil
                         }
                     },
+                    importClientCertificate: {
+                        Promise { seal in
+                            clientCertificateRequest = OnboardingClientCertificateRequest(
+                                onImport: { certificate in
+                                    clientCertificateRequest = nil
+                                    seal.fulfill(certificate)
+                                },
+                                onCancel: {
+                                    clientCertificateRequest = nil
+                                    seal.reject(PMKError.cancelled)
+                                }
+                            )
+                        }
+                    },
                     completion: completion
                 )
             },
@@ -36,6 +51,19 @@ struct RecoveredServerReauthView: View {
         )
         .sheet(item: $loginViewModel) { viewModel in
             OnboardingAuthLoginView(viewModel: viewModel, style: .modal)
+        }
+        .sheet(item: $clientCertificateRequest) { request in
+            NavigationView {
+                ClientCertificateOnboardingView(
+                    onImport: { request.complete(with: $0) },
+                    onCancel: { request.cancel() }
+                )
+            }
+            .navigationViewStyle(.stack)
+            .presentationDetents([.medium])
+            .onDisappear {
+                request.cancel()
+            }
         }
     }
 }
