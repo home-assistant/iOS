@@ -22,6 +22,7 @@ struct WatchComplicationConfigurationSheet: View {
                 entityValueSection
                 familySection
                 slotSections
+                dimmedDisplaySection
             }
             // Floats over the form only — never over the navigation bar, so the Done button stays
             // reachable.
@@ -180,6 +181,17 @@ struct WatchComplicationConfigurationSheet: View {
             } header: {
                 Text(verbatim: slot.editorTitle)
             }
+        }
+    }
+
+    /// Whether the complication keeps its content on the face while the watch display is dimmed (wrist
+    /// down, Always On). Global rather than per size, like the colors: it is a privacy choice about the
+    /// complication itself, so it sits after the per-size sections. Internal for its tests.
+    var dimmedDisplaySection: some View {
+        Section {
+            Toggle(isOn: showWhenInactiveBinding) { Text(L10n.Watch.Complications.Builder.showWhenInactive) }
+        } footer: {
+            Text(L10n.Watch.Complications.Builder.showWhenInactiveFooter)
         }
     }
 
@@ -499,6 +511,15 @@ struct WatchComplicationConfigurationSheet: View {
         Binding(
             get: { viewModel.config.showsUnit() },
             set: { viewModel.config.showUnit = $0 }
+        )
+    }
+
+    /// Shown while dimmed unless turned off; nil (configs saved before the toggle existed) reads as on.
+    /// Internal for its tests.
+    var showWhenInactiveBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.config.showsWhenInactive() },
+            set: { viewModel.config.showWhenInactive = $0 }
         )
     }
 

@@ -2614,6 +2614,7 @@ The server only answers while the app is open, and stops when you leave it.";
 "watch.complications.builder.show_unit" = "Show unit";
 "watch.complications.builder.show_value" = "Show value";
 "watch.complications.builder.show_when_inactive" = "Show when inactive";
+"watch.complications.builder.show_when_inactive_footer" = "When off, the complication shows the Home Assistant logo while the watch display is dimmed, such as when your wrist is down.";
 "watch.complications.builder.size_options" = "%1$@ options";
 "watch.complications.builder.size_options_footer" = "These settings apply to the selected size. Switch the preview size above to customize each size independently.";
 "watch.complications.builder.source" = "Source";
