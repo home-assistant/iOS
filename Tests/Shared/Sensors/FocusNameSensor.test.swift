@@ -23,10 +23,6 @@ class FocusNameSensorTests: XCTestCase {
         Current.focusFilter.liveConfirmation.value = nil
         Current.focusStatus.receivedStatus.value = nil
         Current.date = { [now] in now }
-
-        let previousIsTestFlight = Current.isTestFlight
-        addTeardownBlock { Current.isTestFlight = previousIsTestFlight }
-        Current.isTestFlight = true
     }
 
     override func tearDownWithError() throws {
@@ -101,17 +97,6 @@ class FocusNameSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].UniqueID, "focus_name")
         XCTAssertEqual(sensors[0].State as? String, "")
         XCTAssertEqual(sensors[0].Attributes?["Is focused"] as? Bool, true)
-    }
-
-    func testUnavailableOutsideTestFlight() throws {
-        Current.isTestFlight = false
-        FocusName(name: "Work").save()
-        setUpDependencies(activeFocusName: "Work", receivedStatus: received(isFocused: true, at: -59))
-
-        let promise = FocusNameSensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? FocusNameSensor.FocusNameError, .unavailable)
-        }
     }
 
     func testReportsActiveNameWhileFocused() throws {
