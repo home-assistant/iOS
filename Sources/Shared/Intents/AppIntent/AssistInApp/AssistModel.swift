@@ -74,8 +74,11 @@ public struct AssistResponse: HADataDecodable {
         }
 
         public struct ChatLogDelta: HADataDecodable {
+            /// Set on the first delta of each chat log message, e.g. `assistant` or `tool_result`.
+            public let role: String?
             public let content: String?
             public init(data: HAData) throws {
+                self.role = try? data.decode("role")
                 self.content = try? data.decode("content")
             }
         }
