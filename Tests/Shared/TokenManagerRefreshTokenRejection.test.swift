@@ -166,6 +166,7 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         }
         _ = await settle(tokenManager.authDictionaryForWebView(forceRefresh: true))
 
+        await waitForMainQueue()
         XCTAssertEqual(recorder.reauthenticationCount, 1)
         XCTAssertEqual(recorder.requestCount, 0)
     }
@@ -180,6 +181,7 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         tokenManager.handleTokenRevoked()
         _ = await settle(tokenManager.bearerToken)
 
+        await waitForMainQueue()
         XCTAssertEqual(recorder.reauthenticationCount, 0)
     }
 
@@ -267,6 +269,13 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
             return .success(value)
         } catch {
             return .failure(error)
+        }
+    }
+
+    /// The missing-token report is dispatched to the main queue, so let whatever is queued there run.
+    private func waitForMainQueue() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
         }
     }
 

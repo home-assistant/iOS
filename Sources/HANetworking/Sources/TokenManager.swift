@@ -319,10 +319,13 @@ public final class TokenManager: @unchecked Sendable {
             return promise
         }
 
-        // Outside the cache queue: the handler disconnects and tears down the API, which may ask this
-        // manager for a token again.
+        // Off the cache queue, since the handler disconnects the API, which may ask this manager for a
+        // token again; and on the main queue, where the server's own rejection reports it too, because
+        // the Alamofire refresh path reaches here from a background queue.
         if shouldReportMissingRefreshToken {
-            HANetworkingEnvironment.current.handleReauthenticationRequired(server, 0, "no refresh token stored")
+            DispatchQueue.main.async { [server] in
+                HANetworkingEnvironment.current.handleReauthenticationRequired(server, 0, "no refresh token stored")
+            }
         }
         return refresh
     }
