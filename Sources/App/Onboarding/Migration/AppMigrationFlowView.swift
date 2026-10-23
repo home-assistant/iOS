@@ -4,9 +4,9 @@ import SwiftUI
 /// The new app's transfer step inside onboarding: intro, overview, then whatever the coordinator is
 /// doing until the setup has been applied.
 struct AppMigrationFlowView: View {
-    @ObservedObject private var coordinator = AppMigrationCoordinator.shared
+    @ObservedObject var coordinator: AppMigrationCoordinator = .shared
     @State private var showsOverview = false
-    @State private var permissionsToAllow: [SensorPermission]?
+    @State var permissionsToAllow: [SensorPermission]?
     let skipAction: () -> Void
     let finishAction: () -> Void
 
@@ -27,6 +27,18 @@ struct AppMigrationFlowView: View {
         return { coordinator.erasePreviousApp() }
     }
 
+    /// Leaves the success screen: straight out when nothing is left to ask, otherwise through the
+    /// permissions screen.
+    func finishAfterSuccess(_ summary: AppMigrationSummary) {
+        let pending = Self.permissionsStillToAsk(from: summary.grantedPermissions)
+        if pending.isEmpty {
+            coordinator.finishImport()
+            finishAction()
+        } else {
+            permissionsToAllow = pending
+        }
+    }
+
     var body: some View {
         if let permissionsToAllow {
             AppMigrationPermissionsView(permissions: permissionsToAllow) {
@@ -45,13 +57,7 @@ struct AppMigrationFlowView: View {
                 previousAppErased: coordinator.previousAppErased,
                 eraseAction: eraseAction
             ) {
-                let pending = Self.permissionsStillToAsk(from: summary.grantedPermissions)
-                if pending.isEmpty {
-                    coordinator.finishImport()
-                    finishAction()
-                } else {
-                    permissionsToAllow = pending
-                }
+                finishAfterSuccess(summary)
             }
             .navigationBarBackButtonHidden(true)
         } else if let state = coordinator.importState {
