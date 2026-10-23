@@ -76,6 +76,11 @@ public final class TokenManager: @unchecked Sendable {
     /// token that only looked dead.
     private let rejectedRefreshTokens = HAProtected<Set<String>>(value: [])
 
+    /// Whether the user has already been told that this server holds no refresh token. A server
+    /// recovered from the GRDB mirror carries none, and since no request ever goes out, nothing else
+    /// would raise the re-authentication prompt for it.
+    private let missingRefreshTokenReported = HAProtected<Bool>(value: false)
+
     public init(server: Server) {
         self.authenticationAPI = AuthenticationAPI(server: server)
         self.server = server
@@ -250,12 +255,21 @@ public final class TokenManager: @unchecked Sendable {
     }
 
     private func refreshToken() -> Promise<TokenInfo> {
-        refreshPromiseCache.queue.sync { [self, server] in
+        var shouldReportMissingRefreshToken = false
+        let refresh: Promise<TokenInfo> = refreshPromiseCache.queue.sync { [self, server] in
             let tokenInfo = server.info.token
 
             if let reason = refusalToSendRefreshToken(tokenInfo.refreshToken) {
                 HANetworkingEnvironment.current.log
                     .error("Not refreshing server \(server.identifier.rawValue): \(reason)")
+                if tokenInfo.refreshToken.isEmpty {
+                    let alreadyReported = missingRefreshTokenReported.mutate { reported -> Bool in
+                        let previous = reported
+                        reported = true
+                        return previous
+                    }
+                    shouldReportMissingRefreshToken = !alreadyReported
+                }
                 return Promise(error: TokenError.reauthenticationRequired)
             }
 
@@ -304,6 +318,13 @@ public final class TokenManager: @unchecked Sendable {
             refreshPromiseCache.promise = promise
             return promise
         }
+
+        // Outside the cache queue: the handler disconnects and tears down the API, which may ask this
+        // manager for a token again.
+        if shouldReportMissingRefreshToken {
+            HANetworkingEnvironment.current.handleReauthenticationRequired(server, 0, "no refresh token stored")
+        }
+        return refresh
     }
 }
 

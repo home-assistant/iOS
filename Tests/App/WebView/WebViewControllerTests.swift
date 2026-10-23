@@ -389,6 +389,21 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertNil(sut.emptyStateTimer)
     }
 
+    func testExternalAuthFailureNeedingReauthenticationShowsReauthEmptyState() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.handleExternalAuthFailure(error: TokenManager.TokenError.reauthenticationRequired)
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
+        XCTAssertNil(sut.emptyStateTimer)
+        XCTAssertNil(sut.latestLoadError)
+    }
+
     func testExternalAuthFailureKeepsAuthInvalid() {
         let sut = makeSUT()
         sut.overlayState = WebFrontendOverlayState()
