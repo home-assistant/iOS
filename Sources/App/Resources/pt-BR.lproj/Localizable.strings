@@ -357,6 +357,7 @@
 "assist.carplay.tap_to_record.title" = "Toque para gravar";
 "assist.chat.menu.edit" = "Editar";
 "assist.chat.menu.replay" = "Reproduzir novamente";
+"assist.error.audio_conversion" = "Couldn't read audio from the microphone. Try again, or use a different microphone.";
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
 "assist.error.speech_to_text_unsupported" = "Este pipeline do Assist não tem um mecanismo de conversão de fala em texto. Escolha um pipeline que tenha um ou habilite a Conversão de fala em texto no dispositivo nas configurações do Assist.";
 "assist.modern_ui.header.title" = "Assist";
@@ -410,6 +411,11 @@
 "camera_list.title" = "Câmeras";
 "camera_list.unavailable.message" = "Câmera para streaming de vídeo não está disponível no Mac.";
 "camera_list.unavailable.title" = "Não disponível no Mac";
+"camera_microphone.errors.connection_failed" = "Unable to connect the microphone to the camera";
+"camera_microphone.errors.interrupted" = "The microphone stream was stopped";
+"camera_microphone.errors.microphone_denied" = "Microphone access is needed to talk through the camera. You can allow it in Settings.";
+"camera_microphone.errors.signaling_failed" = "The camera could not start the microphone stream";
+"camera_microphone.errors.timed_out" = "The camera took too long to respond";
 "camera_player.default_camera_name" = "Câmera";
 "camera_player.errors.no_stream_available" = "Nenhuma transmissão disponível";
 "camera_player.errors.unable_to_connect_to_server" = "Não foi possível conectar ao Home Assistant";
@@ -1955,6 +1961,7 @@ A importação substitui todas as categorias listadas nesta tela, incluindo as c
 "settings.debugging.media_playback.title" = "Reprodução de mídia do WKWebView";
 "settings.debugging.notify_local_push_state_changes.title" = "Notificar quando o push local conectar ou desconectar";
 "settings.debugging.receive_debug_notifications.title" = "Receber notificações de depuração";
+"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Zone enter accuracy fuzz limit";
 "settings.debugging.reset_app.alert_title" = "Excluir todos os dados do aplicativo?";
 "settings.debugging.reset_app.client_event" = "Todos os dados do aplicativo foram excluídos das configurações de depuração";
 "settings.debugging.reset_app.delete_button" = "Excluir dados do aplicativo";

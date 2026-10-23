@@ -1961,6 +1961,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.media_playback.title" = "WKWebView Media Playback";
 "settings.debugging.notify_local_push_state_changes.title" = "Notify when local push connects or disconnects";
 "settings.debugging.receive_debug_notifications.title" = "Receive debug notifications";
+"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Zone enter accuracy fuzz limit";
 "settings.debugging.reset_app.alert_title" = "Delete all app data?";
 "settings.debugging.reset_app.client_event" = "Deleted all app data from debug settings";
 "settings.debugging.reset_app.delete_button" = "Delete App Data";
@@ -1979,7 +1980,6 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.shake_disclaimer_optional.title" = "Shake the App to open debug";
 "settings.debugging.thread.footer" = "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.";
 "settings.debugging.title" = "Debugging";
-"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Zone enter accuracy fuzz limit";
 "settings.debugging.web_view_empty_state_timeout.title" = "Web view empty state timeout";
 "settings.details_section.location_settings_row.title" = "Location";
 "settings.details_section.notification_settings_row.title" = "Notifications";

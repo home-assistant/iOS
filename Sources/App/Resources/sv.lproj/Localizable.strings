@@ -357,6 +357,7 @@
 "assist.carplay.tap_to_record.title" = "Tryck för att spela in";
 "assist.chat.menu.edit" = "Redigera";
 "assist.chat.menu.replay" = "Spela upp igen";
+"assist.error.audio_conversion" = "Couldn't read audio from the microphone. Try again, or use a different microphone.";
 "assist.error.pipelines_response" = "Misslyckades med att inhämta Assist Pipelines, kontrollera din pipelinekonfiguration.";
 "assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
@@ -410,6 +411,11 @@
 "camera_list.title" = "Kameror";
 "camera_list.unavailable.message" = "Kameraströmning är inte tillgängligt på Mac.";
 "camera_list.unavailable.title" = "Inte tillgänglig på Mac";
+"camera_microphone.errors.connection_failed" = "Unable to connect the microphone to the camera";
+"camera_microphone.errors.interrupted" = "The microphone stream was stopped";
+"camera_microphone.errors.microphone_denied" = "Microphone access is needed to talk through the camera. You can allow it in Settings.";
+"camera_microphone.errors.signaling_failed" = "The camera could not start the microphone stream";
+"camera_microphone.errors.timed_out" = "The camera took too long to respond";
 "camera_player.default_camera_name" = "Kamera";
 "camera_player.errors.no_stream_available" = "Ingen ström tillgänglig";
 "camera_player.errors.unable_to_connect_to_server" = "Det går inte att ansluta till Home Assistant";
@@ -1950,6 +1956,7 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings.debugging.media_playback.title" = "WKWebView – Uppspelning av media";
 "settings.debugging.notify_local_push_state_changes.title" = "Notify when local push connects or disconnects";
 "settings.debugging.receive_debug_notifications.title" = "Ta emot felsökningsmeddelanden";
+"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Zone enter accuracy fuzz limit";
 "settings.debugging.reset_app.alert_title" = "Vill du radera alla appdata?";
 "settings.debugging.reset_app.client_event" = "Raderade all appdata från felsökningsinställningarna";
 "settings.debugging.reset_app.delete_button" = "Radera appdata";
