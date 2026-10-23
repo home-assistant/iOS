@@ -153,6 +153,38 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         XCTAssertEqual(recorder.requestCount, 0)
     }
 
+    /// With no request going out, the refusal is the only place the user can learn that this server
+    /// needs a login again; and every caller runs into it, so it is reported once rather than per call.
+    func testPlaceholderCredentialsRequestReauthenticationOnce() async {
+        stubRefreshToken(.rejection)
+        let server = Server.fake(update: { $0.token = ServerInfo.mirrorPlaceholderToken })
+        let tokenManager = TokenManager(server: server)
+
+        for _ in 0 ..< 3 {
+            let error = await assertRefused(tokenManager.bearerToken)
+            XCTAssertEqual(error as? TokenManager.TokenError, .reauthenticationRequired)
+        }
+        _ = await settle(tokenManager.authDictionaryForWebView(forceRefresh: true))
+
+        await waitForMainQueue()
+        XCTAssertEqual(recorder.reauthenticationCount, 1)
+        XCTAssertEqual(recorder.requestCount, 0)
+    }
+
+    /// A refresh token the server itself refused already raised the prompt from the server's answer,
+    /// and a revoked one belongs to a deliberate log out: neither is reported again from the refusal.
+    func testRevokedRefreshTokenDoesNotRequestReauthentication() async {
+        stubRefreshToken(.rejection)
+        let server = Server.fake()
+        let tokenManager = TokenManager(server: server)
+
+        tokenManager.handleTokenRevoked()
+        _ = await settle(tokenManager.bearerToken)
+
+        await waitForMainQueue()
+        XCTAssertEqual(recorder.reauthenticationCount, 0)
+    }
+
     /// The Alamofire interceptor signs from the store, so a placeholder would otherwise go out as a
     /// bare `Bearer ` on every request the session makes. Failing the request is the only honest
     /// outcome while there is nothing to sign it with.
@@ -237,6 +269,13 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
             return .success(value)
         } catch {
             return .failure(error)
+        }
+    }
+
+    /// The missing-token report is dispatched to the main queue, so let whatever is queued there run.
+    private func waitForMainQueue() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
         }
     }
 
