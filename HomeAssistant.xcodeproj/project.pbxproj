@@ -1372,7 +1372,6 @@
 				Container/OnboardingNavigationView.swift,
 				Container/OnboardingNavigationViewModel.swift,
 				Migration/AppMigrationAnnouncement.swift,
-				Migration/AppMigrationAnnouncementItem.swift,
 				Migration/AppMigrationAnnouncementView.swift,
 				Migration/AppMigrationCompleteView.swift,
 				Migration/AppMigrationCoordinator.swift,

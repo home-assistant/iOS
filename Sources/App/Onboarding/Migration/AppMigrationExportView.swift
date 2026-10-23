@@ -71,7 +71,9 @@ struct AppMigrationExportView: View {
             primaryDescription: state == .erased
                 ? L10n.AppMigration.Export.Erased.body
                 : L10n.AppMigration.Export.HandedOff.verifyBody,
-            primaryActionTitle: L10n.AppMigration.Export.HandedOff.openButton,
+            primaryActionTitle: state == .erased
+                ? L10n.AppMigration.Export.Erased.openButton
+                : L10n.AppMigration.Export.HandedOff.openButton,
             primaryAction: openNewAppAction,
             primaryActionIdentifier: AccessibilityIdentifier.migrationExportOpenNewApp.rawValue,
             secondaryActionTitle: state == .erased ? nil : L10n.AppMigration.Export.HandedOff.transferAgainButton,
