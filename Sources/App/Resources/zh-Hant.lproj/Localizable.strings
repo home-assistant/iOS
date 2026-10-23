@@ -1631,7 +1631,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.cloudhook.footer" = "將此網址視為敏感資訊。任何擁有此網址的人都可以向此行動應用程式 Webhook 發送請求。";
 "settings.connection_section.cloudhook.status.not_configured" = "尚未設定";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "連線模式";
 "settings.connection_section.connection_access_security_level.footer" = "當您不在家時，保護內部網址。";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "安全性較低";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "最安全";
@@ -1672,7 +1671,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.location_send_type.setting.never" = "未執行";
 "settings.connection_section.location_send_type.setting.zone_only" = "僅區域";
 "settings.connection_section.location_send_type.title" = "座標傳送";
-"settings.connection_section.logged_in_as" = "登入帳號：";
 "settings.connection_section.make_default" = "設為預設值";
 "settings.connection_section.network_detection_permission.allow" = "允許";
 "settings.connection_section.network_detection_permission.message" = "偵測家庭網路需要讀取 Wi-Fi 名稱，而 iOS 僅允許具有位置存取權限的應用程式讀取此資訊。精確位置開關是讓應用程式能夠讀取 Wi-Fi 名稱的必要條件，包括在使用應用程式時。此外，還需要開啟永遠允許選項，以便在應用程式於背景執行時持續讀取名稱，以支援感測器與通知功能。點選此處以變更您的設定。";

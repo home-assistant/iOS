@@ -5361,16 +5361,12 @@ public enum L10n {
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
       public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
-      /// Connected via
-      public static var connectingVia: String { return L10n.tr("Localizable", "settings.connection_section.connecting_via") }
       /// Details
       public static var details: String { return L10n.tr("Localizable", "settings.connection_section.details") }
       /// Connection
       public static var header: String { return L10n.tr("Localizable", "settings.connection_section.header") }
       /// Directly connect to the Home Assistant server for push notifications when on internal SSIDs.
       public static var localPushDescription: String { return L10n.tr("Localizable", "settings.connection_section.local_push_description") }
-      /// Logged in as
-      public static var loggedInAs: String { return L10n.tr("Localizable", "settings.connection_section.logged_in_as") }
       /// Make default
       public static var makeDefault: String { return L10n.tr("Localizable", "settings.connection_section.make_default") }
       /// Open
@@ -7861,6 +7857,10 @@ public enum L10n {
           /// Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.
           public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.in_bed.footer") }
         }
+        public enum MoveGoal {
+          /// Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.
+          public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.move_goal.footer") }
+        }
       }
       public enum Sensors {
         /// Enable all Apple Health sensors
@@ -8011,6 +8011,12 @@ public enum L10n {
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.accessibility_label") }
         /// When app is open
         public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
+      }
+      public enum RequiresAppleWatch {
+        /// Only reports with a paired Apple Watch
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.requires_apple_watch.accessibility_label") }
+        /// Requires Apple Watch
+        public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.requires_apple_watch.badge") }
       }
       public enum UnavailableOnDevice {
         /// Unavailable on this device

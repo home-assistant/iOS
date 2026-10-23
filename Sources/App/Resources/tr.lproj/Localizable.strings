@@ -1631,7 +1631,6 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.cloudhook.footer" = "Bu URL'yi hassas bilgi olarak değerlendirin. Bu URL'ye sahip herkes bu mobil uygulama web kancasına istek gönderebilir.";
 "settings.connection_section.cloudhook.status.not_configured" = "Yapılandırılmamış";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Bağlantı şekli";
 "settings.connection_section.connection_access_security_level.footer" = "Protects your internal URL when you are not at home.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Daha az güvenli";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "En güvenli";
@@ -1672,7 +1671,6 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.location_send_type.setting.never" = "Asla";
 "settings.connection_section.location_send_type.setting.zone_only" = "Tahmini Konum";
 "settings.connection_section.location_send_type.title" = "Konum Erişimi";
-"settings.connection_section.logged_in_as" = "Kullanıcı";
 "settings.connection_section.make_default" = "Varsayılanı ayarla";
 "settings.connection_section.network_detection_permission.allow" = "Allow";
 "settings.connection_section.network_detection_permission.message" = "Ev ağınızı algılamak, Wi-Fi adını okumak anlamına gelir ve iOS bu adı yalnızca konum erişimine sahip uygulamalarla paylaşır. Hassas Konum seçeneği, uygulamayı kullanırken bile adın okunabilir olmasını sağlar. Uygulama arka planda çalışırken, sensörler ve bildirimler için adı okumaya devam etmek için bunun üzerine Her Zaman seçeneği gereklidir. Ayarlarınızı değiştirmek için buraya dokunun.";

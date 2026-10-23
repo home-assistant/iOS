@@ -1626,7 +1626,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.cloudhook.footer" = "Behandla denna URL som känslig. Alla som har den kan skicka förfrågningar till denna webhook för mobilappen.";
 "settings.connection_section.cloudhook.status.not_configured" = "Inte konfigurerad";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Ansluten via";
 "settings.connection_section.connection_access_security_level.footer" = "Protects your internal URL when you are not at home.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Mindre säker";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Säkrast";
@@ -1667,7 +1666,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.location_send_type.setting.never" = "Aldrig";
 "settings.connection_section.location_send_type.setting.zone_only" = "Endast zonnamn";
 "settings.connection_section.location_send_type.title" = "Plats skickad";
-"settings.connection_section.logged_in_as" = "Inloggad som";
 "settings.connection_section.make_default" = "Ange som standard";
 "settings.connection_section.network_detection_permission.allow" = "Allow";
 "settings.connection_section.network_detection_permission.message" = "För att kunna upptäcka ditt hemnätverk måste appen läsa av dess Wi-Fi-namn, vilket iOS endast delar med appar som har åtkomst till platsinformation. Det är knappen ”Exakt plats” som gör att namnet överhuvudtaget kan läsas av, även när du använder appen. Alternativet ”Alltid” krävs dessutom för att namnet ska kunna läsas av även när appen körs i bakgrunden, för sensorer och aviseringar. Tryck här för att ändra dina inställningar.";

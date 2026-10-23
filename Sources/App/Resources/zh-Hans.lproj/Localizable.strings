@@ -1628,7 +1628,6 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.cloudhook.footer" = "请将此网址视为敏感信息。任何拥有此网址的人都可以向此移动应用 webhook 发送请求。";
 "settings.connection_section.cloudhook.status.not_configured" = "未配置";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "链接方式";
 "settings.connection_section.connection_access_security_level.footer" = "Protects your internal URL when you are not at home.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "低安全";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "最安全";
@@ -1669,7 +1668,6 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.location_send_type.setting.never" = "从不";
 "settings.connection_section.location_send_type.setting.zone_only" = "仅限区域";
 "settings.connection_section.location_send_type.title" = "位置已发送";
-"settings.connection_section.logged_in_as" = "当前用户";
 "settings.connection_section.make_default" = "Make default";
 "settings.connection_section.network_detection_permission.allow" = "Allow";
 "settings.connection_section.network_detection_permission.message" = "Detecting your home network means reading its Wi-Fi name, which iOS only shares with apps that have location access. The Precise Location switch is what makes the name readable at all, including while you are using the app. The Always option is needed on top of it to keep reading the name while the app is in the background, for sensors and notifications. Tap here to change your settings.";

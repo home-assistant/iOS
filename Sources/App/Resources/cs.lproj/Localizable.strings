@@ -1631,7 +1631,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.cloudhook.footer" = "Tuto adresu URL považovat za citlivou. Kdokoli, kdo ji má, může odesílat požadavky na tento webhook mobilní aplikace.";
 "settings.connection_section.cloudhook.status.not_configured" = "Nenastaveno";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Připojeno přes";
 "settings.connection_section.connection_access_security_level.footer" = "Chrání vaši interní URL adresu, když nejste doma.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Méně bezpečné";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Nejbezpečnější";
@@ -1672,7 +1671,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.location_send_type.setting.never" = "Nikdy";
 "settings.connection_section.location_send_type.setting.zone_only" = "Jen zóna";
 "settings.connection_section.location_send_type.title" = "Odeslaná poloha";
-"settings.connection_section.logged_in_as" = "Přihlášen jako";
 "settings.connection_section.make_default" = "Nastavit jako výchozí";
 "settings.connection_section.network_detection_permission.allow" = "Povolit";
 "settings.connection_section.network_detection_permission.message" = "Zjištění vaší domácí sítě znamená načtení jejího názvu Wi-Fi, který systém iOS sdílí jen s aplikacemi, které mají přístup k poloze. Přepínač \"Přesná poloha\" umožňuje, aby byl název vůbec čitelný, a to i během používání aplikace. Kromě toho je nutná volba \"Vždy\", aby se název načítal i v případě, že je aplikace spuštěna na pozadí - pro účely senzorů a oznámení. Klepnutím sem můžete změnit nastavení.";
