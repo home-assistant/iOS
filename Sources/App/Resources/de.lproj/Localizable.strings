@@ -1631,7 +1631,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.cloudhook.footer" = "Diese URL ist vertraulich. Jeder, der sie besitzt, kann Anfragen an diesen Webhook der Mobile-App senden.";
 "settings.connection_section.cloudhook.status.not_configured" = "Nicht konfiguriert";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Verbunden über";
 "settings.connection_section.connection_access_security_level.footer" = "Schützt deine interne URL, wenn du nicht zuhause bist.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Weniger sicher";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Am sichersten";
@@ -1672,7 +1671,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.location_send_type.setting.never" = "Niemals";
 "settings.connection_section.location_send_type.setting.zone_only" = "Nur Zone";
 "settings.connection_section.location_send_type.title" = "Gesendeter Standort";
-"settings.connection_section.logged_in_as" = "Angemeldet als";
 "settings.connection_section.make_default" = "Als Standard festlegen";
 "settings.connection_section.network_detection_permission.allow" = "Erlauben";
 "settings.connection_section.network_detection_permission.message" = "Um dein Heimnetzwerk zu erkennen, muss dessen WLAN-Name ausgelesen werden, den iOS nur an Apps weitergibt, die über Standortzugriff verfügen. Erst durch den Schalter „Genauer Standort“ wird der Name überhaupt lesbar, auch während du die App nutzt. Zusätzlich ist die Option „Immer“ erforderlich, damit der Name auch weiterhin ausgelesen werden kann, wenn die App im Hintergrund läuft – für Sensoren und Benachrichtigungen. Tippe hier, um deine Einstellungen zu ändern.";

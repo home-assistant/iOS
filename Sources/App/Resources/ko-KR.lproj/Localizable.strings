@@ -1631,7 +1631,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.connection_section.cloudhook.footer" = "이 URL을 민감한 URL로 취급하세요. 이를 가진 사람은 누구나 이 모바일 앱 웹훅에 요청을 보낼 수 있습니다.";
 "settings.connection_section.cloudhook.status.not_configured" = "구성되지 않음";
 "settings.connection_section.cloudhook.title" = "클라우드훅";
-"settings.connection_section.connecting_via" = "다음을 통해 연결됨";
 "settings.connection_section.connection_access_security_level.footer" = "집 밖에 있을 때 내부 URL을 보호합니다.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "덜 안전함";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "최고 보안 수준";
@@ -1672,7 +1671,6 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.connection_section.location_send_type.setting.never" = "절대 안됨";
 "settings.connection_section.location_send_type.setting.zone_only" = "영역만";
 "settings.connection_section.location_send_type.title" = "위치 전송됨";
-"settings.connection_section.logged_in_as" = "다음 계정으로 로그인";
 "settings.connection_section.make_default" = "기본값으로 설정";
 "settings.connection_section.network_detection_permission.allow" = "허용";
 "settings.connection_section.network_detection_permission.message" = "홈 네트워크를 감지하려면 Wi-Fi 이름을 읽어야 하며, iOS는 위치 접근 권한이 있는 앱에만 이 정보를 제공합니다. 앱을 사용하는 동안에도 Wi-Fi 이름을 읽으려면 정확한 위치를 켜야 합니다. 앱이 백그라운드에 있을 때도 센서와 알림을 위해 Wi-Fi 이름을 계속 읽으려면 위치 접근 권한을 항상으로 설정해야 합니다. 설정을 변경하려면 여기를 탭하세요.";

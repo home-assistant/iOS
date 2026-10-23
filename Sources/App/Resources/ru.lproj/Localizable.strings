@@ -1631,7 +1631,6 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.cloudhook.footer" = "Относитесь к этому URL-адресу как к конфиденциальному. Любой, у кого он есть, может отправлять запросы на webhook этого мобильного приложения.";
 "settings.connection_section.cloudhook.status.not_configured" = "Не настроено";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Подключен через";
 "settings.connection_section.connection_access_security_level.footer" = "Protects your internal URL when you are not at home.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Менее безопасный";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Самый безопасный";
@@ -1672,7 +1671,6 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.location_send_type.setting.never" = "Никогда";
 "settings.connection_section.location_send_type.setting.zone_only" = "Только зона";
 "settings.connection_section.location_send_type.title" = "Отправка местоположения";
-"settings.connection_section.logged_in_as" = "Вы вошли как";
 "settings.connection_section.make_default" = "Установить по умолчанию";
 "settings.connection_section.network_detection_permission.allow" = "Allow";
 "settings.connection_section.network_detection_permission.message" = "Чтобы определить вашу домашнюю сеть, нужно прочитать ее название Wi-Fi, которое iOS предоставляет только приложениям с доступом к местоположению. Переключатель «Точная геопозиция» позволяет прочитать название сети, в том числе во время использования приложения. Чтобы приложение продолжало считывать название сети в фоновом режиме для работы датчиков и уведомлений, нужно установить флажок «Всегда». Нажмите здесь, чтобы изменить настройки.";

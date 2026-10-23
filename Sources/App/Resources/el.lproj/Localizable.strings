@@ -1631,7 +1631,6 @@
 "settings.connection_section.cloudhook.footer" = "Αντιμετώπιση αυτής της διεύθυνσης URL ως ευαίσθητης. Οποιοσδήποτε την έχει μπορεί να στείλει αιτήματα σε αυτό το webhook εφαρμογής για κινητά.";
 "settings.connection_section.cloudhook.status.not_configured" = "Δεν έχει διαμορφωθεί";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Συνδεδεμένο μέσω";
 "settings.connection_section.connection_access_security_level.footer" = "Protects your internal URL when you are not at home.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Λιγότερο ασφαλές";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Πιο ασφαλές";
@@ -1672,7 +1671,6 @@
 "settings.connection_section.location_send_type.setting.never" = "Ποτέ";
 "settings.connection_section.location_send_type.setting.zone_only" = "Μόνο ζώνη";
 "settings.connection_section.location_send_type.title" = "Αποστολή τοποθεσίας";
-"settings.connection_section.logged_in_as" = "Συνδεδεμένο ως";
 "settings.connection_section.make_default" = "Make default";
 "settings.connection_section.network_detection_permission.allow" = "Allow";
 "settings.connection_section.network_detection_permission.message" = "Detecting your home network means reading its Wi-Fi name, which iOS only shares with apps that have location access. The Precise Location switch is what makes the name readable at all, including while you are using the app. The Always option is needed on top of it to keep reading the name while the app is in the background, for sensors and notifications. Tap here to change your settings.";
