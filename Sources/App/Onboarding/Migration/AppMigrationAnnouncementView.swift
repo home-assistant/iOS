@@ -45,24 +45,6 @@ struct AppMigrationAnnouncementView: View {
             },
             title: L10n.AppMigration.Announcement.title,
             primaryDescription: L10n.AppMigration.Announcement.body,
-            content: {
-                VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                    HASectionPill(L10n.AppMigration.Announcement.Section.whatChanges)
-                    CardView(cornerRadius: DesignSystem.CornerRadius.two) {
-                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-                            ForEach(AppMigrationAnnouncementItem.allCases) { item in
-                                AppMigrationItemRow(
-                                    icon: item.icon,
-                                    tint: .haPrimary,
-                                    title: item.title,
-                                    caption: item.explanation
-                                )
-                            }
-                        }
-                    }
-                }
-                .padding(.top, DesignSystem.Spaces.two)
-            },
             primaryActionTitle: L10n.AppMigration.Announcement.transferButton,
             primaryAction: startTransfer,
             primaryActionIdentifier: AccessibilityIdentifier.migrationAnnouncementTransfer.rawValue,
