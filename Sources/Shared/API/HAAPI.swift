@@ -238,6 +238,7 @@ public class HomeAssistantAPI {
     ) -> URLSession {
         let certificateProvider = HomeAssistantCertificateProvider(server: server, onStep: onStep)
         let delegate = HAURLSessionDelegate(certificateProvider: certificateProvider)
+        configuration.httpCookieStorage = HANetworkingEnvironment.current.cookieStorage
         #if os(watchOS)
         let delegateQueue: OperationQueue? = .main
         #else
@@ -268,6 +269,7 @@ public class HomeAssistantAPI {
 
         configuration.urlCache = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.httpCookieStorage = HANetworkingEnvironment.current.cookieStorage
 
         return Alamofire.Session(
             configuration: configuration,

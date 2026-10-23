@@ -40,15 +40,21 @@ public class AuthenticationAPI {
 
     public init(server: Server) {
         self.server = server
+        let configuration = URLSessionConfiguration.af.default
+        configuration.httpCookieStorage = HANetworkingEnvironment.current.cookieStorage
         // Use custom delegate that supports client certificates (mTLS). Required on watchOS too:
         // token refresh is a REST call, and an mTLS server rejects it without the client cert.
         if server.info.connection.clientCertificate != nil {
             self.session = Session(
+                configuration: configuration,
                 delegate: ClientCertificateSessionDelegate(server: server),
                 serverTrustManager: CustomServerTrustManager(server: server)
             )
         } else {
-            self.session = Session(serverTrustManager: CustomServerTrustManager(server: server))
+            self.session = Session(
+                configuration: configuration,
+                serverTrustManager: CustomServerTrustManager(server: server)
+            )
         }
     }
 
@@ -108,20 +114,29 @@ public class AuthenticationAPI {
         clientCertificate: ClientCertificate? = nil
     ) -> Promise<TokenInfo> {
         let session: Session
+        let configuration = URLSessionConfiguration.af.default
+        configuration.httpCookieStorage = HANetworkingEnvironment.current.cookieStorage
 
         #if !os(watchOS)
         if let clientCert = clientCertificate {
             // Create a session delegate that handles client certificate challenges
             let delegate = OnboardingClientCertificateDelegate(certificate: clientCert)
             session = Session(
+                configuration: configuration,
                 delegate: delegate,
                 serverTrustManager: CustomServerTrustManager(exceptions: exceptions)
             )
         } else {
-            session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
+            session = Session(
+                configuration: configuration,
+                serverTrustManager: CustomServerTrustManager(exceptions: exceptions)
+            )
         }
         #else
-        session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
+        session = Session(
+            configuration: configuration,
+            serverTrustManager: CustomServerTrustManager(exceptions: exceptions)
+        )
         #endif
 
         return Promise { seal in

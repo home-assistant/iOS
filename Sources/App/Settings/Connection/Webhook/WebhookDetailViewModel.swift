@@ -56,6 +56,7 @@ final class WebhookDetailViewModel: ObservableObject {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.urlCache = nil
+        configuration.httpCookieStorage = HANetworkingEnvironment.current.cookieStorage
 
         let session = URLSession(
             configuration: configuration,
