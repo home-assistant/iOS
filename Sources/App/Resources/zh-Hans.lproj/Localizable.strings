@@ -357,6 +357,7 @@
 "assist.carplay.tap_to_record.title" = "点击录制";
 "assist.chat.menu.edit" = "Edit";
 "assist.chat.menu.replay" = "Replay";
+"assist.error.audio_conversion" = "Couldn't read audio from the microphone. Try again, or use a different microphone.";
 "assist.error.pipelines_response" = "无法获取语音助手管道，请检查您的管道配置。";
 "assist.error.speech_to_text_unsupported" = "此辅助管道没有语音转文本引擎。请选择具有语音转文本引擎的管道，或在辅助设置中启用设备上的语音转文本。";
 "assist.modern_ui.header.title" = "语音助手";
@@ -410,6 +411,11 @@
 "camera_list.title" = "摄像头";
 "camera_list.unavailable.message" = "Mac 系统不支持摄像头串流功能。";
 "camera_list.unavailable.title" = "Mac 版不可用";
+"camera_microphone.errors.connection_failed" = "Unable to connect the microphone to the camera";
+"camera_microphone.errors.interrupted" = "The microphone stream was stopped";
+"camera_microphone.errors.microphone_denied" = "Microphone access is needed to talk through the camera. You can allow it in Settings.";
+"camera_microphone.errors.signaling_failed" = "The camera could not start the microphone stream";
+"camera_microphone.errors.timed_out" = "The camera took too long to respond";
 "camera_player.default_camera_name" = "摄像头";
 "camera_player.errors.no_stream_available" = "没有流媒体";
 "camera_player.errors.unable_to_connect_to_server" = "无法连接到 Home Assistant";
@@ -1952,6 +1958,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.media_playback.title" = "WKWebView 媒体播放";
 "settings.debugging.notify_local_push_state_changes.title" = "Notify when local push connects or disconnects";
 "settings.debugging.receive_debug_notifications.title" = "接收调试通知";
+"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Zone enter accuracy fuzz limit";
 "settings.debugging.reset_app.alert_title" = "删除全部应用数据 ？";
 "settings.debugging.reset_app.client_event" = "Deleted all app data from debug settings";
 "settings.debugging.reset_app.delete_button" = "删除应用数据";
