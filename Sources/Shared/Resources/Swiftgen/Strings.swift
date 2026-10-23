@@ -2816,6 +2816,18 @@ public enum L10n {
           public static var webrtcUnavailable: String { return L10n.tr("Localizable", "extensions.notification_content.error.request.webrtc_unavailable") }
         }
       }
+      public enum ErrorState {
+        /// Hide details
+        public static var hideDetails: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.hide_details") }
+        /// The camera could not be reached. Check that it is online and try again.
+        public static var message: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.message") }
+        /// Try again
+        public static var retry: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.retry") }
+        /// Show details
+        public static var showDetails: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.show_details") }
+        /// Video unavailable
+        public static var title: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.title") }
+      }
     }
   }
 
