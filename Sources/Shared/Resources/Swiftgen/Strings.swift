@@ -5211,6 +5211,79 @@ public enum L10n {
     }
   }
 
+  public enum RestoredRegistrations {
+    /// Setting up as a new device signs in to each server again and registers this device on its own, leaving the other device as it is. Replacing the old device keeps everything as it is, for when that device is no longer in use.
+    public static var choices: String { return L10n.tr("Localizable", "restored_registrations.choices") }
+    /// This device was set up from a backup of another one. It still signs in and reports to Home Assistant as that device, so both would share one device there, with its sensors, location and notifications.
+    public static var explanation: String { return L10n.tr("Localizable", "restored_registrations.explanation") }
+    /// Set up as a new device
+    public static var newDevice: String { return L10n.tr("Localizable", "restored_registrations.new_device") }
+    /// %d of %d set up
+    public static func progress(_ p1: Int, _ p2: Int) -> String {
+      return L10n.tr("Localizable", "restored_registrations.progress", p1, p2)
+    }
+    /// Replace the old device
+    public static var replaceDevice: String { return L10n.tr("Localizable", "restored_registrations.replace_device") }
+    /// Setting up…
+    public static var settingUp: String { return L10n.tr("Localizable", "restored_registrations.setting_up") }
+    /// Restored from another device?
+    public static var title: String { return L10n.tr("Localizable", "restored_registrations.title") }
+    /// Try again
+    public static var tryAgain: String { return L10n.tr("Localizable", "restored_registrations.try_again") }
+    public enum Errors {
+      /// This device can't be told apart from others until it has been unlocked. Unlock it and try again.
+      public static var noDeviceIdentifier: String { return L10n.tr("Localizable", "restored_registrations.errors.no_device_identifier") }
+      /// This server still knows this device as another one. Open the app to register it as a new device or keep that registration.
+      public static var registeredByAnotherDevice: String { return L10n.tr("Localizable", "restored_registrations.errors.registered_by_another_device") }
+    }
+    public enum Login {
+      /// Server %d of %d
+      public static func progress(_ p1: Int, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "restored_registrations.login.progress", p1, p2)
+      }
+      /// Sign in to %@
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "restored_registrations.login.title", String(describing: p1))
+      }
+    }
+    public enum Next {
+      /// The page that opens next is the login of %@. Signing in there registers this device with it as a new device.
+      public static func body(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "restored_registrations.next.body", String(describing: p1))
+      }
+      /// Continue
+      public static var `continue`: String { return L10n.tr("Localizable", "restored_registrations.next.continue") }
+      /// Next: sign in to %@
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "restored_registrations.next.title", String(describing: p1))
+      }
+    }
+    public enum Replace {
+      /// Replace
+      public static var confirm: String { return L10n.tr("Localizable", "restored_registrations.replace.confirm") }
+      /// If you still have the other device, remove the Home Assistant app from it. Otherwise both devices keep reporting to Home Assistant as one.
+      public static var message: String { return L10n.tr("Localizable", "restored_registrations.replace.message") }
+      /// Replace the old device?
+      public static var title: String { return L10n.tr("Localizable", "restored_registrations.replace.title") }
+    }
+    public enum Status {
+      /// Set up as a new device
+      public static var done: String { return L10n.tr("Localizable", "restored_registrations.status.done") }
+      /// Couldn't register: %@
+      public static func failed(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "restored_registrations.status.failed", String(describing: p1))
+      }
+      /// Registering…
+      public static var registering: String { return L10n.tr("Localizable", "restored_registrations.status.registering") }
+      /// Signing in…
+      public static var signingIn: String { return L10n.tr("Localizable", "restored_registrations.status.signing_in") }
+      /// Not set up yet. Asked again on the next launch.
+      public static var skipped: String { return L10n.tr("Localizable", "restored_registrations.status.skipped") }
+      /// Waiting
+      public static var waiting: String { return L10n.tr("Localizable", "restored_registrations.status.waiting") }
+    }
+  }
+
   public enum RoomView {
     public enum Section {
       /// Hidden
@@ -5610,6 +5683,16 @@ public enum L10n {
       public enum NoBaseUrl {
         /// No URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
+      }
+      public enum RegisterAsNewDevice {
+        /// Use this when another device restored from a backup of this one shares its registration, so each gets its own sensors, location and notifications.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.footer") }
+        /// Registering…
+        public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.progress") }
+        /// You sign in to this server again and this device gets a registration of its own. The current one stays in Home Assistant for any other device still using it. Remove it there once no device does.
+        public static var signInMessage: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.sign_in_message") }
+        /// Register as new device
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.title") }
       }
       public enum RemoteUiUrl {
         /// Remote UI URL

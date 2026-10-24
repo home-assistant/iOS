@@ -2,8 +2,11 @@ name: E2E
 
 on:
   schedule:
-    # Every morning at 05:00 UTC, on the default branch, matching home-assistant/android.
+    # Every morning at 05:00 UTC, on the default branch, matching home-assistant/android: onboarding.
     - cron: "0 5 * * *"
+    # An hour later, the device restored from another device's backup. Each flow onboards from the
+    # welcome screen on an erased simulator, so they run one per job rather than back to back.
+    - cron: "0 6 * * *"
   # Manual run on any branch carrying this workflow.
   workflow_dispatch:
     inputs:
@@ -11,9 +14,21 @@ on:
         description: "Version to test against: a PyPI version, `dev` for core's dev branch, or `latest` for stable"
         required: false
         default: "dev"
+      test:
+        description: "Which flow to run"
+        required: false
+        default: "OnboardingE2ETests"
+        type: choice
+        options:
+          - OnboardingE2ETests
+          - RestoredDeviceE2ETests
 
+# Keyed by flow as well, so the 06:00 run never cancels a 05:00 run that is still going.
 concurrency:
-  group: e2e-${{ github.ref }}
+  group: >-
+    ${{ format('e2e-{0}-{1}',
+    github.ref,
+    github.event.schedule == '0 6 * * *' && 'RestoredDeviceE2ETests' || inputs.test || 'OnboardingE2ETests') }}
   cancel-in-progress: true
 
 permissions:
@@ -26,10 +41,12 @@ env:
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
   BUNDLE_PATH: vendor/bundle
 
-# Runs the onboarding flow against a real Home Assistant, from the welcome screen through to the
-# native settings screen the frontend opens over the external message bus. Nightly rather than per
-# PR: macOS minutes are billed at ten times the Linux rate, and the point is catching regressions
-# in Home Assistant and in the app's own onboarding, neither of which needs per-commit resolution.
+# Runs one end-to-end flow against a real Home Assistant: onboarding, from the welcome screen
+# through to the native settings screen the frontend opens over the external message bus, or a
+# device restored from another device's backup setting itself up as a new one. Nightly rather than
+# per PR: macOS minutes are billed at ten times the Linux rate, and the point is catching
+# regressions in Home Assistant and in the app's own flows, neither of which needs per-commit
+# resolution.
 #
 # home-assistant/android boots the `dev` container through ludeeus/setup-homeassistant. GitHub's
 # macOS runners have no Docker daemon, so core is installed from PyPI into a virtualenv on the
@@ -37,8 +54,10 @@ env:
 # the app reaches http://localhost:8123 directly, with none of the egress tunnelling and DNS
 # overrides the Android emulators need.
 jobs:
-  onboarding:
-    name: "Onboarding"
+  e2e:
+    name: >-
+      ${{ github.event.schedule == '0 6 * * *' && 'RestoredDeviceE2ETests'
+      || inputs.test || 'OnboardingE2ETests' }}
     runs-on: xcode-27
     timeout-minutes: 90
     # Naming any scope denies the rest, so the failure report has to ask for what it needs:
@@ -51,6 +70,10 @@ jobs:
       E2E_HOME_ASSISTANT_URL: http://localhost:8123
       E2E_HOME_ASSISTANT_USERNAME: citest
       E2E_HOME_ASSISTANT_PASSWORD: "h7jk99&U"
+      # The 06:00 schedule runs the restored-device flow; a manual run takes the input.
+      E2E_TEST: >-
+        ${{ github.event.schedule == '0 6 * * *' && 'RestoredDeviceE2ETests'
+        || inputs.test || 'OnboardingE2ETests' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
@@ -173,9 +196,10 @@ jobs:
           -project HomeAssistant.xcodeproj
           -scheme Tests-UI
 
-      - name: Run onboarding flow
+      - name: Run flow
         run: >-
           bundle exec fastlane e2e
+          test:"$E2E_TEST"
           url:"$E2E_HOME_ASSISTANT_URL"
           username:"$E2E_HOME_ASSISTANT_USERNAME"
           password:"$E2E_HOME_ASSISTANT_PASSWORD"
@@ -258,7 +282,8 @@ jobs:
           HOME_ASSISTANT_VERSION: ${{ inputs.home-assistant-version || 'dev' }}
         with:
           script: |
-            const title = 'E2E: the nightly onboarding test is failing'
+            const test = process.env.E2E_TEST
+            const title = `E2E: the nightly ${test} is failing`
             const { owner, repo } = context.repo
             const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`
 
@@ -270,7 +295,7 @@ jobs:
             const failed = jobs.flatMap((job) => job.steps || []).find((step) => step.conclusion === 'failure')
 
             const body = [
-              `The nightly [E2E run](${run}) failed at **${failed ? failed.name : 'an unknown step'}**.`,
+              `The nightly [E2E run](${run}) of \`${test}\` failed at **${failed ? failed.name : 'an unknown step'}**.`,
               '',
               `- Home Assistant version: \`${process.env.HOME_ASSISTANT_VERSION}\``,
               "- A screen recording of the run and Home Assistant's own log are in that run's",
@@ -279,8 +304,8 @@ jobs:
               'Later failures are added here as comments rather than opening another issue.',
             ].join('\n')
 
-            // Deduped by title among `automated` issues, so a run of bad nights leaves one thread
-            // to read rather than one issue per night.
+            // Deduped by title among `automated` issues, one per flow, so a run of bad nights leaves
+            // one thread to read rather than one issue per night.
             const issues = await github.paginate(github.rest.issues.listForRepo, {
               owner,
               repo,

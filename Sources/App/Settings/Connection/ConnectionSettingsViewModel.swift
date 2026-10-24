@@ -29,6 +29,11 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var sensorPrivacy: ServerSensorPrivacy = .none
     @Published var showDeleteConfirmation = false
     @Published var isDeleting = false
+    @Published var isRegisterAsNewDeviceConfirmationPresented = false
+    @Published var isRegisteringAsNewDevice = false
+    @Published var registerAsNewDeviceError: Error?
+    @Published var isShowingRegisterAsNewDeviceError = false
+    @Published var login: OnboardingAuthLoginViewModel?
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
@@ -48,6 +53,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
     // MARK: - Properties
 
     let server: Server
+    private let ownership: RegistrationOwnership
+    private let signIn: ServerReauthentication.SignIn
     private var tokens: [HACancellable] = []
     private var localPushObserver: HACancellable?
     private var notificationCenterObserver: NSObjectProtocol?
@@ -70,8 +77,14 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     // MARK: - Initialization
 
-    init(server: Server) {
+    init(
+        server: Server,
+        ownership: RegistrationOwnership = RegistrationOwnership(),
+        signIn: @escaping ServerReauthentication.SignIn = ServerReauthentication.signIn(to:presenting:)
+    ) {
         self.server = server
+        self.ownership = ownership
+        self.signIn = signIn
         setupObservers()
         loadInitialData()
     }
@@ -350,6 +363,44 @@ final class ConnectionSettingsViewModel: ObservableObject {
         defer { isDeleting = false }
 
         await server.deleteFromApp(minimumDuration: 3.0)
+    }
+
+    var registerAsNewDeviceTitle: String {
+        isRegisteringAsNewDevice
+            ? L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress
+            : L10n.Settings.ConnectionSection.RegisterAsNewDevice.title
+    }
+
+    func confirmRegisteringAsNewDevice() {
+        isRegisterAsNewDeviceConfirmationPresented = true
+    }
+
+    func startRegisteringAsNewDevice() {
+        Task {
+            await registerAsNewDevice()
+        }
+    }
+
+    func registerAsNewDevice() async {
+        isRegisteringAsNewDevice = true
+        defer { isRegisteringAsNewDevice = false }
+
+        do {
+            try await signIn(server) { [weak self] login in
+                self?.login = login
+            }
+        } catch let error as PMKError where error.isCancelled {
+            return
+        } catch {
+            registerAsNewDeviceError = error
+            isShowingRegisterAsNewDeviceError = true
+            return
+        }
+
+        if let error = await ownership.registerAsNewDevice([server])[server] {
+            registerAsNewDeviceError = error
+            isShowingRegisterAsNewDeviceError = true
+        }
     }
 
     // MARK: - Client Certificate

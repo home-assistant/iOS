@@ -27,6 +27,75 @@ final class LaunchMessagesStateTests: XCTestCase {
         XCTAssertTrue(sut.pending.isEmpty)
     }
 
+    func testRegistrationsOfAnotherDeviceComeFirst() {
+        withRegistrationIdentifier(from: "other-device") { servers in
+            let server = servers.addFake()
+
+            let messages = LaunchMessagesState.messagesToShow()
+            guard case let .restoredRegistrations(restored)? = messages.first else {
+                XCTFail("Expected the registrations of another device to come first")
+                return
+            }
+            XCTAssertEqual(restored, [server])
+            XCTAssertEqual(messages.first?.id, "restoredRegistrations")
+        }
+    }
+
+    func testNoPromptForRegistrationsThisDeviceMade() {
+        withRegistrationIdentifier(from: "this-device") { servers in
+            servers.addFake()
+
+            XCTAssertFalse(LaunchMessagesState.messagesToShow().map(\.id).contains("restoredRegistrations"))
+        }
+    }
+
+    func testSettlingTheRestoredRegistrationsClosesThePrompt() {
+        withRegistrationIdentifier(from: "other-device") { servers in
+            let server = servers.addFake()
+            let sut = LaunchMessagesState()
+            sut.presented = .restoredRegistrations([server])
+
+            sut.restoredRegistrationsViewModel(
+                for: [server],
+                ownership: RegistrationOwnership(catchUp: { _ in })
+            ).replaceOldDevice()
+
+            XCTAssertNil(sut.presented)
+        }
+    }
+
+    private func withRegistrationIdentifier(
+        from owner: String,
+        _ body: (FakeServerManager) throws -> Void
+    ) rethrows {
+        let prefs = Current.settingsStore.prefs
+        let previousServers = Current.servers
+        let previousVendorID = Current.device.identifierForVendor
+        let previousIsCatalyst = Current.isCatalyst
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationRecordsKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        defer {
+            Current.servers = previousServers
+            Current.device.identifierForVendor = previousVendorID
+            Current.isCatalyst = previousIsCatalyst
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+
+        let servers = FakeServerManager(initial: 0)
+        Current.servers = servers
+        Current.device.identifierForVendor = { "this-device" }
+        Current.isCatalyst = false
+        keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(owner, forKey: SettingsStore.integrationDeviceIDKey)
+        try body(servers)
+    }
+
     private static func release(id: String = "test-release") -> WhatsNewRelease {
         WhatsNewRelease(
             id: WhatsNewReleaseId(id),

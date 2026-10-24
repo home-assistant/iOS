@@ -28,6 +28,7 @@ struct ConnectionSettingsView: View {
             clientCertificateSection
             privacySection
             statusSection
+            registrationSection
             deleteSection
         }
         .navigationTitle(L10n.Settings.ConnectionSection.serverDetailsTitle)
@@ -58,6 +59,13 @@ struct ConnectionSettingsView: View {
         }
         .sheet(isPresented: $viewModel.isEditingExternalURL) {
             ServerURLEditorSheet(viewModel: viewModel, urlType: .external, transitionNamespace: urlTransitionNamespace)
+        }
+        .sheet(item: $viewModel.login) { login in
+            OnboardingAuthLoginView(
+                viewModel: login,
+                style: .modal,
+                title: L10n.RestoredRegistrations.Login.title(viewModel.server.info.name)
+            )
         }
         .sheet(isPresented: $viewModel.isShowingHowItWorks) {
             ServerHowItWorksSheet(viewModel: viewModel)
@@ -110,6 +118,14 @@ struct ConnectionSettingsView: View {
         }
         .onDisappear {
             onDismiss?()
+        }
+        .alert(
+            L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
+            isPresented: $viewModel.isShowingRegisterAsNewDeviceError
+        ) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            Text(viewModel.registerAsNewDeviceError?.localizedDescription ?? "")
         }
         .alert(
             L10n.Settings.ConnectionSection.DeleteServer.title,
@@ -301,6 +317,33 @@ struct ConnectionSettingsView: View {
         appSettingsPresenter?.isSheetPresented = false
     }
 
+    // MARK: - Registration Section
+
+    private var registrationSection: some View {
+        Section {
+            Button(action: viewModel.confirmRegisteringAsNewDevice) {
+                Text(viewModel.registerAsNewDeviceTitle)
+            }
+            .accessibilityIdentifier(AccessibilityIdentifier.connectionSettingsRegisterAsNewDevice.rawValue)
+            .disabled(viewModel.isRegisteringAsNewDevice || viewModel.isDeleting)
+            .confirmationDialog(
+                L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
+                isPresented: $viewModel.isRegisterAsNewDeviceConfirmationPresented,
+                titleVisibility: .visible
+            ) {
+                Button(
+                    L10n.Settings.ConnectionSection.RegisterAsNewDevice.title,
+                    action: viewModel.startRegisteringAsNewDevice
+                )
+                Button(L10n.cancelLabel, role: .cancel) {}
+            } message: {
+                Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.signInMessage)
+            }
+        } footer: {
+            Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.footer)
+        }
+    }
+
     // MARK: - Delete Section
 
     private var deleteSection: some View {
@@ -359,6 +402,7 @@ extension ConnectionSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Settings.ConnectionSection.Websocket.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.LocalPush.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.Webhook.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.RegisterAsNewDevice.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.DeleteServer.title),
         ]
     }

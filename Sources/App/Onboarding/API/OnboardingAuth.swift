@@ -5,6 +5,12 @@ import PromiseKit
 import Shared
 
 class OnboardingAuth {
+    private struct Persisted {
+        var identifier: Identifier<Server>
+        var previousInfo: ServerInfo?
+        var previousRegistration: RegistrationRecord
+    }
+
     var login: OnboardingAuthLogin = OnboardingAuthLoginImpl()
     var tokenExchange: OnboardingAuthTokenExchange = OnboardingAuthTokenExchangeImpl()
     var preSteps: [OnboardingAuthPreStep.Type] = [
@@ -51,7 +57,8 @@ class OnboardingAuth {
             }
 
             // Set once the server is persisted, so a later failure undoes exactly what was written.
-            var persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+            var persisted: Persisted?
+            let registrationBeforeOnboarding = Current.settingsStore.registrationRecord(for: api.server.identifier)
 
             return firstly {
                 steps(.beforeRegister, .register, .afterRegister)
@@ -66,16 +73,49 @@ class OnboardingAuth {
                     fallback: api.server.identifier,
                     existingServers: Current.servers.all
                 ).storedIdentifier
-                let existingInfo = Current.servers.server(for: identifier)?.info
-                persisted = (identifier, existingInfo)
+                let existing = Current.servers.server(for: identifier)
+                let existingInfo = existing?.info
+                let settings = Current.settingsStore
+                persisted = Persisted(
+                    identifier: identifier,
+                    previousInfo: existingInfo,
+                    previousRegistration: identifier == api.server.identifier
+                        ? registrationBeforeOnboarding
+                        : settings.registrationRecord(for: identifier)
+                )
 
                 // Re-authenticating a server the app already has is not a new server, and the
                 // privacy step is not shown for it, so it keeps the choices it already carries
                 // instead of the holdback above (or a default) overwriting them.
                 var serverInfo = api.server.info
-                if let existingInfo {
+                var registration = settings.registrationRecord(for: api.server.identifier)
+                if let existing, let existingInfo {
                     serverInfo.setSetting(value: existingInfo.setting(for: .sensorPrivacy), for: .sensorPrivacy)
                     serverInfo.setSetting(value: existingInfo.setting(for: .locationPrivacy), for: .locationPrivacy)
+
+                    if let kept = Self.registrationToKeep(of: existing, insteadOf: registration) {
+                        Current.Log.info(
+                            "keeping the registration \(existing.identifier) has; the one just made is left behind"
+                        )
+                        serverInfo.connection.webhookID = existingInfo.connection.webhookID
+                        serverInfo.connection.webhookSecret = existingInfo.connection.webhookSecret
+                        serverInfo.connection.cloudhookURL = existingInfo.connection.cloudhookURL
+                        serverInfo.hassDeviceId = existingInfo.hassDeviceId
+                        let keys: [ServerSettingKey<String?>] = [
+                            .registeredDeviceID,
+                            .registeredDeviceName,
+                            .overrideDeviceName,
+                        ]
+                        for key in keys {
+                            serverInfo.setSetting(value: existingInfo.setting(for: key), for: key)
+                        }
+                        registration = kept
+                    }
+                }
+
+                settings.setRegistrationRecord(registration, for: identifier)
+                if identifier != api.server.identifier {
+                    settings.setRegistrationRecord(registrationBeforeOnboarding, for: api.server.identifier)
                 }
 
                 // actually persists to outside-onboarding
@@ -96,7 +136,15 @@ class OnboardingAuth {
             }.then { server in
                 steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
-                when(resolved: undoConfigure(api: api, persisted: persisted))
+                let settings = Current.settingsStore
+                let attempt = settings.registrationRecord(for: api.server.identifier)
+                settings.setRegistrationRecord(
+                    Self.knowsInstance(of: api.server)
+                        ? Self.rollingBack(to: registrationBeforeOnboarding, from: attempt)
+                        : registrationBeforeOnboarding,
+                    for: api.server.identifier
+                )
+                return when(resolved: undoConfigure(api: api, persisted: persisted))
                     .then { _ in Promise<Server>(error: error) }
             }
         }
@@ -344,9 +392,40 @@ class OnboardingAuth {
         return candidates.first { !taken.contains($0) } ?? Identifier<Server>(rawValue: UUID().uuidString)
     }
 
+    static func knowsInstance(of server: Server) -> Bool {
+        !server.identifier.rawValue.hasPrefix(DiscoveredHomeAssistant.autogeneratedUUIDPrefix)
+    }
+
+    static func existingServers(reachedBy server: Server, among servers: [Server]) -> [Server] {
+        guard knowsInstance(of: server) else { return [] }
+        return servers.filter { $0.identifier == server.identifier || $0.info.instanceID == server.identifier.rawValue }
+    }
+
+    static func registrationToKeep(
+        of existing: Server,
+        insteadOf registration: RegistrationRecord
+    ) -> RegistrationRecord? {
+        let identity = Current.settingsStore.currentRegistrationIdentity(for: existing)
+        guard !existing.info.connection.webhookID.isEmpty,
+              let vendorID = Current.device.identifierForVendor(), identity.ownerVendorID == vendorID,
+              let made = registration.current, made.deviceID != identity.deviceID else { return nil }
+        return RegistrationRecord(current: identity)
+    }
+
+    private static func rollingBack(
+        to previous: RegistrationRecord,
+        from attempt: RegistrationRecord
+    ) -> RegistrationRecord {
+        guard let vendorID = Current.device.identifierForVendor(), let identity = attempt.pending ?? attempt.current,
+              identity.ownerVendorID == vendorID, identity != previous.current else { return previous }
+        var record = previous
+        record.pending = identity
+        return record
+    }
+
     private func undoConfigure(
         api: HomeAssistantAPI,
-        persisted: (identifier: Identifier<Server>, previousInfo: ServerInfo?)?
+        persisted: Persisted?
     ) -> Promise<Void> {
         Current.Log.info()
 
@@ -375,6 +454,12 @@ class OnboardingAuth {
             } else {
                 Current.servers.remove(identifier: identifier)
             }
+            let settings = Current.settingsStore
+            let attempt = settings.registrationRecord(for: identifier)
+            settings.setRegistrationRecord(
+                Self.rollingBack(to: persisted.previousRegistration, from: attempt),
+                for: identifier
+            )
 
             Current.resetAPICache(for: [identifier])
         }

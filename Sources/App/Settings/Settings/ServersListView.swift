@@ -18,6 +18,7 @@ struct ServersListView: View {
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
                 HomeAssistantAccountRowView(server: server, isCompact: Current.isCatalyst)
             }
+            .accessibilityIdentifier(AccessibilityIdentifier.settingsServerRow.rawValue)
             .tag(MacSettingsSidebarSelection.server(server.identifier))
             .macSettingsSidebarRow(isSelected: macSidebarSelection == .server(server.identifier))
             .contextMenu {
@@ -108,12 +109,13 @@ struct ServersListView: View {
         } label: {
             Label(L10n.Settings.ConnectionSection.addServer, systemSymbol: .plus)
         }
+        .accessibilityIdentifier(AccessibilityIdentifier.settingsAddServer.rawValue)
         #if !targetEnvironment(macCatalyst)
-        .fullScreenCover(isPresented: $showAddServer) {
-            OnboardingNavigationView(onboardingStyle: .secondary)
-        }
+            .fullScreenCover(isPresented: $showAddServer) {
+                OnboardingNavigationView(onboardingStyle: .secondary)
+            }
         #endif
-        .macSettingsSidebarRow()
+            .macSettingsSidebarRow()
     }
 }
 

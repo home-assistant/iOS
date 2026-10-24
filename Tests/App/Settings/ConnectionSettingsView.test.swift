@@ -49,4 +49,9 @@ struct ConnectionSettingsViewTests {
             layout: .fixed(width: 390, height: 2600)
         )
     }
+
+    @Test func searchFindsRegisteringAsANewDevice() {
+        let titles = ConnectionSettingsView.settingsSearchEntries.map(\.title)
+        #expect(titles.contains(L10n.Settings.ConnectionSection.RegisterAsNewDevice.title))
+    }
 }

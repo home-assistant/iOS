@@ -346,6 +346,10 @@ public class WebhookManager: NSObject {
         server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
+        if let held = heldBack(request, to: server) {
+            return held
+        }
+
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [dataQueue] in
@@ -397,6 +401,10 @@ public class WebhookManager: NSObject {
         server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
+        if let held = heldBack(request, to: server) {
+            return held
+        }
+
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [self] in
@@ -411,6 +419,12 @@ public class WebhookManager: NSObject {
         }
 
         return promise
+    }
+
+    private func heldBack(_ request: WebhookRequest, to server: Server) -> Promise<Void>? {
+        guard RegistrationOwnership().holdsBack(request, to: server) else { return nil }
+        Current.Log.info("holding back \(request.type) to \(server.identifier): its registration is another device's")
+        return Promise(error: RegistrationOwnershipError.registeredByAnotherDevice)
     }
 
     private func send(
