@@ -5611,6 +5611,18 @@ public enum L10n {
         /// No URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
       }
+      public enum Reauthenticate {
+        /// Couldn't re-authenticate
+        public static var errorTitle: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.error_title") }
+        /// Sign in to this server again, for example after changing your password or to use a different user. Your server's URLs and settings stay as they are.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.footer") }
+        /// Re-authenticating…
+        public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.progress") }
+        /// Re-authenticate
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.title") }
+        /// Sign in using
+        public static var urlPickerTitle: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.url_picker_title") }
+      }
       public enum RemoteUiUrl {
         /// Remote UI URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.remote_ui_url.title") }

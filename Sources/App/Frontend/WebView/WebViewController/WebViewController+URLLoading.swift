@@ -48,6 +48,13 @@ extension WebViewController {
             object: nil
         )
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(serverDidReauthenticate(_:)),
+            name: ServerReauthenticator.didReauthenticateNotification,
+            object: nil
+        )
+
         tokens.append(server.observe { [weak self] _ in
             self?.connectionInfoDidChange()
         })

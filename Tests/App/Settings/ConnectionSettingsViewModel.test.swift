@@ -226,6 +226,23 @@ struct ConnectionSettingsViewModelTests {
         }
     }
 
+    /// A certificate stored outside this screen, as Re-authenticate does, shows up while it is open.
+    @Test func clientCertificateFollowsTheServer() async {
+        await withTestWorld {
+            let server = makeServer(internalURL: nil, externalURL: "https://external.example.com")
+            let viewModel = ConnectionSettingsViewModel(server: server)
+            #expect(viewModel.clientCertificate == nil)
+
+            let certificate = ClientCertificate(keychainIdentifier: "stored", displayName: "Stored")
+            server.update { $0.connection.clientCertificate = certificate }
+
+            for _ in 0 ..< 3000 where viewModel.clientCertificate == nil {
+                try? await Task.sleep(for: .milliseconds(10))
+            }
+            #expect(viewModel.clientCertificate == certificate)
+        }
+    }
+
     @Test func invitationURLNeedsAnAddressToInviteTo() async {
         await withTestWorld {
             let shareable = ConnectionSettingsViewModel(

@@ -109,8 +109,8 @@ final class OnboardingStateObservableTests: XCTestCase {
         let probe = ReauthProbe()
         let token = newToken
         let state = OnboardingStateObservable()
-        state.clientCertificateRequirement = { _ in requiresCertificate }
-        state.fetchToken = { _, _, _, certificate in
+        state.reauthenticator.clientCertificateRequirement = { _ in requiresCertificate }
+        state.reauthenticator.fetchToken = { _, _, _, certificate in
             probe.fetchedCertificate = certificate
             return .value(token)
         }

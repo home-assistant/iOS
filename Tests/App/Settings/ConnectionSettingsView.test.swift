@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 @testable import HomeAssistant
+import PromiseKit
 @testable import Shared
 import SwiftUI
 import Testing
@@ -11,6 +12,28 @@ import Testing
 @MainActor
 struct ConnectionSettingsViewTests {
     @Test func serverConnectionScreen() async throws {
+        try await assertServerConnectionScreen()
+    }
+
+    @Test func settingsSearchFindsReauthenticate() {
+        #expect(ConnectionSettingsView.settingsSearchEntries.contains { $0.matches(searchQuery: "re-auth") })
+    }
+
+    /// While a Re-authenticate runs, its row shows progress instead of the button title.
+    @Test func serverConnectionScreenWhileReauthenticating() async throws {
+        let reauthentication = ServerReauthenticationModel()
+        // The sign in stays on its first step, so the row stays busy without presenting anything.
+        reauthentication.reauthenticator.clientCertificateRequirement = { _ in Promise<Bool>.pending().promise }
+        try await assertServerConnectionScreen(reauthentication: reauthentication) { server in
+            reauthentication.reauthenticate(server, using: .external)
+        }
+    }
+
+    private func assertServerConnectionScreen(
+        reauthentication: ServerReauthenticationModel? = nil,
+        prepare: (Server) -> Void = { _ in },
+        testName: String = #function
+    ) async throws {
         let info = ServerInfo(
             name: "Test Server",
             connection: .init(
@@ -41,12 +64,15 @@ struct ConnectionSettingsViewTests {
         // The Device Name row falls back to this device's name, which differs per machine.
         Current.device.deviceName = { "iPhone" }
 
+        prepare(server)
+
         assertLightDarkSnapshots(
-            of: NavigationView { ConnectionSettingsView(server: server) },
+            of: NavigationView { ConnectionSettingsView(server: server, reauthentication: reauthentication) },
             drawHierarchyInKeyWindow: true,
             // Taller than a device so the whole details section is captured, not only the part
             // that fits above the fold.
-            layout: .fixed(width: 390, height: 2600)
+            layout: .fixed(width: 390, height: 2600),
+            testName: testName
         )
     }
 }

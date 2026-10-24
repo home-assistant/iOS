@@ -127,7 +127,7 @@ final class RecoveredServerReauthViewModelTests: XCTestCase {
     }
 
     func testReauthenticateAsksForTheCertificateThenLogsIn() throws {
-        state.clientCertificateRequirement = { _ in .value(true) }
+        state.reauthenticator.clientCertificateRequirement = { _ in .value(true) }
         let completed = expectation(description: "completed")
 
         viewModel.reauthenticate(using: .external) { result in
