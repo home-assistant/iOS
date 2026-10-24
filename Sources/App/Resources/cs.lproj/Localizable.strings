@@ -3116,30 +3116,9 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "web_view.server_selection.title" = "Vyberte server";
 "web_view.unique_server_selection.title" = "Vybrat jeden server";
 "webrtc_player.known_issues.title" = "Známé problémy";
-"whats_new.app_support_update.item_body" = "Toto je poslední aktualizace pro iOS 15, watchOS 8 a macOS 11 a starší verze. Klepnutím zobrazíte další informace.";
-"whats_new.app_support_update.item_title" = "Podpora pro iOS 15, Watch OS 8 a macOS 11 bude ukončena";
 "whats_new.app_support_update.title" = "Aktualizace podpory aplikace";
-"whats_new.energy_widget.article_body" = "Nový widget **Energie** umístí váš energetický panel na domovskou obrazovku a zamykací obrazovku.\
-\
-**Co to ukazuje**\
-Síť, solární energie, baterie a plyn pro zvolené období: dnes, včera, tento týden nebo tento měsíc. Vyberte zdroj, kterým chcete uvést, nebo nechte rozhodnutí na displeji. Malá velikost a velikost pro zamčenou obrazovku zobrazují aktuální výkon, pokud máte nastavené senzory výkonu, a větší velikosti zobrazují celkové hodnoty pro každý zdroj za dané období.\
-\
-**Jak jej přidat**\
-Dotkněte se a podržte domovskou obrazovku, klepněte na tlačítko Přidat v horním rohu, vyhledejte Home Assistant a vyberte Energie. Pro zamykací obrazovku se dotkněte a podržte ji, klepněte na Přizpůsobit a přidejte tam widget. Vyžaduje to nastavený ovládací panel Energie v Home Assistantovi.";
-"whats_new.energy_widget.item_body" = "Na domovské obrazovce a zamykací obrazovce se můžete jedním pohledem podívat, kolik energie vaše domácnost spotřebovává, vyrábí a ukládá. Klepnutím se dozvíte více.";
-"whats_new.energy_widget.item_title" = "Widget Energie";
-"whats_new.energy_widget.mac.article_body" = "Nový widget **Energie** vám umístí ovládací panel Energie na plochu.\
-\
-**Co to ukazuje**\
-Síť, solární energie, baterie a plyn pro vámi zvolené období: dnes, včera, tento týden nebo tento měsíc. Vyberte zdroj, ke kterému se má připojit, nebo nechte rozhodnutí na widgetu. Malá velikost zobrazuje aktivní energii, pokud máte nastavené senzory výkonu, a větší velikosti zobrazují celkové hodnoty pro každý zdroj za dané období.\
-\
-**Jak jej přidat**\
-Klepněte pravým tlačítkem myši na plochu, vyberte Upravit widgety, vyhledejte Home Assistant a zvolte Energie. Vyžaduje to nastavený ovládací panel Energie v Home Assistantovi.";
-"whats_new.energy_widget.mac.item_body" = "Podívejte se na ploše, kolik energie váš domov spotřebovává, vyrábí a ukládá. Klepnutím se dozvíte více.";
 "whats_new.item.opens_article_hint" = "Otevře článek";
 "whats_new.item.opens_link_hint" = "Otevře odkaz";
-"whats_new.live_activities.item_body" = "Sledujte časovač, spuštěný spotřebič nebo cokoli, co právě probíhá, na zamykací obrazovce a na Dynamic Islanu. Klepnutím zobrazíte, jak oznámení spustí daný proces.";
-"whats_new.live_activities.item_title" = "Živé aktivity";
 "whats_new.title" = "Co je nového v doprovodné aplikaci";
 "whats_new.version_format" = "Verze %@";
 "widgets.action.name.activate" = "Aktivovat";

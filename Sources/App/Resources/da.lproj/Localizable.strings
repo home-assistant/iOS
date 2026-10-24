@@ -3116,30 +3116,9 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.server_selection.title" = "Vælg server";
 "web_view.unique_server_selection.title" = "Vælg én server";
 "webrtc_player.known_issues.title" = "Kendte problemer";
-"whats_new.app_support_update.item_body" = "Dette er den seneste opdatering til iOS 15, watchOS 8 og macOS 11 og tidligere versioner. Tryk for at læse mere.";
-"whats_new.app_support_update.item_title" = "Understøttelse af iOS 15, watchOS 8 og macOS 11 ophører";
 "whats_new.app_support_update.title" = "Opdatering af app-understøttelse";
-"whats_new.energy_widget.article_body" = "Den nye **Energi**-widget placerer dit energi-betjeningspanel på din hjemmeskærm og låseskærm.\
-\
-**Hvad den viser**\
-Elnettet, solenergi, batteri og gas for den periode, du vælger: i dag, i går, denne uge eller denne måned. Vælg, hvilken kilde der skal vises først, eller lad den selv bestemme. De små størrelser og størrelserne til låseskærmen viser strømforbruget i realtid, når du har strømsensorer opsat, mens de bredere størrelser viser periodens samlede tal for hver energikilde.\
-\
-**Sådan tilføjer du den**\
-Tryk og hold på din hjemmeskærm, tryk på tilføj-knappen i det øverste hjørne, søg efter Home Assistant, og vælg Energi. For låseskærmen skal du trykke og holde på den, trykke på Tilpas og tilføje widgeten der. Der skal være konfigureret et energi-betjeningspanel i Home Assistant.";
-"whats_new.energy_widget.item_body" = "Se hvor meget energi dit hjem bruger, producerer og lagrer med et enkelt blik på din hjemmeskærm og låseskærm. Tryk for at få mere at vide.";
-"whats_new.energy_widget.item_title" = "Energi-widget";
-"whats_new.energy_widget.mac.article_body" = "Den nye **Energi**-widget placerer dit energi-betjeningspanel på skrivebordet.\
-\
-**Hvad den viser**\
-Elnettet, solenergi, batteri og gas for den periode, du vælger: i dag, i går, denne uge eller denne måned. Vælg, hvilken kilde der skal vises først, eller lad den selv bestemme. Den lille størrelse viser strømforbruget i realtid, når du har strømsensorer opsat, mens de bredere størrelser viser periodens samlede tal for hver kilde.\
-\
-**Sådan tilføjer du den**\
-Højreklik på skrivebordet, vælg Rediger widgets, søg efter Home Assistant, og vælg Energi. Der skal være konfigureret et energi-betjeningspanel i Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "Se hvor meget energi dit hjem bruger, producerer og lagrer med et enkelt blik på dit skrivebord. Tryk for at få mere at vide.";
 "whats_new.item.opens_article_hint" = "Åbner en artikel";
 "whats_new.item.opens_link_hint" = "Åbner et link";
-"whats_new.live_activities.item_body" = "Følg med i en timer, en hvidevare der kører, eller noget andet, der er i gang, direkte fra din låseskærm og Dynamic Island. Tryk her for at se, hvordan en notifikation starter en.";
-"whats_new.live_activities.item_title" = "Liveaktiviteter";
 "whats_new.title" = "Nyheder i Home Assistant-appen";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Aktivér";

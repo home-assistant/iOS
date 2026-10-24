@@ -68,20 +68,6 @@ final class SensorPermissionsViewModel: ObservableObject {
     // MARK: - Settings
 
     private func openSettings(for permission: SensorPermission) {
-        URLOpener.shared.openSettings(destination: settingsDestination(for: permission), completionHandler: nil)
-    }
-
-    private func settingsDestination(for permission: SensorPermission) -> OpenSettingsDestination {
-        switch permission {
-        case .location: return .location
-        case .notification: return .notification
-        case .motion: return .motion
-        case .focus: return .focus
-        case .camera: return .camera
-        case .microphone: return .microphone
-        case .speech: return .speech
-        case .bluetooth: return .bluetooth
-        case .localNetwork: return .localNetwork
-        }
+        URLOpener.shared.openSettings(destination: permission.settingsDestination, completionHandler: nil)
     }
 }

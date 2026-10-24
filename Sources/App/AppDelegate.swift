@@ -41,7 +41,7 @@ extension AppEnvironment {
     }
 }
 
-// `@main` is on `HAApp`; this delegate is installed via `@UIApplicationDelegateAdaptor`.
+/// `@main` is on `HAApp`; this delegate is installed via `@UIApplicationDelegateAdaptor`.
 class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Set from `init` so the adaptor-managed delegate stays reachable; see `UIApplication.typedDelegate`.
     private(set) static var shared: AppDelegate?
@@ -108,6 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
         // swiftlint:enable prohibit_environment_assignment
 
+        MainActor.assumeIsolated { AppMigrationCoordinator.shared.restoreHandoffIfNeeded() }
         notificationManager.setupNotifications()
         setupLiveActivityReattachment()
         setupFirebase()
@@ -452,7 +453,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError("no firebase config found")
         }
 
-        notificationManager.setupFirebase()
+        // An app that handed its setup over must not come back with a push token of its own.
+        if MainActor.assumeIsolated({ AppMigrationCoordinator.shared.hasHandedOff }) {
+            MainActor.assumeIsolated { AppMigrationCoordinator.shared.releasePushRegistrationIfHandedOff() }
+        } else {
+            notificationManager.setupFirebase()
+        }
     }
 
     private func setupModels() {
