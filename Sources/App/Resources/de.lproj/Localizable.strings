@@ -357,7 +357,7 @@
 "assist.carplay.tap_to_record.title" = "Zum Aufnehmen tippen";
 "assist.chat.menu.edit" = "Bearbeiten";
 "assist.chat.menu.replay" = "Wiederholung";
-"assist.error.audio_conversion" = "Couldn't read audio from the microphone. Try again, or use a different microphone.";
+"assist.error.audio_conversion" = "Vom Mikrofon wurde kein Audiosignal empfangen. Versuche es erneut oder verwende ein anderes Mikrofon.";
 "assist.error.pipelines_response" = "Assist-Pipelines konnten nicht abgerufen werden. Bitte überprüfe deine Pipeline-Konfiguration.";
 "assist.error.speech_to_text_unsupported" = "Diese Assist-Pipeline verfügt über keine Sprache-zu-Text-Engine. Wähle eine Pipeline aus, die über eine solche verfügt, oder aktiviere die geräteinterne Sprache-zu-Text-Funktion in den Assist-Einstellungen.";
 "assist.modern_ui.header.title" = "Assist";
@@ -411,11 +411,11 @@
 "camera_list.title" = "Kameras";
 "camera_list.unavailable.message" = "Kamera-Streaming ist auf dem Mac nicht verfügbar.";
 "camera_list.unavailable.title" = "Auf Mac nicht verfügbar";
-"camera_microphone.errors.connection_failed" = "Unable to connect the microphone to the camera";
-"camera_microphone.errors.interrupted" = "The microphone stream was stopped";
-"camera_microphone.errors.microphone_denied" = "Microphone access is needed to talk through the camera. You can allow it in Settings.";
-"camera_microphone.errors.signaling_failed" = "The camera could not start the microphone stream";
-"camera_microphone.errors.timed_out" = "The camera took too long to respond";
+"camera_microphone.errors.connection_failed" = "Das Mikrofon konnte nicht mit der Kamera verbunden werden.";
+"camera_microphone.errors.interrupted" = "Der Mikrofon-Stream wurde gestoppt";
+"camera_microphone.errors.microphone_denied" = "Um über die Kamera zu sprechen, ist Mikrofonzugriff erforderlich. Du kannst dies in den Einstellungen erlauben.";
+"camera_microphone.errors.signaling_failed" = "Die Kamera konnte den Mikrofon-Stream nicht starten";
+"camera_microphone.errors.timed_out" = "Die Kamera hat zu lange gebraucht, um zu antworten";
 "camera_player.default_camera_name" = "Kamera";
 "camera_player.errors.no_stream_available" = "Kein Stream verfügbar";
 "camera_player.errors.unable_to_connect_to_server" = "Verbindung zu Home Assistant nicht möglich";
@@ -797,6 +797,11 @@ Dieser Server benötigt ein Clientzertifikat (mTLS), aber der Vorgang wurde abge
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-Stream nicht verfügbar";
 "extensions.notification_content.error.request.other" = "Kein HTTP-200 (OK) Statuscode erhalten (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC-Stream nicht verfügbar";
+"extensions.notification_content.error_state.hide_details" = "Hide details";
+"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
+"extensions.notification_content.error_state.retry" = "Try again";
+"extensions.notification_content.error_state.show_details" = "Show details";
+"extensions.notification_content.error_state.title" = "Media unavailable";
 "flight_greetings.empty_state.body" = "Du bist derzeit nicht verbunden. Dein Zuhause wartet auf dich, wenn du landest.";
 "flight_greetings.empty_state.configure_hint" = "Flugbegrüßungen in den Einstellungen konfigurieren";
 "flight_greetings.empty_state.title" = "Guten Flug";
@@ -1959,7 +1964,7 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings.debugging.media_playback.title" = "WKWebView-Medienwiedergabe";
 "settings.debugging.notify_local_push_state_changes.title" = "Benachrichtigen, wenn lokale Push-Verbindungen hergestellt oder getrennt werden";
 "settings.debugging.receive_debug_notifications.title" = "Debug-Benachrichtigungen erhalten";
-"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Zone enter accuracy fuzz limit";
+"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Toleranzgrenze für Betreten einer Zone";
 "settings.debugging.reset_app.alert_title" = "Alle App-Daten löschen?";
 "settings.debugging.reset_app.client_event" = "Alle App-Daten wurden aus den Debug-Einstellungen gelöscht";
 "settings.debugging.reset_app.delete_button" = "App-Daten löschen";
@@ -2410,6 +2415,7 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "settings_sensors.health.footer" = "Die Apple-Health-Sensoren verwenden die unten aufgeführten, für jeden Sensor spezifischen Steuerelemente. Gesundheitsdaten werden ausschließlich während der regulären Sensoraktualisierungen ausgelesen.";
 "settings_sensors.health.header" = "Apple Health";
 "settings_sensors.health.metric.in_bed.footer" = "Die Apple Watch erfasst zwar die Schlafphasen, nicht jedoch die Zeit im Bett; daher bleibt diese Angabe so lange nicht verfügbar, bis eine Quelle sie übermittelt. Aktiviere „Zeit im Bett mit dem iPhone erfassen“ unter „Health > Schlaf > Optionen“ oder verwende eine Schlaf-Tracking-App, die die Zeit im Bett erfasst.";
+"settings_sensors.health.metric.move_goal.footer" = "Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.";
 "settings_sensors.health.reload" = "Sensoren neu laden";
 "settings_sensors.health.request_access" = "Apple Health-Zugriff anfordern";
 "settings_sensors.health.sensors.enable_all" = "Alle Apple-Health-Sensoren aktivieren";
@@ -2464,6 +2470,8 @@ Der Server antwortet nur, solange die App geöffnet ist, und stoppt, sobald du s
 "settings_sensors.sensors.foreground_only.badge" = "Wenn die App geöffnet ist";
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.sensors.no_results" = "Keine Sensoren passen zu deiner Suche";
+"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Only reports with a paired Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.badge" = "Requires Apple Watch";
 "settings_sensors.sensors.search_prompt" = "Sensoren durchsuchen";
 "settings_sensors.sensors.unavailable_on_device.header" = "Auf diesem Gerät nicht verfügbar";
 "settings_sensors.sensors.unavailable_on_device.state" = "Nicht verfügbar";

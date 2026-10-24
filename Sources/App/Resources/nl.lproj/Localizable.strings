@@ -797,6 +797,11 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-stream niet beschikbaar";
 "extensions.notification_content.error.request.other" = "Non-200 Statuscode ontvangen (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC-stream niet beschikbaar";
+"extensions.notification_content.error_state.hide_details" = "Hide details";
+"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
+"extensions.notification_content.error_state.retry" = "Try again";
+"extensions.notification_content.error_state.show_details" = "Show details";
+"extensions.notification_content.error_state.title" = "Media unavailable";
 "flight_greetings.empty_state.body" = "Je bent momenteel niet verbonden. Je huis staat voor je klaar zodra je bent geland.";
 "flight_greetings.empty_state.configure_hint" = "Configureer vluchtbegroetingen in de instellingen";
 "flight_greetings.empty_state.title" = "Een prettige vlucht gewenst";
@@ -2410,6 +2415,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "settings_sensors.health.footer" = "De sensoren van Apple Gezondheid maken gebruik van de onderstaande bestaande instellingen per sensor. Gezondheidsgegevens worden alleen tijdens normale sensorupdates uitgelezen.";
 "settings_sensors.health.header" = "Apple Gezondheid";
 "settings_sensors.health.metric.in_bed.footer" = "De Apple Watch registreert wel de slaapfasen, maar niet de tijd die je in bed doorbrengt; deze informatie is dus pas beschikbaar als een bron deze gegevens vastlegt. Schakel 'Tijd in bed bijhouden met iPhone' in via Gezondheid > Slaap > Opties, of gebruik een app voor slaapregistratie die de tijd in bed bijhoudt.";
+"settings_sensors.health.metric.move_goal.footer" = "Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.";
 "settings_sensors.health.reload" = "Herlaad Sensoren";
 "settings_sensors.health.request_access" = "Toegang tot Apple Gezondheid aanvragen";
 "settings_sensors.health.sensors.enable_all" = "Alle Apple Gezondheid-sensoren inschakelen";
@@ -2464,6 +2470,8 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "settings_sensors.sensors.foreground_only.badge" = "Wanneer de app geopend is";
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.sensors.no_results" = "Er zijn geen sensoren gevonden die overeenkomen met je zoekopdracht.";
+"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Only reports with a paired Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.badge" = "Requires Apple Watch";
 "settings_sensors.sensors.search_prompt" = "Zoek sensoren";
 "settings_sensors.sensors.unavailable_on_device.header" = "Niet beschikbaar op dit apparaat";
 "settings_sensors.sensors.unavailable_on_device.state" = "Niet beschikbaar";

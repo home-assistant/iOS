@@ -357,7 +357,7 @@
 "assist.carplay.tap_to_record.title" = "點擊錄製";
 "assist.chat.menu.edit" = "編輯";
 "assist.chat.menu.replay" = "重播";
-"assist.error.audio_conversion" = "Couldn't read audio from the microphone. Try again, or use a different microphone.";
+"assist.error.audio_conversion" = "無法從麥克風讀取音效。請再試一次，或使用其他麥克風。";
 "assist.error.pipelines_response" = "獲取助理 Pipeline 失敗，請檢查 Pipeline 設定。";
 "assist.error.speech_to_text_unsupported" = "助理設定沒有語音轉文字引擎。請選擇具有語音轉文字引擎的設定檔，或在助理設定中啟用裝置端語音轉文字功能。";
 "assist.modern_ui.header.title" = "助理";
@@ -411,11 +411,11 @@
 "camera_list.title" = "攝影機";
 "camera_list.unavailable.message" = "Mac 系統不支援攝影機串流功能。";
 "camera_list.unavailable.title" = "Mac 版本不支援";
-"camera_microphone.errors.connection_failed" = "Unable to connect the microphone to the camera";
-"camera_microphone.errors.interrupted" = "The microphone stream was stopped";
-"camera_microphone.errors.microphone_denied" = "Microphone access is needed to talk through the camera. You can allow it in Settings.";
-"camera_microphone.errors.signaling_failed" = "The camera could not start the microphone stream";
-"camera_microphone.errors.timed_out" = "The camera took too long to respond";
+"camera_microphone.errors.connection_failed" = "無法將麥克風連接至攝影機";
+"camera_microphone.errors.interrupted" = "麥克風串流已停止";
+"camera_microphone.errors.microphone_denied" = "需要麥克風存取權限才能透過攝影機通話。可以在設定中允許此權限。";
+"camera_microphone.errors.signaling_failed" = "攝影機無法啟動麥克風串流";
+"camera_microphone.errors.timed_out" = "攝影機回應時間過長";
 "camera_player.default_camera_name" = "攝影機";
 "camera_player.errors.no_stream_available" = "沒有可用的串流";
 "camera_player.errors.unable_to_connect_to_server" = "無法連線至 Home Assistant";
@@ -797,6 +797,11 @@
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 串流不可用";
 "extensions.notification_content.error.request.other" = "取得 non-200 狀態代碼（%li）";
 "extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC 串流不可用";
+"extensions.notification_content.error_state.hide_details" = "Hide details";
+"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
+"extensions.notification_content.error_state.retry" = "Try again";
+"extensions.notification_content.error_state.show_details" = "Show details";
+"extensions.notification_content.error_state.title" = "Media unavailable";
 "flight_greetings.empty_state.body" = "目前處於離線狀態。待重新連上網路後，智能家庭會在這裡等候您。";
 "flight_greetings.empty_state.configure_hint" = "於設定中設定飛行問候語";
 "flight_greetings.empty_state.title" = "祝您飛行旅途愉快";
@@ -1959,7 +1964,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.debugging.media_playback.title" = "WKWebView 媒體播放";
 "settings.debugging.notify_local_push_state_changes.title" = "當本地推送連線或斷線時通知";
 "settings.debugging.receive_debug_notifications.title" = "接收除錯通知";
-"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Zone enter accuracy fuzz limit";
+"settings.debugging.region_enter_maximum_fuzz_distance.title" = "分區進入精度模糊限制";
 "settings.debugging.reset_app.alert_title" = "刪除所有應用資料？";
 "settings.debugging.reset_app.client_event" = "從除錯設定中刪除所有應用程式資料";
 "settings.debugging.reset_app.delete_button" = "刪除應用資料";
@@ -2410,6 +2415,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_sensors.health.footer" = "Apple 健康感測器使用下方現有的個別感測器控制項。健康資料僅在正常的感測器更新期間讀取。";
 "settings_sensors.health.header" = "Apple 健康";
 "settings_sensors.health.metric.in_bed.footer" = "Apple Watch 會記錄睡眠階段，但不會記錄臥床時間，因此在有來源寫入資料之前，此項目將無法使用。請在健康 > 睡眠 > 選項中開啟以 “ iPhone 追蹤在床時間” ，或使用可記錄在床時間的睡眠追蹤 App。";
+"settings_sensors.health.metric.move_goal.footer" = "Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.";
 "settings_sensors.health.reload" = "重新載入感測器";
 "settings_sensors.health.request_access" = "要求 Apple 健康存取權限";
 "settings_sensors.health.sensors.enable_all" = "啟用所有 Apple 健康感測器";
@@ -2464,6 +2470,8 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_sensors.sensors.foreground_only.badge" = "應用程式開啟時";
 "settings_sensors.sensors.header" = "感測器";
 "settings_sensors.sensors.no_results" = "未找到符合搜尋條件的感測器。";
+"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Only reports with a paired Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.badge" = "Requires Apple Watch";
 "settings_sensors.sensors.search_prompt" = "搜尋感測器";
 "settings_sensors.sensors.unavailable_on_device.header" = "此裝置不可用";
 "settings_sensors.sensors.unavailable_on_device.state" = "不可用";
