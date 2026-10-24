@@ -28,7 +28,9 @@ final class CarPlayAssistSessionTests: XCTestCase {
         prompt: String? = nil,
         configuration: AssistConfiguration = AssistConfiguration(),
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
-        speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
+        speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil,
+        responseTimeout: TimeInterval = 30,
+        intentStageTimeout: TimeInterval = 300
     ) -> CarPlayAssistSession {
         let session = CarPlayAssistSession(
             interfaceController: nil,
@@ -40,7 +42,9 @@ final class CarPlayAssistSessionTests: XCTestCase {
             assistConfiguration: configuration,
             speechTranscriber: speechTranscriber,
             speechSynthesizer: speechSynthesizer,
-            tonePlayer: mockTonePlayer
+            tonePlayer: mockTonePlayer,
+            responseTimeout: responseTimeout,
+            intentStageTimeout: intentStageTimeout
         )
         sut = session
         return session
@@ -180,6 +184,51 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
         XCTAssertTrue(mockAssistService.finishSendingAudioCalled)
         XCTAssertTrue(mockTonePlayer.stopCalled)
+    }
+
+    // MARK: - Response watchdog
+
+    /// A conversation agent that does not stream sends nothing between `intent-start` and
+    /// `intent-end`, so the silence deadline must not cut it off while the server still runs it.
+    func testSilentIntentStageIsNotCutOffBySilenceTimeout() {
+        let sut = makeSut(prompt: "Turn on the lights", responseTimeout: 0.05)
+        sut.start()
+        sut.didReceiveEvent(.runStart)
+        sut.didReceiveEvent(.intentStart)
+
+        // Lets the main queue run well past the silence deadline.
+        let silence = expectation(description: "silence")
+        silence.isInverted = true
+        wait(for: [silence], timeout: 0.5)
+
+        XCTAssertEqual(sut.currentState, .processing)
+        XCTAssertFalse(mockAssistService.cancelRunCalled)
+        sut.didReceiveEvent(.intentEnd)
+        sut.didReceiveIntentEndContent("The lights are on")
+        XCTAssertEqual(sut.currentState, .responding)
+    }
+
+    /// When the run goes quiet past its deadline the session abandons it, and a response that
+    /// still arrives afterwards is neither shown nor played.
+    func testWatchdogCancelsRunAndIgnoresLateResponse() {
+        let synthesizer = MockSpeechSynthesizer()
+        let sut = makeSut(
+            prompt: "Turn on the lights",
+            configuration: AssistConfiguration(enableOnDeviceTTS: true),
+            speechSynthesizer: synthesizer,
+            responseTimeout: 0.05
+        )
+        sut.start()
+
+        let errorShown = expectation(for: NSPredicate { _, _ in sut.currentState.isError }, evaluatedWith: nil)
+        wait(for: [errorShown], timeout: 30)
+        XCTAssertTrue(mockAssistService.cancelRunCalled)
+
+        sut.didReceiveIntentEndContent("The lights are on")
+        sut.didReceiveTtsMediaUrl(URL(string: "https://example.com/tts.mp3")!)
+
+        XCTAssertTrue(sut.currentState.isError)
+        XCTAssertFalse(synthesizer.speakCalled)
     }
 
     // MARK: - Prompt flow

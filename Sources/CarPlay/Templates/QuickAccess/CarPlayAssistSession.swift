@@ -76,13 +76,19 @@ final class CarPlayAssistSession: NSObject {
     /// Detects a pipeline run that goes quiet before delivering a response (e.g. the WebSocket
     /// subscription dying mid-run) so the session shows the error state instead of spinning on
     /// "Processing" forever. Re-armed on every pipeline event, so slow-but-alive runs
-    /// (LLM streaming) are not cut off. Both properties are protected by `stateQueue`.
+    /// (LLM streaming) are not cut off. While the conversation agent works (`intent-start` to
+    /// `intent-end`) an agent that does not stream sends nothing at all, so the deadline there is
+    /// the server's own pipeline run timeout: Home Assistant ends the run after it with an `error`
+    /// event, and the watchdog only backs that up. These properties are protected by `stateQueue`.
     private var responseWatchdog: DispatchWorkItem?
     private var ttsWasRequested = false
-    private static let responseTimeout: TimeInterval = 30
+    private var intentStageRunning = false
+    private let responseTimeout: TimeInterval
+    /// Home Assistant's `DEFAULT_PIPELINE_TIMEOUT`, which applies because the app sends no `timeout`.
+    private let intentStageTimeout: TimeInterval
 
     /// Serial queue protecting all mutable session state (`canSendAudioData`, `state`, `isStopped`,
-    /// `ttsWasRequested`, `responseWatchdog`).
+    /// `ttsWasRequested`, `intentStageRunning`, `responseWatchdog`).
     /// Callbacks from AVCaptureSession, HAKit, and NotificationCenter may arrive on arbitrary threads.
     private let stateQueue = DispatchQueue(label: "io.home-assistant.carplay-assist-session", qos: .userInteractive)
     private var canSendAudioData = false
@@ -170,8 +176,12 @@ final class CarPlayAssistSession: NSObject {
         assistConfiguration: AssistConfiguration? = nil,
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
         speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil,
-        tonePlayer: CarPlayAssistTonePlayerProtocol = CarPlayAssistTonePlayer()
+        tonePlayer: CarPlayAssistTonePlayerProtocol = CarPlayAssistTonePlayer(),
+        responseTimeout: TimeInterval = 30,
+        intentStageTimeout: TimeInterval = 300
     ) {
+        self.responseTimeout = responseTimeout
+        self.intentStageTimeout = intentStageTimeout
         self.interfaceController = interfaceController
         self.server = server
         self.pipelineId = pipelineId
@@ -337,6 +347,7 @@ final class CarPlayAssistSession: NSObject {
             canSendAudioData = false
             state = .recording
             ttsWasRequested = false
+            intentStageRunning = false
         }
         cancelResponseWatchdog()
         configureAudioSessionForAssist()
@@ -357,6 +368,7 @@ final class CarPlayAssistSession: NSObject {
             canSendAudioData = false
             state = .processing
             ttsWasRequested = false
+            intentStageRunning = false
         }
         ttsAudioPlayer?.stop()
         ttsAudioPlayer = nil
@@ -740,19 +752,22 @@ final class CarPlayAssistSession: NSObject {
     // MARK: - Response Watchdog
 
     private func armResponseWatchdog() {
+        let timeout = stateQueue.sync { intentStageRunning ? intentStageTimeout : responseTimeout }
         let workItem = DispatchWorkItem { [weak self] in
             guard let self else { return }
             let shouldFire = stateQueue.sync {
                 !self.isStopped && self.state.isAwaitingPipelineResponse && !self.ttsWasRequested
             }
             guard shouldFire else { return }
-            enterErrorState(message: "No response from the Assist pipeline within \(Self.responseTimeout)s")
+            // Abandon the run, so the server stops working on it and its late response is not played.
+            assistService.cancelRun()
+            enterErrorState(message: "No response from the Assist pipeline within \(timeout)s")
         }
         stateQueue.sync {
             responseWatchdog?.cancel()
             responseWatchdog = workItem
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.responseTimeout, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: workItem)
     }
 
     private func cancelResponseWatchdog() {
@@ -1115,8 +1130,10 @@ extension CarPlayAssistSession: AssistServiceDelegate {
             armResponseWatchdog()
         } else {
             // Every pipeline event proves the run is still alive, so push the deadline out.
-            let awaitingResponse = stateQueue.sync {
-                !isStopped && state.isAwaitingPipelineResponse && !ttsWasRequested
+            let awaitingResponse = stateQueue.sync { () -> Bool in
+                if event == .intentStart { intentStageRunning = true }
+                if event == .intentEnd { intentStageRunning = false }
+                return !isStopped && state.isAwaitingPipelineResponse && !ttsWasRequested
             }
             if awaitingResponse {
                 armResponseWatchdog()
@@ -1133,8 +1150,9 @@ extension CarPlayAssistSession: AssistServiceDelegate {
     }
 
     func didReceiveIntentEndContent(_ content: String) {
-        let stopped = stateQueue.sync { isStopped }
-        guard !stopped else { return }
+        // A response that arrives after the session gave up on the run is not played.
+        let ignored = stateQueue.sync { isStopped || state.isError }
+        guard !ignored else { return }
         stateQueue.sync { state = .responding }
         activateVoiceControlState(for: .responding)
         if assistConfiguration.enableOnDeviceTTS {
@@ -1144,7 +1162,7 @@ extension CarPlayAssistSession: AssistServiceDelegate {
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
         let shouldHandle = stateQueue.sync { () -> Bool in
-            guard !isStopped else { return false }
+            guard !isStopped, !state.isError else { return false }
             ttsWasRequested = true
             return true
         }
