@@ -29,8 +29,9 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlOpenEntity.rawValue, "controlOpenEntity")
         XCTAssertEqual(WidgetsKind.controlOpenCamera.rawValue, "controlOpenCamera")
         XCTAssertEqual(WidgetsKind.controlFan.rawValue, "controlFan")
+        XCTAssertEqual(WidgetsKind.controlOpenHomeAssistant.rawValue, "controlOpenHomeAssistant")
         XCTAssertEqual(WidgetsKind.todoList.rawValue, "todoList")
         XCTAssertEqual(WidgetsKind.calendar.rawValue, "calendar")
-        XCTAssertEqual(WidgetsKind.allCases.count, 25)
+        XCTAssertEqual(WidgetsKind.allCases.count, 26)
     }
 }
