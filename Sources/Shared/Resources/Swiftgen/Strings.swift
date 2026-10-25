@@ -981,6 +981,12 @@ public enum L10n {
       /// Open Experimental Dashboard
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.title") }
     }
+    public enum OpenHomeAssistant {
+      /// Opens the Home Assistant app
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_home_assistant.description") }
+      /// Open Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_home_assistant.title") }
+    }
     public enum OpenStateIcon {
       /// Icon for open state
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_state_icon.title") }
