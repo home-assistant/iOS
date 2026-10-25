@@ -797,6 +797,11 @@ Ce serveur requiert un certificat client (mTLS), mais l'opération a été annul
 "extensions.notification_content.error.request.hls_unavailable" = "Le flux HLS n'est pas disponible";
 "extensions.notification_content.error.request.other" = "Code de statut non-200 (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "Flux WebRTC indisponible";
+"extensions.notification_content.error_state.hide_details" = "Hide details";
+"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
+"extensions.notification_content.error_state.retry" = "Try again";
+"extensions.notification_content.error_state.show_details" = "Show details";
+"extensions.notification_content.error_state.title" = "Media unavailable";
 "flight_greetings.empty_state.body" = "Vous êtes actuellement déconnecté. Votre maison vous attendra à l'atterrissage.";
 "flight_greetings.empty_state.configure_hint" = "Configurez les messages de vol dans les réglages";
 "flight_greetings.empty_state.title" = "Bon vol";
@@ -2410,6 +2415,7 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "settings_sensors.health.footer" = "Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.";
 "settings_sensors.health.header" = "Apple Health";
 "settings_sensors.health.metric.in_bed.footer" = "Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.";
+"settings_sensors.health.metric.move_goal.footer" = "Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.";
 "settings_sensors.health.reload" = "Reload Sensors";
 "settings_sensors.health.request_access" = "Request Apple Health Access";
 "settings_sensors.health.sensors.enable_all" = "Enable all Apple Health sensors";
@@ -2464,6 +2470,8 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "settings_sensors.sensors.foreground_only.badge" = "Lorsque l'application est ouverte";
 "settings_sensors.sensors.header" = "Capteurs";
 "settings_sensors.sensors.no_results" = "No sensors match your search";
+"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Only reports with a paired Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.badge" = "Requires Apple Watch";
 "settings_sensors.sensors.search_prompt" = "Search sensors";
 "settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
 "settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";
