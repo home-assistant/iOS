@@ -797,6 +797,11 @@
 "extensions.notification_content.error.request.hls_unavailable" = "Поток HLS недоступен";
 "extensions.notification_content.error.request.other" = "Получен неожиданный (не 200) код состояния (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "Трансляция WebRTC недоступна";
+"extensions.notification_content.error_state.hide_details" = "Hide details";
+"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
+"extensions.notification_content.error_state.retry" = "Try again";
+"extensions.notification_content.error_state.show_details" = "Show details";
+"extensions.notification_content.error_state.title" = "Media unavailable";
 "flight_greetings.empty_state.body" = "В данный момент вы не в сети. Ваш дом будет ждать вас по прибытии.";
 "flight_greetings.empty_state.configure_hint" = "Настроить приветствия в полете в настройках";
 "flight_greetings.empty_state.title" = "Удачного полёта";
@@ -2408,6 +2413,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings_sensors.health.footer" = "Датчики Здоровье используют существующие настройки для каждого датчика, указанные ниже. Данные о состоянии здоровья считываются только при обычном обновлении датчиков.";
 "settings_sensors.health.header" = "Здоровье";
 "settings_sensors.health.metric.in_bed.footer" = "Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.";
+"settings_sensors.health.metric.move_goal.footer" = "Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.";
 "settings_sensors.health.reload" = "Перезагрузить датчики";
 "settings_sensors.health.request_access" = "Запросить доступ к приложению Здоровье";
 "settings_sensors.health.sensors.enable_all" = "Включение всех датчиков Здоровье";
@@ -2462,6 +2468,8 @@ Home Assistant — это приложение с открытым исходн�
 "settings_sensors.sensors.foreground_only.badge" = "Когда приложение открыто";
 "settings_sensors.sensors.header" = "Датчики";
 "settings_sensors.sensors.no_results" = "Нет датчиков, соответствующих вашему запросу";
+"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Only reports with a paired Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.badge" = "Requires Apple Watch";
 "settings_sensors.sensors.search_prompt" = "Поиск датчиков";
 "settings_sensors.sensors.unavailable_on_device.header" = "Недоступно на этом устройстве";
 "settings_sensors.sensors.unavailable_on_device.state" = "Недоступно";

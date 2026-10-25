@@ -797,6 +797,11 @@ Este servidor requiere un certificado de cliente (mTLS), pero la operación se h
 "extensions.notification_content.error.request.hls_unavailable" = "Transmisión HLS no disponible";
 "extensions.notification_content.error.request.other" = "Se ha recibido un código de estado distinto de 200 (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "La transmisión WebRTC no está disponible";
+"extensions.notification_content.error_state.hide_details" = "Hide details";
+"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
+"extensions.notification_content.error_state.retry" = "Try again";
+"extensions.notification_content.error_state.show_details" = "Show details";
+"extensions.notification_content.error_state.title" = "Media unavailable";
 "flight_greetings.empty_state.body" = "Ahora mismo no estás conectado. Tu hogar te estará esperando cuando aterrices.";
 "flight_greetings.empty_state.configure_hint" = "Configura los mensajes de bienvenida de los vuelos en Ajustes";
 "flight_greetings.empty_state.title" = "Que tengas un buen vuelo";
@@ -2410,6 +2415,7 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "settings_sensors.health.footer" = "Los sensores de Apple Health utilizan los controles específicos para cada sensor que se indican a continuación. Los datos de salud solo se leen durante las actualizaciones normales de los sensores.";
 "settings_sensors.health.header" = "Apple Health";
 "settings_sensors.health.metric.in_bed.footer" = "El Apple Watch registra las fases del sueño, pero no el tiempo que pasas en la cama, por lo que este dato no estará disponible hasta que una fuente lo registre. Activa la opción \"Registrar el tiempo en la cama con el iPhone\" en Salud &gt; Sueño &gt; Opciones, o utiliza una aplicación de seguimiento del sueño que registre el tiempo que pasas en la cama.";
+"settings_sensors.health.metric.move_goal.footer" = "Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.";
 "settings_sensors.health.reload" = "Recargar sensores";
 "settings_sensors.health.request_access" = "Solicitar acceso a Apple Health";
 "settings_sensors.health.sensors.enable_all" = "Activar todos los sensores de Apple Health";
@@ -2464,6 +2470,8 @@ El servidor solo responde mientras la aplicación está abierta y deja de hacerl
 "settings_sensors.sensors.foreground_only.badge" = "Mientras la aplicación esté abierta";
 "settings_sensors.sensors.header" = "Sensores";
 "settings_sensors.sensors.no_results" = "No hay sensores que coincidan con tu búsqueda";
+"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Only reports with a paired Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.badge" = "Requires Apple Watch";
 "settings_sensors.sensors.search_prompt" = "Buscar sensores";
 "settings_sensors.sensors.unavailable_on_device.header" = "No disponible en este dispositivo";
 "settings_sensors.sensors.unavailable_on_device.state" = "No disponible";
