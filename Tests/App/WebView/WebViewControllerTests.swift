@@ -61,6 +61,30 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(overlayState.emptyState?.server.identifier, server.identifier)
     }
 
+    /// Re-authenticating from the server's settings has to bring a logged-out web view back, while a
+    /// re-authentication of some other server leaves it alone.
+    func testReauthenticationFromSettingsLeavesTheLoggedOutState() async {
+        let server = Server.fake()
+        let sut = makeSUT(server: server)
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+        sut.observeConnectionNotifications()
+        sut.showLoggedOutState()
+
+        NotificationCenter.default.post(
+            name: ServerReauthenticator.didReauthenticateNotification,
+            object: Server.fake(identifier: .init(rawValue: "other-server"))
+        )
+        await Task.yield()
+        XCTAssertTrue(sut.didLogOut)
+
+        NotificationCenter.default.post(name: ServerReauthenticator.didReauthenticateNotification, object: server)
+        await waitUntil({ !sut.didLogOut })
+
+        XCTAssertFalse(sut.didLogOut)
+        XCTAssertEqual(sut.connectionState, .unknown)
+    }
+
     func testUpdateFrontendConnectionStateDoesNotDowngradeAuthInvalidToDisconnected() {
         let sut = makeSUT()
         sut.connectionState = .authInvalid

@@ -123,6 +123,38 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         XCTAssertEqual(recorder.lastSentRefreshToken, "ReauthenticatedRefreshToken")
     }
 
+    /// Re-authenticating while a refresh of the previous session is in flight stores a new session;
+    /// the refresh answering afterwards must not put the previous one back.
+    func testRefreshFinishingAfterReauthenticationKeepsTheNewSession() async {
+        stubRefreshToken(.success, delay: 0.5)
+        let server = Self.serverWithExpiredToken()
+        let tokenManager = TokenManager(server: server)
+
+        let refresh = tokenManager.bearerToken
+        await waitForRequest()
+        server.update { $0.token = Self.reauthenticatedToken }
+        _ = await settle(refresh)
+
+        XCTAssertEqual(server.info.token, Self.reauthenticatedToken)
+    }
+
+    /// The previous session being refused after the user already signed in again says nothing about
+    /// the new one, so it must not send them back to the login.
+    func testRefusalArrivingAfterReauthenticationDoesNotRequestReauthentication() async {
+        stubRefreshToken(.rejection, delay: 0.5)
+        let server = Self.serverWithExpiredToken()
+        let tokenManager = TokenManager(server: server)
+
+        let refresh = tokenManager.bearerToken
+        await waitForRequest()
+        server.update { $0.token = Self.reauthenticatedToken }
+        _ = await settle(refresh)
+
+        await waitForMainQueue()
+        XCTAssertEqual(recorder.reauthenticationCount, 0)
+        XCTAssertEqual(server.info.token, Self.reauthenticatedToken)
+    }
+
     /// Logging out revokes the refresh token along with the access token, so refreshing is as dead as
     /// re-sending the access token — and the app keeps running until the user signs back in.
     func testRevokedRefreshTokenIsNeverSent() async {
@@ -224,6 +256,22 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         })
     }
 
+    private static let reauthenticatedToken = TokenInfo(
+        accessToken: "ReauthenticatedAccessToken",
+        refreshToken: "ReauthenticatedRefreshToken",
+        expiration: Current.date().addingTimeInterval(1800)
+    )
+
+    /// Waits until the refresh request reached the stub, so a token stored afterwards lands while it
+    /// is in flight.
+    private func waitForRequest() async {
+        let deadline = Date(timeIntervalSinceNow: 30)
+        while recorder.requestCount == 0, Date() < deadline {
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertEqual(recorder.requestCount, 1)
+    }
+
     private enum RefreshOutcome {
         /// What Home Assistant answers for a refresh token it no longer has.
         case rejection
@@ -231,7 +279,7 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         case success
     }
 
-    private func stubRefreshToken(_ outcome: RefreshOutcome) {
+    private func stubRefreshToken(_ outcome: RefreshOutcome, delay: TimeInterval = 0) {
         if let stubDescriptor {
             HTTPStubs.removeStub(stubDescriptor)
         }
@@ -239,26 +287,29 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         stubDescriptor = stub(condition: { $0.url?.path == "/auth/token" }, response: { [recorder] request in
             recorder.recordRequest(body: request.ohhttpStubs_httpBody)
 
+            let response: HTTPStubsResponse
             switch outcome {
             case .rejection:
-                return HTTPStubsResponse(
+                response = HTTPStubsResponse(
                     jsonObject: ["error": "invalid_grant"],
                     statusCode: 400,
                     headers: nil
                 )
             case .serverError:
-                return HTTPStubsResponse(
+                response = HTTPStubsResponse(
                     jsonObject: ["error": "internal_error"],
                     statusCode: 500,
                     headers: nil
                 )
             case .success:
-                return HTTPStubsResponse(
+                response = HTTPStubsResponse(
                     jsonObject: ["access_token": "RefreshedAccessToken", "expires_in": 1800],
                     statusCode: 200,
                     headers: nil
                 )
             }
+            // Holds the answer back, for a refresh still in flight while something else happens.
+            return response.requestTime(0, responseTime: delay)
         })
     }
 
