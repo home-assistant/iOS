@@ -47,7 +47,7 @@ public class FocusFilterWrapper {
     }
 
     /// One question to iOS about the filter's current values.
-    private struct Request {
+    struct Request {
         let id: UUID
         /// When it was asked, which is when its answer is dated: iOS can answer after a filter run
         /// that came later, and that run is the newer of the two.
@@ -93,7 +93,7 @@ public class FocusFilterWrapper {
 
     /// The question in flight, or a new one. `nil` while one a read gave up on is still waiting
     /// for iOS, so a call iOS never answers can't gain a sibling on every read.
-    private func currentRequest(asking reader: @escaping CurrentValuesReader) -> Request? {
+    func currentRequest(asking reader: @escaping CurrentValuesReader) -> Request? {
         request.mutate { current -> Request? in
             if let current {
                 return current.timedOut ? nil : current

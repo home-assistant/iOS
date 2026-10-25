@@ -470,24 +470,25 @@ class FocusNameSensorTests: XCTestCase {
     func testReadsWhileAQuestionIsInFlightShareIt() async throws {
         let gate = Gate()
         let calls = Calls()
-        let asked = expectation(description: "iOS asked")
-        asked.assertForOverFulfill = false
-        Current.focusFilter.setCurrentValuesReader {
+        let reader: FocusFilterWrapper.CurrentValuesReader = {
             calls.record()
-            asked.fulfill()
             await gate.wait()
             return "Work"
         }
 
-        let first = Task { await Current.focusFilter.readFromIOS() }
-        await fulfillment(of: [asked], timeout: 30)
-        let second = Task { await Current.focusFilter.readFromIOS() }
-        gate.open()
-        await first.value
-        await second.value
+        let first = try XCTUnwrap(Current.focusFilter.currentRequest(asking: reader))
+        let second = try XCTUnwrap(Current.focusFilter.currentRequest(asking: reader))
+        XCTAssertEqual(first.id, second.id)
 
+        gate.open()
+        _ = await first.answer.value
         XCTAssertEqual(calls.count, 1)
-        XCTAssertEqual(Current.focusFilter.readings.value, FocusFilterState(name: "Work", date: now))
+
+        // Answered, so the next read asks again.
+        let third = try XCTUnwrap(Current.focusFilter.currentRequest(asking: reader))
+        XCTAssertNotEqual(third.id, first.id)
+        _ = await third.answer.value
+        XCTAssertEqual(calls.count, 2)
     }
 
     /// A question iOS doesn't answer in time is cancelled, and the next read asks again once the
