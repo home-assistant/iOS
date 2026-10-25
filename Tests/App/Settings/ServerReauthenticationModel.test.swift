@@ -58,14 +58,18 @@ struct ServerReauthenticationModelTests {
         )
     }
 
-    private func waitUntil(_ condition: () -> Bool) async -> Bool {
+    /// Waits for `condition`, failing the test where it was called if it never holds.
+    private func expectEventually(
+        _ condition: () -> Bool,
+        sourceLocation: SourceLocation = #_sourceLocation
+    ) async {
         for _ in 0 ..< 3000 {
             if condition() {
-                return true
+                return
             }
             try? await Task.sleep(for: .milliseconds(10))
         }
-        return condition()
+        #expect(condition(), sourceLocation: sourceLocation)
     }
 
     @Test func aChoiceOfAddressesAsksWhichOneForThatServerOnly() {
@@ -94,12 +98,12 @@ struct ServerReauthenticationModelTests {
         #expect(!model.isChoosingURL)
         #expect(model.isReauthenticating(server))
         #expect(!model.isReauthenticating(otherServer))
-        #expectawait (waitUntil { model.loginBinding(for: server).wrappedValue != nil })
+        await expectEventually { model.loginBinding(for: server).wrappedValue != nil }
         #expect(model.loginBinding(for: otherServer).wrappedValue == nil)
         #expect(model.loginViewModel?.authDetails.url.host == "external.example.com")
 
         model.loginBinding(for: server).wrappedValue?.cancel()
-        #expectawait (waitUntil { !model.isReauthenticating })
+        await expectEventually { !model.isReauthenticating }
     }
 
     @Test func aServerWithoutAnAddressDoesNothing() {
@@ -118,13 +122,13 @@ struct ServerReauthenticationModelTests {
         let server = makeServer()
 
         model.reauthenticate(server, using: .external)
-        #expectawait (waitUntil { model.loginViewModel != nil })
+        await expectEventually { model.loginViewModel != nil }
         let loginViewModel = model.loginViewModel
         // Dismissing the sheet clears the binding; the login page cancels as it disappears.
         model.loginBinding(for: server).wrappedValue = nil
         loginViewModel?.cancelIfUnresolved()
 
-        #expectawait (waitUntil { !model.isReauthenticating })
+        await expectEventually { !model.isReauthenticating }
         #expect(model.loginViewModel == nil)
         #expect(model.error == nil)
         #expect(server.info.token.refreshToken == "old-refresh")
@@ -145,10 +149,10 @@ struct ServerReauthenticationModelTests {
         // A second tap while the first sign in runs is ignored rather than opening another login.
         model.start(for: server)
         model.reauthenticate(server, using: .external)
-        #expectawait (waitUntil { model.loginViewModel != nil })
+        await expectEventually { model.loginViewModel != nil }
         completeLogin(model.loginViewModel)
 
-        #expectawait (waitUntil { !model.isReauthenticating })
+        await expectEventually { !model.isReauthenticating }
         #expect(model.loginViewModel == nil)
         #expect(model.error == nil)
         #expect(server.info.token == newToken)
@@ -161,20 +165,42 @@ struct ServerReauthenticationModelTests {
         let otherServer = makeServer(identifier: "other-server")
 
         model.reauthenticate(server, using: .external)
-        #expectawait (waitUntil { model.certificateRequestBinding(for: server).wrappedValue != nil })
+        await expectEventually { model.certificateRequestBinding(for: server).wrappedValue != nil }
         #expect(model.certificateRequestBinding(for: otherServer).wrappedValue == nil)
         #expect(model.loginViewModel == nil)
 
         model.clientCertificateRequest?.complete(with: certificate)
-        #expectawait (waitUntil { model.loginViewModel != nil })
+        await expectEventually { model.loginViewModel != nil }
         #expect(model.clientCertificateRequest == nil)
         #expect(model.loginViewModel?.authDetails.clientCertificate == certificate)
         completeLogin(model.loginViewModel)
 
-        #expectawait (waitUntil { !model.isReauthenticating })
+        await expectEventually { !model.isReauthenticating }
         #expect(model.error == nil)
         #expect(server.info.token == newToken)
         #expect(server.info.connection.clientCertificate == certificate)
+    }
+
+    @Test func theCertificateImportIsAFormSheetOnlyOnCatalyst() async {
+        let previousIsCatalyst = Current.isCatalyst
+        defer { Current.isCatalyst = previousIsCatalyst }
+        let model = makeModel(requiresCertificate: true)
+        let server = makeServer()
+
+        model.reauthenticate(server, using: .external)
+        await expectEventually { model.clientCertificateRequest != nil }
+
+        Current.isCatalyst = false
+        #expect(model.certificateRequestBinding(for: server).wrappedValue != nil)
+        #expect(model.certificateFormSheetRequest(for: server) == nil)
+
+        Current.isCatalyst = true
+        #expect(model.certificateRequestBinding(for: server).wrappedValue == nil)
+        #expect(model.certificateFormSheetRequest(for: server) != nil)
+        #expect(model.certificateFormSheetRequest(for: makeServer(identifier: "other-server")) == nil)
+
+        model.clientCertificateRequest?.cancel()
+        await expectEventually { !model.isReauthenticating }
     }
 
     @Test func dismissingTheCertificateImportCancelsWithoutAnError() async {
@@ -182,10 +208,10 @@ struct ServerReauthenticationModelTests {
         let server = makeServer()
 
         model.reauthenticate(server, using: .external)
-        #expectawait (waitUntil { model.clientCertificateRequest != nil })
+        await expectEventually { model.clientCertificateRequest != nil }
         model.certificateRequestBinding(for: server).wrappedValue = nil
 
-        #expectawait (waitUntil { !model.isReauthenticating })
+        await expectEventually { !model.isReauthenticating }
         #expect(model.clientCertificateRequest == nil)
         #expect(model.loginViewModel == nil)
         #expect(model.error == nil)
@@ -199,10 +225,10 @@ struct ServerReauthenticationModelTests {
         let otherServer = makeServer(identifier: "other-server")
 
         model.reauthenticate(server, using: .external)
-        #expectawait (waitUntil { model.loginViewModel != nil })
+        await expectEventually { model.loginViewModel != nil }
         completeLogin(model.loginViewModel)
 
-        #expectawait (waitUntil { model.error != nil })
+        await expectEventually { model.error != nil }
         #expect(!model.isReauthenticating)
         #expect(model.errorBinding(for: server).wrappedValue)
         #expect(!model.errorBinding(for: otherServer).wrappedValue)

@@ -45,6 +45,20 @@ struct ServerReauthenticationModifierTests {
         return (window, controller)
     }
 
+    /// Waits for `condition`, failing the test where it was called if it never holds.
+    private func expectEventually(
+        _ condition: () -> Bool,
+        sourceLocation: SourceLocation = #_sourceLocation
+    ) async {
+        for _ in 0 ..< 3000 {
+            if condition() {
+                return
+            }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        #expect(condition(), sourceLocation: sourceLocation)
+    }
+
     private func waitUntil(_ condition: () -> Bool) async -> Bool {
         for _ in 0 ..< 3000 {
             if condition() {
@@ -68,7 +82,7 @@ struct ServerReauthenticationModifierTests {
 
         model.start(for: server)
 
-        #expectawait (waitUntil { controller.presentedViewController != nil })
+        await expectEventually { controller.presentedViewController != nil }
         model.isChoosingURL = false
         await dismissPresented(controller)
     }
@@ -81,20 +95,50 @@ struct ServerReauthenticationModifierTests {
         defer { window.isHidden = true }
 
         model.reauthenticate(server, using: .external)
-        #expectawait (waitUntil { controller.presentedViewController != nil })
+        await expectEventually { controller.presentedViewController != nil }
         #expect(model.clientCertificateRequest != nil)
 
         model.clientCertificateRequest?.complete(with: ClientCertificate(
             keychainIdentifier: "imported",
             displayName: "Imported"
         ))
-        #expectawait (waitUntil { model.loginViewModel != nil })
-        #expectawait (waitUntil {
+        await expectEventually { model.loginViewModel != nil }
+        await expectEventually {
             controller.presentedViewController != nil && model.clientCertificateRequest == nil
-        })
+        }
 
         model.loginViewModel?.cancel()
-        #expectawait (waitUntil { !model.isReauthenticating })
+        await expectEventually { !model.isReauthenticating }
+        await dismissPresented(controller)
+    }
+
+    /// On Mac Catalyst SwiftUI sheet content doesn't receive mouse events reliably, so the import is a
+    /// UIKit form sheet there, dismissed once a certificate is chosen.
+    @Test func onCatalystTheCertificateImportIsAFormSheet() async {
+        let previousIsCatalyst = Current.isCatalyst
+        Current.isCatalyst = true
+        defer { Current.isCatalyst = previousIsCatalyst }
+        let server = makeServer()
+        let model = ServerReauthenticationModel()
+        model.reauthenticator.clientCertificateRequirement = { _ in .value(true) }
+        let (window, controller) = host(model, for: server)
+        defer { window.isHidden = true }
+
+        model.reauthenticate(server, using: .external)
+        await expectEventually { model.clientCertificateRequest != nil }
+        #expect(model.certificateRequestBinding(for: server).wrappedValue == nil)
+        await expectEventually { controller.presentedViewController?.modalPresentationStyle == .formSheet }
+        let formSheet = controller.presentedViewController
+
+        model.clientCertificateRequest?.complete(with: ClientCertificate(
+            keychainIdentifier: "imported",
+            displayName: "Imported"
+        ))
+        await expectEventually { model.loginViewModel != nil }
+        await expectEventually { controller.presentedViewController !== formSheet }
+
+        model.loginViewModel?.cancel()
+        await expectEventually { !model.isReauthenticating }
         await dismissPresented(controller)
     }
 
@@ -107,8 +151,8 @@ struct ServerReauthenticationModifierTests {
 
         model.reauthenticate(server, using: .external)
 
-        #expectawait (waitUntil { model.error != nil })
-        #expectawait (waitUntil { controller.presentedViewController is UIAlertController })
+        await expectEventually { model.error != nil }
+        await expectEventually { controller.presentedViewController is UIAlertController }
         model.error = nil
         await dismissPresented(controller)
     }

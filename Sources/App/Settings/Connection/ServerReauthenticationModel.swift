@@ -105,12 +105,23 @@ final class ServerReauthenticationModel: ObservableObject {
         )
     }
 
-    /// Dismissing the import sheet without choosing a certificate cancels the sign in.
+    /// The certificate import as a SwiftUI sheet, on iOS. Dismissing it without choosing a certificate
+    /// cancels the sign in.
     func certificateRequestBinding(for server: Server) -> Binding<OnboardingClientCertificateRequest?> {
         Binding(
-            get: { [self] in activeServerID == server.identifier ? clientCertificateRequest : nil },
+            get: { [self] in Current.isCatalyst ? nil : certificateRequest(for: server) },
             set: { [self] in if $0 == nil { clientCertificateRequest?.cancel() } }
         )
+    }
+
+    /// The certificate import on Mac Catalyst, where SwiftUI sheet content doesn't receive mouse events
+    /// reliably, so it is presented as a UIKit form sheet instead.
+    func certificateFormSheetRequest(for server: Server) -> OnboardingClientCertificateRequest? {
+        Current.isCatalyst ? certificateRequest(for: server) : nil
+    }
+
+    private func certificateRequest(for server: Server) -> OnboardingClientCertificateRequest? {
+        activeServerID == server.identifier ? clientCertificateRequest : nil
     }
 
     /// Dismissing the failure alert clears the error.

@@ -23,6 +23,7 @@ struct ServerReauthenticationModifier: ViewModifier {
             .sheet(item: model.certificateRequestBinding(for: server)) {
                 RecoveredServerClientCertificateImportView(request: $0, asSheet: true)
             }
+            .background(ClientCertificateImportFormSheet(request: model.certificateFormSheetRequest(for: server)))
             .alert(
                 L10n.Settings.ConnectionSection.Reauthenticate.errorTitle,
                 isPresented: model.errorBinding(for: server),

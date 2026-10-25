@@ -280,9 +280,15 @@ public final class TokenManager: @unchecked Sendable {
 
             let promise: Promise<TokenInfo> = firstly {
                 authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
-            }.get { [server] tokenInfo in
+            }.get { [server, tokenInfo] refreshed in
+                // Re-authenticating while this refresh was in flight stored a new session; writing this
+                // answer would put the previous one back.
+                guard server.info.token.refreshToken == tokenInfo.refreshToken else {
+                    HANetworkingEnvironment.current.log.info("not storing refresh token, the session was replaced")
+                    return
+                }
                 HANetworkingEnvironment.current.log.info("storing refresh token")
-                server.info.token = tokenInfo
+                server.info.token = refreshed
             }.tap(on: refreshPromiseCache.queue) { [self, tokenInfo] result in
                 // On the cache's own queue, and ahead of the `ensure` that clears it, so the refusal is
                 // recorded before any caller can be handed a cleared cache: one that arrived in between
@@ -294,13 +300,16 @@ public final class TokenManager: @unchecked Sendable {
             }.ensure(on: refreshPromiseCache.queue) { [self] in
                 HANetworkingEnvironment.current.log.info("reset cached refreshToken promise")
                 refreshPromiseCache.promise = nil
-            }.tap { [server] result in
+            }.tap { [server, tokenInfo] result in
                 switch result {
                 case let .rejected(error):
                     HANetworkingEnvironment.current.log.error("refresh token got error: \(error)")
 
+                    // A refusal of a session that re-authenticating has since replaced says nothing
+                    // about the new one, so it must not send the user back to the login.
                     if let underlying = error.authenticationAPIError,
-                       underlying.shouldRequireReauthentication {
+                       underlying.shouldRequireReauthentication,
+                       server.info.token.refreshToken == tokenInfo.refreshToken {
                         /// Server rejected the refresh token. All is lost. HACore performs the actual
                         /// client-event log + unsubscribe + disconnect + onboarding-needed via this seam.
                         HANetworkingEnvironment.current.handleReauthenticationRequired(
