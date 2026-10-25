@@ -4,6 +4,7 @@ import PromiseKit
 
 final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     private var focusFilterCancellable: HACancellable?
+    private var focusStatusCancellable: HACancellable?
     private let signal: () -> Void
 
     init(signal: @escaping () -> Void) {
@@ -15,18 +16,28 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 
     deinit {
         focusFilterCancellable?.cancel()
+        focusStatusCancellable?.cancel()
     }
 
     override func observe() {
         super.observe()
         guard !isObserving else { return }
 
-        // Only the filter's runs change the name. A status push changes the "Is focused"
-        // attribute too, but the Intents extension that received it reports both Focus sensors
-        // itself, and signalling here would add a full update of every sensor to that extension's
-        // short run.
+        // A filter run changes the name.
         focusFilterCancellable = Current.focusFilter.runs.observe { [weak self] _ in
             self?.signal()
+        }
+        // A status push changes the "Is focused" attribute. The Intents extension that received
+        // it reports it itself, so this only keeps the sensor on screen current: in the background
+        // it would add a full update of every sensor to that extension's short run.
+        focusStatusCancellable = Current.focusStatus.pushes.observe { [weak self] _ in
+            #if os(watchOS)
+            self?.signal()
+            #else
+            if Current.isForegroundApp() {
+                self?.signal()
+            }
+            #endif
         }
         isObserving = true
 
@@ -39,6 +50,7 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
         super.stopObserving()
         guard isObserving else { return }
         focusFilterCancellable?.cancel()
+        focusStatusCancellable?.cancel()
         isObserving = false
     }
 }

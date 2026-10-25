@@ -14,6 +14,53 @@ class FocusNameSensorTests: XCTestCase {
 
     private let now = Date(timeIntervalSince1970: 1_700_000_000)
 
+    /// Holds a reader until the test lets it answer, whether or not its task is cancelled.
+    private final class Gate {
+        private let lock = NSLock()
+        private var isOpen = false
+        private var waiters = [CheckedContinuation<Void, Never>]()
+
+        func wait() async {
+            await withCheckedContinuation { continuation in
+                lock.lock()
+                if isOpen {
+                    lock.unlock()
+                    continuation.resume()
+                } else {
+                    waiters.append(continuation)
+                    lock.unlock()
+                }
+            }
+        }
+
+        func open() {
+            lock.lock()
+            isOpen = true
+            let waiting = waiters
+            waiters = []
+            lock.unlock()
+            waiting.forEach { $0.resume() }
+        }
+    }
+
+    /// Counts how many times iOS was asked, from whichever thread asked.
+    private final class Calls {
+        private let lock = NSLock()
+        private var value = 0
+
+        var count: Int {
+            lock.lock()
+            defer { lock.unlock() }
+            return value
+        }
+
+        func record() {
+            lock.lock()
+            value += 1
+            lock.unlock()
+        }
+    }
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         try clearFocusNames()
@@ -214,6 +261,45 @@ class FocusNameSensorTests: XCTestCase {
         signaler.stopObserving()
     }
 
+    /// A push changes "Is focused", which keeps the sensor on screen current when the binary
+    /// sensor is off, but only in the foreground: in the background the Intents extension that
+    /// received it reports it.
+    @MainActor
+    func testSignalerFiresOnAPushOnlyInTheForeground() async throws {
+        let previousServers = Current.servers
+        let previousIsForegroundApp = Current.isForegroundApp
+        addTeardownBlock {
+            SensorEnablementStore.resetForTesting()
+            Current.servers = previousServers
+            Current.isForegroundApp = previousIsForegroundApp
+        }
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
+        SensorEnablementStore.resetForTesting()
+        Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [WebhookSensorId.focusName.rawValue])
+        _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
+
+        let observationExpectation = expectation(description: "Observation")
+        let signalExpectation = expectation(description: "Signal")
+        let signaler = FocusNameSensorUpdateSignaler(signal: {
+            signalExpectation.fulfill()
+        })
+        signaler.notifyObservation = {
+            observationExpectation.fulfill()
+        }
+
+        await fulfillment(of: [observationExpectation], timeout: 30)
+
+        Current.isForegroundApp = { false }
+        Current.focusStatus.pushes.value = FocusStatusObservation(isFocused: true, date: Date())
+        Current.isForegroundApp = { true }
+        Current.focusStatus.pushes.value = FocusStatusObservation(isFocused: false, date: Date())
+
+        await fulfillment(of: [signalExpectation], timeout: 30)
+        signaler.stopObserving()
+    }
+
     // MARK: - The filter's current values
 
     /// The run with no name for a Focus that ended while iOS didn't launch the app never lands.
@@ -332,6 +418,135 @@ class FocusNameSensorTests: XCTestCase {
 
         XCTAssertEqual(Current.focusFilter.runs.value?.name, "Work")
         XCTAssertEqual(Current.focusFilter.readings.value?.name, "Work")
+    }
+
+    /// Deleting the name an older answer carried must not outrank a newer answer about another
+    /// Focus, in either direction.
+    func testForgettingAnOlderNameKeepsTheNewerAnswer() throws {
+        run("Work", at: -60)
+        Current.focusFilter.readings.value = FocusFilterState(name: "Sleep", date: now.addingTimeInterval(-10))
+        Current.focusFilter.forgetFocusName("Work")
+
+        XCTAssertEqual(Current.focusFilter.runs.value, FocusFilterState(name: nil, date: now.addingTimeInterval(-60)))
+        XCTAssertEqual(Current.focusFilter.activeFocusName(), "Sleep")
+
+        run("Sleep", at: -10)
+        Current.focusFilter.readings.value = FocusFilterState(name: "Work", date: now.addingTimeInterval(-60))
+        Current.focusFilter.forgetFocusName("Work")
+
+        XCTAssertEqual(
+            Current.focusFilter.readings.value,
+            FocusFilterState(name: nil, date: now.addingTimeInterval(-60))
+        )
+        XCTAssertEqual(Current.focusFilter.activeFocusName(), "Sleep")
+    }
+
+    // MARK: - Asking iOS
+
+    /// iOS can answer a question asked before a filter run after that run landed. The answer is
+    /// dated when it was asked, so the run stays the newer of the two.
+    func testAnAnswerAskedBeforeARunDoesNotOutrankIt() async throws {
+        let gate = Gate()
+        let asked = expectation(description: "iOS asked")
+        Current.focusFilter.setCurrentValuesReader {
+            asked.fulfill()
+            await gate.wait()
+            return nil
+        }
+
+        let reading = Task { await Current.focusFilter.readFromIOS() }
+        await fulfillment(of: [asked], timeout: 30)
+        Current.date = { [now] in now.addingTimeInterval(1) }
+        Current.focusFilter.setActiveFocusName("Work")
+        gate.open()
+        await reading.value
+
+        XCTAssertEqual(Current.focusFilter.readings.value, FocusFilterState(name: nil, date: now))
+        XCTAssertEqual(Current.focusFilter.activeFocusName(), "Work")
+    }
+
+    /// Both Focus sensors read at once. They share one question, so neither can store an older
+    /// answer over the other's.
+    func testReadsWhileAQuestionIsInFlightShareIt() async throws {
+        let gate = Gate()
+        let calls = Calls()
+        let asked = expectation(description: "iOS asked")
+        asked.assertForOverFulfill = false
+        Current.focusFilter.setCurrentValuesReader {
+            calls.record()
+            asked.fulfill()
+            await gate.wait()
+            return "Work"
+        }
+
+        let first = Task { await Current.focusFilter.readFromIOS() }
+        await fulfillment(of: [asked], timeout: 30)
+        let second = Task { await Current.focusFilter.readFromIOS() }
+        gate.open()
+        await first.value
+        await second.value
+
+        XCTAssertEqual(calls.count, 1)
+        XCTAssertEqual(Current.focusFilter.readings.value, FocusFilterState(name: "Work", date: now))
+    }
+
+    /// A question iOS doesn't answer in time is cancelled, and the next read asks again once the
+    /// cancelled one has stopped.
+    func testATimedOutQuestionIsCancelled() async throws {
+        FocusFilterWrapper.currentValuesTimeout = 0.05
+        let calls = Calls()
+        let cancelled = expectation(description: "question cancelled")
+        Current.focusFilter.setCurrentValuesReader {
+            calls.record()
+            do {
+                try await Task.sleep(nanoseconds: 30_000_000_000)
+            } catch {
+                cancelled.fulfill()
+                throw error
+            }
+            return "Work"
+        }
+
+        await Current.focusFilter.readFromIOS()
+        await fulfillment(of: [cancelled], timeout: 30)
+        XCTAssertEqual(calls.count, 1)
+
+        FocusFilterWrapper.currentValuesTimeout = 30
+        Current.focusFilter.setCurrentValuesReader { "Sleep" }
+        let askedAgain = expectation(for: NSPredicate { _, _ in
+            Task { await Current.focusFilter.readFromIOS() }
+            return Current.focusFilter.readings.value?.name == "Sleep"
+        }, evaluatedWith: nil)
+        await fulfillment(of: [askedAgain], timeout: 30)
+    }
+
+    /// A question that ignores being cancelled and never comes back must not gain a sibling on
+    /// every read: until iOS answers it, reads go without asking.
+    func testNoNewQuestionWhileATimedOutOneIsUnanswered() async throws {
+        FocusFilterWrapper.currentValuesTimeout = 0.05
+        let gate = Gate()
+        let calls = Calls()
+        let answered = expectation(description: "the stuck question answered")
+        answered.assertForOverFulfill = false
+        Current.focusFilter.setCurrentValuesReader {
+            calls.record()
+            await gate.wait()
+            answered.fulfill()
+            return nil
+        }
+
+        await Current.focusFilter.readFromIOS()
+        await Current.focusFilter.readFromIOS()
+        XCTAssertEqual(calls.count, 1)
+        XCTAssertNil(Current.focusFilter.readings.value, "the stuck answer comes too late to be stored")
+
+        gate.open()
+        await fulfillment(of: [answered], timeout: 30)
+        let cleared = expectation(for: NSPredicate { _, _ in
+            Task { await Current.focusFilter.readFromIOS() }
+            return calls.count > 1
+        }, evaluatedWith: nil)
+        await fulfillment(of: [cleared], timeout: 30)
     }
 
     // MARK: - Pushes

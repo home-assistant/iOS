@@ -46,18 +46,79 @@ public class FocusFilterWrapper {
         currentValuesReader.mutate { $0 = reader }
     }
 
+    /// One question to iOS about the filter's current values.
+    private struct Request {
+        let id: UUID
+        /// When it was asked, which is when its answer is dated: iOS can answer after a filter run
+        /// that came later, and that run is the newer of the two.
+        let askedAt: Date
+        let answer: Task<Result<String?, Error>, Never>
+        /// Whether a read gave up waiting on it. iOS hasn't answered within the timeout, so no new
+        /// question is asked until it does, and nothing waits on it again.
+        var timedOut = false
+    }
+
+    /// The question in flight, shared by every read that arrives while it is, so both Focus
+    /// sensors reading at once ask iOS once and get the same answer.
+    private let request = HAProtected<Request?>(value: nil)
+
     /// Asks iOS for the filter's current values and stores the answer, when this process can ask
     /// and iOS answers in time.
     func readFromIOS() async {
         guard let reader = currentValuesReader.read({ $0 }) else { return }
 
-        switch await Self.withTimeout(Self.currentValuesTimeout, reader) {
-        case let .some(.success(name)):
-            readings.value = FocusFilterState(name: name, date: Current.date())
-        case let .some(.failure(error)):
-            Current.Log.error("focus filter current values unavailable: \(error)")
-        case .none:
+        guard let request = currentRequest(asking: reader) else {
+            Current.Log.info("focus filter current values still unanswered from an earlier read, skipped")
+            return
+        }
+
+        guard let result = await Self.withTimeout(Self.currentValuesTimeout, { await request.answer.value }) else {
+            self.request.mutate { current in
+                if current?.id == request.id {
+                    current?.timedOut = true
+                }
+            }
+            request.answer.cancel()
             Current.Log.error("focus filter current values took over \(Self.currentValuesTimeout)s, skipped")
+            return
+        }
+
+        switch result {
+        case let .success(name):
+            readings.value = FocusFilterState(name: name, date: request.askedAt)
+        case let .failure(error):
+            Current.Log.error("focus filter current values unavailable: \(error)")
+        }
+    }
+
+    /// The question in flight, or a new one. `nil` while one a read gave up on is still waiting
+    /// for iOS, so a call iOS never answers can't gain a sibling on every read.
+    private func currentRequest(asking reader: @escaping CurrentValuesReader) -> Request? {
+        request.mutate { current -> Request? in
+            if let current {
+                return current.timedOut ? nil : current
+            }
+            let id = UUID()
+            // Taken before the question can reach iOS, so no answer predates what it was dated.
+            let askedAt = Current.date()
+            let answer = Task { [weak self] () -> Result<String?, Error> in
+                let result: Result<String?, Error>
+                do {
+                    let name = try await reader()
+                    result = .success(name)
+                } catch {
+                    result = .failure(error)
+                }
+                self?.request.mutate { current in
+                    if current?.id == id {
+                        current = nil
+                    }
+                }
+                return result
+            }
+            let new = Request(id: id, askedAt: askedAt, answer: answer)
+            current = new
+            return new
         }
     }
 
@@ -93,26 +154,28 @@ public class FocusFilterWrapper {
     /// Stops reporting a name the user deleted in settings. A filter still paired with it reports
     /// it again the next time it runs, which is when the name exists again as far as the app is
     /// concerned.
+    ///
+    /// Each answer keeps its date, so clearing an older one can't outrank a newer answer about a
+    /// different Focus.
     public lazy var forgetFocusName: (String) -> Void = { [weak self] name in
         guard let self else { return }
-        let now = Current.date()
-        if runs.value?.name == name {
-            runs.value = FocusFilterState(name: nil, date: now)
+        if let run = runs.value, run.name == name {
+            runs.value = FocusFilterState(name: nil, date: run.date)
         }
-        if readings.value?.name == name {
-            readings.value = FocusFilterState(name: nil, date: now)
+        if let reading = readings.value, reading.name == name {
+            readings.value = FocusFilterState(name: nil, date: reading.date)
         }
     }
 
-    /// Runs `operation`, giving up on it after `timeout` without waiting for it to finish, which a
-    /// task group would do even once cancelled.
+    /// Waits for `operation` for up to `timeout`, without waiting for it to finish once that has
+    /// passed, which a task group would do even once cancelled.
     private static func withTimeout<T>(
         _ timeout: TimeInterval,
-        _ operation: @escaping () async throws -> T
-    ) async -> Result<T, Error>? {
+        _ operation: @escaping () async -> T
+    ) async -> T? {
         await withCheckedContinuation { continuation in
             let resumed = HAProtected<Bool>(value: false)
-            let resume: (Result<T, Error>?) -> Void = { result in
+            let resume: (T?) -> Void = { result in
                 let isFirst = resumed.mutate { resumed -> Bool in
                     defer { resumed = true }
                     return !resumed
@@ -127,12 +190,8 @@ public class FocusFilterWrapper {
                 resume(nil)
             }
             Task {
-                do {
-                    let value = try await operation()
-                    resume(.success(value))
-                } catch {
-                    resume(.failure(error))
-                }
+                let value = await operation()
+                resume(value)
                 timer.cancel()
             }
         }
