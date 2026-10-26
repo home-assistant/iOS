@@ -53,8 +53,12 @@ struct AssistView: View {
         static let inputRowBottomPaddingKeyboardOpen: CGFloat = DesignSystem.Spaces.one
         static let barHorizontalPaddingVerticalBar: CGFloat = DesignSystem.Spaces.two
         static let inputRowBottomPaddingVerticalBar: CGFloat = -DesignSystem.Spaces.two
+        /// How far the centre of the vertical bar's buttons sits from the screen edge. The trailing button
+        /// of the bottom bar is centred on the same line, so it reads as part of that column.
+        static let verticalBarItemCenterInset: CGFloat = 48
         static let inputFieldHeight: CGFloat = 40
         static let inputActionButtonHeight: CGFloat = 40
+        static let inputActionButtonWidth: CGFloat = iconSize.width + DesignSystem.Spaces.oneAndHalf * 2
         /// Height of the input row, driven by its tallest element (the action button plus its padding).
         /// The recording state claims the same height, so the orb lands on the mic button's line.
         static let inputRowHeight: CGFloat = inputActionButtonHeight + DesignSystem.Spaces.oneAndHalf * 2
@@ -254,6 +258,11 @@ struct AssistView: View {
         return hasVerticalBar ? Constants.barHorizontalPaddingVerticalBar : Constants.barHorizontalPadding
     }
 
+    /// With the vertical bar the trailing button is centred under the bar's buttons, keyboard or not.
+    private func barTrailingPadding(buttonWidth: CGFloat) -> CGFloat {
+        hasVerticalBar ? Constants.verticalBarItemCenterInset - buttonWidth / 2 : barHorizontalPadding
+    }
+
     private var barBottomPadding: CGFloat {
         if Current.isCatalyst {
             return Constants.inputRowBottomPaddingMac
@@ -421,7 +430,8 @@ struct AssistView: View {
                 view
             }
         }
-        .padding(.horizontal, barHorizontalPadding)
+        .padding(.leading, barHorizontalPadding)
+        .padding(.trailing, barTrailingPadding(buttonWidth: Constants.inputActionButtonWidth))
         .padding(.bottom, barBottomPadding)
         .opacity(viewModel.isRecording ? 0 : 1)
         .allowsHitTesting(!viewModel.isRecording)
@@ -534,7 +544,7 @@ struct AssistView: View {
                 Spacer()
                 keyboardButton
             }
-            .padding(.trailing, barHorizontalPadding)
+            .padding(.trailing, barTrailingPadding(buttonWidth: Constants.keyboardButtonSize))
             .opacity(viewModel.isRecording ? 1 : 0)
             .allowsHitTesting(viewModel.isRecording)
         }
