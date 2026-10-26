@@ -58,10 +58,16 @@ private extension DevicePose {
             return "mdi:book-open-variant"
         case .laptop:
             return "mdi:laptop"
+        case .tent:
+            return "mdi:tent"
         case .partiallyOpen:
             return "mdi:book-open-outline"
         case .flat:
             return "mdi:tablet"
+        case .flatPortrait:
+            return "mdi:phone-rotate-portrait"
+        case .flatLandscape:
+            return "mdi:phone-rotate-landscape"
         case .flatFaceDown:
             return "mdi:flip-vertical"
         }

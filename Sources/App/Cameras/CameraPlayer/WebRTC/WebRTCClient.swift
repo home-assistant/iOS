@@ -304,6 +304,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         configuration.mode = AVAudioSession.Mode.videoChat.rawValue
         configuration.categoryOptions = [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP, .mixWithOthers]
         RTCAudioSessionConfiguration.setWebRTC(configuration)
+        setAllowsHapticsDuringRecording(true)
     }
 
     private static func restorePlaybackAudioSession() {
@@ -312,6 +313,11 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         configuration.mode = AVAudioSession.Mode.moviePlayback.rawValue
         configuration.categoryOptions = [.mixWithOthers]
         RTCAudioSessionConfiguration.setWebRTC(configuration)
+        setAllowsHapticsDuringRecording(false)
+    }
+
+    private static func setAllowsHapticsDuringRecording(_ allowed: Bool) {
+        try? AVAudioSession.sharedInstance().setAllowHapticsAndSystemSoundsDuringRecording(allowed)
     }
 
     weak var delegate: WebRTCClientDelegate?
