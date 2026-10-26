@@ -70,6 +70,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         MaterialDesignIcons.register()
+        // Before anything reads the Focus sensors, which the launch below already does.
+        FocusNameFocusFilterAppIntent.registerCurrentValuesReader()
 
         guard !Current.isRunningTests else {
             return true

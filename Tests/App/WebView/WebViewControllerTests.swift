@@ -61,6 +61,30 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(overlayState.emptyState?.server.identifier, server.identifier)
     }
 
+    /// Re-authenticating from the server's settings has to bring a logged-out web view back, while a
+    /// re-authentication of some other server leaves it alone.
+    func testReauthenticationFromSettingsLeavesTheLoggedOutState() async {
+        let server = Server.fake()
+        let sut = makeSUT(server: server)
+        sut.webView = WKWebView(frame: .zero)
+        sut.overlayState = WebFrontendOverlayState()
+        sut.observeConnectionNotifications()
+        sut.showLoggedOutState()
+
+        NotificationCenter.default.post(
+            name: ServerReauthenticator.didReauthenticateNotification,
+            object: Server.fake(identifier: .init(rawValue: "other-server"))
+        )
+        await Task.yield()
+        XCTAssertTrue(sut.didLogOut)
+
+        NotificationCenter.default.post(name: ServerReauthenticator.didReauthenticateNotification, object: server)
+        await waitUntil({ !sut.didLogOut })
+
+        XCTAssertFalse(sut.didLogOut)
+        XCTAssertEqual(sut.connectionState, .unknown)
+    }
+
     func testUpdateFrontendConnectionStateDoesNotDowngradeAuthInvalidToDisconnected() {
         let sut = makeSUT()
         sut.connectionState = .authInvalid
@@ -387,6 +411,21 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.connectionState, .loaded)
         XCTAssertNil(sut.latestLoadError)
         XCTAssertNil(sut.emptyStateTimer)
+    }
+
+    func testExternalAuthFailureNeedingReauthenticationShowsReauthEmptyState() {
+        let sut = makeSUT()
+        sut.webView = WKWebView(frame: .zero)
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+
+        sut.handleExternalAuthFailure(error: TokenManager.TokenError.reauthenticationRequired)
+
+        XCTAssertEqual(sut.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.connectionState, .authInvalid)
+        XCTAssertEqual(overlayState.emptyState?.style, .unauthenticated)
+        XCTAssertNil(sut.emptyStateTimer)
+        XCTAssertNil(sut.latestLoadError)
     }
 
     func testExternalAuthFailureKeepsAuthInvalid() {
@@ -1505,6 +1544,31 @@ final class WebViewControllerTests: XCTestCase {
 
         wait(for: [settingsShown], timeout: 5)
         XCTAssertFalse(otherWindowCoordinator.showSettingsCalled)
+    }
+
+    /// Multi-window: the status bar's server menu switches the window it belongs to, not the one that
+    /// registered last.
+    func testOpeningAServerFromTheStatusBarGoesToTheCoordinatorOfTheWebViewsOwnScene() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        let sut = makeSUT()
+        window.addSubview(sut.view)
+        let other = Server.fake()
+
+        let sceneCoordinator = MockAppCoordinator()
+        sceneCoordinator.window = window
+        let otherWindowCoordinator = MockAppCoordinator()
+        otherWindowCoordinator.window = UIWindow()
+        Current.sceneManager.registerAppCoordinator(sceneCoordinator)
+        Current.sceneManager.registerAppCoordinator(otherWindowCoordinator)
+        let serverOpened = expectation(description: "open(server:) called")
+        sceneCoordinator.onOpenServer = { serverOpened.fulfill() }
+
+        sut.openServer(other)
+
+        wait(for: [serverOpened], timeout: 5)
+        XCTAssertEqual(sceneCoordinator.openedServers.map(\.identifier), [other.identifier])
+        XCTAssertTrue(otherWindowCoordinator.openedServers.isEmpty)
     }
 
     /// Without a window to resolve a scene from, the app-wide coordinator is still the right answer.

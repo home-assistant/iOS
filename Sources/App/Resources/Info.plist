@@ -116,9 +116,7 @@
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Locate and communicate with your Home Assistant instance.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting "Always Allow" for the best location experience.
-			Selecting "Only While Using the App" will disable iBeacons, geofences,
-			background location updates and accurate reporting.</string>
+	<string>Allow location access "Always" so the app can update your location in Home Assistant and choose between your local and remote connection in the background.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We always need access to your location for features like iBeacons, geofences,
 			background location updates and accurate reporting.</string>

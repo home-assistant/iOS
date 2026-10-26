@@ -203,7 +203,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
     private func loadInitialData() {
         updateFromServerInfo(server.info)
         updateURLs()
-        clientCertificate = server.info.connection.clientCertificate
         guard let api = Current.api(for: server) else { return }
         api.cachedProfilePicture { [weak self] image in
             Task { @MainActor [weak self] in
@@ -226,6 +225,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     private func updateFromServerInfo(_ info: ServerInfo) {
         serverName = info.name
+        // Follows the server, so a certificate stored by Re-authenticate shows up without reopening the screen.
+        clientCertificate = info.connection.clientCertificate
         // The stored copy re-evaluates the active URL on save, but observers get the value as written,
         // so evaluate a copy here to keep the highlighted pill right after an edit.
         var connection = server.info.connection
@@ -332,12 +333,14 @@ final class ConnectionSettingsViewModel: ObservableObject {
         return invitationURL
     }
 
-    func activateServer() {
+    func activateServer(on coordinator: AppCoordinator?) {
         if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
             Task { [weak self] in
                 guard let self, let url = await server.activeURL() else { return }
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
+        } else if let coordinator {
+            coordinator.activate(server: server)
         } else {
             Current.sceneManager.appCoordinator.done {
                 $0.activate(server: self.server)

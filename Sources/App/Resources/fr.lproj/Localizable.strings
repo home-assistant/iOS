@@ -245,6 +245,8 @@
 "app_intents.open_close.title" = "Open or close";
 "app_intents.open_experimental_dashboard.description" = "Ouvre le tableau de bord expérimental";
 "app_intents.open_experimental_dashboard.title" = "Ouvrir le tableau de bord expérimental";
+"app_intents.open_home_assistant.description" = "Opens the Home Assistant app";
+"app_intents.open_home_assistant.title" = "Open Home Assistant";
 "app_intents.open_state_icon.title" = "Icône pour l'état ouvert";
 "app_intents.perform_action.action.title" = "Action";
 "app_intents.perform_action.action_parameter_configuration" = "Quelle action ?";
@@ -357,6 +359,7 @@
 "assist.carplay.tap_to_record.title" = "Appuyer pour enregistrer";
 "assist.chat.menu.edit" = "Modifier";
 "assist.chat.menu.replay" = "Replay";
+"assist.error.audio_conversion" = "Couldn't read audio from the microphone. Try again, or use a different microphone.";
 "assist.error.pipelines_response" = "Impossible d'obtenir les pipelines Assist, veuillez vérifier la configuration de vos pipelines.";
 "assist.error.speech_to_text_unsupported" = "This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.";
 "assist.modern_ui.header.title" = "Assist";
@@ -410,6 +413,11 @@
 "camera_list.title" = "Caméras";
 "camera_list.unavailable.message" = "Les flux vidéo ne sont pas disponibles sur Mac.";
 "camera_list.unavailable.title" = "Non disponible sur Mac";
+"camera_microphone.errors.connection_failed" = "Unable to connect the microphone to the camera";
+"camera_microphone.errors.interrupted" = "The microphone stream was stopped";
+"camera_microphone.errors.microphone_denied" = "Microphone access is needed to talk through the camera. You can allow it in Settings.";
+"camera_microphone.errors.signaling_failed" = "The camera could not start the microphone stream";
+"camera_microphone.errors.timed_out" = "The camera took too long to respond";
 "camera_player.default_camera_name" = "Camera";
 "camera_player.errors.no_stream_available" = "Aucun flux disponible";
 "camera_player.errors.unable_to_connect_to_server" = "Impossible de se connecter à Home Assistant";
@@ -791,6 +799,11 @@ Ce serveur requiert un certificat client (mTLS), mais l'opération a été annul
 "extensions.notification_content.error.request.hls_unavailable" = "Le flux HLS n'est pas disponible";
 "extensions.notification_content.error.request.other" = "Code de statut non-200 (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "Flux WebRTC indisponible";
+"extensions.notification_content.error_state.hide_details" = "Hide details";
+"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
+"extensions.notification_content.error_state.retry" = "Try again";
+"extensions.notification_content.error_state.show_details" = "Show details";
+"extensions.notification_content.error_state.title" = "Media unavailable";
 "flight_greetings.empty_state.body" = "Vous êtes actuellement déconnecté. Votre maison vous attendra à l'atterrissage.";
 "flight_greetings.empty_state.configure_hint" = "Configurez les messages de vol dans les réglages";
 "flight_greetings.empty_state.title" = "Bon vol";
@@ -1625,7 +1638,6 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings.connection_section.cloudhook.footer" = "Considérez cette URL comme sensible. Toute personne la possédant peut envoyer des requêtes à ce webhook de l'app mobile.";
 "settings.connection_section.cloudhook.status.not_configured" = "Non configuré";
 "settings.connection_section.cloudhook.title" = "Cloudhook";
-"settings.connection_section.connecting_via" = "Connexion via";
 "settings.connection_section.connection_access_security_level.footer" = "Protects your internal URL when you are not at home.";
 "settings.connection_section.connection_access_security_level.less_secure.title" = "Moins sécurisé";
 "settings.connection_section.connection_access_security_level.most_secure.title" = "Le plus sécurisé";
@@ -1666,13 +1678,17 @@ Home Assistant est open source, défend la confidentialité et fonctionne locale
 "settings.connection_section.location_send_type.setting.never" = "Jamais";
 "settings.connection_section.location_send_type.setting.zone_only" = "Zone uniquement";
 "settings.connection_section.location_send_type.title" = "Emplacement envoyé";
-"settings.connection_section.logged_in_as" = "Connecté en tant que";
 "settings.connection_section.make_default" = "Définir par défaut";
 "settings.connection_section.network_detection_permission.allow" = "Allow";
 "settings.connection_section.network_detection_permission.message" = "La détection de votre réseau domestique nécessite la lecture de son nom Wi-Fi, qu'iOS ne partage qu'avec les applications disposant d'un accès à la localisation. Le commutateur « Position exacte » est ce qui permet de rendre ce nom lisible, y compris lorsque vous utilisez l'application. L'option « Toujours » est nécessaire en plus pour continuer à lire le nom lorsque l'application est en arrière-plan, pour les capteurs et les notifications. Touchez ici pour modifier vos paramètres.";
 "settings.connection_section.network_detection_permission.title" = "Location access needed";
 "settings.connection_section.no_base_url.title" = "Pas d'URL";
 "settings.connection_section.open_server" = "Open";
+"settings.connection_section.reauthenticate.error_title" = "Couldn't re-authenticate";
+"settings.connection_section.reauthenticate.footer" = "Sign in to this server again, for example after changing your password or to use a different user. Your server's URLs and settings stay as they are.";
+"settings.connection_section.reauthenticate.progress" = "Re-authenticating…";
+"settings.connection_section.reauthenticate.title" = "Re-authenticate";
+"settings.connection_section.reauthenticate.url_picker_title" = "Sign in using";
 "settings.connection_section.refresh_server" = "Mettre à jour les informations du serveur";
 "settings.connection_section.remote_ui_url.title" = "URL d'interface utilisateur distante";
 "settings.connection_section.sensor_send_type.setting.all" = "Tout";
@@ -1955,6 +1971,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.media_playback.title" = "Lecture multimédia WKWebView";
 "settings.debugging.notify_local_push_state_changes.title" = "Notify when local push connects or disconnects";
 "settings.debugging.receive_debug_notifications.title" = "Recevoir les notifications de débogage";
+"settings.debugging.region_enter_maximum_fuzz_distance.title" = "Zone enter accuracy fuzz limit";
 "settings.debugging.reset_app.alert_title" = "Supprimer toutes les données de l'app ?";
 "settings.debugging.reset_app.client_event" = "Toutes les données de l'app ont été supprimées depuis les réglages de débogage";
 "settings.debugging.reset_app.delete_button" = "Supprimer les données de l'app";
@@ -2405,6 +2422,7 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "settings_sensors.health.footer" = "Apple Health sensors use the existing per-sensor controls below. Health data is read only during normal sensor updates.";
 "settings_sensors.health.header" = "Apple Health";
 "settings_sensors.health.metric.in_bed.footer" = "Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.";
+"settings_sensors.health.metric.move_goal.footer" = "Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.";
 "settings_sensors.health.reload" = "Reload Sensors";
 "settings_sensors.health.request_access" = "Request Apple Health Access";
 "settings_sensors.health.sensors.enable_all" = "Enable all Apple Health sensors";
@@ -2459,6 +2477,8 @@ Le serveur répond uniquement lorsque l'application est ouverte et s'arrête lor
 "settings_sensors.sensors.foreground_only.badge" = "Lorsque l'application est ouverte";
 "settings_sensors.sensors.header" = "Capteurs";
 "settings_sensors.sensors.no_results" = "No sensors match your search";
+"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Only reports with a paired Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.badge" = "Requires Apple Watch";
 "settings_sensors.sensors.search_prompt" = "Search sensors";
 "settings_sensors.sensors.unavailable_on_device.header" = "Unavailable on this device";
 "settings_sensors.sensors.unavailable_on_device.state" = "Unavailable";

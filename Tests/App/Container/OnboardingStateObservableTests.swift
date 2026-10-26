@@ -1,5 +1,6 @@
 import HAKit_Mocks
 @testable import HomeAssistant
+import PromiseKit
 @testable import Shared
 import UIKit
 import XCTest
@@ -84,6 +85,131 @@ final class OnboardingStateObservableTests: XCTestCase {
         Current.settingsStore.lastActiveURLPath = "/lovelace/kitchen"
 
         XCTAssertNil(OnboardingStateObservable.restoredInitialPath(for: firstServer))
+    }
+
+    // MARK: - Recovered server re-authentication
+
+    private final class ReauthProbe {
+        var loginDetails: OnboardingAuthDetails?
+        var importRequested = false
+        var fetchedCertificate: ClientCertificate?
+        var result: Swift.Result<Void, Error>?
+    }
+
+    private let importedCertificate = ClientCertificate(keychainIdentifier: "imported", displayName: "Imported")
+    private let storedCertificate = ClientCertificate(keychainIdentifier: "stored", displayName: "Stored")
+    private let newToken = TokenInfo(accessToken: "new-access", refreshToken: "new-refresh", expiration: .distantFuture)
+
+    private func reauthenticate(
+        server: Server,
+        requiresCertificate: Promise<Bool> = .value(false),
+        importResult: Promise<ClientCertificate>,
+        loginResult: Promise<OnboardingAuthLoginResult> = .value(.init(code: "code", resolvedURL: nil))
+    ) -> ReauthProbe {
+        let probe = ReauthProbe()
+        let token = newToken
+        let state = OnboardingStateObservable()
+        state.reauthenticator.clientCertificateRequirement = { _ in requiresCertificate }
+        state.reauthenticator.fetchToken = { _, _, _, certificate in
+            probe.fetchedCertificate = certificate
+            return .value(token)
+        }
+        let completed = expectation(description: "completion")
+        state.performRecoveredServerReauthentication(
+            for: server,
+            using: .external,
+            login: { details in
+                probe.loginDetails = details
+                return loginResult
+            },
+            importClientCertificate: {
+                probe.importRequested = true
+                return importResult
+            },
+            completion: { result in
+                probe.result = result
+                completed.fulfill()
+            }
+        )
+        wait(for: [completed], timeout: 5)
+        if case .success = probe.result {
+            XCTAssertEqual(state.screen, .webView(server, initialPath: nil))
+        }
+        return probe
+    }
+
+    func testRecoveredServerReauthAsksForACertificateWhenTheServerRequiresOne() {
+        let probe = reauthenticate(
+            server: firstServer,
+            requiresCertificate: .value(true),
+            importResult: .value(importedCertificate)
+        )
+
+        XCTAssertTrue(probe.importRequested)
+        XCTAssertEqual(probe.loginDetails?.clientCertificate, importedCertificate)
+        XCTAssertEqual(probe.fetchedCertificate, importedCertificate)
+        XCTAssertEqual(firstServer.info.token, newToken)
+        XCTAssertEqual(firstServer.info.connection.clientCertificate, importedCertificate)
+    }
+
+    func testRecoveredServerReauthLogsInDirectlyWhenTheServerDoesNotRequireACertificate() {
+        let probe = reauthenticate(
+            server: firstServer,
+            requiresCertificate: .value(false),
+            importResult: .value(importedCertificate)
+        )
+
+        XCTAssertFalse(probe.importRequested)
+        XCTAssertNil(probe.loginDetails?.clientCertificate)
+        XCTAssertEqual(firstServer.info.token, newToken)
+        XCTAssertNil(firstServer.info.connection.clientCertificate)
+    }
+
+    func testRecoveredServerReauthKeepsTheCertificateTheServerAlreadyHas() {
+        firstServer.update { $0.connection.clientCertificate = storedCertificate }
+
+        let probe = reauthenticate(
+            server: firstServer,
+            requiresCertificate: Promise(error: ProbeError.unexpected),
+            importResult: .value(importedCertificate)
+        )
+
+        XCTAssertFalse(probe.importRequested)
+        XCTAssertEqual(probe.loginDetails?.clientCertificate, storedCertificate)
+        XCTAssertEqual(firstServer.info.connection.clientCertificate, storedCertificate)
+    }
+
+    func testRecoveredServerReauthReportsCancellationWhenTheCertificateImportIsCancelled() {
+        let probe = reauthenticate(
+            server: firstServer,
+            requiresCertificate: .value(true),
+            importResult: Promise(error: PMKError.cancelled)
+        )
+
+        XCTAssertNil(probe.loginDetails)
+        guard case let .failure(error) = probe.result else {
+            return XCTFail("expected a failure")
+        }
+        XCTAssertEqual(error as? RecoveredServerReauthenticationError, .cancelled)
+        XCTAssertNotEqual(firstServer.info.token, newToken)
+    }
+
+    func testRecoveredServerReauthFailsWhenTheCertificateProbeFails() {
+        let probe = reauthenticate(
+            server: firstServer,
+            requiresCertificate: Promise(error: ProbeError.unexpected),
+            importResult: .value(importedCertificate)
+        )
+
+        XCTAssertNil(probe.loginDetails)
+        guard case let .failure(error) = probe.result else {
+            return XCTFail("expected a failure")
+        }
+        XCTAssertEqual(error as? ProbeError, .unexpected)
+    }
+
+    private enum ProbeError: Error, Equatable {
+        case unexpected
     }
 
     // MARK: - Frontend theme mode
