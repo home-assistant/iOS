@@ -49,6 +49,15 @@ private let previewTimerState = HALiveActivityAttributes.ContentState(
 )
 
 @available(iOS 17.2, *)
+private let previewCountUpState = HALiveActivityAttributes.ContentState(
+    message: "Workout",
+    chronometer: true,
+    countdownEnd: Current.date().addingTimeInterval(-754),
+    icon: "run",
+    color: "#4CAF50"
+)
+
+@available(iOS 17.2, *)
 private let previewCriticalState = HALiveActivityAttributes.ContentState(
     message: "Charging paused",
     criticalText: "03:20:13",
@@ -62,6 +71,7 @@ private let previewCriticalState = HALiveActivityAttributes.ContentState(
 } contentStates: {
     previewProgressState
     previewTimerState
+    previewCountUpState
     previewCriticalState
 }
 
@@ -71,6 +81,7 @@ private let previewCriticalState = HALiveActivityAttributes.ContentState(
 } contentStates: {
     previewProgressState
     previewTimerState
+    previewCountUpState
     previewCriticalState
 }
 
@@ -80,6 +91,7 @@ private let previewCriticalState = HALiveActivityAttributes.ContentState(
 } contentStates: {
     previewProgressState
     previewTimerState
+    previewCountUpState
     previewCriticalState
 }
 #endif

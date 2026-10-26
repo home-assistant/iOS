@@ -20,8 +20,9 @@ struct HACompactTrailingView: View {
     /// Maximum width for non-timer compact trailing content (criticalText, progress %).
     private static let compactTrailingMaxWidth: CGFloat = 50
     private static let compactTrailingMinimumScaleFactor: CGFloat = 0.6
-    /// Diameter of the ring a narrow island shows in place of the text, inside the 28pt circle the
-    /// system gives the slot.
+    /// The circle the system gives the slot on a narrow island.
+    private static let limitedWidthSlotSize: CGFloat = 28
+    /// Diameter of the ring a narrow island shows in place of the text, inside that circle.
     private static let limitedWidthRingSize: CGFloat = 22
 
     var body: some View {
@@ -29,23 +30,33 @@ struct HACompactTrailingView: View {
             if isLimitedInWidth {
                 // A narrow island (iPhone Duo, landscape, or one shared with another activity) leaves
                 // a 28pt circle, too small for any of the texts, so the timer and the progress become
-                // a ring. Critical text has no graphic form and is left out; the system hides an
-                // empty trailing slot.
-                if state.chronometer == true, let end = state.countdownEnd,
-                   let interval = HAActivityTimerProgressBar.interval(
-                       start: state.chronometerStart,
-                       end: end,
-                       direction: state.resolvedProgressBarDirection
-                   ) {
-                    ProgressView(
-                        timerInterval: interval.range,
-                        countsDown: interval.countsDown,
-                        label: { EmptyView() },
-                        currentValueLabel: { EmptyView() }
-                    )
-                    .progressViewStyle(.circular)
-                    .tint(ringColor)
-                    .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
+                // a ring, the timer first as in the full-width slot. Critical text has no graphic
+                // form and is left out; the system hides an empty trailing slot.
+                if state.chronometer == true, let end = state.countdownEnd {
+                    if let interval = HAActivityTimerProgressBar.interval(
+                        start: state.chronometerStart,
+                        end: end,
+                        direction: state.resolvedProgressBarDirection
+                    ) {
+                        ProgressView(
+                            timerInterval: interval.range,
+                            countsDown: interval.countsDown,
+                            label: { EmptyView() },
+                            currentValueLabel: { EmptyView() }
+                        )
+                        .progressViewStyle(.circular)
+                        .tint(ringColor)
+                        .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
+                    } else {
+                        // A count-up with no end has nothing to fill a ring with, so it keeps its
+                        // elapsed time, scaled down to the circle.
+                        HAActivityChronometerText(end: end, start: state.chronometerStart)
+                            .font(.caption2.monospacedDigit().weight(.semibold))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
+                            .frame(width: Self.limitedWidthSlotSize)
+                    }
                 } else if let fraction = state.progressBarFillFraction {
                     ProgressView(value: fraction)
                         .progressViewStyle(.circular)
@@ -145,6 +156,16 @@ struct HACompactTrailingView: View {
                 countdownEnd: Current.date().addingTimeInterval(1500),
                 icon: "timer",
                 color: "#FF9800"
+            ),
+            forcesLimitedWidth: true
+        )
+        HACompactTrailingView(
+            state: .init(
+                message: "Workout",
+                chronometer: true,
+                countdownEnd: Current.date().addingTimeInterval(-754),
+                icon: "run",
+                color: "#4CAF50"
             ),
             forcesLimitedWidth: true
         )

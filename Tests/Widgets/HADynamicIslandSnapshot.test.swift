@@ -48,6 +48,25 @@ struct HADynamicIslandSnapshotTests {
         }
     }
 
+    /// A count-up with no end has no interval to fill a ring with, so the narrow slot falls back to
+    /// its elapsed time. That text ticks with the wall clock, so it is measured rather than recorded:
+    /// a slot with nothing to show takes no width at all.
+    @available(iOS 26.0, *)
+    @MainActor @Test func compactTrailingLimitedWidthKeepsUnboundedCountUp() {
+        let state = HALiveActivityAttributes.ContentState(
+            message: "Workout",
+            chronometer: true,
+            countdownEnd: Date(timeIntervalSince1970: 1_700_000_000),
+            icon: "run",
+            color: "#4CAF50"
+        )
+        let controller = UIHostingController(
+            rootView: HACompactTrailingView(state: state, forcesLimitedWidth: true)
+        )
+        let size = controller.sizeThatFits(in: CGSize(width: 100, height: 100))
+        #expect(size.width > 0)
+    }
+
     /// The expanded presentation is one view in one full-width region, so these references are the
     /// layout itself rather than a re-composition of it. `.sizeThatFits` is what makes them useful:
     /// the image height is the height the island asks for, so a state with no progress bar records
