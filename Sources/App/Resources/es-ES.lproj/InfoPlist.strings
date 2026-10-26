@@ -5,7 +5,7 @@
 "NSHealthShareUsageDescription" = "Lee los datos seleccionados de Apple Health para poder compartirlos con Home Assistant como sensores.";
 "NSHealthUpdateUsageDescription" = "Home Assistant no envía ningún dato a Apple Health.";
 "NSLocalNetworkUsageDescription" = "Localiza tu instancia de Home Assistant y comunícate con ella.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  También necesitamos permiso para acceder a la ubicación \"Siempre\", para que la aplicación pueda realizar operaciones en segundo plano. \n\n ⚠️  Sin ese permiso, la aplicación no podrá decidir qué conexión (local o remota) utilizar en segundo plano y utilizará siempre la remota.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Permite el acceso a la ubicación \"Siempre\" para que la app pueda actualizar tu ubicación en Home Assistant y elegir entre tu conexión local y remota en segundo plano.";
 "NSLocationAlwaysUsageDescription" = "Siempre necesitamos tener acceso a tu ubicación para funciones como iBeacons, geovallas, actualizaciones de ubicación en segundo plano e informes precisos.";
 "NSLocationUsageDescription" = "Cuando está activada, la ubicación de tu dispositivo se envía al servidor de Home Assistant como un rastreador de dispositivos.";
 "NSLocationWhenInUseUsageDescription" = "Esta aplicación necesita acceso a la ubicación para conectarse directamente a tu instalación de Home Assistant. \n \n 1️⃣ Tu ubicación solo se utilizará para comprobar si estás conectado a tu red local. \n \n 2️⃣ No se compartirá con nadie. \n \n 3️⃣ Si no autorizas esto, la aplicación se conectará siempre a través de Internet. Si no se configura, protegerá tus datos y rechazará la conexión.";

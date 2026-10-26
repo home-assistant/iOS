@@ -7,6 +7,7 @@ struct ServerURLEditorSheet: View {
     @ObservedObject var viewModel: ConnectionSettingsViewModel
     let urlType: ConnectionInfo.URLType
     let transitionNamespace: Namespace.ID?
+    @State private var isSaving = false
 
     var body: some View {
         ServerSettingsSheet(
@@ -15,9 +16,10 @@ struct ServerURLEditorSheet: View {
             onClose: {
                 viewModel.isEditingInternalURL = false
                 viewModel.isEditingExternalURL = false
-            }
+            },
+            isCloseDisabled: isSaving
         ) {
-            ConnectionURLView(server: viewModel.server, urlType: urlType)
+            ConnectionURLView(server: viewModel.server, urlType: urlType, isSaving: $isSaving)
         }
     }
 }

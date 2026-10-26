@@ -4,14 +4,15 @@ import Foundation
 /// Describes one Apple Health sample type and how it becomes a Home Assistant sensor.
 ///
 /// The catalog in `HealthKitMetric+…` files is plain data: `identifier` holds the raw
-/// `HKQuantityTypeIdentifier` (or, for sleep, `HKCategoryTypeIdentifier`) string so metrics
-/// introduced by newer versions of iOS can be listed unconditionally — `HealthKitService` simply
-/// skips the ones the running OS doesn't know about.
+/// `HKQuantityTypeIdentifier` (or, for sleep, `HKCategoryTypeIdentifier`; for the activity rings,
+/// the activity summary type) string so metrics introduced by newer versions of iOS can be listed
+/// unconditionally — `HealthKitService` simply skips the ones the running OS doesn't know about.
 public struct HealthKitMetric: Equatable, Hashable, Sendable {
     /// Stable sensor ID sent to Home Assistant. Never change one that has already shipped.
     public let uniqueID: String
-    /// Raw value of the `HKQuantityTypeIdentifier` this metric reads, or of the
-    /// `HKCategoryTypeIdentifier` for a `.sleep` metric. Several sleep metrics share the one type.
+    /// Raw value of the `HKQuantityTypeIdentifier` this metric reads, of the `HKCategoryTypeIdentifier`
+    /// for a `.sleep` metric, or of the activity summary type for an `.activitySummary` metric. Metrics
+    /// of those last two kinds share their one type.
     public let identifier: String
     /// Entity name sent to Home Assistant. Not localized, matching the other webhook sensors.
     public let name: String
@@ -19,17 +20,21 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
     public let icon: String
     /// Explanation shown under the sensor in settings, `nil` for a metric that needs none.
     public let footer: HealthKitMetricFooter?
+    /// Whether only an Apple Watch records this metric, which the sensor list marks with a badge.
+    public let requiresAppleWatch: Bool
     /// Unit of measurement reported to Home Assistant, `nil` for unitless metrics.
     public let unit: String?
     /// Unit the samples are read in, which is also what `unit` describes. A `.sleep` metric has no
-    /// samples to convert; its `.minute` only names what the summed durations are reported in.
+    /// samples to convert; its `.minute` only names what the summed durations are reported in. An
+    /// `.activitySummary` metric reads its field of the summary in this unit.
     public let queryUnit: HealthKitMetricUnit
     public let aggregation: HealthKitMetricAggregation
     public let category: HealthKitMetricCategory
     public let deviceClass: DeviceClass?
     public let stateClass: SensorStateClass?
-    /// How far back a `.mostRecent` metric looks for a sample, or a `.sleep` metric for a night.
-    /// Ignored for `.cumulativeSum`.
+    /// How far back a `.mostRecent` metric looks for a sample, a `.sleep` metric for a night, or an
+    /// `.activitySummary` goal for the latest summary. Ignored for `.cumulativeSum` and for summary
+    /// progress, which always read the current day.
     public let lookbackDays: Int
     /// Multiplier applied to the raw HealthKit value, e.g. 100 to turn a 0…1 fraction into a percentage.
     public let scale: Double
@@ -44,6 +49,7 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
         name: String,
         icon: String,
         footer: HealthKitMetricFooter? = nil,
+        requiresAppleWatch: Bool = false,
         unit: String?,
         queryUnit: HealthKitMetricUnit,
         aggregation: HealthKitMetricAggregation,
@@ -60,6 +66,7 @@ public struct HealthKitMetric: Equatable, Hashable, Sendable {
         self.name = name
         self.icon = icon
         self.footer = footer
+        self.requiresAppleWatch = requiresAppleWatch
         self.unit = unit
         self.queryUnit = queryUnit
         self.aggregation = aggregation

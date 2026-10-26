@@ -105,6 +105,20 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertEqual(mockAssistService.audioDataSent, Data([0x02]))
     }
 
+    func testRecordingFailureCancelsRunAndStopsSendingAudio() {
+        let sut = makeSut()
+        sut.start()
+        sut.didReceiveGreenLightForAudioInput()
+        let error = AudioRecorderError.captureDeviceUnavailable
+
+        sut.didFailToRecord(error: error)
+        sut.didOutputSample(data: Data([0x01]))
+
+        XCTAssertTrue(mockAssistService.cancelRunCalled)
+        XCTAssertFalse(mockAssistService.sendAudioDataCalled)
+        XCTAssertEqual(sut.currentState, .error(error.localizedDescription))
+    }
+
     func testSttEndStopsRecordingAndTransitionsToProcessing() {
         let sut = makeSut()
         sut.start()

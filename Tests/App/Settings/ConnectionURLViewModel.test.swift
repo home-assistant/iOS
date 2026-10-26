@@ -1,10 +1,22 @@
 import Foundation
 @testable import HomeAssistant
+import PromiseKit
 @testable import Shared
 import Testing
 
+/// Holds the URL check behind Save open until the test answers it, so the state in between can be looked at.
+private final class PendingSendTestWebhookManager: WebhookManager {
+    private(set) var pendingCheck: Resolver<Void>?
+
+    override func sendTest(server: Server, baseURL: URL) -> Promise<Void> {
+        let (promise, seal) = Promise<Void>.pending()
+        pendingCheck = seal
+        return promise
+    }
+}
+
 /// Covers what the URL editor derives from its fields: when the security level row applies, when Save
-/// has something to save, and what a commit writes back.
+/// has something to save, what a commit writes back, and how Save behaves while its URL check is out.
 @Suite(.serialized)
 @MainActor
 struct ConnectionURLViewModelTests {
@@ -81,5 +93,39 @@ struct ConnectionURLViewModelTests {
         externalViewModel.securityLevel = .undefined
         externalViewModel.commitAnyway(onSuccess: {})
         #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
+    }
+
+    /// `isChecking` is what keeps the editor sheet from closing, so it has to stay up for as long as the
+    /// check is out and only drop once the error it produced is ready to show.
+    @Test func saveStaysCheckingUntilTheURLCheckFailsThenOffersUseAnyway() async throws {
+        let previousWebhooks = Current.webhooks
+        let webhooks = PendingSendTestWebhookManager()
+        Current.webhooks = webhooks
+        defer { Current.webhooks = previousWebhooks }
+
+        let server = makeServer(internalURL: "https://internal.example.com:8123")
+        let viewModel = ConnectionURLViewModel(server: server, urlType: .external)
+        viewModel.url = "http://unreachable.example.com:8123"
+
+        var didSave = false
+        viewModel.save(onSuccess: { didSave = true })
+
+        #expect(webhooks.pendingCheck != nil)
+        try await Task.sleep(for: .milliseconds(50))
+        #expect(viewModel.isChecking)
+        #expect(!viewModel.showError)
+
+        // PromiseKit clears `isChecking` and raises the error on separate main queue turns, so wait for the
+        // error, which comes last.
+        webhooks.pendingCheck?.reject(URLError(.timedOut))
+        for _ in 0 ..< 100 where !viewModel.showError {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+
+        #expect(!viewModel.isChecking)
+        #expect(viewModel.showError)
+        #expect(viewModel.canCommitAnyway)
+        #expect(!didSave)
+        #expect(server.info.connection.address(for: .external) == URL(string: "https://external.example.com"))
     }
 }
