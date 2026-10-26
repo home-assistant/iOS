@@ -29,6 +29,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
         configuration: AssistConfiguration = AssistConfiguration(),
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
         speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil,
+        serverTTSPlayback: ((URL) -> Void)? = nil,
         responseTimeout: TimeInterval = 30,
         intentStageTimeout: TimeInterval = 300
     ) -> CarPlayAssistSession {
@@ -42,6 +43,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
             assistConfiguration: configuration,
             speechTranscriber: speechTranscriber,
             speechSynthesizer: speechSynthesizer,
+            serverTTSPlayback: serverTTSPlayback,
             tonePlayer: mockTonePlayer,
             responseTimeout: responseTimeout,
             intentStageTimeout: intentStageTimeout
@@ -212,10 +214,12 @@ final class CarPlayAssistSessionTests: XCTestCase {
     /// still arrives afterwards is neither shown nor played.
     func testWatchdogCancelsRunAndIgnoresLateResponse() {
         let synthesizer = MockSpeechSynthesizer()
+        var playedTTSURLs: [URL] = []
         let sut = makeSut(
             prompt: "Turn on the lights",
             configuration: AssistConfiguration(enableOnDeviceTTS: true),
             speechSynthesizer: synthesizer,
+            serverTTSPlayback: { playedTTSURLs.append($0) },
             responseTimeout: 0.05
         )
         sut.start()
@@ -229,6 +233,7 @@ final class CarPlayAssistSessionTests: XCTestCase {
 
         XCTAssertTrue(sut.currentState.isError)
         XCTAssertFalse(synthesizer.speakCalled)
+        XCTAssertEqual(playedTTSURLs, [])
     }
 
     // MARK: - Prompt flow

@@ -60,6 +60,8 @@ final class CarPlayAssistSession: NSObject {
     private let injectedAssistConfiguration: AssistConfiguration?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
+    /// Replaces server TTS playback (AVPlayer or AVAudioPlayer) when set, so tests can observe it.
+    private let serverTTSPlayback: ((URL) -> Void)?
     /// True while an on-device transcription started by this session is listening; used to tell
     /// a no-speech stop apart from stops the session itself requested.
     private var onDeviceListeningActive = false
@@ -176,6 +178,7 @@ final class CarPlayAssistSession: NSObject {
         assistConfiguration: AssistConfiguration? = nil,
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
         speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil,
+        serverTTSPlayback: ((URL) -> Void)? = nil,
         tonePlayer: CarPlayAssistTonePlayerProtocol = CarPlayAssistTonePlayer(),
         responseTimeout: TimeInterval = 30,
         intentStageTimeout: TimeInterval = 300
@@ -191,6 +194,7 @@ final class CarPlayAssistSession: NSObject {
         self.injectedAssistConfiguration = assistConfiguration
         self.speechTranscriber = speechTranscriber
         self.speechSynthesizer = speechSynthesizer
+        self.serverTTSPlayback = serverTTSPlayback
         self.tonePlayer = tonePlayer
         super.init()
         self.audioRecorder.managesAudioSession = Current.settingsStore.carPlayAssistDebugSettings
@@ -570,6 +574,10 @@ final class CarPlayAssistSession: NSObject {
 
     /// Plays TTS audio using the already active conversational audio session to preserve the car route.
     private func playTTS(url: URL) {
+        if let serverTTSPlayback {
+            serverTTSPlayback(url)
+            return
+        }
         let playbackDelay = Current.settingsStore.carPlayAssistDebugSettings.ttsPlaybackDelay.seconds
         if playbackDelay > 0 {
             Current.Log.info("CarPlay Assist delaying TTS playback by \(playbackDelay)s")
