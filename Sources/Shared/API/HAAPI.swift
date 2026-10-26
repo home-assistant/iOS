@@ -1088,7 +1088,10 @@ public class HomeAssistantAPI {
                     case .fulfilled:
                         retry.noteSuccess(generation: generation, limitedTo: limitedTo)
                     case let .rejected(error):
-                        if error.isCancelled {
+                        if error as? RegistrationOwnershipError == .registeredByAnotherDevice {
+                            // Held back, not lost: this device reports once its registration is settled.
+                            return
+                        } else if error.isCancelled {
                             // Replaced by a newer request for this server; the retry decides.
                             Current.Log.info("sensor update for \(trigger) to \(server.info.name) was replaced")
                         } else {
