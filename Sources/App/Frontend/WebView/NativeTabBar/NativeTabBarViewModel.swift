@@ -35,6 +35,8 @@ final class NativeTabBarViewModel: ObservableObject {
 
     /// The vertical bar draws its tabs out of process, so there is no spot on screen to zoom out of.
     var usesVerticalBar = false
+    /// The window this tab bar lives in, so switching servers from it stays in that window.
+    var windowScene: () -> UIWindowScene? = { nil }
 
     private let allServers: () -> [Server]
     private let extrasStore: NativeTabBarExtrasStore
@@ -246,7 +248,7 @@ final class NativeTabBarViewModel: ObservableObject {
 
     func open(server: Server) {
         guard server.identifier != sidebar.server.identifier else { return }
-        Current.sceneManager.appCoordinator.done { $0.open(server: server) }
+        Current.sceneManager.appCoordinator(for: windowScene()).done { $0.open(server: server) }
     }
 
     func open(serverIdentifier: Identifier<Server>) {

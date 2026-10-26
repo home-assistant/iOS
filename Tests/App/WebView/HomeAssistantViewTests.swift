@@ -34,6 +34,37 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertTrue(coordinator.selectServerZoomedFromStandBy)
     }
 
+    /// Picking a server in the stand-by view's empty state activates it through the coordinator; without a
+    /// window to resolve a scene from, that is the app-wide one.
+    func testActivatingAServerGoesThroughTheCoordinator() {
+        let sut = HomeAssistantViewModel(server: Server.fake())
+        let other = Server.fake()
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        let activated = expectation(description: "server activated")
+        coordinator.onActivateServer = { activated.fulfill() }
+
+        sut.activate(server: other)
+
+        wait(for: [activated], timeout: 1)
+        XCTAssertEqual(coordinator.activatedServers.map(\.identifier), [other.identifier])
+    }
+
+    /// The tab bar's server menu resolves its coordinator from the frontend's window.
+    func testSwitchingServerFromTheTabBarGoesThroughTheCoordinator() {
+        let sut = HomeAssistantViewModel(server: Server.fake())
+        let other = Server.fake()
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        let opened = expectation(description: "server opened")
+        coordinator.onOpenServer = { opened.fulfill() }
+
+        sut.tabBar.open(server: other)
+
+        wait(for: [opened], timeout: 1)
+        XCTAssertEqual(coordinator.openedServers.map(\.identifier), [other.identifier])
+    }
+
     func testEachFrontendViewWiresItsControllerToItsOwnOverlayState() {
         let overlayStateA = WebFrontendOverlayState()
         let overlayStateB = WebFrontendOverlayState()

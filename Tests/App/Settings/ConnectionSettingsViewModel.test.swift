@@ -256,4 +256,19 @@ struct ConnectionSettingsViewModelTests {
             #expect(!unreachable.canShareServer)
         }
     }
+
+    @Test func openingTheServerActivatesItInTheWindowItWasOpenedFrom() async {
+        await withTestWorld {
+            let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+            let viewModel = ConnectionSettingsViewModel(server: server)
+            let windowCoordinator = MockAppCoordinator()
+            let lastRegisteredCoordinator = MockAppCoordinator()
+            Current.sceneManager.registerAppCoordinator(lastRegisteredCoordinator)
+
+            viewModel.activateServer(on: windowCoordinator)
+
+            #expect(windowCoordinator.activatedServers.map(\.identifier) == [server.identifier])
+            #expect(lastRegisteredCoordinator.activatedServers.isEmpty)
+        }
+    }
 }

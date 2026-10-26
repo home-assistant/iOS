@@ -299,8 +299,8 @@ struct ConnectionSettingsView: View {
 
     // MARK: - Open Server
 
-    private func openServer() {
-        viewModel.activateServer()
+    func openServer() {
+        viewModel.activateServer(on: appSettingsPresenter?.appCoordinator)
         dismissAppSettings()
     }
 

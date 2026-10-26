@@ -203,6 +203,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 isLoading: viewModel.overlayState.isLoading,
                 serverSelectionNamespace: serverSelectionNamespace,
                 onSelectServerTapped: viewModel.presentServerSelection,
+                onSelectServer: viewModel.activate(server:),
                 onGestureAction: { action in
                     viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
                 },

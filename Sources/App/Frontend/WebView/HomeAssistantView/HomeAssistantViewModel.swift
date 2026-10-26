@@ -88,6 +88,9 @@ final class HomeAssistantViewModel: ObservableObject {
         sidebar.onNavigate = { [weak self] path in
             self?.webViewController?.openSidebarPath(path)
         }
+        tabBar.windowScene = { [weak self] in
+            self?.webViewController?.presentationWindow?.windowScene
+        }
         tabBar.onQuickSearch = { [weak self] in
             self?.webViewController?.webViewGestureHandler.handleGestureAction(.quickSearch)
         }
@@ -456,6 +459,13 @@ final class HomeAssistantViewModel: ObservableObject {
     private func ensureWebViewVisible() {
         guard contentOpacity == 0 else { return }
         fade(to: 1, reduceMotion: reduceMotion)
+    }
+
+    func activate(server: Server) {
+        let scene = webViewController?.presentationWindow?.windowScene
+        Current.sceneManager.appCoordinator(for: scene).done { coordinator in
+            coordinator.activate(server: server)
+        }
     }
 
     /// Opens the Settings sheet on its compact server picker, activating whatever the user picks. Zooms out of
