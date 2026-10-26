@@ -374,7 +374,7 @@ extension AssistService {
     }
 
     private func intentProgress(delta: AssistResponse.AssistData.ChatLogDelta?) {
-        if delta?.role == "assistant" {
+        if delta?.role == .assistant {
             delegate?.didStartStreamResponseMessage()
         }
         delegate?.didReceiveStreamResponseChunk((delta?.content).orEmpty)

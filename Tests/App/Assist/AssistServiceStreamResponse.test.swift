@@ -62,6 +62,21 @@ final class AssistServiceStreamResponseTests: XCTestCase {
         XCTAssertEqual(delegate.calls, ["start", "Let me check.", "", "start", "", "It is sunny."])
     }
 
+    func testChatLogDeltaRoleRawValues() {
+        typealias Role = AssistResponse.AssistData.ChatLogDelta.Role
+        XCTAssertEqual(Role.assistant.rawValue, "assistant")
+        XCTAssertEqual(Role.toolResult.rawValue, "tool_result")
+        XCTAssertEqual(Role.unknown.rawValue, "unknown")
+    }
+
+    func testChatLogDeltaDecodesUnexpectedRoleAsUnknown() throws {
+        typealias Delta = AssistResponse.AssistData.ChatLogDelta
+        let unexpected = try Delta(data: .dictionary(["role": "system", "content": "Hi"]))
+        XCTAssertEqual(unexpected.role, .unknown)
+        XCTAssertEqual(unexpected.content, "Hi")
+        XCTAssertNil(try Delta(data: .dictionary(["content": "there"])).role)
+    }
+
     private final class SpyAssistServiceDelegate: AssistServiceDelegate {
         private(set) var calls: [String] = []
 
