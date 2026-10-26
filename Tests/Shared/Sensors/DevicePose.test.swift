@@ -39,8 +39,12 @@ class DevicePoseTests: XCTestCase {
         XCTAssertEqual(pose(.partiallyOpen, Orientation.landscapeRight), .tent)
     }
 
+    func testPartiallyOpenWithTheOuterDisplayFacingUpIsTent() {
+        XCTAssertEqual(pose(.partiallyOpen, Orientation.faceUp), .tent)
+    }
+
     func testPartiallyOpenWithoutAnUprightOrientationIsPartiallyOpen() {
-        for orientation in [Orientation.unknown, Orientation.faceUp, Orientation.faceDown, 99] {
+        for orientation in [Orientation.unknown, Orientation.faceDown, 99] {
             XCTAssertEqual(pose(.partiallyOpen, orientation), .partiallyOpen)
         }
     }

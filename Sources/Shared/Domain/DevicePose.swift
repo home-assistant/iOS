@@ -48,8 +48,10 @@ public enum DevicePose: String, CaseIterable, Sendable {
                 // The hinge edge points down: it is the fold between an upright half and the half
                 // resting on the table.
                 self = .laptop
-            case UIDeviceOrientationRawValue.landscapeRight:
-                // The hinge edge points up: it is the peak the two halves lean against.
+            case UIDeviceOrientationRawValue.landscapeRight, UIDeviceOrientationRawValue.faceUp:
+                // The hinge edge points up: it is the peak the two halves lean against. The wider
+                // the tent, the further each half leans back, until iOS stops calling it sideways
+                // and reports the outer display as facing up instead.
                 self = .tent
             default:
                 self = .partiallyOpen
@@ -62,6 +64,7 @@ public enum DevicePose: String, CaseIterable, Sendable {
         static let portraitUpsideDown = 2
         static let landscapeLeft = 3
         static let landscapeRight = 4
+        static let faceUp = 5
         static let faceDown = 6
     }
 }
