@@ -27,8 +27,8 @@ struct HACalendarAppEntity: AppEntity, Sendable {
     /// server, which is common when an integration names them after itself rather than the account.
     var displayRepresentation: DisplayRepresentation {
         .init(
-            title: .init(stringLiteral: name),
-            subtitle: .init(stringLiteral: entityId),
+            title: .verbatim(name),
+            subtitle: .verbatim(entityId),
             image: .init(systemName: "calendar")
         )
     }
