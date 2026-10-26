@@ -67,13 +67,8 @@ class FocusNameSensorTests: XCTestCase {
         resetFocusState()
         Current.date = { [now] in now }
 
-        let previousIsTestFlight = Current.isTestFlight
         let previousTimeout = FocusFilterWrapper.currentValuesTimeout
-        addTeardownBlock {
-            Current.isTestFlight = previousIsTestFlight
-            FocusFilterWrapper.currentValuesTimeout = previousTimeout
-        }
-        Current.isTestFlight = true
+        addTeardownBlock { FocusFilterWrapper.currentValuesTimeout = previousTimeout }
         setUpIOS(liveIsFocused: nil)
     }
 
@@ -131,15 +126,6 @@ class FocusNameSensorTests: XCTestCase {
         let report = try report()
         XCTAssertEqual(report.state, "")
         XCTAssertEqual(report.isFocused, true)
-    }
-
-    func testUnavailableOutsideTestFlight() throws {
-        Current.isTestFlight = false
-        run("Work", at: -60)
-
-        XCTAssertThrowsError(try hang(FocusNameSensor(request: request).sensors())) { error in
-            XCTAssertEqual(error as? FocusNameSensor.FocusNameError, .unavailable)
-        }
     }
 
     func testReportsTheNameOfTheRunningFocus() throws {

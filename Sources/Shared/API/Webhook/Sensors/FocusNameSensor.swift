@@ -65,26 +65,14 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
 /// The sensor is always listed, never erroring out while nothing is configured: its detail screen
 /// is the only route to the Focus names, so a sensor that dropped out of the list until a name
 /// existed left a new user with no way to create their first one.
-///
-/// Labs feature, limited to TestFlight builds while it matures, matching the Focus settings screen
-/// where the names are created.
 final class FocusNameSensor: SensorProvider {
-    public enum FocusNameError: Error, Equatable {
-        /// Labs feature, limited to TestFlight builds while it matures.
-        case unavailable
-    }
-
     let request: SensorProviderRequest
     init(request: SensorProviderRequest) {
         self.request = request
     }
 
     func sensors() -> Promise<[WebhookSensor]> {
-        guard Current.isTestFlight else {
-            return .init(error: FocusNameError.unavailable)
-        }
-
-        return FocusReport.current().map { [self] report in
+        FocusReport.current().map { [self] report in
             let _: FocusNameSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
             // Empty while no named Focus is on, which is also the state before any name exists,

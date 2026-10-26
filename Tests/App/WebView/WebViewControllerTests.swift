@@ -1546,6 +1546,31 @@ final class WebViewControllerTests: XCTestCase {
         XCTAssertFalse(otherWindowCoordinator.showSettingsCalled)
     }
 
+    /// Multi-window: the status bar's server menu switches the window it belongs to, not the one that
+    /// registered last.
+    func testOpeningAServerFromTheStatusBarGoesToTheCoordinatorOfTheWebViewsOwnScene() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        let sut = makeSUT()
+        window.addSubview(sut.view)
+        let other = Server.fake()
+
+        let sceneCoordinator = MockAppCoordinator()
+        sceneCoordinator.window = window
+        let otherWindowCoordinator = MockAppCoordinator()
+        otherWindowCoordinator.window = UIWindow()
+        Current.sceneManager.registerAppCoordinator(sceneCoordinator)
+        Current.sceneManager.registerAppCoordinator(otherWindowCoordinator)
+        let serverOpened = expectation(description: "open(server:) called")
+        sceneCoordinator.onOpenServer = { serverOpened.fulfill() }
+
+        sut.openServer(other)
+
+        wait(for: [serverOpened], timeout: 5)
+        XCTAssertEqual(sceneCoordinator.openedServers.map(\.identifier), [other.identifier])
+        XCTAssertTrue(otherWindowCoordinator.openedServers.isEmpty)
+    }
+
     /// Without a window to resolve a scene from, the app-wide coordinator is still the right answer.
     func testShowSettingsFallsBackToTheAppWideCoordinatorWithoutAWindow() {
         let sut = makeSUT()
