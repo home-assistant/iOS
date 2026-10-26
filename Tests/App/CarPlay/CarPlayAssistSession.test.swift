@@ -236,6 +236,21 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertEqual(playedTTSURLs, [])
     }
 
+    /// The counterpart of the late response test: in a run that is still going, the server's
+    /// TTS URL is played.
+    func testTtsMediaUrlIsPlayedDuringRun() {
+        var playedTTSURLs: [URL] = []
+        let sut = makeSut(prompt: "Turn on the lights", serverTTSPlayback: { playedTTSURLs.append($0) })
+        sut.start()
+        sut.didReceiveIntentEndContent("The lights are on")
+
+        let url = URL(string: "https://example.com/tts.mp3")!
+        sut.didReceiveTtsMediaUrl(url)
+
+        XCTAssertEqual(playedTTSURLs, [url])
+        XCTAssertEqual(sut.currentState, .responding)
+    }
+
     // MARK: - Prompt flow
 
     func testStartWithPromptSendsTextPipelineWithoutRecording() {
