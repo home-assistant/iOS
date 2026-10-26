@@ -913,6 +913,7 @@
 				Widgets/Entities/WidgetEntitiesTimelineProvider.swift,
 				Widgets/EntityIconRenderer.swift,
 				Widgets/HAAppEntityAppIntentEntity.swift,
+				"Widgets/LiveActivity/EnvironmentValues+DynamicIslandLimitedWidth.swift",
 				Widgets/LiveActivity/HAActivityProgressBar.swift,
 				Widgets/LiveActivity/HAActivityTimerProgressBar.swift,
 				Widgets/LiveActivity/HACompactTrailingView.swift,

@@ -30,6 +30,24 @@ struct HADynamicIslandSnapshotTests {
         }
     }
 
+    /// A narrow island (iPhone Duo, landscape, or one shared with another activity) gives the slot a
+    /// 28 pt circle, so the timer and the progress turn into a ring and the critical text is left out.
+    ///
+    /// Outside the Live Activity renderer a circular `ProgressView` draws as a spinner, so these
+    /// references pin which samples show something and that it is centred in the circle, not the ring.
+    @available(iOS 26.0, *)
+    @MainActor @Test func compactTrailingLimitedWidthSnapshots() {
+        for sample in Self.makeSamples() {
+            assertSnapshot(
+                of: HACompactTrailingView(state: sample.state, forcesLimitedWidth: true)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.black),
+                layout: .fixed(width: 28, height: 28),
+                named: sample.name
+            )
+        }
+    }
+
     /// The expanded presentation is one view in one full-width region, so these references are the
     /// layout itself rather than a re-composition of it. `.sizeThatFits` is what makes them useful:
     /// the image height is the height the island asks for, so a state with no progress bar records
