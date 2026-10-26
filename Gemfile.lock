@@ -48,7 +48,7 @@ GEM
     erb (6.0.7)
     excon (1.8.0)
       logger
-    faraday (2.15.0)
+    faraday (2.15.1)
       faraday-net_http (>= 2.0, < 3.6)
       json
       logger
@@ -64,7 +64,7 @@ GEM
     faraday-retry (2.4.0)
       faraday (~> 2.0)
     fastimage (2.4.3)
-    fastlane (2.241.1)
+    fastlane (2.241.2)
       CFPropertyList (>= 2.3, < 5.0.0)
       abbrev (~> 0.1)
       addressable (>= 2.9.0, < 3.0.0)
@@ -301,7 +301,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  fastlane (= 2.241.1)
+  fastlane (= 2.241.2)
   fastlane-plugin-appicon
   fastlane-plugin-clean_testflight_testers
   fastlane-plugin-emerge
