@@ -53,6 +53,7 @@ struct WidgetsBundle18: WidgetBundle {
         #endif
 
         // Controls
+        ControlOpenHomeAssistant()
         ControlAssist()
         ControlLight()
         ControlSwitch()

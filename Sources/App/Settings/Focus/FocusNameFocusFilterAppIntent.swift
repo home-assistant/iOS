@@ -4,8 +4,9 @@ import PromiseKit
 import Shared
 
 /// The Focus Filter the user adds to a Focus in Settings › Focus, picking one of the names they
-/// created in the app. iOS runs this when that Focus activates, which is the only moment it tells
-/// us anything about _which_ Focus is running.
+/// created in the app. iOS performs it with that name when the Focus turns on, and with none when
+/// it ends. That, and asking iOS for its current values, are the only ways iOS tells an app
+/// _which_ Focus is on.
 struct FocusNameFocusFilterAppIntent: SetFocusFilterIntent {
     static let title: LocalizedStringResource = .init(
         "app_intents.focus_filter.title",
@@ -36,6 +37,28 @@ struct FocusNameFocusFilterAppIntent: SetFocusFilterIntent {
             ))
         }
         return .init(title: .init(stringLiteral: focusName.name))
+    }
+
+    /// Lets the Focus sensors, which live in Shared and can't see this type, ask iOS which name the
+    /// filter has right now. Called once at launch.
+    static func registerCurrentValuesReader() {
+        Current.focusFilter.setCurrentValuesReader {
+            try await currentFocusName()
+        }
+    }
+
+    /// The name of the Focus that is on, or `nil` when no Focus with a name picked in this filter
+    /// is on. Apple documents `notFound` only as a failure to find the current Focus
+    /// configuration, which is read here as there being no Focus with this filter on. Any other
+    /// error leaves the name to the filter's runs.
+    static func currentFocusName(
+        reading current: () async throws -> FocusNameFocusFilterAppIntent = { try await Self.current }
+    ) async throws -> String? {
+        do {
+            return try await current().focusName?.name
+        } catch SetFocusFilterIntentError.notFound {
+            return nil
+        }
     }
 
     func perform() async throws -> some IntentResult {

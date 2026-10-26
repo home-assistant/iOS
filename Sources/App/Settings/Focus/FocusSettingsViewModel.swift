@@ -7,8 +7,7 @@ final class FocusSettingsViewModel: ObservableObject {
     /// The name the Focus Filter last reported, shown so the user can tell the pairing worked.
     @Published var activeFocusName: String?
     @Published var isFocusSensorEnabled = false
-    /// Without the Focus status permission nothing tells us a Focus ended, so the last name the
-    /// filter reported would stay put.
+    /// Without the Focus status permission the app only sees the Focuses paired with the filter.
     @Published var isFocusPermissionGranted = false
 
     func load() {
