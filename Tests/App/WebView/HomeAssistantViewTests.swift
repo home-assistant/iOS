@@ -65,6 +65,46 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertEqual(coordinator.openedServers.map(\.identifier), [other.identifier])
     }
 
+    /// Multi-window with the frontend detached (the tab bar's More list): switching from the tab bar still
+    /// reaches this window's coordinator, not the one that registered last.
+    func testWithTheFrontendDetachedTheTabBarSwitchesItsOwnWindow() {
+        let windowCoordinator = MockAppCoordinator()
+        let otherWindowCoordinator = MockAppCoordinator()
+        let sut = HomeAssistantViewModel(server: Server.fake(), appCoordinator: windowCoordinator)
+        let other = Server.fake()
+        Current.sceneManager.registerAppCoordinator(windowCoordinator)
+        Current.sceneManager.registerAppCoordinator(otherWindowCoordinator)
+        let opened = expectation(description: "server opened")
+        windowCoordinator.onOpenServer = { opened.fulfill() }
+
+        sut.tabBar.open(server: other)
+
+        wait(for: [opened], timeout: 1)
+        XCTAssertNil(sut.webViewController)
+        XCTAssertEqual(windowCoordinator.openedServers.map(\.identifier), [other.identifier])
+        XCTAssertTrue(otherWindowCoordinator.openedServers.isEmpty)
+    }
+
+    /// Multi-window with the frontend detached: picking a server in the stand-by view still activates it in
+    /// this window.
+    func testWithTheFrontendDetachedActivatingAServerStaysInItsOwnWindow() {
+        let windowCoordinator = MockAppCoordinator()
+        let otherWindowCoordinator = MockAppCoordinator()
+        let sut = HomeAssistantViewModel(server: Server.fake(), appCoordinator: windowCoordinator)
+        let other = Server.fake()
+        Current.sceneManager.registerAppCoordinator(windowCoordinator)
+        Current.sceneManager.registerAppCoordinator(otherWindowCoordinator)
+        let activated = expectation(description: "server activated")
+        windowCoordinator.onActivateServer = { activated.fulfill() }
+
+        sut.activate(server: other)
+
+        wait(for: [activated], timeout: 1)
+        XCTAssertNil(sut.webViewController)
+        XCTAssertEqual(windowCoordinator.activatedServers.map(\.identifier), [other.identifier])
+        XCTAssertTrue(otherWindowCoordinator.activatedServers.isEmpty)
+    }
+
     func testEachFrontendViewWiresItsControllerToItsOwnOverlayState() {
         let overlayStateA = WebFrontendOverlayState()
         let overlayStateB = WebFrontendOverlayState()

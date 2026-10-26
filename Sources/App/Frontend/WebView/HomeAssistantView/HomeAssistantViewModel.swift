@@ -1,4 +1,5 @@
 import Combine
+import PromiseKit
 import Shared
 import SwiftUI
 import UIKit
@@ -48,6 +49,7 @@ final class HomeAssistantViewModel: ObservableObject {
     @Published var isPullToRefreshActive = false
 
     private let onWebViewController: ((WebViewController) -> Void)?
+    private weak var appCoordinator: AppCoordinator?
 
     /// Overridable so tests can exercise the watchdog without waiting out the real timeout.
     var loaderWatchdogTimeout = Constants.loaderWatchdogTimeout
@@ -74,6 +76,7 @@ final class HomeAssistantViewModel: ObservableObject {
         overlayState: WebFrontendOverlayState? = nil,
         chrome: WebViewChromeState? = nil,
         reconnectManager: WebViewReconnectManager? = nil,
+        appCoordinator: AppCoordinator? = nil,
         onWebViewController: ((WebViewController) -> Void)? = nil
     ) {
         self.server = server
@@ -82,14 +85,15 @@ final class HomeAssistantViewModel: ObservableObject {
         self.chrome = chrome ?? WebViewChromeState()
         self.reconnectManager = reconnectManager ?? WebViewReconnectManager()
         self.onWebViewController = onWebViewController
+        self.appCoordinator = appCoordinator
         self.sidebar = MacSidebarViewModel(server: server, overlayState: self.overlayState)
         self.tabBar = NativeTabBarViewModel(sidebar: sidebar, overlayState: self.overlayState)
 
         sidebar.onNavigate = { [weak self] path in
             self?.webViewController?.openSidebarPath(path)
         }
-        tabBar.windowScene = { [weak self] in
-            self?.webViewController?.presentationWindow?.windowScene
+        tabBar.appCoordinator = { [weak self] in
+            self?.windowCoordinator ?? Current.sceneManager.appCoordinator
         }
         tabBar.onQuickSearch = { [weak self] in
             self?.webViewController?.webViewGestureHandler.handleGestureAction(.quickSearch)
@@ -461,9 +465,13 @@ final class HomeAssistantViewModel: ObservableObject {
         fade(to: 1, reduceMotion: reduceMotion)
     }
 
+    private var windowCoordinator: Guarantee<AppCoordinator> {
+        if let appCoordinator { return .value(appCoordinator) }
+        return Current.sceneManager.appCoordinator(for: webViewController?.presentationWindow?.windowScene)
+    }
+
     func activate(server: Server) {
-        let scene = webViewController?.presentationWindow?.windowScene
-        Current.sceneManager.appCoordinator(for: scene).done { coordinator in
+        windowCoordinator.done { coordinator in
             coordinator.activate(server: server)
         }
     }
@@ -471,9 +479,7 @@ final class HomeAssistantViewModel: ObservableObject {
     /// Opens the Settings sheet on its compact server picker, activating whatever the user picks. Zooms out of
     /// the stand-by view's server pill, which is the only thing that triggers it.
     func presentServerSelection() {
-        // The pill belongs to one window's frontend, so the picker opens on that window's coordinator.
-        let scene = webViewController?.presentationWindow?.windowScene
-        Current.sceneManager.appCoordinator(for: scene).done { coordinator in
+        windowCoordinator.done { coordinator in
             coordinator.selectServer(prompt: nil, zoomsFromStandBy: true) { server in
                 coordinator.activate(server: server)
             }
