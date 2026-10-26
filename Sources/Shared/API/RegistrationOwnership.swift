@@ -2,12 +2,14 @@ import Foundation
 import HAKit
 import HAKit_PromiseKit
 import PromiseKit
+import UserNotifications
 
 /// Settles the registrations a device carries from a backup of another device: each belongs to the device whose
 /// vendor identifier it was made with, and the user either keeps them or registers anew.
 public struct RegistrationOwnership {
     public typealias Register = (Server) async throws -> Void
     public typealias CatchUp = (Server) -> Void
+    public typealias Notify = (Server) -> Void
     static let reportingRequestTypes: Set<String> = ["update_location", "update_sensor_states", "register_sensor"]
     public static let didSettleRegistration = Notification.Name("RegistrationOwnership.didSettleRegistration")
 
@@ -15,18 +17,25 @@ public struct RegistrationOwnership {
     /// Non-private for tests.
     static var reconnectTimeout: TimeInterval = 30
 
+    /// The servers whose held back reports were already told about, each with the other device it was for.
+    static let heldBackNotifiedKey = "registrationHeldBackNotified"
+    private static let heldBackNotifiedLock = NSLock()
+
     private static let inFlightLock = NSLock()
     private static var inFlight = [Identifier<Server>: Task<Void, Error>]()
 
     private let register: Register
     private let catchUp: CatchUp
+    private let notify: Notify
 
     public init(
         register: @escaping Register = RegistrationOwnership.registerWithServer(_:),
-        catchUp: @escaping CatchUp = RegistrationOwnership.catchUpWithServer(_:)
+        catchUp: @escaping CatchUp = RegistrationOwnership.catchUpWithServer(_:),
+        notify: @escaping Notify = RegistrationOwnership.notifyHeldBack(_:)
     ) {
         self.register = register
         self.catchUp = catchUp
+        self.notify = notify
     }
 
     public func serversRegisteredByAnotherDevice() -> [Server] {
@@ -40,6 +49,49 @@ public struct RegistrationOwnership {
 
     public func holdsBack(_ request: WebhookRequest, to server: Server) -> Bool {
         Self.reportingRequestTypes.contains(request.type) && isRegisteredByAnotherDevice(server)
+    }
+
+    /// Reports stay held back until the person chooses, which nobody notices from a background launch, so the first
+    /// time they are for a given other device, a notification says so. Opening the app asks what to do; while it is
+    /// in the foreground it asks anyway, so nothing is sent then and the next background launch still notifies.
+    public func noteHeldBack(by server: Server) {
+        DispatchQueue.main.async { [self] in
+            #if os(iOS)
+            guard !Current.isForegroundApp() else { return }
+            #endif
+            guard let owner = Current.settingsStore.currentRegistrationIdentity(for: server).ownerVendorID else {
+                return
+            }
+            let mark = "\(server.identifier.rawValue) \(owner)"
+            let prefs = Current.settingsStore.prefs
+            let isFirst = Self.heldBackNotifiedLock.withLock { () -> Bool in
+                var marks = prefs.stringArray(forKey: Self.heldBackNotifiedKey) ?? []
+                guard !marks.contains(mark) else { return false }
+                marks.append(mark)
+                prefs.set(marks, forKey: Self.heldBackNotifiedKey)
+                return true
+            }
+            guard isFirst else { return }
+            Current.Log.info("telling the person reports to \(server.identifier) are held back")
+            notify(server)
+        }
+    }
+
+    public static func notifyHeldBack(_ server: Server) {
+        guard !Current.isRunningTests else { return }
+        let content = UNMutableNotificationContent()
+        content.title = L10n.RestoredRegistrations.HeldBackNotification.title
+        content.body = L10n.RestoredRegistrations.HeldBackNotification.body(server.info.name)
+        let request = UNNotificationRequest(
+            identifier: "registration-held-back-\(server.identifier.rawValue)",
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error {
+                Current.Log.error("failed to tell the person reports to \(server.identifier) are held back: \(error)")
+            }
+        }
     }
 
     public func belongsToAnotherDevice(_ identity: RegistrationIdentity) -> Bool {

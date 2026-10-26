@@ -82,6 +82,7 @@ struct RegistrationOwnershipTests {
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
             SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.heldBackNotifiedKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
         let previousServers = Current.servers
@@ -103,6 +104,73 @@ struct RegistrationOwnershipTests {
         keys.forEach(prefs.removeObject(forKey:))
         prefs.set(identifierOwner, forKey: SettingsStore.integrationDeviceIDKey)
         return try await body(servers)
+    }
+
+    /// Lets the main queue run what was put on it so far.
+    private func drainMainQueue() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+    }
+
+    private func noteHeldBack(
+        by server: Server,
+        inForeground: Bool = false,
+        notified: @escaping (Server) -> Void
+    ) async {
+        let previous = Current.isForegroundApp
+        defer { Current.isForegroundApp = previous }
+        Current.isForegroundApp = { inForeground }
+        RegistrationOwnership(notify: notified).noteHeldBack(by: server)
+        await drainMainQueue()
+    }
+
+    @Test func heldBackReportsAreToldAboutOncePerServer() async {
+        await withDevice { servers in
+            let first = addServer(to: servers, ownedBy: Self.otherDevice)
+            let second = addServer(to: servers, ownedBy: Self.otherDevice)
+            var notified = [Server]()
+
+            await noteHeldBack(by: first) { notified.append($0) }
+            await noteHeldBack(by: first) { notified.append($0) }
+            await noteHeldBack(by: second) { notified.append($0) }
+
+            #expect(notified == [first, second])
+        }
+    }
+
+    @Test func heldBackReportsAreNotToldAboutWhileTheAppIsOpen() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            var notified = [Server]()
+
+            await noteHeldBack(by: server, inForeground: true) { notified.append($0) }
+            #expect(notified.isEmpty)
+
+            // The app asks on screen, so a background launch after it still tells.
+            await noteHeldBack(by: server) { notified.append($0) }
+            #expect(notified == [server])
+        }
+    }
+
+    @Test func heldBackReportsAreToldAboutAgainForAnotherDevice() async {
+        await withDevice { servers in
+            let server = addServer(to: servers, ownedBy: Self.otherDevice)
+            var notified = [Server]()
+            await noteHeldBack(by: server) { notified.append($0) }
+
+            let settings = Current.settingsStore
+            settings.setRegistrationRecord(
+                RegistrationRecord(current: RegistrationIdentity(
+                    deviceID: settings.integrationDeviceID,
+                    ownerVendorID: "yet-another-device"
+                )),
+                for: server.identifier
+            )
+            await noteHeldBack(by: server) { notified.append($0) }
+
+            #expect(notified == [server, server])
+        }
     }
 
     @discardableResult

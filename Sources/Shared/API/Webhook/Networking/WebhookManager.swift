@@ -422,8 +422,10 @@ public class WebhookManager: NSObject {
     }
 
     private func heldBack(_ request: WebhookRequest, to server: Server) -> Promise<Void>? {
-        guard RegistrationOwnership().holdsBack(request, to: server) else { return nil }
+        let ownership = RegistrationOwnership()
+        guard ownership.holdsBack(request, to: server) else { return nil }
         Current.Log.info("holding back \(request.type) to \(server.identifier): its registration is another device's")
+        ownership.noteHeldBack(by: server)
         return Promise(error: RegistrationOwnershipError.registeredByAnotherDevice)
     }
 

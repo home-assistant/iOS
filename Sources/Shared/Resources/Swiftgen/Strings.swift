@@ -5237,10 +5237,22 @@ public enum L10n {
     /// Try again
     public static var tryAgain: String { return L10n.tr("Localizable", "restored_registrations.try_again") }
     public enum Errors {
+      /// %@ asks for a client certificate. Re-authenticate it from its server settings to add one, then try again.
+      public static func clientCertificateRequired(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "restored_registrations.errors.client_certificate_required", String(describing: p1))
+      }
       /// This device can't be told apart from others until it has been unlocked. Unlock it and try again.
       public static var noDeviceIdentifier: String { return L10n.tr("Localizable", "restored_registrations.errors.no_device_identifier") }
       /// This server still knows this device as another one. Open the app to register it as a new device or keep that registration.
       public static var registeredByAnotherDevice: String { return L10n.tr("Localizable", "restored_registrations.errors.registered_by_another_device") }
+    }
+    public enum HeldBackNotification {
+      /// This device was set up from a backup of another one, so its location and sensors aren't sent to %@. Open the app to choose how it connects.
+      public static func body(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "restored_registrations.held_back_notification.body", String(describing: p1))
+      }
+      /// Home Assistant isn't getting updates from this device
+      public static var title: String { return L10n.tr("Localizable", "restored_registrations.held_back_notification.title") }
     }
     public enum Login {
       /// Server %d of %d
@@ -5707,6 +5719,8 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.footer") }
         /// Registering…
         public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.progress") }
+        /// This server knows this device as the one its backup came from, so it isn't sent this device's location and sensors. Register as a new device, or replace the old device if this one took its place.
+        public static var restoredFooter: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.restored_footer") }
         /// You sign in to this server again and this device gets a registration of its own. The current one stays in Home Assistant for any other device still using it. Remove it there once no device does.
         public static var signInMessage: String { return L10n.tr("Localizable", "settings.connection_section.register_as_new_device.sign_in_message") }
         /// Register as new device

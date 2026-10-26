@@ -420,6 +420,54 @@ struct ConnectionSettingsViewModelTests {
         }
     }
 
+    @Test func aServerStillAnotherDevicesOffersToReplaceItAndStopsOnceReplaced() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                let settings = Current.settingsStore
+                settings.setRegistrationRecord(
+                    RegistrationRecord(current: RegistrationIdentity(
+                        deviceID: settings.integrationDeviceID,
+                        ownerVendorID: "other-device"
+                    )),
+                    for: server.identifier
+                )
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(catchUp: { _ in }),
+                    signIn: { _, _ in }
+                )
+                #expect(viewModel.isRegisteredByAnotherDevice)
+
+                viewModel.confirmReplacingOldDevice()
+                #expect(viewModel.isReplaceOldDeviceConfirmationPresented)
+                viewModel.replaceOldDevice()
+
+                #expect(!viewModel.isRegisteredByAnotherDevice)
+                #expect(settings.currentRegistrationIdentity(for: server).ownerVendorID == "this-device")
+            }
+        }
+    }
+
+    @Test func aServerThisDeviceRegisteredOffersNothingToReplace() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                Current.settingsStore.setRegistrationRecord(
+                    RegistrationRecord(current: RegistrationIdentity(
+                        deviceID: Current.settingsStore.integrationDeviceID,
+                        ownerVendorID: "this-device"
+                    )),
+                    for: server.identifier
+                )
+
+                let viewModel = ConnectionSettingsViewModel(server: server, signIn: { _, _ in })
+
+                #expect(!viewModel.isRegisteredByAnotherDevice)
+            }
+        }
+    }
+
     @Test func openingTheServerActivatesItInTheWindowItWasOpenedFrom() async {
         await withTestWorld {
             let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)

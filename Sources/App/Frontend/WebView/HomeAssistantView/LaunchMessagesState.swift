@@ -22,8 +22,8 @@ final class LaunchMessagesState: ObservableObject {
     /// Non-private for tests.
     var pending: [Message] = []
     /// Evaluated once per app session — `HomeAssistantView` is recreated on server switches, which
-    /// should not re-present the launch messages.
-    private static var didEvaluate = false
+    /// should not re-present the launch messages. Non-private for tests.
+    static var didEvaluate = false
 
     func evaluateIfNeeded() {
         guard !Self.didEvaluate else { return }
@@ -56,6 +56,16 @@ final class LaunchMessagesState: ObservableObject {
         RestoredRegistrationsViewModel(servers: servers, ownership: ownership, onFinished: { [weak self] in
             self?.presented = nil
         })
+    }
+
+    /// Asks about registrations still another device's each time the app comes back, not just once per launch:
+    /// what this device reports stays held back until each is settled, and an app kept running by location
+    /// updates can go days without a launch. Waits for anything already on screen or queued.
+    func askAboutRestoredRegistrationsAgain() {
+        guard Self.didEvaluate, presented == nil, pending.isEmpty else { return }
+        let servers = RegistrationOwnership().serversRegisteredByAnotherDevice()
+        guard !servers.isEmpty else { return }
+        presented = .restoredRegistrations(servers)
     }
 
     /// Presents the next queued message, if any. Called on evaluation and on each sheet dismiss so a

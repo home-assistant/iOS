@@ -34,6 +34,9 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var registerAsNewDeviceError: Error?
     @Published var isShowingRegisterAsNewDeviceError = false
     @Published var login: OnboardingAuthLoginViewModel?
+    /// Still the registration of the device a backup came from, so nothing this device reports reaches the server.
+    @Published private(set) var isRegisteredByAnotherDevice = false
+    @Published var isReplaceOldDeviceConfirmationPresented = false
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
@@ -85,6 +88,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         self.server = server
         self.ownership = ownership
         self.signIn = signIn
+        self.isRegisteredByAnotherDevice = ownership.isRegisteredByAnotherDevice(server)
         setupObservers()
         loadInitialData()
     }
@@ -404,6 +408,17 @@ final class ConnectionSettingsViewModel: ObservableObject {
             registerAsNewDeviceError = error
             isShowingRegisterAsNewDeviceError = true
         }
+        isRegisteredByAnotherDevice = ownership.isRegisteredByAnotherDevice(server)
+    }
+
+    func confirmReplacingOldDevice() {
+        isReplaceOldDeviceConfirmationPresented = true
+    }
+
+    /// Takes over the registration of the device a backup came from, the same as the choice offered at launch.
+    func replaceOldDevice() {
+        ownership.keepRegistrations(of: [server])
+        isRegisteredByAnotherDevice = ownership.isRegisteredByAnotherDevice(server)
     }
 
     // MARK: - Client Certificate

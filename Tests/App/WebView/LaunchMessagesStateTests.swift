@@ -64,6 +64,71 @@ final class LaunchMessagesStateTests: XCTestCase {
         }
     }
 
+    func testRegistrationsOfAnotherDeviceAreAskedAboutAgainWhenTheAppComesBack() {
+        withRegistrationIdentifier(from: "other-device") { servers in
+            let server = servers.addFake()
+            let sut = LaunchMessagesState()
+
+            withLaunchMessagesEvaluated { sut.askAboutRestoredRegistrationsAgain() }
+
+            guard case let .restoredRegistrations(restored)? = sut.presented else {
+                XCTFail("Expected the registrations of another device to be asked about again")
+                return
+            }
+            XCTAssertEqual(restored, [server])
+        }
+    }
+
+    func testComingBackDoesNotCoverAnotherMessageOrJumpTheQueue() {
+        withRegistrationIdentifier(from: "other-device") { servers in
+            servers.addFake()
+            let shown = LaunchMessagesState()
+            shown.presented = .whatsNew(Self.release())
+            let queued = LaunchMessagesState()
+            queued.pending = [.whatsNew(Self.release())]
+
+            withLaunchMessagesEvaluated {
+                shown.askAboutRestoredRegistrationsAgain()
+                queued.askAboutRestoredRegistrationsAgain()
+            }
+
+            XCTAssertEqual(shown.presented?.id, LaunchMessagesState.Message.whatsNew(Self.release()).id)
+            XCTAssertNil(queued.presented)
+        }
+    }
+
+    func testComingBackBeforeTheLaunchMessagesAsksNothing() {
+        withRegistrationIdentifier(from: "other-device") { servers in
+            servers.addFake()
+            let sut = LaunchMessagesState()
+            let previous = LaunchMessagesState.didEvaluate
+            defer { LaunchMessagesState.didEvaluate = previous }
+            LaunchMessagesState.didEvaluate = false
+
+            sut.askAboutRestoredRegistrationsAgain()
+
+            XCTAssertNil(sut.presented)
+        }
+    }
+
+    func testComingBackAsksNothingOnceTheRegistrationsAreSettled() {
+        withRegistrationIdentifier(from: "this-device") { servers in
+            servers.addFake()
+            let sut = LaunchMessagesState()
+
+            withLaunchMessagesEvaluated { sut.askAboutRestoredRegistrationsAgain() }
+
+            XCTAssertNil(sut.presented)
+        }
+    }
+
+    private func withLaunchMessagesEvaluated(_ body: () -> Void) {
+        let previous = LaunchMessagesState.didEvaluate
+        defer { LaunchMessagesState.didEvaluate = previous }
+        LaunchMessagesState.didEvaluate = true
+        body()
+    }
+
     private func withRegistrationIdentifier(
         from owner: String,
         _ body: (FakeServerManager) throws -> Void

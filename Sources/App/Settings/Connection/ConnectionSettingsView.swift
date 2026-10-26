@@ -370,8 +370,29 @@ struct ConnectionSettingsView: View {
             } message: {
                 Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.signInMessage)
             }
+            if viewModel.isRegisteredByAnotherDevice {
+                Button(action: viewModel.confirmReplacingOldDevice) {
+                    Text(L10n.RestoredRegistrations.replaceDevice)
+                }
+                .accessibilityIdentifier(AccessibilityIdentifier.connectionSettingsReplaceOldDevice.rawValue)
+                .disabled(viewModel.isRegisteringAsNewDevice || viewModel.isDeleting)
+                .confirmationDialog(
+                    L10n.RestoredRegistrations.Replace.title,
+                    isPresented: $viewModel.isReplaceOldDeviceConfirmationPresented,
+                    titleVisibility: .visible
+                ) {
+                    Button(L10n.RestoredRegistrations.Replace.confirm, action: viewModel.replaceOldDevice)
+                    Button(L10n.cancelLabel, role: .cancel) {}
+                } message: {
+                    Text(L10n.RestoredRegistrations.Replace.message)
+                }
+            }
         } footer: {
-            Text(L10n.Settings.ConnectionSection.RegisterAsNewDevice.footer)
+            Text(
+                viewModel.isRegisteredByAnotherDevice
+                    ? L10n.Settings.ConnectionSection.RegisterAsNewDevice.restoredFooter
+                    : L10n.Settings.ConnectionSection.RegisterAsNewDevice.footer
+            )
         }
     }
 

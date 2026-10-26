@@ -9,6 +9,7 @@ struct HomeAssistantView: View, WebFrontendView {
 
     @StateObject private var viewModel: HomeAssistantViewModel
     @StateObject private var launchMessages = LaunchMessagesState()
+    @Environment(\.scenePhase) private var scenePhase
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -125,6 +126,11 @@ struct HomeAssistantView: View, WebFrontendView {
             // The frontend is loaded and on screen — the settled moment to present launch messages.
             if !showsStandBy {
                 launchMessages.evaluateIfNeeded()
+            }
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .active {
+                launchMessages.askAboutRestoredRegistrationsAgain()
             }
         }
         .onChange(of: reduceMotion) { reduceMotion in
