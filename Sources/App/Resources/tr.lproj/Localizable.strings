@@ -245,6 +245,8 @@
 "app_intents.open_close.title" = "Aç veya kapat";
 "app_intents.open_experimental_dashboard.description" = "Deneysel kontrol panelini açar";
 "app_intents.open_experimental_dashboard.title" = "Deneysel Kontrol Panelini Aç";
+"app_intents.open_home_assistant.description" = "Opens the Home Assistant app";
+"app_intents.open_home_assistant.title" = "Open Home Assistant";
 "app_intents.open_state_icon.title" = "Açık durum simgesi";
 "app_intents.perform_action.action.title" = "Eylem";
 "app_intents.perform_action.action_parameter_configuration" = "Hangi eylem?";
@@ -1682,6 +1684,11 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.network_detection_permission.title" = "Konum erişimi gerekiyor";
 "settings.connection_section.no_base_url.title" = "URL yok";
 "settings.connection_section.open_server" = "Aç";
+"settings.connection_section.reauthenticate.error_title" = "Couldn't re-authenticate";
+"settings.connection_section.reauthenticate.footer" = "Sign in to this server again, for example after changing your password or to use a different user. Your server's URLs and settings stay as they are.";
+"settings.connection_section.reauthenticate.progress" = "Re-authenticating…";
+"settings.connection_section.reauthenticate.title" = "Re-authenticate";
+"settings.connection_section.reauthenticate.url_picker_title" = "Sign in using";
 "settings.connection_section.refresh_server" = "Sunucu bilgilerini güncelle";
 "settings.connection_section.remote_ui_url.title" = "Uzak Kullanıcı Arabirimi URL'si";
 "settings.connection_section.sensor_send_type.setting.all" = "Tümü";

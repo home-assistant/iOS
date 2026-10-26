@@ -245,6 +245,8 @@
 "app_intents.open_close.title" = "Open or close";
 "app_intents.open_experimental_dashboard.description" = "Ανοίγει το πειραματικό ταμπλό";
 "app_intents.open_experimental_dashboard.title" = "Ανοιγμα πειραματικού ταμπλό";
+"app_intents.open_home_assistant.description" = "Opens the Home Assistant app";
+"app_intents.open_home_assistant.title" = "Open Home Assistant";
 "app_intents.open_state_icon.title" = "Εικονίδιο για κατάσταση ανοικτό";
 "app_intents.perform_action.action.title" = "Ενέργεια";
 "app_intents.perform_action.action_parameter_configuration" = "Ποια ενέργεια;";
@@ -1682,6 +1684,11 @@
 "settings.connection_section.network_detection_permission.title" = "Location access needed";
 "settings.connection_section.no_base_url.title" = "Δεν υπάρχει URL";
 "settings.connection_section.open_server" = "Open";
+"settings.connection_section.reauthenticate.error_title" = "Couldn't re-authenticate";
+"settings.connection_section.reauthenticate.footer" = "Sign in to this server again, for example after changing your password or to use a different user. Your server's URLs and settings stay as they are.";
+"settings.connection_section.reauthenticate.progress" = "Re-authenticating…";
+"settings.connection_section.reauthenticate.title" = "Re-authenticate";
+"settings.connection_section.reauthenticate.url_picker_title" = "Sign in using";
 "settings.connection_section.refresh_server" = "Ενημέρωση πληροφοριών server";
 "settings.connection_section.remote_ui_url.title" = "Απομακρυσμένη διεύθυνση URL διεπαφής χρήστη";
 "settings.connection_section.sensor_send_type.setting.all" = "Όλα";

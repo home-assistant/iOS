@@ -5,7 +5,7 @@
 "NSHealthShareUsageDescription" = "Läs utvalda Apple Health-mätvärden så att de kan delas med Home Assistant som sensorer.";
 "NSHealthUpdateUsageDescription" = "Home Assistant skriver ingen data till Apple Health.";
 "NSLocalNetworkUsageDescription" = "Hitta och kommunicera med din Home Assistant-installation.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Vi behöver också platsåtkomst \"Alltid\" så att appen kan utföra bakgrundsoperationer. \n\n ⚠️ Utan detta kan appen inte bestämma vilken anslutning (lokal eller fjärr) som ska användas i bakgrunden och kommer alltid att använda fjärr.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Tillåt platsåtkomst \"Alltid\" så att appen kan uppdatera din plats i Home Assistant och i bakgrunden välja mellan lokal anslutning och fjärranslutning.";
 "NSLocationAlwaysUsageDescription" = "Vi behöver alltid till gång till din plats för funktioner som iBeacons, geofences, platsuppdateringar i bakgrunden och korrekt rapportering.";
 "NSLocationUsageDescription" = "När aktiverad skickas din enhets position till din Home Assistant-server som en enhetsspårare.";
 "NSLocationWhenInUseUsageDescription" = "Den här appen behöver platsåtkomst för att ansluta direkt till din Home Assistant-installation. \n \n 1️⃣ Din plats kommer endast att användas för att kontrollera om du är ansluten till ditt lokala nätverk. \n \n 2️⃣ Den kommer inte att delas med någon. \n \n 3️⃣ Om du inte tillåter detta kommer appen alltid att ansluta via internet i stället. Om den inte är konfigurerad kommer den att skydda dina data och neka anslutningen.";
