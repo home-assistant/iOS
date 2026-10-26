@@ -19,6 +19,7 @@ struct ServersListView: View {
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
                 HomeAssistantAccountRowView(server: server, isCompact: Current.isCatalyst)
             }
+            .accessibilityIdentifier(AccessibilityIdentifier.settingsServerRow.rawValue)
             .tag(MacSettingsSidebarSelection.server(server.identifier))
             .macSettingsSidebarRow(isSelected: macSidebarSelection == .server(server.identifier))
             .contextMenu {

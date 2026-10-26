@@ -33,76 +33,53 @@ extension WebViewController {
         showEmptyState()
     }
 
-    func performReauthentication(using urlType: ConnectionInfo.URLType) {
-        let connectionInfo = server.info.connection
-
-        guard let baseURL = connectionInfo.address(for: urlType) else {
-            Current.Log.error("No URL available for re-authentication with type \(urlType)")
-            showReauthFailureAlert(error: ServerConnectionError.noActiveURL(server.info.name))
-            return
-        }
-
-        do {
-            let authDetails = try OnboardingAuthDetails(baseURL: baseURL)
-            authDetails.exceptions = connectionInfo.securityExceptions
-            authDetails.clientCertificate = connectionInfo.clientCertificate
-
-            let loginViewModel = OnboardingAuthLoginViewModel(authDetails: authDetails)
-            let loginController = UIHostingController(
-                rootView: OnboardingAuthLoginView(viewModel: loginViewModel, style: .modal)
-            )
-            loginController.isModalInPresentation = true
-            present(loginController, animated: true)
-
-            firstly {
-                loginViewModel.resultPromise
-            }.ensureThen {
-                Guarantee { seal in
-                    loginController.dismiss(animated: true) {
-                        seal(())
-                    }
+    func performReauthentication(
+        using urlType: ConnectionInfo.URLType,
+        reauthenticator: ServerReauthenticator = ServerReauthenticator()
+    ) {
+        let server = server
+        Task { @MainActor [weak self] in
+            var loginController: UIViewController?
+            do {
+                try await ServerReauthentication.signIn(
+                    to: server,
+                    using: urlType,
+                    reauthenticator: reauthenticator
+                ) { [weak self] viewModel in
+                    // Taken down below instead, so the outcome waits for the page to be gone.
+                    guard let self, let viewModel else { return }
+                    let controller = UIHostingController(rootView: OnboardingAuthLoginView(
+                        viewModel: viewModel,
+                        style: .modal
+                    ))
+                    controller.isModalInPresentation = true
+                    present(controller, animated: true)
+                    loginController = controller
                 }
-            }.then { result -> Promise<(URL?, TokenInfo)> in
-                // The login web view may have been redirected to a different port/scheme; re-authenticate
-                // against the address it actually ended on, and remember it to update the stored URL.
-                let correctedURL = result.resolvedURL?.sameHostRedirectBaseURL(from: baseURL)
-                return AuthenticationAPI.fetchToken(
-                    authorizationCode: result.code,
-                    baseURL: correctedURL ?? baseURL,
-                    exceptions: authDetails.exceptions,
-                    clientCertificate: authDetails.clientCertificate
-                ).map { (correctedURL, $0) }
-            }.done { [weak self] correctedURL, tokenInfo in
-                guard let self else { return }
-                applyNewToken(tokenInfo, correctedURL: correctedURL, urlType: urlType)
-            }.catch { [weak self] error in
-                guard let self else { return }
+                await Self.dismiss(loginController)
+                self?.handleReauthenticated()
+            } catch {
+                await Self.dismiss(loginController)
                 if let pmkError = error as? PMKError, pmkError.isCancelled {
                     Current.Log.info("Re-authentication cancelled by user")
                     return
                 }
                 Current.Log.error("Re-authentication failed: \(error)")
-                showReauthFailureAlert(error: error)
+                self?.showReauthFailureAlert(error: error)
             }
-        } catch {
-            Current.Log.error("Failed to create auth details for re-authentication: \(error)")
-            showReauthFailureAlert(error: error)
         }
     }
 
-    private func applyNewToken(
-        _ tokenInfo: TokenInfo,
-        correctedURL: URL? = nil,
-        urlType: ConnectionInfo.URLType? = nil
-    ) {
-        server.update { serverInfo in
-            serverInfo.token = tokenInfo
-            if let correctedURL, let urlType {
-                Current.Log.info("Updating \(urlType) URL to redirected address \(correctedURL) during re-auth")
-                serverInfo.connection.set(address: correctedURL, for: urlType)
+    private static func dismiss(_ controller: UIViewController?) async {
+        guard let controller else { return }
+        await withCheckedContinuation { continuation in
+            controller.dismiss(animated: true) {
+                continuation.resume()
             }
         }
+    }
 
+    private func handleReauthenticated() {
         didLogOut = false
         connectionState = .unknown
 

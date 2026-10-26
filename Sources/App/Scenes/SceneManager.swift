@@ -50,6 +50,7 @@ enum OpenSource {
 protocol AppCoordinator: AnyObject {
     var presentedViewController: UIViewController? { get }
     var window: UIWindow? { get }
+    var frontend: (any WebFrontend)? { get }
     func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?)
     func show(alert: ServerAlert)
     func showSettings()

@@ -118,6 +118,14 @@ public class AppEnvironment {
                 }
             }
         }
+
+        // Lets the end-to-end tests relaunch as another device; only honored in their configuration.
+        if isFastlaneSnapshot,
+           let vendorID = UserDefaults(suiteName: AppConstants.AppGroupID)!.string(forKey: "E2E_VENDOR_IDENTIFIER"),
+           !vendorID.isEmpty {
+            device.identifierForVendor = { vendorID }
+        }
+
         HAGlobal.log = { level, log in
             let string = "WebSocket: \(log.replacingOccurrences(of: "\n", with: " "))"
 
