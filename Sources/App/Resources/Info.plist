@@ -111,7 +111,7 @@
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Locate and communicate with your Home Assistant instance.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow location access &apos;Always&apos; so the app can choose between your local and remote connection in the background. Otherwise, it will always connect remotely.</string>
+	<string>Allow location access "Always" so the app can choose between your local and remote connection in the background. Otherwise, it will always connect remotely.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We always need access to your location for features like iBeacons, geofences,
 			background location updates and accurate reporting.</string>
