@@ -159,7 +159,9 @@ struct AssistView: View {
                 }
         }
         .navigationViewStyle(.stack)
-        .background(VerticalBarObserver(hasVerticalBar: $hasVerticalBar))
+        // The bar is only reported to views that reach the edge it sits on, so the observer has to
+        // run under the safe area it leaves.
+        .background(VerticalBarObserver(hasVerticalBar: $hasVerticalBar).ignoresSafeArea())
     }
 
     @ViewBuilder
