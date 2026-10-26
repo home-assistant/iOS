@@ -981,6 +981,12 @@ public enum L10n {
       /// Open Experimental Dashboard
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.title") }
     }
+    public enum OpenHomeAssistant {
+      /// Opens the Home Assistant app
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_home_assistant.description") }
+      /// Open Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_home_assistant.title") }
+    }
     public enum OpenStateIcon {
       /// Icon for open state
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_state_icon.title") }
@@ -2833,6 +2839,18 @@ public enum L10n {
           public static var webrtcUnavailable: String { return L10n.tr("Localizable", "extensions.notification_content.error.request.webrtc_unavailable") }
         }
       }
+      public enum ErrorState {
+        /// Hide details
+        public static var hideDetails: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.hide_details") }
+        /// The stream or file could not be loaded. Check that it is reachable and try again.
+        public static var message: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.message") }
+        /// Try again
+        public static var retry: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.retry") }
+        /// Show details
+        public static var showDetails: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.show_details") }
+        /// Media unavailable
+        public static var title: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.title") }
+      }
     }
   }
 
@@ -2872,7 +2890,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.naming.title") }
       }
       public enum NoFocus {
-        /// The sensor reports Not focused once every Focus has ended. This needs the Focus permission, which is what tells the app a Focus is running at all.
+        /// The sensor is empty once every Focus has ended. Its Is focused attribute also turns off, which needs the Focus permission.
         public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.no_focus.body") }
         /// When no Focus is on
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.no_focus.title") }
@@ -2890,7 +2908,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.reporting.title") }
       }
       public enum Unpaired {
-        /// iOS only runs the filter of the Focus that starts, so add one to every Focus you want reported. A Focus without a filter leaves the previous name in place until a paired Focus starts or all of them end.
+        /// iOS only runs the filter of a Focus it is added to, so add one to every Focus you want reported. While a Focus without a filter is on, the sensor is empty.
         public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.unpaired.body") }
         /// Focuses without a filter
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.unpaired.title") }
@@ -2915,7 +2933,7 @@ public enum L10n {
       public static var placeholder: String { return L10n.tr("Localizable", "focus.names.placeholder") }
     }
     public enum PermissionMissing {
-      /// Without it the app cannot tell when every Focus has ended, so the last reported name keeps being sent.
+      /// Without it the app only sees the Focuses you added the filter to.
       public static var body: String { return L10n.tr("Localizable", "focus.permission_missing.body") }
       /// Focus permission is off
       public static var title: String { return L10n.tr("Localizable", "focus.permission_missing.title") }
@@ -5598,6 +5616,18 @@ public enum L10n {
       public enum NoBaseUrl {
         /// No URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
+      }
+      public enum Reauthenticate {
+        /// Couldn't re-authenticate
+        public static var errorTitle: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.error_title") }
+        /// Sign in to this server again, for example after changing your password or to use a different user. Your server's URLs and settings stay as they are.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.footer") }
+        /// Re-authenticating…
+        public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.progress") }
+        /// Re-authenticate
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.title") }
+        /// Sign in using
+        public static var urlPickerTitle: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.url_picker_title") }
       }
       public enum RemoteUiUrl {
         /// Remote UI URL

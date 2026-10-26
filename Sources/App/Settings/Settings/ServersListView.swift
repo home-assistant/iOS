@@ -9,6 +9,7 @@ struct ServersListView: View {
     var macSidebarSelection: MacSettingsSidebarSelection?
 
     @StateObject private var observer = ServersObserver()
+    @StateObject private var reauthentication = ServerReauthenticationModel()
     @State private var showAddServer = false
     @State private var serverPendingDeletion: Server?
     @Environment(\.editMode) private var editMode
@@ -26,6 +27,10 @@ struct ServersListView: View {
                 } label: {
                     Label(L10n.Settings.ConnectionSection.refreshServer, systemSymbol: .arrowClockwise)
                 }
+                Button { reauthentication.start(for: server) } label: {
+                    Label(L10n.Settings.ConnectionSection.Reauthenticate.title, systemSymbol: .personBadgeKey)
+                }
+                .disabled(reauthentication.isReauthenticating || reauthentication.urlTypes(for: server).isEmpty)
                 if observer.servers.first?.identifier != server.identifier {
                     Button {
                         observer.makeDefault(server)
@@ -70,6 +75,7 @@ struct ServersListView: View {
             } message: {
                 Text(L10n.Settings.ConnectionSection.DeleteServer.message)
             }
+            .serverReauthentication(reauthentication, for: server)
         }
         .onMove { source, destination in
             observer.moveServers(from: source, to: destination)

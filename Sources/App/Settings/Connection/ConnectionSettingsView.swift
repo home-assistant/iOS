@@ -5,6 +5,7 @@ import SwiftUI
 /// SwiftUI view for managing server connection settings
 struct ConnectionSettingsView: View {
     @StateObject private var viewModel: ConnectionSettingsViewModel
+    @StateObject private var reauthentication: ServerReauthenticationModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
     @State private var shareWrapper: ShareWrapper?
@@ -17,8 +18,13 @@ struct ConnectionSettingsView: View {
 
     let onDismiss: (() -> Void)?
 
-    init(server: Server, onDismiss: (() -> Void)? = nil) {
+    init(
+        server: Server,
+        reauthentication: ServerReauthenticationModel? = nil,
+        onDismiss: (() -> Void)? = nil
+    ) {
         self._viewModel = StateObject(wrappedValue: ConnectionSettingsViewModel(server: server))
+        self._reauthentication = StateObject(wrappedValue: reauthentication ?? ServerReauthenticationModel())
         self.onDismiss = onDismiss
     }
 
@@ -28,6 +34,7 @@ struct ConnectionSettingsView: View {
             clientCertificateSection
             privacySection
             statusSection
+            reauthenticateSection
             deleteSection
         }
         .navigationTitle(L10n.Settings.ConnectionSection.serverDetailsTitle)
@@ -301,6 +308,30 @@ struct ConnectionSettingsView: View {
         appSettingsPresenter?.isSheetPresented = false
     }
 
+    // MARK: - Re-authenticate Section
+
+    private var reauthenticateSection: some View {
+        Section {
+            Button { reauthentication.start(for: viewModel.server) } label: {
+                if reauthentication.isReauthenticating(viewModel.server) {
+                    HStack {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                        Text(L10n.Settings.ConnectionSection.Reauthenticate.progress)
+                    }
+                } else {
+                    Text(L10n.Settings.ConnectionSection.Reauthenticate.title)
+                }
+            }
+            .disabled(
+                reauthentication.isReauthenticating || reauthentication.urlTypes(for: viewModel.server).isEmpty
+            )
+            .serverReauthentication(reauthentication, for: viewModel.server)
+        } footer: {
+            Text(L10n.Settings.ConnectionSection.Reauthenticate.footer)
+        }
+    }
+
     // MARK: - Delete Section
 
     private var deleteSection: some View {
@@ -359,6 +390,7 @@ extension ConnectionSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.Settings.ConnectionSection.Websocket.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.LocalPush.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.Webhook.title),
+            SettingsSearchEntry(L10n.Settings.ConnectionSection.Reauthenticate.title),
             SettingsSearchEntry(L10n.Settings.ConnectionSection.DeleteServer.title),
         ]
     }

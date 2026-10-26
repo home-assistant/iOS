@@ -5,17 +5,18 @@ import PromiseKit
 class FocusStatusIntentHandler: NSObject, INShareFocusStatusIntentHandling {
     /// How long to let a status change settle before reporting it.
     ///
-    /// Switching Focus pushes "nothing is running" for the Focus that ended and runs the starting
-    /// Focus' filter separately — the filter in the app, which iOS may have to launch first.
-    /// Sending the moment the status arrives publishes that gap as a real state, so Home Assistant
-    /// sees the Focus sensors blank mid-switch and stays that way if the filter's own update never
-    /// lands. Waiting lets the filter run first, so one settled state goes out instead of two.
+    /// Switching Focus pushes "not focused" for the Focus that ended and performs the starting
+    /// Focus' filter separately, in the app, which iOS may have to launch first. Sending the moment
+    /// the status arrives publishes that gap as a real state. Waiting lets the filter run first, so
+    /// one settled state goes out instead of two.
     static var settleDelay: TimeInterval = 5
 
     func handle(intent: INShareFocusStatusIntent, completion: @escaping (INShareFocusStatusIntentResponse) -> Void) {
-        let currentState = intent.focusStatus
-        Current.focusStatus.update(fromReceived: currentState)
-        Current.Log.info("starting, status from intent is \(String(describing: currentState)) from \(intent)")
+        // Read from the intent rather than from `INFocusStatusCenter`, as Apple's sample does: in
+        // an extension the center answers "not focused" whatever is on.
+        let pushedStatus = intent.focusStatus
+        Current.focusStatus.record(pushed: pushedStatus)
+        Current.Log.info("starting, status from intent is \(String(describing: pushedStatus)) from \(intent)")
 
         // `Current.apis` picks each server's URL from the cached network information, which this
         // extension — launched by iOS to hand us the status — doesn't have yet. Without it a server

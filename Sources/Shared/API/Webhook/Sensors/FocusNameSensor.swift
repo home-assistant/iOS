@@ -23,13 +23,21 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
         super.observe()
         guard !isObserving else { return }
 
-        // The Focus Filter tells us which Focus started…
-        focusFilterCancellable = Current.focusFilter.state.observe { [weak self] _ in
+        // A filter run changes the name.
+        focusFilterCancellable = Current.focusFilter.runs.observe { [weak self] _ in
             self?.signal()
         }
-        // …and the Focus status tells us when every Focus ended, which no filter reports.
-        focusStatusCancellable = Current.focusStatus.receivedStatus.observe { [weak self] _ in
+        // A status push changes the "Is focused" attribute. The Intents extension that received
+        // it reports it itself, so this only keeps the sensor on screen current: in the background
+        // it would add a full update of every sensor to that extension's short run.
+        focusStatusCancellable = Current.focusStatus.pushes.observe { [weak self] _ in
+            #if os(watchOS)
             self?.signal()
+            #else
+            if Current.isForegroundApp() {
+                self?.signal()
+            }
+            #endif
         }
         isObserving = true
 
@@ -47,14 +55,12 @@ final class FocusNameSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProvi
     }
 }
 
-/// Reports _which_ Focus is running, which iOS has no API for — empty while none is.
+/// Reports _which_ Focus is on, which iOS has no API for. Empty while none is.
 ///
 /// The user creates the names in the app's Focus settings and pairs each one with a Focus in
-/// Settings › Focus › Focus Filters; activating that Focus runs our filter, which stores the paired
-/// name for this sensor to send. The name lasts until that Focus ends — its filter's reset run, or
-/// iOS confirming every Focus ended — and a Focus that starts without a filter run afterwards is
-/// reported as running with no name, never as the Focus before it. Not being able to tell whether
-/// the named Focus ended keeps its name rather than inventing a state.
+/// Settings › Focus › Focus Filters. iOS performs the filter with that name when the Focus turns
+/// on and with none when it ends, and the app also asks iOS for the filter's current values on
+/// every read, see `FocusReport`.
 ///
 /// The sensor is always listed, never erroring out while nothing is configured: its detail screen
 /// is the only route to the Focus names, so a sensor that dropped out of the list until a name
@@ -78,24 +84,21 @@ final class FocusNameSensor: SensorProvider {
             return .init(error: FocusNameError.unavailable)
         }
 
-        let report = FocusReport.current()
+        return FocusReport.current().map { [self] report in
+            let _: FocusNameSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
-        // Empty while no named Focus is running, which is also the state before any name exists —
-        // what keeps the sensor in the list for a user who has yet to configure it.
-        let sensor = with(WebhookSensor(
-            name: "Focus name",
-            uniqueID: WebhookSensorId.focusName.rawValue,
-            icon: "mdi:moon-waning-crescent",
-            state: report.name ?? ""
-        )) {
-            if let isFocused = report.isFocused {
-                $0.Attributes = ["Is focused": isFocused]
-            }
+            // Empty while no named Focus is on, which is also the state before any name exists,
+            // what keeps the sensor in the list for a user who has yet to configure it.
+            return [with(WebhookSensor(
+                name: "Focus name",
+                uniqueID: WebhookSensorId.focusName.rawValue,
+                icon: "mdi:moon-waning-crescent",
+                state: report.name ?? ""
+            )) {
+                if let isFocused = report.isFocused {
+                    $0.Attributes = ["Is focused": isFocused]
+                }
+            }]
         }
-
-        // Set up our observer
-        let _: FocusNameSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
-
-        return .value([sensor])
     }
 }
