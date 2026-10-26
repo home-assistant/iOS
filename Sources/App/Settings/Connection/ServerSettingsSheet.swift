@@ -7,6 +7,9 @@ struct ServerSettingsSheet<Content: View>: View {
     let zoomSourceID: ServerDetailsRowView.EditOption?
     let transitionNamespace: Namespace.ID?
     let onClose: () -> Void
+    /// Keeps the sheet up, close button and swipe alike, while the content is busy with something whose
+    /// result it still has to show.
+    var isCloseDisabled = false
     @ViewBuilder let content: Content
 
     var body: some View {
@@ -16,9 +19,11 @@ struct ServerSettingsSheet<Content: View>: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButton(alternativeAction: onClose)
+                            .disabled(isCloseDisabled)
                     }
                 }
         }
+        .interactiveDismissDisabled(isCloseDisabled)
         .modify { view in
             if #available(iOS 18.0, *), let zoomSourceID, let transitionNamespace {
                 view.navigationTransition(.zoom(sourceID: zoomSourceID, in: transitionNamespace))

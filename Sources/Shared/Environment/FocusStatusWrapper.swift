@@ -1,42 +1,24 @@
 import Intents
 import PromiseKit
 
-/// The Focus status iOS last pushed to us, kept in the app group so every process reads the same
-/// thing instead of asking iOS itself, along with when a Focus last ended — which is what decides
-/// whether the name the Focus Filter reported is still the Focus that is running.
-public struct FocusStatusState: Codable, Equatable {
-    /// Whether any Focus was running, or `nil` when iOS sent a status without saying.
-    public var isFocused: Bool?
-    /// When this status arrived, so pushing the same status twice still notifies observers.
-    public var date: Date
-    /// When iOS last said every Focus had ended, kept across later updates. A name the filter
-    /// reported before that moment belongs to a Focus that is over; one reported after it doesn't.
-    public var lastEndedDate: Date?
-    /// When iOS last said a Focus was running, kept across later updates. iOS reports "not
-    /// focused" for a Focus whose status the user doesn't share, so this is what says whether it
-    /// can see the running Focus at all: without it, a status saying nothing is running is
-    /// silence rather than an ending.
-    public var lastStartedDate: Date?
-
-    public init(isFocused: Bool?, date: Date, lastEndedDate: Date?, lastStartedDate: Date? = nil) {
-        self.isFocused = isFocused
-        self.date = date
-        self.lastEndedDate = lastEndedDate
-        self.lastStartedDate = lastStartedDate
-    }
-}
-
-public class FocusStatusStateSync: UserDefaultsValueSync<FocusStatusState> {
-    init() {
-        super.init(settingsKey: "FocusStatusStateKey")
-    }
-}
-
+/// iOS's answer to whether a Focus is on, from the two places it gives one.
+///
+/// - The `INShareFocusStatusIntent` iOS hands the Intents extension when the status changes.
+///   Apple's sample reads the value from the intent there, not from `INFocusStatusCenter`, which
+///   in an extension answers "not focused" whatever is on.
+/// - `INFocusStatusCenter`, which the app asks itself every time it reads the Focus sensors.
+///
+/// Both answers are stored in the app group with when they were given, and the newest one is the
+/// status. A push can be hours old by the time something reads it, since iOS doesn't reliably
+/// deliver the one for a Focus ending, while the app's reading is as fresh as its last sensor
+/// read. The other extensions, such as the push provider, can't ask iOS at all, so they report
+/// what the newest answer said instead of an older push that the app has since seen past.
+///
+/// `isFocused` is `true` while a Focus that silences this app is on. It is `false` otherwise,
+/// including while the Focus that is on allows this app's notifications or doesn't share its
+/// status. Which Focus is on, and whether one iOS reports as not focused is on, is the Focus
+/// Filter's to say.
 public class FocusStatusWrapper {
-    /// Every Focus status iOS pushed us, in the app group. Observed to signal the Focus sensors,
-    /// and read back by `FocusReport` to decide whether a reported name is still current.
-    private(set) lazy var receivedStatus = FocusStatusStateSync()
-
     public enum AuthorizationStatus: Equatable {
         case notDetermined
         case restricted
@@ -59,19 +41,18 @@ public class FocusStatusWrapper {
         }
     }
 
-    private var lastStatus: Status? {
-        willSet {
-            precondition(Current.isAppExtension)
-        }
-    }
+    /// Every status iOS pushed to the Intents extension. Observed by the Focus sensors, because a
+    /// push is iOS saying the status changed.
+    private(set) lazy var pushes = UserDefaultsValueSync<FocusStatusObservation>(settingsKey: "FocusStatusStateKey")
 
-    public lazy var isAvailable: () -> Bool = { [weak self] in
-        if Current.isAppExtension {
-            return self?.lastStatus != nil
-        } else {
-            return true
-        }
-    }
+    /// The app's own last reading. Not observed: every sensor read writes it, so observing it
+    /// would make each read start the next one.
+    private(set) lazy var readings = UserDefaultsValueSync<FocusStatusObservation>(
+        settingsKey: "FocusStatusReadingKey"
+    )
+
+    /// Whether this device has Focus at all. Every OS version the app supports does.
+    public var isAvailable: () -> Bool = { true }
 
     public var authorizationStatus: () -> AuthorizationStatus = {
         .init(authorizationStatus: INFocusStatusCenter.default.authorizationStatus)
@@ -87,54 +68,49 @@ public class FocusStatusWrapper {
         return promise
     }
 
-    public struct Status: Equatable {
-        public var isFocused: Bool?
+    /// Whether this process can ask iOS for the status. Only the app can: in an extension
+    /// `INFocusStatusCenter` answers "not focused" whatever is on.
+    public var canAskIOS: () -> Bool = { !Current.isAppExtension }
 
-        public init(focusStatus: INFocusStatus) {
-            self.init(
-                isFocused: focusStatus.isFocused
-            )
-        }
-
-        public init(isFocused: Bool?) {
-            self.isFocused = isFocused
-        }
+    /// iOS's live answer, `nil` without the Focus status permission.
+    public var liveIsFocused: () -> Bool? = {
+        INFocusStatusCenter.default.focusStatus.isFocused
     }
 
-    public func update(fromReceived status: INFocusStatus?) {
-        precondition(Current.isAppExtension)
-        lastStatus = status.flatMap { Status(focusStatus: $0) }
-
-        let now = Current.date()
-        let isFocused = lastStatus?.isFocused
-        let previous = receivedStatus.value
-
-        // State persisted before `lastStartedDate` existed still carries the same evidence in its
-        // own `isFocused`: a status that said a Focus was running is the confirmation, so the
-        // first status after an upgrade doesn't have to be the one that establishes it.
-        let previousStartedDate = previous?.lastStartedDate ?? (previous?.isFocused == true ? previous?.date : nil)
-
-        // Recorded rather than acted on: iOS runs the next Focus' filter before it tells us the
-        // previous one ended, so which of the two is current is decided when they are read back
-        // together, not by letting whichever arrives last overwrite the other.
-        receivedStatus.value = FocusStatusState(
-            isFocused: isFocused,
-            date: now,
-            lastEndedDate: isFocused == false ? now : previous?.lastEndedDate,
-            lastStartedDate: isFocused == true ? now : previousStartedDate
-        )
-    }
-
-    public lazy var status: () -> Status = { [weak self] in
-        if Current.isAppExtension, let lastStatus = self?.lastStatus {
-            return lastStatus
-        } else {
-            return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
+    /// Stores what iOS pushed to the Intents extension.
+    ///
+    /// A push without a value is skipped, as Apple's sample does: iOS only leaves the value out
+    /// for an app without the permission, and the app's own reading already says that.
+    public func record(pushed focusStatus: INFocusStatus?) {
+        guard let isFocused = focusStatus?.isFocused else {
+            Current.Log.info("focus status push carried no value, keeping the previous status")
+            return
         }
+        pushes.value = FocusStatusObservation(isFocused: isFocused, date: Current.date())
     }
 
-    /// The last status iOS pushed us, from whichever process received it.
-    public lazy var lastReceived: () -> FocusStatusState? = { [weak self] in
-        self?.receivedStatus.value
+    /// Asks iOS for the status and stores the answer, when this process can ask.
+    ///
+    /// Without the permission iOS doesn't answer, and that is stored too: a push from before the
+    /// permission was revoked would otherwise keep reporting a status nothing updates anymore.
+    func readFromIOS() {
+        guard canAskIOS() else { return }
+        let isFocused = authorizationStatus() == .authorized ? liveIsFocused() : nil
+        readings.value = FocusStatusObservation(isFocused: isFocused, date: Current.date())
+    }
+
+    /// The newest answer iOS gave, from whichever process received it.
+    public lazy var latest: () -> FocusStatusObservation? = { [weak self] in
+        guard let self else { return nil }
+        return Self.newest(pushes.value, readings.value)
+    }
+
+    private static func newest(
+        _ lhs: FocusStatusObservation?,
+        _ rhs: FocusStatusObservation?
+    ) -> FocusStatusObservation? {
+        guard let lhs else { return rhs }
+        guard let rhs else { return lhs }
+        return rhs.date >= lhs.date ? rhs : lhs
     }
 }
