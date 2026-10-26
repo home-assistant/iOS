@@ -65,6 +65,32 @@ public class WebSocketMessage: Codable {
         self.command = nil
     }
 
+    /// The frontend branches on `code` and shows its own text.
+    public struct ResultError: Codable, Equatable {
+        private static let canceledCode = "canceled"
+        private static let failedCode = "failed"
+
+        public let code: String
+        /// English detail for the app's log, never shown to the user.
+        public let message: String
+
+        public static func canceled(_ message: String) -> Self {
+            .init(code: canceledCode, message: message)
+        }
+
+        public static func failed(_ message: String) -> Self {
+            .init(code: failedCode, message: message)
+        }
+
+        public var isCanceled: Bool {
+            code == Self.canceledCode
+        }
+    }
+
+    public convenience init(id: Int, error: ResultError) {
+        self.init(id: id, errorCode: error.code, errorMessage: error.message)
+    }
+
     public init(id: Int, errorCode: String, errorMessage: String) {
         self.ID = id
         self.MessageType = "result"
@@ -111,7 +137,7 @@ public class WebSocketMessage: Codable {
 
 extension WebSocketMessage: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
-        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)))"
+        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)), error: \(String(describing: ErrorInfo)))"
     }
 
     public var debugDescription: String {
