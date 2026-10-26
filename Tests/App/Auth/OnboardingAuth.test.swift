@@ -10,6 +10,8 @@ class OnboardingAuthTests: XCTestCase {
     private var auth: OnboardingAuth!
     private var instance: DiscoveredHomeAssistant!
     private var previousCurrentNetworkState: (() async -> NetworkState)!
+    private var previousRegistrationRecords: Any?
+    private var previousVendorID: (() -> String?)!
     private var presenter: OnboardingAuthPresenter!
     private var cancellables = Set<AnyCancellable>()
 
@@ -18,6 +20,10 @@ class OnboardingAuthTests: XCTestCase {
 
         auth = OnboardingAuth()
         previousCurrentNetworkState = Current.connectivity.currentNetworkState
+        previousRegistrationRecords = Current.settingsStore.prefs.object(forKey: SettingsStore.registrationRecordsKey)
+        Current.settingsStore.prefs.removeObject(forKey: SettingsStore.registrationRecordsKey)
+        previousVendorID = Current.device.identifierForVendor
+        Current.device.identifierForVendor = { "this-device" }
 
         Current.servers = FakeServerManager()
         presenter = OnboardingAuthPresenter()
@@ -30,6 +36,8 @@ class OnboardingAuthTests: XCTestCase {
 
     override func tearDown() {
         Current.connectivity.currentNetworkState = previousCurrentNetworkState
+        Current.settingsStore.prefs.set(previousRegistrationRecords, forKey: SettingsStore.registrationRecordsKey)
+        Current.device.identifierForVendor = previousVendorID
         FakeOnboardingAuthPostStepBeforeRegister1.onPerform = nil
         FakeOnboardingAuthPostStepAfterRegister1.onPerform = nil
         cancellables.removeAll()
@@ -459,6 +467,226 @@ class OnboardingAuthTests: XCTestCase {
 
         XCTAssertEqual(Current.servers.all.count, 1)
         XCTAssertEqual(Current.servers.server(for: identifier)?.info, existingInfo)
+    }
+
+    func testTheRegistrationIsRecordedForTheServerAsItIsPersisted() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let startIdentifier = try Identifier<Server>(rawValue: XCTUnwrap(instance.uuid))
+        let registration = Self.registration(deviceID: "new-device-id")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            Current.settingsStore.setRegistrationRecord(registration, for: api.server.identifier)
+        }
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.identifier, "instance-1")
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: server.identifier), registration)
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: startIdentifier), RegistrationRecord())
+    }
+
+    func testFailureAfterPersistingRestoresTheRegistrationRecords() throws {
+        let startIdentifier = try Identifier<Server>(rawValue: XCTUnwrap(instance.uuid))
+        let existing: Identifier<Server> = "existing-server"
+        Current.servers.add(identifier: existing, serverInfo: with(ServerInfo.fake()) { $0.instanceID = "instance-1" })
+        let previous = Self.registration(deviceID: "old-device-id")
+        Current.settingsStore.setRegistrationRecord(previous, for: existing)
+        let registration = Self.registration(deviceID: "new-device-id")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            Current.settingsStore.setRegistrationRecord(registration, for: api.server.identifier)
+        }
+
+        let result = auth(postComplete: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: existing), previous)
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: startIdentifier), RegistrationRecord())
+    }
+
+    func testFailureBeforeAnythingIsPersistedRestoresTheRegistrationRecord() throws {
+        let identifier = try Identifier<Server>(rawValue: XCTUnwrap(instance.uuid))
+        Current.servers.add(identifier: identifier, serverInfo: .fake())
+        let previous = Self.registration(deviceID: "old-device-id")
+        Current.settingsStore.setRegistrationRecord(previous, for: identifier)
+        let registration = Self.registration(deviceID: "new-device-id")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            Current.settingsStore.setRegistrationRecord(registration, for: api.server.identifier)
+        }
+
+        let result = auth(postAfterRegister: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: identifier), previous)
+    }
+
+    /// The server can have made the registration even though its response was lost, so trying again registers under
+    func testFailingToRegisterKeepsTheIdentityToRegisterWithNext() throws {
+        let previousVendorID = Current.device.identifierForVendor
+        Current.device.identifierForVendor = { "this-device" }
+        defer { Current.device.identifierForVendor = previousVendorID }
+        instance.uuid = "instance-1"
+        let previous = RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+        )
+        Current.settingsStore.setRegistrationRecord(previous, for: "instance-1")
+        let attempted = RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "this-device")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            Current.settingsStore.updateRegistrationRecord(for: api.server.identifier) { $0.pending = attempted }
+        }
+
+        let result = auth(postRegister: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(
+            Current.settingsStore.registrationRecord(for: "instance-1"),
+            RegistrationRecord(current: previous.current, pending: attempted)
+        )
+    }
+
+    func testFailingAfterRegisteringKeepsTheIdentityRegisteredWith() throws {
+        let previousVendorID = Current.device.identifierForVendor
+        Current.device.identifierForVendor = { "this-device" }
+        defer { Current.device.identifierForVendor = previousVendorID }
+        let existing: Identifier<Server> = "existing-server"
+        Current.servers.add(identifier: existing, serverInfo: with(ServerInfo.fake()) {
+            $0.instanceID = "instance-1"
+            $0.connection.set(address: instance.internalURL, for: .internal)
+        })
+        let previous = RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+        )
+        Current.settingsStore.setRegistrationRecord(previous, for: existing)
+        let registered = RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "this-device")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            let record = RegistrationRecord(current: registered)
+            Current.settingsStore.setRegistrationRecord(record, for: api.server.identifier)
+        }
+
+        let result = auth(postComplete: [.value(()), .init(error: TestError.specific)])
+        XCTAssertThrowsError(try hang(result))
+
+        XCTAssertEqual(
+            Current.settingsStore.registrationRecord(for: existing),
+            RegistrationRecord(current: previous.current, pending: registered)
+        )
+    }
+
+    func testAnExistingServerIsFoundByTheInstanceIDItWasDiscoveredWith() {
+        let existing = Server.fake(identifier: "server-from-an-older-install") { $0.instanceID = "instance-1" }
+        let elsewhere = URL(string: "https://elsewhere.homeassistant:8123")
+
+        let rediscovered = Server.fake(identifier: "instance-1") {
+            $0.connection.set(address: elsewhere, for: .external)
+        }
+        let another = Server.fake(identifier: "instance-2")
+
+        XCTAssertTrue(OnboardingAuth.knowsInstance(of: rediscovered))
+        XCTAssertEqual(
+            OnboardingAuth.existingServers(reachedBy: rediscovered, among: [existing]).map(\.identifier),
+            [existing.identifier]
+        )
+        XCTAssertEqual(OnboardingAuth.existingServers(reachedBy: another, among: [existing]), [])
+    }
+
+    func testAServerReachedByAnAddressTypedInIsTakenForNoSavedServer() {
+        let typedIn = Identifier<Server>(rawValue: DiscoveredHomeAssistant.autogeneratedUUIDPrefix + "typed-in")
+        let local = URL(string: "http://homeassistant.local:8123")
+        let home = Server.fake(identifier: "home") { $0.connection.set(address: local, for: .internal) }
+        let atTheLocalAddress = Server.fake(identifier: typedIn) { $0.connection.set(address: local, for: .internal) }
+
+        XCTAssertFalse(OnboardingAuth.knowsInstance(of: atTheLocalAddress))
+        XCTAssertEqual(OnboardingAuth.existingServers(reachedBy: atTheLocalAddress, among: [home]), [])
+    }
+
+    func testReAddingAServerByAddressKeepsTheRegistrationThisDeviceHasWithIt() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let existing: Identifier<Server> = "instance-1"
+        let existingInfo = with(ServerInfo.fake()) {
+            $0.instanceID = "instance-1"
+            $0.connection.set(address: instance.internalURL, for: .internal)
+            $0.connection.webhookID = "own-webhook"
+            $0.connection.webhookSecret = "own-secret"
+            $0.setSetting(value: "own-device-id", for: .registeredDeviceID)
+            $0.setSetting(value: "Own Phone", for: .registeredDeviceName)
+            $0.hassDeviceId = "own-hass-device"
+        }
+        Current.servers.add(identifier: existing, serverInfo: existingInfo)
+        let own = Self.registration(deviceID: "own-device-id")
+        Current.settingsStore.setRegistrationRecord(own, for: existing)
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            api.server.info.connection.webhookID = "extra-webhook"
+            api.server.info.connection.webhookSecret = "extra-secret"
+            api.server.info.hassDeviceId = "extra-hass-device"
+            api.server.info.setSetting(value: "default-device-id", for: .registeredDeviceID)
+            Current.settingsStore.setRegistrationRecord(
+                Self.registration(deviceID: "default-device-id"),
+                for: api.server.identifier
+            )
+        }
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.identifier, existing)
+        XCTAssertEqual(server.info.connection.webhookID, "own-webhook")
+        XCTAssertEqual(server.info.connection.webhookSecret, "own-secret")
+        XCTAssertEqual(server.info.setting(for: .registeredDeviceID), "own-device-id")
+        XCTAssertEqual(server.info.setting(for: .registeredDeviceName), "Own Phone")
+        XCTAssertEqual(server.info.hassDeviceId, "own-hass-device")
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: existing), own)
+    }
+
+    func testReAddingARecoveredServerByAddressKeepsTheRegistrationJustMade() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let existing: Identifier<Server> = "instance-1"
+        Current.servers.add(identifier: existing, serverInfo: with(ServerInfo.fake()) {
+            $0.instanceID = "instance-1"
+            $0.connection.set(address: instance.internalURL, for: .internal)
+            $0.connection.webhookID = ServerInfo.mirrorPlaceholderWebhookID
+        })
+        Current.settingsStore.setRegistrationRecord(Self.registration(deviceID: "own-device-id"), for: existing)
+        let made = Self.registration(deviceID: "default-device-id")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            api.server.info.connection.webhookID = "new-webhook"
+            Current.settingsStore.setRegistrationRecord(made, for: api.server.identifier)
+        }
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.info.connection.webhookID, "new-webhook")
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: existing), made)
+    }
+
+    func testReAddingAServerByAddressReplacesARegistrationOfAnotherDevice() throws {
+        Current.connectivity.currentNetworkState = { NetworkState() }
+        let existing: Identifier<Server> = "instance-1"
+        Current.servers.add(identifier: existing, serverInfo: with(ServerInfo.fake()) {
+            $0.instanceID = "instance-1"
+            $0.connection.set(address: instance.internalURL, for: .internal)
+            $0.connection.webhookID = "their-webhook"
+        })
+        Current.settingsStore.setRegistrationRecord(
+            RegistrationRecord(current: RegistrationIdentity(deviceID: "their-device-id", ownerVendorID: "other")),
+            for: existing
+        )
+        let made = Self.registration(deviceID: "new-device-id")
+        FakeOnboardingAuthPostStepBeforeRegister1.onPerform = { api in
+            api.server.info.instanceID = "instance-1"
+            api.server.info.connection.webhookID = "new-webhook"
+            Current.settingsStore.setRegistrationRecord(made, for: api.server.identifier)
+        }
+
+        let server = try hang(auth())
+
+        XCTAssertEqual(server.info.connection.webhookID, "new-webhook")
+        XCTAssertEqual(Current.settingsStore.registrationRecord(for: existing), made)
+    }
+
+    private static func registration(deviceID: String) -> RegistrationRecord {
+        RegistrationRecord(current: RegistrationIdentity(deviceID: deviceID, ownerVendorID: "this-device"))
     }
 
     func testFailureBeforeAnythingIsPersistedKeepsAnExistingServer() throws {

@@ -32,6 +32,12 @@ final class MockWebFrontend: WebFrontend {
         onOpen?(url)
     }
 
+    private(set) var refreshCount = 0
+
+    func refresh() {
+        refreshCount += 1
+    }
+
     func navigateToRoot() {
         navigateToRootCallCount += 1
     }

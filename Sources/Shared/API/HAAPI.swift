@@ -363,6 +363,10 @@ public class HomeAssistantAPI {
                 Current.Log.info("skipping registration changes in extension")
                 return Promise<Void>.value(())
             }
+            guard !RegistrationOwnership().isRegisteredByAnotherDevice(server) else {
+                Current.Log.info("leaving the registration with \(server.identifier) to the device it belongs to")
+                return Promise<Void>.value(())
+            }
 
             return updateRegistration().asVoid().recover { [self] error -> Promise<Void> in
                 switch error as? WebhookError {
@@ -598,12 +602,14 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func register() -> Promise<Void> {
-        request(
+    public func register(deviceName: String? = nil) -> Promise<Void> {
+        let identity = Current.settingsStore.registrationIdentity(for: server)
+
+        return request(
             path: "mobile_app/registrations",
             callingFunctionName: "\(#function)",
             method: .post,
-            parameters: buildMobileAppRegistration(),
+            parameters: buildMobileAppRegistration(deviceID: identity.deviceID, deviceName: deviceName),
             encoding: JSONEncoding.default
         ).recover { error -> Promise<MobileAppRegistrationResponse> in
             if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
@@ -619,13 +625,27 @@ public class HomeAssistantAPI {
                 server.connection.cloudhookURL = resp.CloudhookURL
                 server.connection.webhookID = resp.WebhookID
                 server.connection.webhookSecret = resp.WebhookSecret
+                if let deviceName, deviceName != server.mobileAppDeviceName {
+                    server.setSetting(value: deviceName, for: .overrideDeviceName)
+                }
                 server.setSetting(value: server.mobileAppDeviceName, for: .registeredDeviceName)
+                server.setSetting(value: identity.deviceID, for: .registeredDeviceID)
+            }
+            Current.settingsStore.updateRegistrationRecord(for: server.identifier) { record in
+                record.current = identity
+                if record.pending == identity {
+                    record.pending = nil
+                }
             }
         }
     }
 
     public func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
-        Current.webhooks.sendEphemeral(
+        guard !RegistrationOwnership().isRegisteredByAnotherDevice(server) else {
+            return Promise(error: RegistrationOwnershipError.registeredByAnotherDevice)
+        }
+
+        return Current.webhooks.sendEphemeral(
             server: server,
             request: .init(
                 type: "update_registration",
@@ -674,8 +694,11 @@ public class HomeAssistantAPI {
         )
     }
 
-    private func buildMobileAppRegistration() -> [String: Any] {
-        let ident = mobileAppRegistrationRequestModel()
+    private func buildMobileAppRegistration(deviceID: String, deviceName: String?) -> [String: Any] {
+        let ident = with(mobileAppRegistrationRequestModel()) {
+            $0.DeviceID = deviceID
+            $0.DeviceName = deviceName ?? $0.DeviceName
+        }
         var json = Mapper().toJSON(ident)
 
         if server.info.version < .canSendDeviceID {
@@ -710,7 +733,6 @@ public class HomeAssistantAPI {
             $0.AppIdentifier = AppConstants.BundleID
             $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
             $0.AppVersion = HomeAssistantAPI.clientVersionDescription
-            $0.DeviceID = Current.settingsStore.integrationDeviceID
             $0.DeviceName = server.info.mobileAppDeviceName
             $0.Manufacturer = "Apple"
             $0.Model = Current.device.systemModel()
@@ -853,7 +875,7 @@ public class HomeAssistantAPI {
         var eventData: [String: String] = sharedEventDeviceInfo
         eventData["tag_id"] = tagPath
         if server.info.version < .tagWebhookAvailable {
-            eventData["device_id"] = Current.settingsStore.integrationDeviceID
+            eventData["device_id"] = Current.settingsStore.currentRegistrationIdentity(for: server).deviceID
         }
         return (eventType: "tag_scanned", eventData: eventData)
     }
@@ -1066,7 +1088,10 @@ public class HomeAssistantAPI {
                     case .fulfilled:
                         retry.noteSuccess(generation: generation, limitedTo: limitedTo)
                     case let .rejected(error):
-                        if error.isCancelled {
+                        if error as? RegistrationOwnershipError == .registeredByAnotherDevice {
+                            // Held back, not lost: this device reports once its registration is settled.
+                            return
+                        } else if error.isCancelled {
                             // Replaced by a newer request for this server; the retry decides.
                             Current.Log.info("sensor update for \(trigger) to \(server.info.name) was replaced")
                         } else {

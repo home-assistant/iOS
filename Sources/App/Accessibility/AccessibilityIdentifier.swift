@@ -30,4 +30,13 @@ enum AccessibilityIdentifier: String {
     case notificationPermissionRequestPrimary = "notificationPermission.request.primary"
     case notificationPermissionRequestSecondary = "notificationPermission.request.secondary"
     case settingsList = "settings.list"
+    case restoredRegistrationsNewDevice = "restoredRegistrations.newDevice"
+    case restoredRegistrationsReplace = "restoredRegistrations.replace"
+    case restoredRegistrationsNextContinue = "restoredRegistrations.next.continue"
+    case loginCancel = "login.cancel"
+    case loginBanner = "login.banner"
+    case settingsServerRow = "settings.servers.row"
+    case settingsAddServer = "settings.servers.add"
+    case connectionSettingsRegisterAsNewDevice = "connectionSettings.registerAsNewDevice"
+    case connectionSettingsReplaceOldDevice = "connectionSettings.replaceOldDevice"
 }
