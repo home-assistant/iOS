@@ -18,6 +18,13 @@ struct AppMigrationCoordinatorDependencies {
         }
     }
 
+    /// The transferred registrations are recorded as owned by the previous app's vendor identifier, which
+    /// differs from this app's, so they would read as a restored device's. Taking them over keeps the
+    /// same `mobile_app` device; the reconnect is left to the push token adoption that follows.
+    var keepRegistrations: @MainActor ([Server]) -> Void = { servers in
+        RegistrationOwnership(catchUp: { _ in }).keepRegistrations(of: servers)
+    }
+
     /// The transferred registration still carries the previous app's push token: Home Assistant merges
     /// `update_registration` into what it has, so the token only changes once this app sends its own.
     /// Connecting right away does that, and also brings the websocket up for the imported servers.

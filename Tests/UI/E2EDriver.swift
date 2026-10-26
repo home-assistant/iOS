@@ -483,9 +483,3 @@ final class E2EDriver {
         return inApp.waitForExistence(timeout: Timeout.optional) ? inApp : nil
     }
 }
-
-extension XCUIElementQuery {
-    subscript(identifier: AccessibilityIdentifier) -> XCUIElement {
-        self[identifier.rawValue]
-    }
-}

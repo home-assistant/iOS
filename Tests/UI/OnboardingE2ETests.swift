@@ -7,17 +7,20 @@ import XCTest
 /// never by `fastlane test`: it needs an instance seeded from `.github/e2e/homeassistant`, which
 /// `Tools/home_assistant_e2e_auth.py` verifies before the app is ever launched.
 final class OnboardingE2ETests: XCTestCase {
-    private var driver: E2EDriver!
+    private var app: XCUIApplication!
+    private var flow: E2EFlow!
 
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        driver = E2EDriver(app: XCUIApplication(), testCase: self)
-        driver.launchForOnboarding()
+        app = XCUIApplication()
+        app.launchArguments = E2EFlow.launchArguments
+        app.launch()
+        flow = E2EFlow(app: app)
     }
 
     func testOnboardingConnectsAndFrontendOpensNativeSettings() {
-        driver.onboard()
-        driver.openNativeSettingsFromFrontend()
+        flow.onboard()
+        flow.openNativeSettingsFromFrontend()
     }
 }

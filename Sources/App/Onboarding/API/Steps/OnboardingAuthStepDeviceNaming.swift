@@ -47,7 +47,13 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         fetchDeviceListWithTimeout().then { [self] registeredDevices -> Promise<Void> in
-            guard !registeredDevices.contains(where: { $0.id == Current.settingsStore.integrationDeviceID }) else {
+            if reuseRegistrationOfExistingServer(among: registeredDevices) {
+                return .value(())
+            }
+            leaveRegistrationOfAnotherDevice()
+
+            let deviceID = Current.settingsStore.registrationIdentity(for: api.server).deviceID
+            guard !registeredDevices.contains(where: { $0.id == deviceID }) else {
                 // if the integration is registered already, we will take over that one, so we don't need to look
                 return .value(())
             }
@@ -102,6 +108,73 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
 
             presenter.push(.deviceName(request))
         }
+    }
+
+    private func reuseRegistrationOfExistingServer(among registeredDevices: [RegisteredDevice]) -> Bool {
+        let settings = Current.settingsStore
+        let ownership = RegistrationOwnership()
+        let candidates = OnboardingAuth.existingServers(reachedBy: api.server, among: Current.servers.all).filter {
+            !ownership.belongsToAnotherDevice(settings.registrationIdentity(for: $0))
+        }
+        let matches = registrations(of: candidates, among: registeredDevices)
+
+        if matches.count == 1, let match = matches.first {
+            adopt(registrationOf: match.value.server, named: match.value.device.name)
+            return true
+        }
+        if let existing = candidates.first {
+            adopt(registrationOf: existing, named: existing.info.setting(for: .overrideDeviceName))
+        }
+        return false
+    }
+
+    private func registrations(
+        of servers: [Server],
+        among registeredDevices: [RegisteredDevice]
+    ) -> [RegistrationIdentity: (server: Server, device: RegisteredDevice)] {
+        var registrations = [RegistrationIdentity: (server: Server, device: RegisteredDevice)]()
+        for server in servers {
+            let identity = Current.settingsStore.registrationIdentity(for: server)
+            if let device = registeredDevices.first(where: { $0.id == identity.deviceID }) {
+                registrations[identity] = (server, device)
+            }
+        }
+        return registrations
+    }
+
+    private func leaveRegistrationOfAnotherDevice() {
+        let settings = Current.settingsStore
+        let ownership = RegistrationOwnership()
+        let identity = settings.registrationIdentity(for: api.server)
+        let isDefault = settings.registrationRecord(for: api.server.identifier) == RegistrationRecord()
+        let isAnotherDevicesElsewhere = isDefault && Current.servers.all.contains { server in
+            let saved = settings.registrationIdentity(for: server)
+            return saved.deviceID == identity.deviceID && ownership.belongsToAnotherDevice(saved)
+        }
+        if ownership.belongsToAnotherDevice(identity) || isAnotherDevicesElsewhere {
+            registerUnderAnIdentityOfItsOwn()
+        }
+    }
+
+    private func registerUnderAnIdentityOfItsOwn() {
+        guard let vendorID = Current.device.identifierForVendor() else { return }
+        let settings = Current.settingsStore
+        settings.updateRegistrationRecord(for: api.server.identifier) { record in
+            record.pending = RegistrationIdentity(deviceID: settings.newIntegrationDeviceID(), ownerVendorID: vendorID)
+        }
+    }
+
+    private func adopt(registrationOf server: Server, named name: String?) {
+        let settings = Current.settingsStore
+        let current = settings.currentRegistrationIdentity(for: server)
+        let next = settings.registrationIdentity(for: server)
+        settings.setRegistrationRecord(
+            RegistrationRecord(current: current, pending: next == current ? nil : next),
+            for: api.server.identifier
+        )
+        guard api.server.info.setting(for: .overrideDeviceName) == nil, let name,
+              name != api.server.info.mobileAppDeviceName else { return }
+        api.server.info.setSetting(value: name, for: .overrideDeviceName)
     }
 
     // In case the flow is completed or cancelled, we reset the first user device name input flag.

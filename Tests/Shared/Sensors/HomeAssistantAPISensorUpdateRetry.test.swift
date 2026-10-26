@@ -104,6 +104,18 @@ class HomeAssistantAPISensorUpdateRetryTests: XCTestCase {
         XCTAssertTrue(scheduled.isEmpty)
     }
 
+    /// An update held back because the registration is another device's never left the device, so
+    /// retrying it would only be held back again.
+    func testAnUpdateHeldBackForAnotherDevicesRegistrationIsNotRetried() throws {
+        webhookManager.sendRequestHandler = { _, _, _, seal in
+            seal.reject(RegistrationOwnershipError.registeredByAnotherDevice)
+        }
+
+        XCTAssertThrowsError(try hang(api.UpdateSensors(trigger: .Launch)))
+
+        XCTAssertTrue(scheduled.isEmpty)
+    }
+
     /// Overlapping runs read their sensors in whatever order their providers resolve, so the run
     /// that started first can read, and send, last. Its request then carries the newest values and
     /// a failure to deliver them is owed a retry, however early it started.
