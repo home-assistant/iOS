@@ -102,21 +102,16 @@ struct SensorListViewModelPerServerTests {
     /// The root screen lists the servers rather than anything a selection changes, so a change on
     /// one of them leaves it alone instead of asking every server for a fresh reading.
     @Test func theRootModelIgnoresASelectionChange() async throws {
-        try await withServers { _ in
+        try await withServers { servers in
             let viewModel = SensorListViewModelWithoutRefresh(server: nil)
-            var republished = 0
-            let token = viewModel.objectWillChange.sink { _ in republished += 1 }
+            let scoped = SensorListViewModelWithoutRefresh(server: servers.all.first)
+            let reason = SensorContainerUpdateReason.settingsChange(changedUniqueIDs: ["activity"], serverIDs: [])
 
-            viewModel.sensorContainer(
-                Current.sensors,
-                didSignalForUpdateBecause: .settingsChange(changedUniqueIDs: ["activity"], serverIDs: []),
-                lastUpdate: nil
-            )
-            await settle { republished > 0 }
+            viewModel.sensorContainer(Current.sensors, didSignalForUpdateBecause: reason, lastUpdate: nil)
+            scoped.sensorContainer(Current.sensors, didSignalForUpdateBecause: reason, lastUpdate: nil)
 
-            #expect(republished == 0)
             #expect(viewModel.refreshCount == 0)
-            token.cancel()
+            #expect(scoped.refreshCount == 1)
         }
     }
 

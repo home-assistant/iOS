@@ -23,13 +23,15 @@ enum ControlResultSnippet {
         of context: some EntityContextRepresentable,
         serverId: String,
         iconName: String,
-        settlingOn expected: [String] = []
+        settlingOn expected: [String] = [],
+        settleTimeout: TimeInterval = Self.settleTimeout
     ) async -> HAEntityStateAppEntity? {
         guard let server = Current.servers.server(for: .init(rawValue: serverId)),
               let liveState = await settledState(
                   of: context.entityId,
                   on: server,
-                  expecting: expected
+                  expecting: expected,
+                  settleTimeout: settleTimeout
               ) else {
             // The command already succeeded; failing to read the state back is not worth failing it,
             // so the spoken sentence stands on its own and no card is shown.
@@ -53,7 +55,8 @@ enum ControlResultSnippet {
     private static func settledState(
         of entityId: String,
         on server: Server,
-        expecting expected: [String]
+        expecting expected: [String],
+        settleTimeout: TimeInterval
     ) async -> HAEntity? {
         let deadline = Date().addingTimeInterval(settleTimeout)
         var latest: HAEntity?

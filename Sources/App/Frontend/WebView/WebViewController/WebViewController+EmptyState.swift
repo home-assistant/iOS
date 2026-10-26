@@ -171,6 +171,11 @@ extension WebViewController {
     /// load instead: keep the error for the details screen and fall back to the empty state.
     func handleExternalAuthFailure(error: Error) {
         guard !connectionState.isReadyForDisplay else { return }
+        // Nothing to retry: the stored credentials are gone and only logging in again brings them back.
+        if (error as? TokenManager.TokenError) == .reauthenticationRequired {
+            showReAuthPopup(serverId: server.identifier.rawValue, code: 0)
+            return
+        }
         let presentableError = Self.presentableExternalAuthError(for: error)
         latestLoadError = presentableError
         // The token request goes through the app's own session, whose challenges this controller never

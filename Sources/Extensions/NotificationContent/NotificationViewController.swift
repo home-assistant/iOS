@@ -109,6 +109,10 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             extensionContext?.notificationActions = notification.request.content.userInfoActions
         }
 
+        load(notification, api: api)
+    }
+
+    private func load(_ notification: UNNotification, api: HomeAssistantAPI) {
         activeViewController = NotificationLoadingViewController()
 
         var indicator: UIActivityIndicatorView?
@@ -146,7 +150,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             indicator?.removeFromSuperview()
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")
-            self?.activeViewController = NotificationErrorViewController(error: error)
+            self?.activeViewController = NotificationErrorViewController(error: error, onRetry: { [weak self] in
+                self?.load(notification, api: api)
+            })
         }
     }
 

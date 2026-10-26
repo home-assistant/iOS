@@ -14,7 +14,7 @@ final class HealthKitSensorUpdateSignaler: SensorProviderUpdateSignaler {
     private let signal: () -> Void
     /// Guards everything below it.
     private let queue = DispatchQueue(label: AppConstants.BundleID + ".healthKitSensorUpdateSignaler")
-    private var observedIdentifiers: Set<String>?
+    private var observedUniqueIDs: Set<String>?
     private var isSignalPending = false
     private var lastSignalDate: Date?
     private var pendingCompletions = [() -> Void]()
@@ -24,13 +24,17 @@ final class HealthKitSensorUpdateSignaler: SensorProviderUpdateSignaler {
     }
 
     /// Called on every sensor update, so re-observing an unchanged set has to stay free.
+    ///
+    /// Compared by metric rather than by the type each one reads: several metrics can share a type
+    /// (every sleep metric does) while others, like the activity rings, are observed through types
+    /// of their own that their shared identifier doesn't name. The service dedupes the types.
     func observe(metrics: [HealthKitMetric]) {
         queue.async { [self] in
-            let identifiers = Set(metrics.map(\.identifier))
-            guard identifiers != observedIdentifiers else { return }
-            observedIdentifiers = identifiers
+            let uniqueIDs = Set(metrics.map(\.uniqueID))
+            guard uniqueIDs != observedUniqueIDs else { return }
+            observedUniqueIDs = uniqueIDs
 
-            Current.Log.info("observing \(identifiers.count) Apple Health metric(s) for background delivery")
+            Current.Log.info("observing \(uniqueIDs.count) Apple Health metric(s) for background delivery")
             Current.healthKitService.setObservedMetrics(metrics) { [weak self] completion in
                 guard let self else {
                     completion()

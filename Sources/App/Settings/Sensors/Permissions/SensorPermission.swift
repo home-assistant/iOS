@@ -28,8 +28,8 @@ enum SensorPermission: String, CaseIterable, Identifiable {
             WebhookSensorId.activity.rawValue: .motion,
             WebhookSensorId.pressure.rawValue: .motion,
             WebhookSensorId.focus.rawValue: .focus,
-            // The Focus name sensor stands on it too: without it nothing tells the app a Focus
-            // ended, so the name the filter last reported would stay put.
+            // The Focus name sensor's "Is focused" attribute stands on it too: without it only a
+            // Focus paired with the filter can be seen.
             WebhookSensorId.focusName.rawValue: .focus,
             WebhookSensorId.geocodedLocation.rawValue: .location,
             WebhookSensorId.connectivitySSID.rawValue: .location,

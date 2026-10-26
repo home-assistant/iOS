@@ -981,6 +981,12 @@ public enum L10n {
       /// Open Experimental Dashboard
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.title") }
     }
+    public enum OpenHomeAssistant {
+      /// Opens the Home Assistant app
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_home_assistant.description") }
+      /// Open Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_home_assistant.title") }
+    }
     public enum OpenStateIcon {
       /// Icon for open state
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_state_icon.title") }
@@ -1388,6 +1394,8 @@ public enum L10n {
       }
     }
     public enum Error {
+      /// Couldn't read audio from the microphone. Try again, or use a different microphone.
+      public static var audioConversion: String { return L10n.tr("Localizable", "assist.error.audio_conversion") }
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
       /// This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.
@@ -1566,6 +1574,21 @@ public enum L10n {
       public static var message: String { return L10n.tr("Localizable", "camera_list.unavailable.message") }
       /// Not Available on Mac
       public static var title: String { return L10n.tr("Localizable", "camera_list.unavailable.title") }
+    }
+  }
+
+  public enum CameraMicrophone {
+    public enum Errors {
+      /// Unable to connect the microphone to the camera
+      public static var connectionFailed: String { return L10n.tr("Localizable", "camera_microphone.errors.connection_failed") }
+      /// The microphone stream was stopped
+      public static var interrupted: String { return L10n.tr("Localizable", "camera_microphone.errors.interrupted") }
+      /// Microphone access is needed to talk through the camera. You can allow it in Settings.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_microphone.errors.microphone_denied") }
+      /// The camera could not start the microphone stream
+      public static var signalingFailed: String { return L10n.tr("Localizable", "camera_microphone.errors.signaling_failed") }
+      /// The camera took too long to respond
+      public static var timedOut: String { return L10n.tr("Localizable", "camera_microphone.errors.timed_out") }
     }
   }
 
@@ -2816,6 +2839,18 @@ public enum L10n {
           public static var webrtcUnavailable: String { return L10n.tr("Localizable", "extensions.notification_content.error.request.webrtc_unavailable") }
         }
       }
+      public enum ErrorState {
+        /// Hide details
+        public static var hideDetails: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.hide_details") }
+        /// The stream or file could not be loaded. Check that it is reachable and try again.
+        public static var message: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.message") }
+        /// Try again
+        public static var retry: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.retry") }
+        /// Show details
+        public static var showDetails: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.show_details") }
+        /// Media unavailable
+        public static var title: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.title") }
+      }
     }
   }
 
@@ -2855,7 +2890,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.naming.title") }
       }
       public enum NoFocus {
-        /// The sensor reports Not focused once every Focus has ended. This needs the Focus permission, which is what tells the app a Focus is running at all.
+        /// The sensor is empty once every Focus has ended. Its Is focused attribute also turns off, which needs the Focus permission.
         public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.no_focus.body") }
         /// When no Focus is on
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.no_focus.title") }
@@ -2873,7 +2908,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.reporting.title") }
       }
       public enum Unpaired {
-        /// iOS only runs the filter of the Focus that starts, so add one to every Focus you want reported. A Focus without a filter leaves the previous name in place until a paired Focus starts or all of them end.
+        /// iOS only runs the filter of a Focus it is added to, so add one to every Focus you want reported. While a Focus without a filter is on, the sensor is empty.
         public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.unpaired.body") }
         /// Focuses without a filter
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.unpaired.title") }
@@ -2898,7 +2933,7 @@ public enum L10n {
       public static var placeholder: String { return L10n.tr("Localizable", "focus.names.placeholder") }
     }
     public enum PermissionMissing {
-      /// Without it the app cannot tell when every Focus has ended, so the last reported name keeps being sent.
+      /// Without it the app only sees the Focuses you added the filter to.
       public static var body: String { return L10n.tr("Localizable", "focus.permission_missing.body") }
       /// Focus permission is off
       public static var title: String { return L10n.tr("Localizable", "focus.permission_missing.title") }
@@ -4804,6 +4839,8 @@ public enum L10n {
       public static var allow: String { return L10n.tr("Localizable", "onboarding.permissions.allow") }
       /// Done
       public static var allowed: String { return L10n.tr("Localizable", "onboarding.permissions.allowed") }
+      /// Back
+      public static var back: String { return L10n.tr("Localizable", "onboarding.permissions.back") }
       /// You can change this permission later in Settings
       public static var changeLaterNote: String { return L10n.tr("Localizable", "onboarding.permissions.change_later_note") }
       public enum Focus {
@@ -4908,6 +4945,22 @@ public enum L10n {
           }
         }
       }
+    }
+    public enum ServerIdentity {
+      /// Add as a separate server
+      public static var addSeparate: String { return L10n.tr("Localizable", "onboarding.server_identity.add_separate") }
+      /// %1$@ reports the same ID as %2$@ but is at a different address.
+      public static func body(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.server_identity.body", String(describing: p1), String(describing: p2))
+      }
+      /// Replace %1$@
+      public static func replace(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.server_identity.replace", String(describing: p1))
+      }
+      /// Is this the same server?
+      public static var title: String { return L10n.tr("Localizable", "onboarding.server_identity.title") }
+      /// Why am I seeing this?
+      public static var why: String { return L10n.tr("Localizable", "onboarding.server_identity.why") }
     }
     public enum ServerImport {
       /// Hang tight, we’re rounding up your servers.
@@ -5222,6 +5275,35 @@ public enum L10n {
     }
   }
 
+  public enum ServerIdentity {
+    public enum About {
+      /// About server identity
+      public static var title: String { return L10n.tr("Localizable", "server_identity.about.title") }
+      public enum Conflicting {
+        /// Servers sharing an ID
+        public static var header: String { return L10n.tr("Localizable", "server_identity.about.conflicting.header") }
+      }
+      public enum Fix {
+        /// Give one of the servers a new ID. On the same network Home Assistant offers this in Settings › Repairs. Otherwise remove the file .storage/core.uuid on one server and restart it. Data and configuration are not affected.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.fix.body") }
+        /// How to fix it
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.fix.title") }
+      }
+      public enum OneEntry {
+        /// Each server reports its own ID, and the app uses it to recognize a server that is already added. Adding the same server twice updates the existing entry rather than creating a second one.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.one_entry.body") }
+        /// One server, one entry
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.one_entry.title") }
+      }
+      public enum SameId {
+        /// A server set up from a backup of another one carries the same ID. The app cannot tell them apart by ID alone, so it asks which situation applies.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.same_id.body") }
+        /// Two servers with the same ID
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.same_id.title") }
+      }
+    }
+  }
+
   public enum ServersSelection {
     /// Servers
     public static var title: String { return L10n.tr("Localizable", "servers_selection.title") }
@@ -5297,16 +5379,12 @@ public enum L10n {
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
       public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
-      /// Connected via
-      public static var connectingVia: String { return L10n.tr("Localizable", "settings.connection_section.connecting_via") }
       /// Details
       public static var details: String { return L10n.tr("Localizable", "settings.connection_section.details") }
       /// Connection
       public static var header: String { return L10n.tr("Localizable", "settings.connection_section.header") }
       /// Directly connect to the Home Assistant server for push notifications when on internal SSIDs.
       public static var localPushDescription: String { return L10n.tr("Localizable", "settings.connection_section.local_push_description") }
-      /// Logged in as
-      public static var loggedInAs: String { return L10n.tr("Localizable", "settings.connection_section.logged_in_as") }
       /// Make default
       public static var makeDefault: String { return L10n.tr("Localizable", "settings.connection_section.make_default") }
       /// Open
@@ -5325,6 +5403,8 @@ public enum L10n {
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Drag to reorder your servers. The one at the top is used as the default server.
       public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
+      /// Two servers share the same ID
+      public static var sharedInstanceIdWarning: String { return L10n.tr("Localizable", "settings.connection_section.shared_instance_id_warning") }
       /// Sync
       public static var syncServer: String { return L10n.tr("Localizable", "settings.connection_section.sync_server") }
       /// Troubleshooting
@@ -5536,6 +5616,18 @@ public enum L10n {
       public enum NoBaseUrl {
         /// No URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
+      }
+      public enum Reauthenticate {
+        /// Couldn't re-authenticate
+        public static var errorTitle: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.error_title") }
+        /// Sign in to this server again, for example after changing your password or to use a different user. Your server's URLs and settings stay as they are.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.footer") }
+        /// Re-authenticating…
+        public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.progress") }
+        /// Re-authenticate
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.title") }
+        /// Sign in using
+        public static var urlPickerTitle: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.url_picker_title") }
       }
       public enum RemoteUiUrl {
         /// Remote UI URL
@@ -6239,8 +6331,10 @@ public enum L10n {
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.frontend_asset_cache.title") }
           }
           public enum LegacyRealmStore {
-            /// Leftover data from an older version of the app. Nothing uses it anymore.
+            /// The old store zones, notification categories and complications are imported from. It is only kept until that import has run.
             public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.explanation") }
+            /// Leftover data from an older version of the app. Nothing uses it anymore.
+            public static var leftoverExplanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.leftover_explanation") }
             /// Legacy database
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.title") }
           }
@@ -6338,10 +6432,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.sort.title") }
         }
         public enum Summary {
-          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.
+          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, files you added yourself, and anything still waiting to be imported. Everything else is a copy the app makes again when it needs it.
           public static var footer: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.footer") }
           /// Protected items
           public static var protected: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.protected") }
+          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.
+          public static var protectedFooter: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.protected_footer") }
           /// Can be freed
           public static var reclaimable: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.reclaimable") }
           /// Total used
@@ -6367,6 +6463,10 @@ public enum L10n {
       public enum ReceiveDebugNotifications {
         /// Receive debug notifications
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.receive_debug_notifications.title") }
+      }
+      public enum RegionEnterMaximumFuzzDistance {
+        /// Zone enter accuracy fuzz limit
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.region_enter_maximum_fuzz_distance.title") }
       }
       public enum ResetApp {
         /// Delete all app data?
@@ -7787,6 +7887,10 @@ public enum L10n {
           /// Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.
           public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.in_bed.footer") }
         }
+        public enum MoveGoal {
+          /// Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.
+          public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.move_goal.footer") }
+        }
       }
       public enum Sensors {
         /// Enable all Apple Health sensors
@@ -7937,6 +8041,12 @@ public enum L10n {
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.accessibility_label") }
         /// When app is open
         public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
+      }
+      public enum RequiresAppleWatch {
+        /// Only reports with a paired Apple Watch
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.requires_apple_watch.accessibility_label") }
+        /// Requires Apple Watch
+        public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.requires_apple_watch.badge") }
       }
       public enum UnavailableOnDevice {
         /// Unavailable on this device

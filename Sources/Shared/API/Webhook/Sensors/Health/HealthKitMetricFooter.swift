@@ -11,10 +11,14 @@ public enum HealthKitMetricFooter: String, CaseIterable, Sendable {
     /// bed, so "In Bed" reads as unavailable until the user turns iPhone tracking on or installs a
     /// sleep app that records it.
     case timeInBedSource
+    /// The Move goal is reported in kilocalories, so it reads as unavailable while the Move ring is set
+    /// to move time.
+    case moveGoalEnergyOnly
 
     public var text: String {
         switch self {
         case .timeInBedSource: return L10n.SettingsSensors.Health.Metric.InBed.footer
+        case .moveGoalEnergyOnly: return L10n.SettingsSensors.Health.Metric.MoveGoal.footer
         }
     }
 }

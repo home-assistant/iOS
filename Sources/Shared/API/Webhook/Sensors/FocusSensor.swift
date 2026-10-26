@@ -22,20 +22,20 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
     override func observe() {
         super.observe()
         guard !isObserving else { return }
-        cancellable = Current.focusStatus.receivedStatus.observe { [weak self] _ in
+        cancellable = Current.focusStatus.pushes.observe { [weak self] _ in
             #if os(watchOS)
             self?.signal()
             #else
-            // this means that we will double-update the focus sensor if the app is running
-            // this feels less likely to happen, but allows us to keep the in-app visual state right
+            // The Intents extension that received the push reports it itself, so this only keeps
+            // the sensor on screen current. In the background it would be a whole extra update.
             if Current.isForegroundApp() {
                 self?.signal()
             }
             #endif
         }
-        // The sensor also stands on Focus Filter runs, whose own explicit sensor update can fail
-        // (unreachable server) — and they are the only signal when Focus status isn't shared.
-        focusFilterCancellable = Current.focusFilter.state.observe { [weak self] _ in
+        // A Focus Filter run turns the sensor on for a Focus whose status iOS doesn't report, and
+        // the run's own update can fail to reach the server.
+        focusFilterCancellable = Current.focusFilter.runs.observe { [weak self] _ in
             self?.signal()
         }
         isObserving = true
@@ -54,6 +54,7 @@ final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderU
     }
 }
 
+/// Whether any Focus is on, see `FocusReport`.
 final class FocusSensor: SensorProvider {
     public enum FocusError: Error, Equatable {
         case unavailable
@@ -65,40 +66,33 @@ final class FocusSensor: SensorProvider {
     }
 
     func sensors() -> Promise<[WebhookSensor]> {
-        // Everything we know, not just the live status: a Focus Filter run proves a Focus is on
-        // even while the live query still describes the one that just ended (or can't answer at
-        // all because the user doesn't share Focus status), and the status iOS pushed us is what
-        // says it ended. This is what flips the sensor when iOS wakes us for a Focus change.
-        let report = FocusReport.current()
-
-        guard let isFocused = report.isFocused else {
-            // Only when nothing can answer does why it can't matter: a device without Focus has no
-            // sensor to offer. Anything else stays listed — reporting `unavailable` rather than
-            // dropping out, since the list row is the only switch there is — whether the permission
-            // is missing, which switching the sensor on asks for, or iOS simply gave no answer.
-            guard Current.focusStatus.isAvailable() else {
-                return .init(error: FocusError.unavailable)
-            }
-
-            return .value([WebhookSensor(
-                awaitingPermissionNamed: "Focus",
-                uniqueID: WebhookSensorId.focus.rawValue,
-                type: "binary_sensor"
-            )])
+        // Only a device without Focus has no sensor to offer. Anything else stays listed, since
+        // the list row is the only switch there is.
+        guard Current.focusStatus.isAvailable() else {
+            return .init(error: FocusError.unavailable)
         }
 
-        let sensors = [with(WebhookSensor(
-            name: "Focus",
-            uniqueID: WebhookSensorId.focus.rawValue,
-            icon: "mdi:moon-waning-crescent",
-            state: isFocused
-        )) {
-            $0.Type = "binary_sensor"
-        }]
+        return FocusReport.current().map { [self] report in
+            let _: FocusSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
-        // Set up our observer
-        let _: FocusSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
+            guard let isFocused = report.isFocused else {
+                // Nothing says, which is where a missing permission leaves it: switching the
+                // sensor on is what asks for it.
+                return [WebhookSensor(
+                    awaitingPermissionNamed: "Focus",
+                    uniqueID: WebhookSensorId.focus.rawValue,
+                    type: "binary_sensor"
+                )]
+            }
 
-        return .value(sensors)
+            return [with(WebhookSensor(
+                name: "Focus",
+                uniqueID: WebhookSensorId.focus.rawValue,
+                icon: "mdi:moon-waning-crescent",
+                state: isFocused
+            )) {
+                $0.Type = "binary_sensor"
+            }]
+        }
     }
 }
