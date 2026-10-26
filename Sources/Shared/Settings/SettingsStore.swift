@@ -767,6 +767,20 @@ public class SettingsStore {
         }
     }
 
+    public static let defaultRegionEnterMaximumFuzzDistance: CLLocationDistance = 100
+
+    /// The farthest outside a monitored region a one-shot fix may be and still have its accuracy widened
+    /// to reach the region on a region-enter event. Tuned from the hidden developer section of Debug settings.
+    public var regionEnterMaximumFuzzDistance: CLLocationDistance {
+        get {
+            (prefs.object(forKey: "regionEnterMaximumFuzzDistance") as? Double)
+                ?? Self.defaultRegionEnterMaximumFuzzDistance
+        }
+        set {
+            prefs.set(newValue, forKey: "regionEnterMaximumFuzzDistance")
+        }
+    }
+
     public static let defaultWebViewEmptyStateTimeout = 5
 
     /// Seconds the frontend can stay disconnected before the web view shows its empty state

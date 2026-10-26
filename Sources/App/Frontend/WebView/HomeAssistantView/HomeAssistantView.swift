@@ -19,11 +19,17 @@ struct HomeAssistantView: View, WebFrontendView {
         self.init(server: server, initialPath: nil, onWebViewController: onWebViewController)
     }
 
-    init(server: Server, initialPath: String?, onWebViewController: @escaping (WebViewController) -> Void) {
+    init(
+        server: Server,
+        initialPath: String?,
+        appCoordinator: AppCoordinator? = nil,
+        onWebViewController: @escaping (WebViewController) -> Void
+    ) {
         _viewModel = StateObject(
             wrappedValue: HomeAssistantViewModel(
                 server: server,
                 initialPath: initialPath,
+                appCoordinator: appCoordinator,
                 onWebViewController: onWebViewController
             )
         )
@@ -204,6 +210,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 isLoading: viewModel.overlayState.isLoading,
                 serverSelectionNamespace: serverSelectionNamespace,
                 onSelectServerTapped: viewModel.presentServerSelection,
+                onSelectServer: viewModel.activate(server:),
                 onGestureAction: { action in
                     viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
                 },

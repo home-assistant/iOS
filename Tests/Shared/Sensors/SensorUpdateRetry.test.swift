@@ -198,6 +198,52 @@ class SensorUpdateRetryTests: XCTestCase {
         XCTAssertEqual(runner.names.count, 1)
     }
 
+    /// `WebhookManager` replaces an in-flight update with a newer one for the same server, and a
+    /// fast server can answer the newer one before the older one's cancellation is reported. The
+    /// late failure is already overtaken, so retrying it would read every sensor for nothing.
+    func testAFailureOlderThanAFullSuccessIsNotRetried() {
+        let older = retry.beginUpdate()
+        succeed(limitedTo: nil)
+
+        retry.noteFailure(generation: older, limitedTo: nil)
+
+        XCTAssertTrue(scheduled.isEmpty)
+    }
+
+    func testALimitedFailureOlderThanASuccessForItsProviderIsNotRetried() {
+        let older = retry.beginUpdate()
+        succeed(limitedTo: [FocusSensor.self])
+
+        retry.noteFailure(generation: older, limitedTo: [FocusSensor.self])
+
+        XCTAssertTrue(scheduled.isEmpty)
+    }
+
+    /// A Focus-only update that replaces a full one carries only its own providers, so the full
+    /// update is still owed everything it read.
+    func testAFullFailureOlderThanALimitedSuccessIsStillRetried() {
+        let older = retry.beginUpdate()
+        succeed(limitedTo: [FocusSensor.self])
+
+        retry.noteFailure(generation: older, limitedTo: nil)
+
+        XCTAssertEqual(scheduled.count, 1)
+        fireLastScheduled()
+        XCTAssertEqual(performed.count, 1)
+        XCTAssertNil(performed[0])
+    }
+
+    func testALimitedFailureOlderThanASuccessForAnotherProviderIsStillRetried() {
+        let older = retry.beginUpdate()
+        succeed(limitedTo: [FocusSensor.self])
+
+        retry.noteFailure(generation: older, limitedTo: [BatterySensor.self])
+
+        XCTAssertEqual(scheduled.count, 1)
+        fireLastScheduled()
+        XCTAssertEqual(providerNames(performed[0]), names([BatterySensor.self]))
+    }
+
     /// The default scheduler decides by the delay alone.
     func testTheDefaultScheduleHoldsOnlyShortDelays() {
         let runner = RecordingBackgroundTaskRunner()

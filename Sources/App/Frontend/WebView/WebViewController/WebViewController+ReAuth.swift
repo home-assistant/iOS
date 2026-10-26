@@ -89,6 +89,20 @@ extension WebViewController {
         Current.Log.info("Re-authentication successful, tokens updated and WebView refreshing")
     }
 
+    /// The server was re-authenticated somewhere else (its settings), so leave a logged-out or
+    /// auth-invalid state behind and reload the frontend, which may now belong to a different user.
+    @objc func serverDidReauthenticate(_ notification: Notification) {
+        guard let reauthenticatedServer = notification.object as? Server,
+              reauthenticatedServer.identifier == server.identifier else { return }
+        DispatchQueue.main.async { [self] in
+            Current.Log.info("Server \(server.identifier.rawValue) re-authenticated, reloading its web view")
+            didLogOut = false
+            connectionState = .unknown
+            hideEmptyState()
+            refresh()
+        }
+    }
+
     private func showReauthFailureAlert(error: Error) {
         let alert = UIAlertController(
             title: L10n.Alerts.AuthRequired.title,

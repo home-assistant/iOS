@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatable {
+public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
     public var id: String
     public var name: String
     public var items: [MagicItem]

@@ -65,6 +65,7 @@
 		11B92913266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		11B92A5B266F17AA00786588 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */; };
+		9961D993FC5EE2C107101A93 /* LocalizedStringResource+Verbatim.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B34F1ED79C55F60DBD84444 /* LocalizedStringResource+Verbatim.test.swift */; };
 		11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98CC249E637300B05222 /* Version+HA.test.swift */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DE9FBE25B6186E0081C0ED /* Home Assistant Launcher.app in Embed Mac Launcher */ = {isa = PBXBuildFile; fileRef = 11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -95,6 +96,7 @@
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */; };
 		426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */; };
+		42B7A1D1310A00000000A001 /* PeriodicUpdateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7A1D0310A00000000A001 /* PeriodicUpdateManager.test.swift */; };
 		426A2EFB30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */; };
 		426A2EFD30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */; };
 		426A2F013059752700006022 /* ManualUpdateFullAccuracy.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */; };
@@ -613,6 +615,7 @@
 		11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-PushProvider.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11B9290A266F145000786588 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
+		0B34F1ED79C55F60DBD84444 /* LocalizedStringResource+Verbatim.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedStringResource+Verbatim.test.swift"; sourceTree = "<group>"; };
 		11CB98CC249E637300B05222 /* Version+HA.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.test.swift"; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -630,6 +633,7 @@
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
 		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspension.test.swift; sourceTree = "<group>"; };
+		42B7A1D0310A00000000A001 /* PeriodicUpdateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodicUpdateManager.test.swift; sourceTree = "<group>"; };
 		426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseSuspensionProtectedWork.test.swift; sourceTree = "<group>"; };
 		426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelsUpdaterSaveInDatabase.test.swift; sourceTree = "<group>"; };
 		426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualUpdateFullAccuracy.test.swift; sourceTree = "<group>"; };
@@ -878,6 +882,7 @@
 				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntity.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntityValueProvider.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/OpenEntityAppIntent.swift,
+				Widgets/Controls/OpenHomeAssistant/OpenHomeAssistantAppIntent.swift,
 				Widgets/Controls/Switch/IntentSwitchEntity.swift,
 				Widgets/Controls/Switch/SwitchIntent.swift,
 				Widgets/Custom/AppIntents/AppIntentHaptics.swift,
@@ -1308,8 +1313,8 @@
 				AssistView.swift,
 				"AssistView+Build.swift",
 				AssistViewModel.swift,
+				Audio/AssistAudioConverter.swift,
 				Audio/AudioRecorder.swift,
-				"Audio/CMSampleBuffer+AudioSamples.swift",
 				Local/OnDeviceVoice.swift,
 				Local/OnDeviceVoiceCatalog.swift,
 				Local/SpeechSynthesizer.swift,
@@ -1486,6 +1491,7 @@
 				ConfigurationTransfer/AppSettingsSnapshot.swift,
 				ConfigurationTransfer/ImportExportConfigurationView.swift,
 				ConfigurationTransfer/ImportExportConfigurationViewModel.swift,
+				Connection/ClientCertificateImportFormSheet.swift,
 				Connection/ClientCertificateView.swift,
 				Connection/ConnectionHardwareAddressesView.swift,
 				Connection/ConnectionSettingsView.swift,
@@ -1498,6 +1504,8 @@
 				Connection/ServerDetailsRowView.swift,
 				Connection/ServerEditMenu.swift,
 				Connection/ServerHowItWorksSheet.swift,
+				Connection/ServerReauthenticationModel.swift,
+				Connection/ServerReauthenticationModifier.swift,
 				Connection/ServerSettingsSheet.swift,
 				Connection/ServerURLEditorSheet.swift,
 				Connection/Webhook/WebhookDetailView.swift,
@@ -1610,9 +1618,9 @@
 				Sensors/Health/HealthSensorListView.swift,
 				Sensors/Health/HealthSensorListViewModel.swift,
 				Sensors/Health/HealthSensorRow.swift,
-				Sensors/List/SensorForegroundOnlyBadge.swift,
 				Sensors/List/SensorListView.swift,
 				Sensors/List/SensorListViewModel.swift,
+				Sensors/List/SensorNoteBadge.swift,
 				Sensors/List/SensorRow.swift,
 				Sensors/Permissions/BluetoothAuthorizationRequester.swift,
 				Sensors/Permissions/SensorPermission.swift,
@@ -1724,6 +1732,7 @@
 				ConfigurationTransfer/AppSettingsSnapshot.swift,
 				ConfigurationTransfer/ImportExportConfigurationView.swift,
 				ConfigurationTransfer/ImportExportConfigurationViewModel.swift,
+				Connection/ClientCertificateImportFormSheet.swift,
 				Connection/ClientCertificateView.swift,
 				Connection/ConnectionHardwareAddressesView.swift,
 				Connection/ConnectionSettingsView.swift,
@@ -1736,6 +1745,8 @@
 				Connection/ServerDetailsRowView.swift,
 				Connection/ServerEditMenu.swift,
 				Connection/ServerHowItWorksSheet.swift,
+				Connection/ServerReauthenticationModel.swift,
+				Connection/ServerReauthenticationModifier.swift,
 				Connection/ServerSettingsSheet.swift,
 				Connection/ServerURLEditorSheet.swift,
 				Connection/Webhook/WebhookDetailView.swift,
@@ -1848,9 +1859,9 @@
 				Sensors/Health/HealthSensorListView.swift,
 				Sensors/Health/HealthSensorListViewModel.swift,
 				Sensors/Health/HealthSensorRow.swift,
-				Sensors/List/SensorForegroundOnlyBadge.swift,
 				Sensors/List/SensorListView.swift,
 				Sensors/List/SensorListViewModel.swift,
+				Sensors/List/SensorNoteBadge.swift,
 				Sensors/List/SensorRow.swift,
 				Sensors/Permissions/BluetoothAuthorizationRequester.swift,
 				Sensors/Permissions/SensorPermission.swift,
@@ -1921,8 +1932,10 @@
 				EntityFuzzySearch/FuzzySearcher.swift,
 				EntityFuzzySearch/FuzzyTextNormalizer.swift,
 				Environment.swift,
+				FocusFilterState.swift,
 				FocusFilterWrapper.swift,
 				FocusReport.swift,
+				FocusStatusObservation.swift,
 				FocusStatusWrapper.swift,
 				ForceCloseWarningManager.swift,
 				FrontendThemeProvider.swift,
@@ -3227,6 +3240,7 @@
 				9EE9A0E08E6FEBDDE425D0D4 /* Database/TableSchemaTests.test.swift */,
 				11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */,
 				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
+				0B34F1ED79C55F60DBD84444 /* LocalizedStringResource+Verbatim.test.swift */,
 				1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */,
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
 				110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */,
@@ -3271,6 +3285,7 @@
 				42164BB8301320720077A903 /* ComplicationFormula.test.swift */,
 				424169A2303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift */,
 				426A2EF8305952AE00006022 /* AppDatabaseSuspension.test.swift */,
+				42B7A1D0310A00000000A001 /* PeriodicUpdateManager.test.swift */,
 				426A2EFA30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift */,
 				426A2EFC30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift */,
 				426A2F003059752700006022 /* ManualUpdateFullAccuracy.test.swift */,
@@ -4702,11 +4717,13 @@
 				42164BB9301320720077A903 /* ComplicationFormula.test.swift in Sources */,
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
+				9961D993FC5EE2C107101A93 /* LocalizedStringResource+Verbatim.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
 				426A2EFD30596FCC00006022 /* PanelsUpdaterSaveInDatabase.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* AppZone.test.swift in Sources */,
 				DA6F4C18D66EDBA5DCEAE833 /* Database/DatabaseMigration.test.swift in Sources */,
 				426A2EF9305952AE00006022 /* AppDatabaseSuspension.test.swift in Sources */,
+				42B7A1D1310A00000000A001 /* PeriodicUpdateManager.test.swift in Sources */,
 				42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */,
 				42A7F1012FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,

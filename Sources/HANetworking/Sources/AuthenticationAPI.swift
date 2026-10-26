@@ -36,20 +36,16 @@ public class AuthenticationAPI {
     }
 
     let server: Server
-    let session: Session
+    public let session: Session
 
     public init(server: Server) {
         self.server = server
         // Use custom delegate that supports client certificates (mTLS). Required on watchOS too:
         // token refresh is a REST call, and an mTLS server rejects it without the client cert.
-        if server.info.connection.clientCertificate != nil {
-            self.session = Session(
-                delegate: ClientCertificateSessionDelegate(server: server),
-                serverTrustManager: CustomServerTrustManager(server: server)
-            )
-        } else {
-            self.session = Session(serverTrustManager: CustomServerTrustManager(server: server))
-        }
+        self.session = Session(
+            delegate: ClientCertificateSessionDelegate(server: server),
+            serverTrustManager: CustomServerTrustManager(server: server)
+        )
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {

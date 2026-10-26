@@ -11,9 +11,13 @@ struct ConnectionURLView: View {
 
     @StateObject private var viewModel: ConnectionURLViewModel
     @State private var showSecurityLevelPicker = false
+    /// Mirrors the URL check behind Save, so the sheet around this screen can stay open until its result,
+    /// and any error about it, has been shown.
+    @Binding private var isSaving: Bool
 
-    init(server: Server, urlType: ConnectionInfo.URLType) {
+    init(server: Server, urlType: ConnectionInfo.URLType, isSaving: Binding<Bool> = .constant(false)) {
         self.urlType = urlType
+        _isSaving = isSaving
         _viewModel = StateObject(wrappedValue: ConnectionURLViewModel(server: server, urlType: urlType))
     }
 
@@ -38,6 +42,9 @@ struct ConnectionURLView: View {
             ToolbarItem(placement: .confirmationAction) {
                 saveButton
             }
+        }
+        .onChange(of: viewModel.isChecking) { isChecking in
+            isSaving = isChecking
         }
         .alert(L10n.Settings.ConnectionSection.ValidateError.title, isPresented: $viewModel.showError) {
             if viewModel.canCommitAnyway {

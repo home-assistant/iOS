@@ -1,3 +1,4 @@
+import AppIntents
 @testable import HomeAssistant
 @testable import Shared
 import Testing
@@ -56,5 +57,56 @@ struct FocusNameFocusFilterAppIntentTests {
 
             #expect(stored == .some(nil))
         }
+    }
+
+    @Test func currentValuesAnswerWithThePickedName() async throws {
+        var intent = FocusNameFocusFilterAppIntent()
+        intent.focusName = .init(id: "3F9B0A1C-6C0E-4C0B-9D2E-7A1B2C3D4E5F", name: "Work")
+
+        let name = try await FocusNameFocusFilterAppIntent.currentFocusName(reading: { intent })
+
+        #expect(name == "Work")
+    }
+
+    /// iOS not finding the current configuration is read as no Focus with the filter being on.
+    @Test func currentValuesNotFoundAnswerWithNoName() async throws {
+        let name = try await FocusNameFocusFilterAppIntent.currentFocusName(reading: {
+            throw SetFocusFilterIntentError.notFound
+        })
+
+        #expect(name == nil)
+    }
+
+    /// Any other failure is not an answer, so the sensors keep what the filter's runs said.
+    @Test func currentValuesFailingOtherwiseIsPassedOn() async throws {
+        await #expect(throws: SetFocusFilterIntentError.missingParameterValue) {
+            try await FocusNameFocusFilterAppIntent.currentFocusName(reading: {
+                throw SetFocusFilterIntentError.missingParameterValue
+            })
+        }
+    }
+
+    /// The reader the app registers asks iOS itself, which a unit test can't steer, so this only
+    /// pins down what the sensors rely on: asking never holds a sensor read past the timeout, and
+    /// whatever iOS answers, the stored state stays readable.
+    @Test func registeredReaderAnswersWithinTheTimeout() async throws {
+        let previousFilter = Current.focusFilter
+        let previousTimeout = FocusFilterWrapper.currentValuesTimeout
+        defer {
+            Current.focusFilter.readings.value = nil
+            Current.focusFilter = previousFilter
+            FocusFilterWrapper.currentValuesTimeout = previousTimeout
+        }
+        Current.focusFilter = FocusFilterWrapper()
+        Current.focusFilter.readings.value = nil
+        FocusFilterWrapper.currentValuesTimeout = 2
+
+        FocusNameFocusFilterAppIntent.registerCurrentValuesReader()
+        let started = Date()
+        await Current.focusFilter.readFromIOS()
+
+        #expect(Date().timeIntervalSince(started) < 10)
+        // No Focus with the filter is on in a test run, so any answer iOS gives names none.
+        #expect(Current.focusFilter.activeFocusName() == nil)
     }
 }

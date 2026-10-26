@@ -34,7 +34,7 @@ extension WebViewController {
     func openServer(_ server: Server) {
         // Not `activate(server:)`: like the server-cycling gestures, the status bar menu switches
         // in place without sending the user back to the Home Assistant root.
-        Current.sceneManager.appCoordinator.done { coordinator in
+        Current.sceneManager.appCoordinator(for: view.window?.windowScene).done { coordinator in
             coordinator.open(server: server)
         }
     }

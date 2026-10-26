@@ -16,7 +16,7 @@
 "common::state::standby" = "Készenlétben";
 "common::state::unlocked" = "Feloldva";
 "common::state::yes" = "Igen";
-"component::ai_task::title" = "AI task";
+"component::ai_task::title" = "AI-feladat";
 "component::airzone::entity::select::sleep_times::state::off" = "Ki";
 "component::alarm_control_panel::title" = "Riasztó központ";
 "component::alert::entity_component::_::state::idle" = "Tétlen";
@@ -122,18 +122,18 @@
 \
 Kérjük, fejezze be a beállítást a [beállítási útmutató]({url}) követésével.";
 "component::improv_ble::config::abort::unknown" = "Váratlan hiba";
-"component::improv_ble::config::error::unable_to_connect" = "A készülék nem tudott csatlakozni a Wi-Fi hálózathoz. Ellenőrizze, hogy az SSID és a jelszó helyes-e, és próbálja meg újra.";
+"component::improv_ble::config::error::unable_to_connect" = "Az eszköz nem tudott csatlakozni a Wi-Fi hálózathoz. Ellenőrizze, hogy az SSID és a jelszó helyes-e, és próbálja meg újra.";
 "component::improv_ble::config::flow_title" = "{name}";
 "component::improv_ble::config::progress::authorize" = "Az eszköz engedélyezést igényel, nyomja meg az engedélyezési gombot vagy olvassa el az eszköz kézikönyvét a további lépésekért.";
 "component::improv_ble::config::progress::provisioning" = "Az eszköz csatlakozik a Wi-Fi hálózathoz.";
 "component::improv_ble::config::step::bluetooth_confirm::description" = "Szeretné beállítani a(z) {name} eszközt?";
-"component::improv_ble::config::step::identify::description" = "A készülék most azonosítja magát, például villogással vagy hangjelzéssel.";
+"component::improv_ble::config::step::identify::description" = "Az eszköz most azonosítja magát, például villogással vagy hangjelzéssel.";
 "component::improv_ble::config::step::main_menu::description" = "Válassza ki a következő lépést.";
 "component::improv_ble::config::step::main_menu::menu_options::identify" = "Eszköz azonosítása";
 "component::improv_ble::config::step::main_menu::menu_options::provision" = "Csatlakoztassa az eszközt egy Wi-Fi hálózathoz";
 "component::improv_ble::config::step::provision::data::password" = "Jelszó";
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
-"component::improv_ble::config::step::provision::description" = "Adja meg a Wi-Fi hitelesítő adatokat a készülék hálózathoz való csatlakoztatásához.";
+"component::improv_ble::config::step::provision::description" = "Adja meg a Wi-Fi hitelesítő adatokat az eszköz hálózathoz való csatlakoztatásához.";
 "component::improv_ble::config::step::user::data::address" = "Eszköz";
 "component::improv_ble::config::step::user::description" = "Válasszon egy beállítandó eszközt";
 "component::input_boolean::entity_component::_::state::off" = "Ki";

@@ -29,111 +29,61 @@ class FocusSensorTests: XCTestCase {
         Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [
             WebhookSensorId.focus.rawValue,
         ])
-        Current.focusFilter = FocusFilterWrapper()
-        Current.focusStatus = FocusStatusWrapper()
-        Current.focusFilter.state.value = nil
-        Current.focusFilter.liveConfirmation.value = nil
-        Current.focusStatus.receivedStatus.value = nil
+        resetFocusState()
         Current.date = { [now] in now }
     }
 
     override func tearDown() {
         SensorEnablementStore.resetForTesting()
         Current.servers = previousServers
-        Current.focusFilter.state.value = nil
-        Current.focusFilter.liveConfirmation.value = nil
-        Current.focusStatus.receivedStatus.value = nil
-        Current.focusFilter = FocusFilterWrapper()
-        Current.focusStatus = FocusStatusWrapper()
+        resetFocusState()
         Current.date = Date.init
         super.tearDown()
     }
 
-    private func setUpDependencies(
+    private func resetFocusState() {
+        Current.focusFilter = FocusFilterWrapper()
+        Current.focusStatus = FocusStatusWrapper()
+        Current.focusFilter.runs.value = nil
+        Current.focusFilter.readings.value = nil
+        Current.focusStatus.pushes.value = nil
+        Current.focusStatus.readings.value = nil
+    }
+
+    /// - Parameters:
+    ///   - canAskIOS: `false` for an extension, which can't read `INFocusStatusCenter`.
+    ///   - liveIsFocused: what iOS answers when the app asks it.
+    private func setUpIOS(
+        canAskIOS: Bool = true,
         authorization: FocusStatusWrapper.AuthorizationStatus = .authorized,
-        isAvailable: Bool = true,
-        status: FocusStatusWrapper.Status = .init(isFocused: nil),
-        filterState: FocusFilterState? = nil,
-        receivedStatus: FocusStatusState? = nil
+        liveIsFocused: Bool?
     ) {
+        Current.focusStatus.canAskIOS = { canAskIOS }
         Current.focusStatus.authorizationStatus = { authorization }
-        Current.focusStatus.isAvailable = { isAvailable }
-        Current.focusStatus.status = { status }
-        Current.focusStatus.lastReceived = { receivedStatus }
-        Current.focusFilter.activeFocusState = { filterState }
+        Current.focusStatus.liveIsFocused = { liveIsFocused }
+    }
+
+    private func focusState() throws -> Any? {
+        let sensors = try hang(FocusSensor(request: request).sensors())
+        XCTAssertEqual(sensors.count, 1)
+        let sensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == WebhookSensorId.focus.rawValue }))
+        XCTAssertEqual(sensor.Type, "binary_sensor")
+        return sensor.State
     }
 
     func testNotAvailable() throws {
-        setUpDependencies(isAvailable: false)
+        Current.focusStatus.isAvailable = { false }
 
-        let promise = FocusSensor(request: request).sensors()
-        XCTAssertThrowsError(try hang(promise)) { error in
+        XCTAssertThrowsError(try hang(FocusSensor(request: request).sensors())) { error in
             XCTAssertEqual(error as? FocusSensor.FocusError, .unavailable)
         }
     }
 
-    /// Listed rather than dropped: switching it on is what asks for Focus access, so a sensor that
-    /// vanished until it was granted would have no row left to switch on.
-    func testNotAuthorizedReportsUnavailable() throws {
-        for state: FocusStatusWrapper.AuthorizationStatus in [
-            .restricted, .denied, .notDetermined,
-        ] {
-            setUpDependencies(authorization: state)
-
-            let sensors = try hang(FocusSensor(request: request).sensors())
-            XCTAssertEqual(sensors.count, 1, "\(state)")
-            XCTAssertEqual(sensors[0].UniqueID, WebhookSensorId.focus.rawValue)
-            XCTAssertEqual(sensors[0].State as? String, "unavailable")
-            XCTAssertEqual(sensors[0].Type, "binary_sensor")
-        }
-    }
-
-    /// iOS giving no answer is not a reason to vanish from the list: the row is the only switch.
-    func testIsFocusedNilStaysListedAsUnavailable() throws {
-        setUpDependencies(status: .init(isFocused: nil))
-
-        let sensors = try hang(FocusSensor(request: request).sensors())
-        XCTAssertEqual(sensors.count, 1)
-        XCTAssertEqual(sensors[0].UniqueID, WebhookSensorId.focus.rawValue)
-        XCTAssertEqual(sensors[0].State as? String, "unavailable")
-        XCTAssertEqual(sensors[0].Type, "binary_sensor")
-    }
-
-    /// A named filter run keeps the sensor on until that Focus ends — and for a Focus the live
-    /// status confirmed, a live "not focused" is it ending, even when the "ended" push never came
-    /// and the filter's reset run never landed.
-    func testConfirmedNamedFocusEndsWhenTheLiveStatusSaysNotFocused() throws {
-        let filterRan = now.addingTimeInterval(-3600)
-        setUpDependencies(
-            status: .init(isFocused: false),
-            filterState: .init(name: "Work", date: filterRan, liveConfirmedDate: now.addingTimeInterval(-1800))
-        )
-
-        let sensors = try hang(FocusSensor(request: request).sensors())
-        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, false)
-    }
-
-    /// The same run before anything confirmed it: the live "not focused" is also what iOS says
-    /// about a Focus whose status the user doesn't share, so the name — and the sensor — stand.
-    func testUnconfirmedNamedFocusStandsDespiteTheLiveStatusSayingNotFocused() throws {
-        setUpDependencies(
-            status: .init(isFocused: false),
-            filterState: .init(name: "Work", date: now.addingTimeInterval(-3600))
-        )
-
-        let sensors = try hang(FocusSensor(request: request).sensors())
-        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, true)
-    }
-
     func testIsFocusedYes() throws {
-        setUpDependencies(status: .init(isFocused: true))
+        setUpIOS(liveIsFocused: true)
 
-        let promise = FocusSensor(request: request).sensors()
-        let sensors = try hang(promise)
+        let sensors = try hang(FocusSensor(request: request).sensors())
         let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-
         XCTAssertEqual(focusSensor.Name, "Focus")
         XCTAssertEqual(focusSensor.Icon, "mdi:moon-waning-crescent")
         XCTAssertEqual(focusSensor.Type, "binary_sensor")
@@ -141,120 +91,134 @@ class FocusSensorTests: XCTestCase {
     }
 
     func testIsFocusedNo() throws {
-        setUpDependencies(status: .init(isFocused: false))
+        setUpIOS(liveIsFocused: false)
 
-        let promise = FocusSensor(request: request).sensors()
-        let sensors = try hang(promise)
-        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-
-        XCTAssertEqual(focusSensor.Name, "Focus")
-        XCTAssertEqual(focusSensor.Icon, "mdi:moon-waning-crescent")
-        XCTAssertEqual(focusSensor.Type, "binary_sensor")
-        XCTAssertEqual(focusSensor.State as? Bool, false)
+        XCTAssertEqual(try focusState() as? Bool, false)
     }
 
-    /// A named Focus Filter run is proof a Focus started, standing even while the live status
-    /// still describes the Focus that just ended — this is what flips the sensor to true when iOS
-    /// wakes us for a Focus change.
-    func testIsFocusedYesWhileNamedFilterRunStandsDespiteLiveNo() throws {
-        setUpDependencies(
-            status: .init(isFocused: false),
-            filterState: .init(name: "Personal", date: Date())
-        )
+    /// Listed rather than dropped: switching it on is what asks for Focus access, so a sensor that
+    /// vanished until it was granted would have no row left to switch on.
+    func testNotAuthorizedReportsUnavailable() throws {
+        for state: FocusStatusWrapper.AuthorizationStatus in [.restricted, .denied, .notDetermined] {
+            setUpIOS(authorization: state, liveIsFocused: true)
 
-        let sensors = try hang(FocusSensor(request: request).sensors())
-        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, true)
+            XCTAssertEqual(try focusState() as? String, "unavailable", "\(state)")
+        }
     }
 
-    /// The filter path doesn't need the Focus status permission, so a named run answers even when
-    /// the live status can't.
-    func testIsFocusedYesFromNamedFilterRunWithoutAuthorization() throws {
-        setUpDependencies(
-            authorization: .denied,
-            filterState: .init(name: "Personal", date: Date())
-        )
+    /// iOS giving no answer is not a reason to vanish from the list: the row is the only switch.
+    func testIsFocusedNilStaysListedAsUnavailable() throws {
+        setUpIOS(liveIsFocused: nil)
 
-        let sensors = try hang(FocusSensor(request: request).sensors())
-        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, true)
+        XCTAssertEqual(try focusState() as? String, "unavailable")
     }
 
-    /// The nil-name run iOS makes when a Focus deactivates is not proof one is on: the pushed
-    /// status decides.
-    func testFilterResetRunDefersToTheReceivedStatus() throws {
-        let now = Date()
-        setUpDependencies(
-            filterState: .init(name: nil, date: now),
-            receivedStatus: .init(isFocused: false, date: now, lastEndedDate: now)
-        )
+    /// Every read stores what iOS answered, so the extensions that can't ask report it too.
+    func testTheAppStoresWhatIOSAnswered() throws {
+        setUpIOS(liveIsFocused: true)
 
-        let sensors = try hang(FocusSensor(request: request).sensors())
-        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, false)
+        _ = try focusState()
+
+        XCTAssertEqual(Current.focusStatus.readings.value, FocusStatusObservation(isFocused: true, date: now))
     }
 
-    /// The bug behind #5711: iOS wakes us when a Focus starts but not reliably when one ends, so
-    /// a pushed "running" whose "ended" push never came stood until the next Focus started. iOS
-    /// only pushes "running" for a Focus whose status the user shares, so the live status is
-    /// truthful for it — but inside the switch window it can still describe the Focus that just
-    /// ended, so the push has to be older than that window before a live "not focused" ends it.
-    func testStaleReceivedRunningEndsOnceTheLiveStatusSaysNotFocused() throws {
-        setUpDependencies(
-            status: .init(isFocused: false),
-            receivedStatus: .init(isFocused: true, date: now, lastEndedDate: nil)
-        )
+    /// A Focus paired with the filter is on even while iOS reports "not focused", which it does for
+    /// a Focus that doesn't share its status or that allows this app's notifications.
+    func testNamedFocusIsOnWhateverTheStatusSays() throws {
+        Current.focusFilter.runs.value = FocusFilterState(name: "Personal", date: now.addingTimeInterval(-3600))
+        Current.focusStatus.pushes.value = FocusStatusObservation(isFocused: false, date: now.addingTimeInterval(-60))
+        setUpIOS(liveIsFocused: false)
 
-        Current.date = { [now] in now.addingTimeInterval(FocusReport.switchGracePeriod) }
-        var sensors = try hang(FocusSensor(request: request).sensors())
-        var focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, true, "still inside the switch window")
-
-        Current.date = { [now] in now.addingTimeInterval(FocusReport.switchGracePeriod + 1) }
-        sensors = try hang(FocusSensor(request: request).sensors())
-        focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, false, "the push has settled and iOS says it ended")
+        XCTAssertEqual(try focusState() as? Bool, true)
     }
 
-    /// The mirror of the case above, from a log where the sensor published "off" in the same
-    /// breath as iOS answered that a Focus was running: the last pushed status was two days old,
-    /// and being the only thing consulted it outranked the live answer indefinitely.
-    func testStaleReceivedNotRunningYieldsToTheLiveStatusSayingFocused() throws {
-        setUpDependencies(
-            status: .init(isFocused: true),
-            receivedStatus: .init(isFocused: false, date: now, lastEndedDate: now)
-        )
+    /// The filter path doesn't need the Focus status permission.
+    func testNamedFocusIsOnWithoutAuthorization() throws {
+        Current.focusFilter.runs.value = FocusFilterState(name: "Personal", date: now.addingTimeInterval(-60))
+        setUpIOS(authorization: .denied, liveIsFocused: nil)
 
-        Current.date = { [now] in now.addingTimeInterval(FocusReport.switchGracePeriod) }
-        var sensors = try hang(FocusSensor(request: request).sensors())
-        var focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, false, "still inside the switch window")
-
-        Current.date = { [now] in now.addingTimeInterval(FocusReport.switchGracePeriod + 1) }
-        sensors = try hang(FocusSensor(request: request).sensors())
-        focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, true, "the push has settled and iOS says one is on")
+        XCTAssertEqual(try focusState() as? Bool, true)
     }
 
-    /// The whole shape of that log: the Focus carrying the name ended — its filter's reset run
-    /// landing just now — while iOS says a Focus is still on, which is what switching to a Focus
-    /// with no filter paired to it looks like. The ended name must not take the sensor down with
-    /// it.
-    func testFilterResetRunDoesNotEndAFocusTheLiveStatusStillReports() throws {
-        let twoDaysAgo = now.addingTimeInterval(-48 * 60 * 60)
-        setUpDependencies(
-            status: .init(isFocused: true),
-            filterState: .init(name: nil, date: now),
-            receivedStatus: .init(isFocused: false, date: twoDaysAgo, lastEndedDate: twoDaysAgo)
-        )
+    /// The run iOS makes with no name when a Focus ends says nothing about other Focuses: the
+    /// status decides, both ways.
+    func testRunWithNoNameDefersToTheStatus() throws {
+        Current.focusFilter.runs.value = FocusFilterState(name: nil, date: now.addingTimeInterval(-1))
 
-        let sensors = try hang(FocusSensor(request: request).sensors())
-        let focusSensor = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "focus" }))
-        XCTAssertEqual(focusSensor.State as? Bool, true)
+        setUpIOS(liveIsFocused: false)
+        XCTAssertEqual(try focusState() as? Bool, false)
+
+        setUpIOS(liveIsFocused: true)
+        XCTAssertEqual(try focusState() as? Bool, true, "a Focus without a filter is on")
+    }
+
+    /// The bug behind #5711: iOS doesn't reliably push the status of a Focus ending, so a pushed
+    /// "focused" stood until the next Focus started. The app's own reading is newer.
+    func testFocusEndingWithoutAPushIsReadFromIOS() throws {
+        Current.focusStatus.pushes.value = FocusStatusObservation(isFocused: true, date: now.addingTimeInterval(-36000))
+        setUpIOS(liveIsFocused: false)
+
+        XCTAssertEqual(try focusState() as? Bool, false)
+    }
+
+    /// The bug behind #5850: a pushed "not focused" from days ago outranked iOS answering that a
+    /// Focus is on.
+    func testStalePushedNotFocusedYieldsToIOS() throws {
+        Current.focusStatus.pushes.value = FocusStatusObservation(
+            isFocused: false,
+            date: now.addingTimeInterval(-48 * 3600)
+        )
+        setUpIOS(liveIsFocused: true)
+
+        XCTAssertEqual(try focusState() as? Bool, true)
+    }
+
+    /// The log behind this rewrite. The push provider extension, which can't ask iOS, rebuilt the
+    /// sensor from a three-hour-old pushed "not focused" and reported it off, while the app had
+    /// read "focused" from iOS half an hour earlier and the paired Personal Focus was still on.
+    /// Every process now reports the newest answer any of them stored.
+    func testAnExtensionReportsTheNewestStoredAnswerRatherThanAnOlderPush() throws {
+        Current.focusStatus.pushes.value = FocusStatusObservation(
+            isFocused: false,
+            date: now.addingTimeInterval(-3 * 3600)
+        )
+        Current.focusStatus.readings.value = FocusStatusObservation(
+            isFocused: true,
+            date: now.addingTimeInterval(-1800)
+        )
+        setUpIOS(canAskIOS: false, liveIsFocused: false)
+
+        XCTAssertEqual(try focusState() as? Bool, true)
+        XCTAssertEqual(
+            Current.focusStatus.readings.value?.date,
+            now.addingTimeInterval(-1800),
+            "an extension must not store an answer it can't get"
+        )
+    }
+
+    /// The other way round: a push newer than the app's last reading is the newer answer.
+    func testAnExtensionReportsAPushNewerThanTheAppsReading() throws {
+        Current.focusStatus.readings.value = FocusStatusObservation(
+            isFocused: true,
+            date: now.addingTimeInterval(-1800)
+        )
+        Current.focusStatus.pushes.value = FocusStatusObservation(isFocused: false, date: now.addingTimeInterval(-60))
+        setUpIOS(canAskIOS: false, liveIsFocused: nil)
+
+        XCTAssertEqual(try focusState() as? Bool, false)
+    }
+
+    /// Without the permission iOS stops answering and pushing, so a push from before it was
+    /// revoked must not keep being reported.
+    func testRevokedPermissionOutranksAStalePush() throws {
+        Current.focusStatus.pushes.value = FocusStatusObservation(isFocused: true, date: now.addingTimeInterval(-3600))
+        setUpIOS(authorization: .denied, liveIsFocused: nil)
+
+        XCTAssertEqual(try focusState() as? String, "unavailable")
     }
 
     func testUpdateSignalerCreated() throws {
-        setUpDependencies(status: .init(isFocused: false))
+        setUpIOS(liveIsFocused: false)
 
         let dependencies = SensorProviderDependencies()
         let provider = FocusSensor(request: .init(
@@ -263,54 +227,34 @@ class FocusSensorTests: XCTestCase {
             location: nil,
             serverVersion: Version()
         ))
-        let promise = provider.sensors()
-        _ = try hang(promise)
+        _ = try hang(provider.sensors())
 
         let signaler: FocusSensorUpdateSignaler? = dependencies.existingSignaler(for: provider)
         XCTAssertNotNil(signaler)
     }
 
-    @MainActor
-    func testSignaler() async throws {
-        setUpDependencies(
-            authorization: .authorized,
-            isAvailable: true,
-            status: .init(focusStatus: .init(isFocused: true))
-        )
-        _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
+    /// Created while nothing can be read yet too: a filter run is still what turns it on.
+    func testUpdateSignalerCreatedWhileUnavailable() throws {
+        setUpIOS(authorization: .denied, liveIsFocused: nil)
 
-        let expectation1 = expectation(description: "Observation")
-        let expectation2 = expectation(description: "Signal")
-        let signaler = FocusSensorUpdateSignaler(signal: {
-            expectation2.fulfill()
-        })
+        let dependencies = SensorProviderDependencies()
+        let provider = FocusSensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: dependencies,
+            location: nil,
+            serverVersion: Version()
+        ))
+        _ = try hang(provider.sensors())
 
-        signaler.notifyObservation = {
-            expectation1.fulfill()
-        }
-
-        await fulfillment(of: [expectation1], timeout: 10)
-
-        let date = Date()
-        Current.isForegroundApp = { false }
-        Current.focusStatus.receivedStatus.value = .init(isFocused: true, date: date, lastEndedDate: nil)
-
-        Current.isForegroundApp = { true }
-        Current.focusStatus.receivedStatus.value = .init(
-            isFocused: true,
-            date: date.addingTimeInterval(1.0),
-            lastEndedDate: nil
-        )
-
-        // so it sticks around, but we don't need to access it directly
-        await fulfillment(of: [expectation2], timeout: 10)
+        let signaler: FocusSensorUpdateSignaler? = dependencies.existingSignaler(for: provider)
+        XCTAssertNotNil(signaler)
     }
 
-    /// A Focus Filter run must signal the sensor: its own explicit update can fail, and it is the
-    /// only signal when Focus status isn't shared.
+    /// A push only signals in the foreground: in the background the Intents extension that
+    /// received it reports it itself.
     @MainActor
-    func testSignalerFiresOnFilterRun() async throws {
-        setUpDependencies(status: .init(isFocused: true))
+    func testSignaler() async throws {
+        setUpIOS(liveIsFocused: true)
         _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
 
         let observationExpectation = expectation(description: "Observation")
@@ -325,8 +269,41 @@ class FocusSensorTests: XCTestCase {
 
         await fulfillment(of: [observationExpectation], timeout: 10)
 
-        Current.focusFilter.state.value = FocusFilterState(name: "Personal", date: Date())
+        let previousIsForegroundApp = Current.isForegroundApp
+        addTeardownBlock { Current.isForegroundApp = previousIsForegroundApp }
+        let date = Date()
+        Current.isForegroundApp = { false }
+        Current.focusStatus.pushes.value = FocusStatusObservation(isFocused: true, date: date)
+
+        Current.isForegroundApp = { true }
+        Current.focusStatus.pushes.value = FocusStatusObservation(isFocused: true, date: date.addingTimeInterval(1))
 
         await fulfillment(of: [signalExpectation], timeout: 10)
+        withExtendedLifetime(signaler) {}
+    }
+
+    /// A Focus Filter run must signal the sensor: its own explicit update can fail, and it is the
+    /// only signal for a Focus whose status iOS doesn't report.
+    @MainActor
+    func testSignalerFiresOnFilterRun() async throws {
+        setUpIOS(liveIsFocused: true)
+        _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
+
+        let observationExpectation = expectation(description: "Observation")
+        let signalExpectation = expectation(description: "Signal")
+        let signaler = FocusSensorUpdateSignaler(signal: {
+            signalExpectation.fulfill()
+        })
+
+        signaler.notifyObservation = {
+            observationExpectation.fulfill()
+        }
+
+        await fulfillment(of: [observationExpectation], timeout: 10)
+
+        Current.focusFilter.runs.value = FocusFilterState(name: "Personal", date: Date())
+
+        await fulfillment(of: [signalExpectation], timeout: 10)
+        withExtendedLifetime(signaler) {}
     }
 }

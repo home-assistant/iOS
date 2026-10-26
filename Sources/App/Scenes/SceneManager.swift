@@ -160,6 +160,8 @@ final class SceneManager {
     /// host) as the web view migrates off `WebViewWindowController`. Consumers that only need the web view
     /// read this instead of `webViewWindowControllerPromise.then(\.webViewControllerPromise)`.
     private(set) var webViewControllerPromise: Guarantee<WebViewController>
+    /// Dropped once used: the seal holds the promise's box, and the box holds what it was sealed
+    /// with, so keeping the seal keeps the process's first controller for the app's lifetime.
     private var webViewControllerSeal: (WebViewController) -> Void
 
     /// Called by `HomeAssistantView` whenever it creates or replaces its `WebViewController`.
@@ -168,10 +170,12 @@ final class SceneManager {
             webViewControllerPromise = .value(controller)
         } else {
             webViewControllerSeal(controller)
+            webViewControllerSeal = { _ in }
         }
     }
 
     private var appCoordinatorPromise: Guarantee<AppCoordinator>
+    /// Let go of once used, for the same reason as `webViewControllerSeal`.
     private var appCoordinatorSeal: (AppCoordinator) -> Void
 
     private struct WeakAppCoordinator {
@@ -197,6 +201,7 @@ final class SceneManager {
             appCoordinatorPromise = .value(coordinator)
         } else {
             appCoordinatorSeal(coordinator)
+            appCoordinatorSeal = { _ in }
         }
     }
 

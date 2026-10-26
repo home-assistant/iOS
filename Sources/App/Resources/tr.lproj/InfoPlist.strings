@@ -5,7 +5,7 @@
 "NSHealthShareUsageDescription" = "Seçilen Apple Sağlık ölçümlerini okuyarak Home Assistant ile sensör olarak paylaşılmasını sağlayın.";
 "NSHealthUpdateUsageDescription" = "Home Assistant, Apple Sağlığa herhangi bir veri yazmaz.";
 "NSLocalNetworkUsageDescription" = "Home Assistant örneğinizi bulun ve onunla iletişim kurun.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Ayrıca, Uygulamanın arka plan işlemlerini gerçekleştirebilmesi için 'Her Zaman' konuma erişim iznine de ihtiyacımız var. \n\n ⚠️ Bu olmadan, Uygulama arka planda hangi bağlantıyı (yerel veya uzak) kullanacağına karar veremez ve her zaman uzak bağlantıyı kullanır.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Uygulamanın Home Assistant'taki konumunuzu güncelleyebilmesi ve arka planda yerel ile uzak bağlantınız arasında seçim yapabilmesi için konum erişimine \"Her Zaman\" izni verin.";
 "NSLocationAlwaysUsageDescription" = "iBeacon'lar, coğrafi sınırlar, arka planda konum güncellemeleri ve doğru raporlama gibi özellikler için her zaman konumunuza erişmemiz gerekir.";
 "NSLocationUsageDescription" = "Etkinleştirildiğinde, cihaz konumunuz Home Assistant sunucunuza bir cihaz izleyici olarak gönderilir.";
 "NSLocationWhenInUseUsageDescription" = "Bu uygulama, Ev Asistanı kurulumunuza doğrudan bağlanmak için konum erişimine ihtiyaç duyar. \n \n 1️⃣ Konumunuz yalnızca yerel ağınıza bağlı olup olmadığınızı kontrol etmek için kullanılacaktır. \n \n 2️⃣ Kimseyle paylaşılmayacaktır. \n \n 3️⃣ Buna izin vermezseniz, uygulama bunun yerine her zaman internet üzerinden bağlanacaktır. Yapılandırılmamışsa, verilerinizi koruyacak ve bağlantıyı reddedecektir.";

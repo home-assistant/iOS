@@ -74,9 +74,18 @@ public struct AssistResponse: HADataDecodable {
         }
 
         public struct ChatLogDelta: HADataDecodable {
+            /// Set on the first delta of each chat log message, nil on the deltas that continue it.
+            public let role: Role?
             public let content: String?
             public init(data: HAData) throws {
+                self.role = (try? data.decode("role") as String).map { Role(rawValue: $0) ?? .unknown }
                 self.content = try? data.decode("content")
+            }
+
+            public enum Role: String {
+                case assistant
+                case toolResult = "tool_result"
+                case unknown
             }
         }
 
