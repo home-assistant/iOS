@@ -5,7 +5,7 @@
 "NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
 "NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Finn og kommuniser med Home Assistant-forekomsten.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Vi foreslår at du velger \"Alltid tillat\" for den beste opplevelsen. Hvis du velger \"Kun mens du bruker appen\", deaktiveres iBeacons, geofences, oppdateringer for bakgrunnsplassering og nøyaktig rapportering.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Tillat posisjonstilgang \"Alltid\" slik at appen kan oppdatere posisjonen din i Home Assistant og velge mellom lokal og ekstern tilkobling i bakgrunnen.";
 "NSLocationAlwaysUsageDescription" = "Vi trenger tilgang til posisjonen din for funksjoner som iBeacons, geofences, oppdateringer for bakgrunnssteder og nøyaktig rapportering.";
 "NSLocationUsageDescription" = "Når den er aktivert, sendes enhetsplasseringen til Home Assistant-serveren din som en enhetssporing.";
 "NSLocationWhenInUseUsageDescription" = "Bare tillatelse for tilgang til plass mens appen er i bruk, deaktiverer iBeacons, geofences, oppdateringer for bakgrunnsplassering og nøyaktig rapportering.";

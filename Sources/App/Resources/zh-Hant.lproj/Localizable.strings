@@ -245,6 +245,8 @@
 "app_intents.open_close.title" = "開啟或關閉";
 "app_intents.open_experimental_dashboard.description" = "開啟實驗儀錶板";
 "app_intents.open_experimental_dashboard.title" = "開啟實驗儀錶板";
+"app_intents.open_home_assistant.description" = "開啟 Home Assistant 應用程式";
+"app_intents.open_home_assistant.title" = "開啟 Home Assistant";
 "app_intents.open_state_icon.title" = "開啟狀態的圖示";
 "app_intents.perform_action.action.title" = "操作";
 "app_intents.perform_action.action_parameter_configuration" = "哪個操作？";
@@ -1682,6 +1684,11 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.network_detection_permission.title" = "需要定位存取權限";
 "settings.connection_section.no_base_url.title" = "沒有網址";
 "settings.connection_section.open_server" = "開啟";
+"settings.connection_section.reauthenticate.error_title" = "無法重新驗證";
+"settings.connection_section.reauthenticate.footer" = "重新登入此伺服器，例如在變更密碼後或使用不同的使用者時。伺服器的網址和設定將保持不變。";
+"settings.connection_section.reauthenticate.progress" = "重新驗證中……";
+"settings.connection_section.reauthenticate.title" = "重新認證";
+"settings.connection_section.reauthenticate.url_picker_title" = "使用以下方式登入";
 "settings.connection_section.refresh_server" = "更新伺服器資訊";
 "settings.connection_section.remote_ui_url.title" = "遠端 UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "全部";

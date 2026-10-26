@@ -245,6 +245,8 @@
 "app_intents.open_close.title" = "Öffnen oder schließen";
 "app_intents.open_experimental_dashboard.description" = "Öffnet das experimentelle Dashboard";
 "app_intents.open_experimental_dashboard.title" = "Experimentelles Dashboard öffnen";
+"app_intents.open_home_assistant.description" = "Öffnet die Home-Assistant-App";
+"app_intents.open_home_assistant.title" = "Home Assistant öffnen";
 "app_intents.open_state_icon.title" = "Symbol für den geöffneten Zustand";
 "app_intents.perform_action.action.title" = "Aktion";
 "app_intents.perform_action.action_parameter_configuration" = "Welche Aktion?";
@@ -1682,6 +1684,11 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.network_detection_permission.title" = "Standortzugriff erforderlich";
 "settings.connection_section.no_base_url.title" = "Keine URL";
 "settings.connection_section.open_server" = "Öffnen";
+"settings.connection_section.reauthenticate.error_title" = "Erneute Authentifizierung fehlgeschlagen";
+"settings.connection_section.reauthenticate.footer" = "Melde dich erneut bei diesem Server an, beispielsweise nachdem du dein Passwort geändert hast oder um einen anderen Benutzer zu verwenden. Die URLs und Einstellungen deines Servers bleiben unverändert.";
+"settings.connection_section.reauthenticate.progress" = "Erneute Authentifizierung …";
+"settings.connection_section.reauthenticate.title" = "Erneut authentifizieren";
+"settings.connection_section.reauthenticate.url_picker_title" = "Melde dich an mit";
 "settings.connection_section.refresh_server" = "Server-Informationen aktualisieren";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "Alle";

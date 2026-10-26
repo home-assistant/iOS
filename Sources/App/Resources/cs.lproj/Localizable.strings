@@ -245,6 +245,8 @@
 "app_intents.open_close.title" = "Otevřít nebo zavřít";
 "app_intents.open_experimental_dashboard.description" = "Otevře experimentální ovládací panel.";
 "app_intents.open_experimental_dashboard.title" = "Otevřít experimentální ovládcí panel";
+"app_intents.open_home_assistant.description" = "Otevře Home Assistanta";
+"app_intents.open_home_assistant.title" = "Otevřít Home Assistanta";
 "app_intents.open_state_icon.title" = "Ikona pro otevřený stav";
 "app_intents.perform_action.action.title" = "Akce";
 "app_intents.perform_action.action_parameter_configuration" = "Která akce?";
@@ -797,11 +799,11 @@ Tento server vyžaduje klientský certifikát (mTLS), ale operace byla zrušena.
 "extensions.notification_content.error.request.hls_unavailable" = "Proud HLS je nedostupný";
 "extensions.notification_content.error.request.other" = "Stavový kód jiný než 200 (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "Proud WebRTC není k dispozici";
-"extensions.notification_content.error_state.hide_details" = "Hide details";
-"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
-"extensions.notification_content.error_state.retry" = "Try again";
-"extensions.notification_content.error_state.show_details" = "Show details";
-"extensions.notification_content.error_state.title" = "Media unavailable";
+"extensions.notification_content.error_state.hide_details" = "Skrýt podrobnosti";
+"extensions.notification_content.error_state.message" = "Daný proud nebo soubor se nepodařilo načíst. Zkontrolujte, zda je dostupný, a zkuste to znovu.";
+"extensions.notification_content.error_state.retry" = "Zkusit znovu";
+"extensions.notification_content.error_state.show_details" = "Zobrazit podrobnosti";
+"extensions.notification_content.error_state.title" = "Média nejsou dostupná";
 "flight_greetings.empty_state.body" = "Aktuálně nejste připojeni. Až přistanete, váš domov na vás bude čekat.";
 "flight_greetings.empty_state.configure_hint" = "Nastavte si letové pozdravy v Nastavení";
 "flight_greetings.empty_state.title" = "Mějte hezký let";
@@ -1682,6 +1684,11 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.network_detection_permission.title" = "Vyžadován přístup k poloze";
 "settings.connection_section.no_base_url.title" = "Žádná adresa URL";
 "settings.connection_section.open_server" = "Otevřít";
+"settings.connection_section.reauthenticate.error_title" = "Nepodařilo se znovu ověřit";
+"settings.connection_section.reauthenticate.footer" = "Přihlaste se znovu k tomuto serveru, například po změně hesla nebo pro použití jiného uživatele. URL adresy a nastavení vašeho serveru zůstanou zachovány.";
+"settings.connection_section.reauthenticate.progress" = "Opětovné ověřování…";
+"settings.connection_section.reauthenticate.title" = "Znovu ověřit";
+"settings.connection_section.reauthenticate.url_picker_title" = "Přihlásit se pomocí";
 "settings.connection_section.refresh_server" = "Aktualizovat informace o serveru";
 "settings.connection_section.remote_ui_url.title" = "Vzdálená URL uživatelského rozhraní";
 "settings.connection_section.sensor_send_type.setting.all" = "Vše";
@@ -2415,7 +2422,7 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "settings_sensors.health.footer" = "Senzory aplikace Zdraví používají níže uvedené stávající ovládací prvky pro jednotlivé senzory. Zdravotní data se čtou jen během běžných aktualizací senzorů.";
 "settings_sensors.health.header" = "Zdraví Apple";
 "settings_sensors.health.metric.in_bed.footer" = "Apple Watch zaznamenává fáze spánku, ale ne dobu strávenou v posteli, takže tato informace zůstává nedostupná, dokud ji nezadá jiný zdroj. Zapněte funkci \"Sledovat dobu strávenou v posteli pomocí iPhone\" v aplikaci Zdraví > Spánek > Možnosti, nebo použijte aplikaci pro sledování spánku, která zaznamenává dobu strávenou v posteli.";
-"settings_sensors.health.metric.move_goal.footer" = "Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.";
+"settings_sensors.health.metric.move_goal.footer" = "Uvádí se v kilokaloriích, takže tato funkce není dostupná, dokud je kruh Pohyb nastaven na čas pohybu.";
 "settings_sensors.health.reload" = "Znovu načíst senzory";
 "settings_sensors.health.request_access" = "Žádost o přístup k aplikaci Zdraví";
 "settings_sensors.health.sensors.enable_all" = "Povolit všechny senzory aplikace Zdraví";
@@ -2470,8 +2477,8 @@ Server odpovídá jen tehdy, když je aplikace otevřená, a přestane reagovat,
 "settings_sensors.sensors.foreground_only.badge" = "Když je aplikace otevřená";
 "settings_sensors.sensors.header" = "Senzory";
 "settings_sensors.sensors.no_results" = "Vašemu hledání neodpovídají žádné senzory";
-"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Only reports with a paired Apple Watch";
-"settings_sensors.sensors.requires_apple_watch.badge" = "Requires Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.accessibility_label" = "Hlásí jen se spárovanými Apple Watch";
+"settings_sensors.sensors.requires_apple_watch.badge" = "Vyžaduje Apple Watch";
 "settings_sensors.sensors.search_prompt" = "Vyhledání senzorů";
 "settings_sensors.sensors.unavailable_on_device.header" = "Nedostupné na tomto zařízení";
 "settings_sensors.sensors.unavailable_on_device.state" = "Nedostupné";

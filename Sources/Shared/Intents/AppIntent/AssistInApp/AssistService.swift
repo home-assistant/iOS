@@ -21,9 +21,15 @@ public protocol AssistServiceDelegate: AnyObject {
     func didReceiveIntentEndContent(_ content: String)
     /// LLMs supports streaming their response so it shows up word by word
     func didReceiveStreamResponseChunk(_ content: String)
+    /// A new assistant message starts streaming, e.g. the answer after a tool call.
+    func didStartStreamResponseMessage()
     func didReceiveGreenLightForAudioInput()
     func didReceiveTtsMediaUrl(_ mediaUrl: URL)
     func didReceiveError(code: String, message: String)
+}
+
+public extension AssistServiceDelegate {
+    func didStartStreamResponseMessage() {}
 }
 
 public enum AssistSource: Equatable {
@@ -300,7 +306,7 @@ public final class AssistService: AssistServiceProtocol {
         case .ttsEnd:
             ttsEnd(mediaUrlPath: data.data?.ttsOutput?.urlPath)
         case .intentProgress:
-            intentProgress(messageChunk: data.data?.chatLogDelta?.content)
+            intentProgress(delta: data.data?.chatLogDelta)
         case .error:
             assistError(data: data, cancellable: cancellable)
         case .wakeWordStart, .wakeWordEnd, .sttStart, .sttVadStart, .sttVadEnd, .intentStart, .ttsStart:
@@ -367,8 +373,11 @@ extension AssistService {
         delegate?.didReceiveTtsMediaUrl(mediaUrl)
     }
 
-    private func intentProgress(messageChunk: String?) {
-        delegate?.didReceiveStreamResponseChunk(messageChunk.orEmpty)
+    private func intentProgress(delta: AssistResponse.AssistData.ChatLogDelta?) {
+        if delta?.role == .assistant {
+            delegate?.didStartStreamResponseMessage()
+        }
+        delegate?.didReceiveStreamResponseChunk((delta?.content).orEmpty)
     }
 
     private func assistError(data: AssistResponse, cancellable: HACancellable) {
