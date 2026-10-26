@@ -21,11 +21,18 @@ public enum DevicePose: String, CaseIterable, Sendable {
     case flatLandscape = "flat_landscape"
     case flatFaceDown = "flat_face_down"
 
-    public init(status: HingeStatus, uiDeviceOrientationRawValue orientation: Int) {
-        switch status {
+    /// The smallest hinge angle, in degrees, that counts as open whatever the system's status says.
+    ///
+    /// UIKit keeps calling the hinge closed well after it has started to open: an iPhone Duo standing
+    /// as a narrow tent reads 30° and closed. A shut device reads next to nothing, so anything past
+    /// this is a device someone has opened.
+    static let minimumOpenAngleDegrees: Double = 10
+
+    public init(state: HingeState, uiDeviceOrientationRawValue orientation: Int) {
+        switch state.status {
         case .unknown:
             self = .unknown
-        case .closed:
+        case .closed where state.angleDegrees < Self.minimumOpenAngleDegrees:
             self = .closed
         case .fullyOpen:
             switch orientation {
@@ -40,7 +47,7 @@ public enum DevicePose: String, CaseIterable, Sendable {
             default:
                 self = .flat
             }
-        case .partiallyOpen:
+        case .closed, .partiallyOpen:
             switch orientation {
             case UIDeviceOrientationRawValue.portrait, UIDeviceOrientationRawValue.portraitUpsideDown:
                 self = .book
