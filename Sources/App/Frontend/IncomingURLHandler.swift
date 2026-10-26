@@ -76,15 +76,25 @@ class IncomingURLHandler {
                     handler: { self.sendLocationURLHandler() }
                 )
             case .camera:
-                guard let entityId = serviceData["entityId"],
-                      let destination = AppConstants.openEntityDestinationURL(
-                          entityId: entityId,
-                          serverId: serviceData["serverId"] ?? ""
-                      ) else {
+                guard let entityId = serviceData["entityId"] else {
                     Current.Log.error("No entity found for open camera URL: \(url)")
                     return false
                 }
-                return handle(url: destination)
+                let serverId = serviceData["serverId"]
+                // Links made before the native player was reinstated can name any entity; anything that
+                // isn't a camera still opens its more-info dialog.
+                guard Domain(entityId: entityId) == .camera else {
+                    guard let destination = AppConstants.openEntityDestinationURL(
+                        entityId: entityId,
+                        serverId: serverId ?? ""
+                    ) else { return false }
+                    return handle(url: destination)
+                }
+                presentOverFrontend { webViewController in
+                    let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
+                        ?? webViewController.server
+                    CameraOverlayPresenter.shared.show(entityId: entityId, server: server, on: webViewController)
+                }
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
@@ -257,7 +267,7 @@ class IncomingURLHandler {
     /// identifier is the indexed entity's id, which is what the local database keys its rows by.
     private func handleSpotlightEntity(identifier: String) -> Bool {
         guard let entity = HAAppEntity.entity(uniqueId: identifier),
-              let url = AppConstants.openEntityDestinationURL(
+              let url = AppConstants.openEntityOrCameraDestinationURL(
                   entityId: entity.entityId,
                   serverId: entity.serverId
               ) else {

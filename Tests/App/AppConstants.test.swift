@@ -87,6 +87,24 @@ struct AppConstantsTests {
         }
     }
 
+    @Test func testOpenEntityOrCameraDestinationURLOpensTheCameraPlayerForCameras() async throws {
+        let result = try #require(
+            AppConstants.openEntityOrCameraDestinationURL(entityId: "camera.porch", serverId: "server123")
+        )
+        let queryItems = URLComponents(url: result, resolvingAgainstBaseURL: false)?.queryItems ?? []
+
+        #expect(result.host == AppConstants.cameraDeeplinkHost)
+        #expect(queryItems.first(where: { $0.name == "entityId" })?.value == "camera.porch")
+        #expect(queryItems.first(where: { $0.name == "serverId" })?.value == "server123")
+    }
+
+    @Test func testOpenEntityOrCameraDestinationURLOpensMoreInfoForEverythingElse() async throws {
+        for entityId in ["light.living_room", "sensor.camera_battery"] {
+            let result = AppConstants.openEntityOrCameraDestinationURL(entityId: entityId, serverId: "server123")
+            #expect(result == AppConstants.openEntityDestinationURL(entityId: entityId, serverId: "server123"))
+        }
+    }
+
     @Test func testOpenEntityMoreInfoDeeplinkURL() async throws {
         let entityId = "light.living_room"
         let result = AppConstants.openEntityMoreInfoDeeplinkURL(entityId: entityId)?.absoluteString

@@ -33,6 +33,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         server: Server,
         cameraEntityId: String,
         cameraName: String? = nil,
+        supportsTalkback: Bool = false,
         controlsVisible: Binding<Bool>,
         showLoader: Binding<Bool>,
         onWebRTCUnsupported: (() -> Void)? = nil
@@ -46,7 +47,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(
             server: server,
             cameraEntityId: cameraEntityId,
-            supportsTalkback: true
+            supportsTalkback: supportsTalkback
         ))
     }
 
@@ -55,7 +56,8 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
             WebRTCVideoPlayerControlsView(
                 controlsVisible: controlsVisible,
                 isTalkbackSupported: viewModel.isTalkbackSupported,
-                isTalking: viewModel.isTalking,
+                talkbackState: viewModel.talkbackState,
+                talkbackError: viewModel.talkbackError,
                 isMuted: viewModel.isMuted,
                 onToggleTalkback: viewModel.toggleTalkback,
                 onToggleMute: viewModel.toggleMute
@@ -111,7 +113,12 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
                 switch phase {
                 case .active:
                     viewModel.handleAppForegrounded()
-                case .background, .inactive:
+                case .background:
+                    // Only a real trip to the background hangs up the microphone: the permission
+                    // alert it raises on first use makes the scene `.inactive` too.
+                    viewModel.stopTalkback()
+                    viewModel.handleAppBackgrounded()
+                case .inactive:
                     viewModel.handleAppBackgrounded()
                 @unknown default:
                     break
@@ -252,14 +259,13 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
 
 #if DEBUG
 #Preview {
-    NavigationStack {
-        WebRTCVideoPlayerView(
-            server: ServerFixture.standard,
-            cameraEntityId: "camera.front_door",
-            cameraName: "Front Door",
-            controlsVisible: .constant(true),
-            showLoader: .constant(false)
-        )
-    }
+    WebRTCVideoPlayerView(
+        server: ServerFixture.standard,
+        cameraEntityId: "camera.front_door",
+        cameraName: "Front Door",
+        supportsTalkback: true,
+        controlsVisible: .constant(true),
+        showLoader: .constant(false)
+    )
 }
 #endif
