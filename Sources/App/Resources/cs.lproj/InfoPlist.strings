@@ -5,7 +5,7 @@
 "NSHealthShareUsageDescription" = "Čte vybrané metriky zaplikace Zdraví, aby je bylo možné sdílet s Home Assistantem jako senzory.";
 "NSHealthUpdateUsageDescription" = "Home Assistant neukládá žádná data do aplikace Zdraví.";
 "NSLocalNetworkUsageDescription" = "Hledá a komunikuje s Vaší instancí Home Assistanta.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n🔵 Také potřebujeme povolení k přístupu k poloze \"Trvale\", aby aplikace mohla provádět operace na pozadí.\n\n⚠️ Bez něj se aplikace nedokáže rozhodnout, které připojení (lokální nebo vzdálené) použije na pozadí, a bude vždy používat vzdálené.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Povolte přístup k poloze \"Vždy\", aby aplikace mohla aktualizovat vaši polohu v Home Assistantu a na pozadí volit mezi místním a vzdáleným připojením.";
 "NSLocationAlwaysUsageDescription" = "Vždy potřebujeme přístup k Vaší poloze pro funkce, jako jsou iBeacons, geofence, aktualizace polohy na pozadí a přesné hlášení.";
 "NSLocationUsageDescription" = "Když je tato volba povolena, poloha Vašeho zařízení se odesílá na server Home Assistanta jako sledovač zařízení.";
 "NSLocationWhenInUseUsageDescription" = "Tato aplikace potřebuje přístup k poloze, aby se mohla přímo připojit k vaší instalaci Home Assistanta.\n\n1️⃣ Vaše poloha bude použita jen k ověření, zda jste připojeni k místní síti.\n\n2️⃣ Nebude s nikým sdílena.\n\n3️⃣ Pokud není povoleno, aplikace se bude vždy připojovat přes internet. Pokud není nenastaveno, ochrání vaše data a připojení odmítne.";

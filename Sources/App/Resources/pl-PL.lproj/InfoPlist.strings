@@ -5,7 +5,7 @@
 "NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
 "NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Zlokalizuj i komunikuj się z Twoją instancją Home Assistant'a.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Zalecamy wybranie opcji „Zawsze”, aby uzyskać najlepszą jakość lokalizacji. Wybranie opcji „Gdy używam aplikacji” spowoduje wyłączenie iBeacons, geofence, aktualizacji lokalizacji w tle i dokładnego raportowania.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Zezwól na dostęp do lokalizacji \"Zawsze\", aby aplikacja mogła aktualizować Twoją lokalizację w Home Assistant i wybierać w tle między połączeniem lokalnym a zdalnym.";
 "NSLocationAlwaysUsageDescription" = "Zawsze potrzebujemy dostępu do Twojej lokalizacji, aby korzystać z takich funkcji jak iBeacons, geofence, aktualizacje lokalizacji w tle i dokładne raportowanie lokalizacji.";
 "NSLocationUsageDescription" = "Po włączeniu tej funkcji lokalizacja Twojego urządzenia zostanie wysłana na serwer Home Assistant w celu śledzenia urządzenia.";
 "NSLocationWhenInUseUsageDescription" = "Zezwolenie na dostęp do lokalizacji tylko, gdy aplikacja jest włączona, spowoduje wyłączenie iBeacons, geofences, aktualizacje lokalizacji w tle i dokładne raportowania lokalizacji.";
