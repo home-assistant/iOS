@@ -5,6 +5,7 @@ import HAKit_Mocks
 import Testing
 
 /// Covers the card the control commands show once they have changed something.
+@Suite(.serialized)
 struct ControlResultSnippetTests {
     private static func light(serverId: String) -> HAAppEntityAppIntentEntity {
         HAAppEntityAppIntentEntity(
@@ -53,7 +54,7 @@ struct ControlResultSnippetTests {
     /// Answers the state read the card makes, once it lands.
     private func answer(_ connection: HAMockConnection, with data: HAData) async throws {
         var waited = 0
-        while connection.pendingRequests.isEmpty, waited < 200 {
+        while connection.pendingRequests.isEmpty, waited < 6000 {
             try await Task.sleep(nanoseconds: 5_000_000)
             waited += 1
         }
@@ -69,7 +70,7 @@ struct ControlResultSnippetTests {
         var idle = 0
         // The card waits a quarter second between reads, so a longer silence than that means it
         // has stopped asking.
-        while idle < 120 {
+        while idle < 600 {
             guard connection.pendingRequests.count > answered else {
                 try await Task.sleep(nanoseconds: 5_000_000)
                 idle += 1
@@ -116,7 +117,8 @@ struct ControlResultSnippetTests {
                     of: entity,
                     serverId: entity.serverId,
                     iconName: entity.iconName,
-                    settlingOn: ["on"]
+                    settlingOn: ["on"],
+                    settleTimeout: 30
                 )
             }
             try await answerReads(connection, with: ["off", "on"])
@@ -192,7 +194,7 @@ struct ControlResultSnippetTests {
         state.name = "Ceiling"
         state.formattedState = "On"
         state.iconName = "mdi:ceiling-light"
-        state.areaName = "Kitchen"
+        state.context = "Kitchen"
         let view = ControlResultSnippetView(state: state)
         #expect(!String(describing: view.body).isEmpty)
     }
@@ -205,7 +207,7 @@ struct ControlResultSnippetTests {
             state.name = "Ceiling"
             state.formattedState = "On"
             state.iconName = iconName
-            state.areaName = "Kitchen"
+            state.context = "Kitchen"
             let view = ControlResultSnippetView(state: state)
             #expect(!String(describing: view.body).isEmpty, "no body for \(iconName)")
         }

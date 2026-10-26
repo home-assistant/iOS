@@ -13,6 +13,7 @@ public enum ComponentCategory: String, CaseIterable, Identifiable {
     case indicators
     case feedback
     case dataDisplay
+    case moreInfo
 
     public var id: String { rawValue }
 
@@ -25,6 +26,7 @@ public enum ComponentCategory: String, CaseIterable, Identifiable {
         case .indicators: "Indicators"
         case .feedback: "Feedback"
         case .dataDisplay: "Data display"
+        case .moreInfo: "More info dialogs"
         }
     }
 }

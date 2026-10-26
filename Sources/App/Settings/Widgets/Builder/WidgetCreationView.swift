@@ -45,6 +45,15 @@ struct WidgetCreationView: View {
         }
         .navigationTitle(L10n.Settings.Widgets.Create.title)
         .toolbar {
+            #if targetEnvironment(macCatalyst)
+            if needsNavigationStack {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButton {
+                        dismiss()
+                    }
+                }
+            }
+            #endif
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     viewModel.save()

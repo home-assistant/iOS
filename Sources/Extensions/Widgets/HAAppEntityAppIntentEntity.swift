@@ -15,7 +15,12 @@ import WidgetKit
 /// for it. This one stays wide, because search has nothing to filter by.
 @available(macOS 13.0, watchOS 9.4, *)
 struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
-    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Entity")
+    /// App Intents resolves the type name again for every entity it indexes, so it stays off the
+    /// strings table like the title (see `LocalizedStringResource.verbatim`). The metadata extractor
+    /// only accepts a literal here, so the table is spelled out. Translating the name one day belongs
+    /// in a small table of its own, not in `Localizable.strings`, or every index pass parses that whole
+    /// file once per entity.
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init("Entity", table: "Verbatim"))
 
     static let defaultQuery = HAAppEntityAppIntentEntityQuery()
 
@@ -29,6 +34,8 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     var areaName: String?
     @Property(title: .init("app_intents.entity.property.device", defaultValue: "Device"))
     var deviceName: String?
+    var parentDeviceName: String?
+    var contextReach: EntityContextReach = .device
     @Property(title: .init("app_intents.entity.property.floor", defaultValue: "Floor"))
     var floorName: String?
     @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
@@ -56,8 +63,8 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     /// results still carry the real glyph, where it is rendered once per index pass.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: "\(displayString)",
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
+            title: .verbatim(displayString),
+            subtitle: subtitle.map { .verbatim($0) },
             image: .init(systemName: domain?.sfSymbolName ?? Self.fallbackSymbolName)
         )
     }
@@ -75,7 +82,9 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
             serverName: serverName,
             floorName: floorName,
             areaName: areaName,
+            parentDeviceName: parentDeviceName,
             deviceName: deviceName,
+            contextReach: contextReach,
             entityName: displayString,
             entityId: entityId,
             domain: domain
@@ -89,6 +98,8 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         serverName: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        parentDeviceName: String? = nil,
+        contextReach: EntityContextReach = .device,
         floorName: String? = nil,
         displayString: String,
         iconName: String,
@@ -102,6 +113,8 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
         self.serverName = serverName
         self.areaName = areaName
         self.deviceName = deviceName
+        self.parentDeviceName = parentDeviceName
+        self.contextReach = contextReach
         self.floorName = floorName
         self.displayString = displayString
     }
@@ -135,7 +148,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: []).getEntitiesExposedToSiri(matching: string)
 
         for (server, values) in entities {
-            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let deviceContexts = values.deviceContexts(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
             let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
 
@@ -146,7 +159,9 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
                     serverId: entity.serverId,
                     serverName: server.info.name,
                     areaName: areasMap[entity.entityId]?.name ?? "",
-                    deviceName: deviceMap[entity.entityId]?.name ?? "",
+                    deviceName: deviceContexts[entity.entityId]?.deviceName ?? "",
+                    parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                    contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                     floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue

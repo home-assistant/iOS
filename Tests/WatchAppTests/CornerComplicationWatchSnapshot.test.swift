@@ -33,13 +33,20 @@ struct CornerComplicationWatchSnapshotTests {
             ("icon-name-value-gauge", .sample()),
             ("custom-icon-color", customIconColor(.sample(showValue: false, title: nil, fraction: nil))),
             ("value-name-gauge", .sample(icon: false)),
+            ("value-name-progress", .sample(icon: false, gaugeDisplay: .progress)),
             ("value-name-no-gauge", .sample(icon: false, fraction: nil)),
             ("value-only", .sample(icon: false, title: nil, fraction: nil)),
             ("name-only-gauge", .sample(icon: false, showValue: false)),
             ("icon-gauge", .sample(showValue: false, title: nil)),
             ("icon-only", .sample(showValue: false, title: nil, fraction: nil)),
+            // Progress mode moves whatever the corner isn't showing onto the bar's line, as the watch does.
+            ("icon-name-progress", .sample(showValue: false, gaugeDisplay: .progress)),
+            ("icon-progress", .sample(showValue: false, title: nil, gaugeDisplay: .progress)),
+            ("name-only-progress", .sample(icon: false, showValue: false, gaugeDisplay: .progress)),
             ("zero-fraction", .sample(value: "0%", fraction: 0)),
+            ("zero-fraction-progress", .sample(value: "0%", fraction: 0, gaugeDisplay: .progress)),
             ("full-fraction", .sample(value: "100%", fraction: 1)),
+            ("full-fraction-progress", .sample(value: "100%", fraction: 1, gaugeDisplay: .progress)),
             ("custom-text-color", .sample(textColor: .yellow)),
             // The rain-sparkline recipe: an icon plus a block-element bar graph, which only reads as a
             // graph while its cells stay flat, abutting and all on screen.

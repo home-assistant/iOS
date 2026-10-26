@@ -56,7 +56,11 @@ struct WatchConfigItemEditView: View {
         _iconName = State(initialValue: item.customization?.icon)
         // Same default as iOS: `Customization.requiresConfirmation` defaults to false.
         _requiresConfirmation = State(initialValue: item.customization?.requiresConfirmation ?? false)
-        _iconColorHex = State(initialValue: item.customization?.iconColor)
+        // A folder's color is always its own; for anything else a color the app seeded itself is no
+        // choice at all, so the picker starts on "Default" for it.
+        _iconColorHex = State(
+            initialValue: item.type == .folder ? item.customization?.iconColor : item.customization?.customIconColor
+        )
         _backgroundColorHex = State(initialValue: item.customization?.backgroundColor)
         _textColorHex = State(initialValue: item.customization?.textColor)
         _useCustomColors = State(
@@ -197,7 +201,11 @@ struct WatchConfigItemEditView: View {
         customization.icon = iconName
         customization.iconIsCustomized = iconName != nil
         customization.requiresConfirmation = requiresConfirmation
-        customization.iconColor = iconColorHex
+        if let iconColorHex {
+            customization.useCustomIconColor(iconColorHex)
+        } else {
+            customization.useDefaultIconColor()
+        }
         if useCustomColors {
             customization.backgroundColor = backgroundColorHex
             customization.textColor = textColorHex

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import PromiseKit
 import Shared
@@ -15,6 +16,9 @@ class SensorListViewModel: ObservableObject {
     /// doesn't leave it offering a server that is gone or hiding one that has just arrived.
     @Published private(set) var servers: [Server] = []
     @Published var lastUpdateDate: Date?
+    /// Followed from `Current.hinge` rather than read once: the hinge is reported a moment after
+    /// launch, so an early look at this screen sees a device that has not said it folds yet.
+    @Published private(set) var deviceHasHinge: Bool
     @Published var periodicUpdateInterval: TimeInterval? = Current.settingsStore.periodicUpdateInterval
     @Published var searchTerm: String = ""
     @Published var alertMessage: String?
@@ -57,11 +61,29 @@ class SensorListViewModel: ObservableObject {
         #endif
     }
 
-    /// The sensors matching the current search term, or all of them when not searching.
+    /// The sensors that can be switched on here: every one but those needing hardware this device
+    /// does not have.
+    var availableSensors: [WebhookSensor] {
+        sensors.filter {
+            SensorDeviceAvailability.isAvailable(sensorUniqueID: $0.UniqueID, deviceHasHinge: deviceHasHinge)
+        }
+    }
+
+    /// The sensors this device can never report, listed at the bottom with nothing to switch on.
+    /// None until the list has loaded, so their section never sits alone under an empty one.
+    var unavailableSensors: [WebhookSensor] {
+        guard !sensors.isEmpty else { return [] }
+        return Self.sortedAlphabetically(SensorDeviceAvailability.unavailableSensors(deviceHasHinge: deviceHasHinge))
+    }
+
+    /// The available sensors matching the current search term, or all of them when not searching.
     var filteredSensors: [WebhookSensor] {
-        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !term.isEmpty else { return sensors }
-        return sensors.filter { $0.Name?.localizedStandardContains(term) ?? false }
+        matchingSearchTerm(availableSensors)
+    }
+
+    /// The unavailable sensors matching the current search term, or all of them when not searching.
+    var filteredUnavailableSensors: [WebhookSensor] {
+        matchingSearchTerm(unavailableSensors)
     }
 
     /// The servers the root screen lists, each leading to its own copy of this screen. Empty while
@@ -79,7 +101,7 @@ class SensorListViewModel: ObservableObject {
     }
 
     var allSensorsEnabled: Bool {
-        !sensors.isEmpty && sensors.allSatisfy { isEnabled($0) }
+        !availableSensors.isEmpty && availableSensors.allSatisfy { isEnabled($0) }
     }
 
     /// The root screen. It edits the only server directly when there is one, and lists the servers
@@ -93,6 +115,14 @@ class SensorListViewModel: ObservableObject {
         self.server = server
         self.enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
         self.servers = Current.servers.all
+        self.deviceHasHinge = Current.hinge.hasHinge
+        // Only a change is passed on: the publisher opens with the value read just above, and
+        // assigning it again would republish a screen that has nothing new to show.
+        Current.hinge.$hasHinge
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$deviceHasHinge)
         Current.sensors.register(observer: self)
         Current.servers.add(observer: self)
     }
@@ -135,9 +165,11 @@ class SensorListViewModel: ObservableObject {
         requestPermissionsIfNeeded(isEnabled: isEnabled, uniqueIDs: [uniqueID])
     }
 
+    /// Switches on or off every sensor that can be switched on here. Those this device can never
+    /// report are left as they are, since nothing on this screen could switch them back.
     func updateAllSensors(isEnabled: Bool) {
         guard let server else { return }
-        let uniqueIDs = sensors.compactMap(\.UniqueID)
+        let uniqueIDs = availableSensors.compactMap(\.UniqueID)
         Current.sensors.setEnabled(isEnabled, forUniqueIDs: uniqueIDs, on: server)
         enabledUniqueIDs = Self.currentlyEnabledUniqueIDs(for: server)
         requestPermissionsIfNeeded(isEnabled: isEnabled, uniqueIDs: uniqueIDs)
@@ -146,6 +178,12 @@ class SensorListViewModel: ObservableObject {
     private func requestPermissionsIfNeeded(isEnabled: Bool, uniqueIDs: [String]) {
         guard isEnabled, !uniqueIDs.isEmpty else { return }
         Current.requestSensorPermissions(uniqueIDs)
+    }
+
+    private func matchingSearchTerm(_ sensors: [WebhookSensor]) -> [WebhookSensor] {
+        let term = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !term.isEmpty else { return sensors }
+        return sensors.filter { $0.Name?.localizedStandardContains(term) ?? false }
     }
 
     private static func currentlyEnabledUniqueIDs(for server: Server?) -> Set<String> {

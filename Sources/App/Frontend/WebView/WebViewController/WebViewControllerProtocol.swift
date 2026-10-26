@@ -28,6 +28,8 @@ protocol WebViewControllerProtocol: AnyObject {
     func makeWebViewFirstResponder()
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
+    /// Brings the frontend up to date once something presented over it, such as Assist, goes away.
+    func handleOverlayDismissed()
     func updateFrontendConnectionState(state: String)
     func handleFrontendRestoredFromPageCache()
     func handleExternalAuthFailure(error: Error)
@@ -38,7 +40,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func refresh()
     func refreshIfDisconnected()
     func load(request: URLRequest)
-    func showSettingsViewController(pushOntoNavigationStack: Bool)
+    func showSettingsViewController()
     func openDebug()
     func goBack()
     func goForward()
@@ -54,9 +56,5 @@ protocol WebViewControllerProtocol: AnyObject {
 extension WebViewControllerProtocol {
     func styleUI(publishesThemedStatusBar: Bool) {
         styleUI()
-    }
-
-    func showSettingsViewController() {
-        showSettingsViewController(pushOntoNavigationStack: false)
     }
 }

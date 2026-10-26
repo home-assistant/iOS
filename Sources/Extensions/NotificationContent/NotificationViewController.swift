@@ -90,7 +90,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     func didReceive(_ notification: UNNotification) {
         let catID = notification.request.content.categoryIdentifier.lowercased()
-        Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
+        Current.Log.verbose(
+            "Received a notif with userInfo \(LogRedaction.redactValues(in: notification.request.content.userInfo))"
+        )
 
         guard let server = Current.servers.server(for: notification.request.content) else {
             Current.Log.info("ignoring push when unable to find server")
@@ -107,6 +109,10 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             extensionContext?.notificationActions = notification.request.content.userInfoActions
         }
 
+        load(notification, api: api)
+    }
+
+    private func load(_ notification: UNNotification, api: HomeAssistantAPI) {
         activeViewController = NotificationLoadingViewController()
 
         var indicator: UIActivityIndicatorView?
@@ -144,7 +150,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             indicator?.removeFromSuperview()
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")
-            self?.activeViewController = NotificationErrorViewController(error: error)
+            self?.activeViewController = NotificationErrorViewController(error: error, onRetry: { [weak self] in
+                self?.load(notification, api: api)
+            })
         }
     }
 

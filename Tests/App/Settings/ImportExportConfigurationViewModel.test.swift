@@ -27,7 +27,8 @@ struct ImportExportConfigurationViewModelTests {
             await viewModel.export()
 
             let shareWrapper = try #require(viewModel.shareWrapper)
-            #expect(shareWrapper.url.pathExtension == "json")
+            let exportedURL = try #require(shareWrapper.items.first as? URL)
+            #expect(exportedURL.pathExtension == "json")
             #expect(viewModel.isExporting == false)
             #expect(viewModel.errorMessage == nil)
         }

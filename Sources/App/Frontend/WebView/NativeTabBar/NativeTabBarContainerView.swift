@@ -17,6 +17,12 @@ struct NativeTabBarContainerView: View {
     let frontendIgnoredSafeAreaEdges: Edge.Set
     let onNeedsWebViewController: () -> Void
 
+    /// The bar hides behind the frontend's more-info dialog: the dialog covers the page the bar would switch
+    /// away from, and the frontend reports when it closes or navigates.
+    private var tabBarVisibility: Visibility {
+        viewModel.isTabBarHidden ? .hidden : .automatic
+    }
+
     var body: some View {
         TabView(selection: Binding(
             get: { viewModel.selection },
@@ -24,19 +30,22 @@ struct NativeTabBarContainerView: View {
         )) {
             ForEach(viewModel.regularTabItems) { item in
                 Tab(value: item.tab) {
-                    if item.sidebarItem != nil {
-                        NativeTabBarFrontendTabView(
-                            viewModel: viewModel,
-                            item: item,
-                            webViewController: webViewController,
-                            frontendOpacity: frontendOpacity,
-                            frontendIgnoredSafeAreaEdges: frontendIgnoredSafeAreaEdges,
-                            showsBarItems: hasVerticalBar,
-                            onNeedsWebViewController: onNeedsWebViewController
-                        )
-                    } else {
-                        Color.clear
+                    Group {
+                        if item.sidebarItem != nil {
+                            NativeTabBarFrontendTabView(
+                                viewModel: viewModel,
+                                item: item,
+                                webViewController: webViewController,
+                                frontendOpacity: frontendOpacity,
+                                frontendIgnoredSafeAreaEdges: frontendIgnoredSafeAreaEdges,
+                                showsBarItems: hasVerticalBar,
+                                onNeedsWebViewController: onNeedsWebViewController
+                            )
+                        } else {
+                            Color.clear
+                        }
                     }
+                    .toolbarVisibility(tabBarVisibility, for: .tabBar)
                 } label: {
                     Label {
                         Text(item.title)
@@ -66,6 +75,7 @@ struct NativeTabBarContainerView: View {
                     }
                 }
                 .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.moreShowsFrontend)
+                .toolbarVisibility(tabBarVisibility, for: .tabBar)
             } label: {
                 Label(L10n.TabBar.More.title, systemSymbol: .ellipsis)
             }
@@ -93,6 +103,7 @@ struct NativeTabBarContainerView: View {
         }
         .tabViewSearchActivation(.searchTabSelection)
         .tabBarMinimizeBehavior(.onScrollDown)
+        .animation(DesignSystem.Animation.easeInOutFaster, value: viewModel.isTabBarHidden)
         .tint(viewModel.accentColor)
         .background(NativeTabBarLongPressInstaller {
             viewModel.showCustomize(zoomingFromButton: false)

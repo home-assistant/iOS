@@ -58,7 +58,7 @@ struct ManageStorageView: View {
                         .monospacedDigit()
                 }
             } footer: {
-                Text(L10n.Settings.Debugging.ManageStorage.Summary.footer)
+                Text(L10n.Settings.Debugging.ManageStorage.Summary.protectedFooter)
             }
 
             if viewModel.sections.isEmpty {
@@ -216,7 +216,6 @@ struct ManageStorageView: View {
         ManageStorageView(viewModel: ManageStorageViewModel(
             paths: .rooted(at: URL(fileURLWithPath: NSTemporaryDirectory())),
             isCatalyst: false,
-            hasCompletedLegacyStoreMigration: true,
             measurer: ManageStorageSampleMeasurer(),
             cleaner: ManageStorageSampleCleaner()
         ))

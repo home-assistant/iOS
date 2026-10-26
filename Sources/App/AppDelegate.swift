@@ -70,6 +70,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         MaterialDesignIcons.register()
+        // Before anything reads the Focus sensors, which the launch below already does.
+        FocusNameFocusFilterAppIntent.registerCurrentValuesReader()
 
         guard !Current.isRunningTests else {
             return true
@@ -456,8 +458,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupModels() {
-        // Import any legacy Realm data into GRDB before anything reads it
-        RealmToGRDBMigration.migrateIfNeeded()
         NotificationCategory.setupObserver()
         // Start the server-state subscriptions that keep GRDB models in sync
         // (zones via the states cache); without this, appZone is never populated

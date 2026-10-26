@@ -5,7 +5,7 @@
 "NSHealthShareUsageDescription" = "Læs valgte data fra Apple Sundhed, så de kan deles med Home Assistant som sensorer.";
 "NSHealthUpdateUsageDescription" = "Home Assistant skriver ikke nogen data til Apple Sundhed.";
 "NSLocalNetworkUsageDescription" = "Finde og kommunikere med din Home Assistant-installation.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Vi skal også bruge tilladelse til at få adgang til lokalitet 'Altid', så appen kan udføre baggrundshandlinger. \n\n ⚠️ Uden den kan appen ikke vide, hvilken forbindelse (lokal eller fjern) der skal bruges i baggrunden, og vil altid bruge fjernadgang.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Tillad adgang til placering \"Altid\", så appen kan opdatere din placering i Home Assistant og vælge mellem din lokale og eksterne forbindelse i baggrunden.";
 "NSLocationAlwaysUsageDescription" = "Vi har altid brug for adgang til din lokalitet for funktioner som iBeacons, geofences, baggrundsopdatering af lokalitet og nøjagtig rapportering.";
 "NSLocationUsageDescription" = "Når denne indstilling er aktiveret, sendes din enheds lokalitet til din Home Assistant som en sporingsenhed.";
 "NSLocationWhenInUseUsageDescription" = "Denne app skal have adgang til din lokalitet for at kunne oprette direkte forbindelse til din Home Assistant-installation. \n \n 1️⃣ Din lokalitet vil kun blive brugt til at kontrollere, om du har forbindelse til dit lokale netværk. \n \n 2️⃣ Det vil ikke blive delt med nogen. \n \n 3️⃣ Hvis du ikke tillader dette, vil appen altid oprette forbindelse over internettet i stedet. Hvis den ikke er konfigureret, vil den beskytte dine data og afvise forbindelsen.";

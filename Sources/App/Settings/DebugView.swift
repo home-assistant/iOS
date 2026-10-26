@@ -1,3 +1,4 @@
+import CoreLocation
 import PromiseKit
 import SFSafeSymbols
 import Shared
@@ -10,7 +11,7 @@ struct DebugView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
-    @State private var showShareSheet = false
+    @State private var logsShare: ShareWrapper?
     @State private var logsURL: URL?
     @State private var tapsOnCasitaLogo = 0
     @State private var showDeleteKeychainAlert = false
@@ -156,19 +157,12 @@ struct DebugView: View {
                 }
             }
         }
-        .sheet(isPresented: .init(get: { showShareSheet && logsURL != nil }, set: { showShareSheet = $0 })) {
-            if let logsURL {
-                ActivityViewController(shareWrapper: .init(url: logsURL))
-                    .onAppear {
-                        loadingLogs = false
-                    }
-                    .onDisappear {
-                        do {
-                            try FileManager.default.removeItem(at: logsURL)
-                        } catch {
-                            Current.Log.error("Error deleting logs file: \(error)")
-                        }
-                    }
+        .shareSheet(item: $logsShare) {
+            guard let logsURL else { return }
+            do {
+                try FileManager.default.removeItem(at: logsURL)
+            } catch {
+                Current.Log.error("Error deleting logs file: \(error)")
             }
         }
         .modifier(deleteKeychainAlert)
@@ -208,8 +202,8 @@ struct DebugView: View {
         if Current.isCatalyst {
             URLOpener.shared.open(url, options: [:], completionHandler: nil)
         } else {
-            loadingLogs = true
-            showShareSheet = true
+            loadingLogs = false
+            logsShare = ShareWrapper(url: url)
         }
     }
 
@@ -348,7 +342,31 @@ struct DebugView: View {
         }
     }
 
-    private var developerSection: some View {
+    static var notifyOnLocalPushStateChangesBinding: Binding<Bool> {
+        .init(
+            get: { Current.settingsStore.notifyOnLocalPushStateChanges },
+            set: { Current.settingsStore.notifyOnLocalPushStateChanges = $0 }
+        )
+    }
+
+    static let regionEnterMaximumFuzzDistanceOptions: [CLLocationDistance] = [50, 100, 250, 500, 1000, 2000]
+
+    static var regionEnterMaximumFuzzDistanceBinding: Binding<CLLocationDistance> {
+        .init(
+            get: { Current.settingsStore.regionEnterMaximumFuzzDistance },
+            set: { Current.settingsStore.regionEnterMaximumFuzzDistance = $0 }
+        )
+    }
+
+    static func regionEnterMaximumFuzzDistanceRow(_ metres: CLLocationDistance) -> some View {
+        Text(verbatim: "\(Int(metres))m").tag(metres)
+    }
+
+    static func regionEnterMaximumFuzzDistanceRows() -> some View {
+        ForEach(regionEnterMaximumFuzzDistanceOptions, id: \.self, content: regionEnterMaximumFuzzDistanceRow)
+    }
+
+    var developerSection: some View {
         Section {
             NavigationLink {
                 ComponentsLibraryView()
@@ -499,6 +517,16 @@ struct DebugView: View {
             })) {
                 Text(L10n.Settings.Debugging.ReceiveDebugNotifications.title)
             }
+
+            Toggle(isOn: Self.notifyOnLocalPushStateChangesBinding) {
+                Text(L10n.Settings.Debugging.NotifyLocalPushStateChanges.title)
+            }
+
+            Picker(
+                L10n.Settings.Debugging.RegionEnterMaximumFuzzDistance.title,
+                selection: Self.regionEnterMaximumFuzzDistanceBinding,
+                content: Self.regionEnterMaximumFuzzDistanceRows
+            ).pickerStyle(.menu)
 
             if !Current.isCatalyst, horizontalSizeClass == .compact {
                 Toggle(isOn: .init(get: {
@@ -676,7 +704,6 @@ struct DebugView: View {
 
     private func dismissSettingsAfterReset() {
         appSettingsPresenter?.isSheetPresented = false
-        appSettingsPresenter?.isPushPresented = false
         dismiss()
     }
 

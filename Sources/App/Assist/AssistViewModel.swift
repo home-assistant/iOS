@@ -40,10 +40,17 @@ final class AssistViewModel: NSObject, ObservableObject {
     private(set) var autoStartRecording: Bool
 
     private(set) var canSendAudioData = false
+    /// Whether `pipelines` came from the server this session rather than only from the cache, which
+    /// can predate an engine added to a pipeline since.
+    private var hasFreshPipelines = false
     private var configObservationCancellable: AnyDatabaseCancellable?
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
     private var voiceInitiatedRequest = false
+    /// The next streamed text opens a new assistant message, so it goes after a paragraph break.
+    private var streamedMessageStartPending = false
+    /// The text of the assistant message streaming now, to tell whether the final response is new.
+    private var latestStreamedMessage = ""
     /// How far back through the sent requests the user has walked, newest first; nil while they are
     /// still on their own draft.
     private var requestHistoryOffset: Int?
@@ -83,6 +90,8 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @MainActor func initialRoutine() {
         AssistSession.shared.delegate = self
+        // Each session refetches the pipelines, possibly for another server; until then they are only cached.
+        hasFreshPipelines = false
 
         loadCachedPipelines()
 
@@ -111,11 +120,16 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioPlayer.pause()
         stopStreaming()
         voiceInitiatedRequest = expectingTTS
-        let requestServerTTS = expectingTTS && !configuration.muteTTS && !configuration.enableOnDeviceTTS
+        // Already text, wherever it was transcribed: only the reply side of the run is left to decide.
+        let stages = AssistRunStages(
+            pipeline: selectedPipeline,
+            listening: nil,
+            speaking: expectingTTS ? speakingEngine : nil
+        )
         assistService.assist(source: .text(
             input: inputText,
             pipelineId: preferredPipelineId,
-            expectTTS: requestServerTTS
+            expectTTS: stages?.endsWithTextToSpeech == true
         ))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
@@ -194,6 +208,15 @@ final class AssistViewModel: NSObject, ObservableObject {
                 return
             }
 
+            // Checked before the microphone goes live: the backend would refuse the run anyway, and
+            // the user would be left talking to nothing.
+            guard voiceRunStages != nil else {
+                Current.Log.error("Assist pipeline \(preferredPipelineId) has no speech-to-text engine")
+                appendToChat(.init(content: L10n.Assist.Error.speechToTextUnsupported, itemType: .error))
+                focusOnInput = true
+                return
+            }
+
             // Remove text from input to make animation look better
             inputText = ""
 
@@ -231,11 +254,40 @@ final class AssistViewModel: NSObject, ObservableObject {
     private func startAssistAudioPipeline(audioSampleRate: Double) {
         assistService.assist(
             source: .audio(
-                pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
+                pipelineId: voicePipelineId,
                 audioSampleRate: audioSampleRate,
-                tts: !configuration.muteTTS && !configuration.enableOnDeviceTTS
+                tts: voiceRunStages?.endsWithTextToSpeech == true
             )
         )
+    }
+
+    /// Voice runs fall back to the first pipeline while "Preferred" has not been resolved.
+    private var voicePipelineId: String? {
+        preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId
+    }
+
+    /// The pipeline runs go to, once its capabilities are known to be current. Until then nil, so
+    /// requests go out as the user's settings ask and `AssistService` checks them against the server.
+    private var selectedPipeline: Pipeline? {
+        guard hasFreshPipelines else { return nil }
+        return pipelines.first { $0.id == voicePipelineId }
+    }
+
+    /// Who transcribes what the user says into the microphone.
+    private var listeningEngine: AssistSpeechEngine {
+        configuration.enableOnDeviceSTT ? .onDevice : .server
+    }
+
+    /// Who speaks the reply to a spoken request, or nil when replies are muted.
+    private var speakingEngine: AssistSpeechEngine? {
+        guard !configuration.muteTTS else { return nil }
+        return configuration.enableOnDeviceTTS ? .onDevice : .server
+    }
+
+    /// The stages a request spoken into the microphone runs, or nil when the selected pipeline
+    /// cannot transcribe it and the user does not transcribe on device either.
+    private var voiceRunStages: AssistRunStages? {
+        AssistRunStages(pipeline: selectedPipeline, listening: listeningEngine, speaking: speakingEngine)
     }
 
     private func replaceAssistService(server: Server) {
@@ -265,11 +317,12 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func fetchPipelines(completion: (() -> Void)? = nil) {
-        assistService.fetchPipelines { [weak self] _ in
+        assistService.fetchPipelines { [weak self] response in
             guard let self else {
                 self?.showError(message: L10n.Assist.Error.pipelinesResponse)
                 return
             }
+            hasFreshPipelines = response != nil
 
             // Fetch pipelines method already saves new values in database
             // loading cache now
@@ -452,6 +505,13 @@ final class AssistViewModel: NSObject, ObservableObject {
 extension AssistViewModel: AudioRecorderDelegate {
     func didFailToRecord(error: any Error) {
         showError(message: error.localizedDescription)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // The recorder has stopped, so no more audio will reach the run. Abandon it rather than
+            // leave the server waiting for the rest.
+            canSendAudioData = false
+            assistService.cancelRun()
+        }
     }
 
     func didOutputSample(data: Data) {
@@ -483,13 +543,35 @@ extension AssistViewModel: AudioRecorderDelegate {
 }
 
 extension AssistViewModel: AssistServiceDelegate {
+    func didStartStreamResponseMessage() {
+        streamedMessageStartPending = true
+        latestStreamedMessage = ""
+    }
+
     func didReceiveStreamResponseChunk(_ content: String) {
-        if let lastItemInList = chatItems.last, lastItemInList.itemType == .output {
-            let newContent = lastItemInList.content + content
-            appendToChat(.init(content: newContent, itemType: .output))
+        var text = streamedOutput
+        if streamedMessageStartPending, !content.isEmpty {
+            text = Self.joinWithParagraphBreak(text, content)
+            streamedMessageStartPending = false
         } else {
-            appendToChat(.init(content: content, itemType: .output))
+            text += content
         }
+        latestStreamedMessage += content
+        appendToChat(.init(content: text, itemType: .output))
+    }
+
+    /// The text streamed so far in this turn, if the last chat item is the streamed output.
+    private var streamedOutput: String {
+        guard let lastItemInList = chatItems.last, lastItemInList.itemType == .output else { return "" }
+        return lastItemInList.content
+    }
+
+    /// Joins two assistant messages with a paragraph break, as the frontend does, counting any line
+    /// breaks the two texts already have at the seam.
+    static func joinWithParagraphBreak(_ previous: String, _ next: String) -> String {
+        guard !previous.isEmpty, !next.isEmpty else { return previous + next }
+        let newlines = previous.reversed().prefix(while: \.isNewline).count + next.prefix(while: \.isNewline).count
+        return previous + String(repeating: "\n", count: max(0, 2 - newlines)) + next
     }
 
     func didReceiveEvent(_ event: AssistEvent) {
@@ -503,7 +585,21 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveIntentEndContent(_ content: String) {
-        appendToChat(.init(content: content, itemType: .output))
+        // The response holds only the final assistant message, so it is merged into the streamed
+        // text instead of replacing it: otherwise the text written before a tool call is lost.
+        let streamed = streamedOutput
+        let text: String
+        if streamed.isEmpty {
+            text = content
+        } else if latestStreamedMessage.trimmingCharacters(in: .whitespacesAndNewlines) ==
+            content.trimmingCharacters(in: .whitespacesAndNewlines) {
+            text = streamed
+        } else {
+            text = Self.joinWithParagraphBreak(streamed, content)
+        }
+        streamedMessageStartPending = false
+        latestStreamedMessage = ""
+        appendToChat(.init(content: text, itemType: .output))
         if configuration.enableOnDeviceTTS, !configuration.muteTTS, voiceInitiatedRequest {
             speakWithOnDeviceTTS(content)
         }

@@ -375,6 +375,21 @@ struct NativeTabBarViewModelTests {
         #expect(sut.selection == .panel(id: "alpha"))
     }
 
+    @Test("The bar hides while the frontend's more-info dialog is up and comes back when it closes")
+    func moreInfoDialogHidesTheBar() async throws {
+        let fixture = makeFixture("moreInfo")
+        let sut = fixture.sut
+        #expect(!sut.isTabBarHidden)
+
+        fixture.overlayState.isMoreInfoDialogOpen = true
+        await Task.yield()
+        #expect(sut.isTabBarHidden)
+
+        fixture.overlayState.isMoreInfoDialogOpen = false
+        await Task.yield()
+        #expect(!sut.isTabBarHidden)
+    }
+
     @Test("The Search tab opens the frontend's quick search and hands the selection back to the frontend")
     func searchTabOpensQuickSearch() async throws {
         let sut = makeFixture("search").sut

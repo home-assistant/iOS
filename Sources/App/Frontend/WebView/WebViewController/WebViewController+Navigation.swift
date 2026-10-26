@@ -64,7 +64,7 @@ extension WebViewController {
         }
     }
 
-    /// Used by the native macOS sidebar
+    /// Used by the native iOS tab bar
     func openSidebarPath(_ path: String) {
         loadViewIfNeeded()
         navigateThroughFrontend(path: path) { [weak self] success in
@@ -84,34 +84,32 @@ extension WebViewController {
             return
         }
         Current.Log.verbose("Requesting navigation using external bus to path: \(path)")
-        webViewExternalMessageHandler.sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.navigate.rawValue,
+        webViewExternalMessageHandler.sendExternalBusCommandWithRetry(
+            command: .navigate,
             payload: [
                 "path": path,
-            ]
-        )).pipe { result in
-            switch result {
-            case .fulfilled:
-                completion(true)
-            case .rejected:
-                completion(false)
-            }
-        }
+            ],
+            completion: completion
+        )
     }
 
     /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`
     func reload() {
+        guard !isRetired else {
+            Current.Log.info("not reloading, retired")
+            return
+        }
         Current.Log.verbose("Reload webView requested")
         markDisconnectedForHardReload()
         webView.reload()
     }
 
-    func showSettingsViewController(pushOntoNavigationStack: Bool) {
+    func showSettingsViewController() {
         getLatestConfig()
         // Settings opens in the window the request came from: with multiple windows on screen, the app-wide
         // coordinator is whichever scene registered last rather than this one.
         Current.sceneManager.appCoordinator(for: view.window?.windowScene).done {
-            $0.showSettings(pushOntoNavigationStack: pushOntoNavigationStack)
+            $0.showSettings()
         }
     }
 

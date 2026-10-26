@@ -38,6 +38,8 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.entityAddToGetActions.rawValue, "entity/add_to/get_actions")
         XCTAssertEqual(WebViewExternalBusMessage.entityAddTo.rawValue, "entity/add_to")
         XCTAssertEqual(WebViewExternalBusMessage.cameraPlayerShow.rawValue, "camera/show")
+        XCTAssertEqual(WebViewExternalBusMessage.webRTCStreamStart.rawValue, "webrtc/stream/start")
+        XCTAssertEqual(WebViewExternalBusMessage.webRTCStreamStop.rawValue, "webrtc/stream/stop")
         XCTAssertEqual(
             WebViewExternalBusMessage.frontendReloadAndClearCache.rawValue,
             "frontend/reload_and_clear_cache"
@@ -48,7 +50,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.moreInfoClosed.rawValue, "more_info/closed")
         XCTAssertEqual(WebViewExternalBusMessage.entityControlled.rawValue, "entity/controlled")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 30)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 32)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -75,8 +77,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.webRTCStreamStopped.rawValue, "webrtc/stream/stopped")
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 10)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 11)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {
@@ -96,6 +99,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "hasAssist",
             "hasAssistSettings",
             "hasCameraPlayer",
+            "webrtc",
             "canSetupImprov",
             "downloadFileSupported",
             "hasEntityAddTo",
@@ -122,5 +126,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             WebViewExternalBusMessage.configResult["canShareMatterDeviceToAppleHome"] as? Bool,
             false
         )
+    }
+
+    @MainActor func testConfigResultGroupsWebRTCCapabilities() throws {
+        let webRTC = try XCTUnwrap(WebViewExternalBusMessage.configResult["webrtc"] as? [String: Any])
+
+        XCTAssertEqual(Set(webRTC.keys), ["hasCameraMicrophoneStream"])
+        XCTAssertEqual(webRTC["hasCameraMicrophoneStream"] as? Bool, !Current.isCatalyst)
     }
 }

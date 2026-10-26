@@ -40,10 +40,15 @@ public final class WatchUserDefaults: WatchSensorSettings {
     /// list is off there and nothing about it is sent to that server.
     private let sensorEnablement: WatchSensorEnablementStore
 
+    /// What each server receives of the watch's location. Opt-in: a server receives nothing until
+    /// the user picks exact or zone-only for it.
+    private let locationPrivacyStore: WatchLocationPrivacyStore
+
     init() {
         let defaults = UserDefaults()
         self.userDefaults = defaults
         self.sensorEnablement = WatchSensorEnablementStore(defaults: defaults, servers: { Current.servers.all })
+        self.locationPrivacyStore = WatchLocationPrivacyStore(defaults: defaults)
     }
 
     public func set(_ value: Any?, key: WatchUserDefaultsKey) {
@@ -187,6 +192,29 @@ public final class WatchUserDefaults: WatchSensorSettings {
     /// dropping those of every server it left out.
     public func applySyncedServersToSensorEnablement(_ serverIDs: [Identifier<Server>]) {
         sensorEnablement.applySyncedServers(serverIDs)
+    }
+
+    // MARK: - Watch location (reported to the watch's own device tracker)
+
+    public func locationPrivacy(forServer serverID: Identifier<Server>) -> ServerLocationPrivacy {
+        locationPrivacyStore.locationPrivacy(forServer: serverID)
+    }
+
+    public func setLocationPrivacy(_ privacy: ServerLocationPrivacy, forServer serverID: Identifier<Server>) {
+        locationPrivacyStore.setLocationPrivacy(privacy, forServer: serverID)
+    }
+
+    public func isLocationClearPending(forServer serverID: Identifier<Server>) -> Bool {
+        locationPrivacyStore.isLocationClearPending(forServer: serverID)
+    }
+
+    public func setLocationClearPending(_ pending: Bool, forServer serverID: Identifier<Server>) {
+        locationPrivacyStore.setLocationClearPending(pending, forServer: serverID)
+    }
+
+    /// Drops the location choices of every server a sync from the iPhone left out.
+    public func applySyncedServersToLocationPrivacy(_ serverIDs: [Identifier<Server>]) {
+        locationPrivacyStore.applySyncedServers(serverIDs)
     }
 
     /// When the watch last sent its sensors successfully. `nil` until the first success.

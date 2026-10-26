@@ -104,7 +104,7 @@ struct ControllableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
             .map { server, allValues in
                 let serverId = server.identifier.rawValue
                 let values = inAreasOnly ? allValues.userFacingInAreas(serverId: serverId) : allValues
-                let deviceMap = values.devicesMap(for: serverId)
+                let deviceContexts = values.deviceContexts(for: serverId)
                 let areasMap = values.areasMap(for: serverId)
                 let floorMap = values.floorNamesMap(for: serverId)
                 return (server, values.map { entity in
@@ -114,7 +114,9 @@ struct ControllableEntityAppEntityQuery: EntityQuery, EntityStringQuery {
                         serverId: entity.serverId,
                         serverName: server.info.name,
                         areaName: areasMap[entity.entityId]?.name,
-                        deviceName: deviceMap[entity.entityId]?.name,
+                        deviceName: deviceContexts[entity.entityId]?.deviceName,
+                        parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                        contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
                         floorName: floorMap[entity.entityId],
                         displayString: entity.name,
                         iconName: entity.icon ?? SFSymbol.powerCircleFill.rawValue

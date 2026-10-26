@@ -13,6 +13,11 @@ protocol WebViewExternalMessageHandlerProtocol {
     func handleExternalMessage(_ dictionary: [String: Any])
     func sendExternalBus(message: WebSocketMessage) -> Promise<Void>
     func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?)
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    )
 
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
@@ -24,6 +29,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
     private let entityControlDonation: EntityControlDonation
+    private let cameraMicrophoneBridge: CameraMicrophoneBridge
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
@@ -33,10 +39,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     init(
         improvManager: any ImprovManagerProtocol,
-        entityControlDonation: EntityControlDonation = .init()
+        entityControlDonation: EntityControlDonation = .init(),
+        cameraMicrophoneBridge: CameraMicrophoneBridge = .init()
     ) {
         self.improvManager = improvManager
         self.entityControlDonation = entityControlDonation
+        self.cameraMicrophoneBridge = cameraMicrophoneBridge
+        cameraMicrophoneBridge.onSessionEnded = { [weak self] sessionId in
+            self?.notifyWebRTCStreamStopped(sessionId: sessionId)
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -61,6 +72,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
+                stopWebRTCStreamLeftByPreviousPage()
                 let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -205,10 +217,17 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
+            case .webRTCStreamStart:
+                startWebRTCStream(incomingMessage: incomingMessage, server: webViewController.server)
+            case .webRTCStreamStop:
+                guard let sessionId = incomingMessage.Payload?["session_id"] as? String else {
+                    Current.Log.error("Received webrtc/stream/stop but session_id was not string! \(incomingMessage)")
+                    return
+                }
+                cameraMicrophoneBridge.stop(sessionId: sessionId)
             case .frontendReloadAndClearCache:
                 reloadAndClearFrontendCache()
             case .sidebarShow:
-                MacNativeSidebarState.shared.show()
                 NativeTabBarState.shared.requestMore()
             case .moreInfoOpened:
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
@@ -278,7 +297,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     func showSettingsViewController() {
         // Through the web view the message came from, so Settings opens in that window and no other.
-        webViewController?.showSettingsViewController(pushOntoNavigationStack: true)
+        webViewController?.showSettingsViewController()
     }
 
     @MainActor
@@ -612,11 +631,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             )
             Current.sceneManager.activateAnyScene(for: .assist)
         } else {
-            // On iOS/iPad, present modally as before
+            // On iOS/iPad, present modally as before. Closing it re-checks the frontend underneath, which a
+            // cold launch straight into Assist covered before it ever loaded.
             let assistView = UIHostingController(rootView: AssistView.build(
                 server: server,
                 preferredPipelineId: pipeline,
-                autoStartRecording: autoStartRecording
+                autoStartRecording: autoStartRecording,
+                onDismiss: { [weak self] in
+                    self?.webViewController?.handleOverlayDismissed()
+                }
             ))
             let tappedSource = webViewController?.pendingAssistZoomSourceView
             webViewController?.pendingAssistZoomSourceView = nil
@@ -750,6 +773,54 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             on: webViewController
         )
     }
+
+    // MARK: - WebRTC streams
+
+    private func startWebRTCStream(incomingMessage: WebSocketMessage, server: Server) {
+        let messageId = incomingMessage.ID ?? -1
+        let streamType = incomingMessage.Payload?["stream_type"] as? String
+        guard streamType.flatMap(WebRTCStreamType.init(rawValue:)) == .microphone else {
+            Current.Log.error("Received webrtc/stream/start with an unsupported stream_type! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: WebRTCStreamErrorCode.unsupportedStreamType.rawValue,
+                errorMessage: "Unsupported stream_type: \(streamType ?? "none")"
+            ))
+            return
+        }
+        guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+            Current.Log.error("Received webrtc/stream/start but entity_id was not string! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: WebRTCStreamErrorCode.invalidPayload.rawValue,
+                errorMessage: "entity_id is required"
+            ))
+            return
+        }
+        cameraMicrophoneBridge.start(cameraEntityId: entityId, server: server) { [weak self] result in
+            switch result {
+            case let .success(sessionId):
+                self?.sendExternalBus(message: .init(id: messageId, type: "result", result: ["session_id": sessionId]))
+            case let .failure(error):
+                self?.sendExternalBus(message: .init(
+                    id: messageId,
+                    errorCode: error.code.rawValue,
+                    errorMessage: error.message
+                ))
+            }
+        }
+    }
+
+    private func stopWebRTCStreamLeftByPreviousPage() {
+        cameraMicrophoneBridge.stopActiveSession()
+    }
+
+    private func notifyWebRTCStreamStopped(sessionId: String) {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.webRTCStreamStopped.rawValue,
+            payload: ["session_id": sessionId]
+        ))
+    }
 }
 
 // MARK: - Acknowledged external bus commands
@@ -759,6 +830,7 @@ private final class PendingExternalBusCommand {
     let payload: [String: Any]?
     let retryDelay: DispatchTimeInterval
     let acknowledgementTimeout: DispatchTimeInterval
+    let completion: ((Bool) -> Void)?
     var attemptsRemaining: Int
     /// A fresh id is assigned per attempt so a late error result for a previous attempt is ignored.
     var messageID: Int
@@ -770,6 +842,7 @@ private final class PendingExternalBusCommand {
         attemptsRemaining: Int,
         retryDelay: DispatchTimeInterval,
         acknowledgementTimeout: DispatchTimeInterval,
+        completion: ((Bool) -> Void)?,
         messageID: Int
     ) {
         self.command = command
@@ -777,6 +850,7 @@ private final class PendingExternalBusCommand {
         self.attemptsRemaining = attemptsRemaining
         self.retryDelay = retryDelay
         self.acknowledgementTimeout = acknowledgementTimeout
+        self.completion = completion
         self.messageID = messageID
     }
 }
@@ -791,12 +865,21 @@ extension WebViewExternalMessageHandler {
     /// JavaScript evaluation itself fails), and treat the absence of any error within
     /// `acknowledgementTimeout` as success. Main thread only.
     func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?) {
+        sendExternalBusCommandWithRetry(command: command, payload: payload, completion: { _ in })
+    }
+
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    ) {
         sendExternalBusCommandWithRetry(
             command: command,
             payload: payload,
             maxAttempts: 6,
             retryDelay: .milliseconds(300),
-            acknowledgementTimeout: .milliseconds(750)
+            acknowledgementTimeout: .milliseconds(750),
+            completion: completion
         )
     }
 
@@ -805,7 +888,8 @@ extension WebViewExternalMessageHandler {
         payload: [String: Any]?,
         maxAttempts: Int,
         retryDelay: DispatchTimeInterval,
-        acknowledgementTimeout: DispatchTimeInterval
+        acknowledgementTimeout: DispatchTimeInterval,
+        completion: ((Bool) -> Void)? = nil
     ) {
         // Supersede any in-flight attempt for the same command so the latest payload wins.
         cancelPendingCommands(matching: command.rawValue)
@@ -816,6 +900,7 @@ extension WebViewExternalMessageHandler {
             attemptsRemaining: maxAttempts,
             retryDelay: retryDelay,
             acknowledgementTimeout: acknowledgementTimeout,
+            completion: completion,
             messageID: nextOutgoingMessageID
         )
         nextOutgoingMessageID += 1
@@ -827,6 +912,7 @@ extension WebViewExternalMessageHandler {
             Current.Log
                 .warning("External bus command \(pending.command) not acknowledged after retries, giving up")
             pendingCommands[pending.messageID] = nil
+            pending.completion?(false)
             return
         }
         pending.attemptsRemaining -= 1
@@ -846,6 +932,7 @@ extension WebViewExternalMessageHandler {
                 guard let self, let pending, pendingCommands[attemptID] === pending else { return }
                 Current.Log.verbose("External bus command \(pending.command) (id \(attemptID)) acknowledged")
                 pendingCommands[attemptID] = nil
+                pending.completion?(true)
             }
             pending.acknowledgementWorkItem = acknowledgementWorkItem
             DispatchQueue.main.asyncAfter(
@@ -892,6 +979,7 @@ extension WebViewExternalMessageHandler {
             // Defensive: the frontend doesn't currently send a success ack, only failures.
             pending.acknowledgementWorkItem?.cancel()
             pendingCommands[id] = nil
+            pending.completion?(true)
             return
         }
         Current.Log.verbose("External bus command \(pending.command) (id \(id)) rejected by frontend, retrying")

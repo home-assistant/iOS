@@ -109,6 +109,15 @@ public final class HealthKitSensor: SensorProvider {
         switch metric.aggregation {
         case .cumulativeSum:
             start = calendar.startOfDay(for: now)
+        case let .activitySummary(field):
+            // Progress is today's or nothing. A goal is worth carrying over from the latest summary, so
+            // it doesn't read unavailable every night until the first sample creates the new day's.
+            let today = calendar.startOfDay(for: now)
+            if field.isGoal {
+                start = calendar.date(byAdding: .day, value: -metric.lookbackDays, to: today) ?? today
+            } else {
+                start = today
+            }
         case .mostRecent:
             start = calendar.date(byAdding: .day, value: -metric.lookbackDays, to: now)
                 ?? calendar.startOfDay(for: now)

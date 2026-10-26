@@ -485,11 +485,18 @@ extension WebViewController {
         showEmptyState()
     }
 
+    /// The shake gesture only exists on a phone, so only a phone offers the toggle. Read from this
+    /// controller's traits rather than the device, which is what a resizable window reports.
+    var showsShakeDisclaimerToggle: Bool {
+        traitCollection.userInterfaceIdiom == .phone
+    }
+
     func openDebug() {
+        let showsShakeDisclaimerToggle = showsShakeDisclaimerToggle
         let controller = UIHostingController(rootView: AnyView(
             NavigationView {
                 VStack {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
+                    if showsShakeDisclaimerToggle {
                         HStack(spacing: DesignSystem.Spaces.half) {
                             Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
                             Toggle(isOn: .init(get: {

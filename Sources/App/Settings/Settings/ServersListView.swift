@@ -2,9 +2,14 @@ import Shared
 import SwiftUI
 
 struct ServersListView: View {
+    private enum Constants {
+        static let previewWidth: CGFloat = 360
+    }
+
     var macSidebarSelection: MacSettingsSidebarSelection?
 
     @StateObject private var observer = ServersObserver()
+    @StateObject private var reauthentication = ServerReauthenticationModel()
     @State private var showAddServer = false
     @State private var serverPendingDeletion: Server?
     @Environment(\.editMode) private var editMode
@@ -22,6 +27,10 @@ struct ServersListView: View {
                 } label: {
                     Label(L10n.Settings.ConnectionSection.refreshServer, systemSymbol: .arrowClockwise)
                 }
+                Button { reauthentication.start(for: server) } label: {
+                    Label(L10n.Settings.ConnectionSection.Reauthenticate.title, systemSymbol: .personBadgeKey)
+                }
+                .disabled(reauthentication.isReauthenticating || reauthentication.urlTypes(for: server).isEmpty)
                 if observer.servers.first?.identifier != server.identifier {
                     Button {
                         observer.makeDefault(server)
@@ -34,6 +43,22 @@ struct ServersListView: View {
                 } label: {
                     Label(L10n.Settings.ConnectionSection.DeleteServer.title, systemSymbol: .trash)
                 }
+            } preview: {
+                ServerDetailsRowView(
+                    serverName: server.info.name,
+                    userName: "",
+                    profilePicture: nil,
+                    details: ServerDetailsRowView.details(for: server),
+                    isSyncing: false,
+                    transitionNamespace: nil,
+                    onEdit: { _ in },
+                    onSync: {},
+                    onTroubleshoot: {},
+                    onOpen: nil,
+                    showsActions: false
+                )
+                .frame(width: Constants.previewWidth)
+                .background(Color(uiColor: .secondarySystemGroupedBackground))
             }
             .confirmationDialog(
                 L10n.Settings.ConnectionSection.DeleteServer.title,
@@ -50,16 +75,35 @@ struct ServersListView: View {
             } message: {
                 Text(L10n.Settings.ConnectionSection.DeleteServer.message)
             }
+            .serverReauthentication(reauthentication, for: server)
         }
         .onMove { source, destination in
             observer.moveServers(from: source, to: destination)
         }
 
-        NavigationLink(destination: ServerSwitchingSettingsView()) {
-            Label(L10n.Settings.ServerSwitching.title, systemSymbol: .arrowLeftArrowRight)
+        if !observer.serversSharingAnInstanceID.isEmpty {
+            NavigationLink(destination: ServerIdentityExplanationView(
+                conflictingServers: observer
+                    .serverIdentityConflicts
+            )) {
+                Label {
+                    Text(L10n.Settings.ConnectionSection.sharedInstanceIdWarning)
+                } icon: {
+                    Image(systemSymbol: .exclamationmarkTriangleFill)
+                        .foregroundStyle(.orange)
+                }
+            }
+            .tag(MacSettingsSidebarSelection.serverIdentity)
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverIdentity)
         }
-        .tag(MacSettingsSidebarSelection.serverSwitching)
-        .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverSwitching)
+
+        if observer.servers.count > 1 {
+            NavigationLink(destination: ServerSwitchingSettingsView()) {
+                Label(L10n.Settings.ServerSwitching.AutomaticSwitching.title, systemSymbol: .location)
+            }
+            .tag(MacSettingsSidebarSelection.serverSwitching)
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverSwitching)
+        }
 
         Button {
             #if targetEnvironment(macCatalyst)

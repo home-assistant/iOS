@@ -162,7 +162,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public var icon: String?
         /// True only when the user explicitly picked a custom icon via the icon picker
         public var iconIsCustomized: Bool?
-        /// True only when the user explicitly picked a custom icon color via the color picker
+        /// True when the user chose "Custom" for the icon color — see ``customIconColor``
         public var iconColorIsCustomized: Bool?
 
         public var useCustomColors: Bool {
@@ -172,26 +172,28 @@ public struct MagicItem: Codable, Equatable, Hashable {
         /// The icon color the user deliberately chose, or `nil` to let the entity keep the color
         /// home-assistant/frontend gives it.
         ///
-        /// The customization screen seeds its color picker with the app's tint the first time it
-        /// opens, so a stored color on its own never meant the user picked one. Items saved before
-        /// ``iconColorIsCustomized`` existed are therefore only treated as customized when their
-        /// color differs from that seed.
+        /// The customization screen sets ``iconColorIsCustomized`` when the user switches the icon
+        /// color to "Custom", and clears the color itself on "Default". Older versions of that screen
+        /// seeded the color with the app's tint just by opening, so a color saved without the flag
+        /// only counts as picked when it isn't one of the tints the app has ever had.
         public var customIconColor: String? {
             guard let iconColor else { return nil }
             if iconColorIsCustomized == true { return iconColor }
-            return normalizedHex(iconColor) == normalizedHex(MagicItem.defaultIconColorHex)
+            return MagicItem.seededIconColorHexes.contains(MagicItem.normalizedHex(iconColor))
                 ? nil
                 : iconColor
         }
 
-        /// Uppercased six-digit hex, so the seed comparison isn't thrown off by a `#` prefix or an
-        /// opaque alpha channel — the app writes the same color in both shapes.
-        private func normalizedHex(_ hex: String) -> String {
-            var normalized = hex.uppercased().replacingOccurrences(of: "#", with: "")
-            if normalized.count == 8, normalized.hasSuffix("FF") {
-                normalized = String(normalized.dropLast(2))
-            }
-            return normalized
+        /// Lets the entity keep the color home-assistant/frontend gives it.
+        public mutating func useDefaultIconColor() {
+            iconColor = nil
+            iconColorIsCustomized = false
+        }
+
+        /// Fixes the icon to `hex`, whatever the entity's state.
+        public mutating func useCustomIconColor(_ hex: String) {
+            iconColor = hex
+            iconColorIsCustomized = true
         }
 
         public init(
@@ -237,6 +239,18 @@ public struct MagicItem: Codable, Equatable, Hashable {
             self.iconName = iconName
             self.customization = customization
             self.contextSubtitle = contextSubtitle
+        }
+
+        /// The same info carrying `customization`, for an item edited before whatever built the info
+        /// has seen the edit.
+        public func replacingCustomization(_ customization: Customization?) -> Info {
+            .init(
+                id: id,
+                name: name,
+                iconName: iconName,
+                customization: customization,
+                contextSubtitle: contextSubtitle
+            )
         }
     }
 
@@ -688,6 +702,24 @@ public enum ItemAction: Codable, CaseIterable, Equatable, Hashable {
     }
 }
 
+extension MagicItem {
+    /// Every tint the icon color picker has seeded itself with: today's, and `#00AEF8`, the app's
+    /// tint until September 2025. Normalized by ``normalizedHex(_:)``.
+    static var seededIconColorHexes: Set<String> {
+        [normalizedHex(defaultIconColorHex), "00AEF8"]
+    }
+
+    /// Uppercased six-digit hex, so the seed comparison isn't thrown off by a `#` prefix or an
+    /// opaque alpha channel — the app writes the same color in both shapes.
+    static func normalizedHex(_ hex: String) -> String {
+        var normalized = hex.uppercased().replacingOccurrences(of: "#", with: "")
+        if normalized.count == 8, normalized.hasSuffix("FF") {
+            normalized = String(normalized.dropLast(2))
+        }
+        return normalized
+    }
+}
+
 public extension MagicItem {
     /// The color the icon color picker seeds itself with when an item has none yet: the app's tint.
     static var defaultIconColorHex: String {
@@ -707,7 +739,8 @@ public extension MagicItem {
     /// Every other platform executes through the existing `HomeAssistantAPI` paths: scripts and scenes
     /// via the webhook API (`CallService`) and entity/lock actions over the WebSocket connection.
     ///
-    /// `currentItemState` is used only for the lock domain, since it can't be toggled.
+    /// `currentItemState` is used for the lock domain, since it can't be toggled, and to pick the
+    /// on or off service for a toggle the way the frontend's `toggleEntity` does.
     ///
     /// `onStep` narrates the run's progress (resolved service call, URL, token stage, request,
     /// TLS challenges) for the watch's verbose execution trace. Ignored on non-watch platforms.
@@ -830,7 +863,7 @@ public extension MagicItem {
             }
         } else {
             // Use domain's main action for all other domains
-            request = .executeMainAction(domain: domain, entityId: entityId)
+            request = .executeMainAction(domain: domain, entityId: entityId, state: state)
         }
 
         if let request, let connection = Current.api(for: server)?.connection {
@@ -1025,7 +1058,7 @@ public extension MagicItem {
                     throw WatchRESTExecutionError.lockStateUnknown
                 }
             } else {
-                guard let action = domain.mainAction else { return nil }
+                guard let action = domain.mainAction(state: currentItemState) else { return nil }
                 return WatchServiceCall(
                     domain: domain.serviceDomain,
                     service: action.rawValue,

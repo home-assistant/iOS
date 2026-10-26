@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import PromiseKit
 import Shared
 import SwiftUI
 
@@ -18,6 +19,8 @@ final class NativeTabBarViewModel: ObservableObject {
     @Published private(set) var selection: NativeTabBarTab
     /// The More tab shows its list until the user opens a page from it, then the frontend takes over.
     @Published private(set) var moreShowsFrontend = false
+    /// The bar steps aside while the frontend's more-info dialog is up, until it closes or the frontend navigates.
+    @Published private(set) var isTabBarHidden = false
     @Published var showsCustomize = false
     private(set) var customizeZoomsFromButton = true
     @Published private(set) var accentColor: Color = .haPrimary
@@ -33,6 +36,8 @@ final class NativeTabBarViewModel: ObservableObject {
 
     /// The vertical bar draws its tabs out of process, so there is no spot on screen to zoom out of.
     var usesVerticalBar = false
+    /// The coordinator of the window this tab bar lives in, so switching servers from it stays in that window.
+    var appCoordinator: () -> Guarantee<AppCoordinator> = { Current.sceneManager.appCoordinator }
 
     private let allServers: () -> [Server]
     private let extrasStore: NativeTabBarExtrasStore
@@ -95,6 +100,14 @@ final class NativeTabBarViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.revealFrontend()
+            }
+            .store(in: &cancellables)
+
+        overlayState.$isMoreInfoDialogOpen
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isOpen in
+                self?.isTabBarHidden = isOpen
             }
             .store(in: &cancellables)
 
@@ -236,7 +249,7 @@ final class NativeTabBarViewModel: ObservableObject {
 
     func open(server: Server) {
         guard server.identifier != sidebar.server.identifier else { return }
-        Current.sceneManager.appCoordinator.done { $0.open(server: server) }
+        appCoordinator().done { $0.open(server: server) }
     }
 
     func open(serverIdentifier: Identifier<Server>) {

@@ -981,6 +981,12 @@ public enum L10n {
       /// Open Experimental Dashboard
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.title") }
     }
+    public enum OpenHomeAssistant {
+      /// Opens the Home Assistant app
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_home_assistant.description") }
+      /// Open Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_home_assistant.title") }
+    }
     public enum OpenStateIcon {
       /// Icon for open state
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_state_icon.title") }
@@ -1388,8 +1394,12 @@ public enum L10n {
       }
     }
     public enum Error {
+      /// Couldn't read audio from the microphone. Try again, or use a different microphone.
+      public static var audioConversion: String { return L10n.tr("Localizable", "assist.error.audio_conversion") }
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
+      /// This Assist pipeline has no speech-to-text engine. Choose a pipeline that has one, or enable on-device Speech-to-Text in Assist settings.
+      public static var speechToTextUnsupported: String { return L10n.tr("Localizable", "assist.error.speech_to_text_unsupported") }
     }
     public enum ModernUi {
       public enum Header {
@@ -1488,9 +1498,21 @@ public enum L10n {
       public static var placeholder: String { return L10n.tr("Localizable", "assist.text_field.placeholder") }
     }
     public enum Watch {
+      public enum AudioStream {
+        /// Home Assistant never received the recording.
+        public static var notReceived: String { return L10n.tr("Localizable", "assist.watch.audio_stream.not_received") }
+        /// Server not found on iPhone.
+        public static var serverNotFound: String { return L10n.tr("Localizable", "assist.watch.audio_stream.server_not_found") }
+        /// The iPhone could not read the recording.
+        public static var unreadable: String { return L10n.tr("Localizable", "assist.watch.audio_stream.unreadable") }
+      }
       public enum MicButton {
         /// Tap to
         public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.title") }
+        public enum TapOrHold {
+          /// Tap or hold to
+          public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.tap_or_hold.title") }
+        }
       }
       public enum NotReachable {
         /// Assist requires iPhone connectivity. Your iPhone is currently unreachable.
@@ -1512,6 +1534,8 @@ public enum L10n {
     public static var noPipelines: String { return L10n.tr("Localizable", "assist_pipeline_picker.no_pipelines") }
     /// Pick pipeline
     public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
+    /// Reload
+    public static var reload: String { return L10n.tr("Localizable", "assist_pipeline_picker.reload") }
   }
 
   public enum CameraList {
@@ -1550,6 +1574,21 @@ public enum L10n {
       public static var message: String { return L10n.tr("Localizable", "camera_list.unavailable.message") }
       /// Not Available on Mac
       public static var title: String { return L10n.tr("Localizable", "camera_list.unavailable.title") }
+    }
+  }
+
+  public enum CameraMicrophone {
+    public enum Errors {
+      /// Unable to connect the microphone to the camera
+      public static var connectionFailed: String { return L10n.tr("Localizable", "camera_microphone.errors.connection_failed") }
+      /// The microphone stream was stopped
+      public static var interrupted: String { return L10n.tr("Localizable", "camera_microphone.errors.interrupted") }
+      /// Microphone access is needed to talk through the camera. You can allow it in Settings.
+      public static var microphoneDenied: String { return L10n.tr("Localizable", "camera_microphone.errors.microphone_denied") }
+      /// The camera could not start the microphone stream
+      public static var signalingFailed: String { return L10n.tr("Localizable", "camera_microphone.errors.signaling_failed") }
+      /// The camera took too long to respond
+      public static var timedOut: String { return L10n.tr("Localizable", "camera_microphone.errors.timed_out") }
     }
   }
 
@@ -2240,6 +2279,10 @@ public enum L10n {
       public static var adjustLower: String { return L10n.tr("Localizable", "component.circular_slider.adjust_lower") }
       /// Adjust upper target
       public static var adjustUpper: String { return L10n.tr("Localizable", "component.circular_slider.adjust_upper") }
+      /// Decrease
+      public static var decrease: String { return L10n.tr("Localizable", "component.circular_slider.decrease") }
+      /// Increase
+      public static var increase: String { return L10n.tr("Localizable", "component.circular_slider.increase") }
     }
     public enum CollapsibleView {
       /// Collapse
@@ -2252,6 +2295,12 @@ public enum L10n {
       public static var lessSaturation: String { return L10n.tr("Localizable", "component.color_picker.less_saturation") }
       /// More saturation
       public static var moreSaturation: String { return L10n.tr("Localizable", "component.color_picker.more_saturation") }
+    }
+    public enum Cover {
+      /// Buttons
+      public static var buttonsMode: String { return L10n.tr("Localizable", "component.cover.buttons_mode") }
+      /// Position
+      public static var positionMode: String { return L10n.tr("Localizable", "component.cover.position_mode") }
     }
     public enum Distribution {
       /// Show less
@@ -2267,7 +2316,31 @@ public enum L10n {
       /// Previous period
       public static var previous: String { return L10n.tr("Localizable", "component.energy_period.previous") }
     }
+    public enum Light {
+      /// Brightness
+      public static var brightness: String { return L10n.tr("Localizable", "component.light.brightness") }
+      /// Color
+      public static var color: String { return L10n.tr("Localizable", "component.light.color") }
+      /// Color temperature
+      public static var colorTemperature: String { return L10n.tr("Localizable", "component.light.color_temperature") }
+      /// Set white
+      public static var setWhite: String { return L10n.tr("Localizable", "component.light.set_white") }
+    }
+    public enum Lock {
+      /// Lock
+      public static var lock: String { return L10n.tr("Localizable", "component.lock.lock") }
+      /// Open door
+      public static var openDoor: String { return L10n.tr("Localizable", "component.lock.open_door") }
+      /// Really open?
+      public static var openDoorConfirm: String { return L10n.tr("Localizable", "component.lock.open_door_confirm") }
+      /// Door open
+      public static var openDoorDone: String { return L10n.tr("Localizable", "component.lock.open_door_done") }
+      /// Unlock
+      public static var unlock: String { return L10n.tr("Localizable", "component.lock.unlock") }
+    }
     public enum MediaControl {
+      /// Mute
+      public static var mute: String { return L10n.tr("Localizable", "component.media_control.mute") }
       /// Next
       public static var next: String { return L10n.tr("Localizable", "component.media_control.next") }
       /// Pause
@@ -2276,6 +2349,28 @@ public enum L10n {
       public static var play: String { return L10n.tr("Localizable", "component.media_control.play") }
       /// Previous
       public static var previous: String { return L10n.tr("Localizable", "component.media_control.previous") }
+      /// All
+      public static var repeatAll: String { return L10n.tr("Localizable", "component.media_control.repeat_all") }
+      /// Repeat
+      public static var repeatMode: String { return L10n.tr("Localizable", "component.media_control.repeat_mode") }
+      /// Off
+      public static var repeatOff: String { return L10n.tr("Localizable", "component.media_control.repeat_off") }
+      /// One
+      public static var repeatOne: String { return L10n.tr("Localizable", "component.media_control.repeat_one") }
+      /// Shuffle
+      public static var shuffle: String { return L10n.tr("Localizable", "component.media_control.shuffle") }
+      /// Stop
+      public static var stop: String { return L10n.tr("Localizable", "component.media_control.stop") }
+      /// Track position
+      public static var trackPosition: String { return L10n.tr("Localizable", "component.media_control.track_position") }
+      /// Unmute
+      public static var unmute: String { return L10n.tr("Localizable", "component.media_control.unmute") }
+      /// Volume
+      public static var volume: String { return L10n.tr("Localizable", "component.media_control.volume") }
+      /// Volume down
+      public static var volumeDown: String { return L10n.tr("Localizable", "component.media_control.volume_down") }
+      /// Volume up
+      public static var volumeUp: String { return L10n.tr("Localizable", "component.media_control.volume_up") }
     }
     public enum QrCode {
       /// Could not generate the QR code
@@ -2291,13 +2386,53 @@ public enum L10n {
       /// Submit
       public static var submit: String { return L10n.tr("Localizable", "component.qr_scanner.submit") }
     }
+    public enum Scene {
+      /// Activate
+      public static var activate: String { return L10n.tr("Localizable", "component.scene.activate") }
+    }
+    public enum StateToggle {
+      /// Toggle
+      public static var toggle: String { return L10n.tr("Localizable", "component.state_toggle.toggle") }
+      /// Turn off
+      public static var turnOff: String { return L10n.tr("Localizable", "component.state_toggle.turn_off") }
+      /// Turn on
+      public static var turnOn: String { return L10n.tr("Localizable", "component.state_toggle.turn_on") }
+    }
     public enum TimeInput {
       /// Clear
       public static var clear: String { return L10n.tr("Localizable", "component.time_input.clear") }
     }
+    public enum Timer {
+      /// Cancel
+      public static var cancel: String { return L10n.tr("Localizable", "component.timer.cancel") }
+      /// Finish
+      public static var finish: String { return L10n.tr("Localizable", "component.timer.finish") }
+      /// Pause
+      public static var pause: String { return L10n.tr("Localizable", "component.timer.pause") }
+      /// Set
+      public static var setDuration: String { return L10n.tr("Localizable", "component.timer.set_duration") }
+      /// Start
+      public static var start: String { return L10n.tr("Localizable", "component.timer.start") }
+    }
     public enum Tip {
       /// Tip
       public static var `prefix`: String { return L10n.tr("Localizable", "component.tip.prefix") }
+    }
+    public enum Update {
+      /// Clear skipped
+      public static var clearSkipped: String { return L10n.tr("Localizable", "component.update.clear_skipped") }
+      /// Update
+      public static var install: String { return L10n.tr("Localizable", "component.update.install") }
+      /// Read release announcement
+      public static var releaseAnnouncement: String { return L10n.tr("Localizable", "component.update.release_announcement") }
+      /// Skip
+      public static var skip: String { return L10n.tr("Localizable", "component.update.skip") }
+    }
+    public enum Vacuum {
+      /// By area
+      public static var byArea: String { return L10n.tr("Localizable", "component.vacuum.by_area") }
+      /// Cleaning
+      public static var cleaning: String { return L10n.tr("Localizable", "component.vacuum.cleaning") }
     }
   }
 
@@ -2590,6 +2725,8 @@ public enum L10n {
       public enum GroupBy {
         /// Group by Area
         public static var area: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.area") }
+        /// Group by Device
+        public static var device: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.device") }
         /// Group by Domain
         public static var domain: String { return L10n.tr("Localizable", "entity_picker.filter.group_by.domain") }
         /// Group by
@@ -2605,6 +2742,12 @@ public enum L10n {
         public enum NoArea {
           /// No area
           public static var title: String { return L10n.tr("Localizable", "entity_picker.list.area.no_area.title") }
+        }
+      }
+      public enum Device {
+        public enum NoDevice {
+          /// No device
+          public static var title: String { return L10n.tr("Localizable", "entity_picker.list.device.no_device.title") }
         }
       }
     }
@@ -2695,6 +2838,18 @@ public enum L10n {
           /// WebRTC stream unavailable
           public static var webrtcUnavailable: String { return L10n.tr("Localizable", "extensions.notification_content.error.request.webrtc_unavailable") }
         }
+      }
+      public enum ErrorState {
+        /// Hide details
+        public static var hideDetails: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.hide_details") }
+        /// The stream or file could not be loaded. Check that it is reachable and try again.
+        public static var message: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.message") }
+        /// Try again
+        public static var retry: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.retry") }
+        /// Show details
+        public static var showDetails: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.show_details") }
+        /// Media unavailable
+        public static var title: String { return L10n.tr("Localizable", "extensions.notification_content.error_state.title") }
       }
     }
   }
@@ -3717,6 +3872,27 @@ public enum L10n {
     }
   }
 
+  public enum LocalPush {
+    public enum StateNotification {
+      public enum Connected {
+        /// Connected to %@
+        public static func body(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "local_push.state_notification.connected.body", String(describing: p1))
+        }
+        /// Local push connected
+        public static var title: String { return L10n.tr("Localizable", "local_push.state_notification.connected.title") }
+      }
+      public enum Disconnected {
+        /// Lost %1$@: %2$@
+        public static func body(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "local_push.state_notification.disconnected.body", String(describing: p1), String(describing: p2))
+        }
+        /// Local push disconnected
+        public static var title: String { return L10n.tr("Localizable", "local_push.state_notification.disconnected.title") }
+      }
+    }
+  }
+
   public enum LocationChangeNotification {
     /// Location change
     public static var title: String { return L10n.tr("Localizable", "location_change_notification.title") }
@@ -3834,10 +4010,6 @@ public enum L10n {
       public static var hide: String { return L10n.tr("Localizable", "mac.sidebar.hide") }
       /// Notifications
       public static var notifications: String { return L10n.tr("Localizable", "mac.sidebar.notifications") }
-      /// Reset to Defaults
-      public static var resetToDefaults: String { return L10n.tr("Localizable", "mac.sidebar.reset_to_defaults") }
-      /// Set as Default Dashboard
-      public static var setDefaultDashboard: String { return L10n.tr("Localizable", "mac.sidebar.set_default_dashboard") }
       /// Settings
       public static var settings: String { return L10n.tr("Localizable", "mac.sidebar.settings") }
       /// Show
@@ -3943,6 +4115,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "magic_item.display_text.title") }
     }
     public enum IconColor {
+      /// Color
+      public static var color: String { return L10n.tr("Localizable", "magic_item.icon_color.color") }
+      /// Custom
+      public static var custom: String { return L10n.tr("Localizable", "magic_item.icon_color.custom") }
+      /// Default
+      public static var `default`: String { return L10n.tr("Localizable", "magic_item.icon_color.default") }
       /// Icon color
       public static var title: String { return L10n.tr("Localizable", "magic_item.icon_color.title") }
     }
@@ -4109,8 +4287,6 @@ public enum L10n {
       public static var customizeToolbar: String { return L10n.tr("Localizable", "menu.view.customize_toolbar") }
       /// Find
       public static var find: String { return L10n.tr("Localizable", "menu.view.find") }
-      /// Hide Sidebar
-      public static var hideSidebar: String { return L10n.tr("Localizable", "menu.view.hide_sidebar") }
       /// Reload Page
       public static var reloadPage: String { return L10n.tr("Localizable", "menu.view.reload_page") }
       /// Show Sidebar
@@ -4471,6 +4647,8 @@ public enum L10n {
         public static func title(_ p1: Any) -> String {
           return L10n.tr("Localizable", "onboarding.device_name_check.error.title", String(describing: p1))
         }
+        /// Couldn't reach Home Assistant to check the device name. Check your connection and try again.
+        public static var unreachable: String { return L10n.tr("Localizable", "onboarding.device_name_check.error.unreachable") }
       }
     }
     public enum Invitation {
@@ -4661,6 +4839,8 @@ public enum L10n {
       public static var allow: String { return L10n.tr("Localizable", "onboarding.permissions.allow") }
       /// Done
       public static var allowed: String { return L10n.tr("Localizable", "onboarding.permissions.allowed") }
+      /// Back
+      public static var back: String { return L10n.tr("Localizable", "onboarding.permissions.back") }
       /// You can change this permission later in Settings
       public static var changeLaterNote: String { return L10n.tr("Localizable", "onboarding.permissions.change_later_note") }
       public enum Focus {
@@ -4766,6 +4946,22 @@ public enum L10n {
         }
       }
     }
+    public enum ServerIdentity {
+      /// Add as a separate server
+      public static var addSeparate: String { return L10n.tr("Localizable", "onboarding.server_identity.add_separate") }
+      /// %1$@ reports the same ID as %2$@ but is at a different address.
+      public static func body(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.server_identity.body", String(describing: p1), String(describing: p2))
+      }
+      /// Replace %1$@
+      public static func replace(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.server_identity.replace", String(describing: p1))
+      }
+      /// Is this the same server?
+      public static var title: String { return L10n.tr("Localizable", "onboarding.server_identity.title") }
+      /// Why am I seeing this?
+      public static var why: String { return L10n.tr("Localizable", "onboarding.server_identity.why") }
+    }
     public enum ServerImport {
       /// Hang tight, we’re rounding up your servers.
       public static var message: String { return L10n.tr("Localizable", "onboarding.server_import.message") }
@@ -4819,6 +5015,8 @@ public enum L10n {
       public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
       /// Connect to my Home Assistant
       public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button") }
+      /// Connect
+      public static var primaryButtonCompact: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button_compact") }
       /// Getting started
       public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.secondary_button") }
       /// Welcome to Home Assistant %@!
@@ -5077,6 +5275,35 @@ public enum L10n {
     }
   }
 
+  public enum ServerIdentity {
+    public enum About {
+      /// About server identity
+      public static var title: String { return L10n.tr("Localizable", "server_identity.about.title") }
+      public enum Conflicting {
+        /// Servers sharing an ID
+        public static var header: String { return L10n.tr("Localizable", "server_identity.about.conflicting.header") }
+      }
+      public enum Fix {
+        /// Give one of the servers a new ID. On the same network Home Assistant offers this in Settings › Repairs. Otherwise remove the file .storage/core.uuid on one server and restart it. Data and configuration are not affected.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.fix.body") }
+        /// How to fix it
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.fix.title") }
+      }
+      public enum OneEntry {
+        /// Each server reports its own ID, and the app uses it to recognize a server that is already added. Adding the same server twice updates the existing entry rather than creating a second one.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.one_entry.body") }
+        /// One server, one entry
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.one_entry.title") }
+      }
+      public enum SameId {
+        /// A server set up from a backup of another one carries the same ID. The app cannot tell them apart by ID alone, so it asks which situation applies.
+        public static var body: String { return L10n.tr("Localizable", "server_identity.about.same_id.body") }
+        /// Two servers with the same ID
+        public static var title: String { return L10n.tr("Localizable", "server_identity.about.same_id.title") }
+      }
+    }
+  }
+
   public enum ServersSelection {
     /// Servers
     public static var title: String { return L10n.tr("Localizable", "servers_selection.title") }
@@ -5152,26 +5379,36 @@ public enum L10n {
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
       public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
-      /// Connected via
-      public static var connectingVia: String { return L10n.tr("Localizable", "settings.connection_section.connecting_via") }
       /// Details
       public static var details: String { return L10n.tr("Localizable", "settings.connection_section.details") }
       /// Connection
       public static var header: String { return L10n.tr("Localizable", "settings.connection_section.header") }
       /// Directly connect to the Home Assistant server for push notifications when on internal SSIDs.
       public static var localPushDescription: String { return L10n.tr("Localizable", "settings.connection_section.local_push_description") }
-      /// Logged in as
-      public static var loggedInAs: String { return L10n.tr("Localizable", "settings.connection_section.logged_in_as") }
       /// Make default
       public static var makeDefault: String { return L10n.tr("Localizable", "settings.connection_section.make_default") }
+      /// Open
+      public static var openServer: String { return L10n.tr("Localizable", "settings.connection_section.open_server") }
       /// Update server information
       public static var refreshServer: String { return L10n.tr("Localizable", "settings.connection_section.refresh_server") }
+      /// Server Details
+      public static var serverDetailsTitle: String { return L10n.tr("Localizable", "settings.connection_section.server_details_title") }
+      /// Home Assistant %@
+      public static func serverVersionFooter(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.connection_section.server_version_footer", String(describing: p1))
+      }
       /// Servers
       public static var servers: String { return L10n.tr("Localizable", "settings.connection_section.servers") }
       /// Servers
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Drag to reorder your servers. The one at the top is used as the default server.
       public static var serversReorderFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_reorder_footer") }
+      /// Two servers share the same ID
+      public static var sharedInstanceIdWarning: String { return L10n.tr("Localizable", "settings.connection_section.shared_instance_id_warning") }
+      /// Sync
+      public static var syncServer: String { return L10n.tr("Localizable", "settings.connection_section.sync_server") }
+      /// Troubleshooting
+      public static var troubleshooting: String { return L10n.tr("Localizable", "settings.connection_section.troubleshooting") }
       public enum AlwaysFallbackInternal {
         /// Enabling this with an unsecure URL (http) may compromise your security on public networks.
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.footer") }
@@ -5199,6 +5436,8 @@ public enum L10n {
         public static var `import`: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.import") }
         /// Importing...
         public static var importing: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.importing") }
+        /// Not configured
+        public static var notConfigured: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.not_configured") }
         /// Remove Certificate
         public static var remove: String { return L10n.tr("Localizable", "settings.connection_section.client_certificate.remove") }
         public enum ImportError {
@@ -5251,6 +5490,8 @@ public enum L10n {
         }
       }
       public enum ConnectionAccessSecurityLevel {
+        /// Protects your internal URL when you are not at home.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.footer") }
         /// Connection security level
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.title") }
         public enum LessSecure {
@@ -5279,6 +5520,8 @@ public enum L10n {
         public static var cannotRemoveLastUrl: String { return L10n.tr("Localizable", "settings.connection_section.errors.cannot_remove_last_url") }
       }
       public enum ExternalBaseUrl {
+        /// Used when this device is away from home.
+        public static var headerSubtitle: String { return L10n.tr("Localizable", "settings.connection_section.external_base_url.header_subtitle") }
         /// https://homeassistant.myhouse.com
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.external_base_url.placeholder") }
         /// External URL
@@ -5288,7 +5531,13 @@ public enum L10n {
         /// Home Assistant Cloud
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.home_assistant_cloud.title") }
       }
+      public enum HomeNetwork {
+        /// Home network
+        public static var header: String { return L10n.tr("Localizable", "settings.connection_section.home_network.header") }
+      }
       public enum InternalBaseUrl {
+        /// Used only while this device is on your home network.
+        public static var headerSubtitle: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.header_subtitle") }
         /// e.g. http://homeassistant.local:8123/
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder") }
         /// Internal URL
@@ -5315,6 +5564,8 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.header") }
         /// Hardware addresses must look like aa:bb:cc:dd:ee:ff
         public static var invalid: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.invalid") }
+        /// Network interface addresses
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.title") }
       }
       public enum InternalUrlSsids {
         /// Add new SSID
@@ -5355,12 +5606,28 @@ public enum L10n {
         }
       }
       public enum NetworkDetectionPermission {
+        /// Allow
+        public static var allow: String { return L10n.tr("Localizable", "settings.connection_section.network_detection_permission.allow") }
         /// Detecting your home network means reading its Wi-Fi name, which iOS only shares with apps that have location access. The Precise Location switch is what makes the name readable at all, including while you are using the app. The Always option is needed on top of it to keep reading the name while the app is in the background, for sensors and notifications. Tap here to change your settings.
         public static var message: String { return L10n.tr("Localizable", "settings.connection_section.network_detection_permission.message") }
+        /// Location access needed
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.network_detection_permission.title") }
       }
       public enum NoBaseUrl {
         /// No URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
+      }
+      public enum Reauthenticate {
+        /// Couldn't re-authenticate
+        public static var errorTitle: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.error_title") }
+        /// Sign in to this server again, for example after changing your password or to use a different user. Your server's URLs and settings stay as they are.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.footer") }
+        /// Re-authenticating…
+        public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.progress") }
+        /// Re-authenticate
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.title") }
+        /// Sign in using
+        public static var urlPickerTitle: String { return L10n.tr("Localizable", "settings.connection_section.reauthenticate.url_picker_title") }
       }
       public enum RemoteUiUrl {
         /// Remote UI URL
@@ -5389,6 +5656,10 @@ public enum L10n {
           /// Updating entities
           public static var entities: String { return L10n.tr("Localizable", "settings.connection_section.update_database.progress.entities") }
         }
+      }
+      public enum UrlAddress {
+        /// Address
+        public static var header: String { return L10n.tr("Localizable", "settings.connection_section.url_address.header") }
       }
       public enum UrlsHowItWorks {
         /// Your Home Assistant can be reached in two ways: directly on your home network, or over the internet. The app picks one for every request, and the choice can change as you move.
@@ -6062,6 +6333,8 @@ public enum L10n {
           public enum LegacyRealmStore {
             /// The old store zones, notification categories and complications are imported from. It is only kept until that import has run.
             public static var explanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.explanation") }
+            /// Leftover data from an older version of the app. Nothing uses it anymore.
+            public static var leftoverExplanation: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.leftover_explanation") }
             /// Legacy database
             public static var title: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.item.legacy_realm_store.title") }
           }
@@ -6163,6 +6436,8 @@ public enum L10n {
           public static var footer: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.footer") }
           /// Protected items
           public static var protected: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.protected") }
+          /// Protected rows are the ones the app cannot rebuild: the database holding your servers and setups, and files you added yourself. Everything else is a copy the app makes again when it needs it.
+          public static var protectedFooter: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.protected_footer") }
           /// Can be freed
           public static var reclaimable: String { return L10n.tr("Localizable", "settings.debugging.manage_storage.summary.reclaimable") }
           /// Total used
@@ -6181,9 +6456,17 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.debugging.media_playback.restart_required.title") }
         }
       }
+      public enum NotifyLocalPushStateChanges {
+        /// Notify when local push connects or disconnects
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.notify_local_push_state_changes.title") }
+      }
       public enum ReceiveDebugNotifications {
         /// Receive debug notifications
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.receive_debug_notifications.title") }
+      }
+      public enum RegionEnterMaximumFuzzDistance {
+        /// Zone enter accuracy fuzz limit
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.region_enter_maximum_fuzz_distance.title") }
       }
       public enum ResetApp {
         /// Delete all app data?
@@ -6545,6 +6828,10 @@ public enum L10n {
       }
       /// Server Switching
       public static var title: String { return L10n.tr("Localizable", "settings.server_switching.title") }
+      public enum AutomaticSwitching {
+        /// Automatic switching
+        public static var title: String { return L10n.tr("Localizable", "settings.server_switching.automatic_switching.title") }
+      }
       public enum ByLocation {
         /// When you open the app, it checks whether you are at one of your homes, either connected to its Wi-Fi network or inside its Home zone. If that home belongs to another server, that server is opened automatically. Checks happen only on this device while the app is in use, and your location is never stored.
         public static var footer: String { return L10n.tr("Localizable", "settings.server_switching.by_location.footer") }
@@ -7600,6 +7887,10 @@ public enum L10n {
           /// Apple Watch records sleep stages but not time in bed, so this stays unavailable until a source writes it. Turn on “Track Time in Bed with iPhone” in Health > Sleep > Options, or use a sleep tracking app that records time in bed.
           public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.in_bed.footer") }
         }
+        public enum MoveGoal {
+          /// Reported in kilocalories, so this stays unavailable while the Move ring is set to move time.
+          public static var footer: String { return L10n.tr("Localizable", "settings_sensors.health.metric.move_goal.footer") }
+        }
       }
       public enum Sensors {
         /// Enable all Apple Health sensors
@@ -7750,6 +8041,18 @@ public enum L10n {
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.accessibility_label") }
         /// When app is open
         public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.foreground_only.badge") }
+      }
+      public enum RequiresAppleWatch {
+        /// Only reports with a paired Apple Watch
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "settings_sensors.sensors.requires_apple_watch.accessibility_label") }
+        /// Requires Apple Watch
+        public static var badge: String { return L10n.tr("Localizable", "settings_sensors.sensors.requires_apple_watch.badge") }
+      }
+      public enum UnavailableOnDevice {
+        /// Unavailable on this device
+        public static var header: String { return L10n.tr("Localizable", "settings_sensors.sensors.unavailable_on_device.header") }
+        /// Unavailable
+        public static var state: String { return L10n.tr("Localizable", "settings_sensors.sensors.unavailable_on_device.state") }
       }
     }
     public enum Servers {
@@ -7955,6 +8258,8 @@ public enum L10n {
     public static var connectionFailed: String { return L10n.tr("Localizable", "token_error.connection_failed") }
     /// Token is expired.
     public static var expired: String { return L10n.tr("Localizable", "token_error.expired") }
+    /// Session is no longer valid. Please log in again.
+    public static var reauthenticationRequired: String { return L10n.tr("Localizable", "token_error.reauthentication_required") }
     /// Token is unavailable.
     public static var tokenUnavailable: String { return L10n.tr("Localizable", "token_error.token_unavailable") }
   }
@@ -8136,6 +8441,10 @@ public enum L10n {
           /// Recording...
           public static var title: String { return L10n.tr("Localizable", "watch.assist.button.recording.title") }
         }
+        public enum ReleaseToSend {
+          /// Release to send
+          public static var title: String { return L10n.tr("Localizable", "watch.assist.button.release_to_send.title") }
+        }
         public enum SendRequest {
           /// Tap to send request
           public static var title: String { return L10n.tr("Localizable", "watch.assist.button.send_request.title") }
@@ -8292,6 +8601,14 @@ public enum L10n {
         public static var valueTemplate: String { return L10n.tr("Localizable", "watch.complications.builder.value_template") }
         /// When the progress bar or gauge is visible, the template result should be a number between 0 and 1.
         public static var valueTemplateFooter: String { return L10n.tr("Localizable", "watch.complications.builder.value_template_footer") }
+      }
+      public enum CornerGaugeDisplay {
+        /// Gauge
+        public static var gauge: String { return L10n.tr("Localizable", "watch.complications.corner_gauge_display.gauge") }
+        /// Progress bar
+        public static var progress: String { return L10n.tr("Localizable", "watch.complications.corner_gauge_display.progress") }
+        /// Corner indicator
+        public static var title: String { return L10n.tr("Localizable", "watch.complications.corner_gauge_display.title") }
       }
       public enum Family {
         /// Circular
@@ -8696,6 +9013,10 @@ public enum L10n {
         }
       }
     }
+    public enum ContextSync {
+      /// Timed out waiting for the watch to accept the update.
+      public static var timedOut: String { return L10n.tr("Localizable", "watch.context_sync.timed_out") }
+    }
     public enum CoverControls {
       /// Close
       public static var close: String { return L10n.tr("Localizable", "watch.cover_controls.close") }
@@ -8800,6 +9121,10 @@ public enum L10n {
       public enum Device {
         /// There are no compatible entities for this device.
         public static var empty: String { return L10n.tr("Localizable", "watch.home.device.empty") }
+        /// Part of %@
+        public static func partOf(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.home.device.part_of", String(describing: p1))
+        }
       }
       public enum Loading {
         public enum Skip {
@@ -9544,6 +9869,16 @@ public enum L10n {
           /// Warning
           public static var title: String { return L10n.tr("Localizable", "watch.settings.developer.warning.title") }
         }
+      }
+      public enum Location {
+        /// Your Apple Watch reports its location to Home Assistant on its own, as a separate device from your iPhone. Zone only sends just the zone it's in. Nothing is sent until you choose.
+        public static var footer: String { return L10n.tr("Localizable", "watch.settings.location.footer") }
+        /// Home Assistant can't access this Apple Watch's location. Allow it in the Settings app on your Apple Watch, under Privacy & Security > Location Services.
+        public static var permissionDenied: String { return L10n.tr("Localizable", "watch.settings.location.permission_denied") }
+        /// Each server receives the location you choose for it.
+        public static var serversFooter: String { return L10n.tr("Localizable", "watch.settings.location.servers_footer") }
+        /// Location
+        public static var title: String { return L10n.tr("Localizable", "watch.settings.location.title") }
       }
       public enum NoItems {
         public enum Phone {

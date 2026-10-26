@@ -58,9 +58,7 @@ struct DebugDatabaseTransferSection: View {
         } footer: {
             Text(L10n.Settings.Debugging.DatabaseTransfer.footer(part.title))
         }
-        .sheet(item: $shareWrapper) { wrapper in
-            ActivityViewController(shareWrapper: wrapper)
-        }
+        .shareSheet(item: $shareWrapper)
         .fileImporter(
             isPresented: $showImporter,
             allowedContentTypes: [.json],

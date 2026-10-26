@@ -6,6 +6,12 @@ import PromiseKit
 import XCTest
 
 class AuthenticationAPIActiveURLTests: XCTestCase {
+    func testSessionPresentsClientCertificatesEvenWhenNoneWasStoredAtInit() {
+        let api = AuthenticationAPI(server: Server.fake())
+
+        XCTAssertTrue(api.session.delegate is ClientCertificateSessionDelegate)
+    }
+
     /// Websocket auth waits on token refresh, so token refresh must never depend on the async
     /// network-info path: here that path hangs outright, and the refresh must still settle.
     func testRefreshTokenSettlesEvenWhenNetworkInfoRefreshHangs() {
@@ -61,6 +67,22 @@ class HAAPITokenFetchFailureTests: XCTestCase {
 
         XCTAssertTrue(failure.shouldDisconnectPermanently)
         XCTAssertTrue(failure.errorDescription?.contains("invalid_grant") == true)
+    }
+
+    /// Once the token manager refuses to send credentials the server already rejected, the websocket
+    /// never gets a token again, so the reconnect loop has to stop on that refusal exactly as it does
+    /// on the server's own rejection — otherwise it spins until the user logs back in.
+    func testTokenFetchFailureMarksALocalRefusalAsPermanent() {
+        let failure = HomeAssistantAPI.tokenFetchFailure(from: TokenManager.TokenError.reauthenticationRequired)
+
+        XCTAssertTrue(failure.shouldDisconnectPermanently)
+    }
+
+    /// A token that merely lapsed is refreshed on the next attempt, so it must stay retriable.
+    func testTokenFetchFailureLeavesAnExpiredTokenRetryable() {
+        let failure = HomeAssistantAPI.tokenFetchFailure(from: TokenManager.TokenError.expired)
+
+        XCTAssertFalse(failure.shouldDisconnectPermanently)
     }
 
     func testTokenFetchFailureLeavesTransientErrorsRetryable() {
@@ -289,6 +311,61 @@ class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
         XCTAssertEqual(connection.state, expectedState)
     }
 
+    func testAutomaticConnectReevaluatesSocketStuckConnecting() {
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        api.connection = connection
+
+        connection.setState(.connecting)
+
+        api.connectWebSocketIfNeeded()
+        drainMainQueue()
+
+        XCTAssertEqual(connection.state, .ready(version: "1.0-mock"))
+    }
+
+    func testConnectivityChangeReevaluatesSocketStuckConnecting() {
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        api.connection = connection
+
+        connection.setState(.connecting)
+
+        NotificationCenter.default.post(name: Current.connectivity.connectivityDidChangeNotification(), object: nil)
+        drainMainQueue()
+
+        XCTAssertEqual(connection.state, .ready(version: "1.0-mock"))
+    }
+
+    func testConnectivityChangeLeavesIdleSocketDisconnected() {
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        api.connection = connection
+
+        NotificationCenter.default.post(name: Current.connectivity.connectivityDidChangeNotification(), object: nil)
+        drainMainQueue()
+
+        XCTAssertEqual(connection.state, .disconnected(reason: .disconnected))
+    }
+
+    func testConnectivityChangeLeavesWaitingToReconnectState() {
+        let api = HomeAssistantAPI(server: .fake())
+        let connection = HAMockConnection()
+        api.connection = connection
+
+        let expectedState = HAConnectionState.disconnected(reason: .waitingToReconnect(
+            lastError: URLError(.cannotConnectToHost),
+            atLatest: Date(timeIntervalSinceNow: 30),
+            retryCount: 3
+        ))
+        connection.setState(expectedState)
+
+        NotificationCenter.default.post(name: Current.connectivity.connectivityDidChangeNotification(), object: nil)
+        drainMainQueue()
+
+        XCTAssertEqual(connection.state, expectedState)
+    }
+
     func testAutomaticConnectPreservesRejectedState() {
         let api = HomeAssistantAPI(server: .fake())
         let connection = HAMockConnection()
@@ -324,6 +401,18 @@ class HAAPIAutomaticWebSocketConnectTests: XCTestCase {
     func testRetryAwareConnectionReconnectsSocketRequestsFromIdleDisconnectedState() {
         let underlying = HAMockConnection()
         let connection = RetryAwareHAConnection(underlying: underlying)
+
+        _ = connection.send(.init(type: .webSocket("ping")), completion: { _ in })
+        drainMainQueue()
+
+        XCTAssertEqual(underlying.state, .ready(version: "1.0-mock"))
+    }
+
+    func testRetryAwareConnectionReevaluatesSocketRequestsWhileConnecting() {
+        let underlying = HAMockConnection()
+        underlying.automaticallyTransitionToConnecting = false
+        let connection = RetryAwareHAConnection(underlying: underlying)
+        underlying.setState(.connecting)
 
         _ = connection.send(.init(type: .webSocket("ping")), completion: { _ in })
         drainMainQueue()

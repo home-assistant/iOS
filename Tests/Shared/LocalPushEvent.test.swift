@@ -77,6 +77,19 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertNotNil(NotificationSenderParser.parse(from: content))
     }
 
+    func testKioskScreensaverModeIsPassedThrough() throws {
+        let data = HAData.dictionary([
+            "message": "kiosk_set_screensaver_mode",
+            "data": [
+                "mode": "clock",
+            ],
+        ])
+
+        let content = try LocalPushEvent(data: data).content(server: server)
+
+        XCTAssertEqual(content.userInfo["mode"] as? String, "clock")
+    }
+
     func testFullWithoutSound() {
         let event = LocalPushEvent(
             headers: [:],

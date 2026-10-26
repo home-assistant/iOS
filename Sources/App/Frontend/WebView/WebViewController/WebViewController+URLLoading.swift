@@ -29,8 +29,29 @@ extension WebViewController {
 
         NotificationCenter.default.addObserver(
             self,
+            selector: #selector(sceneDidEnterBackground(_:)),
+            name: UIScene.didEnterBackgroundNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(sceneDidActivate(_:)),
+            name: UIScene.didActivateNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
             selector: #selector(serverVersionDidChange(_:)),
             name: HomeAssistantAPI.serverVersionDidChangeNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(serverDidReauthenticate(_:)),
+            name: ServerReauthenticator.didReauthenticateNotification,
             object: nil
         )
 
@@ -59,6 +80,17 @@ extension WebViewController {
         }
     }
 
+    /// Assist opened from the Action Button or a Control Center control on a cold launch is presented over
+    /// the frontend before the frontend is ever on screen, so the appearance and activation events that
+    /// normally load the page pass while it is covered. Without a check once Assist closes, the stand-by
+    /// loader can stay up over a web view that never loaded, or whose watchdog ran while it was hidden.
+    /// Every step is safe to repeat, so a frontend that loaded fine behind Assist is left as it is.
+    func handleOverlayDismissed() {
+        webViewScriptMessageHandler.deliverDeferredMessages()
+        loadActiveURLIfNeeded()
+        overlayState?.frontendUncovered.send()
+    }
+
     /// How long an in-flight `loadActiveURLIfNeeded()` attempt may run before a new call treats it
     /// as hung and replaces it. Attempts normally finish in well under a second; the worst healthy
     /// case is two sequential network-info fetches (`webviewURL()` plus the kiosk dashboard URL),
@@ -69,6 +101,11 @@ extension WebViewController {
     @objc func loadActiveURLIfNeeded() {
         guard webView != nil else {
             Current.Log.info("not loading, web view not built yet")
+            return
+        }
+
+        guard !isRetired else {
+            Current.Log.info("not loading, retired")
             return
         }
 
@@ -104,8 +141,14 @@ extension WebViewController {
     }
 
     private func continueLoadingActiveURLIfNeeded() {
-        // Re-checked because the cache-clean check above is asynchronous: a log out landing while it
-        // was in flight would otherwise navigate back into the server from this completion.
+        // Re-checked because the cache-clean check above is asynchronous: a log out or a retirement
+        // landing while it was in flight would otherwise navigate back into the server from this
+        // completion.
+        guard !isRetired else {
+            Current.Log.info("not loading, retired")
+            return
+        }
+
         guard !didLogOut else {
             Current.Log.info("not loading, logged out of \(server.identifier.rawValue)")
             return
@@ -286,6 +329,46 @@ extension WebViewController {
             loadViewIfNeeded()
             overlayState?.externalNavigationRequests.send()
             load(request: URLRequest(url: target))
+        }
+    }
+
+    /// Sends the web view home after a navigation the frontend can't honor — a 404, a forbidden page, or a
+    /// malformed deeplink URL. Loads the frontend root (the kiosk dashboard when kiosk mode targets this
+    /// server, otherwise the server default) instead of leaving the user on a server error page or the
+    /// disconnected empty state.
+    ///
+    /// `failedURL` is the destination that failed. When it already is the root, the root itself is broken,
+    /// so we fall back to the normal empty state rather than bouncing into the same failure again.
+    func redirectToActiveURLRoot(failedURL: URL?) {
+        // Resolving the root can suspend for two network-state lookups. A newer redirect replaces this one,
+        // and the page the web view is on when the redirect is requested is captured so a navigation the
+        // user triggers meanwhile (a tap, a deep link) is not overwritten by this now-stale redirect.
+        redirectToRootTask?.cancel()
+        let urlWhenRequested = webView.url
+        redirectToRootTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let webviewURL = await server.webviewURL() else {
+                guard !Task.isCancelled else { return }
+                Current.Log.error("Cannot redirect to root, \(server.identifier.rawValue) has no active URL")
+                showNoActiveURLError()
+                return
+            }
+            let target = await kioskDashboardURL(for: webviewURL) ?? webviewURL
+            guard !Task.isCancelled, webView.url == urlWhenRequested else {
+                Current.Log.info("Skipping stale root redirect: a newer navigation took over")
+                return
+            }
+            switch Self.rootRedirectOutcome(target: target, failedURL: failedURL) {
+            case let .loadRoot(url):
+                Current.Log.info("redirecting web view to root after a disallowed navigation: \(url.path)")
+                loadViewIfNeeded()
+                overlayState?.externalNavigationRequests.send()
+                load(request: URLRequest(url: url))
+            case let .showEmptyState(failed):
+                Current.Log.error("Root \(target.path) itself failed to load; showing empty state instead of looping")
+                latestLoadError = Self.serverErrorLoadError(for: failed)
+                showEmptyState()
+            }
         }
     }
 

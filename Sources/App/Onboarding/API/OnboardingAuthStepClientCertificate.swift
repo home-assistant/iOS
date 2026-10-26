@@ -17,7 +17,7 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         Current.Log.info("[mTLS] OnboardingAuthStepClientCertificate starting")
-        return testConnection().then { [self] requiresClientCert -> Promise<Void> in
+        return Self.requiresClientCertificate(at: authDetails.url).then { [self] requiresClientCert -> Promise<Void> in
             Current.Log.info("[mTLS] Test result: requiresClientCert = \(requiresClientCert)")
             if requiresClientCert {
                 return promptForCertificate()
@@ -27,10 +27,10 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
         }
     }
 
-    private func testConnection() -> Promise<Bool> {
+    static func requiresClientCertificate(at url: URL) -> Promise<Bool> {
         Promise { seal in
             // Get base URL
-            var components = URLComponents(url: authDetails.url, resolvingAgainstBaseURL: false)
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
             components?.path = "/"
             components?.queryItems = nil
 

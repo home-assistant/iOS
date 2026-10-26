@@ -126,6 +126,15 @@ final class OnboardingE2ETests: XCTestCase {
         // No alert follows: location is already granted, so this step has nothing left to ask.
         tap(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen, "local access next button")
 
+        // The home network step is the one the user can leave again to change the choice.
+        tap(app.buttons[.onboardingHomeNetworkBack], timeout: Timeout.screen, "home network back button")
+        tap(
+            app.buttons[.onboardingLocalAccessSecureOption],
+            timeout: Timeout.screen,
+            "most secure local access option after going back"
+        )
+        tap(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen, "local access next button again")
+
         // Prefilled from the network the device reports, which is always "Simulator" here, so the
         // name only has to be accepted. Leaving it empty would stall the flow on a validation alert.
         tap(app.buttons[.onboardingHomeNetworkNext], timeout: Timeout.screen, "home network screen")
@@ -145,11 +154,10 @@ final class OnboardingE2ETests: XCTestCase {
     }
 
     private func openNativeSettingsFromFrontend() {
-        // Deliberately runs in the same session that just onboarded: that is the case the settings stack
-        // used to crash in. It was nested inside onboarding's own `NavigationStack`, and SwiftUI raised an
-        // unexpected error from `NavigationColumnState.boundPathChange` as soon as
-        // `AppSettingsPresenter.pushPath` gained its first element (and, on iOS 16, at the very first
-        // layout). The stack now wraps only the frontend, so nothing is nested and no relaunch is needed.
+        // Deliberately runs in the same session that just onboarded: that is the case app Settings used to
+        // crash in, when the stack it was pushed onto was nested inside onboarding's own `NavigationStack`
+        // and SwiftUI raised an unexpected error from `NavigationColumnState.boundPathChange`. Settings is
+        // a sheet with its own stack now, so nothing is nested and no relaunch is needed.
 
         // The toggle reports a successful tap even when the page swallows it, so the sidebar opening
         // is the only thing worth believing.

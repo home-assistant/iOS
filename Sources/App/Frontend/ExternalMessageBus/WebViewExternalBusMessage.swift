@@ -2,7 +2,7 @@ import Foundation
 import Shared
 
 /// External Bus message types used by the web view integration.
-/// - See: Home Assistant External Bus docs: https://developers.home-assistant.io/docs/frontend/external-bus
+/// - See: Home Assistant External Bus docs: https://contributors.home-assistant.io/frontend/reference/external-bus/
 /// - See: Frontend implementation:
 /// https://github.com/home-assistant/frontend/blob/dev/src/external_app/external_messaging.ts
 enum WebViewExternalBusMessage: String, CaseIterable {
@@ -31,6 +31,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityAddToGetActions = "entity/add_to/get_actions"
     case entityAddTo = "entity/add_to"
     case cameraPlayerShow = "camera/show"
+    case webRTCStreamStart = "webrtc/stream/start"
+    case webRTCStreamStop = "webrtc/stream/stop"
     case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
     case sidebarShow = "sidebar/show"
     case moreInfoOpened = "more_info/opened"
@@ -40,7 +42,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
-            "hasSidebar": AppLabsFeature.macNativeSidebar.isEnabled || AppLabsFeature.iosNativeTabBar.isEnabled,
+            "hasSidebar": AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
             "canShareMatterDeviceToAppleHome": Current.matter.canShareDevice,
@@ -52,6 +54,9 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasAssist": true,
             "hasAssistSettings": true,
             "hasCameraPlayer": !Current.isCatalyst,
+            "webrtc": [
+                "hasCameraMicrophoneStream": !Current.isCatalyst,
+            ],
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
@@ -72,4 +77,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
     case showNotifications = "notifications/show"
+    case webRTCStreamStopped = "webrtc/stream/stopped"
 }

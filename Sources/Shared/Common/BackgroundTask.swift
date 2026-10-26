@@ -19,8 +19,9 @@ public enum BackgroundTask: String {
     case webhookInvoke = "webhook-invoke"
     case manualLocationUpdate = "manual-location-update"
     case signaledUpdateSensors = "signaled-update-sensors"
+    case coalescedSensorSignal = "coalesced-sensor-signal"
+    case sensorUpdateRetry = "sensor-update-retry"
     case connectApi = "connect-api"
-    case realmWrite = "realm-write"
     case pushLocationRequest = "push-location-request"
     case remindersSync = "reminders-sync"
     case legacyModelCleanup = "legacy-model-cleanup"
@@ -33,13 +34,27 @@ public enum BackgroundTask: String {
 
 public enum BackgroundTaskError: Error {
     case outOfTime
+    /// The system refused the assertion, so the wrapped work was not started.
+    case denied
 }
 
 public protocol HomeAssistantBackgroundTaskRunner {
+    /// With `requiringAssertion`, the work is skipped and `.denied` returned when the system refuses
+    /// the assertion; database work started without one can be frozen holding the file lock.
+    func callAsFunction<PromiseValue>(
+        withName name: String,
+        requiringAssertion: Bool,
+        wrapping: (TimeInterval?) -> Promise<PromiseValue>
+    ) -> Promise<PromiseValue>
+}
+
+public extension HomeAssistantBackgroundTaskRunner {
     func callAsFunction<PromiseValue>(
         withName name: String,
         wrapping: (TimeInterval?) -> Promise<PromiseValue>
-    ) -> Promise<PromiseValue>
+    ) -> Promise<PromiseValue> {
+        callAsFunction(withName: name, requiringAssertion: false, wrapping: wrapping)
+    }
 }
 
 // enum for namespacing
@@ -48,6 +63,7 @@ public enum HomeAssistantBackgroundTask {
         withName name: String,
         beginBackgroundTask: (String, @escaping () -> Void) -> (IdentifierType?, TimeInterval?),
         endBackgroundTask: @escaping (IdentifierType) -> Void,
+        requiresAssertion: Bool = false,
         wrapping: (TimeInterval?) -> Promise<ReturnType>
     ) -> Promise<ReturnType> {
         func describe(_ identifier: IdentifierType?) -> String {
@@ -96,6 +112,11 @@ public enum HomeAssistantBackgroundTask {
                 // give it a run loop, since we want the promise's e.g. completion handlers to be invoked first
                 DispatchQueue.main.async { endBackgroundTask() }
             }
+        }
+
+        if requiresAssertion, identifier == nil {
+            Current.Log.error("background task \(name) was denied; not starting its work")
+            return Promise(error: BackgroundTaskError.denied)
         }
 
         // make sure we only invoke the promise-returning block once, in case it has side-effects
