@@ -168,6 +168,49 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertEqual(sut.chatItems.first?.itemType, .output)
     }
 
+    /// The intent-end response holds only the final assistant message, so the text the agent wrote
+    /// before a tool call must survive it, in the same bubble and after a paragraph break.
+    @MainActor
+    func testIntentEndKeepsTextStreamedBeforeToolCall() {
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("Let me check the weather for you.")
+        // The tool result delta carries no text.
+        sut.didReceiveStreamResponseChunk("")
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("It is 21 degrees ")
+        sut.didReceiveStreamResponseChunk("in Utrecht.")
+        sut.didReceiveIntentEndContent("It is 21 degrees in Utrecht.")
+
+        XCTAssertEqual(sut.chatItems.map(\.itemType), [.output])
+        XCTAssertEqual(sut.chatItems.last?.content, "Let me check the weather for you.\n\nIt is 21 degrees in Utrecht.")
+    }
+
+    @MainActor
+    func testIntentEndDoesNotDuplicateFullyStreamedReply() {
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("The lights ")
+        sut.didReceiveStreamResponseChunk("are on.")
+        sut.didReceiveIntentEndContent("The lights are on.")
+
+        XCTAssertEqual(sut.chatItems.map(\.content), ["The lights are on."])
+    }
+
+    @MainActor
+    func testIntentEndAppendsResponseThatWasNotStreamed() {
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("Let me check.")
+        sut.didReceiveIntentEndContent("Done.")
+
+        XCTAssertEqual(sut.chatItems.map(\.content), ["Let me check.\n\nDone."])
+    }
+
+    func testJoinWithParagraphBreakCountsExistingLineBreaks() {
+        XCTAssertEqual(AssistViewModel.joinWithParagraphBreak("A", "B"), "A\n\nB")
+        XCTAssertEqual(AssistViewModel.joinWithParagraphBreak("A\n", "B"), "A\n\nB")
+        XCTAssertEqual(AssistViewModel.joinWithParagraphBreak("A\n\n", "B"), "A\n\nB")
+        XCTAssertEqual(AssistViewModel.joinWithParagraphBreak("", "B"), "B")
+    }
+
     @MainActor
     func testDidReceiveSttContent() {
         sut.didReceiveSttContent("test")

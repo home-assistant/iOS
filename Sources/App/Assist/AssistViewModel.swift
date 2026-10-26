@@ -47,6 +47,10 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var speechTranscriber: (any SpeechTranscriberProtocol)?
     private var speechSynthesizer: (any SpeechSynthesizerProtocol)?
     private var voiceInitiatedRequest = false
+    /// The next streamed text opens a new assistant message, so it goes after a paragraph break.
+    private var streamedMessageStartPending = false
+    /// The text of the assistant message streaming now, to tell whether the final response is new.
+    private var latestStreamedMessage = ""
     /// How far back through the sent requests the user has walked, newest first; nil while they are
     /// still on their own draft.
     private var requestHistoryOffset: Int?
@@ -539,13 +543,35 @@ extension AssistViewModel: AudioRecorderDelegate {
 }
 
 extension AssistViewModel: AssistServiceDelegate {
+    func didStartStreamResponseMessage() {
+        streamedMessageStartPending = true
+        latestStreamedMessage = ""
+    }
+
     func didReceiveStreamResponseChunk(_ content: String) {
-        if let lastItemInList = chatItems.last, lastItemInList.itemType == .output {
-            let newContent = lastItemInList.content + content
-            appendToChat(.init(content: newContent, itemType: .output))
+        var text = streamedOutput
+        if streamedMessageStartPending, !content.isEmpty {
+            text = Self.joinWithParagraphBreak(text, content)
+            streamedMessageStartPending = false
         } else {
-            appendToChat(.init(content: content, itemType: .output))
+            text += content
         }
+        latestStreamedMessage += content
+        appendToChat(.init(content: text, itemType: .output))
+    }
+
+    /// The text streamed so far in this turn, if the last chat item is the streamed output.
+    private var streamedOutput: String {
+        guard let lastItemInList = chatItems.last, lastItemInList.itemType == .output else { return "" }
+        return lastItemInList.content
+    }
+
+    /// Joins two assistant messages with a paragraph break, as the frontend does, counting any line
+    /// breaks the two texts already have at the seam.
+    static func joinWithParagraphBreak(_ previous: String, _ next: String) -> String {
+        guard !previous.isEmpty, !next.isEmpty else { return previous + next }
+        let newlines = previous.reversed().prefix(while: \.isNewline).count + next.prefix(while: \.isNewline).count
+        return previous + String(repeating: "\n", count: max(0, 2 - newlines)) + next
     }
 
     func didReceiveEvent(_ event: AssistEvent) {
@@ -559,7 +585,21 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveIntentEndContent(_ content: String) {
-        appendToChat(.init(content: content, itemType: .output))
+        // The response holds only the final assistant message, so it is merged into the streamed
+        // text instead of replacing it: otherwise the text written before a tool call is lost.
+        let streamed = streamedOutput
+        let text: String
+        if streamed.isEmpty {
+            text = content
+        } else if latestStreamedMessage.trimmingCharacters(in: .whitespacesAndNewlines) ==
+            content.trimmingCharacters(in: .whitespacesAndNewlines) {
+            text = streamed
+        } else {
+            text = Self.joinWithParagraphBreak(streamed, content)
+        }
+        streamedMessageStartPending = false
+        latestStreamedMessage = ""
+        appendToChat(.init(content: text, itemType: .output))
         if configuration.enableOnDeviceTTS, !configuration.muteTTS, voiceInitiatedRequest {
             speakWithOnDeviceTTS(content)
         }
