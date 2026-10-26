@@ -35,14 +35,14 @@ public final class HingeObserver: ObservableObject {
     }
 
     public var pose: DevicePose? {
-        state.map { DevicePose(status: $0.status, uiDeviceOrientationRawValue: deviceOrientationRawValue) }
+        state.map { DevicePose(state: $0, uiDeviceOrientationRawValue: deviceOrientationRawValue) }
     }
 
     public var posePublisher: AnyPublisher<DevicePose?, Never> {
         $state
             .combineLatest($deviceOrientationRawValue)
             .map { state, orientation in
-                state.map { DevicePose(status: $0.status, uiDeviceOrientationRawValue: orientation) }
+                state.map { DevicePose(state: $0, uiDeviceOrientationRawValue: orientation) }
             }
             .eraseToAnyPublisher()
     }

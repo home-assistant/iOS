@@ -1,3 +1,7 @@
+#if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+import HomeKit
+import Matter
+#endif
 #if canImport(MatterSupport)
 import MatterSupport
 #endif
@@ -28,6 +32,19 @@ public class MatterWrapper {
         return false
         #endif
     }
+
+    /// Ignores signing: without the entitlements it is still true and the call fails.
+    /// Lazy, so the extensions never query HomeKit.
+    public lazy var canShareDevice: Bool = {
+        #if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 27, *) {
+            return HMAccessorySetupManager.isSupported
+        }
+        return true
+        #else
+        return false
+        #endif
+    }()
 
     #if os(iOS)
     public var threadClientService: ThreadClientProtocol = ThreadClientService()
@@ -66,6 +83,73 @@ public class MatterWrapper {
         #else
         return .value(nil)
         #endif
+    }
+
+    public var shareDevice: @MainActor (_ request: MatterShareRequest) async throws -> Void = { request in
+        #if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+        guard let setupRequest = MatterWrapper.accessorySetupRequest(for: request) else {
+            throw MatterShareError.invalidRequest
+        }
+        // Throws unless setup finished; the returned accessories mean nothing to Home Assistant.
+        _ = try await HMAccessorySetupManager().performAccessorySetup(using: setupRequest)
+        #else
+        throw MatterShareError.unsupported
+        #endif
+    }
+
+    #if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+    static func accessorySetupRequest(for request: MatterShareRequest) -> HMAccessorySetupRequest? {
+        guard let payload = setupPayload(for: request) else {
+            return nil
+        }
+        let setupRequest = HMAccessorySetupRequest()
+        setupRequest.matterPayload = payload
+        setupRequest.suggestedAccessoryName = request.deviceName
+        return setupRequest
+    }
+
+    static func setupPayload(for request: MatterShareRequest) -> MTRSetupPayload? {
+        switch request.window {
+        case let .values(passcode, discriminator, vendorID, productID):
+            let payload = MTRSetupPayload(
+                setupPasscode: NSNumber(value: passcode),
+                discriminator: NSNumber(value: discriminator)
+            )
+            payload.hasShortDiscriminator = false
+            // The values carry no discovery capability; Home Assistant opens windows on the operational network.
+            payload.discoveryCapabilities = .onNetwork
+            if let vendorID {
+                payload.vendorID = NSNumber(value: vendorID)
+            }
+            if let productID {
+                payload.productID = NSNumber(value: productID)
+            }
+            return payload
+        case let .setupCode(setupCode):
+            if #available(iOS 17.6, *) {
+                return MTRSetupPayload(payload: setupCode)
+            }
+            return try? MTRSetupPayload(onboardingPayload: setupCode)
+        }
+    }
+    #endif
+
+    /// No system text in the message: it is localized, and the frontend reads only the code.
+    public static func shareError(for error: Error) -> WebSocketMessage.ResultError {
+        #if canImport(HomeKit) && canImport(Matter) && os(iOS) && !targetEnvironment(macCatalyst)
+        if let error = error as? HMError, error.code == .operationCancelled {
+            return .canceled("the user dismissed the setup sheet")
+        }
+        #endif
+        return .failed("sharing the device failed: \(Self.diagnostic(for: error))")
+    }
+
+    private static func diagnostic(for error: Error) -> String {
+        if let error = error as? MatterShareError {
+            return error.description
+        }
+        let error = error as NSError
+        return "\(error.domain) \(error.code)"
     }
     #endif
 }
