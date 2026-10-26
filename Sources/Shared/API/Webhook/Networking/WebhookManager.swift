@@ -359,6 +359,10 @@ public class WebhookManager: NSObject {
             Current.Log.info("dropping webhook \(request.type) while connections are suspended")
             return Promise(error: WebhookError.connectionsSuspended)
         }
+        if let held = heldBack(request, to: server) {
+            return held
+        }
+
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [dataQueue] in
@@ -414,6 +418,10 @@ public class WebhookManager: NSObject {
             Current.Log.info("dropping passive webhook \(request.type) while connections are suspended")
             return Promise(error: WebhookError.connectionsSuspended)
         }
+        if let held = heldBack(request, to: server) {
+            return held
+        }
+
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [self] in
@@ -428,6 +436,14 @@ public class WebhookManager: NSObject {
         }
 
         return promise
+    }
+
+    private func heldBack(_ request: WebhookRequest, to server: Server) -> Promise<Void>? {
+        let ownership = RegistrationOwnership()
+        guard ownership.holdsBack(request, to: server) else { return nil }
+        Current.Log.info("holding back \(request.type) to \(server.identifier): its registration is another device's")
+        ownership.noteHeldBack(by: server)
+        return Promise(error: RegistrationOwnershipError.registeredByAnotherDevice)
     }
 
     private func send(

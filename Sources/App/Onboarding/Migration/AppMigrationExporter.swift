@@ -9,7 +9,7 @@ import Shared
 struct AppMigrationExporter {
     /// Values the new app generates for itself and must not inherit. The push token belongs to the
     /// previous app's bundle and would be rejected for the new one.
-    static let excludedDefaultsKeys: Set<String> = Set(["pushID", "FASTLANE_SNAPSHOT"])
+    static let excludedDefaultsKeys: Set<String> = Set(["pushID", "FASTLANE_SNAPSHOT", "E2E_VENDOR_IDENTIFIER"])
         .union(AppMigrationHandoffStore.defaultsKeys)
 
     /// Server caches the new app refills on its first connection, and histories not worth carrying:

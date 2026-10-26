@@ -234,6 +234,7 @@ final class AppMigrationCoordinator: ObservableObject {
                 self.session = nil
                 importState = nil
                 completedSummary = summary
+                dependencies.keepRegistrations(Current.servers.all)
                 dependencies.adoptPushRegistration()
             } catch {
                 Current.Log.error("App migration import failed: \(error)")

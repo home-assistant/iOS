@@ -1,5 +1,6 @@
 import Foundation
 @testable import HomeAssistant
+import PromiseKit
 @testable import Shared
 import Testing
 
@@ -254,6 +255,216 @@ struct ConnectionSettingsViewModelTests {
             let unreachable = ConnectionSettingsViewModel(server: makeServer(internalURL: nil, externalURL: nil))
             #expect(unreachable.invitationURL() == nil)
             #expect(!unreachable.canShareServer)
+        }
+    }
+
+    private func withRegistrationIdentifierRestored(_ body: () async throws -> Void) async rethrows {
+        let prefs = Current.settingsStore.prefs
+        let previousVendorID = Current.device.identifierForVendor
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationRecordsKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        defer {
+            Current.device.identifierForVendor = previousVendorID
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+        Current.device.identifierForVendor = { "this-device" }
+        try await body()
+    }
+
+    @Test func registeringAsANewDeviceRegistersWithThisServer() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                var registered = [Server]()
+                var titlesWhileRegistering = [String]()
+                var viewModel: ConnectionSettingsViewModel!
+                var signedIn = [Server]()
+                viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: {
+                        titlesWhileRegistering.append(viewModel.registerAsNewDeviceTitle)
+                        registered.append($0)
+                    }),
+                    signIn: { server, _ in signedIn.append(server) }
+                )
+                #expect(viewModel.registerAsNewDeviceTitle == L10n.Settings.ConnectionSection.RegisterAsNewDevice.title)
+
+                await viewModel.registerAsNewDevice()
+
+                #expect(signedIn == [server])
+                #expect(registered == [server])
+                #expect(titlesWhileRegistering == [L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress])
+                #expect(viewModel.registerAsNewDeviceError == nil)
+                #expect(!viewModel.isShowingRegisterAsNewDeviceError)
+                #expect(!viewModel.isRegisteringAsNewDevice)
+            }
+        }
+    }
+
+    @Test func confirmingRegistersAsANewDevice() async throws {
+        try await withTestWorld {
+            try await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                var registered = [Server]()
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { registered.append($0) }),
+                    signIn: { _, _ in }
+                )
+
+                viewModel.confirmRegisteringAsNewDevice()
+                #expect(viewModel.isRegisterAsNewDeviceConfirmationPresented)
+                #expect(registered.isEmpty)
+
+                viewModel.startRegisteringAsNewDevice()
+
+                for _ in 0 ..< 100 where registered.isEmpty {
+                    try await Task.sleep(for: .milliseconds(20))
+                }
+                #expect(registered == [server])
+            }
+        }
+    }
+
+    @Test func registeringAsANewDeviceReportsAFailure() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { server in
+                        throw ServerConnectionError.noActiveURL(server.info.name)
+                    }),
+                    signIn: { _, _ in }
+                )
+
+                await viewModel.registerAsNewDevice()
+
+                #expect(viewModel.registerAsNewDeviceError is ServerConnectionError)
+                #expect(viewModel.isShowingRegisterAsNewDeviceError)
+                #expect(!viewModel.isRegisteringAsNewDevice)
+            }
+        }
+    }
+
+    @Test func theLoginPageIsShownWhileSigningInAndTakenDownAfter() async throws {
+        try await withTestWorld {
+            try await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                let authDetails = try OnboardingAuthDetails(baseURL: URL(string: "http://internal.example.com:8123")!)
+                let login = OnboardingAuthLoginViewModel(authDetails: authDetails)
+                var shownWhileSigningIn: OnboardingAuthLoginViewModel?
+                var viewModel: ConnectionSettingsViewModel!
+                viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { _ in }),
+                    signIn: { _, present in
+                        present(login)
+                        shownWhileSigningIn = viewModel.login
+                        present(nil)
+                    }
+                )
+
+                await viewModel.registerAsNewDevice()
+
+                #expect(shownWhileSigningIn === login)
+                #expect(viewModel.login == nil)
+            }
+        }
+    }
+
+    @Test func cancellingTheLoginRegistersNothingAndReportsNothing() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                var registered = [Server]()
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { registered.append($0) }),
+                    signIn: { _, _ in throw PMKError.cancelled }
+                )
+
+                await viewModel.registerAsNewDevice()
+
+                #expect(registered.isEmpty)
+                #expect(viewModel.registerAsNewDeviceError == nil)
+                #expect(!viewModel.isShowingRegisterAsNewDeviceError)
+                #expect(!viewModel.isRegisteringAsNewDevice)
+            }
+        }
+    }
+
+    @Test func failingToSignInRegistersNothingAndReportsTheFailure() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                var registered = [Server]()
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(register: { registered.append($0) }),
+                    signIn: { server, _ in throw ServerConnectionError.noActiveURL(server.info.name) }
+                )
+
+                await viewModel.registerAsNewDevice()
+
+                #expect(registered.isEmpty)
+                #expect(viewModel.registerAsNewDeviceError is ServerConnectionError)
+                #expect(viewModel.isShowingRegisterAsNewDeviceError)
+            }
+        }
+    }
+
+    @Test func aServerStillAnotherDevicesOffersToReplaceItAndStopsOnceReplaced() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                let settings = Current.settingsStore
+                settings.setRegistrationRecord(
+                    RegistrationRecord(current: RegistrationIdentity(
+                        deviceID: settings.integrationDeviceID,
+                        ownerVendorID: "other-device"
+                    )),
+                    for: server.identifier
+                )
+                let viewModel = ConnectionSettingsViewModel(
+                    server: server,
+                    ownership: RegistrationOwnership(catchUp: { _ in }),
+                    signIn: { _, _ in }
+                )
+                #expect(viewModel.isRegisteredByAnotherDevice)
+
+                viewModel.confirmReplacingOldDevice()
+                #expect(viewModel.isReplaceOldDeviceConfirmationPresented)
+                viewModel.replaceOldDevice()
+
+                #expect(!viewModel.isRegisteredByAnotherDevice)
+                #expect(settings.currentRegistrationIdentity(for: server).ownerVendorID == "this-device")
+            }
+        }
+    }
+
+    @Test func aServerThisDeviceRegisteredOffersNothingToReplace() async {
+        await withTestWorld {
+            await withRegistrationIdentifierRestored {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                Current.settingsStore.setRegistrationRecord(
+                    RegistrationRecord(current: RegistrationIdentity(
+                        deviceID: Current.settingsStore.integrationDeviceID,
+                        ownerVendorID: "this-device"
+                    )),
+                    for: server.identifier
+                )
+
+                let viewModel = ConnectionSettingsViewModel(server: server, signIn: { _, _ in })
+
+                #expect(!viewModel.isRegisteredByAnotherDevice)
+            }
         }
     }
 

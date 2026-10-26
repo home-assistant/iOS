@@ -233,6 +233,311 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         XCTAssertFalse(request.isSaving)
     }
 
+    func testSigningInAgainKeepsTheDeviceTheServerHas() throws {
+        let home = Server.fake(identifier: "home") {
+            $0.instanceID = "instance-1"
+            $0.setSetting(value: "Zac's Phone 2", for: .overrideDeviceName)
+        }
+        let identity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: identity), for: "home")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Zac's Phone 2", identifier: "home-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server), identity)
+            XCTAssertEqual(api.server.info.setting(for: .overrideDeviceName), "Zac's Phone 2")
+        }
+    }
+
+    func testSigningInAtAnAddressSavedServersShareTakesNoneOfTheirDevices() throws {
+        let address = URL(string: "http://homeassistant.local:8123")
+        let home = Server.fake(identifier: "home") { $0.connection.set(address: address, for: .internal) }
+        let cabin = Server.fake(identifier: "cabin") { $0.connection.set(address: address, for: .internal) }
+
+        try withServers([home, cabin]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+            ), for: "home")
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "cabin-device-id", ownerVendorID: "this-device")
+            ), for: "cabin")
+            signIn(at: address)
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "cabin-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationRecord(for: api.server.identifier), RegistrationRecord())
+        }
+    }
+
+    func testSigningInAgainKeepsThisServersIdentityOverOneAnotherServerHas() throws {
+        let home = Server.fake(identifier: "instance-1")
+        let cabin = Server.fake(identifier: "cabin")
+        let homeIdentity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+
+        try withServers([home, cabin]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: homeIdentity), for: "instance-1")
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "this-device")
+            ), for: "cabin")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "old-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server), homeIdentity)
+        }
+    }
+
+    func testSigningInAgainToAServerAnotherDeviceIsRegisteredWithRegistersAnew() throws {
+        let home = Server.fake(identifier: "instance-1")
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+            ), for: "instance-1")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "old-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, "old-device-id")
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    func testSigningInAgainToADiscoveredServerAnotherDeviceIsRegisteredWithLeavesItsIdentity() throws {
+        let home = Server.fake(identifier: "home") { $0.instanceID = "instance-1" }
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device")
+            ), for: "home")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "old-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, "old-device-id")
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    func testSigningInAgainAfterRegisteringAnewFailedKeepsTheIdentityToRegisterUnder() throws {
+        let home = Server.fake(identifier: "instance-1")
+        let record = RegistrationRecord(
+            current: RegistrationIdentity(deviceID: "old-device-id", ownerVendorID: "other-device"),
+            pending: RegistrationIdentity(deviceID: "new-device-id", ownerVendorID: "this-device")
+        )
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(record, for: "instance-1")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "old-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationRecord(for: api.server.identifier), record)
+            XCTAssertTrue(RegistrationOwnership().isRegisteredByAnotherDevice(api.server))
+        }
+    }
+
+    func testSigningInWithAnotherDevicesIdentifierRegistersUnderOneOfItsOwn() throws {
+        try withServers([]) {
+            Current.settingsStore.prefs.set("other-device", forKey: SettingsStore.integrationDeviceIDKey)
+            let otherDevicesID = Current.settingsStore.integrationDeviceID
+            signIn(at: URL(string: "http://192.168.1.100:8123"))
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: otherDevicesID)]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, otherDevicesID)
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    func testSigningInAgainKeepsAnIdentityTheServersEntriesShare() throws {
+        let home = Server.fake(identifier: "instance-1") { $0.setSetting(value: "Phone", for: .overrideDeviceName) }
+        let olderEntry = Server.fake(identifier: "older-entry") {
+            $0.instanceID = "instance-1"
+            $0.setSetting(value: "Old Phone", for: .overrideDeviceName)
+        }
+        let shared = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+
+        try withServers([home, olderEntry]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: shared), for: "instance-1")
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(current: shared), for: "older-entry")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Old Phone", identifier: "home-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server), shared)
+            XCTAssertEqual(api.server.info.setting(for: .overrideDeviceName), "Old Phone")
+        }
+    }
+
+    func testSigningInAgainAfterARecoveryLeavesARegistrationAnotherDeviceOwns() throws {
+        let home = Server.fake(identifier: "home") {
+            $0.instanceID = "instance-1"
+            $0.token = ServerInfo.mirrorPlaceholderToken
+        }
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "other-device")
+            ), for: "home")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: "home-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, "home-device-id")
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    func testSigningInAgainToAServerAnotherDeviceOwnsTakesNoIdentifierItShares() throws {
+        let cabin = Server.fake(identifier: "cabin") { $0.instanceID = "instance-1" }
+
+        try withServers([cabin]) {
+            let shared = Current.settingsStore.integrationDeviceID
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: shared, ownerVendorID: "other-device")
+            ), for: "cabin")
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: shared)]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, shared)
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    func testSigningInAtAnAddressWithAnIdentifierAnotherServerHasAsAnotherDevicesTakesOneOfItsOwn() throws {
+        let cabin = Server.fake(identifier: "cabin")
+
+        try withServers([cabin]) {
+            let shared = Current.settingsStore.integrationDeviceID
+            Current.settingsStore.setRegistrationRecord(RegistrationRecord(
+                current: RegistrationIdentity(deviceID: shared, ownerVendorID: "other-device")
+            ), for: "cabin")
+            signIn(at: URL(string: "https://cabin.example.com"))
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Other Phone", identifier: shared)]))
+            XCTAssertNoThrow(try hang(result))
+
+            let identity = Current.settingsStore.registrationIdentity(for: api.server)
+            XCTAssertNotEqual(identity.deviceID, shared)
+            XCTAssertEqual(identity.ownerVendorID, "this-device")
+        }
+    }
+
+    func testSigningInAgainAfterAReinstallKeepsTheIdentifierKeptWithTheServer() throws {
+        let home = Server.fake(identifier: "instance-1") {
+            $0.setSetting(value: "home-device-id", for: .registeredDeviceID)
+        }
+
+        try withServers([home]) {
+            api = HomeAssistantAPI(server: .fake(identifier: "instance-1"))
+            api.connection = connection
+            step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: deviceName, identifier: "home-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server).deviceID, "home-device-id")
+        }
+    }
+
+    func testSigningInToAKnownServerWithoutItsDeviceKeepsItsIdentity() throws {
+        let home = Server.fake(identifier: "server-from-an-older-install") { $0.instanceID = "instance-1" }
+        let identity = RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+
+        try withServers([home]) {
+            Current.settingsStore.setRegistrationRecord(
+                RegistrationRecord(current: identity),
+                for: "server-from-an-older-install"
+            )
+            api = HomeAssistantAPI(server: .fake(identifier: "instance-1"))
+            api.connection = connection
+            step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(Current.settingsStore.registrationIdentity(for: api.server), identity)
+        }
+    }
+
+    private func withServers(_ servers: [Server], _ body: () throws -> Void) rethrows {
+        let previousServers = Current.servers
+        let previousVendorID = Current.device.identifierForVendor
+        let previousIsCatalyst = Current.isCatalyst
+        let prefs = Current.settingsStore.prefs
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationRecordsKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        defer {
+            Current.servers = previousServers
+            Current.device.identifierForVendor = previousVendorID
+            Current.isCatalyst = previousIsCatalyst
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+
+        let manager = FakeServerManager(initial: 0)
+        for server in servers {
+            manager.add(identifier: server.identifier, serverInfo: server.info)
+        }
+        Current.servers = manager
+        Current.device.identifierForVendor = { "this-device" }
+        Current.isCatalyst = false
+        keys.forEach(prefs.removeObject(forKey:))
+        try body()
+    }
+
+    private func discover(instance: String) {
+        api = HomeAssistantAPI(server: .fake(identifier: .init(rawValue: instance)))
+        api.connection = connection
+        step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
+    }
+
+    private func signIn(at address: URL?) {
+        let typedIn = Identifier<Server>(rawValue: DiscoveredHomeAssistant.autogeneratedUUIDPrefix + "typed-in")
+        api = HomeAssistantAPI(server: .fake(identifier: typedIn) {
+            $0.connection.set(address: address, for: .external)
+        })
+        api.connection = connection
+        step = OnboardingAuthStepDeviceNaming(api: api, presenter: presenter)
+    }
+
     private func expectErrorMessage(on request: OnboardingDeviceNameRequest) -> XCTestExpectation {
         let expectation = expectation(description: "error message")
         request.$errorMessage

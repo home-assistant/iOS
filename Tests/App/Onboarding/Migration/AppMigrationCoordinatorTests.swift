@@ -324,6 +324,24 @@ struct AppMigrationCoordinatorTests {
         }
         defer { Self.wipe(service: serversService) }
 
+        let previousVendor = Current.device.identifierForVendor
+        let vendorID = "ohf-app-vendor"
+        Current.device.identifierForVendor = { vendorID }
+        defer { Current.device.identifierForVendor = previousVendor }
+        for server in Current.servers.all {
+            Current.settingsStore.updateRegistrationRecord(for: server.identifier) { record in
+                record.current = RegistrationIdentity(
+                    deviceID: "transferred-device",
+                    ownerVendorID: "nabu-casa-app-vendor"
+                )
+            }
+        }
+        defer {
+            for server in Current.servers.all {
+                Current.settingsStore.updateRegistrationRecord(for: server.identifier) { $0 = RegistrationRecord() }
+            }
+        }
+
         let previousOpener = Opener()
         let newOpener = Opener()
         var released = 0
@@ -350,6 +368,10 @@ struct AppMigrationCoordinatorTests {
         previousApp.transfer()
         await expectEventually { newApp.completedSummary != nil }
         #expect(newApp.completedSummary?.serverNames.count == 2)
+        for server in Current.servers.all {
+            #expect(!RegistrationOwnership().isRegisteredByAnotherDevice(server))
+            #expect(Current.settingsStore.currentRegistrationIdentity(for: server).ownerVendorID == vendorID)
+        }
         #expect(ClientCertificateManager.shared.hasIdentity(for: certificate))
         assertLightDarkSnapshots(
             of: AppMigrationFlowView(coordinator: newApp, skipAction: {}, finishAction: {}),
