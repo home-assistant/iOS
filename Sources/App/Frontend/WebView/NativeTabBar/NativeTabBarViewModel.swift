@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import PromiseKit
 import Shared
 import SwiftUI
 
@@ -35,6 +36,8 @@ final class NativeTabBarViewModel: ObservableObject {
 
     /// The vertical bar draws its tabs out of process, so there is no spot on screen to zoom out of.
     var usesVerticalBar = false
+    /// The coordinator of the window this tab bar lives in, so switching servers from it stays in that window.
+    var appCoordinator: () -> Guarantee<AppCoordinator> = { Current.sceneManager.appCoordinator }
 
     private let allServers: () -> [Server]
     private let extrasStore: NativeTabBarExtrasStore
@@ -246,7 +249,7 @@ final class NativeTabBarViewModel: ObservableObject {
 
     func open(server: Server) {
         guard server.identifier != sidebar.server.identifier else { return }
-        Current.sceneManager.appCoordinator.done { $0.open(server: server) }
+        appCoordinator().done { $0.open(server: server) }
     }
 
     func open(serverIdentifier: Identifier<Server>) {

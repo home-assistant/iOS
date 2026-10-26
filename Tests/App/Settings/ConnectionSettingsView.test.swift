@@ -19,6 +19,23 @@ struct ConnectionSettingsViewTests {
         #expect(ConnectionSettingsView.settingsSearchEntries.contains { $0.matches(searchQuery: "re-auth") })
     }
 
+    /// Open hands the server to the coordinator; outside a window's Settings sheet that is the app-wide one.
+    @Test func openingTheServerActivatesIt() async {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 0)
+        let server = Server.fake()
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+
+        await withCheckedContinuation { continuation in
+            coordinator.onActivateServer = { continuation.resume() }
+            ConnectionSettingsView(server: server).openServer()
+        }
+
+        #expect(coordinator.activatedServers.map(\.identifier) == [server.identifier])
+    }
+
     /// While a Re-authenticate runs, its row shows progress instead of the button title.
     @Test func serverConnectionScreenWhileReauthenticating() async throws {
         let reauthentication = ServerReauthenticationModel()

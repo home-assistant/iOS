@@ -21,6 +21,7 @@ final class MockAppCoordinator: AppCoordinator {
     var onShowSettings: (() -> Void)?
     var onShowAssistSettings: (() -> Void)?
     var onOpenServer: (() -> Void)?
+    var onActivateServer: (() -> Void)?
 
     var presentedViewController: UIViewController?
     var window: UIWindow?
@@ -54,6 +55,7 @@ final class MockAppCoordinator: AppCoordinator {
 
     func activate(server: Server) {
         activatedServers.append(server)
+        onActivateServer?()
     }
 
     func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void) {

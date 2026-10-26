@@ -333,12 +333,14 @@ final class ConnectionSettingsViewModel: ObservableObject {
         return invitationURL
     }
 
-    func activateServer() {
+    func activateServer(on coordinator: AppCoordinator?) {
         if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
             Task { [weak self] in
                 guard let self, let url = await server.activeURL() else { return }
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
+        } else if let coordinator {
+            coordinator.activate(server: server)
         } else {
             Current.sceneManager.appCoordinator.done {
                 $0.activate(server: self.server)
