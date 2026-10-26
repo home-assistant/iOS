@@ -876,6 +876,7 @@
 				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntity.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/ControlOpenEntityValueProvider.swift,
 				Widgets/Controls/OpenEntity/ControlOpenEntity/OpenEntityAppIntent.swift,
+				Widgets/Controls/OpenHomeAssistant/OpenHomeAssistantAppIntent.swift,
 				Widgets/Controls/Switch/IntentSwitchEntity.swift,
 				Widgets/Controls/Switch/SwitchIntent.swift,
 				Widgets/Custom/AppIntents/AppIntentHaptics.swift,

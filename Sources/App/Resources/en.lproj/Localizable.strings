@@ -245,6 +245,8 @@
 "app_intents.open_close.title" = "Open or close";
 "app_intents.open_experimental_dashboard.description" = "Opens the experimental dashboard";
 "app_intents.open_experimental_dashboard.title" = "Open Experimental Dashboard";
+"app_intents.open_home_assistant.description" = "Opens the Home Assistant app";
+"app_intents.open_home_assistant.title" = "Open Home Assistant";
 "app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action.title" = "Action";
 "app_intents.perform_action.action_parameter_configuration" = "Which action?";
