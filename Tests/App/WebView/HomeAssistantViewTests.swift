@@ -34,6 +34,77 @@ final class HomeAssistantViewTests: XCTestCase {
         XCTAssertTrue(coordinator.selectServerZoomedFromStandBy)
     }
 
+    /// Picking a server in the stand-by view's empty state activates it through the coordinator; without a
+    /// window to resolve a scene from, that is the app-wide one.
+    func testActivatingAServerGoesThroughTheCoordinator() {
+        let sut = HomeAssistantViewModel(server: Server.fake())
+        let other = Server.fake()
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        let activated = expectation(description: "server activated")
+        coordinator.onActivateServer = { activated.fulfill() }
+
+        sut.activate(server: other)
+
+        wait(for: [activated], timeout: 1)
+        XCTAssertEqual(coordinator.activatedServers.map(\.identifier), [other.identifier])
+    }
+
+    /// The tab bar's server menu resolves its coordinator from the frontend's window.
+    func testSwitchingServerFromTheTabBarGoesThroughTheCoordinator() {
+        let sut = HomeAssistantViewModel(server: Server.fake())
+        let other = Server.fake()
+        let coordinator = MockAppCoordinator()
+        Current.sceneManager.registerAppCoordinator(coordinator)
+        let opened = expectation(description: "server opened")
+        coordinator.onOpenServer = { opened.fulfill() }
+
+        sut.tabBar.open(server: other)
+
+        wait(for: [opened], timeout: 1)
+        XCTAssertEqual(coordinator.openedServers.map(\.identifier), [other.identifier])
+    }
+
+    /// Multi-window with the frontend detached (the tab bar's More list): switching from the tab bar still
+    /// reaches this window's coordinator, not the one that registered last.
+    func testWithTheFrontendDetachedTheTabBarSwitchesItsOwnWindow() {
+        let windowCoordinator = MockAppCoordinator()
+        let otherWindowCoordinator = MockAppCoordinator()
+        let sut = HomeAssistantViewModel(server: Server.fake(), appCoordinator: windowCoordinator)
+        let other = Server.fake()
+        Current.sceneManager.registerAppCoordinator(windowCoordinator)
+        Current.sceneManager.registerAppCoordinator(otherWindowCoordinator)
+        let opened = expectation(description: "server opened")
+        windowCoordinator.onOpenServer = { opened.fulfill() }
+
+        sut.tabBar.open(server: other)
+
+        wait(for: [opened], timeout: 1)
+        XCTAssertNil(sut.webViewController)
+        XCTAssertEqual(windowCoordinator.openedServers.map(\.identifier), [other.identifier])
+        XCTAssertTrue(otherWindowCoordinator.openedServers.isEmpty)
+    }
+
+    /// Multi-window with the frontend detached: picking a server in the stand-by view still activates it in
+    /// this window.
+    func testWithTheFrontendDetachedActivatingAServerStaysInItsOwnWindow() {
+        let windowCoordinator = MockAppCoordinator()
+        let otherWindowCoordinator = MockAppCoordinator()
+        let sut = HomeAssistantViewModel(server: Server.fake(), appCoordinator: windowCoordinator)
+        let other = Server.fake()
+        Current.sceneManager.registerAppCoordinator(windowCoordinator)
+        Current.sceneManager.registerAppCoordinator(otherWindowCoordinator)
+        let activated = expectation(description: "server activated")
+        windowCoordinator.onActivateServer = { activated.fulfill() }
+
+        sut.activate(server: other)
+
+        wait(for: [activated], timeout: 1)
+        XCTAssertNil(sut.webViewController)
+        XCTAssertEqual(windowCoordinator.activatedServers.map(\.identifier), [other.identifier])
+        XCTAssertTrue(otherWindowCoordinator.activatedServers.isEmpty)
+    }
+
     func testEachFrontendViewWiresItsControllerToItsOwnOverlayState() {
         let overlayStateA = WebFrontendOverlayState()
         let overlayStateB = WebFrontendOverlayState()
