@@ -242,7 +242,7 @@ class HingeObserverTests: XCTestCase {
         observer.setDeviceOrientation(rawValue: 4)
 
         cancellable.cancel()
-        XCTAssertEqual(received, [nil, .partiallyOpen, .book, .laptop])
+        XCTAssertEqual(received, [nil, .partiallyOpen, .book, .tent])
         XCTAssertEqual(observer.deviceOrientationRawValue, 4)
     }
 
