@@ -162,28 +162,29 @@ final class WebRTCViewPlayerViewModelTalkbackTests: XCTestCase {
         XCTAssertEqual(viewModel.talkbackState, .idle)
     }
 
-    /// The player view calls this when the scene goes to the background, so a session the app's
-    /// audio background mode would otherwise keep alive stops recording.
-    func testStopTalkbackHangsUpALiveMicrophone() throws {
+    /// The app keeps the audio background mode, so a session left running once the scene is in the
+    /// background would go on recording.
+    func testTheSceneGoingToTheBackgroundHangsUpTheMicrophone() throws {
         viewModel.start()
         viewModel.toggleTalkback()
         let session = try XCTUnwrap(sessions.first)
         session.connect(sessionId: "mic-session")
 
-        viewModel.stopTalkback()
+        viewModel.handleScenePhase(.background)
 
         XCTAssertEqual(session.stopCount, 1)
         XCTAssertEqual(viewModel.talkbackState, .idle)
     }
 
-    /// The microphone permission alert makes the scene inactive, which reaches the view model as
-    /// `handleAppBackgrounded`; that must not hang up the session the alert is asking about.
-    func testTheAppGoingInactiveKeepsTheMicrophone() throws {
+    /// The microphone permission alert makes the scene inactive; that must not hang up the session the
+    /// alert is asking about.
+    func testTheSceneGoingInactiveKeepsTheMicrophone() throws {
         viewModel.start()
         viewModel.toggleTalkback()
         let session = try XCTUnwrap(sessions.first)
 
-        viewModel.handleAppBackgrounded()
+        viewModel.handleScenePhase(.inactive)
+        viewModel.handleScenePhase(.active)
 
         XCTAssertEqual(session.stopCount, 0)
         XCTAssertEqual(viewModel.talkbackState, .connecting)

@@ -59,8 +59,8 @@ struct WebRTCVideoPlayerControlsView<Content: View>: View {
             }
             .overlay(alignment: .bottom) {
                 // A live microphone stays reachable when the rest of the controls are tapped away, so
-                // it can always be hung up.
-                if isTalkbackSupported, controlsVisible || talkbackState != .idle {
+                // it can always be hung up, and so does the reason it stopped when it fails.
+                if isTalkbackSupported, controlsVisible || talkbackState != .idle || talkbackError != nil {
                     WebRTCTalkbackButton(state: talkbackState, errorMessage: talkbackError, action: onToggleTalkback)
                         .padding(.horizontal, DesignSystem.Spaces.two)
                         .padding(.bottom, DesignSystem.Spaces.three)

@@ -91,9 +91,7 @@ class IncomingURLHandler {
                     return handle(url: destination)
                 }
                 presentOverFrontend { webViewController in
-                    let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
-                        ?? webViewController.server
-                    CameraOverlayPresenter.shared.show(entityId: entityId, server: server, on: webViewController)
+                    CameraOverlayPresenter.shared.show(entityId: entityId, serverId: serverId, on: webViewController)
                 }
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {

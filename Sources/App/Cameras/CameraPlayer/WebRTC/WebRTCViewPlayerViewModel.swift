@@ -236,6 +236,22 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         tearDownConnection()
     }
 
+    /// Follows the scene in and out of the foreground. Only a real trip to the background hangs up the
+    /// microphone: the permission alert it raises on first use makes the scene `.inactive` too.
+    func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            handleAppForegrounded()
+        case .background:
+            stopTalkback()
+            handleAppBackgrounded()
+        case .inactive:
+            handleAppBackgrounded()
+        @unknown default:
+            break
+        }
+    }
+
     /// Called when the app leaves the foreground. Nothing is torn down here: iOS keeps the app
     /// running for a short while, and a stream that survives a quick trip away should still be
     /// playing when the user comes back, as it is in the frontend.

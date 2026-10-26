@@ -48,16 +48,31 @@ struct WebRTCVideoPlayerControlsViewTests {
         )
     }
 
+    /// A microphone that fails while the controls are tapped away still says why.
+    @MainActor
+    @Test func errorWithControlsHidden() {
+        assertLightDarkSnapshots(
+            of: controls(
+                isTalkbackSupported: true,
+                talkbackState: .idle,
+                talkbackError: L10n.CameraMicrophone.Errors.connectionFailed,
+                controlsVisible: false
+            ),
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
     private func controls(
         isTalkbackSupported: Bool,
         talkbackState: WebRTCTalkbackState,
+        talkbackError: String? = nil,
         controlsVisible: Bool = true
     ) -> some View {
         WebRTCVideoPlayerControlsView(
             controlsVisible: .constant(controlsVisible),
             isTalkbackSupported: isTalkbackSupported,
             talkbackState: talkbackState,
-            talkbackError: nil,
+            talkbackError: talkbackError,
             isMuted: false,
             onToggleTalkback: {},
             onToggleMute: {}

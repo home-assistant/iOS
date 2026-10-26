@@ -41,14 +41,7 @@ struct CameraMJPEGPlayerView: View {
             }
 
             if isLoading {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .tint(.white)
-                    .scaleEffect(1.5)
-                    // Centered on the stream, which fills the screen, rather than between safe areas
-                    // that are uneven on some devices, such as iPhone Duo around its camera.
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .ignoresSafeArea()
+                CameraStreamLoadingView()
             }
 
             if let errorMessage {

@@ -54,14 +54,7 @@ struct CameraPlayerView: View {
             content
 
             if playback.isLoaderVisible(webRTCIsLoading: showLoader) {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .tint(.white)
-                    .scaleEffect(1.5)
-                    // Centered on the stream, which fills the screen, rather than between safe areas
-                    // that are uneven on some devices, such as iPhone Duo around its camera.
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .ignoresSafeArea()
+                CameraStreamLoadingView()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -92,8 +85,8 @@ struct CameraPlayerView: View {
                     // Kiosks are mostly iPads on a wall, where the time is worth having on screen
                     // with the status bar hidden. A phone's top row has no room to spare for it.
                     if horizontalSizeClass == .regular {
-                        TimelineView(.everyMinute) { context in
-                            Text(context.date, format: .dateTime.hour().minute())
+                        TimelineView(.everyMinute) { _ in
+                            Text(Current.date(), format: .dateTime.hour().minute())
                                 .font(DesignSystem.Font.subheadline.weight(.semibold))
                                 .monospacedDigit()
                                 .foregroundStyle(.white)

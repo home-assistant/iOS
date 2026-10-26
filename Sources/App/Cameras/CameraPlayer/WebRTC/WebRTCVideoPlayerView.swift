@@ -110,19 +110,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
             // page comes back; the peer connection here does not survive iOS suspending the app, so
             // returning to a dead stream restarts it rather than leaving a frozen frame on screen.
             .onChange(of: scenePhase) { phase in
-                switch phase {
-                case .active:
-                    viewModel.handleAppForegrounded()
-                case .background:
-                    // Only a real trip to the background hangs up the microphone: the permission
-                    // alert it raises on first use makes the scene `.inactive` too.
-                    viewModel.stopTalkback()
-                    viewModel.handleAppBackgrounded()
-                case .inactive:
-                    viewModel.handleAppBackgrounded()
-                @unknown default:
-                    break
-                }
+                viewModel.handleScenePhase(phase)
             }
         }
     }
