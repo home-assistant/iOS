@@ -33,25 +33,29 @@ extension WebViewController {
         showEmptyState()
     }
 
-    func performReauthentication(using urlType: ConnectionInfo.URLType) {
-        let reauthentication: ServerReauthentication
-        do {
-            reauthentication = try ServerReauthentication(server: server, urlType: urlType)
-        } catch {
-            Current.Log.error("Failed to create auth details for re-authentication: \(error)")
-            showReauthFailureAlert(error: error)
-            return
-        }
-
-        let loginController = UIHostingController(
-            rootView: OnboardingAuthLoginView(viewModel: reauthentication.viewModel, style: .modal)
-        )
-        loginController.isModalInPresentation = true
-        present(loginController, animated: true)
-
+    func performReauthentication(
+        using urlType: ConnectionInfo.URLType,
+        reauthenticator: ServerReauthenticator = ServerReauthenticator()
+    ) {
+        let server = server
         Task { @MainActor [weak self] in
+            var loginController: UIViewController?
             do {
-                try await reauthentication.signIn()
+                try await ServerReauthentication.signIn(
+                    to: server,
+                    using: urlType,
+                    reauthenticator: reauthenticator
+                ) { [weak self] viewModel in
+                    // Taken down below instead, so the outcome waits for the page to be gone.
+                    guard let self, let viewModel else { return }
+                    let controller = UIHostingController(rootView: OnboardingAuthLoginView(
+                        viewModel: viewModel,
+                        style: .modal
+                    ))
+                    controller.isModalInPresentation = true
+                    present(controller, animated: true)
+                    loginController = controller
+                }
                 await Self.dismiss(loginController)
                 self?.handleReauthenticated()
             } catch {
@@ -66,7 +70,8 @@ extension WebViewController {
         }
     }
 
-    private static func dismiss(_ controller: UIViewController) async {
+    private static func dismiss(_ controller: UIViewController?) async {
+        guard let controller else { return }
         await withCheckedContinuation { continuation in
             controller.dismiss(animated: true) {
                 continuation.resume()

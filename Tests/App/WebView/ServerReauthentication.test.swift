@@ -2,39 +2,18 @@ import Foundation
 import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
-import OHHTTPStubs
-import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
 import Testing
 import WebKit
 
-// Serialized: the tests stub the token endpoint and share the cached APIs.
+// Serialized: the tests share the cached APIs.
 @Suite(.serialized)
 @MainActor
 struct ServerReauthenticationTests {
-    private static let tokenResponse: [String: Any] = [
-        "access_token": "new-access",
-        "refresh_token": "new-refresh",
-        "expires_in": 1800,
-        "token_type": "Bearer",
-    ]
+    private struct TokenRefused: Error {}
 
-    private func withTokenEndpoint(answering status: Int32 = 200, _ body: () async throws -> Void) async rethrows {
-        stub(condition: isPath("/auth/token")) { _ in
-            HTTPStubsResponse(jsonObject: Self.tokenResponse, statusCode: status, headers: nil)
-        }
-        defer { HTTPStubs.removeAllStubs() }
-        try await body()
-    }
-
-    private func completeLogin(on viewModel: OnboardingAuthLoginViewModel, code: String, redirectedTo: URL? = nil) {
-        if let redirectedTo {
-            viewModel.webView(
-                viewModel.webView,
-                decidePolicyFor: FakeWKNavigationAction(request: URLRequest(url: redirectedTo))
-            ) { _ in }
-        }
+    private func completeLogin(on viewModel: OnboardingAuthLoginViewModel, code: String) {
         let callback = URL(string: "homeassistant://auth-callback?code=\(code)")!
         viewModel.webView(
             viewModel.webView,
@@ -58,59 +37,87 @@ struct ServerReauthenticationTests {
         #expect(ServerReauthentication.loginURLType(for: none) == nil)
     }
 
-    @Test func signingInNeedsAnAddressOfTheTypeAsked() throws {
-        let server = Server.fake(identifier: "external-only")
-        #expect(throws: ServerConnectionError.self) {
-            try ServerReauthentication(server: server, urlType: .internal)
+    /// Asks for a client certificate only when told to, and answers the code with a fixed token unless told not to.
+    private func makeReauthenticator(
+        requiresClientCertificate: Bool = false,
+        refusesToken: Bool = false
+    ) -> ServerReauthenticator {
+        var reauthenticator = ServerReauthenticator()
+        reauthenticator.clientCertificateRequirement = { _ in .value(requiresClientCertificate) }
+        reauthenticator.fetchToken = { _, _, _, _ in
+            guard !refusesToken else { return Promise(error: TokenRefused()) }
+            return .value(TokenInfo(accessToken: "new-access", refreshToken: "new-refresh", expiration: .distantFuture))
         }
-        let reauthentication = try ServerReauthentication(server: server, urlType: .external)
-        #expect(reauthentication.viewModel.authDetails.url.host == "homeassistant.local")
+        return reauthenticator
     }
 
-    @Test func signingInStoresTheToken() async throws {
-        let server = Server.fake(identifier: "signed-in-again")
+    @Test func signingInThroughAnAddressTheServerDoesNotHaveFailsBeforeShowingAnything() async {
+        let server = Server.fake(identifier: "external-only")
+        var presented = [OnboardingAuthLoginViewModel?]()
 
-        try await withTokenEndpoint {
-            let reauthentication = try ServerReauthentication(server: server, urlType: .external)
-            completeLogin(on: reauthentication.viewModel, code: "abc")
-            try await reauthentication.signIn()
+        await #expect(throws: ServerConnectionError.self) {
+            try await ServerReauthentication.signIn(
+                to: server,
+                using: .internal,
+                reauthenticator: makeReauthenticator()
+            ) { presented.append($0) }
+        }
+        #expect(presented.allSatisfy { $0 == nil })
+    }
+
+    @Test func signingInShowsTheLoginPageStoresTheTokenAndTakesThePageDown() async throws {
+        let server = Server.fake(identifier: "signed-in-again")
+        var presented = [OnboardingAuthLoginViewModel?]()
+
+        try await ServerReauthentication.signIn(
+            to: server,
+            using: .external,
+            reauthenticator: makeReauthenticator()
+        ) { login in
+            presented.append(login)
+            if let login {
+                completeLogin(on: login, code: "abc")
+            }
         }
 
+        #expect(presented.count == 2)
+        #expect(presented.first??.authDetails.url.host == "homeassistant.local")
+        #expect(presented.last! == nil)
         #expect(server.info.token.accessToken == "new-access")
         #expect(server.info.token.refreshToken == "new-refresh")
-        #expect(server.info.connection.address(for: .external) == URL(string: "http://homeassistant.local:8123"))
     }
 
-    @Test func signingInKeepsTheAddressTheLoginEndedOn() async throws {
-        let server = Server.fake(identifier: "redirected")
-
-        try await withTokenEndpoint {
-            let reauthentication = try ServerReauthentication(server: server, urlType: .external)
-            completeLogin(
-                on: reauthentication.viewModel,
-                code: "abc",
-                redirectedTo: URL(string: "http://homeassistant.local:8124/auth/authorize")!
-            )
-            try await reauthentication.signIn()
-        }
-
-        #expect(server.info.connection.address(for: .external) == URL(string: "http://homeassistant.local:8124"))
-    }
-
-    @Test func aTokenTheServerRefusesIsAnError() async throws {
+    @Test func aTokenTheServerRefusesIsAnErrorAndLeavesTheOldOne() async {
         let server = Server.fake(identifier: "refused")
         let before = server.info.token
 
-        await withTokenEndpoint(answering: 500) {
-            let reauthentication = try? ServerReauthentication(server: server, urlType: .external)
-            guard let reauthentication else { return }
-            completeLogin(on: reauthentication.viewModel, code: "abc")
-            await #expect(throws: (any Error).self) {
-                try await reauthentication.signIn()
+        await #expect(throws: (any Error).self) {
+            try await ServerReauthentication.signIn(
+                to: server,
+                using: .external,
+                reauthenticator: makeReauthenticator(refusesToken: true)
+            ) { login in
+                if let login {
+                    completeLogin(on: login, code: "abc")
+                }
             }
         }
 
         #expect(server.info.token == before)
+    }
+
+    @Test func aServerAskingForAClientCertificateIsAnErrorNamingIt() async {
+        let server = Server.fake(identifier: "mtls")
+        var presented = [OnboardingAuthLoginViewModel?]()
+
+        await #expect(throws: ServerReauthenticationError.clientCertificateRequired(server.info.name)) {
+            try await ServerReauthentication.signIn(
+                to: server,
+                using: .external,
+                reauthenticator: makeReauthenticator(requiresClientCertificate: true)
+            ) { presented.append($0) }
+        }
+        #expect(presented.allSatisfy { $0 == nil })
     }
 
     @Test func signingInShowsTheLoginPageAndTakesItDownAfterCancelling() async {
@@ -119,7 +126,7 @@ struct ServerReauthenticationTests {
 
         var cancelled = false
         do {
-            try await ServerReauthentication.signIn(to: server) { login in
+            try await ServerReauthentication.signIn(to: server, reauthenticator: makeReauthenticator()) { login in
                 presented.append(login)
                 login?.cancel()
             }
@@ -140,7 +147,9 @@ struct ServerReauthenticationTests {
         var presentations = 0
 
         await #expect(throws: ServerConnectionError.self) {
-            try await ServerReauthentication.signIn(to: server) { _ in presentations += 1 }
+            try await ServerReauthentication.signIn(to: server, reauthenticator: makeReauthenticator()) { _ in
+                presentations += 1
+            }
         }
         #expect(presentations == 0)
     }

@@ -34,6 +34,11 @@ final class WebViewControllerReauthenticationTests: XCTestCase {
         return controller
     }
 
+    /// Skips the client certificate check, which would otherwise reach out to the server first.
+    private let reauthenticator = with(ServerReauthenticator()) {
+        $0.clientCertificateRequirement = { _ in .value(false) }
+    }
+
     private func presentedLogin(of controller: WebViewController) async -> OnboardingAuthLoginViewModel? {
         await waitUntil { controller.presentedViewController is UIHostingController<OnboardingAuthLoginView> }
         return (controller.presentedViewController as? UIHostingController<OnboardingAuthLoginView>)?.rootView.viewModel
@@ -42,7 +47,7 @@ final class WebViewControllerReauthenticationTests: XCTestCase {
     func testCancellingTheLoginTakesItDown() async throws {
         let sut = makeSUT()
 
-        sut.performReauthentication(using: .external)
+        sut.performReauthentication(using: .external, reauthenticator: reauthenticator)
         let presented = await presentedLogin(of: sut)
         let login = try XCTUnwrap(presented)
 
@@ -58,7 +63,7 @@ final class WebViewControllerReauthenticationTests: XCTestCase {
         }
         let sut = makeSUT()
 
-        sut.performReauthentication(using: .external)
+        sut.performReauthentication(using: .external, reauthenticator: reauthenticator)
         let presented = await presentedLogin(of: sut)
         let login = try XCTUnwrap(presented)
         let callback = try XCTUnwrap(URL(string: "homeassistant://auth-callback?code=abc"))
@@ -74,7 +79,7 @@ final class WebViewControllerReauthenticationTests: XCTestCase {
     func testAnAddressTheServerDoesNotHaveIsShownAsAnError() async {
         let sut = makeSUT()
 
-        sut.performReauthentication(using: .internal)
+        sut.performReauthentication(using: .internal, reauthenticator: reauthenticator)
         await waitUntil { sut.presentedViewController is UIAlertController }
 
         XCTAssertTrue(sut.presentedViewController is UIAlertController)
