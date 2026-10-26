@@ -6,6 +6,12 @@ import PromiseKit
 import XCTest
 
 class AuthenticationAPIActiveURLTests: XCTestCase {
+    func testSessionPresentsClientCertificatesEvenWhenNoneWasStoredAtInit() {
+        let api = AuthenticationAPI(server: Server.fake())
+
+        XCTAssertTrue(api.session.delegate is ClientCertificateSessionDelegate)
+    }
+
     /// Websocket auth waits on token refresh, so token refresh must never depend on the async
     /// network-info path: here that path hangs outright, and the refresh must still settle.
     func testRefreshTokenSettlesEvenWhenNetworkInfoRefreshHangs() {

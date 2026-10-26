@@ -522,6 +522,10 @@ public class WebhookManager: NSObject {
 
     // MARK: - Testing Connection Info
 
+    /// How long the URL check behind Save waits before giving up. The person is looking at a spinner, so an
+    /// unreachable address should fail in seconds rather than after the system default of a minute.
+    static let sendTestTimeout: TimeInterval = 15
+
     public func sendTest(server: Server, baseURL: URL) -> Promise<Void> {
         firstly {
             Self.urlRequest(
@@ -530,6 +534,8 @@ public class WebhookManager: NSObject {
                 baseURL: baseURL
             )
         }.then(on: dataQueue) { [self] urlRequest, data -> Promise<(Data, URLResponse)> in
+            var urlRequest = urlRequest
+            urlRequest.timeoutInterval = Self.sendTestTimeout
             let (promise, seal) = Promise<(Data, URLResponse)>.pending()
             let task = currentRegularSessionInfo.session.uploadTask(
                 with: urlRequest,

@@ -272,7 +272,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::tessie::entity::select::climate_state_seat_heater_third_row_left::state::off" = "Tắt";
 "component::tessie::entity::select::climate_state_seat_heater_third_row_right::state::off" = "Tắt";
 "component::text::title" = "Văn bản";
-"component::time::title" = "Time";
+"component::time::title" = "Thời gian";
 "component::timer::entity_component::_::state::active" = "Hoạt động";
 "component::timer::entity_component::_::state::idle" = "Nhàn rỗi";
 "component::timer::entity_component::_::state::paused" = "Đã tạm dừng";

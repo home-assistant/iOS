@@ -1063,6 +1063,8 @@ extension CarPlayAssistSession: AudioRecorderDelegate {
         }
         guard shouldHandle else { return }
         Current.Log.error("CarPlay Assist recording failed: \(error.localizedDescription)")
+        // The recorder has stopped, so abandon the run rather than leave the server waiting for audio.
+        assistService.cancelRun()
         enterErrorState(message: error.localizedDescription)
     }
 }

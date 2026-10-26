@@ -123,6 +123,38 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         XCTAssertEqual(recorder.lastSentRefreshToken, "ReauthenticatedRefreshToken")
     }
 
+    /// Re-authenticating while a refresh of the previous session is in flight stores a new session;
+    /// the refresh answering afterwards must not put the previous one back.
+    func testRefreshFinishingAfterReauthenticationKeepsTheNewSession() async {
+        stubRefreshToken(.success, delay: 0.5)
+        let server = Self.serverWithExpiredToken()
+        let tokenManager = TokenManager(server: server)
+
+        let refresh = tokenManager.bearerToken
+        await waitForRequest()
+        server.update { $0.token = Self.reauthenticatedToken }
+        _ = await settle(refresh)
+
+        XCTAssertEqual(server.info.token, Self.reauthenticatedToken)
+    }
+
+    /// The previous session being refused after the user already signed in again says nothing about
+    /// the new one, so it must not send them back to the login.
+    func testRefusalArrivingAfterReauthenticationDoesNotRequestReauthentication() async {
+        stubRefreshToken(.rejection, delay: 0.5)
+        let server = Self.serverWithExpiredToken()
+        let tokenManager = TokenManager(server: server)
+
+        let refresh = tokenManager.bearerToken
+        await waitForRequest()
+        server.update { $0.token = Self.reauthenticatedToken }
+        _ = await settle(refresh)
+
+        await waitForMainQueue()
+        XCTAssertEqual(recorder.reauthenticationCount, 0)
+        XCTAssertEqual(server.info.token, Self.reauthenticatedToken)
+    }
+
     /// Logging out revokes the refresh token along with the access token, so refreshing is as dead as
     /// re-sending the access token — and the app keeps running until the user signs back in.
     func testRevokedRefreshTokenIsNeverSent() async {
@@ -151,6 +183,38 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         _ = await settle(tokenManager.authDictionaryForWebView(forceRefresh: true))
 
         XCTAssertEqual(recorder.requestCount, 0)
+    }
+
+    /// With no request going out, the refusal is the only place the user can learn that this server
+    /// needs a login again; and every caller runs into it, so it is reported once rather than per call.
+    func testPlaceholderCredentialsRequestReauthenticationOnce() async {
+        stubRefreshToken(.rejection)
+        let server = Server.fake(update: { $0.token = ServerInfo.mirrorPlaceholderToken })
+        let tokenManager = TokenManager(server: server)
+
+        for _ in 0 ..< 3 {
+            let error = await assertRefused(tokenManager.bearerToken)
+            XCTAssertEqual(error as? TokenManager.TokenError, .reauthenticationRequired)
+        }
+        _ = await settle(tokenManager.authDictionaryForWebView(forceRefresh: true))
+
+        await waitForMainQueue()
+        XCTAssertEqual(recorder.reauthenticationCount, 1)
+        XCTAssertEqual(recorder.requestCount, 0)
+    }
+
+    /// A refresh token the server itself refused already raised the prompt from the server's answer,
+    /// and a revoked one belongs to a deliberate log out: neither is reported again from the refusal.
+    func testRevokedRefreshTokenDoesNotRequestReauthentication() async {
+        stubRefreshToken(.rejection)
+        let server = Server.fake()
+        let tokenManager = TokenManager(server: server)
+
+        tokenManager.handleTokenRevoked()
+        _ = await settle(tokenManager.bearerToken)
+
+        await waitForMainQueue()
+        XCTAssertEqual(recorder.reauthenticationCount, 0)
     }
 
     /// The Alamofire interceptor signs from the store, so a placeholder would otherwise go out as a
@@ -192,6 +256,22 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         })
     }
 
+    private static let reauthenticatedToken = TokenInfo(
+        accessToken: "ReauthenticatedAccessToken",
+        refreshToken: "ReauthenticatedRefreshToken",
+        expiration: Current.date().addingTimeInterval(1800)
+    )
+
+    /// Waits until the refresh request reached the stub, so a token stored afterwards lands while it
+    /// is in flight.
+    private func waitForRequest() async {
+        let deadline = Date(timeIntervalSinceNow: 30)
+        while recorder.requestCount == 0, Date() < deadline {
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertEqual(recorder.requestCount, 1)
+    }
+
     private enum RefreshOutcome {
         /// What Home Assistant answers for a refresh token it no longer has.
         case rejection
@@ -199,7 +279,7 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         case success
     }
 
-    private func stubRefreshToken(_ outcome: RefreshOutcome) {
+    private func stubRefreshToken(_ outcome: RefreshOutcome, delay: TimeInterval = 0) {
         if let stubDescriptor {
             HTTPStubs.removeStub(stubDescriptor)
         }
@@ -207,26 +287,29 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         stubDescriptor = stub(condition: { $0.url?.path == "/auth/token" }, response: { [recorder] request in
             recorder.recordRequest(body: request.ohhttpStubs_httpBody)
 
+            let response: HTTPStubsResponse
             switch outcome {
             case .rejection:
-                return HTTPStubsResponse(
+                response = HTTPStubsResponse(
                     jsonObject: ["error": "invalid_grant"],
                     statusCode: 400,
                     headers: nil
                 )
             case .serverError:
-                return HTTPStubsResponse(
+                response = HTTPStubsResponse(
                     jsonObject: ["error": "internal_error"],
                     statusCode: 500,
                     headers: nil
                 )
             case .success:
-                return HTTPStubsResponse(
+                response = HTTPStubsResponse(
                     jsonObject: ["access_token": "RefreshedAccessToken", "expires_in": 1800],
                     statusCode: 200,
                     headers: nil
                 )
             }
+            // Holds the answer back, for a refresh still in flight while something else happens.
+            return response.requestTime(0, responseTime: delay)
         })
     }
 
@@ -237,6 +320,13 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
             return .success(value)
         } catch {
             return .failure(error)
+        }
+    }
+
+    /// The missing-token report is dispatched to the main queue, so let whatever is queued there run.
+    private func waitForMainQueue() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
         }
     }
 
