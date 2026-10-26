@@ -317,11 +317,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
     }
 
     private static func setAllowsHapticsDuringRecording(_ allowed: Bool) {
-        do {
-            try AVAudioSession.sharedInstance().setAllowHapticsAndSystemSoundsDuringRecording(allowed)
-        } catch {
-            Current.Log.error("Failed to set haptics during recording to \(allowed): \(error)")
-        }
+        try? AVAudioSession.sharedInstance().setAllowHapticsAndSystemSoundsDuringRecording(allowed)
     }
 
     weak var delegate: WebRTCClientDelegate?
