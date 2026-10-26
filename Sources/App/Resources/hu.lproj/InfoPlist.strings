@@ -5,7 +5,7 @@
 "NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
 "NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Keresse meg és kommunikáljon az Home Asisstant példányával.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Engedélyt kell kérnünk arra, hogy mindig hozzáférhessünk a helymeghatározáshoz, így az alkalmazás háttérben is tud műveleteket végezni. \n\n ⚠️ Enélkül az alkalmazás nem tudja eldönteni, hogy a helyi vagy a távoli kapcsolatot használja-e a háttérben, és mindig a távolit fogja használni.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Engedélyezd a helyhozzáférést \"Mindig\" beállítással, hogy az alkalmazás frissíthesse a helyzetedet a Home Assistantben, és a háttérben választhasson a helyi és a távoli kapcsolat között.";
 "NSLocationAlwaysUsageDescription" = "Az olyan funkciókhoz, mint az iBeacons, a földrajzi kerítések, a háttérben történő helyfrissítések és a pontos jelentéskészítéshez mindig szükségünk van az Ön tartózkodási helyéhez való hozzáférésre.";
 "NSLocationUsageDescription" = "Ha engedélyezve van, az eszköz helyzete elküldésre kerül a Home Assistant szerverére eszközkövetőként.";
 "NSLocationWhenInUseUsageDescription" = "Ez az alkalmazás helyadatokhoz való hozzáférést igényel a Home Assistant telepítéséhez való közvetlen csatlakozáshoz. \n \n 1️⃣ Az Ön helyzete csak annak ellenőrzésére lesz használva, hogy csatlakozik-e a helyi hálózathoz.\n \n 2️⃣ Nem lesz megosztva senkivel.\n \n 3️⃣ Ha nem engedélyezi ezt, az alkalmazás mindig az interneten keresztül fog csatlakozni. Ha nincs konfigurálva, megvédi az adatait és megtagadja a kapcsolatot.";

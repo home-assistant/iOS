@@ -2890,7 +2890,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.naming.title") }
       }
       public enum NoFocus {
-        /// The sensor is empty once every Focus has ended. Its Is focused attribute also turns off, which needs the Focus permission.
+        /// The sensor reports Not focused once every Focus has ended. This needs the Focus permission, which is what tells the app a Focus is running at all.
         public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.no_focus.body") }
         /// When no Focus is on
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.no_focus.title") }
@@ -2908,7 +2908,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.reporting.title") }
       }
       public enum Unpaired {
-        /// iOS only runs the filter of a Focus it is added to, so add one to every Focus you want reported. While a Focus without a filter is on, the sensor is empty.
+        /// iOS only runs the filter of the Focus that starts, so add one to every Focus you want reported. A Focus without a filter leaves the previous name in place until a paired Focus starts or all of them end.
         public static var body: String { return L10n.tr("Localizable", "focus.how_it_works.unpaired.body") }
         /// Focuses without a filter
         public static var title: String { return L10n.tr("Localizable", "focus.how_it_works.unpaired.title") }
@@ -2933,7 +2933,7 @@ public enum L10n {
       public static var placeholder: String { return L10n.tr("Localizable", "focus.names.placeholder") }
     }
     public enum PermissionMissing {
-      /// Without it the app only sees the Focuses you added the filter to.
+      /// Without it the app cannot tell when every Focus has ended, so the last reported name keeps being sent.
       public static var body: String { return L10n.tr("Localizable", "focus.permission_missing.body") }
       /// Focus permission is off
       public static var title: String { return L10n.tr("Localizable", "focus.permission_missing.title") }
