@@ -141,6 +141,16 @@ struct HADynamicIslandSnapshotTests {
                 )
             ),
             (
+                // Servers send emoji here too; it must survive the scale-down.
+                "criticalTextEmoji",
+                .init(
+                    message: "Oven preheated",
+                    criticalText: "🔥 5 min",
+                    icon: "stove",
+                    color: "#F44336"
+                )
+            ),
+            (
                 "progress",
                 .init(
                     message: "Washing cycle",
