@@ -481,6 +481,19 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         return !remoteAudioTrack.isEnabled
     }
 
+    func localAudioLevel(completion: @escaping (_ audioLevel: Double?) -> Void) {
+        guard media.recordsMicrophone else {
+            completion(nil)
+            return
+        }
+        peerConnection.statistics { report in
+            let source = report.statistics.values.first {
+                $0.type == "media-source" && $0.values["kind"] as? String == "audio"
+            }
+            completion((source?.values["audioLevel"] as? NSNumber)?.doubleValue)
+        }
+    }
+
     /// Whether the peer connection can still carry media. iOS suspends the app after a short spell
     /// in the background and the connection does not survive that, so the player asks rather than
     /// assumes when it comes back to the foreground.

@@ -7,6 +7,7 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
     struct Timing {
         var connectionTimeout: TimeInterval
         var disconnectedGracePeriod: TimeInterval
+        var microphoneLevelInterval: TimeInterval = 0.1
 
         static let production = Timing(connectionTimeout: 25, disconnectedGracePeriod: 5)
     }
@@ -18,10 +19,16 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         case ended
     }
 
+    private enum MicrophoneLevel {
+        static let floorDecibels: Double = -60
+        static let minimumChange: Double = 0.02
+    }
+
     private typealias Command = WebRTCViewPlayerViewModel.Constants
 
     let cameraEntityId: String
     var onEnd: ((CameraMicrophoneError) -> Void)?
+    var onMicrophoneLevel: ((Double) -> Void)?
 
     var isConnected: Bool {
         state == .connected
@@ -42,6 +49,9 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
     private var pendingCandidates: [RTCIceCandidate] = []
     private var timeoutWorkItem: DispatchWorkItem?
     private var disconnectRecoveryWorkItem: DispatchWorkItem?
+    private var microphoneLevelTimer: DispatchSourceTimer?
+    private var isSamplingMicrophoneLevel = false
+    private var lastReportedMicrophoneLevel: Double?
 
     init(
         server: Server,
@@ -245,6 +255,7 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         state = .connected
         cancelTimeout()
         Current.Log.info("Camera microphone for \(cameraEntityId) is connected in session \(sessionId)")
+        startMicrophoneLevelSampling()
         let completion = startCompletion
         startCompletion = nil
         completion?(.success(sessionId))
@@ -267,6 +278,7 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
     private func tearDown() {
         cancelTimeout()
         cancelDisconnectRecovery()
+        stopMicrophoneLevelSampling()
         connectionGate?.cancel()
         connectionGate = nil
         offerSubscription?.cancel()
@@ -307,6 +319,61 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
     private func cancelDisconnectRecovery() {
         disconnectRecoveryWorkItem?.cancel()
         disconnectRecoveryWorkItem = nil
+    }
+
+    private func startMicrophoneLevelSampling() {
+        stopMicrophoneLevelSampling()
+        let timer = DispatchSource.makeTimerSource(queue: .main)
+        timer.schedule(
+            deadline: .now() + timing.microphoneLevelInterval,
+            repeating: timing.microphoneLevelInterval
+        )
+        timer.setEventHandler { [weak self] in
+            self?.sampleMicrophoneLevel()
+        }
+        microphoneLevelTimer = timer
+        timer.resume()
+    }
+
+    private func stopMicrophoneLevelSampling() {
+        microphoneLevelTimer?.cancel()
+        microphoneLevelTimer = nil
+        isSamplingMicrophoneLevel = false
+        lastReportedMicrophoneLevel = nil
+    }
+
+    private func sampleMicrophoneLevel() {
+        guard state == .connected, !isSamplingMicrophoneLevel, let client else { return }
+        isSamplingMicrophoneLevel = true
+        client.localAudioLevel { [weak self, weak client] audioLevel in
+            DispatchQueue.main.async {
+                guard let self, let client, client === self.client else { return }
+                isSamplingMicrophoneLevel = false
+                guard state == .connected, let audioLevel else { return }
+                reportMicrophoneLevel(Self.microphoneLevel(fromAudioLevel: audioLevel))
+            }
+        }
+    }
+
+    private func reportMicrophoneLevel(_ level: Double) {
+        if let lastReportedMicrophoneLevel {
+            let changed = Self.hundredths(abs(level - lastReportedMicrophoneLevel)) >= MicrophoneLevel.minimumChange
+            let silenced = level == 0 && lastReportedMicrophoneLevel != 0
+            guard changed || silenced else { return }
+        }
+        lastReportedMicrophoneLevel = level
+        onMicrophoneLevel?(level)
+    }
+
+    static func microphoneLevel(fromAudioLevel audioLevel: Double) -> Double {
+        guard audioLevel > 0 else { return 0 }
+        let decibels = 20 * log10(audioLevel)
+        let level = (decibels - MicrophoneLevel.floorDecibels) / -MicrophoneLevel.floorDecibels
+        return hundredths(min(max(level, 0), 1))
+    }
+
+    private static func hundredths(_ value: Double) -> Double {
+        (value * 100).rounded() / 100
     }
 }
 

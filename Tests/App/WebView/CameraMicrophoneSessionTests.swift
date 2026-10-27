@@ -20,8 +20,14 @@ final class CameraMicrophoneSessionTests: XCTestCase {
     private var permissionRequests = 0
     private var startOutcomes: [StartOutcome] = []
     private var endErrors: [CameraMicrophoneError] = []
+    private var microphoneLevels: [Double] = []
 
     private let patientTiming = CameraMicrophoneSession.Timing(connectionTimeout: 30, disconnectedGracePeriod: 30)
+    private let samplingTiming = CameraMicrophoneSession.Timing(
+        connectionTimeout: 30,
+        disconnectedGracePeriod: 30,
+        microphoneLevelInterval: 0.02
+    )
 
     private let clientConfiguration: [String: Any] = [
         "configuration": [
@@ -47,6 +53,7 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         permissionRequests = 0
         startOutcomes = []
         endErrors = []
+        microphoneLevels = []
         session = makeSession(timing: patientTiming)
     }
 
@@ -372,6 +379,86 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         XCTAssertTrue(session.isConnected)
     }
 
+    // MARK: - Microphone level
+
+    func testAConnectedSessionReportsTheMicrophoneLevel() throws {
+        session = makeSession(timing: samplingTiming)
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+        client.stubbedLocalAudioLevel = 0.1
+        connect(offer, client)
+
+        spinMain(until: { !microphoneLevels.isEmpty })
+
+        XCTAssertEqual(microphoneLevels.first, 0.67)
+    }
+
+    func testNoMicrophoneLevelIsReportedBeforeConnecting() throws {
+        session = makeSession(timing: samplingTiming)
+        _ = try startAndOffer()
+        try XCTUnwrap(clients.first).stubbedLocalAudioLevel = 0.1
+
+        spinMain(for: samplingTiming.microphoneLevelInterval * 5)
+
+        XCTAssertTrue(microphoneLevels.isEmpty)
+    }
+
+    func testOnlyMicrophoneLevelChangesAreReported() throws {
+        session = makeSession(timing: samplingTiming)
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+        client.stubbedLocalAudioLevel = 0.1
+        connect(offer, client)
+        spinMain(until: { !microphoneLevels.isEmpty })
+
+        client.stubbedLocalAudioLevel = 0.101
+        spinMain(for: samplingTiming.microphoneLevelInterval * 5)
+        XCTAssertEqual(microphoneLevels, [0.67])
+
+        client.stubbedLocalAudioLevel = 1
+        spinMain(until: { microphoneLevels.count == 2 })
+        client.stubbedLocalAudioLevel = 0
+        spinMain(until: { microphoneLevels.count == 3 })
+        spinMain(for: samplingTiming.microphoneLevelInterval * 5)
+
+        XCTAssertEqual(microphoneLevels, [0.67, 1, 0])
+    }
+
+    func testAClientWithoutAMicrophoneLevelReportsNothing() throws {
+        session = makeSession(timing: samplingTiming)
+        let offer = try startAndOffer()
+        try connect(offer, XCTUnwrap(clients.first))
+
+        spinMain(for: samplingTiming.microphoneLevelInterval * 5)
+
+        XCTAssertTrue(microphoneLevels.isEmpty)
+    }
+
+    func testTheMicrophoneLevelStopsWithTheSession() throws {
+        session = makeSession(timing: samplingTiming)
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+        client.stubbedLocalAudioLevel = 0.1
+        connect(offer, client)
+        spinMain(until: { !microphoneLevels.isEmpty })
+
+        session.stop()
+        client.stubbedLocalAudioLevel = 1
+        spinMain(for: samplingTiming.microphoneLevelInterval * 5)
+
+        XCTAssertEqual(microphoneLevels, [0.67])
+    }
+
+    func testTheAudioLevelMapsToALoudnessBetweenZeroAndOne() {
+        XCTAssertEqual(CameraMicrophoneSession.microphoneLevel(fromAudioLevel: 0), 0)
+        XCTAssertEqual(CameraMicrophoneSession.microphoneLevel(fromAudioLevel: 0.0001), 0)
+        XCTAssertEqual(CameraMicrophoneSession.microphoneLevel(fromAudioLevel: 0.001), 0)
+        XCTAssertEqual(CameraMicrophoneSession.microphoneLevel(fromAudioLevel: 0.01), 0.33)
+        XCTAssertEqual(CameraMicrophoneSession.microphoneLevel(fromAudioLevel: 0.1), 0.67)
+        XCTAssertEqual(CameraMicrophoneSession.microphoneLevel(fromAudioLevel: 1), 1)
+        XCTAssertEqual(CameraMicrophoneSession.microphoneLevel(fromAudioLevel: 2), 1)
+    }
+
     // MARK: - Stopping
 
     func testStopWhileAskingForTheMicrophoneNeverSignals() {
@@ -464,6 +551,9 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         )
         session.onEnd = { [weak self] error in
             self?.endErrors.append(error)
+        }
+        session.onMicrophoneLevel = { [weak self] level in
+            self?.microphoneLevels.append(level)
         }
         return session
     }

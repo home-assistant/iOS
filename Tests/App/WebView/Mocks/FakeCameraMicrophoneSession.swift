@@ -7,6 +7,7 @@ final class FakeCameraMicrophoneSession: CameraMicrophoneSessionProtocol {
     var sessionId: String?
     var isConnected = false
     var onEnd: ((CameraMicrophoneError) -> Void)?
+    var onMicrophoneLevel: ((Double) -> Void)?
     private(set) var startCount = 0
     private(set) var stopCount = 0
     private var startCompletion: ((Result<String, CameraMicrophoneError>) -> Void)?
@@ -40,6 +41,10 @@ final class FakeCameraMicrophoneSession: CameraMicrophoneSessionProtocol {
     func end(_ error: CameraMicrophoneError) {
         isConnected = false
         onEnd?(error)
+    }
+
+    func reportMicrophoneLevel(_ level: Double) {
+        onMicrophoneLevel?(level)
     }
 
     private func resolveStart(_ result: Result<String, CameraMicrophoneError>) {

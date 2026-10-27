@@ -12,6 +12,7 @@ final class WebRTCFakeStreamClient: WebRTCStreamClient {
     let configuration: WebRTCClientConfiguration
     weak var delegate: WebRTCClientDelegate?
     var isConnectionAlive = true
+    var stubbedLocalAudioLevel: Double?
     var offerSDP = "v=0\r\no=- 1 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\n"
     private(set) var offerCount = 0
     private(set) var remoteDescriptions: [String] = []
@@ -57,6 +58,10 @@ final class WebRTCFakeStreamClient: WebRTCStreamClient {
 
     func isAudioMuted() -> Bool {
         isMuted
+    }
+
+    func localAudioLevel(completion: @escaping (_ audioLevel: Double?) -> Void) {
+        completion(stubbedLocalAudioLevel)
     }
 
     func closeConnection() {

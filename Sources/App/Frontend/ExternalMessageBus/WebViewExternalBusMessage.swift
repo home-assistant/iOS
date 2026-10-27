@@ -76,4 +76,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case kioskModeSet = "kiosk_mode/set"
     case showNotifications = "notifications/show"
     case webRTCStreamStopped = "webrtc/stream/stopped"
+    case webRTCStreamReport = "webrtc/stream/report"
 }
