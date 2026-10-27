@@ -79,7 +79,12 @@ package that has a newer release.
 python3 Tools/UpdateSwiftPackages.py                  # list packages with a newer release
 python3 Tools/UpdateSwiftPackages.py --apply GRDB.swift  # update one package
 python3 Tools/UpdateSwiftPackages.py --apply-all      # update every outdated package
+python3 Tools/UpdateSwiftPackages.py --json           # the outdated packages, for the workflow
 ```
+
+The workflow applies with `--apply <name> --to <target>`, the target being what `--json`
+reported, so a release that lands between discovery and the serialized update jobs does not
+change what a pull request says it updates to.
 
 **What it does:**
 1. Reads every `XCRemoteSwiftPackageReference` in `project.pbxproj` and the pins in the

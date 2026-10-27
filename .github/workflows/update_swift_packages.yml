@@ -59,7 +59,8 @@ jobs:
       - name: Update the package and resolve
         env:
           PACKAGE: ${{ matrix.package.name }}
-        run: python3 Tools/UpdateSwiftPackages.py --apply "$PACKAGE"
+          TARGET: ${{ matrix.package.target }}
+        run: python3 Tools/UpdateSwiftPackages.py --apply "$PACKAGE" --to "$TARGET"
 
       - name: Commit changes
         id: commit
@@ -101,6 +102,7 @@ jobs:
   close_stale_pull_requests:
     name: Close pull requests for packages that are current
     needs: find_updates
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write

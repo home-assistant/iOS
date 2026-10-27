@@ -11,6 +11,9 @@ Run with no arguments to list the packages that have a newer release.
 Run with `--apply <name>` to update one package (or `--apply-all` for every one):
 the project's requirement, the local packages that pin the same dependency, the
 resolved pins Xcode writes, and the `Package.resolved` mirror at the repository root.
+`--apply <name> --to <target>` applies the version (or branch revision) that an
+earlier `--json` run reported instead of whatever is newest at that moment, so a
+workflow that discovers first and applies later lands exactly what it announced.
 
 Only versioned requirements (`exactVersion`, `upToNextMajorVersion`,
 `upToNextMinorVersion`) and `branch` requirements are considered. A package pinned
@@ -93,6 +96,7 @@ class PackageReference:
             "kind": self.kind,
             "current": self.current,
             "latest": self.target,
+            "target": self.latest_revision if self.kind == "branch" else self.latest,
             "major": self.is_major_update,
             "manifests": [str(path.relative_to(REPO_ROOT)) for path in self.manifests],
         }
@@ -298,7 +302,10 @@ def main():
     parser.add_argument("--json", action="store_true", help="print the outdated packages as JSON")
     parser.add_argument("--apply", metavar="NAME", action="append", default=[], help="update this package")
     parser.add_argument("--apply-all", action="store_true", help="update every outdated package")
+    parser.add_argument("--to", metavar="TARGET", help="with a single --apply: the version or revision to apply")
     args = parser.parse_args()
+    if args.to and (len(args.apply) != 1 or args.apply_all):
+        parser.error("--to takes exactly one --apply and no --apply-all")
 
     references = read_references()
     attach_context(references, read_resolved_pins(), read_local_manifests())
@@ -324,6 +331,10 @@ def main():
         if reference is None:
             print(f"Unknown package {name}; known: {', '.join(sorted(by_name))}", file=sys.stderr)
             return 1
+        if args.to and reference.kind == "branch":
+            reference.latest_revision = args.to
+        elif args.to:
+            reference.latest = args.to
         if not reference.is_outdated:
             print(f"{name} is already up to date; nothing to do.")
             continue
