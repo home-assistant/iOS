@@ -1,6 +1,14 @@
 name: Update Swift Packages
 on:
   workflow_dispatch:
+    inputs:
+      package:
+        description: Only update this package (its name in project.pbxproj); blank for every outdated one
+        required: false
+        type: string
+  push:
+    branches:
+      - bgoncal/dependency-manager-spm-prs-21fa06
   schedule:
     # Weekly. Checks every Swift package the Xcode project depends on and opens
     # one pull request per package that has a newer release. Renovate covers the
@@ -23,9 +31,15 @@ jobs:
 
       - name: Check for newer releases
         id: check
+        env:
+          ONLY: ${{ inputs.package || 'Alamofire' }}
         run: |
           python3 Tools/UpdateSwiftPackages.py
-          echo "updates=$(python3 Tools/UpdateSwiftPackages.py --json)" >> "$GITHUB_OUTPUT"
+          updates=$(python3 Tools/UpdateSwiftPackages.py --json)
+          if [ -n "$ONLY" ]; then
+            updates=$(jq -c --arg name "$ONLY" '[.[] | select(.name == $name)]' <<< "$updates")
+          fi
+          echo "updates=$updates" >> "$GITHUB_OUTPUT"
 
   update_package:
     name: Update ${{ matrix.package.name }}
