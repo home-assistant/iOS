@@ -4,6 +4,7 @@ import Foundation
 @testable import Shared
 import SwiftUI
 import Testing
+import XCTest
 
 /// Stands in for `Current.locationManager` so the requirements list is decided by the test rather
 /// than by whatever the simulator happens to have been granted.
@@ -378,6 +379,34 @@ struct ConnectionURLsHowItWorksViewModelTests {
             #expect(onListedNetwork?.isMet == false)
             #expect(viewModel.activeURLType == .external)
             #expect(viewModel.activeURL?.absoluteString == "https://external.example.com")
+        }
+    }
+}
+
+// TEMPORARY: records the CI-rendered reference as an XCTAttachment. Remove before merging.
+@MainActor
+final class ConnectionURLViewExternalSnapshotRecorder: XCTestCase {
+    func testRecordExternalURLScreenWithHomeAssistantLinkTurnedOn() {
+        let server = makeServer(
+            internalURL: URL(string: "http://internal.example.com:8123"),
+            externalURL: URL(string: "https://external.example.com"),
+            internalSSIDs: ["MyWifi"],
+            remoteUIURL: URL(string: "https://remote.ui.nabu.casa"),
+            useCloud: true
+        )
+
+        withEnvironment(
+            permissionState: .authorizedAlways,
+            accuracy: .fullAccuracy,
+            networkState: .init(ssid: "MyWifi")
+        ) {
+            assertLightDarkSnapshots(
+                of: NavigationView { ConnectionURLView(server: server, urlType: .external) },
+                drawHierarchyInKeyWindow: true,
+                layout: .fixed(width: 390, height: 1400),
+                record: true,
+                testName: "externalURLScreenWithHomeAssistantLinkTurnedOn()"
+            )
         }
     }
 }
