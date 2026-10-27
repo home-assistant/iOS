@@ -22,6 +22,7 @@ public enum GRDBDatabaseTable: String {
     case homeViewConfiguration
     case assistConfiguration
     case voiceToolsServerConfiguration
+    case sendspinPlayerConfiguration
     case allowedTags
     case kioskSettings
     case appLabsFeatureState
@@ -223,6 +224,17 @@ public enum DatabaseTables {
         case id
         case isEnabled
         case port
+    }
+
+    /// The Sendspin player's own settings. Its keys and pairing records are in the keychain.
+    public enum SendspinPlayerConfiguration: String, CaseIterable {
+        case id
+        case enabledServerIdentifiers
+        case playerName
+        case volume
+        case isMuted
+        case outputDelayMs
+        case allowsUnpairedAccess
     }
 
     public enum AllowedTag: String, CaseIterable {

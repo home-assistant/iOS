@@ -30,8 +30,16 @@ struct SettingsSectionLayoutTests {
     /// the other things shared from this device rather than in App Labs.
     @Test("The voice tools server is shared from this device")
     func voiceToolsServerIsSharedFromThisDevice() {
-        #expect(SettingsSection.shareFromDevice.allItems.last == .voiceToolsServer)
+        #expect(SettingsSection.shareFromDevice.allItems.contains(.voiceToolsServer))
         #expect(!SettingsSection.appLabs.allItems.contains(.voiceToolsServer))
+    }
+
+    /// The device lends Music Assistant its speaker, which sits next to the voice tools it lends
+    /// Home Assistant.
+    @Test("The Sendspin speaker is shared from this device")
+    func sendspinIsSharedFromThisDevice() {
+        #expect(SettingsSection.shareFromDevice.allItems.last == .sendspin)
+        #expect(!SettingsSection.appLabs.allItems.contains(.sendspin))
     }
 
     @Test("App Labs is the only entry carrying a static subtitle")

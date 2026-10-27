@@ -78,13 +78,14 @@ class LifecycleManager {
             })
         }.cauterize()
 
-        // The voice tools listener is bound here rather than lazily on first use: Home Assistant
+        // The voice tools and Sendspin listeners are bound here rather than lazily on first use: Home Assistant
         // connects to it whenever it likes, so it has to be up before anything asks for it. A
         // background launch is skipped — the settings it reads live in the database that was just
         // suspended above, and the first foreground starts it anyway.
         if Current.isCatalyst || UIApplication.shared.applicationState != .background {
             Task { @MainActor in
                 WyomingServerController.shared.applyConfiguration()
+                SendspinPlayerController.shared.applyConfiguration()
             }
         }
 
@@ -100,6 +101,7 @@ class LifecycleManager {
         isActive = true
         Task { @MainActor in
             WyomingServerController.shared.applicationWillEnterForeground()
+            SendspinPlayerController.shared.applicationWillEnterForeground()
         }
         AppDatabaseSuspension.resume()
         refreshNetworkInformation()
@@ -120,6 +122,7 @@ class LifecycleManager {
         isActive = false
         Task { @MainActor in
             WyomingServerController.shared.applicationDidEnterBackground()
+            SendspinPlayerController.shared.applicationDidEnterBackground()
         }
         needsAppOpenLocationUpdate = true
         AppDatabaseSuspension.suspendIfIdle()
