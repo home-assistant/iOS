@@ -483,6 +483,10 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         remoteAudioTrack?.isEnabled = true
     }
 
+    var isMicrophoneEnabled: Bool {
+        microphoneTrack?.isEnabled ?? false
+    }
+
     func setMicrophoneEnabled(_ enabled: Bool) {
         microphoneTrack?.isEnabled = enabled
     }
