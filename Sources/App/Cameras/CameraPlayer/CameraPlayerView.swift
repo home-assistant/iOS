@@ -70,7 +70,7 @@ struct CameraPlayerView: View {
                     } label: {
                         Image(systemSymbol: .xmark)
                             .font(DesignSystem.Font.body.weight(.semibold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                             .frame(width: controlSize, height: controlSize)
                             .haGlassBackground(in: Circle())
                             .contentShape(Circle())
@@ -89,7 +89,7 @@ struct CameraPlayerView: View {
                             Text(Current.date(), format: .dateTime.hour().minute())
                                 .font(DesignSystem.Font.subheadline.weight(.semibold))
                                 .monospacedDigit()
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                                 .padding(.horizontal, DesignSystem.Spaces.two)
                                 .frame(height: controlSize)
                                 .haGlassBackground(in: Capsule(), isInteractive: false)
@@ -174,11 +174,11 @@ struct CameraPlayerView: View {
             VStack(alignment: .leading, spacing: .zero) {
                 Text(displayName(name))
                     .font(DesignSystem.Font.subheadline.weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                 if let subtitle, !subtitle.isEmpty {
                     Text(subtitle)
                         .font(DesignSystem.Font.caption)
-                        .foregroundStyle(.white.opacity(0.7))
+                        .foregroundStyle(.secondary)
                 }
             }
             .lineLimit(1)
@@ -186,7 +186,7 @@ struct CameraPlayerView: View {
             if cameras.count > 1 {
                 Image(systemSymbol: .chevronUpChevronDown)
                     .font(DesignSystem.Font.caption.weight(.semibold))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(.secondary)
             }
         }
         .padding(.leading, DesignSystem.Spaces.two + DesignSystem.Spaces.half)

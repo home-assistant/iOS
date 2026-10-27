@@ -35,7 +35,7 @@ struct WebRTCTalkbackButton: View {
             if let errorMessage {
                 Text(errorMessage)
                     .font(DesignSystem.Font.footnote)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, DesignSystem.Spaces.two)
@@ -64,7 +64,9 @@ struct WebRTCTalkbackButton: View {
                 .foregroundStyle(.white)
                 .frame(minWidth: buttonSize, minHeight: buttonSize)
                 .padding(.horizontal, state == .talking ? DesignSystem.Spaces.three : .zero)
-                .haGlassBackground(in: Capsule(), tint: state == .talking ? talkingTint : nil)
+                // Tinted in every state, so the white symbol always sits on a solid colour: the accent
+                // colour until the microphone is live, orange while it is.
+                .haGlassBackground(in: Capsule(), tint: state == .talking ? talkingTint : .haPrimary)
                 .contentShape(Capsule())
             }
             .buttonStyle(.plain)

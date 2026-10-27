@@ -10,6 +10,7 @@ final class FakeCameraMicrophoneSession: CameraMicrophoneSessionProtocol {
     var onMicrophoneLevel: ((Double) -> Void)?
     private(set) var startCount = 0
     private(set) var stopCount = 0
+    private(set) var isMicrophoneEnabled = true
     private var startCompletion: ((Result<String, CameraMicrophoneError>) -> Void)?
 
     init(server: Server, cameraEntityId: String) {
@@ -26,6 +27,10 @@ final class FakeCameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         stopCount += 1
         isConnected = false
         resolveStart(.failure(.interrupted))
+    }
+
+    func setMicrophoneEnabled(_ enabled: Bool) {
+        isMicrophoneEnabled = enabled
     }
 
     func connect(sessionId: String) {
