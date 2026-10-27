@@ -348,9 +348,9 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         client.localAudioLevel { [weak self, weak client] audioLevel in
             DispatchQueue.main.async {
                 guard let self, let client, client === self.client else { return }
-                isSamplingMicrophoneLevel = false
-                guard state == .connected, let audioLevel else { return }
-                reportMicrophoneLevel(Self.microphoneLevel(fromAudioLevel: audioLevel))
+                self.isSamplingMicrophoneLevel = false
+                guard self.state == .connected, let audioLevel else { return }
+                self.reportMicrophoneLevel(Self.microphoneLevel(fromAudioLevel: audioLevel))
             }
         }
     }
