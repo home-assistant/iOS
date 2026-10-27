@@ -70,12 +70,17 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// before coming back to the foreground counts as needing a fresh one.
     private static let backgroundTeardownDelay: TimeInterval = 60
 
+    /// How long the microphone connection is kept, muted, after talking stops, so talking again
+    /// picks up at once instead of connecting the microphone from scratch.
+    private static let microphoneHoldDuration: TimeInterval = 60
+
     struct Timing {
         var connectionTimeout: TimeInterval
         var disconnectedGracePeriod: TimeInterval
         var signalingStallTimeout: TimeInterval
         var connectionWaitTimeout: TimeInterval
         var backgroundTeardownDelay: TimeInterval
+        var microphoneHoldDuration: TimeInterval = WebRTCViewPlayerViewModel.microphoneHoldDuration
 
         static let production = Timing(
             connectionTimeout: WebRTCViewPlayerViewModel.connectionTimeout,
@@ -118,6 +123,8 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// connection carrying both directions, the way the frontend player does it, reaches ICE
     /// connected but delivers no audio to the camera.
     private var microphoneSession: CameraMicrophoneSessionProtocol?
+    /// Hangs up a microphone that stopped talking once the hold runs out.
+    private var microphoneReleaseWorkItem: DispatchWorkItem?
 
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
@@ -161,6 +168,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         connectionWaitWorkItem?.cancel()
         signalingStallWorkItem?.cancel()
         connectionGate?.cancel()
+        microphoneReleaseWorkItem?.cancel()
         microphoneSession?.stop()
         webRTCClient?.closeConnection()
     }
@@ -178,17 +186,28 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         }
     }
 
-    /// Hangs up the microphone. The app keeps the audio background mode, so a session left running
-    /// once the app is backgrounded would go on recording.
+    /// Stops talking. A connected microphone is muted and held for a while rather than hung up, so
+    /// talking again is instant; one still connecting is hung up at once.
     func stopTalkback() {
+        guard let session = microphoneSession, talkbackState != .idle else { return }
+        talkbackState = .idle
+        guard session.isConnected else {
+            releaseMicrophone()
+            return
+        }
+        session.setMicrophoneEnabled(false)
+        Current.impactFeedback.impactOccurred(style: .soft)
+        scheduleMicrophoneRelease()
+    }
+
+    /// Hangs up the microphone connection, talking or held. The app keeps the audio background mode,
+    /// so a connection left up once the app is backgrounded would go on recording.
+    func releaseMicrophone() {
+        cancelMicrophoneRelease()
         guard let session = microphoneSession else { return }
         microphoneSession = nil
         talkbackState = .idle
-        let wasConnected = session.isConnected
         session.stop()
-        if wasConnected {
-            Current.impactFeedback.impactOccurred(style: .soft)
-        }
     }
 
     func toggleMute() {
@@ -229,7 +248,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     func stop() {
         isActive = false
         backgroundedAt = nil
-        stopTalkback()
+        releaseMicrophone()
         talkbackError = nil
         cancelTimeout()
         cancelDisconnectRecovery()
@@ -243,7 +262,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         case .active:
             handleAppForegrounded()
         case .background:
-            stopTalkback()
+            releaseMicrophone()
             handleAppBackgrounded()
         case .inactive:
             handleAppBackgrounded()
@@ -426,11 +445,27 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         guard isActive, isTalkbackSupported else { return }
         talkbackError = nil
 
+        // Still held from the last time: unmute it rather than connecting again.
+        if let session = microphoneSession, session.isConnected {
+            cancelMicrophoneRelease()
+            session.setMicrophoneEnabled(true)
+            Current.impactFeedback.impactOccurred(style: .rigid)
+            talkbackState = .talking
+            return
+        }
+        releaseMicrophone()
+
         let session = makeMicrophoneSession(server, cameraEntityId)
         microphoneSession = session
         talkbackState = .connecting
         session.onEnd = { [weak self, weak session] error in
             guard let self, let session, session === microphoneSession else { return }
+            // A held microphone that drops needs no explanation; the next tap connects a new one.
+            guard talkbackState != .idle else {
+                cancelMicrophoneRelease()
+                microphoneSession = nil
+                return
+            }
             Current.impactFeedback.notificationOccurred(.warning)
             endTalkback(with: error)
         }
@@ -448,7 +483,22 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         }
     }
 
+    private func scheduleMicrophoneRelease() {
+        cancelMicrophoneRelease()
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.releaseMicrophone()
+        }
+        microphoneReleaseWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.microphoneHoldDuration, execute: workItem)
+    }
+
+    private func cancelMicrophoneRelease() {
+        microphoneReleaseWorkItem?.cancel()
+        microphoneReleaseWorkItem = nil
+    }
+
     private func endTalkback(with error: CameraMicrophoneError) {
+        cancelMicrophoneRelease()
         microphoneSession = nil
         talkbackState = .idle
         talkbackError = error.message

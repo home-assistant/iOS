@@ -326,6 +326,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
     private let peerConnection: RTCPeerConnection
     private var remoteVideoTrack: RTCVideoTrack?
     private var remoteAudioTrack: RTCAudioTrack?
+    private var microphoneTrack: RTCAudioTrack?
     private var localDataChannel: RTCDataChannel?
     private var remoteDataChannel: RTCDataChannel?
     /// The view remote video renders into. Held here because the track that ends up carrying the
@@ -482,6 +483,10 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
         remoteAudioTrack?.isEnabled = true
     }
 
+    func setMicrophoneEnabled(_ enabled: Bool) {
+        microphoneTrack?.isEnabled = enabled
+    }
+
     func isAudioMuted() -> Bool {
         guard let remoteAudioTrack else { return true }
         return !remoteAudioTrack.isEnabled
@@ -497,6 +502,7 @@ final class WebRTCClient: NSObject, WebRTCStreamClient {
 
     private func addMicrophoneTransceiver() {
         let audioTrack = factory.audioTrack(with: factory.audioSource(with: nil), trackId: "ha_microphone")
+        microphoneTrack = audioTrack
         let audioTransceiverInit = RTCRtpTransceiverInit()
         audioTransceiverInit.direction = .sendOnly
         audioTransceiverInit.streamIds = ["ha_ios"]

@@ -46,7 +46,7 @@ struct WebRTCVideoPlayerControlsView<Content: View>: View {
                     Button(action: onToggleMute) {
                         Image(systemSymbol: isMuted ? .speakerSlashFill : .speakerWave2Fill)
                             .font(DesignSystem.Font.body.weight(.semibold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
                             .frame(width: controlSize, height: controlSize)
                             .haGlassBackground(in: Circle())
                             .contentShape(Circle())

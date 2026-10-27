@@ -11,5 +11,7 @@ protocol WebRTCStreamClient: AnyObject {
     func muteAudio()
     func unmuteAudio()
     func isAudioMuted() -> Bool
+    /// Pauses or resumes sending the microphone, without touching the connection.
+    func setMicrophoneEnabled(_ enabled: Bool)
     func closeConnection()
 }
