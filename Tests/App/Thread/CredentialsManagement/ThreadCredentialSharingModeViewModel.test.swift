@@ -25,6 +25,17 @@ final class ThreadCredentialSharingModeViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isLoadingCredentials)
     }
 
+    func test_loadCredentials_failure_clears_credentials() async {
+        mockClient.retrieveAllCredentialsError = ThreadClientServiceError.credentialSharingModeUnavailable
+        XCTAssertTrue(sut.isLoadingCredentials)
+
+        await sut.loadCredentials()
+
+        XCTAssertTrue(mockClient.retrieveAllCredentialsCalled)
+        XCTAssertTrue(sut.credentials.isEmpty)
+        XCTAssertFalse(sut.isLoadingCredentials)
+    }
+
     func test_sanitizedExtendedPANID_strips_separators_and_prefix() {
         sut.extendedPANID = " 0xDE:AD-BE EF 00 11 22 33 "
 
@@ -131,6 +142,7 @@ final class ThreadCredentialSharingModeViewModelTests: XCTestCase {
 
     func test_seeded_credentials_skip_loading() async {
         sut = .init(threadClientService: mockClient, credentials: [], state: .success)
+        XCTAssertFalse(sut.isLoadingCredentials)
 
         await sut.loadCredentialsIfNeeded()
 

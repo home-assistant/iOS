@@ -21,9 +21,7 @@ struct ThreadCredentialSharingModeView: View {
                 .textInputAutocapitalization(.never)
 
                 Button {
-                    Task {
-                        await viewModel.enableSharingMode()
-                    }
+                    Task { await viewModel.enableSharingMode() }
                 } label: {
                     HStack(spacing: DesignSystem.Spaces.one) {
                         Text(L10n.Thread.CredentialSharingMode.startButton)

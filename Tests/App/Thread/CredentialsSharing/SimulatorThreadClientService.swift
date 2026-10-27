@@ -40,8 +40,17 @@ final class SimulatorThreadClientService: ThreadClientProtocol {
         ),
     ]
 
+    var retrieveAllCredentialsError: Error?
+    var suspendRetrieveAllCredentials = false
+
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
         retrieveAllCredentialsCalled = true
+        if suspendRetrieveAllCredentials {
+            try await Task.sleep(nanoseconds: 60_000_000_000)
+        }
+        if let retrieveAllCredentialsError {
+            throw retrieveAllCredentialsError
+        }
         return credentials
     }
 

@@ -31,6 +31,7 @@ final class ThreadCredentialSharingModeViewModel: ObservableObject {
         self.extendedPANID = extendedPANID
         self.state = state
         self.needsCredentialLoad = credentials == nil
+        self.isLoadingCredentials = credentials == nil
     }
 
     var sanitizedExtendedPANID: String {

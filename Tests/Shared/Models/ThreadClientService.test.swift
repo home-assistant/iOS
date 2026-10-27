@@ -14,6 +14,14 @@ struct ThreadClientServiceTests {
         }
     }
 
+    #if !canImport(ThreadNetwork)
+    @Test func enableCredentialSharingModeIsUnavailableWithoutThreadNetwork() async {
+        await #expect(throws: ThreadClientServiceError.credentialSharingModeUnavailable) {
+            try await ThreadClientService().enableCredentialSharingMode(extendedPANID: "deadbeef00112233")
+        }
+    }
+    #endif
+
     @Test func errorDescriptionsAreLocalized() {
         #expect(
             ThreadClientServiceError.failedToConvertToHexadecimal.errorDescription

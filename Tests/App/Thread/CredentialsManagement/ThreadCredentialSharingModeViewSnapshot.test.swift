@@ -32,18 +32,27 @@ final class ThreadCredentialSharingModeViewSnapshotTests: XCTestCase {
     ]
 
     private func makeView(
-        credentials: [ThreadCredential],
+        credentials: [ThreadCredential]?,
         extendedPANID: String = "",
         state: ThreadCredentialSharingModeViewModel.State = .idle
     ) -> some View {
-        NavigationView {
+        let threadClientService = SimulatorThreadClientService()
+        threadClientService.suspendRetrieveAllCredentials = true
+        return NavigationView {
             ThreadCredentialSharingModeView(viewModel: ThreadCredentialSharingModeViewModel(
-                threadClientService: SimulatorThreadClientService(),
+                threadClientService: threadClientService,
                 credentials: credentials,
                 extendedPANID: extendedPANID,
                 state: state
             ))
         }
+    }
+
+    func testThreadSharingModeLoadingKeychain() {
+        assertLightDarkSnapshots(
+            of: makeView(credentials: nil),
+            drawHierarchyInKeyWindow: true
+        )
     }
 
     func testThreadSharingModeWithNetworks() {
