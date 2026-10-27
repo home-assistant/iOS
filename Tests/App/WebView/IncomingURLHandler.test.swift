@@ -6,6 +6,7 @@ import Testing
 
 /// Routing of `homeassistant://` deep links. The `camera` link opens the native camera player for a
 /// camera, and the more-info dialog for any other entity a link made before it was reinstated names.
+@Suite(.serialized)
 struct IncomingURLHandlerTests {
     private func withFakeServer(_ body: (Server, MockAppCoordinator, IncomingURLHandler) throws -> Void) throws {
         let previousServers = Current.servers
@@ -17,6 +18,12 @@ struct IncomingURLHandlerTests {
         let coordinator = MockAppCoordinator()
         let handler = IncomingURLHandler(coordinator: coordinator)
         try body(server, coordinator, handler)
+    }
+
+    /// What the handler asked the camera player to show.
+    private struct CameraPresentation: Equatable {
+        let entityId: String
+        let serverId: String?
     }
 
     private func withAppIconShortcutConfig(item: MagicItem, _ body: () throws -> Void) throws {
@@ -37,6 +44,8 @@ struct IncomingURLHandlerTests {
 
     @Test func cameraDeeplinkOpensTheCameraPlayerInsteadOfTheFrontend() throws {
         try withFakeServer { server, coordinator, handler in
+            var presented: [CameraPresentation] = []
+            handler.presentCamera = { presented.append(.init(entityId: $0, serverId: $1)) }
             let url = try #require(AppConstants.openCameraDeeplinkURL(
                 entityId: "camera.porch",
                 serverId: server.identifier.rawValue
@@ -44,6 +53,7 @@ struct IncomingURLHandlerTests {
 
             #expect(handler.handle(url: url))
 
+            #expect(presented == [.init(entityId: "camera.porch", serverId: server.identifier.rawValue)])
             #expect(coordinator.openedDeeplinks.isEmpty)
             #expect(coordinator.openedDeeplinksSelectingServer.isEmpty)
         }
@@ -51,6 +61,8 @@ struct IncomingURLHandlerTests {
 
     @Test func cameraDeeplinkForAnotherEntityOpensTheMoreInfoDialog() throws {
         try withFakeServer { server, coordinator, handler in
+            var presented: [CameraPresentation] = []
+            handler.presentCamera = { presented.append(.init(entityId: $0, serverId: $1)) }
             let url = try #require(AppConstants.openCameraDeeplinkURL(
                 entityId: "light.porch",
                 serverId: server.identifier.rawValue
@@ -58,6 +70,7 @@ struct IncomingURLHandlerTests {
 
             #expect(handler.handle(url: url))
 
+            #expect(presented.isEmpty)
             let opened = try #require(coordinator.openedDeeplinks.first)
             #expect(opened.server.identifier == server.identifier)
             #expect(opened.urlString.contains("\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=light.porch"))
@@ -92,11 +105,17 @@ struct IncomingURLHandlerTests {
             Current.database = { database }
             defer { Current.database = previousDatabase }
 
+            var presented: [CameraPresentation] = []
+            handler.presentCamera = { presented.append(.init(entityId: $0, serverId: $1)) }
             let activity = NSUserActivity(activityType: CSSearchableItemActionType)
             activity.userInfo = [CSSearchableItemActivityIdentifier: uniqueId]
 
             #expect(handler.handle(userActivity: activity))
             #expect(coordinator.openedDeeplinks.isEmpty == !opensMoreInfo)
+            #expect(presented == (opensMoreInfo ? [] : [.init(
+                entityId: entityId,
+                serverId: server.identifier.rawValue
+            )]))
         }
     }
 

@@ -10,6 +10,13 @@ import SwiftUI
 
 class IncomingURLHandler {
     private(set) weak var coordinator: AppCoordinator!
+    /// Shows a camera in the native player over the frontend. Replaced by tests, which have no
+    /// frontend to present on.
+    lazy var presentCamera: (_ entityId: String, _ serverId: String?) -> Void = { [weak self] entityId, serverId in
+        self?.presentOverFrontend { webViewController in
+            CameraOverlayPresenter.shared.show(entityId: entityId, serverId: serverId, on: webViewController)
+        }
+    }
 
     init(coordinator: AppCoordinator) {
         self.coordinator = coordinator
@@ -90,9 +97,7 @@ class IncomingURLHandler {
                     ) else { return false }
                     return handle(url: destination)
                 }
-                presentOverFrontend { webViewController in
-                    CameraOverlayPresenter.shared.show(entityId: entityId, serverId: serverId, on: webViewController)
-                }
+                presentCamera(entityId, serverId)
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false

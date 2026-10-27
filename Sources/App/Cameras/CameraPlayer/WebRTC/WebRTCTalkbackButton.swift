@@ -10,6 +10,18 @@ struct WebRTCTalkbackButton: View {
     private let action: () -> Void
 
     private let buttonSize: CGFloat = DesignSystem.Spaces.nine
+
+    /// Glass softens its tint, but before iOS 26 the tint is a solid fill, where white text on plain
+    /// orange falls short of a readable contrast. That fill is a darker orange instead, so the label
+    /// stays white like every other control over the stream.
+    private var talkingTint: Color {
+        if #available(iOS 26.0, *) {
+            return .orange
+        } else {
+            return Color(red: 0.7, green: 0.29, blue: 0)
+        }
+    }
+
     private let errorMaxWidth: CGFloat = 320
 
     init(state: WebRTCTalkbackState, errorMessage: String? = nil, action: @escaping () -> Void) {
@@ -52,7 +64,7 @@ struct WebRTCTalkbackButton: View {
                 .foregroundStyle(.white)
                 .frame(minWidth: buttonSize, minHeight: buttonSize)
                 .padding(.horizontal, state == .talking ? DesignSystem.Spaces.three : .zero)
-                .haGlassBackground(in: Capsule(), tint: state == .talking ? .orange : nil)
+                .haGlassBackground(in: Capsule(), tint: state == .talking ? talkingTint : nil)
                 .contentShape(Capsule())
             }
             .buttonStyle(.plain)
