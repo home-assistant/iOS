@@ -28,7 +28,10 @@ final class CarPlayAssistSessionTests: XCTestCase {
         prompt: String? = nil,
         configuration: AssistConfiguration = AssistConfiguration(),
         speechTranscriber: (any SpeechTranscriberProtocol)? = nil,
-        speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil
+        speechSynthesizer: (any SpeechSynthesizerProtocol)? = nil,
+        serverTTSPlayback: ((URL) -> Void)? = nil,
+        responseTimeout: TimeInterval = 30,
+        intentStageTimeout: TimeInterval = 300
     ) -> CarPlayAssistSession {
         let session = CarPlayAssistSession(
             interfaceController: nil,
@@ -40,7 +43,10 @@ final class CarPlayAssistSessionTests: XCTestCase {
             assistConfiguration: configuration,
             speechTranscriber: speechTranscriber,
             speechSynthesizer: speechSynthesizer,
-            tonePlayer: mockTonePlayer
+            serverTTSPlayback: serverTTSPlayback,
+            tonePlayer: mockTonePlayer,
+            responseTimeout: responseTimeout,
+            intentStageTimeout: intentStageTimeout
         )
         sut = session
         return session
@@ -105,6 +111,20 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertEqual(mockAssistService.audioDataSent, Data([0x02]))
     }
 
+    func testRecordingFailureCancelsRunAndStopsSendingAudio() {
+        let sut = makeSut()
+        sut.start()
+        sut.didReceiveGreenLightForAudioInput()
+        let error = AudioRecorderError.captureDeviceUnavailable
+
+        sut.didFailToRecord(error: error)
+        sut.didOutputSample(data: Data([0x01]))
+
+        XCTAssertTrue(mockAssistService.cancelRunCalled)
+        XCTAssertFalse(mockAssistService.sendAudioDataCalled)
+        XCTAssertEqual(sut.currentState, .error(error.localizedDescription))
+    }
+
     func testSttEndStopsRecordingAndTransitionsToProcessing() {
         let sut = makeSut()
         sut.start()
@@ -166,6 +186,69 @@ final class CarPlayAssistSessionTests: XCTestCase {
         XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
         XCTAssertTrue(mockAssistService.finishSendingAudioCalled)
         XCTAssertTrue(mockTonePlayer.stopCalled)
+    }
+
+    // MARK: - Response watchdog
+
+    /// A conversation agent that does not stream sends nothing between `intent-start` and
+    /// `intent-end`, so the silence deadline must not cut it off while the server still runs it.
+    func testSilentIntentStageIsNotCutOffBySilenceTimeout() {
+        let sut = makeSut(prompt: "Turn on the lights", responseTimeout: 0.05)
+        sut.start()
+        sut.didReceiveEvent(.runStart)
+        sut.didReceiveEvent(.intentStart)
+
+        // Lets the main queue run well past the silence deadline.
+        let silence = expectation(description: "silence")
+        silence.isInverted = true
+        wait(for: [silence], timeout: 0.5)
+
+        XCTAssertEqual(sut.currentState, .processing)
+        XCTAssertFalse(mockAssistService.cancelRunCalled)
+        sut.didReceiveEvent(.intentEnd)
+        sut.didReceiveIntentEndContent("The lights are on")
+        XCTAssertEqual(sut.currentState, .responding)
+    }
+
+    /// When the run goes quiet past its deadline the session abandons it, and a response that
+    /// still arrives afterwards is neither shown nor played.
+    func testWatchdogCancelsRunAndIgnoresLateResponse() {
+        let synthesizer = MockSpeechSynthesizer()
+        var playedTTSURLs: [URL] = []
+        let sut = makeSut(
+            prompt: "Turn on the lights",
+            configuration: AssistConfiguration(enableOnDeviceTTS: true),
+            speechSynthesizer: synthesizer,
+            serverTTSPlayback: { playedTTSURLs.append($0) },
+            responseTimeout: 0.05
+        )
+        sut.start()
+
+        let errorShown = expectation(for: NSPredicate { _, _ in sut.currentState.isError }, evaluatedWith: nil)
+        wait(for: [errorShown], timeout: 30)
+        XCTAssertTrue(mockAssistService.cancelRunCalled)
+
+        sut.didReceiveIntentEndContent("The lights are on")
+        sut.didReceiveTtsMediaUrl(URL(string: "https://example.com/tts.mp3")!)
+
+        XCTAssertTrue(sut.currentState.isError)
+        XCTAssertFalse(synthesizer.speakCalled)
+        XCTAssertEqual(playedTTSURLs, [])
+    }
+
+    /// The counterpart of the late response test: in a run that is still going, the server's
+    /// TTS URL is played.
+    func testTtsMediaUrlIsPlayedDuringRun() {
+        var playedTTSURLs: [URL] = []
+        let sut = makeSut(prompt: "Turn on the lights", serverTTSPlayback: { playedTTSURLs.append($0) })
+        sut.start()
+        sut.didReceiveIntentEndContent("The lights are on")
+
+        let url = URL(string: "https://example.com/tts.mp3")!
+        sut.didReceiveTtsMediaUrl(url)
+
+        XCTAssertEqual(playedTTSURLs, [url])
+        XCTAssertEqual(sut.currentState, .responding)
     }
 
     // MARK: - Prompt flow

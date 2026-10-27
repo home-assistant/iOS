@@ -29,6 +29,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
     private let entityControlDonation: EntityControlDonation
+    private let cameraMicrophoneBridge: CameraMicrophoneBridge
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
@@ -38,10 +39,15 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     init(
         improvManager: any ImprovManagerProtocol,
-        entityControlDonation: EntityControlDonation = .init()
+        entityControlDonation: EntityControlDonation = .init(),
+        cameraMicrophoneBridge: CameraMicrophoneBridge = .init()
     ) {
         self.improvManager = improvManager
         self.entityControlDonation = entityControlDonation
+        self.cameraMicrophoneBridge = cameraMicrophoneBridge
+        cameraMicrophoneBridge.onSessionEnded = { [weak self] sessionId in
+            self?.notifyWebRTCStreamStopped(sessionId: sessionId)
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -66,6 +72,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
+                stopWebRTCStreamLeftByPreviousPage()
                 let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -123,6 +130,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 webViewController.evaluateJavaScript("notifyThemeColors()", completion: nil)
             case .matterCommission:
                 matterComissioningHandler(incomingMessage: incomingMessage)
+            case .matterShareDevice:
+                handleMatterShareDevice(incomingMessage)
             case .threadImportCredentials:
                 transferKeychainThreadCredentialsToHARequested()
             case .barCodeScanner:
@@ -208,6 +217,14 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
+            case .webRTCStreamStart:
+                startWebRTCStream(incomingMessage: incomingMessage, server: webViewController.server)
+            case .webRTCStreamStop:
+                guard let sessionId = incomingMessage.Payload?["session_id"] as? String else {
+                    Current.Log.error("Received webrtc/stream/stop but session_id was not string! \(incomingMessage)")
+                    return
+                }
+                cameraMicrophoneBridge.stop(sessionId: sessionId)
             case .frontendReloadAndClearCache:
                 reloadAndClearFrontendCache()
             case .sidebarShow:
@@ -244,6 +261,39 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     }
 
     // swiftlint:enable cyclomatic_complexity
+
+    private func handleMatterShareDevice(_ incomingMessage: WebSocketMessage) {
+        guard let messageId = incomingMessage.ID else {
+            Current.Log.error("Received matter/share_device without a message id")
+            return
+        }
+        guard let request = MatterShareRequest(payload: incomingMessage.Payload) else {
+            Current.Log.error("Received matter/share_device with an invalid payload")
+            sendExternalBus(message: .init(
+                id: messageId,
+                error: MatterWrapper.shareError(for: MatterShareError.invalidRequest)
+            )).cauterize()
+            return
+        }
+        Task { @MainActor [weak self] in
+            let outgoing: WebSocketMessage
+            do {
+                try await Current.matter.shareDevice(request)
+                Current.Log.info("Matter device shared")
+                outgoing = .init(id: messageId, type: "result", result: [:])
+            } catch {
+                let busError = MatterWrapper.shareError(for: error)
+                if busError.isCanceled {
+                    Current.Log.info("Sharing Matter device cancelled by user")
+                } else {
+                    // Full error for the log; only the bus message must be free of system text.
+                    Current.Log.error("Sharing Matter device failed: \(error)")
+                }
+                outgoing = .init(id: messageId, error: busError)
+            }
+            self?.sendExternalBus(message: outgoing).cauterize()
+        }
+    }
 
     func showSettingsViewController() {
         // Through the web view the message came from, so Settings opens in that window and no other.
@@ -722,6 +772,54 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             cameraName: cameraName,
             on: webViewController
         )
+    }
+
+    // MARK: - WebRTC streams
+
+    private func startWebRTCStream(incomingMessage: WebSocketMessage, server: Server) {
+        let messageId = incomingMessage.ID ?? -1
+        let streamType = incomingMessage.Payload?["stream_type"] as? String
+        guard streamType.flatMap(WebRTCStreamType.init(rawValue:)) == .microphone else {
+            Current.Log.error("Received webrtc/stream/start with an unsupported stream_type! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: WebRTCStreamErrorCode.unsupportedStreamType.rawValue,
+                errorMessage: "Unsupported stream_type: \(streamType ?? "none")"
+            ))
+            return
+        }
+        guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+            Current.Log.error("Received webrtc/stream/start but entity_id was not string! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: WebRTCStreamErrorCode.invalidPayload.rawValue,
+                errorMessage: "entity_id is required"
+            ))
+            return
+        }
+        cameraMicrophoneBridge.start(cameraEntityId: entityId, server: server) { [weak self] result in
+            switch result {
+            case let .success(sessionId):
+                self?.sendExternalBus(message: .init(id: messageId, type: "result", result: ["session_id": sessionId]))
+            case let .failure(error):
+                self?.sendExternalBus(message: .init(
+                    id: messageId,
+                    errorCode: error.code.rawValue,
+                    errorMessage: error.message
+                ))
+            }
+        }
+    }
+
+    private func stopWebRTCStreamLeftByPreviousPage() {
+        cameraMicrophoneBridge.stopActiveSession()
+    }
+
+    private func notifyWebRTCStreamStopped(sessionId: String) {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.webRTCStreamStopped.rawValue,
+            payload: ["session_id": sessionId]
+        ))
     }
 }
 

@@ -67,7 +67,8 @@ struct ContainerView: View {
                         onDismiss: { viewModel.fullScreenCover = nil }
                     )
                     .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
+                        // Trailing, so it stays clear of the back button on the home network step
+                        ToolbarItem(placement: .topBarTrailing) {
                             CloseButton { viewModel.fullScreenCover = nil }
                         }
                     }
@@ -82,7 +83,7 @@ struct ContainerView: View {
     /// it would make iOS 27.1 reserve iPhone Duo's vertical bar: an 84 pt safe-area strip the frontend never
     /// fills, on the outer edge of its Split View pane.
     private func frontend(server: Server, initialPath: String?) -> some View {
-        HomeAssistantView(server: server, initialPath: initialPath) { webViewController in
+        HomeAssistantView(server: server, initialPath: initialPath, appCoordinator: coordinator) { webViewController in
             coordinator.setFrontend(webViewController)
             Current.sceneManager.setWebViewController(webViewController)
         }

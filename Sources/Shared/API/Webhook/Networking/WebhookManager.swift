@@ -346,6 +346,10 @@ public class WebhookManager: NSObject {
         server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
+        if let held = heldBack(request, to: server) {
+            return held
+        }
+
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [dataQueue] in
@@ -397,6 +401,10 @@ public class WebhookManager: NSObject {
         server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
+        if let held = heldBack(request, to: server) {
+            return held
+        }
+
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [self] in
@@ -411,6 +419,14 @@ public class WebhookManager: NSObject {
         }
 
         return promise
+    }
+
+    private func heldBack(_ request: WebhookRequest, to server: Server) -> Promise<Void>? {
+        let ownership = RegistrationOwnership()
+        guard ownership.holdsBack(request, to: server) else { return nil }
+        Current.Log.info("holding back \(request.type) to \(server.identifier): its registration is another device's")
+        ownership.noteHeldBack(by: server)
+        return Promise(error: RegistrationOwnershipError.registeredByAnotherDevice)
     }
 
     private func send(
@@ -505,6 +521,10 @@ public class WebhookManager: NSObject {
 
     // MARK: - Testing Connection Info
 
+    /// How long the URL check behind Save waits before giving up. The person is looking at a spinner, so an
+    /// unreachable address should fail in seconds rather than after the system default of a minute.
+    static let sendTestTimeout: TimeInterval = 15
+
     public func sendTest(server: Server, baseURL: URL) -> Promise<Void> {
         firstly {
             Self.urlRequest(
@@ -513,6 +533,8 @@ public class WebhookManager: NSObject {
                 baseURL: baseURL
             )
         }.then(on: dataQueue) { [self] urlRequest, data -> Promise<(Data, URLResponse)> in
+            var urlRequest = urlRequest
+            urlRequest.timeoutInterval = Self.sendTestTimeout
             let (promise, seal) = Promise<(Data, URLResponse)>.pending()
             let task = currentRegularSessionInfo.session.uploadTask(
                 with: urlRequest,

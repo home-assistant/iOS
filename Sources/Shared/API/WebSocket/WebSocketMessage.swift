@@ -6,6 +6,7 @@ public class WebSocketMessage: Codable {
     public var Success: Bool?
     public var Payload: [String: Any]?
     public var Result: [String: Any]?
+    public var ErrorInfo: [String: String]?
     public var Message: String?
     public var HAVersion: String?
     public var command: String?
@@ -16,6 +17,7 @@ public class WebSocketMessage: Codable {
         case Success = "success"
         case Payload = "payload"
         case Result = "result"
+        case ErrorInfo = "error"
         case Message = "message"
         case HAVersion = "ha_version"
         case command = "command"
@@ -28,6 +30,7 @@ public class WebSocketMessage: Codable {
         self.Success = try? values.decode(Bool.self, forKey: .Success)
         self.Payload = try? values.decode([String: Any].self, forKey: .Payload)
         self.Result = try? values.decode([String: Any].self, forKey: .Result)
+        self.ErrorInfo = try? values.decode([String: String].self, forKey: .ErrorInfo)
         self.Message = try? values.decode(String.self, forKey: .Message)
         self.HAVersion = try? values.decode(String.self, forKey: .HAVersion)
         self.command = try values.decodeIfPresent(String.self, forKey: .command)
@@ -41,6 +44,7 @@ public class WebSocketMessage: Codable {
         self.ID = dictionary["id"] as? Int
         self.Payload = dictionary["payload"] as? [String: Any]
         self.Result = dictionary["result"] as? [String: Any]
+        self.ErrorInfo = dictionary["error"] as? [String: String]
         self.Success = dictionary["success"] as? Bool
         self.command = dictionary["command"] as? String
     }
@@ -58,6 +62,40 @@ public class WebSocketMessage: Codable {
         self.MessageType = type
         self.Result = result
         self.Success = success
+        self.command = nil
+    }
+
+    /// The frontend branches on `code` and shows its own text.
+    public struct ResultError: Codable, Equatable {
+        private static let canceledCode = "canceled"
+        private static let failedCode = "failed"
+
+        public let code: String
+        /// English detail for the app's log, never shown to the user.
+        public let message: String
+
+        public static func canceled(_ message: String) -> Self {
+            .init(code: canceledCode, message: message)
+        }
+
+        public static func failed(_ message: String) -> Self {
+            .init(code: failedCode, message: message)
+        }
+
+        public var isCanceled: Bool {
+            code == Self.canceledCode
+        }
+    }
+
+    public convenience init(id: Int, error: ResultError) {
+        self.init(id: id, errorCode: error.code, errorMessage: error.message)
+    }
+
+    public init(id: Int, errorCode: String, errorMessage: String) {
+        self.ID = id
+        self.MessageType = "result"
+        self.Success = false
+        self.ErrorInfo = ["code": errorCode, "message": errorMessage]
         self.command = nil
     }
 
@@ -83,6 +121,9 @@ public class WebSocketMessage: Codable {
         if let Result {
             try container.encode(Result, forKey: .Result)
         }
+        if let ErrorInfo {
+            try container.encode(ErrorInfo, forKey: .ErrorInfo)
+        }
         if let Payload {
             try container.encode(Payload, forKey: .Payload)
         }
@@ -96,7 +137,7 @@ public class WebSocketMessage: Codable {
 
 extension WebSocketMessage: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
-        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)))"
+        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)), error: \(String(describing: ErrorInfo)))"
     }
 
     public var debugDescription: String {

@@ -11,5 +11,9 @@ protocol WebRTCStreamClient: AnyObject {
     func muteAudio()
     func unmuteAudio()
     func isAudioMuted() -> Bool
+    /// Whether the microphone is being sent; `false` for a client that never sends it.
+    var isMicrophoneEnabled: Bool { get }
+    /// Pauses or resumes sending the microphone, without touching the connection.
+    func setMicrophoneEnabled(_ enabled: Bool)
     func closeConnection()
 }

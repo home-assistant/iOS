@@ -49,6 +49,19 @@ final class CameraCapabilitiesTests: XCTestCase {
         XCTAssertEqual(capabilities.frontendStreamTypes, [.hls])
     }
 
+    func testDecodesTwoWayAudioSupport() {
+        let capabilities = CameraCapabilities(data: .init(value: [
+            "frontend_stream_types": ["web_rtc"],
+            "two_way_audio": true,
+        ]))
+        XCTAssertTrue(capabilities.twoWayAudio)
+    }
+
+    func testACameraThatDoesNotReportTwoWayAudioCannotPlayTheMicrophone() {
+        let capabilities = CameraCapabilities(data: .init(value: ["frontend_stream_types": ["web_rtc"]]))
+        XCTAssertFalse(capabilities.twoWayAudio)
+    }
+
     func testDecodesAResponseWithoutTheKeyAsEmpty() {
         let capabilities = CameraCapabilities(data: .init(value: [String: Any]()))
         XCTAssertTrue(capabilities.frontendStreamTypes.isEmpty)

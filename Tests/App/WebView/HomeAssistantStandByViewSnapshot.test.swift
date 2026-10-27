@@ -92,6 +92,21 @@ struct HomeAssistantStandByViewSnapshotTests {
         }
     }
 
+    /// Picking a server in the empty state's picker hands it to whoever owns the stand-by view.
+    @MainActor @Test func selectingAServerCallsBack() {
+        let server = HomeAssistantStandByView.previewServer(
+            name: "Other Server",
+            configuredURLTypes: [.external],
+            activeURLType: .external
+        )
+        var selected: Server?
+        let sut = HomeAssistantStandByView(server: server, emptyState: nil, onSelectServer: { selected = $0 })
+
+        sut.selectServer(server)
+
+        #expect(selected?.identifier == server.identifier)
+    }
+
     /// The app builds the view with its default fade; that configuration has to host and lay out too.
     @MainActor @Test func defaultConfigurationLaysOut() async throws {
         let server = HomeAssistantStandByView.previewServer(

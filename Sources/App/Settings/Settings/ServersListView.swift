@@ -9,6 +9,7 @@ struct ServersListView: View {
     var macSidebarSelection: MacSettingsSidebarSelection?
 
     @StateObject private var observer = ServersObserver()
+    @StateObject private var reauthentication = ServerReauthenticationModel()
     @State private var showAddServer = false
     @State private var serverPendingDeletion: Server?
     @Environment(\.editMode) private var editMode
@@ -18,6 +19,7 @@ struct ServersListView: View {
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
                 HomeAssistantAccountRowView(server: server, isCompact: Current.isCatalyst)
             }
+            .accessibilityIdentifier(AccessibilityIdentifier.settingsServerRow.rawValue)
             .tag(MacSettingsSidebarSelection.server(server.identifier))
             .macSettingsSidebarRow(isSelected: macSidebarSelection == .server(server.identifier))
             .contextMenu {
@@ -26,6 +28,10 @@ struct ServersListView: View {
                 } label: {
                     Label(L10n.Settings.ConnectionSection.refreshServer, systemSymbol: .arrowClockwise)
                 }
+                Button { reauthentication.start(for: server) } label: {
+                    Label(L10n.Settings.ConnectionSection.Reauthenticate.title, systemSymbol: .personBadgeKey)
+                }
+                .disabled(reauthentication.isReauthenticating || reauthentication.urlTypes(for: server).isEmpty)
                 if observer.servers.first?.identifier != server.identifier {
                     Button {
                         observer.makeDefault(server)
@@ -70,9 +76,26 @@ struct ServersListView: View {
             } message: {
                 Text(L10n.Settings.ConnectionSection.DeleteServer.message)
             }
+            .serverReauthentication(reauthentication, for: server)
         }
         .onMove { source, destination in
             observer.moveServers(from: source, to: destination)
+        }
+
+        if !observer.serversSharingAnInstanceID.isEmpty {
+            NavigationLink(destination: ServerIdentityExplanationView(
+                conflictingServers: observer
+                    .serverIdentityConflicts
+            )) {
+                Label {
+                    Text(L10n.Settings.ConnectionSection.sharedInstanceIdWarning)
+                } icon: {
+                    Image(systemSymbol: .exclamationmarkTriangleFill)
+                        .foregroundStyle(.orange)
+                }
+            }
+            .tag(MacSettingsSidebarSelection.serverIdentity)
+            .macSettingsSidebarRow(isSelected: macSidebarSelection == .serverIdentity)
         }
 
         if observer.servers.count > 1 {
@@ -92,12 +115,13 @@ struct ServersListView: View {
         } label: {
             Label(L10n.Settings.ConnectionSection.addServer, systemSymbol: .plus)
         }
+        .accessibilityIdentifier(AccessibilityIdentifier.settingsAddServer.rawValue)
         #if !targetEnvironment(macCatalyst)
-        .fullScreenCover(isPresented: $showAddServer) {
-            OnboardingNavigationView(onboardingStyle: .secondary)
-        }
+            .fullScreenCover(isPresented: $showAddServer) {
+                OnboardingNavigationView(onboardingStyle: .secondary)
+            }
         #endif
-        .macSettingsSidebarRow()
+            .macSettingsSidebarRow()
     }
 }
 

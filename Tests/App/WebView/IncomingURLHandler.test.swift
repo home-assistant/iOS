@@ -1,10 +1,12 @@
+import CoreSpotlight
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
 import Testing
 
-/// Routing of `homeassistant://` deep links. The `camera` link used to open the native camera player;
-/// it now lands on the entity's more-info dialog, so links created before the change keep working.
+/// Routing of `homeassistant://` deep links. The `camera` link opens the native camera player for a
+/// camera, and the more-info dialog for any other entity a link made before it was reinstated names.
+@Suite(.serialized)
 struct IncomingURLHandlerTests {
     private func withFakeServer(_ body: (Server, MockAppCoordinator, IncomingURLHandler) throws -> Void) throws {
         let previousServers = Current.servers
@@ -16,6 +18,12 @@ struct IncomingURLHandlerTests {
         let coordinator = MockAppCoordinator()
         let handler = IncomingURLHandler(coordinator: coordinator)
         try body(server, coordinator, handler)
+    }
+
+    /// What the handler asked the camera player to show.
+    private struct CameraPresentation: Equatable {
+        let entityId: String
+        let serverId: String?
     }
 
     private func withAppIconShortcutConfig(item: MagicItem, _ body: () throws -> Void) throws {
@@ -34,18 +42,80 @@ struct IncomingURLHandlerTests {
         try body()
     }
 
-    @Test func cameraDeeplinkOpensTheMoreInfoDialog() throws {
+    @Test func cameraDeeplinkOpensTheCameraPlayerInsteadOfTheFrontend() throws {
         try withFakeServer { server, coordinator, handler in
-            let url = try #require(URL(
-                string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=camera.porch&serverId=\(server.identifier.rawValue)"
+            var presented: [CameraPresentation] = []
+            handler.presentCamera = { presented.append(.init(entityId: $0, serverId: $1)) }
+            let url = try #require(AppConstants.openCameraDeeplinkURL(
+                entityId: "camera.porch",
+                serverId: server.identifier.rawValue
             ))
 
             #expect(handler.handle(url: url))
 
+            #expect(presented == [.init(entityId: "camera.porch", serverId: server.identifier.rawValue)])
+            #expect(coordinator.openedDeeplinks.isEmpty)
+            #expect(coordinator.openedDeeplinksSelectingServer.isEmpty)
+        }
+    }
+
+    @Test func cameraDeeplinkForAnotherEntityOpensTheMoreInfoDialog() throws {
+        try withFakeServer { server, coordinator, handler in
+            var presented: [CameraPresentation] = []
+            handler.presentCamera = { presented.append(.init(entityId: $0, serverId: $1)) }
+            let url = try #require(AppConstants.openCameraDeeplinkURL(
+                entityId: "light.porch",
+                serverId: server.identifier.rawValue
+            ))
+
+            #expect(handler.handle(url: url))
+
+            #expect(presented.isEmpty)
             let opened = try #require(coordinator.openedDeeplinks.first)
             #expect(opened.server.identifier == server.identifier)
-            #expect(opened.urlString.contains("\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=camera.porch"))
+            #expect(opened.urlString.contains("\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=light.porch"))
             #expect(coordinator.openedDeeplinksSelectingServer.isEmpty)
+        }
+    }
+
+    @Test(arguments: [
+        (entityId: "camera.porch", opensMoreInfo: false),
+        (entityId: "light.porch", opensMoreInfo: true),
+    ])
+    func spotlightTapOpensCamerasInThePlayerAndEverythingElseInMoreInfo(
+        entityId: String,
+        opensMoreInfo: Bool
+    ) throws {
+        try withFakeServer { server, coordinator, handler in
+            let database = try DatabaseQueue(path: ":memory:")
+            try HAppEntityTable().createIfNeeded(database: database)
+            let uniqueId = ServerEntity.uniqueId(serverId: server.identifier.rawValue, entityId: entityId)
+            try database.write { db in
+                try HAAppEntity(
+                    id: uniqueId,
+                    entityId: entityId,
+                    serverId: server.identifier.rawValue,
+                    domain: entityId.components(separatedBy: ".").first ?? "",
+                    name: "Porch",
+                    icon: nil,
+                    rawDeviceClass: nil
+                ).insert(db)
+            }
+            let previousDatabase = Current.database
+            Current.database = { database }
+            defer { Current.database = previousDatabase }
+
+            var presented: [CameraPresentation] = []
+            handler.presentCamera = { presented.append(.init(entityId: $0, serverId: $1)) }
+            let activity = NSUserActivity(activityType: CSSearchableItemActionType)
+            activity.userInfo = [CSSearchableItemActivityIdentifier: uniqueId]
+
+            #expect(handler.handle(userActivity: activity))
+            #expect(coordinator.openedDeeplinks.isEmpty == !opensMoreInfo)
+            #expect(presented == (opensMoreInfo ? [] : [.init(
+                entityId: entityId,
+                serverId: server.identifier.rawValue
+            )]))
         }
     }
 

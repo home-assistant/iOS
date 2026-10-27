@@ -15,6 +15,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case tagWrite = "tag/write"
     case themeUpdate = "theme-update"
     case matterCommission = "matter/commission"
+    case matterShareDevice = "matter/share_device"
     case threadImportCredentials = "thread/import_credentials"
     case threadStoreCredentialInAppleKeychain = "thread/store_in_platform_keychain"
     case barCodeScanner = "bar_code/scan"
@@ -30,6 +31,8 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityAddToGetActions = "entity/add_to/get_actions"
     case entityAddTo = "entity/add_to"
     case cameraPlayerShow = "camera/show"
+    case webRTCStreamStart = "webrtc/stream/start"
+    case webRTCStreamStop = "webrtc/stream/stop"
     case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
     case sidebarShow = "sidebar/show"
     case moreInfoOpened = "more_info/opened"
@@ -42,6 +45,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasSidebar": AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
+            "canShareMatterDeviceToAppleHome": Current.matter.canShareDevice,
             "hasMatterStatusReport": Current.matter.isAvailable,
             "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
             "hasBarCodeScanner": true,
@@ -50,6 +54,9 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "hasAssist": true,
             "hasAssistSettings": true,
             "hasCameraPlayer": !Current.isCatalyst,
+            "webrtc": [
+                "hasCameraMicrophoneStream": !Current.isCatalyst,
+            ],
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
@@ -70,4 +77,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case matterCommissionFinish = "matter/commission/finish"
     case kioskModeSet = "kiosk_mode/set"
     case showNotifications = "notifications/show"
+    case webRTCStreamStopped = "webrtc/stream/stopped"
 }

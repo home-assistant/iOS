@@ -11,5 +11,16 @@ public enum HealthKitMetricAggregation: Equatable, Hashable, Sendable {
     /// Adds up the time spent in any of `stages` during the most recent night, i.e. the latest sleep
     /// day with samples. Only valid for the sleep analysis category type; see `HealthKitSleepSummary`.
     case sleep(stages: Set<HealthKitSleepStage>)
+    /// Reads one field of the current day's activity summary: a Fitness ring's progress or its goal.
+    /// Only valid for the activity summary type; see `HealthKitActivitySummaryField`.
+    case activitySummary(HealthKitActivitySummaryField)
+
+    /// The field read from the activity summary, `nil` for the sample-based aggregations.
+    public var activitySummaryField: HealthKitActivitySummaryField? {
+        if case let .activitySummary(field) = self {
+            return field
+        }
+        return nil
+    }
 }
 #endif

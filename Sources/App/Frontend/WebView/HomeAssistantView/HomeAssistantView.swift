@@ -8,9 +8,8 @@ struct HomeAssistantView: View, WebFrontendView {
     }
 
     @StateObject private var viewModel: HomeAssistantViewModel
-    /// What's-New / TestFlight sheets are owned here so they can only ever present over the web
-    /// frontend, never over onboarding.
     @StateObject private var launchMessages = LaunchMessagesState()
+    @Environment(\.scenePhase) private var scenePhase
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -21,11 +20,17 @@ struct HomeAssistantView: View, WebFrontendView {
         self.init(server: server, initialPath: nil, onWebViewController: onWebViewController)
     }
 
-    init(server: Server, initialPath: String?, onWebViewController: @escaping (WebViewController) -> Void) {
+    init(
+        server: Server,
+        initialPath: String?,
+        appCoordinator: AppCoordinator? = nil,
+        onWebViewController: @escaping (WebViewController) -> Void
+    ) {
         _viewModel = StateObject(
             wrappedValue: HomeAssistantViewModel(
                 server: server,
                 initialPath: initialPath,
+                appCoordinator: appCoordinator,
                 onWebViewController: onWebViewController
             )
         )
@@ -123,6 +128,11 @@ struct HomeAssistantView: View, WebFrontendView {
                 launchMessages.evaluateIfNeeded()
             }
         }
+        .onChange(of: scenePhase) { phase in
+            if phase == .active {
+                launchMessages.askAboutRestoredRegistrationsAgain()
+            }
+        }
         .onChange(of: reduceMotion) { reduceMotion in
             viewModel.updateReduceMotion(reduceMotion)
         }
@@ -132,6 +142,8 @@ struct HomeAssistantView: View, WebFrontendView {
         }
         .sheet(item: $launchMessages.presented, onDismiss: { launchMessages.showNext() }) { message in
             switch message {
+            case let .restoredRegistrations(servers):
+                RestoredRegistrationsView(viewModel: launchMessages.restoredRegistrationsViewModel(for: servers))
             case let .whatsNew(release):
                 WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }
             case let .testFlight(message):
@@ -203,6 +215,7 @@ struct HomeAssistantView: View, WebFrontendView {
                 isLoading: viewModel.overlayState.isLoading,
                 serverSelectionNamespace: serverSelectionNamespace,
                 onSelectServerTapped: viewModel.presentServerSelection,
+                onSelectServer: viewModel.activate(server:),
                 onGestureAction: { action in
                     viewModel.webViewController?.webViewGestureHandler.handleGestureAction(action)
                 },

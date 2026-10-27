@@ -117,6 +117,50 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(manager.state, .available(received: 1))
     }
 
+    /// Subscribing takes the channel over from the device the registration belongs to, so a restored device waits
+    func testNoSubscriptionWhileTheRegistrationIsAnotherDevices() throws {
+        let prefs = Current.settingsStore.prefs
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        let previousVendorID = Current.device.identifierForVendor
+        let previousIsCatalyst = Current.isCatalyst
+        defer {
+            Current.device.identifierForVendor = previousVendorID
+            Current.isCatalyst = previousIsCatalyst
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+        Current.device.identifierForVendor = { "this-device" }
+        Current.isCatalyst = false
+        keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
+        Current.settingsStore.setRegistrationRecord(
+            RegistrationRecord(current: RegistrationIdentity(deviceID: "device-id", ownerVendorID: "other-device")),
+            for: api.server.identifier
+        )
+
+        setUpManager(webhookID: "webhook1")
+        XCTAssertTrue(apiConnection.pendingSubscriptions.isEmpty)
+
+        Current.settingsStore.setRegistrationRecord(
+            RegistrationRecord(current: RegistrationIdentity(deviceID: "device-id", ownerVendorID: "this-device")),
+            for: api.server.identifier
+        )
+        NotificationCenter.default.post(
+            name: RegistrationOwnership.didSettleRegistration,
+            object: api.server.identifier
+        )
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        XCTAssertEqual(sub.request.type, "mobile_app/push_notification_channel")
+    }
+
     func testSubscriptionAtStart() throws {
         setUpManager(webhookID: "webhook1", version: .init(major: 2021, minor: 9))
 

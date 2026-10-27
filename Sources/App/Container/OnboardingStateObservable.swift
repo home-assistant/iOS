@@ -118,54 +118,32 @@ final class OnboardingStateObservable: ObservableObject {
         server.info.connection.availableAuthenticationURLTypes
     }
 
+    var reauthenticator = ServerReauthenticator()
+
     /// Re-authenticates a server recovered from a keychain-mirror restore, then shows its web view.
     /// Moved from `WebViewWindowController`; `login` is provided by the re-auth screen, which presents
     /// the login web view and resolves with its OAuth result.
     func performRecoveredServerReauthentication(
         for server: Server,
         using urlType: ConnectionInfo.URLType,
-        login: (OnboardingAuthDetails) -> Promise<OnboardingAuthLoginResult>,
+        login: @escaping (OnboardingAuthDetails) -> Promise<OnboardingAuthLoginResult>,
+        importClientCertificate: @escaping () -> Promise<ClientCertificate>,
         completion: @escaping (Swift.Result<Void, Error>) -> Void
     ) {
-        let connectionInfo = server.info.connection
-        guard let baseURL = connectionInfo.address(for: urlType) else {
-            completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
-            return
-        }
-        do {
-            let authDetails = try OnboardingAuthDetails(baseURL: baseURL)
-            authDetails.exceptions = connectionInfo.securityExceptions
-            authDetails.clientCertificate = connectionInfo.clientCertificate
-            firstly {
-                login(authDetails)
-            }.then { result -> Promise<(URL?, TokenInfo)> in
-                let correctedURL = result.resolvedURL?.sameHostRedirectBaseURL(from: baseURL)
-                return AuthenticationAPI.fetchToken(
-                    authorizationCode: result.code,
-                    baseURL: correctedURL ?? baseURL,
-                    exceptions: authDetails.exceptions,
-                    clientCertificate: authDetails.clientCertificate
-                ).map { (correctedURL, $0) }
-            }.done { [weak self] correctedURL, tokenInfo in
-                server.update { serverInfo in
-                    serverInfo.token = tokenInfo
-                    if let correctedURL {
-                        Current.Log.info("Updating \(urlType) URL to redirect \(correctedURL) during re-auth")
-                        serverInfo.connection.set(address: correctedURL, for: urlType)
-                    }
-                }
-                completion(.success(()))
-                self?.showWebView(for: server)
-            }.catch { error in
-                if let pmkError = error as? PMKError, pmkError.isCancelled {
-                    completion(.failure(RecoveredServerReauthenticationError.cancelled))
-                    return
-                }
-                Current.Log.error("Recovered server re-authentication failed: \(error)")
-                completion(.failure(error))
+        reauthenticator.reauthenticate(
+            server,
+            using: urlType,
+            login: login,
+            importClientCertificate: importClientCertificate
+        ).done { [weak self] in
+            completion(.success(()))
+            self?.showWebView(for: server)
+        }.catch(policy: .allErrors) { error in
+            if let pmkError = error as? PMKError, pmkError.isCancelled {
+                completion(.failure(RecoveredServerReauthenticationError.cancelled))
+                return
             }
-        } catch {
-            Current.Log.error("Failed to create auth details for recovered server re-authentication: \(error)")
+            Current.Log.error("Recovered server re-authentication failed: \(error)")
             completion(.failure(error))
         }
     }

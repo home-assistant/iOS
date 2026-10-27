@@ -29,6 +29,14 @@ final class ConnectionSettingsViewModel: ObservableObject {
     @Published var sensorPrivacy: ServerSensorPrivacy = .none
     @Published var showDeleteConfirmation = false
     @Published var isDeleting = false
+    @Published var isRegisterAsNewDeviceConfirmationPresented = false
+    @Published var isRegisteringAsNewDevice = false
+    @Published var registerAsNewDeviceError: Error?
+    @Published var isShowingRegisterAsNewDeviceError = false
+    @Published var login: OnboardingAuthLoginViewModel?
+    /// Still the registration of the device a backup came from, so nothing this device reports reaches the server.
+    @Published private(set) var isRegisteredByAnotherDevice = false
+    @Published var isReplaceOldDeviceConfirmationPresented = false
     @Published var clientCertificate: ClientCertificate?
     @Published var isImportingCertificate = false
     @Published var certificateError: Error?
@@ -48,6 +56,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
     // MARK: - Properties
 
     let server: Server
+    private let ownership: RegistrationOwnership
+    private let signIn: ServerReauthentication.SignIn
     private var tokens: [HACancellable] = []
     private var localPushObserver: HACancellable?
     private var notificationCenterObserver: NSObjectProtocol?
@@ -70,8 +80,15 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     // MARK: - Initialization
 
-    init(server: Server) {
+    init(
+        server: Server,
+        ownership: RegistrationOwnership = RegistrationOwnership(),
+        signIn: @escaping ServerReauthentication.SignIn = ServerReauthentication.signIn(to:presenting:)
+    ) {
         self.server = server
+        self.ownership = ownership
+        self.signIn = signIn
+        self.isRegisteredByAnotherDevice = ownership.isRegisteredByAnotherDevice(server)
         setupObservers()
         loadInitialData()
     }
@@ -203,7 +220,6 @@ final class ConnectionSettingsViewModel: ObservableObject {
     private func loadInitialData() {
         updateFromServerInfo(server.info)
         updateURLs()
-        clientCertificate = server.info.connection.clientCertificate
         guard let api = Current.api(for: server) else { return }
         api.cachedProfilePicture { [weak self] image in
             Task { @MainActor [weak self] in
@@ -226,6 +242,8 @@ final class ConnectionSettingsViewModel: ObservableObject {
 
     private func updateFromServerInfo(_ info: ServerInfo) {
         serverName = info.name
+        // Follows the server, so a certificate stored by Re-authenticate shows up without reopening the screen.
+        clientCertificate = info.connection.clientCertificate
         // The stored copy re-evaluates the active URL on save, but observers get the value as written,
         // so evaluate a copy here to keep the highlighted pill right after an edit.
         var connection = server.info.connection
@@ -332,12 +350,14 @@ final class ConnectionSettingsViewModel: ObservableObject {
         return invitationURL
     }
 
-    func activateServer() {
+    func activateServer(on coordinator: AppCoordinator?) {
         if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
             Task { [weak self] in
                 guard let self, let url = await server.activeURL() else { return }
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
+        } else if let coordinator {
+            coordinator.activate(server: server)
         } else {
             Current.sceneManager.appCoordinator.done {
                 $0.activate(server: self.server)
@@ -350,6 +370,55 @@ final class ConnectionSettingsViewModel: ObservableObject {
         defer { isDeleting = false }
 
         await server.deleteFromApp(minimumDuration: 3.0)
+    }
+
+    var registerAsNewDeviceTitle: String {
+        isRegisteringAsNewDevice
+            ? L10n.Settings.ConnectionSection.RegisterAsNewDevice.progress
+            : L10n.Settings.ConnectionSection.RegisterAsNewDevice.title
+    }
+
+    func confirmRegisteringAsNewDevice() {
+        isRegisterAsNewDeviceConfirmationPresented = true
+    }
+
+    func startRegisteringAsNewDevice() {
+        Task {
+            await registerAsNewDevice()
+        }
+    }
+
+    func registerAsNewDevice() async {
+        isRegisteringAsNewDevice = true
+        defer { isRegisteringAsNewDevice = false }
+
+        do {
+            try await signIn(server) { [weak self] login in
+                self?.login = login
+            }
+        } catch let error as PMKError where error.isCancelled {
+            return
+        } catch {
+            registerAsNewDeviceError = error
+            isShowingRegisterAsNewDeviceError = true
+            return
+        }
+
+        if let error = await ownership.registerAsNewDevice([server])[server] {
+            registerAsNewDeviceError = error
+            isShowingRegisterAsNewDeviceError = true
+        }
+        isRegisteredByAnotherDevice = ownership.isRegisteredByAnotherDevice(server)
+    }
+
+    func confirmReplacingOldDevice() {
+        isReplaceOldDeviceConfirmationPresented = true
+    }
+
+    /// Takes over the registration of the device a backup came from, the same as the choice offered at launch.
+    func replaceOldDevice() {
+        ownership.keepRegistrations(of: [server])
+        isRegisteredByAnotherDevice = ownership.isRegisteredByAnotherDevice(server)
     }
 
     // MARK: - Client Certificate

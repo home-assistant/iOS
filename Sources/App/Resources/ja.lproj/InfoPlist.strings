@@ -2,10 +2,10 @@
 "NSCameraUsageDescription" = "写真を撮って、Home Assistant serverに送ることができます。";
 "NSCrossWebsiteTrackingUsageDescription" = "必要に応じて、クロス Web サイト トラッキングを有効にします。";
 "NSFocusStatusUsageDescription" = "フォーカスの状態をセンサーとして報告します。";
-"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
-"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
+"NSHealthShareUsageDescription" = "Apple Healthの特定の測定値を読み取り、センサーとしてHome Assistantと共有できるようにします。";
+"NSHealthUpdateUsageDescription" = "Home Assistantは、Apple Healthにデータを一切書き込みません。";
 "NSLocalNetworkUsageDescription" = "Home Assistantのインスタンスを見つけて通信します。";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 アプリがバックグラウンド操作を実行できるようにするには、位置情報への「常時」アクセス権限も必要です。 \n\n ⚠️ これがないと、アプリはバックグラウンドでどの接続 (ローカルまたはリモート) を使用するかを決定できず、常にリモートを使用します。";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "アプリが Home Assistant 上で位置情報を更新し、バックグラウンドでローカル接続とリモート接続のどちらを使用するかを選択できるようにするため、位置情報のアクセスを「常に」許可してください。";
 "NSLocationAlwaysUsageDescription" = "iBeacons、ジオフェンス、バックグラウンドでの位置情報の更新、正確なレポートなどの機能のために、常に位置情報にアクセスする必要があります。";
 "NSLocationUsageDescription" = "有効にすると、デバイスの位置情報がデバイス トラッカーとしてHome Assistantに送信されます。";
 "NSLocationWhenInUseUsageDescription" = "このアプリは、Home Assistant インストールに直接接続するために位置情報へのアクセスが必要です。 \n \n 1️⃣ あなたの位置情報は、ローカルネットワークに接続しているかどうかを確認するためにのみ使用されます。 \n \n 2️⃣ 誰とも共有されません。 \n \n 3️⃣ 許可しない場合、アプリは常にインターネット経由で接続します。設定されていない場合、アプリはデータを保護するために接続を拒否します。";

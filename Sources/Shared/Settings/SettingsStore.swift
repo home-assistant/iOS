@@ -31,8 +31,14 @@ public class SettingsStore {
     /// differently (the Mac moving from Catalyst to the native app) keeps the registration it has
     /// rather than registering a second device.
     public var integrationDeviceID: String {
-        let baseString = persistedIntegrationDeviceID ?? deviceID
+        Self.integrationDeviceID(from: persistedIntegrationDeviceID ?? deviceID)
+    }
 
+    public func newIntegrationDeviceID() -> String {
+        Self.integrationDeviceID(from: UUID().uuidString)
+    }
+
+    private static func integrationDeviceID(from baseString: String) -> String {
         switch Current.appConfiguration {
         case .debug:
             return "debug_" + baseString
@@ -61,6 +67,76 @@ public class SettingsStore {
         }
         prefs.set(current, forKey: Self.integrationDeviceIDKey)
         return current
+    }
+
+    static let integrationDeviceIDOwnerKey = "integrationDeviceIDOwner"
+
+    public var integrationDeviceIDOwnerVendorID: String? {
+        prefs.string(forKey: Self.integrationDeviceIDOwnerKey) ?? persistedIntegrationDeviceID
+    }
+
+    public func takeOverIntegrationDeviceID(for vendorID: String) {
+        prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
+    }
+
+    /// Home Assistant replaces a `mobile_app` registration whose app and device identifiers match an existing one,
+    /// so only a fresh identifier makes the next registration a new device rather than taking over an existing one.
+    public func adoptNewIntegrationDeviceID(ownedBy vendorID: String) {
+        prefs.set(UUID().uuidString, forKey: Self.integrationDeviceIDKey)
+        prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
+    }
+
+    public var integrationDeviceIdentity: RegistrationIdentity {
+        RegistrationIdentity(deviceID: integrationDeviceID, ownerVendorID: integrationDeviceIDOwnerVendorID)
+    }
+
+    static let registrationRecordsKey = "registrationRecords"
+    private static let registrationRecordsLock = NSLock()
+
+    /// Kept in the app group rather than the Keychain, which outlives a reinstall: the reinstalled app's own
+    /// registrations would otherwise look like another device's.
+    public func registrationRecord(for server: Identifier<Server>) -> RegistrationRecord {
+        registrationRecords[server.rawValue] ?? RegistrationRecord()
+    }
+
+    public func currentRegistrationIdentity(for server: Server) -> RegistrationIdentity {
+        if let current = registrationRecord(for: server.identifier).current {
+            return current
+        }
+        guard let deviceID = server.info.setting(for: .registeredDeviceID) else {
+            return integrationDeviceIdentity
+        }
+        return RegistrationIdentity(deviceID: deviceID, ownerVendorID: integrationDeviceIDOwnerVendorID)
+    }
+
+    public func registrationIdentity(for server: Server) -> RegistrationIdentity {
+        if let pending = registrationRecord(for: server.identifier).pending,
+           pending.ownerVendorID == Current.device.identifierForVendor() {
+            return pending
+        }
+        return currentRegistrationIdentity(for: server)
+    }
+
+    public func setRegistrationRecord(_ record: RegistrationRecord, for server: Identifier<Server>) {
+        updateRegistrationRecord(for: server) { $0 = record }
+    }
+
+    public func updateRegistrationRecord(
+        for server: Identifier<Server>,
+        _ update: (inout RegistrationRecord) -> Void
+    ) {
+        Self.registrationRecordsLock.lock()
+        defer { Self.registrationRecordsLock.unlock() }
+        var records = registrationRecords
+        var record = records[server.rawValue] ?? RegistrationRecord()
+        update(&record)
+        records[server.rawValue] = record == RegistrationRecord() ? nil : record
+        prefs.set(try? JSONEncoder().encode(records), forKey: Self.registrationRecordsKey)
+    }
+
+    private var registrationRecords: [String: RegistrationRecord] {
+        guard let data = prefs.data(forKey: Self.registrationRecordsKey) else { return [:] }
+        return (try? JSONDecoder().decode([String: RegistrationRecord].self, from: data)) ?? [:]
     }
 
     private var seenWhatsNewReleaseIDs: Set<String> {
@@ -688,6 +764,20 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "notifyOnLocalPushStateChanges")
+        }
+    }
+
+    public static let defaultRegionEnterMaximumFuzzDistance: CLLocationDistance = 100
+
+    /// The farthest outside a monitored region a one-shot fix may be and still have its accuracy widened
+    /// to reach the region on a region-enter event. Tuned from the hidden developer section of Debug settings.
+    public var regionEnterMaximumFuzzDistance: CLLocationDistance {
+        get {
+            (prefs.object(forKey: "regionEnterMaximumFuzzDistance") as? Double)
+                ?? Self.defaultRegionEnterMaximumFuzzDistance
+        }
+        set {
+            prefs.set(newValue, forKey: "regionEnterMaximumFuzzDistance")
         }
     }
 

@@ -15,7 +15,12 @@ import WidgetKit
 /// for it. This one stays wide, because search has nothing to filter by.
 @available(macOS 13.0, watchOS 9.4, *)
 struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
-    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Entity")
+    /// App Intents resolves the type name again for every entity it indexes, so it stays off the
+    /// strings table like the title (see `LocalizedStringResource.verbatim`). The metadata extractor
+    /// only accepts a literal here, so the table is spelled out. Translating the name one day belongs
+    /// in a small table of its own, not in `Localizable.strings`, or every index pass parses that whole
+    /// file once per entity.
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: .init("Entity", table: "Verbatim"))
 
     static let defaultQuery = HAAppEntityAppIntentEntityQuery()
 
@@ -58,8 +63,8 @@ struct HAAppEntityAppIntentEntity: AppEntity, EntityContextRepresentable {
     /// results still carry the real glyph, where it is rendered once per index pass.
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: "\(displayString)",
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
+            title: .verbatim(displayString),
+            subtitle: subtitle.map { .verbatim($0) },
             image: .init(systemName: domain?.sfSymbolName ?? Self.fallbackSymbolName)
         )
     }
@@ -120,7 +125,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
     /// Only ever single entities: an area is something to switch, which `ControllableEntityAppEntity`
     /// offers and reads back, not something to index, put in a widget or open the details of.
     func entities(for identifiers: [String]) async throws -> [HAAppEntityAppIntentEntity] {
-        getEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
+        getEntities(includingServersHiddenFromSiri: true).flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
@@ -138,9 +143,15 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         })
     }
 
-    private func getEntities(matching string: String? = nil) -> [(Server, [HAAppEntityAppIntentEntity])] {
+    private func getEntities(
+        matching string: String? = nil,
+        includingServersHiddenFromSiri: Bool = false
+    ) -> [(Server, [HAAppEntityAppIntentEntity])] {
         var allEntities: [(Server, [HAAppEntityAppIntentEntity])] = []
-        let entities = ControlEntityProvider(domains: []).getEntitiesExposedToSiri(matching: string)
+        let provider = ControlEntityProvider(domains: [])
+        let entities = includingServersHiddenFromSiri
+            ? provider.getEntities(matching: string)
+            : provider.getEntitiesExposedToSiri(matching: string)
 
         for (server, values) in entities {
             let deviceContexts = values.deviceContexts(for: server.identifier.rawValue)

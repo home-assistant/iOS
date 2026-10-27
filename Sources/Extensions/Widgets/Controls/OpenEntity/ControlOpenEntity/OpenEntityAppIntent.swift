@@ -24,7 +24,7 @@ struct OpenEntityAppIntent: AppIntent {
     func perform() async throws -> some IntentResult {
         guard let entity else { return .result() }
         #if !WIDGET_EXTENSION
-        if let url = AppConstants.openEntityDestinationURL(
+        if let url = AppConstants.openEntityOrCameraDestinationURL(
             entityId: entity.entityId,
             serverId: entity.serverId
         ) {

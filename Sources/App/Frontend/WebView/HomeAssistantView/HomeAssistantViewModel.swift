@@ -1,4 +1,5 @@
 import Combine
+import PromiseKit
 import Shared
 import SwiftUI
 import UIKit
@@ -48,9 +49,12 @@ final class HomeAssistantViewModel: ObservableObject {
     @Published var isPullToRefreshActive = false
 
     private let onWebViewController: ((WebViewController) -> Void)?
+    private weak var appCoordinator: AppCoordinator?
 
     /// Overridable so tests can exercise the watchdog without waiting out the real timeout.
     var loaderWatchdogTimeout = Constants.loaderWatchdogTimeout
+    /// Overridable for the same reason, the first cycle starts in `init` and takes the real value.
+    var loaderMinimumDuration = Constants.minimumLoaderDuration
 
     // The standby loader remains mounted until both the minimum duration has elapsed and the frontend reconnects.
     // Empty-state content waits for the same minimum duration so transient reload failures don't flash immediately.
@@ -72,6 +76,7 @@ final class HomeAssistantViewModel: ObservableObject {
         overlayState: WebFrontendOverlayState? = nil,
         chrome: WebViewChromeState? = nil,
         reconnectManager: WebViewReconnectManager? = nil,
+        appCoordinator: AppCoordinator? = nil,
         onWebViewController: ((WebViewController) -> Void)? = nil
     ) {
         self.server = server
@@ -80,11 +85,15 @@ final class HomeAssistantViewModel: ObservableObject {
         self.chrome = chrome ?? WebViewChromeState()
         self.reconnectManager = reconnectManager ?? WebViewReconnectManager()
         self.onWebViewController = onWebViewController
+        self.appCoordinator = appCoordinator
         self.sidebar = MacSidebarViewModel(server: server, overlayState: self.overlayState)
         self.tabBar = NativeTabBarViewModel(sidebar: sidebar, overlayState: self.overlayState)
 
         sidebar.onNavigate = { [weak self] path in
             self?.webViewController?.openSidebarPath(path)
+        }
+        tabBar.appCoordinator = { [weak self] in
+            self?.windowCoordinator ?? Current.sceneManager.appCoordinator
         }
         tabBar.onQuickSearch = { [weak self] in
             self?.webViewController?.webViewGestureHandler.handleGestureAction(.quickSearch)
@@ -132,6 +141,12 @@ final class HomeAssistantViewModel: ObservableObject {
     deinit {
         loaderMinimumDurationTask?.cancel()
         loaderWatchdogTask?.cancel()
+        // A server switch or a closing window drops this model with its controller still in it. Hosted
+        // by a `FrontendView` that controller is retired on dismantle; hosted by the tab bar's slot,
+        // nothing else would.
+        MainActor.assumeIsolated {
+            webViewController?.retireFrontend()
+        }
     }
 
     var webViewIgnoredSafeAreaEdges: Edge.Set {
@@ -202,6 +217,8 @@ final class HomeAssistantViewModel: ObservableObject {
     }
 
     func resetWebFrontend() {
+        // The tab bar's slot hosts the controller without a `FrontendView`, so nothing else retires it.
+        webViewController?.retireFrontend()
         overlayState.emptyState = nil
         overlayState.showsNoActiveURL = false
         webViewController = nil
@@ -333,11 +350,16 @@ final class HomeAssistantViewModel: ObservableObject {
         loaderMinimumDurationElapsed = false
         overlayState.connectionState = .unknown
         loaderCycleID = cycleID
-        loaderMinimumDurationTask = Task { @MainActor in
-            try? await Task.sleep(for: Constants.minimumLoaderDuration)
-            guard !Task.isCancelled, loaderCycleID == cycleID else { return }
+        // Weak, like the two tasks below: holding the model would keep it, and the controller it still
+        // holds, alive past its owner for as long as the sleep runs, and keep `deinit` from cancelling
+        // anything. Nothing touches `self` before the unwrap for the same reason, an implicit use there
+        // captures it strongly regardless.
+        let minimumDuration = loaderMinimumDuration
+        loaderMinimumDurationTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: minimumDuration)
+            guard let self, !Task.isCancelled, loaderCycleID == cycleID else { return }
             withAnimation(DesignSystem.Animation.default) {
-                loaderMinimumDurationElapsed = true
+                self.loaderMinimumDurationElapsed = true
             }
             updateFullScreenLoaderVisibility()
         }
@@ -366,9 +388,9 @@ final class HomeAssistantViewModel: ObservableObject {
             isFullScreenLoaderVisible = false
         }
 
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
             try? await Task.sleep(for: Constants.loaderFadeOutDuration)
-            guard loaderCycleID == finishingCycleID, !isFullScreenLoaderVisible else { return }
+            guard let self, loaderCycleID == finishingCycleID, !isFullScreenLoaderVisible else { return }
             isFullScreenLoaderMounted = false
             ensureWebViewVisible()
         }
@@ -384,9 +406,10 @@ final class HomeAssistantViewModel: ObservableObject {
         guard isFullScreenLoaderMounted else { return }
         let cycleID = loaderCycleID
         loaderWatchdogTask?.cancel()
-        loaderWatchdogTask = Task { @MainActor in
-            try? await Task.sleep(for: loaderWatchdogTimeout)
-            guard !Task.isCancelled, loaderCycleID == cycleID, isFullScreenLoaderMounted,
+        let timeout = loaderWatchdogTimeout
+        loaderWatchdogTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: timeout)
+            guard let self, !Task.isCancelled, loaderCycleID == cycleID, isFullScreenLoaderMounted,
                   !overlayState.isLoading, overlayState.emptyState == nil,
                   !overlayState.showsNoActiveURL else { return }
             Current.Log.error("Standby loader stuck with no frontend report after loading, checking the page")
@@ -442,12 +465,21 @@ final class HomeAssistantViewModel: ObservableObject {
         fade(to: 1, reduceMotion: reduceMotion)
     }
 
+    private var windowCoordinator: Guarantee<AppCoordinator> {
+        if let appCoordinator { return .value(appCoordinator) }
+        return Current.sceneManager.appCoordinator(for: webViewController?.presentationWindow?.windowScene)
+    }
+
+    func activate(server: Server) {
+        windowCoordinator.done { coordinator in
+            coordinator.activate(server: server)
+        }
+    }
+
     /// Opens the Settings sheet on its compact server picker, activating whatever the user picks. Zooms out of
     /// the stand-by view's server pill, which is the only thing that triggers it.
     func presentServerSelection() {
-        // The pill belongs to one window's frontend, so the picker opens on that window's coordinator.
-        let scene = webViewController?.presentationWindow?.windowScene
-        Current.sceneManager.appCoordinator(for: scene).done { coordinator in
+        windowCoordinator.done { coordinator in
             coordinator.selectServer(prompt: nil, zoomsFromStandBy: true) { server in
                 coordinator.activate(server: server)
             }
