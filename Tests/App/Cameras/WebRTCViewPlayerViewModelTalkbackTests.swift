@@ -70,18 +70,53 @@ final class WebRTCViewPlayerViewModelTalkbackTests: XCTestCase {
         XCTAssertEqual(haptics.feedbacks, [.impact(.rigid)])
     }
 
-    func testTappingAgainStopsTheMicrophone() throws {
-        viewModel.start()
-        viewModel.toggleTalkback()
-        let session = try XCTUnwrap(sessions.first)
-        session.connect(sessionId: "mic-session")
+    /// Stopping mutes the microphone and keeps its connection, so talking again does not have to
+    /// connect it from scratch.
+    func testTappingAgainMutesAndHoldsTheMicrophone() throws {
+        let session = try startTalking()
 
         viewModel.toggleTalkback()
 
-        XCTAssertEqual(session.stopCount, 1)
+        XCTAssertEqual(session.stopCount, 0)
+        XCTAssertFalse(session.isMicrophoneEnabled)
         XCTAssertEqual(viewModel.talkbackState, .idle)
         XCTAssertNil(viewModel.talkbackError)
         XCTAssertEqual(haptics.feedbacks, [.impact(.rigid), .impact(.soft)])
+    }
+
+    func testTalkingAgainWhileHeldPicksUpTheSameMicrophoneAtOnce() throws {
+        let session = try startTalking()
+        viewModel.toggleTalkback()
+
+        viewModel.toggleTalkback()
+
+        XCTAssertEqual(sessions.count, 1)
+        XCTAssertTrue(session.isMicrophoneEnabled)
+        XCTAssertEqual(viewModel.talkbackState, .talking)
+        XCTAssertEqual(haptics.feedbacks, [.impact(.rigid), .impact(.soft), .impact(.rigid)])
+    }
+
+    func testAHeldMicrophoneIsHungUpOnceTheHoldRunsOut() throws {
+        viewModel = makeViewModel(supportsTalkback: true, microphoneHoldDuration: 0.05)
+        let session = try startTalking()
+
+        viewModel.toggleTalkback()
+        spinMain(until: { session.stopCount == 1 })
+
+        viewModel.toggleTalkback()
+        XCTAssertEqual(sessions.count, 2, "Talking after the hold connects a new microphone")
+    }
+
+    func testAHeldMicrophoneThatDropsIsForgottenQuietly() throws {
+        let session = try startTalking()
+        viewModel.toggleTalkback()
+
+        session.end(.connectionFailed)
+        viewModel.toggleTalkback()
+
+        XCTAssertNil(viewModel.talkbackError)
+        XCTAssertEqual(sessions.count, 2)
+        XCTAssertEqual(viewModel.talkbackState, .connecting)
     }
 
     func testCancellingWhileConnectingIgnoresTheInterruptedStart() throws {
@@ -151,15 +186,21 @@ final class WebRTCViewPlayerViewModelTalkbackTests: XCTestCase {
     }
 
     func testStoppingThePlayerStopsTheMicrophone() throws {
-        viewModel.start()
-        viewModel.toggleTalkback()
-        let session = try XCTUnwrap(sessions.first)
-        session.connect(sessionId: "mic-session")
+        let session = try startTalking()
 
         viewModel.stop()
 
         XCTAssertEqual(session.stopCount, 1)
         XCTAssertEqual(viewModel.talkbackState, .idle)
+    }
+
+    func testStoppingThePlayerHangsUpAHeldMicrophone() throws {
+        let session = try startTalking()
+        viewModel.toggleTalkback()
+
+        viewModel.stop()
+
+        XCTAssertEqual(session.stopCount, 1)
     }
 
     /// The app keeps the audio background mode, so a session left running once the scene is in the
@@ -174,6 +215,15 @@ final class WebRTCViewPlayerViewModelTalkbackTests: XCTestCase {
 
         XCTAssertEqual(session.stopCount, 1)
         XCTAssertEqual(viewModel.talkbackState, .idle)
+    }
+
+    func testTheSceneGoingToTheBackgroundHangsUpAHeldMicrophone() throws {
+        let session = try startTalking()
+        viewModel.toggleTalkback()
+
+        viewModel.handleScenePhase(.background)
+
+        XCTAssertEqual(session.stopCount, 1)
     }
 
     /// The microphone permission alert makes the scene inactive; that must not hang up the session the
@@ -196,8 +246,13 @@ final class WebRTCViewPlayerViewModelTalkbackTests: XCTestCase {
         connection.pendingRequests.filter { $0.request.type.command == "camera/webrtc/get_client_config" }
     }
 
-    private func makeViewModel(supportsTalkback: Bool) -> WebRTCViewPlayerViewModel {
-        WebRTCViewPlayerViewModel(
+    private func makeViewModel(
+        supportsTalkback: Bool,
+        microphoneHoldDuration: TimeInterval = 60
+    ) -> WebRTCViewPlayerViewModel {
+        var timing = WebRTCViewPlayerViewModel.Timing.production
+        timing.microphoneHoldDuration = microphoneHoldDuration
+        return WebRTCViewPlayerViewModel(
             server: server,
             cameraEntityId: "camera.front_door",
             supportsTalkback: supportsTalkback,
@@ -206,7 +261,30 @@ final class WebRTCViewPlayerViewModelTalkbackTests: XCTestCase {
                 let session = FakeCameraMicrophoneSession(server: server, cameraEntityId: cameraEntityId)
                 self?.sessions.append(session)
                 return session
-            }
+            },
+            timing: timing
         )
+    }
+
+    private func startTalking() throws -> FakeCameraMicrophoneSession {
+        viewModel.start()
+        viewModel.toggleTalkback()
+        let session = try XCTUnwrap(sessions.last)
+        session.connect(sessionId: "mic-session")
+        XCTAssertEqual(viewModel.talkbackState, .talking)
+        return session
+    }
+
+    private func spinMain(
+        until condition: () -> Bool,
+        timeout: TimeInterval = 30,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let deadline = Date().addingTimeInterval(timeout)
+        while !condition(), Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        }
+        XCTAssertTrue(condition(), "Timed out spinning the main run loop", file: file, line: line)
     }
 }
