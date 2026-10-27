@@ -5224,7 +5224,7 @@ public enum L10n {
     public static var explanation: String { return L10n.tr("Localizable", "restored_registrations.explanation") }
     /// Set up as a new device
     public static var newDevice: String { return L10n.tr("Localizable", "restored_registrations.new_device") }
-    /// %d of %d set up
+    /// %li of %li set up
     public static func progress(_ p1: Int, _ p2: Int) -> String {
       return L10n.tr("Localizable", "restored_registrations.progress", p1, p2)
     }
@@ -5255,7 +5255,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "restored_registrations.held_back_notification.title") }
     }
     public enum Login {
-      /// Server %d of %d
+      /// Server %li of %li
       public static func progress(_ p1: Int, _ p2: Int) -> String {
         return L10n.tr("Localizable", "restored_registrations.login.progress", p1, p2)
       }
