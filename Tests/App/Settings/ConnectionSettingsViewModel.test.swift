@@ -265,6 +265,7 @@ struct ConnectionSettingsViewModelTests {
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
             SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
         defer {
@@ -274,6 +275,7 @@ struct ConnectionSettingsViewModelTests {
             }
         }
         Current.device.identifierForVendor = { "this-device" }
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
         try await body()
     }
 

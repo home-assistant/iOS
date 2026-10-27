@@ -501,6 +501,7 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
             SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
         defer {
@@ -520,6 +521,7 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         Current.device.identifierForVendor = { "this-device" }
         Current.isCatalyst = false
         keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
         try body()
     }
 
