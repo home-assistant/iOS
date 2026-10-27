@@ -45,7 +45,7 @@ struct ServerDetailsRowView: View {
         let isActive: Bool
         let symbol: SFSymbol?
         /// What Copy puts on the clipboard when it differs from `value`, such as the cloud pill's remote UI
-        /// address behind its "Home Assistant Cloud" label.
+        /// address behind its "Home Assistant Link" label.
         let copyValue: String?
 
         var id: EditOption { option }
