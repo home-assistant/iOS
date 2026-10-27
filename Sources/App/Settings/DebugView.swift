@@ -584,6 +584,7 @@ struct DebugView: View {
     func simulateRestoredDevice() {
         RegistrationOwnership().simulateRestoreFromAnotherDevice()
         feedbackGenerator.notificationOccurred(.success)
+        dismissSettings()
     }
 
     private func sendMapNotification() {
@@ -698,7 +699,7 @@ struct DebugView: View {
         await toastProgressTask.value
         hideResetAppToast()
         loadingResetApp = false
-        dismissSettingsAfterReset()
+        dismissSettings()
         Current.onboardingObservation.needed(.logout)
     }
 
@@ -731,7 +732,7 @@ struct DebugView: View {
         }
     }
 
-    private func dismissSettingsAfterReset() {
+    private func dismissSettings() {
         appSettingsPresenter?.isSheetPresented = false
         dismiss()
     }
