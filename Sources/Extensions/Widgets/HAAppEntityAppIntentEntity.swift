@@ -125,7 +125,7 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
     /// Only ever single entities: an area is something to switch, which `ControllableEntityAppEntity`
     /// offers and reads back, not something to index, put in a widget or open the details of.
     func entities(for identifiers: [String]) async throws -> [HAAppEntityAppIntentEntity] {
-        getEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
+        getEntities(includingServersHiddenFromSiri: true).flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
@@ -143,9 +143,15 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         })
     }
 
-    private func getEntities(matching string: String? = nil) -> [(Server, [HAAppEntityAppIntentEntity])] {
+    private func getEntities(
+        matching string: String? = nil,
+        includingServersHiddenFromSiri: Bool = false
+    ) -> [(Server, [HAAppEntityAppIntentEntity])] {
         var allEntities: [(Server, [HAAppEntityAppIntentEntity])] = []
-        let entities = ControlEntityProvider(domains: []).getEntitiesExposedToSiri(matching: string)
+        let provider = ControlEntityProvider(domains: [])
+        let entities = includingServersHiddenFromSiri
+            ? provider.getEntities(matching: string)
+            : provider.getEntitiesExposedToSiri(matching: string)
 
         for (server, values) in entities {
             let deviceContexts = values.deviceContexts(for: server.identifier.rawValue)
