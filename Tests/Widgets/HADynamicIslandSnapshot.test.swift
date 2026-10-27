@@ -31,7 +31,8 @@ struct HADynamicIslandSnapshotTests {
     }
 
     /// A narrow island (iPhone Duo, landscape, or one shared with another activity) gives the slot a
-    /// 28 pt circle, so the timer and the progress turn into a ring and the critical text is left out.
+    /// 28 pt circle, so the timer and the progress turn into a ring and the critical text scales
+    /// down to fit.
     ///
     /// Outside the Live Activity renderer a circular `ProgressView` draws as a spinner, so these
     /// references pin which samples show something and that it is centred in the circle, not the ring.
