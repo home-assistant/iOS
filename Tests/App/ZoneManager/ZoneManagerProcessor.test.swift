@@ -587,10 +587,12 @@ class ZoneManagerProcessorTests: XCTestCase {
                 )
 
                 XCTAssertTrue(regionWithAccuracy.contains(sentLocation.coordinate))
+                XCTAssertNotEqual(sentLocation.horizontalAccuracy, oneShotLocation.horizontalAccuracy)
             } else {
                 XCTFail("didn't send a location")
             }
 
+            XCTAssertEqual(api.submitLocationInvocation?.rawLocation, oneShotLocation)
             XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
         }
 
@@ -1369,17 +1371,20 @@ private class FakeHassAPI: HomeAssistantAPI {
     var submitLocationInvocation: (
         updateType: LocationUpdateTrigger,
         location: CLLocation?,
+        rawLocation: CLLocation?,
         zone: AppZone?
     )?
 
     override func SubmitLocation(
         updateType: LocationUpdateTrigger,
         location: CLLocation?,
+        rawLocation: CLLocation? = nil,
         zone: AppZone?
     ) -> Promise<Void> {
         submitLocationInvocation = (
             updateType: updateType,
             location: location,
+            rawLocation: rawLocation,
             zone: zone
         )
         return submitLocationPromise!

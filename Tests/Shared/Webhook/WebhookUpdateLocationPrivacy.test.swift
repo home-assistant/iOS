@@ -20,20 +20,32 @@ struct WebhookUpdateLocationPrivacyTests {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
     }
 
+    private let fuzzedFix = CLLocation(
+        coordinate: .init(latitude: 1.6, longitude: 2.6),
+        altitude: 10,
+        horizontalAccuracy: 120,
+        verticalAccuracy: 3,
+        timestamp: Date()
+    )
+
     private func payload(
         _ privacy: ServerLocationPrivacy,
         trigger: LocationUpdateTrigger = .Manual,
         location: CLLocation?,
+        rawLocation: CLLocation? = nil,
         zone: AppZone? = nil,
         supportsInZones: Bool = true,
+        supportsRawLocation: Bool = false,
         zonesContaining: [AppZone] = []
     ) -> [String: Any] {
         WebhookUpdateLocation(
             privacy: privacy,
             trigger: trigger,
             location: location,
+            rawLocation: rawLocation,
             zone: zone,
             supportsInZones: supportsInZones,
+            supportsRawLocation: supportsRawLocation,
             currentSSID: nil,
             zonesContaining: { _ in zonesContaining }
         ).toJSON()
@@ -46,6 +58,53 @@ struct WebhookUpdateLocationPrivacyTests {
         #expect(json["gps_accuracy"] as? Double == 5)
         #expect(json["location_name"] == nil)
         #expect(json["battery"] as? Int == 44)
+        #expect(json["raw_gps"] == nil)
+        #expect(json["raw_gps_accuracy"] == nil)
+    }
+
+    @Test func exactSendsTheUnmodifiedFixToANewerServer() {
+        let json = payload(
+            .exact,
+            trigger: .GPSRegionEnter,
+            location: fuzzedFix,
+            rawLocation: fix,
+            zone: home,
+            supportsRawLocation: true
+        )
+
+        #expect(json["gps"] as? [Double] == [1.6, 2.6])
+        #expect(json["gps_accuracy"] as? Double == 120)
+        #expect(json["raw_gps"] as? [Double] == [1.5, 2.5])
+        #expect(json["raw_gps_accuracy"] as? Double == 5)
+    }
+
+    @Test func exactRepeatsAnUnchangedFixAsTheRawOne() {
+        let json = payload(.exact, location: fix, supportsRawLocation: true)
+
+        #expect(json["raw_gps"] as? [Double] == [1.5, 2.5])
+        #expect(json["raw_gps_accuracy"] as? Double == 5)
+    }
+
+    @Test func exactWithoutAFixSendsNoRawFix() {
+        let json = payload(.exact, trigger: .GPSRegionExit, location: nil, zone: home, supportsRawLocation: true)
+
+        #expect(json["gps"] as? [Double] == [1.5, 2.5])
+        #expect(json["raw_gps"] == nil)
+        #expect(json["raw_gps_accuracy"] == nil)
+    }
+
+    @Test func zoneOnlyNeverSendsTheRawFix() {
+        let json = payload(
+            .zoneOnly,
+            location: fuzzedFix,
+            rawLocation: fix,
+            supportsRawLocation: true,
+            zonesContaining: [home]
+        )
+
+        #expect(json["gps"] == nil)
+        #expect(json["raw_gps"] == nil)
+        #expect(json["in_zones"] as? [String] == ["zone.home"])
     }
 
     @Test func zoneOnlySendsTheZoneAndNoCoordinates() {
@@ -85,6 +144,7 @@ struct WebhookUpdateLocationPrivacyTests {
         #expect(json["gps"] == nil)
         #expect(json["location_name"] == nil)
         #expect(json["in_zones"] == nil)
+        #expect(json["raw_gps"] == nil)
         #expect(json["battery"] as? Int == 44)
     }
 

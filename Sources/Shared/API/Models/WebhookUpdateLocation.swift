@@ -14,6 +14,8 @@ public struct WebhookUpdateLocation: ImmutableMappable {
     public var location: CLLocationCoordinate2D?
     public var locationName: String?
     public var inZones: [String]?
+    public var rawLocation: CLLocationCoordinate2D?
+    public var rawHorizontalAccuracy: CLLocationAccuracy?
 
     public var speed: CLLocationSpeed?
     public var altitude: CLLocationDistance?
@@ -121,6 +123,8 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         horizontalAccuracy >>> map["gps_accuracy"]
         locationName >>> map["location_name"]
         inZones >>> map["in_zones"]
+        rawLocation >>> (map["raw_gps"], CLLocationCoordinate2DTransform())
+        rawHorizontalAccuracy >>> map["raw_gps_accuracy"]
         speed >>> map["speed"]
         altitude >>> map["altitude"]
         course >>> map["course"]

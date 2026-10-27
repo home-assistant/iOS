@@ -530,6 +530,9 @@ public extension Version {
     static let canDisplayEdgeToEdge: Version = .init(major: 2026, minor: 8, patch: 0, prerelease: "any0")
     /// Core's `usage_prediction/common_control` accepts a `limit` from 2026.10.0, and rejects it before.
     static let usagePredictionCommonControlLimit: Version = .init(major: 2026, minor: 10, patch: 0, prerelease: "any0")
+    /// Core accepts `raw_gps` and `raw_gps_accuracy` in update_location payloads from 2026.12.0, and rejects
+    /// the whole update before, so exact-mode updates only carry them from then on.
+    static let rawLocationOnLocationUpdate: Version = .init(major: 2026, minor: 12, patch: 0, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))
