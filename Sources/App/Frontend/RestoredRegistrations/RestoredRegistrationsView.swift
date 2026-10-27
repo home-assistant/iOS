@@ -75,8 +75,6 @@ struct RestoredRegistrationsView: View {
                     }
                 }
             }
-            .padding(.horizontal, DesignSystem.Spaces.three)
-            .ignoresSafeArea(.container, edges: detent == .large ? [] : .horizontal)
             VStack(spacing: DesignSystem.Spaces.one) {
                 Button(action: viewModel.startSettingUpAsNewDevice) {
                     Text(viewModel.newDeviceTitle)
@@ -100,11 +98,11 @@ struct RestoredRegistrationsView: View {
                 }
             }
             .disabled(viewModel.isRegistering)
-            .padding(.horizontal, DesignSystem.Spaces.three)
-            .ignoresSafeArea(.container, edges: .horizontal)
         }
+        .padding(.horizontal, DesignSystem.Spaces.three)
         .padding(.top, DesignSystem.Spaces.four)
         .padding(.bottom, DesignSystem.Spaces.one)
+        .ignoresSafeArea(.container, edges: detent == .large ? [] : .horizontal)
         .presentationDetents([.medium, .large], selection: $detent)
         .interactiveDismissDisabled(viewModel.isRegistering)
         .sheet(isPresented: $viewModel.isSheetPresented) {
