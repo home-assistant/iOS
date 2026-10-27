@@ -117,6 +117,9 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
         /// open gauge; nil falls back to the base `showMin` / `showMax`.
         public var showMin: Bool?
         public var showMax: Bool?
+        /// Optional endpoint label templates. These label the scale without changing its bounds.
+        public var minLabelTemplate: String?
+        public var maxLabelTemplate: String?
         public var gaugeMin: Double?
         public var gaugeMax: Double?
         public var gaugeAttribute: String?
@@ -141,6 +144,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             showGauge: Bool? = nil,
             showMin: Bool? = nil,
             showMax: Bool? = nil,
+            minLabelTemplate: String? = nil,
+            maxLabelTemplate: String? = nil,
             gaugeMin: Double? = nil,
             gaugeMax: Double? = nil,
             gaugeAttribute: String? = nil,
@@ -156,6 +161,8 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
             self.showGauge = showGauge
             self.showMin = showMin
             self.showMax = showMax
+            self.minLabelTemplate = minLabelTemplate
+            self.maxLabelTemplate = maxLabelTemplate
             self.gaugeMin = gaugeMin
             self.gaugeMax = gaugeMax
             self.gaugeAttribute = gaugeAttribute
@@ -341,6 +348,37 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
               let maxValue = options?.gaugeMax ?? gaugeMax,
               maxValue > minValue else { return nil }
         return (minValue, maxValue)
+    }
+
+    /// Extra templates needed for endpoint labels, deduplicated across sizes. Entity complications
+    /// remain REST-state-only; templates are available with the template source.
+    public var gaugeLabelTemplates: Set<String> {
+        guard kind == .customTemplate else { return [] }
+        return Set((families ?? [:]).values.flatMap { [$0.minLabelTemplate, $0.maxLabelTemplate] }
+            .compactMap { $0 }.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty })
+    }
+
+    /// Labels are independent of the gauge's numeric range, just like ClockKit's leading/trailing
+    /// text areas. Missing or failed template renders leave that label empty; entity gauges retain
+    /// their existing rounded numeric bounds.
+    public func gaugeLabels(
+        for family: Family,
+        renderedTemplates: [String: String] = [:]
+    ) -> (min: String?, max: String?) {
+        let options = families?[family.rawValue]
+        let range = gaugeRange(for: family)
+        func label(template: String?, bound: Double?) -> String? {
+            if kind == .customTemplate, let template,
+               !template.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                guard let rendered = renderedTemplates[template], !rendered.isEmpty else { return nil }
+                return rendered
+            }
+            return bound.map { String(format: "%.0f", $0.rounded()) }
+        }
+        return (
+            showsMin(for: family) ? label(template: options?.minLabelTemplate, bound: range?.min) : nil,
+            showsMax(for: family) ? label(template: options?.maxLabelTemplate, bound: range?.max) : nil
+        )
     }
 
     public func gaugeAttribute(for family: Family) -> String? {

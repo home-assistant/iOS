@@ -119,4 +119,82 @@ struct WatchComplicationConfigGaugeRangeTests {
         #expect(config.cornerGaugeDisplay(for: .circular) == .gauge)
         #expect(config.cornerGaugeDisplay(for: .corner) == .gauge)
     }
+    @Test func templateEndpointLabelsRenderIndependently() {
+        let config = WatchComplicationConfig(
+            serverId: "server-1",
+            kind: .customTemplate,
+            families: ["circular": .init(minLabelTemplate: "{{ low }}", maxLabelTemplate: "{{ high }}")]
+        )
+        let labels = config.gaugeLabels(for: .circular, renderedTemplates: ["{{ low }}": "12.5°"])
+        #expect(labels.min == "12.5°")
+        #expect(labels.max == nil)
+        #expect(config.gaugeRange(for: .circular) == nil)
+    }
+
+    @Test func endpointLabelsRespectFamilyAndVisibility() {
+        let config = WatchComplicationConfig(
+            serverId: "server-1",
+            kind: .customTemplate,
+            families: ["corner": .init(showMin: false, minLabelTemplate: "low", maxLabelTemplate: "high")]
+        )
+        let rendered = ["low": "-4", "high": "18"]
+        let labels = config.gaugeLabels(for: .corner, renderedTemplates: rendered)
+        #expect(labels.min == nil)
+        #expect(labels.max == "18")
+        #expect(config.gaugeLabels(for: .circular, renderedTemplates: rendered).max == nil)
+    }
+
+    @Test func entityLabelsKeepRoundedNumericBounds() {
+        let config = config(gaugeMin: -5.5, gaugeMax: 25.5)
+        let labels = config.gaugeLabels(for: .circular)
+        #expect(labels.min == "-6")
+        #expect(labels.max == "26")
+    }
+
+    @Test func blankOrFailedEndpointRenderDoesNotShowTemplateSource() {
+        let config = WatchComplicationConfig(
+            serverId: "server-1",
+            kind: .customTemplate,
+            families: ["circular": .init(minLabelTemplate: "{{ low }}", maxLabelTemplate: "{{ high }}")]
+        )
+        let labels = config.gaugeLabels(for: .circular, renderedTemplates: ["{{ low }}": ""])
+        #expect(labels.min == nil)
+        #expect(labels.max == nil)
+    }
+
+    @Test func endpointTemplatesAreDeduplicatedAndIgnoreEmptySources() {
+        let config = WatchComplicationConfig(
+            serverId: "server-1",
+            kind: .customTemplate,
+            families: [
+                "circular": .init(minLabelTemplate: "{{ low }}", maxLabelTemplate: " "),
+                "corner": .init(minLabelTemplate: "{{ low }}", maxLabelTemplate: "{{ high }}"),
+            ]
+        )
+        #expect(config.gaugeLabelTemplates == ["{{ low }}", "{{ high }}"])
+        var entity = config
+        entity.kind = .entity
+        #expect(entity.gaugeLabelTemplates.isEmpty)
+    }
+
+    @Test func endpointTemplatesSurviveConfigSync() throws {
+        let config = WatchComplicationConfig(
+            serverId: "server-1",
+            kind: .customTemplate,
+            families: ["corner": .init(minLabelTemplate: "{{ low }}", maxLabelTemplate: "{{ high }}")]
+        )
+        let decoded = try JSONDecoder().decode(WatchComplicationConfig.self, from: JSONEncoder().encode(config))
+        #expect(decoded == config)
+        #expect(decoded.options(for: .corner).minLabelTemplate == "{{ low }}")
+    }
+
+    @Test func oldFamilyOptionsDecodeWithoutLabelTemplates() throws {
+        let options = try JSONDecoder().decode(
+            WatchComplicationConfig.FamilyOptions.self,
+            from: Data(#"{"gaugeMin":0,"gaugeMax":100}"#.utf8)
+        )
+        #expect(options.minLabelTemplate == nil)
+        #expect(options.maxLabelTemplate == nil)
+        #expect(options.gaugeMax == 100)
+    }
 }

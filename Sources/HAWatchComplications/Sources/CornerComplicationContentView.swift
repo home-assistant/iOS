@@ -153,6 +153,24 @@ public struct CornerComplicationContentView: View {
                             .position(arcPoint(at: midAngle))
                     }
                 case .gauge:
+                    if let label = model.minLabel {
+                        Text(label)
+                            .font(.system(size: 8))
+                            .foregroundStyle(textColor)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .frame(width: 24)
+                            .position(arcPoint(at: startAngle - 12))
+                    }
+                    if let label = model.maxLabel {
+                        Text(label)
+                            .font(.system(size: 8))
+                            .foregroundStyle(textColor)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .frame(width: 24)
+                            .position(arcPoint(at: endAngle + 12))
+                    }
                     Circle()
                         .fill(model.tint)
                         .frame(width: arcLineWidth, height: arcLineWidth)

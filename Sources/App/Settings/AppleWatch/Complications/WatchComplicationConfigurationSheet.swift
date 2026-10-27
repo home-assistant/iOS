@@ -213,7 +213,23 @@ struct WatchComplicationConfigurationSheet: View {
                     }
                     .pickerStyle(.segmented)
                 }
-                // Numeric range + min/max labels only apply to entity gauges.
+                if viewModel.config.kind == .customTemplate, let server = viewModel.server {
+                    JinjaTemplateButton(
+                        server: server,
+                        title: L10n.Watch.Complications.Builder.minimum,
+                        text: gaugeLabelTemplateBinding(\.minLabelTemplate),
+                        placeholder: "{{ states('sensor.daily_low') }}"
+                    )
+                    JinjaTemplateButton(
+                        server: server,
+                        title: L10n.Watch.Complications.Builder.maximum,
+                        text: gaugeLabelTemplateBinding(\.maxLabelTemplate),
+                        placeholder: "{{ states('sensor.daily_high') }}"
+                    )
+                    Toggle(isOn: showMinBinding) { Text(L10n.Watch.Complications.Builder.showMin) }
+                    Toggle(isOn: showMaxBinding) { Text(L10n.Watch.Complications.Builder.showMax) }
+                }
+                // Entity gauges label their numeric range by default.
                 if viewModel.config.kind == .entity {
                     numberField(title: L10n.Watch.Complications.Builder.minimum, value: gaugeMinBinding)
                     numberField(title: L10n.Watch.Complications.Builder.maximum, value: gaugeMaxBinding)
@@ -385,6 +401,15 @@ struct WatchComplicationConfigurationSheet: View {
         Binding(
             get: { viewModel.config.showsMax(for: currentFamily) },
             set: { value in updateOptions { $0.showMax = value } }
+        )
+    }
+
+    private func gaugeLabelTemplateBinding(
+        _ keyPath: WritableKeyPath<WatchComplicationConfig.FamilyOptions, String?>
+    ) -> Binding<String> {
+        Binding(
+            get: { viewModel.config.options(for: currentFamily)[keyPath: keyPath] ?? "" },
+            set: { value in updateOptions { $0[keyPath: keyPath] = value.isEmpty ? nil : value } }
         )
     }
 
