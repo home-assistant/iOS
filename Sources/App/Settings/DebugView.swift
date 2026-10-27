@@ -406,7 +406,7 @@ struct DebugView: View {
 
             if #available(iOS 27, *), !Current.isCatalyst {
                 NavigationLink {
-                    ThreadCredentialSharingModeView()
+                    ThreadCredentialSharingModeView(viewModel: ThreadCredentialSharingModeViewModel())
                 } label: {
                     linkContent(
                         image: Image(

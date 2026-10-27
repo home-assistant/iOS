@@ -5,7 +5,7 @@ import SwiftUI
 struct ThreadCredentialSharingModeView: View {
     @StateObject private var viewModel: ThreadCredentialSharingModeViewModel
 
-    init(viewModel: ThreadCredentialSharingModeViewModel = .init()) {
+    init(viewModel: ThreadCredentialSharingModeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -91,6 +91,6 @@ struct ThreadCredentialSharingModeView: View {
 
 #Preview {
     NavigationStack {
-        ThreadCredentialSharingModeView()
+        ThreadCredentialSharingModeView(viewModel: ThreadCredentialSharingModeViewModel())
     }
 }
