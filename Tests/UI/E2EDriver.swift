@@ -151,13 +151,7 @@ final class E2EDriver {
         // once that has happened rather than covering both and stalling if it never arrives.
         wait(for: app.webViews.firstMatch, timeout: Timeout.frontend, "frontend")
 
-        // A transfer that skipped the permissions step lands here with location still undecided, so the
-        // app covers the frontend with the location decision; declining leads through the local access
-        // and home network steps to a success screen that closes itself.
-        if tapIfPresent(app.buttons[.onboardingLocationSkip], timeout: Timeout.optional) {
-            tapIfPresent(app.buttons[.onboardingLocalAccessNext], timeout: Timeout.screen)
-            tapIfPresent(app.buttons[.onboardingHomeNetworkNext], timeout: Timeout.screen)
-        }
+        declineLocationDecisionIfShown()
 
         let request = app.buttons[.notificationPermissionRequestPrimary]
         guard request.waitForExistence(timeout: Timeout.screen) else { return }
@@ -167,19 +161,30 @@ final class E2EDriver {
         allowSystemAlert(timeout: Timeout.screen, "notification permission alert")
     }
 
+    /// The app covers the frontend with the location decision whenever location is still undecided and
+    /// the server is only reachable over HTTP, as the local test instance is: after a transfer that
+    /// skipped the permissions step and on a relaunch after onboarding alike. The cover's close button
+    /// is the one way out that does not depend on which of its steps is showing.
+    func declineLocationDecisionIfShown() {
+        let cover = app.buttons[.onboardingLocationSkip]
+        let localAccess = app.buttons[.onboardingLocalAccessNext]
+        guard cover.waitForExistence(timeout: Timeout.optional) || localAccess.exists else { return }
+        let close = app.navigationBars.buttons.matching(NSPredicate(format: "label == 'Close'")).firstMatch
+        tap(close, timeout: Timeout.screen, "location decision close button")
+        XCTAssertTrue(cover.waitForNonExistence(timeout: Timeout.screen), "The location decision stayed on screen")
+    }
+
     func openNativeSettingsFromFrontend() {
-        // Wide layouts keep the sidebar open, so the toggle is only needed when Settings is out of reach.
+        wait(for: app.webViews.firstMatch, timeout: Timeout.frontend, "frontend")
+        declineLocationDecisionIfShown()
         // The toggle reports a successful tap even when the page swallows it, so the sidebar opening
         // is the only thing worth believing.
-        let settings = webElement(labelContaining: "settings")
-        if !isHittable(settings, within: Timeout.optional) {
-            tapWebElement(
-                labelContaining: "sidebar toggle",
-                until: settings,
-                timeout: Timeout.frontend,
-                "frontend sidebar"
-            )
-        }
+        tapWebElement(
+            labelContaining: "sidebar toggle",
+            until: webElement(labelContaining: "settings"),
+            timeout: Timeout.frontend,
+            "frontend sidebar"
+        )
         tapWebElement(labelContaining: "settings", timeout: Timeout.frontend, "frontend sidebar settings entry")
 
         // The app's own settings screen is opened by the frontend over the external message bus, so
@@ -299,7 +304,10 @@ final class E2EDriver {
     }
 
     func isHittable(_ element: XCUIElement, within timeout: TimeInterval) -> Bool {
-        let hittable = testCase.expectation(for: NSPredicate(format: "isHittable == true"), evaluatedWith: element)
+        let hittable = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "isHittable == true"),
+            object: element
+        )
         return XCTWaiter().wait(for: [hittable], timeout: timeout) == .completed
     }
 
