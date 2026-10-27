@@ -1,10 +1,12 @@
 # End-to-end tests
 
 The [`E2E` workflow](../workflows/e2e.yml) runs `Tests/UI/OnboardingE2ETests.swift` against a real
-Home Assistant every night, mirroring [home-assistant/android][android-workflow]'s own `e2e`
-workflow. The flow onboards the app from the welcome screen, then drives the frontend into opening
-the app's **native** settings screen, which is what proves the external message bus works end to
-end.
+Home Assistant every night at 05:00 UTC, mirroring [home-assistant/android][android-workflow]'s own
+`e2e` workflow. The flow onboards the app from the welcome screen, then drives the frontend into
+opening the app's **native** settings screen, which is what proves the external message bus works
+end to end. An hour later it runs `Tests/UI/RestoredDeviceE2ETests.swift`, in a job of its own
+because every flow onboards from scratch on an erased simulator. A manual run picks the flow through
+the `test` input.
 
 ## The fixture
 
@@ -38,7 +40,37 @@ bundle exec fastlane e2e
 ```
 
 It takes `url:`, `username:`, `password:` and `device:` options, all defaulting to the fixture above
-and an `iPhone 17`. To check the instance without running the flow:
+and an `iPhone 17`, and `test:` to pick which test runs, defaulting to `OnboardingE2ETests`. Each
+test onboards from the welcome screen, so only one runs per erased simulator.
+`Tests/UI/RestoredDeviceE2ETests.swift` onboards, relaunches the app with
+`-E2E_VENDOR_IDENTIFIER` set to another device's identifier, which is what a backup restored onto new
+hardware looks like to the app, and sets the device up as a new one from the screen that follows:
+
+```bash
+bundle exec fastlane e2e test:RestoredDeviceE2ETests
+```
+
+`Tests/UI/RestoredDeviceFlowsRecordingTests.swift` holds the same flows paced for watching, one per test
+and each picking up where the one before left off, for recordings rather than the nightly:
+`Tools/record_ui_test.sh` runs one of them with `test-without-building`, exports the screen recording XCTest
+keeps in the result bundle, and re-encodes it at 30 fps. The device names it relaunches as are unique per
+run through `TEST_RUNNER_E2E_RUN_ID`, so a simulator that already ran them can run them again.
+
+```bash
+xcodebuild build-for-testing -project HomeAssistant.xcodeproj -scheme Tests-UI -destination "platform=iOS Simulator,id=$UDID" -derivedDataPath build/DerivedData
+export TEST_RUNNER_E2E_RUN_ID=$(date +%H%M)
+Tools/record_ui_test.sh "$UDID" Tests-UI/RestoredDeviceFlowsRecordingTests/test1Onboards onboarding.mp4
+Tools/record_ui_test.sh "$UDID" Tests-UI/RestoredDeviceFlowsRecordingTests/test2SetsUpAsANewDevice new-device.mp4
+```
+
+The two-server flow (`test6SetsUpTwoServersAsANewDevice`) adds a second server first, so it needs a second
+instance at `E2E_HOME_ASSISTANT_SECOND_URL` (default `http://localhost:8124`) that Home Assistant tells apart
+from the first: a copy of the fixture with another `uuid` in `.storage/core.uuid`, its own `location_name` in
+`.storage/core.config`, and `server_port` set to 8124 in the `stable` entry of `.storage/http`. Setting the
+port in `configuration.yaml` instead makes it a pending HTTP config, which Home Assistant reverts five minutes
+later unless confirmed from its UI, and the instance then fails to restart on the port the first one holds.
+
+To check the instance without running the flow:
 
 ```bash
 python3 Tools/home_assistant_e2e_auth.py --url http://localhost:8123 --username citest --password 'h7jk99&U' --timeout 300 --require-component mobile_app
@@ -62,10 +94,10 @@ for f in $(cd .github/e2e/homeassistant/.storage && ls); do curl -fsS "https://r
 
 ## When a run fails
 
-A failing nightly opens an issue titled "E2E: the nightly onboarding test is failing", labelled
-`automated`, naming the step that failed and linking the run. Later failures are added to that same
-issue as comments, and a closed one is reopened, so a bad week leaves one thread to read rather than
-seven issues. Only the scheduled run reports: a manual dispatch is usually someone working on the
+A failing nightly opens an issue titled "E2E: the nightly `<test>` is failing", one per flow,
+labelled `automated`, naming the step that failed and linking the run. Later failures are added to
+that same issue as comments, and a closed one is reopened, so a bad week leaves one thread to read
+rather than seven issues. Only the scheduled run reports: a manual dispatch is usually someone working on the
 workflow itself. GitHub's own notification for a failing schedule reaches only whoever last edited
 the cron line, which is why this exists.
 

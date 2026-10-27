@@ -4,6 +4,7 @@ import GRDB
 import Testing
 
 /// Covers the Siri settings screen's rows and the filtering they drive.
+@Suite(.serialized)
 @MainActor
 struct SiriSettingsViewModelTests {
     private func clear() async throws {
@@ -73,6 +74,7 @@ struct SiriSettingsViewModelTests {
 
 /// Every list Siri reads through honours the opt-out. Each query is checked on its own, so a
 /// regression names the one that stopped filtering rather than just "Siri sees too much".
+@Suite(.serialized)
 @MainActor
 struct SiriExposureAcrossQueriesTests {
     private func clear() async throws {
@@ -175,6 +177,25 @@ struct SiriExposureAcrossQueriesTests {
             #expect(entities.contains(visible))
             #expect(!scripts.contains(hidden))
             #expect(scripts.contains(visible))
+        }
+    }
+
+    /// A control or widget configured with an entity on a server hidden from Siri still has to get
+    /// that entity back when it runs, or tapping it opens the app on nothing.
+    @Test func resolvingAConfiguredEntityIgnoresIt() async throws {
+        try await clear()
+        try await withOneHiddenServer { hidden, visible in
+            let query = HAAppEntityAppIntentEntityQuery()
+            let hiddenId = ServerEntity.uniqueId(serverId: hidden, entityId: "light.kitchen")
+            let visibleId = ServerEntity.uniqueId(serverId: visible, entityId: "light.kitchen")
+
+            let resolved = try await query.entities(for: [hiddenId, visibleId]).map(\.id)
+            let matched = try await query.entities(matching: "kitchen")
+                .sections.flatMap(\.items).map(\.value.serverId)
+
+            #expect(Set(resolved) == [hiddenId, visibleId])
+            #expect(!matched.contains(hidden))
+            #expect(matched.contains(visible))
         }
     }
 }

@@ -25,6 +25,7 @@ final class MockAppCoordinator: AppCoordinator {
 
     var presentedViewController: UIViewController?
     var window: UIWindow?
+    var frontend: (any WebFrontend)?
 
     func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
         presentedViewControllers.append(viewController)

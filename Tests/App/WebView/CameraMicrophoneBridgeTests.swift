@@ -20,6 +20,8 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
     private var startOutcomes: [StartOutcome] = []
     private var endedSessionIds: [String] = []
     private var reports: [Report] = []
+    private var haptics: SpyImpactFeedbackGenerator!
+    private var originalImpactFeedback: ImpactFeedbackGeneratorProtocol!
     private let server = ServerFixture.standard
 
     override func setUp() {
@@ -29,6 +31,9 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
         startOutcomes = []
         endedSessionIds = []
         reports = []
+        originalImpactFeedback = Current.impactFeedback
+        haptics = SpyImpactFeedbackGenerator()
+        Current.impactFeedback = haptics
         bridge = CameraMicrophoneBridge(notificationCenter: notificationCenter) { [weak self] server, cameraEntityId in
             let session = FakeCameraMicrophoneSession(server: server, cameraEntityId: cameraEntityId)
             self?.sessions.append(session)
@@ -46,6 +51,7 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
         bridge = nil
         notificationCenter = nil
         sessions = []
+        Current.impactFeedback = originalImpactFeedback
         super.tearDown()
     }
 
@@ -213,6 +219,87 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
         flushMainQueue()
 
         XCTAssertEqual(session.stopCount, 1)
+    }
+
+    // MARK: - Haptics
+
+    func testTheMicrophoneGoingLivePlaysARigidImpact() throws {
+        start("camera.front_door")
+        XCTAssertTrue(haptics.feedbacks.isEmpty)
+
+        try XCTUnwrap(sessions.first).connect(sessionId: "session-1")
+
+        XCTAssertEqual(haptics.feedbacks, [.impact(.rigid)])
+    }
+
+    func testAFailedStartPlaysTheErrorNotification() throws {
+        start("camera.front_door")
+
+        try XCTUnwrap(sessions.first).fail(.timedOut)
+
+        XCTAssertEqual(haptics.feedbacks, [.notification(.error)])
+    }
+
+    func testAnInterruptedStartPlaysNoHaptic() {
+        start("camera.front_door")
+
+        start("camera.garden")
+
+        XCTAssertEqual(startOutcomes, [.failed(.interrupted)])
+        XCTAssertTrue(haptics.feedbacks.isEmpty)
+    }
+
+    func testStoppingALiveStreamPlaysASoftImpact() throws {
+        start("camera.front_door")
+        try XCTUnwrap(sessions.first).connect(sessionId: "session-1")
+
+        bridge.stop(sessionId: "session-1")
+
+        XCTAssertEqual(haptics.feedbacks, [.impact(.rigid), .impact(.soft)])
+    }
+
+    func testStoppingAStreamThatHasNotGoneLivePlaysNoHaptic() throws {
+        start("camera.front_door")
+        let session = try XCTUnwrap(sessions.first)
+        session.sessionId = "session-1"
+
+        bridge.stop(sessionId: "session-1")
+
+        XCTAssertEqual(session.stopCount, 1)
+        XCTAssertTrue(haptics.feedbacks.isEmpty)
+    }
+
+    func testALiveStreamDroppingOnItsOwnPlaysTheWarningNotification() throws {
+        start("camera.front_door")
+        let session = try XCTUnwrap(sessions.first)
+        session.connect(sessionId: "session-1")
+
+        session.end(.connectionFailed)
+
+        XCTAssertEqual(haptics.feedbacks, [.impact(.rigid), .notification(.warning)])
+    }
+
+    func testSwitchingCamerasWhileLiveOnlyPlaysTheNewStreamGoingLive() throws {
+        start("camera.front_door")
+        try XCTUnwrap(sessions.first).connect(sessionId: "session-1")
+
+        start("camera.garden")
+        sessions[1].connect(sessionId: "session-2")
+
+        XCTAssertEqual(haptics.feedbacks, [.impact(.rigid), .impact(.rigid)])
+    }
+
+    func testEndingALiveStreamWithoutTheUserPlaysNoHaptic() throws {
+        start("camera.front_door")
+        try XCTUnwrap(sessions.first).connect(sessionId: "session-1")
+        bridge.stopActiveSession()
+
+        start("camera.garden")
+        sessions[1].connect(sessionId: "session-2")
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+        flushMainQueue()
+
+        XCTAssertEqual(haptics.feedbacks, [.impact(.rigid), .impact(.rigid)])
     }
 
     // MARK: - Helpers

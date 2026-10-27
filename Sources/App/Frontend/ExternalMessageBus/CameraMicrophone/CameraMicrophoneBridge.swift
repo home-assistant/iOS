@@ -50,6 +50,7 @@ final class CameraMicrophoneBridge {
         session.onEnd = { [weak self, weak session] _ in
             guard let self, let session, self.session === session else { return }
             self.session = nil
+            Current.impactFeedback.notificationOccurred(.warning)
             if let sessionId = session.sessionId {
                 onSessionEnded?(sessionId)
             }
@@ -62,6 +63,7 @@ final class CameraMicrophoneBridge {
             if case .failure = result, let self, let session, self.session === session {
                 self.session = nil
             }
+            Self.playHaptic(for: result)
             completion(result)
         }
     }
@@ -69,7 +71,11 @@ final class CameraMicrophoneBridge {
     func stop(sessionId: String) {
         guard let session, session.sessionId == sessionId else { return }
         self.session = nil
+        let wasConnected = session.isConnected
         session.stop()
+        if wasConnected {
+            Current.impactFeedback.impactOccurred(style: .soft)
+        }
     }
 
     func stopActiveSession() {
@@ -85,6 +91,17 @@ final class CameraMicrophoneBridge {
         session.stop()
         if wasConnected, let sessionId = session.sessionId {
             onSessionEnded?(sessionId)
+        }
+    }
+
+    private static func playHaptic(for result: Result<String, CameraMicrophoneError>) {
+        switch result {
+        case .success:
+            Current.impactFeedback.impactOccurred(style: .rigid)
+        case .failure(.interrupted):
+            break
+        case .failure:
+            Current.impactFeedback.notificationOccurred(.error)
         }
     }
 }

@@ -8,9 +8,8 @@ struct HomeAssistantView: View, WebFrontendView {
     }
 
     @StateObject private var viewModel: HomeAssistantViewModel
-    /// What's-New / TestFlight sheets are owned here so they can only ever present over the web
-    /// frontend, never over onboarding.
     @StateObject private var launchMessages = LaunchMessagesState()
+    @Environment(\.scenePhase) private var scenePhase
     @ObservedObject private var nativeTabBar = NativeTabBarState.shared
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -129,6 +128,11 @@ struct HomeAssistantView: View, WebFrontendView {
                 launchMessages.evaluateIfNeeded()
             }
         }
+        .onChange(of: scenePhase) { phase in
+            if phase == .active {
+                launchMessages.askAboutRestoredRegistrationsAgain()
+            }
+        }
         .onChange(of: reduceMotion) { reduceMotion in
             viewModel.updateReduceMotion(reduceMotion)
         }
@@ -138,6 +142,9 @@ struct HomeAssistantView: View, WebFrontendView {
         }
         .sheet(item: $launchMessages.presented, onDismiss: { launchMessages.showNext() }) { message in
             switch message {
+            case let .restoredRegistrations(servers):
+                RestoredRegistrationsView(viewModel: launchMessages.restoredRegistrationsViewModel(for: servers))
+                    .presentationDetents([.medium, .large])
             case let .whatsNew(release):
                 WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }
             case let .testFlight(message):

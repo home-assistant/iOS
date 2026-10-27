@@ -111,16 +111,22 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private var backgroundedAt: Date?
     private let server: Server
     private let cameraEntityId: String
-    private let supportsTalkback: Bool
     private let makeClient: (WebRTCClientConfiguration) -> WebRTCStreamClient
+    private let makeMicrophoneSession: (Server, String) -> CameraMicrophoneSessionProtocol
     private let timing: Timing
+    /// The microphone runs on its own sendonly peer connection next to the playback one. A single
+    /// connection carrying both directions, the way the frontend player does it, reaches ICE
+    /// connected but delivers no audio to the camera.
+    private var microphoneSession: CameraMicrophoneSessionProtocol?
 
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
     @Published var isMuted: Bool = true
     @Published var isWebRTCUnsupported: Bool = false
-    @Published var isTalkbackSupported: Bool = false
-    @Published var isTalking: Bool = false
+    /// Whether the camera can take audio from the microphone, from `camera/capabilities`.
+    @Published var isTalkbackSupported: Bool
+    @Published private(set) var talkbackState: WebRTCTalkbackState = .idle
+    @Published private(set) var talkbackError: String?
     /// Set when the stream can't be established (offer rejected, signaling error, ICE failure or
     /// timeout), so the in-app player can cascade to the next streaming method.
     @Published var didFail: Bool = false
@@ -135,12 +141,16 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         cameraEntityId: String,
         supportsTalkback: Bool = false,
         makeClient: @escaping (WebRTCClientConfiguration) -> WebRTCStreamClient = { WebRTCClient(configuration: $0) },
+        makeMicrophoneSession: @escaping (Server, String) -> CameraMicrophoneSessionProtocol = {
+            CameraMicrophoneSession(server: $0, cameraEntityId: $1)
+        },
         timing: Timing = .production
     ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
-        self.supportsTalkback = supportsTalkback
+        self.isTalkbackSupported = supportsTalkback
         self.makeClient = makeClient
+        self.makeMicrophoneSession = makeMicrophoneSession
         self.timing = timing
     }
 
@@ -151,10 +161,35 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         connectionWaitWorkItem?.cancel()
         signalingStallWorkItem?.cancel()
         connectionGate?.cancel()
+        microphoneSession?.stop()
         webRTCClient?.closeConnection()
     }
 
-    func toggleTalkback() {}
+    var isTalking: Bool {
+        talkbackState == .talking
+    }
+
+    func toggleTalkback() {
+        switch talkbackState {
+        case .idle:
+            startTalkback()
+        case .connecting, .talking:
+            stopTalkback()
+        }
+    }
+
+    /// Hangs up the microphone. The app keeps the audio background mode, so a session left running
+    /// once the app is backgrounded would go on recording.
+    func stopTalkback() {
+        guard let session = microphoneSession else { return }
+        microphoneSession = nil
+        talkbackState = .idle
+        let wasConnected = session.isConnected
+        session.stop()
+        if wasConnected {
+            Current.impactFeedback.impactOccurred(style: .soft)
+        }
+    }
 
     func toggleMute() {
         guard let webRTCClient else { return }
@@ -194,9 +229,27 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     func stop() {
         isActive = false
         backgroundedAt = nil
+        stopTalkback()
+        talkbackError = nil
         cancelTimeout()
         cancelDisconnectRecovery()
         tearDownConnection()
+    }
+
+    /// Follows the scene in and out of the foreground. Only a real trip to the background hangs up the
+    /// microphone: the permission alert it raises on first use makes the scene `.inactive` too.
+    func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            handleAppForegrounded()
+        case .background:
+            stopTalkback()
+            handleAppBackgrounded()
+        case .inactive:
+            handleAppBackgrounded()
+        @unknown default:
+            break
+        }
     }
 
     /// Called when the app leaves the foreground. Nothing is torn down here: iOS keeps the app
@@ -367,6 +420,38 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 
     private static func isWebRTCUnsupported(message: String) -> Bool {
         message.contains("does not support WebRTC") || message.contains("frontend_stream_types")
+    }
+
+    private func startTalkback() {
+        guard isActive, isTalkbackSupported else { return }
+        talkbackError = nil
+
+        let session = makeMicrophoneSession(server, cameraEntityId)
+        microphoneSession = session
+        talkbackState = .connecting
+        session.onEnd = { [weak self, weak session] error in
+            guard let self, let session, session === microphoneSession else { return }
+            Current.impactFeedback.notificationOccurred(.warning)
+            endTalkback(with: error)
+        }
+        session.start { [weak self, weak session] result in
+            guard let self, let session, session === microphoneSession else { return }
+            // Same haptics as the microphone the frontend drives through `CameraMicrophoneBridge`.
+            switch result {
+            case .success:
+                Current.impactFeedback.impactOccurred(style: .rigid)
+                talkbackState = .talking
+            case let .failure(error):
+                Current.impactFeedback.notificationOccurred(.error)
+                endTalkback(with: error)
+            }
+        }
+    }
+
+    private func endTalkback(with error: CameraMicrophoneError) {
+        microphoneSession = nil
+        talkbackState = .idle
+        talkbackError = error.message
     }
 
     private func tearDownConnection() {
