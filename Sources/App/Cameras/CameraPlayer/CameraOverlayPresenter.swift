@@ -80,6 +80,7 @@ final class CameraOverlayPresenter {
             self?.overlayDidDisappear(controller)
         }
         controller.modalPresentationStyle = .overFullScreen
+        controller.modalPresentationCapturesStatusBarAppearance = true
 
         overlayController = controller
         displayedCamera = camera

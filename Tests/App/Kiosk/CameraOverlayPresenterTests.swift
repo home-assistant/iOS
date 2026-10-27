@@ -68,6 +68,10 @@ final class CameraOverlayPresenterTests: XCTestCase {
         XCTAssertTrue(webViewController.presentOverlayControllerCalled)
         XCTAssertTrue(webViewController.overlayedController is CameraOverlayHostingController)
         XCTAssertEqual(webViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
+        // Over full screen, the status bar stays the web view's unless the overlay captures it.
+        XCTAssertEqual(webViewController.overlayedController?.modalPresentationCapturesStatusBarAppearance, true)
+        XCTAssertEqual(webViewController.overlayedController?.prefersStatusBarHidden, true)
+        XCTAssertEqual(webViewController.overlayedController?.prefersHomeIndicatorAutoHidden, true)
         XCTAssertEqual(presenter.displayedCamera, frontDoor)
         XCTAssertTrue(presenter.isDisplaying(frontDoor))
         XCTAssertTrue(kiosk.isCameraOverlayVisible)
