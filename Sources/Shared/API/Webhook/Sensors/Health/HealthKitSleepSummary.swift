@@ -15,6 +15,9 @@ public struct HealthKitSleepSummary: Equatable, Sendable {
     /// Start of the sleep day the night belongs to.
     public let start: Date
     public let samples: [HealthKitSleepSample]
+    /// Samples of the nights before this one, for stages no source recorded this night.
+    private let earlierSamples: [HealthKitSleepSample]
+    private let calendar: Calendar
 
     /// The samples belonging to the most recent sleep day that has any, `nil` when there are none.
     public static func latestNight(in samples: [HealthKitSleepSample], calendar: Calendar) -> HealthKitSleepSummary? {
@@ -24,7 +27,8 @@ public struct HealthKitSleepSummary: Equatable, Sendable {
 
         let start = sleepDayStart(containing: latest.end, calendar: calendar)
         let night = samples.filter { sleepDayStart(containing: $0.end, calendar: calendar) == start }
-        return HealthKitSleepSummary(start: start, samples: night)
+        let earlier = samples.filter { sleepDayStart(containing: $0.end, calendar: calendar) != start }
+        return HealthKitSleepSummary(start: start, samples: night, earlierSamples: earlier, calendar: calendar)
     }
 
     /// The start of the sleep day containing `date`: the most recent `sleepDayStartHour` at or before it.
@@ -45,11 +49,12 @@ public struct HealthKitSleepSummary: Equatable, Sendable {
     /// Minutes spent in any of `stages` during the night.
     ///
     /// Overlapping samples are only counted once, since an iPhone, an Apple Watch and a third-party
-    /// app can all record the same night. Returns `nil` when nothing that night was recorded by a
-    /// source tracking those stages, which is "not tracked" rather than zero minutes.
+    /// app can all record the same night. When no source tracking those stages recorded this night,
+    /// such as a sleep tracker that hasn't synced yet, the latest earlier night one did is used
+    /// instead. Returns `nil` when none did, which is "not tracked" rather than zero minutes.
     public func minutes(in stages: Set<HealthKitSleepStage>) -> Double? {
         guard records(stages) else {
-            return nil
+            return Self.latestNight(in: earlierSamples, calendar: calendar)?.minutes(in: stages)
         }
 
         let intervals = samples
