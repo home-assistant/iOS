@@ -1,0 +1,126 @@
+name: Update Swift Packages
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Only update this package (its name in project.pbxproj); blank for every outdated one
+        required: false
+        type: string
+  schedule:
+    # Weekly. Checks every Swift package the Xcode project depends on and opens
+    # one pull request per package that has a newer release. Renovate covers the
+    # gems and GitHub Actions; it has no manager for project.pbxproj or Package.resolved.
+    - cron: '0 8 * * 1'
+
+permissions:
+  contents: read
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+
+jobs:
+  find_updates:
+    runs-on: ubuntu-latest
+    outputs:
+      updates: ${{ steps.check.outputs.updates }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Check for newer releases
+        id: check
+        env:
+          ONLY: ${{ inputs.package }}
+        run: |
+          python3 Tools/UpdateSwiftPackages.py
+          updates=$(python3 Tools/UpdateSwiftPackages.py --json)
+          if [ -n "$ONLY" ]; then
+            updates=$(jq -c --arg name "$ONLY" '[.[] | select(.name == $name)]' <<< "$updates")
+          fi
+          echo "updates=$updates" >> "$GITHUB_OUTPUT"
+
+  update_package:
+    name: Update ${{ matrix.package.name }}
+    needs: find_updates
+    if: needs.find_updates.outputs.updates != '[]'
+    runs-on: xcode-27
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        package: ${{ fromJSON(needs.find_updates.outputs.updates) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
+
+      - name: Update the package and resolve
+        env:
+          PACKAGE: ${{ matrix.package.name }}
+          TARGET: ${{ matrix.package.target }}
+        run: python3 Tools/UpdateSwiftPackages.py --apply "$PACKAGE" --to "$TARGET"
+
+      - name: Commit changes
+        id: commit
+        env:
+          PACKAGE: ${{ matrix.package.name }}
+          LATEST: ${{ matrix.package.latest }}
+          MAJOR: ${{ matrix.package.major }}
+        run: |
+          git config --global user.name 'Home Assistant Bot'
+          git config --global user.email 'hello@home-assistant.io'
+          git add HomeAssistant.xcodeproj/project.pbxproj
+          git add HomeAssistant.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          git add Package.resolved
+          git add Sources/*/Package.swift
+          if ! git diff --cached --quiet; then
+            git commit -m "Update $PACKAGE to $LATEST"
+          fi
+          git checkout -- .
+          git clean -xfd
+          echo "pr_title=$(git log -1 --pretty='%s')" >> "$GITHUB_OUTPUT"
+          if [ "$MAJOR" = "true" ]; then
+            echo "note=This is a new major version; check its release notes for breaking changes." >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
+        with:
+          base: main
+          branch: create-pull-request/update-swift-package-${{ matrix.package.identity }}
+          title: ${{ steps.commit.outputs.pr_title }}
+          labels: dependencies
+          body: |
+            Updates [${{ matrix.package.name }}](${{ matrix.package.url }})
+            from ${{ matrix.package.current }} to ${{ matrix.package.latest }}.
+            ${{ steps.commit.outputs.note }}
+
+            Automatically created by ${{ github.actor }}.
+
+  close_stale_pull_requests:
+    name: Close pull requests for packages that are current
+    needs: find_updates
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Close pull requests whose package no longer has an update
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          UPDATES: ${{ needs.find_updates.outputs.updates }}
+        run: |
+          prefix='create-pull-request/update-swift-package-'
+          wanted=$(jq -r --arg prefix "$prefix" '.[] | $prefix + .identity' <<< "$UPDATES")
+          gh pr list --state open --limit 100 --json number,headRefName \
+            --jq ".[] | select(.headRefName | startswith(\"$prefix\")) | \"\(.number) \(.headRefName)\"" |
+          while read -r number branch; do
+            if ! grep -qxF "$branch" <<< "$wanted"; then
+              echo "Closing #$number: $branch is current on main"
+              gh pr close "$number" --delete-branch
+            fi
+          done
