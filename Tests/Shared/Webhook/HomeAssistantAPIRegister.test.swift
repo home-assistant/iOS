@@ -9,6 +9,7 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         SettingsStore.integrationDeviceIDKey,
         SettingsStore.integrationDeviceIDOwnerKey,
         SettingsStore.registrationRecordsKey,
+        RegistrationOwnership.earlierRegistrationsAdoptedKey,
     ]
     private var previousValues = [Any?]()
     private var previousVendorID: (() -> String?)!
@@ -18,6 +19,7 @@ final class HomeAssistantAPIRegisterTests: XCTestCase {
         let prefs = Current.settingsStore.prefs
         previousValues = keys.map { prefs.object(forKey: $0) }
         keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
         previousVendorID = Current.device.identifierForVendor
         Current.device.identifierForVendor = { "this-device" }
     }
