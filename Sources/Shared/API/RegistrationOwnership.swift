@@ -39,6 +39,7 @@ public struct RegistrationOwnership {
         self.register = register
         self.catchUp = catchUp
         self.notify = notify
+        Self.adoptEarlierRegistrations()
     }
 
     public func serversRegisteredByAnotherDevice() -> [Server] {
@@ -112,7 +113,9 @@ public struct RegistrationOwnership {
         adoptionLock.withLock {
             guard !settings.prefs.bool(forKey: earlierRegistrationsAdoptedKey) else { return }
             var adopted = [Identifier<Server>]()
-            for server in Current.servers.all where settings.registrationRecord(for: server.identifier).current == nil {
+            let unrecorded = Current.servers.all
+                .filter { settings.registrationRecord(for: $0.identifier).current == nil }
+            for server in unrecorded {
                 let deviceID = settings.currentRegistrationIdentity(for: server).deviceID
                 settings.updateRegistrationRecord(for: server.identifier) { record in
                     record.current = RegistrationIdentity(deviceID: deviceID, ownerVendorID: vendorID)

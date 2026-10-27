@@ -272,7 +272,8 @@ struct RegistrationOwnershipTests {
             Current.device.identifierForVendor = { Self.thisDevice }
 
             #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
-            #expect(Current.settingsStore.registrationRecord(for: earlier.identifier).current?.ownerVendorID == Self.thisDevice)
+            let owner = Current.settingsStore.registrationRecord(for: earlier.identifier).current?.ownerVendorID
+            #expect(owner == Self.thisDevice)
         }
     }
 

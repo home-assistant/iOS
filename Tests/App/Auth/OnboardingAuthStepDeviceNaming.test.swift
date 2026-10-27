@@ -295,6 +295,29 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
         }
     }
 
+    func testSigningInAgainBeforeOwnershipWasRecordedKeepsTheDeviceTheServerHas() throws {
+        let home = Server.fake(identifier: "home") {
+            $0.instanceID = "instance-1"
+            $0.setSetting(value: "home-device-id", for: .registeredDeviceID)
+        }
+
+        try withServers([home]) {
+            let prefs = Current.settingsStore.prefs
+            prefs.removeObject(forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
+            prefs.set("other-device", forKey: SettingsStore.integrationDeviceIDKey)
+            discover(instance: "instance-1")
+
+            let result = step.perform(point: .beforeRegister)
+            try respond(result: .success([.init(name: "Zac's Phone", identifier: "home-device-id")]))
+            XCTAssertNoThrow(try hang(result))
+
+            XCTAssertEqual(
+                Current.settingsStore.registrationIdentity(for: api.server),
+                RegistrationIdentity(deviceID: "home-device-id", ownerVendorID: "this-device")
+            )
+        }
+    }
+
     func testSigningInAgainToAServerAnotherDeviceIsRegisteredWithRegistersAnew() throws {
         let home = Server.fake(identifier: "instance-1")
 
