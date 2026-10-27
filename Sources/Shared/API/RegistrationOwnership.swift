@@ -21,6 +21,9 @@ public struct RegistrationOwnership {
     static let heldBackNotifiedKey = "registrationHeldBackNotified"
     private static let heldBackNotifiedLock = NSLock()
 
+    static let earlierRegistrationsAdoptedKey = "registrationOwnershipAdoptedEarlierRegistrations"
+    private static let adoptionLock = NSLock()
+
     private static let inFlightLock = NSLock()
     private static var inFlight = [Identifier<Server>: Task<Void, Error>]()
 
@@ -36,14 +39,17 @@ public struct RegistrationOwnership {
         self.register = register
         self.catchUp = catchUp
         self.notify = notify
+        Self.adoptEarlierRegistrations()
     }
 
     public func serversRegisteredByAnotherDevice() -> [Server] {
-        Current.servers.all.filter(isRegisteredByAnotherDevice)
+        Self.adoptEarlierRegistrations()
+        return Current.servers.all.filter(isRegisteredByAnotherDevice)
     }
 
     public func isRegisteredByAnotherDevice(_ server: Server) -> Bool {
-        !server.info.requiresReauthenticationAfterMirrorRestore
+        Self.adoptEarlierRegistrations()
+        return !server.info.requiresReauthenticationAfterMirrorRestore
             && belongsToAnotherDevice(Current.settingsStore.currentRegistrationIdentity(for: server))
     }
 
@@ -96,7 +102,29 @@ public struct RegistrationOwnership {
 
     public func belongsToAnotherDevice(_ identity: RegistrationIdentity) -> Bool {
         guard !Current.isCatalyst, let vendorID = Current.device.identifierForVendor() else { return false }
+        Self.adoptEarlierRegistrations()
         return identity.ownerVendorID != nil && identity.ownerVendorID != vendorID
+    }
+
+    /// Whoever moved devices before ownership was recorded already settled it, so only later restores ask.
+    static func adoptEarlierRegistrations() {
+        guard !Current.isCatalyst, let vendorID = Current.device.identifierForVendor() else { return }
+        let settings = Current.settingsStore
+        adoptionLock.withLock {
+            guard !settings.prefs.bool(forKey: earlierRegistrationsAdoptedKey) else { return }
+            var adopted = [Identifier<Server>]()
+            let unrecorded = Current.servers.all
+                .filter { settings.registrationRecord(for: $0.identifier).current == nil }
+            for server in unrecorded {
+                let deviceID = settings.currentRegistrationIdentity(for: server).deviceID
+                settings.updateRegistrationRecord(for: server.identifier) { record in
+                    record.current = RegistrationIdentity(deviceID: deviceID, ownerVendorID: vendorID)
+                }
+                adopted.append(server.identifier)
+            }
+            settings.prefs.set(true, forKey: earlierRegistrationsAdoptedKey)
+            Current.Log.info("took the registrations of \(adopted) made before ownership was recorded as this device's")
+        }
     }
 
     public func keepRegistrations(of servers: [Server]) {

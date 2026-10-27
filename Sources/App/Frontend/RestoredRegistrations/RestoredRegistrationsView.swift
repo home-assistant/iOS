@@ -4,6 +4,7 @@ import SwiftUI
 
 struct RestoredRegistrationsView: View {
     @StateObject private var viewModel: RestoredRegistrationsViewModel
+    @State private var detent = PresentationDetent.medium
 
     init(viewModel: @autoclosure @escaping () -> RestoredRegistrationsViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel())
@@ -101,6 +102,8 @@ struct RestoredRegistrationsView: View {
         .padding(.horizontal, DesignSystem.Spaces.three)
         .padding(.top, DesignSystem.Spaces.four)
         .padding(.bottom, DesignSystem.Spaces.one)
+        .ignoresSafeArea(.container, edges: detent == .large ? [] : .horizontal)
+        .presentationDetents([.medium, .large], selection: $detent)
         .interactiveDismissDisabled(viewModel.isRegistering)
         .sheet(isPresented: $viewModel.isSheetPresented) {
             switch viewModel.sheet {
@@ -155,6 +158,5 @@ private extension RestoredRegistrationsViewModel.SetupState {
                 servers: FakeServerManager(initial: 2).all,
                 onFinished: {}
             ))
-            .presentationDetents([.medium, .large])
         }
 }

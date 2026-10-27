@@ -144,7 +144,6 @@ struct HomeAssistantView: View, WebFrontendView {
             switch message {
             case let .restoredRegistrations(servers):
                 RestoredRegistrationsView(viewModel: launchMessages.restoredRegistrationsViewModel(for: servers))
-                    .presentationDetents([.medium, .large])
             case let .whatsNew(release):
                 WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }
             case let .testFlight(message):

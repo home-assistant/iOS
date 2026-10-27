@@ -26,6 +26,7 @@ struct RestoredRegistrationsViewModelTests {
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
             SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
         defer {
@@ -42,6 +43,7 @@ struct RestoredRegistrationsViewModelTests {
         Current.device.identifierForVendor = { "this-device" }
         Current.isCatalyst = false
         keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
         prefs.set("other-device", forKey: SettingsStore.integrationDeviceIDKey)
         try await body(servers)
     }

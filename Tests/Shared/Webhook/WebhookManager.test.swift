@@ -597,6 +597,7 @@ class WebhookManagerTests: XCTestCase {
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
             SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
         let previousVendorID = Current.device.identifierForVendor
@@ -611,6 +612,7 @@ class WebhookManagerTests: XCTestCase {
         Current.device.identifierForVendor = { "this-device" }
         Current.isCatalyst = false
         keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
         Current.settingsStore.setRegistrationRecord(
             RegistrationRecord(current: RegistrationIdentity(deviceID: "device-id", ownerVendorID: "other-device")),
             for: server.identifier
