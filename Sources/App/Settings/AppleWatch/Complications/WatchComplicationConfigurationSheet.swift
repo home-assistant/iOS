@@ -218,13 +218,15 @@ struct WatchComplicationConfigurationSheet: View {
                         server: server,
                         title: L10n.Watch.Complications.Builder.minimum,
                         text: gaugeLabelTemplateBinding(\.minLabelTemplate),
-                        placeholder: "{{ states('sensor.daily_low') }}"
+                        placeholder: "{{ states('sensor.daily_low') }}",
+                        showsTitle: true
                     )
                     JinjaTemplateButton(
                         server: server,
                         title: L10n.Watch.Complications.Builder.maximum,
                         text: gaugeLabelTemplateBinding(\.maxLabelTemplate),
-                        placeholder: "{{ states('sensor.daily_high') }}"
+                        placeholder: "{{ states('sensor.daily_high') }}",
+                        showsTitle: true
                     )
                     Toggle(isOn: showMinBinding) { Text(L10n.Watch.Complications.Builder.showMin) }
                     Toggle(isOn: showMaxBinding) { Text(L10n.Watch.Complications.Builder.showMax) }
