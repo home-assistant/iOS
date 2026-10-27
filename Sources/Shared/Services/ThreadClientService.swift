@@ -88,6 +88,19 @@ public final class ThreadClientService: ThreadClientProtocol {
             self?.client = nil
         })
     }
+
+    public func enableCredentialSharingMode(extendedPANID: String) async throws {
+        guard let extendedPANIDData = extendedPANID.hexadecimal, !extendedPANIDData.isEmpty else {
+            throw ThreadClientServiceError.failedToConvertToHexadecimal
+        }
+        guard #available(iOS 27, *) else {
+            throw ThreadClientServiceError.credentialSharingModeUnavailable
+        }
+        let client = THClient()
+        self.client = client
+        defer { self.client = nil }
+        try await client.enableCredentialSharingMode(forExtendedPANID: extendedPANIDData)
+    }
 }
 #else
 /// For SwiftUI Preview
@@ -107,6 +120,10 @@ public final class ThreadClientService: ThreadClientProtocol {
 
     public func deleteCredential(macExtendedAddress: String, completion: @escaping (Error?) -> Void) {
         /* no-op */
+    }
+
+    public func enableCredentialSharingMode(extendedPANID: String) async throws {
+        throw ThreadClientServiceError.credentialSharingModeUnavailable
     }
 }
 #endif

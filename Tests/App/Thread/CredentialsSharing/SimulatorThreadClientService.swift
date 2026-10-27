@@ -47,4 +47,14 @@ final class SimulatorThreadClientService: ThreadClientProtocol {
     public func deleteCredential(macExtendedAddress: String, completion: @escaping (Error?) -> Void) {
         completion(nil)
     }
+
+    var enableCredentialSharingModeExtendedPANID: String?
+    var enableCredentialSharingModeError: Error?
+
+    func enableCredentialSharingMode(extendedPANID: String) async throws {
+        enableCredentialSharingModeExtendedPANID = extendedPANID
+        if let enableCredentialSharingModeError {
+            throw enableCredentialSharingModeError
+        }
+    }
 }

@@ -404,6 +404,22 @@ struct DebugView: View {
                 )
             }
 
+            if #available(iOS 27, *), !Current.isCatalyst {
+                NavigationLink {
+                    ThreadCredentialSharingModeView()
+                } label: {
+                    linkContent(
+                        image: Image(
+                            uiImage: Asset.thread.image.withRenderingMode(
+                                .alwaysTemplate
+                            )
+                        ),
+                        title: L10n.Settings.Developer.ThreadCredentialSharingMode.title,
+                        imageSize: 22
+                    )
+                }
+            }
+
             #if DEBUG
             NavigationLink {
                 KeychainExplorerView()

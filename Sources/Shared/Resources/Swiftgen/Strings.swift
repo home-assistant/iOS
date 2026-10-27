@@ -6731,6 +6731,10 @@ public enum L10n {
         /// Sync Watch Context
         public static var title: String { return L10n.tr("Localizable", "settings.developer.sync_watch_context.title") }
       }
+      public enum ThreadCredentialSharingMode {
+        /// Thread Credential Sharing Mode
+        public static var title: String { return L10n.tr("Localizable", "settings.developer.thread_credential_sharing_mode.title") }
+      }
       public enum WebViewBelowStatusBar {
         /// Always draw web view below status bar
         public static var title: String { return L10n.tr("Localizable", "settings.developer.web_view_below_status_bar.title") }
@@ -8287,6 +8291,36 @@ public enum L10n {
     public enum BorderAgentId {
       /// Border Agent ID
       public static var title: String { return L10n.tr("Localizable", "thread.border_agent_id.title") }
+    }
+    public enum ClientError {
+      /// Thread credential sharing mode requires iOS 27 or later.
+      public static var credentialSharingModeUnavailable: String { return L10n.tr("Localizable", "thread.client_error.credential_sharing_mode_unavailable") }
+      /// Failed to convert input to hexadecimal.
+      public static var hexadecimalConversion: String { return L10n.tr("Localizable", "thread.client_error.hexadecimal_conversion") }
+    }
+    public enum CredentialSharingMode {
+      /// Failed to start credential sharing mode: %@
+      public static func error(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "thread.credential_sharing_mode.error", String(describing: p1))
+      }
+      /// Asks a nearby Apple border router on this Thread network to show a 9-digit code for sharing its credentials. The code appears on that device, not in this app.
+      public static var footer: String { return L10n.tr("Localizable", "thread.credential_sharing_mode.footer") }
+      /// Start credential sharing mode
+      public static var startButton: String { return L10n.tr("Localizable", "thread.credential_sharing_mode.start_button") }
+      /// Credential sharing mode started. Check the border router for the code.
+      public static var success: String { return L10n.tr("Localizable", "thread.credential_sharing_mode.success") }
+      /// Credential Sharing Mode
+      public static var title: String { return L10n.tr("Localizable", "thread.credential_sharing_mode.title") }
+      public enum ExtendedPanId {
+        /// 16 hexadecimal characters
+        public static var placeholder: String { return L10n.tr("Localizable", "thread.credential_sharing_mode.extended_pan_id.placeholder") }
+      }
+      public enum KeychainNetworks {
+        /// No Thread networks found in Apple Keychain.
+        public static var empty: String { return L10n.tr("Localizable", "thread.credential_sharing_mode.keychain_networks.empty") }
+        /// Networks in Apple Keychain
+        public static var title: String { return L10n.tr("Localizable", "thread.credential_sharing_mode.keychain_networks.title") }
+      }
     }
     public enum Credentials {
       public enum ShareCredentials {
