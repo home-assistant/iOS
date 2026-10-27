@@ -26,71 +26,67 @@ struct HACompactTrailingView: View {
     private static let limitedWidthRingSize: CGFloat = 22
 
     var body: some View {
-        Group {
-            if isLimitedInWidth {
-                // A narrow island (iPhone Duo, landscape, or one shared with another activity) leaves
-                // a 28pt circle, too small for any of the texts, so the timer and the progress become
-                // a ring, the timer first as in the full-width slot. Critical text has no graphic
-                // form and is left out; the system hides an empty trailing slot.
-                if state.chronometer == true, let end = state.countdownEnd {
-                    if let interval = HAActivityTimerProgressBar.interval(
-                        start: state.chronometerStart,
-                        end: end,
-                        direction: state.resolvedProgressBarDirection
-                    ) {
-                        ProgressView(
-                            timerInterval: interval.range,
-                            countsDown: interval.countsDown,
-                            label: { EmptyView() },
-                            currentValueLabel: { EmptyView() }
-                        )
-                        .progressViewStyle(.circular)
-                        .tint(ringColor)
-                        .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
-                    } else {
-                        // A count-up with no end has nothing to fill a ring with, so it keeps its
-                        // elapsed time, scaled down to the circle.
-                        HAActivityChronometerText(end: end, start: state.chronometerStart)
-                            .font(.caption2.monospacedDigit().weight(.semibold))
-                            .foregroundStyle(.white)
-                            .lineLimit(1)
-                            .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
-                            .frame(width: Self.limitedWidthSlotSize)
-                    }
-                } else if let fraction = state.progressBarFillFraction {
-                    ProgressView(value: fraction)
-                        .progressViewStyle(.circular)
-                        .tint(ringColor)
-                        .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
+        if isLimitedInWidth {
+            // A narrow island (iPhone Duo, landscape, or one shared with another activity) leaves
+            // a 28pt circle, too small for any of the texts, so the timer and the progress become
+            // a ring, the timer first as in the full-width slot. Critical text has no graphic
+            // form and is left out; the system hides an empty trailing slot.
+            if state.chronometer == true, let end = state.countdownEnd {
+                if let interval = HAActivityTimerProgressBar.interval(
+                    start: state.chronometerStart,
+                    end: end,
+                    direction: state.resolvedProgressBarDirection
+                ) {
+                    ProgressView(
+                        timerInterval: interval.range,
+                        countsDown: interval.countsDown,
+                        label: { EmptyView() },
+                        currentValueLabel: { EmptyView() }
+                    )
+                    .progressViewStyle(.circular)
+                    .tint(ringColor)
+                    .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
+                } else {
+                    // A count-up with no end has nothing to fill a ring with, so it keeps its
+                    // elapsed time, scaled down to the circle.
+                    HAActivityChronometerText(end: end, start: state.chronometerStart)
+                        .font(.caption2.monospacedDigit().weight(.semibold))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
+                        .frame(width: Self.limitedWidthSlotSize)
                 }
-            } else if state.chronometer == true, let end = state.countdownEnd {
-                // A timer past an hour needs three fields, which don't fit at full size. Scaling the
-                // text keeps the whole value readable; the seconds cannot be dropped instead, because
-                // every format style that hides them either spells the units out or cannot be archived
-                // for the out-of-process Live Activity renderer.
-                HAActivityChronometerText(end: end, start: state.chronometerStart)
-                    .font(.footnote.monospacedDigit())
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-                    .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
-                    .multilineTextAlignment(.trailing)
-                    .frame(width: Self.compactTrailingTimerWidth)
-            } else if let critical = state.criticalText {
-                Text(critical)
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-                    .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
-                    .frame(maxWidth: Self.compactTrailingMaxWidth)
-            } else if let fraction = state.progressFraction {
-                Text(HAActivityVisualStyle.percentString(for: fraction))
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.white)
-                    .monospacedDigit()
+            } else if let fraction = state.progressBarFillFraction {
+                ProgressView(value: fraction)
+                    .progressViewStyle(.circular)
+                    .tint(ringColor)
+                    .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
             }
+        } else if state.chronometer == true, let end = state.countdownEnd {
+            // A timer past an hour needs three fields, which don't fit at full size. Scaling the
+            // text keeps the whole value readable; the seconds cannot be dropped instead, because
+            // every format style that hides them either spells the units out or cannot be archived
+            // for the out-of-process Live Activity renderer.
+            HAActivityChronometerText(end: end, start: state.chronometerStart)
+                .font(.footnote.monospacedDigit())
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
+                .multilineTextAlignment(.trailing)
+                .frame(width: Self.compactTrailingTimerWidth)
+        } else if let critical = state.criticalText {
+            Text(critical)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
+                .frame(maxWidth: Self.compactTrailingMaxWidth)
+        } else if let fraction = state.progressFraction {
+            Text(HAActivityVisualStyle.percentString(for: fraction))
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.white)
+                .monospacedDigit()
         }
-        // The inset clears the island's rounded end; a narrow island centres the slot instead.
-        .padding(.trailing, isLimitedInWidth ? 0 : DesignSystem.Spaces.half)
     }
 
     private var isLimitedInWidth: Bool {

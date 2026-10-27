@@ -19,9 +19,11 @@ func makeHADynamicIsland(
             HAExpandedContentView(attributes: attributes, state: state)
         }
     } compactLeading: {
-        HACompactLeadingView(state: state)
+        HADynamicIslandIconView(slug: state.icon, color: state.color, size: 18)
+            .modifier(HACompactSlotInsetModifier(edge: .leading))
     } compactTrailing: {
         HACompactTrailingView(state: state)
+            .modifier(HACompactSlotInsetModifier(edge: .trailing))
     } minimal: {
         HADynamicIslandIconView(slug: state.icon, color: state.color, size: 16)
     }
