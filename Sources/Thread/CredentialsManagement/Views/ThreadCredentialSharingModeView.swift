@@ -70,7 +70,7 @@ struct ThreadCredentialSharingModeView: View {
         .navigationTitle(L10n.Thread.CredentialSharingMode.title)
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            await viewModel.loadCredentials()
+            await viewModel.loadCredentialsIfNeeded()
         }
     }
 

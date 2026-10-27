@@ -89,6 +89,57 @@ final class ThreadCredentialSharingModeViewModelTests: XCTestCase {
         XCTAssertTrue(sut.canEnableSharingMode)
     }
 
+    func test_select_is_ignored_while_request_is_in_flight() async {
+        mockClient.suspendEnableCredentialSharingMode = true
+        sut.extendedPANID = "deadbeef00112233"
+        let request = Task { await sut.enableSharingMode() }
+        var attempts = 0
+        while sut.state != .loading, attempts < 100 {
+            await Task.yield()
+            attempts += 1
+        }
+        XCTAssertEqual(sut.state, .loading)
+
+        sut.select(ThreadCredential(
+            networkName: "Other",
+            networkKey: "key",
+            extendedPANID: "0011223344556677",
+            borderAgentID: "agent",
+            macExtendedAddress: "mac",
+            activeOperationalDataSet: "dataset",
+            pskc: "pskc",
+            channel: 25,
+            panID: "pan"
+        ))
+
+        XCTAssertEqual(sut.extendedPANID, "deadbeef00112233")
+        XCTAssertEqual(sut.state, .loading)
+        XCTAssertFalse(sut.canEnableSharingMode)
+        await sut.enableSharingMode()
+        XCTAssertEqual(mockClient.enableCredentialSharingModeCallCount, 1)
+
+        mockClient.resumeSuspendedEnableCredentialSharingModeRequests()
+        await request.value
+
+        XCTAssertEqual(sut.state, .success)
+        XCTAssertEqual(mockClient.enableCredentialSharingModeExtendedPANID, "deadbeef00112233")
+    }
+
+    func test_seeded_credentials_skip_loading() async {
+        sut = .init(threadClientService: mockClient, credentials: [], state: .success)
+
+        await sut.loadCredentialsIfNeeded()
+
+        XCTAssertFalse(mockClient.retrieveAllCredentialsCalled)
+        XCTAssertEqual(sut.state, .success)
+
+        sut = .init(threadClientService: mockClient)
+        await sut.loadCredentialsIfNeeded()
+
+        XCTAssertTrue(mockClient.retrieveAllCredentialsCalled)
+        XCTAssertEqual(sut.credentials.count, 2)
+    }
+
     func test_enableSharingMode_with_invalid_id_does_nothing() async {
         sut.extendedPANID = "nope"
 

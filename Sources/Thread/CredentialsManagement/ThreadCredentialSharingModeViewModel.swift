@@ -18,9 +18,19 @@ final class ThreadCredentialSharingModeViewModel: ObservableObject {
     @Published private(set) var state: State = .idle
 
     private let threadClientService: ThreadClientProtocol
+    private var needsCredentialLoad: Bool
 
-    init(threadClientService: ThreadClientProtocol = Current.matter.threadClientService) {
+    init(
+        threadClientService: ThreadClientProtocol = Current.matter.threadClientService,
+        credentials: [ThreadCredential]? = nil,
+        extendedPANID: String = "",
+        state: State = .idle
+    ) {
         self.threadClientService = threadClientService
+        self.credentials = credentials ?? []
+        self.extendedPANID = extendedPANID
+        self.state = state
+        self.needsCredentialLoad = credentials == nil
     }
 
     var sanitizedExtendedPANID: String {
@@ -42,7 +52,13 @@ final class ThreadCredentialSharingModeViewModel: ObservableObject {
         isExtendedPANIDValid && state != .loading
     }
 
+    func loadCredentialsIfNeeded() async {
+        guard needsCredentialLoad else { return }
+        await loadCredentials()
+    }
+
     func loadCredentials() async {
+        needsCredentialLoad = false
         isLoadingCredentials = true
         defer { isLoadingCredentials = false }
         do {
@@ -54,6 +70,7 @@ final class ThreadCredentialSharingModeViewModel: ObservableObject {
     }
 
     func select(_ credential: ThreadCredential) {
+        guard state != .loading else { return }
         extendedPANID = credential.extendedPANID
         state = .idle
     }
