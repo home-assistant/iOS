@@ -4,6 +4,7 @@ import GRDB
 import Testing
 
 /// Covers the Siri settings screen's rows and the filtering they drive.
+@Suite(.serialized)
 @MainActor
 struct SiriSettingsViewModelTests {
     private func clear() async throws {
@@ -73,6 +74,7 @@ struct SiriSettingsViewModelTests {
 
 /// Every list Siri reads through honours the opt-out. Each query is checked on its own, so a
 /// regression names the one that stopped filtering rather than just "Siri sees too much".
+@Suite(.serialized)
 @MainActor
 struct SiriExposureAcrossQueriesTests {
     private func clear() async throws {
