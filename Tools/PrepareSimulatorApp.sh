@@ -28,7 +28,7 @@ find "$app/PlugIns" -maxdepth 1 -name '*.xctest' -exec rm -rf {} + 2>/dev/null |
 missing_frameworks() {
     find "$app" -type f -perm -u+x -print0 |
         while IFS= read -r -d '' binary; do
-            otool -L "$binary" 2>/dev/null | sed -nE 's#^[[:space:]]*@rpath/([^/]+\.framework)/.*#\1#p'
+            otool -L "$binary" 2>/dev/null | grep -v ', weak)' | sed -nE 's#^[[:space:]]*@rpath/([^/]+\.framework)/.*#\1#p'
         done |
         sort -u |
         while read -r name; do
@@ -52,7 +52,7 @@ while true; do
     done <<< "$missing"
 
     if [[ $embedded == 0 ]]; then
-        echo "::warning::$(basename "$app") links frameworks that are not in $source_frameworks: $(echo "$missing" | tr '\n' ' ')"
-        break
+        echo "::error::$(basename "$app") links frameworks that are not in $source_frameworks: $(echo "$missing" | tr '\n' ' ')"
+        exit 1
     fi
 done
