@@ -371,6 +371,8 @@ final class CameraMicrophoneSessionTests: XCTestCase {
 
         session.setMicrophoneEnabled(true)
         XCTAssertTrue(client.isMicrophoneEnabled)
+        XCTAssertFalse(client.isClosed)
+        XCTAssertEqual(clients.count, 1, "Resuming reuses the same connection")
         XCTAssertTrue(session.isConnected)
     }
 
