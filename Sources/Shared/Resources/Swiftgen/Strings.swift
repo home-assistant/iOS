@@ -1608,6 +1608,8 @@ public enum L10n {
       public static var body: String { return L10n.tr("Localizable", "camera_player.notification.body") }
     }
     public enum Talkback {
+      /// Connecting microphone
+      public static var connecting: String { return L10n.tr("Localizable", "camera_player.talkback.connecting") }
       /// Start talking
       public static var start: String { return L10n.tr("Localizable", "camera_player.talkback.start") }
       /// Stop talking

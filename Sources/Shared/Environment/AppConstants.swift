@@ -234,6 +234,30 @@ public enum AppConstants {
         openEntityDeeplinkURL(entityId: entityId, serverId: serverId)
     }
 
+    /// Where opening an entity from the Control Center controls, Spotlight or Siri lands: the native
+    /// camera player for a camera, the frontend's more-info dialog for everything else.
+    ///
+    /// Widgets and app icon shortcuts keep opening cameras in the more-info dialog through
+    /// `openEntityDestinationURL`.
+    public static func openEntityOrCameraDestinationURL(entityId: String, serverId: String) -> URL? {
+        if Domain(entityId: entityId) == .camera {
+            return openCameraDeeplinkURL(entityId: entityId, serverId: serverId)
+        }
+        return openEntityDestinationURL(entityId: entityId, serverId: serverId)
+    }
+
+    /// The deep link host that opens the native camera player.
+    public static let cameraDeeplinkHost = "camera"
+
+    public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
+        var components = URLComponents(string: "\(AppConstants.deeplinkURL.absoluteString)\(cameraDeeplinkHost)/")
+        components?.queryItems = [
+            URLQueryItem(name: "entityId", value: entityId),
+            URLQueryItem(name: "serverId", value: serverId),
+        ]
+        return components?.url
+    }
+
     public static func todoListAddItemURL(listId: String, serverId: String) -> URL? {
         guard !serverId.isEmpty, !listId.isEmpty else {
             return nil

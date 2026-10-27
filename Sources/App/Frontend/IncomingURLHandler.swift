@@ -10,6 +10,13 @@ import SwiftUI
 
 class IncomingURLHandler {
     private(set) weak var coordinator: AppCoordinator!
+    /// Shows a camera in the native player over the frontend. Replaced by tests, which have no
+    /// frontend to present on.
+    lazy var presentCamera: (_ entityId: String, _ serverId: String?) -> Void = { [weak self] entityId, serverId in
+        self?.presentOverFrontend { webViewController in
+            CameraOverlayPresenter.shared.show(entityId: entityId, serverId: serverId, on: webViewController)
+        }
+    }
 
     init(coordinator: AppCoordinator) {
         self.coordinator = coordinator
@@ -76,15 +83,21 @@ class IncomingURLHandler {
                     handler: { self.sendLocationURLHandler() }
                 )
             case .camera:
-                guard let entityId = serviceData["entityId"],
-                      let destination = AppConstants.openEntityDestinationURL(
-                          entityId: entityId,
-                          serverId: serviceData["serverId"] ?? ""
-                      ) else {
+                guard let entityId = serviceData["entityId"] else {
                     Current.Log.error("No entity found for open camera URL: \(url)")
                     return false
                 }
-                return handle(url: destination)
+                let serverId = serviceData["serverId"]
+                // Links made before the native player was reinstated can name any entity; anything that
+                // isn't a camera still opens its more-info dialog.
+                guard Domain(entityId: entityId) == .camera else {
+                    guard let destination = AppConstants.openEntityDestinationURL(
+                        entityId: entityId,
+                        serverId: serverId ?? ""
+                    ) else { return false }
+                    return handle(url: destination)
+                }
+                presentCamera(entityId, serverId)
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
@@ -257,7 +270,7 @@ class IncomingURLHandler {
     /// identifier is the indexed entity's id, which is what the local database keys its rows by.
     private func handleSpotlightEntity(identifier: String) -> Bool {
         guard let entity = HAAppEntity.entity(uniqueId: identifier),
-              let url = AppConstants.openEntityDestinationURL(
+              let url = AppConstants.openEntityOrCameraDestinationURL(
                   entityId: entity.entityId,
                   serverId: entity.serverId
               ) else {

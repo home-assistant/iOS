@@ -89,6 +89,14 @@ final class CameraOverlayPresenter {
         webViewController.presentOverlayController(controller: controller, animated: true)
     }
 
+    /// Shows a camera from a deep link, on the server it names, or on the one the web view is showing
+    /// when it names none the app knows.
+    func show(entityId: String, serverId: String?, on webViewController: WebViewControllerProtocol) {
+        let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
+            ?? webViewController.server
+        show(entityId: entityId, server: server, on: webViewController)
+    }
+
     func hide(on webViewController: WebViewControllerProtocol) {
         precondition(Thread.isMainThread)
         guard let overlayController else {

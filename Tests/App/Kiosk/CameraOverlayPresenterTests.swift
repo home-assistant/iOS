@@ -73,6 +73,27 @@ final class CameraOverlayPresenterTests: XCTestCase {
         XCTAssertTrue(kiosk.isCameraOverlayVisible)
     }
 
+    func testShowFromADeepLinkUsesTheServerItNames() {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        let servers = FakeServerManager(initial: 0)
+        let named = servers.addFake()
+        Current.servers = servers
+
+        presenter.show(entityId: "camera.front_door", serverId: named.identifier.rawValue, on: webViewController)
+
+        XCTAssertEqual(
+            presenter.displayedCamera,
+            .init(entityId: "camera.front_door", serverIdentifier: named.identifier)
+        )
+    }
+
+    func testShowFromADeepLinkNamingAnUnknownServerUsesTheWebViewOne() {
+        presenter.show(entityId: "camera.front_door", serverId: "unknown", on: webViewController)
+
+        XCTAssertEqual(presenter.displayedCamera, frontDoor)
+    }
+
     func testShowingTheDisplayedCameraAgainDoesNothing() throws {
         let presented = try showAndPresent(frontDoor)
         webViewController.presentOverlayControllerCalled = false

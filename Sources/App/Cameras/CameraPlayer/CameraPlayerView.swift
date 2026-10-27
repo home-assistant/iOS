@@ -11,6 +11,7 @@ import SwiftUI
 /// `ha-camera-stream` chooses its player; see `CameraStreamPlan`.
 struct CameraPlayerView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let server: Server
     private let cameraName: String?
     /// Called when the picker switches to another camera, with the new entity id.
@@ -31,9 +32,10 @@ struct CameraPlayerView: View {
     @State private var cameraSnapshots: [String: UIImage] = [:]
     @State private var controlsVisible = true
     @State private var showLoader = true
+    /// Whether the camera takes audio from the microphone, as reported by `camera/capabilities`.
+    @State private var supportsTwoWayAudio = false
 
-    private let maxTitleTextWidth: CGFloat = 100
-    private let topScrimHeight: CGFloat = 140
+    private let controlSize: CGFloat = 44
 
     init(
         server: Server,
@@ -49,15 +51,62 @@ struct CameraPlayerView: View {
 
     var body: some View {
         ZStack {
-            navigationStack
+            content
 
             if playback.isLoaderVisible(webRTCIsLoading: showLoader) {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .tint(.white)
-                    .scaleEffect(1.5)
+                CameraStreamLoadingView()
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black.ignoresSafeArea())
+        // The stream takes the whole screen and the controls float over it, each on its own glass
+        // (or material before iOS 26), so nothing needs a scrim to stay legible. The WebRTC player
+        // adds mute and the microphone the same way, see `WebRTCVideoPlayerControlsView`.
+        .overlay(alignment: .topLeading) {
+            if controlsVisible {
+                HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemSymbol: .xmark)
+                            .font(DesignSystem.Font.body.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: controlSize, height: controlSize)
+                            .haGlassBackground(in: Circle())
+                            .contentShape(Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(L10n.closeLabel)
+
+                    nameBadge
+
+                    Spacer(minLength: DesignSystem.Spaces.oneAndHalf)
+
+                    // Kiosks are mostly iPads on a wall, where the time is worth having on screen
+                    // with the status bar hidden. A phone's top row has no room to spare for it.
+                    if horizontalSizeClass == .regular {
+                        TimelineView(.everyMinute) { _ in
+                            Text(Current.date(), format: .dateTime.hour().minute())
+                                .font(DesignSystem.Font.subheadline.weight(.semibold))
+                                .monospacedDigit()
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, DesignSystem.Spaces.two)
+                                .frame(height: controlSize)
+                                .haGlassBackground(in: Capsule(), isInteractive: false)
+                        }
+                        .allowsHitTesting(false)
+                    }
+                }
+                .padding(DesignSystem.Spaces.two)
+                // The WebRTC player puts its mute button in the trailing corner, at the same inset and
+                // size, so the clock and a long name stop short of it.
+                .padding(.trailing, playback.current == .webRTC ? controlSize + DesignSystem.Spaces.oneAndHalf : .zero)
+                .transition(.opacity)
+            }
+        }
+        // Only the WebRTC player toggles `controlsVisible` inside `withAnimation`; the HLS and MJPEG
+        // ones toggle it bare, so the fade is scoped here for every player type.
+        .animation(.easeInOut(duration: 0.2), value: controlsVisible)
         .onAppear {
             loadMetadata()
             loadCameras()
@@ -72,75 +121,6 @@ struct CameraPlayerView: View {
         .preferredColorScheme(.dark)
     }
 
-    private var navigationStack: some View {
-        NavigationStack {
-            content
-                .overlay {
-                    // From iOS 26 the toolbar items get their contrast from Liquid Glass. Earlier
-                    // versions render them bare over the stream, so they can disappear against a
-                    // bright image — a scrim from the top gives them something to sit on. It mirrors
-                    // the bottom gradient behind the talkback controls.
-                    if needsTopScrim, isToolbarVisible {
-                        VStack(spacing: 0) {
-                            LinearGradient(
-                                colors: [.black.opacity(0.6), .clear],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                            .frame(height: topScrimHeight)
-                            Spacer(minLength: 0)
-                        }
-                        .allowsHitTesting(false)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                    }
-                }
-                // Only the WebRTC player toggles `controlsVisible` inside `withAnimation`; the HLS and
-                // MJPEG ones toggle it bare, so scope the animation here to fade the scrim on every
-                // player type. Matches the curve WebRTC uses for the rest of the controls.
-                .animation(.easeInOut(duration: 0.2), value: isToolbarVisible)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton {
-                            dismiss()
-                        }
-                    }
-
-                    ToolbarItem(placement: .topBarLeading) {
-                        nameBadge
-                    }
-                }
-                .modify { view in
-                    if #available(iOS 18.0, *) {
-                        view.toolbarVisibility(controlsVisible ? .automatic : .hidden, for: .navigationBar)
-                    } else {
-                        view
-                    }
-                }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    /// Liquid Glass backs the toolbar items from iOS 26 onwards, so the scrim is only needed before that.
-    private var needsTopScrim: Bool {
-        if #available(iOS 26.0, *) {
-            return false
-        } else {
-            return true
-        }
-    }
-
-    /// Mirrors the navigation bar visibility so the scrim comes and goes with the items it backs. Hiding
-    /// the bar requires `toolbarVisibility`, so before iOS 18 the toolbar — and therefore the scrim —
-    /// stays on screen even while the controls are dimmed.
-    private var isToolbarVisible: Bool {
-        if #available(iOS 18.0, *) {
-            return controlsVisible
-        } else {
-            return true
-        }
-    }
-
     /// Entities can reach the picker without a usable name — an empty `friendly_name` upstream, or no
     /// cached entity at all — and a menu row with no title is unpickable, so fall back to a generic
     /// localized "Camera" rather than rendering blank.
@@ -151,9 +131,11 @@ struct CameraPlayerView: View {
         return name
     }
 
+    /// The camera name and area on a glass capsule, which opens the camera picker when there is
+    /// another camera to switch to.
     @ViewBuilder
     private var nameBadge: some View {
-        if controlsVisible {
+        if cameras.count > 1 {
             Menu {
                 Group {
                     ForEach(cameras) { camera in
@@ -178,33 +160,40 @@ struct CameraPlayerView: View {
                     Task { await loadSnapshots(for: cameras) }
                 }
             } label: {
-                HStack(spacing: DesignSystem.Spaces.one) {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                        Text(displayName(name))
-                            .font(DesignSystem.Font.caption.bold())
-                            .foregroundStyle(.primary)
-                            .frame(maxWidth: maxTitleTextWidth, alignment: .leading)
-                            .truncationMode(.middle)
-                        if let subtitle, !subtitle.isEmpty {
-                            Text(subtitle)
-                                .font(DesignSystem.Font.caption2)
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: maxTitleTextWidth, alignment: .leading)
-                                .truncationMode(.middle)
-                        }
-                    }
-                    if cameras.count > 1 {
-                        Image(systemSymbol: .chevronUpChevronDown)
-                            .font(DesignSystem.Font.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.horizontal, DesignSystem.Spaces.two)
-                .padding(.vertical, DesignSystem.Spaces.one)
+                nameBadgeLabel
             }
             .menuOrder(.fixed)
-            .disabled(cameras.count <= 1)
+            .buttonStyle(.plain)
+        } else {
+            nameBadgeLabel
         }
+    }
+
+    private var nameBadgeLabel: some View {
+        HStack(spacing: DesignSystem.Spaces.oneAndHalf) {
+            VStack(alignment: .leading, spacing: .zero) {
+                Text(displayName(name))
+                    .font(DesignSystem.Font.subheadline.weight(.semibold))
+                    .foregroundStyle(.white)
+                if let subtitle, !subtitle.isEmpty {
+                    Text(subtitle)
+                        .font(DesignSystem.Font.caption)
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+            }
+            .lineLimit(1)
+            .truncationMode(.middle)
+            if cameras.count > 1 {
+                Image(systemSymbol: .chevronUpChevronDown)
+                    .font(DesignSystem.Font.caption.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.7))
+            }
+        }
+        .padding(.leading, DesignSystem.Spaces.two + DesignSystem.Spaces.half)
+        .padding(.trailing, DesignSystem.Spaces.two)
+        .frame(minHeight: controlSize)
+        .haGlassBackground(in: Capsule())
+        .contentShape(Capsule())
     }
 
     private var content: some View {
@@ -231,6 +220,7 @@ struct CameraPlayerView: View {
                 server: server,
                 cameraEntityId: cameraEntityId,
                 cameraName: name ?? cameraName,
+                supportsTalkback: supportsTwoWayAudio,
                 controlsVisible: $controlsVisible,
                 showLoader: $showLoader,
                 onWebRTCUnsupported: {
@@ -278,6 +268,10 @@ struct CameraPlayerView: View {
         // mid-fetch still lands here; a stale answer must not decide the plan for the camera now
         // on screen.
         guard entityId == cameraEntityId else { return }
+        // Core only reports two-way audio for a camera it can stream over WebRTC with the Labs
+        // preview switched on, so nothing else needs checking here. Catalyst has no microphone
+        // stream, as the frontend is told through `hasCameraMicrophoneStream`.
+        supportsTwoWayAudio = (capabilities?.twoWayAudio ?? false) && !Current.isCatalyst
         playback.start(with: CameraStreamPlan.players(for: capabilities))
     }
 
@@ -341,6 +335,7 @@ struct CameraPlayerView: View {
         // Changing `cameraEntityId` re-identifies `content`, tearing down the current player first.
         showLoader = true
         playback.clear()
+        supportsTwoWayAudio = false
         cameraEntityId = entityId
         loadMetadata()
         onCameraChange?(entityId)
