@@ -93,10 +93,14 @@ final class ThreadCredentialSharingModeViewModelTests: XCTestCase {
         mockClient.suspendEnableCredentialSharingMode = true
         sut.extendedPANID = "deadbeef00112233"
         let request = Task { await sut.enableSharingMode() }
-        var attempts = 0
-        while sut.state != .loading, attempts < 100 {
-            await Task.yield()
-            attempts += 1
+        let deadline = Date().addingTimeInterval(5)
+        while !mockClient.hasSuspendedEnableCredentialSharingModeRequests, Date() < deadline {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        guard mockClient.hasSuspendedEnableCredentialSharingModeRequests else {
+            request.cancel()
+            XCTFail("The sharing request never reached the client")
+            return
         }
         XCTAssertEqual(sut.state, .loading)
 

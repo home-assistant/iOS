@@ -90,9 +90,7 @@ public final class ThreadClientService: ThreadClientProtocol {
     }
 
     public func enableCredentialSharingMode(extendedPANID: String) async throws {
-        guard let extendedPANIDData = extendedPANID.hexadecimal, !extendedPANIDData.isEmpty else {
-            throw ThreadClientServiceError.failedToConvertToHexadecimal
-        }
+        let extendedPANIDData = try threadExtendedPANIDData(from: extendedPANID)
         guard #available(iOS 27, *) else {
             throw ThreadClientServiceError.credentialSharingModeUnavailable
         }
@@ -123,7 +121,15 @@ public final class ThreadClientService: ThreadClientProtocol {
     }
 
     public func enableCredentialSharingMode(extendedPANID: String) async throws {
+        _ = try threadExtendedPANIDData(from: extendedPANID)
         throw ThreadClientServiceError.credentialSharingModeUnavailable
     }
 }
 #endif
+
+private func threadExtendedPANIDData(from extendedPANID: String) throws -> Data {
+    guard let data = extendedPANID.hexadecimal, !data.isEmpty else {
+        throw ThreadClientServiceError.failedToConvertToHexadecimal
+    }
+    return data
+}

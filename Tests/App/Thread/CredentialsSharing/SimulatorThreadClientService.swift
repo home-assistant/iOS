@@ -68,6 +68,10 @@ final class SimulatorThreadClientService: ThreadClientProtocol {
         }
     }
 
+    var hasSuspendedEnableCredentialSharingModeRequests: Bool {
+        !suspendedEnableCredentialSharingModeRequests.isEmpty
+    }
+
     func resumeSuspendedEnableCredentialSharingModeRequests() {
         let requests = suspendedEnableCredentialSharingModeRequests
         suspendedEnableCredentialSharingModeRequests.removeAll()
