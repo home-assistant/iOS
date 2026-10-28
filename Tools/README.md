@@ -66,6 +66,41 @@ python3 Tools/diff_coverage.py fastlane/test_output/coverage.lcov --base origin/
 - `0`: Coverage of the changed lines is at or above `--threshold` (default 90%)
 - `1`: Coverage is below the threshold, or the tracefile is missing
 
+### UpdateSwiftPackages.py
+
+Finds and applies updates for the Swift packages `HomeAssistant.xcodeproj` depends on.
+Renovate keeps the gems and GitHub Actions current but has no manager for the package
+references in `project.pbxproj` or for `Package.resolved`, so the weekly
+`Update Swift Packages` workflow runs this script and opens one pull request per
+package that has a newer release.
+
+**Usage:**
+```bash
+python3 Tools/UpdateSwiftPackages.py                  # list packages with a newer release
+python3 Tools/UpdateSwiftPackages.py --apply GRDB.swift  # update one package
+python3 Tools/UpdateSwiftPackages.py --apply-all      # update every outdated package
+python3 Tools/UpdateSwiftPackages.py --json           # the outdated packages, for the workflow
+```
+
+The workflow applies with `--apply <name> --to <target>`, the target being what `--json`
+reported, so a release that lands between discovery and the serialized update jobs does not
+change what a pull request says it updates to.
+
+**What it does:**
+1. Reads every `XCRemoteSwiftPackageReference` in `project.pbxproj` and the pins in the
+   workspace `Package.resolved`
+2. Asks each repository for its tags with `git ls-remote` and keeps the highest stable
+   semantic version; a `branch` requirement compares the branch head with the pinned revision,
+   and a `revision` requirement is pinned on purpose and skipped
+3. With `--apply`, sets the project's requirement to that version, updates the local packages
+   under `Sources/` that pin the same dependency with `exact:` or `from:` so Xcode's package
+   graph keeps unifying them, runs `xcodebuild -resolvePackageDependencies`, and regenerates the
+   root `Package.resolved` mirror that CI keys its caches on
+
+**Exit codes:**
+- `0`: Listed the packages, or applied the requested updates
+- `1`: Unknown package name, or the resolved pin does not match the requested version
+
 ## Shell Scripts
 
 ### BuildMaterialDesignIconsFont.sh

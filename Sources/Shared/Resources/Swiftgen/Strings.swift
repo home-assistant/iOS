@@ -5226,7 +5226,7 @@ public enum L10n {
     public static var explanation: String { return L10n.tr("Localizable", "restored_registrations.explanation") }
     /// Set up as a new device
     public static var newDevice: String { return L10n.tr("Localizable", "restored_registrations.new_device") }
-    /// %d of %d set up
+    /// %li of %li set up
     public static func progress(_ p1: Int, _ p2: Int) -> String {
       return L10n.tr("Localizable", "restored_registrations.progress", p1, p2)
     }
@@ -5257,7 +5257,7 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "restored_registrations.held_back_notification.title") }
     }
     public enum Login {
-      /// Server %d of %d
+      /// Server %li of %li
       public static func progress(_ p1: Int, _ p2: Int) -> String {
         return L10n.tr("Localizable", "restored_registrations.login.progress", p1, p2)
       }
@@ -6612,6 +6612,16 @@ public enum L10n {
       public enum ShakeDisclaimerOptional {
         /// Shake the App to open debug
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.shake_disclaimer_optional.title") }
+      }
+      public enum SimulateRestoredDevice {
+        /// Simulate a restore from another device?
+        public static var alertTitle: String { return L10n.tr("Localizable", "settings.debugging.simulate_restored_device.alert_title") }
+        /// Simulate Restore
+        public static var confirmButton: String { return L10n.tr("Localizable", "settings.debugging.simulate_restored_device.confirm_button") }
+        /// Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.
+        public static var message: String { return L10n.tr("Localizable", "settings.debugging.simulate_restored_device.message") }
+        /// Simulate restore from another device
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.simulate_restored_device.title") }
       }
       public enum Thread {
         /// Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.

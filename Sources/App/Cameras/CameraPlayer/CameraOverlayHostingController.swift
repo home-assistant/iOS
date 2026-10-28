@@ -10,6 +10,17 @@ final class CameraOverlayHostingController: UIHostingController<AnyView> {
     var onAppear: (() -> Void)?
     var onDismiss: (() -> Void)?
 
+    /// The stream takes the whole screen, status bar included. SwiftUI's `statusBarHidden` cannot do
+    /// this on its own: a controller presented over full screen leaves the status bar to the one
+    /// underneath unless it captures it, which the presenter asks for.
+    override var prefersStatusBarHidden: Bool {
+        true
+    }
+
+    override var prefersHomeIndicatorAutoHidden: Bool {
+        true
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         onAppear?()

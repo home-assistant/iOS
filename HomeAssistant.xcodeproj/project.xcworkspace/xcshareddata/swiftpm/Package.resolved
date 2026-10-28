@@ -1,5 +1,5 @@
 {
-  "originHash" : "bcf37b8f96cdf26dc29bc2674ef6fab26ec1ba567e21c769d1886e275a5c8f38",
+  "originHash" : "df33c8810ff4ea0baf0e0587a849bccef824f284286c2fd06f255708e48d1f5a",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Alamofire/Alamofire.git",
       "state" : {
-        "revision" : "7595cbcf59809f9977c5f6378500de2ad73b7ddb",
-        "version" : "5.12.0"
+        "revision" : "bda9ed57d72988a3a2ada33d824583541f86eac6",
+        "version" : "5.12.2"
       }
     },
     {
