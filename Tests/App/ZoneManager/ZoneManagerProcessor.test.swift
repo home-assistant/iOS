@@ -330,24 +330,6 @@ class ZoneManagerProcessorTests: XCTestCase {
         XCTAssertTrue(promise.isFulfilled)
     }
 
-    func testMultiRegionExitWhenZoneAlreadyExitedIsIgnored() throws {
-        try setUpZones(circular: { _, zone in
-            zone.inRegion = false
-        })
-        let zone = try XCTUnwrap(circularRegionZone)
-        let subregion = try XCTUnwrap(zone.circularRegionsForMonitoring.last)
-
-        let promise = processor.perform(event: ZoneManagerEvent(
-            eventType: .region(subregion, .outside),
-            associatedZone: zone
-        ))
-
-        XCTAssertEqual(try hangForIgnoreReason(promise), .zoneAlreadyExited)
-        for api in apis {
-            XCTAssertNil(api.submitLocationInvocation)
-        }
-    }
-
     func testMultiRegionExitsReportOnlyTheFirst() throws {
         try setUpZones(circular: { _, zone in
             zone.inRegion = true
@@ -362,51 +344,106 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         oneShotLocationSeal.fulfill(.init(latitude: 1, longitude: 1))
         submitLocationSeal.fulfill(())
-
-        let expectation = expectation(description: "promises")
-        when(resolved: promises).done { _ in expectation.fulfill() }
-        wait(for: [expectation], timeout: 10.0)
+        waitForAll(promises)
 
         XCTAssertTrue(promises[0].isFulfilled)
         XCTAssertEqual(promises[1].result?.ignoreReason, .zoneAlreadyExited)
         XCTAssertEqual(promises[2].result?.ignoreReason, .zoneAlreadyExited)
-        XCTAssertFalse(AppZone.zone(identifier: zone.identifier)?.inRegion ?? true)
 
         for api in apis {
             XCTAssertEqual(api.submitLocationInvocation?.updateType, .GPSRegionExit)
         }
     }
 
-    func testMultiRegionExitAfterReenteringIsReported() throws {
+    func testMultiRegionExitIsReportedWhenStoredStateIsAlreadyOutside() throws {
         try setUpZones(circular: { _, zone in
             zone.inRegion = false
         })
         let zone = try XCTUnwrap(circularRegionZone)
-        let subregion = try XCTUnwrap(zone.circularRegionsForMonitoring.first)
+        let subregion = try XCTUnwrap(zone.circularRegionsForMonitoring.last)
 
-        let enterPromise = processor.perform(event: ZoneManagerEvent(
-            eventType: .region(subregion, .inside),
-            associatedZone: zone
-        ))
-        let exitPromise = processor.perform(event: ZoneManagerEvent(
+        let promise = processor.perform(event: ZoneManagerEvent(
             eventType: .region(subregion, .outside),
             associatedZone: zone
         ))
 
         oneShotLocationSeal.fulfill(.init(latitude: 1, longitude: 1))
         submitLocationSeal.fulfill(())
+        waitForAll([promise])
 
-        let expectation = expectation(description: "promises")
-        when(resolved: enterPromise, exitPromise).done { _ in expectation.fulfill() }
-        wait(for: [expectation], timeout: 10.0)
+        XCTAssertTrue(promise.isFulfilled)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, .GPSRegionExit)
+        }
+    }
 
-        XCTAssertTrue(enterPromise.isFulfilled)
-        XCTAssertTrue(exitPromise.isFulfilled)
-        XCTAssertFalse(AppZone.zone(identifier: zone.identifier)?.inRegion ?? true)
+    func testMultiRegionExitQueuedBeforeReenteringIsIgnored() throws {
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = true
+        })
+        let zone = try XCTUnwrap(circularRegionZone)
+        let subregions = zone.circularRegionsForMonitoring
+
+        let firstExit = processor.perform(event: ZoneManagerEvent(
+            eventType: .region(subregions[0], .outside),
+            associatedZone: zone
+        ))
+        let secondExit = processor.perform(event: ZoneManagerEvent(
+            eventType: .region(subregions[1], .outside),
+            associatedZone: zone
+        ))
+        let reenter = processor.perform(event: ZoneManagerEvent(
+            eventType: .region(subregions[0], .inside),
+            associatedZone: zone
+        ))
+        let exitAfterReentering = processor.perform(event: ZoneManagerEvent(
+            eventType: .region(subregions[0], .outside),
+            associatedZone: zone
+        ))
+
+        oneShotLocationSeal.fulfill(.init(latitude: 1, longitude: 1))
+        submitLocationSeal.fulfill(())
+        waitForAll([firstExit, secondExit, reenter, exitAfterReentering])
+
+        XCTAssertTrue(firstExit.isFulfilled)
+        XCTAssertEqual(secondExit.result?.ignoreReason, .zoneAlreadyExited)
+        XCTAssertTrue(reenter.isFulfilled)
+        XCTAssertTrue(exitAfterReentering.isFulfilled)
 
         for api in apis {
             XCTAssertEqual(api.submitLocationInvocation?.updateType, .GPSRegionExit)
         }
+    }
+
+    func testMultiRegionEnterIgnoredDuringOneShotStillAllowsTheNextExit() throws {
+        try setUpZones()
+        let zone = try XCTUnwrap(circularRegionZone)
+        let subregions = zone.circularRegionsForMonitoring
+
+        let firstExit = processor.perform(event: ZoneManagerEvent(
+            eventType: .region(subregions[0], .outside),
+            associatedZone: zone
+        ))
+        oneShotLocationSeal.fulfill(.init(latitude: 1, longitude: 1))
+        submitLocationSeal.fulfill(())
+        waitForAll([firstExit])
+        XCTAssertTrue(firstExit.isFulfilled)
+
+        Current.isPerformingSingleShotLocationQuery = true
+        let reenter = processor.perform(event: ZoneManagerEvent(
+            eventType: .region(subregions[0], .inside),
+            associatedZone: zone
+        ))
+        waitForAll([reenter])
+        Current.isPerformingSingleShotLocationQuery = false
+        XCTAssertEqual(reenter.result?.ignoreReason, .duringOneShot)
+
+        let nextExit = processor.perform(event: ZoneManagerEvent(
+            eventType: .region(subregions[1], .outside),
+            associatedZone: zone
+        ))
+        waitForAll([nextExit])
+        XCTAssertTrue(nextExit.isFulfilled)
     }
 
     func testMultiRegionExitThatFailsLetsTheNextRegionReport() throws {
@@ -417,36 +454,28 @@ class ZoneManagerProcessorTests: XCTestCase {
         let subregions = zone.circularRegionsForMonitoring
 
         enum FakeError: Error { case error }
-        let failedPromise = processor.perform(event: ZoneManagerEvent(
+        let failedExit = processor.perform(event: ZoneManagerEvent(
             eventType: .region(subregions[0], .outside),
             associatedZone: zone
         ))
         oneShotLocationSeal.reject(FakeError.error)
+        waitForAll([failedExit])
 
-        let failedExpectation = expectation(description: "failed")
-        failedPromise.ensure { failedExpectation.fulfill() }.cauterize()
-        wait(for: [failedExpectation], timeout: 10.0)
-
-        XCTAssertTrue(failedPromise.isRejected)
-        XCTAssertTrue(AppZone.zone(identifier: zone.identifier)?.inRegion ?? false)
+        XCTAssertTrue(failedExit.isRejected)
         for api in apis {
             XCTAssertNil(api.submitLocationInvocation)
         }
 
         (oneShotLocationPromise, oneShotLocationSeal) = Promise<CLLocation>.pending()
-        let nextPromise = processor.perform(event: ZoneManagerEvent(
+        let nextExit = processor.perform(event: ZoneManagerEvent(
             eventType: .region(subregions[1], .outside),
             associatedZone: zone
         ))
         oneShotLocationSeal.fulfill(.init(latitude: 1, longitude: 1))
         submitLocationSeal.fulfill(())
+        waitForAll([nextExit])
 
-        let nextExpectation = expectation(description: "next")
-        nextPromise.ensure { nextExpectation.fulfill() }.cauterize()
-        wait(for: [nextExpectation], timeout: 10.0)
-
-        XCTAssertTrue(nextPromise.isFulfilled)
-        XCTAssertFalse(AppZone.zone(identifier: zone.identifier)?.inRegion ?? true)
+        XCTAssertTrue(nextExit.isFulfilled)
         for api in apis {
             XCTAssertEqual(api.submitLocationInvocation?.updateType, .GPSRegionExit)
         }
@@ -1439,6 +1468,12 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     // MARK: -
+
+    private func waitForAll(_ promises: [Promise<Void>]) {
+        let expectation = expectation(description: "promises")
+        when(resolved: promises).done { _ in expectation.fulfill() }
+        wait(for: [expectation], timeout: 10.0)
+    }
 
     private func hangForIgnoreReason(_ promise: Promise<Void>) throws -> ZoneManagerIgnoreReason {
         do {

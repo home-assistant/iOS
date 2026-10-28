@@ -39,6 +39,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     private var queue = ZoneManagerProcessorQueue()
     private var currentEvent: ZoneManagerEvent?
     private var lastUpdate: Date = .distantPast
+    private var reportedMultiRegionExits = Set<String>()
 
     var onCompletedEvent: (() -> Void)?
 
@@ -90,15 +91,12 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                 }
             }
         }.tap { [self] result in
-            switch result {
-            case .fulfilled:
+            if result.isFulfilled {
                 // only considered an update if it happened
                 lastUpdate = Current.date()
-            case .rejected(is ZoneManagerIgnoreReason):
-                break
-            case .rejected:
-                if event.isMultiRegionExit {
-                    event.associatedZone?.setInRegion(true)
+
+                if event.isMultiRegionExit, let zone = event.associatedZone {
+                    reportedMultiRegionExits.insert(zone.identifier)
                 }
             }
 
@@ -115,9 +113,18 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     }
 
     private func evaluate(event: ZoneManagerEvent) -> Promise<Void> {
+        if case .region(_, .inside) = event.eventType, let zone = event.associatedZone {
+            reportedMultiRegionExits.remove(zone.identifier)
+        }
+
         guard !Current.isPerformingSingleShotLocationQuery else {
             // never do any processing while actively pulling
             return Self.ignore(.duringOneShot)
+        }
+
+        if event.isMultiRegionExit, let zone = event.associatedZone,
+           reportedMultiRegionExits.contains(zone.identifier) {
+            return Self.ignore(.zoneAlreadyExited)
         }
 
         switch event.eventType {
@@ -130,8 +137,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             return Self.evaluateRegionEvent(
                 region: region,
                 state: state,
-                zone: event.associatedZone,
-                isMultiRegionExit: event.isMultiRegionExit
+                zone: event.associatedZone
             )
         }
     }
@@ -157,12 +163,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         return .value(())
     }
 
-    private static func evaluateRegionEvent(
-        region: CLRegion,
-        state: CLRegionState,
-        zone: AppZone?,
-        isMultiRegionExit: Bool
-    ) -> Promise<Void> {
+    private static func evaluateRegionEvent(region: CLRegion, state: CLRegionState, zone: AppZone?) -> Promise<Void> {
         guard state != .unknown else {
             return ignore(.unknownRegionState)
         }
@@ -174,10 +175,6 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         guard zone.trackingEnabled else {
             // Do nothing in case we don't want to trigger an enter event
             return ignore(.zoneDisabled)
-        }
-
-        if isMultiRegionExit, AppZone.zone(identifier: zone.identifier)?.inRegion == false {
-            return ignore(.zoneAlreadyExited)
         }
 
         return Guarantee<String?> { seal in
