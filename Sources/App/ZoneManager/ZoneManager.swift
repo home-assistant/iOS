@@ -239,6 +239,7 @@ class ZoneManager {
                 ))
 
                 collector.ignoreNextState(for: region)
+                processor.resetExitReporting(for: region)
                 locationManager.startMonitoring(for: region)
             }
         }

@@ -73,6 +73,13 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
         }
     }
 
+    var isMultiRegionExit: Bool {
+        guard case let .region(region as CLCircularRegion, .outside) = eventType, let associatedZone else {
+            return false
+        }
+        return region.identifier != associatedZone.identifier
+    }
+
     var backgroundTaskDescription: String {
         "bg-loc-event-" + {
             switch eventType {
