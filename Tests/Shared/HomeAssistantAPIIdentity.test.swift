@@ -53,6 +53,100 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         XCTAssertEqual(command, "auth/current_user")
     }
 
+    func testCurrentUserCachesTheUserName() {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        let connection = FakeHAConnection()
+        connection.mockResponses["auth/current_user"] = .dictionary([
+            "id": "user-id",
+            "name": "cepresso",
+            "is_owner": false,
+            "is_admin": true,
+            "credentials": [],
+            "mfa_modules": [],
+        ])
+        api.connection = connection
+
+        let expectation = expectation(description: "current user")
+        api.currentUser { _ in expectation.fulfill() }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(fakeDiskCache.storage[api.profileNameCacheKey] as? String, "cepresso")
+    }
+
+    func testCurrentUserWithoutANameCachesNothing() {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        let connection = FakeHAConnection()
+        connection.mockResponses["auth/current_user"] = .dictionary([
+            "id": "user-id",
+            "is_owner": false,
+            "is_admin": true,
+            "credentials": [],
+            "mfa_modules": [],
+        ])
+        api.connection = connection
+
+        let expectation = expectation(description: "current user")
+        api.currentUser { _ in expectation.fulfill() }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertNil(fakeDiskCache.storage[api.profileNameCacheKey])
+    }
+
+    func testProfilePictureCachesTheUserName() throws {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        api.connection = FakeHAConnection()
+        fakeDiskCache.storage[api.profilePictureCacheKey] = makePNGData()
+
+        let expectation = expectation(description: "profile picture")
+        expectation.assertForOverFulfill = false
+        try api.profilePicture(for: makeUser()) { _ in expectation.fulfill() }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(fakeDiskCache.storage[api.profileNameCacheKey] as? String, "cepresso")
+    }
+
+    func testFailingToCacheTheUserNameStillLoadsTheProfilePicture() throws {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        api.connection = FakeHAConnection()
+        fakeDiskCache.storage[api.profilePictureCacheKey] = makePNGData()
+        fakeDiskCache.failsWrites = true
+
+        let expectation = expectation(description: "profile picture")
+        expectation.assertForOverFulfill = false
+        try api.profilePicture(for: makeUser()) { image in
+            XCTAssertNotNil(image)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertNil(fakeDiskCache.storage[api.profileNameCacheKey])
+    }
+
+    func testCachedProfileNameReadsTheCache() {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        fakeDiskCache.storage[api.profileNameCacheKey] = "cepresso"
+
+        let expectation = expectation(description: "cached name")
+        api.cachedProfileName { name in
+            XCTAssertEqual(name, "cepresso")
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testCachedProfileNameIsNilWithoutACache() {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+
+        let expectation = expectation(description: "cached name")
+        api.cachedProfileName { name in
+            XCTAssertNil(name)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+    }
+
     func testProfilePictureURLUsesWebSocketCurrentUserAndRestStates() {
         let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
         let connection = FakeHAConnection()
@@ -288,6 +382,7 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         }
 
         var storage = [String: Any]()
+        var failsWrites = false
         private(set) var deletedKeys = [String]()
 
         func value<T: Codable>(for key: String) -> Promise<T> {
@@ -298,6 +393,9 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         }
 
         func set(_ value: some Codable, for key: String) -> Promise<Void> {
+            if failsWrites {
+                return Promise(error: FakeDiskCacheError.missing)
+            }
             storage[key] = value
             return .value(())
         }
