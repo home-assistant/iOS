@@ -127,6 +127,23 @@ public struct RegistrationOwnership {
         }
     }
 
+    public func simulateRestoreFromAnotherDevice() {
+        let settings = Current.settingsStore
+        let otherDevice = UUID().uuidString
+        var marked = [Identifier<Server>]()
+        for server in Current.servers.all {
+            let deviceID = settings.currentRegistrationIdentity(for: server).deviceID
+            settings.updateRegistrationRecord(for: server.identifier) { record in
+                record.current = RegistrationIdentity(deviceID: deviceID, ownerVendorID: otherDevice)
+                record.pending = nil
+            }
+            marked.append(server.identifier)
+        }
+        settings.takeOverIntegrationDeviceID(for: otherDevice)
+        settings.prefs.set(true, forKey: Self.earlierRegistrationsAdoptedKey)
+        Current.Log.info("made the registrations of \(marked) look like device \(otherDevice)'s")
+    }
+
     public func keepRegistrations(of servers: [Server]) {
         guard let vendorID = Current.device.identifierForVendor() else { return }
         let settings = Current.settingsStore

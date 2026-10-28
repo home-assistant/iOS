@@ -1,8 +1,9 @@
 @testable import HomeAssistant
-import Shared
+@testable import Shared
 import Testing
 
 @MainActor
+@Suite(.serialized)
 struct DebugViewTests {
     /// Every row of the debugging screen is built inline in its body, so nothing else in the suite
     /// runs that code: a row that stopped resolving — a missing icon, a destination that no longer
@@ -14,6 +15,45 @@ struct DebugViewTests {
 
     @Test func theDeveloperSectionBuildsItsRows() {
         _ = DebugView().developerSection
+    }
+
+    @Test func simulatingARestoreMakesTheRestoredDevicePromptShow() {
+        let prefs = Current.settingsStore.prefs
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        let previousServers = Current.servers
+        let previousVendorID = Current.device.identifierForVendor
+        let previousIsCatalyst = Current.isCatalyst
+        defer {
+            Current.servers = previousServers
+            Current.device.identifierForVendor = previousVendorID
+            Current.isCatalyst = previousIsCatalyst
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+
+        let servers = FakeServerManager(initial: 0)
+        Current.servers = servers
+        Current.device.identifierForVendor = { "this-device" }
+        Current.isCatalyst = false
+        keys.forEach(prefs.removeObject(forKey:))
+        prefs.set("this-device", forKey: SettingsStore.integrationDeviceIDKey)
+        let server = servers.addFake()
+        #expect(!LaunchMessagesState.messagesToShow().map(\.id).contains("restoredRegistrations"))
+
+        DebugView().simulateRestoredDevice()
+
+        guard case let .restoredRegistrations(restored)? = LaunchMessagesState.messagesToShow().first else {
+            Issue.record("Expected the restored device prompt to come first")
+            return
+        }
+        #expect(restored == [server])
     }
 
     @Test func theLocalPushStateToggleReadsAndWritesThePreference() {
