@@ -89,7 +89,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                     } else {
                         return nil
                     }
-                }.then { location in
+                }.then { (location: CLLocation?) -> Promise<Void> in
                     submittedLocation = location
                     return when(fulfilled: Current.apis.map { api in
                         api.SubmitLocation(
