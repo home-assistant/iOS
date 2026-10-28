@@ -7,6 +7,7 @@ import SwiftUI
 import Testing
 import UIKit
 
+@Suite(.serialized)
 struct WebViewEmptyStateServerLabelTests {
     private static let size = CGSize(width: 240, height: 60)
 
@@ -58,32 +59,47 @@ struct WebViewEmptyStateServerLabelTests {
         diskCache.storage[api.profileNameCacheKey] = "bruno"
         Current.diskCache = diskCache
 
-        let loaded = await render(WebViewEmptyStateServerLabel(server: server))
-        let expected = await render(WebViewEmptyStateServerLabel(server: server, userName: "bruno"))
+        let expected = await settledImage(of: WebViewEmptyStateServerLabel(server: server, userName: "bruno"))
+        let window = show(WebViewEmptyStateServerLabel(server: server))
+        defer { window.isHidden = true }
 
         let diffing = Diffing<UIImage>.image(precision: 0.99, perceptualPrecision: 0.99)
-        if let difference = diffing.diff(expected, loaded) {
+        let deadline = ContinuousClock.now.advanced(by: .seconds(5))
+        var difference = diffing.diff(expected, image(of: window))
+        while difference != nil, ContinuousClock.now < deadline {
+            try? await Task.sleep(for: .milliseconds(100))
+            difference = diffing.diff(expected, image(of: window))
+        }
+        if let difference {
             Issue.record("The cached user did not show: \(difference.0)")
         }
     }
 
     @MainActor
-    private func render(_ label: WebViewEmptyStateServerLabel) async -> UIImage {
-        let controller = UIHostingController(rootView: label)
+    private func settledImage(of label: WebViewEmptyStateServerLabel) async -> UIImage {
+        let window = show(label)
+        defer { window.isHidden = true }
+        try? await Task.sleep(for: .seconds(0.5))
+        return image(of: window)
+    }
+
+    @MainActor
+    private func show(_ label: WebViewEmptyStateServerLabel) -> UIWindow {
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first
         let window = scene.map { UIWindow(windowScene: $0) } ?? UIWindow()
         window.frame = CGRect(origin: .zero, size: Self.size)
-        window.rootViewController = controller
-        window.makeKeyAndVisible()
+        window.rootViewController = UIHostingController(rootView: label)
+        window.isHidden = false
         window.layoutIfNeeded()
-        try? await Task.sleep(for: .seconds(0.5))
-        window.layoutIfNeeded()
+        return window
+    }
 
-        let image = UIGraphicsImageRenderer(bounds: window.bounds).image { context in
+    @MainActor
+    private func image(of window: UIWindow) -> UIImage {
+        window.layoutIfNeeded()
+        return UIGraphicsImageRenderer(bounds: window.bounds).image { context in
             window.layer.render(in: context.cgContext)
         }
-        window.isHidden = true
-        return image
     }
 
     private func makePicture() -> UIImage {

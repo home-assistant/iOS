@@ -73,23 +73,47 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         XCTAssertEqual(fakeDiskCache.storage[api.profileNameCacheKey] as? String, "cepresso")
     }
 
-    func testCurrentUserWithoutANameCachesNothing() {
+    func testCurrentUserWithoutANameClearsTheCachedName() {
         let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
-        let connection = FakeHAConnection()
-        connection.mockResponses["auth/current_user"] = .dictionary([
-            "id": "user-id",
-            "is_owner": false,
-            "is_admin": true,
-            "credentials": [],
-            "mfa_modules": [],
-        ])
-        api.connection = connection
+        api.connection = makeNamelessUserConnection()
+        fakeDiskCache.storage[api.profileNameCacheKey] = "cepresso"
 
         let expectation = expectation(description: "current user")
         api.currentUser { _ in expectation.fulfill() }
 
         wait(for: [expectation], timeout: 1)
         XCTAssertNil(fakeDiskCache.storage[api.profileNameCacheKey])
+        XCTAssertEqual(fakeDiskCache.deletedKeys, [api.profileNameCacheKey])
+    }
+
+    func testFailingToClearTheCachedNameStillCompletes() {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        api.connection = makeNamelessUserConnection()
+        fakeDiskCache.storage[api.profileNameCacheKey] = "cepresso"
+        fakeDiskCache.failsWrites = true
+
+        let expectation = expectation(description: "current user")
+        api.currentUser { user in
+            XCTAssertEqual(user?.id, "user-id")
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testCurrentUserFailureKeepsTheCachedName() {
+        let api = HomeAssistantAPI(server: ServerFixture.withRemoteConnection)
+        api.connection = FakeHAConnection()
+        fakeDiskCache.storage[api.profileNameCacheKey] = "cepresso"
+
+        let expectation = expectation(description: "current user")
+        api.currentUser { user in
+            XCTAssertNil(user)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(fakeDiskCache.storage[api.profileNameCacheKey] as? String, "cepresso")
     }
 
     func testProfilePictureCachesTheUserName() throws {
@@ -353,6 +377,18 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
 
+    private func makeNamelessUserConnection() -> FakeHAConnection {
+        let connection = FakeHAConnection()
+        connection.mockResponses["auth/current_user"] = .dictionary([
+            "id": "user-id",
+            "is_owner": false,
+            "is_admin": true,
+            "credentials": [],
+            "mfa_modules": [],
+        ])
+        return connection
+    }
+
     private func makeUser() throws -> HAResponseCurrentUser {
         try HAResponseCurrentUser(data: .dictionary([
             "id": "user-id",
@@ -401,6 +437,9 @@ final class HomeAssistantAPIIdentityTests: XCTestCase {
         }
 
         func delete(for key: String) -> Promise<Void> {
+            if failsWrites {
+                return Promise(error: FakeDiskCacheError.missing)
+            }
             storage[key] = nil
             deletedKeys.append(key)
             return .value(())

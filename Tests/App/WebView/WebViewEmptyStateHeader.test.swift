@@ -42,7 +42,7 @@ struct WebViewEmptyStateHeaderTests {
         let window = scene.map { UIWindow(windowScene: $0) } ?? UIWindow()
         window.frame = CGRect(origin: .zero, size: CGSize(width: 390, height: 76))
         window.rootViewController = controller
-        window.makeKeyAndVisible()
+        window.isHidden = false
         defer { window.isHidden = true }
 
         window.layoutIfNeeded()

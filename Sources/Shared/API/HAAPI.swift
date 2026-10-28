@@ -1231,8 +1231,13 @@ public class HomeAssistantAPI {
             }
     }
 
-    private func storeProfileNameInCache(_ name: String?) {
-        guard let name, !name.isEmpty else { return }
+    private func updateProfileNameCache(_ name: String?) {
+        guard let name, !name.isEmpty else {
+            Current.diskCache.delete(for: profileNameCacheKey).catch { error in
+                Current.Log.error("Failed to remove cached profile name: \(error)")
+            }
+            return
+        }
         Current.diskCache.set(name, for: profileNameCacheKey).catch { error in
             Current.Log.error("Failed to cache profile name: \(error)")
         }
@@ -1243,7 +1248,7 @@ public class HomeAssistantAPI {
         connection.send(HATypedRequest<HAResponseCurrentUser>.fetchCurrentUser()) { [weak self] result in
             switch result {
             case let .success(user):
-                self?.storeProfileNameInCache(user.name)
+                self?.updateProfileNameCache(user.name)
                 completion(user)
             case let .failure(error):
                 Current.Log.error("Failed to retrieve current user: \(error)")
@@ -1341,7 +1346,7 @@ public class HomeAssistantAPI {
         for user: HAResponseCurrentUser,
         completion: @escaping (UIImage?) -> Void
     ) -> HACancellable {
-        storeProfileNameInCache(user.name)
+        updateProfileNameCache(user.name)
         let cancellable = ProfilePictureCancellable()
 
         cachedProfilePicture { [weak self] cached in
