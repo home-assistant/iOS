@@ -83,7 +83,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                     } else {
                         return .value(event.associatedLocation)
                     }
-                }.map { location in
+                }.map { location -> CLLocation? in
                     if let location {
                         return accuracyFuzzers.fuzz(location: location, for: event)
                     } else {
