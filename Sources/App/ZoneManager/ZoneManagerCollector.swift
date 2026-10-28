@@ -48,17 +48,21 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         didDetermineState state: CLRegionState,
         for region: CLRegion
     ) {
-        guard !ignoredNextRegions.contains(region) else {
-            ignoredNextRegions.remove(region)
-            return
-        }
-
         // regions for small zones are suffixed with "@<angle>"; the zone's
         // identifier is the prefix
         let baseIdentifier = region.identifier.components(separatedBy: "@").first ?? region.identifier
         var zone = AppZone.zone(identifier: region.identifier)
         if zone == nil, baseIdentifier != region.identifier {
             zone = AppZone.zone(identifier: baseIdentifier)
+        }
+
+        if state == .inside {
+            zone?.setInRegion(true)
+        }
+
+        guard !ignoredNextRegions.contains(region) else {
+            ignoredNextRegions.remove(region)
+            return
         }
 
         let event = ZoneManagerEvent(

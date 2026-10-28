@@ -165,6 +165,48 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertEqual(event.associatedZone, zone)
     }
 
+    func testIgnoredInsideStateMarksZoneInside() throws {
+        let zone = try saveSmallZone(inRegion: false)
+        let region = try XCTUnwrap(zone.circularRegionsForMonitoring.first)
+
+        collector.ignoreNextState(for: region)
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+
+        XCTAssertEqual(delegate.events, [])
+        XCTAssertEqual(AppZone.zone(identifier: zone.identifier)?.inRegion, true)
+    }
+
+    func testIgnoredOutsideStateLeavesZoneInside() throws {
+        let zone = try saveSmallZone(inRegion: true)
+        let region = try XCTUnwrap(zone.circularRegionsForMonitoring.first)
+
+        collector.ignoreNextState(for: region)
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
+
+        XCTAssertEqual(delegate.events, [])
+        XCTAssertEqual(AppZone.zone(identifier: zone.identifier)?.inRegion, true)
+    }
+
+    func testInsideStateMarksZoneInside() throws {
+        let zone = try saveSmallZone(inRegion: false)
+        let region = try XCTUnwrap(zone.circularRegionsForMonitoring.last)
+
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+
+        XCTAssertEqual(delegate.events.count, 1)
+        XCTAssertEqual(AppZone.zone(identifier: zone.identifier)?.inRegion, true)
+    }
+
+    func testOutsideStateLeavesZoneForProcessor() throws {
+        let zone = try saveSmallZone(inRegion: true)
+        let region = try XCTUnwrap(zone.circularRegionsForMonitoring.first)
+
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
+
+        XCTAssertEqual(delegate.events.count, 1)
+        XCTAssertEqual(AppZone.zone(identifier: zone.identifier)?.inRegion, true)
+    }
+
     func testDidUpdateLocations() {
         let locations = [
             CLLocation(latitude: 1.23, longitude: 4.56),
@@ -194,6 +236,21 @@ class ZoneManagerCollectorTests: XCTestCase {
             .init(eventType: .region(region2, .inside), associatedZone: nil),
             .init(eventType: .region(region1, .outside), associatedZone: nil),
         ])
+    }
+
+    private func saveSmallZone(inRegion: Bool) throws -> AppZone {
+        let zone = AppZone(
+            entityId: "zone.small",
+            serverIdentifier: Server.fake().identifier.rawValue,
+            latitude: 1.23,
+            longitude: 4.56,
+            radius: 40,
+            inRegion: inRegion
+        )
+        try database.write { db in
+            try zone.save(db)
+        }
+        return zone
     }
 }
 
