@@ -423,6 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Impossible de se connecter à Home Assistant";
 "camera_player.errors.unknown" = "Erreur inconnue";
 "camera_player.notification.body" = "Touchez pour ouvrir la caméra";
+"camera_player.talkback.connecting" = "Connecting microphone";
 "camera_player.talkback.start" = "Parler";
 "camera_player.talkback.stop" = "Arrêter de parler";
 "cameras.no_server_found" = "Aucun serveur trouvé pour la caméra %@";
@@ -2020,6 +2021,10 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.reset_app.toast.title" = "Suppression des données de l'app";
 "settings.debugging.shake_disclaimer.title" = "Désormais, lorsque vous secouez l'app, vous pouvez accéder aux fonctionnalités de débogage.";
 "settings.debugging.shake_disclaimer_optional.title" = "Secouer l'app pour ouvrir le débogage";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
+"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
+"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
 "settings.debugging.thread.footer" = "Vérifiez quels identifiants Thread se trouvent dans le trousseau Apple ; vous pouvez aussi les importer dans Home Assistant ou les supprimer du trousseau.";
 "settings.debugging.title" = "Débogage";
 "settings.debugging.web_view_empty_state_timeout.title" = "Délai d'expiration de l'état vide de la vue web";

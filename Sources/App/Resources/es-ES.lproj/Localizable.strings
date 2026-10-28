@@ -423,6 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "No se puede conectar a Home Assistant";
 "camera_player.errors.unknown" = "Error desconocido";
 "camera_player.notification.body" = "Toca para abrir la cámara";
+"camera_player.talkback.connecting" = "Connecting microphone";
 "camera_player.talkback.start" = "Empezar a hablar";
 "camera_player.talkback.stop" = "Dejar de hablar";
 "cameras.no_server_found" = "No se ha encontrado ningún servidor para la cámara: %@";
@@ -2020,6 +2021,10 @@ La importación sustituye todas las categorías que aparecen en esta pantalla, i
 "settings.debugging.reset_app.toast.title" = "Eliminación de los datos de la aplicación";
 "settings.debugging.shake_disclaimer.title" = "Ahora, al agitar la aplicación, puedes acceder a las funciones de depuración.";
 "settings.debugging.shake_disclaimer_optional.title" = "Agita la aplicación para abrir la depuración";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
+"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
+"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
 "settings.debugging.thread.footer" = "Comprueba qué credenciales de Thread hay en el Llavero de Apple; también puedes importarlas a Home Assistant o eliminarlas del Llavero.";
 "settings.debugging.title" = "Depuración";
 "settings.debugging.web_view_empty_state_timeout.title" = "Tiempo de espera del estado vacío de la vista web";
