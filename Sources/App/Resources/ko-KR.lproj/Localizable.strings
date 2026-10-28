@@ -423,6 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Home Assistant에 연결할 수 없습니다";
 "camera_player.errors.unknown" = "알 수 없는 오류";
 "camera_player.notification.body" = "카메라를 열려면 탭하세요.";
+"camera_player.talkback.connecting" = "Connecting microphone";
 "camera_player.talkback.start" = "말하기 시작";
 "camera_player.talkback.stop" = "말하기 중지";
 "cameras.no_server_found" = "Server Found For Camera: %@ 없음";
@@ -2020,6 +2021,10 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.debugging.reset_app.toast.title" = "앱 데이터 삭제 중";
 "settings.debugging.shake_disclaimer.title" = "이제 앱을 흔들면 디버그 기능에 액세스할 수 있습니다.";
 "settings.debugging.shake_disclaimer_optional.title" = "앱을 흔들어 디버그 열기";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
+"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
+"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
 "settings.debugging.thread.footer" = "Apple Keychain 내부에 어떤 Thread 자격 증명이 있는지 확인하고, Home Assistant로 가져오거나 Keychain에서 삭제할 수도 있습니다.";
 "settings.debugging.title" = "디버깅";
 "settings.debugging.web_view_empty_state_timeout.title" = "웹 보기 빈 상태 시간 초과";
