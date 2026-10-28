@@ -423,6 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "无法连接到 Home Assistant";
 "camera_player.errors.unknown" = "未知错误";
 "camera_player.notification.body" = "点击打开相机";
+"camera_player.talkback.connecting" = "Connecting microphone";
 "camera_player.talkback.start" = "Start talking";
 "camera_player.talkback.stop" = "Stop talking";
 "cameras.no_server_found" = "未找到摄像头的服务器：%@";
@@ -2017,6 +2018,10 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.reset_app.toast.title" = "Deleting app data";
 "settings.debugging.shake_disclaimer.title" = "现在当您摇动应用时，您就可以访问调试功能。";
 "settings.debugging.shake_disclaimer_optional.title" = "摇一摇应用可开启调试";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
+"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
+"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
 "settings.debugging.thread.footer" = "检查 Apple Keychain 内有哪些 Thread 凭据，您也可以在 Home Assistant 中导入或从 Keychain 中删除。";
 "settings.debugging.title" = "调试";
 "settings.debugging.web_view_empty_state_timeout.title" = "Web view empty state timeout";

@@ -423,6 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Home Assistant'a bağlanılamadı";
 "camera_player.errors.unknown" = "Bilinmeyen hata";
 "camera_player.notification.body" = "Kamerayı açmak için dokunun";
+"camera_player.talkback.connecting" = "Connecting microphone";
 "camera_player.talkback.start" = "Konuşmaya başla";
 "camera_player.talkback.stop" = "Konuşmayı durdur";
 "cameras.no_server_found" = "Kamera için sunucu bulunamadı: %@";
@@ -2020,6 +2021,10 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.debugging.reset_app.toast.title" = "Uygulama verilerini silme";
 "settings.debugging.shake_disclaimer.title" = "Artık uygulamayı salladığınızda hata ayıklama özelliklerine erişebileceksiniz.";
 "settings.debugging.shake_disclaimer_optional.title" = "Hata ayıklamayı açmak için uygulamayı sallayın";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
+"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
+"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
 "settings.debugging.thread.footer" = "Apple Anahtar Zinciri'nin içerisinde Thread kimlik bilgilerinin ne olduğunu kontrol edin, ayrıca Home Assistant'a aktarabilir veya Anahtar Zinciri'nden silebilirsiniz.";
 "settings.debugging.title" = "Hata ayıklama";
 "settings.debugging.web_view_empty_state_timeout.title" = "Web görünümü boş durum zaman aşımı";

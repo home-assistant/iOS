@@ -423,6 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Kan geen verbinding maken met Home Assistant";
 "camera_player.errors.unknown" = "Onbekende fout";
 "camera_player.notification.body" = "Tik om de camera te openen";
+"camera_player.talkback.connecting" = "Connecting microphone";
 "camera_player.talkback.start" = "Begin met praten";
 "camera_player.talkback.stop" = "Stop met praten";
 "cameras.no_server_found" = "Geen server gevonden voor camera: %@";
@@ -2020,6 +2021,10 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "settings.debugging.reset_app.toast.title" = "App-gegevens verwijderen";
 "settings.debugging.shake_disclaimer.title" = "Als je nu de app schudt, krijg je toegang tot de debugfuncties.";
 "settings.debugging.shake_disclaimer_optional.title" = "Schud de app om debug te openen";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
+"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
+"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
 "settings.debugging.thread.footer" = "Controleer welke Thread-referenties er in de Apple Sleutelhanger staan, je kunt ze ook importeren in Home Assistent of verwijderen uit Sleutelhanger.";
 "settings.debugging.title" = "Foutopsporing";
 "settings.debugging.web_view_empty_state_timeout.title" = "Web view empty state timeout";
