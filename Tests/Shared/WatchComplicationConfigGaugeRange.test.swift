@@ -119,6 +119,7 @@ struct WatchComplicationConfigGaugeRangeTests {
         #expect(config.cornerGaugeDisplay(for: .circular) == .gauge)
         #expect(config.cornerGaugeDisplay(for: .corner) == .gauge)
     }
+
     @Test func templateEndpointLabelsRenderIndependently() {
         let config = WatchComplicationConfig(
             serverId: "server-1",

@@ -354,8 +354,10 @@ public struct WatchComplicationConfig: Codable, FetchableRecord, PersistableReco
     /// remain REST-state-only; templates are available with the template source.
     public var gaugeLabelTemplates: Set<String> {
         guard kind == .customTemplate else { return [] }
-        return Set((families ?? [:]).values.flatMap { [$0.minLabelTemplate, $0.maxLabelTemplate] }
-            .compactMap { $0 }.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty })
+        return Set(
+            (families ?? [:]).values.flatMap { [$0.minLabelTemplate, $0.maxLabelTemplate] }
+                .compactMap { $0 }.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        )
     }
 
     /// Labels are independent of the gauge's numeric range, just like ClockKit's leading/trailing

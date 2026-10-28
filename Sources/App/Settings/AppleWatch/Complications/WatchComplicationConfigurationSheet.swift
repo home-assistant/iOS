@@ -406,7 +406,7 @@ struct WatchComplicationConfigurationSheet: View {
         )
     }
 
-    private func gaugeLabelTemplateBinding(
+    func gaugeLabelTemplateBinding(
         _ keyPath: WritableKeyPath<WatchComplicationConfig.FamilyOptions, String?>
     ) -> Binding<String> {
         Binding(
