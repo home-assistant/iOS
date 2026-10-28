@@ -1217,11 +1217,38 @@ public class HomeAssistantAPI {
         }
     }
 
+    var profileNameCacheKey: String {
+        "profile-name-\(server.identifier.rawValue)"
+    }
+
+    public func cachedProfileName(completion: @escaping (String?) -> Void) {
+        Current.diskCache.value(for: profileNameCacheKey)
+            .done { (name: String) in
+                completion(name)
+            }
+            .catch { _ in
+                completion(nil)
+            }
+    }
+
+    private func updateProfileNameCache(_ name: String?) {
+        guard let name, !name.isEmpty else {
+            Current.diskCache.delete(for: profileNameCacheKey).catch { error in
+                Current.Log.error("Failed to remove cached profile name: \(error)")
+            }
+            return
+        }
+        Current.diskCache.set(name, for: profileNameCacheKey).catch { error in
+            Current.Log.error("Failed to cache profile name: \(error)")
+        }
+    }
+
     @discardableResult
     public func currentUser(completion: @escaping (HAResponseCurrentUser?) -> Void) -> HACancellable {
-        connection.send(HATypedRequest<HAResponseCurrentUser>.fetchCurrentUser()) { result in
+        connection.send(HATypedRequest<HAResponseCurrentUser>.fetchCurrentUser()) { [weak self] result in
             switch result {
             case let .success(user):
+                self?.updateProfileNameCache(user.name)
                 completion(user)
             case let .failure(error):
                 Current.Log.error("Failed to retrieve current user: \(error)")
@@ -1319,6 +1346,7 @@ public class HomeAssistantAPI {
         for user: HAResponseCurrentUser,
         completion: @escaping (UIImage?) -> Void
     ) -> HACancellable {
+        updateProfileNameCache(user.name)
         let cancellable = ProfilePictureCancellable()
 
         cachedProfilePicture { [weak self] cached in

@@ -244,7 +244,9 @@ struct HomeAssistantStandByView: View {
                     dismissAction: emptyState.dismissAction,
                     // The accessories stay at the safe-area edges (shifting them would push one under
                     // the vertical bar); only the picker follows the display-centered logo below it.
-                    serverSelectionHorizontalOffset: contentOffset.width
+                    serverSelectionHorizontalOffset: contentOffset.width,
+                    serverSwitcherAction: onSelectServerTapped,
+                    serverSelectionNamespace: serverSelectionNamespace
                 )
                 .opacity(contentOpacity)
             }
