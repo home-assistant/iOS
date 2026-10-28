@@ -11,6 +11,7 @@ protocol ZoneManagerProcessor: AnyObject {
     var delegate: ZoneManagerProcessorDelegate? { get set }
 
     func perform(event: ZoneManagerEvent) -> Promise<Void>
+    func resetExitReporting(for region: CLRegion)
 }
 
 private struct ZoneManagerProcessorQueue {
@@ -39,7 +40,9 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     private var queue = ZoneManagerProcessorQueue()
     private var currentEvent: ZoneManagerEvent?
     private var lastUpdate: Date = .distantPast
-    private var reportedMultiRegionExits = Set<String>()
+    private var reportedMultiRegionExits = [String: Date]()
+
+    static let multiRegionExitDeduplicationInterval: TimeInterval = 5 * 60
 
     var onCompletedEvent: (() -> Void)?
 
@@ -49,11 +52,17 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         return promise
     }
 
+    func resetExitReporting(for region: CLRegion) {
+        let zoneIdentifier = region.identifier.components(separatedBy: "@").first ?? region.identifier
+        reportedMultiRegionExits[zoneIdentifier] = nil
+    }
+
     private func processNextEvent() {
         guard currentEvent == nil else { return }
         guard let (event, resolver) = queue.pop() else { return }
 
         currentEvent = event
+        var submittedLocation: CLLocation?
 
         firstly {
             evaluate(event: event)
@@ -81,7 +90,8 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                         return nil
                     }
                 }.then { location in
-                    when(fulfilled: Current.apis.map { api in
+                    submittedLocation = location
+                    return when(fulfilled: Current.apis.map { api in
                         api.SubmitLocation(
                             updateType: trigger,
                             location: location,
@@ -95,8 +105,9 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                 // only considered an update if it happened
                 lastUpdate = Current.date()
 
-                if event.isMultiRegionExit, let zone = event.associatedZone {
-                    reportedMultiRegionExits.insert(zone.identifier)
+                if event.isMultiRegionExit, let zone = event.associatedZone, let submittedLocation,
+                   !zone.circularRegion.containsWithAccuracy(submittedLocation) {
+                    reportedMultiRegionExits[zone.identifier] = Current.date()
                 }
             }
 
@@ -114,7 +125,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
 
     private func evaluate(event: ZoneManagerEvent) -> Promise<Void> {
         if case .region(_, .inside) = event.eventType, let zone = event.associatedZone {
-            reportedMultiRegionExits.remove(zone.identifier)
+            reportedMultiRegionExits[zone.identifier] = nil
         }
 
         guard !Current.isPerformingSingleShotLocationQuery else {
@@ -123,7 +134,8 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
 
         if event.isMultiRegionExit, let zone = event.associatedZone,
-           reportedMultiRegionExits.contains(zone.identifier) {
+           let reportedAt = reportedMultiRegionExits[zone.identifier],
+           Current.date().timeIntervalSince(reportedAt) < Self.multiRegionExitDeduplicationInterval {
             return Self.ignore(.zoneAlreadyExited)
         }
 
