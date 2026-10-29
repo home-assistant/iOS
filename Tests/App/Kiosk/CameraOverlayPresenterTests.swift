@@ -68,9 +68,34 @@ final class CameraOverlayPresenterTests: XCTestCase {
         XCTAssertTrue(webViewController.presentOverlayControllerCalled)
         XCTAssertTrue(webViewController.overlayedController is CameraOverlayHostingController)
         XCTAssertEqual(webViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
+        // Over full screen, the status bar stays the web view's unless the overlay captures it.
+        XCTAssertEqual(webViewController.overlayedController?.modalPresentationCapturesStatusBarAppearance, true)
+        XCTAssertEqual(webViewController.overlayedController?.prefersStatusBarHidden, true)
+        XCTAssertEqual(webViewController.overlayedController?.prefersHomeIndicatorAutoHidden, true)
         XCTAssertEqual(presenter.displayedCamera, frontDoor)
         XCTAssertTrue(presenter.isDisplaying(frontDoor))
         XCTAssertTrue(kiosk.isCameraOverlayVisible)
+    }
+
+    func testShowFromADeepLinkUsesTheServerItNames() {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        let servers = FakeServerManager(initial: 0)
+        let named = servers.addFake()
+        Current.servers = servers
+
+        presenter.show(entityId: "camera.front_door", serverId: named.identifier.rawValue, on: webViewController)
+
+        XCTAssertEqual(
+            presenter.displayedCamera,
+            .init(entityId: "camera.front_door", serverIdentifier: named.identifier)
+        )
+    }
+
+    func testShowFromADeepLinkNamingAnUnknownServerUsesTheWebViewOne() {
+        presenter.show(entityId: "camera.front_door", serverId: "unknown", on: webViewController)
+
+        XCTAssertEqual(presenter.displayedCamera, frontDoor)
     }
 
     func testShowingTheDisplayedCameraAgainDoesNothing() throws {

@@ -169,6 +169,7 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(locationManager.stopMonitoringRegions.hackilySorted(), removedRegions.hackilySorted())
         XCTAssertEqual(locationManager.startMonitoringRegions.hackilySorted(), addedRegions.hackilySorted())
         XCTAssertEqual(collector.ignoringNextStates, Set(addedRegions))
+        XCTAssertEqual(processor.resetExitReportingRegions.hackilySorted(), addedRegions.hackilySorted())
 
         // remove a zone
         let toRemove = zones.popLast()!
@@ -610,6 +611,11 @@ private class FakeProcessor: ZoneManagerProcessor {
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
         performEvent = event
         return promiseToReturn!
+    }
+
+    var resetExitReportingRegions = [CLRegion]()
+    func resetExitReporting(for region: CLRegion) {
+        resetExitReportingRegions.append(region)
     }
 }
 

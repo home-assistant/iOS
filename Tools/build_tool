@@ -17,13 +17,30 @@ scratch_path="$package_path/.build"
 
 export CLANG_MODULE_CACHE_PATH="${CLANG_MODULE_CACHE_PATH:-$root_dir/.build/module-cache}"
 
+# Xcode fails a script phase that prints an "error:" line even when it exits 0. SwiftPM recovers
+# from a dropped git clone on its own but still forwards git's "error: RPC failed" output, which
+# failed a release archive. Resolve with retries and only show the output if every attempt fails.
 swift_package_resolve() {
-  swift package \
-    --disable-sandbox \
-    --package-path "$package_path" \
-    --cache-path "$cache_path" \
-    --scratch-path "$scratch_path" \
-    resolve
+  local log attempt
+  log="$(mktemp)"
+  for attempt in 1 2 3; do
+    if swift package \
+      --disable-sandbox \
+      --package-path "$package_path" \
+      --cache-path "$cache_path" \
+      --scratch-path "$scratch_path" \
+      resolve >"$log" 2>&1; then
+      rm -f "$log"
+      return 0
+    fi
+    if [ "$attempt" -lt 3 ]; then
+      echo "warning: resolving BuildTools packages failed (attempt $attempt of 3), retrying" >&2
+      sleep $((attempt * 5))
+    fi
+  done
+  cat "$log" >&2
+  rm -f "$log"
+  return 1
 }
 
 swift_package_run() {
@@ -37,9 +54,11 @@ swift_package_run() {
 
 case "$tool" in
   swiftformat)
+    swift_package_resolve
     swift_package_run swiftformat "$@"
     ;;
   swiftgen)
+    swift_package_resolve
     swift_package_run swiftgen "$@"
     ;;
   swiftlint)

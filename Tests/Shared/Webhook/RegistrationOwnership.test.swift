@@ -82,6 +82,7 @@ struct RegistrationOwnershipTests {
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
             SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
             RegistrationOwnership.heldBackNotifiedKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
@@ -102,6 +103,7 @@ struct RegistrationOwnershipTests {
         Current.device.identifierForVendor = { vendorID }
         Current.isCatalyst = false
         keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
         prefs.set(identifierOwner, forKey: SettingsStore.integrationDeviceIDKey)
         return try await body(servers)
     }
@@ -220,6 +222,53 @@ struct RegistrationOwnershipTests {
         ]
     }
 
+    @Test func simulatingARestoreMakesEveryRegistrationAnotherDevices() async {
+        await withDevice(identifierOwner: Self.thisDevice) { servers in
+            let settings = Current.settingsStore
+            let recorded = addServer(to: servers, ownedBy: Self.thisDevice)
+            let unrecorded = addServer(to: servers, ownedBy: nil) { info in
+                info.setSetting(value: "earlier-device-id", for: .registeredDeviceID)
+            }
+            settings.updateRegistrationRecord(for: recorded.identifier) { record in
+                record.pending = RegistrationIdentity(deviceID: "pending-id", ownerVendorID: Self.thisDevice)
+            }
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
+
+            RegistrationOwnership().simulateRestoreFromAnotherDevice()
+
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [recorded, unrecorded])
+            let recordedRecord = settings.registrationRecord(for: recorded.identifier)
+            let unrecordedRecord = settings.registrationRecord(for: unrecorded.identifier)
+            let otherDevice = recordedRecord.current?.ownerVendorID
+            #expect(otherDevice != nil && otherDevice != Self.thisDevice)
+            #expect(recordedRecord == RegistrationRecord(
+                current: RegistrationIdentity(deviceID: settings.integrationDeviceID, ownerVendorID: otherDevice)
+            ))
+            #expect(unrecordedRecord == RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "earlier-device-id", ownerVendorID: otherDevice)
+            ))
+            #expect(settings.integrationDeviceIDOwnerVendorID == otherDevice)
+        }
+    }
+
+    @Test func aSimulatedRestoreIsSettledLikeARealOne() async {
+        await withDevice(identifierOwner: Self.thisDevice) { servers in
+            let settings = Current.settingsStore
+            settings.prefs.removeObject(forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
+            let server = addServer(to: servers, ownedBy: nil)
+
+            RegistrationOwnership().simulateRestoreFromAnotherDevice()
+
+            #expect(settings.prefs.bool(forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey))
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [server])
+
+            keep([server])
+
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
+            #expect(settings.integrationDeviceIDOwnerVendorID == Self.thisDevice)
+        }
+    }
+
     @Test func registrationsOfTheDeviceTheBackupCameFromAreFound() async {
         await withDevice { servers in
             let unrecorded = addServer(to: servers, ownedBy: nil)
@@ -230,6 +279,48 @@ struct RegistrationOwnershipTests {
             }
 
             #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [unrecorded, others])
+        }
+    }
+
+    @Test func registrationsFromBeforeOwnershipWasRecordedAreThisDevices() async {
+        await withDevice { servers in
+            Current.settingsStore.prefs.removeObject(forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
+            let earlier = addServer(to: servers, ownedBy: nil) { info in
+                info.setSetting(value: "earlier-device-id", for: .registeredDeviceID)
+            }
+            let others = addServer(to: servers, ownedBy: Self.otherDevice)
+
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [others])
+            #expect(Current.settingsStore.registrationRecord(for: earlier.identifier) == RegistrationRecord(
+                current: RegistrationIdentity(deviceID: "earlier-device-id", ownerVendorID: Self.thisDevice)
+            ))
+        }
+    }
+
+    @Test func registrationsAreOnlyTakenAsThisDevicesOnce() async {
+        await withDevice { servers in
+            Current.settingsStore.prefs.removeObject(forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
+
+            let restored = addServer(to: servers, ownedBy: nil)
+
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice() == [restored])
+        }
+    }
+
+    @Test func registrationsWaitForAVendorIdentifierToBeTakenAsThisDevices() async {
+        await withDevice(vendorID: nil) { servers in
+            Current.settingsStore.prefs.removeObject(forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
+            let earlier = addServer(to: servers, ownedBy: nil)
+
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
+            #expect(Current.settingsStore.registrationRecord(for: earlier.identifier).current == nil)
+
+            Current.device.identifierForVendor = { Self.thisDevice }
+
+            #expect(RegistrationOwnership().serversRegisteredByAnotherDevice().isEmpty)
+            let owner = Current.settingsStore.registrationRecord(for: earlier.identifier).current?.ownerVendorID
+            #expect(owner == Self.thisDevice)
         }
     }
 

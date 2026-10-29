@@ -44,7 +44,7 @@ struct HAActivityTimerProgressBar: View {
     let direction: HALiveActivityAttributes.ContentState.ProgressBarDirection?
 
     var body: some View {
-        if let interval {
+        if let interval = Self.interval(start: start, end: end, direction: direction) {
             ProgressView(
                 timerInterval: interval.range,
                 countsDown: interval.countsDown,
@@ -60,8 +60,13 @@ struct HAActivityTimerProgressBar: View {
     /// By default a bounded count-up fills from `start` to `end` (and stays full once reached)
     /// while a countdown drains; `direction` overrides that fill direction. A countdown only
     /// renders while still running, and an unbounded count-up has no interval — no bar.
-    /// `now` is captured once so the range can't invalidate between check and use.
-    private var interval: (range: ClosedRange<Date>, countsDown: Bool)? {
+    /// `now` is captured once so the range can't invalidate between check and use. Also drives the
+    /// compact ring of a narrow Dynamic Island, so both fill the same way.
+    static func interval(
+        start: Date?,
+        end: Date,
+        direction: HALiveActivityAttributes.ContentState.ProgressBarDirection?
+    ) -> (range: ClosedRange<Date>, countsDown: Bool)? {
         if let start, start < end {
             return (start ... end, direction == .decreasing)
         }

@@ -44,10 +44,7 @@ struct CameraStreamHLSView: View {
             }
 
             if isLoading {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .tint(.white)
-                    .scaleEffect(1.5)
+                CameraStreamLoadingView()
             }
 
             if let errorMessage, onHLSUnsupported == nil {

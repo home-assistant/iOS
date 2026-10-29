@@ -83,6 +83,10 @@ final class CameraMicrophoneSession: CameraMicrophoneSessionProtocol {
         }
     }
 
+    func setMicrophoneEnabled(_ enabled: Bool) {
+        client?.setMicrophoneEnabled(enabled)
+    }
+
     func stop() {
         finish(with: .interrupted, notifiesEnd: false)
     }
