@@ -107,6 +107,7 @@ enum WidgetComplicationResolver {
         }
         let slotConfigs = (familyConfig.families ?? [:]).values.flatMap { ($0.slots ?? [:]).values }
         let slotTemplates = Set(slotConfigs.flatMap { $0.formula?.templates ?? [] })
+            .union(config.gaugeLabelTemplates)
             .subtracting(renderedTemplates.keys)
         for template in slotTemplates {
             if let rendered = await render(template, server: server) {

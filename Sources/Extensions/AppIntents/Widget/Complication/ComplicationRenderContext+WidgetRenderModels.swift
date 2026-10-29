@@ -18,8 +18,8 @@ extension ComplicationRenderContext {
             subtitle: subtitleText,
             showsSubtitle: showsSubtitle,
             fraction: showsGauge ? fraction : nil,
-            minLabel: showsMin ? range.map { label($0.min) } : nil,
-            maxLabel: showsMax ? range.map { label($0.max) } : nil,
+            minLabel: minLabel,
+            maxLabel: maxLabel,
             valueText: valueText,
             showsValue: showsValue,
             bottomText: bottomText,
@@ -43,8 +43,8 @@ extension ComplicationRenderContext {
             showsName: showsName,
             fraction: showsGauge ? fraction : nil,
             isCapacityGauge: gaugeStyle == .capacity,
-            minLabel: showsMin ? range.map { label($0.min) } : nil,
-            maxLabel: showsMax ? range.map { label($0.max) } : nil,
+            minLabel: minLabel,
+            maxLabel: maxLabel,
             tint: tint,
             textColor: configuredTextColor
         )
