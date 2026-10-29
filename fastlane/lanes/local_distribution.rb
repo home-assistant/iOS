@@ -238,7 +238,7 @@ end
 def local_distribution_check_profiles(platforms)
   identity_shas = local_distribution_identities.map(&:first)
   problems = platforms.flat_map { |platform| LOCAL_DISTRIBUTION_PROFILES.fetch(platform) }
-                      .flat_map { |prefix| Dir["../Configuration/Provisioning/#{prefix}*"] }
+                      .flat_map { |prefix| Dir["#{account_provisioning_directory}/#{prefix}*"] }
                       .filter_map { |file| local_distribution_profile_problem(file, identity_shas) }
   UI.user_error!("These provisioning profiles can't sign the release:\n#{problems.join("\n")}") unless problems.empty?
 end

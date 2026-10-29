@@ -71,69 +71,9 @@ import Shared
 /// )
 /// ```
 enum WhatsNewCatalog {
-    static let releases: [WhatsNewRelease] = [
-        // Live Activities are iOS-only (the widget bundle skips them on Catalyst) and need iOS 17.2, so this
-        // release targets the phone and tablet from that version up.
-        WhatsNewRelease(
-            id: WhatsNewReleaseId("live-activities-energy-widget-2026.9.1"),
-            version: releaseVersion,
-            targetPlatforms: [.iPhone, .iPad],
-            osRequirements: WhatsNewOSRequirements(
-                iOS: WhatsNewOSVersionRange(minimum: WhatsNewOSVersion(major: 17, minor: 2))
-            ),
-            items: [
-                liveActivitiesItem,
-                energyWidgetItem(
-                    body: L10n.WhatsNew.EnergyWidget.itemBody,
-                    articleBody: L10n.WhatsNew.EnergyWidget.articleBody
-                ),
-            ]
-        ),
-        // The Mac gets the Energy widget alone, with copy that talks about the desktop. The widget needs the
-        // iOS 17 WidgetKit feature set, which Catalyst has from macOS 14.
-        WhatsNewRelease(
-            id: WhatsNewReleaseId("energy-widget-mac-2026.9.1"),
-            version: releaseVersion,
-            targetPlatforms: [.mac],
-            osRequirements: WhatsNewOSRequirements(
-                macOS: WhatsNewOSVersionRange(minimum: WhatsNewOSVersion(major: 14))
-            ),
-            items: [
-                energyWidgetItem(
-                    body: L10n.WhatsNew.EnergyWidget.Mac.itemBody,
-                    articleBody: L10n.WhatsNew.EnergyWidget.Mac.articleBody
-                ),
-            ]
-        ),
-    ]
-
-    private static let releaseVersion = WhatsNewAppVersion(major: 2026, minor: 9, patch: 1)
-
-    /// Tapping opens the Live Activities documentation, which explains how a notification starts one.
-    private static let liveActivitiesItem = WhatsNewItem(
-        id: "live-activities",
-        title: L10n.WhatsNew.LiveActivities.itemTitle,
-        body: L10n.WhatsNew.LiveActivities.itemBody,
-        icon: .sfSymbol(.timer),
-        destination: .link(AppConstants.WebURLs.liveActivitiesDocs)
-    )
-
-    /// The Energy widget highlight. Tapping opens an in-app article on what the widget shows and how to
-    /// add it, with the copy of the platform it is shown on: widgets live on the Home Screen and Lock
-    /// Screen on iOS, and on the desktop on the Mac.
-    private static func energyWidgetItem(body: String, articleBody: String) -> WhatsNewItem {
-        WhatsNewItem(
-            id: "energy-widget",
-            title: L10n.WhatsNew.EnergyWidget.itemTitle,
-            body: body,
-            icon: .sfSymbol(.boltFill),
-            destination: .article(ArticleMessage(
-                icon: .sfSymbol(.boltFill),
-                title: L10n.WhatsNew.EnergyWidget.itemTitle,
-                body: articleBody
-            ))
-        )
-    }
+    /// Empty while the move to the new app is announced instead: the previous app shows
+    /// `AppMigrationAnnouncementView` on launch, and two launch messages would compete.
+    static let releases: [WhatsNewRelease] = []
 
     /// A sample release for previews and testing. Not presented to users.
     static let mock = WhatsNewRelease(

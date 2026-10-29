@@ -16,9 +16,9 @@ struct ConditionalContainerView: View {
         self._appSettings = StateObject(wrappedValue: appSettings ?? AppSettingsPresenter())
     }
 
-    // The navigation stack Settings is pushed onto lives in `ContainerView`, around the frontend alone:
-    // it is the only screen anything is ever pushed over, and a stack here would also enclose
-    // onboarding's own — two nested `NavigationStack`s crash SwiftUI on iOS 16.
+    /// The navigation stack Settings is pushed onto lives in `ContainerView`, around the frontend alone:
+    /// it is the only screen anything is ever pushed over, and a stack here would also enclose
+    /// onboarding's own — two nested `NavigationStack`s crash SwiftUI on iOS 16.
     var body: some View {
         content
             .sheet(isPresented: $appSettings.isSheetPresented, onDismiss: appSettings.sheetDismissed) {
@@ -101,7 +101,7 @@ struct ConditionalContainerView: View {
 
     private var content: some View {
         Group {
-            if kiosk.settings.enabled {
+            if kiosk.settings.enabled, !AppMigrationHandoffStore.isActive {
                 KioskView(appSettings: appSettings, showSettings: $showKioskSettings)
             } else {
                 ContainerView(appSettings: appSettings)
@@ -113,7 +113,9 @@ struct ConditionalContainerView: View {
         .onAppear { applyKeepScreenOn() }
         .onChange(of: kiosk.shouldKeepScreenOn) { _ in applyKeepScreenOn() }
         .onChange(of: scenePhase) { phase in
-            if phase == .active { applyKeepScreenOn() }
+            if phase == .active {
+                applyKeepScreenOn()
+            }
         }
         .onChange(of: appSettings.isSheetPresented) { isPresented in
             refreshWebViewIfSettingsClosed(isPresented)
@@ -136,6 +138,7 @@ struct ConditionalContainerView: View {
 
     private func applyKeepScreenOn() {
         UIApplication.shared.isIdleTimerDisabled = kiosk.shouldKeepScreenOn
+            || AppMigrationCoordinator.shared.keepsScreenOn
     }
 
     private func refreshWebViewIfSettingsClosed(_ isPresented: Bool) {

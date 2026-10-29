@@ -458,7 +458,9 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     }
 
     private func serversBySSID() -> [String: [Server]] {
-        Current.servers.all.reduce(into: [String: [Server]]()) { result, server in
+        // A suspended app has handed its setup to another app: no manager may keep delivering here.
+        guard !HomeAssistantAPI.connectionsSuspended else { return [:] }
+        return Current.servers.all.reduce(into: [String: [Server]]()) { result, server in
             let connection = server.info.connection
 
             guard connection.isLocalPushEnabled, connection.address(for: .internal) != nil else {

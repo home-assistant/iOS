@@ -3168,30 +3168,9 @@ Enquanto nenhuma URL for considerada segura, os dados deste servidor não serão
 "web_view.server_selection.title" = "Escolha o servidor";
 "web_view.unique_server_selection.title" = "Escolha um servidor";
 "webrtc_player.known_issues.title" = "Problemas conhecidos";
-"whats_new.app_support_update.item_body" = "Esta é a última atualização para iOS 15, watchOS 8 e macOS 11 e anteriores. Toque para ler mais.";
-"whats_new.app_support_update.item_title" = "O suporte para iOS 15, watchOS 8 e macOS 11 será encerrado";
 "whats_new.app_support_update.title" = "Atualização de suporte do aplicativo";
-"whats_new.energy_widget.article_body" = "O novo widget **Energia** coloca o seu dashboard de energia na Tela de Início e na Tela Bloqueada.\
-\
-**O que ele mostra**\
-Rede elétrica, solar, bateria e gás para o período que você escolher: hoje, ontem, esta semana ou este mês. Escolha a fonte que ele destaca ou deixe que ele decida. O tamanho pequeno e o da Tela Bloqueada mostram a potência em tempo real quando você tem sensores de potência configurados, e os tamanhos maiores exibem os totais do período para cada fonte.\
-\
-**Como adicioná-lo**\
-Toque e segure a Tela de Início, toque no botão de adicionar no canto superior, pesquise por Home Assistant e escolha Energia. Para a Tela Bloqueada, toque e segure nela, toque em Personalizar e adicione o widget ali. É necessário ter um dashboard de energia configurado no Home Assistant.";
-"whats_new.energy_widget.item_body" = "Veja rapidamente quanta energia sua casa está usando, produzindo e armazenando na Tela de Início e na Tela Bloqueada. Toque para saber mais.";
-"whats_new.energy_widget.item_title" = "Widget de energia";
-"whats_new.energy_widget.mac.article_body" = "O novo widget **Energia** coloca o seu dashboard de energia na sua área de trabalho.\
-\
-**O que ele mostra**\
-Rede elétrica, solar, bateria e gás para o período que você escolher: hoje, ontem, esta semana ou este mês. Escolha a fonte que ele destaca ou deixe que ele decida. O tamanho pequeno mostra a potência em tempo real quando você tem sensores de potência configurados, e os tamanhos maiores exibem os totais do período para cada fonte.\
-\
-**Como adicioná-lo**\
-Clique com o botão direito na área de trabalho, escolha Editar Widgets, pesquise por Home Assistant e escolha Energia. É necessário ter um dashboard de energia configurado no Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "Veja rapidamente quanta energia sua casa está usando, produzindo e armazenando na sua área de trabalho. Toque para saber mais.";
 "whats_new.item.opens_article_hint" = "Abre um artigo";
 "whats_new.item.opens_link_hint" = "Abre um link";
-"whats_new.live_activities.item_body" = "Acompanhe um temporizador, um eletrodoméstico em execução ou qualquer coisa em andamento pela Tela Bloqueada e pela Ilha Dinâmica. Toque para saber como uma notificação inicia uma.";
-"whats_new.live_activities.item_title" = "Atividades ao Vivo";
 "whats_new.title" = "O que há de novo no aplicativo complementar";
 "whats_new.version_format" = "Versão %@";
 "widgets.action.name.activate" = "Ativar";

@@ -3163,30 +3163,9 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "web_view.server_selection.title" = "Välj server";
 "web_view.unique_server_selection.title" = "Välj en server";
 "webrtc_player.known_issues.title" = "Kända problem";
-"whats_new.app_support_update.item_body" = "Detta är den sista uppdateringen för iOS 15, watchOS 8 och macOS 11 samt tidigare versioner. Tryck här för att läsa mer.";
-"whats_new.app_support_update.item_title" = "Stöd för iOS 15, Watch OS 8 och macOS 11 upphör";
 "whats_new.app_support_update.title" = "Uppdatering av app-support";
-"whats_new.energy_widget.article_body" = "Den nya **Energi**-widgeten placerar din energikontrollpanel på startskärmen och låsskärmen.\
-\
-**Vad den visar**\
-Elnät, solenergi, batteri och gas för den period du väljer: idag, igår, den här veckan eller den här månaden. Välj vilken källa som ska visas först, eller låt widgeten bestämma själv. De små storlekarna och storlekarna för låsskärmen visar strömförbrukningen i realtid när du har strömsensorer konfigurerade, och de bredare storlekarna visar periodens totalsummor för varje källa.\
-\
-**Så här lägger du till den**\
-Håll ned på startskärmen, tryck på lägg till-knappen i det övre hörnet, sök efter Home Assistant och välj Energi. För låsskärmen håller du ned på den, trycker på Anpassa och lägger till widgeten där. Det krävs att en kontrollpanel för energi är konfigurerad i Home Assistant.";
-"whats_new.energy_widget.item_body" = "Se med ett ögonkast på startskärmen och låsskärmen hur mycket energi ditt hem förbrukar, producerar och lagrar. Tryck för att läsa mer.";
-"whats_new.energy_widget.item_title" = "Energiwidget";
-"whats_new.energy_widget.mac.article_body" = "Den nya **Energi**-widgeten visar din energikontrollpanel direkt på skrivbordet.\
-\
-**Vad den visar**\
-Elnät, solenergi, batteri och gas för den period du väljer: idag, igår, den här veckan eller den här månaden. Välj vilken källa som ska visas först, eller låt widgeten bestämma själv. Den lilla storleken visar strömförbrukningen i realtid när du har strömsensorer installerade, och de bredare storlekarna visar periodens totalsiffror för varje källa.\
-\
-**Så här lägger du till den**\
-Högerklicka på skrivbordet, välj Redigera widgetar, sök efter Home Assistant och välj Energi. Det krävs att en energidashboard är konfigurerad i Home Assistant.";
-"whats_new.energy_widget.mac.item_body" = "Se med ett ögonkast på din datorskärm hur mycket energi ditt hem förbrukar, producerar och lagrar. Tryck för att läsa mer.";
 "whats_new.item.opens_article_hint" = "Öppnar en artikel";
 "whats_new.item.opens_link_hint" = "Öppnar en länk";
-"whats_new.live_activities.item_body" = "Följ en timer, en apparat som är igång eller något annat som pågår direkt från låsskärmen och Dynamic Island. Tryck här för att se hur en notis startar en sådan.";
-"whats_new.live_activities.item_title" = "Live-aktiviteter";
 "whats_new.title" = "Vad är nytt i Companion-appen?";
 "whats_new.version_format" = "Version %@";
 "widgets.action.name.activate" = "Aktivera";

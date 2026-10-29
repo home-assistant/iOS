@@ -335,7 +335,22 @@ public class HomeAssistantAPI {
         }
     }
 
+    /// Set while the app hands its setup to another app: nothing may open a websocket or refresh a
+    /// registration until it is cleared.
+    private static var connectionsSuspendedInProcess = false
+
+    /// Set by the app during the hand-off; every process of the app also honours the hand-off phase
+    /// persisted in the app group, so a widget or intent cannot reconnect once the setup has moved.
+    public static var connectionsSuspended: Bool {
+        get { connectionsSuspendedInProcess || AppMigrationHandoff.isActive }
+        set { connectionsSuspendedInProcess = newValue }
+    }
+
     public func connectWebSocketIfNeeded() {
+        guard !Self.connectionsSuspended else {
+            Current.Log.info("skipping automatic websocket connect while connections are suspended")
+            return
+        }
         let state = connection.state
 
         guard Self.shouldAttemptAutomaticWebSocketConnect(for: state) else {
@@ -353,6 +368,10 @@ public class HomeAssistantAPI {
     }
 
     public func Connect(reason: ConnectReason) -> Promise<Void> {
+        guard !Self.connectionsSuspended else {
+            Current.Log.info("skipping connect for \(reason) while connections are suspended")
+            return .value(())
+        }
         Current.Log.info("running connect for \(reason)")
 
         // websocket
@@ -386,6 +405,7 @@ public class HomeAssistantAPI {
                 case .unregisteredIdentifier,
                      .unacceptableStatusCode,
                      .replaced,
+                     .connectionsSuspended,
                      .none:
                     // not a WebhookError, or not one we think requires reintegration
                     Current.Log.info("not re-registering, but failed to update registration: \(error)")
@@ -1451,9 +1471,7 @@ public class HomeAssistantAPI {
                 removeProfilePictureFromCache()
                 completion(nil)
             case .failure:
-                if !hasCachedFallback {
-                    completion(nil)
-                }
+                if !hasCachedFallback { completion(nil) }
             }
         })
     }
@@ -1693,7 +1711,8 @@ final class RetryAwareHAConnection: HAConnection {
             break
         }
 
-        guard HomeAssistantAPI.shouldAttemptAutomaticWebSocketConnect(for: underlying.state) else {
+        guard !HomeAssistantAPI.connectionsSuspended,
+              HomeAssistantAPI.shouldAttemptAutomaticWebSocketConnect(for: underlying.state) else {
             return
         }
 

@@ -3167,30 +3167,9 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "web_view.server_selection.title" = "サーバーの選択";
 "web_view.unique_server_selection.title" = "サーバーを1つ選択";
 "webrtc_player.known_issues.title" = "既知の問題";
-"whats_new.app_support_update.item_body" = "これは、iOS 15、watchOS 8、およびmacOS 11以前向けの最後のアップデートです。詳細を見るにはタップしてください。";
-"whats_new.app_support_update.item_title" = "iOS 15、watchOS 8、および macOS 11 へのサポートが終了します";
 "whats_new.app_support_update.title" = "アプリのサポートアップデート";
-"whats_new.energy_widget.article_body" = "新しい**「Energy」**ウィジェットを使えば、エネルギーダッシュボードをホーム画面やロック画面に表示できます。\
-\
-**表示内容**\
-選択した期間（今日、昨日、今週、今月）の系統電力、太陽光発電、蓄電池、ガスの使用状況が表示されます。最初に表示する電源を選択することも、ウィジェットに自動で決定させることもできます。小サイズおよびロック画面用サイズでは、電力センサーが設定されている場合にリアルタイムの電力消費量が表示され、幅の広いサイズでは、各電源の期間ごとの合計値が一覧表示されます。\
-\
-**追加方法**\
-ホーム画面を長押しし、右上の追加ボタンをタップして「Home Assistant」を検索し、「Energy」を選択します。ロック画面の場合は、ロック画面を長押しして「カスタマイズ」をタップし、そこからウィジェットを追加します。Home Assistantでエネルギーダッシュボードが設定されている必要があります。";
-"whats_new.energy_widget.item_body" = "ホーム画面やロック画面で、ご自宅のエネルギー使用量、発電量、蓄電量を一目で確認できます。詳細を見るにはタップしてください。";
-"whats_new.energy_widget.item_title" = "エネルギーウィジェット";
-"whats_new.energy_widget.mac.article_body" = "新しい**Energy**ウィジェットを使えば、エネルギーダッシュボードをデスクトップに表示できます。\
-\
-**表示内容**\
-選択した期間（今日、昨日、今週、今月）の系統電力、太陽光発電、蓄電池、ガスの使用状況が表示されます。最初に表示する電源を自分で選ぶことも、ウィジェットに自動で決定させることもできます。 小さいサイズでは、電力センサーが設定されている場合にリアルタイムの電力を表示し、大きいサイズでは、各電源の期間ごとの合計値を表示します。\
-\
-**追加方法**\
-デスクトップを右クリックし、「ウィジェットの編集」を選択して、「Home Assistant」を検索し、「Energy」を選択します。Home Assistantでエネルギーダッシュボードが設定されている必要があります。";
-"whats_new.energy_widget.mac.item_body" = "デスクトップ上で、ご自宅のエネルギー使用量、発電量、蓄電量を一目で確認できます。詳細については、タップしてください。";
 "whats_new.item.opens_article_hint" = "記事を開く";
 "whats_new.item.opens_link_hint" = "リンクを開く";
-"whats_new.live_activities.item_body" = "ロック画面やダイナミックアイランドから、タイマーや動作中の家電製品、その他進行中の操作を確認できます。通知がどのように開始されるかについては、タップしてご確認ください。";
-"whats_new.live_activities.item_title" = "ライブアクティビティ";
 "whats_new.title" = "コンパニオンアプリの新機能";
 "whats_new.version_format" = "バージョン %@";
 "widgets.action.name.activate" = "有効化";
