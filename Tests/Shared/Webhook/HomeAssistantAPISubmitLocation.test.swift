@@ -42,10 +42,23 @@ final class HomeAssistantAPISubmitLocationTests: XCTestCase {
         super.tearDown()
     }
 
+    private let fuzzedFix = CLLocation(
+        coordinate: .init(latitude: 52.371, longitude: 4.891),
+        altitude: 2,
+        horizontalAccuracy: 90,
+        verticalAccuracy: 4,
+        timestamp: Date()
+    )
+
     /// Submits `fix` under `privacy` and returns the `update_location` payload that went out.
-    private func submit(privacy: ServerLocationPrivacy) throws -> [String: Any] {
+    private func submit(
+        privacy: ServerLocationPrivacy,
+        version: Version = .inZonesOnLocationUpdate,
+        location: CLLocation? = nil,
+        rawLocation: CLLocation? = nil
+    ) throws -> [String: Any] {
         let server = Server.fake {
-            $0.version = .inZonesOnLocationUpdate
+            $0.version = version
             $0.setSetting(value: privacy, for: .locationPrivacy)
         }
         AppZone(
@@ -64,7 +77,12 @@ final class HomeAssistantAPISubmitLocationTests: XCTestCase {
             seal.fulfill(())
         }
 
-        try hang(HomeAssistantAPI(server: server).SubmitLocation(updateType: .Manual, location: fix, zone: nil))
+        try hang(HomeAssistantAPI(server: server).SubmitLocation(
+            updateType: .Manual,
+            location: location ?? fix,
+            rawLocation: rawLocation,
+            zone: nil
+        ))
         return try XCTUnwrap(locationPayload)
     }
 
@@ -73,6 +91,29 @@ final class HomeAssistantAPISubmitLocationTests: XCTestCase {
 
         XCTAssertEqual(payload["gps"] as? [Double], [52.37, 4.89])
         XCTAssertNil(payload["location_name"])
+        XCTAssertNil(payload["raw_gps"])
+    }
+
+    func testExactSendsTheRawFixToANewerServer() throws {
+        let payload = try submit(
+            privacy: .exact,
+            version: .rawLocationOnLocationUpdate,
+            location: fuzzedFix,
+            rawLocation: fix
+        )
+
+        XCTAssertEqual(payload["gps"] as? [Double], [52.371, 4.891])
+        XCTAssertEqual(payload["gps_accuracy"] as? Double, 90)
+        XCTAssertEqual(payload["raw_gps"] as? [Double], [52.37, 4.89])
+        XCTAssertEqual(payload["raw_gps_accuracy"] as? Double, 8)
+    }
+
+    func testExactLeavesOutTheRawFixForAnOlderServer() throws {
+        let payload = try submit(privacy: .exact, location: fuzzedFix, rawLocation: fix)
+
+        XCTAssertEqual(payload["gps"] as? [Double], [52.371, 4.891])
+        XCTAssertNil(payload["raw_gps"])
+        XCTAssertNil(payload["raw_gps_accuracy"])
     }
 
     func testZoneOnlySendsTheZoneTheFixFallsIn() throws {

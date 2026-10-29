@@ -83,18 +83,19 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                     } else {
                         return .value(event.associatedLocation)
                     }
-                }.map { location -> CLLocation? in
+                }.map { location -> (fuzzed: CLLocation?, raw: CLLocation?) in
                     if let location {
-                        return accuracyFuzzers.fuzz(location: location, for: event)
+                        return (accuracyFuzzers.fuzz(location: location, for: event), location)
                     } else {
-                        return nil
+                        return (nil, nil)
                     }
-                }.then { (location: CLLocation?) -> Promise<Void> in
-                    submittedLocation = location
+                }.then { (location: (fuzzed: CLLocation?, raw: CLLocation?)) -> Promise<Void> in
+                    submittedLocation = location.fuzzed
                     return when(fulfilled: Current.apis.map { api in
                         api.SubmitLocation(
                             updateType: trigger,
-                            location: location,
+                            location: location.fuzzed,
+                            rawLocation: location.raw,
                             zone: event.associatedZone
                         )
                     })
