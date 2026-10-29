@@ -8652,6 +8652,8 @@ public enum L10n {
         public static var showValue: String { return L10n.tr("Localizable", "watch.complications.builder.show_value") }
         /// Show when inactive
         public static var showWhenInactive: String { return L10n.tr("Localizable", "watch.complications.builder.show_when_inactive") }
+        /// When off, the complication shows the Home Assistant logo while the watch display is dimmed, such as when your wrist is down.
+        public static var showWhenInactiveFooter: String { return L10n.tr("Localizable", "watch.complications.builder.show_when_inactive_footer") }
         /// %1$@ options
         public static func sizeOptions(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.complications.builder.size_options", String(describing: p1))
