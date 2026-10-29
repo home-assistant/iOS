@@ -34,6 +34,7 @@ struct DebugView: View {
     @State private var showClearWebCacheAlert = false
     @State private var showResetAppAlert = false
     @State private var showClearAllowedTagsAlert = false
+    @State private var showSimulateRestoredDeviceDialog = false
     @State private var watchSyncErrorMessage: String?
     @State private var showWatchSyncError = false
 
@@ -498,6 +499,29 @@ struct DebugView: View {
                 )
             }
 
+            if !Current.isCatalyst {
+                Button(action: { showSimulateRestoredDeviceDialog = true }) {
+                    linkContent(
+                        image: .init(systemSymbol: .iphoneAndArrowForward),
+                        title: L10n.Settings.Debugging.SimulateRestoredDevice.title
+                    )
+                }
+                .confirmationDialog(
+                    L10n.Settings.Debugging.SimulateRestoredDevice.alertTitle,
+                    isPresented: $showSimulateRestoredDeviceDialog,
+                    titleVisibility: .visible
+                ) {
+                    Button(
+                        L10n.Settings.Debugging.SimulateRestoredDevice.confirmButton,
+                        role: .destructive,
+                        action: simulateRestoredDevice
+                    )
+                    Button(L10n.cancelLabel, role: .cancel) {}
+                } message: {
+                    Text(L10n.Settings.Debugging.SimulateRestoredDevice.message)
+                }
+            }
+
             Toggle(isOn: .init(get: {
                 prefs.bool(forKey: XCGLogger.shouldNotifyUserDefaultsKey)
             }, set: { newValue in
@@ -555,6 +579,12 @@ struct DebugView: View {
         } footer: {
             Text(verbatim: L10n.Settings.Developer.footer)
         }
+    }
+
+    func simulateRestoredDevice() {
+        RegistrationOwnership().simulateRestoreFromAnotherDevice()
+        feedbackGenerator.notificationOccurred(.success)
+        dismissSettings()
     }
 
     private func sendMapNotification() {
@@ -669,7 +699,7 @@ struct DebugView: View {
         await toastProgressTask.value
         hideResetAppToast()
         loadingResetApp = false
-        dismissSettingsAfterReset()
+        dismissSettings()
         Current.onboardingObservation.needed(.logout)
     }
 
@@ -702,7 +732,7 @@ struct DebugView: View {
         }
     }
 
-    private func dismissSettingsAfterReset() {
+    private func dismissSettings() {
         appSettingsPresenter?.isSheetPresented = false
         dismiss()
     }

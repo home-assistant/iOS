@@ -294,11 +294,17 @@ jobs:
             ~/Library/Logs/scan
             fastlane/test_output/Tests-Unit.xcresult
 
+      - name: Prepare Simulator App
+        run: >-
+          Tools/PrepareSimulatorApp.sh
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
+          build/simulator-app
+
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         name: "Upload Simulator App"
         with:
           name: ios-simulator
-          path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
+          path: build/simulator-app
 
   # A pull request has to test the code it brings: at least 90% of the lines it adds
   # or changes, and that the unit tests are able to run at all, must actually be run

@@ -23,6 +23,27 @@ final class WebRTCClientMediaTests: XCTestCase {
         ])
     }
 
+    func testTheMicrophoneCanBePausedWithoutClosingTheConnection() {
+        let client = WebRTCClient(configuration: configuration, media: .microphone)
+        defer { client.closeConnection() }
+        XCTAssertTrue(client.isMicrophoneEnabled)
+
+        client.setMicrophoneEnabled(false)
+        XCTAssertFalse(client.isMicrophoneEnabled)
+
+        client.setMicrophoneEnabled(true)
+        XCTAssertTrue(client.isMicrophoneEnabled)
+    }
+
+    func testAPlaybackClientHasNoMicrophoneToEnable() {
+        let client = WebRTCClient(configuration: configuration, media: .playback)
+        defer { client.closeConnection() }
+
+        client.setMicrophoneEnabled(true)
+
+        XCTAssertFalse(client.isMicrophoneEnabled)
+    }
+
     func testOnlyClientsThatSendAudioRecordTheMicrophone() {
         XCTAssertFalse(WebRTCClientMedia.playback.recordsMicrophone)
         XCTAssertTrue(WebRTCClientMedia.microphone.recordsMicrophone)

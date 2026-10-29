@@ -146,7 +146,6 @@ struct HomeAssistantView: View, WebFrontendView {
                 AppMigrationAnnouncementView { AppMigrationAnnouncement.markSeen() }
             case let .restoredRegistrations(servers):
                 RestoredRegistrationsView(viewModel: launchMessages.restoredRegistrationsViewModel(for: servers))
-                    .presentationDetents([.medium, .large])
             case let .whatsNew(release):
                 WhatsNewView(release: release) { WhatsNewEngine().markSeen(release) }
             case let .testFlight(message):
