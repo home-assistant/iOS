@@ -48,6 +48,9 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         cameraMicrophoneBridge.onSessionEnded = { [weak self] sessionId in
             self?.notifyWebRTCStreamStopped(sessionId: sessionId)
         }
+        cameraMicrophoneBridge.onSessionReport = { [weak self] sessionId, microphoneLevel in
+            self?.notifyWebRTCStreamReport(sessionId: sessionId, microphoneLevel: microphoneLevel)
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -819,6 +822,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.webRTCStreamStopped.rawValue,
             payload: ["session_id": sessionId]
+        ))
+    }
+
+    private func notifyWebRTCStreamReport(sessionId: String, microphoneLevel: Double) {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.webRTCStreamReport.rawValue,
+            payload: ["session_id": sessionId, "microphone_level": microphoneLevel]
         ))
     }
 }

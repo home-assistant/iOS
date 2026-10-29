@@ -49,6 +49,29 @@ final class WebRTCClientMediaTests: XCTestCase {
         XCTAssertTrue(WebRTCClientMedia.microphone.recordsMicrophone)
     }
 
+    func testThePlaybackClientHasNoLocalAudioLevel() {
+        XCTAssertNil(localAudioLevel(for: .playback))
+    }
+
+    func testTheMicrophoneClientAnswersWithItsLocalAudioLevel() {
+        if let level = localAudioLevel(for: .microphone) {
+            XCTAssertTrue((0 ... 1).contains(level))
+        }
+    }
+
+    private func localAudioLevel(for media: WebRTCClientMedia) -> Double? {
+        let client = WebRTCClient(configuration: configuration, media: media)
+        defer { client.closeConnection() }
+        let answered = expectation(description: "local audio level answered")
+        var level: Double?
+        client.localAudioLevel { audioLevel in
+            level = audioLevel
+            answered.fulfill()
+        }
+        wait(for: [answered], timeout: 10)
+        return level
+    }
+
     private func offeredMedia(for media: WebRTCClientMedia) throws -> [OfferedMedia] {
         let client = WebRTCClient(configuration: configuration, media: media)
         defer { client.closeConnection() }

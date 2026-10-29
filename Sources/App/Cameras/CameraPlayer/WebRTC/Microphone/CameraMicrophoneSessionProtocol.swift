@@ -5,6 +5,7 @@ protocol CameraMicrophoneSessionProtocol: AnyObject {
     var sessionId: String? { get }
     var isConnected: Bool { get }
     var onEnd: ((CameraMicrophoneError) -> Void)? { get set }
+    var onMicrophoneLevel: ((Double) -> Void)? { get set }
     func start(completion: @escaping (Result<String, CameraMicrophoneError>) -> Void)
     func stop()
     /// Pauses or resumes sending the microphone on a connected session, keeping the connection up.

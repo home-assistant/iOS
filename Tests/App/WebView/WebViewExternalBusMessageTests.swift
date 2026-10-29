@@ -78,8 +78,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showNotifications.rawValue, "notifications/show")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.webRTCStreamStopped.rawValue, "webrtc/stream/stopped")
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.webRTCStreamReport.rawValue, "webrtc/stream/report")
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 11)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 12)
     }
 
     @MainActor func testConfigResultIncludesAllExpectedKeys() {
