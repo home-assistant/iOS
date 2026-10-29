@@ -124,6 +124,7 @@ class LocalPushManagerTests: XCTestCase {
             SettingsStore.integrationDeviceIDKey,
             SettingsStore.integrationDeviceIDOwnerKey,
             SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
         ]
         let previousValues = keys.map { prefs.object(forKey: $0) }
         let previousVendorID = Current.device.identifierForVendor
@@ -138,6 +139,7 @@ class LocalPushManagerTests: XCTestCase {
         Current.device.identifierForVendor = { "this-device" }
         Current.isCatalyst = false
         keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
         Current.settingsStore.setRegistrationRecord(
             RegistrationRecord(current: RegistrationIdentity(deviceID: "device-id", ownerVendorID: "other-device")),
             for: api.server.identifier

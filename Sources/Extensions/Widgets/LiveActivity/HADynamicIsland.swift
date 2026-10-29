@@ -20,12 +20,80 @@ func makeHADynamicIsland(
         }
     } compactLeading: {
         HADynamicIslandIconView(slug: state.icon, color: state.color, size: 18)
-            .padding(.leading, DesignSystem.Spaces.half)
+            .modifier(HACompactSlotInsetModifier(edge: .leading))
     } compactTrailing: {
         HACompactTrailingView(state: state)
-            .padding(.trailing, DesignSystem.Spaces.half)
+            .modifier(HACompactSlotInsetModifier(edge: .trailing))
     } minimal: {
         HADynamicIslandIconView(slug: state.icon, color: state.color, size: 16)
     }
+}
+
+@available(iOS 17.2, *)
+private let previewAttributes = HALiveActivityAttributes(tag: "preview", title: "Laundry")
+
+@available(iOS 17.2, *)
+private let previewProgressState = HALiveActivityAttributes.ContentState(
+    message: "Washing cycle",
+    progress: 40,
+    progressMax: 100,
+    icon: "washing-machine",
+    color: "#03A9F4"
+)
+
+@available(iOS 17.2, *)
+private let previewTimerState = HALiveActivityAttributes.ContentState(
+    message: "Pasta",
+    chronometer: true,
+    countdownEnd: Current.date().addingTimeInterval(12013),
+    icon: "timer",
+    color: "#FF9800"
+)
+
+@available(iOS 17.2, *)
+private let previewCountUpState = HALiveActivityAttributes.ContentState(
+    message: "Workout",
+    chronometer: true,
+    countdownEnd: Current.date().addingTimeInterval(-754),
+    icon: "run",
+    color: "#4CAF50"
+)
+
+@available(iOS 17.2, *)
+private let previewCriticalState = HALiveActivityAttributes.ContentState(
+    message: "Charging paused",
+    criticalText: "03:20:13",
+    icon: "battery-alert",
+    color: "#F44336"
+)
+
+@available(iOS 17.2, *)
+#Preview("Compact", as: .dynamicIsland(.compact), using: previewAttributes) {
+    HALiveActivityConfiguration()
+} contentStates: {
+    previewProgressState
+    previewTimerState
+    previewCountUpState
+    previewCriticalState
+}
+
+@available(iOS 17.2, *)
+#Preview("Expanded", as: .dynamicIsland(.expanded), using: previewAttributes) {
+    HALiveActivityConfiguration()
+} contentStates: {
+    previewProgressState
+    previewTimerState
+    previewCountUpState
+    previewCriticalState
+}
+
+@available(iOS 17.2, *)
+#Preview("Minimal", as: .dynamicIsland(.minimal), using: previewAttributes) {
+    HALiveActivityConfiguration()
+} contentStates: {
+    previewProgressState
+    previewTimerState
+    previewCountUpState
+    previewCriticalState
 }
 #endif

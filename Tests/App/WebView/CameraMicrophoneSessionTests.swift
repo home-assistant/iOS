@@ -359,6 +359,23 @@ final class CameraMicrophoneSessionTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(clients.first).isClosed)
     }
 
+    /// Muting keeps the connection, which is what lets the player hold a microphone after talking stops.
+    func testMutingPausesTheMicrophoneOnTheSameConnection() throws {
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+        connect(offer, client)
+
+        session.setMicrophoneEnabled(false)
+        XCTAssertFalse(client.isMicrophoneEnabled)
+        XCTAssertFalse(client.isClosed)
+
+        session.setMicrophoneEnabled(true)
+        XCTAssertTrue(client.isMicrophoneEnabled)
+        XCTAssertFalse(client.isClosed)
+        XCTAssertEqual(clients.count, 1, "Resuming reuses the same connection")
+        XCTAssertTrue(session.isConnected)
+    }
+
     func testAConnectedSessionIsNotTimedOut() throws {
         let timing = CameraMicrophoneSession.Timing(connectionTimeout: 1, disconnectedGracePeriod: 30)
         session = makeSession(timing: timing)

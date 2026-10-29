@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 
-/// Opens an entity's more-info dialog in the frontend.
+/// Opens an entity's more-info dialog in the frontend, or the native camera player for a camera.
 ///
 /// Spotlight runs this intent when someone taps one of the indexed entities, which is why it exists
 /// separately from the widget control's `OpenEntityAppIntent`: only an `OpenIntent` with a `target`
@@ -25,7 +25,7 @@ struct ShowEntityDetailsAppIntent: OpenIntent {
     var target: HAAppEntityAppIntentEntity
 
     func perform() async throws -> some IntentResult {
-        guard let url = AppConstants.openEntityDestinationURL(
+        guard let url = AppConstants.openEntityOrCameraDestinationURL(
             entityId: target.entityId,
             serverId: target.serverId
         ) else {

@@ -30,6 +30,44 @@ struct HADynamicIslandSnapshotTests {
         }
     }
 
+    /// A narrow island (iPhone Duo, landscape, or one shared with another activity) gives the slot a
+    /// 28 pt circle, so the timer and the progress turn into a ring and the critical text scales
+    /// down to fit.
+    ///
+    /// Outside the Live Activity renderer a circular `ProgressView` draws as a spinner, so these
+    /// references pin which samples show something and that it is centred in the circle, not the ring.
+    @available(iOS 26.0, *)
+    @MainActor @Test func compactTrailingLimitedWidthSnapshots() {
+        for sample in Self.makeSamples() {
+            assertSnapshot(
+                of: HACompactTrailingView(state: sample.state, forcesLimitedWidth: true)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.black),
+                layout: .fixed(width: 28, height: 28),
+                named: sample.name
+            )
+        }
+    }
+
+    /// A count-up with no end has no interval to fill a ring with, so the narrow slot falls back to
+    /// its elapsed time. That text ticks with the wall clock, so it is measured rather than recorded:
+    /// a slot with nothing to show takes no width at all.
+    @available(iOS 26.0, *)
+    @MainActor @Test func compactTrailingLimitedWidthKeepsUnboundedCountUp() {
+        let state = HALiveActivityAttributes.ContentState(
+            message: "Workout",
+            chronometer: true,
+            countdownEnd: Date(timeIntervalSince1970: 1_700_000_000),
+            icon: "run",
+            color: "#4CAF50"
+        )
+        let controller = UIHostingController(
+            rootView: HACompactTrailingView(state: state, forcesLimitedWidth: true)
+        )
+        let size = controller.sizeThatFits(in: CGSize(width: 100, height: 100))
+        #expect(size.width > 0)
+    }
+
     /// The expanded presentation is one view in one full-width region, so these references are the
     /// layout itself rather than a re-composition of it. `.sizeThatFits` is what makes them useful:
     /// the image height is the height the island asks for, so a state with no progress bar records
@@ -99,6 +137,16 @@ struct HADynamicIslandSnapshotTests {
                     message: "Charging paused",
                     criticalText: "03:20:13",
                     icon: "battery-alert",
+                    color: "#F44336"
+                )
+            ),
+            (
+                // Servers send emoji here too; it must survive the scale-down.
+                "criticalTextEmoji",
+                .init(
+                    message: "Oven preheated",
+                    criticalText: "🔥 5 min",
+                    icon: "stove",
                     color: "#F44336"
                 )
             ),

@@ -917,6 +917,7 @@
 				Widgets/Entities/WidgetEntitiesTimelineProvider.swift,
 				Widgets/EntityIconRenderer.swift,
 				Widgets/HAAppEntityAppIntentEntity.swift,
+				"Widgets/LiveActivity/EnvironmentValues+DynamicIslandLimitedWidth.swift",
 				Widgets/LiveActivity/HAActivityProgressBar.swift,
 				Widgets/LiveActivity/HAActivityTimerProgressBar.swift,
 				Widgets/LiveActivity/HACompactTrailingView.swift,
@@ -6401,7 +6402,7 @@
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.8.0;
+				minimumVersion = 5.12.2;
 			};
 		};
 		42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {

@@ -19,9 +19,11 @@ struct CameraCapabilities: Equatable {
     static let webSocketCommand = "camera/capabilities"
 
     let frontendStreamTypes: Set<CameraStreamType>
+    let twoWayAudio: Bool
 
-    init(frontendStreamTypes: Set<CameraStreamType>) {
+    init(frontendStreamTypes: Set<CameraStreamType>, twoWayAudio: Bool = false) {
         self.frontendStreamTypes = frontendStreamTypes
+        self.twoWayAudio = twoWayAudio
     }
 
     /// Stream types this app doesn't know about are dropped rather than failing the whole response,
@@ -29,6 +31,7 @@ struct CameraCapabilities: Equatable {
     init(data: HAData) {
         let rawTypes: [String] = (try? data.decode("frontend_stream_types")) ?? []
         self.frontendStreamTypes = Set(rawTypes.compactMap(CameraStreamType.init(rawValue:)))
+        self.twoWayAudio = (try? data.decode("two_way_audio")) ?? false
     }
 
     /// Fetches the capabilities for a camera entity.
