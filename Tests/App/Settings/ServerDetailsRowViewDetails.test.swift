@@ -83,7 +83,7 @@ struct ServerDetailsRowViewDetailsTests {
             useCloud: true
         ))
 
-        #expect(details[2].value == L10n.Settings.ConnectionSection.HomeAssistantCloud.title)
+        #expect(details[2].value == AppConstants.homeAssistantLinkName)
         #expect(details[2].isActive)
         #expect(details[2].symbol == .icloud)
         #expect(details[2].copyValue == "https://example.ui.nabu.casa")

@@ -112,7 +112,7 @@ final class OnboardingStateObservable: ObservableObject {
     }
 
     /// Available URL types for re-authentication, ordered by preference: remote UI > external > internal.
-    /// Remote UI is skipped when the user opted out of Home Assistant Cloud, unless it is the only URL
+    /// Remote UI is skipped when the user opted out of Home Assistant Link, unless it is the only URL
     /// configured for the server.
     func availableReauthURLTypes(for server: Server) -> [ConnectionInfo.URLType] {
         server.info.connection.availableAuthenticationURLTypes

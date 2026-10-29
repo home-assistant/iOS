@@ -3,7 +3,7 @@ import Shared
 
 /// Where a webhook URL comes from.
 ///
-/// Only Home Assistant Cloud subscribers get a `cloudhook`; without one the app builds the webhook
+/// Only Home Assistant Link subscribers get a `cloudhook`; without one the app builds the webhook
 /// URL out of the server's own URLs, which is why all of them are listed as possible sources.
 enum WebhookEndpointSource: Hashable {
     case cloudhook

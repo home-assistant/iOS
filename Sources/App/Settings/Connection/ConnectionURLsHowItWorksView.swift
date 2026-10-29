@@ -28,7 +28,7 @@ struct ConnectionURLsHowItWorksView: View {
         Step(
             symbol: .globe,
             title: L10n.Settings.ConnectionSection.UrlsHowItWorks.Away.title,
-            body: L10n.Settings.ConnectionSection.UrlsHowItWorks.Away.body
+            body: L10n.Settings.ConnectionSection.UrlsHowItWorks.Away.bodyLink(AppConstants.homeAssistantLinkName)
         ),
     ]
 
