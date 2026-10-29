@@ -25,8 +25,8 @@ struct CircularComplicationPreview: View {
             showsName: context.showsName,
             fraction: context.showsGauge ? context.fraction : nil,
             isCapacityGauge: context.gaugeStyle == .capacity,
-            minLabel: context.showsMin ? context.range.map { context.label($0.min) } : nil,
-            maxLabel: context.showsMax ? context.range.map { context.label($0.max) } : nil,
+            minLabel: context.minLabel,
+            maxLabel: context.maxLabel,
             tint: context.tint,
             textColor: context.textColor
         )

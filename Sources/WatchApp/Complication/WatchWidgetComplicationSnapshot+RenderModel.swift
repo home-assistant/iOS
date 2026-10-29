@@ -26,8 +26,8 @@ extension WatchWidgetComplicationSnapshot {
             subtitle: options.subtitle ?? "",
             showsSubtitle: options.showSubtitle ?? false,
             fraction: options.fraction ?? fraction,
-            minLabel: (options.showMin ?? true) ? gaugeLabels?.min : nil,
-            maxLabel: (options.showMax ?? true) ? gaugeLabels?.max : nil,
+            minLabel: (options.showMin ?? true) ? gaugeLabels.min : nil,
+            maxLabel: (options.showMax ?? true) ? gaugeLabels.max : nil,
             valueText: options.value ?? title,
             showsValue: options.showValue,
             bottomText: options.bottomText ?? "",
@@ -47,11 +47,9 @@ extension WatchWidgetComplicationSnapshot {
         return ComplicationIconRendering.image(image, usesCustomColor: iconUsesCustomColor == true)
     }
 
-    /// Both edges or neither: a gauge with only one end labelled reads as a mislabelled scale, which
-    /// is why the widget's `gaugeLabels(for:)` is all-or-nothing too.
-    private static func gaugeLabels(from options: PerFamily) -> (min: String, max: String)? {
-        guard let minLabel = options.minLabel, let maxLabel = options.maxLabel else { return nil }
-        return (minLabel, maxLabel)
+    /// Endpoint labels resolve independently, including a template that labels just one end.
+    private static func gaugeLabels(from options: PerFamily) -> (min: String?, max: String?) {
+        (options.minLabel, options.maxLabel)
     }
 
     /// Failable on purpose — `nil` means "no override, use the view's default". The `Shared`

@@ -7,8 +7,10 @@ import UIKit
 /// template source, then the placeholder), and opens the full editor sheet when tapped.
 struct JinjaTemplateButton: View {
     let server: Server
-    /// The sheet's navigation title — the name of what this template feeds.
+    /// The control's accessible name and the sheet's navigation title.
     let title: String
+    /// Keep the control's purpose visible alongside its template result.
+    let showsTitle: Bool
     @Binding var text: String
     var placeholder: String
     /// When set, a valid hex render shows a color swatch instead of plain text.
@@ -23,10 +25,12 @@ struct JinjaTemplateButton: View {
         title: String,
         text: Binding<String>,
         placeholder: String = "{{ … }}",
-        expectsColor: Bool = false
+        expectsColor: Bool = false,
+        showsTitle: Bool = false
     ) {
         self.server = server
         self.title = title
+        self.showsTitle = showsTitle
         self._text = text
         self.placeholder = placeholder
         self.expectsColor = expectsColor
@@ -38,6 +42,9 @@ struct JinjaTemplateButton: View {
             showEditor = true
         } label: {
             HStack(spacing: DesignSystem.Spaces.two) {
+                if showsTitle {
+                    Text(verbatim: title)
+                }
                 Group {
                     if case let .success(value) = renderer.output, !value.isEmpty {
                         if expectsColor, let hex = WatchComplicationConfig.normalizedHexColor(from: value) {
@@ -66,7 +73,7 @@ struct JinjaTemplateButton: View {
                             .foregroundStyle(.secondary.opacity(0.6))
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: showsTitle ? .trailing : .leading)
 
                 Image(systemSymbol: .chevronRight)
                     .font(.footnote.weight(.semibold))
@@ -75,6 +82,8 @@ struct JinjaTemplateButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(Text(verbatim: title))
+        .accessibilityValue(Text(verbatim: accessibilityValue))
         .sheet(isPresented: $showEditor) {
             JinjaTemplateEditorSheet(
                 server: server,
@@ -95,6 +104,16 @@ struct JinjaTemplateButton: View {
             renderer.updateTemplate(text, skipDelay: true)
         }
     }
+
+    private var accessibilityValue: String {
+        if case let .success(value) = renderer.output, !value.isEmpty {
+            if expectsColor, let hex = WatchComplicationConfig.normalizedHexColor(from: value) {
+                return hex
+            }
+            return value
+        }
+        return text.isEmpty ? placeholder : text
+    }
 }
 
 #Preview {
@@ -102,6 +121,23 @@ struct JinjaTemplateButton: View {
     Current.servers = FakeServerManager(initial: 1)
     // swiftlint:enable prohibit_environment_assignment
     return Form {
+        Section {
+            JinjaTemplateButton(
+                server: Current.servers.all.first!,
+                title: "Minimum",
+                text: .constant("12"),
+                showsTitle: true
+            )
+            JinjaTemplateButton(
+                server: Current.servers.all.first!,
+                title: "Maximum",
+                text: .constant("26"),
+                showsTitle: true
+            )
+        } header: {
+            Text(verbatim: "Persistent endpoint titles")
+        }
+
         Section {
             JinjaTemplateButton(
                 server: Current.servers.all.first!,

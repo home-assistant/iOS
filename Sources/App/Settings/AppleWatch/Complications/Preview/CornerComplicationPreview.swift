@@ -25,6 +25,8 @@ struct CornerComplicationPreview: View {
             valueText: context.valueText,
             showsValue: context.showsValue,
             fraction: context.showsGauge ? context.fraction : nil,
+            minLabel: context.minLabel,
+            maxLabel: context.maxLabel,
             tint: context.tint,
             textColor: context.textColor,
             gaugeDisplay: context.config.cornerGaugeDisplay(for: context.config.widgetFamily).renderModelDisplay
