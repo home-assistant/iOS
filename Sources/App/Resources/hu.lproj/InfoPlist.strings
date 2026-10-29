@@ -2,8 +2,8 @@
 "NSCameraUsageDescription" = "Készítsen fényképeket és küldje el őket a Home Assistant szerverére.";
 "NSCrossWebsiteTrackingUsageDescription" = "Opcionálisan engedélyezze a webhelyek közötti nyomon követést, ha a konfiguráció megköveteli.";
 "NSFocusStatusUsageDescription" = "Jelentse a fókusz állapotát érzékelőként.";
-"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
-"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
+"NSHealthShareUsageDescription" = "Kiválasztott Apple Health metrikák olvasása, hogy érzékelőként megoszthatók legyenek a Home Assistanttal.";
+"NSHealthUpdateUsageDescription" = "A Home Assistant nem ír adatot az Apple Healthbe.";
 "NSLocalNetworkUsageDescription" = "Keresse meg és kommunikáljon az Home Asisstant példányával.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Engedélyezd a helyhozzáférést \"Mindig\" beállítással, hogy az alkalmazás frissíthesse a helyzetedet a Home Assistantben, és a háttérben választhasson a helyi és a távoli kapcsolat között.";
 "NSLocationAlwaysUsageDescription" = "Az olyan funkciókhoz, mint az iBeacons, a földrajzi kerítések, a háttérben történő helyfrissítések és a pontos jelentéskészítéshez mindig szükségünk van az Ön tartózkodási helyéhez való hozzáférésre.";

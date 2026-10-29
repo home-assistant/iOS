@@ -423,7 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Verbindung zu Home Assistant nicht möglich";
 "camera_player.errors.unknown" = "Unbekannter Fehler";
 "camera_player.notification.body" = "Zum Öffnen der Kamera tippen";
-"camera_player.talkback.connecting" = "Connecting microphone";
+"camera_player.talkback.connecting" = "Mikrofon wird verbunden";
 "camera_player.talkback.start" = "Sprechen beginnen";
 "camera_player.talkback.stop" = "Sprechen beenden";
 "cameras.no_server_found" = "Kein Server für Kamera gefunden: %@";
@@ -2021,10 +2021,10 @@ Durch den Import werden alle auf diesem Bildschirm aufgeführten Kategorien, ein
 "settings.debugging.reset_app.toast.title" = "App-Daten werden gelöscht";
 "settings.debugging.shake_disclaimer.title" = "Wenn du die App jetzt schüttelst, kannst auf die Debugging-Funktionen zugreifen.";
 "settings.debugging.shake_disclaimer_optional.title" = "Die App schütteln, um das Debuggen zu öffnen";
-"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
-"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
-"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
-"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
+"settings.debugging.simulate_restored_device.alert_title" = "Eine Wiederherstellung von einem anderen Gerät simulieren?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Wiederherstellung simulieren";
+"settings.debugging.simulate_restored_device.message" = "Markiert jeden Server als von einem anderen Gerät registriert, so als ob die Daten dieser App aus einem Backup eines anderen Telefons wiederhergestellt worden wären. Beim nächsten Öffnen der App wirst du gefragt, ob diese Registrierungen beibehalten oder dieses Gerät als neues eingerichtet werden soll. Es werden keine Daten an deine Server gesendet, bis du eine Entscheidung triffst.";
+"settings.debugging.simulate_restored_device.title" = "Wiederherstellung von einem anderen Gerät simulieren";
 "settings.debugging.thread.footer" = "Prüfe, welche Thread-Anmeldedaten sich im Apple-Schlüsselbund befinden. Du kannst sie auch in Home Assistant importieren oder aus dem Schlüsselbund löschen.";
 "settings.debugging.title" = "Debuggen";
 "settings.debugging.web_view_empty_state_timeout.title" = "Zeitlimit für leeren Zustand der Webansicht";
