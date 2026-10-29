@@ -24,6 +24,7 @@ if [[ $TARGET_NAME = "App" ]]; then
       echo "warning: THREAD_NETWORK_CREDENTIALS disabled for CI"
     elif [[ ${ENABLE_THREAD_NETWORK_CREDENTIALS} -eq 1 ]]; then
         /usr/libexec/PlistBuddy -c "add com.apple.developer.networking.manage-thread-network-credentials bool true" "$ENTITLEMENTS_FILE"
+        /usr/libexec/PlistBuddy -c "add com.apple.developer.networking.share-thread-network-credentials bool true" "$ENTITLEMENTS_FILE"
     else
         echo "warning: THREAD_NETWORK_CREDENTIALS disabled"
     fi
