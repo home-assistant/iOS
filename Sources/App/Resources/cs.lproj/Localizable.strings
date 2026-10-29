@@ -423,7 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Nelze se připojit k Home Assistantovi";
 "camera_player.errors.unknown" = "Neznámá chyba";
 "camera_player.notification.body" = "Klepnutím otevřete kameru";
-"camera_player.talkback.connecting" = "Connecting microphone";
+"camera_player.talkback.connecting" = "Připojování mikrofonu";
 "camera_player.talkback.start" = "Začít mluvit";
 "camera_player.talkback.stop" = "Přestat mluvit";
 "cameras.no_server_found" = "Pro kameru nebyl nalezen server: %@";
@@ -2021,10 +2021,10 @@ Import nahradí všechny kategorie uvedené na této obrazovce, včetně nastave
 "settings.debugging.reset_app.toast.title" = "Mazání dat aplikace";
 "settings.debugging.shake_disclaimer.title" = "Nyní, když zatřesete aplikací, získáte přístup k funkcím ladění.";
 "settings.debugging.shake_disclaimer_optional.title" = "Zatřesením telefonu otevřete ladění";
-"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
-"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
-"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
-"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulovat obnovení z jiného zařízení?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulovat obnovení";
+"settings.debugging.simulate_restored_device.message" = "Označí každý server jako registrovaný jiným zařízením, jako by data této aplikace byla obnovena ze zálohy jiného telefonu. Při příštím spuštění aplikace se zeptá, zda má tyto registrace zachovat, nebo zda má toto zařízení nastavit jako nové. Na vaše servery se nic neodesílá, dokud se nerozhodnete.";
+"settings.debugging.simulate_restored_device.title" = "Simulace obnovení z jiného zařízení";
 "settings.debugging.thread.footer" = "Zkontrolujte, jaké přihlašovací údaje Thread jsou v Klíčence Apple. Můžete je také importovat v Home Assistantovi nebo je smazat z Klíčenky.";
 "settings.debugging.title" = "Ladění";
 "settings.debugging.web_view_empty_state_timeout.title" = "Časový limit pro prázdný stav webového zobrazení";
