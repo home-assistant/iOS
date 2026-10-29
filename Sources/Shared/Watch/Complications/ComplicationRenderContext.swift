@@ -76,6 +76,9 @@ public struct ComplicationRenderContext {
         config.slotColor(.bottomText, for: family).map { Color(uiColor: UIColor(hex: $0)) }
     }
 
+    public var minLabel: String? { config.gaugeLabels(for: family, renderedTemplates: renderedTemplates).min }
+    public var maxLabel: String? { config.gaugeLabels(for: family, renderedTemplates: renderedTemplates).max }
+
     /// Min/max are whole numbers.
     public func label(_ value: Double) -> String { String(Int(value.rounded())) }
 

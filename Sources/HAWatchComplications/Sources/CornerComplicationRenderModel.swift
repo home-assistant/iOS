@@ -20,6 +20,8 @@ public struct CornerComplicationRenderModel {
     public var showsValue: Bool
     /// Gauge fill (0...1), or nil when there's no gauge.
     public var fraction: Double?
+    public var minLabel: String?
+    public var maxLabel: String?
     public var tint: Color
     /// nil resolves to `.primary` (white on the black watch face).
     public var textColor: Color?
@@ -36,6 +38,8 @@ public struct CornerComplicationRenderModel {
         valueText: String = "",
         showsValue: Bool = false,
         fraction: Double? = nil,
+        minLabel: String? = nil,
+        maxLabel: String? = nil,
         tint: Color = .complicationDefaultTint,
         textColor: Color? = nil,
         curvesText: Bool = true,
@@ -47,6 +51,8 @@ public struct CornerComplicationRenderModel {
         self.valueText = valueText
         self.showsValue = showsValue
         self.fraction = fraction
+        self.minLabel = minLabel
+        self.maxLabel = maxLabel
         self.tint = tint
         self.textColor = textColor
         self.curvesText = curvesText
