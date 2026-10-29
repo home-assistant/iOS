@@ -134,6 +134,7 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
         }
         let slotConfigs = (config.families ?? [:]).values.flatMap { ($0.slots ?? [:]).values }
         let customTemplates = Set(slotConfigs.flatMap { $0.formula?.templates ?? [] })
+            .union(config.gaugeLabelTemplates)
             .subtracting(rendered.keys)
         for template in customTemplates {
             if let result = await ComplicationStateFetcher.renderTemplate(template, server: server) {
@@ -264,10 +265,6 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
             }
         }
 
-        func label(_ value: Double) -> String {
-            String(Int(value.rounded()))
-        }
-
         // The name rendered on the face — the entity's name, or the rendered display-name template
         // for the template kind. The complication's own `name` never renders: it only labels the
         // complication in the gallery menu (`menuName` below uses `displayName`).
@@ -294,7 +291,7 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
 
         var perFamily: [String: PerFamily] = [:]
         for family in Family.allCases {
-            let range = config.gaugeRange(for: family)
+            let labels = config.gaugeLabels(for: family, renderedTemplates: renderedTemplates)
             perFamily[family.rawValue] = PerFamily(
                 fraction: fraction(for: family),
                 tint: gaugeColorHex ?? config.tint(for: family),
@@ -305,8 +302,8 @@ struct WatchWidgetComplicationSnapshot: Codable, Equatable {
                 showMax: config.showsMax(for: family),
                 gaugeStyle: config.gaugeStyle(for: family).rawValue,
                 cornerGaugeDisplay: config.cornerGaugeDisplay(for: family).rawValue,
-                minLabel: range.map { label($0.min) },
-                maxLabel: range.map { label($0.max) },
+                minLabel: labels.min,
+                maxLabel: labels.max,
                 textColor: textColorHex ?? config.textColor(for: family),
                 bottomTextColor: config.slotColor(.bottomText, for: family),
                 title: slotText(.title, family),

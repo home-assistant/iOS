@@ -105,6 +105,18 @@ struct CornerComplicationView: View {
             } else {
                 Gauge(value: fraction) {
                     arcLabel(complication)
+                } currentValueLabel: {
+                    EmptyView()
+                } minimumValueLabel: {
+                    if complication.showsMin(for: family),
+                       let label = complication.gaugeLabels(for: family)?.min {
+                        Text(label)
+                    }
+                } maximumValueLabel: {
+                    if complication.showsMax(for: family),
+                       let label = complication.gaugeLabels(for: family)?.max {
+                        Text(label)
+                    }
                 }
                 .tint(complication.tintColor(for: family))
             }
