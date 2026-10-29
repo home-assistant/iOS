@@ -22,6 +22,8 @@ struct WebViewEmptyStateHeader: View {
     /// when a horizontal safe-area inset (iPhone Duo camera or vertical bar) narrows the layout. The
     /// accessories keep their safe-area edges either way.
     var serverSelectionHorizontalOffset: CGFloat = 0
+    var serverSwitcherAction: (() -> Void)?
+    var serverSelectionNamespace: Namespace.ID?
 
     var body: some View {
         HStack {
@@ -33,7 +35,24 @@ struct WebViewEmptyStateHeader: View {
             )
             Spacer()
             if showsServerSelection {
-                if Current.isCatalyst {
+                if let serverSwitcherAction {
+                    Button(action: serverSwitcherAction) {
+                        serverSelectionLabel
+                    }
+                    .buttonStyle(.plain)
+                    .modify { view in
+                        if #available(iOS 18.0, *), let serverSelectionNamespace {
+                            view.matchedTransitionSource(
+                                id: HomeAssistantStandByView.serverSelectionTransitionID,
+                                in: serverSelectionNamespace
+                            )
+                        } else {
+                            view
+                        }
+                    }
+                    .padding(.horizontal, abs(serverSelectionHorizontalOffset))
+                    .offset(x: serverSelectionHorizontalOffset)
+                } else {
                     Menu {
                         ForEach(Current.servers.all, id: \.identifier) { availableServer in
                             Button {
@@ -43,31 +62,11 @@ struct WebViewEmptyStateHeader: View {
                             }
                         }
                     } label: {
-                        HStack(spacing: DesignSystem.Spaces.one) {
-                            Image(systemSymbol: .serverRack)
-                                .foregroundStyle(Color.haPrimary)
-                            Text(server.info.name)
-                                .font(.callout)
-                                .lineLimit(1)
-                            Image(systemSymbol: .chevronUpChevronDown)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.horizontal, DesignSystem.Spaces.two)
-                        .padding(.vertical, DesignSystem.Spaces.one)
-                        .background(Color(uiColor: .secondarySystemBackground))
-                        .clipShape(.capsule)
+                        serverSelectionLabel
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal, abs(serverSelectionHorizontalOffset))
                     .offset(x: serverSelectionHorizontalOffset)
-                } else {
-                    ServerPickerView(server: server, onSelect: serverSelectionAction)
-                        // Using .secondarySystemBackground to visually distinguish the server selection view
-                        .background(Color(uiColor: .secondarySystemBackground))
-                        .clipShape(Capsule())
-                        .padding(.horizontal, abs(serverSelectionHorizontalOffset))
-                        .offset(x: serverSelectionHorizontalOffset)
                 }
             }
             Spacer()
@@ -79,6 +78,11 @@ struct WebViewEmptyStateHeader: View {
             )
         }
         .padding()
+    }
+
+    private var serverSelectionLabel: some View {
+        WebViewEmptyStateServerLabel(server: server)
+            .id(server.identifier)
     }
 
     private var leadingAccessory: WebViewEmptyStateStyle.HeaderAccessory {
@@ -147,7 +151,8 @@ struct WebViewEmptyStateHeader: View {
             showsErrorDetailsButton: false,
             settingsAction: {},
             serverSelectionAction: { _ in },
-            dismissAction: {}
+            dismissAction: {},
+            serverSwitcherAction: {}
         )
         Spacer()
     }

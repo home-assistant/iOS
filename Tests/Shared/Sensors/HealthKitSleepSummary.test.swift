@@ -157,6 +157,17 @@ class HealthKitSleepSummaryTests: XCTestCase {
         XCTAssertNil(night.minutes(in: [.inBed]))
     }
 
+    func testTimeInBedFallsBackToTheLatestNightThatRecordedIt() throws {
+        // A tracker that logged time in bed the night before, but hasn't synced the latest Watch night yet.
+        let earlierInBed = [sample(.inBed, from: date(9, 21, 57), to: date(10, 6, 22))]
+
+        let night = try XCTUnwrap(HealthKitSleepSummary.latestNight(in: earlierInBed + watchNight, calendar: calendar))
+
+        XCTAssertEqual(night.start, date(10, 18, 0))
+        XCTAssertEqual(night.minutes(in: [.inBed]), 505)
+        XCTAssertEqual(night.minutes(in: HealthKitSleepStage.asleepStages), 460)
+    }
+
     func testSleepAnalysisValuesMapToStages() {
         XCTAssertEqual(HealthKitSleepStage(sleepAnalysisValue: 0), .inBed)
         XCTAssertEqual(HealthKitSleepStage(sleepAnalysisValue: 1), .asleepUnspecified)

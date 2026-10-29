@@ -1,5 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Swift packages are not handled here: Renovate has no manager for the references in project.pbxproj, so the Update Swift Packages workflow opens those pull requests.",
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "enabledManagers": ["bundler", "github-actions", "ruby-version"],
   "semanticCommits": "disabled",

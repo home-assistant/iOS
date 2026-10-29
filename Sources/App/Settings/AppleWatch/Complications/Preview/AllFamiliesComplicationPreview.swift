@@ -55,6 +55,12 @@ struct AllFamiliesComplicationPreview: View {
     @StateObject private var gaugeColorRenderer: TemplateRenderer
     @StateObject private var iconColorRenderer: TemplateRenderer
     @StateObject private var textColorRenderer: TemplateRenderer
+    @StateObject private var circularMinRenderer: TemplateRenderer
+    @StateObject private var circularMaxRenderer: TemplateRenderer
+    @StateObject private var cornerMinRenderer: TemplateRenderer
+    @StateObject private var cornerMaxRenderer: TemplateRenderer
+    @StateObject private var rectangularMinRenderer: TemplateRenderer
+    @StateObject private var rectangularMaxRenderer: TemplateRenderer
 
     init(
         config: WatchComplicationConfig,
@@ -78,6 +84,12 @@ struct AllFamiliesComplicationPreview: View {
         _gaugeColorRenderer = StateObject(wrappedValue: makeRenderer())
         _iconColorRenderer = StateObject(wrappedValue: makeRenderer())
         _textColorRenderer = StateObject(wrappedValue: makeRenderer())
+        _circularMinRenderer = StateObject(wrappedValue: makeRenderer())
+        _circularMaxRenderer = StateObject(wrappedValue: makeRenderer())
+        _cornerMinRenderer = StateObject(wrappedValue: makeRenderer())
+        _cornerMaxRenderer = StateObject(wrappedValue: makeRenderer())
+        _rectangularMinRenderer = StateObject(wrappedValue: makeRenderer())
+        _rectangularMaxRenderer = StateObject(wrappedValue: makeRenderer())
     }
 
     private var fetchKey: String {
@@ -86,7 +98,28 @@ struct AllFamiliesComplicationPreview: View {
             config.customTextTemplate ?? "", config.customGaugeTemplate ?? "",
             config.customGaugeColorTemplate ?? "", config.customIconColorTemplate ?? "",
             config.customTextColorTemplate ?? "",
+            labelRenderers.map { $0.0 ?? "" }.joined(separator: "|"),
         ].joined(separator: "|")
+    }
+
+    private var labelRenderers: [(String?, TemplateRenderer)] {
+        let circular = config.options(for: .circular)
+        let corner = config.options(for: .corner)
+        let rectangular = config.options(for: .rectangular)
+        return [
+            (circular.minLabelTemplate, circularMinRenderer), (circular.maxLabelTemplate, circularMaxRenderer),
+            (corner.minLabelTemplate, cornerMinRenderer), (corner.maxLabelTemplate, cornerMaxRenderer),
+            (rectangular.minLabelTemplate, rectangularMinRenderer),
+            (rectangular.maxLabelTemplate, rectangularMaxRenderer),
+        ]
+    }
+
+    private var renderedLabelTemplates: [String: String] {
+        labelRenderers.reduce(into: [:]) { result, item in
+            if let template = item.0, case let .success(rendered) = item.1.output {
+                result[template] = rendered
+            }
+        }
     }
 
     /// A color renderer's evaluated color, normalized — nil while loading, on failure, or when the
@@ -263,7 +296,10 @@ struct AllFamiliesComplicationPreview: View {
                 // The slot formulas resolve the display-name template through this lookup; without it
                 // the value slot renders empty and the face falls back to showing just the
                 // complication name.
-                renderedTemplates: config.customTextTemplate.map { [$0: value] } ?? [:]
+                renderedTemplates: renderedLabelTemplates.merging(
+                    config.customTextTemplate.map { [$0: value] } ?? [:],
+                    uniquingKeysWith: { _, main in main }
+                )
             )
         }
     }
@@ -284,6 +320,9 @@ struct AllFamiliesComplicationPreview: View {
             gaugeColorRenderer.updateTemplate(config.customGaugeColorTemplate ?? "", skipDelay: skipInitialDelay)
             iconColorRenderer.updateTemplate(config.customIconColorTemplate ?? "", skipDelay: skipInitialDelay)
             textColorRenderer.updateTemplate(config.customTextColorTemplate ?? "", skipDelay: skipInitialDelay)
+            for (template, renderer) in labelRenderers {
+                renderer.updateTemplate(template ?? "", skipDelay: skipInitialDelay)
+            }
         }
     }
 

@@ -246,11 +246,10 @@ struct WatchWidgetComplicationSnapshot: Codable {
         widgetFamily == .accessoryCorner && options(for: widgetFamily)?.cornerGaugeDisplay == "progress"
     }
 
-    /// Gauge min/max labels (open circular gauge only), when a range is configured.
-    func gaugeLabels(for widgetFamily: WidgetFamily) -> (min: String, max: String)? {
-        guard let options = options(for: widgetFamily),
-              let minLabel = options.minLabel, let maxLabel = options.maxLabel else { return nil }
-        return (minLabel, maxLabel)
+    /// Each endpoint is optional: a template can label just one end of the scale.
+    func gaugeLabels(for widgetFamily: WidgetFamily) -> (min: String?, max: String?)? {
+        guard let options = options(for: widgetFamily) else { return nil }
+        return (options.minLabel, options.maxLabel)
     }
 
     var recommendationID: String {

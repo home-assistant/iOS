@@ -68,7 +68,7 @@ public class StorageSensor: SensorProvider {
             $0.zeroPadsFractionDigits = true
         }
 
-        // Custom formatter for consistent locale-independent formatting
+        /// Custom formatter for consistent locale-independent formatting
         private let numberFormatter = with(NumberFormatter()) {
             $0.numberStyle = .decimal
             $0.minimumFractionDigits = 2
@@ -97,7 +97,11 @@ public class StorageSensor: SensorProvider {
 
         func availablePercent() -> String {
             precondition(total > 0, "init should prevent this")
-            let percent = Decimal(availableOpportunistic) / Decimal(total) * Decimal(100.0)
+            // "Important usage" mirrors what iOS Settings reports as free: it includes purgeable
+            // space the system will reclaim on demand. The "opportunistic" value drops to 0 as soon
+            // as the device approaches its reserved threshold, which misreports a device with tens
+            // of GB free as 0 % available.
+            let percent = Decimal(availableImportant) / Decimal(total) * Decimal(100.0)
             return String(format: "%.02lf", Double(truncating: percent as NSNumber))
         }
 

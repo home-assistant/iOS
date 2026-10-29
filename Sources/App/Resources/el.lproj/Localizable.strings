@@ -423,6 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Δεν είναι δυνατή η σύνδεση με το Home Assistant";
 "camera_player.errors.unknown" = "Αγνωστο σφάλμα";
 "camera_player.notification.body" = "Πατήστε για να ανοίξετε την κάμερα";
+"camera_player.talkback.connecting" = "Connecting microphone";
 "camera_player.talkback.start" = "Start talking";
 "camera_player.talkback.stop" = "Stop talking";
 "cameras.no_server_found" = "Δεν βρέθηκε server για την κάμερα: %@";
@@ -2020,6 +2021,10 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.reset_app.toast.title" = "Deleting app data";
 "settings.debugging.shake_disclaimer.title" = "Τώρα, όταν κουνάτε τη συσκευή με την εφαρμογή ανοικτή, μπορείτε να έχετε πρόσβαση στις λειτουργίες εντοπισμού σφαλμάτων.";
 "settings.debugging.shake_disclaimer_optional.title" = "Κουνήστε ενώ είστε στην εφαρμογή για να ανοίξετε τον εντοπισμό σφαλμάτων";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
+"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
+"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
 "settings.debugging.thread.footer" = "Ελέγξτε ποια διαπιστευτήρια Thread υπάρχουν μέσα στην Κλειδοθήκη Apple, μπορείτε επίσης να τα εισάγετε στο Home Assistant ή να τα διαγράψετε από την Κλειδοθήκη.";
 "settings.debugging.title" = "Αποσφαλμάτωση";
 "settings.debugging.web_view_empty_state_timeout.title" = "Web view empty state timeout";

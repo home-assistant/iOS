@@ -24,13 +24,17 @@ struct HACompactTrailingView: View {
     private static let limitedWidthSlotSize: CGFloat = 28
     /// Diameter of the ring a narrow island shows in place of the text, inside that circle.
     private static let limitedWidthRingSize: CGFloat = 22
+    /// How far the critical text may shrink to fit the circle: `H:MM:SS`, the longest value the
+    /// docs recommend, is about twice as wide as the circle at `caption2`.
+    private static let limitedWidthMinimumScaleFactor: CGFloat = 0.4
 
     var body: some View {
         if isLimitedInWidth {
             // A narrow island (iPhone Duo, landscape, or one shared with another activity) leaves
             // a 28pt circle, too small for any of the texts, so the timer and the progress become
             // a ring, the timer first as in the full-width slot. Critical text has no graphic
-            // form and is left out; the system hides an empty trailing slot.
+            // form, so it is scaled down into the circle: an empty slot would hide the value the
+            // server marked as the one to show.
             if state.chronometer == true, let end = state.countdownEnd {
                 if let interval = HAActivityTimerProgressBar.interval(
                     start: state.chronometerStart,
@@ -56,6 +60,13 @@ struct HACompactTrailingView: View {
                         .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
                         .frame(width: Self.limitedWidthSlotSize)
                 }
+            } else if let critical = state.criticalText {
+                Text(critical)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(Self.limitedWidthMinimumScaleFactor)
+                    .frame(width: Self.limitedWidthSlotSize)
             } else if let fraction = state.progressBarFillFraction {
                 ProgressView(value: fraction)
                     .progressViewStyle(.circular)
@@ -162,6 +173,15 @@ struct HACompactTrailingView: View {
                 countdownEnd: Current.date().addingTimeInterval(-754),
                 icon: "run",
                 color: "#4CAF50"
+            ),
+            forcesLimitedWidth: true
+        )
+        HACompactTrailingView(
+            state: .init(
+                message: "Charging paused",
+                criticalText: "03:20:13",
+                icon: "battery-alert",
+                color: "#F44336"
             ),
             forcesLimitedWidth: true
         )
