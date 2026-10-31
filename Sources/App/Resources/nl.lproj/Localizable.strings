@@ -423,7 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Kan geen verbinding maken met Home Assistant";
 "camera_player.errors.unknown" = "Onbekende fout";
 "camera_player.notification.body" = "Tik om de camera te openen";
-"camera_player.talkback.connecting" = "Connecting microphone";
+"camera_player.talkback.connecting" = "Microfoon verbinden";
 "camera_player.talkback.start" = "Begin met praten";
 "camera_player.talkback.stop" = "Stop met praten";
 "cameras.no_server_found" = "Geen server gevonden voor camera: %@";
@@ -666,13 +666,13 @@
 "component.qr_code.failed" = "De QR-code kon niet worden gegenereerd";
 "component.qr_code.label" = "QR-code";
 "component.qr_scanner.manual_input" = "Voer de code handmatig in";
-"component.qr_scanner.retry" = "Opnieuw proberen";
+"component.qr_scanner.retry" = "Probeer opnieuw";
 "component.qr_scanner.submit" = "Verzenden";
 "component.scene.activate" = "Activeer";
 "component.state_toggle.toggle" = "Schakel om";
 "component.state_toggle.turn_off" = "Zet uit";
 "component.state_toggle.turn_on" = "Zet aan";
-"component.time_input.clear" = "Wissen";
+"component.time_input.clear" = "Wis";
 "component.timer.cancel" = "Annuleer";
 "component.timer.finish" = "Stop";
 "component.timer.pause" = "Pauze";
@@ -802,7 +802,7 @@ Deze server vereist een clientcertificaat (mTLS), maar de bewerking is geannulee
 "extensions.notification_content.error.request.webrtc_unavailable" = "WebRTC-stream niet beschikbaar";
 "extensions.notification_content.error_state.hide_details" = "Verberg details";
 "extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
-"extensions.notification_content.error_state.retry" = "Opnieuw proberen";
+"extensions.notification_content.error_state.retry" = "Probeer opnieuw";
 "extensions.notification_content.error_state.show_details" = "Details weergeven";
 "extensions.notification_content.error_state.title" = "Media niet beschikbaar";
 "flight_greetings.empty_state.body" = "Je bent momenteel niet verbonden. Je huis staat voor je klaar zodra je bent geland.";
@@ -1529,7 +1529,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "reminders_sync.direction.both_ways" = "Beide kanten op";
 "reminders_sync.direction.to_home_assistant" = "Herinneringen → Home Assistant";
 "reminders_sync.direction.to_reminders" = "Home Assistant → Herinneringen";
-"reminders_sync.history.clear" = "Wissen";
+"reminders_sync.history.clear" = "Wis";
 "reminders_sync.history.clear_confirm.button" = "Clear History";
 "reminders_sync.history.clear_confirm.title" = "Clear all sync history? This can’t be undone.";
 "reminders_sync.history.detail.created_item_%@" = "Created Home Assistant item “%@”";
@@ -1578,17 +1578,17 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "restored_registrations.progress" = "%li of %li set up";
 "restored_registrations.replace.confirm" = "Replace";
 "restored_registrations.replace.message" = "If you still have the other device, remove the Home Assistant app from it. Otherwise both devices keep reporting to Home Assistant as one.";
-"restored_registrations.replace.title" = "Replace the old device?";
-"restored_registrations.replace_device" = "Replace the old device";
-"restored_registrations.setting_up" = "Setting up…";
-"restored_registrations.status.done" = "Set up as a new device";
+"restored_registrations.replace.title" = "Het oude apparaat vervangen?";
+"restored_registrations.replace_device" = "Vervang het oude apparaat";
+"restored_registrations.setting_up" = "Instellen…";
+"restored_registrations.status.done" = "Stel als nieuw apparaat in";
 "restored_registrations.status.failed" = "Couldn't register: %@";
 "restored_registrations.status.registering" = "Registering…";
 "restored_registrations.status.signing_in" = "Signing in…";
 "restored_registrations.status.skipped" = "Not set up yet. Asked again on the next launch.";
-"restored_registrations.status.waiting" = "Waiting";
+"restored_registrations.status.waiting" = "Wachten";
 "restored_registrations.title" = "Restored from another device?";
-"restored_registrations.try_again" = "Try again";
+"restored_registrations.try_again" = "Probeer opnieuw";
 "retry_label" = "Probeer opnieuw";
 "room_view.section.hidden" = "Verborgen";
 "room_view.section.visible" = "Zichtbaar";
@@ -1722,7 +1722,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.register_as_new_device.progress" = "Registering…";
 "settings.connection_section.register_as_new_device.restored_footer" = "This server knows this device as the one its backup came from, so it isn't sent this device's location and sensors. Register as a new device, or replace the old device if this one took its place.";
 "settings.connection_section.register_as_new_device.sign_in_message" = "You sign in to this server again and this device gets a registration of its own. The current one stays in Home Assistant for any other device still using it. Remove it there once no device does.";
-"settings.connection_section.register_as_new_device.title" = "Register as new device";
+"settings.connection_section.register_as_new_device.title" = "Registreer als nieuw apparaat";
 "settings.connection_section.remote_ui_url.title" = "Gebruikersinterface op afstand URL";
 "settings.connection_section.sensor_send_type.setting.all" = "Alle";
 "settings.connection_section.sensor_send_type.setting.none" = "Geen";
@@ -2022,9 +2022,9 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "settings.debugging.shake_disclaimer.title" = "Als je nu de app schudt, krijg je toegang tot de debugfuncties.";
 "settings.debugging.shake_disclaimer_optional.title" = "Schud de app om debug te openen";
 "settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
-"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simuleer herstellen";
 "settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
-"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
+"settings.debugging.simulate_restored_device.title" = "Simuleer herstellen van een ander apparaat";
 "settings.debugging.thread.footer" = "Controleer welke Thread-referenties er in de Apple Sleutelhanger staan, je kunt ze ook importeren in Home Assistent of verwijderen uit Sleutelhanger.";
 "settings.debugging.title" = "Foutopsporing";
 "settings.debugging.web_view_empty_state_timeout.title" = "Web view empty state timeout";
@@ -2037,7 +2037,7 @@ Door te importeren worden alle categorieën die op dit scherm worden weergegeven
 "settings.developer.camera_notification.notification.body" = "Vouw dit uit om de extensie voor de camera-inhoud weer te geven";
 "settings.developer.camera_notification.title" = "Toon de inhoud van de cameramelding";
 "settings.developer.clear_allowed_tags.complete.title" = "Goedgekeurde tags gewist";
-"settings.developer.clear_allowed_tags.title" = "Goedgekeurde tags wissen";
+"settings.developer.clear_allowed_tags.title" = "Wis goedgekeurde tags";
 "settings.developer.copy_realm.alert.message" = "Gekopieerd Realm van %@ naar %@";
 "settings.developer.copy_realm.alert.title" = "Gekopieerd Realm";
 "settings.developer.copy_realm.title" = "Kopieer Realm van app-groep naar Documenten";
@@ -2344,7 +2344,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "settings_details.notifications.documentation" = "Documentatie";
 "settings_details.notifications.force_close_warning.footer" = "Geeft een melding weer wanneer de app wordt gesloten, omdat het sluiten de locatie- en sensorupdates stopt totdat je de app opnieuw opent. Vereist toestemming voor meldingen en locatietoegang moet ingesteld zijn op 'Altijd'.";
 "settings_details.notifications.force_close_warning.title" = "Waarschuwing bij geforceerd sluiten";
-"settings_details.notifications.history.clear" = "Wissen";
+"settings_details.notifications.history.clear" = "Wis";
 "settings_details.notifications.history.clear_confirm.message" = "Dit kan niet ongedaan gemaakt worden.";
 "settings_details.notifications.history.clear_confirm.title" = "Weet je zeker dat je de meldingsgeschiedenis wilt wissen?";
 "settings_details.notifications.history.detail.copied" = "Gekopieerd!";
@@ -2362,7 +2362,7 @@ De server reageert alleen zolang de app geopend is en stopt zodra je de app afsl
 "settings_details.notifications.history.remote_live_activity_unavailable" = "Externe live-activiteiten worden rechtstreeks door iOS naar het systeem verzonden, waardoor de app ze niet ziet en ze hier niet kan weergeven.";
 "settings_details.notifications.history.title" = "Geschiedenis";
 "settings_details.notifications.info" = "Gebruik de mobile_app-meldingsservice om meldingen naar je apparaat te sturen.";
-"settings_details.notifications.local_push.retry.title" = "Lokale push opnieuw proberen";
+"settings_details.notifications.local_push.retry.title" = "Probeer lokale push opnieuw";
 "settings_details.notifications.local_push.status.available" = "Beschikbaar ( %1$@ )";
 "settings_details.notifications.local_push.status.disabled" = "Uitgeschakeld";
 "settings_details.notifications.local_push.status.establishing" = "Tot stand brengen";
@@ -3057,7 +3057,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.settings.client_certificate.remove_from_watch.message" = "Het certificaat wordt alleen van deze Watch verwijderd. Je iPhone behoudt het, en bij het vernieuwen wordt het weer aan de Watch toegevoegd.";
 "watch.settings.client_certificate.remove_from_watch.remove" = "Verwijder";
 "watch.settings.client_certificate.remove_from_watch.title" = "Verwijderen van deze Watch?";
-"watch.settings.client_events.clear" = "Wissen";
+"watch.settings.client_events.clear" = "Wis";
 "watch.settings.client_events.empty" = "No events recorded yet.";
 "watch.settings.client_events.send_to_phone" = "Verzenden naar iPhone";
 "watch.settings.client_events.send_to_phone.failure" = "Het verzenden van logbestanden naar de iPhone is mislukt: %@";
@@ -3073,7 +3073,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.settings.complications.refresh" = "Nu vernieuwen";
 "watch.settings.complications.refresh_all" = "Alles vernieuwen";
 "watch.settings.complications.refreshing" = "Vernieuwen…";
-"watch.settings.complications.retry" = "Opnieuw proberen";
+"watch.settings.complications.retry" = "Probeer opnieuw";
 "watch.settings.complications.retrying" = "Opnieuw proberen…";
 "watch.settings.complications.status.cached" = "Showing cached value";
 "watch.settings.complications.status.failed" = "Mislukt";
@@ -3138,7 +3138,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "watch.sync.not_reachable.message" = "Open de Home Assistant-app op je iPhone en houd deze binnen handbereik. Je complicaties worden nog steeds op de achtergrond vernieuwd zodra de app binnen bereik is.";
 "watch.sync.not_reachable.title" = "iPhone niet bereikbaar";
 "watch.sync.progress" = "%1$li/%2$li";
-"watch.sync.retry" = "Opnieuw proberen";
+"watch.sync.retry" = "Probeer opnieuw";
 "watch.sync.starting" = "Synchronisatie starten…";
 "web_view.add_to.option.AppleWatch.title" = "Apple Watch";
 "web_view.add_to.option.CarPlay.title" = "CarPlay";
@@ -3147,7 +3147,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "web_view.add_to.option.NfcTag.title" = "NFC-tag";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Controleer je verbinding of probeer het later opnieuw. Als Home Assistant opnieuw wordt opgestart, wordt de verbinding hersteld zodra deze weer beschikbaar is.";
-"web_view.empty_state.clean_cache_and_reload_button" = "Cache wissen en opnieuw laden";
+"web_view.empty_state.clean_cache_and_reload_button" = "Wis cache en herlaad";
 "web_view.empty_state.client_certificate.import_button" = "Certificaat importeren";
 "web_view.empty_state.client_certificate.rejected.body" = "%@ heeft het op dit apparaat geconfigureerde clientcertificaat geweigerd. Het certificaat is mogelijk verlopen, ingetrokken of op de server vervangen. Importeer een geldig certificaatbestand (.p12 of .pfx) om door te gaan.";
 "web_view.empty_state.client_certificate.rejected.title" = "Certificaat afgewezen";
@@ -3158,7 +3158,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "web_view.empty_state.logged_out.title" = "Je bent uitgelogd";
 "web_view.empty_state.open_settings_button" = "Open app-instellingen";
 "web_view.empty_state.reauthenticate_button" = "Authenticeer opnieuw";
-"web_view.empty_state.retry_button" = "Opnieuw proberen";
+"web_view.empty_state.retry_button" = "Probeer opnieuw";
 "web_view.empty_state.title" = "Je hebt geen verbinding meer";
 "web_view.no_url_available.body" = "🔐 Door je beveiligingskeuzes is er geen URL die we mogen gebruiken. \
 \
