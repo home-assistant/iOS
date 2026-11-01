@@ -16,7 +16,8 @@ struct RemindersSyncSettingsViewTests {
         )
         assertLightDarkSnapshots(
             of: NavigationView { RemindersSyncSettingsView(viewModel: viewModel) },
-            layout: .fixed(width: 393, height: 1500)
+            drawHierarchyInKeyWindow: true,
+            layout: .fixed(width: 390, height: 1500)
         )
     }
 
