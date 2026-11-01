@@ -108,6 +108,47 @@ final class EntityAddToHandlerTests: XCTestCase {
         wait(for: [resolved], timeout: 10.0)
     }
 
+    func testWatchComplicationActionPresentsTheComplicationBuilderForTheEntity() throws {
+        let webView = MockWebViewController()
+        let sut = EntityAddToHandler(webViewController: webView)
+        let executed = expectation(description: "watch complication action executed")
+
+        sut.execute(action: WatchComplicationAction(), entityId: "sensor.battery").done {
+            executed.fulfill()
+        }.cauterize()
+        wait(for: [executed], timeout: 10.0)
+
+        XCTAssertTrue(webView.presentOverlayControllerCalled)
+        let controller = try XCTUnwrap(webView.overlayedController)
+        XCTAssertTrue(String(describing: type(of: controller)).contains("WatchComplicationBuilderEditView"))
+    }
+
+    func testActionsForEntityIncludesWatchComplicationActionForAnyDomain() {
+        let webView = MockWebViewController()
+        let sut = EntityAddToHandler(webViewController: webView)
+        let resolved = expectation(description: "actions resolved")
+
+        // The builder's entity picker has no domain filter, so even a domain the app does not model
+        // (no watch row, no CarPlay row) can still be a complication.
+        sut.actionsForEntity(entityId: "not_a_domain.kitchen").done { actions in
+            XCTAssertTrue(actions.contains { $0.actionType == EntityAddToActionType.watchComplication.rawValue })
+            resolved.fulfill()
+        }.cauterize()
+        wait(for: [resolved], timeout: 10.0)
+    }
+
+    func testWatchComplicationActionSurvivesTheRoundTripThroughTheFrontend() throws {
+        let external = try ExternalEntityAddToAction.from(action: WatchComplicationAction())
+
+        XCTAssertEqual(external.name, L10n.WebView.AddTo.Option.WatchComplication.title)
+        XCTAssertEqual(external.mdiIcon, "mdi:watch-variant")
+        XCTAssertTrue(external.enabled)
+
+        let decoded = try ExternalEntityAddToAction.toAction(from: external.appPayload)
+        XCTAssertEqual(decoded.actionType, EntityAddToActionType.watchComplication.rawValue)
+        XCTAssertTrue(decoded is WatchComplicationAction)
+    }
+
     func testNFCTagActionSurvivesTheRoundTripThroughTheFrontend() throws {
         let external = try ExternalEntityAddToAction.from(action: NFCTagAction())
 
