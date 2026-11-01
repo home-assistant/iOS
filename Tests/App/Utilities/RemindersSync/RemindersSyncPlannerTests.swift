@@ -303,6 +303,24 @@ struct RemindersSyncPlannerTests {
         ])
     }
 
+    @Test func testIncludingCompletedItemsMatchesAllSameStatePairsBeforeCrossStateOnes() {
+        // The completed item sorts first, but must not take the only open reminder away from the
+        // open item that matches it exactly.
+        let open = snapshot()
+        let completed = snapshot(isCompleted: true)
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            includeCompletedItems: true,
+            todoItems: ["a-completed": completed, "z-open": open],
+            reminders: ["reminder-open": open],
+            links: []
+        )
+        #expect(operations == [
+            .adoptLink(todoItemUid: "z-open", reminderId: "reminder-open"),
+            .createReminder(todoItemUid: "a-completed"),
+        ])
+    }
+
     @Test func testIncludingCompletedItemsReopensAnAdoptedCompletedCopy() {
         // Only a completed copy of a newly added open item exists on the other side: with
         // Home Assistant winning, link them and reopen the reminder instead of creating a

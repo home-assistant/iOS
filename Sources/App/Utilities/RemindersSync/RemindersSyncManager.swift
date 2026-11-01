@@ -375,7 +375,7 @@ final class RemindersSyncManager: ObservableObject {
 
     /// Plans and applies the operations for one config. Returns the history detail lines for the
     /// changes that were applied.
-    private func applyPlan(
+    func applyPlan(
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
         calendar: EKCalendar,
@@ -401,46 +401,65 @@ final class RemindersSyncManager: ObservableObject {
         var createdTodoItemReminderIds: [String] = []
         var needsCommit = false
 
-        for operation in operations {
-            switch operation {
-            case .createReminder, .updateReminder, .deleteReminder:
-                let didWriteStore = try await applyReminderOperation(
-                    operation,
-                    config: config,
-                    calendar: calendar,
-                    features: features,
+        func applyOperations(_ operations: [RemindersSyncOperation]) async throws {
+            for operation in operations {
+                switch operation {
+                case .createReminder, .updateReminder, .deleteReminder:
+                    let didWriteStore = try await applyReminderOperation(
+                        operation,
+                        config: config,
+                        calendar: calendar,
+                        features: features,
+                        todoSnapshots: todoSnapshots,
+                        remindersById: remindersById
+                    )
+                    needsCommit = needsCommit || didWriteStore
+                case .createTodoItem, .updateTodoItem, .deleteTodoItem, .adoptLink, .deleteLink:
+                    let createdFromReminderId = try await applyTodoOperation(
+                        operation,
+                        config: config,
+                        api: api,
+                        todoSnapshots: todoSnapshots,
+                        reminderSnapshots: reminderSnapshots
+                    )
+                    if let createdFromReminderId {
+                        createdTodoItemReminderIds.append(createdFromReminderId)
+                    }
+                }
+                if let line = historyLine(
+                    for: operation,
                     todoSnapshots: todoSnapshots,
-                    remindersById: remindersById
-                )
-                needsCommit = needsCommit || didWriteStore
-            case .createTodoItem, .updateTodoItem, .deleteTodoItem, .adoptLink, .deleteLink:
-                let createdFromReminderId = try await applyTodoOperation(
-                    operation,
-                    config: config,
-                    api: api,
-                    todoSnapshots: todoSnapshots,
-                    reminderSnapshots: reminderSnapshots
-                )
-                if let createdFromReminderId {
-                    createdTodoItemReminderIds.append(createdFromReminderId)
+                    reminderSnapshots: reminderSnapshots,
+                    links: links
+                ) {
+                    details.append(line)
                 }
             }
-            if let line = historyLine(
-                for: operation,
-                todoSnapshots: todoSnapshots,
-                reminderSnapshots: reminderSnapshots,
-                links: links
-            ) {
-                details.append(line)
+
+            if needsCommit {
+                // Saves and removals above only stage changes (`commit: false`); this is the XPC
+                // round-trip that writes them, so it stays off the main thread too. `Swift.Result`
+                // spelled out because PromiseKit's `Result<T>` shadows it in this file.
+                let store = eventStore
+                try await Self.eventStoreAccess { Swift.Result(catching: { try store.commit() }) }.get()
             }
         }
 
-        if needsCommit {
-            // Saves and removals above only stage changes (`commit: false`); this is the XPC
-            // round-trip that writes them, so it stays off the main thread too. `Swift.Result`
-            // spelled out because PromiseKit's `Result<T>` shadows it in this file.
-            let store = eventStore
-            try await Self.eventStoreAccess { Swift.Result(catching: { try store.commit() }) }.get()
+        do {
+            try await applyOperations(operations)
+        } catch {
+            // Items already added to Home Assistant stay there whatever failed afterwards. Link
+            // them now (best effort) so the next sync doesn't see an unlinked open copy and, by
+            // adopting it, reopen the completed reminder it came from.
+            if !createdTodoItemReminderIds.isEmpty {
+                try? await linkCreatedTodoItems(
+                    config: config,
+                    api: api,
+                    reminderIds: createdTodoItemReminderIds,
+                    reminderSnapshots: reminderSnapshots
+                )
+            }
+            throw error
         }
 
         if !createdTodoItemReminderIds.isEmpty {

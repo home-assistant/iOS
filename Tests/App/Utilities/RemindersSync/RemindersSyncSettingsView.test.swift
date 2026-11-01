@@ -14,4 +14,10 @@ struct RemindersSyncSettingsViewTests {
             layout: .fixed(width: 393, height: 1500)
         )
     }
+
+    /// The new toggle is reachable from settings search.
+    @Test func searchIndexesTheCompletedItemsToggle() {
+        let titles = RemindersSyncSettingsView.settingsSearchEntries.map(\.title)
+        #expect(titles.contains(L10n.RemindersSync.Settings.Completed.title))
+    }
 }
