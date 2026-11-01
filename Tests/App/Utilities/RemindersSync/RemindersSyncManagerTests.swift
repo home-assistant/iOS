@@ -18,7 +18,7 @@ struct RemindersSyncManagerTests {
     private static let listId = "todo.shopping"
     private let eventStore = EKEventStore()
 
-    private var config: RemindersSyncConfig {
+    private func config(_ direction: RemindersSyncDirection = .toHomeAssistant) -> RemindersSyncConfig {
         RemindersSyncConfig(
             id: "config",
             serverId: "server",
@@ -26,7 +26,7 @@ struct RemindersSyncManagerTests {
             todoEntityName: "Shopping",
             reminderListId: "list",
             reminderListName: "Groceries",
-            direction: .toHomeAssistant
+            direction: direction
         )
     }
 
@@ -83,16 +83,57 @@ struct RemindersSyncManagerTests {
         return (details, connection.requests, links)
     }
 
-    private func applyPlan(api: HomeAssistantAPI, remindersById: [String: EKReminder]) async throws -> [String] {
+    /// The manager's own event store: a reminder it creates belongs to that store, and EventKit
+    /// refuses to attach it to a calendar from any other.
+    private func managerStore() throws -> EKEventStore {
+        let child = Mirror(reflecting: RemindersSyncManager.shared).children.first { $0.label == "eventStore" }
+        return try #require(child?.value as? EKEventStore)
+    }
+
+    private func applyPlan(
+        api: HomeAssistantAPI,
+        direction: RemindersSyncDirection = .toHomeAssistant,
+        todoSnapshots: [String: RemindersSyncItemSnapshot] = [:],
+        remindersById: [String: EKReminder]
+    ) async throws -> [String] {
         try await RemindersSyncManager.shared.applyPlan(
-            config: config,
+            config: config(direction),
             api: api,
-            calendar: EKCalendar(for: .reminder, eventStore: eventStore),
+            calendar: EKCalendar(for: .reminder, eventStore: managerStore()),
             features: nil,
-            todoSnapshots: [:],
+            todoSnapshots: todoSnapshots,
             remindersById: remindersById,
             links: []
         )
+    }
+
+    /// Reminder-side writes go through EventKit, which refuses them here: the test host has no
+    /// Reminders access and the calendar was never saved. The plan still reaches the write, the
+    /// refusal is reported, and nothing is sent to Home Assistant.
+    @Test func refusedReminderWriteIsReported() async throws {
+        var thrown: Error?
+        let (_, requests, links) = try await withSyncEnvironment(items: []) { api in
+            do {
+                return try await applyPlan(
+                    api: api,
+                    direction: .toReminders,
+                    todoSnapshots: ["u-milk": RemindersSyncItemSnapshot(
+                        title: "Milk",
+                        isCompleted: false,
+                        notes: nil,
+                        due: nil
+                    )],
+                    remindersById: [:]
+                )
+            } catch {
+                thrown = error
+                return []
+            }
+        }
+
+        #expect(thrown != nil)
+        #expect(requests.isEmpty)
+        #expect(links.isEmpty)
     }
 
     private func data(_ request: HARequest, _ key: String) -> String? {
