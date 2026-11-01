@@ -387,9 +387,11 @@ final class RemindersSyncManager: ObservableObject {
         let reminderSnapshots = remindersById.mapValues {
             RemindersSyncItemSnapshot(reminder: $0).trimmed(to: features)
         }
+        let settings = RemindersSyncSettings.current
         let operations = RemindersSyncPlanner.plan(
             direction: config.direction,
-            conflictResolution: RemindersSyncSettings.current.conflictResolution,
+            conflictResolution: settings.conflictResolution,
+            includeCompletedItems: settings.includeCompletedItems,
             todoItems: todoSnapshots,
             reminders: reminderSnapshots,
             links: links
@@ -604,7 +606,8 @@ final class RemindersSyncManager: ObservableObject {
 
     /// `todo.add_item` doesn't return the created item's `uid`, so items created on the Home
     /// Assistant side are linked by re-fetching the list and matching still-unlinked items by
-    /// title.
+    /// title. `todo.add_item` can't create a completed item either, so a completed reminder is
+    /// created open and completed here, once its `uid` is known.
     private func linkCreatedTodoItems(
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
@@ -615,13 +618,35 @@ final class RemindersSyncManager: ObservableObject {
         let configId = config.id
         let existingLinks = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
         let linkedUids = Set(existingLinks.map(\.todoItemUid))
-        var unlinkedItems = refreshed.filter { !linkedUids.contains($0.uid) }
+        // Only open items are candidates: that's what `todo.add_item` just created, and with
+        // completed items included an older checked-off copy of the same title may also be
+        // unlinked.
+        var unlinkedItems = refreshed.filter { !linkedUids.contains($0.uid) && $0.status != "completed" }
 
         for reminderId in reminderIds {
-            guard let snapshot = reminderSnapshots[reminderId],
+            guard var snapshot = reminderSnapshots[reminderId],
                   let index = unlinkedItems
                   .firstIndex(where: { RemindersSyncItemSnapshot(todoItem: $0).title == snapshot.title }) else { continue }
             let item = unlinkedItems.remove(at: index)
+            if snapshot.isCompleted {
+                do {
+                    try await api.updateTodoItem(
+                        listId: config.todoEntityId,
+                        itemId: item.uid,
+                        rename: snapshot.title,
+                        status: "completed",
+                        description: snapshot.notes,
+                        dueDate: snapshot.dueDateArgument,
+                        dueDateTime: snapshot.dueDateTimeArgument
+                    )
+                } catch {
+                    // The item exists but is still open. Link it as open so the next sync sees
+                    // the reminder as the changed side and completes it, instead of seeing the
+                    // item as changed and reopening the reminder.
+                    Current.Log.error("Reminders sync couldn't complete created item \(snapshot.title): \(error)")
+                    snapshot.isCompleted = false
+                }
+            }
             await saveLink(config: config, todoItemUid: item.uid, reminderId: reminderId, snapshot: snapshot)
         }
     }

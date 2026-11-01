@@ -33,6 +33,7 @@ enum RemindersSyncPlanner {
     static func plan(
         direction: RemindersSyncDirection,
         conflictResolution: RemindersSyncConflictResolution = .homeAssistant,
+        includeCompletedItems: Bool = false,
         todoItems: [String: RemindersSyncItemSnapshot],
         reminders: [String: RemindersSyncItemSnapshot],
         links: [LinkState]
@@ -52,23 +53,27 @@ enum RemindersSyncPlanner {
                 reminder: reminders[link.reminderId]
             ))
         }
-        // Completed items that were never linked are ignored: they are history, not work to
-        // mirror. Completion still propagates across linked pairs above.
+        // Completed items that were never linked are ignored unless the user opted in: they are
+        // history, not work to mirror. Completion still propagates across linked pairs above.
         var unlinkedTodoUids = todoItems
-            .filter { !linkedUids.contains($0.key) && !$0.value.isCompleted }
+            .filter { !linkedUids.contains($0.key) && (includeCompletedItems || !$0.value.isCompleted) }
             .keys.sorted()
         var unlinkedReminderIds = reminders
-            .filter { !linkedReminderIds.contains($0.key) && !$0.value.isCompleted }
+            .filter { !linkedReminderIds.contains($0.key) && (includeCompletedItems || !$0.value.isCompleted) }
             .keys.sorted()
 
         // Adopt same-titled unlinked pairs first, so linking two lists that already contain the
         // same items doesn't create duplicates on the first sync. Removing each matched reminder
-        // from the candidates ensures it is adopted at most once.
+        // from the candidates ensures it is adopted at most once. A reminder in the same
+        // completion state is preferred, so an open item isn't paired with a checked-off copy
+        // of itself while an open one is available.
         var adoptedTodoUids = Set<String>()
         for uid in unlinkedTodoUids {
-            guard let todoItem = todoItems[uid],
-                  let reminderIndex = unlinkedReminderIds
-                  .firstIndex(where: { reminders[$0]?.title == todoItem.title }) else { continue }
+            guard let todoItem = todoItems[uid] else { continue }
+            let sameTitle: (String) -> Bool = { reminders[$0]?.title == todoItem.title }
+            guard let reminderIndex = unlinkedReminderIds
+                .firstIndex(where: { sameTitle($0) && reminders[$0]?.isCompleted == todoItem.isCompleted })
+                ?? unlinkedReminderIds.firstIndex(where: sameTitle) else { continue }
             let reminderId = unlinkedReminderIds.remove(at: reminderIndex)
             adoptedTodoUids.insert(uid)
             operations.append(.adoptLink(todoItemUid: uid, reminderId: reminderId))

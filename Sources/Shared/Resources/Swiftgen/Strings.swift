@@ -5080,7 +5080,7 @@ public enum L10n {
       public static var direction: String { return L10n.tr("Localizable", "reminders_sync.add.direction") }
       /// These lists are already being synced.
       public static var duplicateWarning: String { return L10n.tr("Localizable", "reminders_sync.add.duplicate_warning") }
-      /// The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are not copied.
+      /// The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are only copied when “Include completed items” is turned on in the sync settings.
       public static var listsFooter: String { return L10n.tr("Localizable", "reminders_sync.add.lists_footer") }
       /// Lists to sync
       public static var listsHeader: String { return L10n.tr("Localizable", "reminders_sync.add.lists_header") }
@@ -5183,6 +5183,14 @@ public enum L10n {
         public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.body") }
         /// Reminders access needed
         public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.title") }
+      }
+      public enum Completed {
+        /// Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.
+        public static var footer: String { return L10n.tr("Localizable", "reminders_sync.settings.completed.footer") }
+        /// Completed items
+        public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.completed.header") }
+        /// Include completed items
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.completed.title") }
       }
       public enum Conflicts {
         /// This only matters for two-way syncs. If the same item was edited in both apps since the last sync, the version from the side you pick here is kept.

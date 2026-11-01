@@ -76,6 +76,15 @@ struct RemindersSyncSettingsView: View {
                 }
                 refreshSections
                 conflictSection
+                Section(
+                    header: Text(L10n.RemindersSync.Settings.Completed.header),
+                    footer: Text(L10n.RemindersSync.Settings.Completed.footer)
+                ) {
+                    Toggle(
+                        L10n.RemindersSync.Settings.Completed.title,
+                        isOn: $viewModel.settings.includeCompletedItems
+                    )
+                }
                 historySection
             }
         }
@@ -174,6 +183,7 @@ extension RemindersSyncSettingsView: SettingsScreenSearchable {
         [
             SettingsSearchEntry(L10n.RemindersSync.Settings.addList),
             SettingsSearchEntry(L10n.RemindersSync.Settings.syncNow),
+            SettingsSearchEntry(L10n.RemindersSync.Settings.Completed.title),
         ]
     }
 }
