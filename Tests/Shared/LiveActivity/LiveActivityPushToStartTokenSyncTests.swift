@@ -8,29 +8,60 @@ import XCTest
 /// (home-assistant/iOS#5812), so the stale one stops being re-sent to Core on every registration.
 @available(iOS 17.2, *)
 final class LiveActivityPushToStartTokenSyncTests: XCTestCase {
-    /// In-memory stand-in for the Keychain, which the test host cannot access.
-    private final class StoredToken: @unchecked Sendable {
-        var value: String?
-        init(_ value: String?) { self.value = value }
+    /// What the registry touched: the stored token (an in-memory stand-in for the Keychain, which the
+    /// test host cannot access) and the servers that received an `update_registration` request.
+    private final class Recorder: @unchecked Sendable {
+        var storedToken: String?
+        var updatedServers: [Identifier<Server>] = []
+        init(storedToken: String?) { self.storedToken = storedToken }
     }
 
     private var previousServers: ServerManager!
+    private var previousWebhooks: WebhookManager!
+    private var previousVendorID: (() -> String?)!
+    private var servers: FakeServerManager!
+    private var webhooks: FakeWebhookManager!
+    private var recorder: Recorder!
 
     override func setUp() {
         super.setUp()
         previousServers = Current.servers
-        Current.servers = FakeServerManager(initial: 0)
+        previousWebhooks = Current.webhooks
+        previousVendorID = Current.device.identifierForVendor
+        servers = FakeServerManager(initial: 2)
+        webhooks = FakeWebhookManager()
+        recorder = Recorder(storedToken: nil)
+        Current.servers = servers
+        Current.webhooks = webhooks
+        // Without a vendor identifier no registration counts as another device's, so every fake
+        // server accepts the registration update.
+        Current.device.identifierForVendor = { nil }
+        webhooks.sendEphemeralHandler = { [recorder] server, request in
+            if request.type == "update_registration" {
+                recorder?.updatedServers.append(server.identifier)
+            }
+            return ["webhook_id": "webhook-id"]
+        }
     }
 
     override func tearDown() {
+        Current.device.identifierForVendor = previousVendorID
+        Current.webhooks = previousWebhooks
         Current.servers = previousServers
         super.tearDown()
     }
 
-    private func makeRegistry(stored: String?) -> (LiveActivityRegistry, StoredToken) {
-        let token = StoredToken(stored)
-        let store = LiveActivityPushToStartTokenStore(read: { token.value }, write: { token.value = $0 })
-        return (LiveActivityRegistry(pushToStartTokenStore: store), token)
+    private func makeRegistry(stored: String?) -> LiveActivityRegistry {
+        recorder.storedToken = stored
+        let store = LiveActivityPushToStartTokenStore(
+            read: { [recorder] in recorder?.storedToken },
+            write: { [recorder] in recorder?.storedToken = $0 }
+        )
+        return LiveActivityRegistry(pushToStartTokenStore: store)
+    }
+
+    private var allServerIdentifiers: Set<Identifier<Server>> {
+        Set(servers.all.map(\.identifier))
     }
 
     // MARK: - Keychain store
@@ -83,46 +114,62 @@ final class LiveActivityPushToStartTokenSyncTests: XCTestCase {
 
     // MARK: - syncPushToStartToken
 
-    func testSyncPushToStartToken_rotatedToken_replacesStoredToken() async {
-        let (registry, stored) = makeRegistry(stored: "ffee")
+    func testSyncPushToStartToken_rotatedToken_storesAndReportsToEveryServer() async {
+        let registry = makeRegistry(stored: "ffee")
 
         await registry.syncPushToStartToken(current: Data([0x01, 0xAB]))
 
-        XCTAssertEqual(stored.value, "01ab")
+        XCTAssertEqual(recorder.storedToken, "01ab")
+        XCTAssertEqual(recorder.updatedServers.count, 2)
+        XCTAssertEqual(Set(recorder.updatedServers), allServerIdentifiers)
     }
 
-    func testSyncPushToStartToken_nothingStored_storesCurrentToken() async {
-        let (registry, stored) = makeRegistry(stored: nil)
+    func testSyncPushToStartToken_nothingStored_storesAndReportsToEveryServer() async {
+        let registry = makeRegistry(stored: nil)
 
         await registry.syncPushToStartToken(current: Data([0x01, 0xAB]))
 
-        XCTAssertEqual(stored.value, "01ab")
+        XCTAssertEqual(recorder.storedToken, "01ab")
+        XCTAssertEqual(recorder.updatedServers.count, 2)
+        XCTAssertEqual(Set(recorder.updatedServers), allServerIdentifiers)
     }
 
-    func testSyncPushToStartToken_unchangedToken_leavesStoredToken() async {
-        let (registry, stored) = makeRegistry(stored: "01ab")
+    func testSyncPushToStartToken_unchangedToken_doesNotReport() async {
+        let registry = makeRegistry(stored: "01ab")
 
         await registry.syncPushToStartToken(current: Data([0x01, 0xAB]))
 
-        XCTAssertEqual(stored.value, "01ab")
+        XCTAssertEqual(recorder.storedToken, "01ab")
+        XCTAssertEqual(recorder.updatedServers, [])
     }
 
-    func testSyncPushToStartToken_nilCurrent_keepsStoredToken() async {
-        let (registry, stored) = makeRegistry(stored: "01ab")
+    func testSyncPushToStartToken_nilCurrent_keepsStoredTokenAndDoesNotReport() async {
+        let registry = makeRegistry(stored: "01ab")
 
         await registry.syncPushToStartToken(current: nil)
 
-        XCTAssertEqual(stored.value, "01ab")
+        XCTAssertEqual(recorder.storedToken, "01ab")
+        XCTAssertEqual(recorder.updatedServers, [])
+    }
+
+    func testSyncPushToStartToken_emptyCurrent_keepsStoredTokenAndDoesNotReport() async {
+        let registry = makeRegistry(stored: "01ab")
+
+        await registry.syncPushToStartToken(current: Data())
+
+        XCTAssertEqual(recorder.storedToken, "01ab")
+        XCTAssertEqual(recorder.updatedServers, [])
     }
 
     /// `reattach()` runs the sync with ActivityKit's live value, which the simulator never issues, so
-    /// a stored token must survive it untouched.
-    func testReattach_withoutSystemToken_keepsStoredToken() async {
-        let (registry, stored) = makeRegistry(stored: "01ab")
+    /// a stored token must survive it untouched and nothing is reported.
+    func testReattach_withoutSystemToken_keepsStoredTokenAndDoesNotReport() async {
+        let registry = makeRegistry(stored: "01ab")
 
         await registry.reattach()
 
-        XCTAssertEqual(stored.value, "01ab")
+        XCTAssertEqual(recorder.storedToken, "01ab")
+        XCTAssertEqual(recorder.updatedServers, [])
     }
 }
 #endif
