@@ -186,6 +186,23 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func testEmptyStreamChunksKeepTypingIndicator() {
+        sut.didReceiveSttContent("What is the temperature in the living room?")
+        // An agent that calls a tool first streams a message start and the tool call without text.
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("")
+        sut.didReceiveStreamResponseChunk("")
+
+        XCTAssertEqual(sut.chatItems.map(\.itemType), [.input, .typing])
+
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("It is 21 degrees.")
+
+        XCTAssertEqual(sut.chatItems.map(\.itemType), [.input, .output])
+        XCTAssertEqual(sut.chatItems.last?.content, "It is 21 degrees.")
+    }
+
+    @MainActor
     func testIntentEndDoesNotDuplicateFullyStreamedReply() {
         sut.didStartStreamResponseMessage()
         sut.didReceiveStreamResponseChunk("The lights ")
