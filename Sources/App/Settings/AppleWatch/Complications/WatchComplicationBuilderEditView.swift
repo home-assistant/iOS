@@ -24,10 +24,8 @@ struct WatchComplicationBuilderEditView: View {
 
     /// A new complication for an entity picked elsewhere, e.g. the frontend's "Add to" sheet.
     init(prefilledEntityId: String, serverId: String) {
-        _viewModel = StateObject(wrappedValue: WatchComplicationBuilderEditViewModel(
-            prefilledEntityId: prefilledEntityId,
-            serverId: serverId
-        ))
+        let viewModel = WatchComplicationBuilderEditViewModel(prefilledEntityId: prefilledEntityId, serverId: serverId)
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     /// Server selection. Animated: picking a server reveals the next step of the flow.
@@ -184,7 +182,7 @@ struct WatchComplicationBuilderEditView: View {
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                            Text(verbatim: viewModel.selectedEntity?.name ?? L10n.EntityPicker.placeholder)
+                            Text(verbatim: viewModel.entityRowTitle)
                                 .foregroundColor(.accentColor)
                             if let entitySubtitle = viewModel.entitySubtitle {
                                 Text(verbatim: entitySubtitle)

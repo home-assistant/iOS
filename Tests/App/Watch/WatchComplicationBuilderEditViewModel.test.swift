@@ -65,6 +65,7 @@ struct WatchComplicationBuilderEditViewModelTests {
             #expect(viewModel.config.gaugeMin == 0)
             #expect(viewModel.config.gaugeMax == 100)
             #expect(viewModel.config.iconName == Domain(rawValue: "sensor")?.icon(deviceClass: "battery").name)
+            #expect(viewModel.entityRowTitle == "Battery")
         }
     }
 
@@ -83,6 +84,17 @@ struct WatchComplicationBuilderEditViewModelTests {
             #expect(viewModel.selectedEntity == nil)
             #expect(viewModel.config.iconName == Domain.light.icon().name)
             #expect(viewModel.isSourceConfigured)
+            // The row shows what was pre-filled rather than asking to pick an entity.
+            #expect(viewModel.entityRowTitle == "light.kitchen")
+        }
+    }
+
+    @Test func entityRowTitleFallsBackToThePickerPromptWithoutAnEntity() throws {
+        try withBuilderTestWorld { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+
+            #expect(viewModel.entityRowTitle == L10n.EntityPicker.placeholder)
         }
     }
 

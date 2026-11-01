@@ -87,6 +87,12 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         config.entityDisplayName ?? config.entityId ?? L10n.Watch.Complications.Builder.name
     }
 
+    /// The entity row's label: the picked entity's name, or for a pre-filled entity the app has no
+    /// registry row for, the id the config holds — never the "pick entity" prompt while Save is enabled.
+    var entityRowTitle: String {
+        selectedEntity?.name ?? config.entityDisplayName ?? config.entityId ?? L10n.EntityPicker.placeholder
+    }
+
     var isValid: Bool {
         switch config.kind {
         case .entity: return config.entityId != nil

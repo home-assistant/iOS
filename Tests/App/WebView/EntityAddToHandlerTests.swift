@@ -149,6 +149,12 @@ final class EntityAddToHandlerTests: XCTestCase {
         XCTAssertTrue(decoded is WatchComplicationAction)
     }
 
+    func testEncodingAWatchComplicationActionOfTheWrongTypeFails() {
+        XCTAssertThrowsError(try ExternalEntityAddToAction.from(action: MismatchedWatchComplicationAction())) { error in
+            XCTAssertEqual(error as? EntityAddToError, .encodingFailed)
+        }
+    }
+
     func testNFCTagActionSurvivesTheRoundTripThroughTheFrontend() throws {
         let external = try ExternalEntityAddToAction.from(action: NFCTagAction())
 
@@ -160,4 +166,12 @@ final class EntityAddToHandlerTests: XCTestCase {
         XCTAssertEqual(decoded.actionType, EntityAddToActionType.nfcTag.rawValue)
         XCTAssertTrue(decoded is NFCTagAction)
     }
+}
+
+/// Claims the watch complication action type without being the watch complication action, so the
+/// type-erased encoder has a mismatch to refuse.
+private struct MismatchedWatchComplicationAction: EntityAddToAction {
+    var mdiIcon: String { "mdi:alert" }
+    var actionType: String { EntityAddToActionType.watchComplication.rawValue }
+    func text() -> String { "" }
 }
