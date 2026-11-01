@@ -3,9 +3,13 @@ import Shared
 import SwiftUI
 
 struct RemindersSyncSettingsView: View {
-    @StateObject private var viewModel = RemindersSyncSettingsViewModel()
+    @StateObject private var viewModel: RemindersSyncSettingsViewModel
     @ObservedObject private var syncManager = RemindersSyncManager.shared
     @State private var showAddSheet = false
+
+    init(viewModel: RemindersSyncSettingsViewModel? = nil) {
+        self._viewModel = StateObject(wrappedValue: viewModel ?? RemindersSyncSettingsViewModel())
+    }
 
     var body: some View {
         List {
