@@ -4,6 +4,7 @@ import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
+import UserNotifications
 
 // Serialized: the tests swap `Current.isCatalyst`, which concurrent tests would race on.
 @Suite(.sharedState)
@@ -57,6 +58,57 @@ struct NotificationSettingsViewTests {
         viewModel.tapActionsEnabled = true
 
         #expect(Current.settingsStore.notificationTapActionsEnabled)
+    }
+
+    /// Every authorization status reads as enabled, disabled or "needs request".
+    @MainActor
+    @Test func permissionStatusesDescribeThemselves() {
+        let enabled = L10n.SettingsDetails.Notifications.Permission.enabled
+        let disabled = L10n.SettingsDetails.Notifications.Permission.disabled
+        #expect(NotificationSettingsViewModel.permissionText(for: .authorized) == enabled)
+        #expect(NotificationSettingsViewModel.permissionText(for: .provisional) == enabled)
+        #expect(NotificationSettingsViewModel.permissionText(for: .ephemeral) == enabled)
+        #expect(NotificationSettingsViewModel.permissionText(for: .denied) == disabled)
+        #expect(
+            NotificationSettingsViewModel.permissionText(for: .notDetermined) ==
+                L10n.SettingsDetails.Notifications.Permission.needsRequest
+        )
+        #expect(NotificationSettingsViewModel.permissionText(for: UNAuthorizationStatus(rawValue: 99)!) == disabled)
+    }
+
+    /// The badge and force-close switches write through to the settings store. Turning the force-close
+    /// warning on would ask for notification permission, so only switching it off is exercised.
+    @MainActor
+    @Test func switchesWriteThroughToSettings() {
+        let previousClear = Current.settingsStore.clearBadgeAutomatically
+        let previousForceClose = Current.settingsStore.forceCloseWarningEnabled
+        defer {
+            Current.settingsStore.clearBadgeAutomatically = previousClear
+            Current.settingsStore.forceCloseWarningEnabled = previousForceClose
+        }
+
+        let viewModel = NotificationSettingsViewModel()
+        viewModel.clearBadgeAutomatically = !previousClear
+        #expect(Current.settingsStore.clearBadgeAutomatically == !previousClear)
+        viewModel.forceCloseWarningEnabled = false
+        #expect(!Current.settingsStore.forceCloseWarningEnabled)
+    }
+
+    /// Presented from a notification, the screen offers Done; clearing the badge resets the count.
+    @MainActor
+    @Test func doneAndClearingTheBadge() async {
+        let previousBadge = UIApplication.shared.applicationIconBadgeNumber
+        defer { UIApplication.shared.applicationIconBadgeNumber = previousBadge }
+        UIApplication.shared.applicationIconBadgeNumber = 3
+
+        let driver = await SwiftUIScreenDriver.show(NotificationSettingsView(showsDoneButton: true))
+        defer { driver.close() }
+        let pressed = await driver.tapBarButton(titled: L10n.doneLabel)
+        #expect(pressed)
+
+        // Header, overview, history/snooze/sounds, tap actions, then the badge section.
+        await driver.tapRow(IndexPath(item: 0, section: 4))
+        #expect(UIApplication.shared.applicationIconBadgeNumber == 0)
     }
 
     private func withCatalyst(_ isCatalyst: Bool, _ body: () throws -> Void) rethrows {

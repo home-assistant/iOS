@@ -115,6 +115,92 @@ struct ImportExportConfigurationViewModelTests {
         }
     }
 
+    /// Import starts by asking for a file; a picker that returns nothing changes nothing, and one
+    /// that fails reports why.
+    @Test func thePickerOpensAndItsOutcomesAreHandled() async throws {
+        try await withViewModelTestWorld { _, viewModel in
+            viewModel.startImport()
+            #expect(viewModel.showImporter)
+
+            await viewModel.handleFileSelection(.success([]))
+            #expect(!viewModel.showImportConfirmation)
+            #expect(viewModel.errorMessage == nil)
+
+            await viewModel.handleFileSelection(.failure(URLError(.cancelled)))
+            #expect(viewModel.errorMessage != nil)
+        }
+    }
+
+    /// A configuration file with nothing in it says so in the confirmation.
+    @Test func anEmptyConfigurationFileSaysSo() async throws {
+        let emptyDatabase = try makeViewModelDatabase()
+        let restoreSource = prepareWorld(database: emptyDatabase)
+        let url = try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
+        restoreSource()
+        var payload = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        payload.removeValue(forKey: "appSettings")
+        try JSONSerialization.data(withJSONObject: payload).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        try await withViewModelTestWorld { _, viewModel in
+            await viewModel.handleFileSelection(.success([url]))
+            if viewModel.showImportConfirmation {
+                #expect(!viewModel.pendingImportSummary.isEmpty)
+            }
+        }
+    }
+
+    /// A configuration file that carries no category at all is confirmed as an empty file.
+    @Test func aFileWithoutAnyCategoryIsDescribedAsEmpty() async throws {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("empty-\(UUID().uuidString)")
+            .appendingPathExtension(AppConfigurationTransfer.fileExtension)
+        let payload: [String: Any] = [
+            "kind": AppConfigurationTransfer.fileKind,
+            "schemaVersion": AppConfigurationTransfer.schemaVersion,
+            "exportedAt": "2026-01-01T00:00:00Z",
+        ]
+        try JSONSerialization.data(withJSONObject: payload).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        try await withViewModelTestWorld { _, viewModel in
+            await viewModel.handleFileSelection(.success([url]))
+            #expect(viewModel.showImportConfirmation)
+            #expect(
+                viewModel.pendingImportSummary
+                    == L10n.Settings.Debugging.ConfigurationTransfer.Import.Confirmation.emptyFile
+            )
+            viewModel.cancelImport()
+        }
+    }
+
+    /// Counting, exporting and importing all report a database they cannot read.
+    @Test func databaseFailuresAreReported() async throws {
+        let sourceDatabase = try makeViewModelDatabase()
+        try seedCustomWidget(in: sourceDatabase, id: "imported")
+        let restoreSource = prepareWorld(database: sourceDatabase)
+        let url = try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
+        restoreSource()
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        try await withViewModelTestWorld { _, viewModel in
+            await viewModel.handleFileSelection(.success([url]))
+            #expect(viewModel.showImportConfirmation)
+
+            Current.database = { try! DatabaseQueue() }
+            viewModel.refreshEntryCounts()
+            #expect(viewModel.entryCounts.isEmpty)
+
+            await viewModel.export()
+            #expect(viewModel.errorMessage != nil)
+
+            viewModel.errorMessage = nil
+            await viewModel.confirmImport()
+            #expect(viewModel.errorMessage != nil)
+            #expect(!viewModel.isImporting)
+        }
+    }
+
     private let serverId = "server-valid"
 
     private func withViewModelTestWorld(

@@ -119,6 +119,169 @@ struct DebugDatabaseTransferTests {
         }
     }
 
+    @Test func transferErrorsDescribeThemselves() {
+        let errors: [DebugDatabaseTransfer.TransferError] = [
+            .unsupportedFile,
+            .unsupportedFeatureFile,
+            .wrongFeatureFile(actual: .customWidgets, expected: .complications),
+        ]
+        for error in errors {
+            #expect(error.errorDescription?.isEmpty == false)
+        }
+    }
+
+    @Test func validateRejectsAFileThatIsNotJSON() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("debug-transfer-\(UUID()).txt")
+        try Data("{}".utf8).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        #expect(throws: DebugDatabaseTransfer.TransferError.self) {
+            try DebugDatabaseTransfer.validateImportFile(from: url, part: .watchConfiguration)
+        }
+    }
+
+    /// Files exported before the discriminator existed name their part through the only list they fill.
+    @Test func validateInfersThePartOfAFileWithoutDiscriminator() throws {
+        try withTransferTestWorld { database in
+            try seedAllParts(in: database, serverId: validServerId)
+            for part in DebugDatabaseTransfer.Part.allCases {
+                let url = try strippedExport(of: part)
+                defer { try? FileManager.default.removeItem(at: url) }
+                try DebugDatabaseTransfer.validateImportFile(from: url, part: part)
+            }
+        }
+    }
+
+    /// Without a discriminator, a file filling several lists (or none) cannot be matched to a part.
+    @Test func validateRejectsAnAmbiguousFileWithoutDiscriminator() throws {
+        try withTransferTestWorld { database in
+            try seedAllParts(in: database, serverId: validServerId)
+            let watch = try strippedExport(of: .watchConfiguration)
+            let carPlay = try strippedExport(of: .carPlayConfiguration)
+            defer {
+                try? FileManager.default.removeItem(at: watch)
+                try? FileManager.default.removeItem(at: carPlay)
+            }
+            var mixed = try jsonPayload(from: watch)
+            mixed["carPlayConfigurations"] = try jsonPayload(from: carPlay)["carPlayConfigurations"]
+            try JSONSerialization.data(withJSONObject: mixed).write(to: watch)
+
+            do {
+                try DebugDatabaseTransfer.validateImportFile(from: watch, part: .watchConfiguration)
+                Issue.record("Expected a mixed file without discriminator to be rejected")
+            } catch DebugDatabaseTransfer.TransferError.unsupportedFeatureFile {
+                // expected
+            }
+        }
+    }
+
+    /// Importing each remaining part replaces only its rows, drops what points at an unknown server
+    /// and refreshes the surfaces that show it.
+    @Test(arguments: [
+        DebugDatabaseTransfer.Part.watchConfiguration,
+        .complications,
+        .customWidgets,
+        .appIconShortcuts,
+    ])
+    func importReplacesThePartAndDropsUnknownServers(part: DebugDatabaseTransfer.Part) async throws {
+        let sourceDatabase = try makeTransferDatabase()
+        try seedMixedServers(part: part, in: sourceDatabase)
+        let url = try withTransferTestWorld(database: sourceDatabase) { _ in
+            try DebugDatabaseTransfer.exportURL(part: part)
+        }
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let destinationDatabase = try makeTransferDatabase()
+        try await withTransferTestWorld(database: destinationDatabase) { _ in
+            let summary = try await DebugDatabaseTransfer.importPayload(from: url, part: part)
+            switch part {
+            case .watchConfiguration:
+                #expect(summary.watchConfigurations == 1)
+                let storedConfig = try WatchConfig.config()
+                let config = try #require(storedConfig)
+                #expect(config.items.map(\.id) == ["watch-valid"])
+                #expect(config.assist.serverId == nil)
+                #expect(config.assist.pipelineId == nil)
+            case .complications:
+                #expect(summary.legacyComplications == 2)
+                #expect(summary.complicationConfigurations == 1)
+            case .customWidgets:
+                #expect(summary.customWidgets == 1)
+                let storedWidgets = try CustomWidget.widgets()
+                let widgets = try #require(storedWidgets)
+                #expect(widgets.map(\.id) == ["mixed"])
+                #expect(widgets.first?.items.map(\.id) == ["customWidgets-valid"])
+            case .appIconShortcuts:
+                #expect(summary.appIconShortcutConfigurations == 1)
+            case .carPlayConfiguration:
+                Issue.record("CarPlay is covered by its own test")
+            }
+        }
+    }
+
+    @Test func importFailsWhenThePostImportCleanupFails() async throws {
+        let sourceDatabase = try makeTransferDatabase()
+        try seedCarPlayConfiguration(in: sourceDatabase, serverId: validServerId)
+        let url = try withTransferTestWorld(database: sourceDatabase) { _ in
+            try DebugDatabaseTransfer.exportURL(part: .carPlayConfiguration)
+        }
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        try await withTransferTestWorld(modelManager: FailingModelManager()) { _ in
+            await #expect(throws: (any Error).self) {
+                _ = try await DebugDatabaseTransfer.importPayload(from: url, part: .carPlayConfiguration)
+            }
+        }
+    }
+
+    /// Exports `part` and removes its feature discriminator, as older exports were written.
+    private func strippedExport(of part: DebugDatabaseTransfer.Part) throws -> URL {
+        let url = try DebugDatabaseTransfer.exportURL(part: part)
+        var payload = try jsonPayload(from: url)
+        payload.removeValue(forKey: "exportedPart")
+        try JSONSerialization.data(withJSONObject: payload).write(to: url)
+        return url
+    }
+
+    /// Seeds `part` with rows for the known server and for one the destination does not know.
+    private func seedMixedServers(part: DebugDatabaseTransfer.Part, in database: DatabaseQueue) throws {
+        let valid = MagicItem(id: "\(part.rawValue)-valid", serverId: validServerId, type: .script)
+        let invalid = MagicItem(id: "\(part.rawValue)-invalid", serverId: missingServerId, type: .script)
+        try database.write { db in
+            switch part {
+            case .watchConfiguration:
+                var config = WatchConfig(id: WatchConfig.watchConfigId, items: [
+                    .init(id: "watch-valid", serverId: validServerId, type: .script),
+                    .init(id: "watch-invalid", serverId: missingServerId, type: .script),
+                ])
+                config.assist = .init(showAssist: true, serverId: missingServerId, pipelineId: "pipeline")
+                try config.insert(db)
+            case .complications:
+                try WatchComplication(identifier: "legacy-valid", serverIdentifier: validServerId, name: "A")
+                    .insert(db)
+                try WatchComplication(identifier: "legacy-unowned", serverIdentifier: nil, name: "B").insert(db)
+                try WatchComplication(identifier: "legacy-invalid", serverIdentifier: missingServerId, name: "C")
+                    .insert(db)
+                try WatchComplicationConfig(id: "config-valid", serverId: validServerId, entityId: "sensor.a")
+                    .insert(db)
+                try WatchComplicationConfig(id: "config-invalid", serverId: missingServerId, entityId: "sensor.b")
+                    .insert(db)
+            case .customWidgets:
+                try CustomWidget(
+                    id: "mixed",
+                    name: "Mixed",
+                    items: [valid, invalid],
+                    itemsStates: [valid.serverUniqueId: .idle, invalid.serverUniqueId: .pendingConfirmation]
+                ).insert(db)
+                try CustomWidget(id: "orphan", name: "Orphan", items: [invalid]).insert(db)
+            case .appIconShortcuts:
+                try AppIconShortcutConfig(items: [valid, invalid]).insert(db)
+            case .carPlayConfiguration:
+                try CarPlayConfig(quickAccessItems: [valid, invalid]).insert(db)
+            }
+        }
+    }
+
     private let validServerId = "server-valid"
     private let missingServerId = "server-missing"
 
@@ -275,5 +438,11 @@ private final class RecordingAppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         if forceUpdate {
             updatedServerIds.append(server.identifier.rawValue)
         }
+    }
+}
+
+private final class FailingModelManager: LegacyModelManager {
+    override func cleanup(definitions: [CleanupDefinition] = CleanupDefinition.defaults) -> Promise<Void> {
+        .init(error: URLError(.cannotOpenFile))
     }
 }

@@ -333,4 +333,37 @@ struct AppIconShortcutItemsUpdaterTests {
     func ignoresForeignShortcutType() {
         #expect(AppIconShortcutItemsUpdater.identifier(from: "openSettings") == nil)
     }
+
+    /// Each kind of item gets its own icon (an unsupported one none), four at a time.
+    @MainActor
+    @Test("Gives every kind of item its icon")
+    func everyKindOfItemHasItsIcon() async throws {
+        let kinds: [[MagicItem.ItemType]] = [[.script, .scene, .folder, .area], [.complication, .unsupported]]
+        for batch in kinds {
+            let items = batch.map { MagicItem(id: "item.\($0.rawValue)", serverId: Self.serverId, type: $0) }
+            try await withConfiguredItems(items) { _ in
+                await update()
+                #expect(!publishedTypes.isEmpty)
+            }
+        }
+    }
+
+    /// On the Mac an "Open Settings" item always comes first.
+    @MainActor
+    @Test("Adds Open Settings on the Mac")
+    func theMacAlwaysOffersOpenSettings() async throws {
+        let previousCatalyst = Current.isCatalyst
+        Current.isCatalyst = true
+        defer { Current.isCatalyst = previousCatalyst }
+        try await withConfiguredItems([entityItem(id: "light.kitchen")]) { _ in
+            await update()
+            #expect(publishedTypes.first == HAApplicationShortcutItem.openSettings.rawValue)
+        }
+    }
+
+    @Test("Rejects a shortcut type naming an unknown item kind")
+    func rejectsAnUnknownItemKind() {
+        #expect(AppIconShortcutItemsUpdater.identifier(from: "appIconShortcut.1|bogus|light.kitchen") == nil)
+        #expect(AppIconShortcutItemsUpdater.identifier(from: "something.else") == nil)
+    }
 }

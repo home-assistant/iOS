@@ -52,6 +52,17 @@ struct WebhookDetailViewModelTests {
         body()
     }
 
+    /// A server without a single URL has no active endpoint.
+    @Test func aServerWithoutURLsHasNoActiveEndpoint() {
+        let server = makeServer(internalURL: nil, externalURL: nil, remoteUIURL: nil, cloudhookURL: nil)
+
+        withNetworkState(NetworkState()) {
+            let viewModel = WebhookDetailViewModel(server: server)
+            #expect(viewModel.activeURL == nil)
+            #expect(viewModel.activeSource == nil)
+        }
+    }
+
     @Test func listsCloudhookAndEveryConfiguredURLAsAWebhookEndpoint() {
         let server = makeServer(
             internalURL: URL(string: "http://internal.example.com:8123"),
