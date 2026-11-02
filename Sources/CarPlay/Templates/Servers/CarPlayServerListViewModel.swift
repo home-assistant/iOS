@@ -5,7 +5,7 @@ import Shared
 
 final class CarPlayServerListViewModel {
     weak var templateProvider: CarPlayServersListTemplate?
-    weak var interfaceController: CPInterfaceController?
+    weak var interfaceController: CarPlayAlertPresenting?
     private var pendingTabs: [CarPlayTab]?
     private var pendingLayout: CarPlayQuickAccessLayout?
     private var pendingServer: Server?

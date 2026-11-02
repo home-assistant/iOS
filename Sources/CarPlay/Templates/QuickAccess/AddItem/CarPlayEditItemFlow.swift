@@ -5,15 +5,15 @@ import Shared
 final class CarPlayEditItemFlow {
     typealias DisplayItem = (title: String, subtitle: String?, image: UIImage)
 
-    private weak var interfaceController: CPInterfaceController?
+    private weak var interfaceController: CarPlayNavigationPresenting?
     private let viewModel: CarPlayAddItemViewModel
     private let itemDisplay: (MagicItem) -> DisplayItem
     private let onFinish: () -> Void
 
-    private let template = CPListTemplate(title: L10n.CarPlay.QuickAccess.EditItem.title, sections: [])
+    let template = CPListTemplate(title: L10n.CarPlay.QuickAccess.EditItem.title, sections: [])
 
     init(
-        interfaceController: CPInterfaceController?,
+        interfaceController: CarPlayNavigationPresenting?,
         viewModel: CarPlayAddItemViewModel = CarPlayAddItemViewModel(),
         itemDisplay: @escaping (MagicItem) -> DisplayItem,
         onFinish: @escaping () -> Void
