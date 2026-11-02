@@ -115,7 +115,8 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
         })
 
         interface.serversDidChange(servers)
-        wait(seconds: 1)
+        // Polled rather than slept: the reloads run on the main queue, which a busy runner delays.
+        waitUntil { loads >= 2 }
 
         XCTAssertEqual(loads, 2)
         assertDisabled(interface.status(for: server))
@@ -134,7 +135,8 @@ final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
         })
 
         interface.serversDidChange(servers)
-        wait(seconds: 2)
+        // Polled rather than slept: the reloads run on the main queue, which a busy runner delays.
+        waitUntil { loads >= 4 }
 
         XCTAssertEqual(loads, 4)
         assertDisabled(interface.status(for: server))

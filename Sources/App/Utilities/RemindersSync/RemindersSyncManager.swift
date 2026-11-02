@@ -22,15 +22,19 @@ final class RemindersSyncManager: ObservableObject {
 
     @Published private(set) var isSyncing = false
 
-    private var eventStore = EKEventStore()
+    private var eventStore: EKEventStore
     private var notificationObservers: [NSObjectProtocol] = []
-    private var pendingSyncTask: Task<Void, Never>?
+    /// The scheduled (debounced or on-demand) sync. Readable by tests.
+    private(set) var pendingSyncTask: Task<Void, Never>?
     private var periodicRefreshTask: Task<Void, Never>?
     /// Our own EventKit writes post `EKEventStoreChanged` too; suppress rescheduling while (and
     /// shortly after) a sync is running so it doesn't feed back into itself.
     private var suppressStoreChangeSync = false
 
-    private init() {}
+    /// The app uses `shared`; tests create their own instance, optionally with a stand-in store.
+    init(eventStore: EKEventStore = EKEventStore()) {
+        self.eventStore = eventStore
+    }
 
     /// Installs the foreground and Reminders-change observers. Called once at app launch; cheap
     /// when the user has no sync configured.
@@ -71,6 +75,22 @@ final class RemindersSyncManager: ObservableObject {
 
         scheduleSync(after: 5)
         restartPeriodicRefresh()
+    }
+
+    /// Undoes `start()` for an instance a test owns: removes the observers and cancels the
+    /// scheduled and periodic syncs, returning once they have finished.
+    func stopForTesting() async {
+        for observer in notificationObservers {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        notificationObservers = []
+        let tasks = [pendingSyncTask, periodicRefreshTask].compactMap { $0 }
+        pendingSyncTask = nil
+        periodicRefreshTask = nil
+        for task in tasks {
+            task.cancel()
+            await task.value
+        }
     }
 
     /// Backgrounding: stop the debounce and periodic-refresh timers so a sync can't start during
@@ -374,8 +394,8 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     /// Plans and applies the operations for one config. Returns the history detail lines for the
-    /// changes that were applied.
-    private func applyPlan(
+    /// changes that were applied. Non-private for tests.
+    func applyPlan(
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
         calendar: EKCalendar,
@@ -467,8 +487,8 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     /// A localized, human-readable line for the history log describing one applied operation.
-    /// Link bookkeeping operations return nil, they aren't user-visible changes.
-    private func historyLine(
+    /// Link bookkeeping operations return nil, they aren't user-visible changes. Non-private for tests.
+    func historyLine(
         for operation: RemindersSyncOperation,
         todoSnapshots: [String: RemindersSyncItemSnapshot],
         reminderSnapshots: [String: RemindersSyncItemSnapshot],
@@ -648,7 +668,9 @@ final class RemindersSyncManager: ObservableObject {
         return TodoListEntityFeature(rawValue: rawValue)
     }
 
-    private func apply(
+    /// Copies `snapshot` onto `reminder`, leaving alone the fields the list can't store. Non-private for
+    /// tests.
+    func apply(
         _ snapshot: RemindersSyncItemSnapshot,
         to reminder: EKReminder,
         features: TodoListEntityFeature?
