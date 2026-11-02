@@ -8,8 +8,11 @@ import Testing
 /// connection is a state machine over a socket, so nothing below the transport tells you whether a
 /// `synthesize` actually comes back as playable audio.
 ///
-/// `AVSpeechSynthesizer.write` hands its buffers back through the main thread, so the synthesis tests
-/// time out (the synthesizer gives up after 30 s) while another test keeps the main thread busy.
+/// `AVSpeechSynthesizer.write` hands its buffers back through the main thread, and the recogniser
+/// session lives on the main actor, both shared with every other suite in the process: on a loaded
+/// runner a turn there has taken over a minute. So the synthesiser's own timeout is lifted, and the
+/// client's reads give up only once their time has passed and the main queue has drained
+/// (`LoadTolerantDeadline`), never while the answer is still queued behind other tests.
 struct WyomingConnectionTests {
     private enum TestError: Error {
         case listenerUnavailable
@@ -33,18 +36,19 @@ struct WyomingConnectionTests {
             }
         }
 
-        func boundPort(timeout: TimeInterval = 10) async throws -> UInt16 {
-            let deadline = Date().addingTimeInterval(timeout)
-            while Date() < deadline {
+        func boundPort() async throws -> UInt16 {
+            var port: UInt16?
+            var failed = false
+            _ = await LoadTolerantDeadline.waitUntil {
                 lock.lock()
-                let port = port
-                let failed = failed
+                port = self.port
+                failed = self.failed
                 lock.unlock()
-                if failed { throw TestError.listenerUnavailable }
-                if let port { return port }
-                try await Task.sleep(nanoseconds: 20_000_000)
+                return port != nil || failed
             }
-            throw TestError.timedOut
+            if failed { throw TestError.listenerUnavailable }
+            guard let port else { throw TestError.timedOut }
+            return port
         }
     }
 
@@ -72,8 +76,9 @@ struct WyomingConnectionTests {
             let data = try WyomingEventCodec.encode(event)
             _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, Error>) in
                 let pending = Pending(continuation)
-                let deadline = DispatchWorkItem { pending.resume(with: .failure(TestError.timedOut)) }
-                DispatchQueue.global().asyncAfter(deadline: .now() + readTimeout, execute: deadline)
+                let deadline = LoadTolerantDeadline.Expiry(seconds: readTimeout) {
+                    pending.resume(with: .failure(TestError.timedOut))
+                }
 
                 connection.send(content: data, completion: .contentProcessed { error in
                     deadline.cancel()
@@ -118,8 +123,9 @@ struct WyomingConnectionTests {
         private func readChunk() async throws -> Data {
             try await withCheckedThrowingContinuation { continuation in
                 let pending = Pending(continuation)
-                let deadline = DispatchWorkItem { pending.resume(with: .failure(TestError.timedOut)) }
-                DispatchQueue.global().asyncAfter(deadline: .now() + readTimeout, execute: deadline)
+                let deadline = LoadTolerantDeadline.Expiry(seconds: readTimeout) {
+                    pending.resume(with: .failure(TestError.timedOut))
+                }
 
                 connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, _, isComplete, error in
                     deadline.cancel()
@@ -149,6 +155,8 @@ struct WyomingConnectionTests {
             fallbackLocale: Locale(identifier: "en-US"),
             advertisesOverBonjour: false,
             makeRecognizer: makeRecognizer,
+            // The client's load-tolerant reads decide when a request has gone unanswered.
+            synthesisTimeout: 600,
             onStateChange: { recorder.record($0) }
         )
         await server.start()
@@ -363,14 +371,26 @@ struct WyomingConnectionTests {
         let port = try #require(NWEndpoint.Port(rawValue: boundPort))
 
         // One more than the cap, all held open at once and none of them saying anything — which is
-        // what a host that went away without closing leaves behind. Spaced out so the server
-        // accepts them in the order they were made and "the oldest" means the first of them. The
-        // oldest reads with a short deadline so a connection that was *not* dropped is told apart
-        // from one that was, rather than both ending in an error.
+        // what a host that went away without closing leaves behind. Each is accepted before the
+        // next is made (the server accepts on a task per socket, which a loaded runner can run in
+        // any order), so "the oldest" means the first of them. A connection that was *not* dropped
+        // is told apart from one that was by its read running out of time rather than failing.
         var clients: [Client] = []
         for index in 0 ... 8 {
-            clients.append(Client(port: port, readTimeout: index == 0 ? 2 : 60))
-            try await Task.sleep(for: .milliseconds(50))
+            clients.append(Client(port: port, readTimeout: LoadTolerantDeadline.seconds))
+            if index < 8 {
+                let accepted = await LoadTolerantDeadline.waitUntil(awaiting: {
+                    await server.openConnectionCount == index + 1
+                })
+                guard accepted else {
+                    Issue.record("The server never accepted connection \(index)")
+                    for client in clients {
+                        client.cancel()
+                    }
+                    await server.stop()
+                    return
+                }
+            }
         }
 
         // The newest answers: a table full of sockets that went quiet does not turn it away.

@@ -67,12 +67,14 @@ final class MockWebViewController: WebViewControllerProtocol {
         // Simulate opening debug view
     }
 
+    private(set) var goBackCallCount = 0
     func goBack() {
-        // Simulate going back
+        goBackCallCount += 1
     }
 
+    private(set) var goForwardCallCount = 0
     func goForward() {
-        // Simulate going forward
+        goForwardCallCount += 1
     }
 
     func openInBrowser() {
