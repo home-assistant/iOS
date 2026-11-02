@@ -549,8 +549,10 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveStreamResponseChunk(_ content: String) {
+        // A delta without text must not turn the typing indicator into an empty bubble.
+        guard !content.isEmpty else { return }
         var text = streamedOutput
-        if streamedMessageStartPending, !content.isEmpty {
+        if streamedMessageStartPending {
             text = Self.joinWithParagraphBreak(text, content)
             streamedMessageStartPending = false
         } else {

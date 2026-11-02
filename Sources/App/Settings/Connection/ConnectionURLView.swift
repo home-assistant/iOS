@@ -68,7 +68,7 @@ struct ConnectionURLView: View {
     private var cloudToggleSection: some View {
         if urlType.isAffectedByCloud, viewModel.server.info.connection.canUseCloud {
             Section {
-                Toggle(L10n.Settings.ConnectionSection.HomeAssistantCloud.title, isOn: $viewModel.useCloud)
+                Toggle(AppConstants.homeAssistantLinkName, isOn: $viewModel.useCloud)
             }
         }
     }
@@ -128,7 +128,7 @@ struct ConnectionURLView: View {
             urlTextField
             securityWarning
         } else {
-            Text(L10n.Settings.ConnectionSection.cloudOverridesExternal)
+            Text(L10n.Settings.ConnectionSection.cloudLinkOverridesExternal(AppConstants.homeAssistantLinkName))
                 .foregroundColor(.secondary)
                 .font(.footnote)
         }

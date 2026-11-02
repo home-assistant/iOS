@@ -6238,7 +6238,7 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
 			requirement = {
 				kind = exactVersion;
-				version = 1.18.1;
+				version = 1.19.7;
 			};
 		};
 		4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
@@ -6286,7 +6286,7 @@
 			repositoryURL = "https://github.com/mxcl/PromiseKit/";
 			requirement = {
 				kind = exactVersion;
-				version = 8.1.1;
+				version = 8.2.0;
 			};
 		};
 		42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */ = {
@@ -6318,7 +6318,7 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 12.9.0;
+				minimumVersion = 13.1.1;
 			};
 		};
 		42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
@@ -6326,7 +6326,7 @@
 			repositoryURL = "https://github.com/stasel/WebRTC.git";
 			requirement = {
 				kind = exactVersion;
-				version = 152.0.0;
+				version = 156.0.0;
 			};
 		};
 		42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
@@ -6366,7 +6366,7 @@
 			repositoryURL = "https://github.com/phimage/CallbackURLKit.git";
 			requirement = {
 				kind = exactVersion;
-				version = 2.3.2;
+				version = 3.0.0;
 			};
 		};
 		CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
@@ -6382,7 +6382,7 @@
 			repositoryURL = "https://github.com/groue/GRDB.swift.git";
 			requirement = {
 				kind = exactVersion;
-				version = 7.8.0;
+				version = 7.12.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
