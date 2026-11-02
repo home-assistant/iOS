@@ -225,7 +225,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::script::entity_component::_::state::off" = "Tắt";
 "component::script::entity_component::_::state::on" = "Bật";
 "component::script::title" = "Tập lệnh";
-"component::select::title" = "Chọn";
+"component::select::title" = "Hộp thoại chọn";
 "component::sensibo::entity::climate::climate_device::state_attributes::swing_mode::state::stopped" = "Tắt";
 "component::sensibo::entity::select::horizontalswing::state::stopped" = "Tắt";
 "component::sensibo::entity::select::light::state::off" = "Tắt";
