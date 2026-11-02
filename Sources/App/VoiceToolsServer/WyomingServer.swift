@@ -34,6 +34,9 @@ actor WyomingServer {
     private let makeRecognizer: OnDeviceRecognizerFactory
     /// Shortened by tests, which cannot wait out a minute of silence to prove the socket closes.
     private let idleReadTimeout: TimeInterval?
+    /// Lengthened by tests, whose main thread (which synthesis goes through) is shared with other
+    /// suites on a loaded runner.
+    private let synthesisTimeout: TimeInterval?
     private let onStateChange: @Sendable (WyomingServerState) -> Void
     private let queue = DispatchQueue(label: "io.home-assistant.wyoming-server", qos: .userInitiated)
 
@@ -56,6 +59,7 @@ actor WyomingServer {
         advertisesOverBonjour: Bool = true,
         makeRecognizer: @escaping OnDeviceRecognizerFactory = systemSpeechRecognizerFactory,
         idleReadTimeout: TimeInterval? = nil,
+        synthesisTimeout: TimeInterval? = nil,
         onStateChange: @escaping @Sendable (WyomingServerState) -> Void
     ) {
         self.requestedPort = port
@@ -64,6 +68,7 @@ actor WyomingServer {
         self.advertisesOverBonjour = advertisesOverBonjour
         self.makeRecognizer = makeRecognizer
         self.idleReadTimeout = idleReadTimeout
+        self.synthesisTimeout = synthesisTimeout
         self.onStateChange = onStateChange
     }
 
@@ -159,7 +164,8 @@ actor WyomingServer {
             queue: queue,
             fallbackLocale: fallbackLocale,
             makeRecognizer: makeRecognizer,
-            idleReadTimeout: idleReadTimeout ?? WyomingConnection.defaultIdleReadTimeout
+            idleReadTimeout: idleReadTimeout ?? WyomingConnection.defaultIdleReadTimeout,
+            synthesisTimeout: synthesisTimeout ?? WyomingSpeechSynthesizer.defaultRenderTimeout
         )
         // The task inherits this actor, so the bookkeeping below runs on it without a hop and the
         // entry is always removed on the same actor that added it.

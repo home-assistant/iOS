@@ -65,7 +65,7 @@ actor WyomingConnection {
     private let makeRecognizer: OnDeviceRecognizerFactory
     /// Shortened by tests, which cannot wait out a minute of silence to prove the socket closes.
     private let idleReadTimeout: TimeInterval
-    private let synthesizer = WyomingSpeechSynthesizer()
+    private let synthesizer: WyomingSpeechSynthesizer
 
     private var buffer = Data()
     private var requestedLanguage: String?
@@ -76,13 +76,15 @@ actor WyomingConnection {
         queue: DispatchQueue,
         fallbackLocale: Locale,
         makeRecognizer: @escaping OnDeviceRecognizerFactory,
-        idleReadTimeout: TimeInterval = WyomingConnection.defaultIdleReadTimeout
+        idleReadTimeout: TimeInterval = WyomingConnection.defaultIdleReadTimeout,
+        synthesisTimeout: TimeInterval = WyomingSpeechSynthesizer.defaultRenderTimeout
     ) {
         self.connection = connection
         self.queue = queue
         self.fallbackLocale = fallbackLocale
         self.makeRecognizer = makeRecognizer
         self.idleReadTimeout = idleReadTimeout
+        self.synthesizer = WyomingSpeechSynthesizer(renderTimeout: synthesisTimeout)
     }
 
     /// Reads and answers events until the client hangs up or the task is cancelled.
