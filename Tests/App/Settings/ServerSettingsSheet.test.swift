@@ -1,13 +1,14 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 
 /// Covers the sheet wrapper the server details screen presents its editors in: a navigation stack with
 /// a close button around the given content.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerSettingsSheetTests {
     @Test func wrapsContentWithAClose() async throws {

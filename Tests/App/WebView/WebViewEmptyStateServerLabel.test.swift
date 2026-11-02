@@ -7,7 +7,7 @@ import SwiftUI
 import Testing
 import UIKit
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WebViewEmptyStateServerLabelTests {
     private static let size = CGSize(width: 240, height: 60)
 

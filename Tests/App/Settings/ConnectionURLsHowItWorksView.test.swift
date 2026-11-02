@@ -2,6 +2,7 @@ import CoreLocation
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
@@ -93,7 +94,7 @@ private func withEnvironment(
     body()
 }
 
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionURLsHowItWorksViewTests {
     @Test func everyRequirementMet() async throws {
@@ -207,7 +208,7 @@ struct ConnectionURLsHowItWorksViewTests {
     }
 }
 
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionURLsHowItWorksViewModelTests {
     @Test func marksEveryRequirementMetOnAListedNetwork() {

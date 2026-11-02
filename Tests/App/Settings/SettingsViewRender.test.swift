@@ -1,6 +1,7 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
@@ -12,7 +13,7 @@ import UIKit
 /// `NavigationLink(destination:)` rows, so rendering it would construct every destination screen
 /// — and the view models some of them build in `init`, which reach for the real database.
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct SettingsViewRenderTests {
     private func withEnvironment(isTestFlight: Bool, _ work: () -> Void) {
         let previousTestFlight = Current.isTestFlight

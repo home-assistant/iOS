@@ -1,8 +1,10 @@
 import Foundation
 @testable import HomeAssistant
 import Shared
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct ManageStorageInventoryTests {
     private let paths = ManageStoragePaths.rooted(at: URL(fileURLWithPath: "/tmp/manage-storage-inventory"))
 

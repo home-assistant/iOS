@@ -8,8 +8,10 @@ import XCTest
 class OneShotLocationTests: XCTestCase {
     private var locationManager: FakeLocationManager!
     private var now: Date!
+    private var previousDate: (() -> Date)!
 
     override func setUp() {
+        previousDate = Current.date
         let now = Date()
         self.now = now
         Current.date = { now }
@@ -19,6 +21,7 @@ class OneShotLocationTests: XCTestCase {
     override func tearDown() {
         XCTAssertNil(locationManager.delegate)
         XCTAssertFalse(locationManager.isUpdatingLocation)
+        Current.date = previousDate
     }
 
     func testNoLocationsNoErrorJustTimeout() {

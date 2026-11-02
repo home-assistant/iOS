@@ -2,6 +2,7 @@ import Foundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Stands in for the database updater so a Sync in a test never reaches the network.
@@ -17,7 +18,7 @@ private final class IdleAppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
 /// Covers what the server screen's view model derives for the details row: the URLs, which one is in
 /// use, the Sync button's in-flight state, and the invitation link behind the share button.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionSettingsViewModelTests {
     private func makeServer(

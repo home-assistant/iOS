@@ -3,6 +3,7 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Exercises the entity list behind "get entity state" and "show": it offers what a person would
@@ -10,7 +11,7 @@ import Testing
 ///
 /// Offering and resolving are two different objects now that the entity is shared: this narrows what
 /// is put in front of someone, and `HAAppEntityAppIntentEntityQuery` reads any id back.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ReadableEntityOptionsProviderTests {
     private static func makeEntity(
         serverId: String,

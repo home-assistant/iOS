@@ -1,10 +1,11 @@
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// The identifier the server knows the installation by is taken from the vendor identifier once and kept.
 // Serialized: the tests swap `Current.device.identifierForVendor` and the stored value, which concurrent
 // tests would race on.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct SettingsStoreIntegrationDeviceIDTests {
     private func withVendorIdentifier(
         _ identifier: @escaping () -> String?,

@@ -4,9 +4,14 @@ import GRDB
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 class ZoneManagerProcessorTests: XCTestCase {
+    /// Puts back the fake servers and other `Current` members this class swaps in, which would
+    /// otherwise receive sensor updates for the rest of the run.
+    private var currentSnapshot: CurrentSnapshot!
+
     private var apis: [FakeHassAPI]!
     private var (oneShotLocationPromise, oneShotLocationSeal) = Promise<CLLocation>.pending()
     private var (submitLocationPromise, submitLocationSeal) = Promise<Void>.pending()
@@ -22,6 +27,7 @@ class ZoneManagerProcessorTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        currentSnapshot = CurrentSnapshot()
 
         Current.connectivity.currentNetworkState = { NetworkState(ssid: "wifi_name") }
 
@@ -64,6 +70,12 @@ class ZoneManagerProcessorTests: XCTestCase {
         Current.database = previousDatabase
         Current.settingsStore.regionEnterMaximumFuzzDistance = SettingsStore.defaultRegionEnterMaximumFuzzDistance
 
+        currentSnapshot.restore()
+        // XCTest keeps every test case instance for the whole run, so what the properties hold
+        // would outlive the test: each API stays registered with the app's sensor container.
+        processor = nil
+        delegate = nil
+        apis = nil
         super.tearDown()
     }
 

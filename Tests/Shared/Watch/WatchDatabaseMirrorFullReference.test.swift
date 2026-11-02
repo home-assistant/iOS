@@ -1,12 +1,13 @@
 import Foundation
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Tests for the full-reference (v2) watch database mirror: the version/compression wire constants,
 /// snapshot fidelity per advertised version, the registry/device table retain-vs-replace semantics,
 /// and payload compression.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchDatabaseMirrorFullReferenceTests {
     @Test("Version and payload keys are stable wire constants")
     func constants() {

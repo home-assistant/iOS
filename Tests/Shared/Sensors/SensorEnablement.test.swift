@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 class SensorEnablementTests: XCTestCase {
@@ -12,9 +13,16 @@ class SensorEnablementTests: XCTestCase {
     /// A battery whose unique ID comes from the hardware, so it can't be known ahead of time.
     private let dynamicSensorID = "battery-serial-1234_level"
 
+    /// Every migration flag and allowlist these read lives in the app group defaults, which other
+    /// test processes on the simulator reset and seed while this class runs.
+    private var settingsStore: PrivateSettingsStore!
+    private var previousServers: ServerManager!
+
     override func setUp() {
         super.setUp()
 
+        settingsStore = PrivateSettingsStore()
+        previousServers = Current.servers
         servers = FakeServerManager()
         server = servers.addFake()
         secondServer = servers.addFake()
@@ -26,9 +34,13 @@ class SensorEnablementTests: XCTestCase {
     }
 
     override func tearDown() {
-        super.tearDown()
+        container = nil
+        Current.servers = previousServers
+        previousServers = nil
+        settingsStore?.restore()
+        settingsStore = nil
 
-        SensorEnablementStore.resetForTesting()
+        super.tearDown()
     }
 
     // MARK: - Migrating an install that predates the allowlist

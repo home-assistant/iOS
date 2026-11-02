@@ -1,9 +1,10 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct DebugViewTests {
     /// Every row of the debugging screen is built inline in its body, so nothing else in the suite
     /// runs that code: a row that stopped resolving — a missing icon, a destination that no longer

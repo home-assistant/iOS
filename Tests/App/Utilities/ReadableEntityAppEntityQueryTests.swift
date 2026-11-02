@@ -1,13 +1,14 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// The entity list behind "get entity state", which asks about entities rather than switching them.
 ///
 /// Like the on/off list it offers a narrowed set — the readable domains, in rooms — while resolving
 /// anything, so an id saved in a shortcut keeps working after the entity leaves that set.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ReadableEntityAppEntityQueryTests {
     private static func makeEntity(serverId: String, entityId: String, name: String) -> HAAppEntity {
         HAAppEntity(

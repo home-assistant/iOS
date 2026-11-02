@@ -6,7 +6,7 @@ import SwiftUI
 import Testing
 
 /// Serialized: the test replaces the process-wide `Current.database`.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct AssistPipelineAddListSnapshotTests {
     /// The cached pipelines are listed per server, with a reload button in the toolbar to fetch

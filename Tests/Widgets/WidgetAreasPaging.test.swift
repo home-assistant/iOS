@@ -1,12 +1,13 @@
 @testable import HomeAssistant
 
 import Shared
+import SharedTesting
 import Testing
 import WidgetKit
 
 /// The parts of the areas widget's paging that aren't drawn: where the page is remembered, and what
 /// the arrows do at the two ends of a home.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WidgetAreasPagingTests {
     private static let serverId = "paging-tests-server"
 

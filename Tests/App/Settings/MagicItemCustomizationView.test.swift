@@ -10,6 +10,7 @@ import Testing
 /// a tap on the tile does, and what a tap on its icon does. Everywhere else a magic item is used
 /// there is still only one thing to tap.
 @MainActor
+@Suite(.sharedState)
 struct MagicItemCustomizationViewTests {
     @Test func widgetOffersTapAndIconTapBehaviors() {
         assertSnapshots(context: .widget, item: .init(id: "light.kitchen", serverId: "1", type: .entity))

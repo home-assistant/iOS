@@ -3,11 +3,12 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Flips the App Labs tab bar flag in the store the way the App Labs screen does and checks what follows it.
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct NativeTabBarEnabledStateTests {
     private func setTabBar(enabled: Bool) async throws {
         Current.appLabs.setEnabled(enabled, featureId: AppLabsFeature.iosNativeTabBar.rawValue)

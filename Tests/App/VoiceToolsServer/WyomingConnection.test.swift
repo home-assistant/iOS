@@ -7,6 +7,9 @@ import Testing
 /// Drives a real listener over loopback and exercises the requests Home Assistant sends. The
 /// connection is a state machine over a socket, so nothing below the transport tells you whether a
 /// `synthesize` actually comes back as playable audio.
+///
+/// `AVSpeechSynthesizer.write` hands its buffers back through the main thread, so the synthesis tests
+/// time out (the synthesizer gives up after 30 s) while another test keeps the main thread busy.
 struct WyomingConnectionTests {
     private enum TestError: Error {
         case listenerUnavailable

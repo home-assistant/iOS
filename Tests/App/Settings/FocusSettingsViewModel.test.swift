@@ -1,11 +1,13 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 // Exercises the Focus names the user creates in settings: the names are the state the `focus_name`
 // sensor reports, so they have to be trimmed, unique, and stop being reported once deleted.
 @MainActor
+@Suite(.sharedState)
 struct FocusSettingsViewModelTests {
     private func makeViewModel() throws -> FocusSettingsViewModel {
         try Current.database().write { db in

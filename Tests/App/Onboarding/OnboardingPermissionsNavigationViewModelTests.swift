@@ -2,18 +2,21 @@ import CoreLocation
 import Foundation
 @testable import HomeAssistant
 import Shared
+import SharedTesting
 import Testing
 
 // MARK: - Test Fixtures
 
-@Suite("OnboardingPermissionsNavigationViewModel Tests")
+/// `.isolatedEnvironment` with an empty server registry: the flow asks for privacy choices instead of the
+/// location permission when the registry holds another server, and suites running alongside this one
+/// put servers in the process-wide registry.
+@Suite("OnboardingPermissionsNavigationViewModel Tests", .isolatedEnvironment { $0.servers = FakeServerManager() })
 struct OnboardingPermissionsNavigationViewModelTests {
     // MARK: - Initialization Tests
 
     @Test("Initialization with default steps")
     func initializationWithDefaultSteps() async throws {
-        ServerFixture.reset()
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         #expect(viewModel.steps == OnboardingPermissionsNavigationViewModel.StepID.default)
@@ -24,10 +27,9 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Initialization with remote connection setup skips local network configuration")
     func initializationWithRemoteConnectionSetup() async throws {
-        ServerFixture.reset()
         // Fixture has an HTTPS external URL and an HTTP internal URL, so the local
         // network configuration steps are not needed
-        let server = ServerFixture.withRemoteConnection
+        let server = OnboardingTestServers.withRemoteConnection
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         #expect(viewModel.steps == [.location, .completion])
@@ -143,7 +145,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Initialization with custom steps")
     func initializationWithCustomSteps() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let customSteps: [OnboardingPermissionsNavigationViewModel.StepID] = [.location, .completion]
         let viewModel = OnboardingPermissionsNavigationViewModel(
             onboardingServer: server,
@@ -158,7 +160,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Current step returns correct step")
     func currentStepReturnsCorrectStep() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         #expect(viewModel.currentStep == .disclaimer)
@@ -172,7 +174,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Current step handles out of bounds index")
     func currentStepHandlesOutOfBoundsIndex() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         // Test the computed property behavior when currentStepIndex is out of bounds
@@ -191,7 +193,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Navigate to step by index")
     func navigateToStepByIndex() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         viewModel.navigateToStep(at: 2)
@@ -201,7 +203,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Navigate to step by index with bounds checking")
     func navigateToStepByIndexWithBoundsChecking() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
         let initialIndex = viewModel.currentStepIndex
 
@@ -216,7 +218,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Navigate to step by identifier")
     func navigateToStepByIdentifier() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         viewModel.navigateToStep(.location)
@@ -230,7 +232,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Navigate to step by non-existent identifier")
     func navigateToStepByNonExistentIdentifier() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let customSteps: [OnboardingPermissionsNavigationViewModel.StepID] = [.location, .completion]
         let viewModel = OnboardingPermissionsNavigationViewModel(
             onboardingServer: server,
@@ -244,7 +246,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Next step navigation")
     func nextStepNavigation() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         #expect(viewModel.currentStepIndex == 0)
@@ -263,7 +265,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
     @Test("Previous step goes from home network back to local access")
     func previousStepFromHomeNetworkToLocalAccess() async throws {
         let viewModel = OnboardingPermissionsNavigationViewModel(
-            onboardingServer: ServerFixture.standard,
+            onboardingServer: OnboardingTestServers.standard,
             steps: OnboardingPermissionsNavigationViewModel.StepID.default
         )
         viewModel.navigateToStep(.homeNetwork)
@@ -436,7 +438,10 @@ struct OnboardingPermissionsNavigationViewModelTests {
         [.localAccess, .updatePreferencesSuccess],
     ])
     func canGoBackOnlyOnHomeNetwork(steps: [OnboardingPermissionsNavigationViewModel.StepID]) async throws {
-        let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: ServerFixture.standard, steps: steps)
+        let viewModel = OnboardingPermissionsNavigationViewModel(
+            onboardingServer: OnboardingTestServers.standard,
+            steps: steps
+        )
 
         for (index, step) in steps.enumerated() {
             viewModel.navigateToStep(at: index)
@@ -449,7 +454,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
     @Test("Back is not offered on a home network step without the local access choice before it")
     func canGoBackNeedsLocalAccessBefore() async throws {
         let viewModel = OnboardingPermissionsNavigationViewModel(
-            onboardingServer: ServerFixture.standard,
+            onboardingServer: OnboardingTestServers.standard,
             steps: [.homeNetwork, .completion]
         )
 
@@ -462,7 +467,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Save Home Network")
     func saveHomeNetwork() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         let testSSID = "TestNetwork"
@@ -475,7 +480,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Request location permission for Home Assistant sharing")
     func requestLocationPermissionForHomeAssistantSharing() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         viewModel.requestLocationPermissionToShareWithHomeAssistant()
@@ -484,7 +489,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Request location permission for secure local connection")
     func requestLocationPermissionForSecureLocalConnection() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         viewModel.requestLocationPermissionForSecureLocalConnection()
@@ -493,7 +498,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Set less secure local connection")
     func setLessSecureLocalConnection() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         viewModel.setLessSecureLocalConnection()
@@ -522,7 +527,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Request location permission for less secure local connection")
     func requestLocationPermissionForLessSecureLocalConnection() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         viewModel.requestLocationPermissionForLessSecureLocalConnection()
@@ -531,7 +536,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("Disable location sensor")
     func disableLocationSensor() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         viewModel.disableLocationSensor()
@@ -581,7 +586,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     @Test("LocationPermissionContext enum cases")
     func locationPermissionContextEnumCases() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         // Test initial state
@@ -604,16 +609,14 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
 // MARK: - Location Manager Delegate Tests
 
-@Suite("OnboardingPermissionsNavigationViewModel Location Delegate Tests")
+@Suite(
+    "OnboardingPermissionsNavigationViewModel Location Delegate Tests",
+    .isolatedEnvironment { $0.servers = FakeServerManager() }
+)
 struct OnboardingPermissionsNavigationViewModelLocationDelegateTests {
-    init() {
-        // Reset fixtures before each test suite
-        ServerFixture.reset()
-    }
-
     @Test("Location manager authorization change - when in use granted")
     func locationManagerAuthorizationChangeWhenInUse() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
         viewModel.locationPermissionContext = .shareWithHomeAssistant
 
@@ -630,7 +633,7 @@ struct OnboardingPermissionsNavigationViewModelLocationDelegateTests {
 
     @Test("Location manager authorization change - denied")
     func locationManagerAuthorizationChangeDenied() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         let mockLocationManager = MockCLLocationManager()
@@ -645,7 +648,7 @@ struct OnboardingPermissionsNavigationViewModelLocationDelegateTests {
 
     @Test("Location manager authorization change - denied after less secure selection advances")
     func locationManagerAuthorizationChangeDeniedAfterLessSecureSelectionAdvances() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
         viewModel.navigateToStep(.localAccess)
         viewModel.locationPermissionContext = .lessSecureLocalConnection
@@ -662,7 +665,7 @@ struct OnboardingPermissionsNavigationViewModelLocationDelegateTests {
 
     @Test("Location manager authorization change - when in use after less secure selection advances")
     func locationManagerAuthorizationChangeWhenInUseAfterLessSecureSelectionAdvances() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
         viewModel.navigateToStep(.localAccess)
         viewModel.locationPermissionContext = .lessSecureLocalConnection
@@ -678,7 +681,7 @@ struct OnboardingPermissionsNavigationViewModelLocationDelegateTests {
 
     @Test("Location manager authorization change - not determined")
     func locationManagerAuthorizationChangeNotDetermined() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
         let initialStepIndex = viewModel.currentStepIndex
 
@@ -694,15 +697,11 @@ struct OnboardingPermissionsNavigationViewModelLocationDelegateTests {
 
 // MARK: - Privacy Step Tests
 
-@Suite("OnboardingPermissionsNavigationViewModel Privacy Step Tests", .serialized)
+@Suite("OnboardingPermissionsNavigationViewModel Privacy Step Tests", .sharedState)
 struct OnboardingPermissionsNavigationViewModelPrivacyTests {
-    init() {
-        ServerFixture.reset()
-    }
-
     @Test("A server added next to an existing one asks for the privacy choices")
     func additionalServerReplacesLocationStepWithPrivacyStep() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let previousServers = Current.servers
         defer { Current.servers = previousServers }
         Current.servers = Self.serverManager(containing: server, alongsideOtherServers: 1)
@@ -715,7 +714,7 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
 
     @Test("The app's first server keeps the location permission step")
     func firstServerKeepsLocationStep() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let previousServers = Current.servers
         defer { Current.servers = previousServers }
         Current.servers = Self.serverManager(containing: server, alongsideOtherServers: 0)
@@ -728,7 +727,7 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
 
     @Test("Custom steps are used as given for an additional server")
     func customStepsAreNotRewrittenForAdditionalServer() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let previousServers = Current.servers
         defer { Current.servers = previousServers }
         Current.servers = Self.serverManager(containing: server, alongsideOtherServers: 1)
@@ -743,7 +742,7 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
 
     @Test("Choosing to send nothing stores both settings and moves on without asking for a permission")
     func savingPrivacyChoicesWithoutLocationStoresSettings() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let previousStatus = Current.location.permissionStatus
         defer { Current.location.permissionStatus = previousStatus }
         Current.location.permissionStatus = { .notDetermined }
@@ -763,7 +762,7 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
 
     @Test("A location choice is kept and applied once the permission is already granted")
     func savingPrivacyChoicesAppliesChosenLevelWhenPermissionIsGranted() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let previousStatus = Current.location.permissionStatus
         defer { Current.location.permissionStatus = previousStatus }
         Current.location.permissionStatus = { .authorizedAlways }
@@ -783,7 +782,7 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
 
     @Test("A location choice made while the permission is denied is stored and does not strand the flow")
     func savingPrivacyChoicesMovesOnWhenPermissionIsDenied() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let previousStatus = Current.location.permissionStatus
         defer { Current.location.permissionStatus = previousStatus }
         Current.location.permissionStatus = { .denied }
@@ -804,7 +803,7 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
 
     @Test("Denying the location permission on the privacy step stores never and moves on")
     func denyingTheLocationPermissionOnThePrivacyStepAdvances() async throws {
-        let server = ServerFixture.standard
+        let server = OnboardingTestServers.standard
         let previousStatus = Current.location.permissionStatus
         defer { Current.location.permissionStatus = previousStatus }
         Current.location.permissionStatus = { .notDetermined }
@@ -836,6 +835,65 @@ struct OnboardingPermissionsNavigationViewModelPrivacyTests {
         }
         manager.add(identifier: server.identifier, serverInfo: server.info)
         return manager
+    }
+}
+
+// MARK: - Servers
+
+/// Fresh servers shaped like `ServerFixture.standard` and `.withRemoteConnection`. The fixtures keep their
+/// info in shared statics that other suites reset and change while these tests run, and these tests
+/// change the server they onboard.
+private enum OnboardingTestServers {
+    static var standard: Server {
+        make(identifier: "123", name: "A Name", connection: .init(
+            externalURL: nil,
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(exceptions: []),
+            connectionAccessSecurityLevel: .undefined
+        ), version: "123")
+    }
+
+    static var withRemoteConnection: Server {
+        make(identifier: "remote", name: "Remote Server", connection: .init(
+            externalURL: URL(string: "https://external.example.com"),
+            internalURL: URL(string: "http://internal.example.com"),
+            cloudhookURL: URL(string: "https://hooks.nabu.casa/webhook-id"),
+            remoteUIURL: URL(string: "https://ui.nabu.casa"),
+            webhookID: "webhook-id",
+            webhookSecret: "webhook-secret",
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(exceptions: []),
+            connectionAccessSecurityLevel: .undefined
+        ), version: "2023.12.0")
+    }
+
+    private static func make(
+        identifier: String,
+        name: String,
+        connection: ConnectionInfo,
+        version: Version
+    ) -> Server {
+        var info = ServerInfo(
+            name: name,
+            connection: connection,
+            token: .init(accessToken: "", refreshToken: "", expiration: Date()),
+            version: version
+        )
+        return Server(identifier: .init(rawValue: identifier), getter: {
+            info
+        }, setter: { newInfo in
+            info = newInfo
+            return true
+        })
     }
 }
 

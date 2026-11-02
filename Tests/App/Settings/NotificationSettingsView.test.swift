@@ -1,11 +1,12 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
 
 // Serialized: the tests swap `Current.isCatalyst`, which concurrent tests would race on.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct NotificationSettingsViewTests {
     @MainActor
     @Test func rendersWithForceCloseWarningRow() {

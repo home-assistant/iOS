@@ -1,9 +1,10 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct GeneralSettingsViewTests {
     /// Building the screen is what constructs the Enhanced Security row, which is the only place

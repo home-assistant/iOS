@@ -10,10 +10,12 @@ import XCTest
 final class WebViewControllerReauthenticationTests: XCTestCase {
     private var previousWebsiteDataStoreHandler: WebsiteDataStoreHandlerProtocol!
     private var window: UIWindow!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
 
     override func setUp() {
         super.setUp()
         previousWebsiteDataStoreHandler = Current.websiteDataStoreHandler
+        previousCachedApis = Current.cachedApis
         Current.websiteDataStoreHandler = MockWebsiteDataStoreHandler()
         window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
     }
@@ -23,6 +25,11 @@ final class WebViewControllerReauthenticationTests: XCTestCase {
         window.isHidden = true
         window.rootViewController = nil
         Current.websiteDataStoreHandler = previousWebsiteDataStoreHandler
+        // The code under test caches an API for its server. XCTest keeps this test case alive for the
+        // whole run, and an API left in the cache stays registered with the app's sensor container,
+        // which every later sensor signal fans out to.
+        Current.cachedApis = previousCachedApis
+        previousCachedApis = nil
         super.tearDown()
     }
 

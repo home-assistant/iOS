@@ -1,13 +1,14 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 
 /// Covers the URL editor as the server details screen presents it, and the close that clears both
 /// editing flags.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerURLEditorSheetTests {
     @Test func externalEditorInASheet() async throws {

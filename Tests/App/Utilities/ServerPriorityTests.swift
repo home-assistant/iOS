@@ -1,6 +1,8 @@
 @testable import Shared
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct ServerPriorityTests {
     private func withServers(_ count: Int, _ body: ([Server]) throws -> Void) rethrows {
         let previous = Current.servers

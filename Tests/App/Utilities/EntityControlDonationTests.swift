@@ -3,10 +3,11 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Serialized because every test swaps `Current.database` and `Current.servers` for its own.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct EntityControlDonationTests {
     // MARK: - Mapping a service to a command
 

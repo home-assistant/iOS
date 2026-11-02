@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import UIKit
 import XCTest
 
@@ -25,15 +26,24 @@ class PeriodicUpdateManagerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        // The periodic interval is read from the settings, which live in the app group defaults
+        // every test process on the simulator shares. Registered first, so it is restored last.
+        let privateSettings = PrivateSettingsStore()
+        addTeardownBlock { privateSettings.restore() }
         let previousDate = Current.date
         let previousServers = Current.servers
         let previousRunner = Current.backgroundTask
+        let previousIsAppExtension = Current.isAppExtension
         addTeardownBlock {
             Current.date = previousDate
             Current.servers = previousServers
             Current.backgroundTask = previousRunner
+            Current.isAppExtension = previousIsAppExtension
         }
 
+        // Outside a host app `Current.isAppExtension` starts out true, and an extension keeps its
+        // periodic update across backgrounding, which is not what these tests are about.
+        Current.isAppExtension = false
         setNow(Date(timeIntervalSince1970: 1_000_000))
         Current.servers = FakeServerManager()
         runner = RecordingBackgroundTaskRunner()
@@ -52,11 +62,13 @@ class PeriodicUpdateManagerTests: XCTestCase {
     }
 
     /// Lets the connects started so far run to their `finally`, which is where a periodic update
-    /// gets scheduled.
-    private func waitForConnectsToFinish() {
-        let finished = expectation(description: "connects finished")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { finished.fulfill() }
-        wait(for: [finished], timeout: 5)
+    /// gets scheduled, until it is or the deadline passes.
+    private func waitForThePeriodicUpdateToBeScheduled() -> Bool {
+        let deadline = Date().addingTimeInterval(10)
+        while !manager.isPeriodicUpdateScheduled, Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        }
+        return manager.isPeriodicUpdateScheduled
     }
 
     private func setNow(_ date: Date) {
@@ -137,8 +149,7 @@ class PeriodicUpdateManagerTests: XCTestCase {
     func testASkippedWarmConnectStillSchedulesThePeriodicUpdate() {
         applicationState = .active
         manager.connectAPI(reason: .periodic)
-        waitForConnectsToFinish()
-        XCTAssertTrue(manager.isPeriodicUpdateScheduled)
+        XCTAssertTrue(waitForThePeriodicUpdateToBeScheduled())
 
         manager.invalidatePeriodicUpdateTimer(forBackground: true)
         XCTAssertFalse(manager.isPeriodicUpdateScheduled)

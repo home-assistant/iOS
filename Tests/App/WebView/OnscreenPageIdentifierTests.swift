@@ -2,11 +2,12 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
 /// to a type marked `@available`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct OnscreenPageIdentifierTests {
     @Test("A page resolves to an identifier keyed the way the widgets' page entity is")
     func pageResolvesToAnIdentifier() throws {

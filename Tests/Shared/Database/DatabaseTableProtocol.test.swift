@@ -1,8 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite("Database Table Protocol Tests")
+@Suite("Database Table Protocol Tests", .sharedState)
 struct DatabaseTableProtocolTests {
     @Test("HAppEntityTable conforms to DatabaseTableProtocol")
     func hAppEntityTableConformance() throws {

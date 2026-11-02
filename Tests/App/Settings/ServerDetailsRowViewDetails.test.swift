@@ -1,10 +1,11 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers the detail rows built straight from a `Server` for the servers list's long-press preview.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerDetailsRowViewDetailsTests {
     private func makeServer(

@@ -1,12 +1,13 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 
 /// Covers the explainer sheet the Troubleshooting button opens.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerHowItWorksSheetTests {
     @Test func explainerInASheet() async throws {

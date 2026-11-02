@@ -3,12 +3,13 @@ import Foundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
 /// Covers the per-server connection screen, whose details section now carries the
 /// "Understand Internal vs External URLs" row under the two URL rows.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionSettingsViewTests {
     @Test func serverConnectionScreen() async throws {

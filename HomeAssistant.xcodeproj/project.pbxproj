@@ -285,6 +285,7 @@
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
 		FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */; };
+		42C0FFEE2E0000000000A001 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -476,6 +477,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = D03D891620E0A85200D4F28D;
 			remoteInfo = Shared;
+		};
+		42C0FFEE2E0000000000A002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 46C62B872D8A3687002C0001;
+			remoteInfo = SharedTesting;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -2941,6 +2949,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42C0FFEE2E0000000000A001 /* SharedTesting.framework in Frameworks */,
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
 				42886D602FFE88D5004EB33B /* PromiseKitDynamic in Frameworks */,
 				42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */,
@@ -3929,6 +3938,7 @@
 			);
 			dependencies = (
 				D03D894920E0BC1800D4F28D /* PBXTargetDependency */,
+				42C0FFEE2E0000000000A003 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
@@ -4920,6 +4930,11 @@
 			isa = PBXTargetDependency;
 			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = D0EEF344214F15CA00D1D360 /* PBXContainerItemProxy */;
+		};
+		42C0FFEE2E0000000000A003 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 46C62B872D8A3687002C0001 /* SharedTesting */;
+			targetProxy = 42C0FFEE2E0000000000A002 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

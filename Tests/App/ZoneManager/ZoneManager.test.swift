@@ -4,6 +4,7 @@ import GRDB
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 final class MockClientEventStore: ClientEventStoreProtocol {
@@ -30,6 +31,10 @@ final class MockClientEventStore: ClientEventStoreProtocol {
 }
 
 class ZoneManagerTests: XCTestCase {
+    /// Puts back the fake servers and other `Current` members this class swaps in, which would
+    /// otherwise receive sensor updates for the rest of the run.
+    private var currentSnapshot: CurrentSnapshot!
+
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
     private var collector: FakeCollector!
@@ -50,6 +55,7 @@ class ZoneManagerTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        currentSnapshot = CurrentSnapshot()
 
         Current.settingsStore.locationSources.zone = true
         Current.settingsStore.locationSources.significantLocationChange = true
@@ -82,6 +88,14 @@ class ZoneManagerTests: XCTestCase {
         Current.database = previousDatabase
         Current.clientEventStore.clearAllEvents()
 
+        currentSnapshot.restore()
+        // XCTest keeps every test case instance for the whole run, so what the properties hold
+        // would outlive the test: each API stays registered with the app's sensor container.
+        apis = nil
+        collector = nil
+        processor = nil
+        regionFilter = nil
+        locationManager = nil
         super.tearDown()
     }
 

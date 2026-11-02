@@ -1,10 +1,11 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ServerDeletionSiriCleanupTests {
     @Test func deletingAServerDropsItsSiriExposureRows() async throws {
         let previous = Current.servers
