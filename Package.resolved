@@ -42,14 +42,6 @@
         }
       },
       {
-        "package": "debugswift",
-        "repositoryURL": "https://github.com/DebugSwift/DebugSwift.git",
-        "state": {
-          "revision": "a61ed10addb0d453a0b78798dff45bf02e74f17e",
-          "version": "1.16.0"
-        }
-      },
-      {
         "package": "firebase-ios-sdk",
         "repositoryURL": "https://github.com/firebase/firebase-ios-sdk.git",
         "state": {

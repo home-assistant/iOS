@@ -1,8 +1,5 @@
 import Alamofire
 import CallbackURLKit
-#if DEBUG
-import DebugSwift
-#endif
 import FirebaseCore
 import FirebaseMessaging
 import Intents
@@ -55,9 +52,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppDelegate.shared = self
     }
 
-    #if DEBUG
-    private let debugSwift = DebugSwift()
-    #endif
     private var zoneManager: ZoneManager?
     #if targetEnvironment(macCatalyst)
     private let statusItemManager = StatusItemManager()
@@ -163,7 +157,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UISwitch.appearance().onTintColor = .haPrimary
 
         lifecycleManager.didFinishLaunching()
-        setupDebugSwift()
         FlightGreetingManager.shared.start()
         LocationBasedServerSwitcher.shared.start()
 
@@ -178,17 +171,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkForAlerts()
 
         return true
-    }
-
-    private func setupDebugSwift() {
-        #if DEBUG
-        // Opt-in via the "-EnableDebugSwift" launch argument (off by default). DebugSwift's
-        // network monitor swizzles URLSessionConfiguration and intercepts every request, which
-        // breaks mTLS / self-signed-certificate flows such as onboarding on the simulator.
-        guard ProcessInfo.processInfo.arguments.contains("-EnableDebugSwift") else { return }
-        debugSwift.setup()
-        debugSwift.show()
-        #endif
     }
 
     override func buildMenu(with builder: UIMenuBuilder) {
