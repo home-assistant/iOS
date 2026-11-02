@@ -109,9 +109,14 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// retried token report (ActivityKit re-issues tokens) from re-alerting for the same activity.
     private var unreachableWarnedTags: Set<String> = []
 
+    /// Persistent home of the push-to-start token; Keychain in the app, in-memory in tests.
+    private let pushToStartTokenStore: LiveActivityPushToStartTokenStore
+
     // MARK: - Init
 
-    public init() {}
+    public init(pushToStartTokenStore: LiveActivityPushToStartTokenStore = .keychain) {
+        self.pushToStartTokenStore = pushToStartTokenStore
+    }
 
     // MARK: - Reservation (internal — called within actor context)
 
@@ -269,7 +274,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// Re-attach observation tasks to any Live Activities that survived process termination,
     /// then sync Core: release the push token for any activity Core still thinks is live but
     /// is no longer running (e.g. it ended during an app update, so its dismissal was never
-    /// observed). Call this at app launch before any notification handlers are invoked.
+    /// observed), and re-report the push-to-start token if the system rotated it while the app
+    /// was not observing (see `syncPushToStartToken`). Call this at app launch before any
+    /// notification handlers are invoked.
     public func reattach() async {
         var runningTags: Set<String> = []
         // Choose the newest surviving activity per tag (by server-stamped `startedAt`) BEFORE observing
@@ -300,6 +307,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
             Current.Log.verbose("LiveActivityRegistry: reattached newest activity for tag \(tag), id=\(winner.id)")
         }
         await releaseStaleTokens(runningTags: runningTags)
+        syncPushToStartToken()
     }
 
     /// End a duplicate Live Activity. If we are already tracking it, cancel its observation and drop
@@ -334,20 +342,42 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// The token is stored in Keychain and reported to HA via registration update so the
     /// relay server can use it to send push-to-start APNs payloads.
     ///
-    /// Call this once at app launch; the stream is infinite and self-managing.
+    /// Call this once at app launch; the stream is infinite and self-managing. It only delivers
+    /// tokens issued while the app is observing it, so a token rotated while the app was not
+    /// running is picked up by `syncPushToStartToken()` instead.
     public func startObservingPushToStartToken() async {
         for await tokenData in Activity<HALiveActivityAttributes>.pushToStartTokenUpdates {
-            let tokenHex = tokenData.map { String(format: "%02x", $0) }.joined()
             Current.Log.verbose("LiveActivityRegistry: new push-to-start token")
-
-            // Store in Keychain — this token is higher-value than a per-activity token
-            // (it can start any new activity) so UserDefaults is intentionally avoided.
-            AppConstants.Keychain[LiveActivityRegistry.pushToStartTokenKeychainKey] = tokenHex
-
-            // Report to all HA servers via registration update so the token is available
-            // in the HA device registry immediately.
-            reportPushToStartToken(tokenHex)
+            storeAndReportPushToStartToken(Self.hexString(tokenData))
         }
+    }
+
+    /// Bring the stored push-to-start token in line with the one ActivityKit holds right now.
+    ///
+    /// `pushToStartTokenUpdates` is not guaranteed to replay the current token when the app
+    /// subscribes; across the iOS 27 upgrade it did not (#5812). The Keychain then keeps the token
+    /// from before the rotation, every `updateRegistration()` keeps sending that stale value to
+    /// Core, and the relay pushes every start to a token APNs no longer honours. Nothing in that
+    /// chain reports an error, so the activity simply never appears. Reading `pushToStartToken`
+    /// directly closes the gap. Runs from `reattach()`: at launch, on every foreground, and from
+    /// the Live Activities settings "Sync with Home Assistant" button.
+    ///
+    /// A nil `current` is left alone: the stored token stays until the stream delivers a new one.
+    func syncPushToStartToken(current: Data? = Activity<HALiveActivityAttributes>.pushToStartToken) {
+        guard let tokenHex = Self.pushToStartTokenToSync(
+            current: current,
+            stored: pushToStartTokenStore.read()
+        ) else { return }
+        Current.Log.info("LiveActivityRegistry: push-to-start token changed while unobserved, re-reporting")
+        storeAndReportPushToStartToken(tokenHex)
+    }
+
+    /// Persist the push-to-start token and send it to every server through a registration update.
+    private func storeAndReportPushToStartToken(_ tokenHex: String) {
+        pushToStartTokenStore.write(tokenHex)
+        // Report to all HA servers via registration update so the token is available
+        // in the HA device registry immediately.
+        reportPushToStartToken(tokenHex)
     }
 
     /// Observe activities started remotely by ActivityKit push-to-start notifications.
@@ -402,11 +432,24 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     /// The stored push-to-start token for inclusion in registration payloads.
     /// Returns nil if the device hasn't received a token yet (pre-iOS 17.2 or not yet issued).
     public static var storedPushToStartToken: String? {
-        AppConstants.Keychain[pushToStartTokenKeychainKey]
+        LiveActivityPushToStartTokenStore.keychain.read()
     }
 
     static let pushToStartRegistrationKey = "start_live_activity_token"
     static let pushToStartTokenKeychainKey = "live_activity_push_to_start_token"
+
+    /// The hex form of `current` when it differs from `stored`, or nil when there is nothing to sync.
+    /// An absent or empty `current` never clears a stored token.
+    static func pushToStartTokenToSync(current: Data?, stored: String?) -> String? {
+        guard let current, !current.isEmpty else { return nil }
+        let hex = hexString(current)
+        return hex == stored ? nil : hex
+    }
+
+    /// APNs tokens are exchanged with Core and the relay as lowercase, zero-padded hex.
+    static func hexString(_ token: Data) -> String {
+        token.map { String(format: "%02x", $0) }.joined()
+    }
 
     // MARK: - Private — Stale Date
 
