@@ -105,7 +105,9 @@ public final class NetworkReachability {
     /// type unchanged but make the cached SSID stale.
     public static let pathDidUpdateNotification = Notification.Name("NetworkReachabilityPathDidUpdate")
 
-    private enum Connection {
+    /// Internal so tests can map one fixed reading through both `getSimpleNetworkType()` and
+    /// `getNetworkType()`; the live path can't be built or held still in a test.
+    enum Connection {
         case unavailable
         case wifi
         case cellular
@@ -140,6 +142,10 @@ public final class NetworkReachability {
     }
 
     public func getSimpleNetworkType() -> NetworkType {
+        Self.simpleNetworkType(for: connection)
+    }
+
+    static func simpleNetworkType(for connection: Connection) -> NetworkType {
         switch connection {
         case .unavailable:
             return .noConnection
@@ -151,6 +157,10 @@ public final class NetworkReachability {
     }
 
     public func getNetworkType() -> NetworkType {
+        Self.networkType(for: connection)
+    }
+
+    static func networkType(for connection: Connection) -> NetworkType {
         switch connection {
         case .unavailable:
             return .noConnection
@@ -158,7 +168,7 @@ public final class NetworkReachability {
             return .wifi
         case .cellular:
             #if !targetEnvironment(macCatalyst)
-            return Self.getWWANNetworkType()
+            return getWWANNetworkType()
             #else
             return .cellular
             #endif
