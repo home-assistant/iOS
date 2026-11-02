@@ -43,6 +43,10 @@ struct AllowedTagTests {
         legacyTags: [String]? = nil,
         perform work: () throws -> Void
     ) throws {
+        // The legacy tags live in a defaults suite of this test's own: tests creating the schema in
+        // parallel run the same migration, which would read and delete them from the app group defaults.
+        let privateSettings = PrivateSettingsStore()
+        defer { privateSettings.restore() }
         let previousDatabase = Current.database
         let database = try DatabaseQueue(path: ":memory:")
 

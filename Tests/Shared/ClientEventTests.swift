@@ -6,15 +6,22 @@ import XCTest
 class ClientEventTests: XCTestCase {
     var store: ClientEventStore!
     private var previousDate: (() -> Date)!
+    /// A file of this test's own: the app group's `clientEvents.json` is shared with every other test
+    /// process on the simulator (parallel workers, the app's tests), which write and clear it concurrently.
+    private var eventsFile: URL!
 
     override func setUp() {
         super.setUp()
         previousDate = Current.date
-        store = ClientEventStore()
+        eventsFile = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ClientEventTests-\(UUID().uuidString).json")
+        store = ClientEventStore(fileURL: eventsFile)
     }
 
     override func tearDown() {
-        store.clearAllEvents()
+        try? FileManager.default.removeItem(at: eventsFile)
+        store = nil
+        eventsFile = nil
         Current.date = previousDate
         super.tearDown()
     }
@@ -72,7 +79,7 @@ class ClientEventTests: XCTestCase {
 
     func testReadsFileWrittenAsSingleJSONArray() throws {
         let event = ClientEvent(text: "Legacy", type: .notification)
-        try JSONEncoder().encode([event]).write(to: AppConstants.clientEventsFile, options: .atomic)
+        try JSONEncoder().encode([event]).write(to: eventsFile, options: .atomic)
 
         let retrieved = store.getEvents()
         XCTAssertEqual(1, retrieved.count)
@@ -89,8 +96,7 @@ class ClientEventTests: XCTestCase {
     func testCanClearEvents() throws {
         let event = ClientEvent(text: "Yo", type: .notification)
         store.addEvent(event)
-        // !!!: Repeating the assertion from `testCanWriteClientEvent` was failing often here. Asserting only that the store is not empty for now. Later should be investigated why the count of events was not always 1 here
-        XCTAssertTrue(store.getEvents().count != 0)
+        XCTAssertEqual(1, store.getEvents().count)
         store.clearAllEvents()
         XCTAssertEqual(0, store.getEvents().count)
     }
