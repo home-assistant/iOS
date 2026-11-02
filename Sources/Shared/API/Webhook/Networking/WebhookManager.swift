@@ -294,7 +294,7 @@ public class WebhookManager: NSObject {
     }
 
     /// Whether the cloudhook turned a request away without it reaching Home Assistant: 503 when the
-    /// cloud subscription expired or the account signed out, 404 when Home Assistant Cloud doesn't
+    /// cloud subscription expired or the account signed out, 404 when Home Assistant Link doesn't
     /// know the cloudhook. Home Assistant itself never answers a webhook with either.
     static func isCloudhookUnavailable(_ error: Error) -> Bool {
         switch error as? WebhookError {
@@ -306,7 +306,7 @@ public class WebhookManager: NSObject {
     }
 
     /// Resends a request the cloudhook turned away to the server's active URL, the webhook URL the
-    /// app would use without Home Assistant Cloud. When that fails too, the cloudhook's error is what
+    /// app would use without Home Assistant Link. When that fails too, the cloudhook's error is what
     /// the caller sees, so handling built on it (such as re-registering on a 404) is unchanged.
     private func sendEphemeralBypassingCloudhook<ResponseType>(
         server: Server,

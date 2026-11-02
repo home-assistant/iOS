@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/phimage/CallbackURLKit.git",
       "state" : {
-        "revision" : "28664b3d4f37bb359d5ed729aa463cbedfba5d82",
-        "version" : "2.3.2"
+        "revision" : "5411bfc17cd0787ac80c46f312c7235783ff9421",
+        "version" : "3.0.0"
       }
     },
     {
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/groue/GRDB.swift.git",
       "state" : {
-        "revision" : "18497b68fdbb3a09528d260a0a0e1e7e61c8c53d",
-        "version" : "7.8.0"
+        "revision" : "92a554cd0d5e8d67cb18993c6054e73fe42c066c",
+        "version" : "7.12.0"
       }
     },
     {
