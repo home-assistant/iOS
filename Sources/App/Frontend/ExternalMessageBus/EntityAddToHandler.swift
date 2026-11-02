@@ -47,6 +47,11 @@ final class EntityAddToHandler {
                     if isWatchSupported {
                         actions.append(WatchItemAction())
                     }
+                    // The complication builder renders any entity's state, so no domain check here;
+                    // only a phone pairs with a watch, so an iPad is never offered one.
+                    if UIDevice.current.userInterfaceIdiom == .phone {
+                        actions.append(WatchComplicationAction())
+                    }
                 }
                 #endif
 
@@ -103,6 +108,10 @@ final class EntityAddToHandler {
 
                 case .watchItem:
                     addToWatchItems(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
+                case .watchComplication:
+                    openComplicationBuilder(entityId: entityId, webViewController: webViewController)
                     seal.fulfill(())
 
                 case .customWidget:
@@ -163,6 +172,21 @@ final class EntityAddToHandler {
         let watchSettingsView = WatchConfigurationView(needsNavigationStack: true, viewModel: viewModel)
         webViewController.presentOverlayController(
             controller: watchSettingsView.embeddedInHostingController(),
+            animated: true
+        )
+    }
+
+    /// Opens the complication builder as a new complication with the entity already picked, the same
+    /// screen the Apple Watch settings open from "New complication", minus the source and entity steps.
+    private func openComplicationBuilder(entityId: String, webViewController: WebViewControllerProtocol) {
+        Current.Log.info("Opening complication builder for entity \(entityId)")
+        let editor = WatchComplicationBuilderEditView(
+            prefilledEntityId: entityId,
+            serverId: webViewController.server.identifier.rawValue
+        )
+        let builder = NavigationView { editor }.navigationViewStyle(.stack)
+        webViewController.presentOverlayController(
+            controller: builder.embeddedInHostingController(),
             animated: true
         )
     }
