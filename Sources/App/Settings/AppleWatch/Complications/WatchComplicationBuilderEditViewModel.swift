@@ -56,6 +56,25 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
         ].contains { !($0 ?? "").isEmpty }
     }
 
+    /// A new entity complication for an entity chosen somewhere else (the frontend's "Add to" sheet):
+    /// the source and entity steps are already answered, so the editor opens on the preview with the
+    /// Customize row in reach. The same auto-design defaults the entity picker applies run here, from
+    /// the entity's registry row when the app has one; an entity the app has not mirrored yet still
+    /// opens, with its id alone and a domain icon.
+    convenience init(prefilledEntityId: String, serverId: String) {
+        self.init(existing: nil)
+        self.selectedSource = .entity
+        config.kind = .entity
+        config.serverId = serverId
+        if let entity = HAAppEntity.entity(id: prefilledEntityId, serverId: serverId) {
+            self.selectedEntity = entity
+            applySelectedEntity()
+        } else {
+            config.entityId = prefilledEntityId
+            config.iconName = Domain(entityId: prefilledEntityId)?.icon().name
+        }
+    }
+
     var server: Server? {
         Current.servers.all.first { $0.identifier.rawValue == config.serverId } ?? Current.servers.all.first
     }
@@ -66,6 +85,12 @@ final class WatchComplicationBuilderEditViewModel: ObservableObject {
     /// otherwise the generic "Name" label.
     var namePlaceholder: String {
         config.entityDisplayName ?? config.entityId ?? L10n.Watch.Complications.Builder.name
+    }
+
+    /// The entity row's label: the picked entity's name, or for a pre-filled entity the app has no
+    /// registry row for, the id the config holds — never the "pick entity" prompt while Save is enabled.
+    var entityRowTitle: String {
+        selectedEntity?.name ?? config.entityDisplayName ?? config.entityId ?? L10n.EntityPicker.placeholder
     }
 
     var isValid: Bool {

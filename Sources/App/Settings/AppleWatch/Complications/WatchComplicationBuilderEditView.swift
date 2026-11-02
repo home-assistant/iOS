@@ -22,6 +22,12 @@ struct WatchComplicationBuilderEditView: View {
         _viewModel = StateObject(wrappedValue: WatchComplicationBuilderEditViewModel(existing: existing))
     }
 
+    /// A new complication for an entity picked elsewhere, e.g. the frontend's "Add to" sheet.
+    init(prefilledEntityId: String, serverId: String) {
+        let viewModel = WatchComplicationBuilderEditViewModel(prefilledEntityId: prefilledEntityId, serverId: serverId)
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
     /// Server selection. Animated: picking a server reveals the next step of the flow.
     private var serverBinding: Binding<String> {
         Binding(
@@ -176,7 +182,7 @@ struct WatchComplicationBuilderEditView: View {
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                            Text(verbatim: viewModel.selectedEntity?.name ?? L10n.EntityPicker.placeholder)
+                            Text(verbatim: viewModel.entityRowTitle)
                                 .foregroundColor(.accentColor)
                             if let entitySubtitle = viewModel.entitySubtitle {
                                 Text(verbatim: entitySubtitle)
@@ -398,6 +404,16 @@ extension Binding where Value == String {
     Current.servers = FakeServerManager(initial: 1)
     // swiftlint:enable prohibit_environment_assignment
     return NavigationView { WatchComplicationBuilderEditView(existing: nil) }
+}
+
+#Preview("New complication pre-filled from Add to") {
+    // swiftlint:disable prohibit_environment_assignment
+    Current.servers = FakeServerManager(initial: 1)
+    // swiftlint:enable prohibit_environment_assignment
+    let serverId = Current.servers.all.first?.identifier.rawValue ?? ""
+    return NavigationView {
+        WatchComplicationBuilderEditView(prefilledEntityId: "sensor.battery", serverId: serverId)
+    }
 }
 
 #Preview("Editing existing entity complication") {
