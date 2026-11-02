@@ -24,4 +24,26 @@ struct ServerSettingsSheetTests {
             layout: .fixed(width: 390, height: 500)
         )
     }
+
+    /// Given the namespace of the control that opened it, the sheet zooms out of that control.
+    @Test func zoomsOutOfItsSourceControl() async {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 0)
+
+        let driver = await SwiftUIScreenDriver.show(ZoomingSheetHost(), inNavigationStack: false)
+        defer { driver.close() }
+        #expect(!driver.barButtons.isEmpty)
+    }
+}
+
+/// Owns the namespace a zoom transition needs, the way the server details screen does.
+private struct ZoomingSheetHost: View {
+    @Namespace private var namespace
+
+    var body: some View {
+        ServerSettingsSheet(zoomSourceID: .internalURL, transitionNamespace: namespace, onClose: {}) {
+            ConnectionURLsHowItWorksView(server: ServerFixture.standard)
+        }
+    }
 }

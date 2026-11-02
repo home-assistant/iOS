@@ -1,4 +1,6 @@
 import Foundation
+import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
@@ -60,6 +62,32 @@ struct ConnectionSettingsViewModelTests {
         Current.servers = FakeServerManager(initial: 0)
         Current.appDatabaseUpdater = IdleAppDatabaseUpdater()
         return try await body()
+    }
+
+    /// On the Mac, with only native features on, activating a server opens it in the browser.
+    @Test func activatingOnTheMacWithNativeFeaturesOnlyOpensTheBrowser() async {
+        let previousCatalyst = Current.isCatalyst
+        let previousNativeOnly = Current.settingsStore.macNativeFeaturesOnly
+        defer {
+            Current.isCatalyst = previousCatalyst
+            Current.settingsStore.macNativeFeaturesOnly = previousNativeOnly
+        }
+        Current.isCatalyst = true
+        Current.settingsStore.macNativeFeaturesOnly = true
+
+        await withTestWorld {
+            await RecordingURLOpener.with { opener in
+                let server = makeServer(internalURL: nil, externalURL: "https://external.example.com")
+                let viewModel = ConnectionSettingsViewModel(server: server)
+                viewModel.activateServer(on: nil)
+
+                let deadline = Date().addingTimeInterval(10)
+                while opener.openedURLs.isEmpty, Date() < deadline {
+                    try? await Task.sleep(nanoseconds: 20_000_000)
+                }
+                #expect(opener.openedURLs.map(\.url.host) == ["external.example.com"])
+            }
+        }
     }
 
     @Test func urlsAndActiveTypeFollowTheServer() async {
@@ -484,5 +512,178 @@ struct ConnectionSettingsViewModelTests {
             #expect(windowCoordinator.activatedServers.map(\.identifier) == [server.identifier])
             #expect(lastRegisteredCoordinator.activatedServers.isEmpty)
         }
+    }
+
+    // MARK: - Local push, privacy, certificates and the signed-in user
+
+    /// Swaps the app's local push manager for `fake` while `body` runs.
+    private func withLocalPush(_ fake: FakeLocalPushManager, _ body: () async throws -> Void) async rethrows {
+        let manager = Current.notificationManager
+        let previous = manager.localPushManager
+        manager.localPushManager = fake
+        defer { manager.localPushManager = previous }
+        try await body()
+    }
+
+    /// The status line follows every state the manager reports, refreshed when it reports a change.
+    @Test func localPushStatusFollowsTheManager() async {
+        let fake = FakeLocalPushManager()
+        await withTestWorld {
+            await withLocalPush(fake) {
+                let viewModel = ConnectionSettingsViewModel(
+                    server: makeServer(internalURL: nil, externalURL: "https://external.example.com")
+                )
+                let expectations: [(NotificationManagerLocalPushStatus, String)] = [
+                    (.disabled, L10n.SettingsDetails.Notifications.LocalPush.Status.disabled),
+                    (.unsupported, L10n.SettingsDetails.Notifications.LocalPush.Status.unsupported),
+                    (.allowed(.unavailable), L10n.SettingsDetails.Notifications.LocalPush.Status.unavailable),
+                    (.allowed(.establishing), L10n.SettingsDetails.Notifications.LocalPush.Status.establishing),
+                ]
+                for (status, text) in expectations {
+                    fake.currentStatus = status
+                    fake.notify()
+                    #expect(viewModel.localPushStatus == text)
+                }
+                fake.currentStatus = .allowed(.available(received: 1234))
+                fake.notify()
+                #expect(viewModel.localPushStatus.contains("234"))
+            }
+        }
+    }
+
+    /// On the server's own Wi-Fi with local push on, Retry asks the manager to reconnect.
+    @Test func retryingLocalPushAsksTheManagerOnTheHomeNetwork() async {
+        let fake = FakeLocalPushManager()
+        let connectivity = Current.connectivity
+        let previousState = connectivity.currentNetworkState
+        connectivity.currentNetworkState = { NetworkState(ssid: "Home Wi-Fi") }
+        defer { connectivity.currentNetworkState = previousState }
+
+        await withTestWorld {
+            await withLocalPush(fake) {
+                let server = makeServer(internalURL: "http://internal.example.com:8123", externalURL: nil)
+                server.update {
+                    $0.connection.isLocalPushEnabled = true
+                    $0.connection.internalSSIDs = ["Home Wi-Fi"]
+                }
+                let viewModel = ConnectionSettingsViewModel(server: server)
+                defer { Current.resetAPICache(for: [server.identifier]) }
+
+                for _ in 0 ..< 1000 where !viewModel.canRetryLocalPush {
+                    try? await Task.sleep(nanoseconds: 10_000_000)
+                }
+                #expect(viewModel.canRetryLocalPush)
+                viewModel.retryLocalPush()
+                #expect(fake.retriedServers == [server.identifier])
+            }
+        }
+    }
+
+    /// Changing the location or sensor privacy stores it on the server; the update it triggers is
+    /// stopped by a background task runner that has no time left.
+    @Test func privacyChoicesAreStoredOnTheServer() async {
+        let previousRunner = Current.backgroundTask
+        Current.backgroundTask = OutOfTimeBackgroundTaskRunner()
+        defer { Current.backgroundTask = previousRunner }
+
+        await withTestWorld {
+            let server = makeServer(internalURL: nil, externalURL: nil)
+            let viewModel = ConnectionSettingsViewModel(server: server)
+
+            viewModel.updateLocationPrivacy(.zoneOnly)
+            #expect(viewModel.locationPrivacy == .zoneOnly)
+            #expect(server.info.setting(for: .locationPrivacy) == ServerLocationPrivacy.zoneOnly)
+
+            viewModel.updateSensorPrivacy(.none)
+            #expect(viewModel.sensorPrivacy == .none)
+            #expect(server.info.setting(for: .sensorPrivacy) == ServerSensorPrivacy.none)
+        }
+    }
+
+    /// A file the app cannot open for reading (here, not a file at all) fails the import.
+    @Test func importingFromANonFileURLFails() async {
+        await withTestWorld {
+            let viewModel = ConnectionSettingsViewModel(server: makeServer(internalURL: nil, externalURL: nil))
+            await viewModel.importCertificate(
+                from: URL(string: "https://example.com/home.p12")!,
+                password: "secret"
+            )
+            #expect(viewModel.certificateError != nil)
+            #expect(!viewModel.isImportingCertificate)
+        }
+    }
+
+    /// Removing the certificate clears it from the server; the keychain item stays while another
+    /// server still uses it and is deleted (here: nothing to delete) once none does.
+    @Test func removingTheCertificateKeepsItWhileAnotherServerUsesIt() async {
+        await withTestWorld {
+            let certificate = ClientCertificate(
+                keychainIdentifier: "test-shared-\(UUID().uuidString)",
+                displayName: "Shared"
+            )
+            let servers = FakeServerManager(initial: 0)
+            Current.servers = servers
+            let first = servers.add(identifier: "first", serverInfo: with(ServerInfo.fake()) {
+                $0.connection.clientCertificate = certificate
+            })
+            let second = servers.add(identifier: "second", serverInfo: with(ServerInfo.fake()) {
+                $0.connection.clientCertificate = certificate
+            })
+            defer { Current.resetAPICache(for: [first.identifier, second.identifier]) }
+
+            let noCertificate = ConnectionSettingsViewModel(server: makeServer(internalURL: nil, externalURL: nil))
+            noCertificate.removeCertificate()
+            #expect(noCertificate.clientCertificate == nil)
+
+            let firstModel = ConnectionSettingsViewModel(server: first)
+            #expect(firstModel.clientCertificate == certificate)
+            firstModel.removeCertificate()
+            #expect(firstModel.clientCertificate == nil)
+            #expect(first.info.connection.clientCertificate == nil)
+
+            let secondModel = ConnectionSettingsViewModel(server: second)
+            secondModel.removeCertificate()
+            #expect(second.info.connection.clientCertificate == nil)
+        }
+    }
+}
+
+/// Reports whatever status a test sets and records retries, in place of the app's local push manager.
+private final class FakeLocalPushManager: NotificationManagerLocalPushInterface {
+    var currentStatus: NotificationManagerLocalPushStatus = .disabled
+    private(set) var retriedServers: [Identifier<Server>] = []
+    private var handlers: [(NotificationManagerLocalPushStatus) -> Void] = []
+
+    func status(for server: Server) -> NotificationManagerLocalPushStatus {
+        currentStatus
+    }
+
+    func addObserver(
+        for server: Server,
+        handler: @escaping (NotificationManagerLocalPushStatus) -> Void
+    ) -> HACancellable {
+        handlers.append(handler)
+        return HAMockCancellable {}
+    }
+
+    func notify() {
+        handlers.forEach { $0(currentStatus) }
+    }
+
+    func retryLocalPush(for server: Server?, reason: LocalPushRetryReason) {
+        if let server { retriedServers.append(server.identifier) }
+    }
+
+    func scheduleAppOpenLocalPushRetries() {}
+}
+
+/// Fails every background task at once, without running the work it wraps.
+private final class OutOfTimeBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+    func callAsFunction<PromiseValue>(
+        withName name: String,
+        requiringAssertion: Bool,
+        wrapping: (TimeInterval?) -> Promise<PromiseValue>
+    ) -> Promise<PromiseValue> {
+        Promise(error: BackgroundTaskError.outOfTime)
     }
 }

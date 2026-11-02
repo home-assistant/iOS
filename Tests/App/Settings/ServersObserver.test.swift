@@ -100,4 +100,40 @@ struct ServersObserverTests {
             )
         }
     }
+
+    // MARK: - Ordering
+
+    /// Moving a server rewrites every server's sort order to its new position, and making one the
+    /// default moves it first; the default staying put changes nothing. Changes to the server list
+    /// reach the observer.
+    @Test func moveAndMakeDefaultRewriteTheSortOrder() async {
+        let previous = Current.servers
+        defer { Current.servers = previous }
+        let manager = FakeServerManager()
+        let home = manager.add(identifier: "home", serverInfo: with(ServerInfo.fake()) { $0.sortOrder = 0 })
+        let chalet = manager.add(identifier: "chalet", serverInfo: with(ServerInfo.fake()) { $0.sortOrder = 1 })
+        let office = manager.add(identifier: "office", serverInfo: with(ServerInfo.fake()) { $0.sortOrder = 2 })
+        Current.servers = manager
+
+        let observer = ServersObserver()
+        observer.servers = [home, chalet, office]
+
+        observer.moveServers(from: IndexSet(integer: 2), to: 0)
+        #expect(observer.servers.map(\.identifier.rawValue) == ["office", "home", "chalet"])
+        #expect(office.info.sortOrder == 0)
+        #expect(home.info.sortOrder == 1)
+        #expect(chalet.info.sortOrder == 2)
+
+        observer.makeDefault(chalet)
+        #expect(observer.servers.first?.identifier == chalet.identifier)
+        observer.makeDefault(chalet)
+        observer.makeDefault(Server.fake(identifier: "unknown"))
+        #expect(observer.servers.first?.identifier == chalet.identifier)
+
+        observer.serversDidChange(manager)
+        for _ in 0 ..< 500 where observer.servers.count != manager.all.count {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        #expect(observer.servers.count == manager.all.count)
+    }
 }

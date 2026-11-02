@@ -43,6 +43,14 @@ final class ServerSwitchingSettingsViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    /// A failed one-shot fix is only logged: the closest server stays undetermined.
+    @MainActor
+    func testAFailedLocationFixLeavesTheClosestServerUnknown() {
+        let viewModel = ServerSwitchingSettingsViewModel()
+        viewModel.locationManager(CLLocationManager(), didFailWithError: CLError(.locationUnknown))
+        XCTAssertNil(viewModel.closestServerSource)
+    }
+
     @MainActor
     func testDescribesTheServerMatchedByItsHomeNetwork() async throws {
         server1.update { $0.connection.internalSSIDs = ["home1-wifi"] }

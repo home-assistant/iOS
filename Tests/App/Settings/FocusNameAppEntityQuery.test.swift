@@ -112,4 +112,17 @@ struct FocusNameAppEntityQueryTests {
 
         #expect(entities.map(\.name) == [name.name])
     }
+
+    /// The suggestions are every stored name, each shown under its own name.
+    @Test func suggestedEntitiesListEveryStoredName() async throws {
+        let queue = try makeDatabase(containing: [name])
+
+        let entities = try await withDatabase(queue) {
+            try await FocusNameAppEntityQuery().suggestedEntities()
+        }
+
+        #expect(entities.map(\.id) == [name.id])
+        let title = try #require(entities.first?.displayRepresentation.title)
+        #expect(String(localized: title) == name.name)
+    }
 }
