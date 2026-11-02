@@ -11,7 +11,7 @@ import UIKit
 final class CatalystTimeInputMessageHandler: NSObject, WKScriptMessageHandler {
     private struct Request {
         let token: String
-        let frame: WKFrameInfo
+        let frame: WKFrameInfo?
         let value: String
         let step: Int
         /// How round the input's corners are, in CSS pixels.
@@ -42,14 +42,20 @@ final class CatalystTimeInputMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard let body = message.body as? [String: Any], let token = body["token"] as? String else { return }
+        guard let body = message.body as? [String: Any] else { return }
+        handleMessage(body: body, frame: message.frameInfo, isMainFrame: message.frameInfo.isMainFrame)
+    }
+
+    /// `frame` is where a picked value gets written back; `nil` means the main frame.
+    func handleMessage(body: [String: Any], frame: WKFrameInfo?, isMainFrame: Bool) {
+        guard let token = body["token"] as? String else { return }
 
         switch body["kind"] as? String {
         case "open":
             removeOverlay()
             let request = Request(
                 token: token,
-                frame: message.frameInfo,
+                frame: frame,
                 value: body["value"] as? String ?? "",
                 step: (body["step"] as? NSNumber)?.intValue ?? 60,
                 borderRadius: (body["borderRadius"] as? NSNumber)?.doubleValue ?? 0,
@@ -65,7 +71,7 @@ final class CatalystTimeInputMessageHandler: NSObject, WKScriptMessageHandler {
                 pendingRequest = request
             }
         case "anchor":
-            guard message.frameInfo.isMainFrame, let webView = webViewProvider(),
+            guard isMainFrame, let webView = webViewProvider(),
                   let cssRect = Self.rect(from: body) else { return }
             let scale = Self.scale(viewportWidth: (body["viewportWidth"] as? NSNumber)?.doubleValue, in: webView)
             let anchor = Anchor(
