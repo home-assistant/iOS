@@ -78,6 +78,11 @@ lane :test do
     # because the plain `build` action disables testability for packages.
     skip_build: true,
     xcargs: "COMPILER_INDEX_STORE_ENABLE=NO #{test_timeout_xcargs}",
+    # The scheme lets Xcode spread XCTest classes over simulator clones, but on the runner a second
+    # clone could fail to launch the host app and stall the job, and two hosted processes starved
+    # each other's main thread. Swift Testing already runs suites concurrently inside the one host,
+    # where most of the time is spent, so a single simulator is as fast and does not stall.
+    parallel_testing: false,
     # A failed test is run again before it counts: the shared runner is loaded enough that a wait
     # generous on a Mac still lands late. A deterministic failure fails every attempt the same way.
     number_of_retries: 2,

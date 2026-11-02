@@ -1,9 +1,11 @@
 import Foundation
 @testable import HomeAssistant
 import Shared
+import SharedTesting
 import Testing
 
 @MainActor
+@Suite(.sharedState)
 struct NativeTabBarViewModelTests {
     private func panel(_ path: String, component: String = "lovelace", title: String) -> HAPanel {
         HAPanel(
@@ -466,8 +468,11 @@ struct NativeTabBarViewModelTests {
         #expect(sut.otherServers.map(\.identifier) == [other.identifier])
         #expect(sut.servers.map(\.identifier) == [ServerFixture.standard.identifier, other.identifier])
 
+        // Handed to the view model rather than registered with the scene manager: the app-wide
+        // coordinator is whatever registered last, so other tests' work reaches it, and a callback this
+        // test leaves on it would resume a continuation the test has already finished with.
         let coordinator = MockAppCoordinator()
-        Current.sceneManager.registerAppCoordinator(coordinator)
+        sut.appCoordinator = { .value(coordinator) }
         sut.open(server: ServerFixture.standard)
         await withCheckedContinuation { continuation in
             coordinator.onOpenServer = { continuation.resume() }

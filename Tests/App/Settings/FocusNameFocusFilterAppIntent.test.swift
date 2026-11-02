@@ -1,6 +1,7 @@
 import AppIntents
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 // The Focus Filter is the only thing that ever tells the app *which* Focus is running, and iOS runs
@@ -10,7 +11,7 @@ import Testing
 // Serialized because `withNoServers` swaps the process-wide servers, APIs, focus filter and
 // connectivity, and suspends while `perform()` runs — run in parallel, one test would see or
 // restore another's fakes.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct FocusNameFocusFilterAppIntentTests {
     private func withNoServers(_ body: () async throws -> Void) async rethrows {
         let previousServers = Current.servers

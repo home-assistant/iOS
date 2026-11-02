@@ -1,8 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct FrontendThemeVariableTests {
     @Test("Variables round-trip per server and appearance")
     func storesPerServerAndAppearance() throws {

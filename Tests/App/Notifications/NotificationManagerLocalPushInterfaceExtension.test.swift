@@ -6,16 +6,23 @@ import XCTest
 final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
     private var servers: FakeServerManager!
     private var originalServers: ServerManager!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
 
     override func setUp() {
         super.setUp()
         originalServers = Current.servers
+        previousCachedApis = Current.cachedApis
         servers = FakeServerManager(initial: 0)
         Current.servers = servers
     }
 
     override func tearDown() {
         Current.servers = originalServers
+        // The code under test caches an API for its server. XCTest keeps this test case alive for the
+        // whole run, and an API left in the cache stays registered with the app's sensor container,
+        // which every later sensor signal fans out to.
+        Current.cachedApis = previousCachedApis
+        previousCachedApis = nil
         super.tearDown()
     }
 

@@ -23,6 +23,22 @@ python3 Tools/detect_unused_strings.py
 - `0`: No unused strings found
 - `1`: Unused strings detected (normal for reporting)
 
+### check_test_isolation.py
+
+Checks that every Swift Testing file under `Tests/` that assigns to `Current` carries
+`.sharedState` or `.isolatedEnvironment` (from `SharedTesting`). Swift Testing runs suites in
+parallel in one process, and `.serialized` only keeps the tests of one suite apart from each other.
+`fastlane lint` and the CI lint job run it.
+
+**Usage:**
+```bash
+python3 Tools/check_test_isolation.py
+```
+
+**Exit codes:**
+- `0`: Every such file declares a trait
+- `1`: Offending files were listed on stderr
+
 ### xccov_to_lcov.py
 
 Converts Xcode code coverage from an `.xcresult` bundle into an LCOV tracefile, which is

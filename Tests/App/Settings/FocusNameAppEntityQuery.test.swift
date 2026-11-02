@@ -2,6 +2,7 @@ import AppIntents
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 // iOS asks this query for the name stored in a Focus Filter every time that Focus activates, and
@@ -10,7 +11,7 @@ import Testing
 // database the app merely failed to read never comes back as "that name is gone".
 // Serialized because every test swaps the process-wide `Current.database` and suspends while the
 // query reads it — run in parallel, one test would read another's in-memory queue.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct FocusNameAppEntityQueryTests {
     private let name = FocusName(id: "05D1CF48-9AFD-4B6B-9E70-6F6DDE1B1D3B", name: "Personal")
 

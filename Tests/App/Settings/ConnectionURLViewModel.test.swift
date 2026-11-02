@@ -2,6 +2,7 @@ import Foundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Holds the URL check behind Save open until the test answers it, so the state in between can be looked at.
@@ -17,7 +18,7 @@ private final class PendingSendTestWebhookManager: WebhookManager {
 
 /// Covers what the URL editor derives from its fields: when the security level row applies, when Save
 /// has something to save, what a commit writes back, and how Save behaves while its URL check is out.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionURLViewModelTests {
     private func makeServer(internalURL: String?, securityLevel: ConnectionSecurityLevel = .mostSecure) -> Server {

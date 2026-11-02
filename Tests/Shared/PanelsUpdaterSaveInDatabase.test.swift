@@ -3,10 +3,11 @@ import GRDB
 import HAKit
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Serialized because every test swaps the global `Current.database` and `Current.backgroundTask`.
-@Suite("PanelsUpdater database write", .serialized)
+@Suite("PanelsUpdater database write", .sharedState)
 struct PanelsUpdaterSaveInDatabaseTests {
     /// Runs the wrapped work without a real `UIApplication`/`ProcessInfo` assertion.
     private final class PassthroughBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {

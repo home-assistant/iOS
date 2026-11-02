@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Counts how often the fake transport was asked for the states.
@@ -22,7 +23,7 @@ private final class FetchCounter {
 }
 
 // Serialized: the tests swap `Current.database` and share a defaults suite.
-@Suite(.serialized)
+@Suite(.sharedState)
 final class WatchZoneSyncTests {
     private static let suiteName = "WatchZoneSyncTests"
 

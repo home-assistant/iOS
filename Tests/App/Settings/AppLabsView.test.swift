@@ -1,9 +1,12 @@
 @testable import HomeAssistant
 import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
 
+/// Runs against its own `Current`: flipping `isTestFlight` here cannot leak into another test.
+@Suite(.isolatedEnvironment)
 struct AppLabsViewTests {
     @Test func appLabsIsHiddenOutsideTestFlight() {
         let previousIsTestFlight = Current.isTestFlight

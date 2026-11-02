@@ -9,10 +9,12 @@ final class CarPlayAssistSessionTests: XCTestCase {
     private var mockAssistService: MockAssistService!
     private var mockTonePlayer: MockCarPlayAssistTonePlayer!
     private var sut: CarPlayAssistSession?
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
 
     override func setUp() {
         super.setUp()
         mockAudioRecorder = MockAudioRecorder()
+        previousCachedApis = Current.cachedApis
         mockAssistService = MockAssistService()
         mockTonePlayer = MockCarPlayAssistTonePlayer()
     }
@@ -20,6 +22,11 @@ final class CarPlayAssistSessionTests: XCTestCase {
     override func tearDown() {
         sut?.stop()
         sut = nil
+        // The code under test caches an API for its server. XCTest keeps this test case alive for the
+        // whole run, and an API left in the cache stays registered with the app's sensor container,
+        // which every later sensor signal fans out to.
+        Current.cachedApis = previousCachedApis
+        previousCachedApis = nil
         super.tearDown()
     }
 

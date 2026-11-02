@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
@@ -7,7 +8,7 @@ import Testing
 /// of servers to pick one — which is the difference these cover.
 ///
 /// Serialized because `withServers` swaps globals on `Current`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct SensorListViewTests {
     @MainActor
     @Test func sensorListWithOneServerShowsItsSensors() throws {

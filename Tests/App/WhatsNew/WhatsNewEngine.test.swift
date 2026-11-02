@@ -1,8 +1,9 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WhatsNewEngineTests {
     private let seenWhatsNewReleaseIDsKey = "seenWhatsNewReleaseIDs"
 

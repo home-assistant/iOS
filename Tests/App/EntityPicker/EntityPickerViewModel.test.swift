@@ -2,6 +2,7 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 // MARK: - Fakes & Helpers
@@ -49,7 +50,7 @@ private extension AppArea {
     }
 }
 
-@Suite("EntityPickerViewModel", .serialized)
+@Suite("EntityPickerViewModel", .sharedState)
 struct EntityPickerViewModelTests {
     private func makeVM(
         domainFilter: [Domain]? = nil,

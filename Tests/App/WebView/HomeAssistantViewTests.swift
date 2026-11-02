@@ -5,6 +5,22 @@ import XCTest
 
 @MainActor
 final class HomeAssistantViewTests: XCTestCase {
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
+
+    override func setUp() {
+        super.setUp()
+        previousCachedApis = Current.cachedApis
+    }
+
+    override func tearDown() {
+        // The code under test caches an API for its server. XCTest keeps this test case alive for the
+        // whole run, and an API left in the cache stays registered with the app's sensor container,
+        // which every later sensor signal fans out to.
+        Current.cachedApis = previousCachedApis
+        previousCachedApis = nil
+        super.tearDown()
+    }
+
     func testMakeWebViewControllerUsesProvidedServerAndHasNoInitialURLWithoutRestoration() {
         let server = Server.fake()
         let representable = FrontendView(

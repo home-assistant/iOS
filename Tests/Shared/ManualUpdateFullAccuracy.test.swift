@@ -2,11 +2,12 @@ import CoreLocation
 import Foundation
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 import UIKit
 
 /// Serialized because every test swaps the global `Current.locationManager`.
-@Suite("manuallyUpdate full accuracy", .serialized)
+@Suite("manuallyUpdate full accuracy", .sharedState)
 struct ManualUpdateFullAccuracyTests {
     /// Fails the wrapped work immediately, which stops `manuallyUpdate` after the accuracy step so
     /// these tests don't need a server, sensors or a real location fix.

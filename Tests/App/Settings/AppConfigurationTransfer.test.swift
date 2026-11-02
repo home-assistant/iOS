@@ -3,10 +3,11 @@ import GRDB
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct AppConfigurationTransferTests {
     @Test func exportMarksTheFileAsAFullConfigurationExport() throws {
         try withConfigurationTestWorld { database in

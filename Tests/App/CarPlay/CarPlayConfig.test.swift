@@ -1,7 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct CarPlayConfigTests {
     @Test func validateCarPlayConfigScheme() async throws {
         let currentFileURL = URL(fileURLWithPath: #file)

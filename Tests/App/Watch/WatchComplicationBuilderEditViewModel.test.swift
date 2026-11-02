@@ -2,10 +2,11 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchComplicationBuilderEditViewModelTests {
     // MARK: - Initial state
 

@@ -6,7 +6,7 @@ import SwiftUI
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ServersObserverTests {
     private func server(_ identifier: String, name: String, instanceID: String?) -> Server {
         Server.fake(identifier: .init(rawValue: identifier)) {

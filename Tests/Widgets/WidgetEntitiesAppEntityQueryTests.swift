@@ -1,13 +1,14 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// The entity picker behind the entities widget configuration, run against an in-memory copy of
 /// the app's entity tables.
 ///
 /// Serialized because every test swaps the database and the servers in `Current`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WidgetEntitiesAppEntityQueryTests {
     /// Saved picks come back in the order they were saved, which is the order the widget draws.
     @available(iOS 17, *)

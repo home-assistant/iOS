@@ -1,9 +1,10 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct SiriEntityExposureTests {
     private let calendar = Domain.calendar.rawValue
     private let todo = Domain.todo.rawValue

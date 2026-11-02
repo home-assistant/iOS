@@ -1,8 +1,10 @@
 import Foundation
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct WatchEntityStateFetcherTests {
     private func responseData(
         entityId: String,

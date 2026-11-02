@@ -16,19 +16,86 @@ Or in Xcode: use the `Tests-Unit` scheme with ⌘U.
 ## Testing Conventions
 
 - Tests live in `Tests/` mirroring the source structure
-- Mock dependencies by overriding `Current.*` properties in test setup
+- Mock dependencies by overriding `Current.*` properties in test setup; a Swift Testing suite that does so carries `.isolatedEnvironment` or `.sharedState` (see below)
 - Use `Sources/SharedTesting/` for shared test utilities
 - Tests are excluded from SwiftLint enforcement
 
-## Keeping Tests Stable on CI
+## Parallel Tests and Shared State
 
-The CI runner is far slower and busier than a Mac, and `fastlane test` runs the whole `Tests-Unit`
-bundle in one process where Swift Testing suites run in parallel with each other and with the
-XCTest suites. What flakes locally once a year flakes there every day.
+The `Tests-Unit` scheme runs in parallel at two levels, and each has its own rule.
 
-- **Swift Testing suites that swap anything on `Current` must be `@Suite(.serialized)`**, and must
-  not assert on side effects of global state (an `objectWillChange` count, "nothing was published"):
-  another suite is swapping the same globals at the same moment. Assert on the object under test.
+**XCTest classes run in several processes at once.** Both unit test targets are
+`parallelizable` in the scheme, so Xcode spreads XCTest classes over worker processes when you run
+the tests locally. `fastlane test` turns that off (`parallel_testing: false`): on CI a second
+simulator clone could fail to launch the host app, and Swift Testing, where most of the time is
+spent, already runs concurrently inside the one host. Each worker has its own
+`Current`, and XCTest runs one class at a time inside it, so a class that swaps `Current.*` in
+`setUp` and restores it in `tearDown` is safe from the classes in its own process. Within one
+bundle the XCTest phase finishes before the Swift Testing phase starts; the two never overlap.
+
+What the workers do share is the simulator. `Tests-Shared` has no host app, and several of its
+xctest processes run on the same simulator at once, so they share its app group defaults (one
+plist for the whole simulator), the app group container, and files such as the notification
+history. A class that writes those, or wipes them with `SensorEnablementStore.resetForTesting()`,
+lands in the middle of a class running in another process. Point `Current.settingsStore` at a
+defaults suite of the class's own with `PrivateSettingsStore` from `SharedTesting`: create it
+first in `setUp` and call `restore()` last in `tearDown`. Give file-backed stores a file of the
+test's own (`NotificationHistoryStore(fileURL:)`). Code that opens
+`UserDefaults(suiteName: AppConstants.AppGroupID)` directly, rather than through
+`Current.settingsStore.prefs`, still reaches the shared suite.
+
+**Swift Testing runs suites and tests concurrently in one process.** Every test shares that
+process's `Current`, `UserDefaults`, app database, keychain and singletons. `.serialized` does not
+help: it only keeps the tests of one suite apart from each other, and two suites that both swap
+`Current.servers` still overlap. A test that changes shared state declares how it is kept apart,
+with one of the traits in `SharedTesting`:
+
+- `@Suite(.isolatedEnvironment)` gives each test case a fresh `AppEnvironment` through
+  `withCurrent`, so its assignments to `Current.*` are invisible to every other test and it keeps
+  running in parallel. Use it for new tests. The override is task-local: it reaches everything the
+  test calls and its structured child tasks, but not work that hops to a dispatch queue, a
+  PromiseKit callback or `Task.detached`; those read the global environment, which no isolated test
+  changes. `.isolatedEnvironment { $0.isTestFlight = false }` configures the environment up front.
+- `@Suite(.sharedState)` runs each test case under `SharedStateLock`, so it never overlaps another
+  `.sharedState` test in any suite. Use it when the code under test still crosses a queue hop, or
+  when the test writes `UserDefaults`, the database, the keychain or a singleton. It subsumes
+  `.serialized`.
+
+Swift Testing files that assign to `Current` without either trait fail
+`Tools/check_test_isolation.py`, which `fastlane lint` and the CI lint job run. XCTest classes are
+not checked. Whatever the trait, assert on the object under test, never on side effects of global
+state (an `objectWillChange` count, "nothing was published").
+
+### Nothing a test creates may outlive it
+
+`.sharedState` restores the members of `Current` a test replaced (`CurrentSnapshot`), and XCTest
+classes that swap `Current.servers` can do the same with `CurrentSnapshot()` in `setUp` and
+`restore()` in `tearDown`. That does not reach objects held elsewhere. XCTest keeps every test case
+instance until the process ends, so whatever a class stores in a property during `setUp` lives on
+unless `tearDown` sets it to `nil`, and a `HAMockConnection` request the test never answers keeps
+its API in a retain cycle (clear `pendingRequests` and `pendingSubscriptions`). Every
+`HomeAssistantAPI` observes `Current.sensors`, so each leaked one reads every sensor provider, on the
+main thread, whenever anything signals the container, and keeps retrying the update against its
+fake server. A few hundred of them once stretched the app's Swift Testing phase from six minutes to
+over twenty.
+
+A test that turns sensors on or off gives itself a container (`Current.sensors = SensorContainer()`
+under `.sharedState`) instead of signaling the app's. `.sharedState` names any test that signals the
+app's container, and any test that holds the shared-state lock for more than five seconds, in the
+test log.
+
+### Effects inside `#expect`
+
+Write `await` and `try` before the macro, not inside it: `await #expect(model.load())`,
+`try await #require(value())`. The repository's SwiftFormat hoists them out of the call and turns
+`#expect(await x)` into `#expectawait (x)` (and `#expect(try x)` into `#expecttry (x)`), which does
+not compile.
+
+### Keeping Tests Stable on CI
+
+The CI runner is far slower and busier than a Mac. What flakes locally once a year flakes there
+every day.
+
 - **Never wait a fixed time** (`asyncAfter(0.2)`, `Task.sleep(120ms)`) for something asynchronous
   to land. Poll for the condition with a deadline of about 30 seconds, through
   `expectation(for: NSPredicate ...)` or a `waitUntil` loop. A short `wait(for:timeout:)` is only

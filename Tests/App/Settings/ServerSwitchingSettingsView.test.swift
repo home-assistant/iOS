@@ -1,8 +1,10 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
+@Suite(.sharedState)
 struct ServerSwitchingSettingsViewTests {
     @MainActor
     @Test func searchIndexesNothingWithASingleServer() {

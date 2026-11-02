@@ -46,6 +46,11 @@ jobs:
             ghcr.io/nicklockwood/swiftformat:0.53.1 \
             --lint --config .swiftformat .
 
+      # Swift Testing runs suites in parallel in one process; a suite that assigns to `Current`
+      # has to say how it is kept apart from the others (see Tools/check_test_isolation.py).
+      - name: Check test isolation traits
+        run: python3 Tools/check_test_isolation.py
+
   check-swiftlint-disables:
     needs: lint
     if: github.event_name == 'pull_request'

@@ -2,16 +2,22 @@ import CoreTelephony
 import Foundation
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 #if !targetEnvironment(macCatalyst)
 class ConnectivitySensorTests: XCTestCase {
+    /// The enablement this class resets lives in the app group defaults, which every test process
+    /// on the simulator shares; a suite of its own keeps another process's reset out of this one.
+    private var privateSettings: PrivateSettingsStore!
+
     /// Enablement is per server, so the device-level observation these cover only starts while
     /// there is a server to report to.
     private var previousServers: ServerManager!
 
     override func setUp() {
         super.setUp()
+        privateSettings = PrivateSettingsStore()
 
         previousServers = Current.servers
         let servers = FakeServerManager()
@@ -30,6 +36,8 @@ class ConnectivitySensorTests: XCTestCase {
     override func tearDown() {
         SensorEnablementStore.resetForTesting()
         Current.servers = previousServers
+        privateSettings.restore()
+        privateSettings = nil
         super.tearDown()
     }
 

@@ -2,15 +2,21 @@ import Foundation
 import ObjectMapper
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 class SensorContainerTests: XCTestCase {
+    /// The enablement this class resets lives in the app group defaults, which every test process
+    /// on the simulator shares; a suite of its own keeps another process's reset out of this one.
+    private var privateSettings: PrivateSettingsStore!
+
     private var observer: MockSensorObserver!
     private var container: SensorContainer!
     private var server1: Server!
     private var server2: Server!
     /// The flushes the container asked to run later, instead of a real timer the test would wait for.
     private var scheduledFlushes: [(delay: TimeInterval, block: () -> Void)] = []
+    private var previousDate: (() -> Date)!
 
     private enum TestError: Error {
         case anyError
@@ -18,6 +24,8 @@ class SensorContainerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        privateSettings = PrivateSettingsStore()
+        previousDate = Current.date
 
         let servers = FakeServerManager()
         server1 = servers.addFake()
@@ -37,6 +45,9 @@ class SensorContainerTests: XCTestCase {
         super.tearDown()
 
         SensorEnablementStore.resetForTesting()
+        Current.date = previousDate
+        privateSettings.restore()
+        privateSettings = nil
     }
 
     func testNoProvidersNoCachedDoesntNotify() {

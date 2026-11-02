@@ -6,7 +6,7 @@ import SwiftUI
 import Testing
 
 /// Serialized: the tests replace the process-wide `Current.bonjour`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct OnboardingServersListViewTests {
     @MainActor @Test func regularHeightShowsCenteredLoader() async throws {
         guard #available(iOS 18.0, *) else { return }

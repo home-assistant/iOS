@@ -2,11 +2,12 @@ import GRDB
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 import UIKit
 
 /// Serialized because every test swaps globals on `Current`.
-@Suite("AppIconShortcutItemsUpdater", .serialized)
+@Suite("AppIconShortcutItemsUpdater", .sharedState)
 struct AppIconShortcutItemsUpdaterTests {
     /// Runs the wrapped work without a real `UIApplication`/`ProcessInfo` assertion.
     private final class PassthroughBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {

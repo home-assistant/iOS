@@ -1,8 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite("Database Migration Tests")
+@Suite("Database Migration Tests", .sharedState)
 struct DatabaseMigrationTests {
     /// Helper table class for migration testing
     class TestTable: DatabaseTableProtocol {

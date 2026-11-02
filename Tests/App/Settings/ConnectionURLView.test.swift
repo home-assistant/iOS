@@ -2,6 +2,7 @@ import CoreLocation
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
@@ -28,7 +29,7 @@ private final class FakeLocationManager: LocationManagerProtocol {
 
 /// Covers the per-URL editor: the header, the address with its security level, the home network
 /// section with the permission card, and the external variant.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionURLViewTests {
     private func server(

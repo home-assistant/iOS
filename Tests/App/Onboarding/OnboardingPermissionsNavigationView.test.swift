@@ -1,12 +1,13 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
 
 /// During onboarding the bar is only there for the back button, so it shows on the home network step
 /// reached from local access and goes away again on the way back.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct OnboardingPermissionsNavigationViewTests {
     @MainActor
     @Test func navigationBarFollowsTheBackButton() async throws {

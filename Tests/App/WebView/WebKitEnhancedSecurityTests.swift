@@ -1,10 +1,11 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 // Serialized: the tests mutate process-wide app-group defaults through `Current.settingsStore`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WebKitEnhancedSecurityTests {
     // MARK: - Which URLs WebKit would harden
 

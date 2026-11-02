@@ -5,13 +5,17 @@ import XCTest
 
 class ClientEventTests: XCTestCase {
     var store: ClientEventStore!
+    private var previousDate: (() -> Date)!
+
     override func setUp() {
         super.setUp()
+        previousDate = Current.date
         store = ClientEventStore()
     }
 
     override func tearDown() {
         store.clearAllEvents()
+        Current.date = previousDate
         super.tearDown()
     }
 

@@ -3,9 +3,10 @@ import GRDB
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct DebugDatabaseTransferTests {
     @Test func exportAvailabilityIsFalseWhenFeatureHasNoRows() throws {
         try withTransferTestWorld { _ in

@@ -1,9 +1,11 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Coverage for how the watch's area and device screens resolve a server's entities into their two
 /// sections, and for the device each row carries — which is where child devices reach the watch.
+@Suite(.sharedState)
 struct WatchEntitySectionsTests {
     @Test("A child device's row carries its own name and the hardware it is part of")
     func rowCarriesTheParentOfAChildDevice() async throws {

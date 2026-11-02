@@ -7,6 +7,7 @@ import Testing
 
 /// The entity picker's row. A long list resolves every row's context line and glyph up front and
 /// hands them over, so the rows here are drawn from given content rather than resolving their own.
+@Suite(.sharedState)
 struct EntityRowViewTests {
     @MainActor
     @Test func rowsShowTheirNameContextAndGlyph() async throws {

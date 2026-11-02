@@ -19,6 +19,7 @@ class ModelManagerTests: XCTestCase {
 
     private var database: DatabaseQueue!
     private var previousDatabase: (() -> DatabaseQueue)!
+    private var previousDate: (() -> Date)!
     private var testQueue: DispatchQueue!
     private var manager: LegacyModelManager!
     private var servers: FakeServerManager!
@@ -30,6 +31,7 @@ class ModelManagerTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
+        previousDate = Current.date
         testQueue = DispatchQueue(label: #file)
         manager = LegacyModelManager()
         manager.workQueue = testQueue
@@ -76,6 +78,7 @@ class ModelManagerTests: XCTestCase {
 
     override func tearDown() {
         Current.database = previousDatabase
+        Current.date = previousDate
         TestStoreModel1.updateFalseIds = []
 
         super.tearDown()

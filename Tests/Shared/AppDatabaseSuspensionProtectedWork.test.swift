@@ -2,10 +2,11 @@ import Foundation
 import GRDB
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Serialized because every test swaps the global `Current.backgroundTask`.
-@Suite("AppDatabaseSuspension protected work", .serialized)
+@Suite("AppDatabaseSuspension protected work", .sharedState)
 struct AppDatabaseSuspensionProtectedWorkTests {
     /// Records the notifications posted by the instance under test.
     private final class Recorder {

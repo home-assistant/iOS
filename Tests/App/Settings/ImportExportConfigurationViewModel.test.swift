@@ -3,10 +3,11 @@ import GRDB
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ImportExportConfigurationViewModelTests {
     @Test func refreshingCountsReportsWhatIsConfigured() async throws {
         try await withViewModelTestWorld { database, viewModel in

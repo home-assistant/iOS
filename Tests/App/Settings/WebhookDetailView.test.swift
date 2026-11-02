@@ -1,12 +1,13 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
 /// Covers the webhook screen of a server reached through Home Assistant Link, whose footer explains
 /// that the cloudhook is used away from home.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct WebhookDetailViewTests {
     @Test func webhookDetailWithHomeAssistantLinkCloudhook() async throws {

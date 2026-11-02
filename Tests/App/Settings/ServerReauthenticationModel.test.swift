@@ -2,11 +2,12 @@ import Foundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers a Re-authenticate started from the settings: which address it signs in through, what it
 /// presents and for which server, and what a cancel, a failure or a success leaves behind.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerReauthenticationModelTests {
     private let newToken = TokenInfo(accessToken: "new-access", refreshToken: "new-refresh", expiration: .distantFuture)

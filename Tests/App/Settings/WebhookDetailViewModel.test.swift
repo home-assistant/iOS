@@ -1,9 +1,10 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct WebhookDetailViewModelTests {
     private func makeServer(
