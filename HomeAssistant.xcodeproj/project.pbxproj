@@ -6350,7 +6350,7 @@
 			repositoryURL = "https://github.com/DebugSwift/DebugSwift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.15.0;
+				minimumVersion = 1.19.0;
 			};
 		};
 		5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {

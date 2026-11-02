@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DebugSwift/DebugSwift.git",
       "state" : {
-        "revision" : "a61ed10addb0d453a0b78798dff45bf02e74f17e",
-        "version" : "1.16.0"
+        "revision" : "b85fd86581bc1b67710be82249d8aac2ef61b2f5",
+        "version" : "1.19.0"
       }
     },
     {
