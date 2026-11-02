@@ -10115,6 +10115,10 @@ public enum L10n {
           /// NFC Tag
           public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.NfcTag.title") }
         }
+        public enum WatchComplication {
+          /// Watch Complication
+          public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.WatchComplication.title") }
+        }
         public enum Widget {
           /// Widget
           public static var title: String { return L10n.tr("Localizable", "web_view.add_to.option.Widget.title") }
