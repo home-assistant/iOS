@@ -120,4 +120,76 @@ final class CarPlayEntityListItemTests: XCTestCase {
 
         try assertSameColor(color, onEntity.stateIconColor())
     }
+
+    // MARK: - Detail text and the executing subtitle
+
+    private func spinRunLoop(until condition: () -> Bool, file: StaticString = #filePath, line: UInt = #line) {
+        let deadline = Date().addingTimeInterval(10)
+        while !condition(), Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+        }
+        XCTAssertTrue(condition(), "condition not met within 10 s", file: file, line: line)
+    }
+
+    func testTheAreaFollowsTheStateOrStandsAloneForStatelessDomains() throws {
+        let light = try CarPlayEntityListItem(serverId: serverId, entity: entity(state: "on"), area: "Kitchen")
+        XCTAssertEqual(light.template.detailText?.hasSuffix("Kitchen"), true)
+        XCTAssertNotEqual(light.template.detailText, "Kitchen")
+
+        let script = try CarPlayEntityListItem(
+            serverId: serverId,
+            entity: entity(id: "script.morning", state: "off"),
+            area: "Kitchen"
+        )
+        XCTAssertEqual(script.template.detailText, "Kitchen")
+    }
+
+    /// An entity outside the known domains shows its raw state, with the unit when it has one.
+    func testAnUnknownDomainShowsItsStateAndUnit() throws {
+        let plain = try CarPlayEntityListItem(serverId: serverId, entity: entity(id: "mystery.thing", state: "idle"))
+        XCTAssertEqual(plain.template.detailText?.isEmpty, false)
+
+        let measured = try HAEntity(
+            entityId: "mystery.level",
+            state: "12",
+            lastChanged: Date(),
+            lastUpdated: Date(),
+            attributes: ["unit_of_measurement": "cm"],
+            context: .init(id: "", userId: "", parentId: "")
+        )
+        let item = CarPlayEntityListItem(serverId: serverId, entity: measured)
+        XCTAssertEqual(item.template.detailText?.hasSuffix(" cm"), true)
+    }
+
+    /// A state update arriving mid-action keeps "Executing…" up until its minimum duration has
+    /// passed, then the row reports its state again and tells the list to redraw.
+    func testTheExecutingSubtitleOutlivesAnEarlyStateUpdate() throws {
+        let item = try CarPlayEntityListItem(serverId: serverId, entity: entity(state: "off"))
+        var deferredUpdates = 0
+        item.onDeferredPresentationUpdate = { deferredUpdates += 1 }
+
+        item.setExecutingState(true)
+        try item.update(serverId: serverId, entity: entity(state: "on"))
+        XCTAssertEqual(item.template.detailText, CarPlayEntityListItem.executingSubtitle)
+
+        spinRunLoop { deferredUpdates == 1 }
+        XCTAssertNotEqual(item.template.detailText, CarPlayEntityListItem.executingSubtitle)
+    }
+
+    /// Once the minimum duration has already passed when the action finishes, the subtitle clears
+    /// at once.
+    func testAnActionFinishingAfterTheMinimumDurationClearsAtOnce() throws {
+        let item = try CarPlayEntityListItem(serverId: serverId, entity: entity(state: "off"))
+        var deferredUpdates = 0
+        item.onDeferredPresentationUpdate = { deferredUpdates += 1 }
+        item.setExecutingState(true)
+        let started = Date()
+
+        // Let the minimum executing duration elapse; nothing asynchronous is awaited here.
+        spinRunLoop { Date().timeIntervalSince(started) > 1.6 }
+        item.setExecutingState(false)
+
+        XCTAssertEqual(deferredUpdates, 1)
+        XCTAssertNotEqual(item.template.detailText, CarPlayEntityListItem.executingSubtitle)
+    }
 }

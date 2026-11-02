@@ -26,7 +26,7 @@ final class CarPlayAssistTonePlayer: NSObject, CarPlayAssistTonePlayerProtocol {
         case error
     }
 
-    private struct Segment {
+    struct Segment {
         /// Frequency in hertz, `0` produces silence for `duration`.
         let frequency: Double
         let duration: TimeInterval
@@ -87,7 +87,7 @@ final class CarPlayAssistTonePlayer: NSObject, CarPlayAssistTonePlayerProtocol {
         pendingCompletion?()
     }
 
-    private func toneData(for tone: Tone) -> Data {
+    func toneData(for tone: Tone) -> Data {
         if let cached = cachedToneData[tone] {
             return cached
         }
@@ -96,7 +96,7 @@ final class CarPlayAssistTonePlayer: NSObject, CarPlayAssistTonePlayerProtocol {
         return data
     }
 
-    private static func segments(for tone: Tone) -> [Segment] {
+    static func segments(for tone: Tone) -> [Segment] {
         switch tone {
         case .startRecording:
             [
@@ -117,7 +117,7 @@ final class CarPlayAssistTonePlayer: NSObject, CarPlayAssistTonePlayerProtocol {
         }
     }
 
-    private static func makeWAVData(segments: [Segment]) -> Data {
+    static func makeWAVData(segments: [Segment]) -> Data {
         var samples = [Int16]()
         for segment in segments {
             let sampleCount = Int(segment.duration * sampleRate)

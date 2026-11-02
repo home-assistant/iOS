@@ -1,3 +1,4 @@
+import Foundation
 import GRDB
 @testable import Shared
 import SharedTesting
@@ -138,5 +139,23 @@ struct CarPlayConfigTests {
         #expect(foundMissingFolder == false)
         #expect(config.folder(withId: "qa-folder")?.items?.count == 1)
         #expect(config.folder(withId: "tab-folder")?.items?.count == 1)
+    }
+
+    @Test func anExplicitLayoutWinsOverTheDefault() {
+        #expect(CarPlayConfig(quickAccessLayout: .list).resolvedQuickAccessLayout == .list)
+        #expect(CarPlayConfig(quickAccessLayout: .grid, showAddEditButtons: false).resolvedQuickAccessLayout == .grid)
+    }
+
+    @Test func builtInTabsAreTheOnlyCasesAndEachHasAName() {
+        #expect(CarPlayTab.allCases == [.quickAccess, .areas, .domains, .settings])
+        #expect(CarPlayTab.domains.name == L10n.CarPlay.Navigation.Tab.domains)
+        #expect(Set(CarPlayTab.allCases.map(\.name)).count == 4)
+    }
+
+    @Test func decodingAnUnknownTabFails() {
+        let data = Data(#"["quickAccess", "nonsense"]"#.utf8)
+        #expect(throws: DecodingError.self) {
+            try JSONDecoder().decode([CarPlayTab].self, from: data)
+        }
     }
 }
