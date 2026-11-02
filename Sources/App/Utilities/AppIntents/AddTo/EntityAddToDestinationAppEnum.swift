@@ -6,9 +6,9 @@ import UIKit
 /// Where "Add entity to" puts an entity.
 ///
 /// These are the destinations the frontend's own "Add to" sheet offers (`EntityAddToActionType`),
-/// narrowed to the three that are nothing but a config write. The widget builder, the NFC sheet and
-/// the deep link share sheet all need someone at the screen to finish, so there is nothing for an
-/// intent to complete on its own and they are deliberately absent.
+/// narrowed to the three that are nothing but a config write. The widget builder, the complication
+/// builder, the NFC sheet and the deep link share sheet all need someone at the screen to finish, so
+/// there is nothing for an intent to complete on its own and they are deliberately absent.
 @available(macOS 13.0, *)
 enum EntityAddToDestinationAppEnum: String, Codable, Sendable, AppEnum {
     case appleWatch
