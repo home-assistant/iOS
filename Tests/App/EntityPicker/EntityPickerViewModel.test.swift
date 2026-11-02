@@ -261,4 +261,150 @@ struct EntityPickerViewModelTests {
             "switch.strip_main",
         ])
     }
+
+    // MARK: - Refreshing, servers and grouping
+
+    @Test func groupingsIdentifyThemselvesByRawValue() {
+        #expect(EntityGrouping.allCases.map(\.id) == EntityGrouping.allCases.map(\.rawValue))
+    }
+
+    /// Pull to refresh asks the database updater for the selected server, shows the updater's phase,
+    /// and stops once that server's update finishes; without a server, or a server with no address,
+    /// there is nothing to refresh.
+    @MainActor
+    @Test func refreshFollowsTheDatabaseUpdater() async throws {
+        let previousServers = Current.servers
+        let previousUpdater = Current.appDatabaseUpdater
+        let updater = RecordingDatabaseUpdater()
+        let servers = FakeServerManager(initial: 0)
+        let online = servers.addFake()
+        let offline = servers.add(identifier: "offline", serverInfo: with(ServerInfo.fake()) {
+            $0.connection.set(address: nil, for: .internal)
+            $0.connection.set(address: nil, for: .external)
+            $0.connection.set(address: nil, for: .remoteUI)
+        })
+        Current.servers = servers
+        Current.appDatabaseUpdater = updater
+        defer {
+            Current.servers = previousServers
+            Current.appDatabaseUpdater = previousUpdater
+        }
+
+        try await SettingsTestDatabase.with { _ in
+            let noServer = EntityPickerViewModel(domainFilter: nil, selectedServerId: nil)
+            await noServer.refresh()
+            #expect(!noServer.isRefreshing)
+
+            let unreachable = EntityPickerViewModel(domainFilter: nil, selectedServerId: offline.identifier.rawValue)
+            await unreachable.refresh()
+            await #expect(Self.waitUntil { !unreachable.isRefreshing })
+            #expect(updater.updated.isEmpty)
+
+            let viewModel = EntityPickerViewModel(domainFilter: nil, selectedServerId: online.identifier.rawValue)
+            await viewModel.refresh()
+            #expect(viewModel.isRefreshing)
+            #expect(updater.updated == [online.identifier])
+
+            let center = NotificationCenter.default
+            let phase = [AppDatabaseUpdaterUserInfo.phaseDescriptionKey: "Areas"]
+            center.post(name: .appDatabaseUpdaterDidChangePhase, object: offline, userInfo: phase)
+            center.post(name: .appDatabaseUpdaterDidChangePhase, object: "not a server", userInfo: phase)
+            center.post(name: .appDatabaseUpdaterDidChangePhase, object: online, userInfo: phase)
+            await #expect(Self.waitUntil { viewModel.refreshStatusText == "Areas" })
+
+            center.post(name: .appDatabaseUpdaterDidFinishRoutine, object: online)
+            await #expect(Self.waitUntil { !viewModel.isRefreshing })
+        }
+    }
+
+    /// Switching servers re-reads that server's data and drops a domain filter the domain list no
+    /// longer offers; grouping by domain makes one section per domain, and the search narrows the
+    /// list once it settles.
+    @MainActor
+    @Test func switchingServersAndGroupingByDomain() async throws {
+        try await SettingsTestDatabase.with({ db in
+            for entity: HAAppEntity in [
+                .make("light.kitchen", name: "Kitchen", domain: "light", serverId: "A"),
+                .make("switch.pump", name: "Pump", domain: "switch", serverId: "A"),
+                .make("sensor.temperature", name: "Temperature", domain: "sensor", serverId: "B"),
+            ] {
+                try entity.insert(db)
+            }
+        }) { _ in
+            let viewModel = EntityPickerViewModel(domainFilter: nil, selectedServerId: "A")
+            viewModel.fetchEntities()
+            viewModel.selectedDomainFilter = "sensor"
+            viewModel.selectedServerId = "B"
+            #expect(viewModel.selectedDomainFilter == nil)
+
+            viewModel.selectedGrouping = .domain
+            await viewModel._test_awaitFiltering()
+            #expect(viewModel.filteredGroups.map(\.id) == ["sensor"])
+
+            viewModel.searchTerm = "zzqqxx"
+            await #expect(Self.waitUntil { viewModel.filteredGroups.isEmpty })
+        }
+    }
+
+    /// Without the entity table the fetch only logs, and the list stays empty.
+    @MainActor
+    @Test func fetchingFromADatabaseWithoutTablesLeavesTheListEmpty() async throws {
+        try await SettingsTestDatabase.withoutTables { _ in
+            let viewModel = EntityPickerViewModel(domainFilter: nil, selectedServerId: nil)
+            viewModel.fetchEntities()
+            viewModel._test_updateFilteredEntities()
+            #expect(viewModel.entities.isEmpty)
+        }
+    }
+
+    /// A refresh that already ran past the minimum display time stops the moment the update finishes.
+    @MainActor
+    @Test func aRefreshFinishingAfterTheMinimumDisplayStopsAtOnce() async throws {
+        let previousServers = Current.servers
+        let previousUpdater = Current.appDatabaseUpdater
+        let previousDate = Current.date
+        let servers = FakeServerManager(initial: 0)
+        let online = servers.addFake()
+        Current.servers = servers
+        Current.appDatabaseUpdater = RecordingDatabaseUpdater()
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        Current.date = { start }
+        defer {
+            Current.servers = previousServers
+            Current.appDatabaseUpdater = previousUpdater
+            Current.date = previousDate
+        }
+
+        try await SettingsTestDatabase.with { _ in
+            let viewModel = EntityPickerViewModel(domainFilter: nil, selectedServerId: online.identifier.rawValue)
+            await viewModel.refresh()
+            #expect(viewModel.isRefreshing)
+
+            Current.date = { start.addingTimeInterval(10) }
+            NotificationCenter.default.post(name: .appDatabaseUpdaterDidFinishRoutine, object: online)
+            await #expect(Self.waitUntil { !viewModel.isRefreshing })
+            #expect(viewModel.refreshStatusText == nil)
+        }
+    }
+
+    @MainActor
+    private static func waitUntil(timeout: TimeInterval = 10, _ condition: () -> Bool) async -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while !condition() {
+            if Date() > deadline { return false }
+            try? await Task.sleep(nanoseconds: 20_000_000)
+        }
+        return true
+    }
+}
+
+/// Records which servers a refresh asked to update, in place of the app's database updater.
+private final class RecordingDatabaseUpdater: AppDatabaseUpdaterProtocol {
+    private(set) var updated: [Identifier<Server>] = []
+
+    func stop() {}
+
+    func update(server: Server, forceUpdate: Bool, showProgress: Bool) {
+        updated.append(server.identifier)
+    }
 }

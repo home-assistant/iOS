@@ -4,6 +4,7 @@ import GRDB
 import SharedTesting
 import SwiftUI
 import Testing
+import UIKit
 
 /// The entity picker's row. A long list resolves every row's context line and glyph up front and
 /// hands them over, so the rows here are drawn from given content rather than resolving their own.
@@ -39,6 +40,27 @@ struct EntityRowViewTests {
         .listStyle(.plain)
 
         assertLightDarkSnapshots(of: view, drawHierarchyInKeyWindow: true)
+    }
+
+    /// A row that is not selected shows its accessory symbol instead of the checkmark.
+    @MainActor
+    @Test func anUnselectedRowShowsItsAccessory() {
+        let row = EntityRowView(
+            entity: .make("script.goodnight", name: "Goodnight"),
+            subtitle: nil,
+            icon: nil,
+            accessoryImageSystemSymbol: .plusCircleFill
+        )
+        let controller = UIHostingController(rootView: row)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 80))
+        window.rootViewController = controller
+        window.isHidden = false
+        defer {
+            window.isHidden = true
+            window.rootViewController = nil
+        }
+        controller.view.layoutIfNeeded()
+        #expect(controller.view.bounds.height == 80)
     }
 
     /// The rows outside the picker keep resolving their own content: with nothing in the registry

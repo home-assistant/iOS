@@ -374,6 +374,48 @@ struct WatchComplicationBuilderEditViewModelTests {
         }
     }
 
+    /// A template complication saved without a name takes the first free "Complication-N".
+    @Test func unnamedTemplateTakesTheFirstFreeNumber() throws {
+        try withBuilderTestWorld { database in
+            for number in [1, 2, 4] {
+                try WatchComplicationConfig(serverId: "server-1", kind: .customTemplate, name: "Complication-\(number)")
+                    .save()
+            }
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.customTemplate)
+            viewModel.config.name = "  "
+
+            viewModel.save()
+
+            let saved = try database.read { db in
+                try WatchComplicationConfig.fetchOne(db, key: viewModel.config.id)
+            }
+            #expect(saved?.name == "Complication-3")
+        }
+    }
+
+    /// A save the database rejects is logged; the change notification still goes out.
+    @Test func saveFailureStillPostsTheChangeNotification() async throws {
+        let previousServers = Current.servers
+        Current.servers = FakeServerManager(initial: 0)
+        defer { Current.servers = previousServers }
+        try await SettingsTestDatabase.withoutTables { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(
+                existing: WatchComplicationConfig(serverId: "server-1", name: "Named")
+            )
+            var notified = false
+            let token = NotificationCenter.default.addObserver(
+                forName: WatchComplicationConfig.didChangeNotification,
+                object: nil,
+                queue: nil
+            ) { _ in notified = true }
+            defer { NotificationCenter.default.removeObserver(token) }
+
+            viewModel.save()
+            #expect(notified)
+        }
+    }
+
     // MARK: - Helpers
 
     private static func batteryEntity(serverId: String, icon: String? = nil) -> HAAppEntity {

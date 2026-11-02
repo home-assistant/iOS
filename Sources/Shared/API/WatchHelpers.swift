@@ -287,8 +287,16 @@ public enum WatchMirrorPushCoordinator {
         }
     }
 
+    /// Test seam: when bound for a task, `schedule` hands each reason to it instead of queuing a push,
+    /// so a test's trigger never leaves a delayed push behind that reads a later test's `Current`.
+    @TaskLocal public static var scheduleOverride: (@Sendable (Reason) -> Void)?
+
     /// Request a push. Safe to call from anywhere and as often as needed — it debounces and de-dupes.
     public static func schedule(reason: Reason) {
+        if let scheduleOverride {
+            scheduleOverride(reason)
+            return
+        }
         queue.async {
             pendingComplicationRefresh = pendingComplicationRefresh || reason == .complicationSaved
             pendingWork?.cancel()
