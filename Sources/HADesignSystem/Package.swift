@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "HADesignSystem", targets: ["HADesignSystem"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols", .upToNextMajor(from: "5.3.0")),
+        .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols", .upToNextMajor(from: "7.0.0")),
         .package(path: "../HAIconic"),
     ],
     targets: [
