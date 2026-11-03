@@ -3,11 +3,13 @@ import HANetworking
 @testable import HomeAssistant
 import Security
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import Testing
 
 /// Both sides of the hand-off driven in one process: the links one coordinator asks iOS to open are
 /// delivered to the other, the way the two apps hand each other control on a device.
+@Suite(.sharedState)
 @MainActor
 struct AppMigrationCoordinatorTests {
     /// Stands in for iOS: records every link a coordinator opens and answers as the test decides.
