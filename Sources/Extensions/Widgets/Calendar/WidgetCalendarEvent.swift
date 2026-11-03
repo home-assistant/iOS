@@ -50,7 +50,9 @@ struct WidgetCalendarEvent: Identifiable, Hashable {
                 calendarEntityId: calendar.entityId,
                 uid: event.uid,
                 recurrenceId: event.recurrenceId,
-                start: event.start
+                start: event.start,
+                end: event.end,
+                summary: event.summary
             ),
             summary: event.summary,
             start: event.start,
