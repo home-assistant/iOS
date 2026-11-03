@@ -689,6 +689,7 @@
 "connection.active_url_type.toast.internal" = "A belső URL használatban van.";
 "connection.active_url_type.toast.none" = "Ehhez a szerverhez jelenleg nem érhető el aktív URL.";
 "connection.active_url_type.toast.remote_ui" = "A Cloud Remote UI URL használatban van.";
+"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
 "connection.active_url_type.toast.title" = "Kapcsolat típusa";
 "connection.error.details.button.clipboard" = "Másolás a vágólapra";
 "connection.error.details.button.discord" = "Kérdezzen a Discordon";
@@ -701,6 +702,8 @@
 "connection.error.details.title" = "Csatlakozási hiba";
 "connection.error.failed_connect.cloud.title" = "Győződjön meg róla, hogy a Home Assistant Cloud előfizetése aktív és csatlakozik a szerveréhez. Ezt ellenőrizheti a [Nabu Casa](https://account.nabucasa.com) oldalon.";
 "connection.error.failed_connect.cloud_inactive.title" = "A Home Assistant Cloud használata le van tiltva az alkalmazásban. Ha távoli eléréshez szüksége van rá, nyissa meg a mobilalkalmazás beállításait és engedélyezze.";
+"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.subtitle" = "Ellenőrizze a kapcsolatot és próbálja meg újra. Ha nem otthon van, győződjön meg róla, hogy beállította a távoli hozzáférést.";
 "connection.error.failed_connect.title" = "Nem sikerült csatlakozni a Home Assistanthoz";
 "connection.error.failed_connect.url" = "Az alkalmazás jelenleg csatlakozik a következőhöz:";
@@ -1656,6 +1659,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.connection_section.client_certificate.remove_confirmation.message" = "A tanúsítvány el lesz távolítva az eszközről. Az mTLS hitelesítés használatához újra importálnia kell.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Eltávolítás";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Eltávolítja a tanúsítványt?";
+"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
 "settings.connection_section.cloud_overrides_external" = "Felhőn keresztüli csatlakozáskor a külső URL nem kerül felhasználásra. Nem kell konfigurálnia, hacsak nem szeretné letiltani a Cloud szolgáltatást.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "Elérhető";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Elérhető (HTTP %li)";
@@ -1743,6 +1747,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.connection_section.urls_how_it_works.active.header" = "Jelenleg használatban";
 "settings.connection_section.urls_how_it_works.active.none" = "A jelenlegi beállításokkal egyetlen URL sem használható";
 "settings.connection_section.urls_how_it_works.away.body" = "Ha a felsorolt hálózatok egyike sem egyezik, a rendszer a Home Assistant Cloud URL-t használja, ha a felhő be van kapcsolva, ellenkező esetben a külső URL-t.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
 "settings.connection_section.urls_how_it_works.away.title" = "Bárhol máshol";
 "settings.connection_section.urls_how_it_works.background.body" = "Az érzékelőfrissítések, az értesítési műveletek és a helyi push az alkalmazás bezárása után is tovább működnek. A háttérben az iOS csak akkor osztja meg a hálózat nevét, ha a helyhozzáférés Mindig értékre van állítva, nem pedig Az alkalmazás használata közben értékre. Enélkül az otthoni hálózat felismeretlen marad, és ezek ugyanúgy csatlakoznak, mint amikor távol van.";
 "settings.connection_section.urls_how_it_works.background.title" = "Amíg az alkalmazás a háttérben van";
@@ -1770,6 +1775,7 @@ A Home Assistant nyílt forráskódú, az adatvédelem mellett áll ki és helyi
 "settings.connection_section.webhook.active.unavailable" = "Nincs elérhető URL";
 "settings.connection_section.webhook.endpoints.footer" = "Kezelje ezeket az URL-eket bizalmasan. Bárki, aki rendelkezik velük, kéréseket küldhet ennek a mobilalkalmazás-WebHooknak.";
 "settings.connection_section.webhook.footer" = "Az alkalmazás ide küldi az érzékelők, a helyadatok és egyéb frissítések adatait. A Home Assistant Cloud biztosít egy cloudhookot, amelyet az alkalmazás akkor használ, ha Ön nincs otthon. Ennek hiányában az alkalmazás a WebHook URL-t a szerver belső, távoli vagy külső URL-jéből állítja össze.";
+"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
 "settings.connection_section.webhook.in_use" = "Használatban";
 "settings.connection_section.webhook.title" = "WebHook";
 "settings.connection_section.websocket.status.authenticating" = "Hitelesítés";
@@ -3065,6 +3071,7 @@ Amíg egyetlen URL sem minősül biztonságosnak, a szerver adatai nem szinkroni
 "watch.settings.client_events.title" = "Naplók";
 "watch.settings.complications.empty" = "Még nincs beállított komplikáció.";
 "watch.settings.complications.footer" = "Minden komplikáció aktuális értékét közvetlenül a Home Assistantból kéri le. Ehhez elérhető szerver-URL szükséges (helyi hálózat vagy távoli/Cloud URL).";
+"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
 "watch.settings.complications.last_attempt" = "Utolsó próbálkozás: %@";
 "watch.settings.complications.list_footer" = "Koppintson egy komplikációra, hogy megtekintse, mikor frissült utoljára, vagy hogy újrapróbálja.";
 "watch.settings.complications.never" = "Még nem frissült";
@@ -3144,6 +3151,7 @@ Amíg egyetlen URL sem minősül biztonságosnak, a szerver adatai nem szinkroni
 "web_view.add_to.option.Deeplink.title" = "Mélyhivatkozás";
 "web_view.add_to.option.MacToolbar.title" = "Mac eszköztár";
 "web_view.add_to.option.NfcTag.title" = "NFC-címke";
+"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Ellenőrizze a kapcsolatot vagy próbálja meg később újra. Ha a Home Assistant újraindul, a kapcsolat automatikusan helyreáll, amint ismét online lesz.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Gyorsítótár törlése és újratöltés";
