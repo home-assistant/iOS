@@ -689,6 +689,7 @@
 "connection.active_url_type.toast.internal" = "Usando a URL interna.";
 "connection.active_url_type.toast.none" = "Nenhuma URL ativa está disponível no momento para este servidor.";
 "connection.active_url_type.toast.remote_ui" = "Usando a URL da interface remota da nuvem.";
+"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
 "connection.active_url_type.toast.title" = "Tipo de conexão";
 "connection.error.details.button.clipboard" = "Copiar para a área de transferência";
 "connection.error.details.button.discord" = "Pergunte no Discord";
@@ -701,6 +702,8 @@
 "connection.error.details.title" = "Erro de conexão";
 "connection.error.failed_connect.cloud.title" = "Certifique-se de que sua assinatura do Home Assistant Cloud esteja ativa e conectada ao seu servidor. Você pode verificar isso em [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.cloud_inactive.title" = "Você desabilitou o uso do Home Assistant Cloud no aplicativo. Se precisar dele para acesso remoto, abra as configurações do aplicativo complementar e habilite-o.";
+"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.subtitle" = "Verifique sua conexão e tente novamente. Se você não estiver em casa, certifique-se de ter configurado o acesso remoto.";
 "connection.error.failed_connect.title" = "Não foi possível conectar ao Home Assistant";
 "connection.error.failed_connect.url" = "O aplicativo está se conectando a";
@@ -1657,6 +1660,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.client_certificate.remove_confirmation.message" = "O certificado será removido do dispositivo. Você precisará importá-lo novamente para usar a autenticação mTLS.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Remover";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Remover certificado?";
+"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
 "settings.connection_section.cloud_overrides_external" = "Ao conectar via Nuvem, a URL Externa não será usada. Você não precisa configurar uma, a menos que queira desabilitar a Nuvem.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "Acessível";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Acessível (HTTP %li)";
@@ -1744,6 +1748,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.urls_how_it_works.active.header" = "Em uso agora";
 "settings.connection_section.urls_how_it_works.active.none" = "Nenhuma URL pode ser usada com as configurações atuais";
 "settings.connection_section.urls_how_it_works.away.body" = "Quando nenhuma rede listada corresponde, a URL do Home Assistant Cloud é usada se a nuvem estiver ligada; caso contrário, a URL externa.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
 "settings.connection_section.urls_how_it_works.away.title" = "Em qualquer outro lugar";
 "settings.connection_section.urls_how_it_works.background.body" = "Atualizações de sensores, ações de notificação e push local continuam funcionando com o aplicativo fechado. Em segundo plano, o iOS só compartilha o nome da rede quando o acesso à localização está definido como Sempre, em vez de Durante o Uso do App; então, sem isso, sua rede doméstica não é reconhecida e esses recursos se conectam da mesma forma que quando você está fora.";
 "settings.connection_section.urls_how_it_works.background.title" = "Enquanto o aplicativo está em segundo plano";
@@ -1771,6 +1776,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.webhook.active.unavailable" = "Nenhuma URL disponível";
 "settings.connection_section.webhook.endpoints.footer" = "Trate estas URLs como confidenciais. Qualquer pessoa que as tenha pode enviar solicitações para o webhook deste aplicativo móvel.";
 "settings.connection_section.webhook.footer" = "O aplicativo envia atualizações de sensores, localização e outras para este webhook. O Home Assistant Cloud fornece um cloudhook, que é usado sempre que você está fora de casa. Sem ele, o aplicativo cria o URL do webhook a partir do URL interno, remoto ou externo deste servidor.";
+"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
 "settings.connection_section.webhook.in_use" = "Em uso";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Autenticando";
@@ -3066,6 +3072,7 @@ Enquanto nenhuma URL for considerada segura, os dados deste servidor não serão
 "watch.settings.client_events.title" = "Logs";
 "watch.settings.complications.empty" = "Nenhuma complicação configurada ainda.";
 "watch.settings.complications.footer" = "Busca o valor atual de cada complicação diretamente do Home Assistant. Isso requer uma URL de servidor acessível (rede local ou uma URL remota/Cloud).";
+"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
 "watch.settings.complications.last_attempt" = "Última tentativa: %@";
 "watch.settings.complications.list_footer" = "Toque em uma complicação para ver quando foi atualizada pela última vez e para tentar novamente.";
 "watch.settings.complications.never" = "Ainda não atualizado";
@@ -3145,6 +3152,7 @@ Enquanto nenhuma URL for considerada segura, os dados deste servidor não serão
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Barra de ferramentas do Mac";
 "web_view.add_to.option.NfcTag.title" = "Tag NFC";
+"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Verifique sua conexão ou tente novamente mais tarde. Se o Home Assistant estiver reiniciando, ele se reconectará após ficar online novamente.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Limpar cache e recarregar";
@@ -3157,7 +3165,7 @@ Enquanto nenhuma URL for considerada segura, os dados deste servidor não serão
 "web_view.empty_state.logged_out.login_button" = "Entrar";
 "web_view.empty_state.logged_out.title" = "Você está desconectado";
 "web_view.empty_state.open_settings_button" = "Abrir configurações do app";
-"web_view.empty_state.reauthenticate_button" = "Reautenticar";
+"web_view.empty_state.reauthenticate_button" = "Autenticar novamente";
 "web_view.empty_state.retry_button" = "Tentar novamente";
 "web_view.empty_state.title" = "Você está desconectado";
 "web_view.no_url_available.body" = "🔐  Devido às suas escolhas de segurança, não há nenhuma URL que tenhamos permissão para usar. \
