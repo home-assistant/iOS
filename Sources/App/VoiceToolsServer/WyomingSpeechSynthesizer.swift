@@ -20,9 +20,16 @@ actor WyomingSpeechSynthesizer {
 
     /// A render that never calls back would hold the connection open forever: cancelling the task
     /// awaiting a continuation does not resume it.
-    private static let renderTimeout: TimeInterval = 30
+    static let defaultRenderTimeout: TimeInterval = 30
 
     private let synthesizer = AVSpeechSynthesizer()
+    /// Lengthened by tests: the synthesiser hands its buffers back through the main thread, which
+    /// other suites keep busy on a loaded test runner.
+    private let renderTimeout: TimeInterval
+
+    init(renderTimeout: TimeInterval = WyomingSpeechSynthesizer.defaultRenderTimeout) {
+        self.renderTimeout = renderTimeout
+    }
 
     /// Collects the buffers `write` produces and owns the continuation waiting on them.
     ///
@@ -60,7 +67,7 @@ actor WyomingSpeechSynthesizer {
             let render = Render(continuation: continuation)
             let timeout = DispatchWorkItem { render.finish(with: .failure(WyomingProtocolError.timedOut)) }
             DispatchQueue.global(qos: .userInitiated).asyncAfter(
-                deadline: .now() + Self.renderTimeout,
+                deadline: .now() + renderTimeout,
                 execute: timeout
             )
 

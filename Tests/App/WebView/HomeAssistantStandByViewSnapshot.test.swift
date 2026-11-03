@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
@@ -14,6 +15,7 @@ import UIKit
 /// The test and image names carry a "stand-by" prefix: Xcode copies every reference image into the
 /// test bundle, so file names have to be unique across suites, and the `WebViewEmptyStateView` suite
 /// already records the plain certificate names.
+@Suite(.sharedState)
 struct HomeAssistantStandByViewSnapshotTests {
     private static let iPhoneDuoSize = CGSize(width: 466, height: 678)
     private static let iPhoneDuoVerticalBarInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 84)

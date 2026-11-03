@@ -176,7 +176,7 @@ class iOSTagManager: TagActivityManager {
         }
     }
 
-    private static func identifier(from message: NFCNDEFMessage) -> Promise<String> {
+    static func identifier(from message: NFCNDEFMessage) -> Promise<String> {
         firstly {
             .value(message.records)
         }.compactMapValues { payload in

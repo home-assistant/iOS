@@ -18,7 +18,7 @@ class CarPlaySceneDelegate: UIResponder {
     private var folderTabTemplates: [String: any CarPlayTemplateProvider] = [:]
     private var includedDomains: [Domain] = Domain.carPlaySupported
 
-    private var allTemplates: [any CarPlayTemplateProvider] {
+    var allTemplates: [any CarPlayTemplateProvider] {
         [
             quickAccessListTemplate,
             areasZonesListTemplate,

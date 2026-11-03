@@ -1,13 +1,14 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 
 /// Covers the row at the top of a server's settings: identity on top, the editable details
 /// below it as tappable pills, the active URL highlighted, and an Add pill where a URL is missing.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerDetailsRowViewTests {
     private func card(

@@ -1,12 +1,13 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct KioskHideSettingsEntryTests {
     @Test func switchingOnAsksBeforeStoringIt() throws {
         try withKioskDatabase { _ in

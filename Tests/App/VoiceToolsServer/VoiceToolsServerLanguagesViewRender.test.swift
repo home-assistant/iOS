@@ -15,7 +15,7 @@ struct VoiceToolsServerLanguagesViewRenderTests {
     /// The list is already cached by the time the screen opens, as it is once Home Assistant has
     /// asked the server to describe itself. Opening the screen has to probe again anyway, and leave
     /// the new answer behind for the next `describe`.
-    @Test(.timeLimit(.minutes(1))) func openingTheScreenFindsALanguageInstalledSinceTheLastProbe() async throws {
+    @Test func openingTheScreenFindsALanguageInstalledSinceTheLastProbe() async throws {
         let stub = SpeechLocaleProbeStub(answers: [english, englishAndPortuguese])
         let speechLocales = SupportedSpeechLocales(probe: stub.probe)
         let cached = await speechLocales.locales()
@@ -29,22 +29,24 @@ struct VoiceToolsServerLanguagesViewRenderTests {
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
         window.rootViewController = controller
         window.isHidden = false
-        controller.view.setNeedsLayout()
-        controller.view.layoutIfNeeded()
         defer {
             window.isHidden = true
             window.rootViewController = nil
         }
 
-        // The screen probes from its own task, so the new answer lands some time after the layout
-        // pass. A screen that read the cache instead would never get here, and the time limit is
-        // what fails the test.
-        var advertised = await speechLocales.locales()
-        while advertised != englishAndPortuguese {
+        // The screen probes from its own task, so the new answer lands some time after a layout
+        // pass. A screen that read the cache instead would never get there: the deadline fails the
+        // test rather than leaving it to a time limit, which takes the whole test process down.
+        let deadline = Date().addingTimeInterval(30)
+        var advertised = cached
+        while advertised != englishAndPortuguese, Date() < deadline {
+            controller.view.setNeedsLayout()
+            controller.view.layoutIfNeeded()
             try await Task.sleep(nanoseconds: 10_000_000)
             advertised = await speechLocales.locales()
         }
 
+        #expect(advertised == englishAndPortuguese)
         #expect(stub.probeCount == 2)
     }
 }

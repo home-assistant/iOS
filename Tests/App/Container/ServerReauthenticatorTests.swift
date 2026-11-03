@@ -2,12 +2,13 @@ import Foundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers logging an existing server in again: the new token replaces the old one, the address only
 /// moves when the login page was redirected on the same host, and a server without the chosen
 /// address fails before any login is shown.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerReauthenticatorTests {
     private let newToken = TokenInfo(accessToken: "new-access", refreshToken: "new-refresh", expiration: .distantFuture)

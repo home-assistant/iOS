@@ -1,3 +1,4 @@
+import CarPlay
 import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
@@ -79,5 +80,25 @@ final class CarPlayLockConfirmationTests: XCTestCase {
 
         wait(for: [reported], timeout: 2)
         XCTAssertNotNil(error)
+    }
+
+    /// An unlocked lock asks to lock; cancelling only dismisses the question.
+    func testCancellingTheLockQuestionRunsNothing() throws {
+        let presenter = FakeCarPlayAlertPresenter()
+        var confirmed = false
+
+        CarPlayLockConfirmation.show(
+            entityName: "Front door",
+            currentState: "unlocked",
+            interfaceController: presenter
+        ) { confirmed = true }
+
+        let alert = try XCTUnwrap(presenter.presentedTemplates.first as? CPAlertTemplate)
+        XCTAssertEqual(alert.titleVariants, [L10n.CarPlay.Lock.Confirmation.title("Front door")])
+        let cancel = try XCTUnwrap(alert.actions.first)
+        cancel.handler(cancel)
+
+        XCTAssertFalse(confirmed)
+        XCTAssertEqual(presenter.dismissCount, 1)
     }
 }

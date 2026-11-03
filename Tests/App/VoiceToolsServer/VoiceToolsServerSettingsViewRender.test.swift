@@ -2,6 +2,7 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
@@ -10,7 +11,7 @@ import UIKit
 /// the real stored settings — rather than the injected one the snapshots use. That path is what
 /// ships, and nothing else exercises it.
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct VoiceToolsServerSettingsViewRenderTests {
     private func withTestDatabase(seeding configuration: VoiceToolsServerConfiguration?, _ work: () -> Void) throws {
         let database = try DatabaseQueue(path: ":memory:")

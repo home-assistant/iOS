@@ -1,8 +1,10 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct WatchConfig_test {
     @Test func validateWatchConfigScheme() async throws {
         let currentFileURL = URL(fileURLWithPath: #file)

@@ -1,10 +1,11 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Kiosk mode belongs to the device rather than to one server, so its sensors screen switches them
 /// on everywhere at once — the per-server choice lives in Settings > Sensors.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct KioskSensorsViewModelTests {
     @Test func switchingAKioskSensorOnCoversEveryServer() throws {

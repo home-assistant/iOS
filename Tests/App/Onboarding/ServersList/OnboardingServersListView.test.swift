@@ -6,11 +6,13 @@ import SwiftUI
 import Testing
 
 /// Serialized: the tests replace the process-wide `Current.bonjour`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct OnboardingServersListViewTests {
     @MainActor @Test func regularHeightShowsCenteredLoader() async throws {
         guard #available(iOS 18.0, *) else { return }
         Current.bonjour = { MockBonjour() }
+        // A pending invitation replaces the list with the invitation screen.
+        Current.appSessionValues.inviteURL = nil
 
         assertLightDarkSnapshots(
             of: AnyView(OnboardingServersListView(onboardingStyle: .secondary, presenter: OnboardingAuthPresenter())),
@@ -23,6 +25,8 @@ struct OnboardingServersListViewTests {
     @MainActor @Test func compactHeightShowsTitleInToolbar() async throws {
         guard #available(iOS 18.0, *) else { return }
         Current.bonjour = { MockBonjour() }
+        // A pending invitation replaces the list with the invitation screen.
+        Current.appSessionValues.inviteURL = nil
 
         assertLightDarkSnapshots(
             of: AnyView(

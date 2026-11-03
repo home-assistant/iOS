@@ -2,12 +2,13 @@ import Foundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
 
 // Serialized: the tests swap `Current` and the app group's stored registration identifier.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct RestoredRegistrationsViewModelTests {
     private struct RegisterFailure: Error {}

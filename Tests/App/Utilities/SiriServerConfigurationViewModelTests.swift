@@ -1,10 +1,11 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct SiriServerConfigurationViewModelTests {
     private func withSeededServer(_ body: (Server) async throws -> Void) async throws {
         let previous = Current.servers

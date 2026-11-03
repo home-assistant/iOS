@@ -2,12 +2,13 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Drives each spoken control command end to end: the service it calls, and the card it comes back
 /// with. Every one of them now makes two requests — the action, then the state it reads back to
 /// describe — so the helper answers them in that order.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ControlIntentSnippetTests {
     private static func controllable(
         serverId: String,

@@ -105,7 +105,10 @@ public enum AppIntentServerAPI {
     /// How long a single App Intent request may take before it fails with a timeout. Entity queries
     /// populate a picker the user is waiting on, so they can't wait indefinitely for a connection
     /// that may never come up.
-    static var requestTimeout: TimeInterval { 10 }
+    ///
+    /// Task-local so a test can lengthen it for the requests it starts: the responses travel through
+    /// main-queue hops, which other suites keep busy on a loaded test runner.
+    @TaskLocal static var requestTimeout: TimeInterval = 10
 
     /// Orders entities the way a picker should read: by friendly name, falling back to the entity id.
     /// Shared by both transports so a list looks the same wherever it was fetched.

@@ -67,19 +67,29 @@ class PedometerSensorTests: XCTestCase {
         }
     }
 
-    func testRegistrationListsEverySensorEvenWithoutAValue() throws {
-        request.reason = .registration
+    /// A sensor only reported when it has a value has no row in the sensor list the rest of the
+    /// time, and so nothing to switch off. Current pace and cadence never have one from the daily
+    /// query, so dropping them is what left their entities with no toggle anywhere in the app.
+    func testEverySensorIsListedEvenWithoutAValue() throws {
         Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in hand(FakePedometerData(), nil) }
 
-        let sensors = try hang(PedometerSensor(request: request).sensors())
+        for reason in [SensorProviderRequest.Reason.trigger("unit-test"), .registration] {
+            request.reason = reason
+            let sensors = try hang(PedometerSensor(request: request).sensors())
 
-        XCTAssertEqual(Set(sensors.compactMap(\.UniqueID)), Set(PedometerSensor.allSensorIDs))
-        let pace = sensors.first(where: { $0.UniqueID == "pedometer_avg_active_pace" })
-        XCTAssertEqual(pace?.State as? String, "unavailable")
-        XCTAssertEqual(pace?.UnitOfMeasurement, "m/s")
-        XCTAssertEqual(sensors.first(where: { $0.UniqueID == "pedometer_steps" })?.State as? Int, 0)
+            XCTAssertEqual(Set(sensors.compactMap(\.UniqueID)), Set(PedometerSensor.allSensorIDs), "\(reason)")
+            for sensor in sensors where sensor.UniqueID != "pedometer_steps" {
+                XCTAssertEqual(sensor.State as? String, "unavailable", "\(reason) \(sensor.UniqueID ?? "")")
+            }
+            let pace = sensors.first(where: { $0.UniqueID == "pedometer_current_pace" })
+            XCTAssertEqual(pace?.Name, "Current Pace", "\(reason)")
+            XCTAssertEqual(pace?.UnitOfMeasurement, "m/s", "\(reason)")
+            let cadence = sensors.first(where: { $0.UniqueID == "pedometer_current_cadence" })
+            XCTAssertEqual(cadence?.Name, "Current Cadence", "\(reason)")
+            XCTAssertEqual(cadence?.UnitOfMeasurement, "steps/s", "\(reason)")
+        }
     }
 
     func testWithOnlyRequiredSteps() throws {
@@ -89,14 +99,13 @@ class PedometerSensorTests: XCTestCase {
 
         let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
-        XCTAssertEqual(sensors.count, 1)
+        let steps = try XCTUnwrap(sensors.first(where: { $0.UniqueID == "pedometer_steps" }))
 
-        XCTAssertEqual(sensors[0].UniqueID, "pedometer_steps")
-        XCTAssertEqual(sensors[0].Name, "Steps")
-        XCTAssertEqual(sensors[0].Icon, "mdi:walk")
-        XCTAssertEqual(sensors[0].UnitOfMeasurement, "steps")
-        XCTAssertEqual(sensors[0].State as? Int, 0)
-        XCTAssertEqual(sensors[0].StateClass, .totalIncreasing)
+        XCTAssertEqual(steps.Name, "Steps")
+        XCTAssertEqual(steps.Icon, "mdi:walk")
+        XCTAssertEqual(steps.UnitOfMeasurement, "steps")
+        XCTAssertEqual(steps.State as? Int, 0)
+        XCTAssertEqual(steps.StateClass, .totalIncreasing)
     }
 
     func testWithDistance() throws {

@@ -2,12 +2,13 @@ import AppIntents
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 import UIKit
 import WebKit
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WebViewControllerOnscreenContentTests {
     @Test("The activity is named after the panel the frontend is showing")
     func namesTheActivityAfterThePage() async throws {

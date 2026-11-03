@@ -1,6 +1,7 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Exercises the entity list behind the spoken on/off commands: it offers the domains a command can
@@ -9,7 +10,7 @@ import Testing
 /// Offering and resolving are two different things here: the query narrows what is put in front of
 /// someone, while `entities(for:)` reads any id back, so a saved shortcut keeps working after its
 /// entity leaves the offered list.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ControllableEntityAppEntityQueryTests {
     private static func makeEntity(
         serverId: String,

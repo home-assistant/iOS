@@ -218,7 +218,6 @@
 		42F1C0173140B00011AABB17 /* TokenManagerRefreshTokenRejection.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0183140B00011AABB18 /* TokenManagerRefreshTokenRejection.test.swift */; };
 		42F1C0323140B00011AACC02 /* ConnectivityWrapper.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0223140B00011AACC01 /* ConnectivityWrapper.test.swift */; };
 		42F1C0DE302E000000A1B2C2 /* FlightDetector.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0DE302E000000A1B2C1 /* FlightDetector.test.swift */; };
-		42F384052FB49C9500390AFC /* DebugSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 42F384042FB49C9500390AFC /* DebugSwift */; };
 		42FA000000000000000C0002 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0001 /* WebRTC */; };
 		42FA000000000000000C0009 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 42FA000000000000000C0008 /* SFSafeSymbols */; };
 		42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
@@ -287,6 +286,7 @@
 		E33F645682064B22AC4CDFBB /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C6ACD1840F0E4F5FBFDDE88B /* SFSafeSymbols */; };
 		FA11C0DE0000000000000101 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11C0DE0000000000000100 /* BackgroundRefreshManager.swift */; };
 		FF145C6710814841A155EF62 /* ForceCloseWarningManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74711C3AB8FE4BA7A9C3175D /* ForceCloseWarningManager.test.swift */; };
+		42C0FFEE2E0000000000A001 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -478,6 +478,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = D03D891620E0A85200D4F28D;
 			remoteInfo = Shared;
+		};
+		42C0FFEE2E0000000000A002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 46C62B872D8A3687002C0001;
+			remoteInfo = SharedTesting;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -860,6 +867,7 @@
 				Widgets/Common/WidgetDomainAppEntityQuery.swift,
 				"Widgets/Common/WidgetFamily+AppPreview.swift",
 				Widgets/Common/WidgetFamilySizes.swift,
+				Widgets/Common/WidgetOptimisticToggle.swift,
 				Widgets/Common/WidgetPreviewMagicItemProvider.swift,
 				Widgets/Common/WidgetPreviewSample.swift,
 				Widgets/Common/WidgetPreviewSampleEntity.swift,
@@ -867,6 +875,7 @@
 				Widgets/Common/WidgetRefreshButton.swift,
 				"Widgets/Common/WidgetsKind+TileCapacity.swift",
 				Widgets/Common/WidgetTileInteraction.swift,
+				Widgets/Common/WidgetTimelineContext.swift,
 				Widgets/Common/WidgetTimelineProviderSupport.swift,
 				Widgets/Common/WidgetType.swift,
 				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntities.swift,
@@ -2904,7 +2913,6 @@
 				42991E612FF4474500C2C76B /* ImproviOS in Frameworks */,
 				42B18FD72F38CA2300A1537A /* FirebaseMessaging in Frameworks */,
 				1148A44E24E8B59100345050 /* WidgetKit.framework in Frameworks */,
-				42F384052FB49C9500390AFC /* DebugSwift in Frameworks */,
 				42E00D112E1E7487006D140D /* SharedPush in Frameworks */,
 				110EC9FD251708D5009C9A1B /* Shared.framework in Frameworks */,
 				11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */,
@@ -3017,6 +3025,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42C0FFEE2E0000000000A001 /* SharedTesting.framework in Frameworks */,
 				42A1F0B62E000000000000B6 /* Alamofire in Frameworks */,
 				42886D602FFE88D5004EB33B /* PromiseKitDynamic in Frameworks */,
 				42886D1A2FFE5C20004EB33B /* Sodium in Frameworks */,
@@ -4008,6 +4017,7 @@
 			);
 			dependencies = (
 				D03D894920E0BC1800D4F28D /* PBXTargetDependency */,
+				42C0FFEE2E0000000000A003 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
@@ -4255,7 +4265,6 @@
 				DE51600000000000000000C1 /* XCLocalSwiftPackageReference "Sources/HAUtilities" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				42B18FD52F38CA2300A1537A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */,
 				5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				CEF4014BDE11E7E12A6C1F73 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */,
@@ -5016,6 +5025,11 @@
 			isa = PBXTargetDependency;
 			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = D0EEF344214F15CA00D1D360 /* PBXContainerItemProxy */;
+		};
+		42C0FFEE2E0000000000A003 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 46C62B872D8A3687002C0001 /* SharedTesting */;
+			targetProxy = 42C0FFEE2E0000000000A002 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -6330,7 +6344,7 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
 			requirement = {
 				kind = exactVersion;
-				version = 1.18.1;
+				version = 1.19.7;
 			};
 		};
 		4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
@@ -6378,7 +6392,7 @@
 			repositoryURL = "https://github.com/mxcl/PromiseKit/";
 			requirement = {
 				kind = exactVersion;
-				version = 8.1.1;
+				version = 8.2.0;
 			};
 		};
 		42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */ = {
@@ -6410,7 +6424,7 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 12.9.0;
+				minimumVersion = 13.1.1;
 			};
 		};
 		42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
@@ -6418,7 +6432,7 @@
 			repositoryURL = "https://github.com/stasel/WebRTC.git";
 			requirement = {
 				kind = exactVersion;
-				version = 152.0.0;
+				version = 156.0.0;
 			};
 		};
 		42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
@@ -6437,20 +6451,12 @@
 				minimumVersion = 1.14.1;
 			};
 		};
-		42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/DebugSwift/DebugSwift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.15.0;
-			};
-		};
 		5C81525C99BE463C89623E8D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.3.0;
+				minimumVersion = 7.0.0;
 			};
 		};
 		CA11B4CC0000000000000001 /* XCRemoteSwiftPackageReference "CallbackURLKit" */ = {
@@ -6458,7 +6464,7 @@
 			repositoryURL = "https://github.com/phimage/CallbackURLKit.git";
 			requirement = {
 				kind = exactVersion;
-				version = 2.3.2;
+				version = 3.0.0;
 			};
 		};
 		CEA1C4A10000000000000001 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
@@ -6474,7 +6480,7 @@
 			repositoryURL = "https://github.com/groue/GRDB.swift.git";
 			requirement = {
 				kind = exactVersion;
-				version = 7.8.0;
+				version = 7.12.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -6786,11 +6792,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DE51600000000000000000E1 /* XCLocalSwiftPackageReference "Sources/HAModels" */;
 			productName = HAModels;
-		};
-		42F384042FB49C9500390AFC /* DebugSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42F384032FB49C9500390AFC /* XCRemoteSwiftPackageReference "DebugSwift" */;
-			productName = DebugSwift;
 		};
 		42FA000000000000000C0001 /* WebRTC */ = {
 			isa = XCSwiftPackageProductDependency;

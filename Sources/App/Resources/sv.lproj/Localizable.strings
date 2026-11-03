@@ -689,6 +689,7 @@
 "connection.active_url_type.toast.internal" = "Använda den interna URL:en.";
 "connection.active_url_type.toast.none" = "Det finns för närvarande ingen aktiv URL för denna server.";
 "connection.active_url_type.toast.remote_ui" = "Använder Cloud Remote UI-URL.";
+"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
 "connection.active_url_type.toast.title" = "Anslutningstyp";
 "connection.error.details.button.clipboard" = "Kopiera till urklipp";
 "connection.error.details.button.discord" = "Fråga i Discord";
@@ -701,6 +702,8 @@
 "connection.error.details.title" = "Anslutningsfel";
 "connection.error.failed_connect.cloud.title" = "Kontrollera att din Home Assistant Cloud-prenumeration är aktiv och ansluten till din server, du kan verifiera det på [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.cloud_inactive.title" = "Du har inaktiverat Home Assistant Cloud-användning i appen. Om du behöver det för fjärråtkomst, öppna inställningarna för Companion-appen och aktivera det.";
+"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.subtitle" = "Kontrollera din anslutning och försök igen. Om du inte är hemma, se till att du har konfigurerat fjärråtkomst.";
 "connection.error.failed_connect.title" = "Vi kunde inte ansluta till Home Assistant";
 "connection.error.failed_connect.url" = "Appen ansluter för närvarande till";
@@ -1652,6 +1655,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.client_certificate.remove_confirmation.message" = "Certifikatet kommer att tas bort från enheten. Du måste importera det igen för att använda mTLS-autentisering.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Ta bort";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Ta bort certifikat?";
+"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
 "settings.connection_section.cloud_overrides_external" = "Vid anslutning via Cloud används inte den externa URL:en. Du behöver inte konfigurera den så länge du inte vill inaktivera Cloud.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "Nåbar";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Nåbar (HTTP %li)";
@@ -1739,6 +1743,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.urls_how_it_works.active.header" = "Används just nu";
 "settings.connection_section.urls_how_it_works.active.none" = "Ingen URL kan användas med de nuvarande inställningarna";
 "settings.connection_section.urls_how_it_works.away.body" = "Om inget av de angivna nätverken stämmer överens används Home Assistant Cloud-URL:en om molntjänsten är aktiverad, och i övriga fall används den externa URL:en.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
 "settings.connection_section.urls_how_it_works.away.title" = "Någon annanstans";
 "settings.connection_section.urls_how_it_works.background.body" = "Sensoruppdateringar, aviseringar och lokala push-meddelanden fortsätter att fungera även när appen är stängd. I bakgrunden delar iOS endast nätverksnamnet när platsåtkomst är inställd på ”Alltid” istället för ”När appen används”, så utan den känns ditt hemnätverk inte igen och anslutningarna sker på samma sätt som när du är borta.";
 "settings.connection_section.urls_how_it_works.background.title" = "När appen körs i bakgrunden";
@@ -1766,6 +1771,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.webhook.active.unavailable" = "Ingen URL tillgänglig";
 "settings.connection_section.webhook.endpoints.footer" = "Behandla dessa URL:er som känsliga. Den som har tillgång till dem kan skicka förfrågningar till den här mobilappens webhook.";
 "settings.connection_section.webhook.footer" = "Appen skickar uppdateringar om sensorer, position och annat till denna webhook. Home Assistant Cloud tillhandahåller en cloudhook som används när du är borta från hemmet. Utan den skapar appen istället webhook-URL:en utifrån den interna, fjärranslutna eller externa URL:en för denna server.";
+"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
 "settings.connection_section.webhook.in_use" = "Används";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Autentiserar";
@@ -3061,6 +3067,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "watch.settings.client_events.title" = "Loggar";
 "watch.settings.complications.empty" = "Inga komplikationer konfigurerade än.";
 "watch.settings.complications.footer" = "Hämtar varje komplikations aktuella värde direkt från Home Assistant. Detta kräver en nåbar server-URL (i det lokala nätverket eller en fjärr-/moln-URL).";
+"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
 "watch.settings.complications.last_attempt" = "Senaste försöket: %@";
 "watch.settings.complications.list_footer" = "Tryck på en komplikation för att se när den senast uppdaterades och för att försöka igen.";
 "watch.settings.complications.never" = "Har ännu inte uppdaterats";
@@ -3140,6 +3147,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "web_view.add_to.option.Deeplink.title" = "Djuplänk";
 "web_view.add_to.option.MacToolbar.title" = "Mac-verktygsfältet";
 "web_view.add_to.option.NfcTag.title" = "NFC-tagg";
+"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant startas om kommer den att återanslutas efter uppstarten.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Rensa cacheminnet och ladda om sidan";

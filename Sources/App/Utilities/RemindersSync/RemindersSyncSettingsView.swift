@@ -3,9 +3,13 @@ import Shared
 import SwiftUI
 
 struct RemindersSyncSettingsView: View {
-    @StateObject private var viewModel = RemindersSyncSettingsViewModel()
+    @StateObject private var viewModel: RemindersSyncSettingsViewModel
     @ObservedObject private var syncManager = RemindersSyncManager.shared
     @State private var showAddSheet = false
+
+    init(viewModel: RemindersSyncSettingsViewModel? = nil) {
+        self._viewModel = StateObject(wrappedValue: viewModel ?? RemindersSyncSettingsViewModel())
+    }
 
     var body: some View {
         List {
@@ -76,6 +80,15 @@ struct RemindersSyncSettingsView: View {
                 }
                 refreshSections
                 conflictSection
+                Section(
+                    header: Text(L10n.RemindersSync.Settings.Completed.header),
+                    footer: Text(L10n.RemindersSync.Settings.Completed.footer)
+                ) {
+                    Toggle(
+                        L10n.RemindersSync.Settings.Completed.title,
+                        isOn: $viewModel.settings.includeCompletedItems
+                    )
+                }
                 historySection
             }
         }
@@ -174,6 +187,7 @@ extension RemindersSyncSettingsView: SettingsScreenSearchable {
         [
             SettingsSearchEntry(L10n.RemindersSync.Settings.addList),
             SettingsSearchEntry(L10n.RemindersSync.Settings.syncNow),
+            SettingsSearchEntry(L10n.RemindersSync.Settings.Completed.title),
         ]
     }
 }

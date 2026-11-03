@@ -1,11 +1,12 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct RecoveredServerReauthViewRenderTests {
     private func render(_ view: some View) {
         let controller = UIHostingController(rootView: view)

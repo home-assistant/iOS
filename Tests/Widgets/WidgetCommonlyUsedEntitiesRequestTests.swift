@@ -2,12 +2,13 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 import WidgetKit
 
 /// Covers what the commonly-used-entities widget asks core for: a `limit` sized to the widget, but
 /// only from the core version that accepts one.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WidgetCommonlyUsedEntitiesRequestTests {
     private static let supportedVersions = [
         Version(major: 2026, minor: 10, patch: 0, prerelease: "b0"),

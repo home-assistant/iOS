@@ -3,6 +3,7 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers which server an action runs against, in particular for a shortcut synced from another
@@ -10,7 +11,7 @@ import Testing
 ///
 /// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
 /// to a type marked `@available`, and the intent is iOS 17.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct PerformActionAppIntentTests {
     private static let foreignIdentifier = "identifier-from-another-device"
 

@@ -59,6 +59,13 @@ final class NotificationTapActionPresenterTests: XCTestCase {
             Current.sceneManager.registerAppCoordinator(previousCoordinator)
         }
 
+        // XCTest keeps every test case instance for the whole run, so what the properties hold
+        // would outlive the test: the API stays registered with the app's sensor container.
+        sut = nil
+        api = nil
+        coordinator = nil
+        server = nil
+        database = nil
         super.tearDown()
     }
 

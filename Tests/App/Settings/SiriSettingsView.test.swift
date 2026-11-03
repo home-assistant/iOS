@@ -1,9 +1,10 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct SiriSettingsViewSnapshotTests {
     @MainActor
     @Test func siriSettingsWithAConfigureLinkUnderExposedServers() async throws {

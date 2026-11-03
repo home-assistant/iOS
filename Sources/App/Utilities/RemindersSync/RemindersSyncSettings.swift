@@ -12,6 +12,41 @@ struct RemindersSyncSettings: Codable, Equatable {
     /// as the earliest allowed start, not a guarantee.
     var backgroundRefreshInterval: TimeInterval = 0
     var conflictResolution: RemindersSyncConflictResolution = .homeAssistant
+    /// Whether items that are already completed on one side, and were never linked, are copied to
+    /// the other side as completed. Off by default: most lists carry a long tail of checked-off
+    /// history that nobody wants mirrored. Completion of linked items always syncs regardless.
+    var includeCompletedItems = false
+
+    init(
+        foregroundRefreshInterval: TimeInterval = 0,
+        backgroundRefreshInterval: TimeInterval = 0,
+        conflictResolution: RemindersSyncConflictResolution = .homeAssistant,
+        includeCompletedItems: Bool = false
+    ) {
+        self.foregroundRefreshInterval = foregroundRefreshInterval
+        self.backgroundRefreshInterval = backgroundRefreshInterval
+        self.conflictResolution = conflictResolution
+        self.includeCompletedItems = includeCompletedItems
+    }
+
+    /// Every key is optional on decode so a setting added in a later build doesn't reset the
+    /// ones a user already saved.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.foregroundRefreshInterval = try container.decodeIfPresent(
+            TimeInterval.self,
+            forKey: .foregroundRefreshInterval
+        ) ?? 0
+        self.backgroundRefreshInterval = try container.decodeIfPresent(
+            TimeInterval.self,
+            forKey: .backgroundRefreshInterval
+        ) ?? 0
+        self.conflictResolution = try container.decodeIfPresent(
+            RemindersSyncConflictResolution.self,
+            forKey: .conflictResolution
+        ) ?? .homeAssistant
+        self.includeCompletedItems = try container.decodeIfPresent(Bool.self, forKey: .includeCompletedItems) ?? false
+    }
 
     static let foregroundIntervalOptions: [TimeInterval] = [0, 60, 5 * 60, 15 * 60, 30 * 60, 60 * 60]
     static let backgroundIntervalOptions: [TimeInterval] = [

@@ -2,6 +2,7 @@
 import SFSafeSymbols
 import SwiftUI
 import Testing
+import UIKit
 
 struct EntityFilterPickerViewTests {
     @MainActor
@@ -39,5 +40,40 @@ struct EntityFilterPickerViewTests {
         }
         .padding()
         assertLightDarkSnapshots(of: view, drawHierarchyInKeyWindow: true)
+    }
+
+    /// The taller capsule, with the filter's title above the selected value, with and without an
+    /// icon and a selection.
+    @MainActor
+    @Test func rendersTheDescriptionStyle() {
+        let items: [EntityFilterPickerView.PickerItem] = [
+            .init(id: "1", title: "Home"),
+            .init(id: "2", title: "Office"),
+        ]
+        let view = VStack {
+            EntityFilterPickerView(
+                title: "Server",
+                icon: .serverRack,
+                pickerItems: items,
+                selectedItemId: .constant("2"),
+                style: .descriptionContent
+            )
+            EntityFilterPickerView(
+                title: "Server",
+                pickerItems: items,
+                selectedItemId: .constant(nil),
+                style: .descriptionContent
+            )
+        }
+        let controller = UIHostingController(rootView: view)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 300))
+        window.rootViewController = controller
+        window.isHidden = false
+        defer {
+            window.isHidden = true
+            window.rootViewController = nil
+        }
+        controller.view.layoutIfNeeded()
+        #expect(controller.view.bounds.width == 390)
     }
 }

@@ -3,10 +3,11 @@ import HAKit
 import HAKit_Mocks
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 // Serialized: the tests swap `Current` and the app group's stored registration identifier.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct RegistrationOwnershipTests {
     private static let thisDevice = "this-device"
     private static let otherDevice = "other-device"

@@ -33,6 +33,11 @@ final class WatchCommunicatorPushActionTests: XCTestCase {
     override func tearDown() {
         Current.servers = previousServers
         Current.cachedApis = previousCachedApis
+        // XCTest keeps this test case alive for the whole run, and an API left alive stays registered
+        // with the app's sensor container, which every later sensor signal fans out to.
+        service = nil
+        api = nil
+        server = nil
 
         super.tearDown()
     }

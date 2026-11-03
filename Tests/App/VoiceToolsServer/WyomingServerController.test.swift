@@ -2,10 +2,11 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WyomingServerControllerTests {
     private func withTestDatabase(_ work: () throws -> Void) throws {
         let database = try DatabaseQueue(path: ":memory:")

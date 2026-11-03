@@ -54,7 +54,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         // when you provide `reader(_:didDetect:)`.
     }
 
-    private static func message(
+    static func message(
         for capacity: Int,
         required: NFCNDEFMessage,
         optional: NFCNDEFMessage

@@ -8,6 +8,7 @@ import Testing
 /// The Watch, CarPlay, widget and app icon shortcut screens all list magic items the same way, so
 /// each one is rendered here with every row kind it can hold.
 @MainActor
+@Suite(.sharedState)
 struct MagicItemConfigurationListsTests {
     @Test func watchConfigurationListsEveryItemKind() throws {
         try withConfiguration { _ in

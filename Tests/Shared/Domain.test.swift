@@ -1,8 +1,10 @@
 import Foundation
 import HAKit
 @testable import Shared
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct DomainTests {
     @Test func allDomainRawValues() {
         let expected: [Domain: String] = [

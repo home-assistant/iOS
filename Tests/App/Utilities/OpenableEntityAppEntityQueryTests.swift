@@ -1,10 +1,12 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Exercises the entity list behind "open" and "close": it offers only the domains whose services
 /// actually open and close, so a light never appears among them.
+@Suite(.sharedState)
 struct OpenableEntityAppEntityQueryTests {
     private static func makeEntity(serverId: String, entityId: String, name: String) -> HAAppEntity {
         HAAppEntity(

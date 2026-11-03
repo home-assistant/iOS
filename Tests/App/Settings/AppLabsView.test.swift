@@ -1,9 +1,13 @@
+import GRDB
 @testable import HomeAssistant
-import Shared
+@testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
 
+/// Runs against its own `Current`: flipping `isTestFlight` here cannot leak into another test.
+@Suite(.isolatedEnvironment)
 struct AppLabsViewTests {
     @Test func appLabsIsHiddenOutsideTestFlight() {
         let previousIsTestFlight = Current.isTestFlight
@@ -40,5 +44,22 @@ struct AppLabsViewTests {
 
     @Test @MainActor func rendersEveryFeature() {
         render(AppLabsView(features: AppLabsFeature.allCases))
+    }
+
+    /// Flipping a feature's switch stores its new state in the database.
+    @Test @MainActor func flippingAFeatureStoresIt() async throws {
+        let database = try SettingsTestDatabase.make()
+        Current.database = { database }
+
+        let driver = await SwiftUIScreenDriver.show(AppLabsView(features: AppLabsFeature.allCases))
+        defer { driver.close() }
+        let switches = driver.views(of: UISwitch.self)
+        #expect(switches.count == AppLabsFeature.allCases.count)
+        let wasOn = switches.first?.isOn ?? false
+        await driver.toggleSwitches()
+
+        let stored = try await database.read { db in try AppLabsFeatureState.fetchAll(db) }
+        #expect(stored.map(\.id) == [AppLabsFeature.iosNativeTabBar.rawValue])
+        #expect(stored.first?.isEnabled == !wasOn)
     }
 }

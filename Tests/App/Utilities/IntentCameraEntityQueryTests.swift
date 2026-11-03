@@ -1,12 +1,13 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers reading a camera back from a saved shortcut.
 ///
 /// The availability guard sits inside the test rather than on the suite: `@Suite` cannot be applied
 /// to a type marked `@available`, and the query is iOS 17.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct IntentCameraEntityQueryTests {
     /// The server the shortcut picked isn't available to the query here, and the camera was named by
     /// a device that isn't this one, so the entity is rebuilt from the identifier rather than

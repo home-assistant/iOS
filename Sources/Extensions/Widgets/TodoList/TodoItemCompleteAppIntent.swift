@@ -51,17 +51,17 @@ struct TodoItemCompleteAppIntent: AppIntent {
             AppIntentHaptics.notify()
         }
 
-        await withCheckedContinuation { continuation in
-            connection.send(.completeTodoItem(listId: listId, itemId: itemId)).promise.pipe { result in
-                switch result {
-                case .fulfilled:
-                    Current.Log.info("Successfully completed todo item \(itemId) in list \(listId)")
-                    continuation.resume()
-                case let .rejected(error):
-                    Current.Log.error("Failed to complete todo item \(itemId) in list \(listId): \(error)")
-                    continuation.resume()
-                }
-            }
+        do {
+            try await connection.send(.completeTodoItem(listId: listId, itemId: itemId))
+                .promise.asyncValue(timeout: 10)
+            Current.Log.info("Successfully completed todo item \(itemId) in list \(listId)")
+        } catch {
+            Current.Log.error("Failed to complete todo item \(itemId) in list \(listId): \(error)")
+            Current.notificationDispatcher.send(.init(
+                id: .intentPerformActionFailed,
+                title: L10n.Widgets.Custom.IntentPerformActionFailed.title,
+                body: L10n.Widgets.Custom.IntentPerformActionFailed.body
+            ))
         }
 
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.todoList.rawValue)

@@ -12,6 +12,7 @@ import XCTest
 @MainActor
 final class ContainerNavigationTests: XCTestCase {
     private var previousServers: ServerManager!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var window: UIWindow?
     /// The presenter the hosted container is given, standing in for the one it would own per scene.
     private var presenter: AppSettingsPresenter!
@@ -19,6 +20,7 @@ final class ContainerNavigationTests: XCTestCase {
     override func setUp() {
         super.setUp()
         previousServers = Current.servers
+        previousCachedApis = Current.cachedApis
         presenter = AppSettingsPresenter()
     }
 
@@ -28,6 +30,11 @@ final class ContainerNavigationTests: XCTestCase {
         window = nil
         presenter = nil
         Current.servers = previousServers
+        // The code under test caches an API for its server. XCTest keeps this test case alive for the
+        // whole run, and an API left in the cache stays registered with the app's sensor container,
+        // which every later sensor signal fans out to.
+        Current.cachedApis = previousCachedApis
+        previousCachedApis = nil
         super.tearDown()
     }
 

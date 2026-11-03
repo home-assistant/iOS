@@ -1,8 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite("GRDB Initialization Tests")
+@Suite("GRDB Initialization Tests", .sharedState)
 struct GRDBInitializationTests {
     /// Helper to create a unique test database path
     func makeTestDatabasePath() -> String {

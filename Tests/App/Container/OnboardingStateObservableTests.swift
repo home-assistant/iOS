@@ -222,11 +222,48 @@ final class OnboardingStateObservableTests: XCTestCase {
 
         // Launching straight into a server reads that server's preference.
         let state = OnboardingStateObservable(themeMode: themeMode.observer)
+        drainMainQueue()
         XCTAssertEqual(themeMode.mode(for: firstServer), .dark)
 
         // Switching server reads the new one's.
         state.showWebView(for: secondServer)
         XCTAssertEqual(themeMode.mode(for: secondServer), .light)
+    }
+
+    func testCreatingTheStateLeavesTheAppearanceAloneUntilTheViewUpdateIsOver() {
+        Current.settingsStore.lastActiveServerIdentifier = "server-1"
+        let themeMode = ThemeModeProbe()
+        themeMode.remember("dark", for: firstServer)
+
+        let state = OnboardingStateObservable(themeMode: themeMode.observer)
+        XCTAssertEqual(themeMode.mode(for: firstServer), .automatic)
+
+        drainMainQueue()
+        withExtendedLifetime(state) {
+            XCTAssertEqual(themeMode.mode(for: firstServer), .dark)
+        }
+    }
+
+    func testASwitchBeforeTheLaunchAppearanceLandsKeepsTheNewServersAppearance() {
+        Current.settingsStore.lastActiveServerIdentifier = "server-1"
+        let themeMode = ThemeModeProbe()
+        themeMode.remember("dark", for: firstServer)
+        themeMode.remember("light", for: secondServer)
+
+        let state = OnboardingStateObservable(themeMode: themeMode.observer)
+        state.showWebView(for: secondServer)
+        drainMainQueue()
+
+        withExtendedLifetime(state) {
+            XCTAssertEqual(themeMode.mode(for: firstServer), .automatic)
+            XCTAssertEqual(themeMode.mode(for: secondServer), .light)
+        }
+    }
+
+    private func drainMainQueue() {
+        let drained = expectation(description: "main queue drained")
+        DispatchQueue.main.async { drained.fulfill() }
+        wait(for: [drained], timeout: 1)
     }
 
     func testLaunchingIntoOnboardingLeavesTheDeviceInCharge() {

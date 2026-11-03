@@ -1,9 +1,10 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct SiriServerConfigurationViewTests {
     @MainActor
     @Test func siriServerConfigurationWithCalendarsAndLists() async throws {

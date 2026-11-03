@@ -1,12 +1,13 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Server identifiers are generated per installation, so a shortcut synced between devices through
 /// iCloud carries an identifier the second device never issued. These cover how far that identifier
 /// is trusted: a single server is unambiguous, several servers are not, and widgets don't guess at
 /// all.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct IntentServerAppEntityTests {
     private static let foreignIdentifier = "identifier-from-another-device"
 

@@ -12,15 +12,15 @@ final class CarPlayAddItemFlow {
         case assist(Server)
     }
 
-    private weak var interfaceController: CPInterfaceController?
+    private weak var interfaceController: CarPlayNavigationPresenting?
     private let viewModel: CarPlayAddItemViewModel
     private let onFinish: () -> Void
 
-    private let template = CPListTemplate(title: L10n.CarPlay.QuickAccess.AddItem.title, sections: [])
+    let template = CPListTemplate(title: L10n.CarPlay.QuickAccess.AddItem.title, sections: [])
     private var steps: [Step] = []
 
     init(
-        interfaceController: CPInterfaceController?,
+        interfaceController: CarPlayNavigationPresenting?,
         viewModel: CarPlayAddItemViewModel = CarPlayAddItemViewModel(),
         onFinish: @escaping () -> Void
     ) {

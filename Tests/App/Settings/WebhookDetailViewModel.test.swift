@@ -1,9 +1,10 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct WebhookDetailViewModelTests {
     private func makeServer(
@@ -49,6 +50,17 @@ struct WebhookDetailViewModelTests {
             Current.connectivity.lastKnownNetworkState = { state }
         }
         body()
+    }
+
+    /// A server without a single URL has no active endpoint.
+    @Test func aServerWithoutURLsHasNoActiveEndpoint() {
+        let server = makeServer(internalURL: nil, externalURL: nil, remoteUIURL: nil, cloudhookURL: nil)
+
+        withNetworkState(NetworkState()) {
+            let viewModel = WebhookDetailViewModel(server: server)
+            #expect(viewModel.activeURL == nil)
+            #expect(viewModel.activeSource == nil)
+        }
     }
 
     @Test func listsCloudhookAndEveryConfiguredURLAsAWebhookEndpoint() {

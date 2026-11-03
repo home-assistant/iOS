@@ -1,9 +1,10 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers which server a template is rendered against.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct RenderTemplateAppIntentTests {
     /// An identifier resolves to nothing when no server is set up, so rendering is refused rather
     /// than sent to whatever happens to be around.

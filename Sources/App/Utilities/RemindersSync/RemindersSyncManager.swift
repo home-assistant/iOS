@@ -22,15 +22,19 @@ final class RemindersSyncManager: ObservableObject {
 
     @Published private(set) var isSyncing = false
 
-    private var eventStore = EKEventStore()
+    private var eventStore: EKEventStore
     private var notificationObservers: [NSObjectProtocol] = []
-    private var pendingSyncTask: Task<Void, Never>?
+    /// The scheduled (debounced or on-demand) sync. Readable by tests.
+    private(set) var pendingSyncTask: Task<Void, Never>?
     private var periodicRefreshTask: Task<Void, Never>?
     /// Our own EventKit writes post `EKEventStoreChanged` too; suppress rescheduling while (and
     /// shortly after) a sync is running so it doesn't feed back into itself.
     private var suppressStoreChangeSync = false
 
-    private init() {}
+    /// The app uses `shared`; tests create their own instance, optionally with a stand-in store.
+    init(eventStore: EKEventStore = EKEventStore()) {
+        self.eventStore = eventStore
+    }
 
     /// Installs the foreground and Reminders-change observers. Called once at app launch; cheap
     /// when the user has no sync configured.
@@ -71,6 +75,22 @@ final class RemindersSyncManager: ObservableObject {
 
         scheduleSync(after: 5)
         restartPeriodicRefresh()
+    }
+
+    /// Undoes `start()` for an instance a test owns: removes the observers and cancels the
+    /// scheduled and periodic syncs, returning once they have finished.
+    func stopForTesting() async {
+        for observer in notificationObservers {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        notificationObservers = []
+        let tasks = [pendingSyncTask, periodicRefreshTask].compactMap { $0 }
+        pendingSyncTask = nil
+        periodicRefreshTask = nil
+        for task in tasks {
+            task.cancel()
+            await task.value
+        }
     }
 
     /// Backgrounding: stop the debounce and periodic-refresh timers so a sync can't start during
@@ -374,8 +394,8 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     /// Plans and applies the operations for one config. Returns the history detail lines for the
-    /// changes that were applied.
-    private func applyPlan(
+    /// changes that were applied. Non-private for tests.
+    func applyPlan(
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
         calendar: EKCalendar,
@@ -387,9 +407,11 @@ final class RemindersSyncManager: ObservableObject {
         let reminderSnapshots = remindersById.mapValues {
             RemindersSyncItemSnapshot(reminder: $0).trimmed(to: features)
         }
+        let settings = RemindersSyncSettings.current
         let operations = RemindersSyncPlanner.plan(
             direction: config.direction,
-            conflictResolution: RemindersSyncSettings.current.conflictResolution,
+            conflictResolution: settings.conflictResolution,
+            includeCompletedItems: settings.includeCompletedItems,
             todoItems: todoSnapshots,
             reminders: reminderSnapshots,
             links: links
@@ -399,46 +421,65 @@ final class RemindersSyncManager: ObservableObject {
         var createdTodoItemReminderIds: [String] = []
         var needsCommit = false
 
-        for operation in operations {
-            switch operation {
-            case .createReminder, .updateReminder, .deleteReminder:
-                let didWriteStore = try await applyReminderOperation(
-                    operation,
-                    config: config,
-                    calendar: calendar,
-                    features: features,
+        func applyOperations(_ operations: [RemindersSyncOperation]) async throws {
+            for operation in operations {
+                switch operation {
+                case .createReminder, .updateReminder, .deleteReminder:
+                    let didWriteStore = try await applyReminderOperation(
+                        operation,
+                        config: config,
+                        calendar: calendar,
+                        features: features,
+                        todoSnapshots: todoSnapshots,
+                        remindersById: remindersById
+                    )
+                    needsCommit = needsCommit || didWriteStore
+                case .createTodoItem, .updateTodoItem, .deleteTodoItem, .adoptLink, .deleteLink:
+                    let createdFromReminderId = try await applyTodoOperation(
+                        operation,
+                        config: config,
+                        api: api,
+                        todoSnapshots: todoSnapshots,
+                        reminderSnapshots: reminderSnapshots
+                    )
+                    if let createdFromReminderId {
+                        createdTodoItemReminderIds.append(createdFromReminderId)
+                    }
+                }
+                if let line = historyLine(
+                    for: operation,
                     todoSnapshots: todoSnapshots,
-                    remindersById: remindersById
-                )
-                needsCommit = needsCommit || didWriteStore
-            case .createTodoItem, .updateTodoItem, .deleteTodoItem, .adoptLink, .deleteLink:
-                let createdFromReminderId = try await applyTodoOperation(
-                    operation,
-                    config: config,
-                    api: api,
-                    todoSnapshots: todoSnapshots,
-                    reminderSnapshots: reminderSnapshots
-                )
-                if let createdFromReminderId {
-                    createdTodoItemReminderIds.append(createdFromReminderId)
+                    reminderSnapshots: reminderSnapshots,
+                    links: links
+                ) {
+                    details.append(line)
                 }
             }
-            if let line = historyLine(
-                for: operation,
-                todoSnapshots: todoSnapshots,
-                reminderSnapshots: reminderSnapshots,
-                links: links
-            ) {
-                details.append(line)
+
+            if needsCommit {
+                // Saves and removals above only stage changes (`commit: false`); this is the XPC
+                // round-trip that writes them, so it stays off the main thread too. `Swift.Result`
+                // spelled out because PromiseKit's `Result<T>` shadows it in this file.
+                let store = eventStore
+                try await Self.eventStoreAccess { Swift.Result(catching: { try store.commit() }) }.get()
             }
         }
 
-        if needsCommit {
-            // Saves and removals above only stage changes (`commit: false`); this is the XPC
-            // round-trip that writes them, so it stays off the main thread too. `Swift.Result`
-            // spelled out because PromiseKit's `Result<T>` shadows it in this file.
-            let store = eventStore
-            try await Self.eventStoreAccess { Swift.Result(catching: { try store.commit() }) }.get()
+        do {
+            try await applyOperations(operations)
+        } catch {
+            // Items already added to Home Assistant stay there whatever failed afterwards. Link
+            // them now (best effort) so the next sync doesn't see an unlinked open copy and, by
+            // adopting it, reopen the completed reminder it came from.
+            if !createdTodoItemReminderIds.isEmpty {
+                try? await linkCreatedTodoItems(
+                    config: config,
+                    api: api,
+                    reminderIds: createdTodoItemReminderIds,
+                    reminderSnapshots: reminderSnapshots
+                )
+            }
+            throw error
         }
 
         if !createdTodoItemReminderIds.isEmpty {
@@ -467,8 +508,8 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     /// A localized, human-readable line for the history log describing one applied operation.
-    /// Link bookkeeping operations return nil, they aren't user-visible changes.
-    private func historyLine(
+    /// Link bookkeeping operations return nil, they aren't user-visible changes. Non-private for tests.
+    func historyLine(
         for operation: RemindersSyncOperation,
         todoSnapshots: [String: RemindersSyncItemSnapshot],
         reminderSnapshots: [String: RemindersSyncItemSnapshot],
@@ -604,7 +645,8 @@ final class RemindersSyncManager: ObservableObject {
 
     /// `todo.add_item` doesn't return the created item's `uid`, so items created on the Home
     /// Assistant side are linked by re-fetching the list and matching still-unlinked items by
-    /// title.
+    /// title. `todo.add_item` can't create a completed item either, so a completed reminder is
+    /// created open and completed here, once its `uid` is known.
     private func linkCreatedTodoItems(
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
@@ -615,13 +657,35 @@ final class RemindersSyncManager: ObservableObject {
         let configId = config.id
         let existingLinks = await Self.databaseAccess { RemindersSyncItemLink.links(configId: configId) }
         let linkedUids = Set(existingLinks.map(\.todoItemUid))
-        var unlinkedItems = refreshed.filter { !linkedUids.contains($0.uid) }
+        // Only open items are candidates: that's what `todo.add_item` just created, and with
+        // completed items included an older checked-off copy of the same title may also be
+        // unlinked.
+        var unlinkedItems = refreshed.filter { !linkedUids.contains($0.uid) && $0.status != "completed" }
 
         for reminderId in reminderIds {
-            guard let snapshot = reminderSnapshots[reminderId],
+            guard var snapshot = reminderSnapshots[reminderId],
                   let index = unlinkedItems
                   .firstIndex(where: { RemindersSyncItemSnapshot(todoItem: $0).title == snapshot.title }) else { continue }
             let item = unlinkedItems.remove(at: index)
+            if snapshot.isCompleted {
+                do {
+                    try await api.updateTodoItem(
+                        listId: config.todoEntityId,
+                        itemId: item.uid,
+                        rename: snapshot.title,
+                        status: "completed",
+                        description: snapshot.notes,
+                        dueDate: snapshot.dueDateArgument,
+                        dueDateTime: snapshot.dueDateTimeArgument
+                    )
+                } catch {
+                    // The item exists but is still open. Link it as open so the next sync sees
+                    // the reminder as the changed side and completes it, instead of seeing the
+                    // item as changed and reopening the reminder.
+                    Current.Log.error("Reminders sync couldn't complete created item \(snapshot.title): \(error)")
+                    snapshot.isCompleted = false
+                }
+            }
             await saveLink(config: config, todoItemUid: item.uid, reminderId: reminderId, snapshot: snapshot)
         }
     }
@@ -648,7 +712,9 @@ final class RemindersSyncManager: ObservableObject {
         return TodoListEntityFeature(rawValue: rawValue)
     }
 
-    private func apply(
+    /// Copies `snapshot` onto `reminder`, leaving alone the fields the list can't store. Non-private for
+    /// tests.
+    func apply(
         _ snapshot: RemindersSyncItemSnapshot,
         to reminder: EKReminder,
         features: TodoListEntityFeature?

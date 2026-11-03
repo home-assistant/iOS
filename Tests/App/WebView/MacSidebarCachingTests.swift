@@ -1,9 +1,11 @@
 import Foundation
 @testable import HomeAssistant
 import Shared
+import SharedTesting
 import Testing
 
 @MainActor
+@Suite(.sharedState)
 struct MacSidebarCachingTests {
     private func panel(
         _ path: String,
