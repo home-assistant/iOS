@@ -235,11 +235,13 @@ final class OnboardingStateObservableTests: XCTestCase {
         let themeMode = ThemeModeProbe()
         themeMode.remember("dark", for: firstServer)
 
-        _ = OnboardingStateObservable(themeMode: themeMode.observer)
+        let state = OnboardingStateObservable(themeMode: themeMode.observer)
         XCTAssertEqual(themeMode.mode(for: firstServer), .automatic)
 
         drainMainQueue()
-        XCTAssertEqual(themeMode.mode(for: firstServer), .dark)
+        withExtendedLifetime(state) {
+            XCTAssertEqual(themeMode.mode(for: firstServer), .dark)
+        }
     }
 
     func testASwitchBeforeTheLaunchAppearanceLandsKeepsTheNewServersAppearance() {
@@ -252,8 +254,10 @@ final class OnboardingStateObservableTests: XCTestCase {
         state.showWebView(for: secondServer)
         drainMainQueue()
 
-        XCTAssertEqual(themeMode.mode(for: firstServer), .automatic)
-        XCTAssertEqual(themeMode.mode(for: secondServer), .light)
+        withExtendedLifetime(state) {
+            XCTAssertEqual(themeMode.mode(for: firstServer), .automatic)
+            XCTAssertEqual(themeMode.mode(for: secondServer), .light)
+        }
     }
 
     private func drainMainQueue() {
