@@ -1519,7 +1519,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "reminders_sync.add.direction_footer.to_home_assistant" = "Apple Reminders is the source of truth. Its items and changes overwrite the Home Assistant list. Items that only exist in Home Assistant are left alone.";
 "reminders_sync.add.direction_footer.to_reminders" = "Home Assistant is the source of truth. Its items and changes overwrite the Apple Reminders list. Items that only exist in Reminders are left alone.";
 "reminders_sync.add.duplicate_warning" = "These lists are already being synced.";
-"reminders_sync.add.lists_footer" = "The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are not copied.";
+"reminders_sync.add.lists_footer" = "The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are only copied when “Include completed items” is turned on in the sync settings.";
 "reminders_sync.add.lists_header" = "Lists to sync";
 "reminders_sync.add.no_todo_lists.message" = "To sync with Apple Reminders, create a to-do list in Home Assistant first, then come back here.";
 "reminders_sync.add.no_todo_lists.title" = "No to-do lists";
@@ -1549,6 +1549,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "reminders_sync.settings.conflicts.footer" = "This only matters for two-way syncs. If the same item was edited in both apps since the last sync, the version from the side you pick here is kept.";
 "reminders_sync.settings.conflicts.header" = "Conflicts";
 "reminders_sync.settings.conflicts.title" = "Keep changes from";
+"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
+"reminders_sync.settings.completed.header" = "Completed items";
+"reminders_sync.settings.completed.title" = "Include completed items";
 "reminders_sync.settings.empty.body" = "No lists are synced yet. Pick an Apple Reminders list and a Home Assistant to-do list to keep in sync.";
 "reminders_sync.settings.last_synced_%@" = "Last synced %@";
 "reminders_sync.settings.never_synced" = "Not synced yet";
