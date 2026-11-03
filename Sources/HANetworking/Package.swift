@@ -35,7 +35,7 @@ let package = Package(
         .package(url: "https://github.com/Alamofire/Alamofire.git", exact: "5.12.2"),
         .package(url: "https://github.com/tristanhimmelman/ObjectMapper.git", exact: "4.4.3"),
         .package(url: "https://github.com/home-assistant/HAKit.git", exact: "0.4.19"),
-        .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.8.0"),
+        .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.12.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", exact: "4.2.2"),
         .package(path: "../HAModels"),
     ],

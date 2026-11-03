@@ -2,11 +2,12 @@ import CoreSpotlight
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Routing of `homeassistant://` deep links. The `camera` link opens the native camera player for a
 /// camera, and the more-info dialog for any other entity a link made before it was reinstated names.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct IncomingURLHandlerTests {
     private func withFakeServer(_ body: (Server, MockAppCoordinator, IncomingURLHandler) throws -> Void) throws {
         let previousServers = Current.servers

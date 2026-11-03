@@ -1,12 +1,14 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers what `ManageStorageMeasurer()` and `ManageStorageCleaner()` reach for when nothing is
 /// injected. Every other test supplies its own doubles, so without these the wiring that the app
 /// actually runs — `URLCache.shared`, `Current.database()`, `Current.websiteDataStoreHandler` —
 /// would never be exercised.
+@Suite(.sharedState)
 struct ManageStorageProductionDefaultsTests {
     private func item(source: ManageStorageSource) -> ManageStorageItem {
         ManageStorageItem(id: .networkResponseCache, category: .caches, protection: .deletable, source: source)

@@ -9,21 +9,33 @@ public extension WebhookUpdateLocation {
     /// in, or nothing beyond the battery level.
     ///
     /// - Parameters:
+    ///   - location: the fix to report, after any zone-event fuzzing.
+    ///   - rawLocation: the fix as CoreLocation delivered it, when `location` was changed to agree with a
+    ///     region event; `nil` means `location` is unchanged.
     ///   - zone: the zone the trigger is about (a region entered or exited), if any.
     ///   - supportsInZones: whether the server accepts `in_zones` on location updates.
+    ///   - supportsRawLocation: whether the server accepts `raw_gps` and `raw_gps_accuracy`, which an exact
+    ///     update carries whenever it reports a fix so core can tell the unmodified fix from the one sent.
     ///   - zonesContaining: the server's tracked zones a location falls in, smallest first.
     init(
         privacy: ServerLocationPrivacy,
         trigger: LocationUpdateTrigger,
         location: CLLocation?,
+        rawLocation: CLLocation? = nil,
         zone: AppZone?,
         supportsInZones: Bool,
+        supportsRawLocation: Bool = false,
         currentSSID: String?,
         zonesContaining: (CLLocation) -> [AppZone]
     ) {
         switch privacy {
         case .exact:
             self.init(trigger: trigger, location: location, zone: zone, currentSSID: currentSSID)
+            guard supportsRawLocation, let fix = rawLocation ?? location else { return }
+            self.rawLocation = fix.coordinate
+            if fix.horizontalAccuracy > -1 {
+                self.rawHorizontalAccuracy = fix.horizontalAccuracy
+            }
         case .zoneOnly:
             guard trigger == .BeaconRegionEnter || location != nil else {
                 self.init(trigger: trigger)

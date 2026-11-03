@@ -2,10 +2,11 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers the card the control commands show once they have changed something.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ControlResultSnippetTests {
     private static func light(serverId: String) -> HAAppEntityAppIntentEntity {
         HAAppEntityAppIntentEntity(

@@ -11,9 +11,9 @@ import UIKit
 final class LocationSettingsViewModel: NSObject, ObservableObject {
     // MARK: - Permissions
 
-    @Published private(set) var locationAuthorizationStatus: CLAuthorizationStatus
-    @Published private(set) var locationAccuracyAuthorization: CLAccuracyAuthorization
-    @Published private(set) var backgroundRefreshStatus: UIBackgroundRefreshStatus
+    @Published var locationAuthorizationStatus: CLAuthorizationStatus
+    @Published var locationAccuracyAuthorization: CLAccuracyAuthorization
+    @Published var backgroundRefreshStatus: UIBackgroundRefreshStatus
 
     // MARK: - Location source toggles
 

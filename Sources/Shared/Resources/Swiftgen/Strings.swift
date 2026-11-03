@@ -2752,6 +2752,10 @@ public enum L10n {
         public static var `none`: String { return L10n.tr("Localizable", "connection.active_url_type.toast.none") }
         /// Using Cloud Remote UI URL.
         public static var remoteUi: String { return L10n.tr("Localizable", "connection.active_url_type.toast.remote_ui") }
+        /// Using %@ Remote UI URL.
+        public static func remoteUiLink(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "connection.active_url_type.toast.remote_ui_link", String(describing: p1))
+        }
         /// Connection type
         public static var title: String { return L10n.tr("Localizable", "connection.active_url_type.toast.title") }
       }
@@ -2797,6 +2801,18 @@ public enum L10n {
         public enum CloudInactive {
           /// You have disabled Home Assistant Cloud use in the app, if you need it for remote access please open companion app settings and enable it.
           public static var title: String { return L10n.tr("Localizable", "connection.error.failed_connect.cloud_inactive.title") }
+        }
+        public enum CloudInactiveLink {
+          /// You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "connection.error.failed_connect.cloud_inactive_link.title", String(describing: p1))
+          }
+        }
+        public enum CloudLink {
+          /// Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "connection.error.failed_connect.cloud_link.title", String(describing: p1))
+          }
         }
       }
     }
@@ -5391,7 +5407,7 @@ public enum L10n {
       public static var direction: String { return L10n.tr("Localizable", "reminders_sync.add.direction") }
       /// These lists are already being synced.
       public static var duplicateWarning: String { return L10n.tr("Localizable", "reminders_sync.add.duplicate_warning") }
-      /// The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are not copied.
+      /// The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are only copied when “Include completed items” is turned on in the sync settings.
       public static var listsFooter: String { return L10n.tr("Localizable", "reminders_sync.add.lists_footer") }
       /// Lists to sync
       public static var listsHeader: String { return L10n.tr("Localizable", "reminders_sync.add.lists_header") }
@@ -5494,6 +5510,14 @@ public enum L10n {
         public static var body: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.body") }
         /// Reminders access needed
         public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.access_denied.title") }
+      }
+      public enum Completed {
+        /// Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.
+        public static var footer: String { return L10n.tr("Localizable", "reminders_sync.settings.completed.footer") }
+        /// Completed items
+        public static var header: String { return L10n.tr("Localizable", "reminders_sync.settings.completed.header") }
+        /// Include completed items
+        public static var title: String { return L10n.tr("Localizable", "reminders_sync.settings.completed.title") }
       }
       public enum Conflicts {
         /// This only matters for two-way syncs. If the same item was edited in both apps since the last sync, the version from the side you pick here is kept.
@@ -5775,6 +5799,10 @@ public enum L10n {
       public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
+      /// When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.
+      public static func cloudLinkOverridesExternal(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.connection_section.cloud_link_overrides_external", String(describing: p1))
+      }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
       public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
       /// Details
@@ -6085,6 +6113,10 @@ public enum L10n {
         public enum Away {
           /// When no listed network matches, the Home Assistant Cloud URL is used if cloud is turned on, and the external URL otherwise.
           public static var body: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body") }
+          /// When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.
+          public static func bodyLink(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.body_link", String(describing: p1))
+          }
           /// Anywhere else
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.urls_how_it_works.away.title") }
         }
@@ -6144,6 +6176,10 @@ public enum L10n {
       public enum Webhook {
         /// The app sends sensor, location and other updates to this webhook. Home Assistant Cloud provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.webhook.footer") }
+        /// The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.
+        public static func footerLink(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.connection_section.webhook.footer_link", String(describing: p1))
+        }
         /// In use
         public static var inUse: String { return L10n.tr("Localizable", "settings.connection_section.webhook.in_use") }
         /// Webhook
@@ -10197,6 +10233,10 @@ public enum L10n {
         public static var empty: String { return L10n.tr("Localizable", "watch.settings.complications.empty") }
         /// Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).
         public static var footer: String { return L10n.tr("Localizable", "watch.settings.complications.footer") }
+        /// Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).
+        public static func footerLink(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.settings.complications.footer_link", String(describing: p1))
+        }
         /// Last attempt: %@
         public static func lastAttempt(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.settings.complications.last_attempt", String(describing: p1))
@@ -11192,6 +11232,8 @@ public enum L10n {
       public static var completeItemTitle: String { return L10n.tr("Localizable", "widgets.todo_list.complete_item_title") }
       /// Check your lists and add items
       public static var description: String { return L10n.tr("Localizable", "widgets.todo_list.description") }
+      /// Couldn't update. Tap refresh.
+      public static var loadFailed: String { return L10n.tr("Localizable", "widgets.todo_list.load_failed") }
       /// Refresh To-do List
       public static var refreshTitle: String { return L10n.tr("Localizable", "widgets.todo_list.refresh_title") }
       /// Edit widget to select list.

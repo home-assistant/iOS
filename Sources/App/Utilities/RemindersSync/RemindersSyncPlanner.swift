@@ -33,6 +33,7 @@ enum RemindersSyncPlanner {
     static func plan(
         direction: RemindersSyncDirection,
         conflictResolution: RemindersSyncConflictResolution = .homeAssistant,
+        includeCompletedItems: Bool = false,
         todoItems: [String: RemindersSyncItemSnapshot],
         reminders: [String: RemindersSyncItemSnapshot],
         links: [LinkState]
@@ -52,32 +53,40 @@ enum RemindersSyncPlanner {
                 reminder: reminders[link.reminderId]
             ))
         }
-        // Completed items that were never linked are ignored: they are history, not work to
-        // mirror. Completion still propagates across linked pairs above.
+        // Completed items that were never linked are ignored unless the user opted in: they are
+        // history, not work to mirror. Completion still propagates across linked pairs above.
         var unlinkedTodoUids = todoItems
-            .filter { !linkedUids.contains($0.key) && !$0.value.isCompleted }
+            .filter { !linkedUids.contains($0.key) && (includeCompletedItems || !$0.value.isCompleted) }
             .keys.sorted()
         var unlinkedReminderIds = reminders
-            .filter { !linkedReminderIds.contains($0.key) && !$0.value.isCompleted }
+            .filter { !linkedReminderIds.contains($0.key) && (includeCompletedItems || !$0.value.isCompleted) }
             .keys.sorted()
 
         // Adopt same-titled unlinked pairs first, so linking two lists that already contain the
         // same items doesn't create duplicates on the first sync. Removing each matched reminder
-        // from the candidates ensures it is adopted at most once.
+        // from the candidates ensures it is adopted at most once. Pairs in the same completion
+        // state are matched first, across all items, so an open item is never paired with a
+        // checked-off copy while an open one is available for it.
         var adoptedTodoUids = Set<String>()
-        for uid in unlinkedTodoUids {
-            guard let todoItem = todoItems[uid],
-                  let reminderIndex = unlinkedReminderIds
-                  .firstIndex(where: { reminders[$0]?.title == todoItem.title }) else { continue }
-            let reminderId = unlinkedReminderIds.remove(at: reminderIndex)
-            adoptedTodoUids.insert(uid)
-            operations.append(.adoptLink(todoItemUid: uid, reminderId: reminderId))
-            if let reminder = reminders[reminderId], reminder != todoItem {
-                switch direction {
-                case .bothWays, .toReminders:
-                    operations.append(.updateReminder(todoItemUid: uid, reminderId: reminderId))
-                case .toHomeAssistant:
-                    operations.append(.updateTodoItem(todoItemUid: uid, reminderId: reminderId))
+        for requireSameState in [true, false] {
+            for uid in unlinkedTodoUids where !adoptedTodoUids.contains(uid) {
+                guard let todoItem = todoItems[uid],
+                      let reminderIndex = unlinkedReminderIds.firstIndex(where: { reminderId in
+                          guard let reminder = reminders[reminderId], reminder.title == todoItem.title else {
+                              return false
+                          }
+                          return !requireSameState || reminder.isCompleted == todoItem.isCompleted
+                      }) else { continue }
+                let reminderId = unlinkedReminderIds.remove(at: reminderIndex)
+                adoptedTodoUids.insert(uid)
+                operations.append(.adoptLink(todoItemUid: uid, reminderId: reminderId))
+                if let reminder = reminders[reminderId], reminder != todoItem {
+                    switch direction {
+                    case .bothWays, .toReminders:
+                        operations.append(.updateReminder(todoItemUid: uid, reminderId: reminderId))
+                    case .toHomeAssistant:
+                        operations.append(.updateTodoItem(todoItemUid: uid, reminderId: reminderId))
+                    }
                 }
             }
         }

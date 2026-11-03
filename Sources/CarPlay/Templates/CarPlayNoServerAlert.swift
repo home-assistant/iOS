@@ -3,7 +3,7 @@ import Foundation
 import Shared
 
 final class CarPlayNoServerAlert {
-    weak var interfaceController: CPInterfaceController?
+    weak var interfaceController: CarPlayAlertPresenting?
 
     func present() {
         let loginAlertAction = CPAlertAction(title: L10n.CarPlay.Labels.alreadyAddedServer, style: .default) { _ in

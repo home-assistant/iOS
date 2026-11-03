@@ -1,7 +1,9 @@
 import Foundation
 @testable import HomeAssistant
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct ManageStoragePathsTests {
     @Test func aRootedInventoryGivesEveryRowItsOwnFolder() {
         let root = URL(fileURLWithPath: "/tmp/manage-storage-paths")

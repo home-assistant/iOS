@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
@@ -6,7 +7,7 @@ import UIKit
 /// Lays the App Labs tab bar out in a window of its own and watches the bar UIKit draws for it, which is
 /// what shows the visibility modifiers reaching the screen rather than only the view model's flag.
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct NativeTabBarContainerViewRenderTests {
     @available(iOS 26, *)
     @Test("The bar leaves the screen while the more-info dialog is up and returns when it closes")

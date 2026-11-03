@@ -50,7 +50,9 @@ final class OnboardingServersListViewModel: ObservableObject {
         discoveredInstances = []
         discovery.start()
 
-        if Current.appConfiguration == .debug {
+        // Demo servers for trying the flow by hand in a debug build. Not in the test host: they arrive a
+        // second and a half later, so whether a test sees them would depend on how busy the machine is.
+        if Current.appConfiguration == .debug, !Current.isRunningTests {
             for (idx, instance) in [
                 DiscoveredHomeAssistant(
                     manualURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic")!,

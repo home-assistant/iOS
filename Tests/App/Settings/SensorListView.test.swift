@@ -1,5 +1,7 @@
 @testable import HomeAssistant
+import PromiseKit
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
@@ -7,7 +9,7 @@ import Testing
 /// of servers to pick one — which is the difference these cover.
 ///
 /// Serialized because `withServers` swaps globals on `Current`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct SensorListViewTests {
     @MainActor
     @Test func sensorListWithOneServerShowsItsSensors() throws {
@@ -107,6 +109,49 @@ struct SensorListViewTests {
         }
     }
 
+    /// The switches turn every sensor, or one, on and off for the server; the last update shows
+    /// under them; a new update interval is stored; and a refresh that fails is reported. The
+    /// sensors used need no permission, so no system prompt shows.
+    @MainActor
+    @Test func switchesIntervalAndAFailedRefresh() async throws {
+        let previousServers = Current.servers
+        let previousSensors = Current.sensors
+        let previousInterval = Current.settingsStore.periodicUpdateInterval
+        let previousRunner = Current.backgroundTask
+        defer {
+            Current.servers = previousServers
+            Current.sensors = previousSensors
+            Current.settingsStore.periodicUpdateInterval = previousInterval
+            Current.backgroundTask = previousRunner
+            SensorEnablementStore.resetForTesting()
+        }
+        let servers = FakeServerManager(initial: 1)
+        Current.servers = servers
+        SensorEnablementStore.resetForTesting()
+        Current.sensors = SensorContainer()
+        Current.sensors.resetSensorsForFirstRun()
+        Current.backgroundTask = NoTimeRunner()
+        let server = try #require(servers.all.first)
+
+        let viewModel = SensorListViewModel(server: server)
+        viewModel.sensors = [
+            WebhookSensor(name: "Storage", uniqueID: WebhookSensorId.storage.rawValue, state: "12 GB"),
+            WebhookSensor(name: "App version", uniqueID: WebhookSensorId.appVersion.rawValue, state: "2026.10"),
+        ]
+        viewModel.lastUpdateDate = Date(timeIntervalSince1970: 1_800_000_000)
+        let driver = await SwiftUIScreenDriver.show(SensorListView(viewModel: viewModel))
+        defer { driver.close() }
+
+        let before = Current.sensors.enabledUniqueIDs(for: server)
+        await driver.toggleSwitches()
+        #expect(Current.sensors.enabledUniqueIDs(for: server) != before)
+
+        viewModel.periodicUpdateInterval = 600
+        await #expect(driver.waitUntil { Current.settingsStore.periodicUpdateInterval == 600 })
+        await #expect(driver.waitUntil { viewModel.showAlert })
+        await driver.dismissPresented()
+    }
+
     /// The screen reads the servers, the selection and the hinge straight out of `Current`, so all
     /// three are put back afterwards rather than left for whatever test runs next.
     @MainActor
@@ -151,5 +196,16 @@ struct SensorListViewTests {
             )
         }
         try body(servers)
+    }
+}
+
+/// Fails every background task at once, without running the work it wraps.
+private final class NoTimeRunner: HomeAssistantBackgroundTaskRunner {
+    func callAsFunction<PromiseValue>(
+        withName name: String,
+        requiringAssertion: Bool,
+        wrapping: (TimeInterval?) -> Promise<PromiseValue>
+    ) -> Promise<PromiseValue> {
+        Promise(error: BackgroundTaskError.outOfTime)
     }
 }

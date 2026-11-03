@@ -6,9 +6,15 @@ import UIKit
 
 public class SettingsStore {
     let keychain = AppConstants.Keychain
-    let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
+    let prefs: UserDefaults
     private let seenWhatsNewReleaseIDsKey = "seenWhatsNewReleaseIDs"
     private let seenTestFlightMessageIDsKey = "seenTestFlightMessageIDs"
+
+    /// - Parameter prefs: the app group defaults. Tests pass a suite of their own, because every
+    ///   process on a simulator shares the app group's, including test processes running at once.
+    init(prefs: UserDefaults = UserDefaults(suiteName: AppConstants.AppGroupID)!) {
+        self.prefs = prefs
+    }
 
     /// These will only be posted on the main thread
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")

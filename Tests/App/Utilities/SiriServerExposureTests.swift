@@ -1,9 +1,11 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers the per-server Siri opt-out: what it stores, and what it hides.
+@Suite(.sharedState)
 struct SiriServerExposureTests {
     private func clear() async throws {
         try await Current.database().write { db in

@@ -1,13 +1,14 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 
 /// Covers the client certificate screen reached from a server's settings, with and without a
 /// certificate installed.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ClientCertificateViewTests {
     private func server(certificate: ClientCertificate?) -> Server {

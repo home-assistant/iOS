@@ -1,12 +1,13 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 
 /// Covers the toolbar pencil menu and the pill menu items it shares options with.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerEditMenuTests {
     @Test func pencilMenu() async throws {

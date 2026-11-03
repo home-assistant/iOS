@@ -17,11 +17,11 @@ struct WidgetEntityState: Codable {
 
     /// The icon color home-assistant/frontend gives this entity, or `customColor` when the user
     /// picked one, which wins whatever the entity's state.
-    func iconColor(domain: Domain?, customColor: Color? = nil) -> Color {
+    func iconColor(domain: Domain?, customColor: Color? = nil, stateOverride: String? = nil) -> Color {
         EntityIconColorProvider.iconColor(
             domain: domain?.rawValue ?? "",
             deviceClass: deviceClass,
-            state: rawState,
+            state: stateOverride ?? rawState,
             liveColor: liveColorHex.map { Color(hex: $0) },
             groupMemberDomain: groupMemberDomain,
             customColor: customColor

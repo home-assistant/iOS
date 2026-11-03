@@ -1,6 +1,7 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers the spoken "add this to…" command: what it writes, and the two ways it refuses.
@@ -11,7 +12,7 @@ import Testing
 /// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
 /// to a type marked `@available`, and the intent is iOS 17 for its destination list.
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct AddEntityToAppIntentTests {
     @Test("Adding to the watch stores the entity")
     func addsToWatch() async throws {

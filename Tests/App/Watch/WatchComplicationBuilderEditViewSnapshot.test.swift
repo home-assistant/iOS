@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
@@ -12,6 +13,7 @@ import Testing
 /// Only the first screenful is captured — the form is scrollable — so these guard the top of the flow
 /// and the preview; the on-face rendering itself is covered by the complication content-view snapshots.
 @MainActor
+@Suite(.sharedState)
 struct WatchComplicationBuilderEditViewSnapshotTests {
     @Test func newComplicationBuilder() {
         let previousServers = Current.servers

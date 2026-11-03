@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import HAKit
 import Shared
 import SwiftUI
 import WidgetKit
@@ -17,6 +18,8 @@ struct CustomWidgetToggleAppIntent: AppIntent {
     var entityId: String?
     @Parameter(title: "Is widget showing states?")
     var widgetShowingStates: Bool?
+    @Parameter(title: "Target state")
+    var targetValue: Bool?
 
     func perform() async throws -> some IntentResult {
         Current.Log.verbose(
@@ -53,9 +56,19 @@ struct CustomWidgetToggleAppIntent: AppIntent {
         )
         AppIntentHaptics.notify()
         do {
-            // The frontend's toggle: the entity's state decides between the domain's on and off
-            // services, so a locked lock unlocks and a running script stops.
-            try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+            if let targetValue {
+                guard WidgetOptimisticToggle.supports(domain) else {
+                    throw EntityToggler.ToggleError.domainNotToggleable(domain)
+                }
+                // A repeated tap on the same timeline must not undo the first request.
+                try await connection.send(.callService(
+                    domain: .init(stringLiteral: domain.rawValue),
+                    service: .init(stringLiteral: targetValue ? Service.turnOn.rawValue : Service.turnOff.rawValue),
+                    data: ["entity_id": entityId]
+                )).promise.asyncValue(timeout: 10)
+            } else {
+                try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+            }
             Current.Log.verbose(
                 "ToggleAppIntent: toggled, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
             )

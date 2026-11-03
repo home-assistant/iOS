@@ -1,8 +1,10 @@
 import Foundation
 import GRDB
 @testable import HomeAssistant
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct ManageStorageCleanerTests {
     private func makeTemporaryDirectory() throws -> URL {
         let url = URL(fileURLWithPath: NSTemporaryDirectory())

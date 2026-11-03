@@ -4,7 +4,7 @@ import SharedTesting
 import SwiftUI
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct NativeTabBarSnapshotTests {
     @available(iOS 26, *)

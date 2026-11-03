@@ -35,6 +35,30 @@ struct ServerActionPickerListTests {
         assertSnapshots(actions: [])
     }
 
+    /// The toolbar's buttons close the sheet and ask the server again.
+    @Test func toolbarClosesAndReloads() async {
+        var closed = 0
+        var reloaded = 0
+        let driver = await SwiftUIScreenDriver.show(ServerActionPickerList(
+            actions: Self.actions,
+            isLoading: false,
+            searchTerm: .constant(""),
+            selectedActionId: "light.toggle",
+            onSelect: { _ in },
+            onReload: { reloaded += 1 },
+            onClose: { closed += 1 }
+        ))
+        defer { driver.close() }
+        #expect(driver.rows.count == Self.actions.count)
+
+        #expect(driver.barButtons.count == 2)
+        for index in driver.barButtons.indices {
+            await driver.tapBarButton(index)
+        }
+        #expect(closed == 1)
+        #expect(reloaded == 1)
+    }
+
     /// The last one carries no icon on purpose: an action the server describes without one falls
     /// back to the bolt, so no row is ever left with a gap where the icon should be.
     private static let actions: [IntentActionDefinition] = [

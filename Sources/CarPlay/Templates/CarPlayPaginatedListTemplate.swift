@@ -285,7 +285,7 @@ final class CarPlayPaginatedListTemplate {
         return barButtons
     }
 
-    private func changePage(to: PageDirection) {
+    func changePage(to: PageDirection) {
         var newCurrentPage = currentPage
         switch to {
         case .next:

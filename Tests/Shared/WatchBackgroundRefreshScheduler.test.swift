@@ -4,11 +4,19 @@ import XCTest
 
 class WatchBackgroundRefreshSchedulerTests: XCTestCase {
     private var scheduler: WatchBackgroundRefreshScheduler!
+    /// The test cases pin `Current.date` to 2020; left in place, it reaches every class that runs next.
+    private var previousDate: (() -> Date)!
 
     override func setUp() {
         super.setUp()
 
+        previousDate = Current.date
         scheduler = WatchBackgroundRefreshScheduler()
+    }
+
+    override func tearDown() {
+        Current.date = previousDate
+        super.tearDown()
     }
 
     private struct TestCase {

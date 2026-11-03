@@ -28,4 +28,4 @@ There are multiple string tables:
 
 All string lookup flows through `Current.localized.string` which handles locale fallback.
 
-> **Important**: Translations for other languages are managed externally via [Lokalise](https://lokalise.com/public/834452985a05254348aee2.46389241/). Only add/modify strings in the `en.lproj` files.
+> **Important**: Translations for other languages are managed externally via [Lokalise](https://app.lokalise.com/public/834452985a05254348aee2.46389241/). Only add/modify strings in the `en.lproj` files.

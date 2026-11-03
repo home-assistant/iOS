@@ -68,6 +68,10 @@ final class SensorPermissionsViewModel: ObservableObject {
     // MARK: - Settings
 
     private func openSettings(for permission: SensorPermission) {
-        URLOpener.shared.openSettings(destination: permission.settingsDestination, completionHandler: nil)
+        URLOpener.shared.openSettings(destination: settingsDestination(for: permission), completionHandler: nil)
+    }
+
+    func settingsDestination(for permission: SensorPermission) -> OpenSettingsDestination {
+        permission.settingsDestination
     }
 }

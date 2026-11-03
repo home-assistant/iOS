@@ -9,6 +9,9 @@ import Shared
 final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
+    /// Set only by tests, which cannot construct a `CPInterfaceController`.
+    var navigatorOverride: CarPlayNavigationPresenting?
+    private var navigator: CarPlayNavigationPresenting? { navigatorOverride ?? interfaceController }
 
     private let viewModel: CarPlayClimateControlViewModel
 
@@ -362,7 +365,7 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
             )
             item.handler = { [weak self] _, completion in
                 self?.viewModel.setHvacMode(mode)
-                self?.interfaceController?.popTemplate(animated: true, completion: nil)
+                self?.navigator?.popTemplate(animated: true, completion: nil)
                 completion()
             }
             return item
@@ -391,7 +394,7 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
                     return
                 }
                 onSelect(viewModel, option)
-                interfaceController?.popTemplate(animated: true, completion: nil)
+                navigator?.popTemplate(animated: true, completion: nil)
                 completion()
             }
             return item
@@ -401,6 +404,6 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
 
     private func pushSelectionTemplate(title: String, items: [CPListItem]) {
         let selectionTemplate = CPListTemplate(title: title, sections: [CPListSection(items: items)])
-        interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
     }
 }

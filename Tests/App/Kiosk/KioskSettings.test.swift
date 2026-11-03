@@ -1,8 +1,10 @@
 import Foundation
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct KioskSettingsTests {
     @Test func roundTripsThroughDatabase() throws {
         let database = try DatabaseQueue()

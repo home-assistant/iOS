@@ -2,6 +2,7 @@ import CoreLocation
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
@@ -40,15 +41,17 @@ private func makeServer(
     externalURL: URL?,
     internalSSIDs: [String]?,
     internalHardwareAddresses: [String]? = nil,
+    remoteUIURL: URL? = nil,
+    useCloud: Bool = false,
     securityLevel: ConnectionSecurityLevel = .undefined
 ) -> Server {
-    let info = ServerInfo(
+    var info = ServerInfo(
         name: "Test Server",
         connection: .init(
             externalURL: externalURL,
             internalURL: internalURL,
             cloudhookURL: nil,
-            remoteUIURL: nil,
+            remoteUIURL: remoteUIURL,
             webhookID: "webhook-id",
             webhookSecret: nil,
             internalSSIDs: internalSSIDs,
@@ -60,6 +63,7 @@ private func makeServer(
         token: .init(accessToken: "token", refreshToken: "refresh", expiration: Date()),
         version: "2024.1"
     )
+    info.connection.useCloud = useCloud
     return Server.fake(identifier: .init(rawValue: "test-server"), initial: info)
 }
 
@@ -90,7 +94,7 @@ private func withEnvironment(
     body()
 }
 
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionURLsHowItWorksViewTests {
     @Test func everyRequirementMet() async throws {
@@ -180,9 +184,31 @@ struct ConnectionURLsHowItWorksViewTests {
             )
         }
     }
+
+    @Test func externalURLScreenWithHomeAssistantLinkTurnedOn() async throws {
+        let server = makeServer(
+            internalURL: URL(string: "http://internal.example.com:8123"),
+            externalURL: URL(string: "https://external.example.com"),
+            internalSSIDs: ["MyWifi"],
+            remoteUIURL: URL(string: "https://remote.ui.nabu.casa"),
+            useCloud: true
+        )
+
+        withEnvironment(
+            permissionState: .authorizedAlways,
+            accuracy: .fullAccuracy,
+            networkState: .init(ssid: "MyWifi")
+        ) {
+            assertLightDarkSnapshots(
+                of: NavigationView { ConnectionURLView(server: server, urlType: .external) },
+                drawHierarchyInKeyWindow: true,
+                layout: .fixed(width: 390, height: 1400)
+            )
+        }
+    }
 }
 
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionURLsHowItWorksViewModelTests {
     @Test func marksEveryRequirementMetOnAListedNetwork() {

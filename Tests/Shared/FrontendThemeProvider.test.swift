@@ -1,10 +1,11 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct FrontendThemeProviderTests {
     @Test("Stored properties are read back per server and appearance")
     func readsBackWhatItStored() throws {

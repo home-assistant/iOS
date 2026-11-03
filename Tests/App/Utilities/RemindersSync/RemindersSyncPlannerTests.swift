@@ -240,6 +240,106 @@ struct RemindersSyncPlannerTests {
         #expect(operations.isEmpty)
     }
 
+    @Test func testIncludingCompletedItemsCreatesThemOnTheOtherSide() {
+        let completedItem = snapshot(title: "Done in HA", isCompleted: true)
+        let completedReminder = snapshot(title: "Done in Reminders", isCompleted: true)
+        let inputs = (todoItems: ["todo-1": completedItem], reminders: ["reminder-1": completedReminder])
+
+        let bothWays = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            includeCompletedItems: true,
+            todoItems: inputs.todoItems,
+            reminders: inputs.reminders,
+            links: []
+        )
+        #expect(bothWays == [.createReminder(todoItemUid: "todo-1"), .createTodoItem(reminderId: "reminder-1")])
+
+        let toReminders = RemindersSyncPlanner.plan(
+            direction: .toReminders,
+            includeCompletedItems: true,
+            todoItems: inputs.todoItems,
+            reminders: inputs.reminders,
+            links: []
+        )
+        #expect(toReminders == [.createReminder(todoItemUid: "todo-1")])
+
+        let toHomeAssistant = RemindersSyncPlanner.plan(
+            direction: .toHomeAssistant,
+            includeCompletedItems: true,
+            todoItems: inputs.todoItems,
+            reminders: inputs.reminders,
+            links: []
+        )
+        #expect(toHomeAssistant == [.createTodoItem(reminderId: "reminder-1")])
+    }
+
+    @Test func testIncludingCompletedItemsAdoptsSameTitledCompletedPairs() {
+        let completed = snapshot(isCompleted: true)
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            includeCompletedItems: true,
+            todoItems: ["todo-1": completed],
+            reminders: ["reminder-1": completed],
+            links: []
+        )
+        #expect(operations == [.adoptLink(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testIncludingCompletedItemsPrefersAdoptingTheSameCompletionState() {
+        // An open item and a checked-off copy of the same title on the other side: pair the open
+        // ones together and mirror the completed one, rather than pairing open with completed.
+        let open = snapshot()
+        let completed = snapshot(isCompleted: true)
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            includeCompletedItems: true,
+            todoItems: ["todo-1": open],
+            reminders: ["reminder-completed": completed, "reminder-open": open],
+            links: []
+        )
+        #expect(operations == [
+            .adoptLink(todoItemUid: "todo-1", reminderId: "reminder-open"),
+            .createTodoItem(reminderId: "reminder-completed"),
+        ])
+    }
+
+    @Test func testIncludingCompletedItemsMatchesAllSameStatePairsBeforeCrossStateOnes() {
+        // The completed item sorts first, but must not take the only open reminder away from the
+        // open item that matches it exactly.
+        let open = snapshot()
+        let completed = snapshot(isCompleted: true)
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            includeCompletedItems: true,
+            todoItems: ["a-completed": completed, "z-open": open],
+            reminders: ["reminder-open": open],
+            links: []
+        )
+        #expect(operations == [
+            .adoptLink(todoItemUid: "z-open", reminderId: "reminder-open"),
+            .createReminder(todoItemUid: "a-completed"),
+        ])
+    }
+
+    @Test func testIncludingCompletedItemsReopensAnAdoptedCompletedCopy() {
+        // Only a completed copy of a newly added open item exists on the other side: with
+        // Home Assistant winning, link them and reopen the reminder instead of creating a
+        // duplicate.
+        let open = snapshot()
+        let completed = snapshot(isCompleted: true)
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            includeCompletedItems: true,
+            todoItems: ["todo-1": open],
+            reminders: ["reminder-1": completed],
+            links: []
+        )
+        #expect(operations == [
+            .adoptLink(todoItemUid: "todo-1", reminderId: "reminder-1"),
+            .updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1"),
+        ])
+    }
+
     @Test func testCompletingALinkedReminderCompletesTheTodoItem() {
         let original = snapshot()
         let operations = RemindersSyncPlanner.plan(

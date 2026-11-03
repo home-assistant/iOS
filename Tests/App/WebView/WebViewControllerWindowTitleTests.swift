@@ -1,10 +1,11 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 import UIKit
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WebViewControllerWindowTitleTests {
     @Test func theWindowIsNamedAfterThePanelTheFrontendIsShowing() {
         #expect(

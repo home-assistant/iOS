@@ -145,7 +145,12 @@ struct WidgetCustom: Widget {
                 confirmsTapAction: itemState == .pendingTapConfirmation,
                 requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,
                 widgetId: widget.id,
-                disabled: !widget.itemsStates.isEmpty
+                disabled: !widget.itemsStates.isEmpty,
+                optimisticToggle: .init(
+                    domain: magicItem.domain,
+                    state: showStates ? state : nil,
+                    customColor: magicItem.customization?.customIconColor.map { Color(hex: $0) }
+                )
             )
         }
     }

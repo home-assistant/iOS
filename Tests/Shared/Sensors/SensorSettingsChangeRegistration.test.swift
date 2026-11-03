@@ -1,12 +1,13 @@
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Switching a sensor on for one server must not make the others rewrite their registrations: the
 /// choice is theirs to keep, and the extra round trips are the whole cost of a toggle.
 ///
 /// Serialized because every test swaps globals on `Current`.
-@Suite("Sensor settings change registration", .serialized)
+@Suite("Sensor settings change registration", .sharedState)
 struct SensorSettingsChangeRegistrationTests {
     /// Runs the wrapped work without a real `UIApplication`/`ProcessInfo` assertion.
     private final class PassthroughBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {

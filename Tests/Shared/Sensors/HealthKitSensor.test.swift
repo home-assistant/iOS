@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 class HealthKitSensorTests: XCTestCase {
@@ -12,7 +13,9 @@ class HealthKitSensorTests: XCTestCase {
     private var originalHealthKitService: HealthKitService!
     private var originalSensors: SensorContainer!
     private var originalServers: ServerManager!
-    private var previousReported: Any?
+    /// Enablement and the reported-metrics record live in the app group defaults, which other test
+    /// processes on the simulator reset while this class runs.
+    private var settingsStore: PrivateSettingsStore!
 
     private let lock = NSLock()
     private var queryCounts = [String: Int]()
@@ -38,7 +41,7 @@ class HealthKitSensorTests: XCTestCase {
         originalHealthKitService = Current.healthKitService
         originalSensors = Current.sensors
         originalServers = Current.servers
-        previousReported = Current.settingsStore.prefs.object(forKey: Self.reportedKey)
+        settingsStore = PrivateSettingsStore()
 
         request = .init(
             reason: .trigger("unit-test"),
@@ -82,12 +85,6 @@ class HealthKitSensorTests: XCTestCase {
         HealthKitSensorUpdateSignaler.minimumSignalInterval = originalMinimumSignalInterval
         originalDebounceInterval = nil
         originalMinimumSignalInterval = nil
-        SensorEnablementStore.resetForTesting()
-        if let previousReported {
-            Current.settingsStore.prefs.set(previousReported, forKey: Self.reportedKey)
-        } else {
-            Current.settingsStore.prefs.removeObject(forKey: Self.reportedKey)
-        }
         Current.date = originalDate
         Current.calendar = originalCalendar
         Current.healthKitService = originalHealthKitService
@@ -98,7 +95,8 @@ class HealthKitSensorTests: XCTestCase {
         originalCalendar = nil
         originalHealthKitService = nil
         originalSensors = nil
-        previousReported = nil
+        settingsStore?.restore()
+        settingsStore = nil
         activeEnergy = nil
         super.tearDown()
     }

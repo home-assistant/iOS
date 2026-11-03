@@ -17,6 +17,7 @@ struct WidgetRefreshButton: View {
     var body: some View {
         Button(intent: refreshIntent) {
             WidgetRefreshLabel(date: date)
+                .invalidatableContent()
         }
         .buttonStyle(.plain)
         // The visible text is a timestamp, so name the action explicitly and leave the time as the

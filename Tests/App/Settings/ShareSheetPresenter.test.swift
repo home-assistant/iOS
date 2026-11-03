@@ -1,5 +1,6 @@
 import Foundation
 @testable import HomeAssistant
+import SharedTesting
 import Testing
 import UIKit
 
@@ -16,7 +17,7 @@ private final class RecordingViewController: UIViewController {
 
 /// Covers the UIKit side of `View.shareSheet(item:)`: the activity controller is presented from the
 /// top-most controller of the anchor's window, once per item, and the item is cleared on dismissal.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ShareSheetPresenterTests {
     private func settle() async throws {

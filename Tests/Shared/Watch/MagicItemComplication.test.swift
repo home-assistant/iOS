@@ -1,8 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct MagicItemComplicationTests {
     @Test("Only rectangular complications are offered for the watch item list")
     func onlyRectangularIsAddable() throws {

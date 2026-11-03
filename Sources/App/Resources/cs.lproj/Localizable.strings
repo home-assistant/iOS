@@ -689,6 +689,7 @@
 "connection.active_url_type.toast.internal" = "Použití interní URL adresy.";
 "connection.active_url_type.toast.none" = "Pro tento server momentálně není k dispozici žádná aktivní URL.";
 "connection.active_url_type.toast.remote_ui" = "Použití URL Cloud Remote UI.";
+"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
 "connection.active_url_type.toast.title" = "Typ připojení";
 "connection.error.details.button.clipboard" = "Zkopírovat do schránky";
 "connection.error.details.button.discord" = "Zeptat se na Discordu";
@@ -701,6 +702,8 @@
 "connection.error.details.title" = "Chyba připojení";
 "connection.error.failed_connect.cloud.title" = "Ujistěte se, že je vaše předplatné Home Assistant Cloud aktivní a připojené k vašemu serveru. Můžete to ověřit na [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.cloud_inactive.title" = "V aplikaci jste zakázali používání Home Assistant Cloud. Pokud jej potřebujete pro vzdálený přístup, otevřete nastavení doprovodné aplikace a povolte jej.";
+"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.subtitle" = "Zkontrolujte připojení a zkuste to znovu. Pokud nejste doma, ujistěte se, že máte nastavený vzdálený přístup.";
 "connection.error.failed_connect.title" = "Nepodařilo se nám připojit k Home Assistantovi";
 "connection.error.failed_connect.url" = "Aplikace se aktuálně připojuje k";
@@ -1657,6 +1660,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.client_certificate.remove_confirmation.message" = "Certifikát bude ze zařízení odebrán. Pro použití ověřování mTLS jej budete muset znovu importovat.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Odebrat";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Odebrat certifikát?";
+"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
 "settings.connection_section.cloud_overrides_external" = "Při připojování přes Cloud se externí URL nepoužívá. Není nutné ji nastavovat, pokud nechcete používat Cloud.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "Dosažitelné";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Dosažitelné (HTTP %li)";
@@ -1744,6 +1748,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.urls_how_it_works.active.header" = "Právě se používá";
 "settings.connection_section.urls_how_it_works.active.none" = "S aktuálním nastavením nelze použít žádnou URL adresu";
 "settings.connection_section.urls_how_it_works.away.body" = "Pokud se v seznamu nenajde žádná odpovídající síť, použije se adresa URL služby Home Assistant Cloud, pokud je cloud zapnutý; v opačném případě se použije externí adresa URL.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
 "settings.connection_section.urls_how_it_works.away.title" = "Kdekoli jinde";
 "settings.connection_section.urls_how_it_works.background.body" = "Aktualizace senzorů, akce oznámení a lokální push oznámení běží i při zavřené aplikaci. Na pozadí iOS sdílí název sítě jen tehdy, když je přístup k poloze nastaven na \"Vždy\", nikoli na \"Při používání aplikace\", takže bez něj vaše domácí síť nebude rozpoznána a zařízení se připojí stejným způsobem, jako když nejste doma.";
 "settings.connection_section.urls_how_it_works.background.title" = "Když je aplikace spuštěna na pozadí";
@@ -1771,6 +1776,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.webhook.active.unavailable" = "Žádná URL adresa není k dispozici";
 "settings.connection_section.webhook.endpoints.footer" = "Tyto adresy URL považovat za citlivé. Kdokoli s nimi může odesílat požadavky na tento webhook mobilní aplikace.";
 "settings.connection_section.webhook.footer" = "Aplikace odesílá do tohoto webhooku informace o senzorech, poloze a další informace. Home Assistant Cloud poskytuje cloudhook, který se používá, kdykoli jste mimo domov. Bez něj aplikace místo toho vytváří URL webhooku z interní, vzdálené nebo externí URL tohoto serveru.";
+"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
 "settings.connection_section.webhook.in_use" = "Používá se";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Ověřování";
@@ -3066,6 +3072,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "watch.settings.client_events.title" = "Protokoly";
 "watch.settings.complications.empty" = "Zatím nejsou nastaveny žádné komplikace.";
 "watch.settings.complications.footer" = "Načte aktuální hodnotu každé komplikace přímo z Home Assistanta. To vyžaduje dostupnou URL adresu serveru (lokální síť nebo vzdálenou/cloudovou URL adresu).";
+"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
 "watch.settings.complications.last_attempt" = "Poslední pokus: %@";
 "watch.settings.complications.list_footer" = "Klepnutím na komplikaci zobrazíte, kdy byla naposledy aktualizována, a můžete to zkusit znovu.";
 "watch.settings.complications.never" = "Zatím neaktualizováno";
@@ -3145,6 +3152,7 @@ I když žádná URL adresa není považována za bezpečnou, data tohoto server
 "web_view.add_to.option.Deeplink.title" = "Hloubkový odkaz";
 "web_view.add_to.option.MacToolbar.title" = "Panel nástrojů Macu";
 "web_view.add_to.option.NfcTag.title" = "NFC štítek";
+"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Zkontrolujte připojení nebo to zkuste znovu později. Pokud se Home Assistant restartuje, znovu se připojí po opětovném připojení k internetu.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Vymazat  mezipaměť a znovu načíst";
