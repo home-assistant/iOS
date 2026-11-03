@@ -80,6 +80,7 @@ struct WidgetTodoListView: View {
                 return AnyView(Link(destination: openListURL.withWidgetAuthenticity()) { content })
             }
         )
+        .widgetBackground(.primaryBackground)
     }
 
     /// The drawing half of an item: what it says and, in words, when it is due.
@@ -150,6 +151,20 @@ struct WidgetTodoListView: View {
     private func capitalizeLeadingCharacter(in text: String) -> String {
         guard let first = text.first else { return text }
         return String(first).uppercased() + text.dropFirst()
+    }
+}
+
+@available(iOS 17, *)
+extension WidgetTodoListView {
+    init(entry: WidgetTodoListEntry) {
+        self.init(
+            serverId: entry.serverId,
+            listId: entry.listId,
+            title: entry.listTitle,
+            items: entry.items,
+            isEmpty: entry.listId.isEmpty,
+            loadFailed: entry.loadFailed
+        )
     }
 }
 

@@ -20,16 +20,33 @@ struct WidgetTodoListTimelineTests {
     @available(iOS 17, *)
     private var provider: WidgetTodoListAppIntentTimelineProvider { .init() }
 
+    private struct TimelineContext: WidgetTimelineContext {
+        var family: WidgetFamily = .systemMedium
+        var isPreview = false
+    }
+
     // MARK: - Timeline
 
     @available(iOS 17, *)
     @Test func anUnconfiguredListDoesNotReportALoadFailure() async throws {
         _ = try install(entities: []) { _ in .failure(widgetStubUnexpected) }
-        let timeline = await provider.timeline(for: .init(), family: .systemMedium)
+        let timeline = await provider.timeline(for: .init(), in: TimelineContext())
         let entry = try #require(timeline.entries.first)
         #expect(entry.listId.isEmpty)
         #expect(entry.items.isEmpty)
         #expect(!entry.loadFailed)
+        #expect(WidgetTodoListView(entry: entry).isEmpty)
+    }
+
+    @available(iOS 17, *)
+    @Test func aGalleryPreviewDoesNotFetchRealItems() async throws {
+        let (_, connection) = try install(entities: []) { _ in .failure(widgetStubUnexpected) }
+        let timeline = await provider.timeline(for: .init(), in: TimelineContext(isPreview: true))
+        let entry = try #require(timeline.entries.first)
+        #expect(entry.listId == "todo.preview")
+        #expect(entry.items.count == 3)
+        #expect(!entry.loadFailed)
+        #expect(connection.sent.isEmpty)
     }
 
     @available(iOS 17, *)
@@ -43,8 +60,12 @@ struct WidgetTodoListTimelineTests {
             displayString: "Shopping",
             iconName: "checklist"
         )
-        let failed = await provider.timeline(for: configuration, family: .systemMedium)
+        let failed = await provider.timeline(for: configuration, in: TimelineContext())
         #expect(failed.entries.first?.loadFailed == true)
+        let failedView = try WidgetTodoListView(entry: #require(failed.entries.first))
+        #expect(failedView.loadFailed)
+        #expect(!failedView.isEmpty)
+        #expect(failedView.listId == "todo.shopping")
 
         Current.api(for: server)?.connection = WidgetStubConnection { _ in
             .success(HAData(value: [
@@ -52,12 +73,12 @@ struct WidgetTodoListTimelineTests {
                 "service_response": ["todo.shopping": ["items": [[String: String]]()]],
             ]))
         }
-        let empty = await provider.timeline(for: configuration, family: .systemMedium)
+        let empty = await provider.timeline(for: configuration, in: TimelineContext())
         #expect(empty.entries.first?.loadFailed == false)
         #expect(empty.entries.first?.items.isEmpty == true)
 
         Current.servers = FakeServerManager()
-        let missing = await provider.timeline(for: configuration, family: .systemMedium)
+        let missing = await provider.timeline(for: configuration, in: TimelineContext())
         #expect(missing.entries.first?.loadFailed == true)
     }
 

@@ -15,7 +15,6 @@ struct WidgetGauge: Widget {
             if timelineEntry.runScript, let intent = intent(for: timelineEntry) {
                 Button(intent: intent) {
                     WidgetGaugeView(entry: timelineEntry)
-                        .invalidatableContent()
                         .widgetBackground(Color.clear)
                 }
                 .buttonStyle(.plain)

@@ -83,14 +83,11 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
         return placeholder(in: context)
     }
 
-    func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+    func timeline(for configuration: Intent, in context: some WidgetTimelineContext) async -> Timeline<Entry> {
         if context.isPreview {
             return Timeline(entries: [placeholder(in: context)], policy: .never)
         }
-        return await timeline(for: configuration, family: context.family)
-    }
-
-    func timeline(for configuration: Intent, family: WidgetFamily) async -> Timeline<Entry> {
+        let family = context.family
         guard let selectedList = selectedList(for: configuration) else {
             return Timeline(
                 entries: [.init(
@@ -160,7 +157,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
-    func placeholder(in context: Context) -> Entry {
+    func placeholder(in context: some WidgetTimelineContext) -> Entry {
         .init(
             date: Date(),
             serverId: WidgetPreviewSample.serverId,

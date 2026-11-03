@@ -871,6 +871,7 @@
 				Widgets/Common/WidgetRefreshButton.swift,
 				"Widgets/Common/WidgetsKind+TileCapacity.swift",
 				Widgets/Common/WidgetTileInteraction.swift,
+				Widgets/Common/WidgetTimelineContext.swift,
 				Widgets/Common/WidgetTimelineProviderSupport.swift,
 				Widgets/Common/WidgetType.swift,
 				Widgets/CommonlyUsedEntities/WidgetCommonlyUsedEntities.swift,

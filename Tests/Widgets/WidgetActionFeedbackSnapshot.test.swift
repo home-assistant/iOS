@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 
+import HAWatchComplications
 import Shared
 import SharedTesting
 import SwiftUI
@@ -7,6 +8,42 @@ import Testing
 import WidgetKit
 
 struct WidgetActionFeedbackSnapshotTests {
+    @available(iOS 17, *)
+    @MainActor @Test func gaugeContentSupportsPendingFeedback() {
+        assertLightDarkSnapshots(
+            of: HStack {
+                WidgetGaugeView(entry: .init(
+                    gaugeType: .normal,
+                    value: 0.67,
+                    valueLabel: "67%",
+                    runScript: false,
+                    script: nil,
+                    showConfirmationNotification: false
+                ))
+                WidgetGaugeView(entry: .init(
+                    gaugeType: .normal,
+                    value: 0.67,
+                    valueLabel: "67%",
+                    complicationModel: .init(
+                        valueText: "67%",
+                        showsValue: true,
+                        title: "Battery",
+                        showsName: true,
+                        fraction: 0.67,
+                        minLabel: "0",
+                        maxLabel: "100",
+                        tint: .green
+                    ),
+                    runScript: false,
+                    script: nil,
+                    showConfirmationNotification: false
+                ))
+            }
+            .padding(),
+            layout: .fixed(width: 360, height: 180)
+        )
+    }
+
     @available(iOS 17, *)
     @MainActor @Test func optimisticSplitEntityStates() {
         assertLightDarkSnapshots(
@@ -80,14 +117,15 @@ struct WidgetActionFeedbackSnapshotTests {
     @available(iOS 17, *)
     @MainActor @Test func failedTodoRefreshDoesNotClaimCompletion() {
         assertLightDarkSnapshots(
-            of: WidgetTodoListView(
+            of: WidgetTodoListView(entry: .init(
+                date: Date(timeIntervalSince1970: 0),
                 serverId: "s",
                 listId: "todo.shopping",
-                title: "Shopping",
+                listTitle: "Shopping",
                 items: [],
-                isEmpty: false,
+                family: .systemMedium,
                 loadFailed: true
-            )
+            ))
             .padding(),
             layout: .fixed(width: 338, height: 158)
         )
