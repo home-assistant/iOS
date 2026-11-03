@@ -7,6 +7,8 @@ import WidgetKit
 /// A tile that reports a reading: the value leads and the icon is pushed to the trailing edge, so a
 /// column of sensors reads as a column of numbers rather than a column of glyphs.
 public struct WidgetTileSensorView: View {
+    @Environment(\.showsWidgetContainerBackground) private var showsWidgetContainerBackground
+
     public let model: WidgetTileModel
     public let sizeStyle: WidgetTileSizeStyle
     public let family: WidgetFamily
@@ -123,7 +125,14 @@ public struct WidgetTileSensorView: View {
                 }
             }
         }
-        .widgetTileCardStyle(sizeStyle: sizeStyle, model: model, tinted: tinted)
+        .modify { view in
+            // CarPlay and StandBy remove the container background, so the sensor's card must follow it.
+            if showsWidgetContainerBackground {
+                view.widgetTileCardStyle(sizeStyle: sizeStyle, model: model, tinted: tinted)
+            } else {
+                view.frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
     }
 }
 
