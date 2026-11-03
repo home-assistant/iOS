@@ -57,6 +57,7 @@ public struct HACalendarEventRecord: Codable, Identifiable, FetchableRecord, Per
 
     /// Without a `uid` two events can share a start, so the summary and end are folded in to keep
     /// them apart; with a `uid` the start alone distinguishes the occurrences of a recurring event.
+    /// An empty `uid` counts as missing, matching how the rest of the app treats it.
     public static func uniqueId(
         serverId: String,
         calendarEntityId: String,
@@ -66,6 +67,7 @@ public struct HACalendarEventRecord: Codable, Identifiable, FetchableRecord, Per
         end: Date,
         summary: String
     ) -> String {
+        let uid = uid.flatMap { $0.isEmpty ? nil : $0 }
         var components = [
             serverId,
             calendarEntityId,
