@@ -83,6 +83,20 @@ struct WidgetTileRenderingTests {
         render(WidgetRefreshButton(kind: .custom, date: Date()))
     }
 
+    @available(iOS 17, *)
+    @Test @MainActor func refreshControlsDrawWhileWaitingForTheirIntents() {
+        let date = Date(timeIntervalSince1970: 0)
+        render(WidgetCalendarRefreshButton(date: date))
+        render(WidgetEnergyControls.period("Today")(AnyView(Text(verbatim: "Today"))))
+        render(WidgetEnergyControls.refresh(date)(AnyView(Text(verbatim: "Updated"))))
+        for entry in [
+            WidgetEnergyEntry(isConfigured: true, loadFailed: true),
+            WidgetEnergyEntry(isConfigured: false, noConnection: true),
+        ] {
+            render(WidgetEnergyView(entry: entry))
+        }
+    }
+
     // MARK: - Custom widget models
 
     /// A stored widget's tiles take their colors and names from the item's customization and info;

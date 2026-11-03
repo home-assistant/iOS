@@ -23,6 +23,16 @@ struct WidgetTodoListTimelineTests {
     // MARK: - Timeline
 
     @available(iOS 17, *)
+    @Test func anUnconfiguredListDoesNotReportALoadFailure() async throws {
+        _ = try install(entities: []) { _ in .failure(widgetStubUnexpected) }
+        let timeline = await provider.timeline(for: .init(), family: .systemMedium)
+        let entry = try #require(timeline.entries.first)
+        #expect(entry.listId.isEmpty)
+        #expect(entry.items.isEmpty)
+        #expect(!entry.loadFailed)
+    }
+
+    @available(iOS 17, *)
     @Test func aFailedRefreshIsNotAnEmptyCompletedList() async throws {
         let (server, _) = try install(entities: []) { _ in .failure(widgetStubUnexpected) }
         let configuration = WidgetTodoListAppIntent()
