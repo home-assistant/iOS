@@ -1,13 +1,14 @@
 @testable import HomeAssistant
 
 import Shared
+import SharedTesting
 import Testing
 import WidgetKit
 
 /// The entries the entities widget builds from its configuration, outside the gallery.
 ///
 /// Serialized because every test swaps the servers and the item info provider in `Current`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WidgetEntitiesTimelineProviderTests {
     /// The snapshot carries the configured tiles and the server's name, but no states: those are
     /// only fetched for the timeline.

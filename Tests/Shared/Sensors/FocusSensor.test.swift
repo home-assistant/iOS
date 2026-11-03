@@ -1,5 +1,6 @@
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import XCTest
 
@@ -16,13 +17,30 @@ class FocusSensorTests: XCTestCase {
     /// Enablement is per server, so the device-level observation these cover only starts while
     /// there is a server to report to.
     private var previousServers: ServerManager!
+    private var previousSensors: SensorContainer!
+    private var previousFocusFilter: FocusFilterWrapper!
+    private var previousFocusStatus: FocusStatusWrapper!
+    private var previousDate: (() -> Date)!
+    /// Enablement and every Focus answer these store live in the app group defaults, which other
+    /// test processes on the simulator reset and write while this class runs.
+    private var settingsStore: PrivateSettingsStore!
 
     override func setUp() {
         super.setUp()
+        settingsStore = PrivateSettingsStore()
         previousServers = Current.servers
+        previousSensors = Current.sensors
+        previousFocusFilter = Current.focusFilter
+        previousFocusStatus = Current.focusStatus
+        previousDate = Current.date
         let servers = FakeServerManager()
         servers.addFake()
         Current.servers = servers
+        // The signaler starts observing once the container has produced a Focus sensor a server
+        // wants, so the container is this class's own rather than whatever an earlier one left.
+        let sensors = SensorContainer()
+        sensors.register(provider: FocusSensor.self)
+        Current.sensors = sensors
         // Stated rather than inherited: the observation only runs while a server wants the sensor,
         // and what an earlier test left in the shared selection is not this test's premise.
         SensorEnablementStore.resetForTesting()
@@ -34,10 +52,18 @@ class FocusSensorTests: XCTestCase {
     }
 
     override func tearDown() {
-        SensorEnablementStore.resetForTesting()
+        Current.date = previousDate
+        Current.focusStatus = previousFocusStatus
+        Current.focusFilter = previousFocusFilter
+        Current.sensors = previousSensors
         Current.servers = previousServers
-        resetFocusState()
-        Current.date = Date.init
+        previousDate = nil
+        previousFocusStatus = nil
+        previousFocusFilter = nil
+        previousSensors = nil
+        previousServers = nil
+        settingsStore?.restore()
+        settingsStore = nil
         super.tearDown()
     }
 

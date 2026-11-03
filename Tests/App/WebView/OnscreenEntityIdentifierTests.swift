@@ -3,11 +3,12 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
 /// to a type marked `@available`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct OnscreenEntityIdentifierTests {
     /// A cover leads with the type that opens and closes it, because the single identifier an activity
     /// can carry is the first one, and "open this" is how a cover is asked for.

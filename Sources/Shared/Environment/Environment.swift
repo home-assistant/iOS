@@ -103,7 +103,10 @@ public func withCurrent<R>(
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
 public class AppEnvironment {
-    init() {
+    /// Process-wide logging hooks. They are installed once, by whichever environment is created first
+    /// (the global one in the app), so the fresh environments tests create concurrently through
+    /// `makeIsolated()` do not rewrite these globals while other threads read them.
+    private static let installProcessWideLogging: Void = {
         PromiseKit.conf.logHandler = { event in
             Current.Log.info {
                 switch event {
@@ -119,13 +122,6 @@ public class AppEnvironment {
             }
         }
 
-        // Lets the end-to-end tests relaunch as another device; only honored in their configuration.
-        if isFastlaneSnapshot,
-           let vendorID = UserDefaults(suiteName: AppConstants.AppGroupID)!.string(forKey: "E2E_VENDOR_IDENTIFIER"),
-           !vendorID.isEmpty {
-            device.identifierForVendor = { vendorID }
-        }
-
         HAGlobal.log = { level, log in
             let string = "WebSocket: \(log.replacingOccurrences(of: "\n", with: " "))"
 
@@ -133,6 +129,17 @@ public class AppEnvironment {
             case .info: Current.Log.info(string)
             case .error: Current.Log.error(string)
             }
+        }
+    }()
+
+    init() {
+        _ = Self.installProcessWideLogging
+
+        // Lets the end-to-end tests relaunch as another device; only honored in their configuration.
+        if isFastlaneSnapshot,
+           let vendorID = UserDefaults(suiteName: AppConstants.AppGroupID)!.string(forKey: "E2E_VENDOR_IDENTIFIER"),
+           !vendorID.isEmpty {
+            device.identifierForVendor = { vendorID }
         }
     }
 
@@ -257,6 +264,20 @@ public class AppEnvironment {
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
         LogRedactionServerObserver.shared.start(observing: servers)
+    }
+
+    /// A fresh environment for one test, meant to be resolved through `withCurrent` so what the test
+    /// assigns to it never reaches the global instance another test may be reading at that moment.
+    ///
+    /// Every member starts from its default implementation, as the global one does before
+    /// `setup()` runs, except the ones wrapping a resource the process can only hold once: those
+    /// are shared with the global environment rather than created again.
+    public static func makeIsolated() -> AppEnvironment {
+        let environment = AppEnvironment()
+        // Background URL session identifiers cannot be reused, so a second WebhookManager would
+        // compete with the first for the same sessions.
+        environment.webhooks = underlyingCurrent.webhooks
+        return environment
     }
 
     /// Crash reporting and related metadata gathering

@@ -1,7 +1,9 @@
 import Foundation
 @testable import HomeAssistant
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct RemoveResetCachesTests {
     @Test func removesTheResetCachesAndNothingElse() throws {
         let root = FileManager.default.temporaryDirectory

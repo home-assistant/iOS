@@ -30,16 +30,8 @@ public class PedometerSensor: SensorProvider {
 
         return firstly { () -> Promise<CMPedometerData> in
             latestPedometerData()
-        }.then { [request] data in
-            when(resolved: PedometerSensor.allCases.map { $0.asSensor(from: data, request: request) })
-        }.map { sensors -> [WebhookSensor] in
-            sensors.compactMap {
-                if case let .fulfilled(value) = $0 {
-                    return value
-                } else {
-                    return nil
-                }
-            }
+        }.map { [request] data in
+            PedometerSensor.allCases.map { $0.asSensor(from: data, request: request) }
         }
     }
 
@@ -153,15 +145,16 @@ public class PedometerSensor: SensorProvider {
             WebhookSensor(awaitingPermissionNamed: name, uniqueID: rawValue)
         }
 
-        func asSensor(from data: CMPedometerData, request: SensorProviderRequest) -> Promise<WebhookSensor> {
+        /// Listed with every value or none: a sensor only reported when it has a value has no row
+        /// in the sensor list the rest of the time, and no row means nothing to switch off. Current
+        /// pace and cadence never have one here — CoreMotion only fills them in live updates, not
+        /// for the daily query — so without this they existed in Home Assistant alone.
+        func asSensor(from data: CMPedometerData, request: SensorProviderRequest) -> WebhookSensor {
             guard let intVal = keyPath.intValue(on: data) else {
-                guard request.reason == .registration else {
-                    return .init(error: PedometerError.noData)
-                }
-                return .value(sensor(state: "unavailable", request: request))
+                return sensor(state: "unavailable", request: request)
             }
 
-            return .value(sensor(state: intVal, request: request))
+            return sensor(state: intVal, request: request)
         }
 
         private func sensor(state: Any, request: SensorProviderRequest) -> WebhookSensor {

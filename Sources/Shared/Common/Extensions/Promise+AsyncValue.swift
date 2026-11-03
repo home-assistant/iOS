@@ -1,7 +1,7 @@
 import Foundation
 import PromiseKit
 
-extension Promise {
+public extension Promise {
     /// `asyncValue()` with a deadline.
     ///
     /// Requests that travel over the WebSocket carry no deadline of their own, so a connection that

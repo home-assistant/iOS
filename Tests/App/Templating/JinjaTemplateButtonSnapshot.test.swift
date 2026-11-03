@@ -1,10 +1,11 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct JinjaTemplateButtonSnapshotTests {
     @Test func titlesRemainVisibleForEmptyTextAndRenderedResults() throws {
         let previousServers = Current.servers

@@ -4,11 +4,12 @@ import HAKit_Mocks
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 import WebKit
 
 // Serialized: the tests share the cached APIs.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerReauthenticationTests {
     private struct TokenRefused: Error {}

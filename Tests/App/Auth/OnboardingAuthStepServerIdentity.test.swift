@@ -2,9 +2,14 @@ import Combine
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 final class OnboardingAuthStepServerIdentityTests: XCTestCase {
+    /// Puts back the fake servers and other `Current` members this class swaps in, which would
+    /// otherwise receive sensor updates for the rest of the run.
+    private var currentSnapshot: CurrentSnapshot!
+
     private var presenter: OnboardingAuthPresenter!
     private var api: HomeAssistantAPI!
     private var cancellables = Set<AnyCancellable>()
@@ -12,6 +17,7 @@ final class OnboardingAuthStepServerIdentityTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        currentSnapshot = CurrentSnapshot()
         previousIsCatalyst = Current.isCatalyst
         Current.isCatalyst = false
         Current.servers = FakeServerManager()
@@ -27,6 +33,11 @@ final class OnboardingAuthStepServerIdentityTests: XCTestCase {
     override func tearDown() {
         Current.isCatalyst = previousIsCatalyst
         cancellables.removeAll()
+        currentSnapshot.restore()
+        // XCTest keeps this test case alive for the whole run, and an API left alive stays registered
+        // with the app's sensor container, which every later sensor signal fans out to.
+        api = nil
+        presenter = nil
         super.tearDown()
     }
 

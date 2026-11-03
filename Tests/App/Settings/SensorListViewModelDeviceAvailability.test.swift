@@ -1,12 +1,13 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// The hinge sensors can only be switched on on a device that folds. Anywhere else they move to a
 /// section of their own at the bottom of the list, which these cover.
 ///
 /// Serialized because each test swaps `Current.hinge`, `Current.servers` and `Current.sensors`.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct SensorListViewModelDeviceAvailabilityTests {
     @Test func withoutAHingeTheHingeSensorsAreUnavailable() async throws {

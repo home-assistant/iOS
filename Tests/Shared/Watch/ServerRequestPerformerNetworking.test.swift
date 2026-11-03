@@ -1,12 +1,13 @@
 import Foundation
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Drives `ServerRequestPerformer` through a stubbed `URLProtocol` so the real transport — the
 /// session, the continuation and the cancellation handling — is exercised without a server.
 ///
 /// Serialized because the stub's handler is process-wide static state.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ServerRequestPerformerNetworkingTests {
     private func url(_ string: String) -> URL {
         URL(string: string)!

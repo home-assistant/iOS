@@ -1,12 +1,13 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 import UIKit
 
 /// Covers the list of destinations "Add entity to" puts in front of someone: only the ones this
 /// device has, and only the ones that can show what is being added.
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct EntityAddToDestinationOptionsProviderTests {
     /// A Mac has no CarPlay quick access and no watch paired the way a phone does, so its only
     /// destination is its own toolbar.

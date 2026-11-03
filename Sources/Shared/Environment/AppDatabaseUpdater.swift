@@ -185,7 +185,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    private let taskCoordinator = TaskCoordinator()
+    /// Internal so tests can wait for a finished run to leave the queue before starting the next one.
+    let taskCoordinator = TaskCoordinator()
 
     // Simple adaptive throttling/backoff
     // - Tracks consecutive failures per server to increase delay between attempts.

@@ -2,11 +2,12 @@ import Combine
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// The sensor list is scoped to one server, or to none on the root screen of an install with
 /// several. These cover what that scoping changes.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct SensorListViewModelPerServerTests {
     @Test func aScopedModelReportsOnlyItsOwnServersSelection() async throws {

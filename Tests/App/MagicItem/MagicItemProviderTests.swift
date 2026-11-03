@@ -1,8 +1,9 @@
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Serialized because the tests share the database and swap the servers in `Current`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct MagicItemProviderTests {
     private var sut: MagicItemProvider
 

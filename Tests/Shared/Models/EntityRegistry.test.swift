@@ -2,6 +2,7 @@ import Foundation
 import GRDB
 import HAKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 @Suite("Entity Registry Tests")
@@ -41,7 +42,7 @@ struct EntityRegistryTests {
     }
 }
 
-@Suite("AppEntitiesModel display-name resolution", .serialized)
+@Suite("AppEntitiesModel display-name resolution", .sharedState)
 struct AppEntitiesModelNameResolutionTests {
     private func makeEntity(_ entityId: String, friendlyName: String?) throws -> HAEntity {
         var attributes: [String: Any] = [:]

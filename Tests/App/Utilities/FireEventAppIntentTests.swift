@@ -1,12 +1,13 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers which server an event is fired at.
 ///
 /// The availability guard sits inside the test rather than on the suite: `@Suite` cannot be applied
 /// to a type marked `@available`, and the intent is iOS 17.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct FireEventAppIntentTests {
     /// An identifier resolves to nothing when no server is set up, so the event is refused rather
     /// than fired at whatever happens to be around.

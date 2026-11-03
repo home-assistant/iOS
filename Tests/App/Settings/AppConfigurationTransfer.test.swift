@@ -3,10 +3,11 @@ import GRDB
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import Testing
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct AppConfigurationTransferTests {
     @Test func exportMarksTheFileAsAFullConfigurationExport() throws {
         try withConfigurationTestWorld { database in
@@ -138,6 +139,77 @@ struct AppConfigurationTransferTests {
             let storedKiosk = try await database.read { db in try KioskSettings.fetchOne(db) }
             let kiosk = try #require(storedKiosk)
             #expect(kiosk.serverId == validServerId)
+        }
+    }
+
+    @Test func transferErrorsDescribeThemselves() {
+        let errors: [AppConfigurationTransfer.TransferError] = [
+            .unsupportedFile, .notAConfigurationFile, .unsupportedSchema,
+        ]
+        for error in errors {
+            #expect(error.errorDescription?.isEmpty == false)
+        }
+    }
+
+    /// Only a JSON file of a schema this version understands is accepted.
+    @Test func inspectRejectsOtherFilesAndNewerSchemas() throws {
+        let text = FileManager.default.temporaryDirectory.appendingPathComponent("config-\(UUID()).txt")
+        try Data("{}".utf8).write(to: text)
+        defer { try? FileManager.default.removeItem(at: text) }
+        #expect(throws: AppConfigurationTransfer.TransferError.self) {
+            try AppConfigurationTransfer.inspectImportFile(from: text)
+        }
+
+        let url = try withConfigurationTestWorld { _ in
+            try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
+        }
+        defer { try? FileManager.default.removeItem(at: url) }
+        var payload = try jsonPayload(from: url)
+        payload["schemaVersion"] = AppConfigurationTransfer.schemaVersion + 1
+        try JSONSerialization.data(withJSONObject: payload).write(to: url)
+        do {
+            _ = try AppConfigurationTransfer.inspectImportFile(from: url)
+            Issue.record("Expected a newer schema to be rejected")
+        } catch AppConfigurationTransfer.TransferError.unsupportedSchema {
+            // expected
+        }
+    }
+
+    /// The watch's Assist pipeline and the kiosk's server are dropped when they belong to a server
+    /// this device does not know; a failing post-import cleanup fails the import.
+    @Test func importDropsUnknownServersFromWatchAndKiosk() async throws {
+        let sourceDatabase = try makeConfigurationDatabase()
+        try await sourceDatabase.write { db in
+            var watch = WatchConfig(id: WatchConfig.watchConfigId, items: [])
+            watch.assist = .init(showAssist: true, serverId: missingServerId, pipelineId: "pipeline")
+            try watch.insert(db)
+            var kiosk = KioskSettings()
+            kiosk.serverId = missingServerId
+            kiosk.dashboard = "lovelace-kiosk"
+            try kiosk.insert(db, onConflict: .replace)
+        }
+        let url = try withConfigurationTestWorld(database: sourceDatabase) { _ in
+            try AppConfigurationTransfer.exportURL(appSettings: AppSettingsSnapshot.capture())
+        }
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        try await withConfigurationTestWorld(database: makeConfigurationDatabase()) { database in
+            _ = try await AppConfigurationTransfer.importPayload(from: url)
+            let watch = try await database.read { db in try WatchConfig.fetchOne(db) }
+            #expect(watch?.assist.serverId == nil)
+            #expect(watch?.assist.pipelineId == nil)
+            let kiosk = try await database.read { db in try KioskSettings.fetchOne(db) }
+            #expect(kiosk?.serverId == nil)
+            #expect(kiosk?.dashboard == nil)
+        }
+
+        try await withConfigurationTestWorld(
+            database: makeConfigurationDatabase(),
+            modelManager: FailingConfigurationModelManager()
+        ) { _ in
+            await #expect(throws: (any Error).self) {
+                _ = try await AppConfigurationTransfer.importPayload(from: url)
+            }
         }
     }
 
@@ -397,5 +469,11 @@ private final class RecordingConfigurationAppDatabaseUpdater: AppDatabaseUpdater
         if forceUpdate {
             updatedServerIds.append(server.identifier.rawValue)
         }
+    }
+}
+
+private final class FailingConfigurationModelManager: LegacyModelManager {
+    override func cleanup(definitions: [CleanupDefinition] = CleanupDefinition.defaults) -> Promise<Void> {
+        .init(error: URLError(.cannotOpenFile))
     }
 }

@@ -5,13 +5,14 @@ import HAKit_Mocks
 import OHHTTPStubs
 import OHHTTPStubsSwift
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers which server a camera snapshot is taken from.
 ///
 /// The availability guard sits inside each test rather than on the suite: `@Suite` cannot be applied
 /// to a type marked `@available`, and the intent is iOS 17.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct GetCameraSnapshotAppIntentTests {
     private static let foreignIdentifier = "identifier-from-another-device"
 

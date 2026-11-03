@@ -24,4 +24,4 @@ Home Assistant is an open-source home automation platform that focuses on local 
 - Wink
 - Z-Wave
 
-Home Assistant Companion requires an iPhone running iOS 10.3 or later and a configured Home Assistant instance. The instance must use Home Assistant Cloud or be accessible from the Internet and secured with a valid, non self-signed, SSL certificate for location tracking. Basic notifications work without external access.
+Home Assistant Companion requires an iPhone running iOS 10.3 or later and a configured Home Assistant instance. The instance must use Home Assistant Link or be accessible from the Internet and secured with a valid, non self-signed, SSL certificate for location tracking. Basic notifications work without external access.

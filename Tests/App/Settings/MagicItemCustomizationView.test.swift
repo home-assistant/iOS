@@ -10,6 +10,7 @@ import Testing
 /// a tap on the tile does, and what a tap on its icon does. Everywhere else a magic item is used
 /// there is still only one thing to tap.
 @MainActor
+@Suite(.sharedState)
 struct MagicItemCustomizationViewTests {
     @Test func widgetOffersTapAndIconTapBehaviors() {
         assertSnapshots(context: .widget, item: .init(id: "light.kitchen", serverId: "1", type: .entity))
@@ -120,6 +121,63 @@ struct MagicItemCustomizationViewTests {
             customization: .init(iconColor: "00AEF8")
         )
         assertSnapshots(context: .carPlay, item: item)
+    }
+
+    // MARK: - Driving the editor
+
+    /// Custom colors and the confirmation switch write into the item, the name field falls back to
+    /// the entity's name when cleared, and the toolbar button hands the edited item back.
+    @Test func editingAWidgetItemHandsItBack() async throws {
+        let previousProvider = Current.magicItemProvider
+        Current.magicItemProvider = { MagicItemCustomizationMagicItemProvider() }
+        defer { Current.magicItemProvider = previousProvider }
+
+        var saved: [MagicItem] = []
+        let driver = await SwiftUIScreenDriver.show(MagicItemCustomizationView(
+            mode: .add,
+            context: .widget,
+            // Without a customization, the screen gives the item one to edit.
+            item: .init(id: "light.kitchen", serverId: "1", type: .entity, customization: nil)
+        ) { saved.append($0) })
+        defer { driver.close() }
+
+        await driver.toggleSwitches()
+        await driver.type("  ")
+        await driver.type("Desk lamp")
+        let pressed = await driver.tapBarButton(titled: L10n.MagicItem.add)
+        #expect(pressed)
+        let item = try #require(saved.last)
+        #expect(item.displayText == "Desk lamp")
+        #expect(item.customization?.backgroundColor != nil)
+        #expect(item.customization?.requiresConfirmation == true)
+
+        await driver.toggleSwitches()
+        await driver.tapBarButton(titled: L10n.MagicItem.add)
+        #expect(saved.last?.customization?.backgroundColor == nil)
+    }
+
+    /// An Assist pipeline shows the microphone instead of an icon picker, and on the watch it never
+    /// asks for confirmation.
+    @Test(arguments: [nil, "#FF9800"])
+    func assistOnTheWatchSkipsConfirmation(iconColor: String?) async throws {
+        let previousProvider = Current.magicItemProvider
+        Current.magicItemProvider = { MagicItemCustomizationMagicItemProvider() }
+        defer { Current.magicItemProvider = previousProvider }
+
+        var saved: [MagicItem] = []
+        let item = MagicItem(
+            id: "pipeline",
+            serverId: "1",
+            type: .assistPipeline,
+            customization: .init(iconColor: iconColor, requiresConfirmation: true)
+        )
+        let driver = await SwiftUIScreenDriver.show(
+            MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { saved.append($0) }
+        )
+        defer { driver.close() }
+
+        await driver.tapBarButton(titled: L10n.MagicItem.edit)
+        #expect(saved.last?.customization?.requiresConfirmation == false)
     }
 
     /// `Current` is a shared global, so the mocked provider is put back as soon as the snapshot is

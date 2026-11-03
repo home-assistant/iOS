@@ -2,12 +2,13 @@
 
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 import WidgetKit
 
 /// What the widget's timeline is built from: the areas the app has already stored, the page the
 /// widget was left on, and the server it was configured with.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WidgetAreasTimelineProviderTests {
     @available(iOS 17, *)
     @Test func aServersAreasBecomeThePageTheWidgetDraws() throws {

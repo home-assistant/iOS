@@ -235,7 +235,8 @@ struct MainWindowGroupCommands: Commands {
             servers = newServers
         }
 
-        private static func loadServers() -> [AreasCommandServer] {
+        /// Non-private for tests.
+        static func loadServers() -> [AreasCommandServer] {
             Current.servers.all.map { server in
                 let serverId = server.identifier.rawValue
                 let areas: [AppArea]
@@ -274,7 +275,8 @@ struct MainWindowGroupCommands: Commands {
             }
         }
 
-        private static func floors(from areas: [AreasCommandArea]) -> [AreasCommandFloor] {
+        /// Non-private for tests.
+        static func floors(from areas: [AreasCommandArea]) -> [AreasCommandFloor] {
             let noFloorName = L10n.MainWindowGroupCommands.Floor.empty
 
             return Dictionary(grouping: areas) { area in

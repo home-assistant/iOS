@@ -1,10 +1,11 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Coverage for the area entries the watch configuration can hold: which areas may be added, and
 /// how a `.area` magic item resolves its name and icon.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchAreaEntryTests {
     @Test("Only areas holding a watch-compatible entity are addable")
     func dropsAreasWithoutWatchCompatibleEntities() throws {

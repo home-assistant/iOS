@@ -21,6 +21,21 @@ struct SensorRowTests {
         assertLightDarkSnapshots(of: view)
     }
 
+    /// The Focus name sensor is a Labs feature, so its row carries the Labs label next to its name.
+    @MainActor
+    @Test func focusNameRowCarriesTheLabsLabel() async {
+        let sensor = WebhookSensor(
+            name: "Focus name",
+            uniqueID: WebhookSensorId.focusName.rawValue,
+            icon: .abTestingIcon,
+            state: "Work",
+            unit: nil
+        )
+        let driver = await SwiftUIScreenDriver.show(List { SensorRow(sensor: sensor, isEnabled: true) })
+        defer { driver.close() }
+        #expect(driver.rows.count == 1)
+    }
+
     /// The badge belongs to the sensor rather than to its state, so it stays on the row whether the
     /// sensor is switched on or off.
     @MainActor

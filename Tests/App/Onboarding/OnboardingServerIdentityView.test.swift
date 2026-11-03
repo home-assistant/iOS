@@ -7,7 +7,7 @@ import Testing
 import UIKit
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct OnboardingServerIdentityViewTests {
     private static let home = ServerIdentityConflictingServer(
         name: "Domicile",

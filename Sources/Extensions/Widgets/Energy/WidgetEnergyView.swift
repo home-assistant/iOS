@@ -49,7 +49,7 @@ struct WidgetEnergyView: View {
         return { label in
             AnyView(
                 Button(intent: WidgetEnergyRefreshAppIntent()) {
-                    label
+                    label.invalidatableContent()
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(L10n.Widgets.Energy.refreshTitle)

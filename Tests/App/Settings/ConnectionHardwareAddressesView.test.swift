@@ -1,12 +1,13 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 
 /// Covers the router addresses sub-screen reached from the internal URL editor.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ConnectionHardwareAddressesViewTests {
     @Test func addresses() async throws {

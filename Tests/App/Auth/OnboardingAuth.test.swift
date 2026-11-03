@@ -14,11 +14,15 @@ class OnboardingAuthTests: XCTestCase {
     private var previousVendorID: (() -> String?)!
     private var presenter: OnboardingAuthPresenter!
     private var cancellables = Set<AnyCancellable>()
+    private var previousServers: ServerManager!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
 
     override func setUp() {
         super.setUp()
 
         auth = OnboardingAuth()
+        previousServers = Current.servers
+        previousCachedApis = Current.cachedApis
         previousCurrentNetworkState = Current.connectivity.currentNetworkState
         previousRegistrationRecords = Current.settingsStore.prefs.object(forKey: SettingsStore.registrationRecordsKey)
         Current.settingsStore.prefs.removeObject(forKey: SettingsStore.registrationRecordsKey)
@@ -41,6 +45,14 @@ class OnboardingAuthTests: XCTestCase {
         FakeOnboardingAuthPostStepBeforeRegister1.onPerform = nil
         FakeOnboardingAuthPostStepAfterRegister1.onPerform = nil
         cancellables.removeAll()
+        // Onboarding caches an API for each server it adds. XCTest keeps this test case alive for the
+        // whole run, and an API left alive stays registered with the app's sensor container, which
+        // every later sensor signal fans out to.
+        Current.servers = previousServers
+        Current.cachedApis = previousCachedApis
+        auth = nil
+        presenter = nil
+        instance = nil
 
         super.tearDown()
     }

@@ -2,9 +2,10 @@ import Foundation
 @testable import HomeAssistant
 import ObjectMapper
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct OnboardingServersListViewModelTests {
     @Test func testInitAddsSelfAsObserver() async throws {
         let mockBonjour = MockBonjour()

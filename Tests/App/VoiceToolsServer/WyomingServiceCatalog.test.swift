@@ -1,8 +1,10 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
+@Suite(.sharedState)
 struct WyomingServiceCatalogTests {
     private func withServers(_ servers: FakeServerManager, _ work: () async -> Void) async {
         let previousServers = Current.servers

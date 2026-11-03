@@ -1,8 +1,10 @@
 import Foundation
 @testable import HomeAssistant
+import SharedTesting
 import Testing
 
 @MainActor
+@Suite(.sharedState)
 struct ManageStorageViewModelTests {
     private let paths = ManageStoragePaths.rooted(at: URL(fileURLWithPath: "/tmp/manage-storage-view-model"))
 

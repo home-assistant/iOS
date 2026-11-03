@@ -2,11 +2,12 @@ import Foundation
 import HAKit
 import HAKit_Mocks
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Where an area tile lands: the view the frontend opens when an area is tapped, `areas-<area_id>`
 /// under the dashboard that has a view for every area.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WidgetAreasDashboardTests {
     private static func panel(_ path: String, component: String) -> HAPanel {
         .init(icon: nil, title: path.capitalized, path: path, component: component, showInSidebar: true)

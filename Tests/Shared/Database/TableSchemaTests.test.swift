@@ -1,8 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite("Table Schema Tests")
+@Suite("Table Schema Tests", .sharedState)
 struct TableSchemaTests {
     /// Helper method to verify table schema
     func verifyTableSchema(

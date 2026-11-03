@@ -180,8 +180,11 @@ struct OnDeviceSpeechRecognitionSessionTests {
 
         recognizer.report("turn on the")
         session.append(pause)
-        try await Task.sleep(nanoseconds: pastTheSilence)
+        // The silence timer runs on the main actor, which other suites keep busy under load: wait for
+        // it to fire rather than for a fixed time.
+        let ended = await LoadTolerantDeadline.waitUntil { listeningEnded > 0 }
 
+        #expect(ended)
         #expect(listeningEnded == 1)
     }
 
@@ -199,7 +202,8 @@ struct OnDeviceSpeechRecognitionSessionTests {
         #expect(listeningEnded == 0)
 
         session.append(pause)
-        try await Task.sleep(nanoseconds: pastTheSilence)
+        let ended = await LoadTolerantDeadline.waitUntil { listeningEnded > 0 }
+        #expect(ended)
         #expect(listeningEnded == 1)
     }
 

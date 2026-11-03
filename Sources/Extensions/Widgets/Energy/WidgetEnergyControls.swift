@@ -14,7 +14,7 @@ enum WidgetEnergyControls {
         { label in
             AnyView(
                 Button(intent: WidgetEnergyRefreshAppIntent()) {
-                    label
+                    label.invalidatableContent()
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text(L10n.Widgets.Energy.refreshTitle))
@@ -30,7 +30,7 @@ enum WidgetEnergyControls {
         { label in
             AnyView(
                 Button(intent: WidgetEnergyRefreshAppIntent()) {
-                    label
+                    label.invalidatableContent()
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text(L10n.Widgets.Energy.refreshTitle))

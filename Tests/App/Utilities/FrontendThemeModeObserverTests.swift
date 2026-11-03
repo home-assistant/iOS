@@ -2,11 +2,12 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 import UIKit
 
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct FrontendThemeModeObserverTests {
     @Test func theRememberedModeIsAppliedWhileTheWebsocketIsStillConnecting() throws {
         try withContext { context in

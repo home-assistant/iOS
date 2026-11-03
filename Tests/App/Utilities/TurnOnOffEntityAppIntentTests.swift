@@ -2,10 +2,11 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// One intent now switches both ways, so each direction is checked for the service it sends.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct TurnOnOffEntityAppIntentTests {
     /// Toggling is the only direction that is right whatever state the entity is already in, so it is
     /// what an action dropped into a shortcut without the direction set does. The App Shortcuts still

@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Records the webhook requests a run made, from whichever task the reporter calls `send` on.
@@ -65,7 +66,7 @@ private final class LocationSendLog {
 }
 
 // Serialized: the suites share `Current`.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchDeviceReporterLocationTests {
     private let server = Server.fake { $0.version = .inZonesOnLocationUpdate }
     private let store = FakeWatchDeviceRegistrationStore()

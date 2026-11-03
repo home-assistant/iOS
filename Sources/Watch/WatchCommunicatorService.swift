@@ -28,6 +28,17 @@ final class WatchCommunicatorService {
         Communicator.shared.send($0, errorHandler: $1)
     }
 
+    /// Queued (`transferUserInfo`) delivery to the watch. Injectable so tests capture the replies.
+    var sendGuaranteed: (HAWatchConnectivity.GuaranteedMessage) -> Void = {
+        Communicator.shared.send($0)
+    }
+
+    /// Pushes the application context to the watch. Injectable so tests never update the paired
+    /// watch's context; `setup()` captures it when it registers the state observers.
+    var syncWatchContext: () -> Void = {
+        HomeAssistantAPI.syncWatchContext()
+    }
+
     private typealias UndeliveredAssistMessage = (sequence: Int, message: HAWatchConnectivity.ImmediateMessage)
     private var undeliveredAssistMessages: [UndeliveredAssistMessage] = []
     private var assistMessageSequence = 0
@@ -101,16 +112,17 @@ final class WatchCommunicatorService {
 
     func setup() {
         Current.servers.add(observer: self)
+        let syncWatchContext = syncWatchContext
 
         // This directly mutates the data structure for observations to avoid race conditions.
         Communicator.shared.state.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
-            HomeAssistantAPI.syncWatchContext()
+            syncWatchContext()
         }
 
         Communicator.shared.watchState.observations.store[.init(queue: .main)] = { watchState in
             Current.Log.verbose("Watch state changed: \(watchState)")
-            HomeAssistantAPI.syncWatchContext()
+            syncWatchContext()
         }
 
         Communicator.shared.reachability.observations.store[.init(queue: .main)] = { reachability in
@@ -561,14 +573,15 @@ final class WatchCommunicatorService {
         // the latter only because Swift prefers the overload without defaulted arguments.
         do {
             if let config: WatchConfig = try Current.database().read({ db in try WatchConfig.fetchOne(db) }) {
+                let sendGuaranteed = sendGuaranteed
                 buildWatchConfigResponseContent(watchConfig: config) { content in
-                    Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(
+                    sendGuaranteed(HAWatchConnectivity.GuaranteedMessage(
                         identifier: InteractiveImmediateResponses.watchConfigResponse.rawValue,
                         content: content
                     ))
                 }
             } else {
-                Communicator.shared.send(HAWatchConnectivity.GuaranteedMessage(
+                sendGuaranteed(HAWatchConnectivity.GuaranteedMessage(
                     identifier: InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
                 ))
             }
@@ -1569,7 +1582,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-        HomeAssistantAPI.syncWatchContext()
+        syncWatchContext()
         // Also push the reference database (which now carries the servers too) so the new server set
         // reaches the watch proactively. mTLS client-certificate bundles still flow only through the
         // on-demand `serversConfigSync` reply (they carry Keychain material kept off the mirror).

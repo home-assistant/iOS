@@ -1,10 +1,12 @@
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 // Exercises the database-backed floor disambiguation: `floorNamesMap(for:)` and an entity's
 // `contextualSubtitle`, which only attach the floor when an area name collides on the same server.
+@Suite(.sharedState)
 struct FloorNamesMapTests {
     private static func makeArea(
         serverId: String,

@@ -1,9 +1,10 @@
 import Foundation
 @testable import Shared
+import SharedTesting
 import Testing
 
 // Serialized: the tests override the shared `Current.device`, which concurrent tests would race on.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchDeviceSensorsTests {
     /// Runs `body` with the device reporting one battery at `level`, charging, restoring the shared
     /// environment afterwards so other suites see the defaults.
